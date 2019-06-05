@@ -13,6 +13,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
+import static de.monticore.typescalculator.TypesCalculatorHelper.*;
+
 public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCalculator implements AssignmentExpressionsVisitor {
 
   private AssignmentExpressionsVisitor realThis;
@@ -33,7 +35,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTIncSuffixExpression expr){
-    ASTMCType result = calculatePlusMinusIncDecPrefixInfix(expr.getExpression());
+    ASTMCType result = getUnaryNumericPromotionType(expr.getExpression());
 
     if(result!=null){
       this.result = result;
@@ -47,7 +49,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTDecSuffixExpression expr){
-    ASTMCType result = calculatePlusMinusIncDecPrefixInfix(expr.getExpression());
+    ASTMCType result = getUnaryNumericPromotionType(expr.getExpression());
 
     if(result!=null){
       this.result = result;
@@ -61,7 +63,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTIncPrefixExpression expr){
-    ASTMCType result = calculatePlusMinusIncDecPrefixInfix(expr.getExpression());
+    ASTMCType result = getUnaryNumericPromotionType(expr.getExpression());
 
     if(result!=null){
       this.result = result;
@@ -75,7 +77,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTDecPrefixExpression expr){
-    ASTMCType result = calculatePlusMinusIncDecPrefixInfix(expr.getExpression());
+    ASTMCType result = getUnaryNumericPromotionType(expr.getExpression());
 
     if(result!=null){
       this.result = result;
@@ -89,7 +91,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTPlusPrefixExpression expr){
-    ASTMCType result = calculatePlusMinusIncDecPrefixInfix(expr.getExpression());
+    ASTMCType result = getUnaryNumericPromotionType(expr.getExpression());
     if(result!=null){
       this.result = result;
       MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
@@ -102,7 +104,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTMinusPrefixExpression expr){
-    ASTMCType result = calculatePlusMinusIncDecPrefixInfix(expr.getExpression());
+    ASTMCType result = getUnaryNumericPromotionType(expr.getExpression());
     if(result!=null){
       this.result = result;
       MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
@@ -113,20 +115,8 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     }
   }
 
-  private ASTMCType calculatePlusMinusIncDecPrefixInfix(ASTExpression expr){
-    ASTMCType result = null;
-    if(types.containsKey(expr)){
-      if(types.get(expr).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build())){
-        result=MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
-      }else if(types.get(expr).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build())){
-        result=MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
-      }
-    }
-    return result;
-  }
-
   private void calculatePlusAssignment(ASTRegularAssignmentExpression expr){
-    ASTMCType result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    ASTMCType result = calculateTypeArithmeticWithString(expr.getLeft(),expr.getRight());
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
       List<String> name = new ArrayList<>();
       name.add("String");
@@ -227,16 +217,10 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
         left = scope.resolveEVariable(types.get(expr.getLeft()).getEVariableSymbol().getName());
         right = scope.resolveEVariable(types.get(expr.getRight()).getEVariableSymbol().getName());
       }
-
       if (types.containsKey(expr.getLeft()) && types.containsKey(expr.getRight())) {
-        if (types.get(expr.getLeft()).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build()) && types.get(expr.getRight()).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build())) {
-          result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
-        }
-        else if (types.get(expr.getLeft()).deepEquals(types.get(expr.getRight()))) {
-          result = types.get(expr.getLeft()).getASTMCType().deepClone();
-        }
-        else if (left.isPresent() && right.isPresent()) {
-          if (left.get().getMCTypeSymbol().getSubtypes().contains(right.get().getMCTypeSymbol())) {
+        result=calculateRegularAssignment(expr.getLeft(),expr.getRight());
+        if (left.isPresent() && right.isPresent()) {
+          if (left.get().getMCTypeSymbol().getSubtypes().contains(right.get().getMCTypeSymbol())||types.get(expr.getLeft()).getASTMCType().deepEquals(types.get(expr.getRight()).getASTMCType())) {
             result = types.get(expr.getLeft()).getASTMCType().deepClone();
           }
         }
@@ -343,19 +327,60 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     }
   }
 
+  public ASTMCType getBinaryNumericPromotion(ASTExpression leftType,
+                                             ASTExpression rightType) {
+    if(types.containsKey(leftType)&&types.containsKey(rightType)){
+      if("double".equals(unbox(types.get(leftType).getASTMCType()).getBaseName())||"double".equals(unbox(types.get(rightType).getASTMCType()).getBaseName())){
+        return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
+      }
+      if("float".equals(unbox(types.get(leftType).getASTMCType()).getBaseName())||"float".equals(unbox(types.get(rightType).getASTMCType()).getBaseName())){
+        return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build();
+      }
+      if("long".equals(unbox(types.get(leftType).getASTMCType()).getBaseName())||"long".equals(unbox(types.get(rightType).getASTMCType()).getBaseName())){
+        return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build();
+      }
+      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
+    }
+    return null;
+  }
+
+  public ASTMCType getUnaryNumericPromotionType(ASTExpression expr){
+    if(types.containsKey(expr))
+      if("byte".equals(unbox(types.get(expr).getASTMCType()).getBaseName())||
+          "short".equals(unbox(types.get(expr).getASTMCType()).getBaseName())||
+          "char".equals(unbox(types.get(expr).getASTMCType()).getBaseName())||
+          "int".equals(unbox(types.get(expr).getASTMCType()).getBaseName())
+      ){
+        return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
+      }
+      if("long".equals(unbox(types.get(expr).getASTMCType()).getBaseName())||
+          "double".equals(unbox(types.get(expr).getASTMCType()).getBaseName())||
+          "float".equals(unbox(types.get(expr).getASTMCType()).getBaseName())
+      ){
+        return unbox(types.get(expr).getASTMCType());
+      }
+    return null;
+  }
+
   private ASTMCType calculateTypeArithmetic(ASTExpression left, ASTExpression right){
     ASTMCType result = null;
     if(types.containsKey(left)&&types.containsKey(right)) {
-      if (types.get(left).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build()) && types.get(right).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build())) {
-        result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
+      if(isNumericType(types.get(left).getASTMCType())&&isNumericType(types.get(right).getASTMCType())){
+        return types.get(left).getASTMCType();
       }
-      else if (types.get(left).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build()) && types.get(right).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build())) {
-        result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
-      }
-      else if (types.get(left).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build()) && types.get(right).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build())){
-        result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
-      }else if(types.get(left).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build()) && types.get(right).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build())) {
-        result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
+    }
+    return result;
+  }
+
+  private ASTMCType calculateTypeArithmeticWithString(ASTExpression left, ASTExpression right){
+    ASTMCType result = null;
+    if(types.containsKey(left)&&types.containsKey(right)){
+      List<String> name = new ArrayList<>();
+      name.add("String");
+      if(unbox(types.get(left).getASTMCType()).deepEquals(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build())){
+        result= MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+      }else{
+        result=calculateTypeArithmetic(left,right);
       }
     }
     return result;
@@ -364,8 +389,8 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
   private ASTMCType calculateTypeBitOperation(ASTExpression left, ASTExpression right){
     ASTMCType result = null;
     if(types.containsKey(left)&&types.containsKey(right)){
-      if(types.get(left).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build())&&types.get(right).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build())){
-        result=MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
+      if(isIntegralType(types.get(left).getASTMCType())&&isIntegralType(types.get(right).getASTMCType())){
+        result=types.get(left).getASTMCType().deepClone();
       }
     }
     return result;
@@ -374,13 +399,23 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
   private ASTMCType calculateTypeBinaryOperations(ASTExpression left, ASTExpression right){
     ASTMCType result = null;
     if(types.containsKey(left)&&types.containsKey(right)){
-      if(types.get(left).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build())&&types.get(right).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build())){
-        result=MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
+      if(isIntegralType(types.get(left).getASTMCType())&&isIntegralType(types.get(right).getASTMCType())){
+        result=types.get(left).getASTMCType().deepClone();
       }else if(types.get(left).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build())&&types.get(right).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build())) {
         result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build();
       }
     }
     return result;
+  }
+
+  public ASTMCType calculateRegularAssignment(ASTExpression left,
+                                                         ASTExpression right) {
+    if(types.containsKey(left)&&types.containsKey(right)) {
+      if(isNumericType(types.get(left).getASTMCType())&&isNumericType(types.get(right).getASTMCType())){
+        return types.get(left).getASTMCType().deepClone();
+      }
+    }
+    return null;
   }
 
   public void setTypes(Map<ASTNode,MCTypeSymbol> types){
