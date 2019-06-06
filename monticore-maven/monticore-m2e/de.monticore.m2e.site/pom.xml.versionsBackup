@@ -7,17 +7,26 @@
   <parent>
     <groupId>de.monticore.mojo</groupId>
     <artifactId>monticore-m2e</artifactId>
-    <version>5.0.6.latestGrammar-SNAPSHOT</version>
+    <version>5.0.6.NewSymTab-SNAPSHOT</version>
   </parent>
 
-  <artifactId>de.monticore.m2e</artifactId>
+  <artifactId>de.monticore.m2e.site</artifactId>
 
-  <packaging>eclipse-plugin</packaging>
+  <packaging>eclipse-repository</packaging>
+
+  <profiles>
+    <profile>
+      <id>deploy-m2e</id>
+      <properties>
+        <skip.m2e.deployment>false</skip.m2e.deployment>
+      </properties>
+    </profile>
+  </profiles>
 
   <!-- == PROJECT METAINFORMATION ================================ -->
 
-  <name>MontiCore M2E Connector Plugin</name>
-  <description>The M2E Connector for the MontiCore Maven Plugin</description>
+  <name>MontiCore M2E Connector Site</name>
+  <description>A Site bundling the MontiCore M2E Connector</description>
   <inceptionYear>2012</inceptionYear>
 
   <organization>
@@ -37,6 +46,11 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>wagon-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

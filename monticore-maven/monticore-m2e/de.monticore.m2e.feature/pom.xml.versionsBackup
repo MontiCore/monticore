@@ -7,17 +7,17 @@
   <parent>
     <groupId>de.monticore.mojo</groupId>
     <artifactId>monticore-m2e</artifactId>
-    <version>5.0.6.latestGrammar-SNAPSHOT</version>
+    <version>5.0.6.NewSymTab-SNAPSHOT</version>
   </parent>
 
-  <artifactId>de.monticore.m2e</artifactId>
+  <artifactId>de.monticore.m2e.feature</artifactId>
 
-  <packaging>eclipse-plugin</packaging>
+  <packaging>eclipse-feature</packaging>
 
   <!-- == PROJECT METAINFORMATION ================================ -->
 
-  <name>MontiCore M2E Connector Plugin</name>
-  <description>The M2E Connector for the MontiCore Maven Plugin</description>
+  <name>MontiCore M2E Connector Plugin Feature</name>
+  <description>A Feature for the MontiCore M2E Connector Plugin</description>
   <inceptionYear>2012</inceptionYear>
 
   <organization>
