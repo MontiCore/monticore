@@ -1,11 +1,11 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
-import de.monticore.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +21,12 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
   private CommonExpressionTypesCalculator commonExpressionTypesCalculator;
 
   private ExpressionsBasisTypesCalculator expressionsBasisTypesCalculator;
+  
+  private CombineExpressionsWithLiteralsLiteralTypesCalculator literalsLiteralTypesCalculator;
+  
+  private LiteralsBasisTypesCalculator literalsBasisTypesCalculator;
+  
+  private CommonLiteralsTypesCalculator commonLiteralsTypesCalculator;
 
 
   public CombineExpressionsWithLiteralsTypesCalculator(ExpressionsBasisScope scope){
@@ -42,22 +48,27 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     expressionsBasisTypesCalculator.setTypes(types);
     setExpressionsBasisVisitor(expressionsBasisTypesCalculator);
 
-    CombineExpressionsWithLiteralsLiteralTypesCalculator combineExpressionsWithCombineExpressionsWithLiteralsLiteralTypesCalculator = new CombineExpressionsWithLiteralsLiteralTypesCalculator();
-    combineExpressionsWithCombineExpressionsWithLiteralsLiteralTypesCalculator.setTypes(types);
-    setCombineExpressionsWithLiteralsVisitor(combineExpressionsWithCombineExpressionsWithLiteralsLiteralTypesCalculator);
+    CombineExpressionsWithLiteralsLiteralTypesCalculator literalsLiteralTypesCalculator = new CombineExpressionsWithLiteralsLiteralTypesCalculator();
+    literalsLiteralTypesCalculator.setTypes(types);
+    setCombineExpressionsWithLiteralsVisitor(literalsLiteralTypesCalculator);
+    this.literalsLiteralTypesCalculator=literalsLiteralTypesCalculator;
 
     LiteralsBasisTypesCalculator literalsBasisTypesCalculator = new LiteralsBasisTypesCalculator();
     setMCLiteralsBasisVisitor(literalsBasisTypesCalculator);
+    this.literalsBasisTypesCalculator=literalsBasisTypesCalculator;
 
-    CommonLiteralsTypesCalculator basicLiteralsTypeCalculator = new CommonLiteralsTypesCalculator();
-    basicLiteralsTypeCalculator.setTypes(types);
-    setMCCommonLiteralsVisitor(basicLiteralsTypeCalculator);
-
+    CommonLiteralsTypesCalculator commonLiteralsTypesCalculator = new CommonLiteralsTypesCalculator();
+    commonLiteralsTypesCalculator.setTypes(types);
+    setMCCommonLiteralsVisitor(commonLiteralsTypesCalculator);
+    this.commonLiteralsTypesCalculator=commonLiteralsTypesCalculator;
   }
 
   public ASTMCType calculateType(ASTExpression e){
     e.accept(realThis);
-    return types.get(e).getASTMCType();
+    if(types.get(e)!=null){
+      return types.get(e).getASTMCType();
+    }
+    return null;
   }
 
   @Override
@@ -65,17 +76,14 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     return realThis;
   }
 
-  public ASTMCType getResult(){
-    if(assignmentExpressionTypesCalculator.getResult()!=null){
-      return assignmentExpressionTypesCalculator.getResult();
-    }
-    if(commonExpressionTypesCalculator.getResult()!=null){
-      return commonExpressionTypesCalculator.getResult();
-    }
-    if(expressionsBasisTypesCalculator.getResult()!=null){
-      return expressionsBasisTypesCalculator.getResult();
-    }
-    return null;
+  public Map<ASTNode,MCTypeSymbol> getTypes(){
+    return types;
+  }
+
+  public void setScope(ExpressionsBasisScope scope){
+    assignmentExpressionTypesCalculator.setScope(scope);
+    expressionsBasisTypesCalculator.setScope(scope);
+    commonExpressionTypesCalculator.setScope(scope);
   }
 
 }
