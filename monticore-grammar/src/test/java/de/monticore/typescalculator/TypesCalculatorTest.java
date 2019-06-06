@@ -1,7 +1,6 @@
 package de.monticore.typescalculator;
 
 import de.monticore.antlr4.MCConcreteParser;
-import de.monticore.expressions.assignmentexpressions._ast.ASTRegularAssignmentExpression;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
@@ -213,31 +212,31 @@ public class TypesCalculatorTest {
   public void testIsAssignable() throws IOException{
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     TypesCalculator.setScope(scope);
-    Optional<ASTExpression> a = p.parse_StringExpression("varDouble=varInt");
-    Optional<ASTExpression> b = p.parse_StringExpression("varInt=varDouble");
-    Optional<ASTExpression> c = p.parse_StringExpression("varSuperTest=varTest");
-    Optional<ASTExpression> d = p.parse_StringExpression("varTest=varSuperTest");
-    Optional<ASTExpression> e = p.parse_StringExpression("varDouble=5");
+    Optional<ASTExpression> a = p.parse_StringExpression("varDouble");
+    Optional<ASTExpression> b = p.parse_StringExpression("varInt");
+    Optional<ASTExpression> c = p.parse_StringExpression("varSuperTest");
+    Optional<ASTExpression> d = p.parse_StringExpression("varTest");
+    Optional<ASTExpression> e = p.parse_StringExpression("5");
 
     assertTrue(a.isPresent());
-    assertTrue(isAssignableFrom((ASTRegularAssignmentExpression)a.get()));
-    assertTrue(isAssignableFrom_StringExpression("varDouble=varInt"));
+    assertTrue(isAssignableFrom(a.get(),b.get()));
+    assertTrue(isAssignableFrom_StringExpression("varDouble","varInt"));
 
     assertTrue(b.isPresent());
-    assertFalse(isAssignableFrom((ASTRegularAssignmentExpression)b.get()));
-    assertFalse(isAssignableFrom_StringExpression("varInt=varDouble"));
+    assertFalse(isAssignableFrom(b.get(),a.get()));
+    assertFalse(isAssignableFrom_StringExpression("varInt","varDouble"));
 
     assertTrue(c.isPresent());
-    assertTrue(isAssignableFrom((ASTRegularAssignmentExpression)c.get()));
-    assertTrue(isAssignableFrom_StringExpression("varSuperTest=varTest"));
+    assertTrue(isAssignableFrom(c.get(),d.get()));
+    assertTrue(isAssignableFrom_StringExpression("varSuperTest","varTest"));
 
     assertTrue(d.isPresent());
-    assertFalse(isAssignableFrom((ASTRegularAssignmentExpression)d.get()));
-    assertFalse(isAssignableFrom_StringExpression("varTest=varSuperTest"));
+    assertFalse(isAssignableFrom(d.get(),c.get()));
+    assertFalse(isAssignableFrom_StringExpression("varTest","varSuperTest"));
 
     assertTrue(e.isPresent());
-    assertTrue(isAssignableFrom((ASTRegularAssignmentExpression)e.get()));
-    assertTrue(isAssignableFrom_StringExpression("varDouble=5"));
+    assertTrue(isAssignableFrom(a.get(),e.get()));
+    assertTrue(isAssignableFrom_StringExpression("varDouble","5"));
   }
 
   @Test

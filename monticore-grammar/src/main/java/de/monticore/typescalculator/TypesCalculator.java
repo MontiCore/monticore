@@ -1,7 +1,5 @@
 package de.monticore.typescalculator;
 
-import de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions;
-import de.monticore.expressions.assignmentexpressions._ast.ASTRegularAssignmentExpression;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
@@ -234,41 +232,38 @@ public class TypesCalculator {
     return null;
   }
 
-  public static boolean isAssignableFrom(ASTRegularAssignmentExpression expr){
-    if(expr.getOperator()!= ASTConstantsAssignmentExpressions.EQUALS){
-      Log.error("No regular assignment.");
-      return false;
-    }
-    calc.calculateType(expr);
-    if(calc.getTypes().get(expr.getLeft())!=null){
-      if(isPrimitive(expr.getLeft())&&isPrimitive(expr.getRight())){
-        if(isBoolean(expr.getLeft())&&isBoolean(expr.getRight())){
+  public static boolean isAssignableFrom(ASTExpression left, ASTExpression right){
+    calc.calculateType(left);
+    calc.calculateType(right);
+    if(calc.getTypes().get(left)!=null){
+      if(isPrimitive(left)&&isPrimitive(right)){
+        if(isBoolean(left)&&isBoolean(right)){
           return true;
         }
-        if(isDouble(expr.getLeft())&&TypesCalculatorHelper.isNumericType(calc.getTypes().get(expr.getRight()).getASTMCType())){
+        if(isDouble(left)&&TypesCalculatorHelper.isNumericType(calc.getTypes().get(right).getASTMCType())){
           return true;
         }
-        if(isFloat(expr.getLeft())&&(isIntegralType(calc.getTypes().get(expr.getRight()).getASTMCType())||isFloat(expr.getRight()))){
+        if(isFloat(left)&&(isIntegralType(calc.getTypes().get(right).getASTMCType())||isFloat(right))){
           return true;
         }
-        if(isLong(expr.getLeft())&&isIntegralType(calc.getTypes().get(expr.getRight()).getASTMCType())){
+        if(isLong(left)&&isIntegralType(calc.getTypes().get(right).getASTMCType())){
           return true;
         }
-        if(isInt(expr.getLeft())&&isIntegralType(calc.getTypes().get(expr.getRight()).getASTMCType())&&!isLong(expr.getRight())){
+        if(isInt(left)&&isIntegralType(calc.getTypes().get(right).getASTMCType())&&!isLong(right)){
           return true;
         }
-        if(isChar(expr.getLeft())&&isChar(expr.getRight())){
+        if(isChar(left)&&isChar(right)){
           return true;
         }
-        if(isShort(expr.getLeft())&&isShort(expr.getRight())){
+        if(isShort(left)&&isShort(right)){
           return true;
         }
-        if(isByte(expr.getLeft())&&isByte(expr.getRight())){
+        if(isByte(left)&&isByte(right)){
           return true;
         }
         return false;
       }else {
-        return calc.getTypes().get(expr.getLeft()).getSubtypes().contains(calc.getTypes().get(expr.getRight()));
+        return calc.getTypes().get(left).getSubtypes().contains(calc.getTypes().get(right));
       }
     }
     return false;
@@ -296,15 +291,49 @@ public class TypesCalculator {
     return false;
   }
 
-  public static boolean isAssignableFrom_StringExpression(String a) throws IOException{
+  public static boolean isAssignableFrom_StringExpression(String left, String right) throws IOException{
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExp = p.parse_StringExpression(a);
-    if(optExp.isPresent()){
-      ASTRegularAssignmentExpression expr = (ASTRegularAssignmentExpression) optExp.get();
-      return isAssignableFrom(expr);
+    Optional<ASTExpression> optExpA = p.parse_StringExpression(left);
+    Optional<ASTExpression> optExpB = p.parse_StringExpression(right);
+    if(optExpA.isPresent()&&optExpB.isPresent()){
+      ASTExpression exprA = optExpA.get();
+      ASTExpression exprB = optExpB.get();
+      return isAssignableFrom(exprA,exprB);
     }
     Log.error("given expression not correct");
     return false;
+  }
+
+  public static boolean isBoolean(ASTMCType type){
+    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build());
+  }
+
+  public static boolean isInt(ASTMCType type){
+    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build());
+  }
+
+  public static boolean isDouble(ASTMCType type){
+    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build());
+  }
+
+  public static boolean isFloat(ASTMCType type){
+    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build());
+  }
+
+  public static boolean isLong(ASTMCType type){
+    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build());
+  }
+
+  public static boolean isChar(ASTMCType type){
+    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build());
+  }
+
+  public static boolean isShort(ASTMCType type){
+    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.SHORT).build());
+  }
+
+  public static boolean isByte(ASTMCType type){
+    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BYTE).build());
   }
 
   public static void setScope(ExpressionsBasisScope scope){
