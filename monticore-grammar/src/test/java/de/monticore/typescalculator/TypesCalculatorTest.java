@@ -7,6 +7,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisLanguage;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
@@ -21,8 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.typescalculator.TypesCalculator.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TypesCalculatorTest {
 
@@ -266,6 +266,45 @@ public class TypesCalculatorTest {
 
     assertFalse(isSubtypeOf(c.get(),d.get()));
     assertFalse(isSubtypeOf_StringExpression("varSuperTest","varTest"));
+  }
+
+  @Test
+  public void testGetType() throws IOException{
+    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
+    TypesCalculator.setScope(scope);
+    List<String> name = new ArrayList<>();
+    name.add("Test");
+    Optional<ASTExpression> a = p.parse_StringExpression("13+12.5-9");
+    Optional<ASTExpression> b = p.parse_StringExpression("varTest");
+
+    assertTrue(a.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(getType(a.get())));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(getType_StringExpression("13+12.5-9")));
+
+    assertTrue(b.isPresent());
+    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(getType(b.get())));
+    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(getType_StringExpression("varTest")));
+  }
+
+  @Test
+  public void testGetTypeString() throws IOException{
+    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
+    TypesCalculator.setScope(scope);
+    Optional<ASTExpression> a = p.parse_StringExpression("13+12.5-9");
+    Optional<ASTExpression> b = p.parse_StringExpression("varTest");
+    Optional<ASTExpression> c = p.parse_StringExpression("varInt");
+
+    assertTrue(a.isPresent());
+    assertEquals("double", getTypeString(a.get()));
+    assertEquals("double", getTypeString_StringExpression("13+12.5-9"));
+
+    assertTrue(b.isPresent());
+    assertEquals("Test", getTypeString(b.get()));
+    assertEquals("Test", getTypeString_StringExpression("varTest"));
+
+    assertTrue(c.isPresent());
+    assertEquals("java.lang.Integer",getTypeString(c.get()));
+    assertEquals("java.lang.Integer",getTypeString_StringExpression("varInt"));
   }
 
 

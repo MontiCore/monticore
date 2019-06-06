@@ -75,7 +75,15 @@ public class TypesCalculator {
   }
 
   public static String getTypeString(ASTExpression expr){
-    return calc.calculateType(expr).getBaseName();
+    calc.calculateType(expr);
+    String result = "";
+    if(calc.getTypes().get(expr)!=null) {
+      for (String part : calc.getTypes().get(expr).getASTMCType().getNameList()) {
+        result += part + ".";
+      }
+      result = result.substring(0, result.length() - 1);
+    }
+    return result;
   }
 
   public static ASTMCType getType(ASTExpression expr){
