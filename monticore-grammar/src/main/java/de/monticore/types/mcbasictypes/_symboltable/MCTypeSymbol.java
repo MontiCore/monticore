@@ -4,6 +4,7 @@ import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MCTypeSymbol extends MCTypeSymbolTOP  {
@@ -15,6 +16,8 @@ public class MCTypeSymbol extends MCTypeSymbolTOP  {
 
   public MCTypeSymbol(String name){
     super(name);
+    subtypes=new ArrayList<>();
+    supertypes=new ArrayList<>();
   }
 
   public void setEVariableSymbol(EVariableSymbol symbol){
