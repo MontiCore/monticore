@@ -48,7 +48,9 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
         symbolDefiningRules.add(rule);
       }
       else {
-        nonSymbolDefiningRules.add(rule);
+        if(rule.isParserProd()) {
+          nonSymbolDefiningRules.add(rule);
+        }
       }
     }
     symbolDefiningRules.stream().forEach(p -> symbolKinds.add(p.getSymbolDefinitionKind().orElse("")));
