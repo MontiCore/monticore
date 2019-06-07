@@ -20,6 +20,7 @@ import static de.monticore.codegen.GeneratorHelper.SYMBOL;
 
 public class SymbolAndScopeTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
+
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(Link<ASTMCGrammar, ASTCDCompilationUnit> links) {
     for (Link<ASTClassProd, ASTCDClass> link : links.getLinks(ASTClassProd.class, ASTCDClass.class)) {
@@ -32,7 +33,6 @@ public class SymbolAndScopeTranslation implements
       final ASTInterfaceProd astInterfaceProd = link.source();
       final ASTCDInterface astcdInterface = link.target();
       addSymbolAndScopeStereotypes(astInterfaceProd, astcdInterface);
-
     }
     return links;
   }
