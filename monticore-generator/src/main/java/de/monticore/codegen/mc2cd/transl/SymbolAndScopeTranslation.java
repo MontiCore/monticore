@@ -6,6 +6,7 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.symboltable.SymbolTableGenerator;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
@@ -45,8 +46,15 @@ public class SymbolAndScopeTranslation implements
             && grammarSymbol.isPresent()) {
           //extra information into stereotype value if a symboltype is already defined in the grammar
           String symbolName = symbolDefinition.getSymbolName();
-          String qualifiedName = grammarSymbol.get().getFullName().toLowerCase() + "." +
-              SymbolTableGenerator.PACKAGE + "." + symbolName;
+          String qualifiedName = "";
+          Optional<MCProdSymbol> symbolType = grammarProd.getEnclosingScope().<MCProdSymbol>resolve(symbolName, MCProdSymbol.KIND);
+          if (symbolType.isPresent()) {
+            String packageName = symbolType.get().getFullName().substring(0, symbolType.get().getFullName().lastIndexOf(".")).toLowerCase();
+            qualifiedName = packageName + "." + SymbolTableGenerator.PACKAGE + "." + symbolName;
+          } else {
+            qualifiedName = grammarSymbol.get().getFullName().toLowerCase() + "." +
+                SymbolTableGenerator.PACKAGE + "." + symbolName;
+          }
           TransformationHelper.addStereoType(cdType,
               MC2CDStereotypes.SYMBOL.toString(), qualifiedName + SYMBOL);
         } else {
