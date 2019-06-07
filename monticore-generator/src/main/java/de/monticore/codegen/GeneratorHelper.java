@@ -92,6 +92,8 @@ public class GeneratorHelper extends TypesHelper {
 
   public static final String BUILDER_PREFIX = "Builder_";
 
+  public static final String DELEGATE = "Delegate";
+
   public static final String DESER = "DeSer";
 
   public static final String OPTIONAL = "Optional";

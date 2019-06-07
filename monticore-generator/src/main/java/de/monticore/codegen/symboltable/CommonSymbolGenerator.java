@@ -6,6 +6,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static de.monticore.codegen.GeneratorHelper.BUILDER;
 import static de.monticore.codegen.GeneratorHelper.DESER;
 import static de.monticore.codegen.GeneratorHelper.SYMBOL;
+import static de.monticore.codegen.GeneratorHelper.DELEGATE;
 import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
 import static de.se_rwth.commons.Names.getPathFromPackage;
 import static de.se_rwth.commons.Names.getSimpleName;
@@ -48,13 +49,18 @@ public class CommonSymbolGenerator implements SymbolGenerator {
     String deserName = getSimpleTypeNameToGenerate(
         getSimpleName(className + SYMBOL + DESER),
         genHelper.getSerializationTargetPackage(), handCodedPath);
+    String delegateName = getSimpleTypeNameToGenerate(
+            getSimpleName("I" + className + SYMBOL + DELEGATE),
+            genHelper.getSerializationTargetPackage(), handCodedPath);
 
     final Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()),
             symbolName + ".java");
     final Path builderFilePath = get(getPathFromPackage(genHelper.getTargetPackage()),
             builderName + ".java");
     final Path serializationFilePath = get(getPathFromPackage(genHelper.getSerializationTargetPackage()),
-        deserName +".java");
+            deserName +".java");
+    final Path delegateFilePath = get(getPathFromPackage(genHelper.getTargetPackage()),
+            delegateName +".java");
 
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
     Optional<ASTSymbolRule> symbolRule = empty();
@@ -74,6 +80,8 @@ public class CommonSymbolGenerator implements SymbolGenerator {
               prodSymbol.getAstNode().get(), builderName, className, symbolRule, imports);
       genEngine.generate("symboltable.serialization.SymbolDeSer", serializationFilePath,
           prodSymbol.getAstNode().get(), genHelper.getGrammarSymbol().getName(), deserName, className, symbolRule);
+      genEngine.generate("symboltable.SymbolDelegateInterface", delegateFilePath,
+              prodSymbol.getAstNode().get(), delegateName, className);
     }
 
   }

@@ -31,6 +31,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 import static de.se_rwth.commons.Names.getQualifier;
+import static de.se_rwth.commons.Names.getSimpleName;
 
 public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
@@ -86,6 +87,12 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    */
   public String getQualifiedGrammarName() {
     return qualifiedGrammarName;
+  }
+
+  public static String getQualifiedSymbolType(MCProdSymbol symbol) {
+    return SymbolTableGeneratorHelper.getQualifiedSymbolType(
+        getQualifier(symbol.getFullName()).toLowerCase(),
+        Names.getSimpleName(symbol.getName() + SYMBOL));
   }
 
   public static String getQualifiedSymbolType(String packageName, String symbolName) {
@@ -684,4 +691,16 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
       return false;
     }
   }
+
+	/**
+	 * Computes the fully qualified ISymbolDelegator for a given symbol.
+	 * 
+	 * @param symbol The input symbol.
+	 * @return A String containing the qualified path of ISymbolDelegator.
+	 */
+	public static String getDelegatorForSymbol(MCProdSymbol symbol) {
+	  return SymbolTableGeneratorHelper.getQualifiedSymbolType(
+        getQualifier(symbol.getFullName()).toLowerCase(),
+        Names.getSimpleName("I" + symbol.getName() + SYMBOL + DELEGATE));
+	}
 }
