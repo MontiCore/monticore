@@ -162,6 +162,7 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${scopeClass} {
   public Collection<${symbolNames[symbol]}> continue${symbol}WithEnclosingScope(
       boolean foundSymbols, String name,
       AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate) {
+    ${symbolNames[symbol]}.setAlreadyResolved(false);
     final Collection<${symbolNames[symbol]}> result = new LinkedHashSet<>();
 
     if (checkIfContinueWithEnclosingScope(foundSymbols) && (getEnclosingScope().isPresent())) {
