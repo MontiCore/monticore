@@ -53,7 +53,8 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
         }
       }
     }
-    symbolDefiningRules.stream().forEach(p -> symbolKinds.add(p.getSymbolDefinitionKind().orElse("")));
+    symbolDefiningRules.forEach(p -> symbolKinds.add(genHelper.getQualifiedSymbolName(p.getEnclosingScope(),
+        p.getSymbolDefinitionKind().orElse(""))));
 
     List<CDSymbol> directSuperCds = genHelper.getDirectSuperCds(genHelper.getCd());
     if(grammarSymbol.getStartProd().isPresent()) {
