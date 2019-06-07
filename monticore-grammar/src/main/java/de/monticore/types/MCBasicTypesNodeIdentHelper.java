@@ -1,11 +1,11 @@
 package de.monticore.types;
 
+import de.monticore.generating.templateengine.reporting.commons.ASTNodeIdentHelper;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
-import de.monticore.literals.LiteralsNodeIdentHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 
-public class MCBasicTypesNodeIdentHelper extends LiteralsNodeIdentHelper {
+public class MCBasicTypesNodeIdentHelper extends ASTNodeIdentHelper {
   protected String unqualName(ASTMCQualifiedName ast){
     return ast.getBaseName();
   }

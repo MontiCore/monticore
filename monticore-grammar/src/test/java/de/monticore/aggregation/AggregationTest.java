@@ -10,7 +10,6 @@ import de.monticore.aggregation.foo._parser.FooParser;
 import de.monticore.aggregation.foo._symboltable.FooLanguage;
 import de.monticore.aggregation.foo._symboltable.FooScope;
 import de.monticore.aggregation.foo._symboltable.FooSymbolTableCreator;
-import de.monticore.expressions.expressionsbasis._symboltable.EMethodKind;
 import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;

@@ -7,7 +7,6 @@ import de.monticore.mcjavaliterals._ast.ASTFloatLiteral;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
