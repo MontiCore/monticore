@@ -8,8 +8,6 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.types.TypesHelper;
-import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.ASTVoidType;

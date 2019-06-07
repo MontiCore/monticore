@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.factories.CDModifier;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
-import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTType;
 
 import static org.junit.Assert.assertTrue;

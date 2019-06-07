@@ -6,7 +6,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.literals.literals._ast.*;
-import de.monticore.types.TypesNodeIdentHelper;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.types._ast.ASTQualifiedName;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
