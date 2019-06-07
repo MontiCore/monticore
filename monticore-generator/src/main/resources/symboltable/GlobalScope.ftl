@@ -27,7 +27,7 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${languageName}Scop
   protected final Map<String, Set<${languageName}ModelLoader>> modelName2ModelLoaderCache = new HashMap<>();
 
 <#list symbolProds as symbol>
-  protected Set<${genHelper.getDelegatorForSymbol(symbol)}> adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList = new HashSet<${genHelper.getDelegatorForSymbol(symbol)}>();
+  protected Collection<${genHelper.getDelegatorForSymbol(symbol)}> adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList = new HashSet<${genHelper.getDelegatorForSymbol(symbol)}>();
   
 </#list>
 
@@ -77,5 +77,19 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${languageName}Scop
   }
   
 </#list>  
-    
+
+<#list symbolProds as symbol>
+  public Collection<${genHelper.getDelegatorForSymbol(symbol)}> getAdapted${names.getSimpleName(symbol.getName())}SymbolDelegateList(){
+    return adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList;
+  }
+  
+  public void setAdapted${names.getSimpleName(symbol.getName())}SymbolDelegateList(Collection<${genHelper.getDelegatorForSymbol(symbol)}> adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList) {
+    this.adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList = adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList;
+  }
+  
+  public void addAdapted${names.getSimpleName(symbol.getName())}SymbolDelegateList(${genHelper.getDelegatorForSymbol(symbol)} ${names.getSimpleName(symbol.getName())}SymbolDelegate) {
+    this.adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList.add(${names.getSimpleName(symbol.getName())}SymbolDelegate);
+  }
+  
+</#list>  
 }
