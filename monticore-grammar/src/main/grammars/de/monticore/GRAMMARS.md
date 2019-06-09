@@ -160,13 +160,15 @@ UML's OCL.
 
 TODO Defizite:
 * interface Literal und interface SignedLiteral in verschiedenen
-  Grammatiken
+  Grammatiken.
+* Die Trennung Literals und SignedLiterals ist aus Nutzersicht immer 
+  noch unschön
 * Alle Expression-Grammatiken sind jetzt abhängig von 
    MCLiteralsBasis.mc4, und während die Expressions als Stable 
    deklariert sind, ist es MCLiteralsBasis.mc4 nicht
 * Literals sind auch Expressions, warum also nicht im Directory
   expressions ansiedeln (oder eigenes Subdirectory)
-* Literals haben einen Typ --> ber in der MCLiteralsBasis.mc4
+* Literals haben einen Typ --> aber in der MCLiteralsBasis.mc4
   grammatik werden die Grundlagen dafür (zB symbol EType)
   nicht gelegt. Wie wollen wir das handhaben?
 * Man könnte auch das Interface "Literals" direkt in ExpressionsBasis
