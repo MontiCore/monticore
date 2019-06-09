@@ -182,6 +182,9 @@ nochmal extra in die Kern-Library zu legen:
  Ausserdem scheinen die veraltet zu sein (da taucht ExtLiteral auf).
  Überdies scheinen die maximal tests zu sein (da taucht Foo="bar" auf).
  Wir tun uns nicht weh die zu entfernen oder in eine Test-Sammlung zu verschieben?
+* Ergänzend: eine Grammatik, die nur das Interface "Literal" 
+beinhaltet könnte auch so heissen: "LiteralInterface"
+(ohne "MC"). Dito für Expressions.
 
 * Meta: Anscheinend müssen wir den Prozess zur Anpassung bereits
 stabiler und anderer Grammatiken sowie deren Dokumentation
