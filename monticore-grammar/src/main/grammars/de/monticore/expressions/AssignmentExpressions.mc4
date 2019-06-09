@@ -24,7 +24,8 @@ package de.monticore.expressions;
  *
 */
 
-component grammar AssignmentExpressions extends de.monticore.expressions.ExpressionsBasis {
+component grammar AssignmentExpressions
+	  extends de.monticore.expressions.ExpressionsBasis {
 
   /*=================================================================*/
 

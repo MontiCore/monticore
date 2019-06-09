@@ -24,7 +24,8 @@ package de.monticore.expressions;
  *
 */
 
-component grammar SetExpressions extends de.monticore.expressions.CommonExpressions {
+component grammar SetExpressions
+          extends de.monticore.expressions.CommonExpressions {
 
   /*=================================================================*/
 

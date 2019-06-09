@@ -154,8 +154,38 @@ UML's OCL.
 
 ### Beta: to become stable in the next iteration
 
+* MCLiteralsBasis.mc4
 * MCCommonLiterals.mc4
 * MCJavaLiterals.mc4
+
+TODO Defizite:
+* interface Literal und interface SignedLiteral in verschiedenen
+  Grammatiken
+* Alle Expression-Grammatiken sind jetzt abhängig von 
+   MCLiteralsBasis.mc4, und während die Expressions als Stable 
+   deklariert sind, ist es MCLiteralsBasis.mc4 nicht
+* Literals sind auch Expressions, warum also nicht im Directory
+  expressions ansiedeln (oder eigenes Subdirectory)
+* Literals haben einen Typ --> ber in der MCLiteralsBasis.mc4
+  grammatik werden die Grundlagen dafür (zB symbol EType)
+  nicht gelegt. Wie wollen wir das handhaben?
+* Man könnte auch das Interface "Literals" direkt in ExpressionsBasis
+  einbauen (was wiederum die Literals-Grammatiken leider von 
+  ExpressionsBasis abhängig macht)
+* Wieso halten wir es für gerechtfertigt / notwendig diese Grammatiken
+nochmal extra in die Kern-Library zu legen:
+ expressions/AssignmentExpressionsWithLiterals.mc4
+ expressions/CombineExpressionsWithLiterals.mc4
+ expressions/CommonExpressionsWithLiterals.mc4.
+ Ausserdem scheinen die veraltet zu sein (da taucht ExtLiteral auf).
+ Überdies scheinen die maximal tests zu sein (da taucht Foo="bar" auf).
+ Wir tun uns nicht weh die zu entfernen oder in eine Test-Sammlung zu verschieben?
+
+* Meta: Anscheinend müssen wir den Prozess zur Anpassung bereits
+stabiler und anderer Grammatiken sowie deren Dokumentation
+im MC-Kern nochmal klären.
+
+
 
 ### Alpha: also to become stable (one phase later)
 

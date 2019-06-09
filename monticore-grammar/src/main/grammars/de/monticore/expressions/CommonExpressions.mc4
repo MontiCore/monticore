@@ -31,7 +31,8 @@ package de.monticore.expressions;
  *
 */
 
-component grammar CommonExpressions extends de.monticore.expressions.ExpressionsBasis {
+component grammar CommonExpressions
+          extends de.monticore.expressions.ExpressionsBasis {
 
   /*=================================================================*/
 

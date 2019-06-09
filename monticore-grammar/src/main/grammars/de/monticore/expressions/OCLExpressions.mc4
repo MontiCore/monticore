@@ -20,7 +20,8 @@ package de.monticore.expressions;
  *
 */
 
-component grammar OCLExpressions extends de.monticore.expressions.ExpressionsBasis {
+component grammar OCLExpressions
+          extends de.monticore.expressions.ExpressionsBasis {
 
 external EDeclaration;
 external ExtType;

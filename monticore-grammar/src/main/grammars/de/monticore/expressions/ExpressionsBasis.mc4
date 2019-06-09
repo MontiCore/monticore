@@ -28,7 +28,9 @@ package de.monticore.expressions;
  *
 */
 
-component grammar ExpressionsBasis extends de.monticore.MCBasics, de.monticore.MCLiteralsBasis {
+component grammar ExpressionsBasis
+        extends de.monticore.MCBasics,
+	        de.monticore.MCLiteralsBasis {
 
   /*=================================================================*/
 
@@ -66,4 +68,5 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics, de.monticore.M
 
   QualifiedNameExpression implements Expression <290> =
   	Expression "." Name;
+
 }
