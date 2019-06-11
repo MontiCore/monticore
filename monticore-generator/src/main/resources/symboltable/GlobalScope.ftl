@@ -87,7 +87,7 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${languageName}Scop
     this.adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList = adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList;
   }
   
-  public void addAdapted${names.getSimpleName(symbol.getName())}SymbolDelegateList(${genHelper.getDelegatorForSymbol(symbol)} ${names.getSimpleName(symbol.getName())}SymbolDelegate) {
+  public void addAdapted${names.getSimpleName(symbol.getName())}SymbolDelegate(${genHelper.getDelegatorForSymbol(symbol)} ${names.getSimpleName(symbol.getName())}SymbolDelegate) {
     this.adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList.add(${names.getSimpleName(symbol.getName())}SymbolDelegate);
   }
   
