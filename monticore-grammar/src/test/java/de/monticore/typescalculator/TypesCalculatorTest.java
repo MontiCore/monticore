@@ -1,16 +1,13 @@
 package de.monticore.typescalculator;
 
-import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisLanguage;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
-import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,14 +28,6 @@ public class TypesCalculatorTest {
   public void setup(){
     LogStub.init();
     scope = new ExpressionsBasisScope();
-    ExpressionsBasisLanguage expressionsBasisLanguage=new ExpressionsBasisLanguage("TypesCalculatorFacade","exp") {
-      @Override
-      public MCConcreteParser getParser() {
-        return new CombineExpressionsWithLiteralsParser();
-      }
-    };
-    Log.enableFailQuick(false);
-    scope.setResolvingFilters(expressionsBasisLanguage.getResolvingFilters());
 
     EVariableSymbol sym = new EVariableSymbol("varInt");
     MCTypeSymbol typeSymbol = new MCTypeSymbol("java.lang.Integer");

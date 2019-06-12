@@ -35,8 +35,6 @@ public class ExpressionsBasisTest {
 
     this.scope=new ExpressionsBasisScope();
     this.artifactScope=new ArtifactScope("",new ArrayList<>());
-    artifactScope.addSubScope(scope);
-    scope.setResolvingFilters(expressionsBasisLanguage.getResolvingFilters());
 
     this.literalsVisitor=new CommonLiteralsTypesCalculator();
 

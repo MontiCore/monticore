@@ -1,28 +1,24 @@
 package de.monticore.aggregation;
 
-import com.google.common.collect.Lists;
 import de.monticore.aggregation.blah._ast.ASTBlahModel;
-import de.monticore.aggregation.blah._ast.ASTBlub;
 import de.monticore.aggregation.blah._parser.BlahParser;
-import de.monticore.aggregation.blah._symboltable.*;
+import de.monticore.aggregation.blah._symboltable.BlahLanguage;
+import de.monticore.aggregation.blah._symboltable.BlahScope;
+import de.monticore.aggregation.blah._symboltable.BlahSymbolTableCreator;
+import de.monticore.aggregation.blah._symboltable.DummySymbol;
 import de.monticore.aggregation.foo._ast.ASTBar;
 import de.monticore.aggregation.foo._parser.FooParser;
+import de.monticore.aggregation.foo._symboltable.BarSymbol;
 import de.monticore.aggregation.foo._symboltable.FooLanguage;
 import de.monticore.aggregation.foo._symboltable.FooScope;
 import de.monticore.aggregation.foo._symboltable.FooSymbolTableCreator;
 import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
@@ -48,20 +44,10 @@ public class AggregationTest {
     */
  
   //Create global scope for our language combination
-  BlahLanguage blahLang = new BlahLanguage("BlahLangName","blah"){};
+  BlahLanguage blahLang = new BlahLanguage();
   FooLanguage fooLanguage = new FooLanguage("FooLangName","foo") {};
-  final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
 
-  resolvingConfiguration.addDefaultFilters(blahLang.getResolvingFilters());
-
-
-  Dummy2EMethodResolvingFilter dummy2EMethodResolvingFilter = new Dummy2EMethodResolvingFilter(DummySymbol.KIND);
-  resolvingConfiguration.addDefaultFilter(dummy2EMethodResolvingFilter);
-
-
-  resolvingConfiguration.addDefaultFilters(fooLanguage.getResolvingFilters());
- 
-  GlobalScope globalScope = new GlobalScope(new ModelPath(), Lists.newArrayList(blahLang,fooLanguage), resolvingConfiguration);
+  FooBlahGlobalScope globalScope = new FooBlahGlobalScope(new ModelPath(), fooLanguage);
  
   //Parse blah model
   BlahParser blahParser = new BlahParser();
@@ -77,7 +63,7 @@ public class AggregationTest {
   );
   
   // create symbol table for "blah"
-  BlahSymbolTableCreator blahSymbolTableCreator = new BlahSymbolTableCreator(resolvingConfiguration,globalScope);
+  BlahSymbolTableCreator blahSymbolTableCreator = new BlahSymbolTableCreator(globalScope.getIBlahGS());
   BlahScope blahSymbolTable = (BlahScope) blahSymbolTableCreator.createFromAST(blahModel.get());
   
   // check dummy symbol is present in local scope
@@ -89,7 +75,7 @@ public class AggregationTest {
 
   // check dummy symbol is present in global scope
   // TODO soll das so? Scopes ohne Namen müssen mit Punkt navigiert werde
-  blubSymbol1 = globalScope.resolve("blubScope1.blubSymbol1", DummySymbol.KIND);
+  Optional<BarSymbol> barSymbol = globalScope.resolveBar("blubScope1.blubSymbol1");
   
   assertTrue(blubSymbol1.isPresent());
 
@@ -108,7 +94,7 @@ public class AggregationTest {
   assertTrue(fooModel.isPresent());
  
   // create symbol table for "foo"
-  FooSymbolTableCreator fooSymbolTableCreator = new FooSymbolTableCreator(resolvingConfiguration,globalScope);
+  FooSymbolTableCreator fooSymbolTableCreator = new FooSymbolTableCreator(globalScope);
   FooScope fooScope = (FooScope) fooSymbolTableCreator.createFromAST(fooModel.get());
   
   // check Dummy symbol is resolvable
@@ -116,7 +102,7 @@ public class AggregationTest {
   //Optional<Symbol> k = fooScope.resolve(".blubSymbol1", DummyKind.KIND);
   //assertTrue(k.isPresent());
 
-  Optional<Symbol> a = fooScope.resolve("blubScope1.blubSymbol1", EMethodSymbol.KIND);
+  Optional<EMethodSymbol> a = fooScope.resolveEMethod("blubScope1.blubSymbol1");
 
   assertTrue(a.isPresent());
 

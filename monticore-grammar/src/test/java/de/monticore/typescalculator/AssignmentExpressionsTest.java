@@ -1,12 +1,12 @@
 package de.monticore.typescalculator;
 
-import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.*;
-import de.monticore.types.mcbasictypes._ast.*;
+import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 import de.monticore.typescalculator.testassignmentexpressions._parser.TestAssignmentExpressionsParser;
-import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AssignmentExpressionsTest {
 
@@ -27,16 +28,7 @@ public class AssignmentExpressionsTest {
   public void setup() {
 
 
-    ExpressionsBasisLanguage expressionsBasisLanguage = new ExpressionsBasisLanguage("AssignmentExpressions","exp") {
-      @Override
-      public MCConcreteParser getParser() {
-        return new TestAssignmentExpressionsParser();
-      }
-    };
-    Log.enableFailQuick(false);
-
     scope = new ExpressionsBasisScope();
-    scope.setResolvingFilters(expressionsBasisLanguage.getResolvingFilters());
     EVariableSymbol symbol = new EVariableSymbol("varInt");
     MCTypeSymbol typeSymbol = new MCTypeSymbol("int");
     typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build());
