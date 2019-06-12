@@ -14,7 +14,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethod;
 import de.monticore.grammar.grammar._ast.ASTMethodParameter;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
-import de.monticore.java.javadsl._ast.ASTBlockStatement;
+import de.monticore.javastatements._ast.ASTBlockStatement;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.utils.Link;
@@ -86,7 +86,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
       for (ASTBlockStatement action : ((ASTAction) method.getBody()).getBlockStatementList()) {
-        code.append(GeneratorHelper.getJavaPrettyPrinter().prettyprint(action));
+        code.append(GeneratorHelper.getMcPrettyPrinter().prettyprint(action));
       }
       if (!code.toString().isEmpty()) {
         HookPoint methodBody = new StringHookPoint(code.toString());
@@ -105,7 +105,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
       for (ASTBlockStatement action : ((ASTAction) method.getBody()).getBlockStatementList()) {
-        code.append(GeneratorHelper.getJavaPrettyPrinter().prettyprint(action));
+        code.append(GeneratorHelper.getMcPrettyPrinter().prettyprint(action));
       }
       HookPoint methodBody = new StringHookPoint(code.toString());
       glex.replaceTemplate(CdDecorator.EMPTY_BODY_TEMPLATE, cdMethod, methodBody);

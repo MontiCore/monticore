@@ -17,12 +17,12 @@ import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCGrammarSymbolReference;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.java.prettyprint.JavaDSLPrettyPrinterDelegator;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.GlobalScope;
@@ -140,7 +140,7 @@ public class GeneratorHelper extends TypesHelper {
       "local",
       "readonly"});
 
-  static JavaDSLPrettyPrinterDelegator javaPrettyPrinter;
+  static Grammar_WithConceptsPrettyPrinter mcPrettyPrinter;
 
   static CDPrettyPrinterConcreteVisitor cdPrettyPrinter;
 
@@ -190,7 +190,7 @@ public class GeneratorHelper extends TypesHelper {
   /**
    * Converts CD type to Java type using the given package suffix.
    *
-   * @param type
+   * @param astType
    * @param packageSuffix
    * @return converted type or original type if type is java type already
    */
@@ -256,7 +256,7 @@ public class GeneratorHelper extends TypesHelper {
   /**
    * Converts CD type to Java type using the given package suffix.
    *
-   * @param type
+   * @param astType
    * @param packageSuffix
    * @return converted type or original type if type is java type already
    */
@@ -322,7 +322,7 @@ public class GeneratorHelper extends TypesHelper {
   /**
    * Converts CD type to Java type using the given package suffix.
    *
-   * @param type
+   * @param astType
    * @param packageSuffix
    * @return converted type or original type if type is java type already
    */
@@ -382,7 +382,7 @@ public class GeneratorHelper extends TypesHelper {
   /**
    * Converts CD types defined in this- or in one of the super CDs to simple CD Types
    *
-   * @param type
+   * @param astType
    * @param packageSuffix
    */
   public void transformQualifiedToSimpleIfPossible(ASTSimpleReferenceType astType,
@@ -871,7 +871,7 @@ public class GeneratorHelper extends TypesHelper {
   }
 
   /**
-   * @param type
+   * @param astType
    * @return
    */
   public Optional<String> getTypeNameToResolve(ASTSimpleReferenceType astType) {
@@ -1017,7 +1017,7 @@ public class GeneratorHelper extends TypesHelper {
   /**
    * Gets the java super types of the given clazz (without the clazz itself).
    *
-   * @param clazz
+   * @param type
    * @return
    */
   public List<CDTypeSymbol> getAllSuperInterfaces(ASTCDType type) {
@@ -1065,11 +1065,11 @@ public class GeneratorHelper extends TypesHelper {
     return cdType.getFields().stream().filter(a -> !a.isPrivate()).collect(Collectors.toList());
   }
 
-  public static JavaDSLPrettyPrinterDelegator getJavaPrettyPrinter() {
-    if (javaPrettyPrinter == null) {
-      javaPrettyPrinter = new JavaDSLPrettyPrinterDelegator(new IndentPrinter());
+  public static Grammar_WithConceptsPrettyPrinter getMcPrettyPrinter() {
+    if (mcPrettyPrinter == null) {
+      mcPrettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
     }
-    return javaPrettyPrinter;
+    return mcPrettyPrinter;
   }
 
   public static CDPrettyPrinterConcreteVisitor getCDPrettyPrinter() {
