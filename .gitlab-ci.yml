@@ -32,14 +32,14 @@ build_dev:
     - newSymtab
     - refactoring_with_new_symtab
     
-#build_branches:
-#  stage: build
-#  script:
-#    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install"
-#  except:
-#    - dev
-#    - master
-#    - ci/gitlab-runner
+build_branches:
+  stage: build
+  script:
+    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install"
+  except:
+    - dev
+    - master
+    - ci/gitlab-runner
 
 #integration-test:
 #  stage: test
