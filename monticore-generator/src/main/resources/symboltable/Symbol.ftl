@@ -28,6 +28,7 @@ package ${genHelper.getTargetPackage()};
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Optional;
+import java.util.List;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.Names;
 import de.monticore.symboltable.modifiers.AccessModifier;

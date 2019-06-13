@@ -18,6 +18,7 @@ import ${genHelper.getSymbolTablePackage()}.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
+import java.util.List;
 
 import com.google.gson.stream.JsonReader;
 
