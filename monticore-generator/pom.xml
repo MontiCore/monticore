@@ -100,17 +100,6 @@
     </dependency>
 
     <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>javaDSL</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>javaDSL</artifactId>
-      <classifier>${grammars.classifier}</classifier>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.8.1</version>

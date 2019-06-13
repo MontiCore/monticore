@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "ruleName")}
+${signature("className", "ruleName", "prodSymbol", "symbolRule")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign referencedSymbol = ruleName+"Symbol">
 <#assign package = genHelper.getTargetPackage()?lower_case>
@@ -16,6 +16,7 @@ package ${package};
 import ${fqn}._ast.*;
 
 import java.util.Optional;
+import java.util.List;
 import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
@@ -48,7 +49,10 @@ public class ${className} extends ${referencedSymbol} implements ISymbolReferenc
 
   @Override
   public String getName() {
+    if (isReferencedSymbolLoaded()) {
     return getReferencedSymbol().getName();
+    }
+    return this.name;
   }
 
   @Override
@@ -65,6 +69,13 @@ public class ${className} extends ${referencedSymbol} implements ISymbolReferenc
   public I${languageName}Scope getEnclosingScope() {
     return getReferencedSymbol().getEnclosingScope();
   }
+
+<#if prodSymbol.isScopeDefinition()>
+  @Override
+  public I${languageName}Scope getSpannedScope() {
+    return getReferencedSymbol().getSpannedScope();
+  }
+</#if>
 
   @Override
   public AccessModifier getAccessModifier() {
@@ -88,6 +99,11 @@ public class ${className} extends ${referencedSymbol} implements ISymbolReferenc
 
   public void setPredicate(Predicate<${referencedSymbol}> predicate) {
     this.predicate = predicate;
+  }
+
+  @Override
+  public String getPackageName() {
+    return getReferencedSymbol().getPackageName();
   }
 
   @Override
@@ -132,5 +148,8 @@ public class ${className} extends ${referencedSymbol} implements ISymbolReferenc
     return resolvedSymbol;
   }
 
+<#if symbolRule.isPresent()>
+  ${includeArgs("symboltable.symbols.SymbolRuleForReference", symbolRule.get())}
+</#if>
 }
 

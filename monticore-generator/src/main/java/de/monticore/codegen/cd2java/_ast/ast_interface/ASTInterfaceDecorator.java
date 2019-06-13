@@ -14,6 +14,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
@@ -56,26 +57,40 @@ public class ASTInterfaceDecorator extends AbstractDecorator<ASTCDInterface, AST
     methodDecorator.disableTemplates();
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(input);
-    addSymboltableMethods(symbolAttributes, input);
+    input.addAllCDMethods(addSymbolMethods(symbolAttributes));
 
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(input);
-    addSymboltableMethods(scopeAttributes, input);
+    input.addAllCDMethods(addScopeMethods(scopeAttributes));
 
     return input;
   }
 
-  protected void addSymboltableMethods(List<ASTCDAttribute> astcdAttributes, ASTCDInterface input) {
+  protected List<ASTCDMethod> addScopeMethods(List<ASTCDAttribute> astcdAttributes) {
+    List<ASTCDMethod> scopeMethods = new ArrayList<>();
     for (ASTCDAttribute attribute : astcdAttributes) {
       if (!astService.hasStereotype(attribute.getModifier(), MC2CDStereotypes.INHERITED)) {
         List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
         methods.forEach(x -> x.getModifier().setAbstract(true));
-        input.addAllCDMethods(methods);
+        scopeMethods.addAll(methods);
       } else {
         List<ASTCDMethod> methods = methodDecorator.getMutatorDecorator().decorate(attribute);
         methods.forEach(x -> x.getModifier().setAbstract(true));
-        input.addAllCDMethods(methods);
+        scopeMethods.addAll(methods);
       }
     }
+    return scopeMethods;
+  }
+
+
+  protected List<ASTCDMethod> addSymbolMethods(List<ASTCDAttribute> astcdAttributes) {
+    List<ASTCDMethod> scopeMethods = new ArrayList<>();
+    for (ASTCDAttribute attribute : astcdAttributes) {
+      List<ASTCDMethod> methods = methodDecorator.getAccessorDecorator().decorate(attribute);
+      methods.forEach(x -> x.getModifier().setAbstract(true));
+      scopeMethods.addAll(methods);
+    }
+    return scopeMethods;
+
   }
 
   protected ASTCDMethod getAcceptMethod(ASTType visitorType) {

@@ -12,19 +12,21 @@ import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.codegen.symboltable.SymbolTableGenerator;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCGrammarSymbolReference;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.java.prettyprint.JavaDSLPrettyPrinterDelegator;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.types._ast.ASTImportStatement;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
@@ -65,7 +67,7 @@ public class GeneratorHelper extends TypesHelper {
   public static final String ASTC_NODE_CLASS_NAME = "mc.ast.ASTCNode";
 
   public static final String AST_PACKAGE_SUFFIX = "_ast";
-  
+
   public static final String SYMBOLTABLE_PACKAGE_SUFFIX = "_symboltable";
 
   public static final String VISITOR_PACKAGE_SUFFIX = "_visitor";
@@ -88,16 +90,18 @@ public class GeneratorHelper extends TypesHelper {
 
   public static final String BUILDER_PREFIX = "Builder_";
 
+  public static final String DELEGATE = "Delegate";
+
   public static final String DESER = "DeSer";
-  
+
   public static final String OPTIONAL = "Optional";
 
   public static final String SYMBOL = "Symbol";
 
   public static final String SCOPE = "Scope";
-  
+
   public static final String ARTIFACT_SCOPE = "ArtifactScope";
-  
+
   public static final String GLOBAL_SCOPE = "GlobalScope";
 
   public static final String BASE = "Node";
@@ -134,7 +138,7 @@ public class GeneratorHelper extends TypesHelper {
       "local",
       "readonly"});
 
-  static JavaDSLPrettyPrinterDelegator javaPrettyPrinter;
+  static Grammar_WithConceptsPrettyPrinter mcPrettyPrinter;
 
   static CDPrettyPrinterConcreteVisitor cdPrettyPrinter;
 
@@ -184,7 +188,7 @@ public class GeneratorHelper extends TypesHelper {
   /**
    * Converts CD type to Java type using the given package suffix.
    *
-   * @param type
+   * @param astType
    * @param packageSuffix
    * @return converted type or original type if type is java type already
    */
@@ -250,7 +254,7 @@ public class GeneratorHelper extends TypesHelper {
   /**
    * Converts CD type to Java type using the given package suffix.
    *
-   * @param type
+   * @param astType
    * @param packageSuffix
    * @return converted type or original type if type is java type already
    */
@@ -316,7 +320,7 @@ public class GeneratorHelper extends TypesHelper {
   /**
    * Converts CD type to Java type using the given package suffix.
    *
-   * @param type
+   * @param astType
    * @param packageSuffix
    * @return converted type or original type if type is java type already
    */
@@ -376,7 +380,7 @@ public class GeneratorHelper extends TypesHelper {
   /**
    * Converts CD types defined in this- or in one of the super CDs to simple CD Types
    *
-   * @param type
+   * @param astType
    * @param packageSuffix
    */
   public void transformQualifiedToSimpleIfPossible(ASTSimpleReferenceType astType,
@@ -574,7 +578,6 @@ public class GeneratorHelper extends TypesHelper {
   public static boolean isModifierPrivate(ASTCDAttribute attribute) {
     return attribute.isPresentModifier() && attribute.getModifier().isPrivate();
   }
-
 
 
   public static boolean isString(String type) {
@@ -866,7 +869,7 @@ public class GeneratorHelper extends TypesHelper {
   }
 
   /**
-   * @param type
+   * @param astType
    * @return
    */
   public Optional<String> getTypeNameToResolve(ASTSimpleReferenceType astType) {
@@ -1012,7 +1015,7 @@ public class GeneratorHelper extends TypesHelper {
   /**
    * Gets the java super types of the given clazz (without the clazz itself).
    *
-   * @param clazz
+   * @param type
    * @return
    */
   public List<CDTypeSymbol> getAllSuperInterfaces(ASTCDType type) {
@@ -1060,11 +1063,11 @@ public class GeneratorHelper extends TypesHelper {
     return cdType.getFields().stream().filter(a -> !a.isPrivate()).collect(Collectors.toList());
   }
 
-  public static JavaDSLPrettyPrinterDelegator getJavaPrettyPrinter() {
-    if (javaPrettyPrinter == null) {
-      javaPrettyPrinter = new JavaDSLPrettyPrinterDelegator(new IndentPrinter());
+  public static Grammar_WithConceptsPrettyPrinter getMcPrettyPrinter() {
+    if (mcPrettyPrinter == null) {
+      mcPrettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
     }
-    return javaPrettyPrinter;
+    return mcPrettyPrinter;
   }
 
   public static CDPrettyPrinterConcreteVisitor getCDPrettyPrinter() {
@@ -1456,7 +1459,7 @@ public class GeneratorHelper extends TypesHelper {
   public String getAstPackage() {
     return getPackageName(getPackageName(), AST_PACKAGE_SUFFIX);
   }
-  
+
   public String getSymbolTablePackage() {
     return getPackageName(getPackageName(), SYMBOLTABLE_PACKAGE_SUFFIX);
   }
@@ -1836,5 +1839,14 @@ public class GeneratorHelper extends TypesHelper {
       return new AstEmfGeneratorHelper(astClassDiagram, globalScope);
     }
     return new AstGeneratorHelper(astClassDiagram, globalScope);
+  }
+
+  public String getQualifiedSymbolName(Scope enclsoingScope, String simpleSymbolName) {
+    Optional<MCProdSymbol> symbolType = enclsoingScope.<MCProdSymbol>resolve(simpleSymbolName, MCProdSymbol.KIND);
+    if (symbolType.isPresent()) {
+      String packageName = symbolType.get().getFullName().substring(0, symbolType.get().getFullName().lastIndexOf(".")).toLowerCase();
+      return packageName + "." + SymbolTableGenerator.PACKAGE + "." + simpleSymbolName +SYMBOL;
+    }
+    return "";
   }
 }

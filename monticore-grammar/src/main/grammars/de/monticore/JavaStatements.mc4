@@ -1,0 +1,338 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+component grammar JavaStatements extends de.monticore.expressions.CommonExpressions,
+                                         de.monticore.types.MCBasicTypes {
+
+// Modifiers
+interface Modifier ;
+
+PrimitiveModifier implements Modifier =
+        Modifier:["private" | "public" | "protected" | "static" | "transient" 
+        | "final" | "abstract" | "native" | "threadsafe" | "synchronized" 
+        | "const" | "volatile" | "strictfp"]
+    ;
+
+// Type declarations
+interface TypeDeclaration extends ClassMemberDeclaration,
+        InterfaceMemberDeclaration, AnnotationTypeElementDeclaration, BlockStatement;
+
+EmptyDeclaration implements TypeDeclaration
+    =   ";"
+    ;
+    
+interface ClassBodyDeclaration ;
+
+interface InterfaceBodyDeclaration ;
+
+ClassBlock implements ClassBodyDeclaration
+    = (["static"])? JavaBlock
+    ;
+
+interface ClassMemberDeclaration extends ClassBodyDeclaration ;
+
+MethodDeclaration implements ClassMemberDeclaration
+    =   MethodSignature (MethodBody | ";")
+    ;
+
+interface MethodBody ;
+
+interface TypeParameters;
+
+ConstructorDeclaration implements ClassMemberDeclaration
+    =   Modifier* TypeParameters? Name FormalParameters ("throws" Throws)?
+        ConstructorBody
+    ;
+
+interface ConstructorBody ;
+
+FieldDeclaration implements ClassMemberDeclaration
+    =   Modifier* MCType (VariableDeclarator || ",")+ ";"
+    ;
+
+interface InterfaceMemberDeclaration extends InterfaceBodyDeclaration ;
+
+ConstDeclaration implements InterfaceMemberDeclaration
+    =   Modifier* MCType (ConstantDeclarator || ",")+ ";"
+    ;
+
+ConstantDeclarator
+    =   Name (dim:"[" "]")* "=" VariableInititializerOrExpression
+    ;
+
+InterfaceMethodDeclaration implements InterfaceMemberDeclaration
+    =   MethodSignature ";"
+    ;
+
+/* We use rule this even for void methods which cannot have [] after parameters.
+   This simplifies grammar and we can consider void to be a type, which
+   renders the [] matching as a context-sensitive issue or a semantic check
+   for invalid return type after parsing.
+ */
+MethodSignature
+    =   Modifier* TypeParameters?
+        MCReturnType Name FormalParameters (dim:"[" "]")*
+        ("throws" Throws)?
+    ;
+
+Throws
+    =   (MCQualifiedName || ",")+
+    ;
+
+VariableDeclarator
+    =   DeclaratorId ("=" VariableInititializerOrExpression)?
+    ;
+
+DeclaratorId
+    =   Name (dim:"[" "]")*
+    ;
+
+interface VariableInitializer;
+
+VariableInititializerOrExpression
+	= VariableInitializer | Expression;
+
+ArrayInitializer implements VariableInitializer
+    =   "{" (VariableInititializerOrExpression || ",")* (",")? "}"
+    ;
+
+FormalParameters
+    =   "(" FormalParameterListing? ")"
+    ;
+
+FormalParameterListing
+    =   (FormalParameter || ",")+ ("," LastFormalParameter)?
+    |   LastFormalParameter
+    ;
+
+FormalParameter
+    =   PrimitiveModifier* MCType DeclaratorId
+    ;
+
+LastFormalParameter
+    =   PrimitiveModifier* MCType "..." DeclaratorId
+    ;
+
+// ANNOTATIONS
+
+// TODO: Check implementing Statement
+Annotation implements Modifier,  ElementValue, Statement
+    =   "@" annotationName:MCQualifiedName ( "(" AnnotationArguments? ")" )?
+    ;
+
+interface AnnotationArguments ;
+
+AnnotationPairArguments implements AnnotationArguments
+   =   (ElementValuePair || ",")+
+   ;
+
+ElementValuePair
+    =   Name "=" ElementValueOrExpr
+    ;
+
+interface ElementValue;
+
+ElementValueOrExpr implements AnnotationArguments
+	= ElementValue | Expression;
+
+ElementValueArrayInitializer implements ElementValue
+    =   "{" (ElementValueOrExpr || ",")* (",")? "}"
+    ;
+
+AnnotationTypeDeclaration implements TypeDeclaration
+    =   Modifier* "@" "interface" Name AnnotationTypeBody
+    ;
+
+AnnotationTypeBody
+    =   "{" (AnnotationTypeElementDeclaration)* "}"
+    ;
+
+interface AnnotationTypeElementDeclaration ;
+
+AnnotationMethod implements AnnotationTypeElementDeclaration
+    =   Modifier* MCType Name "(" ")" DefaultValue? ";"
+    ;
+
+AnnotationConstant implements AnnotationTypeElementDeclaration
+    =   Modifier* MCType (VariableDeclarator || ",")+ ";"
+    ;
+
+DefaultValue
+    =   "default" ElementValueOrExpr
+    ;
+
+// STATEMENTS / BLOCKS
+
+interface BlockStatement ;
+
+LocalVariableDeclarationStatement implements BlockStatement
+    =    LocalVariableDeclaration ";"
+    ;
+
+LocalVariableDeclaration implements ForInit
+    =   PrimitiveModifier* MCType (VariableDeclarator || ",")+
+    ;
+
+interface Statement extends BlockStatement ;
+
+JavaBlock implements Statement, MethodBody, ConstructorBody, FinallyBlock
+    =   "{" BlockStatement* "}"
+    ;
+
+AssertStatement implements Statement
+    =   "assert" assertion:Expression (":" message:Expression)? ";"
+    ;
+
+IfStatement implements Statement
+    =   "if" "(" condition:Expression ")" thenStatement:Statement ("else" elseStatement:Statement)?
+    ;
+
+ForStatement implements Statement
+    =   "for" "(" ForControl ")" Statement
+    ;
+
+interface ForControl ;
+
+CommonForControl implements ForControl
+    =   ForInit? ";" condition:Expression? ";" (Expression || ",")*
+    ;
+
+interface ForInit ;
+
+ForInitByExpressions implements ForInit
+    =   (Expression || ",")+
+    ;
+
+EnhancedForControl implements ForControl
+    =   FormalParameter ":" Expression
+    ;
+
+WhileStatement implements Statement
+    =   "while" "(" condition:Expression ")" Statement
+    ;
+
+DoWhileStatement implements Statement
+    =   "do" Statement "while" "(" condition:Expression ")" ";"
+    ;
+
+TryStatement implements Statement
+    =   "try" JavaBlock ExceptionHandler
+    ;
+
+interface ExceptionHandler ;
+
+CatchExceptionsHandler implements ExceptionHandler
+    =   CatchClause+ ("finally" FinallyBlock)?
+    ;
+
+FinallyBlockOnlyHandler implements ExceptionHandler
+    =   ("finally" FinallyBlock)
+    ;
+
+TryStatementWithResources implements Statement
+    =   "try" "(" (Resource || ";")+ ";"? ")" JavaBlock CatchClause* ("finally" FinallyBlock)?
+    ;
+
+Resource
+    =   PrimitiveModifier* MCType DeclaratorId "=" Expression
+    ;
+
+CatchClause
+    =   "catch" "(" PrimitiveModifier* CatchType Name ")" JavaBlock
+    ;
+
+CatchType
+    =   (MCQualifiedName || "|")+
+    ;
+
+interface FinallyBlock ;
+
+SwitchStatement implements Statement
+    =   "switch" "(" Expression ")" "{" SwitchBlockStatementGroup* SwitchLabel* "}"
+    ;
+
+SynchronizedStatement implements Statement
+    =   "synchronized" "(" Expression ")" JavaBlock
+    ;
+
+ReturnStatement implements Statement
+    =   "return" Expression? ";"
+    ;
+
+ThrowStatement implements Statement
+    =   "throw" Expression ";"
+    ;
+
+BreakStatement implements Statement
+    =   "break" label:Name? ";"
+    ;
+
+ContinueStatement implements Statement
+    =   "continue" label:Name? ";"
+    ;
+
+EmptyStatement implements Statement
+    =   ";"
+    ;
+
+ExpressionStatement implements Statement
+    =   Expression ";"
+    ;
+ 
+LabeledStatement implements Statement
+    =   label:Name ":" Statement
+    ;
+
+/** Matches cases then statements, both of which are mandatory.
+ *  To handle empty cases at the end, we add switchLabel* to statement.
+ */
+SwitchBlockStatementGroup
+    =   SwitchLabel+ BlockStatement+
+    ;
+
+interface SwitchLabel ;
+
+ConstantExpressionSwitchLabel implements SwitchLabel
+    =   "case" constantExpression:Expression ":"
+    ;
+
+EnumConstantSwitchLabel implements SwitchLabel
+    =   "case" enumConstantName:Name ":"
+    ;
+
+DefaultSwitchLabel implements SwitchLabel
+    =   "default" ":"
+    ;
+
+CreatorExpression implements Expression <235> =
+	"new" Creator;
+
+interface Creator ;
+
+// TODO Reicht das so? Siehe ursprüngliche Definition
+// =   TypeArguments? CreatedName ClassCreatorRest
+AnonymousClass implements Creator
+    =  CreatedName Arguments
+    ;
+
+ArrayCreator implements Creator
+    =   CreatedName ArrayDimensionSpecifier
+    ;
+
+interface ArrayDimensionSpecifier ;
+    
+ArrayDimensionByInitializer implements ArrayDimensionSpecifier
+    =   (dim:"[" "]")+ ArrayInitializer
+    ;
+    
+ArrayDimensionByExpression implements ArrayDimensionSpecifier
+    =   ("[" Expression "]")+ (dim:"[" "]")*
+    ;
+    
+CreatedName
+    =   (MCObjectType || ".")+
+    |   MCPrimitiveType
+    ;
+
+}

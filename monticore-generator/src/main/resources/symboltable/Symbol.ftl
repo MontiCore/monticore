@@ -28,9 +28,11 @@ package ${genHelper.getTargetPackage()};
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Optional;
+import java.util.List;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.Names;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 
 <#list imports as imp>
 import ${imp}._ast.*;
@@ -47,6 +49,8 @@ public class ${className} ${superClass} ${superInterfaces} {
   protected AST${ruleName} node;
 
   protected String packageName;
+
+  protected AccessModifier accessModifier = ALL_INCLUSION;
 
   public ${className}(String name) {
     this.name = name;
@@ -88,7 +92,12 @@ public class ${className} ${superClass} ${superInterfaces} {
 
   @Override
   public void setAccessModifier(AccessModifier accessModifier) {
-    //TODO
+    this.accessModifier = accessModifier;
+  }
+
+  @Override
+  public AccessModifier getAccessModifier() {
+    return this.accessModifier;
   }
 
   @Override public String getName() {

@@ -118,20 +118,21 @@ public class ${className} implements ${grammarName}Visitor {
   <#assign symbolName = ruleSymbol.getSymbolDefinitionKind().orElse("") + "Symbol">
   <#assign astName = genHelper.getQualifiedASTName(ruleSymbol)>
   <#assign isScopeSpanning = genHelper.isScopeSpanningSymbol(ruleSymbol)>
+  <#assign qualifiedSymbolName = genHelper.getQualifiedSymbolName(ruleSymbol.getEnclosingScope(), ruleSymbol.getSymbolDefinitionKind().orElse("") )>
   // Methods for ${symbolName}
 <#if !ruleSymbol.isInterface()>
   @Override
   public void visit(${astName} ast) {
-    ${symbolName} symbol = create_${ruleName}(ast);
+    ${qualifiedSymbolName} symbol = create_${ruleName}(ast);
     initialize_${ruleName}(symbol, ast);
     addToScopeAndLinkWithNode(symbol, ast);
   }
 
-  protected ${symbolName} create_${ruleName}(${astName} ast) {
-      return new ${symbolName}(ast.getName());
+  protected ${qualifiedSymbolName} create_${ruleName}(${astName} ast) {
+      return new ${qualifiedSymbolName}(ast.getName());
   }
 
-  protected void initialize_${ruleName}(${symbolName} symbol, ${astName} ast) {
+  protected void initialize_${ruleName}(${qualifiedSymbolName} symbol, ${astName} ast) {
   }
 
   @Override
@@ -141,7 +142,7 @@ public class ${className} implements ${grammarName}Visitor {
 </#if>
   }
 
-  public void addToScopeAndLinkWithNode(${symbolName} symbol, ${astName} astNode) {
+  public void addToScopeAndLinkWithNode(${qualifiedSymbolName} symbol, ${astName} astNode) {
     addToScope(symbol);
     setLinkBetweenSymbolAndNode(symbol, astNode);
 <#if isScopeSpanning>
@@ -151,7 +152,7 @@ public class ${className} implements ${grammarName}Visitor {
 </#if>
   }
 
-  public void setLinkBetweenSymbolAndNode(${symbolName} symbol, ${astName} astNode) {
+  public void setLinkBetweenSymbolAndNode(${qualifiedSymbolName} symbol, ${astName} astNode) {
     // symbol -> ast
     symbol.setAstNode(astNode);
 
@@ -193,7 +194,7 @@ public class ${className} implements ${grammarName}Visitor {
 </#list>
 
 <#list kinds as kind>
-  public void addToScope(${kind}Symbol symbol) {
+  public void addToScope(${kind} symbol) {
     if (!(symbol instanceof ISymbolReference)) {
       if (getCurrentScope().isPresent()) {
         getCurrentScope().get().add(symbol);
