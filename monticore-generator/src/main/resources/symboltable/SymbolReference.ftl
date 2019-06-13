@@ -16,6 +16,7 @@ package ${package};
 import ${fqn}._ast.*;
 
 import java.util.Optional;
+import java.util.List;
 import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;

@@ -8,6 +8,7 @@ ${defineHookPoint("JavaCopyright")}
 package ${genHelper.getTargetPackage()};
 
 import java.util.Optional;
+import java.util.List;
 <#list imports as imp>
 import ${imp}._ast.*;
 </#list>
