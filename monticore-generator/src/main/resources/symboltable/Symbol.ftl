@@ -52,6 +52,8 @@ public class ${className} ${superClass} ${superInterfaces} {
 
   protected AccessModifier accessModifier = ALL_INCLUSION;
 
+  protected static boolean alreadyResolved = false;
+
   public ${className}(String name) {
     this.name = name;
   }
@@ -122,6 +124,14 @@ public class ${className} ${superClass} ${superInterfaces} {
     }
 
     return fullName;
+  }
+
+  public static boolean isAlreadyResolved() {
+    return alreadyResolved;
+  }
+
+  public static void setAlreadyResolved(boolean isResolved) {
+    alreadyResolved = isResolved;
   }
 
   protected String determinePackageName() {
