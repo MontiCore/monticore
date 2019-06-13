@@ -12,7 +12,6 @@ import de.monticore.aggregation.foo._symboltable.BarSymbol;
 import de.monticore.aggregation.foo._symboltable.FooLanguage;
 import de.monticore.aggregation.foo._symboltable.FooScope;
 import de.monticore.aggregation.foo._symboltable.FooSymbolTableCreator;
-import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
@@ -64,20 +63,20 @@ public class AggregationTest {
   
   // create symbol table for "blah"
   BlahSymbolTableCreator blahSymbolTableCreator = new BlahSymbolTableCreator(globalScope.getIBlahGS());
-  BlahScope blahSymbolTable = (BlahScope) blahSymbolTableCreator.createFromAST(blahModel.get());
+  BlahScope blahSymbolTable = blahSymbolTableCreator.createFromAST(blahModel.get());
   
   // check dummy symbol is present in local scope
-  Optional<DummySymbol> blubSymbol1 = blahSymbolTable.resolveDummy("blubSymbol1");
+  Optional<DummySymbol> blubSymbol1 = blahSymbolTable.resolveDummy("blubScope1.blubSymbol1");
   
   assertTrue(blubSymbol1.isPresent());
-
-
+//
+//
 
   // check dummy symbol is present in global scope
   // TODO soll das so? Scopes ohne Namen müssen mit Punkt navigiert werde
   Optional<BarSymbol> barSymbol = globalScope.resolveBar("blubScope1.blubSymbol1");
   
-  assertTrue(blubSymbol1.isPresent());
+  assertTrue(barSymbol.isPresent());
 
 
    /* ***************************************************************************************************************
@@ -88,7 +87,7 @@ public class AggregationTest {
  
    //parse foo model
   FooParser fooParser = new FooParser();
-  Optional<ASTBar> fooModel = fooParser.parse_String("bar { blubSymbol1() }");
+  Optional<ASTBar> fooModel = fooParser.parse_String("bar { blubSymbol1() } name");
  
   // Check foo model is parsed
   assertTrue(fooModel.isPresent());
@@ -101,14 +100,6 @@ public class AggregationTest {
   // TODO soll das so? Scopes ohne Namen müssen mit Punkt navigiert werde
   //Optional<Symbol> k = fooScope.resolve(".blubSymbol1", DummyKind.KIND);
   //assertTrue(k.isPresent());
-
-  Optional<EMethodSymbol> a = fooScope.resolveEMethod("blubScope1.blubSymbol1");
-
-  assertTrue(a.isPresent());
-
-  Optional<EMethodSymbol> a2 = fooScope.resolveEMethod("blubScope1.blubSymbol1");
-
-  assertTrue(a2.isPresent());
 
  }
  
