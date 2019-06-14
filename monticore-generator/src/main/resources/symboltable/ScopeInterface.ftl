@@ -76,7 +76,13 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
   }
 
   default public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate) {
-      // 1. Conduct search locally in the current scope
+    if (!is${symbol}SymbolAlreadyResolved()) {
+      set${symbol}SymbolAlreadyResolved(true);
+    } else {
+      return new LinkedHashSet<>();
+    }
+
+    // 1. Conduct search locally in the current scope
     final Set<${symbolNames[symbol]}> resolved = this.resolve${symbol}LocallyMany(foundSymbols, name,
         modifier, predicate);
 
@@ -97,7 +103,7 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
       }
     }
     Log.trace("END " + resolveCall + ". Found #" + resolved.size(), "");
-
+    set${symbol}SymbolAlreadyResolved(false);
     return resolved;
   }
 
@@ -134,13 +140,21 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
   }
 
   default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(boolean foundSymbols, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate)  {
+    if (!is${symbol}SymbolAlreadyResolved()) {
+      set${symbol}SymbolAlreadyResolved(true);
+    } else {
+      return new LinkedHashSet<>();
+    }
+
     final Set<${symbolNames[symbol]}> resolvedSymbols = this.resolve${symbol}LocallyMany(foundSymbols, name, modifier, predicate);
     if (!resolvedSymbols.isEmpty()) {
+      set${symbol}SymbolAlreadyResolved(false);
       return resolvedSymbols;
     }
     resolvedSymbols.addAll(resolveAdapted${symbol}LocallyMany(foundSymbols, name, modifier, predicate));
     final Collection<${symbolNames[symbol]}> resolvedFromEnclosing = continue${symbol}WithEnclosingScope((foundSymbols | resolvedSymbols.size() > 0), name, modifier, predicate);
     resolvedSymbols.addAll(resolvedFromEnclosing);
+    set${symbol}SymbolAlreadyResolved(false);
     return resolvedSymbols;
   }
 
@@ -152,7 +166,6 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
 
   default Set<${symbolNames[symbol]}> resolve${symbol}LocallyMany(boolean foundSymbols, String name, AccessModifier modifier,
       Predicate<${symbolNames[symbol]}> predicate) {
-
     final Set<${symbolNames[symbol]}> resolvedSymbols = new LinkedHashSet<>();
 
     try {
@@ -212,6 +225,7 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
   }
 
   default Collection<${symbolNames[symbol]}> continueAs${symbol}SubScope(boolean foundSymbols, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate){
+    set${symbol}SymbolAlreadyResolved(false);
     if (checkIfContinueAsSubScope(name)) {
       final String remainingSymbolName = getRemainingNameForResolveDown(name);
       return this.resolve${symbol}DownMany(foundSymbols, remainingSymbolName, modifier, predicate);
