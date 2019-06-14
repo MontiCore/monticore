@@ -1,24 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.ast_emf;
 
-import static de.monticore.codegen.GeneratorHelper.getPlainName;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDFieldSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import de.monticore.cd.cd4analysis._visitor.CD4AnalysisInheritanceVisitor;
+import de.monticore.cd.transformation.ASTCDRawTransformation;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstAdditionalAttributes;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
@@ -33,27 +24,19 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.TypesMill;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
-import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisInheritanceVisitor;
-import de.monticore.umlcd4a.symboltable.CDFieldSymbol;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
-import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
+import de.monticore.types.CollectionTypesPrinter;
+import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import groovyjarjarantlr.ANTLRException;
-import transformation.ast.ASTCDRawTransformation;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static de.monticore.codegen.GeneratorHelper.getPlainName;
 
 /**
  * Decorates class diagrams by adding of new classes and methods using in emf
@@ -153,11 +136,11 @@ public class CdEmfDecorator extends CdDecorator {
     addConstantsClass(cdDefinition, astHelper);
     
     // Additional imports
-    cdCompilationUnit.getImportStatementList().add(
-        TypesMill.importStatementBuilder()
-            .setImportList(
+    cdCompilationUnit.getMCImportStatementList().add(
+        MCBasicTypesMill.mCImportStatementBuilder()
+            .setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(
                 Lists.newArrayList(VisitorGeneratorHelper.getQualifiedVisitorType(astHelper
-                    .getPackageName(), cdDefinition.getName())))
+                    .getPackageName(), cdDefinition.getName()))).build())
             .build());
             
     addEmfCode(cdCompilationUnit, nativeClasses, nativeTypes, astHelper,
@@ -393,7 +376,7 @@ public class CdEmfDecorator extends CdDecorator {
     replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
     
     List<String> superCDs = astHelper.getAllSuperCds(astHelper.getCdSymbol()).stream()
-        .map(CDSymbol::getFullName).collect(Collectors.toList());
+        .map(CDDefinitionSymbol::getFullName).collect(Collectors.toList());
     toParse = "public void initializePackageContents();";
     getMethodBody = new TemplateHookPoint(
         "ast_emf.epackagemethods.InitializePackageContents", cdDef.getName(),
@@ -411,7 +394,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addSetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     for (EmfAttribute attribute : getEmfAttributes(clazz)) {
       ASTCDAttribute cdAttribute = attribute.getCdAttribute();
-      String typeName = TypesHelper.printSimpleRefType(cdAttribute.getType());
+      String typeName = MCCollectionTypesHelper.printSimpleRefType(cdAttribute.getMCType());
       if (!AstGeneratorHelper.generateSetter(clazz, cdAttribute, typeName)) {
         continue;
       }
@@ -658,10 +641,10 @@ public class CdEmfDecorator extends CdDecorator {
   String createEDataType(ASTCDAttribute cdAttribute, boolean isAstList,
       AstEmfGeneratorHelper astHelper, ETypeCollector eTypeCollector) {
     if (isAstList || AstEmfGeneratorHelper.istJavaList(cdAttribute)) {
-      Optional<ASTSimpleReferenceType> typeArg = TypesHelper
-          .getFirstTypeArgumentOfGenericType(cdAttribute.getType(), GeneratorHelper.JAVA_LIST);
+      Optional<ASTSimpleReferenceType> typeArg = MCCollectionTypesHelper
+          .getFirstTypeArgumentOfGenericType(cdAttribute.getMCType(), GeneratorHelper.JAVA_LIST);
       if (typeArg.isPresent()) {
-        return Names.getSimpleName(TypesHelper
+        return Names.getSimpleName(MCCollectionTypesHelper
             .printType(typeArg.get()));
       }
     }
@@ -796,7 +779,7 @@ public class CdEmfDecorator extends CdDecorator {
       String genericType = "";
       ASTSimpleReferenceType convertedType = astType;
       if (AstGeneratorHelper.isOptional(astType)) {
-        Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+        Optional<ASTSimpleReferenceType> typeArgument = MCCollectionTypesHelper
             .getFirstTypeArgumentOfOptional(astType);
         if (!typeArgument.isPresent()) {
           return;
@@ -804,9 +787,9 @@ public class CdEmfDecorator extends CdDecorator {
         convertedType = typeArgument.get();
         genericType = AstGeneratorHelper.OPTIONAL;
       }
-      else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType,
+      else if (MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astType,
           AstGeneratorHelper.JAVA_LIST)) {
-        Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+        Optional<ASTSimpleReferenceType> typeArgument = MCCollectionTypesHelper
             .getFirstTypeArgumentOfGenericType(astType, AstGeneratorHelper.JAVA_LIST);
         if (!typeArgument.isPresent()) {
           return;
@@ -814,7 +797,7 @@ public class CdEmfDecorator extends CdDecorator {
         convertedType = typeArgument.get();
         genericType = AstGeneratorHelper.JAVA_LIST;
       }
-      String convertedTypeName = TypesPrinter.printType(convertedType);
+      String convertedTypeName = CollectionTypesPrinter.printType(convertedType);
       /* TODO GV
       if (!genericType.isEmpty() && !convertedTypeName.contains("<")) {
         String newType = "";

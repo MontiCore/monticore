@@ -1,8 +1,8 @@
 package de.monticore.codegen.cd2java;
 
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.io.File;
 import java.nio.file.Path;

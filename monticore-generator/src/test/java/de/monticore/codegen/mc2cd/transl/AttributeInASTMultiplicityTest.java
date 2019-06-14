@@ -2,19 +2,18 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.codegen.mc2cd.TestHelper;
+import org.junit.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Test;
-
-import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test for the proper transformation of AttributeInASTs to corresponding
@@ -44,13 +43,13 @@ public class AttributeInASTMultiplicityTest {
   @Test
   public void testStarMultiplicity() {
     List<ASTCDAttribute> attributes = astA.getCDAttributeList();
-    assertTrue(TestHelper.isListOfType(attributes.get(0).getType(),
+    assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTX"));
     /*
-    String name = typeToString(attributes.get(0).getType());
+    String name = typeToString(attributes.get(0).getMCType());
     assertEquals("java.util.List", name);
-    assertTrue(attributes.get(0).getType() instanceof ASTSimpleReferenceType);
-    ASTSimpleReferenceType type = (ASTSimpleReferenceType) attributes.get(0).getType();
+    assertTrue(attributes.get(0).getMCType() instanceof ASTSimpleReferenceType);
+    ASTSimpleReferenceType type = (ASTSimpleReferenceType) attributes.get(0).getMCType();
     assertTrue(type.getTypeArguments().isPresent());
     assertEquals(1, type.getTypeArguments().get().getTypeArguments().size());
     assertEquals("mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTX",
@@ -65,14 +64,14 @@ public class AttributeInASTMultiplicityTest {
   @Test
   public void testOptionalCardinality() {
     List<ASTCDAttribute> attributes = astB.getCDAttributeList();
-    String name = typeToString(attributes.get(0).getType());
+    String name = typeToString(attributes.get(0).getMCType());
     assertEquals("Optional", name);
   }
   
   @Test
   public void testOneCardinality() {
     List<ASTCDAttribute> attributes = astC.getCDAttributeList();
-    String name = typeToString(attributes.get(0).getType());
+    String name = typeToString(attributes.get(0).getMCType());
     assertEquals("mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTZ", name);
   }
 }

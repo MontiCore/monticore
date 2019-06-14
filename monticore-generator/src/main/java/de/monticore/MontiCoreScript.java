@@ -4,6 +4,10 @@ package de.monticore;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreator;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CDGenerator;
@@ -58,10 +62,6 @@ import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.umlcd4a.CD4AnalysisLanguage;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.symboltable.CD4AnalysisSymbolTableCreator;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.configuration.Configuration;
@@ -317,9 +317,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getCDDefinition()
         .getName());
-    Optional<CDSymbol> cdSymbol = globalScope.<CDSymbol>resolveDown(
+    Optional<CDDefinitionSymbol> cdSymbol = globalScope.<CDDefinitionSymbol>resolveDown(
         qualifiedCDName,
-        CDSymbol.KIND);
+        CDDefinitionSymbol.KIND);
 
     ASTCDCompilationUnit result = ast;
 
@@ -418,7 +418,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // Write reporting CD
     ASTCDCompilationUnit astCdForReporting = new AstGeneratorHelper(cd, globalScope).getASTCDForReporting();
     // No star imports in reporting CDs
-    astCdForReporting.getImportStatementList().forEach(s -> s.setStar(false));
+    astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
     GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
 
   }
@@ -591,7 +591,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = (MCGrammarSymbol) astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
-        Optional<CDSymbol> importedCd = symbolTable.resolveDown(mcgsym.getFullName(), CDSymbol.KIND);
+        Optional<CDDefinitionSymbol> importedCd = symbolTable.resolveDown(mcgsym.getFullName(), CDDefinitionSymbol.KIND);
         if (!importedCd.isPresent() && mcgsym.getAstNode().isPresent()) {
           transformAndCreateSymbolTable((ASTMCGrammar) mcgsym.getAstNode().get(), glex, symbolTable);
         }

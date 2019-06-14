@@ -1,5 +1,9 @@
 package de.monticore.codegen.cd2java._ast.ast_constants;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -10,10 +14,6 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,35 +69,35 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
   public void testLANGUAGEAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("LANGUAGE", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC_FINAL, astcdAttribute.getModifier());
-    assertDeepEquals("String", astcdAttribute.getType());
+    assertDeepEquals("String", astcdAttribute.getMCType());
   }
 
   @Test
   public void testDEFAULTAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("DEFAULT", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC_FINAL, astcdAttribute.getModifier());
-    assertInt(astcdAttribute.getType());
+    assertInt(astcdAttribute.getMCType());
   }
 
   @Test
   public void testFINALAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("FINAL", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC_FINAL, astcdAttribute.getModifier());
-    assertInt(astcdAttribute.getType());
+    assertInt(astcdAttribute.getMCType());
   }
 
   @Test
   public void testINITIALAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("INITIAL", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC_FINAL, astcdAttribute.getModifier());
-    assertInt(astcdAttribute.getType());
+    assertInt(astcdAttribute.getMCType());
   }
 
   @Test
   public void testSuperGrammarsAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("superGrammars", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC, astcdAttribute.getModifier());
-    assertDeepEquals(cdTypeFacade.createTypeByDefinition("String[]"), astcdAttribute.getType());
+    assertDeepEquals(cdTypeFacade.createTypeByDefinition("String[]"), astcdAttribute.getMCType());
     assertFalse(astcdAttribute.isPresentValue());
   }
 
@@ -110,7 +110,7 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
   public void testGetAllLanguagesMethod() {
     ASTCDMethod method = getMethodBy("getAllLanguages", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createTypeByDefinition("Collection<String>"), method.getReturnType());
+    assertDeepEquals(cdTypeFacade.createTypeByDefinition("Collection<String>"), method.getMCReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 

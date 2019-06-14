@@ -2,19 +2,18 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import org.junit.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Test;
-
-import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.types.types._ast.ASTReferenceType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test for the proper transformation of ASTAbstractProds to corresponding
@@ -65,7 +64,7 @@ public class AbstractProdTest {
    */
   @Test
   public void testExtends() {
-    java.util.Optional<ASTReferenceType> superClasses = astA.getSuperclassOpt();
+    java.util.Optional<ASTMCQualifiedType> superClasses = astA.getSuperclassOpt();
     assertTrue(superClasses.isPresent());
     String name = typeToString(superClasses.get());
     assertEquals("mc2cdtransformation.AbstractProd.ASTextendedProd", name);
@@ -77,7 +76,7 @@ public class AbstractProdTest {
    */
   @Test
   public void testImplements() {
-    List<ASTReferenceType> superInterfaces = astB.getInterfaceList();
+    List<ASTMCQualifiedType> superInterfaces = astB.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("mc2cdtransformation.AbstractProd.ASTimplementedProd", name);
@@ -89,7 +88,7 @@ public class AbstractProdTest {
    */
   @Test
   public void testAstextends() {
-    java.util.Optional<ASTReferenceType> superClasses = astC.getSuperclassOpt();
+    java.util.Optional<ASTMCQualifiedType> superClasses = astC.getSuperclassOpt();
     assertTrue(superClasses.isPresent());
     String name = typeToString(superClasses.get());
     assertEquals("AstExtendedType", name);
@@ -101,7 +100,7 @@ public class AbstractProdTest {
    */
   @Test
   public void testAstimplements() {
-    List<ASTReferenceType> superInterfaces = astD.getInterfaceList();
+    List<ASTMCQualifiedType> superInterfaces = astD.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("AstImplementedType", name);
@@ -113,7 +112,7 @@ public class AbstractProdTest {
    */
   @Test
   public void testAstextendsQualified() {
-    java.util.Optional<ASTReferenceType> superClasses = astE.getSuperclassOpt();
+    java.util.Optional<ASTMCQualifiedType> superClasses = astE.getSuperclassOpt();
     assertTrue(superClasses.isPresent());
     String name = typeToString(superClasses.get());
     assertEquals("java.util.Observable", name);
@@ -125,7 +124,7 @@ public class AbstractProdTest {
    */
   @Test
   public void testAstimplementsQualified() {
-    List<ASTReferenceType> superInterfaces = astF.getInterfaceList();
+    List<ASTMCQualifiedType> superInterfaces = astF.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("java.io.Serializable", name);

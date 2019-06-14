@@ -1,10 +1,9 @@
 package de.monticore.codegen.cd2java.data;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,7 +75,7 @@ public class DataDecoratorUtil extends AbstractDecorator<ASTCDType, List<ASTCDMe
 
   public ASTCDMethod createDeepClone(ASTCDType cdType) {
     // deep clone without parameters
-    ASTType type = getCDTypeFacade().createSimpleReferenceType(getSimpleName(cdType));
+    ASTMCType type = getCDTypeFacade().createSimpleReferenceType(getSimpleName(cdType));
     return getCDMethodFacade().createMethod(PUBLIC, type, DEEP_CLONE_METHOD);
   }
 

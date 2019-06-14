@@ -1,5 +1,9 @@
 package de.monticore.codegen.cd2java._ast.ast_new.reference.referencedSymbol;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDStereotype;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -10,11 +14,7 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDStereotype;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -66,15 +66,15 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
     assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
     assertEquals("de.monticore.codegen.ast.referencedSymbol.FooSymbol", stereotype.getValue(0).getValue());
-    assertDeepEquals(cdTypeFacade.createTypeByDefinition("java.util.List<String>"), nameAttribute.getType());
+    assertDeepEquals(cdTypeFacade.createTypeByDefinition("java.util.List<String>"), nameAttribute.getMCType());
   }
 
   @Test
   public void testSymbolAttribute() {
     ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astClass);
     assertTrue(symbolAttribute.getModifier().isPrivate());
-    ASTType symboType = this.cdTypeFacade.createTypeByDefinition(NAME_SYMBOL_MAP);
-    assertDeepEquals(symboType, symbolAttribute.getType());
+    ASTMCType symboType = this.cdTypeFacade.createTypeByDefinition(NAME_SYMBOL_MAP);
+    assertDeepEquals(symboType, symbolAttribute.getMCType());
   }
 
   @Test

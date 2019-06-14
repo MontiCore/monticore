@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java._ast.builder;
 
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
@@ -9,8 +10,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,8 +41,8 @@ public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> 
   @Override
   public ASTCDClass decorate(final ASTCDClass domainClass) throws DecorateException {
     String builderClassName = domainClass.getName() + BUILDER_SUFFIX;
-    ASTType domainType = this.getCDTypeFacade().createSimpleReferenceType(domainClass.getName());
-    ASTType builderType = this.getCDTypeFacade().createSimpleReferenceType(builderClassName);
+    ASTMCType domainType = this.getCDTypeFacade().createSimpleReferenceType(domainClass.getName());
+    ASTMCType builderType = this.getCDTypeFacade().createSimpleReferenceType(builderClassName);
 
 
     CDModifier modifier = PUBLIC;
@@ -57,7 +57,7 @@ public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> 
     List<ASTCDAttribute> mandatoryAttributes = builderAttributes.stream()
         .filter(a -> !GeneratorHelper.isListType(a.printType()))
         .filter(a -> !GeneratorHelper.isOptional(a))
-        .filter(a -> !GeneratorHelper.isPrimitive(a.getType()))
+        .filter(a -> !GeneratorHelper.isPrimitive(a.getMCType()))
         .collect(Collectors.toList());
 
 

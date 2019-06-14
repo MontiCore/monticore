@@ -7,6 +7,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
+import de.monticore.cd.CD4AnalysisHelper;
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.*;
+import de.monticore.cd.prettyprint.CDPrettyPrinter;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
@@ -28,14 +32,12 @@ import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
-import de.monticore.types.types._ast.ASTImportStatement;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.CD4AnalysisHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.prettyprint.CDPrettyPrinterConcreteVisitor;
-import de.monticore.umlcd4a.symboltable.*;
-import de.monticore.umlcd4a.symboltable.references.CDTypeSymbolReference;
+import de.monticore.types.CollectionTypesPrinter;
+import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
@@ -53,10 +55,11 @@ import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleRefere
 import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
 import static de.monticore.grammar.Multiplicity.multiplicityByAlternative;
 import static de.monticore.grammar.Multiplicity.multiplicityByIteration;
+import static de.monticore.types.MCFullGenericTypesHelper.getReferenceNameFromOptional;
 import static de.se_rwth.commons.Names.getQualifier;
 import static java.util.Collections.max;
 
-public class GeneratorHelper extends TypesHelper {
+public class GeneratorHelper extends MCCollectionTypesHelper {
 
   public static final String AST_PREFIX = "AST";
 
@@ -140,7 +143,7 @@ public class GeneratorHelper extends TypesHelper {
 
   static Grammar_WithConceptsPrettyPrinter mcPrettyPrinter;
 
-  static CDPrettyPrinterConcreteVisitor cdPrettyPrinter;
+  static CDPrettyPrinter cdPrettyPrinter;
 
   protected static Collection<String> additionalAttributes = Lists.newArrayList(SYMBOL, SCOPE);
 
@@ -155,7 +158,7 @@ public class GeneratorHelper extends TypesHelper {
 
   protected GlobalScope symbolTable;
 
-  protected CDSymbol cdSymbol;
+  protected CDDefinitionSymbol cdSymbol;
 
   protected ASTCDCompilationUnit topAst;
 
@@ -178,7 +181,7 @@ public class GeneratorHelper extends TypesHelper {
     this.cdSymbol = getCd();
 
     // Create list of CDs for super grammars
-    for (ASTImportStatement importSt : topAst.getImportStatementList()) {
+    for (ASTMCImportStatement importSt : topAst.getMCImportStatementList()) {
       if (importSt.isStar()) {
         superGrammarCds.add(Names.getQualifiedName(importSt.getImportList()));
       }
@@ -192,29 +195,29 @@ public class GeneratorHelper extends TypesHelper {
    * @param packageSuffix
    * @return converted type or original type if type is java type already
    */
-  public void transformTypeCd2Java(ASTSimpleReferenceType astType,
+  public void transformTypeCd2Java(ASTMCObjectType astType,
                                    String packageSuffix) {
-    Log.trace("Converted Cd or Java type: " + TypesPrinter.printType(astType), LOG_NAME);
+    Log.trace("Converted Cd or Java type: " + CollectionTypesPrinter.printType(astType), LOG_NAME);
     String genericType = "";
-    ASTSimpleReferenceType convertedType = astType;
+    ASTMCObjectType convertedType = astType;
     if (isOptional(astType)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfOptional(astType);
       if (!typeArgument.isPresent()) {
         return;
       }
       convertedType = typeArgument.get();
       genericType = OPTIONAL;
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, ARRAY_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+    } else if (MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astType, ARRAY_LIST)) {
+      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(astType, ARRAY_LIST);
       if (!typeArgument.isPresent()) {
         return;
       }
       convertedType = typeArgument.get();
       genericType = ARRAY_LIST;
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, JAVA_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+    } else if (MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astType, JAVA_LIST)) {
+      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(astType, JAVA_LIST);
       if (!typeArgument.isPresent()) {
         return;
@@ -223,7 +226,7 @@ public class GeneratorHelper extends TypesHelper {
       genericType = JAVA_LIST;
     }
 
-    String convertedTypeName = TypesPrinter.printType(convertedType);
+    String convertedTypeName = CollectionTypesPrinter.printType(convertedType);
     // Resolve only qualified types
     if (!convertedTypeName.contains(".")) {
       return;
@@ -258,29 +261,29 @@ public class GeneratorHelper extends TypesHelper {
    * @param packageSuffix
    * @return converted type or original type if type is java type already
    */
-  public ASTSimpleReferenceType convertTypeCd2Java(ASTSimpleReferenceType astType,
+  public ASTMCObjectType convertTypeCd2Java(ASTMCObjectType astType,
                                                    String packageSuffix) {
-    Log.trace("Converted Cd or Java type: " + TypesPrinter.printType(astType), LOG_NAME);
+    Log.trace("Converted Cd or Java type: " + CollectionTypesPrinter.printType(astType), LOG_NAME);
     String genericType = "";
-    ASTSimpleReferenceType convertedType = astType;
+    ASTMCObjectType convertedType = astType;
     if (isOptional(astType)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfOptional(astType);
       if (!typeArgument.isPresent()) {
         return astType;
       }
       convertedType = typeArgument.get();
       genericType = OPTIONAL;
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, ARRAY_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+    } else if (MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astType, ARRAY_LIST)) {
+      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(astType, ARRAY_LIST);
       if (!typeArgument.isPresent()) {
         return astType;
       }
       convertedType = typeArgument.get();
       genericType = ARRAY_LIST;
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, JAVA_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+    } else if (MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astType, JAVA_LIST)) {
+      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(astType, JAVA_LIST);
       if (!typeArgument.isPresent()) {
         return astType;
@@ -289,7 +292,7 @@ public class GeneratorHelper extends TypesHelper {
       genericType = JAVA_LIST;
     }
 
-    String convertedTypeName = TypesPrinter.printType(convertedType);
+    String convertedTypeName = CollectionTypesPrinter.printType(convertedType);
     // Resolve only qualified types
     if (!convertedTypeName.contains(".")) {
       return astType;
@@ -383,29 +386,29 @@ public class GeneratorHelper extends TypesHelper {
    * @param astType
    * @param packageSuffix
    */
-  public void transformQualifiedToSimpleIfPossible(ASTSimpleReferenceType astType,
+  public void transformQualifiedToSimpleIfPossible(ASTMCObjectType astType,
                                                    String packageSuffix) {
-    Log.trace("Converted Cd or Java type: " + TypesPrinter.printType(astType), LOG_NAME);
+    Log.trace("Converted Cd or Java type: " + CollectionTypesPrinter.printType(astType), LOG_NAME);
     String genericType = "";
-    ASTSimpleReferenceType convertedType = astType;
+    ASTMCObjectType convertedType = astType;
     if (isOptional(astType)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfOptional(astType);
       if (!typeArgument.isPresent()) {
         return;
       }
       convertedType = typeArgument.get();
       genericType = OPTIONAL;
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, ARRAY_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+    } else if (MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astType, ARRAY_LIST)) {
+      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(astType, ARRAY_LIST);
       if (!typeArgument.isPresent()) {
         return;
       }
       convertedType = typeArgument.get();
       genericType = ARRAY_LIST;
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, JAVA_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+    } else if (MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astType, JAVA_LIST)) {
+      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(astType, JAVA_LIST);
       if (!typeArgument.isPresent()) {
         return;
@@ -415,7 +418,7 @@ public class GeneratorHelper extends TypesHelper {
       genericType = JAVA_LIST;
     }
 
-    String convertedTypeName = TypesPrinter.printType(convertedType);
+    String convertedTypeName = CollectionTypesPrinter.printType(convertedType);
     // Resolve only qualified types
     if (!convertedTypeName.contains(".")) {
       return;
@@ -461,7 +464,7 @@ public class GeneratorHelper extends TypesHelper {
   /**
    * @return cdSymbol
    */
-  public CDSymbol getCdSymbol() {
+  public CDDefinitionSymbol getCdSymbol() {
     return this.cdSymbol;
   }
 
@@ -481,7 +484,7 @@ public class GeneratorHelper extends TypesHelper {
   public Collection<String> getASTNodeBaseTypes() {
     Set<String> baseNodesNames = new LinkedHashSet<>();
 
-    for (CDSymbol cd : getAllCds(getCd())) {
+    for (CDDefinitionSymbol cd : getAllCds(getCd())) {
       String qualifiedCdName = cd.getFullName();
       String simpleCdName = getCdName(qualifiedCdName);
       String baseNodeName = getASTNodeBaseType(simpleCdName);
@@ -544,11 +547,11 @@ public class GeneratorHelper extends TypesHelper {
   }
 
   public static boolean isAdditionalAttribute(ASTCDAttribute attrib) {
-    return isOptional(attrib.getType())
+    return isOptional(attrib.getMCType())
         && (isSymbolOrScopeAttribute(attrib)
         //TODO remove as soon as symbol and scopes get removed from ASTCNode
         || additionalAttributes.stream().filter(
-        a -> a.equals(getReferenceNameFromOptional(attrib.getType()))).findAny()
+        a -> a.equals(getReferenceNameFromOptional(attrib.getMCType()))).findAny()
         .isPresent());
   }
 
@@ -584,7 +587,7 @@ public class GeneratorHelper extends TypesHelper {
     return "String".equals(type) || "java.lang.String".equals(type);
   }
 
-  public static boolean isString(ASTSimpleReferenceType type) {
+  public static boolean isString(ASTMCQualifiedType type) {
     String typeName = getSimpleName(type.getNameList());
     return "String".equals(typeName) || "java.lang.String".equals(typeName);
   }
@@ -630,7 +633,7 @@ public class GeneratorHelper extends TypesHelper {
   }
 
   public static boolean isOptional(ASTCDAttribute attribute) {
-    return isOptional(attribute.getType());
+    return isOptional(attribute.getMCType());
   }
 
   public static boolean isOptional(CDTypeSymbol type) {
@@ -644,14 +647,14 @@ public class GeneratorHelper extends TypesHelper {
       return false;
     }
     ASTNode node = type.getAstNode().get();
-    if (!(node instanceof ASTType)) {
+    if (!(node instanceof ASTMCType)) {
       Log.error(String
           .format(
               "0xA5009 Expected the ASTNode of cd type symbol %s to be an ASTType, but it is of kind %s",
               type.getFullName(), node.getClass().getName()));
       return false;
     }
-    return isOptional((ASTType) node);
+    return isOptional((ASTMCType) node);
   }
 
   public static boolean isOptional(CDFieldSymbol field) {
@@ -667,7 +670,7 @@ public class GeneratorHelper extends TypesHelper {
     if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
       return false;
     } else {
-      List<String> listName = TypesHelper.createListFromDotSeparatedString(typeName);
+      List<String> listName = MCCollectionTypesHelper.createListFromDotSeparatedString(typeName);
       if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
         return false;
       }
@@ -770,7 +773,7 @@ public class GeneratorHelper extends TypesHelper {
       return false;
     }
 
-    List<String> listName = TypesHelper.createListFromDotSeparatedString(typeName);
+    List<String> listName = MCCollectionTypesHelper.createListFromDotSeparatedString(typeName);
     if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
       return false;
     }
@@ -872,24 +875,24 @@ public class GeneratorHelper extends TypesHelper {
    * @param astType
    * @return
    */
-  public Optional<String> getTypeNameToResolve(ASTSimpleReferenceType astType) {
-    ASTSimpleReferenceType convertedType = astType;
+  public Optional<String> getTypeNameToResolve(ASTMCObjectType astType) {
+    ASTMCObjectType convertedType = astType;
     if (isOptional(astType)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfOptional(astType);
       if (!typeArgument.isPresent()) {
         return Optional.empty();
       }
       convertedType = typeArgument.get();
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, ARRAY_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+    } else if (MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astType, ARRAY_LIST)) {
+      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(astType, ARRAY_LIST);
       if (!typeArgument.isPresent()) {
         return Optional.empty();
       }
       convertedType = typeArgument.get();
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, JAVA_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+    } else if (MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astType, JAVA_LIST)) {
+      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(astType, JAVA_LIST);
       if (!typeArgument.isPresent()) {
         return Optional.empty();
@@ -897,7 +900,7 @@ public class GeneratorHelper extends TypesHelper {
       convertedType = typeArgument.get();
     }
 
-    String convertedTypeName = TypesPrinter.printType(convertedType);
+    String convertedTypeName = CollectionTypesPrinter.printType(convertedType);
     // Resolve only qualified types
     if (!convertedTypeName.contains(".")) {
       return Optional.empty();
@@ -1070,9 +1073,9 @@ public class GeneratorHelper extends TypesHelper {
     return mcPrettyPrinter;
   }
 
-  public static CDPrettyPrinterConcreteVisitor getCDPrettyPrinter() {
+  public static CDPrettyPrinter getCDPrettyPrinter() {
     if (cdPrettyPrinter == null) {
-      cdPrettyPrinter = new CDPrettyPrinterConcreteVisitor(new IndentPrinter());
+      cdPrettyPrinter = new CDPrettyPrinter(new IndentPrinter());
     }
     return cdPrettyPrinter;
   }
@@ -1208,8 +1211,8 @@ public class GeneratorHelper extends TypesHelper {
 
   public String getTypeNameWithoutOptional(ASTCDAttribute attribute) {
     if (isOptional(attribute)) {
-      return TypesHelper
-          .printType(TypesHelper.getSimpleReferenceTypeFromOptional(attribute.getType()));
+      return MCCollectionTypesHelper
+          .printType(MCCollectionTypesHelper.getSimpleReferenceTypeFromOptional(attribute.getMCType()));
 
     }
     return attribute.printType();
@@ -1234,7 +1237,7 @@ public class GeneratorHelper extends TypesHelper {
   }
 
   public static String getPlainGetter(ASTCDAttribute ast) {
-    String astType = printType(ast.getType());
+    String astType = printType(ast.getMCType());
     StringBuilder sb = new StringBuilder();
     if (CDTypes.isBoolean(astType)) {
       sb.append(GET_PREFIX_BOOLEAN);
@@ -1295,7 +1298,7 @@ public class GeneratorHelper extends TypesHelper {
   public static String getPlainSetter(ASTCDAttribute ast) {
     StringBuilder sb = new StringBuilder(SET_PREFIX).append(
         StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
-    String astType = printType(ast.getType());
+    String astType = printType(ast.getMCType());
     if (isListType(astType))
       if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
         sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
@@ -1355,9 +1358,9 @@ public class GeneratorHelper extends TypesHelper {
    * Prints the type argument of the list-values ast type otherwise prints the
    * given type.
    */
-  public static String printTypeArgumentOfAstList(ASTType type) {
+  public static String printTypeArgumentOfAstList(ASTMCType type) {
     if (isGenericTypeWithOneTypeArgument(type, JAVA_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(type, JAVA_LIST);
       if (typeArgument.isPresent()) {
         return printSimpleRefType(typeArgument.get());
@@ -1534,8 +1537,8 @@ public class GeneratorHelper extends TypesHelper {
    * @return the class diagrams starting with the current grammar and then in
    * order of appearance in the imports of the class diagram.
    */
-  public List<CDSymbol> getAllCds(CDSymbol cd) {
-    List<CDSymbol> resolvedCds = new ArrayList<>();
+  public List<CDDefinitionSymbol> getAllCds(CDDefinitionSymbol cd) {
+    List<CDDefinitionSymbol> resolvedCds = new ArrayList<>();
     // the cd itself
     resolvedCds.add(cd);
     resolvedCds.addAll(getAllSuperCds(cd));
@@ -1558,12 +1561,12 @@ public class GeneratorHelper extends TypesHelper {
    * @return the class diagrams starting with the current grammar and then in
    * order of appearance in the imports of the class diagram.
    */
-  public List<CDSymbol> getAllSuperCds(CDSymbol cd) {
-    List<CDSymbol> resolvedCds = new ArrayList<>();
+  public List<CDDefinitionSymbol> getAllSuperCds(CDDefinitionSymbol cd) {
+    List<CDDefinitionSymbol> resolvedCds = new ArrayList<>();
     // imported cds
     for (String importedCdName : cd.getImports()) {
       Log.trace("Resolving the CD: " + importedCdName, LOG_NAME);
-      Optional<CDSymbol> importedCd = resolveCd(importedCdName);
+      Optional<CDDefinitionSymbol> importedCd = resolveCd(importedCdName);
       if (!importedCd.isPresent()) {
         Log.error("0xA8451 The class diagram could not be resolved: " + importedCdName);
       } else {
@@ -1574,8 +1577,8 @@ public class GeneratorHelper extends TypesHelper {
          * Note that this is independent from the rules within a grammar - there
          * the last occurrence would be used, because it overrides the former
          * declarations . */
-        List<CDSymbol> recursivImportedCds = getAllCds(importedCd.get());
-        for (CDSymbol recImport : recursivImportedCds) {
+        List<CDDefinitionSymbol> recursivImportedCds = getAllCds(importedCd.get());
+        for (CDDefinitionSymbol recImport : recursivImportedCds) {
           if (!resolvedCds
               .stream()
               .filter(c -> c.getFullName().equals(recImport.getFullName()))
@@ -1593,14 +1596,14 @@ public class GeneratorHelper extends TypesHelper {
    * @param cd
    * @return
    */
-  public List<CDSymbol> getDirectSuperCds(CDSymbol cd) {
-    List<CDSymbol> resolvedCds = new ArrayList<>();
+  public List<CDDefinitionSymbol> getDirectSuperCds(CDDefinitionSymbol cd) {
+    List<CDDefinitionSymbol> resolvedCds = new ArrayList<>();
     // the cd itself
     resolvedCds.add(cd);
     // imported cds
     for (String importedCdName : cd.getImports()) {
       Log.trace("Resolving the CD: " + importedCdName, LOG_NAME);
-      Optional<CDSymbol> importedCd = resolveCd(importedCdName);
+      Optional<CDDefinitionSymbol> importedCd = resolveCd(importedCdName);
       if (!importedCd.isPresent()) {
         Log.error("0xA8452 The class diagram could not be resolved: " + importedCdName);
       }
@@ -1609,8 +1612,8 @@ public class GeneratorHelper extends TypesHelper {
     return resolvedCds;
   }
 
-  public CDSymbol getCd() {
-    Optional<CDSymbol> cdOpt = resolveCd(getQualifiedCdName());
+  public CDDefinitionSymbol getCd() {
+    Optional<CDDefinitionSymbol> cdOpt = resolveCd(getQualifiedCdName());
     if (!cdOpt.isPresent()) {
       Log.error("0xA0487 The class diagram could not be resolved: " + getQualifiedCdName());
     }
@@ -1667,10 +1670,10 @@ public class GeneratorHelper extends TypesHelper {
    * Resolves the CD of the given qualified name
    *
    * @param qualifiedCdName full qualified name to resolve the CD for
-   * @return the {@link CDSymbol}
+   * @return the {@link CDDefinitionSymbol}
    */
-  public Optional<CDSymbol> resolveCd(String qualifiedCdName) {
-    return symbolTable.resolve(qualifiedCdName, CDSymbol.KIND);
+  public Optional<CDDefinitionSymbol> resolveCd(String qualifiedCdName) {
+    return symbolTable.resolve(qualifiedCdName, CDDefinitionSymbol.KIND);
   }
 
   public Optional<String> getSymbolName(String name, AstGeneratorHelper astGeneratorHelper) {

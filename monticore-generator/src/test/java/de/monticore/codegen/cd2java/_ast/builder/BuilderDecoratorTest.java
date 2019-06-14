@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java._ast.builder;
 
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -8,7 +9,6 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,6 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderDecorator.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
 public class BuilderDecoratorTest extends DecoratorTestCase {
@@ -75,29 +74,29 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
 
     ASTCDAttribute attribute = getAttributeBy("i", builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertInt(attribute.getType());
+    assertInt(attribute.getMCType());
 
     attribute = getAttributeBy("s", builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertDeepEquals(String.class, attribute.getType());
+    assertDeepEquals(String.class, attribute.getMCType());
 
     attribute = getAttributeBy("opt", builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertOptionalOf(String.class, attribute.getType());
+    assertOptionalOf(String.class, attribute.getMCType());
 
     attribute = getAttributeBy("list", builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertListOf(String.class, attribute.getType());
+    assertListOf(String.class, attribute.getMCType());
 
     attribute = getAttributeBy(REAL_BUILDER, builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertDeepEquals(builderClass.getName(), attribute.getType());
+    assertDeepEquals(builderClass.getName(), attribute.getMCType());
   }
 
   @Test
   public void testBuildMethod() {
     ASTCDMethod build = getMethodBy(BUILD_METHOD, builderClass);
-    assertDeepEquals(originalClass.getName(), build.getReturnType());
+    assertDeepEquals(originalClass.getName(), build.getMCReturnType());
     assertDeepEquals(PUBLIC, build.getModifier());
     assertTrue(build.getCDParameterList().isEmpty());
   }
@@ -105,7 +104,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testIsValidMethod() {
     ASTCDMethod isValid = getMethodBy(IS_VALID, builderClass);
-    assertBoolean(isValid.getReturnType());
+    assertBoolean(isValid.getMCReturnType());
     assertDeepEquals(PUBLIC, isValid.getModifier());
     assertTrue(isValid.getCDParameterList().isEmpty());
   }

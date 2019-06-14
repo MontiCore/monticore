@@ -1,10 +1,10 @@
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
@@ -32,7 +32,7 @@ public class ASTLanguageInterfaceDecorator extends AbstractDecorator<ASTCDCompil
   }
 
   protected ASTCDMethod getAcceptMethod() {
-    ASTType visitorType = visitorService.getVisitorType();
+    ASTMCType visitorType = visitorService.getVisitorType();
     ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(visitorType, "visitor");
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, visitorParameter);
   }

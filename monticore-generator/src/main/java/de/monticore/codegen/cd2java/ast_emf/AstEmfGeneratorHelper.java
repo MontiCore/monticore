@@ -2,31 +2,23 @@
 
 package de.monticore.codegen.cd2java.ast_emf;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDFieldSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.mc2cd.manipul.BaseInterfaceAddingManipulation;
 import de.monticore.emf._ast.ASTECNode;
 import de.monticore.emf._ast.ASTENodePackage;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
-import de.monticore.umlcd4a.symboltable.CDFieldSymbol;
-import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
+import de.monticore.types.CollectionTypesPrinter;
+import de.monticore.types.MCCollectionTypesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A helper for emf-compatible generation
@@ -54,15 +46,15 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     if (isOptional(attribute)) {
       return "Optional.empty()";
     }
-    String typeName = TypesPrinter.printType(attribute.getType());
+    String typeName = CollectionTypesPrinter.printType(attribute.getMCType());
     if (isListType(typeName)) {
       String attributeName = getPlainName(clazz) + "_"
           + StringTransformations.capitalize(GeneratorHelper.getNativeAttributeName(attribute
               .getName()));
-      Optional<ASTSimpleReferenceType> typeArg = TypesHelper
-          .getFirstTypeArgumentOfGenericType(attribute.getType(), JAVA_LIST);
+      Optional<ASTSimpleReferenceType> typeArg = MCCollectionTypesHelper
+          .getFirstTypeArgumentOfGenericType(attribute.getMCType(), JAVA_LIST);
       if (typeArg.isPresent()) {
-        String typeArgName = TypesHelper.printType(typeArg.get());
+        String typeArgName = MCCollectionTypesHelper.printType(typeArg.get());
         if (Names.getQualifier(typeArgName).equals(getAstPackage())) {
           typeName = Names.getSimpleName(typeArgName);
           return "new EObjectContainmentEList<" + typeName + ">(" + typeName + ".class, this, "
@@ -83,13 +75,13 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   
   public String getNativeTypeName(ASTCDAttribute attribute) {
     if (isOptional(attribute)) {
-      return TypesHelper
-          .printType(TypesHelper.getSimpleReferenceTypeFromOptional(attribute.getType()));
+      return MCCollectionTypesHelper
+          .printType(MCCollectionTypesHelper.getSimpleReferenceTypeFromOptional(attribute.getMCType()));
           
     }
     if (isListAstNode(attribute)) {
-      Optional<ASTSimpleReferenceType> typeArg = TypesHelper
-          .getFirstTypeArgumentOfGenericType(attribute.getType(), JAVA_LIST);
+      Optional<ASTSimpleReferenceType> typeArg = MCCollectionTypesHelper
+          .getFirstTypeArgumentOfGenericType(attribute.getMCType(), JAVA_LIST);
       if (typeArg.isPresent()) {
         return printType(typeArg.get());
       }
@@ -259,7 +251,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   }
   
   public static boolean istJavaList(ASTCDAttribute attribute) {
-    return TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getType())
+    return CollectionTypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getMCType())
         .equals(JAVA_LIST);
   }
   

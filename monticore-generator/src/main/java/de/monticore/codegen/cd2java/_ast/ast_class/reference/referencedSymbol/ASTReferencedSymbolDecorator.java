@@ -1,5 +1,9 @@
 package de.monticore.codegen.cd2java._ast.ast_class.reference.referencedSymbol;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.referencedSymbol.referenedSymbolMethodDecorator.ReferencedSymbolAccessorDecorator;
@@ -8,11 +12,7 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
   }
 
   protected ASTCDAttribute getRefSymbolAttribute(ASTCDAttribute attribute, String referencedSymbol) {
-    ASTType attributeType;
+    ASTMCType attributeType;
     if (GeneratorHelper.isListType(attribute.printType())) {
       //if the attribute is a list
       attributeType = getCDTypeFacade().createTypeByDefinition("Map< String, Optional<" + referencedSymbol + ">>");
@@ -76,8 +76,8 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
     if (GeneratorHelper.isMapType(refSymbolAttribute.printType())) {
       //have to change type of attribute list instead of map
       //because the inner representation is a map but for users the List methods are only shown
-      ASTType optionalType = getCDTypeFacade().createOptionalTypeOf(referencedSymbol);
-      ASTType listType = getCDTypeFacade().createListTypeOf(optionalType);
+      ASTMCType optionalType = getCDTypeFacade().createOptionalTypeOf(referencedSymbol);
+      ASTMCType listType = getCDTypeFacade().createListTypeOf(optionalType);
       methodDecorationAttribute = getCDAttributeFacade().createAttribute(refSymbolAttribute.getModifier().deepClone(), listType, refSymbolAttribute.getName());
     } else if (wasAttributeOptional) {
       //add stereotype to attribute to later in the method generation know if the original attribute was optional or mandatory
@@ -89,7 +89,7 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
   }
 
   private boolean wasAttributeOptional(ASTCDAttribute originalAttribute) {
-    return DecorationHelper.isOptional(originalAttribute.getType());
+    return DecorationHelper.isOptional(originalAttribute.getMCType());
   }
 
 }

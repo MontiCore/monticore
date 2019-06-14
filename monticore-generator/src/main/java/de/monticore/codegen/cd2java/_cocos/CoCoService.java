@@ -1,11 +1,11 @@
 package de.monticore.codegen.cd2java._cocos;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDType;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 public class CoCoService extends AbstractService<CoCoService> {
 
@@ -13,7 +13,7 @@ public class CoCoService extends AbstractService<CoCoService> {
     super(compilationUnit);
   }
 
-  public CoCoService(CDSymbol cdSymbol) {
+  public CoCoService(CDDefinitionSymbol cdSymbol) {
     super(cdSymbol);
   }
 
@@ -23,11 +23,11 @@ public class CoCoService extends AbstractService<CoCoService> {
   }
 
   @Override
-  protected CoCoService createService(CDSymbol cdSymbol) {
+  protected CoCoService createService(CDDefinitionSymbol cdSymbol) {
     return createCoCoService(cdSymbol);
   }
 
-  public static CoCoService createCoCoService(CDSymbol cdSymbol) {
+  public static CoCoService createCoCoService(CDDefinitionSymbol cdSymbol) {
     return new CoCoService(cdSymbol);
   }
 
@@ -39,7 +39,7 @@ public class CoCoService extends AbstractService<CoCoService> {
     return String.join(".", getPackage(), getCoCoSimpleTypeName(type));
   }
 
-  public ASTType getCoCoType(ASTCDType type) {
+  public ASTMCType getCoCoType(ASTCDType type) {
     return getCDTypeFactory().createSimpleReferenceType(getCoCoFullTypeName(type));
   }
 
@@ -51,7 +51,7 @@ public class CoCoService extends AbstractService<CoCoService> {
     return String.join(".", getPackage(), getCoCoSimpleTypeName());
   }
 
-  public ASTType getCoCoType() {
+  public ASTMCType getCoCoType() {
     return getCDTypeFactory().createSimpleReferenceType(getCoCoFullTypeName());
   }
 
@@ -63,7 +63,7 @@ public class CoCoService extends AbstractService<CoCoService> {
     return String.join(".", getPackage(), getCheckerSimpleTypeName());
   }
 
-  public ASTType getCheckerType() {
+  public ASTMCType getCheckerType() {
     return getCDTypeFactory().createSimpleReferenceType(getCheckerFullTypeName());
   }
 }

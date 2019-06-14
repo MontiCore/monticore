@@ -1,8 +1,13 @@
 package de.monticore.codegen.cd2java.factories;
 
-import de.monticore.types.types._ast.*;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
+import de.monticore.types.mccollectiontypes._ast.MCCollectionTypesMill;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class CDTypeBuilder {
 
@@ -24,15 +29,15 @@ public class CDTypeBuilder {
     return new CDTypeBuilder();
   }
 
-  public ASTSimpleReferenceType build() {
-    return TypesMill.simpleReferenceTypeBuilder()
+  public ASTMCObjectType build() {
+    return MCCollectionTypesMill.mcObjectTypeBuilder()
         .setNameList(qualifiedName)
         .setTypeArguments(this.genericTypes.isEmpty() ? null : createTypeArguments())
         .build();
   }
 
-  private ASTTypeArguments createTypeArguments() {
-    List<ASTTypeArgument> typeArguments = new ArrayList<>();
+  private ASTMCTypeArgument createTypeArguments() {
+    List<ASTMCTypeArgument> typeArguments = new ArrayList<>();
     for (CDTypeBuilder cdTypeBuilder : this.genericTypes) {
       if (cdTypeBuilder.wildcard == null) {
         typeArguments.add(cdTypeBuilder.build());

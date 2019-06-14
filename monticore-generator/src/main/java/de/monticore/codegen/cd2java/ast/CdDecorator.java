@@ -6,6 +6,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.ast.ASTNode;
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import de.monticore.cd.prettyprint.AstPrinter;
+import de.monticore.cd.transformation.ASTCDTransformation;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -22,25 +27,21 @@ import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Symbol;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.types.types._ast.TypesMill;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.prettyprint.AstPrinter;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
-import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
+import de.monticore.types.CollectionTypesPrinter;
+import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import groovyjarjarantlr.ANTLRException;
-import transformation.ast.ASTCDTransformation;
 
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static de.se_rwth.commons.Names.getSimpleName;
 
 /**
@@ -161,11 +162,11 @@ public class CdDecorator {
     addConstantsClass(cdDefinition, astHelper);
 
     // Additional imports
-    cdCompilationUnit.getImportStatementList().add(
-        TypesMill.importStatementBuilder()
-            .setImportList(
+    cdCompilationUnit.getMCImportStatementList().add(
+        MCBasicTypesMill.mCImportStatementBuilder()
+            .setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(
                 Lists.newArrayList(VisitorGeneratorHelper.getQualifiedVisitorType(astHelper
-                    .getPackageName(), cdDefinition.getName())))
+                    .getPackageName(), cdDefinition.getName()))).build())
             .build());
 
 
@@ -454,7 +455,7 @@ public class CdDecorator {
           "ast.additionalmethods.Accept", clazz));
 
       // node needs to accept visitors from all super languages
-      for (CDSymbol cdSym : astHelper.getAllSuperCds(astHelper.getCd())) {
+      for (CDDefinitionSymbol cdSym : astHelper.getAllSuperCds(astHelper.getCd())) {
         String superGrammarName = Names.getSimpleName(cdSym.getFullName());
         String visitorType = superGrammarName + "Visitor";
         String visitorPackage = VisitorGeneratorHelper.getVisitorPackage(cdSym.getFullName());
@@ -561,11 +562,11 @@ public class CdDecorator {
     if (astHelper.isAstClass(clazz) || isBuilderClass) {
       List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
       for (ASTCDAttribute attribute : attributes) {
-        if (!astHelper.isListType(TypesPrinter.printType(attribute.getType()))) {
+        if (!astHelper.isListType(CollectionTypesPrinter.printType(attribute.getMCType()))) {
           continue;
         }
-        Optional<ASTSimpleReferenceType> type = TypesHelper
-            .getFirstTypeArgumentOfGenericType(attribute.getType(), GeneratorHelper.JAVA_LIST);
+        Optional<ASTMCObjectType> type = MCCollectionTypesHelper
+            .getFirstTypeArgumentOfGenericType(attribute.getMCType(), GeneratorHelper.JAVA_LIST);
         if (!type.isPresent()) {
           continue;
         }
@@ -595,11 +596,11 @@ public class CdDecorator {
     if (astHelper.isAstInterface(interf)) {
       List<ASTCDAttribute> attributes = Lists.newArrayList(interf.getCDAttributeList());
       for (ASTCDAttribute attribute : attributes) {
-        if (!astHelper.isListType(TypesPrinter.printType(attribute.getType()))) {
+        if (!astHelper.isListType(CollectionTypesPrinter.printType(attribute.getMCType()))) {
           continue;
         }
-        Optional<ASTSimpleReferenceType> type = TypesHelper
-            .getFirstTypeArgumentOfGenericType(attribute.getType(), GeneratorHelper.JAVA_LIST);
+        Optional<ASTMCObjectType> type = MCCollectionTypesHelper
+            .getFirstTypeArgumentOfGenericType(attribute.getMCType(), GeneratorHelper.JAVA_LIST);
         if (!type.isPresent()) {
           continue;
         }
@@ -842,7 +843,7 @@ public class CdDecorator {
     replaceMethodBodyTemplate(type, toParse, getMethodBody);
 
     String methodSetOpt = "set" + nativeName + "Opt";
-    toParse = "public " + returnType + " " + methodSetOpt + "(" + TypesPrinter.printType(attribute.getType()) + " value) ;";
+    toParse = "public " + returnType + " " + methodSetOpt + "(" + CollectionTypesPrinter.printType(attribute.getMCType()) + " value) ;";
     getMethodBody = new TemplateHookPoint("ast.additionalmethods.SetOpt",
         GeneratorHelper.getJavaAndCdConformName(attribute.getName()), isBuilderClass, isInherited, GeneratorHelper.isReferencedSymbolAttribute(attribute));
     replaceMethodBodyTemplate(type, toParse, getMethodBody);
@@ -851,7 +852,7 @@ public class CdDecorator {
   protected void addOptionalGetMethods(ASTCDType type, ASTCDAttribute attribute, String nativeName) {
     nativeName = StringTransformations.capitalize(nativeName);
     String methodName = GeneratorHelper.getPlainGetter(attribute);
-    String returnType = TypesPrinter.printType(TypesHelper.getFirstTypeArgumentOfOptional(attribute.getType()).get());
+    String returnType = CollectionTypesPrinter.printType(MCCollectionTypesHelper.getFirstTypeArgumentOfOptional(attribute.getMCType()).get());
 
     HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetOpt", type, methodName);
     replaceMethodBodyTemplate(type, String.format(AstOptionalGetMethods.get.getDeclaration(), returnType, nativeName), getMethodBody);
@@ -953,7 +954,7 @@ public class CdDecorator {
 
   protected void addGetter(ASTCDType type, ASTCDAttribute attribute) {
     String methodName = GeneratorHelper.getPlainGetter(attribute);
-    String toParse = "public " + TypesPrinter.printType(attribute.getType()) + " "
+    String toParse = "public " + CollectionTypesPrinter.printType(attribute.getMCType()) + " "
         + methodName + "() ;";
     HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.Get",
         type, attribute.getName());
@@ -974,7 +975,7 @@ public class CdDecorator {
           .isPresent()) {
         continue;
       }
-      String toParse = "public " + TypesPrinter.printType(attribute.getType()) + " "
+      String toParse = "public " + CollectionTypesPrinter.printType(attribute.getMCType()) + " "
           + GeneratorHelper.getPlainGetter(attribute) + "();";
       cdTransformation.addCdMethodUsingDefinition(interf, toParse);
     }
@@ -989,7 +990,7 @@ public class CdDecorator {
    */
   protected void addSetter(ASTCDClass clazz, AstGeneratorHelper astHelper, ASTCDDefinition cdDefinition) {
     for (ASTCDAttribute attribute : clazz.getCDAttributeList()) {
-      String typeName = TypesHelper.printSimpleRefType(attribute.getType());
+      String typeName = MCCollectionTypesHelper.printSimpleRefType(attribute.getMCType());
       boolean isBuilderClass = AstGeneratorHelper.isBuilderClass(cdDefinition, clazz);
       if (!AstGeneratorHelper.generateSetter(clazz, attribute, typeName) && !isBuilderClass) {
         continue;
@@ -1005,7 +1006,7 @@ public class CdDecorator {
   }
 
   protected void addSetter(ASTCDType type, ASTCDAttribute attribute, boolean isBuilderClass, boolean isInherited) {
-    String typeName = TypesHelper.printSimpleRefType(attribute.getType());
+    String typeName = MCCollectionTypesHelper.printSimpleRefType(attribute.getMCType());
     String attributeName = attribute.getName();
     String methodName = GeneratorHelper.getPlainSetter(attribute);
     boolean isOptional = GeneratorHelper.isOptional(attribute);
@@ -1099,7 +1100,7 @@ public class CdDecorator {
 
     // Create delegate methods for inherited classes
     List<String> delegateList = Lists.newArrayList(astClasses);
-    for (CDSymbol superCd : astHelper.getAllSuperCds(astHelper.getCdSymbol())) {
+    for (CDDefinitionSymbol superCd : astHelper.getAllSuperCds(astHelper.getCdSymbol())) {
       for (CDTypeSymbol cdType : superCd.getTypes()) {
         Optional<ASTNode> node = cdType.getAstNode();
         if (node.isPresent() && node.get() instanceof ASTCDClass) {
@@ -1117,7 +1118,7 @@ public class CdDecorator {
     }
 
     // Compute diagrams with overridden classes
-    HashMap<CDSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
+    HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
     Collection<CDTypeSymbol> firstClasses = Lists.newArrayList();
     calculateOverriddenCds(astHelper.getCdSymbol(), astClasses, overridden, firstClasses);
 
@@ -1135,8 +1136,8 @@ public class CdDecorator {
     // Create Mill for overridden Rules
     List<String> importsIgnoredRules = Lists.newArrayList();
     importsIgnoredRules.add("de.se_rwth.commons.logging.Log");
-    for (Entry<CDSymbol, Collection<CDTypeSymbol>> e : overridden.entrySet()) {
-      CDSymbol symbol = e.getKey();
+    for (Entry<CDDefinitionSymbol, Collection<CDTypeSymbol>> e : overridden.entrySet()) {
+      CDDefinitionSymbol symbol = e.getKey();
       String millForName = symbol.getName() + "MillFor" + cdCompilationUnit.getCDDefinition().getName();
       String millSuperName = getSimpleName(symbol.getName()) + MILL;
       String millSuperPackage = symbol.getFullName().toLowerCase()
@@ -1150,14 +1151,14 @@ public class CdDecorator {
   }
 
 
-  protected void calculateOverriddenCds(CDSymbol cd,
-                                        Collection<String> nativeClasses, HashMap<CDSymbol, Collection<CDTypeSymbol>> overridden,
+  protected void calculateOverriddenCds(CDDefinitionSymbol cd,
+                                        Collection<String> nativeClasses, HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> overridden,
                                         Collection<CDTypeSymbol> firstClasses) {
     HashMap<String, CDTypeSymbol> l = Maps.newHashMap();
     for (String importedCdName : cd.getImports()) {
-      Optional<CDSymbol> importedCd = symbolTable.resolve(importedCdName, CDSymbol.KIND);
+      Optional<CDDefinitionSymbol> importedCd = symbolTable.resolve(importedCdName, CDDefinitionSymbol.KIND);
       if (importedCd.isPresent()) {
-        CDSymbol superCd = importedCd.get();
+        CDDefinitionSymbol superCd = importedCd.get();
         Collection<CDTypeSymbol> overriddenSet = Lists.newArrayList();
         for (String className : nativeClasses) {
           Optional<CDTypeSymbol> cdType = superCd.getType(className);
@@ -1317,8 +1318,8 @@ public class CdDecorator {
     // grammars
     List<String> imports = new ArrayList<>();
     if (!astHelper.getSuperGrammarCds().isEmpty()) {
-      for (CDSymbol superCd : astHelper.getAllCds(astHelper.getCdSymbol())) {
-        Log.debug(" CDSymbol for " + nodeFactoryName + " : " + superCd, "CdDecorator");
+      for (CDDefinitionSymbol superCd : astHelper.getAllCds(astHelper.getCdSymbol())) {
+        Log.debug(" CDDefinitionSymbol for " + nodeFactoryName + " : " + superCd, "CdDecorator");
         nodeFactoryName = getSimpleName(superCd.getName()) + NODE_FACTORY;
         String factoryPackage = superCd.getFullName().toLowerCase()
             + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
@@ -1388,9 +1389,9 @@ public class CdDecorator {
         continue;
       }
       ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
-      ASTType type = attr.getType();
+      ASTMCType type = attr.getMCType();
       parameters.add(attr);
-      param.setType(type);
+      param.setMCType(type);
       String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
       param.setName(javaAttrName);
       ASTCDParameter doParam = param.deepClone();
@@ -1402,9 +1403,9 @@ public class CdDecorator {
 
     for (ASTCDAttribute attr : inheritedAttributes) {
       ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
-      ASTType type = attr.getType();
+      ASTMCType type = attr.getMCType();
       parameters.add(attr);
-      param.setType(type);
+      param.setMCType(type);
       String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
       param.setName(javaAttrName);
       ASTCDParameter doParam = param.deepClone();
@@ -1446,7 +1447,7 @@ public class CdDecorator {
    * @param delegateFactoryName
    */
   protected void addDelegateMethodsToNodeFactory(ASTCDClass clazz, ASTCDClass nodeFactoryClass,
-                                                 AstGeneratorHelper astHelper, CDSymbol cdSymbol, String delegateFactoryName) {
+                                                 AstGeneratorHelper astHelper, CDDefinitionSymbol cdSymbol, String delegateFactoryName) {
     String className = GeneratorHelper.getPlainName(clazz);
     String toParse = "public static " + cdSymbol.getFullName().toLowerCase()
         + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + className + " create" + className
@@ -1488,12 +1489,12 @@ public class CdDecorator {
         continue;
       }
       ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
-      ASTType type = attr.getType();
-      if (type instanceof ASTSimpleReferenceType) {
-        type = astHelper.convertTypeCd2Java((ASTSimpleReferenceType) type,
+      ASTMCType type = attr.getMCType();
+      if (type instanceof ASTMCObjectType) {
+        type = astHelper.convertTypeCd2Java((ASTMCObjectType) type,
             AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
       }
-      param.setType(type);
+      param.setMCType(type);
       String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
       param.setName(javaAttrName);
       createMethod.getCDParameterList().add(param);
@@ -1502,12 +1503,12 @@ public class CdDecorator {
     }
     for (ASTCDAttribute attr : inheritedAttributes) {
       ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
-      ASTType type = attr.getType();
-      if (type instanceof ASTSimpleReferenceType) {
-        type = astHelper.convertTypeCd2Java((ASTSimpleReferenceType) type,
+      ASTMCType type = attr.getMCType();
+      if (type instanceof ASTMCObjectType) {
+        type = astHelper.convertTypeCd2Java((ASTMCObjectType) type,
             AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
       }
-      param.setType(type);
+      param.setMCType(type);
       String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
       param.setName(javaAttrName);
       createMethod.getCDParameterList().add(param);
@@ -1534,7 +1535,7 @@ public class CdDecorator {
    * @param delegateMillName
    */
   protected void addDelegateMethodToMill(String name, ASTCDClass nodeMill,
-                                         AstGeneratorHelper astHelper, CDSymbol cdSymbol, String delegateMillName) {
+                                         AstGeneratorHelper astHelper, CDDefinitionSymbol cdSymbol, String delegateMillName) {
     String className = StringTransformations.uncapitalize(AstGeneratorHelper.getASTClassNameWithoutPrefix(name) + "Builder");
     String toParse = "public static " + cdSymbol.getFullName().toLowerCase()
         + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + name + "Builder " + className
@@ -1569,13 +1570,13 @@ public class CdDecorator {
         continue;
       }
       ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
-      param.setType((ASTType) attr.getType().deepClone());
+      param.setMCType((ASTMCType) attr.getMCType().deepClone());
       param.setName(attr.getName());
       fullConstructor.getCDParameterList().add(param);
     }
     for (ASTCDAttribute attr : inheritedAttributes) {
       ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
-      param.setType((ASTType) attr.getType().deepClone());
+      param.setMCType((ASTMCType) attr.getMCType().deepClone());
       param.setName(attr.getName());
       fullConstructor.getCDParameterList().add(param);
     }

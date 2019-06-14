@@ -1,15 +1,16 @@
 package de.monticore.codegen.cd2java.typecd2java;
 
 import de.monticore.MontiCoreScript;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,8 +53,8 @@ public class TypeCD2JavaTest {
     //that names = ["java", "util", "List"] and names != ["java.util.List"]
     for (ASTCDClass astcdClass : cdCompilationUnit.getCDDefinition().getCDClassList()) {
       for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
-        if (astcdAttribute.getType() instanceof ASTSimpleReferenceType) {
-          ASTSimpleReferenceType simpleReferenceType = (ASTSimpleReferenceType) astcdAttribute.getType();
+        if (astcdAttribute.getMCType() instanceof ASTSimpleReferenceType) {
+          ASTSimpleReferenceType simpleReferenceType = (ASTSimpleReferenceType) astcdAttribute.getMCType();
           assertTrue(simpleReferenceType.getNameList().stream().noneMatch((s) -> s.contains(".")));
         }
       }
@@ -62,8 +63,8 @@ public class TypeCD2JavaTest {
 
   @Test
   public void testTypeJavaConformList() {
-    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getType() instanceof ASTSimpleReferenceType);
-    ASTSimpleReferenceType simpleReferenceType = (ASTSimpleReferenceType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getType();
+    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTSimpleReferenceType);
+    ASTMCListType simpleReferenceType = (ASTMCListType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType();
     assertFalse(simpleReferenceType.isEmptyNames());
     assertEquals(3, simpleReferenceType.sizeNames());
     assertEquals("java", simpleReferenceType.getName(0));
@@ -74,11 +75,11 @@ public class TypeCD2JavaTest {
   @Test
   public void testTypeJavaConformASTPackage() {
     //test that for AST classes the package is now java conform
-    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getType() instanceof ASTSimpleReferenceType);
-    ASTSimpleReferenceType simpleReferenceType = (ASTSimpleReferenceType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getType();
+    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTSimpleReferenceType);
+    ASTMCQualifiedType simpleReferenceType = (ASTMCQualifiedType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType();
     assertTrue(simpleReferenceType.isPresentTypeArguments());
     assertEquals(1, simpleReferenceType.getTypeArguments().sizeTypeArguments());
-    assertTrue(simpleReferenceType.getTypeArguments().getTypeArgument(0) instanceof ASTSimpleReferenceType);
+    assertTrue(simpleReferenceType.getTypeArguments().getTypeArgument(0) instanceof ASTMCQualifiedType);
     ASTSimpleReferenceType typeArgument = (ASTSimpleReferenceType) simpleReferenceType.getTypeArguments().getTypeArgument(0);
     assertFalse(typeArgument.isEmptyNames());
     assertEquals(3, typeArgument.sizeNames());
@@ -90,8 +91,8 @@ public class TypeCD2JavaTest {
   @Test
   public void testStringType() {
     //test that types like String are not changed
-    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(0).getType() instanceof ASTSimpleReferenceType);
-    ASTSimpleReferenceType simpleReferenceType = (ASTSimpleReferenceType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(0).getType();
+    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(0).getMCType() instanceof ASTMCQualifiedType);
+    ASTMCQualifiedType simpleReferenceType = (ASTMCQualifiedType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(0).getMCType();
     assertFalse(simpleReferenceType.isEmptyNames());
     assertEquals(1, simpleReferenceType.sizeNames());
     assertEquals("String", simpleReferenceType.getName(0));

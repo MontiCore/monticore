@@ -2,9 +2,17 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static de.monticore.grammar.Multiplicity.determineMultiplicity;
+import com.google.common.collect.Maps;
+import de.monticore.ast.ASTNode;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.grammar.Multiplicity;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.utils.Link;
 
 import java.util.List;
 import java.util.Map;
@@ -13,18 +21,9 @@ import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Maps;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.grammar.Multiplicity;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.types.types._ast.ASTConstantsTypes;
-import de.monticore.types.types._ast.ASTPrimitiveType;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.utils.Link;
+import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
+import static de.monticore.grammar.Multiplicity.determineMultiplicity;
 
 
 /**
@@ -51,7 +50,7 @@ public class MultiplicityTranslation implements
         .forEach(entry -> {
           ASTCDAttribute cdAttribute = entry.getKey();
           Multiplicity multiplicity = entry.getValue();
-          cdAttribute.setType(createNewType(cdAttribute.getType(), multiplicity));
+          cdAttribute.setMCType(createNewType(cdAttribute.getMCType(), multiplicity));
         });
 
     return rootLink;
@@ -72,10 +71,10 @@ public class MultiplicityTranslation implements
             .get());
   }
 
-  private static ASTType createNewType(ASTType oldType, Multiplicity multiplicity) {
-    if (oldType instanceof ASTPrimitiveType) {
+  private static ASTMCType createNewType(ASTMCType oldType, Multiplicity multiplicity) {
+    if (oldType instanceof ASTMCPrimitiveType) {
       if (multiplicity == Multiplicity.LIST) {
-        return createNewListType(changePrimitiveType(((ASTPrimitiveType) oldType).getPrimitive()));
+        return createNewListType(changePrimitiveType(((ASTMCPrimitiveType) oldType).getPrimitive()));
       }
     } else {
       if (multiplicity == Multiplicity.LIST) {
@@ -88,7 +87,7 @@ public class MultiplicityTranslation implements
     return oldType;
   }
 
-  private static ASTSimpleReferenceType createNewListType(String oldTypeName) {
+  private static ASTMCListType createNewListType(String oldTypeName) {
     return createSimpleReference("java.util.List", oldTypeName);
     // TODO GV, MB
     /*
@@ -102,21 +101,21 @@ public class MultiplicityTranslation implements
   
   private static String changePrimitiveType(int primType) {
     switch (primType) {
-      case ASTConstantsTypes.INT:
+      case ASTConstantsMCBasicTypes.INT:
         return "Integer";
-      case ASTConstantsTypes.BOOLEAN:
+      case ASTConstantsMCBasicTypes.BOOLEAN:
         return "Boolean";
-      case ASTConstantsTypes.DOUBLE:
+      case ASTConstantsMCBasicTypes.DOUBLE:
         return "Double";
-      case ASTConstantsTypes.FLOAT:
+      case ASTConstantsMCBasicTypes.FLOAT:
         return "Float";
-      case ASTConstantsTypes.CHAR:
+      case ASTConstantsMCBasicTypes.CHAR:
         return "Char";
-      case ASTConstantsTypes.BYTE:
+      case ASTConstantsMCBasicTypes.BYTE:
         return "Byte";
-      case ASTConstantsTypes.SHORT:
+      case ASTConstantsMCBasicTypes.SHORT:
         return "Short";
-      case ASTConstantsTypes.LONG:
+      case ASTConstantsMCBasicTypes.LONG:
         return "Long";
       default:
         return "Object";

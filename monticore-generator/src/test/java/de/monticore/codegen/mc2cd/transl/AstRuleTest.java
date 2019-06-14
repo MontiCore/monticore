@@ -2,22 +2,21 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
-import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.types.types._ast.ASTReferenceType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test for the proper transformation of ASTAbstractProds to corresponding
@@ -58,7 +57,7 @@ public class AstRuleTest {
    */
   @Test
   public void testAstSuperClass() {
-    java.util.Optional<ASTReferenceType> superClasses = astA.getSuperclassOpt();
+    java.util.Optional<ASTMCQualifiedType> superClasses = astA.getSuperclassOpt();
     assertTrue(superClasses.isPresent());
     String name = typeToString(superClasses.get());
     assertEquals("ASTExternalProd", name);
@@ -135,7 +134,7 @@ public class AstRuleTest {
    */
   @Test
   public void testAstInterfaces() {
-    List<ASTReferenceType> superInterfaces = astD.getInterfaceList();
+    List<ASTMCQualifiedType> superInterfaces = astD.getInterfaceList();
     assertEquals(3, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("ASTB", name);

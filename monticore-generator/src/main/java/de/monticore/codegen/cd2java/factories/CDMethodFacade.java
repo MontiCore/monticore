@@ -1,13 +1,13 @@
 package de.monticore.codegen.cd2java.factories;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.cd4analysis._ast.ASTModifier;
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
+import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
-import de.monticore.types.types._ast.ASTReturnType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
-import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -64,18 +64,18 @@ public class CDMethodFacade {
     return createMethod(modifier, this.cdTypeFacade.createVoidType(), name, parameters);
   }
 
-  public ASTCDMethod createMethod(final ASTModifier modifier, final ASTReturnType returnType, final String name) {
+  public ASTCDMethod createMethod(final ASTModifier modifier, final ASTMCReturnType returnType, final String name) {
     return createMethod(modifier, returnType, name, Collections.emptyList());
   }
 
-  public ASTCDMethod createMethod(final ASTModifier modifier, final ASTReturnType returnType, final String name, final ASTCDParameter... parameters) {
+  public ASTCDMethod createMethod(final ASTModifier modifier, final ASTMCReturnType returnType, final String name, final ASTCDParameter... parameters) {
     return createMethod(modifier, returnType, name, Arrays.asList(parameters));
   }
 
-  public ASTCDMethod createMethod(final ASTModifier modifier, final ASTReturnType returnType, final String name, final List<ASTCDParameter> parameters) {
+  public ASTCDMethod createMethod(final ASTModifier modifier, final ASTMCReturnType returnType, final String name, final List<ASTCDParameter> parameters) {
     return CD4AnalysisMill.cDMethodBuilder()
         .setModifier(modifier)
-        .setReturnType(returnType)
+        .setMCReturnType(returnType)
         .setName(name)
         .setCDParameterList(parameters.stream().map(ASTCDParameter::deepClone).collect(Collectors.toList()))
         .build();
@@ -94,15 +94,15 @@ public class CDMethodFacade {
     return createMethod(modifier.build(), name, parameters);
   }
 
-  public ASTCDMethod createMethod(final CDModifier modifier, final ASTReturnType returnType, final String name) {
+  public ASTCDMethod createMethod(final CDModifier modifier, final ASTMCReturnType returnType, final String name) {
     return createMethod(modifier.build(), returnType, name);
   }
 
-  public ASTCDMethod createMethod(final CDModifier modifier, final ASTReturnType returnType, final String name, final ASTCDParameter... parameters) {
+  public ASTCDMethod createMethod(final CDModifier modifier, final ASTMCReturnType returnType, final String name, final ASTCDParameter... parameters) {
     return createMethod(modifier.build(), returnType, name, parameters);
   }
 
-  public ASTCDMethod createMethod(final CDModifier modifier, final ASTReturnType returnType, final String name, final List<ASTCDParameter> parameters) {
+  public ASTCDMethod createMethod(final CDModifier modifier, final ASTMCReturnType returnType, final String name, final List<ASTCDParameter> parameters) {
     return createMethod(modifier.build(), returnType, name, parameters);
   }
 }

@@ -1,14 +1,15 @@
 package de.monticore.codegen.cd2java.methods;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
+import de.monticore.types.CollectionTypesPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -46,8 +47,8 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
 
   protected abstract List<String> getMethodSignatures();
 
-  protected String getTypeArgumentFromListType(ASTType type) {
-    String typeString = TypesPrinter.printType(type);
+  protected String getTypeArgumentFromListType(ASTMCType type) {
+    String typeString = CollectionTypesPrinter.printType(type);
     int lastListIndex = typeString.lastIndexOf("List<") + 5;
     return typeString.substring(lastListIndex, typeString.length() - 1);
   }
@@ -70,6 +71,6 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
   }
 
   public String getAttributeType(ASTCDAttribute attribute) {
-    return getTypeArgumentFromListType(attribute.getType());
+    return getTypeArgumentFromListType(attribute.getMCType());
   }
 }

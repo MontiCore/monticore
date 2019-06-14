@@ -3,6 +3,7 @@
 package de.monticore.codegen.cd2java.cocos;
 
 import de.monticore.MontiCoreScript;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.AstDependentGeneratorTest;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -10,7 +11,6 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;

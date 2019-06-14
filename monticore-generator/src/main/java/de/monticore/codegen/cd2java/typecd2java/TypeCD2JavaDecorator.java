@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java.typecd2java;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 
 public class TypeCD2JavaDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 

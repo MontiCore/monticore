@@ -2,21 +2,20 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
+import com.google.common.collect.Maps;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.utils.ASTNodes;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
-
-import com.google.common.collect.Maps;
-
-import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.types.types._ast.ASTReferenceType;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.utils.ASTNodes;
 
 public class AddAttributesOfExtendedInterfacesManipulation implements
     UnaryOperator<ASTCDCompilationUnit> {
@@ -47,9 +46,9 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
   private void addAttributesOfExtendedInterfaces(ASTCDClass cdClass) {
     List<ASTCDAttribute> attributes = new ArrayList<>();
     // TODO GV:use Cd4Analysis symboltable to get all interfaces recursively
-    for (ASTReferenceType interf : cdClass.getInterfaceList()) {
-      if (interf instanceof ASTSimpleReferenceType) {
-        List<String> names = ((ASTSimpleReferenceType) interf).getNameList();
+    for (ASTMCQualifiedType interf : cdClass.getInterfaceList()) {
+      if (interf instanceof ASTMCObjectType) {
+        List<String> names = ((ASTMCObjectType) interf).getNameList();
         String interfaceName = (names.isEmpty())? "" : names.get(names.size()-1);
         if (cDInterfaces.get(interfaceName) != null) {
           attributes.addAll(cDInterfaces.get(interfaceName).getCDAttributeList());

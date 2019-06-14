@@ -1,14 +1,15 @@
 package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._symboltable.CDFieldSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
+import de.monticore.cd.cd4analysis._symboltable.CDTypes;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.symboltable.CDFieldSymbol;
-import de.monticore.umlcd4a.symboltable.CDTypes;
-import de.monticore.umlcd4a.symboltable.references.CDTypeSymbolReference;
+import de.monticore.types.MCCollectionTypesHelper;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -18,7 +19,7 @@ import java.util.List;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 
-public class DecorationHelper extends TypesHelper {
+public class DecorationHelper extends MCCollectionTypesHelper {
 
   public static final String OPTIONAL = "Optional";
 
@@ -51,11 +52,11 @@ public class DecorationHelper extends TypesHelper {
   }
 
   public boolean isSimpleAstNode(ASTCDAttribute attr) {
-    return !DecorationHelper.isOptional(attr.getType()) && !DecorationHelper.isListType(attr.printType()) && isAstNode(attr);
+    return !DecorationHelper.isOptional(attr.getMCType()) && !DecorationHelper.isListType(attr.printType()) && isAstNode(attr);
   }
 
   public boolean isOptionalAstNode(ASTCDAttribute attr) {
-    return DecorationHelper.isOptional(attr.getType()) && isAstNode(attr);
+    return DecorationHelper.isOptional(attr.getMCType()) && isAstNode(attr);
   }
 
   public boolean isListAstNode(ASTCDAttribute attribute) {
@@ -134,7 +135,7 @@ public class DecorationHelper extends TypesHelper {
       return false;
     }
 
-    List<String> listName = TypesHelper.createListFromDotSeparatedString(typeName);
+    List<String> listName = MCCollectionTypesHelper.createListFromDotSeparatedString(typeName);
     if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
       return false;
     }
@@ -149,7 +150,7 @@ public class DecorationHelper extends TypesHelper {
   }
 
   public static String getPlainGetter(ASTCDAttribute ast) {
-    String astType = printType(ast.getType());
+    String astType = printType(ast.getMCType());
     StringBuilder sb = new StringBuilder();
     if (CDTypes.isBoolean(astType)) {
       sb.append(GET_PREFIX_BOOLEAN);
@@ -157,7 +158,7 @@ public class DecorationHelper extends TypesHelper {
       sb.append(GET_PREFIX);
     }
     sb.append(StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
-    if (isOptional(ast.getType())) {
+    if (isOptional(ast.getMCType())) {
       sb.append(GET_SUFFIX_OPTINAL);
     } else if (isListType(astType)) {
       if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {

@@ -2,20 +2,20 @@
 
 package de.monticore.codegen.cd2java.od;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 public class ODGenerator {
@@ -35,7 +35,7 @@ public class ODGenerator {
     setup.setGlex(glex);
     final GeneratorEngine generator = new GeneratorEngine(setup);
     final String diagramName = astClassDiagram.getCDDefinition().getName();
-    final CDSymbol cd = odHelper.getCd();
+    final CDDefinitionSymbol cd = odHelper.getCd();
     
     final String astPackage = GeneratorHelper.getPackageName(odHelper.getPackageName(),
         AstGeneratorHelper.getAstPackageSuffix());

@@ -1,12 +1,12 @@
 package de.monticore.codegen.cd2java._ast.builder.buildermethods;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.methods.mutator.ListMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,9 +15,9 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 public class BuilderListMutatorDecorator extends ListMutatorDecorator {
 
-  private final ASTType builderType;
+  private final ASTMCType builderType;
 
-  public BuilderListMutatorDecorator(GlobalExtensionManagement glex, final ASTType builderType) {
+  public BuilderListMutatorDecorator(GlobalExtensionManagement glex, final ASTMCType builderType) {
     super(glex);
     this.builderType = builderType;
   }
@@ -28,7 +28,7 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
     List<ASTCDMethod> methods = super.createSetter(attribute);
     enableTemplates();
     for (ASTCDMethod m : methods) {
-      m.setReturnType(builderType);
+      m.setMCReturnType(builderType);
       int attributeIndex = m.getName().lastIndexOf(capitalizedAttributeNameWithOutS);
       String methodName = m.getName().substring(0, attributeIndex);
       String parameterCall = m.getCDParameterList().stream()
@@ -43,7 +43,7 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
   protected ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
     String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethodByDefinition(signature);
-    method.setReturnType(builderType);
+    method.setMCReturnType(builderType);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.Set", ast));
     return method;
   }

@@ -1,16 +1,16 @@
 package de.monticore.codegen.cd2java._ast.builder;
 
 import de.monticore.ast.ASTCNode;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.types._ast.ASTReferenceType;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
     builderClass.setSuperclass(createBuilderSuperClass(domainClass, builderClassName));
 
     if (!hasSuperClassOtherThanASTCNode(domainClass)) {
-      ASTType builderType = this.getCDTypeFacade().createSimpleReferenceType(builderClassName);
+      ASTMCType builderType = this.getCDTypeFacade().createSimpleReferenceType(builderClassName);
       builderClass.addAllCDMethods(createBuilderMethodForASTCNodeMethods(builderType));
     }
 
@@ -57,7 +57,7 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
   }
 
 
-  protected ASTReferenceType createBuilderSuperClass(final ASTCDClass domainClass, final String builderClassName) {
+  protected ASTMCQualifiedType createBuilderSuperClass(final ASTCDClass domainClass, final String builderClassName) {
     String superClass = String.format(DEFAULT_SUPER_CLASS, builderClassName);
     if (hasSuperClassOtherThanASTCNode(domainClass)) {
       superClass = domainClass.printSuperClass()+ BUILDER_SUFFIX;
@@ -69,11 +69,11 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
     return domainClass.isPresentSuperclass() && !ASTCNode.class.getSimpleName().equals(domainClass.printSuperClass());
   }
 
-  protected List<ASTCDMethod> createBuilderMethodForASTCNodeMethods(final ASTType builderType) {
+  protected List<ASTCDMethod> createBuilderMethodForASTCNodeMethods(final ASTMCType builderType) {
     List<ASTCDMethod> result = new ArrayList<>();
     for (ASTCNodeMethod astNodeMethod : ASTCNodeMethod.values()) {
       ASTCDMethod method = this.getCDMethodFacade().createMethodByDefinition(astNodeMethod.signature);
-      method.setReturnType(builderType);
+      method.setMCReturnType(builderType);
       this.replaceTemplate(EMPTY_BODY, method, createImplementation(method));
       result.add(method);
     }

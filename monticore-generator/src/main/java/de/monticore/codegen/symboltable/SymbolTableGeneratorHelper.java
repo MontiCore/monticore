@@ -5,6 +5,8 @@ package de.monticore.codegen.symboltable;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
@@ -17,8 +19,6 @@ import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -31,7 +31,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 import static de.se_rwth.commons.Names.getQualifier;
-import static de.se_rwth.commons.Names.getSimpleName;
 
 public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
@@ -437,7 +436,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
   // TODO refactor
-  public String getQualifiedVisitorNameAsJavaName(CDSymbol cd) {
+  public String getQualifiedVisitorNameAsJavaName(CDDefinitionSymbol cd) {
     return VisitorGeneratorHelper.qualifiedJavaTypeToName(getQualifiedVisitorType(cd));
   }
 
@@ -449,16 +448,16 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
   // TODO refactor
-  public String getQualifiedVisitorType(CDSymbol cd) {
+  public String getQualifiedVisitorType(CDDefinitionSymbol cd) {
     return VisitorGeneratorHelper.getQualifiedVisitorType(cd.getFullName());
   }
   
-  public String getQualifiedScopeVisitorType(CDSymbol cd) {
+  public String getQualifiedScopeVisitorType(CDDefinitionSymbol cd) {
     return VisitorGeneratorHelper.getQualifiedScopeVisitorType(cd.getFullName());
   }
   
   public String getQualifiedScopeVisitorType(String symbol) {
-    Optional<CDSymbol> cdSymbol = this.cdSymbol.getEnclosingScope().resolve(symbol, CDSymbol.KIND);
+    Optional<CDDefinitionSymbol> cdSymbol = this.cdSymbol.getEnclosingScope().resolve(symbol, CDDefinitionSymbol.KIND);
     if (cdSymbol.isPresent()) {
       return getQualifiedScopeVisitorType(cdSymbol.get());
     }
@@ -537,14 +536,14 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return prodName;
   }
 
-  public String getQualifiedScopeInterfaceType(CDSymbol cdSymbol) {
+  public String getQualifiedScopeInterfaceType(CDDefinitionSymbol cdSymbol) {
     String packageName = getCdPackage(cdSymbol.getFullName());
     String cdName = getCdName(cdSymbol.getFullName());
     return getQualifiedScopeInterfaceType(packageName, cdName);
   }
 
   public String getQualifiedScopeInterfaceType(String symbol) {
-    Optional<CDSymbol> cdSymbol = this.cdSymbol.getEnclosingScope().resolve(symbol, CDSymbol.KIND);
+    Optional<CDDefinitionSymbol> cdSymbol = this.cdSymbol.getEnclosingScope().resolve(symbol, CDDefinitionSymbol.KIND);
     if (cdSymbol.isPresent()) {
       return getQualifiedScopeInterfaceType(cdSymbol.get());
     }
@@ -560,7 +559,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return "I" + cdName + SCOPE;
   }
   
-  public String getScopeInterfaceType(CDSymbol cdSymbol) {
+  public String getScopeInterfaceType(CDDefinitionSymbol cdSymbol) {
     String cdName = getCdName(cdSymbol.getFullName());
     return getScopeInterfaceType(cdName);
   }
@@ -585,7 +584,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    */
   public Set<String> getQualifiedInheritedSymbols() {
     Set<String> inheritedSymbols = new LinkedHashSet<>();
-    for (CDSymbol superCd : getAllSuperCds(cdSymbol)) {
+    for (CDDefinitionSymbol superCd : getAllSuperCds(cdSymbol)) {
       // resolve super grammar and retrieve qualified symbols
       MCGrammarSymbol grammarSymbol = cdSymbol.getEnclosingScope().<MCGrammarSymbol> resolve(superCd.getFullName(), MCGrammarSymbol.KIND).orElse(null);
       inheritedSymbols.addAll(getQualifiedSymbolsFromGrammar(grammarSymbol));
@@ -668,7 +667,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    * @param cdSymbol The input class diagram symbol.
    * @return A boolean value if the language has a symbol table.
    */
-  public boolean hasSymbolTable(CDSymbol cdSymbol) {
+  public boolean hasSymbolTable(CDDefinitionSymbol cdSymbol) {
     Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(cdSymbol.getFullName(), MCGrammarSymbol.KIND);
     if (grammarSymbol.isPresent() && grammarSymbol.get().getStartProd().isPresent()) {
       return true;
@@ -684,7 +683,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    * @return A boolean value if the language has a symbol table.
    */
   public boolean hasSymbolTable(String cdSymbolName) {
-    Optional<CDSymbol> cdSymbolOpt = resolveCd(cdSymbolName);
+    Optional<CDDefinitionSymbol> cdSymbolOpt = resolveCd(cdSymbolName);
     if (cdSymbolOpt.isPresent()) {
       return hasSymbolTable(cdSymbolOpt.get());
     } else {

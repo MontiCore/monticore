@@ -2,19 +2,18 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.codegen.mc2cd.TestHelper;
+import org.junit.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Test;
-
-import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class InheritedNonTerminalsTest {
   
@@ -39,7 +38,7 @@ public class InheritedNonTerminalsTest {
   
   @Test
   public void testSuperGrammarResolving() {
-    String name = typeToString(astA.getCDAttributeList().get(0).getType());
+    String name = typeToString(astA.getCDAttributeList().get(0).getMCType());
     assertEquals("mc2cdtransformation.Supergrammar.ASTX", name);
   }
 }

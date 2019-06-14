@@ -1,12 +1,13 @@
 package de.monticore.codegen.cd2java.factories;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTModifier;
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
+import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
-import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
+import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -43,16 +44,16 @@ public class CDAttributeFacade {
     return attribute.get();
   }
 
-  public ASTCDAttribute createAttribute(final ASTModifier modifier, final ASTType type, final String name) {
+  public ASTCDAttribute createAttribute(final ASTModifier modifier, final ASTMCType type, final String name) {
     return CD4AnalysisMill.cDAttributeBuilder()
         .setModifier(modifier)
-        .setType(type.deepClone())
+        .setMCType(type.deepClone())
         .setName(name)
         .build();
   }
 
-  public ASTCDAttribute createAttribute(final ASTModifier modifier, final ASTType type) {
-    return createAttribute(modifier, type, StringUtils.uncapitalize(TypesHelper.printType(type)));
+  public ASTCDAttribute createAttribute(final ASTModifier modifier, final ASTMCType type) {
+    return createAttribute(modifier, type, StringUtils.uncapitalize(MCCollectionTypesHelper.printType(type)));
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final String type, final String name) {
@@ -72,11 +73,11 @@ public class CDAttributeFacade {
   }
 
 
-  public ASTCDAttribute createAttribute(final CDModifier modifier, final ASTType type, final String name) {
+  public ASTCDAttribute createAttribute(final CDModifier modifier, final ASTMCType type, final String name) {
     return createAttribute(modifier.build(), type, name);
   }
 
-  public ASTCDAttribute createAttribute(final CDModifier modifier, final ASTType type) {
+  public ASTCDAttribute createAttribute(final CDModifier modifier, final ASTMCType type) {
     return createAttribute(modifier.build(), type);
   }
 

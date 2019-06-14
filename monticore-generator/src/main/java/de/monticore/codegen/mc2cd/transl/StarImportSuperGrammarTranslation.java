@@ -2,16 +2,16 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
+import de.monticore.utils.Link;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.UnaryOperator;
-
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.types.types._ast.ASTImportStatement;
-import de.monticore.types.types._ast.TypesMill;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.utils.Link;
 
 /**
  * Adds the fully qualified names of supergrammars as star-imports to the ASTCDCompilationUnit of
@@ -29,10 +29,10 @@ public class StarImportSuperGrammarTranslation implements
       MCGrammarSymbol symbol = (MCGrammarSymbol) grammar.getSymbol();
       for (MCGrammarSymbol superSymbol : symbol.getSuperGrammarSymbols()) {
         List<String> names = Arrays.asList(superSymbol.getFullName().split("\\."));
-        ASTImportStatement importStatement = TypesMill.importStatementBuilder().setImportList(names)
+        ASTMCImportStatement importStatement = MCBasicTypesMill.mCImportStatementBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(names).build())
             .setStar(true).build();
         ;
-        rootLink.target().getImportStatementList().add(importStatement);
+        rootLink.target().getMCImportStatementList().add(importStatement);
       }
     }  
     return rootLink;

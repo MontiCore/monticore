@@ -1,10 +1,10 @@
 package de.monticore.codegen.cd2java.method.accessor;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,8 +15,8 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class MandatoryAccessorDecoratorTest {
 
@@ -37,7 +37,7 @@ public class MandatoryAccessorDecoratorTest {
     assertEquals(1, methods.size());
     ASTCDMethod method = getMethodBy("getA", methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    assertDeepEquals(String.class, method.getReturnType());
+    assertDeepEquals(String.class, method.getMCReturnType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
@@ -50,7 +50,7 @@ public class MandatoryAccessorDecoratorTest {
     assertEquals(1, methods.size());
     ASTCDMethod method = getMethodBy("getA", methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    assertDeepEquals(String.class, method.getReturnType());
+    assertDeepEquals(String.class, method.getMCReturnType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 }

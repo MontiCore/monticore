@@ -1,12 +1,12 @@
 package de.monticore.codegen.cd2java;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.JavaNamesHelper;
 
 import java.util.ArrayList;
@@ -18,21 +18,21 @@ import java.util.stream.Stream;
 
 public class AbstractService<T extends AbstractService> {
 
-  private final CDSymbol cdSymbol;
+  private final CDDefinitionSymbol cdSymbol;
 
   private final CDTypeFacade cdTypeFacade;
 
 
   public AbstractService(final ASTCDCompilationUnit compilationUnit) {
-    this((CDSymbol) compilationUnit.getCDDefinition().getSymbol());
+    this((CDDefinitionSymbol) compilationUnit.getCDDefinition().getSymbol());
   }
 
-  public AbstractService(final CDSymbol cdSymbol) {
+  public AbstractService(final CDDefinitionSymbol cdSymbol) {
     this.cdSymbol = cdSymbol;
     this.cdTypeFacade = CDTypeFacade.getInstance();
   }
 
-  public CDSymbol getCDSymbol() {
+  public CDDefinitionSymbol getCDSymbol() {
     return this.cdSymbol;
   }
 
@@ -40,26 +40,26 @@ public class AbstractService<T extends AbstractService> {
     return this.cdTypeFacade;
   }
 
-  public Collection<CDSymbol> getAllCDs() {
+  public Collection<CDDefinitionSymbol> getAllCDs() {
     return Stream.of(Collections.singletonList(getCDSymbol()), getSuperCDs())
         .flatMap(Collection::stream)
         .collect(Collectors.toList());
   }
 
-  public Collection<CDSymbol> getSuperCDs() {
+  public Collection<CDDefinitionSymbol> getSuperCDs() {
     return getSuperCDs(getCDSymbol());
   }
 
-  public Collection<CDSymbol> getSuperCDs(CDSymbol cdSymbol) {
+  public Collection<CDDefinitionSymbol> getSuperCDs(CDDefinitionSymbol cdSymbol) {
     // get direct parent CDSymbols
-    List<CDSymbol> directSuperCdSymbols = cdSymbol.getImports().stream()
+    List<CDDefinitionSymbol> directSuperCdSymbols = cdSymbol.getImports().stream()
         .map(this::resolveCD)
         .collect(Collectors.toList());
     // search for super Cds in super Cds
-    List<CDSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
-    for (CDSymbol superSymbol : directSuperCdSymbols) {
-      Collection<CDSymbol> superCDs = getSuperCDs(superSymbol);
-      for (CDSymbol superCD : superCDs) {
+    List<CDDefinitionSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
+    for (CDDefinitionSymbol superSymbol : directSuperCdSymbols) {
+      Collection<CDDefinitionSymbol> superCDs = getSuperCDs(superSymbol);
+      for (CDDefinitionSymbol superCD : superCDs) {
         if (resolvedCds
             .stream()
             .noneMatch(c -> c.getFullName().equals(superCD.getFullName()))) {
@@ -70,8 +70,8 @@ public class AbstractService<T extends AbstractService> {
     return resolvedCds;
   }
 
-  public CDSymbol resolveCD(String qualifiedName) {
-    return getCDSymbol().getEnclosingScope().<CDSymbol>resolve(qualifiedName, CDSymbol.KIND)
+  public CDDefinitionSymbol resolveCD(String qualifiedName) {
+    return getCDSymbol().getEnclosingScope().<CDDefinitionSymbol>resolveCDDefinition(qualifiedName)
         .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
   }
 
@@ -79,7 +79,7 @@ public class AbstractService<T extends AbstractService> {
     return getCDSymbol().getName();
   }
 
-  private String getBasePackage(CDSymbol cdSymbol) {
+  private String getBasePackage(CDDefinitionSymbol cdSymbol) {
     return cdSymbol.getPackageName();
   }
 
@@ -91,7 +91,7 @@ public class AbstractService<T extends AbstractService> {
     return getPackage(getCDSymbol());
   }
 
-  public String getPackage(CDSymbol cdSymbol) {
+  public String getPackage(CDDefinitionSymbol cdSymbol) {
     if (getBasePackage(cdSymbol).isEmpty()) {
       return String.join(".", cdSymbol.getName(), getSubPackage()).toLowerCase();
     }
@@ -108,7 +108,7 @@ public class AbstractService<T extends AbstractService> {
         .collect(Collectors.toList());
   }
 
-  protected T createService(CDSymbol cdSymbol) {
+  protected T createService(CDDefinitionSymbol cdSymbol) {
     return (T) new AbstractService(cdSymbol);
   }
 
@@ -183,7 +183,7 @@ public class AbstractService<T extends AbstractService> {
       return false;
     }
     for (int i = 0; i < method1.getCDParameterList().size(); i++) {
-      if (!method1.getCDParameter(i).getType().deepEquals(method2.getCDParameter(i).getType())) {
+      if (!method1.getCDParameter(i).getMCType().deepEquals(method2.getCDParameter(i).getMCType())) {
         return false;
       }
     }

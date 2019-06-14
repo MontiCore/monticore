@@ -3,18 +3,18 @@
 package de.monticore.codegen.mc2cd;
 
 import de.monticore.MontiCoreScript;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.CD4AnalysisLanguage;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Names;
 import parser.MCGrammarParser;
 
@@ -67,14 +67,14 @@ public class TestHelper {
         .findAny();
   }
 
-  public static boolean isListOfType(ASTType typeRef, String typeArg) {
+  public static boolean isListOfType(ASTMCType typeRef, String typeArg) {
     if (!TransformationHelper.typeToString(typeRef).equals("java.util.List")) {
       return false;
     }
-    if (!(typeRef instanceof ASTSimpleReferenceType)) {
+    if (!(typeRef instanceof ASTMCObjectType)) {
       return false;
     }
-    ASTSimpleReferenceType type = (ASTSimpleReferenceType) typeRef;
+    ASTMCObjectType type = (ASTMCObjectType) typeRef;
     if (!type.isPresentTypeArguments()) {
       return false;
     }
@@ -82,11 +82,11 @@ public class TestHelper {
       return false;
     }
     if (!(type.getTypeArguments().getTypeArgumentList()
-        .get(0) instanceof ASTSimpleReferenceType)) {
+        .get(0) instanceof SimpleReferenceType)) {
       return false;
     }
     return Names.getQualifiedName(
-        ((ASTSimpleReferenceType) type.getTypeArguments().getTypeArgumentList().get(0))
+        ((SimpleReferenceType) type.getTypeArguments().getTypeArgumentList().get(0))
             .getNameList())
         .equals(typeArg);
   }

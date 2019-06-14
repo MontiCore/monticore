@@ -2,18 +2,17 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import org.junit.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Test;
-
-import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.types.types._ast.ASTReferenceType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test for the proper transformation of ASTInterfaceProds to corresponding ASTCDInterfaces
@@ -41,7 +40,7 @@ public class InterfaceProdTest {
    */
   @Test
   public void testExtends() {
-    List<ASTReferenceType> superInterfaces = astA.getInterfaceList();
+    List<ASTMCQualifiedType> superInterfaces = astA.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("mc2cdtransformation.InterfaceProd.ASTextendedProd", name);
@@ -53,7 +52,7 @@ public class InterfaceProdTest {
    */
   @Test
   public void testAstextends() {
-    List<ASTReferenceType> superInterfaces = astB.getInterfaceList();
+    List<ASTMCQualifiedType> superInterfaces = astB.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("AstExtendedType", name);
@@ -65,7 +64,7 @@ public class InterfaceProdTest {
    */
   @Test
   public void testAstimplementsQualified() {
-    List<ASTReferenceType> superInterfaces = astC.getInterfaceList();
+    List<ASTMCQualifiedType> superInterfaces = astC.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("java.io.Serializable", name);

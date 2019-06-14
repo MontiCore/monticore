@@ -1,17 +1,14 @@
 package de.monticore.codegen.cd2java;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisModelLoader;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.umlcd4a.CD4AnalysisLanguage;
-import de.monticore.umlcd4a.CD4AnalysisModelLoader;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Optional;
 
 import static org.junit.Assert.fail;
 

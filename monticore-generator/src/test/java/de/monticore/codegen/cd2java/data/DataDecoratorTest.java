@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.data;
 
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -9,7 +10,6 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,35 +52,35 @@ public class DataDecoratorTest extends DecoratorTestCase {
   public void testPrimitiveAttribute() {
     ASTCDAttribute attribute = getAttributeBy("i", dataClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertInt(attribute.getType());
+    assertInt(attribute.getMCType());
   }
 
   @Test
   public void testMandatoryAttribute() {
     ASTCDAttribute attribute = getAttributeBy("s", dataClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertDeepEquals(String.class, attribute.getType());
+    assertDeepEquals(String.class, attribute.getMCType());
   }
 
   @Test
   public void testOptionalAttribute() {
     ASTCDAttribute attribute = getAttributeBy("opt", dataClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertOptionalOf(String.class, attribute.getType());
+    assertOptionalOf(String.class, attribute.getMCType());
   }
 
   @Test
   public void testListAttribute() {
     ASTCDAttribute attribute = getAttributeBy("list", dataClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertListOf(String.class, attribute.getType());
+    assertListOf(String.class, attribute.getMCType());
   }
 
   @Test
   public void testBAttribute() {
     ASTCDAttribute attribute = getAttributeBy("b", dataClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertDeepEquals("de.monticore.codegen.data.ASTB", attribute.getType());
+    assertDeepEquals("de.monticore.codegen.data.ASTB", attribute.getMCType());
   }
 
   @Test
@@ -104,23 +104,23 @@ public class DataDecoratorTest extends DecoratorTestCase {
     assertEquals(5, fullConstructor.sizeCDParameters());
 
     ASTCDParameter parameter = fullConstructor.getCDParameter(0);
-    assertInt(parameter.getType());
+    assertInt(parameter.getMCType());
     assertEquals("i", parameter.getName());
 
     parameter = fullConstructor.getCDParameter(1);
-    assertDeepEquals(String.class, parameter.getType());
+    assertDeepEquals(String.class, parameter.getMCType());
     assertEquals("s", parameter.getName());
 
     parameter = fullConstructor.getCDParameter(2);
-    assertOptionalOf(String.class, parameter.getType());
+    assertOptionalOf(String.class, parameter.getMCType());
     assertEquals("opt", parameter.getName());
 
     parameter = fullConstructor.getCDParameter(3);
-    assertListOf(String.class, parameter.getType());
+    assertListOf(String.class, parameter.getMCType());
     assertEquals("list", parameter.getName());
 
     parameter = fullConstructor.getCDParameter(4);
-    assertDeepEquals("de.monticore.codegen.data.ASTB", parameter.getType());
+    assertDeepEquals("de.monticore.codegen.data.ASTB", parameter.getMCType());
     assertEquals("b", parameter.getName());
   }
 
@@ -134,13 +134,13 @@ public class DataDecoratorTest extends DecoratorTestCase {
   public void testDeepEquals() {
     ASTCDMethod method = getMethodBy("deepEquals", 1, dataClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getReturnType());
+    assertBoolean(method.getMCReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(Object.class, parameter.getType());
+    assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
   }
 
@@ -148,17 +148,17 @@ public class DataDecoratorTest extends DecoratorTestCase {
   public void testDeepEqualsForceSameOrder() {
     ASTCDMethod method = getMethodBy("deepEquals", 2, dataClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getReturnType());
+    assertBoolean(method.getMCReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(Object.class, parameter.getType());
+    assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
 
     parameter = method.getCDParameter(1);
-    assertBoolean(parameter.getType());
+    assertBoolean(parameter.getMCType());
     assertEquals("forceSameOrder", parameter.getName());
   }
 
@@ -166,13 +166,13 @@ public class DataDecoratorTest extends DecoratorTestCase {
   public void testDeepEqualsWithComments() {
     ASTCDMethod method = getMethodBy("deepEqualsWithComments", 1, dataClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getReturnType());
+    assertBoolean(method.getMCReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(Object.class, parameter.getType());
+    assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
   }
 
@@ -180,17 +180,17 @@ public class DataDecoratorTest extends DecoratorTestCase {
   public void testDeepEqualsWithCommentsForceSameOrder() {
     ASTCDMethod method = getMethodBy("deepEqualsWithComments", 2, dataClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getReturnType());
+    assertBoolean(method.getMCReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(Object.class, parameter.getType());
+    assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
 
     parameter = method.getCDParameter(1);
-    assertBoolean(parameter.getType());
+    assertBoolean(parameter.getMCType());
     assertEquals("forceSameOrder", parameter.getName());
   }
 
@@ -198,13 +198,13 @@ public class DataDecoratorTest extends DecoratorTestCase {
   public void testEqualAttributes() {
     ASTCDMethod method = getMethodBy("equalAttributes", dataClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getReturnType());
+    assertBoolean(method.getMCReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(Object.class, parameter.getType());
+    assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
   }
 
@@ -212,13 +212,13 @@ public class DataDecoratorTest extends DecoratorTestCase {
   public void testEqualsWithComments() {
     ASTCDMethod method = getMethodBy("equalsWithComments", dataClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getReturnType());
+    assertBoolean(method.getMCReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(Object.class, parameter.getType());
+    assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
   }
 
@@ -226,7 +226,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
   public void testDeepClone() {
     ASTCDMethod method = getMethodBy("deepClone", 0, dataClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(dataClass.getName(), method.getReturnType());
+    assertDeepEquals(dataClass.getName(), method.getMCReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -234,13 +234,13 @@ public class DataDecoratorTest extends DecoratorTestCase {
   public void testDeepCloneWithResult() {
     ASTCDMethod method = getMethodBy("deepClone", 1, dataClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(dataClass.getName(), method.getReturnType());
+    assertDeepEquals(dataClass.getName(), method.getMCReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(dataClass.getName(), parameter.getType());
+    assertDeepEquals(dataClass.getName(), parameter.getMCType());
     assertEquals("result", parameter.getName());
   }
 

@@ -1,13 +1,13 @@
 package de.monticore.codegen.cd2java.method.mutator;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class OptionalMutatorDecoratorTest {
   @Before
   public void setup() {
     LogStub.init();
-    ASTType optionalType = CDTypeFacade.getInstance().createOptionalTypeOf(String.class);
+    ASTMCType optionalType = CDTypeFacade.getInstance().createOptionalTypeOf(String.class);
     ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED, optionalType, "a");
     OptionalMutatorDecorator optionalMutatorDecorator = new OptionalMutatorDecorator(glex);
     this.methods = optionalMutatorDecorator.decorate(attribute);
@@ -44,29 +44,29 @@ public class OptionalMutatorDecoratorTest {
   @Test
   public void testGetMethod() {
     ASTCDMethod method = getMethodBy("setA", this.methods);
-    assertVoid(method.getReturnType());
+    assertVoid(method.getMCReturnType());
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(String.class, parameter.getType());
+    assertDeepEquals(String.class, parameter.getMCType());
     assertEquals("a", parameter.getName());
   }
 
   @Test
   public void testGetOptMethod() {
     ASTCDMethod method = getMethodBy("setAOpt", this.methods);
-    assertVoid(method.getReturnType());
+    assertVoid(method.getMCReturnType());
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertOptionalOf(String.class, parameter.getType());
+    assertOptionalOf(String.class, parameter.getMCType());
     assertEquals("a", parameter.getName());
   }
 
   @Test
   public void testIsPresentMethod() {
     ASTCDMethod method = getMethodBy("setAAbsent", this.methods);
-    assertVoid(method.getReturnType());
+    assertVoid(method.getMCReturnType());
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getCDParameterList().isEmpty());
   }

@@ -1,6 +1,6 @@
 package de.monticore.codegen.cd2java;
 
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._ast.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public final class DecoratorTestUtil {
 

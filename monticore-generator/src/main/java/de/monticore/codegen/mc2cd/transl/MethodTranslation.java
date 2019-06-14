@@ -2,6 +2,7 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
@@ -16,7 +17,6 @@ import de.monticore.grammar.grammar._ast.ASTMethodParameter;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.javastatements._ast.ASTBlockStatement;
 import de.monticore.types.FullGenericTypesPrinter;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
@@ -65,7 +65,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
     String dotSeparatedName = FullGenericTypesPrinter.printReturnType(method.getMCReturnType());
-    cdMethod.setReturnType(TransformationHelper.createSimpleReference(dotSeparatedName));
+    cdMethod.setMCReturnType(TransformationHelper.createSimpleReference(dotSeparatedName));
     for (ASTMethodParameter param : method.getMethodParameterList()) {
       String typeName = FullGenericTypesPrinter.printType(param.getType());
       cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));

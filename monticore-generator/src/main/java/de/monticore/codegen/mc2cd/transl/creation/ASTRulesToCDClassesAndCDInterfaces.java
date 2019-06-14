@@ -2,20 +2,15 @@
 
 package de.monticore.codegen.mc2cd.transl.creation;
 
+import com.google.common.collect.Iterables;
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.grammar.grammar._ast.*;
+import de.monticore.utils.ASTNodes;
+import de.monticore.utils.Link;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.UnaryOperator;
-
-import com.google.common.collect.Iterables;
-
-import de.monticore.grammar.grammar._ast.*;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
-import de.monticore.utils.ASTNodes;
-import de.monticore.utils.Link;
 
 /**
  * Creates Links from ASTRules to CDClasses and CDInterfaces. The CDClass/CDInterface will

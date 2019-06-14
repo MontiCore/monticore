@@ -2,11 +2,10 @@
 
 package de.monticore.codegen.cd2java.cocos;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
@@ -14,11 +13,12 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
 
 /**
  * Generates the infrastructure for context conditions: For the different ast
@@ -35,8 +35,8 @@ public class CoCoGenerator {
    * dispatch mechanism of {@link VisitorGenerator}.
    */
   public static void generate(GlobalExtensionManagement glex,
-      GlobalScope globalScope,
-      ASTCDCompilationUnit astClassDiagram, File outputDirectory) {
+                              GlobalScope globalScope,
+                              ASTCDCompilationUnit astClassDiagram, File outputDirectory) {
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
     CoCoGeneratorHelper coCoHelper = new CoCoGeneratorHelper(astClassDiagram, globalScope);
@@ -50,7 +50,7 @@ public class CoCoGenerator {
         AstGeneratorHelper.getAstPackageSuffix());
     final String visitorPackage = CoCoGeneratorHelper.getPackageName(coCoHelper.getPackageName(),
         VisitorGeneratorHelper.getVisitorPackageSuffix());
-    final CDSymbol cd = coCoHelper.getCd();
+    final CDDefinitionSymbol cd = coCoHelper.getCd();
     
     // TODO generate interfaces using cd instead of ast? Would prevent duplicate
     // code
@@ -70,7 +70,7 @@ public class CoCoGenerator {
       generator.generate("cocos.CoCoInterface", cocoFilePath, interf, astPackage);
     }
     
-    Collection<CDSymbol> allCds = coCoHelper.getAllCds(cd);
+    Collection<CDDefinitionSymbol> allCds = coCoHelper.getAllCds(cd);
     
     // coco checker
     final String checkerType = diagramName + "CoCoChecker";

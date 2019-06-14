@@ -3,16 +3,17 @@
 package de.monticore.codegen.cd2java.ast;
 
 import com.google.common.base.Joiner;
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.types.types._ast.ASTVoidType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisVisitor;
+import de.monticore.types.CollectionTypesPrinter;
+import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -49,7 +50,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
     if (isOptional(attribute)) {
       return "Optional.empty()";
     }
-    String typeName = TypesPrinter.printType(attribute.getType());
+    String typeName = CollectionTypesPrinter.printType(attribute.getMCType());
     if (isListType(typeName)) {
       return "new java.util.ArrayList<>()";
     }
@@ -173,7 +174,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
     if (clazz.getCDMethodList().stream()
         .filter(m -> methodName.equals(m.getName()) && m.getCDParameterList().size() == 1
             && compareAstTypes(typeName,
-                TypesHelper.printSimpleRefType(m.getCDParameterList().get(0).getType())))
+                MCCollectionTypesHelper.printSimpleRefType(m.getCDParameterList().get(0).getMCType())))
         .findAny()
         .isPresent()) {
       return false;
@@ -214,7 +215,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public static boolean hasReturnTypeVoid(ASTCDMethod method) {
-    return method.getReturnType() instanceof ASTVoidType;
+    return method.getMCReturnType().isPresentMCVoidType();
   }
   
   /**
@@ -223,7 +224,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   public void transformCdTypes2Java() {
     new Cd2JavaTypeConverter() {
       @Override
-      public void visit(ASTSimpleReferenceType node) {
+      public void visit(ASTMCQualifiedType node) {
         AstGeneratorHelper.this.transformTypeCd2Java(node, GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
       }
     }.handle(topAst);
@@ -239,7 +240,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
     
     new Cd2JavaTypeConverter() {
       @Override
-      public void visit(ASTSimpleReferenceType node) {
+      public void visit(ASTMCQualifiedType node) {
        AstGeneratorHelper.this.transformQualifiedToSimpleIfPossible(node, GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
       }
     }.handle(ast);
@@ -247,8 +248,8 @@ public class AstGeneratorHelper extends GeneratorHelper {
     return ast;
   }
   
-  public String printFullType(ASTType ast) {
-    return TypesPrinter.printType(ast);
+  public String printFullType(ASTMCType ast) {
+    return CollectionTypesPrinter.printType(ast);
   }
   
   public class Cd2JavaTypeConverter implements CD4AnalysisVisitor {}

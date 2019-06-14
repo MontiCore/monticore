@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.data;
 
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -9,7 +10,6 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ public class FullConstructorTest extends DecoratorTestCase {
   public void testPrimitiveAttribute() {
     ASTCDAttribute attribute = getAttributeBy("i", subBClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertInt(attribute.getType());
+    assertInt(attribute.getMCType());
   }
 
   @Test
@@ -71,11 +71,11 @@ public class FullConstructorTest extends DecoratorTestCase {
     assertEquals(2, fullConstructor.sizeCDParameters());
 
     ASTCDParameter parameter = fullConstructor.getCDParameter(0);
-    assertInt(parameter.getType());
+    assertInt(parameter.getMCType());
     assertEquals("i", parameter.getName());
 
     parameter = fullConstructor.getCDParameter(1);
-    assertDeepEquals(String.class, parameter.getType());
+    assertDeepEquals(String.class, parameter.getMCType());
     assertEquals("s", parameter.getName());
   }
 
@@ -88,15 +88,15 @@ public class FullConstructorTest extends DecoratorTestCase {
     assertEquals(3, fullConstructor.sizeCDParameters());
 
     ASTCDParameter parameter = fullConstructor.getCDParameter(0);
-    assertInt(parameter.getType());
+    assertInt(parameter.getMCType());
     assertEquals("i", parameter.getName());
 
     parameter = fullConstructor.getCDParameter(1);
-    assertBoolean(parameter.getType());
+    assertBoolean(parameter.getMCType());
     assertEquals("b", parameter.getName());
 
     parameter = fullConstructor.getCDParameter(2);
-    assertDeepEquals(String.class, parameter.getType());
+    assertDeepEquals(String.class, parameter.getMCType());
     assertEquals("s", parameter.getName());
   }
 

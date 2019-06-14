@@ -4,19 +4,19 @@ package de.monticore.codegen.cd2java.ast;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTVoidType;
-import de.monticore.umlcd4a.CD4AnalysisLanguage;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.se_rwth.commons.Names;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,10 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Test for the {@link CdDecorator} class.
@@ -192,16 +189,16 @@ public class CdDecoratorTest {
         assertEquals(1, clazz.getCDMethodList().size());
         ASTCDMethod method = clazz.getCDMethodList().get(0);
         assertEquals("getName", method.getName());
-        assertTrue(method.getReturnType() instanceof ASTSimpleReferenceType);
-        assertEquals("String", ((ASTSimpleReferenceType) method.getReturnType()).getNameList()
+        assertTrue(method.getMCReturnType().isPresentMCType());
+        assertEquals("String", ((ASTMCObjectType) method.getMCReturnType()).getNameList()
             .get(0));
       }
       else if (clazz.getName().equals("ASTB")) {
         assertEquals(1, clazz.getCDMethodList().size());
         ASTCDMethod method = clazz.getCDMethodList().get(0);
         assertEquals("getA", method.getName());
-        assertTrue(method.getReturnType() instanceof ASTSimpleReferenceType);
-        assertEquals("ASTA", ((ASTSimpleReferenceType) method.getReturnType()).getNameList().get(0));
+        assertTrue(method.getMCReturnType().isPresentMCType());
+        assertEquals("ASTA", ((ASTMCObjectType) method.getMCReturnType()).getNameList().get(0));
       }
     }
   }
@@ -218,24 +215,24 @@ public class CdDecoratorTest {
         assertEquals(1, clazz.getCDMethodList().size());
         ASTCDMethod method = clazz.getCDMethodList().get(0);
         assertEquals("setName", method.getName());
-        assertTrue(method.getReturnType() instanceof ASTVoidType);
+        assertTrue(method.getMCReturnType().isPresentMCVoidType());
         assertEquals(1, method.getCDParameterList().size());
         assertEquals("name", method.getCDParameterList().get(0).getName());
         assertEquals(
             "String",
-            Names.getQualifiedName(((ASTSimpleReferenceType) method
-                .getCDParameterList().get(0).getType()).getNameList()));
+            Names.getQualifiedName(((ASTMCObjectType) method
+                .getCDParameterList().get(0).getMCType()).getNameList()));
       }
       else if (clazz.getName().equals("ASTB")) {
         assertEquals(1, clazz.getCDMethodList().size());
         ASTCDMethod method = clazz.getCDMethodList().get(0);
         assertEquals("setA", method.getName());
-        assertTrue(method.getReturnType() instanceof ASTVoidType);
+        assertTrue(method.getMCReturnType().isPresentMCVoidType());
         assertEquals("a", method.getCDParameterList().get(0).getName());
         assertEquals(
             "ASTA",
-            Names.getQualifiedName(((ASTSimpleReferenceType) method
-                .getCDParameterList().get(0).getType()).getNameList()));
+            Names.getQualifiedName(((ASTMCObjectType) method
+                .getCDParameterList().get(0).getMCType()).getNameList()));
       }
     }
   }

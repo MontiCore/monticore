@@ -1,5 +1,10 @@
 package de.monticore;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisModelLoader;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreator;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.CDGenerator;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.*;
@@ -52,11 +57,6 @@ import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.umlcd4a.CD4AnalysisLanguage;
-import de.monticore.umlcd4a.CD4AnalysisModelLoader;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.symboltable.CD4AnalysisSymbolTableCreator;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FilenameUtils;
@@ -243,9 +243,9 @@ public class MontiCoreTool {
 
     final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getCDDefinition()
         .getName());
-    Optional<CDSymbol> cdSymbol = symbolTable.resolveDown(
+    Optional<CDDefinitionSymbol> cdSymbol = symbolTable.resolveDown(
         qualifiedCDName,
-        CDSymbol.KIND);
+        CDDefinitionSymbol.KIND);
 
     ASTCDCompilationUnit result = ast;
 
@@ -267,7 +267,7 @@ public class MontiCoreTool {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = (MCGrammarSymbol) astGrammar.getSymbol();
       for (MCGrammarSymbol grammarSymbol : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
-        Optional<CDSymbol> importedCd = symbolTable.resolveDown(grammarSymbol.getFullName(), CDSymbol.KIND);
+        Optional<CDDefinitionSymbol> importedCd = symbolTable.resolveDown(grammarSymbol.getFullName(), CDDefinitionSymbol.KIND);
         if (!importedCd.isPresent() && grammarSymbol.getAstNode().isPresent()) {
           transformAndCreateSymbolTable((ASTMCGrammar) grammarSymbol.getAstNode().get(), glex);
         }

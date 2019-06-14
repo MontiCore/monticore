@@ -2,21 +2,20 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.codegen.mc2cd.TestHelper;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Test;
-
-import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test for the proper transformation of NonTerminals to corresponding ASTCDAttributes
@@ -75,7 +74,7 @@ public class NonTerminalMultiplicityTest {
   @Test
   public void testStarMultiplicity() {
     List<ASTCDAttribute> attributes = astA.getCDAttributeList();
-    assertTrue(TestHelper.isListOfType(attributes.get(0).getType(),
+    assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
   }
   
@@ -86,7 +85,7 @@ public class NonTerminalMultiplicityTest {
   @Test
   public void testParenthesizedStarMultiplicity() {
     List<ASTCDAttribute> attributes = astB.getCDAttributeList();
-    assertTrue(TestHelper.isListOfType(attributes.get(0).getType(),
+    assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
   }
   
@@ -97,7 +96,7 @@ public class NonTerminalMultiplicityTest {
   @Test
   public void testPlusMultiplicity() {
     List<ASTCDAttribute> attributes = astC.getCDAttributeList();
-    assertTrue(TestHelper.isListOfType(attributes.get(0).getType(),
+    assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
   }
   
@@ -108,7 +107,7 @@ public class NonTerminalMultiplicityTest {
   @Test
   public void testParenthesizedPlusMultiplicity() {
     List<ASTCDAttribute> attributes = astD.getCDAttributeList();
-    assertTrue(TestHelper.isListOfType(attributes.get(0).getType(),
+    assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
   }
   
@@ -119,7 +118,7 @@ public class NonTerminalMultiplicityTest {
   @Test
   public void testOptionalMultiplicity() {
     List<ASTCDAttribute> attributes = astE.getCDAttributeList();
-    String name = typeToString(attributes.get(0).getType());
+    String name = typeToString(attributes.get(0).getMCType());
     assertEquals("Optional", name);
   }
   
@@ -130,7 +129,7 @@ public class NonTerminalMultiplicityTest {
   @Test
   public void testParenthesizedOptionalMultiplicity() {
     List<ASTCDAttribute> attributes = astF.getCDAttributeList();
-    String name = typeToString(attributes.get(0).getType());
+    String name = typeToString(attributes.get(0).getMCType());
     assertEquals("Optional", name);
   }
   
@@ -141,7 +140,7 @@ public class NonTerminalMultiplicityTest {
   @Test
   public void testDuplicateMultiplicity() {
     List<ASTCDAttribute> attributes = astG.getCDAttributeList();
-    assertTrue(TestHelper.isListOfType(attributes.get(0).getType(),
+    assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
   }
   
@@ -153,10 +152,10 @@ public class NonTerminalMultiplicityTest {
   public void testAlternative() {
     List<ASTCDAttribute> attributes = astH.getCDAttributeList();
     
-    String xTypeName = typeToString(attributes.get(0).getType());
+    String xTypeName = typeToString(attributes.get(0).getMCType());
     assertEquals("Optional", xTypeName);
     
-    String yTypeName = typeToString(attributes.get(1).getType());
+    String yTypeName = typeToString(attributes.get(1).getMCType());
     assertEquals("Optional", yTypeName);
   }
   
@@ -168,7 +167,7 @@ public class NonTerminalMultiplicityTest {
   public void testTwinAlternative() {
     List<ASTCDAttribute> attributes = astJ.getCDAttributeList();
     assertEquals(1, attributes.size());
-    String xTypeName = typeToString(attributes.get(0).getType());
+    String xTypeName = typeToString(attributes.get(0).getMCType());
     assertEquals("Optional", xTypeName);
   }
 }

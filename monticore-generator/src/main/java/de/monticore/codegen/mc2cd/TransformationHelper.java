@@ -6,6 +6,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.prettyprint.CDPrettyPrinter;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -17,12 +21,9 @@ import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.FullGenericTypesPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.types._ast.*;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
-import de.monticore.umlcd4a.prettyprint.CDPrettyPrinterConcreteVisitor;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
+import de.monticore.types.mcbasictypes._ast.*;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
+import de.monticore.types.mccollectiontypes._ast.MCCollectionTypesNodeFactory;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -56,12 +57,12 @@ public final class TransformationHelper {
     return classProd.getName();
   }
 
-  public static String typeToString(ASTType type) {
-    if (type instanceof ASTSimpleReferenceType) {
+  public static String typeToString(ASTMCType type) {
+    if (type instanceof ASTMCObjectType) {
       return Names.getQualifiedName(
-          ((ASTSimpleReferenceType) type).getNameList());
+          ((ASTMCObjectType) type).getNameList());
     }
-    else if (type instanceof ASTPrimitiveType) {
+    else if (type instanceof ASTMCPrimitiveType) {
       return type.toString();
     }
     return "";
@@ -75,7 +76,7 @@ public final class TransformationHelper {
   // TODO: should be placed somewhere in the UML/P CD project
   public static String prettyPrint(ASTCD4AnalysisNode astNode) {
     // set up objects
-    CDPrettyPrinterConcreteVisitor prettyPrinter = new CDPrettyPrinterConcreteVisitor(
+    CDPrettyPrinter prettyPrinter = new CDPrettyPrinter(
         new IndentPrinter());
 
     // run, check result and return
@@ -140,10 +141,10 @@ public final class TransformationHelper {
   }
 
   public static ASTCDParameter createParameter(String typeName,
-      String parameterName) {
+                                               String parameterName) {
     ASTCDParameter parameter = CD4AnalysisNodeFactory
         .createASTCDParameter();
-    parameter.setType(TransformationHelper.createSimpleReference(typeName));
+    parameter.setMCType(TransformationHelper.createSimpleReference(typeName));
     parameter.setName(parameterName);
     return parameter;
   }
@@ -178,10 +179,10 @@ public final class TransformationHelper {
     return modifier;
   }
 
-  public static ASTSimpleReferenceType createSimpleReference(
+  public static ASTMCObjectType createSimpleReference(
       String typeName, String... generics) {
-    ASTSimpleReferenceType reference = TypesNodeFactory
-        .createASTSimpleReferenceType();
+    ASTMCObjectType reference = MCCollectionTypesNodeFactory
+        .createASTMCObjectType();
 
     // set the name of the type
     ArrayList<String> name = new ArrayList<String>();
@@ -190,7 +191,7 @@ public final class TransformationHelper {
 
     // set generics
     if (generics.length > 0) {
-      List<ASTTypeArgument> typeArguments = new ArrayList<>();
+      List<ASTMCTypeArgument> typeArguments = new ArrayList<>();
       for (String generic : generics) {
         typeArguments.add(createSimpleReference(generic));
       }
@@ -201,19 +202,19 @@ public final class TransformationHelper {
     return reference;
   }
 
-  public static ASTType createType(String typeName) {
+  public static ASTMCType createType(String typeName) {
     CD4AnalysisParser parser = new CD4AnalysisParser();
-    Optional<ASTType> optType = null;
+    Optional<ASTMCType> optType = null;
     try {
-      optType = parser.parse_StringType(typeName);
+      optType = parser.parse_StringMCType(typeName);
     } catch (IOException e) {
       Log.error("0xA4036 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
     }
     return optType.get();
   }
 
-  public static ASTVoidType createVoidType() {
-    return TypesNodeFactory.createASTVoidType();
+  public static ASTMCVoidType createVoidType() {
+    return MCBasicTypesNodeFactory.createASTMCVoidType();
   }
 
   public static String grammarName2PackageName(MCGrammarSymbol grammar) {
@@ -325,8 +326,8 @@ public final class TransformationHelper {
       ASTMCGrammar ast) {
     final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getName());
 
-    Optional<CDSymbol> cdSymbol = globalScope.<CDSymbol>resolveDown(
-        qualifiedCDName, CDSymbol.KIND);
+    Optional<CDDefinitionSymbol> cdSymbol = globalScope.<CDDefinitionSymbol>resolveDown(
+        qualifiedCDName, CDDefinitionSymbol.KIND);
 
     if (cdSymbol.isPresent() && cdSymbol.get().getEnclosingScope().getAstNode().isPresent()) {
       Log.debug("Got existed symbol table for " + cdSymbol.get().getFullName(),
