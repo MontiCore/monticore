@@ -75,6 +75,16 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${languageName}Scop
     }
     return adaptedSymbols;
   }
+
+  @Override
+  public boolean is${names.getSimpleName(symbol.getName())}SymbolAlreadyResolved() {
+    return ${names.getSimpleName(symbol.getName())?lower_case}symbolAlreadyResolved;
+  }
+
+  @Override
+  public void set${names.getSimpleName(symbol.getName())}SymbolAlreadyResolved(boolean symbolAlreadyResolved) {
+    ${names.getSimpleName(symbol.getName())?lower_case}symbolAlreadyResolved = symbolAlreadyResolved;
+  }
   
 </#list>  
 
@@ -90,6 +100,6 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${languageName}Scop
   public void addAdapted${names.getSimpleName(symbol.getName())}SymbolDelegate(${genHelper.getDelegatorForSymbol(symbol)} ${names.getSimpleName(symbol.getName())}SymbolDelegate) {
     this.adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList.add(${names.getSimpleName(symbol.getName())}SymbolDelegate);
   }
-  
+
 </#list>  
 }

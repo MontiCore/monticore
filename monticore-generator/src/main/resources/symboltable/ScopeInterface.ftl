@@ -28,9 +28,9 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
 
 <#list symbolNames?keys as symbol>
 
-  public boolean is${symbol}AlreadyResolved();
+  public boolean is${symbol}SymbolAlreadyResolved();
 
-  public void set${symbol}AlreadyResolved(boolean symbolAlreadyResolved);
+  public void set${symbol}SymbolAlreadyResolved(boolean symbolAlreadyResolved);
 
   // all resolve Methods for ${symbol}Symbol
   default public Optional<${symbolNames[symbol]}> resolve${symbol}(String name) {
@@ -76,11 +76,6 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
   }
 
   default public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate) {
-    if (${symbolNames[symbol]}.isAlreadyResolved()) {
-      return new ArrayList<>();
-    } else {
-      ${symbolNames[symbol]}.setAlreadyResolved(true);
-    }
       // 1. Conduct search locally in the current scope
     final Set<${symbolNames[symbol]}> resolved = this.resolve${symbol}LocallyMany(foundSymbols, name,
         modifier, predicate);
@@ -102,7 +97,6 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
       }
     }
     Log.trace("END " + resolveCall + ". Found #" + resolved.size(), "");
-    ${symbolNames[symbol]}.setAlreadyResolved(false);
 
     return resolved;
   }
@@ -140,20 +134,13 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
   }
 
   default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(boolean foundSymbols, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate)  {
-    if (${symbolNames[symbol]}.isAlreadyResolved()) {
-      return new LinkedHashSet<>();
-    } else {
-      ${symbolNames[symbol]}.setAlreadyResolved(true);
-    }
     final Set<${symbolNames[symbol]}> resolvedSymbols = this.resolve${symbol}LocallyMany(foundSymbols, name, modifier, predicate);
     if (!resolvedSymbols.isEmpty()) {
-      ${symbolNames[symbol]}.setAlreadyResolved(false);
       return resolvedSymbols;
     }
     resolvedSymbols.addAll(resolveAdapted${symbol}LocallyMany(foundSymbols, name, modifier, predicate));
     final Collection<${symbolNames[symbol]}> resolvedFromEnclosing = continue${symbol}WithEnclosingScope((foundSymbols | resolvedSymbols.size() > 0), name, modifier, predicate);
     resolvedSymbols.addAll(resolvedFromEnclosing);
-    ${symbolNames[symbol]}.setAlreadyResolved(false);
     return resolvedSymbols;
   }
 
@@ -218,7 +205,6 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
 
   default Collection<${symbolNames[symbol]}> continue${symbol}WithEnclosingScope(boolean foundSymbols, String name,  AccessModifier modifier,
       Predicate<${symbolNames[symbol]}> predicate) {
-    ${symbolNames[symbol]}.setAlreadyResolved(false);
     if (checkIfContinueWithEnclosingScope(foundSymbols) && (getEnclosingScope().isPresent())) {
       return getEnclosingScope().get().resolve${symbol}Many(foundSymbols, name, modifier, predicate);
     }
@@ -226,7 +212,6 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
   }
 
   default Collection<${symbolNames[symbol]}> continueAs${symbol}SubScope(boolean foundSymbols, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate){
-    ${symbolNames[symbol]}.setAlreadyResolved(false);
     if (checkIfContinueAsSubScope(name)) {
       final String remainingSymbolName = getRemainingNameForResolveDown(name);
       return this.resolve${symbol}DownMany(foundSymbols, remainingSymbolName, modifier, predicate);
