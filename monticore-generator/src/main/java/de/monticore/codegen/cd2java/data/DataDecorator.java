@@ -8,7 +8,9 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,7 +136,8 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     // deep clone with result parameter
     ASTMCType classType = this.getCDTypeFacade().createSimpleReferenceType(simpleName);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(classType, "result");
-    ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC, classType, DEEP_CLONE_METHOD, parameter);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(classType).build();
+    ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC, returnType, DEEP_CLONE_METHOD, parameter);
     this.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("data.DeepCloneWithParameters", clazz));
     return deepCloneWithParam;
   }

@@ -7,7 +7,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -57,7 +57,7 @@ public class AstRuleTest {
    */
   @Test
   public void testAstSuperClass() {
-    java.util.Optional<ASTMCQualifiedType> superClasses = astA.getSuperclassOpt();
+    java.util.Optional<ASTMCObjectType> superClasses = astA.getSuperclassOpt();
     assertTrue(superClasses.isPresent());
     String name = typeToString(superClasses.get());
     assertEquals("ASTExternalProd", name);
@@ -134,7 +134,7 @@ public class AstRuleTest {
    */
   @Test
   public void testAstInterfaces() {
-    List<ASTMCQualifiedType> superInterfaces = astD.getInterfaceList();
+    List<ASTMCObjectType> superInterfaces = astD.getInterfaceList();
     assertEquals(3, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("ASTB", name);

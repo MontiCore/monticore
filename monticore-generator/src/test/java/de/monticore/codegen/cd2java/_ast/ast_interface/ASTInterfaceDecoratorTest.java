@@ -17,7 +17,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -86,13 +86,13 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testASTNodeSuperInterface(){
-    ASTMCQualifiedType superInteface = dataInterface.getInterface(0);
+    ASTMCObjectType superInteface = dataInterface.getInterface(0);
     assertDeepEquals("de.monticore.ast.ASTNode", superInteface);
   }
 
   @Test
   public void testASTDataInterfaceNodeSuperInterface(){
-    ASTMCQualifiedType superInteface = dataInterface.getInterface(1);
+    ASTMCObjectType superInteface = dataInterface.getInterface(1);
     assertDeepEquals("de.monticore.codegen.data.datainterface._ast.ASTDataInterfaceNode", superInteface);
   }
 

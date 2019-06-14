@@ -7,7 +7,9 @@ import de.monticore.codegen.cd2java.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
@@ -29,7 +31,8 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
     ASTMCType parameterType = MCCollectionTypesHelper.getSimpleReferenceTypeFromOptional(attribute.getMCType()).deepClone();
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, attribute.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, parameter);
-    method.setMCReturnType(this.builderType);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
+    method.setMCReturnType(returnType);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.opt.Set", attribute));
     return method;
   }
@@ -39,7 +42,8 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
   protected ASTCDMethod createSetOptMethod(final ASTCDAttribute attribute) {
     String name = String.format(SET_OPT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, this.getCDParameterFacade().createParameters(attribute));
-    method.setMCReturnType(this.builderType);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
+    method.setMCReturnType(returnType);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.Set", attribute));
     return method;
   }
@@ -49,7 +53,8 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
   protected ASTCDMethod createSetAbsentMethod(final ASTCDAttribute attribute) {
     String name = String.format(SET_ABSENT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name);
-    method.setMCReturnType(this.builderType);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
+    method.setMCReturnType(returnType);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.opt.SetAbsent", attribute));
     return method;
   }

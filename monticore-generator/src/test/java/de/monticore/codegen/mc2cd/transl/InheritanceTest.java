@@ -5,7 +5,7 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -53,7 +53,7 @@ public class InheritanceTest {
    */
   @Test
   public void testExtends() {
-    java.util.Optional<ASTMCQualifiedType> superClasses = astA.getSuperclassOpt();
+    java.util.Optional<ASTMCObjectType> superClasses = astA.getSuperclassOpt();
     assertTrue(superClasses.isPresent());
     String name = typeToString(superClasses.get());
     assertEquals("mc2cdtransformation.InheritanceGrammar.ASTextendedProd", name);
@@ -65,7 +65,7 @@ public class InheritanceTest {
    */
   @Test
   public void testImplements() {
-    List<ASTMCQualifiedType> superInterfaces = astB.getInterfaceList();
+    List<ASTMCObjectType> superInterfaces = astB.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("mc2cdtransformation.InheritanceGrammar.ASTimplementedProd", name);
@@ -77,7 +77,7 @@ public class InheritanceTest {
    */
   @Test
   public void testAstextends() {
-    java.util.Optional<ASTMCQualifiedType> superClasses = astC.getSuperclassOpt();
+    java.util.Optional<ASTMCObjectType> superClasses = astC.getSuperclassOpt();
     assertTrue(superClasses.isPresent());
     String name = typeToString(superClasses.get());
     assertEquals("AstExtendedType", name);
@@ -89,7 +89,7 @@ public class InheritanceTest {
    */
   @Test
   public void testAstimplements() {
-    List<ASTMCQualifiedType> superInterfaces = astD.getInterfaceList();
+    List<ASTMCObjectType> superInterfaces = astD.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("AstImplementedType", name);
@@ -101,7 +101,7 @@ public class InheritanceTest {
    */
   @Test
   public void testAstextendsQualified() {
-    java.util.Optional<ASTMCQualifiedType> superClasses = astE.getSuperclassOpt();
+    java.util.Optional<ASTMCObjectType> superClasses = astE.getSuperclassOpt();
     assertTrue(superClasses.isPresent());
     String name = typeToString(superClasses.get());
     assertEquals("java.util.Observable", name);
@@ -113,7 +113,7 @@ public class InheritanceTest {
    */
   @Test
   public void testAstimplementsQualified() {
-    List<ASTMCQualifiedType> superInterfaces = astF.getInterfaceList();
+    List<ASTMCObjectType> superInterfaces = astF.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("java.io.Serializable", name);

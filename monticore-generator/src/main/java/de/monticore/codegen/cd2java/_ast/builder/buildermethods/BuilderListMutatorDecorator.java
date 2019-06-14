@@ -6,7 +6,9 @@ import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.methods.mutator.ListMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +30,8 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
     List<ASTCDMethod> methods = super.createSetter(attribute);
     enableTemplates();
     for (ASTCDMethod m : methods) {
-      m.setMCReturnType(builderType);
+      ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
+      m.setMCReturnType(returnType);
       int attributeIndex = m.getName().lastIndexOf(capitalizedAttributeNameWithOutS);
       String methodName = m.getName().substring(0, attributeIndex);
       String parameterCall = m.getCDParameterList().stream()
@@ -43,7 +46,8 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
   protected ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
     String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethodByDefinition(signature);
-    method.setMCReturnType(builderType);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
+    method.setMCReturnType(returnType);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.Set", ast));
     return method;
   }

@@ -1102,7 +1102,7 @@ public class CdDecorator {
     List<String> delegateList = Lists.newArrayList(astClasses);
     for (CDDefinitionSymbol superCd : astHelper.getAllSuperCds(astHelper.getCdSymbol())) {
       for (CDTypeSymbol cdType : superCd.getTypes()) {
-        Optional<ASTNode> node = cdType.getAstNode();
+        Optional<ASTCDType> node = cdType.getAstNode();
         if (node.isPresent() && node.get() instanceof ASTCDClass) {
           if (!cdType.isAbstract() && !delegateList.contains(cdType.getName())) {
             delegateList.add(cdType.getName());
@@ -1325,7 +1325,7 @@ public class CdDecorator {
             + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
         imports.add(factoryPackage + "*");
         for (CDTypeSymbol type : superCd.getTypes()) {
-          Optional<ASTNode> node = type.getAstNode();
+          Optional<ASTCDType> node = type.getAstNode();
           if (node.isPresent() && node.get() instanceof ASTCDClass) {
             ASTCDClass cdClass = (ASTCDClass) node.get();
             if (astClasses.contains(cdClass.getName())) {

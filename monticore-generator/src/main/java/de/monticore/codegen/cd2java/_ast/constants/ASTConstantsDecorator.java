@@ -7,6 +7,8 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -110,7 +112,9 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
   }
 
   protected ASTCDMethod getGetAllLanguagesMethod(Collection<CDDefinitionSymbol> superCDs) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, getCDTypeFacade().createTypeByDefinition("Collection<String>"), GET_ALL_LANGUAGES);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createTypeByDefinition("Collection<String>")).build();
+
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, GET_ALL_LANGUAGES);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_constants.GetAllLanguages",
        superCDs));
     return method;

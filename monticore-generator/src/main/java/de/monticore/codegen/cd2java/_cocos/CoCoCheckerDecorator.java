@@ -11,7 +11,9 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.List;
 
@@ -149,7 +151,8 @@ public class CoCoCheckerDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
   protected ASTCDMethod createAddCoCoMethod(ASTMCType cocoType, ASTMCType checkerType) {
     ASTCDParameter parameter = getCDParameterFacade().createParameter(cocoType, COCO);
-    return getCDMethodFacade().createMethod(PUBLIC, checkerType, ADD_COCO, parameter);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(checkerType).build();
+    return getCDMethodFacade().createMethod(PUBLIC, returnType, ADD_COCO, parameter);
   }
 
   protected HookPoint createAddCoCoImpl(boolean isCurrentDiagram, String cocoCollectionName, String checkerName) {

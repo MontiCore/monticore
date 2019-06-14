@@ -10,7 +10,9 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +75,8 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
     List<ASTCDMethod> result = new ArrayList<>();
     for (ASTCNodeMethod astNodeMethod : ASTCNodeMethod.values()) {
       ASTCDMethod method = this.getCDMethodFacade().createMethodByDefinition(astNodeMethod.signature);
-      method.setMCReturnType(builderType);
+      ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
+      method.setMCReturnType(returnType);
       this.replaceTemplate(EMPTY_BODY, method, createImplementation(method));
       result.add(method);
     }

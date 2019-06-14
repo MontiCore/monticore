@@ -8,6 +8,7 @@ import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -53,15 +54,18 @@ public class CDMethodFacade {
   }
 
   public ASTCDMethod createMethod(final ASTModifier modifier, final String name) {
-    return createMethod(modifier, this.cdTypeFacade.createVoidType(), name);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCVoidType(cdTypeFacade.createVoidType()).build();
+    return createMethod(modifier, returnType, name);
   }
   
   public ASTCDMethod createMethod(final ASTModifier modifier, final String name, final ASTCDParameter... parameters) {
-    return createMethod(modifier, this.cdTypeFacade.createVoidType(), name, parameters);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCVoidType(cdTypeFacade.createVoidType()).build();
+    return createMethod(modifier, returnType, name, parameters);
   }
 
   public ASTCDMethod createMethod(final ASTModifier modifier, final String name, final List<ASTCDParameter> parameters) {
-    return createMethod(modifier, this.cdTypeFacade.createVoidType(), name, parameters);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCVoidType(cdTypeFacade.createVoidType()).build();
+    return createMethod(modifier, returnType, name, parameters);
   }
 
   public ASTCDMethod createMethod(final ASTModifier modifier, final ASTMCReturnType returnType, final String name) {

@@ -6,7 +6,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -26,7 +26,7 @@ public class ExternalImplementationTest {
 
   @Test
   public void testExternalImplementation() {
-    ASTMCQualifiedType cdInterface = astZ.getInterfaceList().get(0);
+    ASTMCObjectType cdInterface = astZ.getInterfaceList().get(0);
     assertTrue(cdInterface != null);
     String name = TransformationHelper.typeToString(cdInterface);
     assertEquals("mc2cdtransformation.Supergrammar.ASTZExt", name);

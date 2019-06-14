@@ -5,7 +5,7 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -40,7 +40,7 @@ public class InterfaceProdTest {
    */
   @Test
   public void testExtends() {
-    List<ASTMCQualifiedType> superInterfaces = astA.getInterfaceList();
+    List<ASTMCObjectType> superInterfaces = astA.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("mc2cdtransformation.InterfaceProd.ASTextendedProd", name);
@@ -52,7 +52,7 @@ public class InterfaceProdTest {
    */
   @Test
   public void testAstextends() {
-    List<ASTMCQualifiedType> superInterfaces = astB.getInterfaceList();
+    List<ASTMCObjectType> superInterfaces = astB.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("AstExtendedType", name);
@@ -64,7 +64,7 @@ public class InterfaceProdTest {
    */
   @Test
   public void testAstimplementsQualified() {
-    List<ASTMCQualifiedType> superInterfaces = astC.getInterfaceList();
+    List<ASTMCObjectType> superInterfaces = astC.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("java.io.Serializable", name);
