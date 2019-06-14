@@ -7,7 +7,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.utils.ASTNodes;
 
 import java.util.List;
@@ -30,10 +30,10 @@ public class RemoveRedundantSupertypesManipulation implements UnaryOperator<ASTC
     return cdCompilationUnit;
   }
   
-  private void removeRedundantSuperTypes(List<ASTMCQualifiedType> superClasses) {
+  private void removeRedundantSuperTypes(List<ASTMCObjectType> superClasses) {
     for (int i = 0; i < superClasses.size();) {
-      ASTMCQualifiedType inspectedAttribute = superClasses.get(i);
-      Iterable<ASTMCQualifiedType> remainingAttributes = Iterables.filter(superClasses,
+      ASTMCObjectType inspectedAttribute = superClasses.get(i);
+      Iterable<ASTMCObjectType> remainingAttributes = Iterables.filter(superClasses,
           attribute -> !attribute.equals(inspectedAttribute));
       if (isRedundant(inspectedAttribute, remainingAttributes)) {
         superClasses.remove(i);
@@ -44,8 +44,8 @@ public class RemoveRedundantSupertypesManipulation implements UnaryOperator<ASTC
     }
   }
   
-  private boolean isRedundant(ASTMCQualifiedType inspectedReference,
-      Iterable<ASTMCQualifiedType> remainingReferences) {
+  private boolean isRedundant(ASTMCObjectType inspectedReference,
+      Iterable<ASTMCObjectType> remainingReferences) {
     return StreamSupport.stream(remainingReferences.spliterator(), false)
         .anyMatch(
             ref -> TransformationHelper.typeToString(inspectedReference).equals(

@@ -9,9 +9,9 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.utils.Link;
 
 import java.util.List;
@@ -87,7 +87,7 @@ public class MultiplicityTranslation implements
     return oldType;
   }
 
-  private static ASTMCListType createNewListType(String oldTypeName) {
+  private static ASTMCObjectType createNewListType(String oldTypeName) {
     return createSimpleReference("java.util.List", oldTypeName);
     // TODO GV, MB
     /*

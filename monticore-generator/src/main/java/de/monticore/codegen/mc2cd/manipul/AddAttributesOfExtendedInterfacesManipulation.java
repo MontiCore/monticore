@@ -9,7 +9,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.utils.ASTNodes;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
   private void addAttributesOfExtendedInterfaces(ASTCDClass cdClass) {
     List<ASTCDAttribute> attributes = new ArrayList<>();
     // TODO GV:use Cd4Analysis symboltable to get all interfaces recursively
-    for (ASTMCQualifiedType interf : cdClass.getInterfaceList()) {
+    for (ASTMCObjectType interf : cdClass.getInterfaceList()) {
       if (interf instanceof ASTMCObjectType) {
         List<String> names = ((ASTMCObjectType) interf).getNameList();
         String interfaceName = (names.isEmpty())? "" : names.get(names.size()-1);

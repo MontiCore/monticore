@@ -38,6 +38,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
@@ -199,9 +200,9 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
                                    String packageSuffix) {
     Log.trace("Converted Cd or Java type: " + CollectionTypesPrinter.printType(astType), LOG_NAME);
     String genericType = "";
-    ASTMCObjectType convertedType = astType;
+    ASTMCTypeArgument convertedType = astType;
     if (isOptional(astType)) {
-      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
+      Optional<ASTMCTypeArgument> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfOptional(astType);
       if (!typeArgument.isPresent()) {
         return;
@@ -209,7 +210,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
       convertedType = typeArgument.get();
       genericType = OPTIONAL;
     } else if (MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astType, ARRAY_LIST)) {
-      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
+      Optional<ASTMCTypeArgument> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(astType, ARRAY_LIST);
       if (!typeArgument.isPresent()) {
         return;
@@ -217,7 +218,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
       convertedType = typeArgument.get();
       genericType = ARRAY_LIST;
     } else if (MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astType, JAVA_LIST)) {
-      Optional<ASTMCObjectType> typeArgument = MCCollectionTypesHelper
+      Optional<ASTMCTypeArgument> typeArgument = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(astType, JAVA_LIST);
       if (!typeArgument.isPresent()) {
         return;

@@ -63,37 +63,36 @@ public class CDTypeFacade {
     return type.get();
   }
 
-  public ASTMCObjectType createSimpleReferenceType(final Class<?> clazz) {
+  public ASTMCQualifiedType createSimpleReferenceType(final Class<?> clazz) {
     return createSimpleReferenceType(clazz.getSimpleName());
   }
 
-  public ASTMCObjectType createSimpleReferenceType(final String name) {
-    return MCCollectionTypesMill.mCObjectTypeBuilder()
-        .setNameList(Arrays.asList(name.split(PACKAGE_SEPARATOR)))
+  public ASTMCQualifiedType createSimpleReferenceType(final String name) {
+    return MCCollectionTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(Arrays.asList(name.split(PACKAGE_SEPARATOR)))
         .build();
   }
 
-  public ASTMCOptionalType createOptionalTypeOf(final Class<?> clazz) {
+  public ASTMCObjectType createOptionalTypeOf(final Class<?> clazz) {
     return createOptionalTypeOf(clazz.getSimpleName());
   }
 
-  public ASTMCOptionalType createOptionalTypeOf(final String name) {
+  public ASTMCObjectType createOptionalTypeOf(final String name) {
     return createSimpleReferenceType(Optional.class, name);
   }
 
-  public ASTMCOptionalType createOptionalTypeOf(final ASTMCType type) {
+  public ASTMCObjectType createOptionalTypeOf(final ASTMCType type) {
     return createSimpleReferenceType(Optional.class, MCCollectionTypesHelper.printType(type));
   }
 
-  public ASTMCListType createListTypeOf(final Class<?> clazz) {
+  public ASTMCObjectType createListTypeOf(final Class<?> clazz) {
     return createListTypeOf(clazz.getSimpleName());
   }
 
-  public ASTMCListType createListTypeOf(final String name) {
+  public ASTMCObjectType createListTypeOf(final String name) {
     return createSimpleReferenceType(List.class, name);
   }
 
-  public ASTMCListType createListTypeOf(final ASTMCType type) {
+  public ASTMCObjectType createListTypeOf(final ASTMCType type) {
     return createSimpleReferenceType(List.class, MCCollectionTypesHelper.printType(type));
   }
 
@@ -109,7 +108,7 @@ public class CDTypeFacade {
     return createSimpleReferenceType(Collection.class, MCCollectionTypesHelper.printType(type));
   }
 
-  public ASTMCMapType createMapTypeOf(final String firstType, final String secondType) {
+  public ASTMCObjectType createMapTypeOf(final String firstType, final String secondType) {
     return createSimpleReferenceType(Map.class, firstType, secondType);
   }
 
