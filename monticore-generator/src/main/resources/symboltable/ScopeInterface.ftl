@@ -27,6 +27,11 @@ import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolExcepti
 public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScopes?join(", ")} <#else> extends IScope</#if>  {
 
 <#list symbolNames?keys as symbol>
+
+  public boolean is${symbol}AlreadyResolved();
+
+  public void set${symbol}AlreadyResolved(boolean symbolAlreadyResolved);
+
   // all resolve Methods for ${symbol}Symbol
   default public Optional<${symbolNames[symbol]}> resolve${symbol}(String name) {
     return getResolvedOrThrowException(resolve${symbol}Many(name));

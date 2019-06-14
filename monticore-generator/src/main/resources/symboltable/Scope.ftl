@@ -37,6 +37,8 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
 <#list symbolNames?keys as symbol>
   protected LinkedListMultimap<String, ${symbolNames[symbol]}> ${symbol?lower_case}s = LinkedListMultimap.create();
 
+  protected boolean is${symbol?lower_case}AlreadyResolved = false;
+
 </#list>
   protected I${languageName}Scope enclosingScope;
 
@@ -189,6 +191,16 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
 
   public LinkedListMultimap<String, ${symbolNames[symbol]}> get${symbol}s() {
     return this.${symbol?lower_case}s;
+  }
+
+  @Override
+  public boolean is${symbol}AlreadyResolved() {
+    return ${symbol?lower_case}AlreadyResolved;
+  }
+
+  @Override
+  public void set${symbol}AlreadyResolved(boolean symbolAlreadyResolved) {
+    ${symbol?lower_case}AlreadyResolved = symbolAlreadyResolved;
   }
 
 </#list>
