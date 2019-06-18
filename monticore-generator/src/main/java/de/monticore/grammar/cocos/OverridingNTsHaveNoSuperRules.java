@@ -8,7 +8,7 @@ import java.util.Optional;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTClassProdCoCo;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.se_rwth.commons.logging.Log;
 

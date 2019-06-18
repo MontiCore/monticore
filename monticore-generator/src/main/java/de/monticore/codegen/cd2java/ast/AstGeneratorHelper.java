@@ -8,7 +8,7 @@ import de.monticore.cd.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.CollectionTypesPrinter;
 import de.monticore.types.MCCollectionTypesHelper;

@@ -49,9 +49,9 @@ import de.monticore.generating.templateengine.reporting.reporter.InputOutputFile
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
-import de.monticore.grammar.symboltable.MontiCoreGrammarModelLoader;
+import de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable._symboltable.MontiCoreGrammarLanguage;
+import de.monticore.grammar.grammar._symboltable._symboltable.MontiCoreGrammarModelLoader;
 import de.monticore.incremental.IncrementalChecker;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;

@@ -4,12 +4,10 @@ package de.monticore;
 
 import java.nio.file.Paths;
 
-import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
+import de.monticore.grammar.grammar._symboltable._symboltable.MontiCoreGrammarLanguage;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
-
-import java.nio.file.Paths;
 
 public class GrammarGlobalScopeTestFactory {
 

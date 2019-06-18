@@ -3,7 +3,7 @@ package de.monticore.grammar.cocos;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._cocos.GrammarASTNonTerminalCoCo;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;

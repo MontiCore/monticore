@@ -9,8 +9,8 @@ import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._cocos.GrammarASTNonTerminalCoCo;
-import de.monticore.grammar.symboltable.MCProdComponentSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable._symboltable.MCProdComponentSymbol;
+import de.monticore.grammar.grammar._symboltable._symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**

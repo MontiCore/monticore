@@ -11,12 +11,13 @@ import static org.junit.Assert.fail;
 
 import java.util.Optional;
 
+import de.monticore.grammar._symboltable.*;
+import de.monticore.grammar.grammar._symboltable._symboltable.*;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import de.monticore.GrammarGlobalScopeTestFactory;
-import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTExternalProd;

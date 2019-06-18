@@ -8,7 +8,7 @@ package de.monticore.codegen.symboltable;
 import java.util.Collection;
 
 import de.monticore.generating.GeneratorEngine;
-import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable._symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 
 public interface ScopeGenerator {
