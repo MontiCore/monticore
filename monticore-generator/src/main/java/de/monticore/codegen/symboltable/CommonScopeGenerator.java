@@ -5,13 +5,13 @@
  */
 package de.monticore.codegen.symboltable;
 
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTScopeRule;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 
 import java.nio.file.Path;
@@ -130,7 +130,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
 
     // list of all superscope interfaces of the current scope
     Set<String> allSuperScopes = new HashSet<>();
-    for (CDSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
+    for (CDDefinitionSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
       if (genHelper.hasSymbolTable(cdSymbol.getFullName())) {
         String qualifiedSymbolName = genHelper.getQualifiedScopeInterfaceType(cdSymbol);
         if (!qualifiedSymbolName.isEmpty()) {
@@ -152,7 +152,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     
     // list of superscopevisitors that the scope must accept
     Set<String> superScopeVisitors = new HashSet<>();
-    for (CDSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
+    for (CDDefinitionSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
       String qualifiedScopeVisitorName = genHelper.getQualifiedScopeVisitorType(cdSymbol);
       if (!qualifiedScopeVisitorName.isEmpty()) {
         superScopeVisitors.add(qualifiedScopeVisitorName);

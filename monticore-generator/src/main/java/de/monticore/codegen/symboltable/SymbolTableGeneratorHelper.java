@@ -543,7 +543,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
   public String getQualifiedScopeInterfaceType(String symbol) {
-    Optional<CDDefinitionSymbol> cdSymbol = this.cdSymbol.getEnclosingScope().resolve(symbol, CDDefinitionSymbol.KIND);
+    Optional<CDDefinitionSymbol> cdSymbol = this.cdSymbol.getEnclosingScope2().resolveC(symbol, CDDefinitionSymbol.KIND);
     if (cdSymbol.isPresent()) {
       return getQualifiedScopeInterfaceType(cdSymbol.get());
     }

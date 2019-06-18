@@ -48,11 +48,11 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
 
   public ASTMCType getVisitorType() {
-    return getCDTypeFactory().createSimpleReferenceType(getVisitorFullTypeName());
+    return getCDTypeFactory().createQualifiedType(getVisitorFullTypeName());
   }
 
   public ASTMCQualifiedType getVisitorReferenceType() {
-    return getCDTypeFactory().createSimpleReferenceType(getVisitorFullTypeName());
+    return getCDTypeFactory().createQualifiedType(getVisitorFullTypeName());
   }
 
   public List<ASTMCQualifiedType> getAllVisitorTypesInHierarchy() {

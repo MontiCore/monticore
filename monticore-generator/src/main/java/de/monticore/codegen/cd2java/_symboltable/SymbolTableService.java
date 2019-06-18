@@ -64,15 +64,15 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public ASTMCType getScopeType() {
-    return getCDTypeFactory().createSimpleReferenceType(getScopeTypeName());
+    return getCDTypeFactory().createQualifiedType(getScopeTypeName());
   }
 
   public ASTMCType getScopeInterfaceType() {
-    return getCDTypeFactory().createSimpleReferenceType(getScopeInterfaceTypeName());
+    return getCDTypeFactory().createQualifiedType(getScopeInterfaceTypeName());
   }
 
   public ASTMCType getScopeInterfaceType(CDDefinitionSymbol cdSymbol) {
-    return getCDTypeFactory().createSimpleReferenceType(getScopeInterfaceTypeName(cdSymbol));
+    return getCDTypeFactory().createQualifiedType(getScopeInterfaceTypeName(cdSymbol));
   }
 
   public String getSymbolName(ASTCDType clazz) {
@@ -88,7 +88,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public ASTMCType getSymbolType(ASTCDType clazz) {
-    return getCDTypeFactory().createSimpleReferenceType(getSymbolTypeName(clazz));
+    return getCDTypeFactory().createQualifiedType(getSymbolTypeName(clazz));
   }
 
   public String getReferencedSymbolTypeName(ASTCDAttribute attribute) {
@@ -104,7 +104,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getSimpleSymbolNameFromOptional(ASTMCType type) {
-    ASTMCType referencedSymbolType = MCCollectionTypesHelper.getSimpleReferenceTypeFromOptional(type.deepClone());
+    ASTMCType referencedSymbolType = MCCollectionTypesHelper.getReferenceTypeFromOptional(type.deepClone()).getMCTypeOpt().get();
     String referencedSymbol = CollectionTypesPrinter.printType(referencedSymbolType);
     return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SymbolTableConstants.SYMBOL_SUFFIX));
   }

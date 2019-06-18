@@ -49,7 +49,7 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
 
   protected ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
     String name = String.format(GET, naiveAttributeName);
-    ASTMCType type = MCCollectionTypesHelper.getSimpleReferenceTypeFromOptional(ast.getMCType().deepClone());
+    ASTMCType type = MCCollectionTypesHelper.getReferenceTypeFromOptional(ast.getMCType().deepClone()).getMCTypeOpt().get();
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, returnType, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get", ast, naiveAttributeName));

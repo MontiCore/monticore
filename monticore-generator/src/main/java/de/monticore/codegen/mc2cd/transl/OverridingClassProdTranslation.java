@@ -37,7 +37,7 @@ public class OverridingClassProdTranslation implements
         String qualifiedASTNodeName = TransformationHelper.getPackageName(ruleSymbol.get()) + "AST"
             + ruleSymbol.get().getName();
         link.target().setSuperclass(
-            TransformationHelper.createSimpleReference(qualifiedASTNodeName));
+            TransformationHelper.createType(qualifiedASTNodeName));
       }
       
     }

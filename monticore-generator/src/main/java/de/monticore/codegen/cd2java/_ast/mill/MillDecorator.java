@@ -1,15 +1,17 @@
 package de.monticore.codegen.cd2java._ast.mill;
 
 import com.google.common.collect.Lists;
-import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.CollectionTypesPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -59,7 +61,7 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
     ASTMCType millType = this.getCDTypeFacade().createTypeByDefinition(millClassName);
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
 
-    Collection<CDSymbol> superSymbolList = service.getSuperCDs();
+    Collection<CDDefinitionSymbol> superSymbolList = service.getSuperCDs();
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, millClassName);
 
@@ -109,7 +111,8 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
   }
 
   protected ASTCDMethod addGetMillMethods(ASTMCType millType) {
-    ASTCDMethod getMillMethod = this.getCDMethodFacade().createMethod(PROTECTED_STATIC, millType, GET_MILL);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(millType).build();
+    ASTCDMethod getMillMethod = this.getCDMethodFacade().createMethod(PROTECTED_STATIC, returnType, GET_MILL);
     this.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint("_ast.mill.GetMillMethod", CollectionTypesPrinter.printType(millType)));
     return getMillMethod;
   }
@@ -127,7 +130,7 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
     return initMethod;
   }
 
-  protected ASTCDMethod addResetMethod(List<ASTCDClass> astcdClassList, Collection<CDSymbol> superSymbolList) {
+  protected ASTCDMethod addResetMethod(List<ASTCDClass> astcdClassList, Collection<CDDefinitionSymbol> superSymbolList) {
     ASTCDMethod resetMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, RESET);
     this.replaceTemplate(EMPTY_BODY, resetMethod, new TemplateHookPoint("_ast.mill.ResetMethod", getAttributeNameList(astcdClassList), superSymbolList));
     return resetMethod;
@@ -138,7 +141,8 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
 
     for (ASTCDClass astcdClass : astcdClassList) {
       String astName = astcdClass.getName();
-      ASTMCType builderType = this.getCDTypeFacade().createSimpleReferenceType(astName + BUILDER);
+      ASTMCReturnType builderType = MCBasicTypesMill.mCReturnTypeBuilder().
+              setMCType(this.getCDTypeFacade().createQualifiedType(astName + BUILDER)).build();
       String methodName = StringTransformations.uncapitalize(astName.replaceFirst("AST", "")) + BUILDER;
 
       // add public static Method for Builder
@@ -149,17 +153,17 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
       // add protected Method for Builder
       ASTCDMethod protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
       builderMethodsList.add(protectedMethod);
-      this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderMethod", CollectionTypesPrinter.printType(builderType)));
+      this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderMethod", CollectionTypesPrinter.printReturnType(builderType)));
     }
 
     return builderMethodsList;
   }
 
-  protected List<ASTCDMethod> addSuperBuilderMethods(Collection<CDSymbol> superSymbolList) {
+  protected List<ASTCDMethod> addSuperBuilderMethods(Collection<CDDefinitionSymbol> superSymbolList) {
     List<ASTCDMethod> superMethods = new ArrayList<>();
     //get super symbols
-    for (CDSymbol superSymbol : superSymbolList) {
-      Optional<ASTNode> astNode = superSymbol.getAstNode();
+    for (CDDefinitionSymbol superSymbol : superSymbolList) {
+      Optional<ASTCDDefinition> astNode = superSymbol.getAstNode();
       if (astNode.isPresent() && astNode.get() instanceof ASTCDDefinition) {
         //get super cddefinition
         ASTCDDefinition superDefinition = (ASTCDDefinition) astNode.get().deepClone();
@@ -173,7 +177,8 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
         for (ASTCDClass superClass : copiedList) {
           if (!service.isClassOverwritten(superClass, astcdDefinition.getCDClassList())) {
             String packageName = superSymbol.getFullName().toLowerCase() + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
-            ASTMCType superAstType = this.getCDTypeFacade().createSimpleReferenceType(packageName + superClass.getName() + BUILDER);
+            ASTMCReturnType superAstType = MCBasicTypesMill.mCReturnTypeBuilder().
+                    setMCType(this.getCDTypeFacade().createQualifiedType(packageName + superClass.getName() + BUILDER)).build();
             String methodName = StringTransformations.uncapitalize(superClass.getName().replaceFirst("AST", "")) + BUILDER;
 
             //add builder method

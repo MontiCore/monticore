@@ -26,7 +26,11 @@ import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.CollectionTypesPrinter;
 import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -148,12 +152,7 @@ public class CdEmfDecorator extends CdDecorator {
         
   }
   
-  /**
-   *
-   * @param astHelper
-   * @param astNotListClasses
-   */
-  void createEmfAttributes(AstEmfGeneratorHelper astHelper, ETypeCollector emfCollector,
+   void createEmfAttributes(AstEmfGeneratorHelper astHelper, ETypeCollector emfCollector,
       List<ASTCDType> astTypes) {
     emfAttributes.clear();
     astTypes.stream().filter(t -> t instanceof ASTCDClass)
@@ -172,11 +171,6 @@ public class CdEmfDecorator extends CdDecorator {
     return Arrays.asList(AstAdditionalAttributes.values()).stream().map(a -> a.toString());
   }
   
-  /**
-   *
-   * @param astClasses
-   * @param map.
-   */
   void addEmfCode(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDClass> astClasses,
       List<ASTCDType> types, AstEmfGeneratorHelper astHelper, Map<String, String> map) {
       
@@ -641,7 +635,7 @@ public class CdEmfDecorator extends CdDecorator {
   String createEDataType(ASTCDAttribute cdAttribute, boolean isAstList,
       AstEmfGeneratorHelper astHelper, ETypeCollector eTypeCollector) {
     if (isAstList || AstEmfGeneratorHelper.istJavaList(cdAttribute)) {
-      Optional<ASTSimpleReferenceType> typeArg = MCCollectionTypesHelper
+      Optional<ASTMCTypeArgument> typeArg = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(cdAttribute.getMCType(), GeneratorHelper.JAVA_LIST);
       if (typeArg.isPresent()) {
         return Names.getSimpleName(MCCollectionTypesHelper
@@ -771,30 +765,30 @@ public class CdEmfDecorator extends CdDecorator {
     }
     
     @Override
-    public void visit(ASTSimpleReferenceType ast) {
+    public void visit(ASTMCObjectType ast) {
       collectExternalTypes(ast);
     }
     
-    private void collectExternalTypes(ASTSimpleReferenceType astType) {
+    private void collectExternalTypes(ASTMCObjectType astType) {
       String genericType = "";
-      ASTSimpleReferenceType convertedType = astType;
+      ASTMCType convertedType = astType;
       if (AstGeneratorHelper.isOptional(astType)) {
-        Optional<ASTSimpleReferenceType> typeArgument = MCCollectionTypesHelper
+        Optional<ASTMCTypeArgument> typeArgument = MCCollectionTypesHelper
             .getFirstTypeArgumentOfOptional(astType);
         if (!typeArgument.isPresent()) {
           return;
         }
-        convertedType = typeArgument.get();
+        convertedType = typeArgument.get().getMCTypeOpt().get();
         genericType = AstGeneratorHelper.OPTIONAL;
       }
       else if (MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astType,
           AstGeneratorHelper.JAVA_LIST)) {
-        Optional<ASTSimpleReferenceType> typeArgument = MCCollectionTypesHelper
+        Optional<ASTMCTypeArgument> typeArgument = MCCollectionTypesHelper
             .getFirstTypeArgumentOfGenericType(astType, AstGeneratorHelper.JAVA_LIST);
         if (!typeArgument.isPresent()) {
           return;
         }
-        convertedType = typeArgument.get();
+        convertedType = typeArgument.get().getMCTypeOpt().get();
         genericType = AstGeneratorHelper.JAVA_LIST;
       }
       String convertedTypeName = CollectionTypesPrinter.printType(convertedType);

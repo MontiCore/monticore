@@ -157,7 +157,7 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2, method.sizeCDParameters());
 
-    ASTMCType fooType = cdTypeFacade.createSimpleReferenceType("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
+    ASTMCType fooType = cdTypeFacade.createQualifiedType("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
     ASTCDParameter fooParameter = cdParameterFacade.createParameter(fooType, "foo");
     //assertTrue(fooParameter.getType().deepEquals(method.getCDParameter(0).getType())); todo fix ast->cd transformation
     assertEquals("de.monticore.codegen.factory.agrammar._ast.ASTFoo", CollectionTypesPrinter.printType(method.getCDParameter(0).getMCType()));

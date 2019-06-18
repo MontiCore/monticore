@@ -37,11 +37,11 @@ public class CDParameterFacade {
   }
 
   public ASTCDParameter createParameter(final Class<?> type, final String name) {
-    return createParameter(CDTypeFacade.getInstance().createSimpleReferenceType(type), name);
+    return createParameter(CDTypeFacade.getInstance().createQualifiedType(type), name);
   }
 
   public ASTCDParameter createParameter(final Class<?> type) {
-    return createParameter(CDTypeFacade.getInstance().createSimpleReferenceType(type), StringUtils.uncapitalize(type.getSimpleName()));
+    return createParameter(CDTypeFacade.getInstance().createQualifiedType(type), StringUtils.uncapitalize(type.getSimpleName()));
   }
 
   public ASTCDParameter createParameter(final ASTCDAttribute ast) {

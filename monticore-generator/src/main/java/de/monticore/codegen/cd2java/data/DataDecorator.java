@@ -134,7 +134,7 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   protected ASTCDMethod createDeepCloneWithParam(ASTCDClass clazz) {
     String simpleName = dataDecoratorUtil.getSimpleName(clazz);
     // deep clone with result parameter
-    ASTMCType classType = this.getCDTypeFacade().createSimpleReferenceType(simpleName);
+    ASTMCType classType = this.getCDTypeFacade().createQualifiedType(simpleName);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(classType, "result");
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(classType).build();
     ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC, returnType, DEEP_CLONE_METHOD, parameter);

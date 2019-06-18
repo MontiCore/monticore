@@ -55,7 +55,7 @@ public class ImplementsTranslation implements
         Log.error("0xA0137 The rule '" + ruleReference.getName() + "' does not exist!", ruleReference.get_SourcePositionStart());
       }
       cdClass.getInterfaceList().add(
-          TransformationHelper.createSimpleReference(TransformationHelper
+          TransformationHelper.createType(TransformationHelper
               .getPackageName(ruleSymbol.get())
               + "AST"
               + ruleReference.getName()));
@@ -68,7 +68,7 @@ public class ImplementsTranslation implements
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);
       cdClass.getInterfaceList().add(
-          TransformationHelper.createSimpleReference(qualifiedRuleName));
+          TransformationHelper.createType(qualifiedRuleName));
     }
   }
   
@@ -83,7 +83,7 @@ public class ImplementsTranslation implements
         Log.error("0xA0138 The rule '" + ruleReference.getName() + "' does not exist!");
       }
       cdClass.getInterfaceList().add(
-          TransformationHelper.createSimpleReference(TransformationHelper
+          TransformationHelper.createType(TransformationHelper
               .getPackageName(ruleSymbol.get())
               + "AST"
               + ruleReference.getName()));
@@ -96,7 +96,7 @@ public class ImplementsTranslation implements
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);
       cdClass.getInterfaceList().add(
-          TransformationHelper.createSimpleReference(qualifiedRuleName));
+          TransformationHelper.createType(qualifiedRuleName));
     }
   }
   

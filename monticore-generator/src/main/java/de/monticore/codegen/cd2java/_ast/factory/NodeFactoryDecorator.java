@@ -38,7 +38,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
     this.compilationUnit = astcdCompilationUnit;
     ASTCDDefinition astcdDefinition = astcdCompilationUnit.getCDDefinition();
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
-    ASTMCType factoryType = this.getCDTypeFacade().createSimpleReferenceType(factoryClassName);
+    ASTMCType factoryType = this.getCDTypeFacade().createQualifiedType(factoryClassName);
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, factoryClassName);
 
@@ -95,7 +95,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
   protected List<ASTCDMethod> addFactoryMethods(ASTCDClass astcdClass) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     String astName = astcdClass.getName();
-    ASTMCType astType = this.getCDTypeFacade().createSimpleReferenceType(astName);
+    ASTMCType astType = this.getCDTypeFacade().createQualifiedType(astName);
 
     // add create Method for AST without parameters
     methodList.add(addCreateMethod(astName, astType));
@@ -165,7 +165,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
               && !(superClass.isPresentModifier() && superClass.getModifier().isAbstract())
               && !nodeFactoryService.isMethodAlreadyDefined(CREATE_METHOD + superClass.getName(), delegateMethodList)) {
             String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
-            ASTMCType superAstType = this.getCDTypeFacade().createSimpleReferenceType(packageName + superClass.getName());
+            ASTMCType superAstType = this.getCDTypeFacade().createQualifiedType(packageName + superClass.getName());
 
             //add create method without parameters
             delegateMethodList.add(addCreateDelegateMethod(superAstType, superClass.getName(), packageName, superSymbol.getName()));

@@ -43,8 +43,8 @@ public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> 
   @Override
   public ASTCDClass decorate(final ASTCDClass domainClass) throws DecorateException {
     String builderClassName = domainClass.getName() + BUILDER_SUFFIX;
-    ASTMCType domainType = this.getCDTypeFacade().createSimpleReferenceType(domainClass.getName());
-    ASTMCType builderType = this.getCDTypeFacade().createSimpleReferenceType(builderClassName);
+    ASTMCType domainType = this.getCDTypeFacade().createQualifiedType(domainClass.getName());
+    ASTMCType builderType = this.getCDTypeFacade().createQualifiedType(builderClassName);
 
 
     CDModifier modifier = PUBLIC;

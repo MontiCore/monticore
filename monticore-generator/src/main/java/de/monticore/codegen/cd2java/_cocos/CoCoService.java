@@ -40,7 +40,7 @@ public class CoCoService extends AbstractService<CoCoService> {
   }
 
   public ASTMCType getCoCoType(ASTCDType type) {
-    return getCDTypeFactory().createSimpleReferenceType(getCoCoFullTypeName(type));
+    return getCDTypeFactory().createQualifiedType(getCoCoFullTypeName(type));
   }
 
   public String getCoCoSimpleTypeName() {
@@ -52,7 +52,7 @@ public class CoCoService extends AbstractService<CoCoService> {
   }
 
   public ASTMCType getCoCoType() {
-    return getCDTypeFactory().createSimpleReferenceType(getCoCoFullTypeName());
+    return getCDTypeFactory().createQualifiedType(getCoCoFullTypeName());
   }
 
   public String getCheckerSimpleTypeName() {
@@ -64,6 +64,6 @@ public class CoCoService extends AbstractService<CoCoService> {
   }
 
   public ASTMCType getCheckerType() {
-    return getCDTypeFactory().createSimpleReferenceType(getCheckerFullTypeName());
+    return getCDTypeFactory().createQualifiedType(getCheckerFullTypeName());
   }
 }

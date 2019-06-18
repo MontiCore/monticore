@@ -71,7 +71,7 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     clazz.addCDMethod(getConstructMethod(clazz));
     clazz.addCDMethod(createGetChildrenMethod(clazz));
     if (!clazz.isPresentSuperclass()) {
-      clazz.setSuperclass(this.getCDTypeFacade().createSimpleReferenceType(ASTCNode.class));
+      clazz.setSuperclass(this.getCDTypeFacade().createQualifiedType(ASTCNode.class));
     }
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(clazz);
@@ -135,7 +135,7 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   protected ASTCDMethod getConstructMethod(ASTCDClass astClass) {
     ASTCDMethod constructMethod;
-    ASTMCType classType = this.getCDTypeFacade().createSimpleReferenceType(astClass.getName());
+    ASTMCType classType = this.getCDTypeFacade().createQualifiedType(astClass.getName());
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(classType).build();
     if (astClass.isPresentModifier() && astClass.getModifier().isAbstract()) {
       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT, returnType, ASTConstants.CONSTRUCT_METHOD);

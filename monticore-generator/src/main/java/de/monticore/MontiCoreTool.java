@@ -115,7 +115,6 @@ public class MontiCoreTool {
 
     this.resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(mcLanguage.getResolvingFilters());
-    resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
 
     this.symbolTable = new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4aLanguage), resolvingConfiguration);
     this.mcModelLoader = new MontiCoreGrammarModelLoader(mcLanguage);
@@ -310,7 +309,6 @@ public class MontiCoreTool {
     // new generation process using decorator
     CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
     GlobalScope symbolTable = new GlobalScope(modelPath, cd4aLanguage, resolvingConfiguration);
 
     for (Map.Entry<ASTMCGrammar, ASTCDCompilationUnit> pair : input.entrySet()) {

@@ -208,7 +208,7 @@ public class ListMutatorDecoratorTest {
   public void testRemoveWithIndexMethod() {
     List<ASTCDMethod> methods = getMethodsBy("removeA", 1, this.methods);
     assertEquals(2, methods.size());
-    ASTMCType exptectedReturnType = CDTypeFacade.getInstance().createSimpleReferenceType(String.class);
+    ASTMCType exptectedReturnType = CDTypeFacade.getInstance().createQualifiedType(String.class);
     methods = methods.stream().filter(m -> m.getMCReturnType().deepEquals(exptectedReturnType)).collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);

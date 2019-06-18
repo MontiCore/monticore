@@ -565,8 +565,8 @@ public class CdDecorator {
         if (!astHelper.isListType(CollectionTypesPrinter.printType(attribute.getMCType()))) {
           continue;
         }
-        Optional<ASTMCObjectType> type = MCCollectionTypesHelper
-            .getFirstTypeArgumentOfGenericType(attribute.getMCType(), GeneratorHelper.JAVA_LIST);
+        Optional<ASTMCType> type = MCCollectionTypesHelper
+            .getFirstTypeArgumentOfGenericType(attribute.getMCType(), GeneratorHelper.JAVA_LIST).get().getMCTypeOpt();
         if (!type.isPresent()) {
           continue;
         }
@@ -599,8 +599,8 @@ public class CdDecorator {
         if (!astHelper.isListType(CollectionTypesPrinter.printType(attribute.getMCType()))) {
           continue;
         }
-        Optional<ASTMCObjectType> type = MCCollectionTypesHelper
-            .getFirstTypeArgumentOfGenericType(attribute.getMCType(), GeneratorHelper.JAVA_LIST);
+        Optional<ASTMCType> type = MCCollectionTypesHelper
+            .getFirstTypeArgumentOfGenericType(attribute.getMCType(), GeneratorHelper.JAVA_LIST).get().getMCTypeOpt();
         if (!type.isPresent()) {
           continue;
         }
@@ -870,18 +870,18 @@ public class CdDecorator {
    * @throws ANTLRException
    */
   protected void addBuilders(ASTCDDefinition cdDefinition, AstGeneratorHelper astHelper) {
-    newArrayList(cdDefinition.getCDClassList()).stream()
+    Lists.newArrayList(cdDefinition.getCDClassList()).stream()
         .forEach(c -> {
           Optional<ASTCDClass> clazz = cdTransformation.addCdClassUsingDefinition(
               cdDefinition,
               "public class " + AstGeneratorHelper.getNameOfBuilderClass(c) + " ;");
           if (clazz.isPresent()) {
             c.getCDAttributeList().stream().forEach(a -> cdTransformation.addCdAttribute(clazz.get(), a));
-            ASTSimpleReferenceType superClass;
+            ASTMCObjectType superClass;
             if (c.isPresentSuperclass()) {
-              superClass = TransformationHelper.createSimpleReference(c.printSuperClass() + "Builder");
+              superClass = TransformationHelper.createType(c.printSuperClass() + "Builder");
             } else {
-              superClass = TransformationHelper.createSimpleReference("de.monticore.ast.ASTNodeBuilder", clazz.get().getName());
+              superClass = TransformationHelper.createType("de.monticore.ast.ASTNodeBuilder", clazz.get().getName());
             }
             clazz.get().setSuperclass(superClass);
           }
@@ -1246,7 +1246,7 @@ public class CdDecorator {
       millClass.setModifier(TransformationHelper.createAbstractModifier());
     }
     millClass.setName(millClassName);
-    millClass.setSuperclass(TransformationHelper.createSimpleReference(symbol.getName()));
+    millClass.setSuperclass(TransformationHelper.createType(symbol.getName()));
 
     // Add builder-creating methods
     for (CDTypeSymbol cdType : overriddenClasses) {

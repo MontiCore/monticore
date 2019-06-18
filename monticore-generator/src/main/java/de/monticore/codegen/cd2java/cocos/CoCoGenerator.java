@@ -5,6 +5,7 @@ package de.monticore.codegen.cd2java.cocos;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
@@ -35,7 +36,7 @@ public class CoCoGenerator {
    * dispatch mechanism of {@link VisitorGenerator}.
    */
   public static void generate(GlobalExtensionManagement glex,
-                              GlobalScope globalScope,
+                              CD4AnalysisGlobalScope globalScope,
                               ASTCDCompilationUnit astClassDiagram, File outputDirectory) {
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);

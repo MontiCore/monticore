@@ -13,6 +13,7 @@ import de.monticore.emf._ast.ASTENodePackage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.CollectionTypesPrinter;
 import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -51,7 +52,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
       String attributeName = getPlainName(clazz) + "_"
           + StringTransformations.capitalize(GeneratorHelper.getNativeAttributeName(attribute
               .getName()));
-      Optional<ASTSimpleReferenceType> typeArg = MCCollectionTypesHelper
+      Optional<ASTMCTypeArgument> typeArg = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(attribute.getMCType(), JAVA_LIST);
       if (typeArg.isPresent()) {
         String typeArgName = MCCollectionTypesHelper.printType(typeArg.get());
@@ -76,11 +77,11 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   public String getNativeTypeName(ASTCDAttribute attribute) {
     if (isOptional(attribute)) {
       return MCCollectionTypesHelper
-          .printType(MCCollectionTypesHelper.getSimpleReferenceTypeFromOptional(attribute.getMCType()));
+          .printType(MCCollectionTypesHelper.getReferenceTypeFromOptional(attribute.getMCType()));
           
     }
     if (isListAstNode(attribute)) {
-      Optional<ASTSimpleReferenceType> typeArg = MCCollectionTypesHelper
+      Optional<ASTMCTypeArgument> typeArg = MCCollectionTypesHelper
           .getFirstTypeArgumentOfGenericType(attribute.getMCType(), JAVA_LIST);
       if (typeArg.isPresent()) {
         return printType(typeArg.get());
@@ -183,11 +184,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     return types;
   }
   
-  /**
-   *
-   * @param cdType
-   * @return
-   */
   public Collection<CDFieldSymbol> getAllVisibleFields(ASTCDType type) {
     List<CDFieldSymbol> allSuperTypeFields = new ArrayList<>();
     if (!type.isPresentSymbol()) {
@@ -251,7 +247,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   }
   
   public static boolean istJavaList(ASTCDAttribute attribute) {
-    return CollectionTypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getMCType())
+    return attribute.getMCType().getBaseName()
         .equals(JAVA_LIST);
   }
   

@@ -94,7 +94,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAcceptMethod() {
     List<ASTCDMethod> methods = getMethodsBy("accept", 1, astClass);
-    ASTMCType visitorType = this.cdTypeFacade.createSimpleReferenceType("de.monticore.codegen.ast.ast._visitor.ASTVisitor");
+    ASTMCType visitorType = this.cdTypeFacade.createQualifiedType("de.monticore.codegen.ast.ast._visitor.ASTVisitor");
 
     methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameter(0).getMCType())).collect(Collectors.toList());
     assertEquals(1, methods.size());
@@ -115,7 +115,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAcceptSuperMethod() {
     List<ASTCDMethod> methods = getMethodsBy("accept", 1, astClass);
-    ASTMCType visitorType = this.cdTypeFacade.createSimpleReferenceType("de.monticore.codegen.ast.super._visitor.SuperVisitor");
+    ASTMCType visitorType = this.cdTypeFacade.createQualifiedType("de.monticore.codegen.ast.super._visitor.SuperVisitor");
 
     methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameter(0).getMCType())).collect(Collectors.toList());
     assertEquals(1, methods.size());
@@ -148,7 +148,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   public void testConstructMethod() {
     ASTCDMethod method = getMethodBy("_construct", astClass);
     assertDeepEquals(PROTECTED, method.getModifier());
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(astClass.getName());
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(astClass.getName());
     assertDeepEquals(astType, method.getMCReturnType());
     assertTrue(method.isEmptyCDParameters());
   }

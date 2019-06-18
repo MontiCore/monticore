@@ -103,7 +103,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertEquals("initMe", initMe.getName());
     //test Parameters
     assertEquals(1, initMe.sizeCDParameters());
-    ASTMCType type = cdTypeFacade.createSimpleReferenceType("AutomatonMill");
+    ASTMCType type = cdTypeFacade.createQualifiedType("AutomatonMill");
     assertDeepEquals(type, initMe.getCDParameter(0).getMCType());
     assertEquals("a", initMe.getCDParameter(0).getName());
     //test ReturnType

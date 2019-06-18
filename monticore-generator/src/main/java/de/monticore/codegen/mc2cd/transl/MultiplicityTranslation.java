@@ -21,7 +21,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
+import static de.monticore.codegen.mc2cd.TransformationHelper.createType;
 import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 import static de.monticore.grammar.Multiplicity.determineMultiplicity;
 
@@ -81,14 +81,14 @@ public class MultiplicityTranslation implements
         return createNewListType(typeToString(oldType));
       }
       else if (multiplicity == Multiplicity.OPTIONAL) {
-        return createSimpleReference("Optional", typeToString(oldType));
+        return createType("Optional", typeToString(oldType));
       }
     }
     return oldType;
   }
 
   private static ASTMCObjectType createNewListType(String oldTypeName) {
-    return createSimpleReference("java.util.List", oldTypeName);
+    return createType("java.util.List", oldTypeName);
     // TODO GV, MB
     /*
     if (Names.getSimpleName(oldTypeName).startsWith(TransformationHelper.AST_PREFIX)) {

@@ -40,7 +40,7 @@ public class ReferenceTypeTranslation implements
 
     for (Link<ASTTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTTerminal.class,
         ASTCDAttribute.class)) {
-      link.target().setMCType(createSimpleReference("String"));
+      link.target().setMCType(createType("String"));
     }
 
     for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
@@ -56,17 +56,17 @@ public class ReferenceTypeTranslation implements
   private ASTMCType ruleSymbolToType(MCProdSymbol ruleSymbol, String typeName) {
     if (ruleSymbol.isLexerProd()) {
       if (!ruleSymbol.getAstNode().isPresent() || !(ruleSymbol.getAstNode().get() instanceof ASTLexProd)) {
-        return createSimpleReference("String");
+        return createType("String");
       }
       return determineConstantsType(HelperGrammar.createConvertType((ASTLexProd) ruleSymbol.getAstNode().get()))
           .map(lexType -> (ASTMCType) MCBasicTypesNodeFactory.createASTMCPrimitiveType(lexType))
-          .orElse(createSimpleReference("String"));
+          .orElse(createType("String"));
     } else if (ruleSymbol.isExternal()) {
-      return createSimpleReference("AST" + typeName + "Ext");
+      return createType("AST" + typeName + "Ext");
     } else {
       String qualifiedASTNodeName = getPackageName(ruleSymbol)
           + "AST" + ruleSymbol.getName();
-      return createSimpleReference(qualifiedASTNodeName);
+      return createType(qualifiedASTNodeName);
     }
   }
 
@@ -77,11 +77,11 @@ public class ReferenceTypeTranslation implements
     if (!ruleSymbol.isPresent()) {
       return determineTypeToSet(astGenericType, astMCGrammar);
     } else if (ruleSymbol.get().isExternal()) {
-      return createSimpleReference(astGenericType + "Ext");
+      return createType(astGenericType + "Ext");
     } else {
       String qualifiedASTNodeName = TransformationHelper
           .getPackageName(ruleSymbol.get()) + "AST" + ruleSymbol.get().getName();
-      return createSimpleReference(qualifiedASTNodeName);
+      return createType(qualifiedASTNodeName);
     }
   }
 
@@ -101,7 +101,7 @@ public class ReferenceTypeTranslation implements
         .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeName));
     Optional<ASTMCType> byPrimitive = determineConstantsType(typeName)
         .map(MCBasicTypesNodeFactory::createASTMCPrimitiveType);
-    return byReference.orElse(byPrimitive.orElse(createSimpleReference(typeName)));
+    return byReference.orElse(byPrimitive.orElse(createType(typeName)));
   }
 
   private Optional<Integer> determineConstantsType(String typeName) {

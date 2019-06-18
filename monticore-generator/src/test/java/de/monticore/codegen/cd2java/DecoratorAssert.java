@@ -30,11 +30,11 @@ public final class DecoratorAssert {
   }
 
   public static void assertDeepEquals(Class<?> expected, ASTNode actual) {
-    assertDeepEquals(CD_TYPE_FACADE.createSimpleReferenceType(expected), actual);
+    assertDeepEquals(CD_TYPE_FACADE.createQualifiedType(expected), actual);
   }
 
   public static void assertDeepEquals(String name, ASTNode actual) {
-    assertDeepEquals(CD_TYPE_FACADE.createSimpleReferenceType(name), actual);
+    assertDeepEquals(CD_TYPE_FACADE.createQualifiedType(name), actual);
   }
 
   public static void assertBoolean(ASTNode actual) {

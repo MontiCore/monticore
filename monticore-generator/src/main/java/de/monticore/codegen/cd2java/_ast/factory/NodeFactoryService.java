@@ -40,7 +40,7 @@ public class NodeFactoryService extends AbstractService<NodeFactoryService> {
   }
 
   public ASTMCType getNodeFactoryType() {
-    return getCDTypeFactory().createSimpleReferenceType(getNodeFactoryFullTypeName());
+    return getCDTypeFactory().createQualifiedType(getNodeFactoryFullTypeName());
   }
 
   public String getCreateInvocation(ASTCDClass clazz) {

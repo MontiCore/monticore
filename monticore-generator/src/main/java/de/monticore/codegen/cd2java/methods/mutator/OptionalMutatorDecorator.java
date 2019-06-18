@@ -43,7 +43,7 @@ public class OptionalMutatorDecorator extends AbstractDecorator<ASTCDAttribute, 
 
   protected ASTCDMethod createSetMethod(final ASTCDAttribute ast) {
     String name = String.format(SET, naiveAttributeName);
-    ASTMCType parameterType = MCCollectionTypesHelper.getSimpleReferenceTypeFromOptional(ast.getMCType()).deepClone();
+    ASTMCType parameterType = MCCollectionTypesHelper.getReferenceTypeFromOptional(ast.getMCType()).getMCTypeOpt().get().deepClone();
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, parameter);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Set", ast));

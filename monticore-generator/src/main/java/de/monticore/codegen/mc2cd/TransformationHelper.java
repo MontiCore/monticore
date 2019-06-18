@@ -22,6 +22,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.*;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mccollectiontypes._ast.MCCollectionTypesNodeFactory;
 import de.monticore.utils.ASTNodes;
@@ -144,7 +145,7 @@ public final class TransformationHelper {
                                                String parameterName) {
     ASTCDParameter parameter = CD4AnalysisNodeFactory
         .createASTCDParameter();
-    parameter.setMCType(TransformationHelper.createSimpleReference(typeName));
+    parameter.setMCType(TransformationHelper.createType(typeName));
     parameter.setName(parameterName);
     return parameter;
   }
@@ -179,34 +180,23 @@ public final class TransformationHelper {
     return modifier;
   }
 
-  public static ASTMCObjectType createSimpleReference(
-      String typeName, String... generics) {
-    ASTMCObjectType reference = MCCollectionTypesNodeFactory
-        .createASTMCObjectType();
-
-    // set the name of the type
-    ArrayList<String> name = new ArrayList<String>();
-    name.add(typeName);
-    reference.setNameList(name);
-
-    // set generics
-    if (generics.length > 0) {
-      List<ASTMCTypeArgument> typeArguments = new ArrayList<>();
-      for (String generic : generics) {
-        typeArguments.add(createSimpleReference(generic));
-      }
-      reference.setTypeArguments(TypesNodeFactory
-          .createASTTypeArguments(typeArguments));
+  public static ASTMCGenericType createType(
+      String typeName, String generics) {
+    CD4AnalysisParser parser = new CD4AnalysisParser();
+    Optional<ASTMCGenericType> optType = null;
+    try {
+      optType = parser.parse_StringMCGenericType(typeName + "<" + generics + ">");
+    } catch (IOException e) {
+      Log.error("0xA4036 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
     }
-
-    return reference;
+    return optType.get();
   }
 
-  public static ASTMCType createType(String typeName) {
+  public static ASTMCObjectType createType(String typeName) {
     CD4AnalysisParser parser = new CD4AnalysisParser();
-    Optional<ASTMCType> optType = null;
+    Optional<ASTMCObjectType> optType = null;
     try {
-      optType = parser.parse_StringMCType(typeName);
+      optType = parser.parse_StringMCObjectType(typeName);
     } catch (IOException e) {
       Log.error("0xA4036 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
     }

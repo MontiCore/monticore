@@ -157,7 +157,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   public void testSetRealThisMethod() {
     ASTCDMethod method = getMethodBy("setRealThis", cocoChecker);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(COCO_CHECKER);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(COCO_CHECKER);
     assertVoid(method.getMCReturnType());
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.getCDParameterList().size());
@@ -169,7 +169,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   public void testGetRealThisMethod() {
     ASTCDMethod method = getMethodBy("getRealThis", cocoChecker);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(COCO_CHECKER);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(COCO_CHECKER);
     assertDeepEquals(astType, method.getMCReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
@@ -177,7 +177,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddCheckerAutomatonCoCoMethod() {
     List<ASTCDMethod> list = getMethodsBy("addChecker", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(AUTOMATON_COCO_CHECKER);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(AUTOMATON_COCO_CHECKER);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -189,7 +189,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddCheckerLexicalsCoCoMethod() {
     List<ASTCDMethod> list = getMethodsBy("addChecker", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(LEXICALS_COCO_CHECKER);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(LEXICALS_COCO_CHECKER);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -201,7 +201,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddCoCoAutomatonMethod() {
     List<ASTCDMethod> list = getMethodsBy("addCoCo", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(AUTOMATON_COCO);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(AUTOMATON_COCO);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -213,7 +213,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddCoCoAutomatonNodeMethod() { // schlaegt fehl, da das Attribut vom Typ ASTAutomatonNode noch fehlt
     List<ASTCDMethod> list = getMethodsBy("addCoCo", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(AUTOMATON_NODE_COCO);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(AUTOMATON_NODE_COCO);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -225,7 +225,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddCoCoStateMethod() {
     List<ASTCDMethod> list = getMethodsBy("addCoCo", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(STATE_COCO);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(STATE_COCO);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -237,7 +237,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddCoCoTransitionMethod() {
     List<ASTCDMethod> list = getMethodsBy("addCoCo", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(TRANSITION_COCO);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(TRANSITION_COCO);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -249,7 +249,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddCoCoLexicalsNodeMethod() {
     List<ASTCDMethod> list = getMethodsBy("addCoCo", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(LEXICALS_NODE_COCO);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(LEXICALS_NODE_COCO);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -261,7 +261,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testVisitAutomatonMethod() {
     List<ASTCDMethod> list = getMethodsBy("visit", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(AUTOMATON);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(AUTOMATON);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -273,7 +273,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testVisitAutomatonNodeMethod() {
     List<ASTCDMethod> list = getMethodsBy("visit", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(AUTOMATON_NODE);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(AUTOMATON_NODE);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -285,7 +285,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testVisitStateMethod() {
     List<ASTCDMethod> list = getMethodsBy("visit", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(STATE);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(STATE);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -297,7 +297,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testVisitTransitionMethod() {
     List<ASTCDMethod> list = getMethodsBy("visit", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(TRANSITION);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(TRANSITION);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -309,7 +309,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testVisitLexicalsNodeMethod() {
     List<ASTCDMethod> list = getMethodsBy("visit", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(LEXICALS_NODE);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(LEXICALS_NODE);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -321,7 +321,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCheckAllAutomatonNodeMethod() {
     List<ASTCDMethod> list = getMethodsBy("checkAll", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(AUTOMATON_NODE);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(AUTOMATON_NODE);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -333,7 +333,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCheckAllLexicalsNodeMethod() {
     List<ASTCDMethod> list = getMethodsBy("checkAll", 1, cocoChecker);
-    ASTMCType astType = this.cdTypeFacade.createSimpleReferenceType(LEXICALS_NODE);
+    ASTMCType astType = this.cdTypeFacade.createQualifiedType(LEXICALS_NODE);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = list.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();

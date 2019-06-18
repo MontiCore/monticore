@@ -9,7 +9,8 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.AttributeCategory;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.utils.ASTNodes;
 
 import java.util.Iterator;
@@ -20,7 +21,6 @@ import java.util.function.UnaryOperator;
 import java.util.stream.StreamSupport;
 
 import static de.monticore.codegen.mc2cd.AttributeCategory.determineCategory;
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 
 /**
  * Removes duplicate attributes that may result from rules having multiple nonterminals referencing
@@ -96,17 +96,13 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
 
   private static Optional<String> getFirstTypeArgument(ASTCDAttribute cdAttribute) {
     // the 'List' in 'List<String>'
-    ASTMCObjectType outerType = (ASTMCObjectType) cdAttribute
-        .getMCType();
-
-    if (!outerType.isPresentTypeArguments() || outerType
-        .getTypeArguments().getTypeArgumentList().isEmpty()) {
-      return Optional.empty();
+    if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
+      List<ASTMCTypeArgument> argList = ((ASTMCGenericType) cdAttribute.getMCType()).getMCTypeArgumentList();
+      if (!argList.isEmpty()) {
+        return Optional.of(argList.get(0).getMCTypeOpt().get().getBaseName());
+      }
     }
-    // the 'String' in 'List<String>'
-    ASTMCObjectType typeArgument = (ASTMCObjectType) outerType
-        .getTypeArguments().getTypeArgumentList().get(0);
-
-    return Optional.of(typeToString(typeArgument));
+    return Optional.empty();
   }
+
 }

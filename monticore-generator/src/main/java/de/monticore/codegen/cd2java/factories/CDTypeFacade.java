@@ -1,18 +1,17 @@
 package de.monticore.codegen.cd2java.factories;
 
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
 import de.monticore.types.MCCollectionTypesHelper;
 import de.monticore.types.mcbasictypes._ast.*;
-import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
-import de.monticore.types.mccollectiontypes._ast.MCCollectionTypesMill;
+import de.monticore.types.mccollectiontypes._ast.*;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Optional;
 
 public class CDTypeFacade {
 
@@ -63,61 +62,60 @@ public class CDTypeFacade {
     return type.get();
   }
 
-  public ASTMCQualifiedType createSimpleReferenceType(final Class<?> clazz) {
-    return createSimpleReferenceType(clazz.getSimpleName());
+  public ASTMCQualifiedType createQualifiedType(final Class<?> clazz) {
+    return createQualifiedType(clazz.getSimpleName());
   }
 
-  public ASTMCQualifiedType createSimpleReferenceType(final String name) {
-    return MCCollectionTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(Arrays.asList(name.split(PACKAGE_SEPARATOR)))
-        .build();
+  public ASTMCQualifiedType createQualifiedType(final String name) {
+    ASTMCQualifiedName qualName = MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(Arrays.asList(name.split(PACKAGE_SEPARATOR))).build();
+    return MCCollectionTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(qualName).build();
   }
 
   public ASTMCObjectType createOptionalTypeOf(final Class<?> clazz) {
     return createOptionalTypeOf(clazz.getSimpleName());
   }
 
-  public ASTMCObjectType createOptionalTypeOf(final String name) {
-    return createSimpleReferenceType(Optional.class, name);
+  public ASTMCOptionalType createOptionalTypeOf(final String name) {
+    ASTMCTypeArgument arg = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
+    return CD4AnalysisMill.mCOptionalTypeBuilder().setMCTypeArgument(arg).build();
   }
 
-  public ASTMCObjectType createOptionalTypeOf(final ASTMCType type) {
-    return createSimpleReferenceType(Optional.class, MCCollectionTypesHelper.printType(type));
+  public ASTMCOptionalType createOptionalTypeOf(final ASTMCType type) {
+    return createOptionalTypeOf(MCCollectionTypesHelper.printType(type));
   }
 
-  public ASTMCObjectType createListTypeOf(final Class<?> clazz) {
+  public ASTMCListType createListTypeOf(final Class<?> clazz) {
     return createListTypeOf(clazz.getSimpleName());
   }
 
-  public ASTMCObjectType createListTypeOf(final String name) {
-    return createSimpleReferenceType(List.class, name);
+  public ASTMCListType createListTypeOf(final String name) {
+    ASTMCTypeArgument arg = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
+    return CD4AnalysisMill.mCListTypeBuilder().setMCTypeArgument(arg).build();
   }
 
-  public ASTMCObjectType createListTypeOf(final ASTMCType type) {
-    return createSimpleReferenceType(List.class, MCCollectionTypesHelper.printType(type));
+  public ASTMCListType createListTypeOf(final ASTMCType type) {
+    return createListTypeOf(MCCollectionTypesHelper.printType(type));
   }
 
-  public ASTMCObjectType createCollectionTypeOf(final Class<?> clazz) {
+  public ASTMCSetType createCollectionTypeOf(final Class<?> clazz) {
     return createCollectionTypeOf(clazz.getSimpleName());
   }
 
-  public ASTMCObjectType createCollectionTypeOf(final String name) {
-    return createSimpleReferenceType(Collection.class, name);
+  public ASTMCSetType createCollectionTypeOf(final String name) {
+    ASTMCTypeArgument arg = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
+    return CD4AnalysisMill.mCSetTypeBuilder().setMCTypeArgument(arg).build();
   }
 
-  public ASTMCObjectType createCollectionTypeOf(final ASTMCType type) {
-    return createSimpleReferenceType(Collection.class, MCCollectionTypesHelper.printType(type));
+  public ASTMCSetType createCollectionTypeOf(final ASTMCType type) {
+    return createCollectionTypeOf(MCCollectionTypesHelper.printType(type));
   }
 
-  public ASTMCObjectType createMapTypeOf(final String firstType, final String secondType) {
-    return createSimpleReferenceType(Map.class, firstType, secondType);
+  public ASTMCMapType createMapTypeOf(final String firstType, final String secondType) {
+    ASTMCTypeArgument first = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(firstType)).build();
+    ASTMCTypeArgument second = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(secondType)).build();
+    return CD4AnalysisMill.mCMapTypeBuilder().setKey(first).setValue(second).build();
   }
 
-  private ASTMCObjectType createSimpleReferenceType(final Class<?> clazz, final String... names) {
-    CDTypeBuilder cdTypeBuilder = CDTypeBuilder.newTypeBuilder().simpleName(clazz);
-    for (String name : names)
-      cdTypeBuilder.qualifiedGenericType(name.split(PACKAGE_SEPARATOR));
-    return cdTypeBuilder.build();
-  }
 
   public ASTMCVoidType createVoidType() {
     return MCBasicTypesMill.mCVoidTypeBuilder()

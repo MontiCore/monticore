@@ -41,7 +41,7 @@ public class ASTService extends AbstractService<ASTService> {
   }
 
   public ASTMCQualifiedType getASTBaseInterface() {
-    return getCDTypeFactory().createSimpleReferenceType(getASTBaseInterfaceFullName());
+    return getCDTypeFactory().createQualifiedType(getASTBaseInterfaceFullName());
   }
 
   public String getSimpleTypeName(ASTCDType type) {
@@ -57,11 +57,11 @@ public class ASTService extends AbstractService<ASTService> {
   }
 
   public ASTMCType getASTType(ASTCDType type) {
-    return getCDTypeFactory().createSimpleReferenceType(getASTFullTypeName(type));
+    return getCDTypeFactory().createQualifiedType(getASTFullTypeName(type));
   }
 
   public ASTMCQualifiedType getASTNodeInterfaceType() {
-    return getCDTypeFactory().createSimpleReferenceType(ASTNode.class);
+    return getCDTypeFactory().createQualifiedType(ASTNode.class);
   }
 
   public String getASTConstantClassName() {

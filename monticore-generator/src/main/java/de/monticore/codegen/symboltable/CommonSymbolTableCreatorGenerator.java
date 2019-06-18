@@ -4,11 +4,11 @@ package de.monticore.codegen.symboltable;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 
 import java.nio.file.Path;
@@ -56,7 +56,7 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
     symbolDefiningRules.forEach(p -> symbolKinds.add(genHelper.getQualifiedSymbolName(p.getEnclosingScope(),
         p.getSymbolDefinitionKind().orElse(""))));
 
-    List<CDSymbol> directSuperCds = genHelper.getDirectSuperCds(genHelper.getCd());
+    List<CDDefinitionSymbol> directSuperCds = genHelper.getDirectSuperCds(genHelper.getCd());
     if(grammarSymbol.getStartProd().isPresent()) {
       genEngine
           .generate("symboltable.SymbolTableCreator", filePath, grammarSymbol.getAstNode().get(),

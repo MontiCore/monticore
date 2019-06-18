@@ -84,7 +84,7 @@ public class DataDecoratorUtil extends AbstractDecorator<ASTCDType, List<ASTCDMe
 
   public ASTCDMethod createDeepClone(ASTCDType cdType) {
     // deep clone without parameters
-    ASTMCType type = getCDTypeFacade().createSimpleReferenceType(getSimpleName(cdType));
+    ASTMCType type = getCDTypeFacade().createQualifiedType(getSimpleName(cdType));
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
     return getCDMethodFacade().createMethod(PUBLIC, returnType, DEEP_CLONE_METHOD);
   }

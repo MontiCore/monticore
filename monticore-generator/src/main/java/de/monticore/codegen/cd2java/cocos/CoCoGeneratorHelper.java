@@ -3,15 +3,15 @@
 package de.monticore.codegen.cd2java.cocos;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
-import de.monticore.symboltable.GlobalScope;
 
 public class CoCoGeneratorHelper extends GeneratorHelper {
   
-  public CoCoGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
+  public CoCoGeneratorHelper(ASTCDCompilationUnit topAst, CD4AnalysisGlobalScope symbolTable) {
     super(topAst, symbolTable);
   }
   
@@ -34,7 +34,6 @@ public class CoCoGeneratorHelper extends GeneratorHelper {
   /**
    * @param cDName
    * @return type name of the language's visitor interface
-   * @see #getQualifiedVisitorType()
    */
   public static String getCheckerType(String cDName) {
     return cDName + "CoCoChecker";
@@ -55,7 +54,6 @@ public class CoCoGeneratorHelper extends GeneratorHelper {
    * @param packageName
    * @param cdName
    * @return full-qualified name of the language's checker
-   * @see #getCheckerType()
    */
   public static String getQualifiedCheckerType(String packageName, String cdName) {
     return getPackageName(packageName, getCoCoPackageSuffix()) + "."
@@ -90,7 +88,6 @@ public class CoCoGeneratorHelper extends GeneratorHelper {
   
   /**
    * @return type name of the language's inheritance visitor interface
-   * @see #getQualifiedVisitorType()
    */
   public String getInheritanceVisitorType() {
     return VisitorGeneratorHelper.getInheritanceVisitorType(getCdName());

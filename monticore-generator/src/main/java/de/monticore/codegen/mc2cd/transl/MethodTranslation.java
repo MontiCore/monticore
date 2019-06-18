@@ -66,7 +66,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
     String dotSeparatedName = FullGenericTypesPrinter.printReturnType(method.getMCReturnType());
-    cdMethod.setMCReturnType(MCBasicTypesMill.mCReturnTypeBuilder().setMCType(TransformationHelper.createSimpleReference(dotSeparatedName)).build());
+    cdMethod.setMCReturnType(MCBasicTypesMill.mCReturnTypeBuilder().setMCType(TransformationHelper.createType(dotSeparatedName)).build());
     for (ASTMethodParameter param : method.getMethodParameterList()) {
       String typeName = FullGenericTypesPrinter.printType(param.getType());
       cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));

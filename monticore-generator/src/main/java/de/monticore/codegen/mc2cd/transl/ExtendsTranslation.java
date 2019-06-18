@@ -52,7 +52,7 @@ public class ExtendsTranslation implements
     for (ASTRuleReference ruleReference : classProd.getSuperRuleList()) {
       MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdClass.setSuperclass(TransformationHelper.createSimpleReference(
+      cdClass.setSuperclass(TransformationHelper.createType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -60,7 +60,7 @@ public class ExtendsTranslation implements
     for (ASTMCType typeReference : classProd.getASTSuperClassList()) {
       String qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
-      cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedRuleName));
+      cdClass.setSuperclass(TransformationHelper.createType(qualifiedRuleName));
     }
   }
 
@@ -70,7 +70,7 @@ public class ExtendsTranslation implements
     for (ASTRuleReference ruleReference : abstractProd.getSuperRuleList()) {
       MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdClass.setSuperclass(TransformationHelper.createSimpleReference(
+      cdClass.setSuperclass(TransformationHelper.createType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -79,7 +79,7 @@ public class ExtendsTranslation implements
     for (ASTMCType typeReference : abstractProd.getASTSuperClassList()) {
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
-      cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedRuleName));
+      cdClass.setSuperclass(TransformationHelper.createType(qualifiedRuleName));
     }
   }
 
@@ -89,7 +89,7 @@ public class ExtendsTranslation implements
     for (ASTRuleReference ruleReference : interfaceProd.getSuperInterfaceRuleList()) {
       MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdInterface.getInterfaceList().add(TransformationHelper.createSimpleReference(
+      cdInterface.getInterfaceList().add(TransformationHelper.createType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -99,7 +99,7 @@ public class ExtendsTranslation implements
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdInterface);
       cdInterface.getInterfaceList().add(
-          TransformationHelper.createSimpleReference(qualifiedRuleName));
+          TransformationHelper.createType(qualifiedRuleName));
     }
   }
 }

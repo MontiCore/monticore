@@ -15,7 +15,6 @@ import de.monticore.grammar.grammar_withconcepts._od.Grammar_WithConcepts2OD;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsDelegatorVisitor;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.javastatements._od.JavaStatements2OD;
-import de.monticore.lexicals.lexicals._od.Lexicals2OD;
 import de.monticore.mcbasics._od.MCBasics2OD;
 import de.monticore.mccommonliterals._od.MCCommonLiterals2OD;
 import de.monticore.mcliteralsbasis._od.MCLiteralsBasis2OD;
