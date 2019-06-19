@@ -2,27 +2,23 @@
 
 package de.monticore.codegen.symboltable;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static de.monticore.codegen.GeneratorHelper.BUILDER;
-import static de.monticore.codegen.GeneratorHelper.DESER;
-import static de.monticore.codegen.GeneratorHelper.SYMBOL;
-import static de.monticore.codegen.GeneratorHelper.DELEGATE;
-import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
-import static de.se_rwth.commons.Names.getPathFromPackage;
-import static de.se_rwth.commons.Names.getSimpleName;
-import static java.nio.file.Paths.get;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Optional;
-
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTSymbolRule;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static de.monticore.codegen.GeneratorHelper.*;
+import static de.se_rwth.commons.Names.getPathFromPackage;
+import static de.se_rwth.commons.Names.getSimpleName;
+import static java.nio.file.Paths.get;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 public class CommonSymbolGenerator implements SymbolGenerator {
 
@@ -77,7 +73,7 @@ public class CommonSymbolGenerator implements SymbolGenerator {
       genEngine.generate("symboltable.Symbol", filePath, prodSymbol.getAstNode().get(), symbolName,
               prodSymbol, symbolRule, imports, isScopeSpanningSymbol);
       genEngine.generate("symboltable.SymbolBuilder", builderFilePath,
-              prodSymbol.getAstNode().get(), builderName, className, symbolRule, imports);
+              prodSymbol.getAstNode().get(), builderName, className, symbolRule, imports, prodSymbol);
       genEngine.generate("symboltable.serialization.SymbolDeSer", serializationFilePath,
           prodSymbol.getAstNode().get(), genHelper.getGrammarSymbol().getName(), deserName, className, symbolRule);
       genEngine.generate("symboltable.SymbolDelegateInterface", delegateFilePath,

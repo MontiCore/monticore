@@ -1,6 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "symbolName", "symbolRule", "imports")}
+${signature("className", "symbolName", "symbolRule", "imports", "prodSymbol")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
+<#assign ruleName = prodSymbol.getName()>
+<#assign scopeName = genHelper.getGrammarSymbol().getName() + "Scope">
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
 
@@ -8,6 +10,8 @@ ${defineHookPoint("JavaCopyright")}
 package ${genHelper.getTargetPackage()};
 
 import java.util.Optional;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 <#list imports as imp>
   import ${imp}._ast.*;
 </#list>
@@ -19,51 +23,50 @@ import java.util.Optional;
 public class ${className} {
 
 
-  protected I${languageName}Scope enclosingScope;
+  protected I${scopeName} enclosingScope;
 
   protected String fullName;
 
   protected String name;
 
+  protected AST${ruleName} node;
+
+  protected String packageName;
+
+  protected AccessModifier accessModifier = ALL_INCLUSION;
+
   <#if symbolRule.isPresent()>
     <#list symbolRule.get().getAdditionalAttributeList() as attr>
       <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
-      protected ${attrType} ${attr.getName()};
+  protected ${attrType} ${attr.getName()};
     </#list>
   </#if>
 
   protected ${className}() {}
 
   public ${symbolName}Symbol build() {
-  ${symbolName}Symbol ${symbolName?uncap_first}Symbol = new ${symbolName}Symbol(name);
+  ${symbolName}Symbol symbol = new ${symbolName}Symbol(name);
   <#if symbolRule.isPresent()>
     <#list symbolRule.get().getAdditionalAttributeList() as attr>
       <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
-      ${symbolName?uncap_first}Symbol.set${attr.getName()?cap_first}(${attr.getName()});
+      symbol.set${attr.getName()?cap_first}(${attr.getName()});
     </#list>
   </#if>
-    ${symbolName?uncap_first}Symbol.setEnclosingScope(this.enclosingScope);
-    ${symbolName?uncap_first}Symbol.setFullName(this.fullName);
-    ${symbolName?uncap_first}Symbol.name(this.name);
-    return ${symbolName?uncap_first}Symbol;
+    symbol.setEnclosingScope(this.enclosingScope);
+    symbol.setFullName(this.fullName);
+    return symbol;
   }
 
-  public I${languageName}Scope getEnclosingScope(){
+  public I${scopeName} getEnclosingScope(){
     return this.enclosingScope;
   }
 
-  public ${className} setEnclosingScope(I${languageName}Scope newEnclosingScope){
+  public ${className} setEnclosingScope(I${scopeName} newEnclosingScope){
     this.enclosingScope = newEnclosingScope;
     return this;
   }
 
-  @Override
-  public ${className} setAccessModifier(AccessModifier accessModifier) {
-    //TODO
-    return this;
-  }
-
-  @Override public String getName() {
+  public String getName() {
     return name;
   }
 
@@ -73,24 +76,41 @@ public class ${className} {
   }
 
   public String getFullName() {
-    if (fullName == null) {
-      fullName = determineFullName();
-    }
     return fullName;
   }
 
-  public ${className} name(String name) {
+  public ${className} setName(String name) {
     this.name = name;
     return this;
+  }
+
+  <#assign names = glex.getGlobalVar("nameHelper")>
+  <#assign astNode = names.getQualifiedName(genHelper.getAstPackage(), "AST" + ruleName)>
+  public Optional<${astNode}> getAstNode() {
+    return Optional.ofNullable(node);
+  }
+
+  public ${className} setAstNode(${astNode} node) {
+    this.node = node;
+    return this;
+  }
+
+  public ${className} setAccessModifier(AccessModifier accessModifier) {
+    this.accessModifier = accessModifier;
+    return this;
+  }
+
+  public AccessModifier getAccessModifier() {
+    return this.accessModifier;
   }
 
 <#if symbolRule.isPresent()>
   <#list symbolRule.get().getAdditionalAttributeList() as attr>
     <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
-    public ${className} ${attr.getName()}(${attrType} ${attr.getName()}) {
+  public ${className} ${attr.getName()}(${attrType} ${attr.getName()}) {
     this.${attr.getName()} = ${attr.getName()};
     return this;
-    }
+  }
 
   </#list>
 </#if>

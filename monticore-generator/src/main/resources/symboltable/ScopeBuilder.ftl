@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "scopeName")}
+${signature("className", "scopeName", "scopeRule")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -8,6 +8,14 @@ ${defineHookPoint("JavaCopyright")}
 package ${genHelper.getTargetPackage()};
 
 import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.IScopeSpanningSymbol;
+import de.se_rwth.commons.logging.Log;
+
+import com.google.common.collect.ImmutableList;
 
 /**
 * Builder for {@link ${scopeName}}.
@@ -16,9 +24,9 @@ import java.util.Optional;
 public class ${className} {
 
 
-  protected I${languageName}Scope enclosingScope;
+  protected I${scopeName} enclosingScope;
 
-  protected List<I${languageName}Scope> subScopes = new ArrayList<>();
+  protected List<I${scopeName}> subScopes = new ArrayList<>();
 
   protected Optional<IScopeSpanningSymbol> spanningSymbol = Optional.empty();
 
@@ -26,34 +34,46 @@ public class ${className} {
 
   protected boolean exportsSymbols = true;
 
-  protected Optional<String> name;
+  protected Optional<String> name = Optional.empty();
 
   protected ASTNode astNode;
+
+<#if scopeRule.isPresent()>
+  <#list scopeRule.get().getAdditionalAttributeList() as attr>
+    <#assign attrName="_" + attr.getName()>
+    <#assign attrType=attr.getMCType().getBaseName()>
+  protected ${genHelper.getQualifiedASTName(attrType)} ${attrName};
+  </#list>
+</#if>
 
   protected ${className}() {}
 
   public ${scopeName} build() {
-    ${scopeName} scope = new ${scopeName}();
-    scope.setSpanningSymbol(this.spanningSymbol);
+    ${scopeName} scope = new ${scopeName}(shadowing);
+    this.spanningSymbol.ifPresent(scope::setSpanningSymbol);
     scope.setExportsSymbols(this.exportsSymbols);
     scope.setEnclosingScope(this.enclosingScope);
     scope.setSubScopes(this.subScopes);
-    scope.setShadowing(this.shadowing);
     scope.setAstNode(this.astNode);
-    scope.setName(this.name);
+    this.name.ifPresent(scope::setName);
+    this.subScopes.forEach(s -> s.setEnclosingScope(scope));
+  <#if scopeRule.isPresent()>
+    <#list scopeRule.get().getAdditionalAttributeList() as attr>
+      <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
+      scope.set${attr.getName()?cap_first}(${attr.getName()});
+    </#list>
+  </#if>
+    return scope;
   }
 
-  @Override
-  public ${className} addSubScope(I${languageName}Scope subScope) {
-    if (!subScopes.contains(subScope)) {
+  public ${className} addSubScope(I${scopeName} subScope) {
+    if (!this.subScopes.contains(subScope)) {
       this.subScopes.add(subScope);
-      subScope.setEnclosingScope(this);
     }
     return this;
   }
 
-  @Override
-  public ${className} removeSubScope(I${languageName}Scope subScope) {
+  public ${className} removeSubScope(I${scopeName} subScope) {
     this.subScopes.remove(subScope);
     return this;
   }
@@ -64,7 +84,6 @@ public class ${className} {
     return this;
   }
 
-  @Override
   public ${className} setExportsSymbols(boolean b) {
     this.exportsSymbols = b;
     return this;
@@ -74,77 +93,76 @@ public class ${className} {
     return this.spanningSymbol;
   }
 
-  public Optional<I${languageName}Scope> getEnclosingScope() {
+  public Optional<I${scopeName}> getEnclosingScope() {
     return Optional.ofNullable(enclosingScope);
   }
 
-  public ${className} setEnclosingScope(I${languageName}Scope newEnclosingScope) {
-    if ((this.enclosingScope != null) && (newEnclosingScope != null)) {
-      if (this.enclosingScope == newEnclosingScope) {
-        return this;
-      }
-      Log.warn("0xA1042 Scope \"" + getName() + "\" has already an enclosing scope.");
-    }
-
-    // remove this scope from current (old) enclosing scope, if exists.
-    if (this.enclosingScope != null) {
-      this.enclosingScope.removeSubScope(this);
-    }
-
-    // add this scope to new enclosing scope, if exists.
-    if (newEnclosingScope != null) {
-      newEnclosingScope.addSubScope(this);
-    }
-
-    // set new enclosing scope (or null)
+  public ${className} setEnclosingScope(I${scopeName} newEnclosingScope) {
     this.enclosingScope = newEnclosingScope;
     return this;
   }
 
-  public List<I${languageName}Scope> getSubScopes() {
+  public List<I${scopeName}> getSubScopes() {
     return ImmutableList.copyOf(subScopes);
   }
 
-  public ${className} setSubScopes(List<I${languageName}Scope> subScopes) {
+  public ${className} setSubScopes(List<I${scopeName}> subScopes) {
     this.subScopes = subScopes;
     return this;
   }
 
-  @Override
   public boolean isShadowingScope() {
     return shadowing;
   }
 
-  @Override
   public boolean isSpannedBySymbol() {
     return spanningSymbol.isPresent();
   }
 
-  @Override
   public boolean exportsSymbols() {
     return exportsSymbols;
   }
 
-  @Override
   public ${className} setAstNode(ASTNode node) {
     this.astNode = node;
     return this;
   }
 
-  @Override
   public Optional<ASTNode> getAstNode() {
     return Optional.ofNullable(astNode);
   }
 
-  @Override
   public ${className} setName(String name) {
     this.name = Optional.ofNullable(name);
     return this;
   }
 
-  @Override
   public Optional<String> getName() {
     return this.name;
   }
 
+  <#if scopeRule.isPresent()>
+    <#list scopeRule.get().getAdditionalAttributeList() as attr>
+      <#assign attrName=attr.getName()>
+      <#assign attrType=attr.getMCType().getBaseName()>
+      <#if attrType == "boolean" || attrType == "Boolean">
+        <#if attr.getName()?starts_with("is")>
+          <#assign methodName=attr.getName()>
+        <#else>
+          <#assign methodName="is" + attr.getName()?cap_first>
+        </#if>
+      <#else>
+        <#assign methodName="get" + attr.getName()?cap_first>
+      </#if>
+  public ${attrType} ${methodName}() {
+    return this._${attrName};
+  }
+
+  public ${className} set${attrName?cap_first}(${attrType} ${attrName}) {
+    this._${attrName} = ${attrName};
+    return this;
+  }
+
+    </#list>
+  </#if>
 }
