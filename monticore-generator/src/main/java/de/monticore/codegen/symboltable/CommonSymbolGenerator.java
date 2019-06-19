@@ -21,7 +21,7 @@ import java.util.Optional;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTSymbolRule;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 
 public class CommonSymbolGenerator implements SymbolGenerator {

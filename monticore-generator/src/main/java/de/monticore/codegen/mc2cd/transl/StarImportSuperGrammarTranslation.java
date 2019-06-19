@@ -4,7 +4,7 @@ package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.utils.Link;

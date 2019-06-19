@@ -7,9 +7,9 @@ import java.util.Optional;
 
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCProdSymbol;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCProdSymbolReference;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.MCProdSymbolReference;
 
 import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.getAllSuperGrammars;
 import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.getMCGrammarSymbol;

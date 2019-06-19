@@ -49,9 +49,9 @@ import de.monticore.generating.templateengine.reporting.reporter.InputOutputFile
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable._symboltable.MontiCoreGrammarLanguage;
-import de.monticore.grammar.grammar._symboltable._symboltable.MontiCoreGrammarModelLoader;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.GrammarLanguage;
+import de.monticore.grammar.grammar._symboltable.GrammarModelLoader;
 import de.monticore.incremental.IncrementalChecker;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
@@ -89,7 +89,7 @@ public class MontiCoreTool {
 
   private final GlobalScope symbolTable;
 
-  private final MontiCoreGrammarModelLoader mcModelLoader;
+  private final GrammarModelLoader mcModelLoader;
 
   private final CD4AnalysisModelLoader cd4aModelLoader;
 
@@ -110,14 +110,14 @@ public class MontiCoreTool {
     this.handcodedPath = handcodedPath;
     this.templatePath = templatePath;
 
-    MontiCoreGrammarLanguage mcLanguage = new MontiCoreGrammarLanguage();
+    GrammarLanguage mcLanguage = new GrammarLanguage();
     CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
 
     this.resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(mcLanguage.getResolvingFilters());
 
     this.symbolTable = new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4aLanguage), resolvingConfiguration);
-    this.mcModelLoader = new MontiCoreGrammarModelLoader(mcLanguage);
+    this.mcModelLoader = new GrammarModelLoader(mcLanguage);
     this.cd4aModelLoader = new CD4AnalysisModelLoader(cd4aLanguage);
   }
 

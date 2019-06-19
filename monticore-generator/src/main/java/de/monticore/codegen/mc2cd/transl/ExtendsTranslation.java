@@ -7,7 +7,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.utils.Link;
 

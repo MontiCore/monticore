@@ -53,9 +53,9 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable._symboltable.MontiCoreGrammarLanguage;
-import de.monticore.grammar.grammar._symboltable._symboltable.MontiCoreGrammarSymbolTableCreator;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.GrammarLanguage;
+import de.monticore.grammar.grammar._symboltable.MontiCoreGrammarSymbolTableCreator;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
@@ -278,7 +278,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     if (grammarSymbol.isPresent()) {
       result = (ASTMCGrammar) grammarSymbol.get().getAstNode().get();
     } else {
-      MontiCoreGrammarLanguage language = new MontiCoreGrammarLanguage();
+      GrammarLanguage language = new GrammarLanguage();
 
       ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
       resolvingConfiguration.addDefaultFilters(language.getResolvingFilters());
@@ -606,7 +606,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   public GlobalScope createGlobalScope(ModelPath modelPath) {
-    final MontiCoreGrammarLanguage mcLanguage = new MontiCoreGrammarLanguage();
+    final GrammarLanguage mcLanguage = new GrammarLanguage();
 
     return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage), resolvingConfiguration);
   }

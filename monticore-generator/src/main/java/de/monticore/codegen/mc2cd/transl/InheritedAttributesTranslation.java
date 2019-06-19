@@ -12,9 +12,9 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCProdAttributeSymbol;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.MCProdAttributeSymbol;
+import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.utils.Link;
 

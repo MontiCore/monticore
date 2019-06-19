@@ -4,8 +4,8 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCProdComponentSymbol;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.MCProdComponentSymbol;
+import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;

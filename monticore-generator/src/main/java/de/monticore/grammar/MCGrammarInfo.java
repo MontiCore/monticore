@@ -36,8 +36,8 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.logging.Log;
 

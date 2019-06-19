@@ -8,8 +8,8 @@ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._cocos.GrammarASTASTRuleCoCo;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCProdComponentSymbol;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.MCProdComponentSymbol;
+import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.se_rwth.commons.logging.Log;
 

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**

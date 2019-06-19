@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.grammar.symboltable;
+package de.monticore.grammar.grammar._symboltable;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.Multiplicity;
@@ -9,9 +9,11 @@ import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVi
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.*;
+import de.monticore.symboltable.references.ISymbolReference;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
@@ -30,8 +32,8 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
-public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
-        implements Grammar_WithConceptsVisitor {
+public class GrammarSymbolTableCreator
+        extends GrammarSymbolTableCreatorTOP {
 
   private String packageName = "";
 
@@ -39,30 +41,20 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
 
   private ASTMCGrammar astGrammar;
 
-  public MontiCoreGrammarSymbolTableCreator(
-          ResolvingConfiguration resolvingConfig,
-          Scope enclosingScope) {
-    super(resolvingConfig, enclosingScope);
+  public GrammarSymbolTableCreator(IGrammarScope enclosingScope) {
+    super(enclosingScope);
   }
 
-  /**
-   * Creates the symbol table starting from the <code>rootNode</code> and
-   * returns the first scope that was created.
-   *
-   * @param rootNode the root node
-   * @return the first scope that was created
-   */
-  public Scope createFromAST(ASTMCGrammar rootNode) {
-    errorIfNull(rootNode);
-    handle(rootNode);
-    return getFirstCreatedScope();
+  public GrammarSymbolTableCreator(Deque<? extends IGrammarScope> scopeStack) {
+    super(scopeStack);
   }
+
 
   // PN is tested
   @Override
   public void visit(ASTMCGrammar astGrammar) {
     debug("Building Symboltable for Grammar: " + astGrammar.getName(),
-            MontiCoreGrammarSymbolTableCreator.class.getSimpleName());
+            GrammarSymbolTableCreator.class.getSimpleName());
 
     packageName = getQualifiedName(astGrammar.getPackageList());
     this.astGrammar = astGrammar;
@@ -74,9 +66,6 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
                 imp.isStar()));
       }
     }
-
-    final ArtifactScope scope = new ArtifactScope(empty(), packageName, imports);
-    putOnStack(scope);
 
     grammarSymbol = new MCGrammarSymbol(astGrammar.getName());
     grammarSymbol.setComponent(astGrammar.isComponent());
@@ -90,18 +79,30 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   public void endVisit(ASTMCGrammar astGrammar) {
 
     setComponentsCardinality();
-
-    setEnclosingScopeOfNodes(astGrammar);
-
+    
     computeStartParserProd(astGrammar);
 
     setSymbolRule();
 
     // remove grammar scope
-    removeCurrentScope();
+    removeCurrentGrammarScope();
+    
+  }
 
-    // remove artifact scope
-    removeCurrentScope();
+  public void addToScopeAndLinkWithNode(de.monticore.grammar.grammar._symboltable.MCGrammarSymbol symbol, de.monticore.grammar.grammar._ast.ASTMCGrammar astNode) {
+    addToScope(symbol);
+    setLinkBetweenSymbolAndNode(symbol, astNode);
+    IGrammarScope scope = createScope();
+    putOnStack(scope);
+    symbol.setSpannedScope(scope);
+  }
+
+  public void addToScopeAndLinkWithNode(de.monticore.grammar.grammar._symboltable.MCProdSymbol symbol, de.monticore.grammar.grammar._ast.ASTProd astNode) {
+    addToScope(symbol);
+    setLinkBetweenSymbolAndNode(symbol, astNode);
+    IGrammarScope scope = createScope();
+    putOnStack(scope);
+    symbol.setSpannedScope(scope);
   }
 
   private void setSymbolRule() {
@@ -129,12 +130,12 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
 
   @Override
   public void endVisit(ASTInterfaceProd astInterfaceProd) {
-    removeCurrentScope();
+    removeCurrentGrammarScope();
   }
 
   @Override
   public void endVisit(ASTConstantGroup astConstantGroup) {
-    removeCurrentScope();
+    removeCurrentGrammarScope();
   }
 
   @Override
@@ -147,7 +148,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
 
   @Override
   public void endVisit(ASTLexProd astLexProd) {
-    removeCurrentScope();
+    removeCurrentGrammarScope();
   }
 
   @Override
@@ -163,7 +164,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   }
 
   public void endVisit(ASTClassProd astClassProd) {
-    removeCurrentScope();
+    removeCurrentGrammarScope();
   }
 
   @Override
@@ -181,7 +182,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
 
   @Override
   public void endVisit(ASTAbstractProd astAbstractProd) {
-    removeCurrentScope();
+    removeCurrentGrammarScope();
   }
 
   @Override
@@ -197,7 +198,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
 
   @Override
   public void endVisit(ASTExternalProd astExternalProd) {
-    removeCurrentScope();
+    removeCurrentGrammarScope();
   }
 
   @Override
@@ -210,13 +211,13 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
 
   @Override
   public void endVisit(ASTEnumProd astEnumProd) {
-    removeCurrentScope();
+    removeCurrentGrammarScope();
   }
 
   @Override
   public void visit(ASTTerminal ast) {
     final String usageName = ast.getUsageNameOpt().orElse(null);
-    final Symbol currentSymbol = currentSymbol().orElse(null);
+    final MCProdSymbol currentSymbol = getProdSymbol().orElse(null);
 
     if (currentSymbol != null) {
       final String symbolName = isNullOrEmpty(usageName) ? ast.getName() : usageName;
@@ -241,15 +242,16 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   @Override
   public void visit(ASTNonTerminal ast) {
     final String usageName = ast.getUsageNameOpt().orElse(null);
-    final Symbol currentSymbol = currentSymbol().orElse(null);
+    final MCProdSymbol currentSymbol = getProdSymbol().orElse(null);
 
     if (currentSymbol != null) {
       final String symbolName = isNullOrEmpty(usageName) ? ast.getName() : usageName;
-      MCProdComponentSymbol prodComponent = new MCProdComponentSymbol(symbolName);
+      MCProdComponentSymbol prodComponent = new
+              MCProdComponentSymbol(symbolName);
 
       prodComponent.setUsageName(usageName);
       MCProdSymbolReference symRef = new MCProdSymbolReference(ast.getName(),
-              currentScope().orElse(null));
+              getCurrentScope().orElse(null));
       prodComponent.setReferencedProd(symRef);
 
       if (currentSymbol instanceof MCProdSymbol) {
@@ -321,10 +323,10 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   @Override
   public void visit(ASTConstantGroup astNode) {
     Optional<String> attrName = getConstantName(astNode,
-            currentSymbol());
+            getProdSymbol());
 
     final String usageName = astNode.getUsageNameOpt().orElse(null);
-    final Symbol currentSymbol = currentSymbol().orElse(null);
+    final MCProdSymbol currentSymbol = getProdSymbol().orElse(null);
 
     if (currentSymbol != null && attrName.isPresent()) {
       MCProdComponentSymbol prodComponent = new MCProdComponentSymbol(attrName.get());
@@ -431,7 +433,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
       final String superGrammarName = getQualifiedName(ref.getNameList());
 
       final MCGrammarSymbolReference superGrammar = new MCGrammarSymbolReference(
-              superGrammarName, currentScope().orElse(null));
+              superGrammarName, getCurrentScope().orElse(null));
 
       grammarSymbol.addSuperGrammar(superGrammar);
     }
@@ -440,7 +442,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   private void setSuperProdsAndTypes(MCProdSymbol prodSymbol, List<ASTRuleReference> superProds,
                                      List<ASTMCType> astSuperClasses, List<ASTRuleReference> superInterfaceProds,
                                      List<ASTMCType> astSuperInterfaces) {
-    final Scope enclosingScope = currentScope().get();
+    final IGrammarScope enclosingScope = getCurrentScope().get();
 
     // A extends B
     for (ASTRuleReference astSuperProd : superProds) {
@@ -590,4 +592,55 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
 
   }
 
+  public void addToScope(de.monticore.grammar.grammar._symboltable.MCGrammarSymbol symbol) {
+    if (!(symbol instanceof ISymbolReference)) {
+      if (getCurrentScope().isPresent()) {
+        getCurrentScope().get().add(symbol);
+      } else {
+        Log.warn("0xA50212 Symbol cannot be added to current scope, since no scope exists.");
+      }
+    }
+  }
+  public void addToScope(de.monticore.grammar.grammar._symboltable.MCProdSymbol symbol) {
+    if (!(symbol instanceof ISymbolReference)) {
+      if (getCurrentScope().isPresent()) {
+        getCurrentScope().get().add(symbol);
+      } else {
+        Log.warn("0xA50212 Symbol cannot be added to current scope, since no scope exists.");
+      }
+    }
+  }
+  public void addToScope(de.monticore.grammar.grammar._symboltable.MCProdAttributeSymbol symbol) {
+    if (!(symbol instanceof ISymbolReference)) {
+      if (getCurrentScope().isPresent()) {
+        getCurrentScope().get().add(symbol);
+      } else {
+        Log.warn("0xA50212 Symbol cannot be added to current scope, since no scope exists.");
+      }
+    }
+  }
+
+  public void setLinkBetweenSpannedScopeAndNode(IGrammarScope scope, de.monticore.grammar.grammar._ast.ASTMCGrammar astNode) {
+    // scope -> ast
+    scope.setAstNode(astNode);
+
+    // ast -> scope
+    astNode.setSpannedScope2((GrammarScope) scope);
+  }
+
+  public void setLinkBetweenSpannedScopeAndNode(IGrammarScope scope, de.monticore.grammar.grammar._ast.ASTProd astNode) {
+    // scope -> ast
+    scope.setAstNode(astNode);
+
+    // ast -> scope
+    astNode.setSpannedScope2((GrammarScope) scope);
+  }
+
+  public final Optional<MCProdSymbol> getProdSymbol() {
+    if (getCurrentScope().isPresent()) {
+      return getCurrentScope().get().get;
+    }
+
+    return empty();
+  }
 }

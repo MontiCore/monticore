@@ -3,7 +3,7 @@
 package de.monticore.grammar;
 
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.utils.ASTNodes;
 import de.monticore.ast.ASTNode;

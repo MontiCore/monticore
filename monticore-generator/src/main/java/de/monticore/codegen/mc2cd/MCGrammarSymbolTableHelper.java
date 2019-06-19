@@ -11,10 +11,8 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.RegExpBuilder;
-import de.monticore.grammar._symboltable.*;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar._symboltable._symboltable.*;
-import de.monticore.grammar.symboltable.*;
+import de.monticore.grammar.grammar._symboltable.*;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.StringTransformations;
@@ -33,7 +31,7 @@ import static de.se_rwth.commons.Util.listTillNull;
 public class MCGrammarSymbolTableHelper {
   
   public static void initializeSymbolTable(ASTMCGrammar rootNode, ModelPath modelPath) {
-    ModelingLanguage grammarLanguage = new MontiCoreGrammarLanguage();
+    ModelingLanguage grammarLanguage = new GrammarLanguage();
     
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(grammarLanguage.getResolvingFilters());
@@ -67,7 +65,7 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<MCGrammarSymbol> getGrammarSymbol(ASTMCGrammar astNode) {
-    if (!astNode.isPresentSymbol()) {
+    if (!astNode.isPresentSymbol2()) {
       return Optional.empty();
     }
     if (!(astNode.getSymbol() instanceof MCGrammarSymbol)) {
@@ -346,7 +344,7 @@ public class MCGrammarSymbolTableHelper {
    * @return
    */
   public static Optional<String> getConstantName(ASTConstantGroup astNode,
-      Optional<? extends ScopeSpanningSymbol> currentSymbol) {
+                                                 Optional<MCProdSymbol> currentSymbol) {
     Optional<String> constName = getConstantGroupName(astNode);
     if (!currentSymbol.isPresent() || !(currentSymbol.get() instanceof MCProdSymbol)
         || !constName.isPresent()) {
@@ -434,11 +432,7 @@ public class MCGrammarSymbolTableHelper {
     if (type1 == type2) {
       return true;
     }
-    
-    if (!type1.getKind().equals(type2.getKind())) {
-      return false;
-    }
-    
+
     return type1.getFullName().equals(type2.getFullName());
 
   }

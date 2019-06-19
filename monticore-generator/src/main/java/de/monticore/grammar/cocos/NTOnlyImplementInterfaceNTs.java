@@ -8,7 +8,7 @@ import java.util.Optional;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._cocos.GrammarASTClassProdCoCo;
-import de.monticore.grammar.grammar._symboltable._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
