@@ -37,7 +37,7 @@ import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.logging.Log;
 
@@ -138,7 +138,7 @@ public class MCGrammarInfo {
       // Add relation to predicats
       for (Entry<String, List<ASTRuleReference>> entry: ruleMap.entrySet()) {
         for (ASTRuleReference ref: entry.getValue()) {
-          Optional<MCProdSymbol> prodByName = grammarSymbol
+          Optional<ProdSymbol> prodByName = grammarSymbol
               .getProdWithInherited(ref.getTypeName());
           if (prodByName.isPresent()) {
             addSubrule(prodByName.get().getName(), entry.getKey(), ref);
@@ -289,7 +289,7 @@ public class MCGrammarInfo {
   
   public List<PredicatePair> getSubRulesForParsing(String ruleName) {
     // Consider superclass
-    Optional<MCProdSymbol> ruleByName = grammarSymbol.getProdWithInherited(ruleName);
+    Optional<ProdSymbol> ruleByName = grammarSymbol.getProdWithInherited(ruleName);
     List<PredicatePair> predicateList = Lists.newArrayList();
     if (!ruleByName.isPresent()) {
       return predicateList;
@@ -314,9 +314,9 @@ public class MCGrammarInfo {
    * Iterates over all Rules to find all keywords
    */
   private void findAllKeywords() {
-    for (MCProdSymbol ruleSymbol : grammarSymbol.getProdsWithInherited().values()) {
+    for (ProdSymbol ruleSymbol : grammarSymbol.getProdsWithInherited().values()) {
       if (ruleSymbol.isParserProd()) {
-        Optional<ASTNode> astProd = ruleSymbol.getAstNode();
+        Optional<ASTProd> astProd = ruleSymbol.getAstNode();
         if (astProd.isPresent() && astProd.get() instanceof ASTClassProd) {
           Optional<MCGrammarSymbol> refGrammarSymbol = MCGrammarSymbolTableHelper
               .getMCGrammarSymbol(astProd.get());
@@ -351,7 +351,7 @@ public class MCGrammarInfo {
       lexerPatterns.put(grammar, patterns);
     }
     
-    for (MCProdSymbol rule : grammar.getProdsWithInherited().values()) {
+    for (ProdSymbol rule : grammar.getProdsWithInherited().values()) {
       if (rule.isLexerProd()) {
         if (!MCGrammarSymbolTableHelper.isFragment(rule.getAstNode())) {
           Optional<Pattern> lexPattern = MCGrammarSymbolTableHelper.calculateLexPattern(

@@ -12,13 +12,13 @@ import de.monticore.symboltable.types.JTypeSymbol;
  */
 public class MCProdOrTypeReference {
 
-  private final MCProdSymbolReference prodRef;
+  private final ProdSymbolReference prodRef;
 
   public MCProdOrTypeReference(String referencedSymbolName, IGrammarScope enclosingScopeOfReference) {
-    prodRef = new MCProdSymbolReference(referencedSymbolName, enclosingScopeOfReference);
+    prodRef = new ProdSymbolReference(referencedSymbolName, enclosingScopeOfReference);
   }
 
-  public MCProdSymbolReference getProdRef() {
+  public ProdSymbolReference getProdRef() {
     return prodRef;
   }
 

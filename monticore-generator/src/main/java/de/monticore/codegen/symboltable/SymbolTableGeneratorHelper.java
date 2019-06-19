@@ -14,8 +14,8 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethod;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdComponentSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
@@ -88,7 +88,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return qualifiedGrammarName;
   }
 
-  public static String getQualifiedSymbolType(MCProdSymbol symbol) {
+  public static String getQualifiedSymbolType(ProdSymbol symbol) {
     return SymbolTableGeneratorHelper.getQualifiedSymbolType(
         getQualifier(symbol.getFullName()).toLowerCase(),
         Names.getSimpleName(symbol.getName() + SYMBOL));
@@ -113,7 +113,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return "";
   }
 
-  public boolean isStartRule(MCProdSymbol ruleSymbol) {
+  public boolean isStartRule(ProdSymbol ruleSymbol) {
     return grammarSymbol.getStartProd().isPresent()
         && grammarSymbol.getStartProd().get().equals(ruleSymbol);
   }
@@ -123,14 +123,14 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    * is specified, it must be <code>name</code> (case insenstive), e.g.
    * <code>name:Name</code> or <code>Name:Name</code>.
    */
-  public Collection<MCProdSymbol> getAllSymbolDefiningRules() {
+  public Collection<ProdSymbol> getAllSymbolDefiningRules() {
     return getAllSymbolDefiningRules(grammarSymbol);
   }
 
-  public Collection<MCProdSymbol> getAllSymbolDefiningRulesInSuperGrammar() {
-    final Set<MCProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
+  public Collection<ProdSymbol> getAllSymbolDefiningRulesInSuperGrammar() {
+    final Set<ProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
 
-    for (final MCProdSymbol superRule : grammarSymbol.getProdsWithInherited().values()) {
+    for (final ProdSymbol superRule : grammarSymbol.getProdsWithInherited().values()) {
       if (superRule.isSymbolDefinition() && superRule.getName().equals(superRule.getSymbolDefinitionKind().get())) {
         ruleSymbolsWithName.add(superRule);
       }
@@ -139,12 +139,12 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return ImmutableList.copyOf(ruleSymbolsWithName);
   }
 
-  public Collection<MCProdSymbol> getAllOverwrittenSymbolProductions() {
-    final Set<MCProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
+  public Collection<ProdSymbol> getAllOverwrittenSymbolProductions() {
+    final Set<ProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
 
-    for (final MCProdSymbol rule : grammarSymbol.getProds()) {
+    for (final ProdSymbol rule : grammarSymbol.getProds()) {
       if (!rule.isSymbolDefinition()) {
-        Optional<MCProdSymbol> overwrittenSymbol = grammarSymbol.getInheritedProd(rule.getName());
+        Optional<ProdSymbol> overwrittenSymbol = grammarSymbol.getInheritedProd(rule.getName());
         if(overwrittenSymbol.isPresent() && overwrittenSymbol.get().isSymbolDefinition()){
           ruleSymbolsWithName.add(overwrittenSymbol.get());
         }
@@ -155,10 +155,10 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
 
-  public Collection<MCProdSymbol> getAllScopeSpanningRules() {
-    final Set<MCProdSymbol> rules = new LinkedHashSet<>();
+  public Collection<ProdSymbol> getAllScopeSpanningRules() {
+    final Set<ProdSymbol> rules = new LinkedHashSet<>();
 
-    for (final MCProdSymbol rule : grammarSymbol.getProds()) {
+    for (final ProdSymbol rule : grammarSymbol.getProds()) {
       if (spansScope(rule)) {
         rules.add(rule);
       }
@@ -167,12 +167,12 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return ImmutableList.copyOf(rules);
   }
 
-  public Map<String, String> ruleComponents2JavaFields(MCProdSymbol ruleSymbol) {
+  public Map<String, String> ruleComponents2JavaFields(ProdSymbol ruleSymbol) {
     Log.errorIfNull(ruleSymbol);
     // fieldName -> fieldType
     final Map<String, String> fields = new HashMap<>();
 
-    for (MCProdComponentSymbol componentSymbol : ruleSymbol.getProdComponents()) {
+    for (RuleComponentSymbol componentSymbol : ruleSymbol.getProdComponents()) {
 
       checkArgument(componentSymbol.getAstNode().isPresent());
       if (componentSymbol.isNonterminal()) {
@@ -199,7 +199,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return fields;
   }
 
-  private void nonterminal2JavaField(MCProdComponentSymbol componentSymbol,
+  private void nonterminal2JavaField(RuleComponentSymbol componentSymbol,
                                      Map<String, String> fields) {
     final Optional<String> componentName = getRuleComponentName(componentSymbol);
     if (componentName.isPresent()) {
@@ -212,7 +212,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     // TODO PN else, do something?
   }
 
-  private void constant2JavaField(MCProdComponentSymbol componentSymbol,
+  private void constant2JavaField(RuleComponentSymbol componentSymbol,
                                   Map<String, String> fields) {
     final Optional<String> componentName = getRuleComponentName(componentSymbol);
     if (componentName.isPresent()) {
@@ -220,7 +220,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     }
   }
 
-  private Optional<String> getRuleComponentName(MCProdComponentSymbol componentSymbol) {
+  private Optional<String> getRuleComponentName(RuleComponentSymbol componentSymbol) {
     if (canBeTransformedToValidJavaName(componentSymbol.getName())) {
       return Optional.of(componentSymbol.getName());
     } else if (canBeTransformedToValidJavaName(componentSymbol.getUsageName())) {
@@ -230,13 +230,13 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return Optional.empty();
   }
 
-  public Map<String, String> symbolRuleComponents2JavaFields(MCProdSymbol ruleSymbol) {
+  public Map<String, String> symbolRuleComponents2JavaFields(ProdSymbol ruleSymbol) {
     Log.errorIfNull(ruleSymbol);
 
     // fieldName -> fieldType
     final Map<String, String> fields = new HashMap<>();
 
-    for (MCProdComponentSymbol componentSymbol : ruleSymbol.getProdComponents()) {
+    for (RuleComponentSymbol componentSymbol : ruleSymbol.getProdComponents()) {
       checkArgument(componentSymbol.getAstNode().isPresent());
       if (componentSymbol.isNonterminal()) {
         symbolNonTerminal2JavaField(componentSymbol, fields);
@@ -246,13 +246,13 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return fields;
   }
 
-  private void symbolNonTerminal2JavaField(MCProdComponentSymbol componentSymbol,
+  private void symbolNonTerminal2JavaField(RuleComponentSymbol componentSymbol,
                                            Map<String, String> fields) {
     final Optional<String> componentName = getRuleComponentName(componentSymbol);
     if (componentName.isPresent() && componentSymbol.getReferencedProd().isPresent()) {
       // the case: Automaton = Name ... State* ..., i.e., the containment of
       // another symbol
-      final Optional<MCProdSymbol> referencedRule = grammarSymbol
+      final Optional<ProdSymbol> referencedRule = grammarSymbol
           .getProd(componentSymbol.getReferencedProd().get().getName());
       if (referencedRule.isPresent() && referencedRule.get().isSymbolDefinition()) {
         fields.put(componentName.get(), referencedRule.get().getName() + "Symbol");
@@ -260,12 +260,12 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     }
   }
 
-  public Map<String, String> symbolReferenceRuleComponents2JavaFields(MCProdSymbol ruleSymbol) {
+  public Map<String, String> symbolReferenceRuleComponents2JavaFields(ProdSymbol ruleSymbol) {
     Log.errorIfNull(ruleSymbol);
     // fieldName -> fieldType
     final Map<String, String> fields = new HashMap<>();
 
-    for (MCProdComponentSymbol componentSymbol : ruleSymbol.getProdComponents()) {
+    for (RuleComponentSymbol componentSymbol : ruleSymbol.getProdComponents()) {
       checkArgument(componentSymbol.getAstNode().isPresent());
       if (componentSymbol.isNonterminal()) {
         nonterminal2JavaField(componentSymbol, fields);
@@ -276,7 +276,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
   public Map<String, String> ruleComponentsWithoutSymbolReferences2JavaFields(
-      final MCProdSymbol ruleSymbol) {
+      final ProdSymbol ruleSymbol) {
     final Map<String, String> all = ruleComponents2JavaFields(ruleSymbol);
     final Map<String, String> symbolReferences = symbolReferenceRuleComponents2JavaFields(
         ruleSymbol);
@@ -292,7 +292,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return withoutSymbolReferences;
   }
 
-  public Map<String, String> nonSymbolFields(MCProdSymbol ruleSymbol) {
+  public Map<String, String> nonSymbolFields(ProdSymbol ruleSymbol) {
     return null; // TODO PN implement
   }
 
@@ -464,20 +464,20 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return "";
   }
 
-  public boolean spansScope(final MCProdSymbol rule) {
+  public boolean spansScope(final ProdSymbol rule) {
     return rule.isScopeDefinition();
   }
 
-  public boolean isSymbol(final MCProdSymbol rule) {
+  public boolean isSymbol(final ProdSymbol rule) {
     return rule.isSymbolDefinition();
   }
 
-  public boolean isScopeSpanningSymbol(final MCProdSymbol rule) {
+  public boolean isScopeSpanningSymbol(final ProdSymbol rule) {
     return isSymbol(rule) && spansScope(rule);
   }
 
-  public boolean isNamed(final MCProdSymbol rule) {
-    for (MCProdComponentSymbol comp : rule.getProdComponents()) {
+  public boolean isNamed(final ProdSymbol rule) {
+    for (RuleComponentSymbol comp : rule.getProdComponents()) {
       // TODO check full name?
       if ((comp.getName().equals(NAME_NONTERMINAL) &&
           isNullOrEmpty(comp.getUsageName())
@@ -488,8 +488,8 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return false;
   }
 
-  public boolean isOptionalNamed(final MCProdSymbol rule) {
-    for (MCProdComponentSymbol comp : rule.getProdComponents()) {
+  public boolean isOptionalNamed(final ProdSymbol rule) {
+    for (RuleComponentSymbol comp : rule.getProdComponents()) {
       // TODO check full name?
       if (comp.getName().equals(NAME_NONTERMINAL) &&
           (isNullOrEmpty(comp.getUsageName())
@@ -500,13 +500,13 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return false;
   }
 
-  public boolean existsHandwrittenSymbolClass(MCProdSymbol ruleSymbol, IterablePath handCodedPath) {
+  public boolean existsHandwrittenSymbolClass(ProdSymbol ruleSymbol, IterablePath handCodedPath) {
     return existsHandwrittenClass(Names.getSimpleName(ruleSymbol.getName() + "Symbol"),
         getTargetPackage(), handCodedPath);
   }
 
   public String getQualifiedASTName(String name) {
-    Optional<MCProdSymbol> prod = grammarSymbol.getProdWithInherited(name);
+    Optional<ProdSymbol> prod = grammarSymbol.getProdWithInherited(name);
     if (prod.isPresent()) {
       return AST_PREFIX + prod.get().getName();
     }
@@ -520,7 +520,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return code;
   }
 
-  public String getQualifiedProdName(MCProdSymbol prod) {
+  public String getQualifiedProdName(ProdSymbol prod) {
     String prodName = prod.getFullName();
     prodName = SymbolTableGeneratorHelper
         .getQualifiedSymbolType(getQualifier(prodName)
@@ -528,7 +528,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return prodName;
   }
 
-  public String getQualifiedASTName(MCProdSymbol prod) {
+  public String getQualifiedASTName(ProdSymbol prod) {
     String prodName = prod.getFullName();
     prodName = SymbolTableGeneratorHelper
         .getQualifiedASTType(getQualifier(prodName)
@@ -603,7 +603,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     if (grammarSymbol != null && grammarSymbol.getAstGrammar().isPresent()) {
       String packageName = GeneratorHelper.getPackageName(grammarSymbol.getAstGrammar().get(), GeneratorHelper.SYMBOLTABLE_PACKAGE_SUFFIX);
       // store qualified symbols
-      for (MCProdSymbol symbol : SymbolTableGeneratorHelper.getAllSymbolDefiningRules(grammarSymbol)) {
+      for (ProdSymbol symbol : SymbolTableGeneratorHelper.getAllSymbolDefiningRules(grammarSymbol)) {
         qualifiedSymbols.add(GeneratorHelper.getPackageName(packageName, symbol.getName() + GeneratorHelper.SYMBOL));
       }
     }
@@ -613,7 +613,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   public boolean hasSymbolDefiningRule(String symbol) {
     Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(symbol, MCGrammarSymbol.KIND);
     if (grammarSymbol.isPresent()) {
-      for (MCProdSymbol prodSymbol : grammarSymbol.get().getProds()) {
+      for (ProdSymbol prodSymbol : grammarSymbol.get().getProds()) {
         if (prodSymbol.isSymbolDefinition()) {
           return true;
         }
@@ -625,7 +625,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   public boolean hasScopeSpanningRule(String symbol) {
     Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(symbol, MCGrammarSymbol.KIND);
     if (grammarSymbol.isPresent()) {
-      for (MCProdSymbol prodSymbol : grammarSymbol.get().getProds()) {
+      for (ProdSymbol prodSymbol : grammarSymbol.get().getProds()) {
         if (prodSymbol.isScopeDefinition()) {
           return true;
         }
@@ -648,10 +648,10 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    *         is specified, it must be <code>name</code> (case insenstive), e.g.
    *         <code>name:Name</code> or <code>Name:Name</code>.
    */
-  public static Collection<MCProdSymbol> getAllSymbolDefiningRules(MCGrammarSymbol grammarSymbol) {
-    final Set<MCProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
+  public static Collection<ProdSymbol> getAllSymbolDefiningRules(MCGrammarSymbol grammarSymbol) {
+    final Set<ProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
     
-    for (final MCProdSymbol rule : grammarSymbol.getProds()) {
+    for (final ProdSymbol rule : grammarSymbol.getProds()) {
       if (rule.isSymbolDefinition() && rule.getName().equals(rule.getSymbolDefinitionKind().get())) {
         ruleSymbolsWithName.add(rule);
       }
@@ -697,7 +697,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 	 * @param symbol The input symbol.
 	 * @return A String containing the qualified path of ISymbolDelegator.
 	 */
-	public static String getDelegatorForSymbol(MCProdSymbol symbol) {
+	public static String getDelegatorForSymbol(ProdSymbol symbol) {
 	  return SymbolTableGeneratorHelper.getQualifiedSymbolType(
         getQualifier(symbol.getFullName()).toLowerCase(),
         Names.getSimpleName("I" + symbol.getName() + SYMBOL + DELEGATE));

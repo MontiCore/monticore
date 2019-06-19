@@ -7,7 +7,7 @@ import com.google.common.collect.Sets;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 
@@ -39,11 +39,11 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
 
     Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
   
-    Set<MCProdSymbol> symbolDefiningRules = Sets.newHashSet();
-    Set<MCProdSymbol> nonSymbolDefiningRules = Sets.newHashSet();
+    Set<ProdSymbol> symbolDefiningRules = Sets.newHashSet();
+    Set<ProdSymbol> nonSymbolDefiningRules = Sets.newHashSet();
     Set<String> symbolKinds = Sets.newHashSet();
 
-    for(MCProdSymbol rule: grammarSymbol.getProds()) {
+    for(ProdSymbol rule: grammarSymbol.getProds()) {
       if(rule.isSymbolDefinition()) {
         symbolDefiningRules.add(rule);
       }
@@ -104,16 +104,16 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
   
     // local symbols
     Map<String,String> localSymbolsAndScope = Maps.newHashMap();
-    for(MCProdSymbol s : genHelper.getAllSymbolDefiningRules()) {
+    for(ProdSymbol s : genHelper.getAllSymbolDefiningRules()) {
       localSymbolsAndScope.put(genHelper.getQualifiedProdName(s)+"Symbol", s.getName()+"Symbol");
     }
     
     // super grammar symbols
     Map<String,String> superSymbols = Maps.newHashMap();
     Map<String,String> symbolToMill = Maps.newHashMap();
-    Set<MCProdSymbol> superSyms = Sets.newHashSet(genHelper.getAllSymbolDefiningRulesInSuperGrammar());
+    Set<ProdSymbol> superSyms = Sets.newHashSet(genHelper.getAllSymbolDefiningRulesInSuperGrammar());
     superSyms.removeAll(genHelper.getAllSymbolDefiningRules());
-    for(MCProdSymbol s : superSyms) {
+    for(ProdSymbol s : superSyms) {
       superSymbols.put(genHelper.getQualifiedProdName(s)+"Symbol", s.getName()+"Symbol");
       String mill = Names.getQualifier(genHelper.getQualifiedProdName(s))+ "." + s.getEnclosingScope().getName().get() + millName;
       symbolToMill.put(genHelper.getQualifiedProdName(s)+"Symbol", mill);

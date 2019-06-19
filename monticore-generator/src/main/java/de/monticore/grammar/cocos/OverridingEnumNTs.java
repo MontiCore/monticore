@@ -10,7 +10,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -35,7 +35,7 @@ public class OverridingEnumNTs implements GrammarASTMCGrammarCoCo {
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
     
     for (ASTProd p : prods) {
-      Optional<MCProdSymbol> typeSymbol = grammarSymbol.getInheritedProd(p.getName());
+      Optional<ProdSymbol> typeSymbol = grammarSymbol.getInheritedProd(p.getName());
       if (typeSymbol.isPresent() && typeSymbol.get().isEnum()) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName()));
       }

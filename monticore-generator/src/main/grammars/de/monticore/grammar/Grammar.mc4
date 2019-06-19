@@ -28,7 +28,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
   @attribute Concepts List of additional concepts
   @attribute StartRule defines the start rule
   */
-  MCGrammar =
+  symbol scope MCGrammar =
     ("package" package:(Name& || ".")+ ";")?
   	(importStatement:MCImportStatement)*
 
@@ -53,7 +53,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
            ASTRule
          |
            SymbolRule
-         | 
+         |
            ScopeRule
          |
            Concept
@@ -88,7 +88,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
         FollowOption
       |
         AntlrOption
-      | 
+      |
         KeywordOption
       )*
     "}" ;
@@ -108,9 +108,9 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
   */
   AntlrOption =
     Name  ("=" value:Name |"=" value:String)? ;
-    
-  KeywordOption = 
-    ["allkeywords"] | 
+
+  KeywordOption =
+    ["allkeywords"] |
     "keywords" Name+ ";";
 
   /** The start rule should be the rule defining the whole model.
@@ -128,7 +128,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
 
   /** Productions form the syntactical structure of the grammar
   */
-  interface Prod = DeprecatedAnnotation? Name;
+  interface symbol scope Prod = DeprecatedAnnotation? Name;
 
   /** ParserProduction are handled by the parser
   */
@@ -151,7 +151,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
   @attribute Type Type of the lexer tokens
   @attribute Block Block used if other than standard mapping shall be used
   */
-  LexProd implements Prod =
+  symbol (Prod) scope LexProd implements Prod =
     DeprecatedAnnotation? (["fragment"] | ["comment"]  )*
     ("token") Name
     (
@@ -173,7 +173,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
   @attribute name Name of the production
   @attribute constant List of all constants
   */
-  EnumProd implements Prod =
+  symbol (Prod) scope EnumProd implements Prod =
     DeprecatedAnnotation? "enum" Name "=" (Constant || "|")+ ";";
 
 
@@ -182,7 +182,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
   @attribute name Name of the hole
   @attribute MCType External type used for this hole rule
   */
-  ExternalProd implements Prod =
+  symbol (Prod) scope ExternalProd implements Prod =
     DeprecatedAnnotation? "external" SymbolDefinition* Name MCType? ";";
 
 
@@ -193,7 +193,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
   @attribute superInterfaceRule Super interfaces
   @attribute aSTSuperInterface Super interfaces abstract syntax only
   */
-  InterfaceProd implements ParserProd =
+  symbol (Prod) scope InterfaceProd implements ParserProd =
     DeprecatedAnnotation? "interface" SymbolDefinition* Name
     (
       "extends" superInterfaceRule:(RuleReference || "," )+
@@ -210,7 +210,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
   @attribute aSTSuperClass Super productions (abstract syntax only)
   @attribute aSTSuperInterface Super interfaces  (abstract syntax only)
   */
-  AbstractProd implements Prod =
+  symbol (Prod) scope AbstractProd implements Prod =
     DeprecatedAnnotation? "abstract" SymbolDefinition* Name
     (
       "extends" superRule:(RuleReference || ",")+
@@ -220,7 +220,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
       "astextends" aSTSuperClass:(MCType || ",")+
     |
       "astimplements" aSTSuperInterface:(MCType || ",")+
-    )* 
+    )*
     ("=" alt:(Alt || "|")+ )? ";";
 
   /** A rule represents a rule (production) in a context free grammar.
@@ -233,7 +233,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
   @attribute action Action executed priot to the rule body
   @attribute alts List of alternatives representing the body of the rule
   */
-  ClassProd implements ParserProd =
+  symbol (Prod) scope ClassProd implements ParserProd =
     DeprecatedAnnotation? SymbolDefinition* Name
     (
        "extends" superRule:(RuleReference || ",")+
@@ -297,7 +297,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
 
   /** RuleComponents are parts of the alternatives
   */
-  interface RuleComponent;
+  interface symbol RuleComponent;
 
   /** A NonTerminalSeparator is a shortcut for the description of list structures
   @attribute variableName Name for a variable binding (Note: Only one attribute of
@@ -469,7 +469,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
   @attribute genericType Name of the referring type
   @attribute card Cardinality
   */
-  AdditionalAttribute =
+  symbol AdditionalAttribute =
     (Name  ":")?
     MCType
     Card?;

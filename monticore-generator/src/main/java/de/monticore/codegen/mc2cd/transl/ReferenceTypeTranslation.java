@@ -9,7 +9,7 @@ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -53,7 +53,7 @@ public class ReferenceTypeTranslation implements
     return rootLink;
   }
 
-  private ASTMCType ruleSymbolToType(MCProdSymbol ruleSymbol, String typeName) {
+  private ASTMCType ruleSymbolToType(ProdSymbol ruleSymbol, String typeName) {
     if (ruleSymbol.isLexerProd()) {
       if (!ruleSymbol.getAstNode().isPresent() || !(ruleSymbol.getAstNode().get() instanceof ASTLexProd)) {
         return createType("String");
@@ -72,7 +72,7 @@ public class ReferenceTypeTranslation implements
 
   private ASTMCType determineTypeToSetForAttributeInAST(ASTMCType astGenericType,
                                                       ASTMCGrammar astMCGrammar) {
-    Optional<MCProdSymbol> ruleSymbol = TransformationHelper
+    Optional<ProdSymbol> ruleSymbol = TransformationHelper
         .resolveAstRuleType(astMCGrammar, astGenericType);
     if (!ruleSymbol.isPresent()) {
       return determineTypeToSet(astGenericType, astMCGrammar);
@@ -128,20 +128,20 @@ public class ReferenceTypeTranslation implements
   }
 
   private void addStereotypeForASTTypes(ASTNonTerminal nonTerminal, ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
-    Optional<MCProdSymbol> mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, nonTerminal.getName());
+    Optional<ProdSymbol> mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, nonTerminal.getName());
     if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
       TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
     }
   }
 
   private void addStereotypeForASTTypes(ASTAdditionalAttribute astAdditionalAttributes, ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
-    Optional<MCProdSymbol> mcProdSymbol = resolveAstRuleType(astmcGrammar, astAdditionalAttributes.getMCType());
+    Optional<ProdSymbol> mcProdSymbol = resolveAstRuleType(astmcGrammar, astAdditionalAttributes.getMCType());
     if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
       TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
     }
   }
 
-  private boolean isASTType(MCProdSymbol mcProdSymbol) {
+  private boolean isASTType(ProdSymbol mcProdSymbol) {
     return !mcProdSymbol.isLexerProd() && !mcProdSymbol.isEnum();
   }
 

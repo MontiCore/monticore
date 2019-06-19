@@ -22,7 +22,7 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Symbol;
@@ -198,8 +198,8 @@ public class CdDecorator {
     }
 
     String name = AstGeneratorHelper.getASTClassNameWithoutPrefix(cdType);
-    Optional<MCProdSymbol> prodSymbol = grammarSymbol.
-        getSpannedScope().resolve(name, MCProdSymbol.KIND);
+    Optional<ProdSymbol> prodSymbol = grammarSymbol.
+        getSpannedScope().resolve(name, ProdSymbol.KIND);
 
     if (!prodSymbol.isPresent()) {
       // Externe Produktionen werden nicht gefunden (der Name endet auf "Ext", steht

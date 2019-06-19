@@ -8,7 +8,7 @@ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.utils.Link;
 
 import java.util.Optional;
@@ -29,7 +29,7 @@ public class OverridingClassProdTranslation implements
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
         ASTCDClass.class)) {
       
-      Optional<MCProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper
+      Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper
           .resolveRuleInSupersOnly(
               rootLink.source(),
               link.source().getName());

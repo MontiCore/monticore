@@ -9,7 +9,7 @@ import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
 import de.se_rwth.commons.Names;
@@ -96,7 +96,7 @@ public class VisitorGenerator {
     Log.trace(LOGGER_NAME, "Generated delegator visitor for the diagram: " + diagramName);
     
     // symbol visitor interface
-    Collection<MCProdSymbol> symbols  = new LinkedHashSet<>();
+    Collection<ProdSymbol> symbols  = new LinkedHashSet<>();
     Object stHelperObj = glex.getGlobalVar("stHelper");
     if (stHelperObj != null && stHelperObj instanceof SymbolTableGeneratorHelper) {
       SymbolTableGeneratorHelper stHelper = (SymbolTableGeneratorHelper) stHelperObj;

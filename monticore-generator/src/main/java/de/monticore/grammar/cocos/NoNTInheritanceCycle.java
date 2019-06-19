@@ -5,7 +5,7 @@ package de.monticore.grammar.cocos;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -22,9 +22,9 @@ public class NoNTInheritanceCycle implements GrammarASTProdCoCo {
   
   @Override
   public void check(ASTProd a) {
-    if (a.getSymbol() instanceof MCProdSymbol) {
-      MCProdSymbol symbol = (MCProdSymbol) a.getSymbol();
-      for (MCProdSymbol sr : MCGrammarSymbolTableHelper.getAllSuperProds(symbol)) {
+    if (a.getSymbol() instanceof ProdSymbol) {
+      ProdSymbol symbol = (ProdSymbol) a.getSymbol();
+      for (ProdSymbol sr : MCGrammarSymbolTableHelper.getAllSuperProds(symbol)) {
         if (sr.getFullName().equals(symbol.getFullName())) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, symbol.getFullName()),
               a.get_SourcePositionStart());

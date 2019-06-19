@@ -10,7 +10,7 @@ import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.logging.Log;
@@ -50,7 +50,7 @@ public class ImplementsTranslation implements
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol();
     // translates "implements"
     for (ASTRuleReference ruleReference : classProd.getSuperInterfaceRuleList()) {
-      Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
+      Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
       if (!ruleSymbol.isPresent()) {
         Log.error("0xA0137 The rule '" + ruleReference.getName() + "' does not exist!", ruleReference.get_SourcePositionStart());
       }
@@ -78,7 +78,7 @@ public class ImplementsTranslation implements
     for (ASTRuleReference ruleReference : abstractProd
         .getSuperInterfaceRuleList()) {
       MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol();
-      Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
+      Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
       if (!ruleSymbol.isPresent()) {
         Log.error("0xA0138 The rule '" + ruleReference.getName() + "' does not exist!");
       }

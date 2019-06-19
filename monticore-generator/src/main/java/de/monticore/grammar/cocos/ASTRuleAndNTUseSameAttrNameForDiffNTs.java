@@ -8,8 +8,8 @@ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._cocos.GrammarASTASTRuleCoCo;
-import de.monticore.grammar.grammar._symboltable.MCProdComponentSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.se_rwth.commons.logging.Log;
 
@@ -27,18 +27,18 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
   
   @Override
   public void check(ASTASTRule a) {
-    MCProdSymbol symbol = (MCProdSymbol) a.getEnclosingScope().resolve(a.getType(),
-        MCProdSymbol.KIND).get();
+    ProdSymbol symbol = (ProdSymbol) a.getEnclosingScope().resolve(a.getType(),
+        ProdSymbol.KIND).get();
     for (ASTAdditionalAttribute attr : a.getAdditionalAttributeList()) {
-      Optional<MCProdComponentSymbol> rc = symbol.getProdComponent(attr.getNameOpt().orElse(""));
+      Optional<RuleComponentSymbol> rc = symbol.getProdComponent(attr.getNameOpt().orElse(""));
       String typeName = FullGenericTypesPrinter.printType(attr.getMCType());
       if (rc.isPresent()) {
         if (!typeName
             .endsWith(rc.get().getReferencedProd().get().getName())) {
-          Optional<MCProdSymbol> attrType = a.getEnclosingScope()
-              .resolve(typeName, MCProdSymbol.KIND);
-          Optional<MCProdSymbol> compType = a.getEnclosingScope()
-              .resolve(rc.get().getReferencedProd().get().getName(), MCProdSymbol.KIND);
+          Optional<ProdSymbol> attrType = a.getEnclosingScope()
+              .resolve(typeName, ProdSymbol.KIND);
+          Optional<ProdSymbol> compType = a.getEnclosingScope()
+              .resolve(rc.get().getReferencedProd().get().getName(), ProdSymbol.KIND);
           if (attrType.isPresent() && compType.isPresent()
               && !MCGrammarSymbolTableHelper.isSubtype(compType.get(), attrType.get())) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getType(),

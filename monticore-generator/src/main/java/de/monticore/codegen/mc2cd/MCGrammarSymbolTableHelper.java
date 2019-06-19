@@ -44,7 +44,7 @@ public class MCGrammarSymbolTableHelper {
     symbolTableCreator.createFromAST(rootNode);
   }
   
-  public static Optional<MCProdSymbol> resolveRule(ASTNode astNode, String name) {
+  public static Optional<ProdSymbol> resolveRule(ASTNode astNode, String name) {
     Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode);
     if (!grammarSymbol.isPresent()) {
       return Optional.empty();
@@ -52,7 +52,7 @@ public class MCGrammarSymbolTableHelper {
     return grammarSymbol.get().getProdWithInherited(name);
   }
   
-  public static Optional<MCProdSymbol> resolveRuleInSupersOnly(ASTNode astNode, String name) {
+  public static Optional<ProdSymbol> resolveRuleInSupersOnly(ASTNode astNode, String name) {
     Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode);
     Stream<MCGrammarSymbol> superGrammars = grammarSymbol
         .map(symbol -> Util.preOrder(symbol, MCGrammarSymbol::getSuperGrammarSymbols)
@@ -92,19 +92,19 @@ public class MCGrammarSymbolTableHelper {
     // .findFirst();
   }
   
-  public static Optional<MCProdSymbol> getEnclosingRule(ASTNode astNode) {
+  public static Optional<ProdSymbol> getEnclosingRule(ASTNode astNode) {
     return getAllScopes(astNode).stream()
         .map(Scope::getSpanningSymbol)
         .filter(Optional::isPresent)
         .map(Optional::get)
-        .filter(MCProdSymbol.class::isInstance)
-        .map(MCProdSymbol.class::cast)
+        .filter(ProdSymbol.class::isInstance)
+        .map(ProdSymbol.class::cast)
         .findFirst();
   }
   
-  public static Optional<MCProdSymbol> getEnclosingRule(MCProdComponentSymbol prod) {
-    return prod.getEnclosingScope().getSpanningSymbol().filter(MCProdSymbol.class::isInstance)
-        .map(MCProdSymbol.class::cast);
+  public static Optional<ProdSymbol> getEnclosingRule(RuleComponentSymbol prod) {
+    return prod.getEnclosingScope().getSpanningSymbol().filter(ProdSymbol.class::isInstance)
+        .map(ProdSymbol.class::cast);
   }
   
   /**
@@ -129,7 +129,7 @@ public class MCGrammarSymbolTableHelper {
     return ImmutableSet.copyOf(allSuperGrammars);
   }
   
-  public static boolean isFragment(Optional<ASTNode> astNode) {
+  public static boolean isFragment(Optional<ASTProd> astNode) {
     return !astNode.isPresent() || !(astNode.get() instanceof ASTLexProd)
         || ((ASTLexProd) astNode.get()).isFragment();
   }
@@ -211,9 +211,9 @@ public class MCGrammarSymbolTableHelper {
    * @param name Name of the type
    * @return Symboltable entry for this type
    */
-  public static Optional<MCProdSymbol> getTypeWithInherited(String name,
-      MCGrammarSymbol gramamrSymbol) {
-    Optional<MCProdSymbol> ret = Optional.empty();
+  public static Optional<ProdSymbol> getTypeWithInherited(String name,
+                                                          MCGrammarSymbol gramamrSymbol) {
+    Optional<ProdSymbol> ret = Optional.empty();
     if (name.startsWith("super.")) {
       name = name.substring(6);
     }
@@ -231,7 +231,7 @@ public class MCGrammarSymbolTableHelper {
    * @return the qualified name for this type
    */
   // TODO GV: change implementation
-  public static String getQualifiedName(MCProdSymbol symbol) {
+  public static String getQualifiedName(ProdSymbol symbol) {
     if (!symbol.getAstNode().isPresent()) {
       return "UNKNOWN_TYPE";
     }
@@ -247,7 +247,7 @@ public class MCGrammarSymbolTableHelper {
     return getQualifiedName(symbol.getAstNode().get(), symbol, GeneratorHelper.AST_PREFIX, "");
   }
   
-  public static String getDefaultValue(MCProdSymbol symbol) {
+  public static String getDefaultValue(ProdSymbol symbol) {
     if ("int".equals(getQualifiedName(symbol))) {
       return "0";
     }
@@ -272,8 +272,8 @@ public class MCGrammarSymbolTableHelper {
     
   }
   
-  public static String getQualifiedName(ASTNode astNode, MCProdSymbol symbol, String prefix,
-      String suffix) {
+  public static String getQualifiedName(ASTNode astNode, ProdSymbol symbol, String prefix,
+                                        String suffix) {
     if (symbol.isExternal()) {
       return symbol.getName();
     }
@@ -292,7 +292,7 @@ public class MCGrammarSymbolTableHelper {
     }
   }
   
-  public static Optional<String> getConstantName(MCProdComponentSymbol compSymbol) {
+  public static Optional<String> getConstantName(RuleComponentSymbol compSymbol) {
     if (compSymbol.isConstantGroup() && compSymbol.getAstNode().isPresent()
         && compSymbol.getAstNode().get() instanceof ASTConstantGroup) {
       return getConstantGroupName((ASTConstantGroup) compSymbol.getAstNode().get());
@@ -344,23 +344,23 @@ public class MCGrammarSymbolTableHelper {
    * @return
    */
   public static Optional<String> getConstantName(ASTConstantGroup astNode,
-                                                 Optional<MCProdSymbol> currentSymbol) {
+                                                 Optional<ProdSymbol> currentSymbol) {
     Optional<String> constName = getConstantGroupName(astNode);
-    if (!currentSymbol.isPresent() || !(currentSymbol.get() instanceof MCProdSymbol)
+    if (!currentSymbol.isPresent() || !(currentSymbol.get() instanceof ProdSymbol)
         || !constName.isPresent()) {
       return constName;
     }
     return Optional.of(currentSymbol.get().getName() + "." + getConstantGroupName(astNode).get());
   }
   
-  public static Set<MCProdSymbol> getAllSuperProds(MCProdSymbol prod) {
-    Set<MCProdSymbol> supersHandled = new LinkedHashSet<>();
-    List<MCProdSymbol> supersToHandle = new ArrayList<>();
+  public static Set<ProdSymbol> getAllSuperProds(ProdSymbol prod) {
+    Set<ProdSymbol> supersHandled = new LinkedHashSet<>();
+    List<ProdSymbol> supersToHandle = new ArrayList<>();
     supersToHandle.addAll(getSuperProds(prod));
-    Set<MCProdSymbol> supersNextRound = new LinkedHashSet<>();
+    Set<ProdSymbol> supersNextRound = new LinkedHashSet<>();
     
     while (!supersToHandle.isEmpty()) {
-      for (MCProdSymbol superType : supersToHandle) {
+      for (ProdSymbol superType : supersToHandle) {
         if (!supersHandled.contains(superType)) {
           supersNextRound.addAll(getSuperProds(superType));
         }
@@ -373,7 +373,7 @@ public class MCGrammarSymbolTableHelper {
     return ImmutableSet.copyOf(supersHandled);
   }
   
-  public static Set<MCProdSymbol> getAllSuperInterfaces(MCProdSymbol prod) {
+  public static Set<ProdSymbol> getAllSuperInterfaces(ProdSymbol prod) {
     return getAllSuperProds(prod).stream().filter(p -> p.isInterface()).collect(Collectors.toSet());
   }
   
@@ -382,8 +382,8 @@ public class MCGrammarSymbolTableHelper {
    * @param prod
    * @return
    */
-  public static List<MCProdSymbol> getSuperProds(MCProdSymbol prod) {
-    List<MCProdSymbol> superTypes = prod.getSuperProds().stream().map(s -> s.getReferencedSymbol())
+  public static List<ProdSymbol> getSuperProds(ProdSymbol prod) {
+    List<ProdSymbol> superTypes = prod.getSuperProds().stream().map(s -> s.getReferencedSymbol())
         .collect(Collectors.toList());
     superTypes.addAll(prod.getSuperInterfaceProds().stream().map(s -> s.getReferencedSymbol())
         .collect(Collectors.toList()));
@@ -396,24 +396,24 @@ public class MCGrammarSymbolTableHelper {
     return ImmutableList.copyOf(superTypes);
   }
   
-  public static boolean isSubtype(MCProdSymbol subType, MCProdSymbol superType) {
+  public static boolean isSubtype(ProdSymbol subType, ProdSymbol superType) {
     return isSubtype(subType, superType, newLinkedHashSet(Arrays.asList(subType)));
   }
   
-  private static boolean isSubtype(MCProdSymbol subType, MCProdSymbol superType,
-      Set<MCProdSymbol> handledTypes) {
+  private static boolean isSubtype(ProdSymbol subType, ProdSymbol superType,
+                                   Set<ProdSymbol> handledTypes) {
     if (areSameTypes(subType, superType)) {
       return true;
     }
     
     // Try to find superType in super types of this type
-    final Collection<MCProdSymbol> allSuperTypes = getAllSuperProds(subType);
+    final Collection<ProdSymbol> allSuperTypes = getAllSuperProds(subType);
     if (allSuperTypes.contains(superType)) {
       return true;
     }
     
     // check transitive sub-type relation
-    for (MCProdSymbol t : allSuperTypes) {
+    for (ProdSymbol t : allSuperTypes) {
       if (handledTypes.add(superType)) {
         boolean subtypeOf = isSubtype(t, superType, handledTypes);
         if (subtypeOf) {
@@ -425,7 +425,7 @@ public class MCGrammarSymbolTableHelper {
     return false;
   }
   
-  public static boolean areSameTypes(MCProdSymbol type1, MCProdSymbol type2) {
+  public static boolean areSameTypes(ProdSymbol type1, ProdSymbol type2) {
     Log.errorIfNull(type1);
     Log.errorIfNull(type2);
     
@@ -437,8 +437,8 @@ public class MCGrammarSymbolTableHelper {
 
   }
   
-  public static boolean isAssignmentCompatibleOrUndecidable(MCProdSymbol subType,
-      MCProdSymbol superType) {
+  public static boolean isAssignmentCompatibleOrUndecidable(ProdSymbol subType,
+                                                            ProdSymbol superType) {
     return isAssignmentCompatibleOrUndecidable(subType, superType,
         newLinkedHashSet(Arrays.asList(subType)));
   }
@@ -450,10 +450,10 @@ public class MCGrammarSymbolTableHelper {
    * @param types Collection of types
    * @return type that is subtype of all other types or null.
    */
-  public static Optional<MCProdSymbol> findLeastType(Collection<MCProdSymbol> types) {
-    for (MCProdSymbol t1 : types) {
+  public static Optional<ProdSymbol> findLeastType(Collection<ProdSymbol> types) {
+    for (ProdSymbol t1 : types) {
       boolean isLeastType = true;
-      for (MCProdSymbol t2 : types) {
+      for (ProdSymbol t2 : types) {
         if (!isSubtype(t2, t1) && !areSameTypes(t2, t1)) {
           isLeastType = false;
           break;
@@ -466,8 +466,8 @@ public class MCGrammarSymbolTableHelper {
     return Optional.empty();
   }
   
-  public static boolean isAssignmentCompatibleOrUndecidable(MCProdSymbol subType,
-      MCProdSymbol superType, Set<MCProdSymbol> handledTypes) {
+  public static boolean isAssignmentCompatibleOrUndecidable(ProdSymbol subType,
+                                                            ProdSymbol superType, Set<ProdSymbol> handledTypes) {
     // Return true if this type or the other type are both external
     // TODO GV: check, wenn Java angebunden
     if (subType.isExternal()
@@ -481,13 +481,13 @@ public class MCGrammarSymbolTableHelper {
     }
 
     // Try to find superType in supertypes of this type
-    Collection<MCProdSymbol> allSuperTypes = getAllSuperProds(subType);
+    Collection<ProdSymbol> allSuperTypes = getAllSuperProds(subType);
     if (allSuperTypes.contains(superType)) {
       return true;
     }
     
     // check transitive sub-type relation
-    for (MCProdSymbol t : allSuperTypes) {
+    for (ProdSymbol t : allSuperTypes) {
       if (handledTypes.add(superType)) {
         boolean subtypeOf = isAssignmentCompatibleOrUndecidable(t, superType, handledTypes);
         if (subtypeOf) {
@@ -505,9 +505,9 @@ public class MCGrammarSymbolTableHelper {
    * @param ref2
    * @return
    */
-  public static boolean isSubType(MCProdSymbolReference ref1, MCProdSymbolReference ref2) {
-    MCProdSymbol type1 = ref1.getReferencedSymbol();
-    MCProdSymbol type2 = ref2.getReferencedSymbol();
+  public static boolean isSubType(ProdSymbolReference ref1, ProdSymbolReference ref2) {
+    ProdSymbol type1 = ref1.getReferencedSymbol();
+    ProdSymbol type2 = ref2.getReferencedSymbol();
     return areSameTypes(type1, type2) || isSubtype(type1, type2) || isSubtype(type2, type1);
   }
   
@@ -516,20 +516,20 @@ public class MCGrammarSymbolTableHelper {
    * @param prodComponent
    * @return
    */
-  public static boolean isConstGroupIterated(MCProdComponentSymbol prodComponent) {
+  public static boolean isConstGroupIterated(RuleComponentSymbol prodComponent) {
     Preconditions.checkArgument(prodComponent.isConstantGroup());
     if (!prodComponent.isList() && prodComponent.getSubProdComponents().size() <= 1) {
       return false;
     }
     prodComponent.getSubProdComponents();
     Collection<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-    for (MCProdComponentSymbol component : prodComponent.getSubProdComponents()) {
+    for (RuleComponentSymbol component : prodComponent.getSubProdComponents()) {
       set.add(component.getName());
     }
     return set.size() > 1;
   }
   
-  public static boolean isAttributeIterated(MCProdAttributeSymbol attrSymbol) {
+  public static boolean isAttributeIterated(AdditionalAttributeSymbol attrSymbol) {
     return attrSymbol.getAstNode().isPresent()
         && attrSymbol.getAstNode().get() instanceof ASTAdditionalAttribute
         && isAttributeIterated((ASTAdditionalAttribute) attrSymbol.getAstNode().get());
@@ -551,7 +551,7 @@ public class MCGrammarSymbolTableHelper {
     return max.isPresent() && (max.get() == GeneratorHelper.STAR || max.get() > 1);
   }
   
-  public static Optional<Integer> getMax(MCProdAttributeSymbol attrSymbol) {
+  public static Optional<Integer> getMax(AdditionalAttributeSymbol attrSymbol) {
     if (!attrSymbol.getAstNode().isPresent()
         || !(attrSymbol.getAstNode().get() instanceof ASTAdditionalAttribute)) {
       return Optional.empty();
@@ -580,7 +580,7 @@ public class MCGrammarSymbolTableHelper {
     return Optional.empty();
   }
   
-  public static Optional<Integer> getMin(MCProdAttributeSymbol attrSymbol) {
+  public static Optional<Integer> getMin(AdditionalAttributeSymbol attrSymbol) {
     if (!attrSymbol.getAstNode().isPresent()
         || !(attrSymbol.getAstNode().get() instanceof ASTAdditionalAttribute)) {
       return Optional.empty();

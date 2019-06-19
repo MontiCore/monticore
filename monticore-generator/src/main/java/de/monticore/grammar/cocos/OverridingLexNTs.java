@@ -9,7 +9,7 @@ import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -36,7 +36,7 @@ public class OverridingLexNTs implements GrammarASTMCGrammarCoCo {
     }
   }
   
-  private void doCheck(Optional<MCProdSymbol> prodSymbol, ASTLexProd lexProd) {
+  private void doCheck(Optional<ProdSymbol> prodSymbol, ASTLexProd lexProd) {
     if (prodSymbol.isPresent() && prodSymbol.get().isLexerProd()
         && !((ASTLexProd) prodSymbol.get().getAstNode().get()).getTypeList()
             .equals(lexProd.getTypeList())) {

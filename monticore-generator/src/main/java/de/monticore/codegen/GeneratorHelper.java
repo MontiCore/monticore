@@ -23,7 +23,7 @@ import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolReference;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
@@ -1661,7 +1661,7 @@ return null;
   public Optional<String> getSymbolName(String name, AstGeneratorHelper astGeneratorHelper) {
     String astName = name.substring(name.lastIndexOf("AST") + 3);
     MCGrammarSymbol grammarSymbol = astGeneratorHelper.getGrammarSymbol();
-    Optional<MCProdSymbol> mcProdSymbol = grammarSymbol.getProd(astName);
+    Optional<ProdSymbol> mcProdSymbol = grammarSymbol.getProd(astName);
     if (mcProdSymbol.isPresent()) {
       return mcProdSymbol.get().getSymbolDefinitionKind();
     }
@@ -1671,7 +1671,7 @@ return null;
   public boolean isScopeClass(String name, AstGeneratorHelper astGeneratorHelper) {
     String astName = name.substring(name.lastIndexOf("AST") + 3);
     MCGrammarSymbol grammarSymbol = astGeneratorHelper.getGrammarSymbol();
-    Optional<MCProdSymbol> mcProdSymbol = grammarSymbol.getProd(astName);
+    Optional<ProdSymbol> mcProdSymbol = grammarSymbol.getProd(astName);
     if (mcProdSymbol.isPresent() && mcProdSymbol.get().isScopeDefinition()) {
       return true;
     }
@@ -1773,7 +1773,7 @@ return null;
                                                     ASTNode nodeWithSymbol) {
     List<ASTProd> superRuleNodes = new ArrayList<>();
     for (ASTRuleReference superRule : ruleReferences) {
-      Optional<MCProdSymbol> symbol = MCGrammarSymbolTableHelper.resolveRule(nodeWithSymbol,
+      Optional<ProdSymbol> symbol = MCGrammarSymbolTableHelper.resolveRule(nodeWithSymbol,
           superRule.getName());
       if (symbol.isPresent() && symbol.get().getAstNode().isPresent()) {
         superRuleNodes.add((ASTProd) symbol.get().getAstNode().get());
@@ -1827,7 +1827,7 @@ return null;
   }
 
   public String getQualifiedSymbolName(Scope enclsoingScope, String simpleSymbolName) {
-    Optional<MCProdSymbol> symbolType = enclsoingScope.<MCProdSymbol>resolve(simpleSymbolName, MCProdSymbol.KIND);
+    Optional<ProdSymbol> symbolType = enclsoingScope.<ProdSymbol>resolve(simpleSymbolName, ProdSymbol.KIND);
     if (symbolType.isPresent()) {
       String packageName = symbolType.get().getFullName().substring(0, symbolType.get().getFullName().lastIndexOf(".")).toLowerCase();
       return packageName + "." + SymbolTableGenerator.PACKAGE + "." + simpleSymbolName +SYMBOL;

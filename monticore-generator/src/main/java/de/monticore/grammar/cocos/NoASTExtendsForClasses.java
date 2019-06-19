@@ -8,7 +8,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.MCProdOrTypeReference;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
@@ -28,9 +28,9 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
   @Override
   public void check(ASTMCGrammar a) {
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
-    Map<String, MCProdSymbol> allProds = grammarSymbol.getProdsWithInherited();
+    Map<String, ProdSymbol> allProds = grammarSymbol.getProdsWithInherited();
     
-    for (MCProdSymbol classProd : grammarSymbol.getProds()) {
+    for (ProdSymbol classProd : grammarSymbol.getProds()) {
       for (MCProdOrTypeReference sClass : classProd.getAstSuperClasses()) {
         if (!allProds.containsKey(
             sClass.getProdRef().getName().substring(TransformationHelper.AST_PREFIX.length()))) {
@@ -44,7 +44,7 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
     
     for (ASTASTRule rule : a.getASTRuleList()) {
       if (allProds.containsKey(rule.getType())) {
-        MCProdSymbol prod = allProds.get(rule.getType());
+        ProdSymbol prod = allProds.get(rule.getType());
         if (prod.isClass()) {
           for (ASTMCType type : rule.getASTSuperClassList()) {
             String simpleName = type.getBaseName();

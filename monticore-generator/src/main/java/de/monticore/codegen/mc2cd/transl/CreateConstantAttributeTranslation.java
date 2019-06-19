@@ -10,8 +10,8 @@ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._symboltable.MCProdComponentSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesNodeFactory;
 import de.monticore.utils.Link;
@@ -38,10 +38,10 @@ public class CreateConstantAttributeTranslation implements
   
   // TODO SO <- GV : please change and move to the ConstantTypeTranslation
   private void createConstantAttributes(Link<ASTClassProd, ASTCDClass> link) {
-    Optional<MCProdSymbol> typeProd = MCGrammarSymbolTableHelper
+    Optional<ProdSymbol> typeProd = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(link.source()).get()
         .getSpannedScope()
-        .resolve(link.source().getName(), MCProdSymbol.KIND);
+        .resolve(link.source().getName(), ProdSymbol.KIND);
     if (!typeProd.isPresent()) {
       Log.debug("Unknown type of the grammar rule "
           + link.source().getName() + " in the grammar "
@@ -52,8 +52,8 @@ public class CreateConstantAttributeTranslation implements
       return;
     }
     
-    MCProdSymbol prodSymbol = typeProd.get();
-    for (MCProdComponentSymbol prodComponent : prodSymbol.getProdComponents()) {
+    ProdSymbol prodSymbol = typeProd.get();
+    for (RuleComponentSymbol prodComponent : prodSymbol.getProdComponents()) {
       if (prodComponent.isConstantGroup() && prodComponent.getAstNode().isPresent()
           && prodComponent.getAstNode().get() instanceof ASTConstantGroup) {
         boolean iterated = MCGrammarSymbolTableHelper.isConstGroupIterated(prodComponent);

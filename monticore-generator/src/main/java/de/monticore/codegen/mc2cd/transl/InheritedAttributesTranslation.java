@@ -13,8 +13,8 @@ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdAttributeSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.utils.Link;
 
@@ -51,9 +51,9 @@ public class InheritedAttributesTranslation implements
   }
   
   private void handleInheritedAttributeInASTs(Link<ASTClassProd, ASTCDClass> link) {
-    for (Entry<ASTProd, Collection<MCProdAttributeSymbol>> entry : getInheritedAttributeInASTs(
+    for (Entry<ASTProd, Collection<AdditionalAttributeSymbol>> entry : getInheritedAttributeInASTs(
         link.source()).entrySet()) {
-      for (MCProdAttributeSymbol attributeInAST : entry.getValue()) {
+      for (AdditionalAttributeSymbol attributeInAST : entry.getValue()) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
         link.target().getCDAttributeList().add(cdAttribute);
         if (attributeInAST.getAstNode().isPresent()) {
@@ -80,19 +80,19 @@ public class InheritedAttributesTranslation implements
   }
 
   
-  private Map<ASTProd, Collection<MCProdAttributeSymbol>> getInheritedAttributeInASTs(
+  private Map<ASTProd, Collection<AdditionalAttributeSymbol>> getInheritedAttributeInASTs(
       ASTNode astNode) {
     return GeneratorHelper.getAllSuperProds(astNode).stream()
         .distinct()
         .collect(Collectors.toMap(Function.identity(), astProd -> astProd.getSymbolOpt()
             .flatMap(this::getTypeSymbol)
-            .map(MCProdSymbol::getProdAttributes)
+            .map(ProdSymbol::getProdAttributes)
             .orElse(Collections.emptyList())));
   }
   
-  private Optional<MCProdSymbol> getTypeSymbol(Symbol symbol) {
-    if (symbol instanceof MCProdSymbol) {
-      return Optional.of(((MCProdSymbol) symbol));
+  private Optional<ProdSymbol> getTypeSymbol(Symbol symbol) {
+    if (symbol instanceof ProdSymbol) {
+      return Optional.of(((ProdSymbol) symbol));
     }
     return Optional.empty();
   }

@@ -10,7 +10,7 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.utils.Link;
 
 import java.util.Optional;
@@ -36,7 +36,7 @@ class NonTerminalsWithSymbolReferenceToCDAttributeStereotypes implements
         final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
             .getMCGrammarSymbol(nonTerminal);
         if (grammarSymbol.isPresent()) {
-          final Optional<MCProdSymbol> referencedSymbol = grammarSymbol.get()
+          final Optional<ProdSymbol> referencedSymbol = grammarSymbol.get()
               .getProdWithInherited(nonTerminal.getReferencedSymbol());
           if (referencedSymbol.isPresent()) {
             final String referencedSymbolName = TransformationHelper

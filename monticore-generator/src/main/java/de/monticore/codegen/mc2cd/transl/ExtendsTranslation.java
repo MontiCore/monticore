@@ -7,7 +7,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.utils.Link;
 
@@ -50,7 +50,7 @@ public class ExtendsTranslation implements
       ASTMCGrammar astGrammar) {
     // translates "extends"
     for (ASTRuleReference ruleReference : classProd.getSuperRuleList()) {
-      MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
+      ProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
       cdClass.setSuperclass(TransformationHelper.createType(
           packageName + "AST" + ruleReference.getName()));
@@ -68,7 +68,7 @@ public class ExtendsTranslation implements
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     // translates "extends"
     for (ASTRuleReference ruleReference : abstractProd.getSuperRuleList()) {
-      MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
+      ProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
       cdClass.setSuperclass(TransformationHelper.createType(
           packageName + "AST" + ruleReference.getName()));
@@ -87,7 +87,7 @@ public class ExtendsTranslation implements
       ASTCDInterface cdInterface, ASTMCGrammar astGrammar) {
     // translates "extends"
     for (ASTRuleReference ruleReference : interfaceProd.getSuperInterfaceRuleList()) {
-      MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
+      ProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
       cdInterface.getInterfaceList().add(TransformationHelper.createType(
           packageName + "AST" + ruleReference.getName()));

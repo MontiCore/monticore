@@ -14,7 +14,7 @@ import org.stringtemplate.v4.ST;
 import com.google.common.base.Preconditions;
 
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -99,7 +99,7 @@ public class AntlrTool extends Tool {
     for (int i = 0; i < args.length; i++) {
       if (args[i] instanceof String) {
         String name = StringTransformations.capitalize((String) args[i]);
-        Optional<MCProdSymbol> rule = grammarSymbol.getProd(name);
+        Optional<ProdSymbol> rule = grammarSymbol.getProd(name);
         if (rule.isPresent()) {
           args[i] = name;
           if (i == 0) {

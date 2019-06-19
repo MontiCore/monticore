@@ -8,7 +8,7 @@ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._cocos.GrammarASTNonTerminalCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -27,7 +27,7 @@ public class UsedNTNotDefined implements GrammarASTNonTerminalCoCo {
   public void check(ASTNonTerminal a) {
     Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a);
-    Optional<MCProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.getEnclosingRule(a);
+    Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.getEnclosingRule(a);
     String ruleName = ruleSymbol.isPresent()? ruleSymbol.get().getName() : "";
     if (grammarSymbol.isPresent() && !grammarSymbol.get().getProdWithInherited(a.getName()).isPresent()) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, ruleName, a.getName(),

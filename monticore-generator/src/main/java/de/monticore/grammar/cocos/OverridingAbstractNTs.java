@@ -12,7 +12,7 @@ import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -49,7 +49,7 @@ public class OverridingAbstractNTs implements GrammarASTMCGrammarCoCo {
     }
   }
   
-  private void doCheck(Optional<MCProdSymbol> typeSymbol, String type) {
+  private void doCheck(Optional<ProdSymbol> typeSymbol, String type) {
     if (typeSymbol.isPresent() && typeSymbol.get().isAbstract()) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, typeSymbol.get().getName(), type));
     }

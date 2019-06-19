@@ -8,9 +8,9 @@ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdComponentSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbolReference;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolReference;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -33,9 +33,9 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
               + a.getName(),
           a.get_SourcePositionStart());
     }
-    for (MCProdSymbol prodSymbol : symbol.get().getProds()) {
+    for (ProdSymbol prodSymbol : symbol.get().getProds()) {
       if (!prodSymbol.isInterface()) {
-        for (MCProdSymbol interfaceSymbol : MCGrammarSymbolTableHelper
+        for (ProdSymbol interfaceSymbol : MCGrammarSymbolTableHelper
             .getAllSuperInterfaces(prodSymbol)) {
           compareComponents(prodSymbol, interfaceSymbol);
         }
@@ -43,14 +43,14 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
     }
   }
   
-  private void compareComponents(MCProdSymbol prodSymbol, MCProdSymbol interfaceSymbol) {
-    for (MCProdComponentSymbol interfaceComponent : interfaceSymbol.getProdComponents()) {
-      Optional<MCProdComponentSymbol> prodComponentOpt = prodSymbol.getProdComponent(interfaceComponent.getName());
+  private void compareComponents(ProdSymbol prodSymbol, ProdSymbol interfaceSymbol) {
+    for (RuleComponentSymbol interfaceComponent : interfaceSymbol.getProdComponents()) {
+      Optional<RuleComponentSymbol> prodComponentOpt = prodSymbol.getProdComponent(interfaceComponent.getName());
       if (!prodComponentOpt.isPresent()) {
         logError(prodSymbol, interfaceSymbol, interfaceComponent);
         continue;
       }
-      MCProdComponentSymbol prodComponent = prodComponentOpt.get();
+      RuleComponentSymbol prodComponent = prodComponentOpt.get();
 
       if (prodComponent.isList() != interfaceComponent.isList()
          || prodComponent.isOptional() != interfaceComponent.isOptional()) {
@@ -65,8 +65,8 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
         }
       }
 
-      Optional<MCProdSymbolReference> prodComponentRefOpt = prodComponent.getReferencedProd();
-      Optional<MCProdSymbolReference> interfaceComponentRefOpt = interfaceComponent.getReferencedProd();
+      Optional<ProdSymbolReference> prodComponentRefOpt = prodComponent.getReferencedProd();
+      Optional<ProdSymbolReference> interfaceComponentRefOpt = interfaceComponent.getReferencedProd();
 
       if (prodComponentRefOpt.isPresent() != interfaceComponentRefOpt.isPresent()) {
         logError(prodSymbol, interfaceSymbol, interfaceComponent);
@@ -84,7 +84,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
     }
   }
 
-  private void logError(MCProdSymbol prodSymbol, MCProdSymbol interfaceSymbol, MCProdComponentSymbol interfaceComponent) {
+  private void logError(ProdSymbol prodSymbol, ProdSymbol interfaceSymbol, RuleComponentSymbol interfaceComponent) {
     String suffix = interfaceComponent.isList() ? "*" : interfaceComponent.isOptional() ? "?" : "";
     Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodSymbol.getName(),
           interfaceComponent.getName() + suffix, interfaceSymbol.getName()),

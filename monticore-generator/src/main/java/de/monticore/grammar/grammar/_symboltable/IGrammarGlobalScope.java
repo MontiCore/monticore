@@ -68,11 +68,11 @@ public interface IGrammarGlobalScope extends IGrammarScope {
 
     }
   }
-  default Collection<de.monticore.grammar.grammar._symboltable.MCProdSymbol> resolveProdMany(boolean foundSymbols,
-                                                                                           final String symbolName, final AccessModifier modifier, final Predicate<de.monticore.grammar.grammar._symboltable.MCProdSymbol> predicate) {
+  default Collection<ProdSymbol> resolveProdMany(boolean foundSymbols,
+                                                 final String symbolName, final AccessModifier modifier, final Predicate<ProdSymbol> predicate) {
 
     // First, try to resolve the symbol in the current scope and its sub scopes.
-    Collection<de.monticore.grammar.grammar._symboltable.MCProdSymbol> resolvedSymbol = resolveProdDownMany(foundSymbols, symbolName,  modifier, predicate);
+    Collection<ProdSymbol> resolvedSymbol = resolveProdDownMany(foundSymbols, symbolName,  modifier, predicate);
 
     if (!resolvedSymbol.isEmpty()) {
       return resolvedSymbol;
@@ -89,7 +89,7 @@ public interface IGrammarGlobalScope extends IGrammarScope {
     return resolvedSymbol;
   }
 
-  default Collection<de.monticore.grammar.grammar._symboltable.MCProdSymbol> resolveAdaptedProd(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<de.monticore.grammar.grammar._symboltable.MCProdSymbol> predicate){
+  default Collection<ProdSymbol> resolveAdaptedProd(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<ProdSymbol> predicate){
     return Lists.newArrayList();
   }
 
@@ -150,11 +150,11 @@ public interface IGrammarGlobalScope extends IGrammarScope {
 
     }
   }
-  default Collection<de.monticore.grammar.grammar._symboltable.MCProdAttributeSymbol> resolveAdditionalAttributeMany(boolean foundSymbols,
-                                                                                                                         final String symbolName, final AccessModifier modifier, final Predicate<de.monticore.grammar.grammar._symboltable.MCProdAttributeSymbol> predicate) {
+  default Collection<AdditionalAttributeSymbol> resolveAdditionalAttributeMany(boolean foundSymbols,
+                                                                               final String symbolName, final AccessModifier modifier, final Predicate<AdditionalAttributeSymbol> predicate) {
 
     // First, try to resolve the symbol in the current scope and its sub scopes.
-    Collection<de.monticore.grammar.grammar._symboltable.MCProdAttributeSymbol> resolvedSymbol = resolveAdditionalAttributeDownMany(foundSymbols, symbolName,  modifier, predicate);
+    Collection<AdditionalAttributeSymbol> resolvedSymbol = resolveAdditionalAttributeDownMany(foundSymbols, symbolName,  modifier, predicate);
 
     if (!resolvedSymbol.isEmpty()) {
       return resolvedSymbol;
@@ -171,7 +171,7 @@ public interface IGrammarGlobalScope extends IGrammarScope {
     return resolvedSymbol;
   }
 
-  default Collection<de.monticore.grammar.grammar._symboltable.MCProdAttributeSymbol> resolveAdaptedAdditionalAttribute(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<de.monticore.grammar.grammar._symboltable.MCProdAttributeSymbol> predicate){
+  default Collection<AdditionalAttributeSymbol> resolveAdaptedAdditionalAttribute(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<AdditionalAttributeSymbol> predicate){
     return Lists.newArrayList();
   }
 

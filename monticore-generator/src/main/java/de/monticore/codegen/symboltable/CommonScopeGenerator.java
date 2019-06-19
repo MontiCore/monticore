@@ -10,7 +10,7 @@ import de.monticore.codegen.GeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTScopeRule;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 
@@ -27,13 +27,13 @@ public class CommonScopeGenerator implements ScopeGenerator {
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
                        IterablePath handCodedPath,
-                       String scopeName, Collection<MCProdSymbol> allSymbolDefiningRules, Collection<MCProdSymbol> allSymbolDefiningRulesWithSuperGrammar) {
+                       String scopeName, Collection<ProdSymbol> allSymbolDefiningRules, Collection<ProdSymbol> allSymbolDefiningRulesWithSuperGrammar) {
     generateScope(genEngine, genHelper, handCodedPath, scopeName, allSymbolDefiningRules, allSymbolDefiningRulesWithSuperGrammar);
   }
 
   protected void generateScope(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
                                IterablePath handCodedPath,
-                               String scopeName, Collection<MCProdSymbol> allSymbolDefiningRules, Collection<MCProdSymbol> allSymbolDefiningRulesWithSuperGrammar) {
+                               String scopeName, Collection<ProdSymbol> allSymbolDefiningRules, Collection<ProdSymbol> allSymbolDefiningRulesWithSuperGrammar) {
     
     final String languageName = genHelper.getGrammarSymbol().getName();
     
@@ -76,7 +76,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     // Maps Symbol Name to Symbol Kind Name
     Map<String, String> symbolNames = new HashMap<String, String>();
     Map<String, String> spanningSymbolNames = new HashMap<String, String>();
-    for (MCProdSymbol sym : allSymbolDefiningRules) {
+    for (ProdSymbol sym : allSymbolDefiningRules) {
       String name = getSimpleName(sym.getName());
       String kind;
       if (sym.getSymbolDefinitionKind().isPresent()) {
@@ -92,7 +92,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
   
     Map<String, String> allSymbols = new HashMap<String, String>();
     Map<String, String> allSpanningSymbolNames = new HashMap<String, String>();
-    for (MCProdSymbol sym : allSymbolDefiningRulesWithSuperGrammar) {
+    for (ProdSymbol sym : allSymbolDefiningRulesWithSuperGrammar) {
       String name = getSimpleName(sym.getName());
       String kind = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
       allSymbols.put(name, kind);
@@ -103,7 +103,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
 
     // Maps Symbol Name to Symbol Kind Name
     Map<String, String> symbolNamesWithSuperGrammar = new HashMap<>();
-    for (MCProdSymbol sym : allSymbolDefiningRulesWithSuperGrammar) {
+    for (ProdSymbol sym : allSymbolDefiningRulesWithSuperGrammar) {
       String name;
       if (sym.getSymbolDefinitionKind().isPresent()) {
         name = getSimpleName(sym.getSymbolDefinitionKind().get() + GeneratorHelper.SYMBOL);
@@ -117,7 +117,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     // symbols that got overwritten by a nonterminal
     // needed so the scope does implement all methods from the interface
     // discuss if this is even allowed to do
-    for (MCProdSymbol sym : genHelper.getAllOverwrittenSymbolProductions()) {
+    for (ProdSymbol sym : genHelper.getAllOverwrittenSymbolProductions()) {
       String name;
       if (sym.getSymbolDefinitionKind().isPresent()) {
         name = getSimpleName(sym.getSymbolDefinitionKind().get() + GeneratorHelper.SYMBOL);

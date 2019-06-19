@@ -4,8 +4,8 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
-import de.monticore.grammar.grammar._symboltable.MCProdComponentSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -22,10 +22,10 @@ public class SymbolWithoutName implements GrammarASTProdCoCo {
     
   @Override
   public void check(ASTProd a) {
-    if (a.getSymbol() instanceof MCProdSymbol) {
-      MCProdSymbol symbol = (MCProdSymbol) a.getSymbol();
+    if (a.getSymbol() instanceof ProdSymbol) {
+      ProdSymbol symbol = (ProdSymbol) a.getSymbol();
       if (symbol.isSymbolDefinition()) {
-        Optional<MCProdComponentSymbol> ref = symbol.getProdComponent("Name");
+        Optional<RuleComponentSymbol> ref = symbol.getProdComponent("Name");
         if (!ref.isPresent()) {
           ref = symbol.getProdComponent("name");
         }

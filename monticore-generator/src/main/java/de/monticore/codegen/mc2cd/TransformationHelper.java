@@ -15,9 +15,8 @@ import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdComponentSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
@@ -213,7 +212,7 @@ public final class TransformationHelper {
     return grammar.getFullName() + ".";
   }
 
-  public static String getPackageName(MCProdSymbol symbol) {
+  public static String getPackageName(ProdSymbol symbol) {
     // return grammar.getName().toLowerCase() + AST_DOT_PACKAGE_SUFFIX_DOT;
     return getGrammarName(symbol) + ".";
   }
@@ -250,17 +249,17 @@ public final class TransformationHelper {
     MCGrammarSymbol grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(grammar).get();
     Preconditions.checkState(grammarSymbol != null);
-    for (MCProdComponentSymbol component : grammarSymbol.getProds().stream()
+    for (RuleComponentSymbol component : grammarSymbol.getProds().stream()
         .flatMap(p -> p.getProdComponents().stream()).collect(Collectors.toSet())) {
       if (component.isConstantGroup()) {
-        for (MCProdComponentSymbol subComponent : component.getSubProdComponents()) {
+        for (RuleComponentSymbol subComponent : component.getSubProdComponents()) {
           if (subComponent.isConstant()) {
             constants.add(subComponent.getName());
           }
         }
       }
     }
-    for (MCProdSymbol type : grammarSymbol.getProds()) {
+    for (ProdSymbol type : grammarSymbol.getProds()) {
       if (type.isEnum() && type.getAstNode().isPresent()
           && type.getAstNode().get() instanceof ASTEnumProd) {
         for (ASTConstant enumValue : ((ASTEnumProd) type.getAstNode().get()).getConstantList()) {
@@ -334,7 +333,7 @@ public final class TransformationHelper {
   public static String getQualifiedTypeNameAndMarkIfExternal(ASTMCType ruleReference,
       ASTMCGrammar grammar, ASTCDClass cdClass) {
 
-    Optional<MCProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
+    Optional<ProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
 
     String qualifiedRuleName = getQualifiedAstName(
         typeSymbol, ruleReference, grammar);
@@ -351,7 +350,7 @@ public final class TransformationHelper {
   public static String getQualifiedTypeNameAndMarkIfExternal(ASTMCType ruleReference,
       ASTMCGrammar grammar, ASTCDInterface interf) {
 
-    Optional<MCProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
+    Optional<ProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
 
     String qualifiedRuleName = getQualifiedAstName(
         typeSymbol, ruleReference, grammar);
@@ -364,13 +363,13 @@ public final class TransformationHelper {
     return qualifiedRuleName;
   }
 
-  public static Optional<MCProdSymbol> resolveAstRuleType(ASTNode node, ASTMCType type) {
+  public static Optional<ProdSymbol> resolveAstRuleType(ASTNode node, ASTMCType type) {
     if (!type.getNameList().isEmpty()) {
       String simpleName = type.getNameList().get(type.getNameList().size() - 1);
       if (!simpleName.startsWith(AST_PREFIX)) {
         return Optional.empty();
       }
-      Optional<MCProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(node,
+      Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(node,
           simpleName
               .substring(AST_PREFIX.length()));
       if (ruleSymbol.isPresent() && istPartOfGrammar(ruleSymbol.get())) {
@@ -381,20 +380,20 @@ public final class TransformationHelper {
   }
 
   // TODO GV, PN: change it
-  public static boolean istPartOfGrammar(MCProdSymbol rule) {
+  public static boolean istPartOfGrammar(ProdSymbol rule) {
     return rule.getEnclosingScope().getAstNode().isPresent()
         && rule.getEnclosingScope().getAstNode().get() instanceof ASTMCGrammar;
   }
 
-  public static String getAstPackage(MCProdSymbol rule) {
+  public static String getAstPackage(ProdSymbol rule) {
     return AstGeneratorHelper.getAstPackage(Names.getQualifier(rule.getFullName()).toLowerCase());
   }
 
-  public static String getGrammarName(MCProdSymbol rule) {
+  public static String getGrammarName(ProdSymbol rule) {
     return Names.getQualifier(rule.getFullName());
   }
 
-  public static String getGrammarNameAsPackage(MCProdSymbol rule) {
+  public static String getGrammarNameAsPackage(ProdSymbol rule) {
     return getGrammarName(rule) + ".";
   }
 
@@ -403,8 +402,8 @@ public final class TransformationHelper {
   }
 
   public static String getQualifiedAstName(
-      Optional<MCProdSymbol> typeSymbol, ASTMCType type,
-      ASTMCGrammar grammar) {
+          Optional<ProdSymbol> typeSymbol, ASTMCType type,
+          ASTMCGrammar grammar) {
     if (!typeSymbol.isPresent()) {
       return FullGenericTypesPrinter.printType(type);
     }

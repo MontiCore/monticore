@@ -21,7 +21,7 @@ import java.util.Optional;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTSymbolRule;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.io.paths.IterablePath;
 
 public class CommonSymbolGenerator implements SymbolGenerator {
@@ -30,12 +30,12 @@ public class CommonSymbolGenerator implements SymbolGenerator {
 
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-                       IterablePath handCodedPath, MCProdSymbol prodSymbol, boolean isScopeSpanningSymbol) {
+                       IterablePath handCodedPath, ProdSymbol prodSymbol, boolean isScopeSpanningSymbol) {
     generateSymbol(genEngine, genHelper, handCodedPath, prodSymbol, isScopeSpanningSymbol);
   }
 
   protected void generateSymbol(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-                                IterablePath handCodedPath, MCProdSymbol prodSymbol, boolean isScopeSpanningSymbol) {
+                                IterablePath handCodedPath, ProdSymbol prodSymbol, boolean isScopeSpanningSymbol) {
 
     String className = prodSymbol.getSymbolDefinitionKind().isPresent()
             ? prodSymbol.getSymbolDefinitionKind().get()

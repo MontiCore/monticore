@@ -9,7 +9,7 @@ import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.se_rwth.commons.logging.Log;
 
@@ -30,7 +30,7 @@ public class NTAndASTRuleExtendType implements GrammarASTMCGrammarCoCo {
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
     for (ASTASTRule rule : a.getASTRuleList()) {
       if (!rule.getASTSuperClassList().isEmpty()) {
-        Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(rule.getType());
+        Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(rule.getType());
         if (ruleSymbol.isPresent()) {
           if (ruleSymbol.get().isClass()) {
             Optional<ASTNode> prod = ruleSymbol.get().getAstNode();
