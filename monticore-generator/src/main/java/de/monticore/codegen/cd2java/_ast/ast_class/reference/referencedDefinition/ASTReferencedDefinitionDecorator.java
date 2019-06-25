@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class ASTReferencedDefinitionDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
@@ -58,7 +59,7 @@ public class ASTReferencedDefinitionDecorator extends AbstractDecorator<ASTCDCla
       //if the attribute is mandatory or optional
       symbolType = getCDTypeFacade().createOptionalTypeOf(referencedNode);
     }
-    ASTCDAttribute refSymbolAttribute = getCDAttributeFacade().createAttribute(PRIVATE, symbolType, astcdAttribute.getName());
+    ASTCDAttribute refSymbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolType, astcdAttribute.getName());
     TransformationHelper.addStereotypeValue(refSymbolAttribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL.toString(), referencedSymbol);
     return accessorDecorator.decorate(refSymbolAttribute);
   }

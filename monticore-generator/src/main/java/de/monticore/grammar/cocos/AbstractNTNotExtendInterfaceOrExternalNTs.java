@@ -28,7 +28,7 @@ public class AbstractNTNotExtendInterfaceOrExternalNTs implements GrammarASTAbst
     if (!a.getSuperRuleList().isEmpty()) {
       List<ASTRuleReference> superRules = a.getSuperRuleList();
       for(ASTRuleReference sr : superRules){
-        Optional<ProdSymbol> ruleSymbol = a.getEnclosingScope().resolve(sr.getName(), ProdSymbol.KIND);
+        Optional<ProdSymbol> ruleSymbol = a.getEnclosingScope2().resolveProd(sr.getName());
         if(ruleSymbol.isPresent()){
           ProdSymbol r = ruleSymbol.get();
           boolean isInterface = r.isInterface();

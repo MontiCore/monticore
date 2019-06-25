@@ -846,7 +846,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     boolean isLeft = false;
     List<PredicatePair> interfaces = grammarInfo.getSubRulesForParsing(prodSymbol.getName());
     for(PredicatePair interf : interfaces) {
-      Optional<ProdSymbol> symbol = grammarEntry.getSpannedScope().<ProdSymbol>resolve(interf.getClassname(), ProdSymbol.KIND);
+      Optional<ProdSymbol> symbol = grammarEntry.getSpannedScope().resolveProd(interf.getClassname());
       if (!symbol.isPresent()) {
         continue;
       }

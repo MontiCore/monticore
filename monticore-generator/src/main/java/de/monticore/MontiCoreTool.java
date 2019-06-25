@@ -1,10 +1,7 @@
 package de.monticore;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisModelLoader;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreator;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.*;
 import de.monticore.codegen.cd2java.CDGenerator;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.*;
@@ -52,6 +49,7 @@ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCo
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.GrammarLanguage;
 import de.monticore.grammar.grammar._symboltable.GrammarModelLoader;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.incremental.IncrementalChecker;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
@@ -85,9 +83,9 @@ public class MontiCoreTool {
 
   private final IterablePath templatePath;
 
-  private final ResolvingConfiguration resolvingConfiguration;
+  private final Grammar_WithConceptsGlobalScope symbolTable;
 
-  private final GlobalScope symbolTable;
+  private final CD4AnalysisGlobalScope cdSymbolTable;
 
   private final GrammarModelLoader mcModelLoader;
 
@@ -113,10 +111,8 @@ public class MontiCoreTool {
     GrammarLanguage mcLanguage = new GrammarLanguage();
     CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
 
-    this.resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(mcLanguage.getResolvingFilters());
-
-    this.symbolTable = new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4aLanguage), resolvingConfiguration);
+    this.symbolTable = new Grammar_WithConceptsGlobalScope(modelPath, mcLanguage);
+    this.cdSymbolTable = new CD4AnalysisGlobalScope(modelPath, cd4aLanguage);
     this.mcModelLoader = new GrammarModelLoader(mcLanguage);
     this.cd4aModelLoader = new CD4AnalysisModelLoader(cd4aLanguage);
   }
@@ -196,11 +192,11 @@ public class MontiCoreTool {
       Log.error("0xA1016 Cannot read " + grammar.toString() + " as it is not a file.");
     }
     String qualifiedName = getQualifiedNameFromPath(grammar);
-    Optional<MCGrammarSymbol> grammarSymbol = symbolTable.resolveDown(qualifiedName, MCGrammarSymbol.KIND);
+    Optional<MCGrammarSymbol> grammarSymbol = symbolTable.resolveMCGrammarDown(qualifiedName);
     if (grammarSymbol.isPresent()) {
       return grammarSymbol.get().getAstGrammar();
     } else {
-      return mcModelLoader.loadModelIntoScope(qualifiedName, modelPath, symbolTable, resolvingConfiguration);
+      return mcModelLoader.loadModelIntoScope(qualifiedName, modelPath, symbolTable);
     }
   }
 
@@ -224,7 +220,7 @@ public class MontiCoreTool {
   private ASTCDCompilationUnit transformGrammarToCD(ASTMCGrammar astGrammar) {
     // transformation
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
-    Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(symbolTable, astGrammar);
+    Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdSymbolTable, astGrammar);
     ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTable(astGrammar, glex));
     createCDSymbolsForSuperGrammars(glex, astGrammar);
     return astCD;
@@ -237,14 +233,13 @@ public class MontiCoreTool {
     return createSymbolsFromAST(compUnit, symbolTable);
   }
 
-  public ASTCDCompilationUnit createSymbolsFromAST(ASTCDCompilationUnit ast, GlobalScope symbolTable) {
+  public ASTCDCompilationUnit createSymbolsFromAST(ASTCDCompilationUnit ast, CD4AnalysisGlobalScope symbolTable) {
     // Build grammar symbol table (if not already built)
 
     final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getCDDefinition()
         .getName());
-    Optional<CDDefinitionSymbol> cdSymbol = symbolTable.resolveDown(
-        qualifiedCDName,
-        CDDefinitionSymbol.KIND);
+    Optional<CDDefinitionSymbol> cdSymbol = symbolTable.resolveCDDefinitionDown(
+        qualifiedCDName);
 
     ASTCDCompilationUnit result = ast;
 
@@ -252,7 +247,7 @@ public class MontiCoreTool {
       result = (ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode().get();
       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
     } else {
-      Optional<CD4AnalysisSymbolTableCreator> symbolTableCreatorOpt = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, symbolTable);
+      Optional<CD4AnalysisSymbolTableCreator> symbolTableCreatorOpt = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(cdSymbolTable);
       if (symbolTableCreatorOpt.isPresent()) {
         CD4AnalysisSymbolTableCreator symbolTableCreator = symbolTableCreatorOpt.get();
         symbolTableCreator.createFromAST(ast);
@@ -266,7 +261,7 @@ public class MontiCoreTool {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = (MCGrammarSymbol) astGrammar.getSymbol();
       for (MCGrammarSymbol grammarSymbol : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
-        Optional<CDDefinitionSymbol> importedCd = symbolTable.resolveDown(grammarSymbol.getFullName(), CDDefinitionSymbol.KIND);
+        Optional<CDDefinitionSymbol> importedCd = cdSymbolTable.resolveCDDefinitionDown(grammarSymbol.getFullName());
         if (!importedCd.isPresent() && grammarSymbol.getAstNode().isPresent()) {
           transformAndCreateSymbolTable((ASTMCGrammar) grammarSymbol.getAstNode().get(), glex);
         }
@@ -295,9 +290,9 @@ public class MontiCoreTool {
       generateSymbolTable(glex, grammar, cd);
 
       // M9 Generate ast classes, visitor and context condition
-      VisitorGenerator.generate(glex, symbolTable, cd, out, handcodedPath);
-      CoCoGenerator.generate(glex, symbolTable, cd, out);
-      ODGenerator.generate(glex, symbolTable, cd, out);
+      VisitorGenerator.generate(glex, cdSymbolTable, cd, out, handcodedPath);
+      CoCoGenerator.generate(glex, cdSymbolTable, cd, out);
+      ODGenerator.generate(glex, cdSymbolTable, cd, out);
 
       Log.info("Grammar " + grammar.getName() + " processed successfully!", LOG_ID);
 

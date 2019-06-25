@@ -28,8 +28,8 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
   public void check(ASTNonTerminal a) {
     if (a.isPresentUsageName()) {
       String attributename = a.getUsageName();
-      Optional<RuleComponentSymbol> componentSymbol = a.getEnclosingScope()
-          .resolve(attributename, RuleComponentSymbol.KIND);
+      Optional<RuleComponentSymbol> componentSymbol = a.getEnclosingScope2()
+          .resolveRuleComponent(attributename);
       if (!componentSymbol.isPresent()) {
         Log.error("0xA1124 ASTNonterminal " + a.getName() + " couldn't be resolved.");
       }
@@ -48,7 +48,7 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
         Optional<ProdSymbol> ruleSymbol = g.getProd(rule.get().getName());
         if (ruleSymbol.isPresent()) {
           Optional<RuleComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
-              .resolve(attributename, RuleComponentSymbol.KIND);
+              .resolveRuleComponent(attributename);
           if (rcs.isPresent() && !rcs.get().getReferencedProd().get().getName()
               .equals(componentSymbol.get().getReferencedProd().get().getName())) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,

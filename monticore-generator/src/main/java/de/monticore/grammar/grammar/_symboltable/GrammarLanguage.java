@@ -7,8 +7,14 @@ import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsPar
 
 public class GrammarLanguage extends GrammarLanguageTOP {
 
+  public static final String FILE_ENDING = ".mc4";
+
   public GrammarLanguage(String langName, String fileEnding) {
     super(langName, fileEnding);
+  }
+
+  public GrammarLanguage() {
+    super("MontiCore Grammar Language", FILE_ENDING);
   }
 
   @Override

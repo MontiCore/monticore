@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.prettyprint.CDPrettyPrinter;
 import de.monticore.codegen.GeneratorHelper;
@@ -17,6 +18,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
@@ -313,12 +315,12 @@ public final class TransformationHelper {
    * @param ast
    * @return
    */
-  public static Optional<ASTCDCompilationUnit> getCDforGrammar(GlobalScope globalScope,
-      ASTMCGrammar ast) {
+  public static Optional<ASTCDCompilationUnit> getCDforGrammar(CD4AnalysisGlobalScope globalScope,
+                                                               ASTMCGrammar ast) {
     final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getName());
 
-    Optional<CDDefinitionSymbol> cdSymbol = globalScope.<CDDefinitionSymbol>resolveDown(
-        qualifiedCDName, CDDefinitionSymbol.KIND);
+    Optional<CDDefinitionSymbol> cdSymbol = globalScope.resolveCDDefinitionDown(
+        qualifiedCDName);
 
     if (cdSymbol.isPresent() && cdSymbol.get().getEnclosingScope().getAstNode().isPresent()) {
       Log.debug("Got existed symbol table for " + cdSymbol.get().getFullName(),

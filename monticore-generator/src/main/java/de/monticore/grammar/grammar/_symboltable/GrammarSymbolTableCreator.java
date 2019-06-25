@@ -304,38 +304,36 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
       prodComponent.setConstantGroup(true);
       prodComponent.setUsageName(usageName);
 
-      if (currentSymbol instanceof ProdSymbol) {
-        ProdSymbol surroundingProd = (ProdSymbol) currentSymbol;
-        final String symbolName = isNullOrEmpty(usageName)
-                ? attrName.get()
-                : usageName;
-        Optional<RuleComponentSymbol> prevProdComp = surroundingProd
-                .getProdComponent(symbolName);
+      final String symbolName = isNullOrEmpty(usageName)
+              ? attrName.get()
+              : usageName;
+      Optional<RuleComponentSymbol> prevProdComp = currentSymbol
+              .getProdComponent(symbolName);
 
-        if (prevProdComp.isPresent() && !prevProdComp.get().isConstantGroup()) {
-          error("0xA4006 The production " + surroundingProd.getName()
-                  + " must not use the attribute name " + attrName.get() +
-                  " for constant group and nonterminals.");
-        }
-        if (prevProdComp.isPresent()) {
-          prodComponent = prevProdComp.get();
-          prodComponent.setList(true);
-          setLinkBetweenSymbolAndNode(prodComponent, astNode);
-        } else {
-          final Optional<RuleComponentSymbol> sym = addRuleComponent(attrName.orElse(""),
-                  astNode, astNode.getUsageNameOpt().orElse(null));
-          if (sym.isPresent()) {
-            sym.get().setConstantGroup(true);
-            addToScopeAndLinkWithNode(sym.get(), astNode);
-          }
+      if (prevProdComp.isPresent() && !prevProdComp.get().isConstantGroup()) {
+        error("0xA4006 The production " + currentSymbol.getName()
+                + " must not use the attribute name " + attrName.get() +
+                " for constant group and nonterminals.");
+      }
+      if (prevProdComp.isPresent()) {
+        prodComponent = prevProdComp.get();
+        prodComponent.setList(true);
+        setLinkBetweenSymbolAndNode(prodComponent, astNode);
+      } else {
+        final Optional<RuleComponentSymbol> sym = addRuleComponent(attrName.orElse(""),
+                astNode, astNode.getUsageNameOpt().orElse(null));
+        if (sym.isPresent()) {
+          sym.get().setConstantGroup(true);
+          addToScopeAndLinkWithNode(sym.get(), astNode);
         }
       }
-    }
+      }
   }
+
 
   @Override
   public void visit(ASTConstant astNode) {
-    final Symbol currentSymbol = currentSymbol().orElse(null);
+    final ProdSymbol currentSymbol = getProdSymbol().orElse(null);
     if (currentSymbol != null) {
       final String symbolName = astNode.isPresentHumanName()
               ? astNode.getHumanName()
@@ -344,16 +342,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
       prodComponent.setConstant(true);
       prodComponent.setUsageName(astNode.getHumanNameOpt().orElse(null));
 
-      if (currentSymbol instanceof ProdSymbol) {
-        ProdSymbol surroundingProd = (ProdSymbol) currentSymbol;
-        prodComponent = surroundingProd.addProdComponent(prodComponent);
-      } else if (currentSymbol instanceof RuleComponentSymbol) {
-        RuleComponentSymbol surroundingProd = (RuleComponentSymbol) currentSymbol;
-        surroundingProd.addSubProdComponent(prodComponent);
-      } else {
-        addToScope(prodComponent);
-      }
-      setLinkBetweenSymbolAndNode(prodComponent, astNode);
+      prodComponent = currentSymbol.addProdComponent(prodComponent);
     }
   }
 
@@ -377,7 +366,8 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   private Optional<RuleComponentSymbol> addRuleComponent(String name, ASTNode node,
                                                          String usageName) {
-    final Symbol currentSymbol = currentSymbol().orElse(null);
+    final
+    ProdSymbol currentSymbol = getProdSymbol().orElse(null);
 
     if (currentSymbol != null) {
       final String symbolName = isNullOrEmpty(usageName) ? name : usageName;
@@ -385,12 +375,8 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
       prodComponent.setUsageName(usageName);
 
-      if (currentSymbol instanceof ProdSymbol) {
-        ProdSymbol surroundingProd = (ProdSymbol) currentSymbol;
-        prodComponent = surroundingProd.addProdComponent(prodComponent);
-      } else {
-        addToScope(prodComponent);
-      }
+      ProdSymbol surroundingProd = (ProdSymbol) currentSymbol;
+      prodComponent = surroundingProd.addProdComponent(prodComponent);
       setLinkBetweenSymbolAndNode(prodComponent, node);
       return of(prodComponent);
     }
@@ -565,10 +551,13 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   public final Optional<ProdSymbol> getProdSymbol() {
     if (getCurrentScope().isPresent()) {
-      return getCurrentScope().get().get;
+      IGrammarScope scope = getCurrentScope().get();
+      if (!scope.getLocalProdSymbols().isEmpty()) {
+        int i = scope.getLocalProdSymbols().size()-1;
+        return Optional.of(scope.getLocalProdSymbols().get(i));
+      }
     }
-
-    return empty();
+    return Optional.empty();
   }
 
   public void setLinkBetweenSymbolAndNode(de.monticore.grammar.grammar._symboltable.RuleComponentSymbol symbol, de.monticore.grammar.grammar._ast.ASTRuleComponent astNode) {
@@ -578,6 +567,14 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     astNode.setEnclosingScope2(symbol.getEnclosingScope());
 
+  }
+
+  public void setLinkBetweenSymbolAndNode(de.monticore.grammar.grammar._symboltable.RuleComponentSymbol symbol, ASTNode astNode) {
+ // TODO
+
+  }
+
+  private void addToScopeAndLinkWithNode(RuleComponentSymbol ruleComponentSymbol, ASTNode astNode) {
   }
 
 }

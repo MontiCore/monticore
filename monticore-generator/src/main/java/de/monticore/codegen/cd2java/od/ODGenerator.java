@@ -3,6 +3,7 @@
 package de.monticore.codegen.cd2java.od;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
@@ -25,7 +26,7 @@ public class ODGenerator {
    * Generates the different visitor default implementations for the given class
    * diagram.
    */
-  public static void generate(GlobalExtensionManagement glex, GlobalScope globalScope,
+  public static void generate(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
       ASTCDCompilationUnit astClassDiagram,
       File outputDirectory) {
     final GeneratorSetup setup = new GeneratorSetup();

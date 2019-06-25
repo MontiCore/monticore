@@ -199,7 +199,7 @@ public class CdDecorator {
 
     String name = AstGeneratorHelper.getASTClassNameWithoutPrefix(cdType);
     Optional<ProdSymbol> prodSymbol = grammarSymbol.
-        getSpannedScope().resolve(name, ProdSymbol.KIND);
+        getSpannedScope().resolveProd(name);
 
     if (!prodSymbol.isPresent()) {
       // Externe Produktionen werden nicht gefunden (der Name endet auf "Ext", steht

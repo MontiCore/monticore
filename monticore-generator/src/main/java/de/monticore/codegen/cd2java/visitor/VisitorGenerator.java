@@ -3,6 +3,7 @@
 package de.monticore.codegen.cd2java.visitor;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
@@ -11,7 +12,6 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.symboltable.GlobalScope;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -37,7 +37,7 @@ public class VisitorGenerator {
    * Generates the different visitor default implementations for the given class
    * diagram.
    */
-  public static void generate(GlobalExtensionManagement glex, GlobalScope globalScope,
+  public static void generate(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
                               ASTCDCompilationUnit astClassDiagram, File outputDirectory,
                               IterablePath handcodedPath) {
     final GeneratorSetup setup = new GeneratorSetup();

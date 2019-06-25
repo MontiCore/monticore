@@ -4,9 +4,9 @@ package de.monticore.codegen.cd2java.visitor;
 
 import com.google.common.base.Joiner;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.symboltable.GlobalScope;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 
@@ -20,7 +20,7 @@ public class VisitorGeneratorHelper extends GeneratorHelper {
   public static final String SYMBOL_VISITOR = "Symbol" + VISITOR;
   public static final String SCOPE_VISITOR = "Scope" + VISITOR;
   
-  public VisitorGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
+  public VisitorGeneratorHelper(ASTCDCompilationUnit topAst, CD4AnalysisGlobalScope symbolTable) {
     super(topAst, symbolTable);
   }
   
