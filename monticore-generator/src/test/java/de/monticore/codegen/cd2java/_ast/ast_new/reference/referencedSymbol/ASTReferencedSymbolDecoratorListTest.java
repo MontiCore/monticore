@@ -72,7 +72,8 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
   @Test
   public void testSymbolAttribute() {
     ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astClass);
-    assertTrue(symbolAttribute.getModifier().isPrivate());
+    assertTrue(symbolAttribute.getModifier().isProtected()
+    );
     ASTType symboType = this.cdTypeFacade.createTypeByDefinition(NAME_SYMBOL_MAP);
     assertDeepEquals(symboType, symbolAttribute.getType());
   }

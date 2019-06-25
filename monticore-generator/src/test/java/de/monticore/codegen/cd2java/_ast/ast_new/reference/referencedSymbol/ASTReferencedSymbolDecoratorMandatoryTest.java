@@ -71,7 +71,7 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
   @Test
   public void testSymbolAttribute() {
     ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astClass);
-    assertTrue(symbolAttribute.getModifier().isPrivate());
+    assertTrue(symbolAttribute.getModifier().isProtected());
     assertOptionalOf(NAME_SYMBOL, symbolAttribute.getType());
   }
 
