@@ -152,6 +152,10 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
       return resolvedSymbols;
     }
     resolvedSymbols.addAll(resolveAdapted${symbol}LocallyMany(foundSymbols, name, modifier, predicate));
+    if (!resolvedSymbols.isEmpty()) {
+      set${symbol}SymbolAlreadyResolved(false);
+      return resolvedSymbols;
+    }
     final Collection<${symbolNames[symbol]}> resolvedFromEnclosing = continue${symbol}WithEnclosingScope((foundSymbols | resolvedSymbols.size() > 0), name, modifier, predicate);
     resolvedSymbols.addAll(resolvedFromEnclosing);
     set${symbol}SymbolAlreadyResolved(false);

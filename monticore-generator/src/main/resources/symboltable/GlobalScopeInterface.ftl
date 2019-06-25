@@ -34,6 +34,7 @@ public interface ${className} extends ${interfaceName} {
   }
 
 <#list symbolNames?keys as symbol>
+
   default Collection<${symbolNames[symbol]}> resolve${symbol}Many(boolean foundSymbols,
       final String symbolName, final AccessModifier modifier, final Predicate<${symbolNames[symbol]}> predicate) {
 
@@ -50,8 +51,11 @@ public interface ${className} extends ${interfaceName} {
     // Maybe the symbol now exists in this scope (or its sub scopes). So, resolve down, again.
     resolvedSymbol = resolve${symbol}DownMany(false, symbolName, modifier, predicate);
     foundSymbols = foundSymbols  | resolvedSymbol.size() > 0;
-    resolvedSymbol.addAll(resolveAdapted${symbol}(foundSymbols, symbolName, modifier, predicate));
-
+    if (!foundSymbols && !is${symbol}SymbolAlreadyResolved()){
+      set${symbol}SymbolAlreadyResolved(true);
+      resolvedSymbol.addAll(resolveAdapted${symbol}(foundSymbols, symbolName, modifier, predicate));
+    }
+    set${symbol}SymbolAlreadyResolved(false);
     return resolvedSymbol;
   }
 
