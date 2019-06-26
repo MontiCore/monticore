@@ -60,8 +60,7 @@ public class JsonParser {
             reader.nextNull();
             return new JsonNull();
           case NUMBER:
-            return new JsonNumber(reader.nextDouble() + ""); // TODO @AB: handle other number
-                                                             // formats
+            return new JsonNumber(reader.nextString());
           case STRING:
             return new JsonString(reader.nextString());
           case END_ARRAY:
