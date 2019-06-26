@@ -57,18 +57,6 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     return clazz;
   }
 
-  protected boolean isSameMethodSignature(ASTCDMethod method1, ASTCDMethod method2) {
-    if (!method1.getName().equals(method2.getName()) || method1.sizeCDParameters() != method2.sizeCDParameters()) {
-      return false;
-    }
-    for (int i = 0; i < method1.getCDParameterList().size(); i++) {
-      if (!method1.getCDParameter(i).getType().deepEquals(method2.getCDParameter(i).getType())) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
     if (GeneratorHelper.isListType(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));

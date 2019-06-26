@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("astcdClass")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
+<#assign service = glex.getGlobalVar("service")>
     super.deepClone(result);
 
 <#list astcdClass.getCDAttributeList() as attribute>
@@ -24,7 +25,7 @@ ${tc.signature("astcdClass")}
     } else {
       result.set${methName}Absent();
     }
-    <#else>
+    <#elseif !service.isReferencedSymbolAttribute(attribute)>
     if (isPresent${methName}()){
       result.set${methName}(get${methName}());
     } else {
