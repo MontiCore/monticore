@@ -60,7 +60,7 @@ public class ${className} {
   <#if scopeRule.isPresent()>
     <#list scopeRule.get().getAdditionalAttributeList() as attr>
       <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
-      scope.set${attr.getName()?cap_first}(${attr.getName()});
+      scope.set${attr.getName()?cap_first}(_${attr.getName()});
     </#list>
   </#if>
     return scope;
