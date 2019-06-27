@@ -1,7 +1,0 @@
-package de.monticore.expressions;
-
-grammar CommonExpressionsWithLiterals extends de.monticore.expressions.CommonExpressions, de.monticore.MCCommonLiterals {
-    start Expression;
-
-    ExtLiteral = Literal;
-}

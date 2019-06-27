@@ -270,7 +270,7 @@ public class JsonPrinter {
   String s = string.trim();
   boolean isFramedInQuotationMarks = s.length() > 0 && s.startsWith("\"") && s.endsWith("\"");
   boolean isSerializedObject = s.length() > 0 && s.startsWith("{") && s.endsWith("}");
-  string = JsonStringUtil.escapeSpecialChars(string);
+  string = JsonUtil.escapeSpecialChars(string);
     if (!isFramedInQuotationMarks && !isSerializedObject) {
       return "\""+string+"\"";
     }

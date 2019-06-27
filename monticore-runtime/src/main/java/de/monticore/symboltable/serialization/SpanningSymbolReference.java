@@ -12,6 +12,7 @@ package de.monticore.symboltable.serialization;
  * @version $Revision$, $Date$
  * @since TODO: add version number
  */
+@Deprecated
 public class SpanningSymbolReference {
   
   public SpanningSymbolReference(

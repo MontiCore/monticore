@@ -1,7 +1,7 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsVisitor;
+import de.monticore.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsVisitor;
 import de.monticore.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;

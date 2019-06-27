@@ -5,6 +5,21 @@
  */
 package de.monticore.codegen.symboltable;
 
+import static de.monticore.codegen.GeneratorHelper.existsHandwrittenClass;
+import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
+import static de.se_rwth.commons.Names.getSimpleName;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -13,14 +28,6 @@ import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-
-import static de.monticore.codegen.GeneratorHelper.existsHandwrittenClass;
-import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
-import static de.se_rwth.commons.Names.getSimpleName;
 
 public class CommonScopeGenerator implements ScopeGenerator {
 
@@ -159,6 +166,8 @@ public class CommonScopeGenerator implements ScopeGenerator {
       }
     }
     
+    List<String> superGrammarPackages = allSuperScopes.stream().map(N -> Names.getQualifier(N)).collect(Collectors.toList());
+    
     final Path scopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         scopeClassName + ".java");
     final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
@@ -175,7 +184,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
         globalScopeInterfaceClassName + ".java");
     
 
-
+    
 
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
     Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
@@ -184,7 +193,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName, scopeRule);
   
     if(genHelper.getGrammarSymbol().getStartProd().isPresent()) {
-      genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, symbolNames,spanningSymbolNames);
+      genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, allSymbols,allSpanningSymbolNames, superGrammarPackages);
     
       genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, baseNameClass, languageName, symbolNames,existsHWCArtifactScopeImpl);
    

@@ -107,7 +107,7 @@ public class ${className} {
 <#if symbolRule.isPresent()>
   <#list symbolRule.get().getAdditionalAttributeList() as attr>
     <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
-  public ${className} ${attr.getName()}(${attrType} ${attr.getName()}) {
+  public ${className} set${attr.getName()?cap_first}(${attrType} ${attr.getName()}) {
     this.${attr.getName()} = ${attr.getName()};
     return this;
   }

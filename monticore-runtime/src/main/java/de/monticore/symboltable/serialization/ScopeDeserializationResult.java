@@ -16,6 +16,7 @@ import de.monticore.symboltable.IScope;
  * @version $Revision$, $Date$
  * @since TODO: add version number
  */
+@Deprecated
 public class ScopeDeserializationResult<T extends IScope> {
   
   public ScopeDeserializationResult(
