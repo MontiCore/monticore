@@ -8,6 +8,8 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
+import de.monticore.grammar.grammar._ast.ASTCard;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethod;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
@@ -703,4 +705,47 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
         getQualifier(symbol.getFullName()).toLowerCase(),
         Names.getSimpleName("I" + symbol.getName() + SYMBOL + DELEGATE));
 	}
+	
+	
+	/**
+	 * Computes the cardinality value for an additional attribute.
+	 * @param attr The input attribute.
+	 * @return The cardinality as a String in form of the values: 1, ?, *
+	 */
+  public static String getCardinalityForAdditionalAttribute(ASTAdditionalAttribute attr) {
+    if (attr.isPresentCard()) {
+      ASTCard card = attr.getCard();
+      
+      // check for list
+      if (card.isPresentMax()) {
+        String max = card.getMax();
+        if (max.equals("*")) {
+          return "*";
+        }
+        else {
+          try {
+            int maxNumber = Integer.parseInt(max);
+            if (maxNumber > 1) {
+              return "*";
+            } // check for optional
+            else if (maxNumber == 1) {
+              if (card.isPresentMin()) {
+                String min = card.getMin();
+                int minNumber = Integer.parseInt(min);
+                if (minNumber == 0) {
+                  return "?";
+                }
+              }
+            }
+          }
+          catch (NumberFormatException e) {
+            return "1";
+          }
+        }
+      }
+    }
+    
+    // return default if no list or optional is found
+    return "1";
+  }
 }
