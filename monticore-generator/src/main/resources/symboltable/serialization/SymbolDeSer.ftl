@@ -100,7 +100,7 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
     return symbolJson.get("${attr.getName()}").getAsJsonNumber().getNumberAsLong();
 <#break>
 <#default>
-    Log.error("Unable to deserialize symbol attribute ${attr.getName()} of type ${attrType}. Please override the method ${className}#deserialize${attr.getName()?cap_first}(JsonObject) using the TOP mechanism!);
+    Log.error("Unable to deserialize symbol attribute ${attr.getName()} of type ${attrType}. Please override the method ${className}#deserialize${attr.getName()?cap_first}(JsonObject) using the TOP mechanism!");
     return null;
 </#switch>
   }
