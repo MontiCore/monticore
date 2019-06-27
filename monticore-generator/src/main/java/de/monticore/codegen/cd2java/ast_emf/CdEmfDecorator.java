@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDFieldSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
@@ -22,12 +23,11 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.CollectionTypesPrinter;
 import de.monticore.types.MCCollectionTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
@@ -63,13 +63,14 @@ public class CdEmfDecorator extends CdDecorator {
   
   public CdEmfDecorator(
       GlobalExtensionManagement glex,
-      GlobalScope symbolTable,
+      CD4AnalysisGlobalScope cdScope,
+      Grammar_WithConceptsGlobalScope mcScope,
       IterablePath targetPath) {
-    super(glex, symbolTable, targetPath);
+    super(glex, cdScope, mcScope, targetPath);
   }
   
   public void decorate(ASTCDCompilationUnit cdCompilationUnit) {
-    AstEmfGeneratorHelper astHelper = new AstEmfGeneratorHelper(cdCompilationUnit, symbolTable);
+    AstEmfGeneratorHelper astHelper = new AstEmfGeneratorHelper(cdCompilationUnit, cdScope, mcScope);
     
     // Run over classdiagramm and collects external emf types
     ETypeCollector emfCollector = new ETypeCollector(astHelper);

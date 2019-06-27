@@ -21,16 +21,16 @@ import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._symboltable.IGrammarScope;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolReference;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ISymbol;
-import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.CollectionTypesPrinter;
 import de.monticore.types.MCCollectionTypesHelper;
@@ -1814,20 +1814,22 @@ return null;
    * Creates an instance of the generator helper
    *
    * @param astClassDiagram
-   * @param globalScope
+   * @param cdScope
    * @param emfCompatible
    * @return
    */
   public static AstGeneratorHelper createGeneratorHelper(ASTCDCompilationUnit astClassDiagram,
-                                                         GlobalScope globalScope, boolean emfCompatible) {
+                                                         CD4AnalysisGlobalScope cdScope,
+                                                         Grammar_WithConceptsGlobalScope mcScope,
+                                                         boolean emfCompatible) {
     if (emfCompatible) {
-      return new AstEmfGeneratorHelper(astClassDiagram, globalScope);
+      return new AstEmfGeneratorHelper(astClassDiagram, cdScope, mcScope);
     }
-    return new AstGeneratorHelper(astClassDiagram, globalScope);
+    return new AstGeneratorHelper(astClassDiagram, cdScope, mcScope);
   }
 
-  public String getQualifiedSymbolName(Scope enclsoingScope, String simpleSymbolName) {
-    Optional<ProdSymbol> symbolType = enclsoingScope.<ProdSymbol>resolve(simpleSymbolName, ProdSymbol.KIND);
+  public String getQualifiedSymbolName(IGrammarScope enclosingScope, String simpleSymbolName) {
+    Optional<ProdSymbol> symbolType = enclosingScope.resolveProd(simpleSymbolName);
     if (symbolType.isPresent()) {
       String packageName = symbolType.get().getFullName().substring(0, symbolType.get().getFullName().lastIndexOf(".")).toLowerCase();
       return packageName + "." + SymbolTableGenerator.PACKAGE + "." + simpleSymbolName +SYMBOL;

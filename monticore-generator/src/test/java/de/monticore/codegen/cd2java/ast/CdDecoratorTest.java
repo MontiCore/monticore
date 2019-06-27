@@ -9,14 +9,13 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.se_rwth.commons.Names;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -63,15 +62,16 @@ public class CdDecoratorTest {
   
   private ASTCDCompilationUnit cdComilationUnit;
   
-  private static GlobalScope globalScope;
+  private static CD4AnalysisGlobalScope globalScope;
+
+  private static Grammar_WithConceptsGlobalScope mcScope;
   
   @BeforeClass
   public static void setup() {
-    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
-    resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());
-    
-    globalScope = new GlobalScope(modelPath, cd4AnalysisLanguage, resolvingConfiguration);
+
+    globalScope = new CD4AnalysisGlobalScope(modelPath, cd4AnalysisLanguage);
+    mcScope = new Grammar_WithConceptsGlobalScope();
   }
   
   @Before
@@ -88,8 +88,8 @@ public class CdDecoratorTest {
       ASTCDClass classA = cdDefinition.getCDClassList().get(0);
       assertEquals("ASTA", classA.getName());
       glex = new GlobalExtensionManagement();
-      cdDecorator = new CdDecorator(glex, null, IterablePath.empty());
-      astHelper = new AstGeneratorHelper(topNode.get(), globalScope);
+      cdDecorator = new CdDecorator(glex, globalScope, mcScope, IterablePath.empty());
+      astHelper = new AstGeneratorHelper(topNode.get(), globalScope, mcScope);
     }
     catch (FileNotFoundException e) {
       fail("Should not reach this, but: " + e);
@@ -108,7 +108,7 @@ public class CdDecoratorTest {
       ASTCDCompilationUnit compUnit = topNode.get();
       assertNotNull(compUnit.getCDDefinition());
       cdDefinitionBuilder = compUnit.getCDDefinition();
-      astHelperBuilder = new AstGeneratorHelper(compUnit, globalScope);
+      astHelperBuilder = new AstGeneratorHelper(compUnit, globalScope, mcScope);
     }
     catch (FileNotFoundException e) {
       fail("Should not reach this, but: " + e);
@@ -119,7 +119,6 @@ public class CdDecoratorTest {
   }
   
   
-  /** {@link CdDecorator#decorateWithBuilders(ASTCDDefinition, GlobalExtensionManagement)} */
   @Test
   public void decorateWithBuilders() {
     assertEquals(2, cdDefinition.getCDClassList().size());
@@ -203,7 +202,6 @@ public class CdDecoratorTest {
     }
   }
   
-  /** {@link CdDecorator#addSetter(ASTCDClass, AstGeneratorHelper)} */
   @Test
   public void addSetter() {
     for (ASTCDClass clazz : cdDefinition.getCDClassList()) {
@@ -250,7 +248,6 @@ public class CdDecoratorTest {
     assertEquals(2, nodeFactoryClass.get().getCDAttributeList().size());
   }
   
-  /** {@link CdDecorator#additionalMethods(ASTCDClass, AstGeneratorHelper)  */
   @Test
   public void additionalMethods() {
     for (ASTCDClass clazz : cdDefinition.getCDClassList()) {

@@ -67,7 +67,7 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
         .addCDAttribute(getLanguageAttribute(grammarName))
         .addCDAttribute(getDefaultAttribute())
         .addAllCDAttributes(getConstantAttribute(enumConstants))
-        .addCDAttribute(getSuperGrammarsAttribute(superSymbolList))
+       // TODO Check .addCDAttribute(getSuperGrammarsAttribute(superSymbolList))
         .addCDConstructor(getDefaultConstructor(className))
         .addCDMethod(getGetAllLanguagesMethod(superSymbolList))
         .build();
@@ -95,7 +95,9 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
     return attribute;
   }
 
-  protected ASTCDAttribute getSuperGrammarsAttribute(Collection<CDDefinitionSymbol> superSymbolList) {
+ /*
+   TODO Braucht man das?
+ protected ASTCDAttribute getSuperGrammarsAttribute(Collection<CDDefinitionSymbol> superSymbolList) {
     List<String> superGrammarNames = superSymbolList.stream().map(CDDefinitionSymbol::getFullName).map(x -> "\"" + x + "\"").collect(Collectors.toList());
     ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC, getCDTypeFacade().createArrayType(String.class, 1), SUPER_GRAMMARS);
     if (!superSymbolList.isEmpty()) {
@@ -106,7 +108,7 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
     }
     return attribute;
   }
-
+*/
   protected ASTCDConstructor getDefaultConstructor(String className) {
     return getCDConstructorFacade().createConstructor(PUBLIC, className);
   }

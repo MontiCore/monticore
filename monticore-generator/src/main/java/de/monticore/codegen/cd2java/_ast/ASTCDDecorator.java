@@ -2,6 +2,7 @@ package de.monticore.codegen.cd2java._ast;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreator;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreatorDelegator;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
@@ -41,10 +42,10 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
 
   private final FullASTInterfaceDecorator astInterfaceDecorator;
 
-  private final CD4AnalysisSymbolTableCreator symbolTableCreator;
+  private final CD4AnalysisSymbolTableCreatorDelegator symbolTableCreator;
 
   public ASTCDDecorator(final GlobalExtensionManagement glex,
-                        final CD4AnalysisSymbolTableCreator symbolTableCreator,
+                        final CD4AnalysisSymbolTableCreatorDelegator symbolTableCreator,
                         final ASTFullDecorator astFullDecorator,
                         final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator,
                         final ASTBuilderDecorator astBuilderDecorator,

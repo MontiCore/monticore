@@ -10,8 +10,8 @@ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesNodeFactory;
 import de.monticore.utils.Link;
@@ -41,7 +41,7 @@ public class CreateConstantAttributeTranslation implements
     Optional<ProdSymbol> typeProd = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(link.source()).get()
         .getSpannedScope()
-        .resolve(link.source().getName(), ProdSymbol.KIND);
+        .resolveProd(link.source().getName());
     if (!typeProd.isPresent()) {
       Log.debug("Unknown type of the grammar rule "
           + link.source().getName() + " in the grammar "

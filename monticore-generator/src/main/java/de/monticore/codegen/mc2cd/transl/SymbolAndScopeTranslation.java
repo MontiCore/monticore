@@ -47,7 +47,7 @@ public class SymbolAndScopeTranslation implements
           //extra information into stereotype value if a symboltype is already defined in the grammar
           String symbolName = symbolDefinition.getSymbolName();
           String qualifiedName;
-          Optional<ProdSymbol> symbolType = grammarProd.getEnclosingScope().<ProdSymbol>resolve(symbolName, ProdSymbol.KIND);
+          Optional<ProdSymbol> symbolType = grammarProd.getEnclosingScope2().resolveProd(symbolName);
           if (symbolType.isPresent()) {
             String packageName = symbolType.get().getFullName().substring(0, symbolType.get().getFullName().lastIndexOf(".")).toLowerCase();
             qualifiedName = packageName + "." + SymbolTableGenerator.PACKAGE + "." + symbolName;

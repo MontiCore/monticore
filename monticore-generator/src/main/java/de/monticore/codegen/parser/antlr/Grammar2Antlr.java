@@ -676,7 +676,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    * @param a
    */
   @Override
-  public void visit(ASTEof a) {
+  public void visit(ASTRuleComponent a) {
     addToAntlrCode("EOF");
   }
 

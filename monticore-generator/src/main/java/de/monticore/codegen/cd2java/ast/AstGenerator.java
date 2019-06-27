@@ -6,11 +6,13 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
 import de.se_rwth.commons.JavaNamesHelper;
@@ -30,19 +32,24 @@ public class AstGenerator {
    * 
    * @param glex - object for managing hook points, features and global
    * variables
-   * @param c 
+   * @param  mcScope -  the global scope for grammars
+   * @param cdScope - the global scope for CD
    * @param astClassDiagram - class diagram AST
-   * @param templateName - the qualified name of the start template
    * @param outputDirectory - target directory
+   * @param templatePath - template path
+   * @param emfCompatible
    */
-  public static void generate(GlobalExtensionManagement glex, GlobalScope globalScope, ASTCDCompilationUnit astClassDiagram,
-      File outputDirectory, IterablePath templatePath, boolean emfCompatible) {
+  public static void generate(GlobalExtensionManagement glex,
+                              ASTCDCompilationUnit astClassDiagram,
+                              CD4AnalysisGlobalScope cdScope,
+                              Grammar_WithConceptsGlobalScope mcScope,
+                              File outputDirectory, IterablePath templatePath, boolean emfCompatible) {
     final String diagramName = astClassDiagram.getCDDefinition().getName();
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
     setup.setModelName(diagramName);
     setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(Path::toFile).collect(Collectors.toList()));
-    AstGeneratorHelper astHelper = GeneratorHelper.createGeneratorHelper(astClassDiagram, globalScope, emfCompatible);
+    AstGeneratorHelper astHelper = GeneratorHelper.createGeneratorHelper(astClassDiagram, cdScope, mcScope, emfCompatible);
     glex.setGlobalValue("astHelper", astHelper);
     glex.setGlobalValue("javaNameHelper", new JavaNamesHelper());
     glex.setGlobalValue("nameHelper", new Names());

@@ -6,12 +6,17 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisScope;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethod;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsScope;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
@@ -44,10 +49,11 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   // TODO PN refactor
   public SymbolTableGeneratorHelper(
-      ASTMCGrammar ast,
-      GlobalScope globalScope,
-      ASTCDCompilationUnit astCd) {
-    super(astCd, globalScope);
+          Grammar_WithConceptsGlobalScope mcGlobalScope,
+          ASTMCGrammar ast,
+          CD4AnalysisGlobalScope cd4AnalysisGlobalScope,
+          ASTCDCompilationUnit astCd) {
+    super(astCd, cd4AnalysisGlobalScope);
     Log.errorIfNull(ast);
     this.astGrammar = ast;
     this.qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
@@ -55,10 +61,10 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
         : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
         astGrammar.getName());
 
-    grammarSymbol = globalScope.<MCGrammarSymbol>resolve(
-        qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
+    grammarSymbol = mcGlobalScope.resolveMCGrammar(
+        qualifiedGrammarName).orElse(null);
     Log.errorIfNull(grammarSymbol, "0xA4036 Grammar " + qualifiedGrammarName
-        + " can't be resolved in the scope " + globalScope);
+        + " can't be resolved in the scope " + cd4AnalysisGlobalScope);
 
     checkState(qualifiedGrammarName.equals(grammarSymbol.getFullName()));
   }
@@ -457,7 +463,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
   
   public String getQualifiedScopeVisitorType(String symbol) {
-    Optional<CDDefinitionSymbol> cdSymbol = this.cdSymbol.getEnclosingScope().resolve(symbol, CDDefinitionSymbol.KIND);
+    Optional<CDDefinitionSymbol> cdSymbol = this.cdSymbol.getEnclosingScope().resolveCDDefinition(symbol);
     if (cdSymbol.isPresent()) {
       return getQualifiedScopeVisitorType(cdSymbol.get());
     }
@@ -543,7 +549,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
   public String getQualifiedScopeInterfaceType(String symbol) {
-    Optional<CDDefinitionSymbol> cdSymbol = this.cdSymbol.getEnclosingScope2().resolveC(symbol, CDDefinitionSymbol.KIND);
+    Optional<CDDefinitionSymbol> cdSymbol = this.cdSymbol.getEnclosingScope().resolveCDDefinition(symbol);
     if (cdSymbol.isPresent()) {
       return getQualifiedScopeInterfaceType(cdSymbol.get());
     }
@@ -586,7 +592,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     Set<String> inheritedSymbols = new LinkedHashSet<>();
     for (CDDefinitionSymbol superCd : getAllSuperCds(cdSymbol)) {
       // resolve super grammar and retrieve qualified symbols
-      MCGrammarSymbol grammarSymbol = cdSymbol.getEnclosingScope().<MCGrammarSymbol> resolve(superCd.getFullName(), MCGrammarSymbol.KIND).orElse(null);
+      MCGrammarSymbol grammarSymbol = getGrammarSymbol().getEnclosingScope().resolveMCGrammar(superCd.getFullName()).orElse(null);
       inheritedSymbols.addAll(getQualifiedSymbolsFromGrammar(grammarSymbol));
     }
     return inheritedSymbols;
@@ -611,7 +617,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
   public boolean hasSymbolDefiningRule(String symbol) {
-    Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(symbol, MCGrammarSymbol.KIND);
+    Optional<MCGrammarSymbol> grammarSymbol = getGrammarSymbol().getEnclosingScope().resolveMCGrammar(symbol);
     if (grammarSymbol.isPresent()) {
       for (ProdSymbol prodSymbol : grammarSymbol.get().getProds()) {
         if (prodSymbol.isSymbolDefinition()) {
@@ -623,7 +629,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
   public boolean hasScopeSpanningRule(String symbol) {
-    Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(symbol, MCGrammarSymbol.KIND);
+    Optional<MCGrammarSymbol> grammarSymbol = getGrammarSymbol().getEnclosingScope().resolveMCGrammar(symbol);
     if (grammarSymbol.isPresent()) {
       for (ProdSymbol prodSymbol : grammarSymbol.get().getProds()) {
         if (prodSymbol.isScopeDefinition()) {
@@ -635,7 +641,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
   public boolean isComponentGrammar(String grammarName) {
-    Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(grammarName, MCGrammarSymbol.KIND);
+    Optional<MCGrammarSymbol> grammarSymbol = getGrammarSymbol().getEnclosingScope().resolveMCGrammar(grammarName);
     if (grammarSymbol.isPresent() && grammarSymbol.get().isComponent()) {
         return true;
     }
@@ -668,7 +674,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    * @return A boolean value if the language has a symbol table.
    */
   public boolean hasSymbolTable(CDDefinitionSymbol cdSymbol) {
-    Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(cdSymbol.getFullName(), MCGrammarSymbol.KIND);
+    Optional<MCGrammarSymbol> grammarSymbol = getGrammarSymbol().getEnclosingScope().resolveMCGrammar(cdSymbol.getFullName());
     if (grammarSymbol.isPresent() && grammarSymbol.get().getStartProd().isPresent()) {
       return true;
     }

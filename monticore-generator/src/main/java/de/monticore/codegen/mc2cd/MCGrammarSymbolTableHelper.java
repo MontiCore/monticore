@@ -30,21 +30,7 @@ import static de.se_rwth.commons.Util.listTillNull;
 
 public class MCGrammarSymbolTableHelper {
   
-  public static void initializeSymbolTable(ASTMCGrammar rootNode, ModelPath modelPath) {
-    ModelingLanguage grammarLanguage = new GrammarLanguage();
-    
-    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(grammarLanguage.getResolvingFilters());
-    
-    Scope globalScope = new GlobalScope(modelPath, grammarLanguage, resolvingConfiguration);
-    MontiCoreGrammarSymbolTableCreator symbolTableCreator = new MontiCoreGrammarSymbolTableCreator(
-        resolvingConfiguration, globalScope);
-    
-    // Create Symbol Table
-    symbolTableCreator.createFromAST(rootNode);
-  }
-  
-  public static Optional<ProdSymbol> resolveRule(ASTNode astNode, String name) {
+   public static Optional<ProdSymbol> resolveRule(ASTNode astNode, String name) {
     Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode);
     if (!grammarSymbol.isPresent()) {
       return Optional.empty();
@@ -162,7 +148,7 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<Pattern> calculateLexPattern(MCGrammarSymbol grammar,
-      Optional<ASTNode> lexNode) {
+      Optional<? extends ASTNode> lexNode) {
     Optional<Pattern> ret = Optional.empty();
     
     if (!lexNode.isPresent() || !(lexNode.get() instanceof ASTLexProd)) {
@@ -259,7 +245,7 @@ public class MCGrammarSymbolTableHelper {
     }
   }
   
-  private static String getLexType(Optional<ASTNode> node) {
+  private static String getLexType(Optional<? extends ASTNode> node) {
     if (node.isPresent()) {
       if (node.get() instanceof ASTLexProd) {
         return HelperGrammar.createConvertType((ASTLexProd) node.get());

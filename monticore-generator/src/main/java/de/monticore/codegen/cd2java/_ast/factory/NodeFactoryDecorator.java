@@ -157,7 +157,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
         //get super cddefinition
         ASTCDDefinition superDefinition = (ASTCDDefinition) astNode.get();
 
-        TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor();
+        TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor(superSymbol.getEnclosingScope());
         CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build().accept(visitor);
 
         for (ASTCDClass superClass : superDefinition.getCDClassList()) {
@@ -198,6 +198,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
     this.replaceTemplate(EMPTY_BODY, createDelegateWithParamMethod, new TemplateHookPoint("_ast.nodefactory.CreateDelegateMethod", packageName + symbolName, superClass.getName(), paramCall));
     return createDelegateWithParamMethod;
   }
+
 }
 
 

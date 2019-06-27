@@ -2,8 +2,6 @@
 
 package de.monticore.grammar.grammar._symboltable;
 
-import de.monticore.symboltable.SymbolKind;
-
 import java.util.Optional;
 
 public class AdditionalAttributeSymbol extends AdditionalAttributeSymbolTOP {
@@ -27,22 +25,5 @@ public class AdditionalAttributeSymbol extends AdditionalAttributeSymbolTOP {
     return Optional.ofNullable(typeReference);
   }
   
-  public static class MCProdAttributeKind implements SymbolKind {
-    
-    private static final String NAME = MCProdAttributeKind.class.getName();
-    
-    protected MCProdAttributeKind() {
-    }
-    
-    @Override
-    public String getName() {
-      return NAME;
-    }
-    
-    @Override
-    public boolean isKindOf(SymbolKind kind) {
-      return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
-    }
-    
-  }
+
 }

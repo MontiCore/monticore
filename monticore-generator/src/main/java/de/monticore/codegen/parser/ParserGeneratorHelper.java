@@ -453,7 +453,7 @@ public class ParserGeneratorHelper {
     for (MCGrammarSymbolReference g : grammarSymbol.getSuperGrammars()) {
       final Optional<ProdSymbol> ruleByName = g.getReferencedSymbol().getProdWithInherited(ast.getName());
       if (ruleByName.isPresent() && ruleByName.get().isClass()) {
-        Optional<ASTNode> astProd = ruleByName.get().getAstNode();
+        Optional<ASTProd> astProd = ruleByName.get().getAstNode();
         if (astProd.isPresent() && astProd.get() instanceof ASTClassProd) {
           return ((ASTClassProd)astProd.get()).getAltList();
         }
@@ -553,7 +553,7 @@ public class ParserGeneratorHelper {
     return "null";
   }
 
-  private static String getLexType(Optional<ASTNode> node) {
+  private static String getLexType(Optional<? extends ASTNode> node) {
     if (node.isPresent()) {
       if (node.get() instanceof ASTLexProd) {
         return HelperGrammar.createConvertType((ASTLexProd) node.get());

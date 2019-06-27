@@ -64,12 +64,12 @@ public final class DecoratorAssert {
   public static void assertListOf(String name, ASTNode actual) {
     assertDeepEquals(CD_TYPE_FACADE.createListTypeOf(name), actual);
   }
-
+/* TODO Check
   public static void assertArrayOf(Class<?> clazz, ASTNode actual) {
     assertDeepEquals(CD_TYPE_FACADE.createArrayType(clazz, DEFAULT_ARRAY_DIMENSION), actual);
   }
 
   public static void assertArrayOf(String name, ASTNode actual) {
     assertDeepEquals(CD_TYPE_FACADE.createArrayType(name, DEFAULT_ARRAY_DIMENSION), actual);
-  }
+  }*/
 }

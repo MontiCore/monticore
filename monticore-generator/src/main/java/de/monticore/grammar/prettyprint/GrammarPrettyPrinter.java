@@ -31,7 +31,7 @@ public class GrammarPrettyPrinter
   }
   
   @Override
-  public void handle(ASTEof a) {
+  public void handle(ASTRuleComponent a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     
     print("EOF");

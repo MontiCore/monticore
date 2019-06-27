@@ -2,11 +2,7 @@
 
 package de.monticore.grammar.cocos;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.grammar.grammar._ast.ASTASTRule;
-import de.monticore.grammar.grammar._ast.ASTAbstractProd;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
@@ -33,8 +29,8 @@ public class NTAndASTRuleExtendType implements GrammarASTMCGrammarCoCo {
         Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(rule.getType());
         if (ruleSymbol.isPresent()) {
           if (ruleSymbol.get().isClass()) {
-            Optional<ASTNode> prod = ruleSymbol.get().getAstNode();
-            if (prod.isPresent() && prod.get() instanceof ASTClassProd
+            Optional<ASTProd> prod = ruleSymbol.get().getAstNode();
+            if (prod.isPresent()
                     && (!((ASTClassProd) prod.get()).getASTSuperClassList().isEmpty()
                     || !((ASTClassProd) prod.get()).getSuperRuleList().isEmpty())) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rule.getType(),

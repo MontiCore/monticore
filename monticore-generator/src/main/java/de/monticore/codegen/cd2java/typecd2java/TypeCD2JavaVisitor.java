@@ -1,9 +1,10 @@
 package de.monticore.codegen.cd2java.typecd2java;
 
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.cd.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,17 +14,23 @@ public class TypeCD2JavaVisitor implements CD4AnalysisVisitor {
 
   private static final String PACKAGE_SEPARATOR = "\\.";
 
+  protected ICD4AnalysisScope scope;
+
+  public TypeCD2JavaVisitor(ICD4AnalysisScope scope) {
+    this.scope = scope;
+  }
+
   @Override
-  public void visit(ASTMCObjectType node) {
+  public void visit(ASTMCQualifiedType node) {
     //only take first one because at first the type has just one name which contains the complete qualified name
     //e.g. "de.monticore.Automaton.ASTAutomaton"
-    Optional<CDTypeSymbol> typeSymbol = node.getEnclosingScope().resolve(node.getName(0), CDTypeSymbol.KIND);
+    Optional<CDTypeSymbol> typeSymbol = scope.resolveCDType(node.getNameList().get(0));
     if (typeSymbol.isPresent()) {
       String javaType = String.join(".", typeSymbol.get().getModelName().toLowerCase(), ASTConstants.AST_PACKAGE, typeSymbol.get().getName());
-      node.setName(0, javaType);
+      node.getMCQualifiedName().setPart(0, javaType);
     }
     if(node.getNameList().size() <= 1){
-      node.setName(new ArrayList<>(Arrays.asList(node.getName(0).split(PACKAGE_SEPARATOR))));
+      node.getMCQualifiedName().setPartList(new ArrayList<>(Arrays.asList(node.getNameList().get(0).split(PACKAGE_SEPARATOR))));
     }
   }
 }

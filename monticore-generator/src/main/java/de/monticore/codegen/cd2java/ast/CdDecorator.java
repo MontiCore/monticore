@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.prettyprint.AstPrinter;
@@ -23,8 +24,10 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.types.CollectionTypesPrinter;
 import de.monticore.types.MCCollectionTypesHelper;
@@ -74,14 +77,18 @@ public class CdDecorator {
 
   protected IterablePath targetPath;
 
-  protected GlobalScope symbolTable;
+  protected CD4AnalysisGlobalScope cdScope;
+
+  protected Grammar_WithConceptsGlobalScope mcScope;
 
   public CdDecorator(
       GlobalExtensionManagement glex,
-      GlobalScope symbolTable,
+      CD4AnalysisGlobalScope cdScope,
+      Grammar_WithConceptsGlobalScope mcScope,
       IterablePath targetPath) {
     this.glex = glex;
-    this.symbolTable = symbolTable;
+    this.mcScope = mcScope;
+    this.cdScope = cdScope;
     this.targetPath = targetPath;
   }
 
@@ -107,7 +114,7 @@ public class CdDecorator {
   }
 
   public void decorate(ASTCDCompilationUnit cdCompilationUnit) {
-    AstGeneratorHelper astHelper = new AstGeneratorHelper(cdCompilationUnit, symbolTable);
+    AstGeneratorHelper astHelper = new AstGeneratorHelper(cdCompilationUnit, cdScope, mcScope);
     ASTCDDefinition cdDefinition = cdCompilationUnit.getCDDefinition();
     List<ASTCDClass> nativeClasses = Lists.newArrayList(cdDefinition.getCDClassList());
 
@@ -1155,7 +1162,7 @@ public class CdDecorator {
                                         Collection<CDTypeSymbol> firstClasses) {
     HashMap<String, CDTypeSymbol> l = Maps.newHashMap();
     for (String importedCdName : cd.getImports()) {
-      Optional<CDDefinitionSymbol> importedCd = symbolTable.resolve(importedCdName, CDDefinitionSymbol.KIND);
+      Optional<CDDefinitionSymbol> importedCd = cdScope.resolveCDDefinition(importedCdName);
       if (importedCd.isPresent()) {
         CDDefinitionSymbol superCd = importedCd.get();
         Collection<CDTypeSymbol> overriddenSet = Lists.newArrayList();
@@ -1229,7 +1236,7 @@ public class CdDecorator {
 
   protected ASTCDClass createMillForSuperClass(ASTCDCompilationUnit cdCompilationUnit,
                                                String millClassName,
-                                               Symbol symbol,
+                                               ISymbol symbol,
                                                Collection<CDTypeSymbol> overriddenClasses,
                                                Collection<CDTypeSymbol> firstClasses,
                                                AstGeneratorHelper astHelper) {
@@ -1654,7 +1661,7 @@ public class CdDecorator {
     }
     ASTCDInterface baseInterface = stream.get(0);
     baseInterface.getInterfaceList().add(
-        TransformationHelper.createSimpleReference(GeneratorHelper.AST_NODE));
+        TransformationHelper.createType(GeneratorHelper.AST_NODE));
     glex.replaceTemplate(
         "ast.AstInterfaceContent",
         baseInterface,

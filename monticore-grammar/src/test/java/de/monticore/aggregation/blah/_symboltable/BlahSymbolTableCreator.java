@@ -16,6 +16,6 @@ public class BlahSymbolTableCreator  extends BlahSymbolTableCreatorTOP {
     BlahScope bla = new BlahScope(false);
     bla.setExportsSymbols(true);
 
-    return new BlubSymbolBuilder().name(ast.getName()).build();
+    return new BlubSymbolBuilder().setName(ast.getName()).build();
   }
 }

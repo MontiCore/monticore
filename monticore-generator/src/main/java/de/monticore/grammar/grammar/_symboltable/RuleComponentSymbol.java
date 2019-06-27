@@ -2,6 +2,7 @@
 
 package de.monticore.grammar.grammar._symboltable;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import static com.google.common.base.Strings.emptyToNull;
@@ -169,6 +170,10 @@ public class RuleComponentSymbol extends RuleComponentSymbolTOP  {
   public void addSubProdComponent(RuleComponentSymbol prodComp) {
     errorIfNull(prodComp);
     getSpannedScope().add(prodComp);
+  }
+
+  public Collection<RuleComponentSymbol> getSubProdComponents() {
+    return getSpannedScope().getLocalRuleComponentSymbols();
   }
 
 }

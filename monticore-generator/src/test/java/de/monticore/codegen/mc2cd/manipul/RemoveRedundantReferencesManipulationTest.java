@@ -16,8 +16,8 @@ public class RemoveRedundantReferencesManipulationTest {
   @Test
   public void testGenericList() {
     ASTCDClass cdClass = setupCDClass("name",
-        TransformationHelper.createSimpleReference("ASTReference"), "name",
-        TransformationHelper.createSimpleReference("java.util.List", "ASTReference"));
+        TransformationHelper.createType("ASTReference"), "name",
+        TransformationHelper.createType("java.util.List", "ASTReference"));
     
     assertEquals(2, cdClass.getCDAttributeList().size());
     

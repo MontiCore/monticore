@@ -4,11 +4,13 @@ package de.monticore.codegen.cd2java.ast;
 
 import com.google.common.base.Joiner;
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.CollectionTypesPrinter;
 import de.monticore.types.MCCollectionTypesHelper;
@@ -24,15 +26,15 @@ public class AstGeneratorHelper extends GeneratorHelper {
 
   private final MCGrammarSymbol grammarSymbol;
   
-  public AstGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
+  public AstGeneratorHelper(ASTCDCompilationUnit topAst, CD4AnalysisGlobalScope symbolTable, Grammar_WithConceptsGlobalScope grammarScope) {
     super(topAst, symbolTable);
     String qualifiedGrammarName = topAst.getPackageList().isEmpty()
         ? this.cdDefinition.getName()
         : Joiner.on('.').join(Names.getQualifiedName(topAst.getPackageList()),
         this.cdDefinition.getName());
 
-    grammarSymbol = symbolTable.<MCGrammarSymbol> resolve(
-        qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
+    grammarSymbol = grammarScope.resolveMCGrammar(
+        qualifiedGrammarName).orElse(null);
   }
 
   public MCGrammarSymbol getGrammarSymbol() {
@@ -130,7 +132,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   /**
-   * @param qualifiedName
+   * @param qualifiedCdName
    * @return The lower case qualifiedName + AST_PACKAGE_SUFFIX
    */
   public static String getAstPackageForCD(String qualifiedCdName) {

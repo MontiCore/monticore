@@ -3,6 +3,7 @@
 package de.monticore.codegen.cd2java.ast_emf;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CDFieldSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.GeneratorHelper;
@@ -10,7 +11,7 @@ import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.mc2cd.manipul.BaseInterfaceAddingManipulation;
 import de.monticore.emf._ast.ASTECNode;
 import de.monticore.emf._ast.ASTENodePackage;
-import de.monticore.symboltable.GlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.types.CollectionTypesPrinter;
 import de.monticore.types.MCCollectionTypesHelper;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
@@ -28,8 +29,10 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   
   public static final String JAVA_MAP = "java.util.Map";
   
-  public AstEmfGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
-    super(topAst, symbolTable);
+  public AstEmfGeneratorHelper(ASTCDCompilationUnit topAst,
+                               CD4AnalysisGlobalScope cdScope,
+                               Grammar_WithConceptsGlobalScope mcScope) {
+    super(topAst, cdScope, mcScope);
   }
   
   public String getPackageURI() {

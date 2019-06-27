@@ -3,11 +3,14 @@ package de.monticore.codegen.cd2java.method.accessor;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
+import de.monticore.codegen.cd2java.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
-import de.monticore.codegen.cd2java.factories.CDTypeBuilder;
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,11 +46,8 @@ public class ListAccessorDecoratorTest {
   @Test
   public void testGetListMethod() {
     ASTCDMethod method = getMethodBy("getAList", 0, this.methods);
-    ASTMCType expectedReturnType = CDTypeBuilder.newTypeBuilder()
-        .simpleName(List.class)
-        .simpleGenericType(String.class)
-        .build();
-    assertDeepEquals(expectedReturnType, method.getMCReturnType());
+    ASTMCType expectedReturnType = CDTypeFactory.create("List<String>");
+    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
@@ -71,10 +71,7 @@ public class ListAccessorDecoratorTest {
 
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    ASTMCType expectedParameterType = CDTypeBuilder.newTypeBuilder()
-        .simpleName(Collection.class)
-        .wildCardGenericType()
-        .build();
+    ASTMCType expectedParameterType = CDTypeFactory.create("Collection<?>");
     assertDeepEquals(expectedParameterType, parameter.getMCType());
     assertEquals("collection", parameter.getName());
   }
@@ -84,18 +81,6 @@ public class ListAccessorDecoratorTest {
     ASTCDMethod method = getMethodBy("isEmptyA", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
     assertBoolean(method.getMCReturnType());
-    assertDeepEquals(PUBLIC, method.getModifier());
-  }
-
-  @Test
-  public void testIteratorMethod() {
-    ASTCDMethod method = getMethodBy("iteratorA", this.methods);
-    assertTrue(method.getCDParameterList().isEmpty());
-    ASTMCType expectedReturnType = CDTypeBuilder.newTypeBuilder()
-        .simpleName(Iterator.class)
-        .simpleGenericType(String.class)
-        .build();
-    assertDeepEquals(expectedReturnType, method.getMCReturnType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
