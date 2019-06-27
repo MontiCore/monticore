@@ -26,7 +26,7 @@ public interface ${className} extends ${interfaceName} {
 
   ${languageName}Language get${languageName}Language();
 
-  void cache(${languageName}ModelLoader modelLoader, String calculatedModelName);
+  void cache(String calculatedModelName);
 
   boolean continueWithModelLoader(String calculatedModelName, ${languageName}ModelLoader modelLoader);
   default boolean checkIfContinueAsSubScope(String symbolName) {
@@ -71,7 +71,7 @@ public interface ${className} extends ${interfaceName} {
     for (String calculatedModelName : calculatedModelNames) {
       if (continueWithModelLoader(calculatedModelName, modelLoader)) {
         modelLoader.loadModelsIntoScope(calculatedModelName, getModelPath(), this);
-        cache(modelLoader, calculatedModelNames.iterator().next());
+        cache(calculatedModelNames.iterator().next());
       } else {
         Log.debug("Already tried to load model for '" + symbolName + "'. If model exists, continue with cached version.", ${languageName}GlobalScope.class.getSimpleName());
       }

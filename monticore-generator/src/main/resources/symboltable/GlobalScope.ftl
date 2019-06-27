@@ -50,7 +50,8 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${languageName}Scop
     return Optional.empty();
   }
 
-  public void cache(${languageName}ModelLoader modelLoader, String calculatedModelName) {
+  public void cache(String calculatedModelName) {
+    ${languageName}ModelLoader modelLoader = this.get${languageName}Language().getModelLoader() ;
     if (modelName2ModelLoaderCache.containsKey(calculatedModelName)) {
       modelName2ModelLoaderCache.get(calculatedModelName).add(modelLoader);
     } else {

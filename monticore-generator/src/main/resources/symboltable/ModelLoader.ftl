@@ -34,7 +34,7 @@ import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 import ${package}.serialization.*;
 
-public class ${className} implements de.monticore.modelloader.IModelLoader<${topAstName}, I${grammarName}Scope> {
+public class ${className} implements de.monticore.modelloader.IModelLoader<${topAstName}, I${grammarName}GlobalScope> {
 
   protected final ${grammarName}Language language;
 
@@ -46,7 +46,7 @@ public class ${className} implements de.monticore.modelloader.IModelLoader<${top
   }
 
   @Override
-  public void createSymbolTableFromAST(final ${topAstName} ast, final String modelName, final I${grammarName}Scope enclosingScope) {
+  public void createSymbolTableFromAST(final ${topAstName} ast, final String modelName, final I${grammarName}GlobalScope enclosingScope) {
     <#if !skipSTGen>
     final ${grammarName}SymbolTableCreatorDelegator symbolTableCreator =
             getModelingLanguage().getSymbolTableCreator(enclosingScope);
@@ -75,7 +75,7 @@ public class ${className} implements de.monticore.modelloader.IModelLoader<${top
   }
 
   public Collection<${topAstName}> loadModelsIntoScope(final String qualifiedModelName,
-      final ModelPath modelPath, I${grammarName}Scope enclosingScope) {
+      final ModelPath modelPath, I${grammarName}GlobalScope enclosingScope) {
 
     if (!loadSymbolsIntoScope(qualifiedModelName, modelPath, enclosingScope)) {
       final Collection<${topAstName}> asts = loadModels(qualifiedModelName, modelPath);
