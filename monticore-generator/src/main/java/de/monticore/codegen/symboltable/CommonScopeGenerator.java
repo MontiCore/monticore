@@ -17,6 +17,7 @@ import de.se_rwth.commons.Names;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.GeneratorHelper.existsHandwrittenClass;
 import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
