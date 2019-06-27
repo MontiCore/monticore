@@ -707,11 +707,12 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 	}
 	
 	
-	/**
-	 * Computes the cardinality value for an additional attribute.
-	 * @param attr The input attribute.
-	 * @return The cardinality as a String in form of the values: 1, ?, *
-	 */
+  /**
+   * Computes the cardinality value for an additional attribute.
+   * 
+   * @param attr The input attribute.
+   * @return The cardinality as a String in form of the values: 1, ?, *
+   */
   public static String getCardinalityForAdditionalAttribute(ASTAdditionalAttribute attr) {
     if (attr.isPresentCard()) {
       ASTCard card = attr.getCard();
