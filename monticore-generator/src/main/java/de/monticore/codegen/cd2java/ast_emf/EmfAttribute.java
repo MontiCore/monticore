@@ -152,7 +152,7 @@ public class EmfAttribute {
   }
   
   /**
-   * @param istAstNode the istAstNode to set
+   * @param isAstNode the istAstNode to set
    */
   public void setAstNode(boolean isAstNode) {
     this.isAstNode = isAstNode;
@@ -187,7 +187,7 @@ public class EmfAttribute {
   }
   
   /**
-   * @param isOptionalAstNode the isOptionalAstNode to set
+   * @param isOptional the isOptionalAstNode to set
    */
   public void setOptional(boolean isOptional) {
     this.isOptional = isOptional;

@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java.method.accessor;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
-import de.monticore.codegen.cd2java.factories.CDTypeBuilder;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
@@ -52,10 +51,7 @@ public class OptionalAccessorDecoratorTest {
   public void testGetOptMethod() {
     ASTCDMethod method = getMethodBy("getAOpt", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    ASTMCType expectedReturnType = CDTypeBuilder.newTypeBuilder()
-        .simpleName(Optional.class)
-        .simpleGenericType(String.class)
-        .build();
+    ASTMCType expectedReturnType = CDTypeFacade.getInstance().createOptionalTypeOf("String");
     assertDeepEquals(expectedReturnType, method.getMCReturnType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }

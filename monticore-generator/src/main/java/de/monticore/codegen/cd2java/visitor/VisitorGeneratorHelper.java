@@ -196,7 +196,7 @@ public class VisitorGeneratorHelper extends GeneratorHelper {
   }
   
   /**
-   * @param cDName
+   * @param name
    * @return name of the language's visitor interface, lowers first char and
    * checks for reserved java-keyword.
    * @see #getVisitorType(String)

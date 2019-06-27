@@ -13,6 +13,7 @@ import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
@@ -69,9 +70,10 @@ public class CdDecoratorTest {
   @BeforeClass
   public static void setup() {
     CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
+    Grammar_WithConceptsLanguage grammar_withConceptsLanguage = new Grammar_WithConceptsLanguage();
 
     globalScope = new CD4AnalysisGlobalScope(modelPath, cd4AnalysisLanguage);
-    mcScope = new Grammar_WithConceptsGlobalScope();
+    mcScope = new Grammar_WithConceptsGlobalScope(modelPath,grammar_withConceptsLanguage);
   }
   
   @Before

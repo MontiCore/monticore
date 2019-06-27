@@ -9,12 +9,11 @@ import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._symboltable._symboltable.MontiCoreGrammarLanguage;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.se_rwth.commons.Names;
 import parser.MCGrammarParser;
 
@@ -45,13 +44,9 @@ public class TestHelper {
   }
   
   public static GlobalScope createGlobalScope(ModelPath modelPath) {
-    final MontiCoreGrammarLanguage mcLanguage = new MontiCoreGrammarLanguage();
-    
-    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(mcLanguage.getResolvingFilters());
+
     final CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
-    resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());
-    
+
     return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage), resolvingConfiguration);
   }
 
@@ -71,10 +66,10 @@ public class TestHelper {
     if (!TransformationHelper.typeToString(typeRef).equals("java.util.List")) {
       return false;
     }
-    if (!(typeRef instanceof ASTMCObjectType)) {
+    if (!(typeRef instanceof ASTMCListType)) {
       return false;
     }
-    ASTMCObjectType type = (ASTMCObjectType) typeRef;
+    ASTMCObjectType type = (ASTMCListType) typeRef;
     if (!type.isPresentTypeArguments()) {
       return false;
     }

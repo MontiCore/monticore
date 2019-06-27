@@ -4,10 +4,14 @@ package de.monticore.codegen.cd2java.cocos;
 
 import de.monticore.MontiCoreScript;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.codegen.AstDependentGeneratorTest;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
@@ -36,6 +40,10 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
 
   private ModelPath modelPath = new ModelPath(Paths.get("src/test/resources"));
 
+  private CD4AnalysisGlobalScope cd4AnalysisGlobalScope;
+
+  private Grammar_WithConceptsGlobalScope grammar_withConceptsGlobalScope;
+
   @BeforeClass
   public static void setup() {
     LogStub.init();
@@ -46,6 +54,8 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
   @Test
   public void test() {
     String grammarToTest = "src/test/resources/Automaton.mc4";
+    cd4AnalysisGlobalScope = new CD4AnalysisGlobalScope(modelPath,new CD4AnalysisLanguage());
+    grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath,new Grammar_WithConceptsLanguage());
 
     astTest.testCorrect(grammarToTest);
 
@@ -54,16 +64,15 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
         grammarToTest).getAbsolutePath());
 
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     IterablePath targetPath = IterablePath.from(new File("src/test/resource"), "java");
     Optional<ASTMCGrammar> ast = mc.parseGrammar(model);
     assertTrue(ast.isPresent());
     grammar = ast.get();
     File targetFile = new File(OUTPUT_FOLDER);
-    cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(), symbolTable);
+    cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(), cd4AnalysisGlobalScope,grammar_withConceptsGlobalScope);
     assertEquals("CD4Analysis", cdCompilationUnit.getCDDefinition().getName());
 
-    CoCoGenerator.generate(glex, symbolTable, cdCompilationUnit, targetFile);
+    CoCoGenerator.generate(glex, cd4AnalysisGlobalScope, cdCompilationUnit, targetFile);
   }
 
   /**
@@ -72,6 +81,9 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
   @Override
   protected void doGenerate(String model) {
     Log.info("Runs CoCoGenerator test for the model " + model, LOG);
+
+    cd4AnalysisGlobalScope = new CD4AnalysisGlobalScope(modelPath,new CD4AnalysisLanguage());
+    grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath,new Grammar_WithConceptsLanguage());
 
     MontiCoreScript mc = new MontiCoreScript();
     GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
@@ -82,9 +94,9 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
 
     IterablePath targetPath = IterablePath.from(new File("target"), "java");
     File targetFile = new File(OUTPUT_FOLDER);
-    cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(), symbolTable);
+    cdCompilationUnit = mc.deriveCD(grammar, glex,cd4AnalysisGlobalScope, grammar_withConceptsGlobalScope);
 
-    CoCoGenerator.generate(glex, symbolTable, cdCompilationUnit, targetFile);
+    CoCoGenerator.generate(glex, cd4AnalysisGlobalScope, cdCompilationUnit, targetFile);
     // TODO needs asts and visitors to be generated first
     // CLIArguments cliArguments =
     // CLIArguments.forArguments(getCLIArguments(model));

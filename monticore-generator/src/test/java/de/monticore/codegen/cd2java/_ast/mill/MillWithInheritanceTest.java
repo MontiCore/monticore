@@ -80,6 +80,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   @Test
   public void testGetMillMethod() {
     //test Method Name
+    ASTCDMethod getMill = millClass.getCDMethod(0);
     assertEquals("getMill", getMill.getName());
     //test Parameters
     assertTrue(getMill.isEmptyCDParameters());

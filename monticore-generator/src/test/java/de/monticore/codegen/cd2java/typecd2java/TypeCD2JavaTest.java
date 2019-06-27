@@ -4,9 +4,13 @@ import de.monticore.MontiCoreScript;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -35,12 +39,15 @@ public class TypeCD2JavaTest {
             "src/test/resources/Automaton.mc4").getAbsolutePath()));
     assertTrue(grammar.isPresent());
 
+    CD4AnalysisGlobalScope cd4AnalysisGlobalScope = new CD4AnalysisGlobalScope(modelPath, new CD4AnalysisLanguage());
+    Grammar_WithConceptsGlobalScope grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath, new Grammar_WithConceptsLanguage());
+
     //create ASTCDDefinition from MontiCoreScript
     MontiCoreScript script = new MontiCoreScript();
     GlobalScope globalScope = TestHelper.createGlobalScope(modelPath);
     script.createSymbolsFromAST(globalScope, grammar.get());
     cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
-        globalScope);
+        cd4AnalysisGlobalScope,grammar_withConceptsGlobalScope);
 
     cdCompilationUnit.setEnclosingScope(globalScope);
     //make types java compatible
@@ -63,13 +70,13 @@ public class TypeCD2JavaTest {
 
   @Test
   public void testTypeJavaConformList() {
-    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTSimpleReferenceType);
+    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTMCListType);
     ASTMCListType simpleReferenceType = (ASTMCListType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType();
-    assertFalse(simpleReferenceType.isEmptyNames());
-    assertEquals(3, simpleReferenceType.sizeNames());
-    assertEquals("java", simpleReferenceType.getName(0));
-    assertEquals("util", simpleReferenceType.getName(1));
-    assertEquals("List", simpleReferenceType.getName(2));
+    assertFalse(simpleReferenceType.getNameList().isEmpty());
+    assertEquals(3, simpleReferenceType.getNameList().size());
+    assertEquals("java", simpleReferenceType.getNameList().get(0));
+    assertEquals("util", simpleReferenceType.getNameList().get(1));
+    assertEquals("List", simpleReferenceType.getNameList().get(2));
   }
 
   @Test
@@ -93,8 +100,8 @@ public class TypeCD2JavaTest {
     //test that types like String are not changed
     assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(0).getMCType() instanceof ASTMCQualifiedType);
     ASTMCQualifiedType simpleReferenceType = (ASTMCQualifiedType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(0).getMCType();
-    assertFalse(simpleReferenceType.isEmptyNames());
-    assertEquals(1, simpleReferenceType.sizeNames());
-    assertEquals("String", simpleReferenceType.getName(0));
+    assertFalse(simpleReferenceType.getNameList().isEmpty());
+    assertEquals(1, simpleReferenceType.getNameList().size());
+    assertEquals("String", simpleReferenceType.getNameList().get(0));
   }
 }

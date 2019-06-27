@@ -2,20 +2,18 @@
 
 package de.monticore;
 
-import static de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol.KIND;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.GlobalScope;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.util.Optional;
+
 import static de.se_rwth.commons.logging.Log.enableFailQuick;
 import static java.nio.file.Paths.get;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Optional;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import de.monticore.grammar.grammar._symboltable._symboltable.MCGrammarSymbol;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
 
 public class MCGrammarLanguageFamilySymbolTableTest {
 
@@ -30,12 +28,12 @@ public class MCGrammarLanguageFamilySymbolTableTest {
     final GlobalScope globalScope = new GlobalScope(new ModelPath(get("src/test/resources")), family);
 
     final Optional<MCGrammarSymbol> oldGrammar =
-            globalScope.resolve("de.monticore.statechart.Statechart", KIND);
+            globalScope.resolveMCGrammarSymbol("de.monticore.statechart.Statechart");
     assertTrue(oldGrammar.isPresent());
 
 
     final Optional<MCGrammarSymbol> newGrammar =
-            globalScope.resolve("de.monticore.statechart.Statechart", KIND);
+            globalScope.resolveMCGrammarSymbol("de.monticore.statechart.Statechart");
     assertTrue(newGrammar.isPresent());
 
     // 2 = Statechart grammar symbol and TestLexicals grammar symbol (super grammar of Statechart)

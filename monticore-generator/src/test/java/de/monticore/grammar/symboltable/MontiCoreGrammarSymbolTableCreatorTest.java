@@ -2,36 +2,19 @@
 
 package de.monticore.grammar.symboltable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.Optional;
-
-import de.monticore.grammar._symboltable.*;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolReference;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.grammar.grammar._symboltable._symboltable.*;
+import de.monticore.GrammarGlobalScopeTestFactory;
+import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._symboltable.*;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
+import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import de.monticore.GrammarGlobalScopeTestFactory;
-import de.monticore.grammar.grammar._ast.ASTAbstractProd;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTExternalProd;
-import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
-import de.monticore.grammar.grammar._ast.ASTLexProd;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
-import de.se_rwth.commons.logging.Log;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 public class MontiCoreGrammarSymbolTableCreatorTest {
   
@@ -57,7 +40,6 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertNotNull(grammar);
     assertEquals("de.monticore.statechart.Statechart", grammar.getFullName());
     assertEquals("de.monticore.statechart", grammar.getPackageName());
-    assertTrue(grammar.getKind().isSame(MCGrammarSymbol.KIND));
     assertTrue(grammar.getStartProd().isPresent());
     
     assertTrue(grammar.isComponent());
@@ -75,12 +57,10 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertEquals("Statechart", stateChartProd.getName());
     assertEquals("de.monticore.statechart.Statechart.Statechart", stateChartProd.getFullName());
     assertEquals("de.monticore.statechart", stateChartProd.getPackageName());
-    assertTrue(stateChartProd.getKind().isSame(ProdSymbol.KIND));
     assertTrue(stateChartProd.isStartProd());
     assertTrue(stateChartProd.isClass());
     // generic vs. specific
-    Optional<ProdSymbol> resolvedStateChartProd = grammar.getSpannedScope().resolve("Statechart",
-        ProdSymbol.KIND);
+    Optional<ProdSymbol> resolvedStateChartProd = grammar.getSpannedScope().resolveProd("Statechart");
     assertTrue(resolvedStateChartProd.isPresent());
     assertSame(stateChartProd, resolvedStateChartProd.get());
     // AST
@@ -95,7 +75,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     
     // test prod components
     assertEquals(3, entryActionProd.getProdComponents().size());
-    MCProdComponentSymbol prodComp = entryActionProd.getProdComponent("entry").orElse(null);
+    RuleComponentSymbol prodComp = entryActionProd.getProdComponent("entry").orElse(null);
     assertNotNull(prodComp);
     assertEquals("entry", prodComp.getName());
     assertEquals("", prodComp.getUsageName());
@@ -106,8 +86,8 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertFalse(prodComp.isOptional());
     assertSame(entryActionProd.getSpannedScope(), prodComp.getEnclosingScope());
     // generic vs specific
-    Optional<MCProdComponentSymbol> resolvedProdComp = entryActionProd.getSpannedScope()
-        .resolve("entry", MCProdComponentSymbol.KIND);
+    Optional<RuleComponentSymbol> resolvedProdComp = entryActionProd.getSpannedScope()
+        .resolveRuleComponent("entry");
     assertTrue(resolvedProdComp.isPresent());
     assertSame(prodComp, resolvedProdComp.get());
     
@@ -169,7 +149,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     // AST
     testLinkBetweenSymbolAndAst(stateProd);
     
-    MCProdComponentSymbol initialComponent = stateProd.getProdComponent("initial").orElse(null);
+    RuleComponentSymbol initialComponent = stateProd.getProdComponent("initial").orElse(null);
     assertNotNull(initialComponent);
     assertEquals("de.monticore.statechart.Statechart.State.initial",
         initialComponent.getFullName());
@@ -219,7 +199,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     }
   }
   
-  private void testLinkBetweenSymbolAndAst(MCProdComponentSymbol prodCompSymbol) {
+  private void testLinkBetweenSymbolAndAst(RuleComponentSymbol prodCompSymbol) {
     assertTrue(prodCompSymbol.getAstNode().isPresent());
     assertSame(prodCompSymbol, prodCompSymbol.getAstNode().get().getSymbol());
     assertSame(prodCompSymbol.getEnclosingScope(),

@@ -2,9 +2,10 @@ package de.monticore.codegen.cd2java._ast.ast_new;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisModelLoader;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreator;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreatorDelegator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -33,8 +34,6 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolvingConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,13 +61,11 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/de/monticore/codegen"));
     CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
-    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
 
-    GlobalScope symbolTable = new GlobalScope(modelPath, cd4aLanguage, resolvingConfiguration);
+    CD4AnalysisGlobalScope symbolTable = new CD4AnalysisGlobalScope(modelPath, cd4aLanguage);
     CD4AnalysisModelLoader cd4aModelLoader = new CD4AnalysisModelLoader(cd4aLanguage);
 
-    CD4AnalysisSymbolTableCreator symbolTableCreator = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
+    CD4AnalysisSymbolTableCreatorDelegator symbolTableCreator = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(symbolTable);
 
 
     ASTService astService = new ASTService(decoratedCompilationUnit);

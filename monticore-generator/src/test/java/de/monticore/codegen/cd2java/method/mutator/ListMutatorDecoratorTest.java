@@ -4,7 +4,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
-import de.monticore.codegen.cd2java.factories.CDTypeBuilder;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.methods.mutator.ListMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -13,12 +12,7 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
@@ -26,8 +20,6 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.factories.CDTypeBuilder.Wildcard.EXTENDS;
-import static de.monticore.codegen.cd2java.factories.CDTypeBuilder.Wildcard.SUPER;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
@@ -88,10 +80,7 @@ public class ListMutatorDecoratorTest {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    ASTMCType expectedParameterType = CDTypeBuilder.newTypeBuilder()
-        .simpleName(Collection.class)
-        .wildCardGenericType(EXTENDS, String.class)
-        .build();
+    ASTMCType expectedParameterType = CDTypeFacade.getInstance().createCollectionTypeOf("? extends String");
     assertDeepEquals(expectedParameterType, parameter.getMCType());
     assertEquals("collection", parameter.getName());
   }
@@ -119,10 +108,7 @@ public class ListMutatorDecoratorTest {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    ASTMCType expectedParameterType = CDTypeBuilder.newTypeBuilder()
-        .simpleName(Collection.class)
-        .wildCardGenericType()
-        .build();
+    ASTMCType expectedParameterType = CDTypeFacade.getInstance().createCollectionTypeOf("?");
     assertDeepEquals(expectedParameterType, parameter.getMCType());
     assertEquals("collection", parameter.getName());
   }
@@ -134,10 +120,7 @@ public class ListMutatorDecoratorTest {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    ASTMCType expectedParameterType = CDTypeBuilder.newTypeBuilder()
-        .simpleName(Collection.class)
-        .wildCardGenericType()
-        .build();
+    ASTMCType expectedParameterType = CDTypeFacade.getInstance().createCollectionTypeOf("?");
     assertDeepEquals(expectedParameterType, parameter.getMCType());
     assertEquals("collection", parameter.getName());
   }
@@ -149,10 +132,7 @@ public class ListMutatorDecoratorTest {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    ASTMCType expectedParameterType = CDTypeBuilder.newTypeBuilder()
-        .simpleName(Predicate.class)
-        .wildCardGenericType(SUPER, String.class)
-        .build();
+    ASTMCType expectedParameterType = CDTypeFacade.getInstance().createTypeByDefinition("Predicate<? super String>");
     assertDeepEquals(expectedParameterType, parameter.getMCType());
     assertEquals("filter", parameter.getName());
   }
@@ -164,10 +144,7 @@ public class ListMutatorDecoratorTest {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    ASTMCType expectedParameterType = CDTypeBuilder.newTypeBuilder()
-        .simpleName(Consumer.class)
-        .wildCardGenericType(SUPER, String.class)
-        .build();
+    ASTMCType expectedParameterType = CDTypeFacade.getInstance().createTypeByDefinition("Consumer<? super String>");
     assertDeepEquals(expectedParameterType, parameter.getMCType());
     assertEquals("action", parameter.getName());
   }
@@ -196,10 +173,8 @@ public class ListMutatorDecoratorTest {
     assertInt(parameter.getMCType());
     assertEquals("index", parameter.getName());
     parameter = method.getCDParameter(1);
-    ASTMCType expectedParameterType = CDTypeBuilder.newTypeBuilder()
-        .simpleName(Collection.class)
-        .wildCardGenericType(EXTENDS, String.class)
-        .build();
+    ASTMCType expectedParameterType = CDTypeFacade.getInstance().createCollectionTypeOf("? extends String");
+
     assertDeepEquals(expectedParameterType, parameter.getMCType());
     assertEquals("collection", parameter.getName());
   }
@@ -241,10 +216,7 @@ public class ListMutatorDecoratorTest {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    ASTMCType expectedParameterType = CDTypeBuilder.newTypeBuilder()
-        .simpleName(UnaryOperator.class)
-        .simpleGenericType(String.class)
-        .build();
+    ASTMCType expectedParameterType = CDTypeFacade.getInstance().createTypeByDefinition("UnaryOperator<String>");
     assertDeepEquals(expectedParameterType, parameter.getMCType());
     assertEquals("operator", parameter.getName());
   }
@@ -256,10 +228,7 @@ public class ListMutatorDecoratorTest {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    ASTMCType expectedParameterType = CDTypeBuilder.newTypeBuilder()
-        .simpleName(Comparator.class)
-        .wildCardGenericType(SUPER, String.class)
-        .build();
+    ASTMCType expectedParameterType =CDTypeFacade.getInstance().createTypeByDefinition("Comparator<? super String>");
     assertDeepEquals(expectedParameterType, parameter.getMCType());
     assertEquals("comparator", parameter.getName());
   }
