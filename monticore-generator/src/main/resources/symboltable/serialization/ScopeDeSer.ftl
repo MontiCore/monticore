@@ -184,12 +184,12 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
       }
 <#assign elseif = "else">
 </#list>
+      }
 <#if symbolNames?keys?size!=0>    
       else {
-        Log.error("Unknown kind of scope spanning symbol: "+spanningSymbolKind);
+        Log.error("Unknown kind of scope spanning symbol: "+JsonConstants.SCOPE_SPANNING_SYMBOL);
       }
 </#if>
-    }
   }
   
 <#list symbolNames?keys as symbol>  
