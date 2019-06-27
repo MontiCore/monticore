@@ -74,8 +74,20 @@ public class ${symTabPrinterName}
   <#else>
     <#assign methodName="get" + attr.getName()?cap_first>
   </#if>
-  protected String serialize${attr.name}(${languageName}Scope scope) {
-    return String.valueOf(scope.${methodName}());
+<#if attrType == "boolean" || 
+     attrType == "int" || 
+     attrType == "float" || 
+     attrType == "double" || 
+     attrType == "long" || 
+     attrType == "String">
+<#assign retType=attrType>
+<#assign retStatement="scope."+methodName+"()">
+<#else>
+<#assign retType="String">
+<#assign retStatement="String.valueOf(scope."+methodName+"())">
+</#if>
+  protected ${retType} serialize${attr.name}(${languageName}Scope scope) {
+    return ${retStatement};
   }
 </#list>
 </#if>
@@ -157,9 +169,22 @@ public class ${symTabPrinterName}
   <#else>
     <#assign methodName="get" + attr.getName()?cap_first>
   </#if>
-    protected String serialize${attr.name}(${symbol.name}Symbol symbol) {
-      return String.valueOf(symbol.${methodName}());
-    }
+<#if attrType == "boolean" || 
+     attrType == "int" || 
+     attrType == "float" || 
+     attrType == "double" || 
+     attrType == "long" || 
+     attrType == "String">
+<#assign retType=attrType>
+<#assign retStatement="symbol."+methodName+"()">
+<#else>
+<#assign retType="String">
+<#assign retStatement="String.valueOf(symbol."+methodName+"())">
+</#if>
+  protected ${retType} serialize${attr.name}(${symbol.name}Symbol symbol) {
+    return ${retStatement};
+  }
+  
 </#list>
 </#if>
 

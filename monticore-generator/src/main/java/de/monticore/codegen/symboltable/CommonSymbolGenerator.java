@@ -77,7 +77,7 @@ public class CommonSymbolGenerator implements SymbolGenerator {
       genEngine.generate("symboltable.Symbol", filePath, prodSymbol.getAstNode().get(), symbolName,
               prodSymbol, symbolRule, imports, isScopeSpanningSymbol);
       genEngine.generate("symboltable.SymbolBuilder", builderFilePath,
-              prodSymbol.getAstNode().get(), builderName, className, symbolRule, imports);
+              prodSymbol.getAstNode().get(), builderName, className, symbolRule, imports, prodSymbol);
       genEngine.generate("symboltable.serialization.SymbolDeSer", serializationFilePath,
           prodSymbol.getAstNode().get(), genHelper.getGrammarSymbol().getName(), deserName, className, symbolRule);
       genEngine.generate("symboltable.SymbolDelegateInterface", delegateFilePath,

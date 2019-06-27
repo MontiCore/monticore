@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
@@ -65,10 +66,10 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
       //if the attribute is mandatory or optional
       attributeType = getCDTypeFacade().createOptionalTypeOf(referencedSymbol);
     }
-    ASTModifier modifier = PRIVATE.build();
+    ASTModifier modifier = PROTECTED.build();
     //add referenced Symbol modifier that it can later be distinguished
     TransformationHelper.addStereotypeValue(modifier, MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE.toString());
-    return this.getCDAttributeFacade().createAttribute(PRIVATE, attributeType, attribute.getName() + SYMBOL);
+    return this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL);
   }
 
   private List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol, boolean wasAttributeOptional) {

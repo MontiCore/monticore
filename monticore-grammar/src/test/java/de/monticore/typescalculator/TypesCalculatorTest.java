@@ -1,6 +1,5 @@
 package de.monticore.typescalculator;
 
-import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
@@ -8,6 +7,7 @@ import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
+import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,7 +83,7 @@ public class TypesCalculatorTest {
 
     scope.add(sym);
     scope.add(sym2);
-
+    TypesCalculator.setExpressionAndLiteralsTypeCalculator(new CombineExpressionsWithLiteralsTypesCalculator(scope));
 
   }
 
@@ -95,11 +95,9 @@ public class TypesCalculatorTest {
 
     assertTrue(a.isPresent());
     assertTrue(isBoolean(a.get()));
-    assertTrue(isBoolean_StringExpression("7<=4&&9>3"));
 
     assertTrue(b.isPresent());
     assertFalse(isBoolean(b.get()));
-    assertFalse(isBoolean_StringExpression("7+3-(23*9)"));
   }
 
   @Test
@@ -110,11 +108,9 @@ public class TypesCalculatorTest {
 
     assertTrue(a.isPresent());
     assertTrue(isInt(a.get()));
-    assertTrue(isInt_StringExpression("7+3-(23*9)"));
 
     assertTrue(b.isPresent());
     assertFalse(isInt(b.get()));
-    assertFalse(isInt_StringExpression("7<=4&&9>3"));
   }
 
   @Test
@@ -125,11 +121,9 @@ public class TypesCalculatorTest {
 
     assertTrue(a.isPresent());
     assertTrue(isDouble(a.get()));
-    assertTrue(isDouble_StringExpression("7.3+3-(23*9)"));
 
     assertTrue(b.isPresent());
     assertFalse(isDouble(b.get()));
-    assertFalse(isDouble_StringExpression("7<=4&&9>3"));
   }
 
   @Test
@@ -140,11 +134,9 @@ public class TypesCalculatorTest {
 
     assertTrue(a.isPresent());
     assertTrue(isFloat(a.get()));
-    assertTrue(isFloat_StringExpression("7.3f+3-(23*9)"));
 
     assertTrue(b.isPresent());
     assertFalse(isFloat(b.get()));
-    assertFalse(isFloat_StringExpression("7<=4&&9>3"));
   }
 
   @Test
@@ -155,11 +147,9 @@ public class TypesCalculatorTest {
 
     assertTrue(a.isPresent());
     assertTrue(isLong(a.get()));
-    assertTrue(isLong_StringExpression("7L+3-(23*9)"));
 
     assertTrue(b.isPresent());
     assertFalse(isLong(b.get()));
-    assertFalse(isLong_StringExpression("7<=4&&9>3"));
   }
 
   @Test
@@ -170,11 +160,9 @@ public class TypesCalculatorTest {
 
     assertTrue(a.isPresent());
     assertTrue(isChar(a.get()));
-    assertTrue(isChar_StringExpression("\'3\'"));
 
     assertTrue(b.isPresent());
     assertFalse(isChar(b.get()));
-    assertFalse(isChar_StringExpression("7<=4&&9>3"));
   }
 
   @Test
@@ -186,15 +174,12 @@ public class TypesCalculatorTest {
 
     assertTrue(a.isPresent());
     assertTrue(isPrimitive(a.get()));
-    assertTrue(isPrimitive_StringExpression("\'3\'"));
 
     assertTrue(b.isPresent());
     assertTrue(isPrimitive(b.get()));
-    assertTrue(isPrimitive_StringExpression("7<=4&&9>3"));
 
     assertTrue(c.isPresent());
     assertFalse(isPrimitive(c.get()));
-    assertFalse(isPrimitive_StringExpression("\"Hello World\""));
   }
 
   @Test
@@ -209,23 +194,18 @@ public class TypesCalculatorTest {
 
     assertTrue(a.isPresent());
     assertTrue(isAssignableFrom(a.get(),b.get()));
-    assertTrue(isAssignableFrom_StringExpression("varDouble","varInt"));
 
     assertTrue(b.isPresent());
     assertFalse(isAssignableFrom(b.get(),a.get()));
-    assertFalse(isAssignableFrom_StringExpression("varInt","varDouble"));
 
     assertTrue(c.isPresent());
     assertTrue(isAssignableFrom(c.get(),d.get()));
-    assertTrue(isAssignableFrom_StringExpression("varSuperTest","varTest"));
 
     assertTrue(d.isPresent());
     assertFalse(isAssignableFrom(d.get(),c.get()));
-    assertFalse(isAssignableFrom_StringExpression("varTest","varSuperTest"));
 
     assertTrue(e.isPresent());
     assertTrue(isAssignableFrom(a.get(),e.get()));
-    assertTrue(isAssignableFrom_StringExpression("varDouble","5"));
   }
 
   @Test
@@ -241,19 +221,15 @@ public class TypesCalculatorTest {
     assertTrue(b.isPresent());
 
     assertTrue(isSubtypeOf(b.get(),a.get()));
-    assertTrue(isSubtypeOf_StringExpression("varInt","varDouble"));
 
     assertFalse(isSubtypeOf(a.get(),b.get()));
-    assertFalse(isSubtypeOf_StringExpression("varDouble","varInt"));
 
     assertTrue(c.isPresent());
     assertTrue(d.isPresent());
 
     assertTrue(isSubtypeOf(d.get(),c.get()));
-    assertTrue(isSubtypeOf_StringExpression("varTest","varSuperTest"));
 
     assertFalse(isSubtypeOf(c.get(),d.get()));
-    assertFalse(isSubtypeOf_StringExpression("varSuperTest","varTest"));
   }
 
   @Test
@@ -267,11 +243,9 @@ public class TypesCalculatorTest {
 
     assertTrue(a.isPresent());
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(getType(a.get())));
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(getType_StringExpression("13+12.5-9")));
 
     assertTrue(b.isPresent());
     assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(getType(b.get())));
-    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(getType_StringExpression("varTest")));
   }
 
   @Test
@@ -284,16 +258,16 @@ public class TypesCalculatorTest {
 
     assertTrue(a.isPresent());
     assertEquals("double", getTypeString(a.get()));
-    assertEquals("double", getTypeString_StringExpression("13+12.5-9"));
 
     assertTrue(b.isPresent());
     assertEquals("Test", getTypeString(b.get()));
-    assertEquals("Test", getTypeString_StringExpression("varTest"));
 
     assertTrue(c.isPresent());
     assertEquals("java.lang.Integer",getTypeString(c.get()));
-    assertEquals("java.lang.Integer",getTypeString_StringExpression("varInt"));
   }
+
+
+
 
 
 }

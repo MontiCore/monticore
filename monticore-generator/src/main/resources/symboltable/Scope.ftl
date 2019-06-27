@@ -48,7 +48,7 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
 
   protected boolean exportsSymbols = true;
 
-  protected Optional<String> name;
+  protected Optional<String> name = Optional.empty();
 
   protected ASTNode astNode;
 
@@ -67,14 +67,14 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
   }
 
   public ${className}(I${languageName}Scope enclosingScope, boolean isShadowingScope) {
-    this.enclosingScope = enclosingScope;
+    this.setEnclosingScope(enclosingScope);
     this.shadowing = isShadowingScope;
     this.name = Optional.empty();
   }
 
   @Override
   public void addSubScope(I${languageName}Scope subScope) {
-    if (!subScopes.contains(subScope)) {
+    if (!this.subScopes.contains(subScope)) {
       this.subScopes.add(subScope);
       subScope.setEnclosingScope(this);
     }
@@ -83,6 +83,9 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
   @Override
   public void removeSubScope(I${languageName}Scope subScope) {
     this.subScopes.remove(subScope);
+    if (subScope.getEnclosingScope().isPresent() && subScope.getEnclosingScope().get() == this) {
+      subScope.setEnclosingScope(null);
+    }
   }
 
   public void setSpanningSymbol(IScopeSpanningSymbol symbol) {
@@ -130,7 +133,8 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
   }
 
   public void setSubScopes(List<I${languageName}Scope> subScopes) {
-    this.subScopes = subScopes;
+    this.subScopes.forEach(this::removeSubScope);
+    subScopes.forEach(this::addSubScope);
   }
 
   @Override
@@ -213,17 +217,17 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
   <#list superScopes as superScope>
   @Override
   public void addSubScope(${superScope} subScope) {
-    addSubScope((I${languageName}Scope) subScope);
+    this.addSubScope((I${languageName}Scope) subScope);
   }
 
   @Override
   public void removeSubScope(${superScope} subScope) {
-    removeSubScope((I${languageName}Scope) subScope);
+    this.removeSubScope((I${languageName}Scope) subScope);
   }
 
   @Override
   public void setEnclosingScope(${superScope} newEnclosingScope) {
-    setEnclosingScope((I${languageName}Scope) newEnclosingScope);
+    this.setEnclosingScope((I${languageName}Scope) newEnclosingScope);
   }
   </#list>
 

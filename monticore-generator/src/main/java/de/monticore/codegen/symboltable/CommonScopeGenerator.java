@@ -159,6 +159,8 @@ public class CommonScopeGenerator implements ScopeGenerator {
       }
     }
     
+    List<String> superGrammarPackages = allSuperScopes.stream().map(N -> Names.getQualifier(N)).collect(Collectors.toList());
+
     final Path scopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         scopeClassName + ".java");
     final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
@@ -184,7 +186,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName);
   
     if(genHelper.getGrammarSymbol().getStartProd().isPresent()) {
-      genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, symbolNames,spanningSymbolNames);
+      genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, allSymbols,allSpanningSymbolNames, superGrammarPackages);
     
       genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, baseNameClass, languageName, symbolNames,existsHWCArtifactScopeImpl);
    

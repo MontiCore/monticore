@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("languageName","className","scopeRule", "symbolNames", "spanningSymbols")}
+${signature("languageName","className","scopeRule", "symbolNames", "spanningSymbols", "superGrammarPackages")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign superClass = " extends de.monticore.symboltable.CommonScope ">
@@ -22,13 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.google.gson.stream.JsonReader;
-import de.monticore.symboltable.serialization.IDeSer;
-import de.monticore.symboltable.serialization.JsonConstants;
-import de.monticore.symboltable.serialization.ScopeDeserializationResult;
-import de.monticore.symboltable.serialization.SpanningSymbolReference;
+import de.monticore.symboltable.ImportStatement;
+import de.monticore.symboltable.serialization.*;
+import de.monticore.symboltable.serialization.json.*;
+
 import de.se_rwth.commons.logging.Log;
 
+<#list superGrammarPackages as s>
+import ${s}.*;
+import ${s}.serialization.*;
+</#list>
 
 /**
  * Class for serializing and deserializing ${languageName}Scopes
@@ -43,349 +46,7 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
   public void store(${languageName}ArtifactScope as, ${languageName}Language lang, String symbolPath) {
     store(as, Paths.get(symbolPath, as.getFilePath(lang).toString()));
   }
-
-  /**
-   * @see de.monticore.symboltable.serialization.IDeSer#serialize(java.lang.Object)
-   */
-  @Override
-  public String serialize(I${languageName}Scope toSerialize) {
-    ${languageName}SymbolTablePrinter printer = new ${languageName}SymbolTablePrinter();
-    toSerialize.accept(printer);
-    return printer.getSerializedString();
-  }
-
-  /**
-   * @throws IOException
-   * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
-   */
-  @Override
-  public Optional<I${languageName}Scope> deserialize(String serialized) {
-JsonReader reader = new JsonReader(new StringReader(serialized));
-    try {
-      reader.beginObject();
-      while (reader.hasNext()) {
-        String key = reader.nextName();
-        switch (key) {
-          case JsonConstants.KIND:
-            String kind = reader.nextString();
-            if (kind.equals("${serializedKind}")) {
-              Optional<ScopeDeserializationResult<I${languageName}Scope>> deserializedScope = deserialize${languageName}Scope(
-                  reader);
-              reader.endObject();
-              if (deserializedScope.isPresent()) {
-                return Optional.ofNullable(deserializedScope.get().getScope());
-              }
-              return Optional.empty();
-            }
-            else if (kind.equals("${serializedASKind}")) {
-              Optional<ScopeDeserializationResult<${languageName}ArtifactScope>> deserializedScope = deserialize${languageName}ArtifactScope(
-                  reader);
-              reader.endObject();
-              if (deserializedScope.isPresent()) {
-                return Optional.ofNullable(deserializedScope.get().getScope());
-              }
-              return Optional.empty();
-            }
-            else {
-              Log.error("0xA0602 Deserialization of \"" + kind + "\" with \"${className}\" failed");
-              return Optional.empty();
-            }
-          default:
-            reader.skipValue();
-            Log.warn("Serialized \"${languageName}Scope\" contains unknown attribute key \""+key+"\"!");
-            break;
-        }
-      }
-      reader.endObject();
-      reader.close();
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
-    return Optional.empty();
-  }
-
-  public Optional<ScopeDeserializationResult<I${languageName}Scope>> deserialize${languageName}Scope(JsonReader reader) {
-    // Part 1: Initialize all attributes with default values
-    ${languageName}Scope scope = null;
-    Optional<String> name = Optional.empty();
-    boolean isShadowingScope = false;
-<#list symbolNames?keys as symbol>
-    List<${symbol}Symbol> ${symbol?lower_case}Symbols = new ArrayList<>();
-</#list>
-<#if scopeRule.isPresent()>
-  <#list scopeRule.get().getAdditionalAttributeList() as attr>
-    <#assign attrName="_" + attr.getName()>
-    <#assign attrType=attr.getMCType().getBaseName()>
-    ${genHelper.getQualifiedASTName(attrType)} ${attrName} = ${genHelper.getDefaultInitValue(attrType)};
-  </#list>   
-</#if>
-    List<ScopeDeserializationResult<I${languageName}Scope>> subScopes = new ArrayList<>();
-    Optional<SpanningSymbolReference> spanningSymbol = Optional.empty();
-
-    // Part 2: Read all available values from the Json string
-    try {
-      while (reader.hasNext()) {
-        String key = reader.nextName();
-        switch (key) {
-          case JsonConstants.NAME:
-            name = Optional.ofNullable(reader.nextString());
-            break;
-          case JsonConstants.IS_SHADOWING_SCOPE:
-            isShadowingScope = reader.nextBoolean();
-            break;
-          case JsonConstants.SCOPE_SPANNING_SYMBOL:
-            spanningSymbol = Optional.ofNullable(deserializeSpanningSymbol(reader));
-            break;
-<#list symbolNames?keys as symbol>
-          case "${symbol?lower_case}Symbols":
-            ${symbol?lower_case}Symbols = deserializeLocal${symbol}Symbols(reader);
-            break;
-</#list>
-<#if scopeRule.isPresent()>
-  <#list scopeRule.get().getAdditionalAttributeList() as attr>
-    <#assign attrName="_" + attr.getName()>
-    <#assign attrType=attr.getMCType().getBaseName()>
-          case "${attrName}":
-    <#if attr.getName()?starts_with("is")>
-      <#assign methodName=attr.getName()>
-    <#else>
-      <#assign methodName="is" + attr.getName()?cap_first>
-    </#if>
-            ${attrName} = ${genHelper.getDeserializationCastString(attrType)} reader.next${genHelper.getDeserializationType(attrType)}();
-            break;
-  </#list>  
-</#if>
-          case JsonConstants.SUBSCOPES:
-            subScopes = deserializeSubScopes(reader);
-            break;
-          default:
-            reader.skipValue();
-            Log.warn("Serialized \"${languageName}Scope\" contains unknown attribute key \""+key+"\"!");
-            break;
-        }
-      }
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-      return Optional.empty();
-    }
-
-    // Part 3: Construct the symbol/scope object
-    scope = new ${languageName}Scope(isShadowingScope);
-    scope.setName(name.orElse(null));
-<#list symbolNames?keys as symbol>
-    for (${symbol}Symbol s : ${symbol?lower_case}Symbols) {
-      scope.add(s);
-    }
-</#list>
-<#if scopeRule.isPresent()>
-  <#list scopeRule.get().getAdditionalAttributeList() as attr>
-    <#assign attrName="_" + attr.getName()>
-      scope.set${attr.getName()?cap_first}(${attrName});
-  </#list>
-</#if>
-
-    for (I${languageName}Scope s : linkSubScopes(scope, subScopes)) {
-      scope.addSubScope(s);
-    }
-    return Optional.of(new ScopeDeserializationResult<I${languageName}Scope>(scope,spanningSymbol));
-  }
-
-  public Optional<ScopeDeserializationResult<${languageName}ArtifactScope>> deserialize${languageName}ArtifactScope(JsonReader reader) {
-    // Part 1: Initialize all attributes with default values
-    ${languageName}ArtifactScope scope = null;
-    Optional<String> name = Optional.empty();
-    boolean isShadowingScope = false;
-    String _package = "";
-<#list symbolNames?keys as symbol>
-    List<${symbol}Symbol> ${symbol?lower_case}Symbols = new ArrayList<>();
-</#list>
-    List<ScopeDeserializationResult<I${languageName}Scope>> subScopes = new ArrayList<>();
-    Optional<SpanningSymbolReference> spanningSymbol = Optional.empty();
-
-    // Part 2: Read all available values from the Json string
-    try {
-      while (reader.hasNext()) {
-        String key = reader.nextName();
-        switch (key) {
-          case JsonConstants.NAME:
-            name = Optional.ofNullable(reader.nextString());
-            break;
-          case JsonConstants.PACKAGE:
-            _package = reader.nextString();
-            break;
-          case JsonConstants.IS_SHADOWING_SCOPE:
-            isShadowingScope = reader.nextBoolean();
-            break;
-          case JsonConstants.SCOPE_SPANNING_SYMBOL:
-            spanningSymbol = Optional.ofNullable(deserializeSpanningSymbol(reader));
-            break;
-<#list symbolNames?keys as symbol>
-          case "${symbol?lower_case}Symbols":
-            ${symbol?lower_case}Symbols = deserializeLocal${symbol}Symbols(reader);
-            break;
-</#list>
-          case JsonConstants.SUBSCOPES:
-            subScopes = deserializeSubScopes(reader);
-            break;
-          default:
-            reader.skipValue();
-            Log.warn("Serialized \"${languageName}ArtifactScope\" contains unknown attribute key \""+key+"\"!");
-            break;
-        }
-      }
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-      return Optional.empty();
-    }
-
-    // Part 3: Construct the symbol/scope object
-    scope = new ${languageName}ArtifactScope(Optional.empty(), _package, new ArrayList<>());
-    scope.setName(name.orElse(null));
-<#list symbolNames?keys as symbol>
-    for (${symbol}Symbol s : ${symbol?lower_case}Symbols) {
-      scope.add(s);
-    }
-</#list>
-
-    for (I${languageName}Scope s : linkSubScopes(scope, subScopes)) {
-      scope.addSubScope(s);
-    }
-    return Optional.of(new ScopeDeserializationResult<${languageName}ArtifactScope>(scope,spanningSymbol));
-  }
-
-  protected List<I${languageName}Scope> linkSubScopes(I${languageName}Scope scope, List<ScopeDeserializationResult<I${languageName}Scope>> subScopes){
-    List<I${languageName}Scope> subScopeList = new ArrayList<>();
-    for (ScopeDeserializationResult<I${languageName}Scope> subScope : subScopes) {
-      subScope.getScope().setEnclosingScope(scope);
-      if (subScope.hasSpanningSymbol()) {
-
-
-<#assign else = "">
-<#list spanningSymbols?keys as symbol>
-      ${else} if (${symbol?lower_case}SymbolDeSer.getSerializedKind().equals(subScope.getSpanningSymbolKind())) {
-          Optional<${symbol}Symbol> spanningSymbol = scope.resolve${symbol}Locally(subScope.getSpanningSymbolName());
-          if(spanningSymbol.isPresent()) {
-            subScope.getScope().setSpanningSymbol(spanningSymbol.get());
-          }
-        }
-<#assign else = "else ">
-</#list>
-<#if symbolNames?keys?size gt 0>
-  <#if spanningSymbols?keys?size gt 0>
-        else {
-          Log.error("0xA0603 Unknown spanning symbol kind "+subScope.getSpanningSymbolKind()+" in ${className}");
-        }
-  <#else>
-        Log.error("0xA0604 Unknown spanning symbol kind "+subScope.getSpanningSymbolKind()+" in ${className}");
-  </#if>
-</#if>
-      }
-      subScopeList.add(subScope.getScope());
-    }
-    return subScopeList;
-  }
-
-  protected SpanningSymbolReference deserializeSpanningSymbol(JsonReader reader) throws IOException {
-    String kind = null;
-    String name = null;
-    reader.beginObject();
-    while (reader.hasNext()) {
-      String key = reader.nextName();
-      switch (key) {
-        case JsonConstants.KIND:
-          kind = reader.nextString();
-          break;
-        case JsonConstants.NAME:
-          name = reader.nextString();
-          break;
-        default:
-          reader.skipValue();
-          Log.warn("Serialized spanning symbol contains unknown attribute key \""+key+"\"!");
-          break;
-      }
-    }
-    reader.endObject();
-    if (null != kind && null != name) {
-      return new SpanningSymbolReference(kind, name);
-    }
-    return null;
-  }
-
-  //TODO: Generate this for all symbols in this scope
-<#list symbolNames?keys as symbol>
-  protected List<${symbol}Symbol> deserializeLocal${symbol}Symbols(JsonReader reader)
-      throws IOException {
-    List<${symbol}Symbol> symbols = new ArrayList<>();
-    reader.beginArray();
-    while (reader.hasNext()) {
-      reader.beginObject();
-      while (reader.hasNext()) {
-        String key = reader.nextName();
-        switch (key) {
-          case JsonConstants.KIND:
-            String kind = reader.nextString();
-            if (kind.equals(${symbol?lower_case}SymbolDeSer.getSerializedKind())) {
-              Optional<${symbol}Symbol> ${symbol?lower_case}Symbol = ${symbol?lower_case}SymbolDeSer
-                  .deserialize${symbol}Symbol(reader);
-              if (${symbol?lower_case}Symbol.isPresent()) {
-                symbols.add(${symbol?lower_case}Symbol.get());
-
-              }
-            }
-            else {
-              Log.error("0xA0605 Deserialization of \"" + kind + "\" with \"${className}\" failed");
-            }
-            break;
-          default:
-            reader.skipValue();
-            Log.warn("Serialized \"${symbol}Symbol\" contains unknown attribute key \""+key+"\"!");
-            break;
-        }
-      }
-      reader.endObject();
-    }
-    reader.endArray();
-    return symbols;
-  }
-  </#list>
-
-  protected List<ScopeDeserializationResult<I${languageName}Scope>> deserializeSubScopes(JsonReader reader)
-      throws IOException {
-    List<ScopeDeserializationResult<I${languageName}Scope>> subScopes = new ArrayList<>();
-    reader.beginArray();
-    while (reader.hasNext()) {
-      reader.beginObject();
-      while (reader.hasNext()) {
-        String key = reader.nextName();
-        switch (key) {
-          case JsonConstants.KIND:
-            String kind = reader.nextString();
-            if (!kind.equals("${serializedKind}")) {
-              Log.error("0xA0606 Deserialization of \"" + kind + "\" with \"${className}\" failed");
-            }
-            else {
-              Optional<ScopeDeserializationResult<I${languageName}Scope>> deserializedScope = deserialize${languageName}Scope(
-                  reader);
-              if (deserializedScope.isPresent()) {
-                subScopes.add(deserializedScope.get());
-              }
-            }
-            break;
-          default:
-            reader.skipValue();
-            Log.warn("Serialized \"${languageName}Scope\" contains unknown attribute key \""+key+"\"!");
-            break;
-        }
-      }
-      reader.endObject();
-    }
-    reader.endArray();
-    return subScopes;
-  }
-
+  
   /**
   * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
   */
@@ -397,4 +58,182 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
   public String getSerializedASKind() {
     return "${serializedASKind}";
   }
+
+  /**
+   * @see de.monticore.symboltable.serialization.IDeSer#serialize(java.lang.Object)
+   */
+  @Override
+  public String serialize(I${languageName}Scope toSerialize) {
+    ${languageName}SymbolTablePrinter printer = new ${languageName}SymbolTablePrinter();
+    toSerialize.accept(printer);
+    return printer.getSerializedString();
+  }
+
+/**
+   * @throws IOException
+   * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
+   */
+  @Override
+  public Optional<I${languageName}Scope> deserialize(String serialized) {
+    JsonObject scope = JsonParser.deserializeJsonObject(serialized);
+    return deserialize(scope);
+  }
+  
+  public Optional<I${languageName}Scope> deserialize(JsonObject scopeJson) {
+    String kind = scopeJson.get(JsonConstants.KIND).getAsJsonString().getValue();
+    if (this.getSerializedKind().equals(kind)) {
+      return Optional.of(deserialize${languageName}Scope(scopeJson));
+    }
+    else if (this.getSerializedASKind().equals(kind)) {
+      return Optional.of(deserialize${languageName}ArtifactScope(scopeJson));
+    }
+    return Optional.empty();
+  }
+  
+  protected ${languageName}Scope deserialize${languageName}Scope(JsonObject scopeJson) {
+    Optional<String> name = scopeJson.getStringOpt(JsonConstants.NAME);
+    Optional<Boolean> exportsSymbols = scopeJson.getBooleanOpt(JsonConstants.EXPORTS_SYMBOLS);
+    Optional<Boolean> isShadowingScope = scopeJson.getBooleanOpt(JsonConstants.IS_SHADOWING_SCOPE);
+    
+    ${languageName}Scope scope = new ${languageName}Scope(isShadowingScope.orElse(false));
+    name.ifPresent(scope::setName);
+    scope.setExportsSymbols(exportsSymbols.orElse(true));
+    
+<#if scopeRule.isPresent()>
+<#list scopeRule.get().getAdditionalAttributeList() as attr>
+    scope.set${attr.getName()?cap_first}(deserialize${attr.getName()?cap_first}(scopeJson));
+</#list>   
+</#if> 
+    
+    addSymbols(scopeJson, scope);
+    addAndLinkSubScopes(scopeJson, scope);
+    return scope;
+  }
+
+
+  
+  protected ${languageName}ArtifactScope deserialize${languageName}ArtifactScope(JsonObject scopeJson) {
+    String name = scopeJson.get(JsonConstants.NAME).getAsJsonString().getValue();
+    String packageName = scopeJson.get(JsonConstants.PACKAGE).getAsJsonString().getValue();
+    List<ImportStatement> imports = JsonUtil.deserializeImports(scopeJson);
+    boolean exportsSymbols = scopeJson.get(JsonConstants.EXPORTS_SYMBOLS).getAsJsonBoolean().getValue();
+    
+    ${languageName}ArtifactScope scope = new ${languageName}ArtifactScope(packageName, imports);
+    scope.setName(name);
+    scope.setExportsSymbols(exportsSymbols);
+    
+<#if scopeRule.isPresent()>
+<#list scopeRule.get().getAdditionalAttributeList() as attr>
+    scope.set${attr.getName()?cap_first}(deserialize${attr.getName()?cap_first}(scopeJson));
+</#list>   
+</#if> 
+
+    addSymbols(scopeJson, scope);
+    addAndLinkSubScopes(scopeJson, scope);
+    return scope;
+  }
+  
+  
+  protected void addSymbols(JsonObject scopeJson, ${languageName}Scope scope) {
+<#list symbolNames?keys as symbol>  
+    if (scopeJson.containsKey("${symbol?lower_case}Symbols")) {
+      List<JsonElement> ${symbol?lower_case}Symbols = scopeJson.get("${symbol?lower_case}Symbols").getAsJsonArray().getElements();
+      for (JsonElement ${symbol?lower_case}Symbol : ${symbol?lower_case}Symbols) {
+        deserialize${symbol}Symbol(${symbol?lower_case}Symbol.getAsJsonObject(), scope);
+      }
+    }
+</#list>     
+  }
+  
+  protected void addAndLinkSubScopes(JsonObject scopeJson, ${languageName}Scope scope) {
+    if (scopeJson.containsKey(JsonConstants.SUBSCOPES)) {
+      List<JsonElement> elements = scopeJson.get(JsonConstants.SUBSCOPES).getAsJsonArray()
+          .getElements();
+      for (JsonElement subScopeJson : elements) {
+        JsonObject s = subScopeJson.getAsJsonObject();
+        Optional<I${languageName}Scope> subScope = deserialize(s);
+        if (subScope.isPresent()) {
+          addAndLinkSpanningSymbol(s, subScope.get(), scope);
+          subScope.get().setEnclosingScope(scope);
+          scope.addSubScope(subScope.get());
+        }
+        else {
+          Log.error("Deserialization of subscope "+s+" failed!");
+        }
+      }
+    }
+  }
+  
+  protected void addAndLinkSpanningSymbol(JsonObject subScopeJson, I${languageName}Scope subScope,
+      ${languageName}Scope scope) {
+    if (subScopeJson.containsKey(JsonConstants.SCOPE_SPANNING_SYMBOL)) {
+      JsonObject symbolRef = subScopeJson.get(JsonConstants.SCOPE_SPANNING_SYMBOL)
+          .getAsJsonObject();
+      String spanningSymbolName = symbolRef.get(JsonConstants.NAME).getAsJsonString().getValue();
+      String spanningSymbolKind = symbolRef.get(JsonConstants.KIND).getAsJsonString().getValue();
+<#assign elseif = "">
+<#list spanningSymbols?keys as symbol>      
+      ${elseif} if (spanningSymbolKind.equals(${symbol?lower_case}SymbolDeSer.getSerializedKind())) {
+        Optional<${symbol}Symbol> spanningSymbol = scope.resolve${symbol}Locally(spanningSymbolName);
+        if (spanningSymbol.isPresent()) {
+          subScope.setSpanningSymbol(spanningSymbol.get());
+        }
+        else {
+          Log.error("Spanning symbol of scope "+subScopeJson+" could not be found during deserialization!");
+        }
+      }
+<#assign elseif = "else">
+</#list>
+<#if symbolNames?keys?size!=0>    
+      else {
+        Log.error("Unknown kind of scope spanning symbol: "+spanningSymbolKind);
+      }
+</#if>
+    }
+  }
+  
+<#list symbolNames?keys as symbol>  
+  protected void deserialize${symbol}Symbol(JsonObject symbolJson, ${languageName}Scope scope) {
+    Optional<${symbol}Symbol> symbol = ${symbol?lower_case}SymbolDeSer.deserialize(symbolJson);
+    if (symbol.isPresent()) {
+      scope.add(symbol.get());
+    }
+    else {
+      Log.error("Deserialization of "+symbolJson+" failed!");
+    }
+  }
+  
+</#list> 
+
+<#if scopeRule.isPresent()>
+<#list scopeRule.get().getAdditionalAttributeList() as attr>
+<#assign attrType=attr.getMCType().getBaseName()>
+  protected ${genHelper.getQualifiedASTName(attrType)} deserialize${attr.getName()?cap_first}(JsonObject scopeJson){
+<#switch attrType>
+<#case "String">
+    return scopeJson.get("${attr.getName()}").getAsJsonString().getValue();
+<#break>
+<#case "boolean">
+    return scopeJson.get("${attr.getName()}").getAsJsonBoolean().getValue();
+<#break>
+<#case "int">
+    return scopeJson.get("${attr.getName()}").getAsJsonNumber().getNumberAsInt();
+<#break>
+<#case "float">
+    return scopeJson.get("${attr.getName()}").getAsJsonNumber().getNumberAsFloat();
+<#break>
+<#case "double">
+    return scopeJson.get("${attr.getName()}").getAsJsonNumber().getNumberAsDouble();
+<#break>
+<#case "long">
+    return scopeJson.get("${attr.getName()}").getAsJsonNumber().getNumberAsLong();
+<#break>
+<#default>
+    Log.error("Unable to deserialize scope attribute ${attr.getName()} of type ${attrType}. Please override the method ${className}#deserialize${attr.getName()?cap_first}(JsonObject) using the TOP mechanism!);
+    return null;
+</#switch>
+  }
+
+</#list>   
+</#if>
 }
