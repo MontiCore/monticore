@@ -5,6 +5,7 @@ import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSc
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,10 +125,21 @@ public class TypesCalculator {
   public static boolean isSubtypeOf(ASTExpression subType, ASTExpression superType){
     calc.calculateType(subType);
     calc.calculateType(superType);
-    if(calc.getTypes().get(superType).getSubtypes().contains(calc.getTypes().get(subType))) {
+    return isSubtypeOf(calc.getTypes().get(subType),calc.getTypes().get(superType));
+  }
+
+  private static boolean isSubtypeOf(MCTypeSymbol subType, MCTypeSymbol superType){
+    if(!subType.getSupertypes().isEmpty()&&subType.getSupertypes().contains(superType)){
       return true;
     }
-    return false;
+    boolean subtype = false;
+    for(int i = 0;i<subType.getSupertypes().size();i++){
+      if(isSubtypeOf(subType.getSupertypes().get(i),superType)){
+        subtype=true;
+        break;
+      }
+    }
+    return subtype;
   }
 
   public static boolean isBoolean(ASTMCType type){
