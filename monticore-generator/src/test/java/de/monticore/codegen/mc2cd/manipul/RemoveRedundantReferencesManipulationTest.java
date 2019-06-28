@@ -2,15 +2,14 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class RemoveRedundantReferencesManipulationTest {
   

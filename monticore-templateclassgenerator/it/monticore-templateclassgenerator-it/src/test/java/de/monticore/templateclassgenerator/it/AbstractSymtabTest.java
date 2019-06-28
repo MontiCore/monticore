@@ -1,14 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.templateclassgenerator.it;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.java.lang.JavaDSLLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Common methods for symboltable tests

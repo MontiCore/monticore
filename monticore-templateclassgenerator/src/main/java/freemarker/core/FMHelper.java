@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package freemarker.core;
 
+import freemarker.template.Template;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import freemarker.template.Template;
 
 
 /**

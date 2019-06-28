@@ -1,16 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.templateclassgenerator;
 
-import groovy.lang.Script;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
-
 import de.monticore.templateclassgenerator.codegen.TemplateClassGenerator;
 import de.monticore.templateclassgenerator.codegen.TemplateClassGeneratorConstants;
 import de.se_rwth.commons.Names;
@@ -18,6 +8,13 @@ import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.groovy.GroovyInterpreter;
 import de.se_rwth.commons.groovy.GroovyRunner;
 import de.se_rwth.commons.logging.Log;
+import groovy.lang.Script;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * This class is used to call the TemplateClassGenerator.

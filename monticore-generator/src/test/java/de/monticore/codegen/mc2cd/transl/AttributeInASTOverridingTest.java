@@ -2,20 +2,18 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static org.junit.Assert.assertEquals;
-
-import java.nio.file.Paths;
-import java.util.List;
-
-import org.junit.Ignore;
-import org.junit.Test;
-
-import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.nio.file.Paths;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests that attributes that are redefined in ASTRules correctly override their counterparts in the

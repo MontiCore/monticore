@@ -2,18 +2,17 @@
 
 package de.monticore.codegen.cd2java.visitor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.google.common.base.Joiner;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class VisitorGeneratorHelper extends GeneratorHelper {
   

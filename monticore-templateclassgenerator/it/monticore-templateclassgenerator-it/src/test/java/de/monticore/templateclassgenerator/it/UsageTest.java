@@ -1,20 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.templateclassgenerator.it;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.antlr.v4.runtime.RecognitionException;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import _templates._setup.GeneratorConfig;
 import _templates.templates.b.JavaClass;
 import _templates.templates.maintemplates.HelloMainImpl;
@@ -26,7 +12,20 @@ import de.monticore.java.symboltable.JavaTypeSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.templateclassgenerator.EmptyNode;
 import de.monticore.templateclassgenerator.util.GeneratorInterface;
+import org.antlr.v4.runtime.RecognitionException;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import types.Attribute;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class UsageTest extends AbstractSymtabTest {
   private static Path outputDirectory = Paths.get("target/generated-sources/templateClasses/");

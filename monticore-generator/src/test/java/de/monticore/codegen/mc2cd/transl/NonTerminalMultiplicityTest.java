@@ -2,21 +2,20 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.nio.file.Paths;
-import java.util.List;
-
-import org.junit.Test;
-
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Test;
+
+import java.nio.file.Paths;
+import java.util.List;
+
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test for the proper transformation of NonTerminals to corresponding ASTCDAttributes

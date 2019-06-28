@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.generating;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import de.monticore.generating.templateengine.ExtendedTemplateController;
 import de.monticore.generating.templateengine.TemplateController;
 import freemarker.template.Configuration;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ExtendedGeneratorSetup extends GeneratorSetup {
   

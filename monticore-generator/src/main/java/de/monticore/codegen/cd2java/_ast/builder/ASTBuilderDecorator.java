@@ -2,7 +2,6 @@ package de.monticore.codegen.cd2java._ast.builder;
 
 import de.monticore.ast.ASTCNode;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -28,13 +27,9 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
 
   private final BuilderDecorator builderDecorator;
 
-  private final AbstractService abstractService;
-
-  public ASTBuilderDecorator(final GlobalExtensionManagement glex, final BuilderDecorator builderDecorator,
-                             final AbstractService abstractService) {
+  public ASTBuilderDecorator(final GlobalExtensionManagement glex, final BuilderDecorator builderDecorator) {
     super(glex);
     this.builderDecorator = builderDecorator;
-    this.abstractService = abstractService;
   }
 
   @Override
