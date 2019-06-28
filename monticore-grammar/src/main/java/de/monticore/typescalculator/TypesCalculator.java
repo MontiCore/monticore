@@ -116,7 +116,9 @@ public class TypesCalculator {
         }
         return false;
       }else {
-        return calc.getTypes().get(left).getSubtypes().contains(calc.getTypes().get(right));
+        if(isSubtypeOf(right,left)||calc.getTypes().get(right).getASTMCType().deepEquals(calc.getTypes().get(left).getASTMCType())){
+          return true;
+        }
       }
     }
     return false;

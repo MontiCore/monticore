@@ -301,6 +301,8 @@ public class TypesCalculatorTest {
 
     assertTrue(e.isPresent());
     assertTrue(isAssignableFrom(a.get(),e.get()));
+
+    assertTrue(isAssignableFrom(a.get(),a.get()));
   }
 
   @Test
