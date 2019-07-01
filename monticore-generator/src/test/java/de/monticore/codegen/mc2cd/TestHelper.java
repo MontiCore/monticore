@@ -9,6 +9,9 @@ import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsScope;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
@@ -36,18 +39,17 @@ public class TestHelper {
       return Optional.empty();
     }
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
+    Grammar_WithConceptsGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
     mc.createSymbolsFromAST(symbolTable, grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDTransformation(
         new GlobalExtensionManagement()).apply(grammar.get());
     return Optional.of(cdCompilationUnit);
   }
   
-  public static GlobalScope createGlobalScope(ModelPath modelPath) {
+  public static Grammar_WithConceptsGlobalScope createGlobalScope(ModelPath modelPath) {
 
-    final CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
-
-    return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage), resolvingConfiguration);
+    Grammar_WithConceptsLanguage mcLanguage = new Grammar_WithConceptsLanguage();
+    return new Grammar_WithConceptsGlobalScope(modelPath, mcLanguage);
   }
 
   public static Optional<ASTCDClass> getCDClass(ASTCDCompilationUnit cdCompilationUnit, String cdClassName) {
@@ -69,20 +71,13 @@ public class TestHelper {
     if (!(typeRef instanceof ASTMCListType)) {
       return false;
     }
-    ASTMCObjectType type = (ASTMCListType) typeRef;
-    if (!type.isPresentTypeArguments()) {
+    ASTMCListType type = (ASTMCListType) typeRef;
+    if (!type.getMCTypeArgument().getMCTypeOpt().isPresent()) {
       return false;
     }
-    if (type.getTypeArguments().getTypeArgumentList().size() != 1) {
+    if (type.getMCTypeArgument().getMCTypeOpt().get().getName().equals(typeArg)) {
       return false;
     }
-    if (!(type.getTypeArguments().getTypeArgumentList()
-        .get(0) instanceof SimpleReferenceType)) {
-      return false;
-    }
-    return Names.getQualifiedName(
-        ((SimpleReferenceType) type.getTypeArguments().getTypeArgumentList().get(0))
-            .getNameList())
-        .equals(typeArg);
+    return true;
   }
 }

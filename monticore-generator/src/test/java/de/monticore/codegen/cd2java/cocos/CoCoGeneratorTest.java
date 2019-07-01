@@ -14,7 +14,6 @@ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConcep
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -86,7 +85,8 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
     grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath,new Grammar_WithConceptsLanguage());
 
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+
+    Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     glex = new GlobalExtensionManagement();
     Optional<ASTMCGrammar> ast = mc.parseGrammar(Paths.get(new File(model).getAbsolutePath()));
     assertTrue(ast.isPresent());

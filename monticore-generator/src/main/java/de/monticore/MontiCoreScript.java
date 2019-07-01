@@ -285,7 +285,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
       Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = language.getSymbolTableCreator(globalScope);
       stCreator.createFromAST(result);
-      globalScope.cache(language.getModelLoader(), qualifiedGrammarName);
+      globalScope.cache(qualifiedGrammarName);
     }
 
     MCGrammarSymbol symbol = (MCGrammarSymbol) result.getSymbol();

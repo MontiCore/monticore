@@ -6,13 +6,11 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
-import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import org.junit.Before;
@@ -44,12 +42,11 @@ public class TypeCD2JavaTest {
 
     //create ASTCDDefinition from MontiCoreScript
     MontiCoreScript script = new MontiCoreScript();
-    GlobalScope globalScope = TestHelper.createGlobalScope(modelPath);
-    script.createSymbolsFromAST(globalScope, grammar.get());
+    script.createSymbolsFromAST(grammar_withConceptsGlobalScope, grammar.get());
     cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
         cd4AnalysisGlobalScope,grammar_withConceptsGlobalScope);
 
-    cdCompilationUnit.setEnclosingScope(globalScope);
+    cdCompilationUnit.setEnclosingScope2(cd4AnalysisGlobalScope);
     //make types java compatible
     TypeCD2JavaDecorator decorator = new TypeCD2JavaDecorator();
     decorator.decorate(cdCompilationUnit);
@@ -60,10 +57,7 @@ public class TypeCD2JavaTest {
     //that names = ["java", "util", "List"] and names != ["java.util.List"]
     for (ASTCDClass astcdClass : cdCompilationUnit.getCDDefinition().getCDClassList()) {
       for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
-        if (astcdAttribute.getMCType() instanceof ASTSimpleReferenceType) {
-          ASTSimpleReferenceType simpleReferenceType = (ASTSimpleReferenceType) astcdAttribute.getMCType();
-          assertTrue(simpleReferenceType.getNameList().stream().noneMatch((s) -> s.contains(".")));
-        }
+        assertTrue(astcdAttribute.getMCType().getNameList().stream().noneMatch((s) -> s.contains(".")));
       }
     }
   }
@@ -82,17 +76,16 @@ public class TypeCD2JavaTest {
   @Test
   public void testTypeJavaConformASTPackage() {
     //test that for AST classes the package is now java conform
-    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTSimpleReferenceType);
-    ASTMCQualifiedType simpleReferenceType = (ASTMCQualifiedType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType();
-    assertTrue(simpleReferenceType.isPresentTypeArguments());
-    assertEquals(1, simpleReferenceType.getTypeArguments().sizeTypeArguments());
-    assertTrue(simpleReferenceType.getTypeArguments().getTypeArgument(0) instanceof ASTMCQualifiedType);
-    ASTSimpleReferenceType typeArgument = (ASTSimpleReferenceType) simpleReferenceType.getTypeArguments().getTypeArgument(0);
-    assertFalse(typeArgument.isEmptyNames());
-    assertEquals(3, typeArgument.sizeNames());
-    assertEquals("automaton", typeArgument.getName(0));
-    assertEquals("_ast", typeArgument.getName(1));
-    assertEquals("ASTState", typeArgument.getName(2));
+    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTMCListType);
+    ASTMCListType listType = (ASTMCListType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType();
+    assertTrue(listType.getMCTypeArgument().getMCTypeOpt().isPresent());
+    assertEquals(1, listType.getMCTypeArgumentList().size());
+    assertTrue(listType.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    ASTMCQualifiedType typeArgument = (ASTMCQualifiedType) listType.getMCTypeArgument().getMCTypeOpt().get();
+    assertEquals(3, typeArgument.getNameList().size());
+    assertEquals("automaton", typeArgument.getNameList().get(0));
+    assertEquals("_ast", typeArgument.getNameList().get(1));
+    assertEquals("ASTState", typeArgument.getNameList().get(2));
   }
 
   @Test
