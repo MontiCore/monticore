@@ -11,6 +11,8 @@ import de.monticore.symboltable.*;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
@@ -44,7 +46,6 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   public GrammarSymbolTableCreator(Deque<? extends IGrammarScope> scopeStack) {
     super(scopeStack);
   }
-
 
   // PN is tested
   @Override

@@ -149,7 +149,13 @@ public class GrammarPrettyPrinter
     CommentPrettyPrinter.printPostComments(a, getPrinter());
     
   }
-  
+
+  @Override
+  public void handle(ASTEof a) {
+    print(" EOF ");
+
+  }
+
   @Override
   public void handle(ASTBlock a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());

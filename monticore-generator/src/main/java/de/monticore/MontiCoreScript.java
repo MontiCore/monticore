@@ -325,7 +325,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     } else {
       CD4AnalysisSymbolTableCreatorDelegator stCreator = cd4AnalysisLanguage.getSymbolTableCreator(globalScope);
       stCreator.createFromAST(result);
-      globalScope.cache(cd4AnalysisLanguage.getModelLoader(), qualifiedCDName);
+      globalScope.cache(qualifiedCDName);
     }
 
     return result;

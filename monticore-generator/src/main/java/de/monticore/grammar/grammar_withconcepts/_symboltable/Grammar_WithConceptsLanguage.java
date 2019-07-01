@@ -6,7 +6,7 @@ import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsPar
 
 public class Grammar_WithConceptsLanguage extends Grammar_WithConceptsLanguageTOP {
 
-  public static final String FILE_ENDING = ".mc4";
+  public static final String FILE_ENDING = "mc4";
 
   public Grammar_WithConceptsLanguage(String langName, String fileEnding) {
     super(langName, fileEnding);
