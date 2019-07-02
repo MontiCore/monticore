@@ -5,7 +5,7 @@ ${tc.signature("astcdClass")}
     super.deepClone(result);
 
 <#list astcdClass.getCDAttributeList() as attribute>
-<#if attribute.isPresentModifier() && !attribute.getModifier().isPrivate() && !service.isInherited(attribute)>
+<#if attribute.isPresentModifier() && !service.isReferencedSymbolAttribute(attribute) && !service.isInherited(attribute)>
   <#assign attributeName = attribute.getName()>
   <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
   <#assign attrType = attribute.getType()>
