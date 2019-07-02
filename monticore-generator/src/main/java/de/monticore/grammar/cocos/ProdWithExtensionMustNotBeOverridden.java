@@ -26,7 +26,7 @@ public class ProdWithExtensionMustNotBeOverridden implements GrammarASTProdCoCo 
   @Override
   public void check(ASTProd a) {
 
-    Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(a);
+    Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(a.getEnclosingScope2());
 
     boolean isOverriding = false;
     for (MCGrammarSymbol sup : getAllSuperGrammars(grammarSymbol.get())) {

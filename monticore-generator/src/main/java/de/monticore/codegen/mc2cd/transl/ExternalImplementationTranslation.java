@@ -25,7 +25,7 @@ public class ExternalImplementationTranslation implements
         ASTCDClass.class)) {
       String name = link.source().getName();
       Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRuleInSupersOnly(
-          rootLink.source(), name);
+          link.source(), name);
       if (ruleSymbol.isPresent() && ruleSymbol.get().isExternal()) {
         link.target().getInterfaceList().add(
             TransformationHelper.createType(TransformationHelper.getGrammarNameAsPackage(

@@ -299,7 +299,7 @@ public class MCGrammarInfo {
         Optional<ASTProd> astProd = ruleSymbol.getAstNode();
         if (astProd.isPresent() && astProd.get() instanceof ASTClassProd) {
           Optional<MCGrammarSymbol> refGrammarSymbol = MCGrammarSymbolTableHelper
-              .getMCGrammarSymbol(astProd.get());
+              .getMCGrammarSymbol(astProd.get().getEnclosingScope2());
           boolean isRefGrammarSymbol = refGrammarSymbol.isPresent();
           for (ASTTerminal keyword : ASTNodes.getSuccessors(astProd.get(), ASTTerminal.class)) {
             if (isKeyword(keyword.getName(), grammarSymbol)

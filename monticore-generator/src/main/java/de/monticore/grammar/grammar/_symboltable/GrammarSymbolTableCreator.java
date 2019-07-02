@@ -7,12 +7,10 @@ import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.*;
+import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.se_rwth.commons.Names;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
@@ -26,7 +24,8 @@ import static de.monticore.grammar.Multiplicity.*;
 import static de.monticore.grammar.grammar._ast.GrammarMill.symbolDefinitionBuilder;
 import static de.se_rwth.commons.Names.getQualifiedName;
 import static de.se_rwth.commons.StringTransformations.uncapitalize;
-import static de.se_rwth.commons.logging.Log.*;
+import static de.se_rwth.commons.logging.Log.debug;
+import static de.se_rwth.commons.logging.Log.error;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -47,29 +46,15 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     super(scopeStack);
   }
 
-  // PN is tested
   @Override
-  public void visit(ASTMCGrammar astGrammar) {
-    debug("Building Symboltable for Grammar: " + astGrammar.getName(),
-            GrammarSymbolTableCreator.class.getSimpleName());
-
-    packageName = getQualifiedName(astGrammar.getPackageList());
+  public void initialize_MCGrammar(MCGrammarSymbol symbol, ASTMCGrammar astGrammar) {
+    this.packageName = getQualifiedName(astGrammar.getPackageList());
     this.astGrammar = astGrammar;
+    this.grammarSymbol = symbol;
 
-    final List<ImportStatement> imports = new ArrayList<>();
-    if (astGrammar.getImportStatementList() != null) {
-      for (ASTMCImportStatement imp : astGrammar.getImportStatementList()) {
-        imports.add(new ImportStatement(getQualifiedName(imp.getImportList()),
-                imp.isStar()));
-      }
-    }
+    symbol.setComponent(astGrammar.isComponent());
 
-    grammarSymbol = new MCGrammarSymbol(astGrammar.getName());
-    grammarSymbol.setComponent(astGrammar.isComponent());
-
-    addToScopeAndLinkWithNode(grammarSymbol, astGrammar);
-
-    addSuperGrammars(astGrammar, grammarSymbol);
+    addSuperGrammars(astGrammar, symbol);
   }
 
   @Override
@@ -98,55 +83,31 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   }
 
   @Override
-  public void visit(ASTInterfaceProd ast) {
-    ProdSymbol prodSymbol = new ProdSymbol(ast.getName());
+  public void initialize_InterfaceProd(ProdSymbol prodSymbol, ASTInterfaceProd ast) {
     prodSymbol.setInterface(true);
 
     setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
 
     setSuperProdsAndTypes(prodSymbol, emptyList(),
             emptyList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
-
-    addToScopeAndLinkWithNode(prodSymbol, ast);
   }
 
   @Override
-  public void endVisit(ASTInterfaceProd astInterfaceProd) {
-    removeCurrentGrammarScope();
-  }
-
-  @Override
-  public void visit(ASTLexProd ast) {
-    final ProdSymbol prodSymbol = new ProdSymbol(ast.getName());
+  public void initialize_LexProd(ProdSymbol prodSymbol, ASTLexProd ast) {
     prodSymbol.setLexerProd(true);
-
-    addToScopeAndLinkWithNode(prodSymbol, ast);
   }
 
   @Override
-  public void endVisit(ASTLexProd astLexProd) {
-    removeCurrentGrammarScope();
-  }
-
-  @Override
-  public void visit(ASTClassProd ast) {
-    final ProdSymbol prodSymbol = new ProdSymbol(ast.getName());
-
+  public void initialize_ClassProd(ProdSymbol prodSymbol, ASTClassProd ast) {
     setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
 
     setSuperProdsAndTypes(prodSymbol, ast.getSuperRuleList(),
             ast.getASTSuperClassList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
-
-    addToScopeAndLinkWithNode(prodSymbol, ast);
   }
 
-  public void endVisit(ASTClassProd astClassProd) {
-    removeCurrentGrammarScope();
-  }
 
   @Override
-  public void visit(ASTAbstractProd ast) {
-    ProdSymbol prodSymbol = new ProdSymbol(ast.getName());
+  public void initialize_AbstractProd(ProdSymbol prodSymbol, ASTAbstractProd ast) {
     prodSymbol.setAbstract(true);
 
     setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
@@ -154,59 +115,40 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     setSuperProdsAndTypes(prodSymbol, ast.getSuperRuleList(),
             ast.getASTSuperClassList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
 
-    addToScopeAndLinkWithNode(prodSymbol, ast);
   }
 
   @Override
-  public void endVisit(ASTAbstractProd astAbstractProd) {
-    removeCurrentGrammarScope();
-  }
-
-  @Override
-  public void visit(ASTExternalProd ast) {
-    final ProdSymbol prodSymbol = new ProdSymbol(ast.getName());
+  public void initialize_ExternalProd(ProdSymbol prodSymbol, ASTExternalProd ast) {
     prodSymbol.setExternal(true);
 
     setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
-
-
-    addToScopeAndLinkWithNode(prodSymbol, ast);
   }
 
   @Override
-  public void endVisit(ASTExternalProd astExternalProd) {
-    removeCurrentGrammarScope();
-  }
-
-  @Override
-  public void visit(ASTEnumProd ast) {
-    final ProdSymbol prodSymbol = new ProdSymbol(ast.getName());
+  public void initialize_EnumProd(ProdSymbol prodSymbol, ASTEnumProd ast) {
     prodSymbol.setEnum(true);
 
     addToScopeAndLinkWithNode(prodSymbol, ast);
   }
 
   @Override
-  public void endVisit(ASTEnumProd astEnumProd) {
-    removeCurrentGrammarScope();
+  protected RuleComponentSymbol create_Terminal(ASTTerminal ast) {
+    final String symbolName = ast.getUsageNameOpt().orElse(ast.getName());
+    return new RuleComponentSymbol(ast.getName());
   }
 
   @Override
-  public void visit(ASTTerminal ast) {
+  public void initialize_Terminal(RuleComponentSymbol prodComponent, ASTTerminal ast) {
     final String usageName = ast.getUsageNameOpt().orElse(null);
-    final ProdSymbol currentSymbol = getProdSymbol().orElse(null);
+    Optional<ProdSymbol> currentSymbol = getProdSymbol();
 
-    if (currentSymbol != null) {
-      final String symbolName = isNullOrEmpty(usageName) ? ast.getName() : usageName;
-      RuleComponentSymbol prodComponent = new RuleComponentSymbol(symbolName);
-
+    if (currentSymbol.isPresent()) {
       prodComponent.setUsageName(usageName);
 
       setComponentMultiplicity(prodComponent, ast);
-      prodComponent = currentSymbol.addProdComponent(prodComponent);
 
-      setLinkBetweenSymbolAndNode(prodComponent, ast);
       prodComponent.setTerminal(true);
+
       setComponentMultiplicity(prodComponent, ast);
     }
   }
@@ -255,7 +197,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
         addToScope(prodComponent);
       }
 
-      setLinkBetweenSymbolAndNode(prodComponent, ast);
+      addToScopeAndLinkWithNode(prodComponent, ast);
       prodComponent.setNonterminal(true);
       prodComponent.setReferencedSymbolName(ast.getReferencedSymbolOpt().orElse(""));
     }
@@ -271,6 +213,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
               ast.get_SourcePositionStart());
     }
     ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a));
+    ast.setEnclosingScope2(getCurrentScope().get());
   }
 
   void setComponentMultiplicity(RuleComponentSymbol prod, ASTNode ast) {
@@ -287,8 +230,10 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     final Optional<RuleComponentSymbol> sym = addRuleComponent(nullToEmpty(astNode.getName()),
             astNode, "");
 
+
     if (sym.isPresent()) {
       sym.get().setLexerNonterminal(true);
+      addToScopeAndLinkWithNode(sym.get(), astNode);
     }
   }
 
@@ -328,7 +273,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
           addToScopeAndLinkWithNode(sym.get(), astNode);
         }
       }
-      }
+    }
   }
 
 
@@ -365,7 +310,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     }
   }
 
-  private Optional<RuleComponentSymbol> addRuleComponent(String name, ASTNode node,
+  private Optional<RuleComponentSymbol> addRuleComponent(String name, ASTRuleComponent node,
                                                          String usageName) {
     final
     ProdSymbol currentSymbol = getProdSymbol().orElse(null);
@@ -378,7 +323,6 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
       ProdSymbol surroundingProd = (ProdSymbol) currentSymbol;
       prodComponent = surroundingProd.addProdComponent(prodComponent);
-      setLinkBetweenSymbolAndNode(prodComponent, node);
       return of(prodComponent);
     }
     return empty();
@@ -553,29 +497,11 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   public final Optional<ProdSymbol> getProdSymbol() {
     if (getCurrentScope().isPresent()) {
       IGrammarScope scope = getCurrentScope().get();
-      if (!scope.getLocalProdSymbols().isEmpty()) {
-        int i = scope.getLocalProdSymbols().size()-1;
-        return Optional.of(scope.getLocalProdSymbols().get(i));
+      if (scope.getSpanningSymbol().isPresent() && scope.getSpanningSymbol().get() instanceof ProdSymbol) {
+        return Optional.of((ProdSymbol) scope.getSpanningSymbol().get());
       }
     }
     return Optional.empty();
-  }
-
-  public void setLinkBetweenSymbolAndNode(de.monticore.grammar.grammar._symboltable.RuleComponentSymbol symbol, de.monticore.grammar.grammar._ast.ASTRuleComponent astNode) {
-    // symbol -> ast
-    symbol.setAstNode(astNode);
-
-
-    astNode.setEnclosingScope2(symbol.getEnclosingScope());
-
-  }
-
-  public void setLinkBetweenSymbolAndNode(de.monticore.grammar.grammar._symboltable.RuleComponentSymbol symbol, ASTNode astNode) {
- // TODO
-
-  }
-
-  private void addToScopeAndLinkWithNode(RuleComponentSymbol ruleComponentSymbol, ASTNode astNode) {
   }
 
 }

@@ -38,7 +38,7 @@ public class ASTConstructionActions {
       String constfile;
       String constantname;
       Optional<MCGrammarSymbol> ruleGrammar = MCGrammarSymbolTableHelper
-          .getMCGrammarSymbol(constgroup);
+          .getMCGrammarSymbol(constgroup.getEnclosingScope2());
       if (ruleGrammar.isPresent()) {
         constfile = AstGeneratorHelper.getConstantClassName(ruleGrammar.get());
         constantname = parserGenHelper.getConstantNameForConstant(constant);
@@ -97,7 +97,7 @@ public class ASTConstructionActions {
     String type = MCGrammarSymbolTableHelper
         .getQualifiedName(symbolTable.getProdWithInherited(HelperGrammar.getRuleName(a)).get());
     Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(a);
+        .getMCGrammarSymbol(a.getEnclosingScope2());
     String name = grammar.isPresent()
         ? grammar.get().getName()
         : symbolTable.getProdWithInherited(HelperGrammar.getRuleName(a)).get().getName();
@@ -119,7 +119,7 @@ public class ASTConstructionActions {
     String type = MCGrammarSymbolTableHelper
         .getQualifiedName(symbolTable.getProdWithInherited(className).get());
     Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(a);
+        .getMCGrammarSymbol(a.getEnclosingScope2());
     String name = grammar.isPresent()
         ? grammar.get().getName()
         : symbolTable.getProdWithInherited(className).get().getName();
@@ -196,7 +196,7 @@ public class ASTConstructionActions {
         .getQualifiedName(symbolTable.getProdWithInherited(a.getName()).get()); // TODO
                                                                                 // GV:
                                                                                 // getDefinedType().getQualifiedName()
-    String name = MCGrammarSymbolTableHelper.getMCGrammarSymbol(a).get().getName();
+    String name = MCGrammarSymbolTableHelper.getMCGrammarSymbol(a.getEnclosingScope2()).get().getName();
     SourcePositionActions sourcePositionBuilder = new SourcePositionActions(parserGenHelper);
     StringBuilder b = new StringBuilder();
     b.append("// Action code for left recursive rule \n");

@@ -6,15 +6,13 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import de.monticore.ModelingLanguage;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.RegExpBuilder;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.*;
+import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
 import de.se_rwth.commons.logging.Log;
@@ -26,20 +24,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Sets.newLinkedHashSet;
-import static de.se_rwth.commons.Util.listTillNull;
 
 public class MCGrammarSymbolTableHelper {
   
-   public static Optional<ProdSymbol> resolveRule(ASTNode astNode, String name) {
-    Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode);
+   public static Optional<ProdSymbol> resolveRule(ASTMCGrammar astNode, String name) {
+    Optional<MCGrammarSymbol> grammarSymbol = astNode.getMCGrammarSymbolOpt();
     if (!grammarSymbol.isPresent()) {
       return Optional.empty();
     }
     return grammarSymbol.get().getProdWithInherited(name);
   }
-  
-  public static Optional<ProdSymbol> resolveRuleInSupersOnly(ASTNode astNode, String name) {
-    Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode);
+
+  public static Optional<ProdSymbol> resolveRuleInSupersOnly(ASTClassProd astNode, String name) {
+    Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode.getEnclosingScope2());
     Stream<MCGrammarSymbol> superGrammars = grammarSymbol
         .map(symbol -> Util.preOrder(symbol, MCGrammarSymbol::getSuperGrammarSymbols)
             .stream())
@@ -49,38 +46,25 @@ public class MCGrammarSymbolTableHelper {
         .map(Optional::get)
         .findFirst();
   }
-  
-  public static Optional<MCGrammarSymbol> getGrammarSymbol(ASTMCGrammar astNode) {
-    if (!astNode.isPresentSymbol2()) {
-      return Optional.empty();
-    }
-    if (!(astNode.getSymbol() instanceof MCGrammarSymbol)) {
-      return Optional.empty();
-    }
-    return Optional.of((MCGrammarSymbol) astNode.getSymbol());
-  }
-  
-  public static Optional<MCGrammarSymbol> getMCGrammarSymbol(ASTNode astNode) {
-    Set<Scope> scopes = getAllScopes(astNode);
-    for (Scope s : scopes) {
-      Optional<? extends ScopeSpanningSymbol> symbol = s.getSpanningSymbol();
-      if (symbol.isPresent() && symbol.get() instanceof MCGrammarSymbol) {
-        return Optional.of((MCGrammarSymbol) symbol.get());
+
+  public static Optional<MCGrammarSymbol> getMCGrammarSymbol(IGrammarScope scope) {
+    boolean exist = true;
+    while (exist) {
+      if (scope.getSpanningSymbol().isPresent() && scope.getSpanningSymbol().get() instanceof MCGrammarSymbol) {
+        return Optional.of((MCGrammarSymbol) scope.getSpanningSymbol().get());
+      }
+      if (!scope.getEnclosingScope().isPresent()) {
+        exist = false;
+      } else {
+        scope = scope.getEnclosingScope().get();
       }
     }
     return Optional.empty();
-    // return getAllScopes(astNode).stream()
-    // .map(Scope::getSpanningSymbol)
-    // .filter(Optional::isPresent)
-    // .map(Optional::get)
-    // .filter(EssentialMCGrammarSymbol.class::isInstance)
-    // .map(EssentialMCGrammarSymbol.class::cast)
-    // .findFirst();
   }
-  
-  public static Optional<ProdSymbol> getEnclosingRule(ASTNode astNode) {
-    return getAllScopes(astNode).stream()
-        .map(Scope::getSpanningSymbol)
+
+    public static Optional<ProdSymbol> getEnclosingRule(ASTRuleComponent astNode) {
+    return getAllScopes(astNode.getEnclosingScope2()).stream()
+        .map(IScope::getSpanningSymbol)
         .filter(Optional::isPresent)
         .map(Optional::get)
         .filter(ProdSymbol.class::isInstance)
@@ -119,18 +103,10 @@ public class MCGrammarSymbolTableHelper {
     return !astNode.isPresent() || !(astNode.get() instanceof ASTLexProd)
         || ((ASTLexProd) astNode.get()).isFragment();
   }
-  
-  private static Set<Scope> getAllScopes(ASTNode astNode) {
-    Set<Scope> ret = Sets.newHashSet();
-    astNode.getSpannedScopeOpt().ifPresent(s -> ret.add(s));
-    for (Symbol s : getAllSubSymbols(astNode)) {
-      for (Scope l : listTillNull(s.getEnclosingScope(),
-          childScope -> childScope.getEnclosingScope().orElse(null))) {
-        ret.add(l);
-      }
-    }
-    
-    return ret;
+
+  private static Set<IGrammarScope> getAllScopes(IGrammarScope scope) {
+    Set<IGrammarScope> ret = Sets.newHashSet(scope);
+    // TODO
     // return getAllSubSymbols(astNode).stream()
     // .map(Symbol::getEnclosingScope)
     // .flatMap(
@@ -138,6 +114,8 @@ public class MCGrammarSymbolTableHelper {
     // childScope.getEnclosingScope().orElse(null))
     // .stream())
     // .collect(Collectors.toSet());
+    return ret;
+
   }
   
   private static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
@@ -169,22 +147,7 @@ public class MCGrammarSymbolTableHelper {
     }
     return ret;
   }
-  
-  private static Set<Symbol> getAllSubSymbols(ASTNode astNode) {
-    Set<Symbol> symbols = Util.preOrder(astNode, ASTNode::get_Children).stream()
-        .map(ASTNode::getSymbolOpt)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.toSet());
-    
-    return symbols;
-    // return Util.preOrder(astNode, ASTNode::get_Children).stream()
-    // .map(ASTNode::getSymbol)
-    // .filter(Optional::isPresent)
-    // .map(Optional::get)
-    // .collect(Collectors.toSet());
-  }
-  
+
   // TODO GV:
   /**
    * Returns the STType associated with this name Use "super." as a prefix to
@@ -258,13 +221,13 @@ public class MCGrammarSymbolTableHelper {
     
   }
   
-  public static String getQualifiedName(ASTNode astNode, ProdSymbol symbol, String prefix,
+  public static String getQualifiedName(ASTProd astNode, ProdSymbol symbol, String prefix,
                                         String suffix) {
     if (symbol.isExternal()) {
       return symbol.getName();
     }
     else {
-      Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode);
+      Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode.getEnclosingScope2());
       String string = (grammarSymbol.isPresent()
           ? grammarSymbol.get().getFullName().toLowerCase()
           : "")

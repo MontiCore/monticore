@@ -27,7 +27,7 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
   
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
+    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
     Map<String, ProdSymbol> allProds = grammarSymbol.getProdsWithInherited();
     
     for (ProdSymbol classProd : grammarSymbol.getProds()) {

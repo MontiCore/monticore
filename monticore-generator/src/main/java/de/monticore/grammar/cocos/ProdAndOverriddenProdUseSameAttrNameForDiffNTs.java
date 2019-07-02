@@ -39,7 +39,7 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
             + " couldn't be resolved.");
       }
       Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-          .getMCGrammarSymbol(a);
+          .getMCGrammarSymbol(a.getEnclosingScope2());
       if (!grammarSymbol.isPresent()) {
         Log.error(
             "0xA1126 grammar symbol for the component " + a.getName() + " couldn't be resolved.");

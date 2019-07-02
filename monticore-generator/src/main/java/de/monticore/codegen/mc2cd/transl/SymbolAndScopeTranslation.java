@@ -41,7 +41,7 @@ public class SymbolAndScopeTranslation implements
     for (ASTSymbolDefinition symbolDefinition : grammarProd.getSymbolDefinitionList()) {
       if (symbolDefinition.isGenSymbol()) {
         final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-            .getMCGrammarSymbol(grammarProd);
+            .getMCGrammarSymbol(grammarProd.getEnclosingScope2());
         if (symbolDefinition.isPresentSymbolName()
             && grammarSymbol.isPresent()) {
           //extra information into stereotype value if a symboltype is already defined in the grammar

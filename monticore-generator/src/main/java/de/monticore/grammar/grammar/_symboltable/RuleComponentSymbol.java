@@ -3,6 +3,8 @@
 package de.monticore.grammar.grammar._symboltable;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Strings.emptyToNull;
@@ -22,6 +24,8 @@ public class RuleComponentSymbol extends RuleComponentSymbolTOP  {
   private boolean isConstant;
 
   private boolean isLexerNonterminal;
+
+  private List<RuleComponentSymbol> supProds = Collections.EMPTY_LIST;
 
   /**
    * E.g. usageName:QualifiedName
@@ -169,11 +173,11 @@ public class RuleComponentSymbol extends RuleComponentSymbolTOP  {
 
   public void addSubProdComponent(RuleComponentSymbol prodComp) {
     errorIfNull(prodComp);
-    getSpannedScope().add(prodComp);
+    supProds.add(prodComp);
   }
 
   public Collection<RuleComponentSymbol> getSubProdComponents() {
-    return getSpannedScope().getLocalRuleComponentSymbols();
+    return supProds;
   }
 
 }

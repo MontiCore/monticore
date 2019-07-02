@@ -19,7 +19,7 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar node) {
-    Optional<MCGrammarSymbol> symbol = MCGrammarSymbolTableHelper.getGrammarSymbol(node);
+    Optional<MCGrammarSymbol> symbol = node.getMCGrammarSymbolOpt();
     for (ProdSymbol prodSymbol : symbol.get().getProds()) {
       //check when you extend a class not conservative directly (Subclass extends Superclass = ...)
       if (prodSymbol.isClass() && !prodSymbol.getSuperProds().isEmpty() && !MCGrammarSymbolTableHelper.getAllSuperProds(prodSymbol).isEmpty()) {

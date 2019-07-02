@@ -31,7 +31,7 @@ public class OverridingClassProdTranslation implements
       
       Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper
           .resolveRuleInSupersOnly(
-              rootLink.source(),
+              link.source(),
               link.source().getName());
       if (ruleSymbol.isPresent() && !ruleSymbol.get().isExternal()) {
         String qualifiedASTNodeName = TransformationHelper.getPackageName(ruleSymbol.get()) + "AST"

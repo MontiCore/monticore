@@ -26,7 +26,7 @@ public class NoTokenDefined implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar node) {
-    Optional<MCGrammarSymbol> symbol = MCGrammarSymbolTableHelper.getGrammarSymbol(node);
+    Optional<MCGrammarSymbol> symbol = node.getMCGrammarSymbolOpt();
     if (symbol.isPresent() && !symbol.get().isComponent()) {
       List<ASTMCGrammar> superGrammars = symbol.get().getAllSuperGrammars().stream()
           .filter(x -> x.getAstNode().isPresent())

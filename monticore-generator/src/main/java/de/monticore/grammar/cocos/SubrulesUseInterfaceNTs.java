@@ -26,7 +26,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar a) {
-    Optional<MCGrammarSymbol> symbol = MCGrammarSymbolTableHelper.getGrammarSymbol(a);
+    Optional<MCGrammarSymbol> symbol = a.getMCGrammarSymbolOpt();
     if (!symbol.isPresent()) {
       Log.error(
           "0xA5001 The CoCo 'SubrulesUseInterfaceNTs' can't be checked: There is no grammar symbol for the grammar "

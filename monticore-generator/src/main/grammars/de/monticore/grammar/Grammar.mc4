@@ -297,7 +297,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
 
   /** RuleComponents are parts of the alternatives
   */
-  interface symbol scope RuleComponent;
+  interface symbol RuleComponent;
 
   /** A NonTerminalSeparator is a shortcut for the description of list structures
   @attribute variableName Name for a variable binding (Note: Only one attribute of
@@ -308,7 +308,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
   @attribute plusKeywords True indicates that all keywords are allowed as well
   @attribute iteration Iteration of nonterminal
   */
-  symbol (RuleComponent) scope NonTerminalSeparator implements RuleComponent =
+  symbol (RuleComponent) NonTerminalSeparator implements RuleComponent =
     (usageName:Name&  ":")?
     "(" Name (plusKeywords:["&"])? "||" separator:String ")" iteration:["*"|"+"];
 
@@ -319,7 +319,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
   @attribute Alts List of alternatives
   @attribute Iteration Iteration of this block
   */
-  symbol (RuleComponent) scope Block  implements RuleComponent =
+  symbol (RuleComponent) Block  implements RuleComponent =
     "("
     (
       (
@@ -355,7 +355,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
   @attribute plusKeywords True indicates that all keywords are allowed as well
   @attribute iteration Iteration of nonterminal
   */
-  symbol (RuleComponent)  scope NonTerminal implements RuleComponent =
+  symbol (RuleComponent) NonTerminal implements RuleComponent =
     (usageName:Name&  ":")?
     Name ("@" referencedSymbol:Name)? (genSymbol:["!!"] symbolName:Name?)?
     (plusKeywords:["&"] | iteration:["?"|"*"|"+"] )*;
@@ -367,7 +367,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
       Name;
 
   /** A Terminal is usually something like "," or "start" */
-  symbol (RuleComponent) scope Terminal implements RuleComponent, ITerminal =
+  symbol (RuleComponent) Terminal implements RuleComponent, ITerminal =
     (usageName:Name&  ":")?
     name:String
     (iteration:["?"|"*"|"+"])*;
@@ -379,18 +379,18 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
 
   /** constants are sth like keywords which one needs to know that they where there,
   e.g. public. In the ast-class they are reflected as int oder boolean isMethods  */
-  symbol (RuleComponent) scope ConstantGroup implements RuleComponent =
+  symbol (RuleComponent) ConstantGroup implements RuleComponent =
      (usageName:Name&  ":")?
      "[" Constant ("|" Constant )* "]"
      (iteration:["?"|"*"|"+"])? ;
 
 
   /** End of file as EOF keyword */
-  symbol (RuleComponent) scope Eof implements RuleComponent =
+  symbol (RuleComponent) Eof implements RuleComponent =
     "EOF";
 
   /** Handed on as antlr action or predicate, realised by external JavaDSLParser */
-  symbol (RuleComponent) scope SemanticpredicateOrAction implements RuleComponent=
+  symbol (RuleComponent) SemanticpredicateOrAction implements RuleComponent=
      "{" ExpressionPredicate "}" Predicate:["?"]
      |
       "{" Action "}"
@@ -512,7 +512,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
      "{" ExpressionPredicate "}" Predicate:["?"]
      ;
 
-  LexNonTerminal implements LexComponent =
+  symbol (RuleComponent) LexNonTerminal implements LexComponent, RuleComponent =
     Name ;
 
   LexSimpleIteration implements LexComponent =

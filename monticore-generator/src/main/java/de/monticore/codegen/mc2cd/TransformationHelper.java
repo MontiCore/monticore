@@ -18,10 +18,8 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
@@ -248,8 +246,7 @@ public final class TransformationHelper {
 
   public static Set<String> getAllGrammarConstants(ASTMCGrammar grammar) {
     Set<String> constants = new HashSet<>();
-    MCGrammarSymbol grammarSymbol = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(grammar).get();
+    MCGrammarSymbol grammarSymbol = grammar.getMCGrammarSymbol();
     Preconditions.checkState(grammarSymbol != null);
     for (RuleComponentSymbol component : grammarSymbol.getProds().stream()
         .flatMap(p -> p.getProdComponents().stream()).collect(Collectors.toSet())) {
@@ -365,7 +362,7 @@ public final class TransformationHelper {
     return qualifiedRuleName;
   }
 
-  public static Optional<ProdSymbol> resolveAstRuleType(ASTNode node, ASTMCType type) {
+  public static Optional<ProdSymbol> resolveAstRuleType(ASTMCGrammar node, ASTMCType type) {
     if (!type.getNameList().isEmpty()) {
       String simpleName = type.getNameList().get(type.getNameList().size() - 1);
       if (!simpleName.startsWith(AST_PREFIX)) {
@@ -399,7 +396,7 @@ public final class TransformationHelper {
     return getGrammarName(rule) + ".";
   }
 
-  public static boolean checkIfExternal(ASTNode node, ASTMCType type) {
+  public static boolean checkIfExternal(ASTMCGrammar node, ASTMCType type) {
     return !resolveAstRuleType(node, type).isPresent();
   }
 

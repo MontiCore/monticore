@@ -25,7 +25,7 @@ public class KeywordInvalidName implements GrammarASTConstantGroupCoCo {
       for (ASTConstant c : a.getConstantList()) {
         if (!HelperGrammar.hasValidName(c)) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
-              c.getEnclosingScope().getEnclosingScope().get().getSpanningSymbol().get()
+              c.getEnclosingScope2().getEnclosingScope().get().getSpanningSymbol().get()
                   .getName(),
               c.getName()),
               a.get_SourcePositionStart());

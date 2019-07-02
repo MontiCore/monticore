@@ -19,17 +19,16 @@ public class NoNTInheritanceCycle implements GrammarASTProdCoCo {
   
   public static final String ERROR_MSG_FORMAT = " The production %s introduces an inheritance"
       + " cycle. Inheritance may not be cyclic.";
-  
+
   @Override
   public void check(ASTProd a) {
-    if (a.getSymbol() instanceof ProdSymbol) {
-      ProdSymbol symbol = (ProdSymbol) a.getSymbol();
-      for (ProdSymbol sr : MCGrammarSymbolTableHelper.getAllSuperProds(symbol)) {
-        if (sr.getFullName().equals(symbol.getFullName())) {
-          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, symbol.getFullName()),
-              a.get_SourcePositionStart());
-        }
+    ProdSymbol symbol =  a.getProdSymbol();
+    for (ProdSymbol sr : MCGrammarSymbolTableHelper.getAllSuperProds(symbol)) {
+      if (sr.getFullName().equals(symbol.getFullName())) {
+        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, symbol.getFullName()),
+                a.get_SourcePositionStart());
       }
     }
   }
+
 }

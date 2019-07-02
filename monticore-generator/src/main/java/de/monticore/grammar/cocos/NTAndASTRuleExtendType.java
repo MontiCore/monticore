@@ -23,7 +23,7 @@ public class NTAndASTRuleExtendType implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
+    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
     for (ASTASTRule rule : a.getASTRuleList()) {
       if (!rule.getASTSuperClassList().isEmpty()) {
         Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(rule.getType());

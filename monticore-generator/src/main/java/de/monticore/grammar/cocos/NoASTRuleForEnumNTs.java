@@ -24,7 +24,7 @@ public class NoASTRuleForEnumNTs implements GrammarASTMCGrammarCoCo {
   
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
+    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
     for (ASTASTRule rule : a.getASTRuleList()) {
       Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(rule.getType());
       if (ruleSymbol.isPresent() && ruleSymbol.get().isEnum()) {

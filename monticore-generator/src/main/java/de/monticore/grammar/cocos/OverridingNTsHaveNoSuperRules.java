@@ -2,15 +2,15 @@
 
 package de.monticore.grammar.cocos;
 
-import java.util.List;
-import java.util.Optional;
-
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTClassProdCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Checks that overriding nonterminals do not have super rules or
@@ -29,7 +29,7 @@ public class OverridingNTsHaveNoSuperRules implements GrammarASTClassProdCoCo {
   @Override
   public void check(ASTClassProd a) {
     Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(a);
+        .getMCGrammarSymbol(a.getEnclosingScope2());
     List<MCGrammarSymbol> grammarSymbols = grammarSymbol.get().getSuperGrammarSymbols();
     
     if (!a.getSuperRuleList().isEmpty() || !a.getASTSuperClassList().isEmpty()) {

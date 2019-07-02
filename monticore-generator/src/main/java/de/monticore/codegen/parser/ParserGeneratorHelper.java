@@ -11,14 +11,14 @@ import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolReference;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolReference;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.javastatements._ast.ASTBlockStatement;
 import de.monticore.javastatements._ast.ASTClassMemberDeclaration;
 import de.monticore.prettyprint.IndentPrinter;
@@ -401,39 +401,12 @@ public class ParserGeneratorHelper {
             .toLowerCase());
   }
 
-  /**
-   * Returns Human-Readable, antlr conformed name for a rulename
-   *
-   * @param rule rule name
-   * @return Human-Readable, antlr conformed rule name
-   */
-  public static String getRuleNameForAntlr(ASTClassProd rule) {
-    return getRuleNameForAntlr(getRuleName(rule));
-  }
 
   public String getTmpVarNameForAntlrCode(ASTNonTerminal node) {
     Optional<ProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
     if (!prod.isPresent()) {
       Log.error("0xA1006 ASTNonterminal " + node.getName() + "(usageName: " + node.getUsageName()
               + ") can't be resolved.");
-      return "";
-    }
-    return getTmpVarName(node);
-  }
-
-  public String getTmpVarNameForAntlrCode(ASTLexNonTerminal node) {
-    Optional<ProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
-    if (!prod.isPresent()) {
-      Log.error("0xA1007 ASTNonterminal " + node.getName() + " can't be resolved.");
-      return "";
-    }
-    return getTmpVarName(node);
-  }
-
-  public String getTmpVarNameForAntlrCode(String name, ASTNode node) {
-    Optional<ProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
-    if (!prod.isPresent()) {
-      Log.error("0xA1008 ASTNonterminal " + name + " can't be resolved.");
       return "";
     }
     return getTmpVarName(node);

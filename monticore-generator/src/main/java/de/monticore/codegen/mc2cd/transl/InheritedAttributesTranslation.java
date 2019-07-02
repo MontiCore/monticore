@@ -2,7 +2,6 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
@@ -12,8 +11,8 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.utils.Link;
@@ -63,11 +62,11 @@ public class InheritedAttributesTranslation implements
     }
   }
 
-  private ASTCDAttribute createCDAttribute(ASTNode inheritingNode, ASTNode definingNode) {
+  private ASTCDAttribute createCDAttribute(ASTProd inheritingNode, ASTProd definingNode) {
     List<ASTInterfaceProd> interfacesWithoutImplementation = getAllInterfacesWithoutImplementation(
         inheritingNode);
     
-    String superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(definingNode)
+    String superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(definingNode.getEnclosingScope2())
         .map(MCGrammarSymbol::getFullName)
         .orElse("");
     
@@ -81,7 +80,7 @@ public class InheritedAttributesTranslation implements
 
   
   private Map<ASTProd, Collection<AdditionalAttributeSymbol>> getInheritedAttributeInASTs(
-      ASTNode astNode) {
+      ASTProd astNode) {
     return GeneratorHelper.getAllSuperProds(astNode).stream()
         .distinct()
         .collect(Collectors.toMap(Function.identity(), astProd -> astProd.getSymbolOpt()
@@ -102,7 +101,7 @@ public class InheritedAttributesTranslation implements
    * class higher up in the type hierarchy. (the list includes interfaces
    * extended transitively by other interfaces)
    */
-  private List<ASTInterfaceProd> getAllInterfacesWithoutImplementation(ASTNode astNode) {
+  private List<ASTInterfaceProd> getAllInterfacesWithoutImplementation(ASTProd astNode) {
     List<ASTInterfaceProd> directInterfaces = GeneratorHelper.getDirectSuperProds(astNode).stream()
         .filter(ASTInterfaceProd.class::isInstance)
         .map(ASTInterfaceProd.class::cast)

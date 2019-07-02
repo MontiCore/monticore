@@ -26,7 +26,7 @@ public class UsedLexNTNotDefined implements GrammarASTLexNonTerminalCoCo {
   @Override
   public void check(ASTLexNonTerminal a) {
     Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(a);
+        .getMCGrammarSymbol(a.getEnclosingScope2());
     
     Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.getEnclosingRule(a);
     String ruleName = ruleSymbol.isPresent() ? ruleSymbol.get().getName() : "";

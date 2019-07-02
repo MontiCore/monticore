@@ -26,7 +26,7 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
   
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
+    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
 
     if (!a.isComponent()) {
 //      for (ASTProd p : a.getExternalProdList()) {

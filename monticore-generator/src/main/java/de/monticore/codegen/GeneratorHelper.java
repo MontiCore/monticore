@@ -1740,7 +1740,7 @@ return null;
    * @return the super productions defined in all super grammars (including
    * transitive super grammars)
    */
-  public static List<ASTProd> getAllSuperProds(ASTNode astNode) {
+  public static List<ASTProd> getAllSuperProds(ASTProd astNode) {
     List<ASTProd> directSuperRules = getDirectSuperProds(astNode);
     List<ASTProd> allSuperRules = new ArrayList<>();
     for (ASTProd superRule : directSuperRules) {
@@ -1753,7 +1753,7 @@ return null;
   /**
    * @return the super productions defined in direct super grammars
    */
-  public static List<ASTProd> getDirectSuperProds(ASTNode astNode) {
+  public static List<ASTProd> getDirectSuperProds(ASTProd astNode) {
     if (astNode instanceof ASTClassProd) {
       List<ASTProd> directSuperProds = resolveRuleReferences(
           ((ASTClassProd) astNode).getSuperRuleList(), astNode);
@@ -1770,11 +1770,10 @@ return null;
    * @return the production definitions of B & C in "A extends B, C"
    */
   public static List<ASTProd> resolveRuleReferences(List<ASTRuleReference> ruleReferences,
-                                                    ASTNode nodeWithSymbol) {
+                                                    ASTProd nodeWithSymbol) {
     List<ASTProd> superRuleNodes = new ArrayList<>();
     for (ASTRuleReference superRule : ruleReferences) {
-      Optional<ProdSymbol> symbol = MCGrammarSymbolTableHelper.resolveRule(nodeWithSymbol,
-          superRule.getName());
+      Optional<ProdSymbol> symbol = nodeWithSymbol.getEnclosingScope2().resolveProd(superRule.getName());
       if (symbol.isPresent() && symbol.get().getAstNode().isPresent()) {
         superRuleNodes.add((ASTProd) symbol.get().getAstNode().get());
       }
