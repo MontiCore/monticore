@@ -10,6 +10,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,6 +28,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
+    Log.enableFailQuick(false);
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "data", "Data");
     ASTCDClass clazz = getClassBy("A", cd);
     this.glex.setGlobalValue("service", new AbstractService(cd));

@@ -127,8 +127,6 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   @Override
   public void initialize_EnumProd(ProdSymbol prodSymbol, ASTEnumProd ast) {
     prodSymbol.setEnum(true);
-
-    addToScopeAndLinkWithNode(prodSymbol, ast);
   }
 
   @Override
@@ -168,36 +166,31 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
               getCurrentScope().orElse(null));
       prodComponent.setReferencedProd(symRef);
 
-      if (currentSymbol instanceof ProdSymbol) {
-        ProdSymbol surroundingProd = (ProdSymbol) currentSymbol;
 
-        RuleComponentSymbol prevProdComp = surroundingProd
-                .getProdComponent(prodComponent.getName()).orElse(null);
+      RuleComponentSymbol prevProdComp = currentSymbol
+              .getProdComponent(prodComponent.getName()).orElse(null);
 
-        Optional<ProdSymbol> byReference = resolveRule(astGrammar, ast.getName());
-        if (!byReference.isPresent() || !byReference.get().isLexerProd()) {
+      Optional<ProdSymbol> byReference = resolveRule(astGrammar, ast.getName());
+      if (!byReference.isPresent() || !byReference.get().isLexerProd()) {
 
-          if (prevProdComp != null && prevProdComp.getReferencedProd().isPresent()) {
-            boolean sameType = prevProdComp.getReferencedProd().get().getName()
-                    .equals(ast.getName());
-            if (!sameType) {
-              boolean subType = isSubType(prevProdComp.getReferencedProd().get(),
-                      symRef)
-                      || isSubType(symRef, prevProdComp.getReferencedProd().get());
-              if (!subType) {
-                error("0xA4077 The production " + surroundingProd.getName()
-                        + " must not use the attribute name " + symbolName +
-                        " for different nonterminals.");
-              }
+        if (prevProdComp != null && prevProdComp.getReferencedProd().isPresent()) {
+          boolean sameType = prevProdComp.getReferencedProd().get().getName()
+                  .equals(ast.getName());
+          if (!sameType) {
+            boolean subType = isSubType(prevProdComp.getReferencedProd().get(),
+                    symRef)
+                    || isSubType(symRef, prevProdComp.getReferencedProd().get());
+            if (!subType) {
+              error("0xA4077 The production " + currentSymbol.getName()
+                      + " must not use the attribute name " + symbolName +
+                      " for different nonterminals.");
             }
           }
         }
-        prodComponent = surroundingProd.addProdComponent(prodComponent);
-      } else {
-        addToScope(prodComponent);
       }
+      prodComponent = currentSymbol.addProdComponent(prodComponent);
+      setLinkBetweenSymbolAndNode(prodComponent, ast);
 
-      addToScopeAndLinkWithNode(prodComponent, ast);
       prodComponent.setNonterminal(true);
       prodComponent.setReferencedSymbolName(ast.getReferencedSymbolOpt().orElse(""));
     }

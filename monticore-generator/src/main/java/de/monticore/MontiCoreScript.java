@@ -279,7 +279,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTMCGrammar result = ast;
 
     if (grammarSymbol.isPresent()) {
-      result = (ASTMCGrammar) grammarSymbol.get().getAstNode().get();
+      result = grammarSymbol.get().getAstNode().get();
     } else {
       Grammar_WithConceptsLanguage language = new Grammar_WithConceptsLanguage();
 
@@ -288,7 +288,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       globalScope.cache(qualifiedGrammarName);
     }
 
-    MCGrammarSymbol symbol = (MCGrammarSymbol) result.getSymbol();
+    MCGrammarSymbol symbol =  result.getSymbol2();
     for (MCGrammarSymbol it : MCGrammarSymbolTableHelper.getAllSuperGrammars(symbol)) {
       if (!it.getFullName().equals(symbol.getFullName())) {
         Reporting.reportOpenInputFile(Optional.empty(),

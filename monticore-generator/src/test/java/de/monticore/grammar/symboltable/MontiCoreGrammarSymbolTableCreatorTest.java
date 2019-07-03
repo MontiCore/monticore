@@ -203,9 +203,9 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
   
   private void testLinkBetweenSymbolAndAst(RuleComponentSymbol prodCompSymbol) {
     assertTrue(prodCompSymbol.getAstNode().isPresent());
-    assertSame(prodCompSymbol, prodCompSymbol.getAstNode().get().getSymbol());
+    assertSame(prodCompSymbol, prodCompSymbol.getAstNode().get().getSymbol2());
     assertSame(prodCompSymbol.getEnclosingScope(),
-        prodCompSymbol.getAstNode().get().getEnclosingScope());
+        prodCompSymbol.getAstNode().get().getEnclosingScope2());
   }
   
   @Test

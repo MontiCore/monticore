@@ -24,7 +24,7 @@ public class AbstractService<T extends AbstractService> {
 
 
   public AbstractService(final ASTCDCompilationUnit compilationUnit) {
-    this((CDDefinitionSymbol) compilationUnit.getCDDefinition().getSymbol());
+    this(compilationUnit.getCDDefinition().getCDDefinitionSymbol());
   }
 
   public AbstractService(final CDDefinitionSymbol cdSymbol) {

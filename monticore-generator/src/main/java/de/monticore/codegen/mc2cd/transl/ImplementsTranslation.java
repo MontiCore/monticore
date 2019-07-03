@@ -47,7 +47,7 @@ public class ImplementsTranslation implements
   
   private void translateClassProd(ASTClassProd classProd,
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
-    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol();
+    MCGrammarSymbol grammarSymbol = astGrammar.getMCGrammarSymbol();
     // translates "implements"
     for (ASTRuleReference ruleReference : classProd.getSuperInterfaceRuleList()) {
       Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
@@ -77,7 +77,7 @@ public class ImplementsTranslation implements
     // translates "implements"
     for (ASTRuleReference ruleReference : abstractProd
         .getSuperInterfaceRuleList()) {
-      MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol();
+      MCGrammarSymbol grammarSymbol = astGrammar.getMCGrammarSymbol();
       Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
       if (!ruleSymbol.isPresent()) {
         Log.error("0xA0138 The rule '" + ruleReference.getName() + "' does not exist!");
