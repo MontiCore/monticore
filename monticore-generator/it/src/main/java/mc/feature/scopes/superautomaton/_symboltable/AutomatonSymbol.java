@@ -5,10 +5,10 @@
  */
 package mc.feature.scopes.superautomaton._symboltable;
 
+import de.monticore.symboltable.ISymbol;
+
 import java.util.Collection;
 import java.util.Optional;
-
-import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
 
 public class AutomatonSymbol extends AutomatonSymbolTOP {
 
@@ -16,18 +16,11 @@ public class AutomatonSymbol extends AutomatonSymbolTOP {
     super(name);
   }
 
-  @Override
-  protected SuperAutomatonScope createSpannedScope() {
-    SuperAutomatonScope a = new SuperAutomatonScope();
-    a.setExportsSymbols(true);
-    return a;
-  }
-
   public Optional<StateSymbol> getState(final String name) {
-    return getSpannedScope().resolveLocally(name, StateSymbol.KIND);
+    return getSpannedScope().resolveStateLocally(name);
   }
 
   public Collection<StateSymbol> getStates() {
-    return sortSymbolsByPosition(getSpannedScope().resolveLocally(StateSymbol.KIND));
+    return ISymbol.sortSymbolsByPosition(getSpannedScope().getStateSymbols().values());
   }
 }

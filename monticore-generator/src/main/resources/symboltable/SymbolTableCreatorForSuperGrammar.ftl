@@ -31,7 +31,9 @@ public class ${className} extends ${superGrammarName}SymbolTableCreator {
     super(scopeStack);
   }
 
-  public ${scopeName} createScope() {
-    return  ${grammarName}SymTabMill.${grammarName?uncap_first+"Scope"}Builder().build();
+  public ${scopeName} createScope(boolean shadowing) {
+    ${scopeName} scope = ${grammarName}SymTabMill.${grammarName?uncap_first+"Scope"}Builder().build();
+    scope.setShadowing(shadowing);
+    return scope;
   }
 }

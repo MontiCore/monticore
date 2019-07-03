@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className","interfaceName", "languageName", "symbolNames")}
+${signature("className","interfaceName", "baseName", "languageName", "symbolNames")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 
@@ -70,7 +70,7 @@ public interface ${className} extends ${interfaceName} {
 
     for (String calculatedModelName : calculatedModelNames) {
       if (continueWithModelLoader(calculatedModelName, modelLoader)) {
-        modelLoader.loadModelsIntoScope(calculatedModelName, getModelPath(), this);
+        modelLoader.loadModelsIntoScope(calculatedModelName, getModelPath(), getRealThis());
         cache(calculatedModelNames.iterator().next());
       } else {
         Log.debug("Already tried to load model for '" + symbolName + "'. If model exists, continue with cached version.", ${languageName}GlobalScope.class.getSimpleName());
@@ -80,8 +80,13 @@ public interface ${className} extends ${interfaceName} {
     }
   }
 </#list>
-
-
+<#if className?ends_with("TOP")>
+  ${baseName} getRealThis();
+<#else>
+  default ${baseName} getRealThis() {
+    return this;
+  }
+</#if>
 
 
 

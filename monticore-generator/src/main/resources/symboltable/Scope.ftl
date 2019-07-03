@@ -100,6 +100,11 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
     this.exportsSymbols = b;
   }
 
+  @Override
+  public void setShadowing(boolean b) {
+    this.shadowing = b;
+  }
+
    public Optional<IScopeSpanningSymbol> getSpanningSymbol() {
     return this.spanningSymbol;
   }

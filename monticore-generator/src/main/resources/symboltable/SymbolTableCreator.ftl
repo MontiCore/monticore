@@ -109,8 +109,10 @@ public class ${className} implements ${grammarName}Visitor {
     this.scopeStack = scopeStack;
   }
 
-  public ${scopeName} createScope() {
-    return  ${grammarName}SymTabMill.${grammarName?uncap_first+"Scope"}Builder().build();
+  public ${scopeName} createScope(boolean shadowing) {
+    ${scopeName} scope = ${grammarName}SymTabMill.${grammarName?uncap_first+"Scope"}Builder().build();
+    scope.setShadowing(shadowing);
+    return scope;
   }
 
 <#list symbolDefiningRules as ruleSymbol>
@@ -146,7 +148,7 @@ public class ${className} implements ${grammarName}Visitor {
     addToScope(symbol);
     setLinkBetweenSymbolAndNode(symbol, astNode);
 <#if isScopeSpanning>
-  ${scopeName} scope = createScope();
+  ${scopeName} scope = createScope(false);
     putOnStack(scope);
     symbol.setSpannedScope(scope);
 </#if>
@@ -190,7 +192,41 @@ public class ${className} implements ${grammarName}Visitor {
       Log.error("Could not set enclosing scope of ASTNode \"" + node
           + "\", because no scope is set yet!");
     }
+    <#if ruleSymbol.isScopeDefinition()>
+        ${scopeName} scope = create_${ruleSymbol.getName()}(node);
+      initialize_${ruleSymbol.getName()}(scope, node);
+      putOnStack(scope);
+      setLinkBetweenSpannedScopeAndNode(scope, node);
+    </#if>
   }
+
+  <#if ruleSymbol.isScopeDefinition()>
+    protected ${scopeName} create_${ruleSymbol.getName()}(AST${ruleSymbol.getName()} ast) {
+      <#if !genHelper.isNamed(ruleSymbol)>
+        // creates new visibility scope
+        return createScope(false);
+      <#else>
+        // creates new shadowing scope
+        return createScope(true);
+      </#if>
+    }
+
+    protected void initialize_${ruleSymbol.getName()}(${scopeName} scope, AST${ruleSymbol.getName()} ast) {
+      <#if !genHelper.isNamed(ruleSymbol)>
+        // e.g., scope.setName(ast.getName())
+      <#else>
+        scope.setName(ast.getName());
+      </#if>
+    }
+
+    public void setLinkBetweenSpannedScopeAndNode(${scopeName} scope, AST${ruleSymbol.getName()} astNode) {
+      // scope -> ast
+      scope.setAstNode(astNode);
+
+      // ast -> scope
+      astNode.setSpannedScope2((${grammarName}Scope) scope);
+    }
+  </#if>
 </#list>
 
 <#list kinds as kind>

@@ -2,15 +2,14 @@
 
 package mc.feature.grammarinherit;
 
-import static org.junit.Assert.assertEquals;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.grammarinherit.sub.subfeaturedslgrammarinherit._parser.SubFeatureDSLgrammarinheritParser;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.junit.Test;
-
-import mc.GeneratorIntegrationsTest;
-import mc.feature.grammarinherit.sub.featuredslgrammarinherit._parser.FeatureDSLgrammarinheritParser;
+import static org.junit.Assert.assertEquals;
 
 public class TestGrammarInherit extends GeneratorIntegrationsTest {
   
@@ -19,7 +18,7 @@ public class TestGrammarInherit extends GeneratorIntegrationsTest {
     
     StringReader s = new StringReader("automaton ad {\n state all;\n state bss;\n ass -> bss; }");
     
-    FeatureDSLgrammarinheritParser p = new FeatureDSLgrammarinheritParser();
+    SubFeatureDSLgrammarinheritParser p = new SubFeatureDSLgrammarinheritParser();
     p.parseFile(s);
     
     assertEquals(false, p.hasErrors());
