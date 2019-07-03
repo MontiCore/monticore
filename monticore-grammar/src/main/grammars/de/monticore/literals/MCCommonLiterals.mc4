@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore;
+package de.monticore.literals;
 
 /**
  * This grammar defines Java compliant literals. The scope of this grammar is to
@@ -8,7 +8,7 @@ package de.monticore;
  * The grammar contains literals from Java, e.g., Boolean, Char, String, ....
 */
 
-component grammar MCCommonLiterals extends de.monticore.MCLiteralsBasis {
+component grammar MCCommonLiterals extends de.monticore.literals.MCLiteralsBasis {
 
 
 

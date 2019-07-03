@@ -3,7 +3,7 @@ package de.monticore.grammar;
 
 /** The grammar describes the MontiCore grammar in its own format
 */
-component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.types.MCSimpleGenericTypes {
+component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.monticore.types.MCSimpleGenericTypes {
 
   /** Used for embedding actions */
   external Action;
