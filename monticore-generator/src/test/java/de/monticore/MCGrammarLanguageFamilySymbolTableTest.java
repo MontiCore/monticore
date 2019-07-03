@@ -2,22 +2,19 @@
 
 package de.monticore;
 
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.GlobalScope;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.util.Optional;
+
 import static de.monticore.grammar.symboltable.MCGrammarSymbol.KIND;
 import static de.se_rwth.commons.logging.Log.enableFailQuick;
 import static java.nio.file.Paths.get;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import java.nio.file.Paths;
-import java.util.Optional;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.se_rwth.commons.logging.Log;
 
 public class MCGrammarLanguageFamilySymbolTableTest {
 

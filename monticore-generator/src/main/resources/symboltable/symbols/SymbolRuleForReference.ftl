@@ -3,19 +3,7 @@
 ${tc.signature("ruleSymbol")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#list ruleSymbol.getAdditionalAttributeList() as attr>
-  <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
-  <#if attr.isPresentCard()>
-    <#if attr.getCard().isPresentMax()>
-      <#if attr.getCard().getMax() == "*">
-        <#assign attrType = "java.util.List<" + attrType + ">">
-      <#elseif attr.getCard().isPresentMin() && attr.getCard().getMin() == "0">
-        <#assign attrType = "Optional<" + attrType + ">">
-      </#if>
-    <#elseif attr.getCard().isPresentMin() && attr.getCard().getMin() == "0">
-      <#assign attrType = "Optional<" + attrType + ">">
-    </#if>
-  </#if>
-
+  <#assign attrType=genHelper.deriveAdditionalAttributeTypeWithMult(attr)>
   <#if attrType == "boolean" || attrType == "Boolean">
     <#if attr.getName()?starts_with("is")>
       <#assign methodName=attr.getName()>

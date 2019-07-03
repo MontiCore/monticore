@@ -2,12 +2,11 @@
 
 package de.monticore.codegen;
 
-import java.util.List;
-
 import com.google.common.collect.Lists;
-
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.codegen.cd2java.ast.AstGeneratorTest;
+
+import java.util.List;
 
 /**
  * The super class for all test classes that generate and compile code which

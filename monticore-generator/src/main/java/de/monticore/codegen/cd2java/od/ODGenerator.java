@@ -2,10 +2,6 @@
 
 package de.monticore.codegen.cd2java.od;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
@@ -16,6 +12,10 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 public class ODGenerator {

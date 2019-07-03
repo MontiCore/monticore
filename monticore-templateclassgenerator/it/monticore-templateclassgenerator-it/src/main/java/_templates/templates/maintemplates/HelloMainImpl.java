@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package _templates.templates.maintemplates;
 
-import java.nio.file.Path;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.CommonSymbol;
+
+import java.nio.file.Path;
 
 public class HelloMainImpl extends HelloMain{
 

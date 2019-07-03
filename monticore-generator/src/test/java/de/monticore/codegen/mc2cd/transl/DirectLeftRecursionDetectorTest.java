@@ -2,20 +2,19 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static org.junit.Assert.assertTrue;
+import de.monticore.grammar.DirectLeftRecursionDetector;
+import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import org.junit.Before;
+import org.junit.Test;
+import parser.MCGrammarParser;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import de.monticore.grammar.DirectLeftRecursionDetector;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import parser.MCGrammarParser;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the helper class on a concrete grammar containing left recursive and normal rules.

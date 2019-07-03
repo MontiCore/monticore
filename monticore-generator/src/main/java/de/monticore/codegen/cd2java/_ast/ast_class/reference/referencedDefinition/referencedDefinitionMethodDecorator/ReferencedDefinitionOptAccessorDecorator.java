@@ -11,6 +11,10 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
@@ -25,11 +29,14 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
   }
 
   @Override
-  public String getNaiveAttributeName(ASTCDAttribute astcdAttribute) {
-    //add Definition to Method names
-    return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(astcdAttribute.getName())) + ASTReferencedDefinitionDecorator.DEFINITION;
+  public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
+    //todo find better util than the DecorationHelper
+    naiveAttributeName = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()))+ ASTReferencedDefinitionDecorator.DEFINITION;
+    ASTCDMethod get = createGetMethod(ast);
+    ASTCDMethod getOpt = createGetOptMethod(ast);
+    ASTCDMethod isPresent = createIsPresentMethod();
+    return new ArrayList<>(Arrays.asList(get, getOpt, isPresent));
   }
-
   @Override
   protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
     String name = String.format(GET_OPT, StringUtils.capitalize(naiveAttributeName));

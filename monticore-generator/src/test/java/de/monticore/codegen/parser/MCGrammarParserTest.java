@@ -2,26 +2,18 @@
 
 package de.monticore.codegen.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
+import de.monticore.grammar.transformation.GrammarTransformer;
+import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import de.monticore.grammar.grammar._ast.ASTASTRule;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
-import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
-import de.monticore.grammar.transformation.GrammarTransformer;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import static org.junit.Assert.*;
 
 public class MCGrammarParserTest {
   

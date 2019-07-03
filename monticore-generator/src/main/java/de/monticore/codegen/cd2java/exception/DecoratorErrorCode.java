@@ -4,7 +4,8 @@ public enum DecoratorErrorCode {
   CD_SYMBOL_NOT_FOUND(10, "Could not resolve CD symbol '%s'"),
   AST_FOR_CD_TYPE_SYMBOL_NOT_FOUND(11, "Could find ASTCDClass for CDTypeSymbol '%s'"),
   AST_FOR_CD_FIELD_SYMBOL_NOT_FOUND(12, "Could find ASTCDAttribute for CDFieldSymbol '%s'"),
-  CD_TYPE_NOT_FOUND(13, "Could find CDTypeSymbol '%s'")
+  CD_TYPE_NOT_FOUND(13, "Could find CDTypeSymbol '%s'"),
+  EXPECTED_LIST_TYPE(14, "List type was expected for Type: '%s'")
   ;
 
   final int code;

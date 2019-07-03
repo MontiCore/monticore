@@ -2,8 +2,6 @@
 
 package de.monticore;
 
-import java.nio.file.Paths;
-
 import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;

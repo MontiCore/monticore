@@ -2,7 +2,10 @@ package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.types.types._ast.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class CDTypeBuilder {
 

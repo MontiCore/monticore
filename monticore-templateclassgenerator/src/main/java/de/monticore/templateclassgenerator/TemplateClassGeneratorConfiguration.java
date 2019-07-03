@@ -1,6 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.templateclassgenerator;
 
+import de.monticore.templateclassgenerator.codegen.TemplateClassGeneratorConstants;
+import de.se_rwth.commons.cli.CLIArguments;
+import de.se_rwth.commons.configuration.Configuration;
+import de.se_rwth.commons.configuration.ConfigurationContributorChainBuilder;
+import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
+import de.se_rwth.commons.configuration.DelegatingConfigurationContributor;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -8,13 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import de.monticore.templateclassgenerator.codegen.TemplateClassGeneratorConstants;
-import de.se_rwth.commons.cli.CLIArguments;
-import de.se_rwth.commons.configuration.Configuration;
-import de.se_rwth.commons.configuration.ConfigurationContributorChainBuilder;
-import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
-import de.se_rwth.commons.configuration.DelegatingConfigurationContributor;
 
 /**
  * Configuration of TemplateClass Generator.

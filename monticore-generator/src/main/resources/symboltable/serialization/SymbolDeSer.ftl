@@ -78,7 +78,7 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
   
 <#if symbolRule.isPresent()>
 <#list symbolRule.get().getAdditionalAttributeList() as attr>
-  <#assign attrType=attr.getMCType().getBaseName()>
+  <#assign attrType=genHelper.deriveAdditionalAttributeTypeWithMult(attr)>
   protected ${genHelper.getQualifiedASTName(attrType)} deserialize${attr.getName()?cap_first}(JsonObject symbolJson) {
 <#switch attrType>
 <#case "String">

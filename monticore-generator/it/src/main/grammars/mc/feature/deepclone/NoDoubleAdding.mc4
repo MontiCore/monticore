@@ -1,0 +1,18 @@
+package mc.feature.deepclone;
+
+grammar NoDoubleAdding extends mc.grammar.types.ItTestTypes {
+
+  // tests fixed bug
+  // problem when one production extends another conservative
+  // the problem is only shown when the Super production already contains a List
+
+  SuperProd = "foo" Name+;
+
+  SupProd extends SuperProd = foo1:Name "foo" Name+;
+
+  // before the deepClone method of SupProd called 'super.deepClone()'
+  // and still added all Elements of the Name list to the cloned Element
+  // but because the super call already did that, the elements where than double in the list
+  // fix -> check if attribute is inherited before adding it to deepClone method
+
+}

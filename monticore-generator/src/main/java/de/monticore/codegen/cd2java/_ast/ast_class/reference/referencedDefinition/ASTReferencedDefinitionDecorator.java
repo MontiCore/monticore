@@ -15,7 +15,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class ASTReferencedDefinitionDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
