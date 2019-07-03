@@ -130,7 +130,7 @@ public class TypesCalculator {
     return isSubtypeOf(calc.getTypes().get(subType),calc.getTypes().get(superType));
   }
 
-  private static boolean isSubtypeOf(MCTypeSymbol subType, MCTypeSymbol superType){
+  public static boolean isSubtypeOf(MCTypeSymbol subType, MCTypeSymbol superType){
     if(!subType.getSupertypes().isEmpty()&&subType.getSupertypes().contains(superType)){
       return true;
     }
