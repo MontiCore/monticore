@@ -2,9 +2,9 @@
 
 package de.monticore.mcliterals;
 
-import de.monticore.mccommonliterals._ast.ASTSignedLiteral;
-import de.monticore.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.testmccommonliterals._parser.TestMCCommonLiteralsParser;
+import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
+import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import junit.framework.TestCase;
 
 import java.io.IOException;

@@ -1,7 +1,0 @@
-/* (c)  https://github.com/MontiCore/monticore */
-
-package de.monticore;
-
-grammar TestMCCommonLiterals extends de.monticore.MCCommonLiterals {
-
-}

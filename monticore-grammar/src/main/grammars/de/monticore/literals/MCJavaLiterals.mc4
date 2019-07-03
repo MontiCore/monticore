@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore;
+package de.monticore.literals;
 
 /**
  *
@@ -13,7 +13,7 @@ package de.monticore;
  *
 */
 
-component grammar MCJavaLiterals extends de.monticore.MCCommonLiterals {
+component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals {
 
 
 

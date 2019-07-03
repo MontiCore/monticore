@@ -8,7 +8,7 @@ import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
-import de.monticore.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
