@@ -3,7 +3,6 @@
 package mc.feature.symboltable;
 
 import de.monticore.symboltable.IScopeSpanningSymbol;
-import de.monticore.symboltable.ScopeSpanningSymbol;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.*;
 import org.junit.Test;
@@ -19,7 +18,7 @@ public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
   @Test
   public void test() {
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
-    assertFalse(automatonSymbol instanceof ScopeSpanningSymbol);
+    assertFalse(automatonSymbol instanceof IScopeSpanningSymbol);
     AutomatonSymbolReference automatonSymbolReference;
     AutomatonWithSTInfo3Language automatonWithSTInfo3Language;
     AutomatonWithSTInfo3ModelLoader automatonWithSTInfo3ModelLoader;

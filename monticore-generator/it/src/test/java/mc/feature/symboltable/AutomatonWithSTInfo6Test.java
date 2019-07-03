@@ -4,6 +4,7 @@ package mc.feature.symboltable;
 
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import mc.GeneratorIntegrationsTest;
+import mc.feature.symboltable.automatonwithstinfo6._ast.ASTBlock;
 import mc.feature.symboltable.automatonwithstinfo6._symboltable.*;
 import org.junit.Test;
 
@@ -52,11 +53,11 @@ public class AutomatonWithSTInfo6Test extends GeneratorIntegrationsTest {
         super(scopeStack);
       }
   
-//      @Override
-//      // Compiler fails if no method for scope 'Block' is generated
-//      protected Scope create_Block(ASTBlock ast) {
-//        return super.create_Block(ast);
-//      }
+      @Override
+      // Compiler fails if no method for scope 'Block' is generated
+      protected IAutomatonWithSTInfo6Scope create_Block(ASTBlock ast) {
+        return super.create_Block(ast);
+      }
     }
 
   }
