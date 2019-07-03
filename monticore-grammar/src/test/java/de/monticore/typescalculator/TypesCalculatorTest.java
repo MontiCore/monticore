@@ -288,18 +288,18 @@ public class TypesCalculatorTest {
     Optional<ASTExpression> e = p.parse_StringExpression("5");
 
     assertTrue(a.isPresent());
+    assertTrue(b.isPresent());
+    assertTrue(c.isPresent());
+    assertTrue(d.isPresent());
+    assertTrue(e.isPresent());
     assertTrue(isAssignableFrom(a.get(),b.get()));
 
-    assertTrue(b.isPresent());
     assertFalse(isAssignableFrom(b.get(),a.get()));
 
-    assertTrue(c.isPresent());
     assertTrue(isAssignableFrom(c.get(),d.get()));
 
-    assertTrue(d.isPresent());
     assertFalse(isAssignableFrom(d.get(),c.get()));
 
-    assertTrue(e.isPresent());
     assertTrue(isAssignableFrom(a.get(),e.get()));
 
     assertTrue(isAssignableFrom(a.get(),a.get()));
