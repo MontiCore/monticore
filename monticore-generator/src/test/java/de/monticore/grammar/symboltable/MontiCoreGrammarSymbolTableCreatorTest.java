@@ -12,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -50,7 +51,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     // AST
     assertTrue(grammar.getAstNode().isPresent());
     assertTrue(grammar.getAstNode().get() instanceof ASTMCGrammar);
-    assertSame(grammar.getEnclosingScope(), grammar.getAstNode().get().getEnclosingScope());
+    assertSame(grammar.getEnclosingScope(), grammar.getAstNode().get().getEnclosingScope2());
     
     final ProdSymbol stateChartProd = grammar.getProd("Statechart").orElse(null);
     assertNotNull(stateChartProd);
@@ -74,6 +75,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     testLinkBetweenSymbolAndAst(entryActionProd);
     
     // test prod components
+    Collection<RuleComponentSymbol> bla = entryActionProd.getProdComponents();
     assertEquals(3, entryActionProd.getProdComponents().size());
     RuleComponentSymbol prodComp = entryActionProd.getProdComponent("entry").orElse(null);
     assertNotNull(prodComp);
@@ -178,9 +180,9 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
   
   private void testLinkBetweenSymbolAndAst(ProdSymbol prodSymbol) {
     assertTrue(prodSymbol.getAstNode().isPresent());
-    assertSame(prodSymbol, prodSymbol.getAstNode().get().getSymbol());
+    assertSame(prodSymbol, prodSymbol.getAstNode().get().getSymbol2());
     assertSame(prodSymbol.getEnclosingScope(),
-        prodSymbol.getAstNode().get().getEnclosingScope());
+        prodSymbol.getAstNode().get().getEnclosingScope2());
     
     if (prodSymbol.isClass()) {
       assertTrue(prodSymbol.getAstNode().get() instanceof ASTClassProd);
@@ -312,7 +314,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertNotNull(transition);
     
     try {
-      Optional<RuleComponentSymbol> r = transition.getSpannedScope().resolveRuleComponent("args");
+      Optional<RuleComponentSymbol> r = transition.getSpannedScope().resolveRuleComponent("arg");
       assertTrue(r.isPresent());
     }
     catch (ResolvedSeveralEntriesException e) {

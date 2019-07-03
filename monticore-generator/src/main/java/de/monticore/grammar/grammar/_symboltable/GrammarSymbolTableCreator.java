@@ -216,6 +216,11 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     ast.setEnclosingScope2(getCurrentScope().get());
   }
 
+  @Override
+  public void visit(ASTAdditionalAttribute ast) {
+    // Do nothing: see method visit(ASTASTRule ast)
+  }
+
   void setComponentMultiplicity(RuleComponentSymbol prod, ASTNode ast) {
     Multiplicity multiplicity = determineMultiplicity(astGrammar, ast);
     if (multiplicity == LIST) {
