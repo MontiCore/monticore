@@ -8,6 +8,7 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.JavaNamesHelper;
+import de.se_rwth.commons.Names;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -100,6 +101,10 @@ public class AbstractService<T extends AbstractService> {
 
   public String getSubPackage() {
     return "";
+  }
+
+  public String getQualifiedCDName(){
+    return Names.getQualifiedName(getPackage(), getCDName());
   }
 
   public Collection<T> getServicesOfSuperCDs() {

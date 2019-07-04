@@ -12,6 +12,14 @@ ${cdInterface.printModifier()} interface ${cdInterface.getName()} <#rt><#lt>
 </#list>
 
 <#list cdInterface.getCDMethodList() as method>
-  <#if !method.getModifier().isAbstract()>default </#if>${tc.include("core.Method", method)}
+    <#if !method.getModifier().isAbstract()>default </#if>${tc.include("core.Method", method)}
 </#list>
+
+<#assign simpleName = cdInterface.getName()?remove_beginning("AST")>
+  interface Literals {
+    org.eclipse.emf.ecore.EEnum Constants${simpleName} = eINSTANCE.getConstants${simpleName}
+    <#list cdInterface.getAttributeList() as attribute>
+
+    </#list>
+  }
 }

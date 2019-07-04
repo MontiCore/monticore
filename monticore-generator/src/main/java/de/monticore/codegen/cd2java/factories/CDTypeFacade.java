@@ -142,6 +142,10 @@ public class CDTypeFacade {
         .build();
   }
 
+  public ASTType createStringType() {
+    return createSimpleReferenceType(String.class);
+  }
+
   public ASTType createBooleanType() {
     return createPrimitiveType(ASTConstantsTypes.BOOLEAN);
   }

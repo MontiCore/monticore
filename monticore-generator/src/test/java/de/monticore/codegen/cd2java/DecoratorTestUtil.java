@@ -109,4 +109,13 @@ public final class DecoratorTestUtil {
     assertEquals(String.format("Expected find 1 attribute, but found '%s'", filtered.size()), 1, filtered.size());
     return filtered.get(0);
   }
+
+
+  public static ASTCDAttribute getAttributeBy(String name, ASTCDInterface clazz) {
+    List<ASTCDAttribute> filtered = clazz.getCDAttributeList().stream()
+        .filter(attribute -> name.equals(attribute.getName()))
+        .collect(Collectors.toList());
+    assertEquals(String.format("Expected find 1 attribute, but found '%s'", filtered.size()), 1, filtered.size());
+    return filtered.get(0);
+  }
 }
