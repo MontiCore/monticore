@@ -34,6 +34,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.ModelPath;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,6 +55,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
+    Log.enableFailQuick(false);
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");
     this.originalCompilationUnit = decoratedCompilationUnit.deepClone();

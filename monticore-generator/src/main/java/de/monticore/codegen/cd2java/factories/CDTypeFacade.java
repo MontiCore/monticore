@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
+import de.monticore.cd.cd4code._parser.CD4CodeParser;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
 import de.monticore.types.MCCollectionTypesHelper;
@@ -19,10 +19,10 @@ public class CDTypeFacade {
 
   private static CDTypeFacade cdTypeFacade;
 
-  private final CD4AnalysisParser parser;
+  private final CD4CodeParser parser;
 
   private CDTypeFacade() {
-    this.parser = new CD4AnalysisParser();
+    this.parser = new CD4CodeParser();
   }
 
   public static CDTypeFacade getInstance() {
@@ -77,7 +77,7 @@ public class CDTypeFacade {
 
   public ASTMCOptionalType createOptionalTypeOf(final String name) {
     ASTMCTypeArgument arg = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
-    return CD4AnalysisMill.mCOptionalTypeBuilder().setMCTypeArgument(arg).build();
+    return CD4AnalysisMill.mCOptionalTypeBuilder().setName("Optional").setMCTypeArgument(arg).build();
   }
 
   public ASTMCOptionalType createOptionalTypeOf(final ASTMCType type) {
@@ -90,7 +90,7 @@ public class CDTypeFacade {
 
   public ASTMCListType createListTypeOf(final String name) {
     ASTMCTypeArgument arg = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
-    return CD4AnalysisMill.mCListTypeBuilder().setMCTypeArgument(arg).build();
+    return CD4AnalysisMill.mCListTypeBuilder().setName("List").setMCTypeArgument(arg).build();
   }
 
   public ASTMCListType createListTypeOf(final ASTMCType type) {
@@ -103,7 +103,7 @@ public class CDTypeFacade {
 
   public ASTMCSetType createCollectionTypeOf(final String name) {
     ASTMCTypeArgument arg = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
-    return CD4AnalysisMill.mCSetTypeBuilder().setMCTypeArgument(arg).build();
+    return CD4AnalysisMill.mCSetTypeBuilder().setName("set").setMCTypeArgument(arg).build();
   }
 
   public ASTMCSetType createCollectionTypeOf(final ASTMCType type) {
@@ -113,7 +113,7 @@ public class CDTypeFacade {
   public ASTMCMapType createMapTypeOf(final String firstType, final String secondType) {
     ASTMCTypeArgument first = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(firstType)).build();
     ASTMCTypeArgument second = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(secondType)).build();
-    return CD4AnalysisMill.mCMapTypeBuilder().setKey(first).setValue(second).build();
+    return CD4AnalysisMill.mCMapTypeBuilder().setName("Map").setKey(first).setValue(second).build();
   }
 
 

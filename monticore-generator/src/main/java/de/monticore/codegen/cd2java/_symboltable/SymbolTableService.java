@@ -9,8 +9,7 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
-import de.monticore.types.CollectionTypesPrinter;
-import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.MCSimpleGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Names;
 
@@ -104,8 +103,9 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getSimpleSymbolNameFromOptional(ASTMCType type) {
-    ASTMCType referencedSymbolType = MCCollectionTypesHelper.getReferenceTypeFromOptional(type.deepClone()).getMCTypeOpt().get();
-    String referencedSymbol = CollectionTypesPrinter.printType(referencedSymbolType);
+    String bla = type.printType();
+    ASTMCType referencedSymbolType = MCSimpleGenericTypesHelper.getReferenceTypeFromOptional(type).getMCTypeOpt().get();
+    String referencedSymbol = referencedSymbolType.printType();
     return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SymbolTableConstants.SYMBOL_SUFFIX));
   }
 

@@ -3,21 +3,12 @@ package de.monticore.codegen.cd2java.factories;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._symboltable.CDFieldSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.cd.cd4analysis._symboltable.CDTypes;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.MCCollectionTypesHelper;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.StringTransformations;
-import de.se_rwth.commons.logging.Log;
-
-import java.util.List;
-
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 
 public class DecorationHelper extends MCCollectionTypesHelper {
 
@@ -72,29 +63,6 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     return true;
   }
 
-  public static String getAstClassNameForASTLists(CDTypeSymbolReference field) {
-    List<ActualTypeArgument> typeArgs = field.getActualTypeArguments();
-    if (typeArgs.size() != 1) {
-      return AST_INTERFACE;
-    }
-
-    if (!(typeArgs.get(0).getType() instanceof CDTypeSymbolReference)) {
-      return AST_INTERFACE;
-    }
-    return ((CDTypeSymbolReference) typeArgs.get(0).getType()).getStringRepresentation();
-  }
-
-  public static String getAstClassNameForASTLists(ASTCDAttribute attr) {
-    if (!attr.isPresentSymbol()) {
-      return "";
-    }
-    if (!(attr.getSymbol() instanceof CDFieldSymbol)) {
-      Log.error(String.format("0xA04125 Symbol of ASTCDAttribute %s is not CDFieldSymbol.",
-          attr.getName()));
-    }
-    return getAstClassNameForASTLists(((CDFieldSymbol) attr.getSymbol()).getType());
-  }
-
   public static String getNativeAttributeName(String attributeName) {
     if (!attributeName.startsWith(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED)) {
       return attributeName;
@@ -114,39 +82,6 @@ public class DecorationHelper extends MCCollectionTypesHelper {
 
   public static boolean isString(String type) {
     return "String".equals(type) || "java.lang.String".equals(type);
-  }
-
-  public boolean isAttributeOfTypeEnum(ASTCDAttribute attr) {
-    if (!attr.isPresentSymbol() || !(attr.getSymbol() instanceof CDFieldSymbol)) {
-      return false;
-    }
-    CDTypeSymbolReference attrType = ((CDFieldSymbol) attr.getSymbol()
-    ).getType();
-
-    List<ActualTypeArgument> typeArgs = attrType.getActualTypeArguments();
-    if (typeArgs.size() > 1) {
-      return false;
-    }
-
-    String typeName = typeArgs.isEmpty()
-        ? attrType.getName()
-        : typeArgs.get(0).getType().getName();
-    if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
-      return false;
-    }
-
-    List<String> listName = MCCollectionTypesHelper.createListFromDotSeparatedString(typeName);
-    if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
-      return false;
-    }
-
-    if (typeArgs.isEmpty()) {
-      return attrType.existsReferencedSymbol() && attrType.isEnum();
-    }
-
-    CDTypeSymbolReference typeArgument = (CDTypeSymbolReference) typeArgs
-        .get(0).getType();
-    return typeArgument.existsReferencedSymbol() && typeArgument.isEnum();
   }
 
   public static String getPlainGetter(ASTCDAttribute ast) {
