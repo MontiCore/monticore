@@ -11,7 +11,6 @@ public class HostLanguage extends HostLanguageTOP {
   public HostLanguage() {
     super("Host Language", FILE_ENDING);
 
-    setModelNameCalculator(new HostModelNameCalculator());
   }
 
 
@@ -30,9 +29,4 @@ public class HostLanguage extends HostLanguageTOP {
     return null;
   }
 
-  @Override
-  protected void initResolvingFilters() {
-    addResolvingFilter(new ContentResolvingFilter());
-    addResolvingFilter(new HostResolvingFilter());
-  }
 }

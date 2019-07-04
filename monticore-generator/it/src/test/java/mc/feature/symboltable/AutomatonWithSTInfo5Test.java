@@ -2,30 +2,13 @@
 
 package mc.feature.symboltable;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import de.monticore.symboltable.IScopeSpanningSymbol;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.symboltable.automatonwithstinfo5._symboltable.*;
 import org.junit.Test;
 
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import mc.GeneratorIntegrationsTest;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.AutomatonKind;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.AutomatonResolvingFilter;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.AutomatonSymbol;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.AutomatonSymbolReference;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.AutomatonWithSTInfo5Language;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.AutomatonWithSTInfo5ModelLoader;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.AutomatonWithSTInfo5ModelNameCalculator;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.AutomatonWithSTInfo5Scope;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.AutomatonWithSTInfo5SymbolTableCreator;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.StateKind;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.StateResolvingFilter;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.StateSymbol;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.StateSymbolReference;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.TransitionKind;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.TransitionResolvingFilter;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.TransitionSymbol;
-import mc.feature.symboltable.automatonwithstinfo5._symboltable.TransitionSymbolReference;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AutomatonWithSTInfo5Test extends GeneratorIntegrationsTest {
 
@@ -35,25 +18,18 @@ public class AutomatonWithSTInfo5Test extends GeneratorIntegrationsTest {
   @SuppressWarnings("unused")
   @Test
   public void test() {
-    AutomatonKind automatonKind;
-    AutomatonResolvingFilter automatonResolvingFilter;
     AutomatonWithSTInfo5Scope automatonScope;
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
-    assertTrue(automatonSymbol instanceof ScopeSpanningSymbol);
+    assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
     AutomatonSymbolReference automatonSymbolReference;
     AutomatonWithSTInfo5Language automatonWithSTInfo5Language;
     AutomatonWithSTInfo5ModelLoader automatonWithSTInfo5ModelLoader;
-    AutomatonWithSTInfo5ModelNameCalculator automatonWithSTInfo5ModelNameCalculator;
     AutomatonWithSTInfo5SymbolTableCreator automatonWithSTInfo5SymbolTableCreator;
-    StateKind stateKind;
-    StateResolvingFilter stateResolvingFilter;
     StateSymbol stateSymbol = new StateSymbol("A");
-    assertFalse(stateSymbol instanceof ScopeSpanningSymbol);
+    assertFalse(stateSymbol instanceof IScopeSpanningSymbol);
     StateSymbolReference stateSymbolReference;
-    TransitionKind transitionKind;
-    TransitionResolvingFilter transitionResolvingFilter;
     TransitionSymbol transitionSymbol = new TransitionSymbol("T");
-    assertFalse(transitionSymbol instanceof ScopeSpanningSymbol);
+    assertFalse(transitionSymbol instanceof IScopeSpanningSymbol);
     TransitionSymbolReference transitionSymbolReference;
 
 //    Collection<StateSymbol> stateSymbols = automatonSymbol.getStates();

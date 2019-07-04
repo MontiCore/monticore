@@ -11,12 +11,12 @@ grammar AutomatonWithSTInfo4 extends mc.common.Basics {
 
   interface symbol AutomatonElement = Name;
 
-  symbol State implements AutomatonElement =
+  symbol(AutomatonElement) State implements AutomatonElement =
     "state" Name
     (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*;
 
 
-  Transition implements AutomatonElement =
+  symbol(AutomatonElement) Transition implements AutomatonElement =
     from:Name "-" Name ">" to:Name ";" ;
 
 }

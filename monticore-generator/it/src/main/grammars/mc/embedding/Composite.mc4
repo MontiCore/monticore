@@ -3,10 +3,10 @@
 package mc.embedding;
 
 grammar Composite extends mc.embedding.Host, mc.embedding.Embedded {
-   
+
    start Host;
 
-   MyContent extends Content = Text;
+   MyContent extends Content = Name Text;
 
 
 
