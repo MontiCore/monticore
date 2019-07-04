@@ -2,24 +2,12 @@
 
 package mc.feature.symboltable;
 
-import static org.junit.Assert.assertFalse;
-
+import de.monticore.symboltable.IScopeSpanningSymbol;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.symboltable.automatonwithstinfo3._symboltable.*;
 import org.junit.Test;
 
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import mc.GeneratorIntegrationsTest;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonKind;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonResolvingFilter;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonSymbol;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonSymbolReference;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonWithSTInfo3Language;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonWithSTInfo3ModelLoader;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonWithSTInfo3ModelNameCalculator;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonWithSTInfo3SymbolTableCreator;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.StateKind;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.StateResolvingFilter;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.StateSymbol;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.StateSymbolReference;
+import static org.junit.Assert.assertFalse;
 
 public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
 
@@ -29,19 +17,23 @@ public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
   @SuppressWarnings("unused")
   @Test
   public void test() {
-    AutomatonKind automatonKind;
-    AutomatonResolvingFilter automatonResolvingFilter;
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
-    assertFalse(automatonSymbol instanceof ScopeSpanningSymbol);
+    assertFalse(automatonSymbol instanceof IScopeSpanningSymbol);
     AutomatonSymbolReference automatonSymbolReference;
     AutomatonWithSTInfo3Language automatonWithSTInfo3Language;
     AutomatonWithSTInfo3ModelLoader automatonWithSTInfo3ModelLoader;
-    AutomatonWithSTInfo3ModelNameCalculator automatonWithSTInfo3ModelNameCalculator;
     AutomatonWithSTInfo3SymbolTableCreator automatonWithSTInfo3SymbolTableCreator;
-    StateKind stateKind;
-    StateResolvingFilter stateResolvingFilter;
+    AutomatonWithSTInfo3SymbolTableCreatorDelegator automatonWithSTInfo3SymbolTableCreatorDelegator;
+    AutomatonWithSTInfo3ArtifactScope automatonWithSTInfo3ArtifactScope;
+    AutomatonWithSTInfo3GlobalScope automatonWithSTInfo3GlobalScope;
+    AutomatonWithSTInfo3Scope automatonWithSTInfo3Scope;
+    AutomatonWithSTInfo3ScopeBuilder automatonWithSTInfo3ScopeBuilder;
+    AutomatonWithSTInfo3SymTabMill automatonWithSTInfo3SymTabMill;
+    IAutomatonWithSTInfo3GlobalScope iAutomatonWithSTInfo3GlobalScope;
+    IAutomatonWithSTInfo3Scope iAutomatonWithSTInfo3Scope;
+    ICommonAutomatonWithSTInfo3Symbol iCommonAutomatonWithSTInfo3Symbol;
     StateSymbol stateSymbol = new StateSymbol("S");
-    assertFalse(stateSymbol instanceof ScopeSpanningSymbol);
+    assertFalse(stateSymbol instanceof IScopeSpanningSymbol);
     StateSymbolReference stateSymbolReference;
   }
 

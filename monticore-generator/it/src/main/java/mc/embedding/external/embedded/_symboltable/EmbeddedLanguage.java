@@ -8,7 +8,6 @@ public class EmbeddedLanguage extends EmbeddedLanguageTOP {
   public EmbeddedLanguage() {
     super("Embedded Language", FILE_ENDING);
 
-    setModelNameCalculator(new EmbeddedModelNameCalculator());
   }
 
 

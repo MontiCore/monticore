@@ -135,6 +135,10 @@ public class AbstractService<T extends AbstractService> {
     return "";
   }
 
+  public boolean isInherited(ASTCDAttribute attribute) {
+    return hasStereotype(attribute.getModifier(), MC2CDStereotypes.INHERITED);
+  }
+
   public boolean hasStereotype(ASTModifier modifier, MC2CDStereotypes stereotype) {
     if (modifier.isPresentStereotype()) {
       return modifier.getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(stereotype.toString()));

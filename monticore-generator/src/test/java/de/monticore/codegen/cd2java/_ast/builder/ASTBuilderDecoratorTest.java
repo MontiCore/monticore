@@ -5,7 +5,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
@@ -41,7 +40,7 @@ public class ASTBuilderDecoratorTest extends DecoratorTestCase {
 
     AccessorDecorator methodDecorator = new AccessorDecorator(glex);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator);
-    ASTBuilderDecorator builderASTNodeDecorator = new ASTBuilderDecorator(glex, builderDecorator, new ASTService(decoratedCompilationUnit));
+    ASTBuilderDecorator builderASTNodeDecorator = new ASTBuilderDecorator(glex, builderDecorator);
     this.builderClass = builderASTNodeDecorator.decorate(cdClass);
   }
 

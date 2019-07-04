@@ -7,10 +7,6 @@
 
 package mc.embedding.external.host._symboltable;
 
-import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
-
-import java.util.Collection;
-
 public class HostSymbol extends HostSymbolTOP {
 
   public HostSymbol(String name) {
@@ -30,8 +26,8 @@ public class HostSymbol extends HostSymbolTOP {
 
 
 
-  public Collection<ContentSymbol> getContent() {
-    return sortSymbolsByPosition(getSpannedScope().resolveLocally(ContentSymbol.KIND));
-  }
+//  public Collection<ContentSymbol> getContent() {
+//    return sortSymbolsByPosition(getSpannedScope().resolveLocally(ContentSymbol.KIND));
+//  }
 
 }

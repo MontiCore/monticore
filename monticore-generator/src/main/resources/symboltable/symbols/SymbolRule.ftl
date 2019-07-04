@@ -5,18 +5,7 @@ ${tc.signature("ruleSymbol")}
 
 <#list ruleSymbol.getAdditionalAttributeList() as attr>
   <#assign attrName = "_" + attr.getName()>
-  <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
-  <#if attr.isPresentCard()>
-    <#if attr.getCard().isPresentMax()>
-      <#if attr.getCard().getMax() == "*">
-        <#assign attrType = "java.util.List<" + attrType + ">">
-      <#elseif attr.getCard().isPresentMin() && attr.getCard().getMin() == "0">
-        <#assign attrType = "Optional<" + attrType + ">">
-      </#if>
-    <#elseif attr.getCard().isPresentMin() && attr.getCard().getMin() == "0">
-      <#assign attrType = "Optional<" + attrType + ">">
-    </#if>
-  </#if>
+  <#assign attrType=genHelper.deriveAdditionalAttributeTypeWithMult(attr)>
 
   private ${attrType} ${attrName};
 

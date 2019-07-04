@@ -42,6 +42,12 @@ import java.util.stream.Stream;
 
 import static de.monticore.codegen.GeneratorHelper.getPlainName;
 
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static de.monticore.codegen.GeneratorHelper.getPlainName;
+
 /**
  * Decorates class diagrams by adding of new classes and methods using in emf
  * compatible ast files
@@ -171,7 +177,7 @@ public class CdEmfDecorator extends CdDecorator {
   Stream<String> getAdditionaAttributeNames() {
     return Arrays.asList(AstAdditionalAttributes.values()).stream().map(a -> a.toString());
   }
-  
+
   void addEmfCode(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDClass> astClasses,
       List<ASTCDType> types, AstEmfGeneratorHelper astHelper, Map<String, String> map) {
       

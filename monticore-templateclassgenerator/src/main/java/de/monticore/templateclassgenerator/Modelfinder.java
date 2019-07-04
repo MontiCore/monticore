@@ -1,15 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.templateclassgenerator;
 
+import de.monticore.templateclassgenerator.codegen.TemplateClassGeneratorConstants;
+import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-
-import de.monticore.templateclassgenerator.codegen.TemplateClassGeneratorConstants;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * Class that finds all models with a given file extension in a modelpath.

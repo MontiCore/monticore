@@ -2,8 +2,6 @@
 
 package de.monticore;
 
-import java.io.File;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
@@ -11,6 +9,8 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingReposit
 import de.monticore.grammar.grammar._ast.ASTGrammarNode;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.Names;
+
+import java.io.File;
 
 public class ODReporter extends AReporter {
   

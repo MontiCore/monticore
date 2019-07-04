@@ -1,10 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.templateclassgenerator;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
 import com.google.common.io.Resources;
 import de.se_rwth.commons.cli.CLIArguments;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * Main class for launching TCG with jar.

@@ -23,6 +23,7 @@ public class ASTLanguageInterfaceDecorator extends AbstractDecorator<ASTCDCompil
 
   @Override
   public ASTCDInterface decorate(final ASTCDCompilationUnit compilationUnit) {
+    // creates Interfaces like for example ASTAutomataNode
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setModifier(PUBLIC.build())
         .setName(astService.getASTBaseInterfaceSimpleName())

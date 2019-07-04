@@ -17,7 +17,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {

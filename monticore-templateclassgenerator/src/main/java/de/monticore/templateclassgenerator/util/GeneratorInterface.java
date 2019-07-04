@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.templateclassgenerator.util;
 
-import java.nio.file.Path;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.CommonSymbol;
+
+import java.nio.file.Path;
 
 /**
  * Every generated main template class implements this interface.

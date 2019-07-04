@@ -5,7 +5,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -30,13 +29,9 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
 
   private final BuilderDecorator builderDecorator;
 
-  private final AbstractService abstractService;
-
-  public ASTBuilderDecorator(final GlobalExtensionManagement glex, final BuilderDecorator builderDecorator,
-                             final AbstractService abstractService) {
+  public ASTBuilderDecorator(final GlobalExtensionManagement glex, final BuilderDecorator builderDecorator) {
     super(glex);
     this.builderDecorator = builderDecorator;
-    this.abstractService = abstractService;
   }
 
   @Override

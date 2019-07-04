@@ -1,17 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.templateclassgenerator.codegen;
 
+import freemarker.core.Parameter;
+
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.base.Strings;
-import com.google.common.primitives.Chars;
-
-import de.se_rwth.commons.Files;
-import de.se_rwth.commons.Names;
-import freemarker.core.Parameter;
 
 /**
  * Common helper methods for generator.

@@ -2,11 +2,11 @@
 
 package mc.embedding.composite._symboltable;
 
-import de.monticore.symboltable.resolving.SymbolAdapter;
+import de.monticore.symboltable.resolving.ISymbolAdapter;
 import mc.embedding.embedded._symboltable.TextSymbol;
 import mc.embedding.host._symboltable.ContentSymbol;
 
-public class Text2ContentAdapter extends ContentSymbol implements SymbolAdapter<TextSymbol> {
+public class Text2ContentAdapter extends ContentSymbol implements ISymbolAdapter<TextSymbol> {
 
   final TextSymbol adaptee;
 

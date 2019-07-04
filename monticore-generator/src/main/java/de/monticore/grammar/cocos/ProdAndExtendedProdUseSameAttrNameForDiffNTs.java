@@ -2,8 +2,6 @@
 
 package de.monticore.grammar.cocos;
 
-import java.util.Optional;
-
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
@@ -13,18 +11,19 @@ import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Optional;
+
 /**
  * Checks that an attribute name is not used twice for different nonterminals.
- *
  */
 public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTNonTerminalCoCo {
-  
+
   public static final String ERROR_CODE = "0xA4024";
-  
+
   public static final String ERROR_MSG_FORMAT = " The production %s extending the production %s must not use the\n"
       +
       "name %s for the nonterminal %s as %s already uses this name for the nonterminal %s.";
-  
+
   @Override
   public void check(ASTNonTerminal a) {
     if (a.isPresentUsageName()) {

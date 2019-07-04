@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className","interfaceName", "languageName", "symbolNames")}
+${signature("className","interfaceName", "baseName", "languageName", "symbolNames")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 
@@ -26,7 +26,7 @@ public interface ${className} extends ${interfaceName} {
 
   ${languageName}Language get${languageName}Language();
 
-  void cache(${languageName}ModelLoader modelLoader, String calculatedModelName);
+  void cache(String calculatedModelName);
 
   boolean continueWithModelLoader(String calculatedModelName, ${languageName}ModelLoader modelLoader);
   default boolean checkIfContinueAsSubScope(String symbolName) {
@@ -34,6 +34,7 @@ public interface ${className} extends ${interfaceName} {
   }
 
 <#list symbolNames?keys as symbol>
+
   default Collection<${symbolNames[symbol]}> resolve${symbol}Many(boolean foundSymbols,
       final String symbolName, final AccessModifier modifier, final Predicate<${symbolNames[symbol]}> predicate) {
 
@@ -50,8 +51,11 @@ public interface ${className} extends ${interfaceName} {
     // Maybe the symbol now exists in this scope (or its sub scopes). So, resolve down, again.
     resolvedSymbol = resolve${symbol}DownMany(false, symbolName, modifier, predicate);
     foundSymbols = foundSymbols  | resolvedSymbol.size() > 0;
-    resolvedSymbol.addAll(resolveAdapted${symbol}(foundSymbols, symbolName, modifier, predicate));
-
+    if (!foundSymbols && !is${symbol}SymbolAlreadyResolved()){
+      set${symbol}SymbolAlreadyResolved(true);
+      resolvedSymbol.addAll(resolveAdapted${symbol}(foundSymbols, symbolName, modifier, predicate));
+    }
+    set${symbol}SymbolAlreadyResolved(false);
     return resolvedSymbol;
   }
 
@@ -66,8 +70,8 @@ public interface ${className} extends ${interfaceName} {
 
     for (String calculatedModelName : calculatedModelNames) {
       if (continueWithModelLoader(calculatedModelName, modelLoader)) {
-        modelLoader.loadModelsIntoScope(calculatedModelName, getModelPath(), this);
-        cache(modelLoader, calculatedModelNames.iterator().next());
+        modelLoader.loadModelsIntoScope(calculatedModelName, getModelPath(), getRealThis());
+        cache(calculatedModelNames.iterator().next());
       } else {
         Log.debug("Already tried to load model for '" + symbolName + "'. If model exists, continue with cached version.", ${languageName}GlobalScope.class.getSimpleName());
       }
@@ -76,8 +80,13 @@ public interface ${className} extends ${interfaceName} {
     }
   }
 </#list>
-
-
+<#if className?ends_with("TOP")>
+  ${baseName} getRealThis();
+<#else>
+  default ${baseName} getRealThis() {
+    return this;
+  }
+</#if>
 
 
 

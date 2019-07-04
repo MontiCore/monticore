@@ -186,7 +186,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     types.add(sym);
     return types;
   }
-  
+
   public Collection<CDFieldSymbol> getAllVisibleFields(ASTCDType type) {
     List<CDFieldSymbol> allSuperTypeFields = new ArrayList<>();
     if (!type.isPresentSymbol()) {

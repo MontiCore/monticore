@@ -14,6 +14,7 @@ ${defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${package};
 
+import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
 import ${fqn}._ast.*;
@@ -30,9 +31,11 @@ public class ${className} extends ${grammarName}DelegatorVisitor {
 
   protected final ${grammarName}SymbolTableCreator ${grammarName?uncap_first}STC;
 
+  protected I${grammarName}GlobalScope globalScope;
 
-  public ${className}(I${grammarName}Scope enclosingScope) {
-    this.scopeStack.push(enclosingScope);
+  public ${className}(I${grammarName}GlobalScope globalScope) {
+    this.scopeStack.push(globalScope);
+    this.globalScope = globalScope;
   <#list supergrammars as sup>
     ${sup.getName()}STCFor${grammarName} ${sup.getName()?uncap_first}SymbolTableCreator = new ${sup.getName()}STCFor${grammarName}(scopeStack);
     set${sup.getName()}Visitor(${sup.getName()?uncap_first}SymbolTableCreator);
@@ -43,6 +46,10 @@ public class ${className} extends ${grammarName}DelegatorVisitor {
   }
 
   public ${grammarName}ArtifactScope createFromAST(${genHelper.getQualifiedASTName(rootNode)} rootNode) {
-    return ${grammarName?uncap_first}STC.createFromAST(rootNode);
+    ${grammarName}ArtifactScope as =  ${grammarName?uncap_first}STC.createFromAST(rootNode);
+    if (as.getName().isPresent()){
+      globalScope.cache(as.getName().get());
+    }
+    return as;
   }
 }

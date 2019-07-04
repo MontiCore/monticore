@@ -159,7 +159,7 @@ public class ${symTabPrinterName}
   
 <#if symbolRules[symbol.name]??>
 <#list symbolRules[symbol.name].getAdditionalAttributeList() as attr>
-  <#assign attrType=attr.getMCType().getBaseName()>
+  <#assign attrType=genHelper.deriveAdditionalAttributeTypeWithMult(attr)>
   <#if attrType == "boolean" || attrType == "Boolean">
     <#if attr.getName()?starts_with("is")>
       <#assign methodName=attr.getName()>

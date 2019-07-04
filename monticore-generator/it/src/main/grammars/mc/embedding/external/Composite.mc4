@@ -5,6 +5,6 @@ package mc.embedding.external;
 grammar Composite extends mc.embedding.external.Host, mc.embedding.external.Embedded {
 
    start Host;
-   Content = Text;
+   symbol Content = Name Text;
 
 }

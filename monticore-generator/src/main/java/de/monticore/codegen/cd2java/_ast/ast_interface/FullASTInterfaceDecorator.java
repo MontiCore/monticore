@@ -14,6 +14,7 @@ public class FullASTInterfaceDecorator extends CompositeDecorator<ASTCDInterface
 
   @Override
   public ASTCDInterface decorate(final ASTCDInterface input) {
+    //deepClone the input to make sure that the original is not changed
     Stream<ASTCDInterface> stream = Stream.of(input.deepClone());
     return super.applyDecorations(stream);
   }

@@ -3,9 +3,8 @@
 package mc.embedding;
 
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolvingConfiguration;
 import mc.GeneratorIntegrationsTest;
+import mc.embedding.host._symboltable.HostGlobalScope;
 import mc.embedding.host._symboltable.HostLanguage;
 import mc.embedding.host._symboltable.HostSymbol;
 import org.junit.Test;
@@ -20,14 +19,12 @@ public class HostTest extends GeneratorIntegrationsTest {
   @Test
   public void test() {
     final HostLanguage language = new HostLanguage();
-    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(language.getResolvingFilters());
 
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 
-    final GlobalScope scope = new GlobalScope(modelPath, language, resolvingConfiguration);
+    final HostGlobalScope scope = new HostGlobalScope(modelPath, language);
 
-    HostSymbol hostSymbol = scope.<HostSymbol>resolve("H", HostSymbol.KIND).orElse(null);
+    HostSymbol hostSymbol = scope.resolveHost("H").orElse(null);
     assertNotNull(hostSymbol);
     assertEquals("H", hostSymbol.getName());
   }
