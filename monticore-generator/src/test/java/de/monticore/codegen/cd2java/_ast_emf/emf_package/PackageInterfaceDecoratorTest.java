@@ -1,4 +1,4 @@
-package de.monticore.codegen.cd2java._ast_emf;
+package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;

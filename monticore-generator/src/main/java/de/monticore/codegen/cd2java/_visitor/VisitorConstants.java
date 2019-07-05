@@ -6,6 +6,8 @@ public final class VisitorConstants {
 
   public static final String VISITOR_SUFFIX = "Visitor";
 
+  public static final String VISITOR_PREFIX = "visitor";
+
   public static final String GET_REAL_THIS = "getRealThis";
 
   public static final String SET_REAL_THIS = "setRealThis";

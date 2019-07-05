@@ -21,13 +21,15 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
-  private static final String DEEP_CLONE_METHOD = "deepClone";
+  protected static final String DEEP_CLONE_METHOD = "deepClone";
 
-  private final MethodDecorator methodDecorator;
+  protected final MethodDecorator methodDecorator;
 
-  private final AbstractService<?> service;
+  protected final AbstractService<?> service;
 
-  private final DataDecoratorUtil dataDecoratorUtil;
+  protected final DataDecoratorUtil dataDecoratorUtil;
+
+  protected String clazzName;
 
   public DataDecorator(final GlobalExtensionManagement glex, final MethodDecorator methodDecorator,
                        final AbstractService service, final DataDecoratorUtil dataDecoratorUtil) {
@@ -39,6 +41,7 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   @Override
   public ASTCDClass decorate(ASTCDClass clazz) {
+    this.clazzName= clazz.deepClone().getName();
     clazz.addCDConstructor(createDefaultConstructor(clazz));
     if (!clazz.getCDAttributeList().isEmpty()) {
       clazz.addCDConstructor(createFullConstructor(clazz));

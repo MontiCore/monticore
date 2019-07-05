@@ -1,7 +1,8 @@
-package de.monticore.codegen.cd2java._ast_emf;
+package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
@@ -224,6 +225,7 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
     assertVoid(method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
+
   @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();

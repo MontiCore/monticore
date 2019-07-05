@@ -38,6 +38,23 @@ public final class EmfConstants {
 
   public static final String IS_INITED = "isInited";
 
+  public static final String E_GET = "eGet";
+
+  public static final String E_SET = "eSet";
+
+  public static final String E_UNSET = "eUnset";
+
+  public static final String E_IS_SET = "eIsSet";
+
+  public static final String E_BASE_STRUCTURAL_FEATURE_ID= "eBaseStructuralFeatureID";
+
+  public static final String E_DERIVED_STRUCTURAL_FEATURE_ID = "eDerivedStructuralFeatureID";
+
+  public static final String E_STATIC_CLASS= "eStaticClass";
+
+  public static final String FEATURE_ID= "featureID";
+
+
 
   private EmfConstants() {}
 

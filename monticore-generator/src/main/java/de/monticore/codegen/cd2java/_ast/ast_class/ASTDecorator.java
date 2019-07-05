@@ -22,26 +22,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 
 public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
-  private static final String VISITOR = "visitor";
+  protected final ASTService astService;
 
-  private final ASTService astService;
+  protected final VisitorService visitorService;
 
-  private final VisitorService visitorService;
+  protected final NodeFactoryService nodeFactoryService;
 
-  private final NodeFactoryService nodeFactoryService;
+  protected final ASTSymbolDecorator symbolDecorator;
 
-  private final ASTSymbolDecorator symbolDecorator;
+  protected final ASTScopeDecorator scopeDecorator;
 
-  private final ASTScopeDecorator scopeDecorator;
+  protected final MethodDecorator methodDecorator;
 
-  private final MethodDecorator methodDecorator;
-
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public ASTDecorator(final GlobalExtensionManagement glex,
                       final ASTService astService,
@@ -102,7 +101,7 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
 
   protected ASTCDMethod createAcceptMethod(ASTCDClass astClass) {
-    ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getVisitorType(), VISITOR);
+    ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getVisitorType(), VISITOR_PREFIX);
     ASTCDMethod acceptMethod = this.getCDMethodFacade().createMethod(PUBLIC, ASTConstants.ACCEPT_METHOD, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_ast.ast_class.Accept", astClass));
     return acceptMethod;
@@ -119,7 +118,7 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     List<ASTCDMethod> result = new ArrayList<>();
     //accept methods for super visitors
     for (ASTType superVisitorType : this.visitorService.getAllVisitorTypesInHierarchy()) {
-      ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR);
+      ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
 
       ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC, ASTConstants.ACCEPT_METHOD, superVisitorParameter);
       String errorCode = DecorationHelper.getGeneratedErrorCode(astClass);
