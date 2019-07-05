@@ -2,6 +2,7 @@ package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java._ast_emf.ast_class.emfMutatorMethodDecorator.EmfMutatorDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -11,14 +12,25 @@ import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.se_rwth.commons.StringTransformations;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 
 public class DataEmfDecorator extends DataDecorator {
 
-  public DataEmfDecorator(GlobalExtensionManagement glex, MethodDecorator methodDecorator, AbstractService service, DataDecoratorUtil dataDecoratorUtil) {
+  private final EmfMutatorDecorator emfMutatorDecorator;
+
+  public DataEmfDecorator(final GlobalExtensionManagement glex,
+                          final MethodDecorator methodDecorator,
+                          final AbstractService service,
+                          final DataDecoratorUtil dataDecoratorUtil,
+                          final EmfMutatorDecorator emfMutatorDecorator) {
     super(glex, methodDecorator, service, dataDecoratorUtil);
+    this.emfMutatorDecorator = emfMutatorDecorator;
   }
 
   @Override
@@ -39,5 +51,13 @@ public class DataEmfDecorator extends DataDecorator {
           ".class, this, " + grammarName + "Package." + classname + "_" + StringTransformations.capitalize(attributeName) + ")";
     }
     return "";
+  }
+
+  @Override
+  protected List<ASTCDMethod> createSetter(List<ASTCDAttribute> attributeList){
+    return attributeList.stream()
+        .map(emfMutatorDecorator::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
   }
 }

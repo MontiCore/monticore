@@ -6,6 +6,7 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
+import de.monticore.codegen.cd2java._ast_emf.ast_class.emfMutatorMethodDecorator.EmfMutatorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
@@ -36,19 +37,22 @@ public class ASTFullEmfDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
+    ASTCDClass clazz = getClassBy("A", decoratedCompilationUnit);
+
     ASTService astService = new ASTService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     NodeFactoryService nodeFactoryService = new NodeFactoryService(decoratedCompilationUnit);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex,  symbolTableService);
-    DataEmfDecorator dataEmfDecorator = new DataEmfDecorator(glex, new MethodDecorator(glex), new ASTService(decoratedCompilationUnit), new DataDecoratorUtil());
+    EmfMutatorDecorator emfMutatorDecorator= new EmfMutatorDecorator(glex, astService, clazz);
+    DataEmfDecorator dataEmfDecorator = new DataEmfDecorator(glex, new MethodDecorator(glex),
+        new ASTService(decoratedCompilationUnit), new DataDecoratorUtil(), emfMutatorDecorator);
     ASTEmfDecorator astEmfDecorator = new ASTEmfDecorator(glex, astService, visitorService, nodeFactoryService,
         astSymbolDecorator, astScopeDecorator, new MethodDecorator(glex), symbolTableService);
     ASTReferenceDecorator astReferencedSymbolDecorator = new ASTReferenceDecorator(glex, symbolTableService);
     ASTFullEmfDecorator fullDecorator = new ASTFullEmfDecorator(dataEmfDecorator, astEmfDecorator, astReferencedSymbolDecorator);
 
-    ASTCDClass clazz = getClassBy("A", decoratedCompilationUnit);
     this.astClass = fullDecorator.decorate(clazz);
   }
 

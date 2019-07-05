@@ -50,12 +50,9 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     clazz.addAllCDMethods(getAllDataMethods(clazz));
     clazz.addCDMethod(createDeepCloneWithParam(clazz));
 
-    List<ASTCDMethod> attributeMethods = clazz.getCDAttributeList().stream()
-        .map(methodDecorator::decorate)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
     //remove methods that are already defined by ast rules
-    clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), attributeMethods));
+    clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), createGetter(clazz.getCDAttributeList())));
+    clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), createSetter(clazz.getCDAttributeList())));
 
     return clazz;
   }
@@ -128,5 +125,19 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC, classType, DEEP_CLONE_METHOD, parameter);
     this.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("data.DeepCloneWithParameters", clazz));
     return deepCloneWithParam;
+  }
+
+  protected List<ASTCDMethod> createGetter(List<ASTCDAttribute> attributeList){
+    return attributeList.stream()
+        .map(methodDecorator.getAccessorDecorator()::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+  }
+
+  protected List<ASTCDMethod> createSetter(List<ASTCDAttribute> attributeList){
+    return attributeList.stream()
+        .map(methodDecorator.getMutatorDecorator()::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
   }
 }
