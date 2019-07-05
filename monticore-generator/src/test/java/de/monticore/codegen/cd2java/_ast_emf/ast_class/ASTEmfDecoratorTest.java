@@ -24,6 +24,7 @@ import org.junit.Test;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
@@ -143,6 +144,23 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDTypeFacade.getInstance().createComplexReferenceType("Class<?>"),
         method.getCDParameter(1).getType());
   }
+
+  @Test
+  public void testEToStringMethod() {
+    ASTCDMethod method = getMethodBy("toString", emfClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(String.class,method.getReturnType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testEStaticClassMethod() {
+    ASTCDMethod method = getMethodBy("eStaticClass", emfClass);
+    assertDeepEquals(PROTECTED, method.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EClass",method.getReturnType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
 
   @Test
   public void testGeneratedCode() {

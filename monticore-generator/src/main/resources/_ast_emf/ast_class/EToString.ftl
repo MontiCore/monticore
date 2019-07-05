@@ -1,24 +1,24 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  ${tc.signature("grammarName", "emfAttributes")}
+  ${tc.signature("attributeList")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
     if (eIsProxy()) {
       return super.toString();
     }
     StringBuffer result = new StringBuffer(getClass().getSimpleName());
-  <#list emfAttributes as emfAttribute>
-    <#if emfAttribute.isOptional()>
-    if (${emfAttribute.getAttributeName()}.isPresent()) {
-      result.append(" ${astHelper.getPlainName(emfAttribute.getCdAttribute())}: ");
-      result.append(${emfAttribute.getAttributeName()}.get());
+  <#list attributeList as attribute>
+    <#if genHelper.isOptional(attribute.getType())>
+    if (${attribute.getName()}.isPresent()) {
+      result.append(" ${attribute.getName()?cap_first}: ");
+      result.append(${attribute.getName()}.get());
     } 
-    <#elseif emfAttribute.isAstList()>
-    if (!${emfAttribute.getAttributeName()}.isEmpty()) {
-      result.append(" ${astHelper.getPlainName(emfAttribute.getCdAttribute())}: ");
-      result.append(${emfAttribute.getAttributeName()});
+    <#elseif genHelper.isListType(attribute.getType())>
+    if (!${attribute.getName()}.isEmpty()) {
+      result.append(" ${attribute.getName()?cap_first}: ");
+      result.append(${attribute.getName()});
     } 
     <#else>
-    result.append(" ${astHelper.getPlainName(emfAttribute.getCdAttribute())}: ");
-    result.append(${emfAttribute.getAttributeName()});
+    result.append(" ${attribute.getName()?cap_first}: ");
+    result.append(${attribute.getName()});
     </#if>
   </#list>
     return result.toString();

@@ -69,8 +69,10 @@ public class ASTEmfDecorator extends ASTDecorator {
     methodList.add(createESetMethod(astcdAttributes, packageName, className));
     methodList.add(createEUnsetMethod(astcdAttributes, packageName, className));
     methodList.add(createEIsSetMethod(astcdAttributes, packageName, className));
-    methodList.add(createEBaseStructuralFeatureIDIDMethod());
+    methodList.add(createEBaseStructuralFeatureIDMethod());
     methodList.add(createEDerivedStructuralFeatureIDMethod());
+    methodList.add(createEToStringMethod(astcdAttributes));
+    methodList.add(creatEStaticClassMethod(packageName, className));
 
     return methodList;
   }
@@ -121,13 +123,27 @@ public class ASTEmfDecorator extends ASTDecorator {
     return method;
   }
 
-  public ASTCDMethod createEBaseStructuralFeatureIDIDMethod() {
+  public ASTCDMethod createEBaseStructuralFeatureIDMethod() {
     ASTCDParameter featureParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createIntType(), FEATURE_ID);
     ASTCDParameter baseClassParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createComplexReferenceType("Class<?>"), "baseClass");
 
     ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getCDTypeFacade().createIntType(),
         E_BASE_STRUCTURAL_FEATURE_ID, featureParameter, baseClassParameter);
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return super.eBaseStructuralFeatureID(featureID, baseClass);"));
+    return method;
+  }
+
+  public ASTCDMethod createEToStringMethod(List<ASTCDAttribute> astcdAttributes) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC,
+        getCDTypeFacade().createSimpleReferenceType(String.class), "toString");
+    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.ast_class.EToString", astcdAttributes));
+    return method;
+  }
+
+  public ASTCDMethod creatEStaticClassMethod(String packageName, String className) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PROTECTED,
+        getCDTypeFacade().createSimpleReferenceType(E_CLASS_TYPE), "eStaticClass");
+    replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return " + packageName + ".Literals." + className + ";"));
     return method;
   }
 }
