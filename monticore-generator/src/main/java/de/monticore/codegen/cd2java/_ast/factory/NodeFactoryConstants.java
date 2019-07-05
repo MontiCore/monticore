@@ -12,5 +12,7 @@ public final class NodeFactoryConstants {
 
   public static final String CREATE_METHOD = "create";
 
+  public static final String FACTORY = "factory";
+
   private NodeFactoryConstants() {}
 }

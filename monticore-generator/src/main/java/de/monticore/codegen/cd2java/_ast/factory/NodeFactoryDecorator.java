@@ -22,11 +22,9 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDClass> {
 
-  private static final String FACTORY = "factory";
+  protected ASTCDCompilationUnit compilationUnit;
 
-  private ASTCDCompilationUnit compilationUnit;
-
-  private final NodeFactoryService nodeFactoryService;
+  protected final NodeFactoryService nodeFactoryService;
 
   public NodeFactoryDecorator(final GlobalExtensionManagement glex, final NodeFactoryService nodeFactoryService) {
     super(glex);

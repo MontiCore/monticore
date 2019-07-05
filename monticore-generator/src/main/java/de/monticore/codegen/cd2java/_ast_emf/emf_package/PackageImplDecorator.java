@@ -112,7 +112,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
   protected ASTCDMethod createInitMethod(String packageName) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, getCDTypeFacade().createSimpleReferenceType(packageName), "init");
-    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.InitMethod", packageName));
+    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.InitMethod", packageName));
     return method;
   }
 
@@ -135,7 +135,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
   protected ASTCDMethod createASTESuperPackagesMethod() {
     ASTSimpleReferenceType returnType = getCDTypeFacade().createListTypeOf(ASTE_PACKAGE);
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, "getASTESuperPackages");
-    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.GetASTESuperPackages"));
+    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.GetASTESuperPackages"));
     return method;
   }
 
@@ -164,13 +164,13 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
   protected ASTCDMethod createCreatePackageContentsMethod(String definitionName, List<ASTCDClass> classList) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "createPackageContents");
-    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.CreatePackageContents", definitionName, classList));
+    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.CreatePackageContents", definitionName, classList));
     return method;
   }
 
   protected ASTCDMethod createInitializePackageContentsMethod(){
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "initializePackageContents");
-    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.InitializePackageContents"));
+    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.InitializePackageContents"));
     return method;
   }
 }

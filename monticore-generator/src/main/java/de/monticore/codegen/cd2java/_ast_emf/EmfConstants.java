@@ -28,9 +28,7 @@ public final class EmfConstants {
 
   public static final String E_ENUM_TYPE = "org.eclipse.emf.ecore.EEnum";
 
-  public static final String E_CLASS_SUFFIX = "EClass";
-
-  public static final String E_ENUM_SUFFIX = "EEnum";
+  public static final String E_OBJECT_TYPE = "org.eclipse.emf.ecore.EObject";
 
   public static final String IS_CREATED = "isCreated";
 
@@ -46,16 +44,17 @@ public final class EmfConstants {
 
   public static final String E_IS_SET = "eIsSet";
 
-  public static final String E_BASE_STRUCTURAL_FEATURE_ID= "eBaseStructuralFeatureID";
+  public static final String E_BASE_STRUCTURAL_FEATURE_ID = "eBaseStructuralFeatureID";
 
   public static final String E_DERIVED_STRUCTURAL_FEATURE_ID = "eDerivedStructuralFeatureID";
 
-  public static final String E_STATIC_CLASS= "eStaticClass";
+  public static final String E_STATIC_CLASS = "eStaticClass";
 
-  public static final String FEATURE_ID= "featureID";
+  public static final String FEATURE_ID = "featureID";
 
+  public static final String E_FACTORY_IMPL = "org.eclipse.emf.ecore.impl.EFactoryImpl";
 
-
-  private EmfConstants() {}
+  private EmfConstants() {
+  }
 
 }

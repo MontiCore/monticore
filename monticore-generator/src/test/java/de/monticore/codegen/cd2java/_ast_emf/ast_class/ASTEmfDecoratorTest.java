@@ -73,7 +73,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethodSize() {
     assertFalse(emfClass.getCDMethodList().isEmpty());
-    assertEquals(37, emfClass.getCDMethodList().size());
+    assertEquals(39, emfClass.getCDMethodList().size());
   }
 
   @Test
