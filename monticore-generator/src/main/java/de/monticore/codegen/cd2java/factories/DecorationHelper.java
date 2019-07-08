@@ -3,12 +3,18 @@ package de.monticore.codegen.cd2java.factories;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.cd.cd4analysis._symboltable.CDTypes;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.MCCollectionTypesHelper;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.StringTransformations;
+
+import java.util.List;
+
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 
 public class DecorationHelper extends MCCollectionTypesHelper {
 
@@ -63,6 +69,22 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     return true;
   }
 
+  public static String getAstClassNameForASTLists(CDTypeSymbolReference field) {
+    List<CDTypeSymbolReference> typeArgs = field.getActualTypeArguments();
+    if (typeArgs.size() != 1) {
+      return AST_INTERFACE;
+    }
+
+    return (typeArgs.get(0)).getStringRepresentation();
+  }
+
+  public static String getAstClassNameForASTLists(ASTCDAttribute attr) {
+    if (!attr.isPresentSymbol2()) {
+      return "";
+    }
+    return getAstClassNameForASTLists((attr.getSymbol2()).getType());
+  }
+
   public static String getNativeAttributeName(String attributeName) {
     if (!attributeName.startsWith(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED)) {
       return attributeName;
@@ -83,6 +105,7 @@ public class DecorationHelper extends MCCollectionTypesHelper {
   public static boolean isString(String type) {
     return "String".equals(type) || "java.lang.String".equals(type);
   }
+
 
   public static String getPlainGetter(ASTCDAttribute ast) {
     String astType = printType(ast.getMCType());
@@ -105,5 +128,38 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     }
     return sb.toString();
   }
+
+  public boolean isAttributeOfTypeEnum(ASTCDAttribute attr) {
+    if (!attr.isPresentSymbol2()) {
+      return false;
+    }
+    CDTypeSymbolReference attrType =  attr.getSymbol2().getType();
+
+    List<CDTypeSymbolReference> typeArgs = attrType.getActualTypeArguments();
+    if (typeArgs.size() > 1) {
+      return false;
+    }
+
+    String typeName = typeArgs.isEmpty()
+            ? attrType.getName()
+            : typeArgs.get(0).getName();
+    if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
+      return false;
+    }
+
+    List<String> listName = MCCollectionTypesHelper.createListFromDotSeparatedString(typeName);
+    if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
+      return false;
+    }
+
+    if (typeArgs.isEmpty()) {
+      return attrType.existsReferencedSymbol() && attrType.isEnum();
+    }
+
+    CDTypeSymbolReference typeArgument = (CDTypeSymbolReference) typeArgs
+            .get(0);
+    return typeArgument.existsReferencedSymbol() && typeArgument.isEnum();
+  }
+
 
 }
