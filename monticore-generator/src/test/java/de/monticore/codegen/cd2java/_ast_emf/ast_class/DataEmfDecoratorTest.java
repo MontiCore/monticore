@@ -35,7 +35,7 @@ public class DataEmfDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
 
     MethodDecorator methodDecorator = new MethodDecorator(glex);
-    EmfMutatorDecorator emfMutatorDecorator= new EmfMutatorDecorator(glex, new ASTService(compilationUnit), clazz);
+    EmfMutatorDecorator emfMutatorDecorator= new EmfMutatorDecorator(glex, new ASTService(compilationUnit));
 
     DataEmfDecorator dataEmfDecorator = new DataEmfDecorator(this.glex, methodDecorator, new ASTService(compilationUnit),
         new DataDecoratorUtil(), emfMutatorDecorator);
@@ -62,6 +62,4 @@ public class DataEmfDecoratorTest extends DecoratorTestCase {
     assertTrue(sb.toString().contains("EObjectContainmentEList"));
     System.out.println(sb.toString());
   }
-
-
 }

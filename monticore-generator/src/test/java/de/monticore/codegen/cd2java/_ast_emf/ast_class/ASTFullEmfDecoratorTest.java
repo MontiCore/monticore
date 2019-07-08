@@ -45,7 +45,7 @@ public class ASTFullEmfDecoratorTest extends DecoratorTestCase {
     NodeFactoryService nodeFactoryService = new NodeFactoryService(decoratedCompilationUnit);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex,  symbolTableService);
-    EmfMutatorDecorator emfMutatorDecorator= new EmfMutatorDecorator(glex, astService, clazz);
+    EmfMutatorDecorator emfMutatorDecorator= new EmfMutatorDecorator(glex, astService);
     DataEmfDecorator dataEmfDecorator = new DataEmfDecorator(glex, new MethodDecorator(glex),
         new ASTService(decoratedCompilationUnit), new DataDecoratorUtil(), emfMutatorDecorator);
     ASTEmfDecorator astEmfDecorator = new ASTEmfDecorator(glex, astService, visitorService, nodeFactoryService,

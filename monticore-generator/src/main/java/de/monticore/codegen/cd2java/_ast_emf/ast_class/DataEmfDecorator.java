@@ -55,6 +55,9 @@ public class DataEmfDecorator extends DataDecorator {
 
   @Override
   protected List<ASTCDMethod> createSetter(List<ASTCDAttribute> attributeList){
+    // have to set className before calling the emfMutatorDecorator
+    // because the className information is needed and hard to get otherwise
+    this.emfMutatorDecorator.setClassName(clazzName);
     return attributeList.stream()
         .map(emfMutatorDecorator::decorate)
         .flatMap(List::stream)

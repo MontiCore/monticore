@@ -5,7 +5,6 @@ import de.monticore.codegen.cd2java.methods.mutator.ListMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
@@ -16,18 +15,24 @@ public class EmfListMutatorDecorator extends ListMutatorDecorator {
 
   private final ASTService astService;
 
-  private final ASTCDClass astcdClass;
+  private String className;
 
-  public EmfListMutatorDecorator(GlobalExtensionManagement glex, ASTService astService, ASTCDClass astcdClass) {
+  public EmfListMutatorDecorator(GlobalExtensionManagement glex, ASTService astService) {
     super(glex);
     this.astService = astService;
-    this.astcdClass = astcdClass;
+  }
+
+  public String getClassName() {
+    return className;
+  }
+
+  public void setClassName(String className) {
+    this.className = className;
   }
 
   @Override
   protected ASTCDMethod createSetListMethod(ASTCDAttribute attribute) {
     String packageName = astService.getCDName() + PACKAGE_SUFFIX;
-    String className = astcdClass.getName();
     String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, attribute.getName());
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
     this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("_ast_emf.ast_class.EmfSet",
