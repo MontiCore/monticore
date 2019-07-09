@@ -29,15 +29,23 @@ build_dev:
     - dev
     - newSymtab
     - refactoring_with_new_symtab
-    
+
+build_latest-grammar:
+  stage: build
+  script:
+    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy"
+  only:
+    - latest-grammar
+
 build_branches:
   stage: build
   script:
-    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install"
+    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
   except:
     - dev
     - master
     - ci/gitlab-runner
+    - latest-grammar
 
 integration-test:
   stage: test

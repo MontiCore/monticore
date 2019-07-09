@@ -14,9 +14,11 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
     }
 
     public ASTMCMapType(String name, ASTMCTypeArgument key, ASTMCTypeArgument value) {
-        super(name, key, value);
+        super("Map", key, value);
     }
-
+    public ASTMCMapType( ASTMCTypeArgument key, ASTMCTypeArgument value) {
+        super("Map", key, value);
+    }
 
 
     @Override

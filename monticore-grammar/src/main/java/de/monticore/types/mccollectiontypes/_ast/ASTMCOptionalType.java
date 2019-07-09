@@ -11,10 +11,13 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
     public ASTMCOptionalType() {
     }
 
-    public ASTMCOptionalType(String name, ASTMCTypeArgument typeArgument) {
-        super(name, typeArgument);
+    public ASTMCOptionalType( ASTMCTypeArgument typeArgument) {
+        super("Optional", typeArgument);
     }
+    public ASTMCOptionalType( String name, ASTMCTypeArgument typeArgument) {
+        super("Optional", typeArgument);
 
+    }
     @Override
     public List<String> getNameList() {
 
