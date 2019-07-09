@@ -744,6 +744,10 @@ public class GeneratorHelper extends TypesHelper {
     return CD4AnalysisHelper.isAbstract(method);
   }
 
+  public static boolean isDefault(ASTCDMethod method) {
+    return hasStereotype(method, MC2CDStereotypes.METHOD_BODY.toString());
+  }
+
   public static boolean isInherited(ASTCDAttribute attribute) {
     return CD4AnalysisHelper.hasStereotype(attribute, MC2CDStereotypes.INHERITED.toString());
   }

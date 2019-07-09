@@ -1,25 +1,27 @@
-${tc.signature("cdInterface")}
+${tc.signature("packageInterface", "astCDDefinition")}
 ${tc.include("core.Package")}
 
 ${tc.include("core.Imports")}
 
-${cdInterface.printModifier()} interface ${cdInterface.getName()} <#rt><#lt>
-<#if !cdInterface.isEmptyInterfaces()>extends ${cdInterface.printInterfaces()} </#if>{
+${packageInterface.printModifier()} interface ${packageInterface.getName()} <#rt><#lt>
+<#if !packageInterface.isEmptyInterfaces()>extends ${packageInterface.printInterfaces()} </#if>{
 
 
-<#list cdInterface.getCDAttributeList() as attribute>
+<#list packageInterface.getCDAttributeList() as attribute>
     ${tc.include("core.Attribute", attribute)}
 </#list>
 
-<#list cdInterface.getCDMethodList() as method>
+<#list packageInterface.getCDMethodList() as method>
     <#if !method.getModifier().isAbstract()>default </#if>${tc.include("core.Method", method)}
 </#list>
 
-<#assign simpleName = cdInterface.getName()?remove_beginning("AST")>
   interface Literals {
-    org.eclipse.emf.ecore.EEnum Constants${simpleName} = eINSTANCE.getConstants${simpleName}
-    <#list cdInterface.getAttributeList() as attribute>
-
+    org.eclipse.emf.ecore.EEnum Constants${astCDDefinition.getName()} = eINSTANCE.getConstants${astCDDefinition.getName()}
+    <#list astCDDefinition.getCDClassList() as cdClass>
+      org.eclipse.emf.ecore.EClass ${cdClass.getName()} = eINSTANCE.get${cdClass.getName()}()
+    </#list>
+    <#list astCDDefinition.getCDInterfaceList() as cdInterface>
+      org.eclipse.emf.ecore.EClass ${cdInterface.getName()} = eINSTANCE.get${cdInterface.getName()}()
     </#list>
   }
 }

@@ -1,16 +1,12 @@
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,9 +24,13 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDInterface packageInterface;
 
+  private ASTCDDefinition astcdDefinition;
+
   @Before
   public void setup() {
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+
+    astcdDefinition= ast.getCDDefinition();
 
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -266,7 +266,7 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, packageInterface, packageInterface);
+    StringBuilder sb = generatorEngine.generate("_ast_emf.emf_package.EmfPackage", packageInterface, packageInterface, astcdDefinition);
     System.out.println(sb.toString());
   }
 
