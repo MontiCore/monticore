@@ -52,7 +52,7 @@ public class ExtendsTranslation implements
     for (ASTRuleReference ruleReference : classProd.getSuperRuleList()) {
       ProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdClass.setSuperclass(TransformationHelper.createType(
+      cdClass.setSuperclass(TransformationHelper.createObjectType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -60,7 +60,7 @@ public class ExtendsTranslation implements
     for (ASTMCType typeReference : classProd.getASTSuperClassList()) {
       String qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
-      cdClass.setSuperclass(TransformationHelper.createType(qualifiedRuleName));
+      cdClass.setSuperclass(TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }
 
@@ -70,7 +70,7 @@ public class ExtendsTranslation implements
     for (ASTRuleReference ruleReference : abstractProd.getSuperRuleList()) {
       ProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdClass.setSuperclass(TransformationHelper.createType(
+      cdClass.setSuperclass(TransformationHelper.createObjectType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -79,7 +79,7 @@ public class ExtendsTranslation implements
     for (ASTMCType typeReference : abstractProd.getASTSuperClassList()) {
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
-      cdClass.setSuperclass(TransformationHelper.createType(qualifiedRuleName));
+      cdClass.setSuperclass(TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }
 
@@ -89,7 +89,7 @@ public class ExtendsTranslation implements
     for (ASTRuleReference ruleReference : interfaceProd.getSuperInterfaceRuleList()) {
       ProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdInterface.getInterfaceList().add(TransformationHelper.createType(
+      cdInterface.getInterfaceList().add(TransformationHelper.createObjectType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -99,7 +99,7 @@ public class ExtendsTranslation implements
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdInterface);
       cdInterface.getInterfaceList().add(
-          TransformationHelper.createType(qualifiedRuleName));
+          TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }
 }

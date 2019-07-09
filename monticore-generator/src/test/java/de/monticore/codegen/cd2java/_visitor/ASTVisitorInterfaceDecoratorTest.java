@@ -14,6 +14,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,6 +52,8 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
+    Log.init();
+    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
     this.cdTypeFacade = CDTypeFacade.getInstance();
 
@@ -91,7 +94,8 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("getRealThis", visitorInterface);
     assertDeepEquals(PUBLIC, method.getModifier());
     ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(VISITOR_FULL_NAME);
-    assertDeepEquals(astType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(astType, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -99,7 +103,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
   public void testSetRealThis() {
     ASTCDMethod method = getMethodBy("setRealThis", visitorInterface);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(VISITOR_FULL_NAME);
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
@@ -115,7 +119,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -127,7 +131,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -139,7 +143,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -151,7 +155,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -163,7 +167,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -175,7 +179,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
 
@@ -188,7 +192,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -200,7 +204,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -212,7 +216,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -224,7 +228,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
 
@@ -237,7 +241,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -249,7 +253,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -261,7 +265,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -273,7 +277,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test

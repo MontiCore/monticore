@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java._cocos;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -11,7 +12,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.se_rwth.commons.logging.LogStub;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,9 +63,11 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    LogStub.init();
+    Log.init();
+    Log.enableFailQuick(false);
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "ast", "Automaton");
     this.glex.setGlobalValue("service", new AbstractService(ast));
+    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     CoCoCheckerDecorator coCoCheckerDecorator = new CoCoCheckerDecorator(glex, methodDecorator, new CoCoService(ast), new VisitorService(ast));
@@ -77,7 +80,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, cocoChecker, cocoChecker);
-    System.out.println(sb.toString());
+    // TODO Check System.out.println(sb.toString());
   }
 
   @Test
@@ -158,7 +161,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setRealThis", cocoChecker);
     assertDeepEquals(PUBLIC, method.getModifier());
     ASTMCType astType = this.cdTypeFacade.createQualifiedType(COCO_CHECKER);
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
@@ -170,7 +173,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("getRealThis", cocoChecker);
     assertDeepEquals(PUBLIC, method.getModifier());
     ASTMCType astType = this.cdTypeFacade.createQualifiedType(COCO_CHECKER);
-    assertDeepEquals(astType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(astType, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 

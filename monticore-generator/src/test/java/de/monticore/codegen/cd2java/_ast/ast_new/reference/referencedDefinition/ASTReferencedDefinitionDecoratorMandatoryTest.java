@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._ast.ast_new.reference.referencedDefinition
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -15,6 +16,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,8 +38,11 @@ public class ASTReferencedDefinitionDecoratorMandatoryTest extends DecoratorTest
 
   @Before
   public void setup() {
+    Log.init();
+    Log.enableFailQuick(false);
     this.cdTypeFacade = CDTypeFacade.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
     this.glex.setGlobalValue("service", new AbstractService(ast));
 
@@ -68,7 +73,8 @@ public class ASTReferencedDefinitionDecoratorMandatoryTest extends DecoratorTest
     ASTCDMethod method = getMethodBy("getNameDefinition", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(NAME_DEFINITION);
-    assertDeepEquals(astType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(astType, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -76,7 +82,8 @@ public class ASTReferencedDefinitionDecoratorMandatoryTest extends DecoratorTest
   public void testGetNameDefinitionOptMethod() {
     ASTCDMethod method = getMethodBy("getNameDefinitionOpt", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertOptionalOf(NAME_DEFINITION, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertOptionalOf(NAME_DEFINITION, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -84,7 +91,8 @@ public class ASTReferencedDefinitionDecoratorMandatoryTest extends DecoratorTest
   public void testIsPresentNameDefinitionMethod() {
     ASTCDMethod method = getMethodBy("isPresentNameDefinition", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -94,6 +102,6 @@ public class ASTReferencedDefinitionDecoratorMandatoryTest extends DecoratorTest
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, astClass, astClass);
-    System.out.println(sb.toString());
+    // TODO: Check System.out.println(sb.toString());
   }
 }

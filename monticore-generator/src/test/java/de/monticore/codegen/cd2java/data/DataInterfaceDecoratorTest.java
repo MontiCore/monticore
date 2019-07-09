@@ -60,7 +60,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testDeepEquals() {
     ASTCDMethod method = getMethodBy("deepEquals", 1, dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertBoolean(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
@@ -74,7 +75,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testDeepEqualsForceSameOrder() {
     ASTCDMethod method = getMethodBy("deepEquals", 2, dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertBoolean(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2, method.sizeCDParameters());
@@ -92,7 +94,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testDeepEqualsWithComments() {
     ASTCDMethod method = getMethodBy("deepEqualsWithComments", 1, dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertBoolean(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
@@ -106,7 +109,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testDeepEqualsWithCommentsForceSameOrder() {
     ASTCDMethod method = getMethodBy("deepEqualsWithComments", 2, dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertBoolean(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2, method.sizeCDParameters());
@@ -124,7 +128,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testEqualAttributes() {
     ASTCDMethod method = getMethodBy("equalAttributes", dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertBoolean(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
@@ -138,7 +143,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testEqualsWithComments() {
     ASTCDMethod method = getMethodBy("equalsWithComments", dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertBoolean(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
@@ -152,7 +158,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testDeepClone() {
     ASTCDMethod method = getMethodBy("deepClone", 0, dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertDeepEquals(dataInterface.getName(), method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(dataInterface.getName(), method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -162,7 +169,7 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, dataInterface, dataInterface);
-    System.out.println(sb.toString());
+    // TODO Check System.out.println(sb.toString());
   }
 
 }

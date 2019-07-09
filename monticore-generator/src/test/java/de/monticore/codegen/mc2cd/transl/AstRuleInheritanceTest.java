@@ -5,6 +5,8 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -16,6 +18,12 @@ public final class AstRuleInheritanceTest {
   private final ASTCDClass astC;
 
   private final ASTCDClass impl;
+
+  @BeforeClass
+  public static void setup() {
+    Log.init();
+    Log.enableFailQuick(false);
+  }
 
   public AstRuleInheritanceTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths

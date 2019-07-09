@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.factories.CDModifier;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
-import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.MCFullGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import static org.junit.Assert.assertTrue;
@@ -22,7 +22,7 @@ public final class DecoratorAssert {
   }
 
   private static String getAsString(ASTNode node) {
-    return node instanceof ASTMCType ? MCCollectionTypesHelper.printType((ASTMCType) node) : node.toString();
+    return node instanceof ASTMCType ? MCFullGenericTypesHelper.printType((ASTMCType) node) : node.toString();
   }
 
   public static void assertDeepEquals(CDModifier expected, ASTNode actual) {

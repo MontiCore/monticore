@@ -26,9 +26,7 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ISymbol;
-import de.monticore.symboltable.Symbol;
 import de.monticore.types.CollectionTypesPrinter;
 import de.monticore.types.MCCollectionTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
@@ -885,7 +883,7 @@ public class CdDecorator {
             c.getCDAttributeList().stream().forEach(a -> cdTransformation.addCdAttribute(clazz.get(), a));
             ASTMCObjectType superClass;
             if (c.isPresentSuperclass()) {
-              superClass = TransformationHelper.createType(c.printSuperClass() + "Builder");
+              superClass = TransformationHelper.createObjectType(c.printSuperClass() + "Builder");
             } else {
               superClass = TransformationHelper.createType("de.monticore.ast.ASTNodeBuilder", clazz.get().getName());
             }
@@ -1252,7 +1250,7 @@ public class CdDecorator {
       millClass.setModifier(TransformationHelper.createAbstractModifier());
     }
     millClass.setName(millClassName);
-    millClass.setSuperclass(TransformationHelper.createType(symbol.getName()));
+    millClass.setSuperclass(TransformationHelper.createObjectType(symbol.getName()));
 
     // Add builder-creating methods
     for (CDTypeSymbol cdType : overriddenClasses) {
@@ -1661,7 +1659,7 @@ public class CdDecorator {
     }
     ASTCDInterface baseInterface = stream.get(0);
     baseInterface.getInterfaceList().add(
-        TransformationHelper.createType(GeneratorHelper.AST_NODE));
+        TransformationHelper.createObjectType(GeneratorHelper.AST_NODE));
     glex.replaceTemplate(
         "ast.AstInterfaceContent",
         baseInterface,

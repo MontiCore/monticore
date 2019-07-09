@@ -114,9 +114,9 @@ public class GeneratorSetup {
   public static final String ALIASES_TEMPLATE = "de.monticore.generating.templateengine.freemarker.Aliases";
   
   public  Configuration getConfig() {
-    Configuration config = new Configuration(Configuration.VERSION_2_3_28);
+    Configuration config = new Configuration(Configuration.VERSION_2_3_26);
 
-    DefaultObjectWrapper o = new DefaultObjectWrapper(Configuration.VERSION_2_3_28);
+    DefaultObjectWrapper o = new DefaultObjectWrapper(Configuration.VERSION_2_3_26);
     o.setTreatDefaultMethodsAsBeanMembers(true);
     config.setObjectWrapper(o);
     // don't look for templateName.de.ftl when templateName.ftl requested

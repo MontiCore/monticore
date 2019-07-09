@@ -28,7 +28,7 @@ public class ExternalImplementationTranslation implements
           link.source(), name);
       if (ruleSymbol.isPresent() && ruleSymbol.get().isExternal()) {
         link.target().getInterfaceList().add(
-            TransformationHelper.createType(TransformationHelper.getGrammarNameAsPackage(
+            TransformationHelper.createObjectType(TransformationHelper.getGrammarNameAsPackage(
                 ruleSymbol.get()) + "AST" + name + "Ext"));
       }
     }

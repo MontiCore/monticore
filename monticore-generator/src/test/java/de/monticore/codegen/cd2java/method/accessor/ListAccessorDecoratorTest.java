@@ -55,7 +55,8 @@ public class ListAccessorDecoratorTest {
   @Test
   public void testContainsMethod() {
     ASTCDMethod method = getMethodBy("containsA", this.methods);
-    assertBoolean(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -67,7 +68,8 @@ public class ListAccessorDecoratorTest {
   @Test
   public void testContainsAllMethod() {
     ASTCDMethod method = getMethodBy("containsAllA", this.methods);
-    assertBoolean(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -81,7 +83,8 @@ public class ListAccessorDecoratorTest {
   public void testIsEmptyMethod() {
     ASTCDMethod method = getMethodBy("isEmptyA", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    assertBoolean(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
@@ -89,7 +92,8 @@ public class ListAccessorDecoratorTest {
   public void testSizeMethod() {
     ASTCDMethod method = getMethodBy("sizeA", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    assertInt(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertInt(method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
@@ -117,7 +121,8 @@ public class ListAccessorDecoratorTest {
     ASTCDMethod method = getMethodBy("spliteratorA", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
     ASTMCType expectedReturnType = CDTypeFacade.getInstance().createTypeByDefinition("Spliterator<String>");
-    assertDeepEquals(expectedReturnType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
@@ -126,7 +131,8 @@ public class ListAccessorDecoratorTest {
     ASTCDMethod method = getMethodBy("streamA", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
     ASTMCType expectedReturnType = CDTypeFacade.getInstance().createTypeByDefinition("Stream<String>");
-    assertDeepEquals(expectedReturnType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
@@ -135,14 +141,16 @@ public class ListAccessorDecoratorTest {
     ASTCDMethod method = getMethodBy("parallelStreamA", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
     ASTMCType expectedReturnType = CDTypeFacade.getInstance().createTypeByDefinition("Stream<String>");
-    assertDeepEquals(expectedReturnType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
   @Test
   public void testGetWithIndexMethod() {
     ASTCDMethod method = getMethodBy("getA", 1, this.methods);
-    assertDeepEquals(String.class, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
 
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -153,7 +161,8 @@ public class ListAccessorDecoratorTest {
   @Test
   public void testIndexOfMethod() {
     ASTCDMethod method = getMethodBy("indexOfA", this.methods);
-    assertInt(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertInt(method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -165,7 +174,8 @@ public class ListAccessorDecoratorTest {
   @Test
   public void testLastIndexOfMethod() {
     ASTCDMethod method = getMethodBy("lastIndexOfA", this.methods);
-    assertInt(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertInt(method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -177,7 +187,8 @@ public class ListAccessorDecoratorTest {
   @Test
   public void testEqualsMethod() {
     ASTCDMethod method = getMethodBy("equalsA", this.methods);
-    assertBoolean(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -199,7 +210,8 @@ public class ListAccessorDecoratorTest {
     ASTCDMethod method = getMethodBy("listIteratorA", 0, this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
     ASTMCType expectedReturnType = CDTypeFacade.getInstance().createTypeByDefinition("ListIterator<String>");
-    assertDeepEquals(expectedReturnType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
@@ -207,7 +219,8 @@ public class ListAccessorDecoratorTest {
   public void testListIteratorWithIndexMethod() {
     ASTCDMethod method = getMethodBy("listIteratorA", 1, this.methods);
     ASTMCType expectedReturnType = CDTypeFacade.getInstance().createTypeByDefinition("ListIterator<String>");
-    assertDeepEquals(expectedReturnType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -220,7 +233,8 @@ public class ListAccessorDecoratorTest {
   public void testSubListMethod() {
     ASTCDMethod method = getMethodBy("subListA", this.methods);
     ASTMCType expectedReturnType = CDTypeFacade.getInstance().createListTypeOf("String");
-    assertDeepEquals(expectedReturnType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
 
     assertEquals(2, method.getCDParameterList().size());

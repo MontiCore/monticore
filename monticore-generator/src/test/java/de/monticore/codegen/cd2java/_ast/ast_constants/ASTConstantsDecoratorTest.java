@@ -4,6 +4,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -41,6 +42,7 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
@@ -110,7 +112,8 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
   public void testGetAllLanguagesMethod() {
     ASTCDMethod method = getMethodBy("getAllLanguages", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createTypeByDefinition("Collection<String>"), method.getMCReturnType());
+    assertDeepEquals(cdTypeFacade.createTypeByDefinition("Collection<String>"),
+            method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
