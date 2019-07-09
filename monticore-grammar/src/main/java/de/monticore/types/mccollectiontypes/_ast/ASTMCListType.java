@@ -11,7 +11,11 @@ public class ASTMCListType extends ASTMCListTypeTOP {
     }
 
     public ASTMCListType(String name, ASTMCTypeArgument typeArgument) {
-        super(name, typeArgument);
+        super("List", typeArgument);
+    }
+
+    public ASTMCListType(ASTMCTypeArgument typeArgument) {
+        super("List", typeArgument);
     }
 
     @Override
