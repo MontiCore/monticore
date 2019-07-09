@@ -1,14 +1,13 @@
 ${tc.signature("packageName")}
 <#assign service = glex.getGlobalVar("service")>
 
-public static ${packageName} init() {
   if (isInited) {
   return (${packageName})org.eclipse.emf.ecore.EPackage.Registry.INSTANCE.getEPackage(${packageName}.eNS_URI);
   }
 
   // Obtain or create and register package
-  ${ast.getName()} the${packageName} = (${ast.getName()})(org.eclipse.emf.ecore.EPackage.Registry.INSTANCE.get(eNS_URI) instanceof ${ast.getName()}
-      ? org.eclipse.emf.ecore.EPackage.Registry.INSTANCE.get(eNS_URI) : new ${ast.getName()}());
+  ${packageName} the${packageName} = (${packageName})(org.eclipse.emf.ecore.EPackage.Registry.INSTANCE.get(eNS_URI) instanceof ${packageName}
+      ? org.eclipse.emf.ecore.EPackage.Registry.INSTANCE.get(eNS_URI) : new ${packageName}());
 
   isInited = true;
 

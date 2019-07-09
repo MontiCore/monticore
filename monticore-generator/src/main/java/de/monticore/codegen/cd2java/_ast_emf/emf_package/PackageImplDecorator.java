@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -13,8 +14,10 @@ import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
@@ -26,6 +29,8 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
   private final MandatoryAccessorDecorator accessorDecorator;
 
   private final DecorationHelper decorationHelper;
+  EmfService emfService;
+
 
   public PackageImplDecorator(GlobalExtensionManagement glex, MandatoryAccessorDecorator accessorDecorator,
                               DecorationHelper decorationHelper) {
@@ -36,13 +41,14 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
+    emfService = new EmfService(compilationUnit);
     String definitionName = compilationUnit.deepClone().getCDDefinition().getName();
     String packageImplName = definitionName + PACKAGE_IMPL_SUFFIX;
     String packageName = definitionName + PACKAGE_SUFFIX;
 
     List<ASTCDClass> classList = compilationUnit.deepClone().getCDDefinition().getCDClassList();
 
-    List<ASTCDAttribute> eClassAttributes = getEClassAttributes(classList);
+    List<ASTCDAttribute> eClassAttributes = getEClassAttributes(compilationUnit.deepClone().getCDDefinition());
     //e.g. public EClass getAutomaton() { return automaton; }
     List<ASTCDMethod> eClassMethods = new ArrayList<>();
     for (ASTCDAttribute eClassAttribute : eClassAttributes) {
@@ -71,14 +77,18 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
         .addCDMethod(createASTESuperPackagesMethod())
         .addAllCDMethods(createGetEAttributeMethods(classList))
         .addCDMethod(createCreatePackageContentsMethod(definitionName, classList))
+        .addCDMethod(createInitializePackageContentsMethod(compilationUnit.getCDDefinition()))
         .build();
   }
 
-  protected List<ASTCDAttribute> getEClassAttributes(List<ASTCDClass> astcdClassList) {
+  protected List<ASTCDAttribute> getEClassAttributes(ASTCDDefinition astcdDefinition) {
     //e.g.  private EClass automaton;
     List<ASTCDAttribute> attributeList = new ArrayList<>();
-    for (ASTCDClass astcdClass : astcdClassList) {
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdClass.getName())));
+    }
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+      attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdInterface.getName())));
     }
     return attributeList;
   }
@@ -121,14 +131,14 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
     ASTSimpleReferenceType nodeFactoryType = getCDTypeFacade().createSimpleReferenceType(definitionName + NODE_FACTORY_SUFFIX);
     String methodName = String.format(GET, definitionName + FACTORY_SUFFIX);
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, nodeFactoryType, methodName);
-    replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + definitionName + NODE_FACTORY_SUFFIX + ")getENodeFactoryInstance()"));
+    replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + definitionName + NODE_FACTORY_SUFFIX + ")getEFactoryInstance();"));
     return method;
   }
 
   protected ASTCDMethod createGetPackageMethod(String definitionName) {
     // e.g. public String getPackageName() { return "automata"; }
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createStringType(), "getPackageName");
-    replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return \"" + StringTransformations.uncapitalize(definitionName) + "\""));
+    replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return \"" + StringTransformations.uncapitalize(definitionName) + "\";"));
     return method;
   }
 
@@ -155,7 +165,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
         ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName);
 
         replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + TypesPrinter.printType(returnType) + ")" +
-            StringTransformations.uncapitalize(astcdClass.getName()) + "getEStructuralFeatures().get(" + i + ")"));
+            StringTransformations.uncapitalize(astcdClass.getName()) + ".getEStructuralFeatures().get(" + i + ");"));
         methodList.add(method);
       }
     }
@@ -168,9 +178,17 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
     return method;
   }
 
-  protected ASTCDMethod createInitializePackageContentsMethod(){
+  protected ASTCDMethod createInitializePackageContentsMethod(ASTCDDefinition astcdDefinition) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "initializePackageContents");
-    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.InitializePackageContents"));
+    //find literalsEnum in CD
+    Optional<ASTCDEnum> literalsEnum = astcdDefinition.getCDEnumList()
+        .stream()
+        .filter(x -> x.getName().equals(astcdDefinition.getName() + LITERALS_SUFFIX))
+        .findFirst();
+    if(literalsEnum.isPresent()){
+      replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.InitializePackageContents",
+          astcdDefinition, literalsEnum.get()));
+    }
     return method;
   }
 }

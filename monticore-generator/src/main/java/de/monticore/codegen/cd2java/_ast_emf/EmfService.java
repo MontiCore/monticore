@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._ast_emf;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 
@@ -46,5 +47,13 @@ public class EmfService extends AbstractService {
 
   public String getSimplePackageImplName(CDSymbol cdSymbol) {
     return cdSymbol.getName() + PACKAGE_IMPL_SUFFIX;
+  }
+
+  public String getSimplePackageImplName(String cdSymbolQualifiedName) {
+    return getSimplePackageImplName(resolveCD(cdSymbolQualifiedName));
+  }
+
+  public boolean isExternal(ASTCDAttribute attribute) {
+    return getNativeAttributeType(attribute.getType()).endsWith("Ext");
   }
 }

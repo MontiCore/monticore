@@ -11,7 +11,7 @@ if (isCreated) {
 isCreated = true;
 
 // Create classes and their features
-constants${grammarName}EEnum = createEEnum(Constants${grammarName});
+constants${grammarName} = createEEnum(Constants${grammarName});
 
 <#list astClasses as astClass>
     ${astClass.getName()?uncap_first} = createEClass(${astClass.getName()});
@@ -21,9 +21,9 @@ constants${grammarName}EEnum = createEEnum(Constants${grammarName});
     <#list astClass.getCDAttributeList() as attribute>
         <#if genHelper.isAstNode(attribute) || genHelper.isOptionalAstNode(attribute)
             || genHelper.isListAstNode(attribute)>
-          createEReference(${astClass.getName()?uncap_first}EClass, ${astClass.getName()}_${attribute.getName()?cap_first});
+          createEReference(${astClass.getName()?uncap_first}, ${astClass.getName()}_${attribute.getName()?cap_first});
           <#else >
-          createEAttribute(${astClass.getName()?uncap_first}EClass, ${astClass.getName()}_${attribute.getName()?cap_first});
+          createEAttribute(${astClass.getName()?uncap_first}, ${astClass.getName()}_${attribute.getName()?cap_first});
         </#if>
     </#list>
 </#list>

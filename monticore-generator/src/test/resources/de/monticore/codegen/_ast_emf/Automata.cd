@@ -1,0 +1,43 @@
+package de.monticore.codegen._ast_emf;
+
+import de.monticore.codegen.ast.Lexicals.*;
+
+classdiagram Automata {
+
+    <<scope, symbol>> public class ASTAutomaton{
+      protected String name;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition> transitions;
+    }
+
+    <<symbol>> public class ASTState{
+      protected String name;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition> transitions;
+    }
+
+    public class ASTTransition{
+      protected String from;
+      protected String input;
+      protected String to;
+    }
+
+    enum AutomataLiterals{
+      FINAL,
+      INITIAL;
+    }
+
+    public class ASTTransitionWithAction extends ASTTransition{
+      protected String from;
+      <<inherited="Automata">>protected String input;
+      <<inherited="Automata">>protected String to;
+    }
+
+    public class ASTAutName extends de.monticore.codegen.ast.Lexicals.ASTName{
+      protected String from;
+      <<inherited="Automata">>protected String input;
+      <<inherited="Automata">>protected String to;
+    }
+
+    public interface ASTBodyExt;
+}

@@ -27,7 +27,7 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "_ast_emf", "Automata");
 
     this.glex.setGlobalValue("service", new EmfService(ast));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -37,13 +37,13 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassName() {
-    assertEquals("AutomatonPackageImpl", packageClass.getName());
+    assertEquals("AutomataPackageImpl", packageClass.getName());
   }
 
   @Test
   public void testSuperInterface() {
     assertEquals(1, packageClass.sizeInterfaces());
-    assertDeepEquals("AutomatonPackage", packageClass.getInterface(0));
+    assertDeepEquals("AutomataPackage", packageClass.getInterface(0));
   }
 
   @Test
@@ -55,30 +55,30 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(7, packageClass.getCDAttributeList().size());
+    assertEquals(9, packageClass.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodSize() {
     assertFalse(packageClass.getCDMethodList().isEmpty());
-    assertEquals(18, packageClass.getCDMethodList().size());
+    assertEquals(27, packageClass.getCDMethodList().size());
   }
 
   @Test
   public void testConstructor() {
     assertEquals(1, packageClass.sizeCDConstructors());
     ASTCDConstructor cdConstructor = packageClass.getCDConstructor(0);
-    assertEquals("AutomatonPackageImpl", cdConstructor.getName());
+    assertEquals("AutomataPackageImpl", cdConstructor.getName());
     assertDeepEquals(PRIVATE, cdConstructor.getModifier());
     assertTrue(cdConstructor.isEmptyCDParameters());
   }
 
   @Test
-  public void testConstantAutomatonAttribute() {
-    ASTCDAttribute constantsAutomaton = getAttributeBy("constantsAutomaton", packageClass);
-    assertTrue(constantsAutomaton.isPresentModifier());
-    assertDeepEquals(PRIVATE, constantsAutomaton.getModifier());
-    assertDeepEquals("org.eclipse.emf.ecore.EEnum", constantsAutomaton.getType());
+  public void testConstantAutomataAttribute() {
+    ASTCDAttribute constantsAutomata = getAttributeBy("constantsAutomata", packageClass);
+    assertTrue(constantsAutomata.isPresentModifier());
+    assertDeepEquals(PRIVATE, constantsAutomata.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EEnum", constantsAutomata.getType());
   }
 
   @Test
@@ -133,21 +133,21 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
   public void testInitMethod() {
     ASTCDMethod method = getMethodBy("init", packageClass);
     assertDeepEquals(PUBLIC_STATIC, method.getModifier());
-    assertDeepEquals("AutomatonPackage", method.getReturnType());
+    assertDeepEquals("AutomataPackage", method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
-  public void testGetAutomatonFactoryMethod() {
-    ASTCDMethod method = getMethodBy("getAutomatonFactory", packageClass);
+  public void testGetAutomataFactoryMethod() {
+    ASTCDMethod method = getMethodBy("getAutomataFactory", packageClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AutomatonNodeFactory", method.getReturnType());
+    assertDeepEquals("AutomataNodeFactory", method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
-  public void testGetConstantsAutomatonMethod() {
-    ASTCDMethod method = getMethodBy("getConstantsAutomaton", packageClass);
+  public void testGetConstantsAutomataMethod() {
+    ASTCDMethod method = getMethodBy("getConstantsAutomata", packageClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EEnum", method.getReturnType());
     assertTrue(method.isEmptyCDParameters());

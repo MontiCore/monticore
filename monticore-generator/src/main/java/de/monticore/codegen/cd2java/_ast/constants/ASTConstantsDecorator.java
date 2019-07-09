@@ -20,7 +20,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDClass> {
 
-  private static final String LITERALS_SUFFIX = "Literals";
+  public static final String LITERALS_SUFFIX = "Literals";
 
   private static final String LANGUAGE = "LANGUAGE";
 

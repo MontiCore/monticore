@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("grammarName", "superGrammars", "astClasses", "emfAttributes", "externalTypes", "definition")}
+${tc.signature("definition", "litealsEnum")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 <#assign service = glex.getGlobalVar("service")>
-
+<#assign grammarName = definition.getName()>
 // Complete the initialization of the package and its meta-model.  This
 // method is guarded to have no affect on any invocation but its first.
 
@@ -29,19 +29,22 @@ ASTENodePackage theASTENodePackage = (ASTENodePackage)EPackage.Registry.INSTANCE
     ${qualifiedName}.eNS_URI);
 </#list>
 
-<#list astClasses as astClass>
-    <#assign className = astClass.getName()>
+<#--add super types if existend, if not standard ENode-->
+<#list definition.getCDClassList() as astClass>
+    <#assign interfaceName = astClass.getName()>
     <#if !astClass.getSymbol().getSuperTypes()?has_content>
-        ${className?uncap_first}.getESuperTypes().add(theASTENodePackage.getENode());
+        ${interfaceName?uncap_first}.getESuperTypes().add(theASTENodePackage.getENode());
     <#else>
-        <#list astClass.getSymbol() as superClass>
-            <#if superClass.getModelName()?lower_case==service.getQualifiedCDName()?lower_case>
-                <#assign package = "this.get">
+        <#list astClass.getSymbol().getSuperTypes() as superType>
+            <#if superType.getModelName()?lower_case==service.getQualifiedCDName()?lower_case>
+                <#--local definded supertype-->
+                <#assign package = "this">
             <#else>
-                <#assign identifierName = astHelper.getIdentifierName(superClass.getModelName())>
-                <#assign package = identifierName?lower_case?cap_first + ".get">
+                <#--before loaded supertype-->
+                <#assign identifierName = service.getSimplePackageImplName(superType.getModelName())>
+                <#assign package = identifierName?uncap_first>
             </#if>
-            ${className?uncap_first}.getESuperTypes().add(${package}${superClass.getName()}());
+            ${interfaceName?uncap_first}.getESuperTypes().add(${package}.get${superType.getName()}());
         </#list>
     </#if>
 </#list>
@@ -49,19 +52,16 @@ ASTENodePackage theASTENodePackage = (ASTENodePackage)EPackage.Registry.INSTANCE
 // Initialize classes and features; add operations and parameters
 
 // Initialize enums and add enum literals
+<#--initialisation for Literal Constants-->
 initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}Literals");
-<#list definition.getCDEnumList() as literal>
-  addEEnumLiteral(constants${grammarName}, ${grammarName}Literals.${literal.getName()}Literals);
+<#list litealsEnum.getCDEnumConstantList() as enumConstant>
+    addEEnumLiteral(constants${grammarName}, ${grammarName}Literals.${enumConstant.getName()});
 </#list>
 
-<#list definition.getCDInterfaceList() as cdInterface>
-    <#assign interfaceName = cdInterface.getName()>
-  initEClass(${className?uncap_first}, ${className}.class, "${className}", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-</#list>
-
-<#list definition.getCDClassList() as astClass>
-    <#assign className = astClass.getName()>
-    <#if astClass.isPresentModifier() && astClass.getModifier().isAbstract()>
+<#--initialisation for all classes-->
+<#list definition.getCDClassList() as cdClass>
+    <#assign className = cdClass.getName()>
+    <#if cdClass.isPresentModifier() && cdClass.getModifier().isAbstract()>
         <#assign abstract = "IS_ABSTRACT">
     <#else>
         <#assign abstract = "!IS_ABSTRACT">
@@ -69,56 +69,36 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
     initEClass(${className?uncap_first}, ${className}.class, "${className}", ${abstract}, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 </#list>
 
-<#list definition.getCDEnumList() as cdEnum>
-    <#assign className = cdEnum.getName()>
-    initEClass(${className?uncap_first}, ${className}.class, "${className}", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+<#list definition.getCDInterfaceList() as cdInterface>
+    <#assign interfaceName = cdInterface.getName()>
+    initEClass(${interfaceName?uncap_first}, ${interfaceName}.class, "${interfaceName}", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 </#list>
 
-<#list emfAttributes as emfAttribute>
-    <#if emfAttribute.isExternal()>
-        <#assign get = "theASTENodePackage.getENode">
-    <#elseif emfAttribute.isInherited()>
-        <#assign sGrammarName = astHelper.getIdentifierName(emfAttribute.getDefinedGrammar())>
-        <#if emfAttribute.hasExternalType()>
-        <#-- Delete 4 characters: "AST" +"E" -->
-            <#assign get = "the" + sGrammarName?cap_first + "Package.get" + emfAttribute.getEDataType()[4..]>
+<#list definition.getCDClassList() as cdClass>
+    <#list cdClass.getCDAttributeList() as attribute>
+        <#if service.isExternal(attribute)>
+            <#assign get = "theASTENodePackage.getENode">
+        <#elseif service.isInherited(attribute)>
+            <#assign sGrammarName = service.getInheritedGrammarName(attribute)>
+            <#assign get = sGrammarName?uncap_first + ".get" + attribute.getName()?cap_first>
         <#else>
-            <#assign get = "the" + sGrammarName?cap_first + "Package.get" + emfAttribute.getEDataType()[3..]>
+            <#assign get = "this.get" + service.getSimpleNativeAttributeType(attribute.getType())?cap_first>
         </#if>
-    <#else>
-        <#assign get = "this.get" + emfAttribute.getEDataType()[3..]>
-    </#if>
-
-    <#if genHelper.isListType(emfAttribute)>
-        <#assign isList = "-1">
-    <#else>
-        <#assign isList = "1">
-    </#if>
-    <#if genHelper.isAstNode(emfAttribute) || genHelper.isListAstNode(emfAttribute)>
-      init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
-      0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, <#if isList == "1">!</#if>IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    <#else>
-        <#if emfAttribute.isEnum()>
-            <#if isList == "-1">
-                <#assign get = "this.getE" + emfAttribute.getEDataType()?cap_first>
-            <#else>
-                <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
-            </#if>
-        <#elseif emfAttribute.hasExternalType()>
-            <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
+        <#if genHelper.isListType(attribute.printType())>
+            <#assign isList = "-1">
         <#else>
-            <#assign get = "ecorePackage.getE" + emfAttribute.getEDataType()?cap_first>
+            <#assign isList = "1">
         </#if>
-      init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), "${emfAttribute.getAttributeName()?cap_first}", null,
-      0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, <#if isList == "1">!</#if>IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    </#if>
+        <#if genHelper.isSimpleAstNode(attribute) || genHelper.isListAstNode(attribute) ||genHelper.isOptionalAstNode(attribute)>
+            initEReference(get${cdClass.getName()}_${attribute.getName()?cap_first}(), ${get}(), null, "${attribute.getName()?cap_first}", null,
+            0, ${isList}, ${cdClass.getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, <#if isList == "1">!</#if>IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        <#else>
+            <#assign get = "ecorePackage.getE" + attribute.printType()?cap_first>
+            initEAttribute(get${cdClass.getName()}_${attribute.getName()?cap_first}(), ${get}(), "${attribute.getName()?cap_first}", null,
+            0, ${isList}, ${cdClass.getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, <#if isList == "1">!</#if>IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        </#if>
+    </#list>
 </#list>
-
-<#list externalTypes?keys as externalType>
-  initEDataType(${externalTypes[externalType]?uncap_first}EDataType, ${externalType}.class, "${externalTypes[externalType]}", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-</#list>
-
-<#-- TODO GV:   ePackageImplInitiliazeMethod, ast.getMethods() -->
 
 // Create resource
 createResource(eNS_URI);

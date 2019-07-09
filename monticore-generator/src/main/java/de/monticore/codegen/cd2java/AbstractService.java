@@ -5,6 +5,9 @@ import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.types.TypesPrinter;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.JavaNamesHelper;
@@ -103,8 +106,8 @@ public class AbstractService<T extends AbstractService> {
     return "";
   }
 
-  public String getQualifiedCDName(){
-    return Names.getQualifiedName(getPackage(), getCDName());
+  public String getQualifiedCDName() {
+    return Names.getQualifiedName(getBasePackage(), getCDName());
   }
 
   public Collection<T> getServicesOfSuperCDs() {
@@ -122,6 +125,24 @@ public class AbstractService<T extends AbstractService> {
       return attributeName;
     }
     return attributeName.substring(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED.length());
+  }
+
+  public static String getNativeAttributeType(ASTType astType) {
+    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
+    // if not generic returns simple Type like 'int'
+    if (astType instanceof ASTSimpleReferenceType && ((ASTSimpleReferenceType) astType).isPresentTypeArguments() &&
+        ((ASTSimpleReferenceType) astType).getTypeArguments().sizeTypeArguments() == 1) {
+      return TypesPrinter.printTypeArgument(((ASTSimpleReferenceType) astType).getTypeArguments().getTypeArgument(0));
+    }
+    return TypesPrinter.printType(astType);
+  }
+
+  public static String getSimpleNativeAttributeType(ASTType astType) {
+    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
+    // if not generic returns simple Type like 'int'
+    String nativeAttributeType = getNativeAttributeType(astType);
+    return nativeAttributeType.contains(".") ? nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".")+1) :
+        nativeAttributeType;
   }
 
   public boolean isMethodBodyPresent(ASTCDMethod method) {
@@ -142,6 +163,10 @@ public class AbstractService<T extends AbstractService> {
 
   public boolean isInherited(ASTCDAttribute attribute) {
     return hasStereotype(attribute.getModifier(), MC2CDStereotypes.INHERITED);
+  }
+
+  public String getInheritedGrammarName(ASTCDAttribute attribute) {
+    return getStereotypeValues(attribute.getModifier(), MC2CDStereotypes.INHERITED).get(0);
   }
 
   public boolean hasStereotype(ASTModifier modifier, MC2CDStereotypes stereotype) {
