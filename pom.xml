@@ -56,7 +56,7 @@
     <powermock.version>1.6.1</powermock.version>
     <reflections.version>0.9.9</reflections.version>
     <slf4j.version>1.7.10</slf4j.version>
-    <freemarker.version>2.3.23</freemarker.version>
+    <freemarker.version>2.3.28</freemarker.version>
     <emf.common.version>2.15.0</emf.common.version>
     <emf.ecore.version>2.15.0</emf.ecore.version>
     <emf.ecore.xmi.version>2.15.0</emf.ecore.xmi.version>
