@@ -116,7 +116,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
   protected ASTCDConstructor createContructor(String packageImplName, String definitionName) {
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PRIVATE, packageImplName);
     replaceTemplate(EMPTY_BODY, constructor,
-        new StringHookPoint("super(" + ENS_URI + "," + definitionName + NODE_FACTORY_SUFFIX + "." + GET_FACTORY_METHOD + "())"));
+        new StringHookPoint("super(" + ENS_URI + "," + definitionName + NODE_FACTORY_SUFFIX + "." + GET_FACTORY_METHOD + "());"));
     return constructor;
   }
 

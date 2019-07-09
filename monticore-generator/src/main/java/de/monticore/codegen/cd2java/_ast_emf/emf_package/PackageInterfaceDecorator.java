@@ -56,7 +56,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
   protected ASTCDAttribute createENameAttribute(String definitionName) {
     // e.g. String eNAME = "Automata";
     ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, String.class, E_NAME);
-    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + definitionName));
+    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= \"" + definitionName + "\""));
     return attribute;
   }
 
@@ -70,7 +70,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
   protected ASTCDAttribute createENSPrefixAttribute(String definitionName) {
     // e.g. String eNS_PREFIX = "Automata";
     ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, String.class, ENS_PREFIX);
-    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + definitionName));
+    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= \"" + definitionName + "\""));
     return attribute;
   }
 
@@ -134,9 +134,9 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     // e.g. EClass getAutomaton(); EClass getState();
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdClassList) {
-      ASTSimpleReferenceType eEnumType = getCDTypeFacade().createSimpleReferenceType(E_CLASS_TYPE);
+      ASTSimpleReferenceType eClassType = getCDTypeFacade().createSimpleReferenceType(E_CLASS_TYPE);
       String methodName = String.format(GET, astcdClass.getName());
-      methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eEnumType, methodName));
+      methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eClassType, methodName));
     }
     return methodList;
   }
