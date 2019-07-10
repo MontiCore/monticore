@@ -47,13 +47,13 @@ public class SubrulesUseInterfaceNTsTest extends CocoTest {
   @Test
   public void TestInvalid5() {
     testInvalidGrammar(grammar + "e", SubrulesUseInterfaceNTs.ERROR_CODE,
-            String.format(MESSAGE, "AImpl", "ds*", "A"), checker);
+            String.format(MESSAGE, "AImpl", "D*", "A"), checker);
   }
 
   @Test
   public void TestInvalid6() {
     testInvalidGrammar(grammar + "f", SubrulesUseInterfaceNTs.ERROR_CODE,
-            String.format(MESSAGE, "BImpl", "ds*", "B"), checker);
+            String.format(MESSAGE, "BImpl", "D*", "B"), checker);
   }
 
   @Test

@@ -282,6 +282,6 @@ public class DataDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
-    System.out.println(sb.toString());
+    // TODO Check System.out.println(sb.toString());
   }
 }

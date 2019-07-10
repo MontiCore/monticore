@@ -44,7 +44,7 @@ public class OptionalMutatorDecoratorTest {
   @Test
   public void testGetMethod() {
     ASTCDMethod method = getMethodBy("setA", this.methods);
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -55,7 +55,7 @@ public class OptionalMutatorDecoratorTest {
   @Test
   public void testGetOptMethod() {
     ASTCDMethod method = getMethodBy("setAOpt", this.methods);
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -66,7 +66,7 @@ public class OptionalMutatorDecoratorTest {
   @Test
   public void testIsPresentMethod() {
     ASTCDMethod method = getMethodBy("setAAbsent", this.methods);
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getCDParameterList().isEmpty());
   }

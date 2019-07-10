@@ -37,7 +37,8 @@ public class MandatoryAccessorDecoratorTest {
     assertEquals(1, methods.size());
     ASTCDMethod method = getMethodBy("getA", methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    assertDeepEquals(String.class, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
@@ -50,7 +51,8 @@ public class MandatoryAccessorDecoratorTest {
     assertEquals(1, methods.size());
     ASTCDMethod method = getMethodBy("getA", methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    assertDeepEquals(String.class, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 }

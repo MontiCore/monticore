@@ -72,7 +72,8 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("accept", languageInterface);
     assertTrue(method.getModifier().isAbstract());
     assertTrue(method.getModifier().isPublic());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType()
+    );
 
     assertEquals(1, method.sizeCDParameters());
     assertEquals("visitor", method.getCDParameter(0).getName());

@@ -9,7 +9,6 @@ import de.monticore.codegen.cd2java.methods.mutator.ListMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -94,7 +93,7 @@ public class ListMutatorDecoratorTest {
     List<ASTCDMethod> methods = getMethodsBy("removeA", 1, this.methods);
     assertEquals(2, methods.size());
     ASTMCType expectedReturnType = CDTypeFacade.getInstance().createBooleanType();
-    methods = methods.stream().filter(m -> m.getMCReturnType().deepEquals(expectedReturnType)).collect(Collectors.toList());
+    methods = methods.stream().filter(m -> m.getMCReturnType().getMCType().deepEquals(expectedReturnType)).collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
     assertTrue(method.getMCReturnType().isPresentMCType());
@@ -193,7 +192,7 @@ public class ListMutatorDecoratorTest {
     List<ASTCDMethod> methods = getMethodsBy("removeA", 1, this.methods);
     assertEquals(2, methods.size());
     ASTMCType exptectedReturnType = CDTypeFacade.getInstance().createQualifiedType(String.class);
-    methods = methods.stream().filter(m -> m.getMCReturnType().deepEquals(exptectedReturnType)).collect(Collectors.toList());
+    methods = methods.stream().filter(m -> m.getMCReturnType().getMCType().deepEquals(exptectedReturnType)).collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
     assertTrue(method.getMCReturnType().isPresentMCType());
