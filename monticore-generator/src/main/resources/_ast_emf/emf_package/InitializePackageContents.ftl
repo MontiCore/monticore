@@ -81,11 +81,9 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
     <#list cdClass.getCDAttributeList() as attribute>
         <#if service.isExternal(attribute)>
             <#assign get = "theASTENodePackage.getENode">
-        <#elseif service.isInherited(attribute)>
-            <#assign sGrammarName = service.getInheritedGrammarName(attribute)>
-            <#assign get = sGrammarName?uncap_first + ".get" + attribute.getName()?cap_first>
         <#else>
-            <#assign get = "this.get" + service.getSimpleNativeAttributeType(attribute.getType())?cap_first>
+            <#assign sGrammarName = service.getGrammarFromClass(definition, attribute)?uncap_first>
+            <#assign get = sGrammarName + ".get" + service.getSimpleNativeAttributeType(attribute.getType())?cap_first>
         </#if>
         <#if genHelper.isListType(attribute.printType())>
             <#assign isList = "-1">

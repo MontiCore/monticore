@@ -120,14 +120,14 @@ public class AbstractService<T extends AbstractService> {
     return (T) new AbstractService(cdSymbol);
   }
 
-  public static String getNativeAttributeName(String attributeName) {
+  public String getNativeAttributeName(String attributeName) {
     if (!attributeName.startsWith(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED)) {
       return attributeName;
     }
     return attributeName.substring(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED.length());
   }
 
-  public static String getNativeAttributeType(ASTType astType) {
+  public String getNativeAttributeType(ASTType astType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
     // if not generic returns simple Type like 'int'
     if (astType instanceof ASTSimpleReferenceType && ((ASTSimpleReferenceType) astType).isPresentTypeArguments() &&
@@ -137,11 +137,11 @@ public class AbstractService<T extends AbstractService> {
     return TypesPrinter.printType(astType);
   }
 
-  public static String getSimpleNativeAttributeType(ASTType astType) {
+  public String getSimpleNativeAttributeType(ASTType astType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
     // if not generic returns simple Type like 'int'
     String nativeAttributeType = getNativeAttributeType(astType);
-    return nativeAttributeType.contains(".") ? nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".")+1) :
+    return nativeAttributeType.contains(".") ? nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".") + 1) :
         nativeAttributeType;
   }
 
@@ -222,6 +222,21 @@ public class AbstractService<T extends AbstractService> {
       }
     }
     return true;
+  }
+
+  public String getGrammarFromClass(ASTCDDefinition astcdDefinition, ASTCDAttribute astcdAttribute) {
+    String simpleNativeAttributeType = getSimpleNativeAttributeType(astcdAttribute.getType());
+    if (astcdDefinition.getCDClassList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
+      return "this";
+    } else {
+      Collection<CDSymbol> superCDs = getSuperCDs(resolveCD(astcdDefinition.getName()));
+      for (CDSymbol superCD : superCDs) {
+        if (superCD.getTypes().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
+         return superCD.getName()+"PackageImpl";
+        }
+      }
+    }
+    return "this";
   }
 
 }
