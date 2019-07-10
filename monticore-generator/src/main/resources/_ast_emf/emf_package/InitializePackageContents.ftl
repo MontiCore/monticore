@@ -71,8 +71,10 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
 </#list>
 
 <#list definition.getCDInterfaceList() as cdInterface>
+ <#if cdInterface.getName() != "AST"+ definition.getName() + "Node">
     <#assign interfaceName = cdInterface.getName()>
     initEClass(${interfaceName?uncap_first}, ${interfaceName}.class, "${interfaceName}", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+ </#if>
 </#list>
 
 <#list definition.getCDClassList() as cdClass>

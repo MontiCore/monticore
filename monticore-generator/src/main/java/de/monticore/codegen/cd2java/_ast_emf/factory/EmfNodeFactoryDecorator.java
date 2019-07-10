@@ -23,7 +23,6 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
   }
 
   public ASTCDClass decorate(final ASTCDCompilationUnit astcdCompilationUnit) {
-    this.compilationUnit = astcdCompilationUnit;
     ASTCDDefinition astcdDefinition = astcdCompilationUnit.getCDDefinition();
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
     ASTType factoryType = this.getCDTypeFacade().createSimpleReferenceType(factoryClassName);
@@ -56,7 +55,7 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
     }
 
     //add factory delegate Methods form Super Classes
-    List<ASTCDMethod> delegateMethodList = addFactoryDelegateMethods();
+    List<ASTCDMethod> delegateMethodList = addFactoryDelegateMethods(astcdClassList);
 
 
     return CD4AnalysisMill.cDClassBuilder()

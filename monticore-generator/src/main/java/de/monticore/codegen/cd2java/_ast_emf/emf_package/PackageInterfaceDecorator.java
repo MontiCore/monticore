@@ -30,10 +30,11 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
 
   @Override
   public ASTCDInterface decorate(ASTCDCompilationUnit compilationUnit) {
-    String definitionName = compilationUnit.deepClone().getCDDefinition().getName();
+    ASTCDDefinition astcdDefinition= compilationUnit.deepClone().getCDDefinition();
+    String definitionName = astcdDefinition.getName();
     String interfaceName = definitionName + PACKAGE_SUFFIX;
 
-    List<ASTCDClass> classList = compilationUnit.deepClone().getCDDefinition().getCDClassList();
+    List<ASTCDClass> classList = astcdDefinition.getCDClassList();
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(interfaceName)
         .setModifier(PUBLIC.build())
@@ -47,7 +48,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
         .addAllCDAttributes(createNonTerminalAttributes(classList))
         .addCDMethod(createNodeFactoryMethod(definitionName))
         .addCDMethod(createEEnumMethod(definitionName))
-        .addAllCDMethods(createEClassMethods(classList))
+        .addAllCDMethods(createEClassMethods(astcdDefinition))
         .addAllCDMethods(createEAttributeMethods(classList))
         .build();
 
@@ -130,13 +131,20 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eEnumType, methodName);
   }
 
-  protected List<ASTCDMethod> createEClassMethods(List<ASTCDClass> astcdClassList) {
+  protected List<ASTCDMethod> createEClassMethods(ASTCDDefinition astcdDefinition) {
     // e.g. EClass getAutomaton(); EClass getState();
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (ASTCDClass astcdClass : astcdClassList) {
-      ASTSimpleReferenceType eClassType = getCDTypeFacade().createSimpleReferenceType(E_CLASS_TYPE);
+    ASTSimpleReferenceType eClassType = getCDTypeFacade().createSimpleReferenceType(E_CLASS_TYPE);
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       String methodName = String.format(GET, astcdClass.getName());
       methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eClassType, methodName));
+    }
+
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+      if(!astcdInterface.getName().equals("AST"+astcdDefinition.getName()+"Node")){
+        String methodName = String.format(GET, astcdInterface.getName());
+        methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eClassType, methodName));
+      }
     }
     return methodList;
   }

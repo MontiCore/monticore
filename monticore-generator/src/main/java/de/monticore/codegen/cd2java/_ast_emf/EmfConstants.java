@@ -58,6 +58,10 @@ public final class EmfConstants {
 
   public static final String E_FACTORY_IMPL = "org.eclipse.emf.ecore.impl.EFactoryImpl";
 
+  public static final String ENUMERATOR ="org.eclipse.emf.common.util.Enumerator";
+
+  public static final String TO_STRING_CALL ="return toString();";
+
   private EmfConstants() {
   }
 

@@ -89,7 +89,9 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
       attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdClass.getName())));
     }
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
-      attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdInterface.getName())));
+      if (!astcdInterface.getName().equals("AST" + astcdDefinition.getName() + "Node")) {
+        attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdInterface.getName())));
+      }
     }
     return attributeList;
   }
@@ -186,7 +188,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
         .stream()
         .filter(x -> x.getName().equals(astcdDefinition.getName() + LITERALS_SUFFIX))
         .findFirst();
-    if(literalsEnum.isPresent()){
+    if (literalsEnum.isPresent()) {
       replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.InitializePackageContents",
           astcdDefinition, literalsEnum.get()));
     }

@@ -21,7 +21,9 @@ ${packageInterface.printModifier()} interface ${packageInterface.getName()} <#rt
       org.eclipse.emf.ecore.EClass ${cdClass.getName()} = eINSTANCE.get${cdClass.getName()}();
     </#list>
     <#list astCDDefinition.getCDInterfaceList() as cdInterface>
+        <#if cdInterface.getName() != "AST"+ astCDDefinition.getName() + "Node">
       org.eclipse.emf.ecore.EClass ${cdInterface.getName()} = eINSTANCE.get${cdInterface.getName()}();
+        </#if>
     </#list>
   }
 }

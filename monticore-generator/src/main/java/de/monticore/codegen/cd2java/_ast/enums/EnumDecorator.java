@@ -19,11 +19,11 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class EnumDecorator extends AbstractDecorator<ASTCDEnum, ASTCDEnum> {
 
-  private static final String INT_VALUE = "intValue";
+  protected static final String INT_VALUE = "intValue";
 
-  private final AccessorDecorator accessorDecorator;
+  protected final AccessorDecorator accessorDecorator;
 
-  private final ASTService astService;
+  protected final ASTService astService;
 
   public EnumDecorator(GlobalExtensionManagement glex, final AccessorDecorator accessorDecorator, final ASTService astService) {
     super(glex);
