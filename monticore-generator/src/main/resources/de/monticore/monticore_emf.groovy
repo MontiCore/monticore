@@ -75,7 +75,9 @@ for (astGrammar in getParsedGrammars()) {
   generateSymbolTable(glex, astGrammar, globalScope, astClassDiagram, out, handcodedPath)
   
   // M9 Generate ast classes, visitor and context condition
-  generateEmfCompatible(glex, globalScope, astClassDiagram, out, templatePath, handcodedPath)
+  generateVisitors(glex, globalScope, astClassDiagram, out, handcodedPath)
+  generateCocos(glex, globalScope, astClassDiagram, out)
+  generateODs(glex, globalScope, astClassDiagram, out)
 
   // M7: decorate Class Diagram AST
   decoratedASTClassDiagramm = decorateEmfForASTPackage(glex, astClassDiagram, modelPath, handcodedPath)

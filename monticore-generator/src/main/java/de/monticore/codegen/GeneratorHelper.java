@@ -8,7 +8,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
-import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -1829,22 +1828,6 @@ public class GeneratorHelper extends TypesHelper {
     String errorCodeSuffix = String.valueOf(hashCode);
     return "x" + (hashCode < 1000 ? errorCodeSuffix : errorCodeSuffix
         .substring(errorCodeSuffix.length() - 3));
-  }
-
-  /**
-   * Creates an instance of the generator helper
-   *
-   * @param astClassDiagram
-   * @param globalScope
-   * @param emfCompatible
-   * @return
-   */
-  public static AstGeneratorHelper createGeneratorHelper(ASTCDCompilationUnit astClassDiagram,
-                                                         GlobalScope globalScope, boolean emfCompatible) {
-    if (emfCompatible) {
-      return new AstEmfGeneratorHelper(astClassDiagram, globalScope);
-    }
-    return new AstGeneratorHelper(astClassDiagram, globalScope);
   }
 
   public String getQualifiedSymbolName(Scope enclsoingScope, String simpleSymbolName) {

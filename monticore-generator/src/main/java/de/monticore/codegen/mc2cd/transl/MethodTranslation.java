@@ -3,12 +3,9 @@
 package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.HookPoint;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethod;
@@ -89,9 +86,6 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
         code.append(GeneratorHelper.getMcPrettyPrinter().prettyprint(action));
       }
       if (!code.toString().isEmpty()) {
-        HookPoint methodBody = new StringHookPoint(code.toString());
-        glex.replaceTemplate(CdDecorator.EMPTY_BODY_TEMPLATE, cdMethod, methodBody);
-
         addMethodBodyStereotype(cdMethod.getModifier(), code);
       } else {
         cdMethod.getModifier().setAbstract(true);
@@ -107,9 +101,6 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
       for (ASTBlockStatement action : ((ASTAction) method.getBody()).getBlockStatementList()) {
         code.append(GeneratorHelper.getMcPrettyPrinter().prettyprint(action));
       }
-      HookPoint methodBody = new StringHookPoint(code.toString());
-      glex.replaceTemplate(CdDecorator.EMPTY_BODY_TEMPLATE, cdMethod, methodBody);
-
       addMethodBodyStereotype(cdMethod.getModifier(), code);
     }
     return cdMethod;

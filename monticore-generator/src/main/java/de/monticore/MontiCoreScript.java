@@ -33,7 +33,6 @@ import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
 import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.ast.AstGenerator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
@@ -619,24 +618,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ODGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
   }
 
-  /**
-   * Generates ast files for the given class diagram AST TODO: rephrase!
-   *
-   * @param glex            - object for managing hook points, features and global
-   *                        variables
-   * @param astClassDiagram - class diagram AST
-   * @param outputDirectory - the name of the output directory
-   */
-  public void generateEmfCompatible(GlobalExtensionManagement glex,
-                                    GlobalScope globalScope, ASTCDCompilationUnit astClassDiagram, File outputDirectory,
-                                    IterablePath templatePath, IterablePath handcodedPath) {
-    boolean emfCompatible = true;
-    AstGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, templatePath,
-        emfCompatible);
-    VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, handcodedPath);
-    CoCoGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
-    ODGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
-  }
 
   private void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
                                                GlobalScope symbolTable) {
