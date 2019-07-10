@@ -4,7 +4,6 @@ package de.monticore.codegen;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
@@ -12,7 +11,6 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.symboltable.SymbolTableGenerator;
-import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
@@ -50,22 +48,15 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
-import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
 import static de.monticore.grammar.Multiplicity.multiplicityByAlternative;
 import static de.monticore.grammar.Multiplicity.multiplicityByIteration;
-import static de.se_rwth.commons.Names.getQualifier;
 import static java.util.Collections.max;
 
 public class GeneratorHelper extends TypesHelper {
 
   public static final String AST_PREFIX = "AST";
 
-  public static final String AST_NODE = "ASTNode";
-
   public static final String AST_NODE_CLASS_NAME = "de.monticore.ast.ASTNode";
-
-  public static final String ASTC_NODE_CLASS_NAME = "mc.ast.ASTCNode";
 
   public static final String AST_PACKAGE_SUFFIX = "_ast";
 
@@ -77,19 +68,13 @@ public class GeneratorHelper extends TypesHelper {
 
   public static final String COCOS_PACKAGE_SUFFIX = "_cocos";
 
-  public static final String PARSER_PACKAGE_SUFFIX = "._parser";
-
   public static final String AST_DOT_PACKAGE_SUFFIX = "._ast";
 
   public static final String AST_PACKAGE_SUFFIX_DOT = "_ast.";
 
   public static final String AST_DOT_PACKAGE_SUFFIX_DOT = "._ast.";
 
-  public static final String MC_CONCRETE_PARSER_CONTEXT = "MCParser";
-
   public static final String BUILDER = "Builder";
-
-  public static final String BUILDER_PREFIX = "Builder_";
 
   public static final String DELEGATE = "Delegate";
 
@@ -184,138 +169,6 @@ public class GeneratorHelper extends TypesHelper {
         superGrammarCds.add(Names.getQualifiedName(importSt.getImportList()));
       }
     }
-  }
-
-  /**
-   * Converts CD type to Java type using the given package suffix.
-   *
-   * @param astType
-   * @param packageSuffix
-   * @return converted type or original type if type is java type already
-   */
-  public void transformTypeCd2Java(ASTSimpleReferenceType astType,
-                                   String packageSuffix) {
-    Log.trace("Converted Cd or Java type: " + TypesPrinter.printType(astType), LOG_NAME);
-    String genericType = "";
-    ASTSimpleReferenceType convertedType = astType;
-    if (isOptional(astType)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
-          .getFirstTypeArgumentOfOptional(astType);
-      if (!typeArgument.isPresent()) {
-        return;
-      }
-      convertedType = typeArgument.get();
-      genericType = OPTIONAL;
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, ARRAY_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
-          .getFirstTypeArgumentOfGenericType(astType, ARRAY_LIST);
-      if (!typeArgument.isPresent()) {
-        return;
-      }
-      convertedType = typeArgument.get();
-      genericType = ARRAY_LIST;
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, JAVA_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
-          .getFirstTypeArgumentOfGenericType(astType, JAVA_LIST);
-      if (!typeArgument.isPresent()) {
-        return;
-      }
-      convertedType = typeArgument.get();
-      genericType = JAVA_LIST;
-    }
-
-    String convertedTypeName = TypesPrinter.printType(convertedType);
-    // Resolve only qualified types
-    if (!convertedTypeName.contains(".")) {
-      return;
-    }
-
-    // TODO: GV, PN: path converter by resolving
-    if (convertedTypeName.contains("<")) {
-      return;
-    }
-    Optional<CDTypeSymbol> symbol = resolveCdType(convertedTypeName);
-    if (symbol.isPresent()) {
-      CDTypeSymbol cdType = symbol.get();
-      Log.trace("CD Type: " + cdType, LOG_NAME);
-      String typeName = cdType.getModelName().toLowerCase()
-          + packageSuffix
-          + cdType.getName();
-      if (!genericType.isEmpty()) {
-        convertedType.setNameList(Arrays.asList(typeName.split("\\.")));
-        return;
-      }
-      astType.setNameList(Arrays.asList(typeName.split("\\.")));
-    } else {
-      Log.debug("CD or Java type couldn't be resolved: " + convertedTypeName, LOG_NAME);
-    }
-    return;
-  }
-
-  /**
-   * Converts CD type to Java type using the given package suffix.
-   *
-   * @param astType
-   * @param packageSuffix
-   * @return converted type or original type if type is java type already
-   */
-  public ASTSimpleReferenceType convertTypeCd2Java(ASTSimpleReferenceType astType,
-                                                   String packageSuffix) {
-    Log.trace("Converted Cd or Java type: " + TypesPrinter.printType(astType), LOG_NAME);
-    String genericType = "";
-    ASTSimpleReferenceType convertedType = astType;
-    if (isOptional(astType)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
-          .getFirstTypeArgumentOfOptional(astType);
-      if (!typeArgument.isPresent()) {
-        return astType;
-      }
-      convertedType = typeArgument.get();
-      genericType = OPTIONAL;
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, ARRAY_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
-          .getFirstTypeArgumentOfGenericType(astType, ARRAY_LIST);
-      if (!typeArgument.isPresent()) {
-        return astType;
-      }
-      convertedType = typeArgument.get();
-      genericType = ARRAY_LIST;
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, JAVA_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
-          .getFirstTypeArgumentOfGenericType(astType, JAVA_LIST);
-      if (!typeArgument.isPresent()) {
-        return astType;
-      }
-      convertedType = typeArgument.get();
-      genericType = JAVA_LIST;
-    }
-
-    String convertedTypeName = TypesPrinter.printType(convertedType);
-    // Resolve only qualified types
-    if (!convertedTypeName.contains(".")) {
-      return astType;
-    }
-
-    // TODO: GV, PN: path converter by resolving
-    if (convertedTypeName.contains("<")) {
-      return astType;
-    }
-
-    Optional<CDTypeSymbol> symbol = resolveCdType(convertedTypeName);
-    if (symbol.isPresent()) {
-      CDTypeSymbol cdType = symbol.get();
-      Log.trace("CD Type: " + cdType, LOG_NAME);
-      String typeName = cdType.getModelName().toLowerCase()
-          + packageSuffix
-          + cdType.getName();
-      if (!genericType.isEmpty()) {
-        return createSimpleReference(genericType, typeName);
-      }
-      return createSimpleReference(typeName);
-    } else {
-      Log.debug("CD or Java type couldn't be resolved: " + convertedTypeName, LOG_NAME);
-    }
-    return astType;
   }
 
   /**
@@ -496,19 +349,11 @@ public class GeneratorHelper extends TypesHelper {
 
   /**
    * @return full qualified name of the overall interface for AST nodes
-   * @see #getASTNodeType()
    */
   public static String getQualifiedASTNodeType() {
     return AST_NODE_CLASS_NAME;
   }
 
-  /**
-   * @return name of the overall interface for AST nodes
-   * @see #getQualifiedASTNodeType()
-   */
-  public static String getASTNodeType() {
-    return AST_NODE;
-  }
 
   /**
    * @return name of the language's AST-Nodes marker interface
@@ -556,11 +401,6 @@ public class GeneratorHelper extends TypesHelper {
   public static boolean isSymbolOrScopeAttribute(ASTCDAttribute attr) {
     return CD4AnalysisHelper.hasStereotype(attr, SYMBOL)
         || CD4AnalysisHelper.hasStereotype(attr, SCOPE);
-  }
-
-  public static List<ASTCDAttribute> getNativeCDAttributes(ASTCDClass clazz) {
-    return clazz.getCDAttributeList().stream().filter(attr -> !isAdditionalAttribute(attr))
-        .collect(Collectors.toList());
   }
 
   public boolean hasOnlyAstAttributes(ASTCDClass type) {
@@ -747,47 +587,12 @@ public class GeneratorHelper extends TypesHelper {
     return hasStereotype(method, MC2CDStereotypes.METHOD_BODY.toString());
   }
 
-  public static boolean isInherited(ASTCDAttribute attribute) {
-    return CD4AnalysisHelper.hasStereotype(attribute, MC2CDStereotypes.INHERITED.toString());
-  }
-
   public boolean isEnum(String qualifiedName) {
     Optional<CDTypeSymbol> cdType = resolveCdType(qualifiedName);
     return cdType.isPresent() && cdType.get().isEnum();
   }
 
-  public boolean isAttributeOfTypeEnum(ASTCDAttribute attr) {
-    if (!attr.isPresentSymbol() || !(attr.getSymbol() instanceof CDFieldSymbol)) {
-      return false;
-    }
-    CDTypeSymbolReference attrType = ((CDFieldSymbol) attr.getSymbol()
-    ).getType();
 
-    List<ActualTypeArgument> typeArgs = attrType.getActualTypeArguments();
-    if (typeArgs.size() > 1) {
-      return false;
-    }
-
-    String typeName = typeArgs.isEmpty()
-        ? attrType.getName()
-        : typeArgs.get(0).getType().getName();
-    if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
-      return false;
-    }
-
-    List<String> listName = TypesHelper.createListFromDotSeparatedString(typeName);
-    if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
-      return false;
-    }
-
-    if (typeArgs.isEmpty()) {
-      return attrType.existsReferencedSymbol() && attrType.isEnum();
-    }
-
-    CDTypeSymbolReference typeArgument = (CDTypeSymbolReference) typeArgs
-        .get(0).getType();
-    return typeArgument.existsReferencedSymbol() && typeArgument.isEnum();
-  }
 
   public static boolean hasStereotype(ASTCDType ast,
                                       String stereotypeName) {
@@ -810,110 +615,6 @@ public class GeneratorHelper extends TypesHelper {
     } else {
       return false;
     }
-  }
-
-  public static List<String> getStereotypeValues(ASTCDType ast,
-                                                 String stereotypeName) {
-    List<String> values = Lists.newArrayList();
-    if (ast.getModifierOpt().isPresent()
-        && ast.getModifierOpt().get().isPresentStereotype()) {
-      ast.getModifierOpt().get().getStereotype().getValueList().stream()
-          .filter(value -> value.getName().equals(stereotypeName))
-          .filter(value -> value.isPresentValue())
-          .forEach(value -> values.add(value.getValue()));
-    }
-    return values;
-  }
-
-
-  /**
-   * @param cdAttribute
-   * @param type
-   * @return
-   */
-  public boolean isAttributeOfSuperType(ASTCDAttribute cdAttribute, ASTCDType type) {
-    if (!type.isPresentSymbol()) {
-      Log.error("0xA5010 Could not load symbol information for " + type.getName() + ".");
-      return false;
-    }
-    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol();
-    return getAllVisibleFieldsOfSuperTypes(sym).stream().map(a -> a.getName())
-        .collect(Collectors.toList()).contains(cdAttribute.getName());
-  }
-
-  /**
-   * @param field
-   * @param type
-   * @return
-   */
-  public boolean isAttributeOfSuperType(CDFieldSymbol field, CDTypeSymbol type) {
-    return getAllVisibleFieldsOfSuperTypes(type).stream().map(a -> a.getName())
-        .collect(Collectors.toList()).contains(field.getName());
-  }
-
-  /**
-   * @param cdType
-   * @return
-   */
-  public Collection<CDFieldSymbol> getAllVisibleFieldsOfSuperTypes(CDTypeSymbol cdType) {
-    final Set<CDFieldSymbol> allSuperTypeFields = new LinkedHashSet<>();
-
-    for (CDTypeSymbol superType : cdType.getSuperTypes()) {
-      for (CDFieldSymbol superField : superType.getFields()) {
-        allSuperTypeFields.add(superField);
-      }
-      allSuperTypeFields.addAll(getAllVisibleFieldsOfSuperTypes(superType));
-    }
-
-    // filter-out all private fields
-    final Set<CDFieldSymbol> allVisibleSuperTypeFields = allSuperTypeFields.stream()
-        .filter(field -> !field.isPrivate())
-        .collect(Collectors.toCollection(LinkedHashSet::new));
-
-    return ImmutableSet.copyOf(allVisibleSuperTypeFields);
-  }
-
-  /**
-   * @param astType
-   * @return
-   */
-  public Optional<String> getTypeNameToResolve(ASTSimpleReferenceType astType) {
-    ASTSimpleReferenceType convertedType = astType;
-    if (isOptional(astType)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
-          .getFirstTypeArgumentOfOptional(astType);
-      if (!typeArgument.isPresent()) {
-        return Optional.empty();
-      }
-      convertedType = typeArgument.get();
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, ARRAY_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
-          .getFirstTypeArgumentOfGenericType(astType, ARRAY_LIST);
-      if (!typeArgument.isPresent()) {
-        return Optional.empty();
-      }
-      convertedType = typeArgument.get();
-    } else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, JAVA_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
-          .getFirstTypeArgumentOfGenericType(astType, JAVA_LIST);
-      if (!typeArgument.isPresent()) {
-        return Optional.empty();
-      }
-      convertedType = typeArgument.get();
-    }
-
-    String convertedTypeName = TypesPrinter.printType(convertedType);
-    // Resolve only qualified types
-    if (!convertedTypeName.contains(".")) {
-      return Optional.empty();
-    }
-
-    // TODO: GV, PN: path converter by resolving
-    if (convertedTypeName.contains("<")) {
-      return Optional.empty();
-    }
-
-    return Optional.of(convertedTypeName);
   }
 
   /**
@@ -1015,57 +716,6 @@ public class GeneratorHelper extends TypesHelper {
         .map(s -> AstGeneratorHelper.getAstPackage(Names.getQualifier(s)) + Names.getSimpleName(s))
         .collect(Collectors.toList());
     return theSuperTypes;
-  }
-
-  /**
-   * Gets the java super types of the given clazz (without the clazz itself).
-   *
-   * @param type
-   * @return
-   */
-  public List<CDTypeSymbol> getAllSuperInterfaces(ASTCDType type) {
-    if (!type.isPresentSymbol()) {
-      Log.error("0xA4079 Could not load symbol information for " + type.getName() + ".");
-    }
-
-    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol();
-    return getAllSuperInterfaces(sym);
-  }
-
-  public static String getSuperClass(ASTCDClass clazz) {
-    if (!clazz.isPresentSuperclass()) {
-      return "de.monticore.ast.ASTCNode";
-    }
-    return clazz.printSuperClass();
-  }
-
-  public static String getSuperClassName(ASTCDClass clazz) {
-    if (!clazz.isPresentSuperclass()) {
-      return "";
-    }
-    return clazz.printSuperClass();
-  }
-
-  public static List<String> getValuesOfConstantEnum(ASTCDDefinition ast) {
-    List<String> astConstants = new ArrayList<>();
-    ASTCDEnum constants = null;
-    Iterator<ASTCDEnum> it = ast.getCDEnumList().iterator();
-    while (it.hasNext() && constants == null) {
-      ASTCDEnum cdEnum = it.next();
-      if (cdEnum.getName().equals(ast.getName() + CONSTANTS_ENUM)) {
-        constants = cdEnum;
-      }
-    }
-    if (constants != null) {
-      for (ASTCDEnumConstant constant : constants.getCDEnumConstantList()) {
-        astConstants.add(constant.getName());
-      }
-    }
-    return astConstants;
-  }
-
-  public static List<CDFieldSymbol> getVisibleFields(CDTypeSymbol cdType) {
-    return cdType.getFields().stream().filter(a -> !a.isPrivate()).collect(Collectors.toList());
   }
 
   public static Grammar_WithConceptsPrettyPrinter getMcPrettyPrinter() {
@@ -1211,33 +861,6 @@ public class GeneratorHelper extends TypesHelper {
     return isOptionalAstNode(((CDFieldSymbol) attr.getSymbol()).getType());
   }
 
-  public String getTypeNameWithoutOptional(ASTCDAttribute attribute) {
-    if (isOptional(attribute)) {
-      return TypesHelper
-          .printType(TypesHelper.getSimpleReferenceTypeFromOptional(attribute.getType()));
-
-    }
-    return attribute.printType();
-  }
-
-  public String getCdTypeNameWithoutOptional(CDFieldSymbol attribute) {
-    CDTypeSymbolReference type = attribute.getType();
-    if (!isOptional(type)) {
-      return type.getName();
-    }
-    return type.getActualTypeArguments().get(0).getType().getName();
-  }
-
-  public String getJavaTypeNameWithoutOptional(CDFieldSymbol attribute) {
-    CDTypeSymbolReference type = attribute.getType();
-    if (!isOptional(type)) {
-      return convertTypeCd2Java(type, AST_DOT_PACKAGE_SUFFIX_DOT);
-    }
-    return convertTypeCd2Java(
-        (CDTypeSymbolReference) type.getActualTypeArguments().get(0).getType(),
-        AST_DOT_PACKAGE_SUFFIX_DOT);
-  }
-
   public static String getPlainGetter(ASTCDAttribute ast) {
     String astType = printType(ast.getType());
     StringBuilder sb = new StringBuilder();
@@ -1262,14 +885,6 @@ public class GeneratorHelper extends TypesHelper {
 
   public static String getPlainName(ASTCDAttribute ast) {
     return StringTransformations.capitalize(getNativeAttributeName(ast.getName()));
-  }
-
-  public static String getSimpleListName(ASTCDAttribute ast) {
-    String name = ast.getName();
-    if (name.endsWith(TransformationHelper.LIST_SUFFIX)) {
-      name = name.substring(0, name.length() - TransformationHelper.LIST_SUFFIX.length());
-    }
-    return StringTransformations.capitalize(name);
   }
 
   public static String getPlainGetter(CDFieldSymbol field) {
@@ -1354,40 +969,6 @@ public class GeneratorHelper extends TypesHelper {
       return name.substring(0, name.lastIndexOf(GeneratorSetup.GENERATED_CLASS_SUFFIX));
     }
     return name;
-  }
-
-  /**
-   * Prints the type argument of the list-values ast type otherwise prints the
-   * given type.
-   */
-  public static String printTypeArgumentOfAstList(ASTType type) {
-    if (isGenericTypeWithOneTypeArgument(type, JAVA_LIST)) {
-      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
-          .getFirstTypeArgumentOfGenericType(type, JAVA_LIST);
-      if (typeArgument.isPresent()) {
-        return printSimpleRefType(typeArgument.get());
-      }
-    }
-    return printSimpleRefType(type);
-  }
-
-  public static String printDeprecatedAnnotation(Optional<ASTModifier> modifier) {
-    StringBuilder modifierStr = new StringBuilder();
-    if (modifier.isPresent() && modifier.get().isPresentStereotype()) {
-      ASTCDStereotype stereo = modifier.get().getStereotype();
-      for (ASTCDStereoValue stereoValue : stereo.getValueList()) {
-        if (DEPRECATED.equals(stereoValue.getName())) {
-          if (stereoValue.isPresentValue()) {
-            // Print java doc
-            modifierStr.append("/**\n * @deprecated ");
-            modifierStr.append(stereoValue.getValue());
-            modifierStr.append("\n **/\n");
-          }
-          modifierStr.append(DEPRECATED);
-        }
-      }
-    }
-    return modifierStr.toString();
   }
 
   /**
@@ -1654,16 +1235,6 @@ public class GeneratorHelper extends TypesHelper {
     return resolveCdType(nameToResolve).isPresent();
   }
 
-  public boolean isAstInterface(ASTCDInterface interf) {
-    String simpleName = Names.getSimpleName(interf.getName());
-    if (!simpleName.startsWith(AST_PREFIX)) {
-      return false;
-    }
-    String nameToResolve = interf.getName().contains(".") ? interf.getName() : qualifiedName + "."
-        + interf.getName();
-    return resolveCdType(nameToResolve).isPresent();
-  }
-
   public String getCdName() {
     return cdDefinition.getName();
   }
@@ -1717,18 +1288,6 @@ public class GeneratorHelper extends TypesHelper {
 
   public static String getCdName(String qualifiedCdName) {
     return Names.getSimpleName(qualifiedCdName);
-  }
-
-  public String getReferencedSymbolName(ASTCDAttribute attribute) {
-    String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
-        MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
-
-    if (!getQualifier(referencedSymbol).isEmpty()) {
-      referencedSymbol = SymbolTableGeneratorHelper
-          .getQualifiedSymbolType(getQualifier(referencedSymbol)
-              .toLowerCase(), Names.getSimpleName(referencedSymbol));
-    }
-    return referencedSymbol;
   }
 
   /**

@@ -70,14 +70,18 @@ for (astGrammar in getParsedGrammars()) {
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
 
-  // M8: decorate Class Diagram AST
-  decorateEmfCd(glex, astClassDiagram, globalScope, handcodedPath)
-
   // M?: generate symbol table
   generateSymbolTable(glex, astGrammar, globalScope, astClassDiagram, out, handcodedPath)
 
-  // M9: generate AST classes
-  generateEmfCompatible(glex, globalScope, astClassDiagram, out, templatePath, handcodedPath)
+  // M9 Generate ast classes, visitor and context condition
+  generateVisitors(glex, globalScope, astClassDiagram, out, handcodedPath)
+  generateCocos(glex, globalScope, astClassDiagram, out)
+  generateODs(glex, globalScope, astClassDiagram, out)
+
+  // M7: decorate Class Diagram AST
+  decoratedASTClassDiagramm = decorateEmfForASTPackage(glex, astClassDiagram, modelPath, handcodedPath)
+  generateEmfFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
+
 
   info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 
