@@ -63,7 +63,7 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testENameAttribute() {
-    ASTCDAttribute attribute = getAttributeBy("eName", packageInterface);
+    ASTCDAttribute attribute = getAttributeBy("eNAME", packageInterface);
     assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertDeepEquals(String.class, attribute.getType());

@@ -7,7 +7,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import org.apache.commons.lang3.StringUtils;
+import de.se_rwth.commons.StringTransformations;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.PACKAGE_SUFFIX;
@@ -35,9 +35,9 @@ public class EmfMandatoryMutatorDecorator extends MandatoryMutatorDecorator {
   protected ASTCDMethod createSetter(final ASTCDAttribute attribute) {
     String packageName = astService.getCDName() + PACKAGE_SUFFIX;
     //todo find better util than the DecorationHelper
-    String methodName = String.format(SET, StringUtils.capitalize(DecorationHelper.getNativeAttributeName(attribute.getName())));
+    String methodName = String.format(SET, StringTransformations.capitalize(DecorationHelper.getNativeAttributeName(attribute.getName())));
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, methodName, this.getCDParameterFacade().createParameters(attribute));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.ast_class.EmfSet",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.ast_class.Set",
         packageName, className, attribute));
     return method;
   }

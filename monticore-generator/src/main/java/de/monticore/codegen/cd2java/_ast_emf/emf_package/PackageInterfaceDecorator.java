@@ -6,7 +6,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
-import net.sourceforge.plantuml.StringUtils;
+import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +108,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     for (ASTCDClass astcdClass : astcdClassList) {
       for (int i = 0; i < astcdClass.getCDAttributeList().size(); i++) {
         ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getCDTypeFacade().createIntType(),
-            astcdClass.getName() + "_" + StringUtils.capitalize(astcdClass.getCDAttribute(i).getName()));
+            astcdClass.getName() + "_" + StringTransformations.capitalize(astcdClass.getCDAttribute(i).getName()));
         this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + i));
         attributeList.add(attribute);
       }
@@ -153,7 +153,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
         } else {
           returnType = getCDTypeFacade().createSimpleReferenceType(E_ATTRIBUTE_TYPE);
         }
-        String methodName = String.format(GET, astcdClass.getName() + "_" + StringUtils.capitalize(astcdAttribute.getName()));
+        String methodName = String.format(GET, astcdClass.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
         methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName));
       }
     }

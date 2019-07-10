@@ -47,7 +47,7 @@ public class DataEmfDecorator extends DataDecorator {
   private String calculateListType(ASTType attributeType, String grammarName, String classname, String attributeName) {
     if (attributeType instanceof ASTSimpleReferenceType && ((ASTSimpleReferenceType) attributeType).getTypeArguments().sizeTypeArguments() == 1) {
       String simpleAttributeType = TypesPrinter.printType((ASTSimpleReferenceType) ((ASTSimpleReferenceType) attributeType).getTypeArguments().getTypeArgument(0));
-      return "= new EObjectContainmentEList<" + simpleAttributeType + ">(" + simpleAttributeType +
+      return "= new org.eclipse.emf.ecore.util.EObjectContainmentEList<" + simpleAttributeType + ">(" + simpleAttributeType +
           ".class, this, " + grammarName + "Package." + classname + "_" + StringTransformations.capitalize(attributeName) + ")";
     }
     return "";

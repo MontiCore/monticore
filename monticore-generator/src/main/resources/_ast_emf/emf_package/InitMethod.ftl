@@ -46,5 +46,5 @@ de.monticore.emf._ast.ASTENodePackageImpl ASTENodePackage = (de.monticore.emf._a
   //  ${packageName}.freeze();
 
   // Update the registry and return the package
-  org.eclipse.emf.ecore.EPackage.Registry.INSTANCE.put(${packageName}.eNS_URI, ${packageName});
-  return ${packageName};
+  org.eclipse.emf.ecore.EPackage.Registry.INSTANCE.put(${packageName}.eNS_URI, ${packageName?uncap_first});
+  return ${packageName?uncap_first};

@@ -40,7 +40,6 @@ public class ASTEmfDecorator extends ASTDecorator {
   @Override
   public ASTCDClass decorate(ASTCDClass clazz) {
     clazz.addInterface(this.astService.getASTBaseInterface());
-    clazz.addInterface(getCDTypeFacade().createSimpleReferenceType(E_PACKAGE));
     clazz.addCDMethod(createAcceptMethod(clazz));
     clazz.addAllCDMethods(createAcceptSuperMethods(clazz));
     clazz.addCDMethod(getConstructMethod(clazz));

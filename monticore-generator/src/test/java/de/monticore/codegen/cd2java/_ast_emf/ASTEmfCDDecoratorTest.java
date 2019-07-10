@@ -1,6 +1,5 @@
 package de.monticore.codegen.cd2java._ast_emf;
 
-import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
@@ -65,7 +64,7 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");
     this.originalCompilationUnit = decoratedCompilationUnit.deepClone();
-    this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
+    this.glex.setGlobalValue("service", new EmfService(decoratedCompilationUnit));
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/de/monticore/codegen"));
     CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();

@@ -54,9 +54,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterface() {
-    assertEquals(2, emfClass.sizeInterfaces());
+    assertEquals(1, emfClass.sizeInterfaces());
     assertDeepEquals("de.monticore.codegen.ast.automaton._ast.ASTAutomatonNode", emfClass.getInterface(0));
-    assertDeepEquals("org.eclipse.emf.ecore.EPackage", emfClass.getInterface(1));
   }
 
   @Test
@@ -64,7 +63,6 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertTrue(emfClass.isPresentSuperclass());
     assertEquals("de.monticore.emf._ast.ASTECNode", emfClass.printSuperClass());
   }
-
 
   @Test
   public void testAttributeSize() {
@@ -102,7 +100,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertEquals("featureID", method.getCDParameter(0).getName());
     assertInt(method.getCDParameter(0).getType());
     assertEquals("newValue", method.getCDParameter(1).getName());
-    assertDeepEquals(Object.class,method.getCDParameter(1).getType());
+    assertDeepEquals(Object.class, method.getCDParameter(1).getType());
   }
 
   @Test
@@ -115,7 +113,6 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertEquals("featureID", method.getCDParameter(0).getName());
     assertInt(method.getCDParameter(0).getType());
   }
-
 
 
   @Test
@@ -150,7 +147,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
   public void testEToStringMethod() {
     ASTCDMethod method = getMethodBy("toString", emfClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(String.class,method.getReturnType());
+    assertDeepEquals(String.class, method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -158,10 +155,9 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
   public void testEStaticClassMethod() {
     ASTCDMethod method = getMethodBy("eStaticClass", emfClass);
     assertDeepEquals(PROTECTED, method.getModifier());
-    assertDeepEquals("org.eclipse.emf.ecore.EClass",method.getReturnType());
+    assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
-
 
   @Test
   public void testGeneratedCode() {
@@ -171,5 +167,4 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, emfClass, emfClass);
     System.out.println(sb.toString());
   }
-
 }

@@ -35,7 +35,7 @@ public class EmfOptionalMutatorDecorator extends OptionalMutatorDecorator {
     String packageName = astService.getCDName() + PACKAGE_SUFFIX;
     String methodName = String.format(SET_OPT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, methodName, this.getCDParameterFacade().createParameters(attribute));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.ast_class.EmfSet",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.ast_class.Set",
         packageName, getClassName(), attribute));
     return method;
   }

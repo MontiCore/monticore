@@ -94,7 +94,7 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
             initEReference(get${cdClass.getName()}_${attribute.getName()?cap_first}(), ${get}(), null, "${attribute.getName()?cap_first}", null,
             0, ${isList}, ${cdClass.getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, <#if isList == "1">!</#if>IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         <#else>
-            <#assign get = "ecorePackage.getE" + attribute.printType()?cap_first>
+            <#assign get = "ecorePackage.getE" + service.getSimpleNativeAttributeType(attribute.getType())?cap_first>
             initEAttribute(get${cdClass.getName()}_${attribute.getName()?cap_first}(), ${get}(), "${attribute.getName()?cap_first}", null,
             0, ${isList}, ${cdClass.getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, <#if isList == "1">!</#if>IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         </#if>

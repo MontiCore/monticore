@@ -589,6 +589,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setModelName(diagramName);
     setup.setGlex(glex);
     CDEmfGenerator generator = new CDEmfGenerator(setup);
+    //set originalDefinition, because information is needed in template
+    generator.setOriginalDefinition(oldCD.getCDDefinition().deepClone());
     generator.generate(decoratedCD);
   }
 
