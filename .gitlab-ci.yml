@@ -1,8 +1,8 @@
 image: maven:3.5.4-jdk-8-alpine
 
 variables:
-  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
-  MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
+  MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+  MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
 
 cache:
   paths:
@@ -21,12 +21,10 @@ stages:
 build_dev:
   stage: build
   script:
-    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS deploy -Dpass=$password -Duser=$username -DdeployAtEnd=true"
+    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -Dpass=$password -Duser=$username -DdeployAtEnd=true"
     - cd monticore-gradle
     - "./gradlew build"
     - "./gradlew publish -PmavenPassword=$password -PmavenUser=$username"
-    - curl --request POST --form "token=$Automaton" --form ref=hwc_symtab https://git.rwth-aachen.de/api/v4/projects/17630/trigger/pipeline
-    - curl --request POST --form "token=$Automaton" --form ref=hwc_symtab_language_composition https://git.rwth-aachen.de/api/v4/projects/17630/trigger/pipeline
   only:
     - dev
     - newSymtab
@@ -41,11 +39,17 @@ build_dev:
 #    - master
 #    - ci/gitlab-runner
 
-#integration-test:
-#  stage: test
-#  script:
-#    - cd monticore-generator/it
-#    - "mvn --settings ../../settings.xml $MAVEN_CLI_OPTS $MAVEN_OPTS clean verify"
+integration-test:
+  stage: test
+  script:
+    - cd monticore-generator/it
+    - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify"
+    
+staging:
+  stage: test
+  trigger:
+    project: monticore/languages/automaton
+    branch: newSymtab_gen
 #
 #integration-test-emf:
 #  stage: test

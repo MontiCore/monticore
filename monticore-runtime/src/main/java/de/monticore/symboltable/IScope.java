@@ -49,6 +49,8 @@ public interface IScope  {
   
   void setExportsSymbols(boolean b);
   
+  void setShadowing(boolean b);
+  
   /**
    * @param node the corresponding ast node
    */

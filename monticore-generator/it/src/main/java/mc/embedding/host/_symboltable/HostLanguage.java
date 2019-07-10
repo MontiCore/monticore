@@ -9,7 +9,6 @@ public class HostLanguage extends HostLanguageTOP {
   public HostLanguage() {
     super("Host Language", FILE_ENDING);
 
-    setModelNameCalculator(new HostModelNameCalculator());
   }
 
 

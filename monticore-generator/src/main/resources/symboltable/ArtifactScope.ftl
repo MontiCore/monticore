@@ -36,9 +36,9 @@ import de.se_rwth.commons.logging.Log;
 
 public <#if hasHWC>abstract</#if> class ${className} extends ${scopeClass} {
 
-  private final String packageName;
+  private String packageName;
 
-  private final List<ImportStatement> imports;
+  private List<ImportStatement> imports;
 
   private QualifiedNamesCalculator qualifiedNamesCalculator;
 
@@ -92,12 +92,20 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${scopeClass} {
     return packageName;
   }
 
+  public void setPackageName(String packageName) {
+    this.packageName = packageName;
+  }
+
     public void setQualifiedNamesCalculator(QualifiedNamesCalculator qualifiedNamesCalculator) {
     this.qualifiedNamesCalculator = Objects.requireNonNull(qualifiedNamesCalculator);
   }
 
   public List<ImportStatement> getImports() {
     return Collections.unmodifiableList(imports);
+  }
+
+  public void setImports(List<ImportStatement> imports) {
+    this.imports = imports;
   }
 
   @Override //TODO: Does not depend on a specific language. Move implementation to RTE?
@@ -142,7 +150,7 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${scopeClass} {
 
     return remainingSymbolName;
   }
-  
+
   public Path getFilePath(${languageName}Language lang) {
     String fileName = getName().orElse("symbols")+"."+lang.getSymbolFileExtension();
     return Paths.get(getPackageName(), fileName);

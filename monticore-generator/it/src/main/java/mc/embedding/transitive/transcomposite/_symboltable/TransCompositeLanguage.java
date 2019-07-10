@@ -8,22 +8,14 @@
 
 package mc.embedding.transitive.transcomposite._symboltable;
 
-import de.monticore.EmbeddingModelingLanguage;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import mc.embedding.composite._symboltable.CompositeLanguage;
 import mc.embedding.transitive.transcomposite._parser.TransCompositeParser;
 import mc.embedding.transitive.transhost._symboltable.TransHostLanguage;
 
-import java.util.Optional;
-
-public class TransCompositeLanguage extends EmbeddingModelingLanguage {
+public class TransCompositeLanguage extends TransCompositeLanguageTOP {
 
   public TransCompositeLanguage() {
-    super("Trans Composite Language", TransHostLanguage.FILE_ENDING, new TransHostLanguage(), new CompositeLanguage());
+    super("Trans Composite Language", TransHostLanguage.FILE_ENDING);
 
-    modelLoader =  provideModelLoader();
-    initResolvingFilters();
   }
 
   @Override
@@ -37,26 +29,6 @@ public class TransCompositeLanguage extends EmbeddingModelingLanguage {
     return (TransCompositeModelLoader) super.getModelLoader();
   }
 
-  //@Override
-  //protected TransCompositeModelLoader provideModelLoader() {
-  //  return new TransCompositeModelLoader(this);
-  //}
-
-  protected void initResolvingFilters() {
-  }
-
-  /**
-   * @see de.monticore.ModelingLanguage#getSymbolTableCreator(ResolvingConfiguration, de.monticore.symboltable.Scope)
-   */
-  @Override
-  public Optional<TransCompositeSymbolTableCreator> getSymbolTableCreator(
-      ResolvingConfiguration resolvingConfiguration, Scope enclosingScope) {
-    return Optional.of(new TransCompositeSymbolTableCreator(resolvingConfiguration, enclosingScope));
-  }
-
-  /**
-   * @see de.monticore.CommonModelingLanguage#provideModelLoader()
-   */
   @Override
   protected TransCompositeModelLoader provideModelLoader() {
     return new TransCompositeModelLoader(this);

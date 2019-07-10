@@ -8,11 +8,6 @@
 
 package mc.embedding.transitive.transhost._symboltable;
 
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.ResolvingConfiguration;
-
-import java.util.Optional;
-
 public class TransHostLanguage extends TransHostLanguageTOP {
 
   public final static String FILE_ENDING = "transhost";
@@ -21,29 +16,10 @@ public class TransHostLanguage extends TransHostLanguageTOP {
   }
 
   @Override
-  public Optional<TransHostSymbolTableCreator> getSymbolTableCreator(
-      ResolvingConfiguration resolvingConfiguration, Scope enclosingScope) {
-    return Optional.of(new TransHostSymbolTableCreator(resolvingConfiguration, enclosingScope));
-  }
-
-  @Override
   public TransHostModelLoader getModelLoader() {
     return (TransHostModelLoader) super.getModelLoader();
   }
 
-  //@Override
-  //protected TransHostModelLoader provideModelLoader() {
-  //  return new TransHostModelLoader(this);
-  //}
-
-  protected void initResolvingFilters() {
-    addResolvingFilter(new TransHosterResolvingFilter());
-    addResolvingFilter(new TransStartResolvingFilter());
-  }
-
-  /**
-   * @see de.monticore.CommonModelingLanguage#provideModelLoader()
-   */
   @Override
   protected TransHostModelLoader provideModelLoader() {
     return new TransHostModelLoader(this);

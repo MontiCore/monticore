@@ -10,7 +10,11 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
     }
 
     public ASTMCSetType(String name, ASTMCTypeArgument typeArgument) {
-        super(name, typeArgument);
+        super("Set", typeArgument);
+    }
+
+    public ASTMCSetType(ASTMCTypeArgument typeArgument) {
+        super("Set", typeArgument);
     }
 
     @Override

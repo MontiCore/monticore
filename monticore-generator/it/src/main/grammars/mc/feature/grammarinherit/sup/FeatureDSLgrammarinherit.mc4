@@ -4,33 +4,33 @@
 package mc.feature.grammarinherit.sup;
 
 grammar FeatureDSLgrammarinherit extends mc.common.Basics {
-	
+
 	// Checks if java code is inherited to sub grammars
-	concept antlr { 
-		
+	concept antlr {
+
 		parserjava {
 			public int a=0;
 		}
-	
+
 	}
-	
-	 
-		
+
+
+
 	Transition implements Inter =
-	   from:Name "->" to:Name ";";  
+	   from:Name "->" to:Name ";";
 
 	// Checks if interfaces are inherited
 	interface Inter;
-	
-	
+
+
 	// TestCase 2:
-	
+
 	A implements X, Y = "a";
 	B implements X = "b";
-	
-	interface X; 
-	
-	
+
+	interface X;
+
+
 	interface Y;
 
 }

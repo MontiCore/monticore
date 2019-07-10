@@ -171,6 +171,9 @@ public class CommonExpressionsTest {
     typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build());
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
+
+    methodSymbol = new EMethodSymbol("test");
+    
   }
 
 
