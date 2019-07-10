@@ -9,7 +9,6 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.CDModifier;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
-import de.monticore.emf._ast.ASTECNode;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -41,6 +40,7 @@ public class ASTEmfDecorator extends ASTDecorator {
   @Override
   public ASTCDClass decorate(ASTCDClass clazz) {
     clazz.addInterface(this.astService.getASTBaseInterface());
+    clazz.addInterface(getCDTypeFacade().createSimpleReferenceType(E_PACKAGE));
     clazz.addCDMethod(createAcceptMethod(clazz));
     clazz.addAllCDMethods(createAcceptSuperMethods(clazz));
     clazz.addCDMethod(getConstructMethod(clazz));
@@ -48,7 +48,7 @@ public class ASTEmfDecorator extends ASTDecorator {
     clazz.addAllCDMethods(createEMethods(clazz));
 
     if (!clazz.isPresentSuperclass()) {
-      clazz.setSuperclass(this.getCDTypeFacade().createSimpleReferenceType(ASTECNode.class));
+      clazz.setSuperclass(this.getCDTypeFacade().createSimpleReferenceType(AST_EC_NODE));
     }
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(clazz);

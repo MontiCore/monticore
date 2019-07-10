@@ -61,6 +61,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(packageImplName)
+        .setModifier(PUBLIC.build())
         .setSuperclass(getCDTypeFacade().createSimpleReferenceType(E_PACKAGE_IMPL))
         .addInterface(getCDTypeFacade().createSimpleReferenceType(packageName))
         .addCDAttribute(constantsEEnumAttribute)

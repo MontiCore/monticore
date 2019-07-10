@@ -18,14 +18,15 @@ setNsURI(eNS_URI);
 
 <#-- (ePackageImplInitializePackageContentsMain, ast) -->
 
-EOperation op;
+org.eclipse.emf.ecore.EOperation op;
 // Obtain other dependent packages
-ASTENodePackage theASTENodePackage = (ASTENodePackage)EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI);
+de.monticore.emf._ast.ASTENodePackage theASTENodePackage = (de.monticore.emf._ast.ASTENodePackage)org.eclipse.emf.ecore.EPackage.
+    Registry.INSTANCE.getEPackage(de.monticore.emf._ast.ASTENodePackage.eNS_URI);
 <#list service.getSuperCDs() as superCD>
     <#assign qualifiedName = service.getQualifiedPackageImplName(superCD)>
     <#assign identifierName = service.getSimplePackageImplName(superCD)>
     ${qualifiedName} ${identifierName?uncap_first} =
-  (${qualifiedName})EPackage.Registry.INSTANCE.getEPackage(
+  (${qualifiedName})org.eclipse.emf.ecore.EPackage.Registry.INSTANCE.getEPackage(
     ${qualifiedName}.eNS_URI);
 </#list>
 

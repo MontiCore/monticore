@@ -2,6 +2,8 @@ package de.monticore.codegen.cd2java._ast_emf;
 
 public final class EmfConstants {
 
+  public static final String AST_EC_NODE = "de.monticore.emf._ast.ASTECNode";
+
   public static final String PACKAGE_SUFFIX = "Package";
 
   public static final String PACKAGE_IMPL_SUFFIX = "PackageImpl";
@@ -10,7 +12,9 @@ public final class EmfConstants {
 
   public static final String E_PACKAGE_IMPL = "org.eclipse.emf.ecore.impl.EPackageImpl";
 
-  public static final String E_NAME = "eName";
+  public static final String E_PACKAGE = "org.eclipse.emf.ecore.EPackage";
+
+  public static final String E_NAME = "eNAME";
 
   public static final String ENS_PREFIX = "eNS_PREFIX";
 

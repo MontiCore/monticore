@@ -16,12 +16,12 @@ ${packageInterface.printModifier()} interface ${packageInterface.getName()} <#rt
 </#list>
 
   interface Literals {
-    org.eclipse.emf.ecore.EEnum Constants${astCDDefinition.getName()} = eINSTANCE.getConstants${astCDDefinition.getName()}
+    org.eclipse.emf.ecore.EEnum Constants${astCDDefinition.getName()} = eINSTANCE.getConstants${astCDDefinition.getName()}();
     <#list astCDDefinition.getCDClassList() as cdClass>
-      org.eclipse.emf.ecore.EClass ${cdClass.getName()} = eINSTANCE.get${cdClass.getName()}()
+      org.eclipse.emf.ecore.EClass ${cdClass.getName()} = eINSTANCE.get${cdClass.getName()}();
     </#list>
     <#list astCDDefinition.getCDInterfaceList() as cdInterface>
-      org.eclipse.emf.ecore.EClass ${cdInterface.getName()} = eINSTANCE.get${cdInterface.getName()}()
+      org.eclipse.emf.ecore.EClass ${cdInterface.getName()} = eINSTANCE.get${cdInterface.getName()}();
     </#list>
   }
 }

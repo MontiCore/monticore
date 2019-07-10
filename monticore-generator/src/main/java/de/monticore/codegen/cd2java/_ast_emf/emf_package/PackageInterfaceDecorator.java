@@ -15,8 +15,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.FACTORY_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.NODE_FACTORY_SUFFIX;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PACKAGE_PRIVATE;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PACKAGE_PRIVATE_ABSTRACT;
+import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDInterface> {
 
@@ -37,6 +36,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     List<ASTCDClass> classList = compilationUnit.deepClone().getCDDefinition().getCDClassList();
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(interfaceName)
+        .setModifier(PUBLIC.build())
         .addInterface(getCDTypeFacade().createSimpleReferenceType(ASTE_PACKAGE))
         .addCDAttribute(createENameAttribute(definitionName))
         .addCDAttribute(createENSURIAttribute(definitionName))

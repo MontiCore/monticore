@@ -20,12 +20,20 @@ import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._ast.mill.MillDecorator;
+import de.monticore.codegen.cd2java._ast_emf.ASTEmfCDDecorator;
+import de.monticore.codegen.cd2java._ast_emf.CDEmfGenerator;
+import de.monticore.codegen.cd2java._ast_emf.EmfService;
+import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTEmfDecorator;
+import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTFullEmfDecorator;
+import de.monticore.codegen.cd2java._ast_emf.ast_class.DataEmfDecorator;
+import de.monticore.codegen.cd2java._ast_emf.ast_class.emfMutatorMethodDecorator.EmfMutatorDecorator;
+import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
+import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
+import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.ast.AstGenerator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
-import de.monticore.codegen.cd2java.ast.CdDecorator;
-import de.monticore.codegen.cd2java.ast_emf.CdEmfDecorator;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
@@ -33,6 +41,7 @@ import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.codegen.cd2java.od.ODGenerator;
 import de.monticore.codegen.cd2java.top.TopDecorator;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
@@ -437,6 +446,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return decorateWithAST(astcdCompilationUnit, glex, modelPath, handCodedPath);
   }
 
+  public ASTCDCompilationUnit decorateEmfForASTPackage(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ModelPath modelPath, IterablePath handCodedPath) {
+    ASTCDCompilationUnit astcdCompilationUnit = prepareCD(astClassDiagram);
+    return decorateEmfWithAST(astcdCompilationUnit, glex, modelPath, handCodedPath);
+  }
+
   private ASTCDCompilationUnit prepareCD(ASTCDCompilationUnit cd) {
     ASTCDCompilationUnit preparedCD = cd;
 
@@ -446,7 +460,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return preparedCD;
   }
 
-  private ASTCDCompilationUnit decorateWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, ModelPath modelPath, IterablePath handCodedPath) {
+  private ASTCDCompilationUnit decorateWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, ModelPath modelPath,
+                                               IterablePath handCodedPath) {
     ASTService astService = new ASTService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
@@ -496,6 +511,57 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
 
+  private ASTCDCompilationUnit decorateEmfWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, ModelPath modelPath,
+                                                  IterablePath handCodedPath) {
+    ASTService astService = new ASTService(cd);
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    VisitorService visitorService = new VisitorService(cd);
+    NodeFactoryService nodeFactoryService = new NodeFactoryService(cd);
+    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    EmfMutatorDecorator emfMutatorDecorator = new EmfMutatorDecorator(glex, astService);
+    DataEmfDecorator dataEmfDecorator = new DataEmfDecorator(glex, methodDecorator, astService, new DataDecoratorUtil(), emfMutatorDecorator);
+    ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
+    ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, symbolTableService);
+    ASTEmfDecorator astEmfDecorator = new ASTEmfDecorator(glex, astService, visitorService, nodeFactoryService,
+        astSymbolDecorator, astScopeDecorator, methodDecorator, symbolTableService);
+    ASTReferenceDecorator astReferencedSymbolDecorator = new ASTReferenceDecorator(glex, symbolTableService);
+    ASTFullEmfDecorator fullEmfDecorator = new ASTFullEmfDecorator(dataEmfDecorator, astEmfDecorator, astReferencedSymbolDecorator);
+
+    ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
+
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex));
+    ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
+
+    EmfNodeFactoryDecorator nodeFactoryDecorator = new EmfNodeFactoryDecorator(glex, nodeFactoryService);
+
+    MillDecorator millDecorator = new MillDecorator(glex, astService);
+
+    ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
+
+    EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex), astService);
+
+    ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService,
+        astSymbolDecorator, astScopeDecorator, methodDecorator);
+    InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, new DataDecoratorUtil(), methodDecorator, astService);
+    FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator);
+
+    PackageImplDecorator packageImplDecorator = new PackageImplDecorator(glex, new MandatoryAccessorDecorator(glex), new DecorationHelper());
+    PackageInterfaceDecorator packageInterfaceDecorator = new PackageInterfaceDecorator(glex, new DecorationHelper());
+
+    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());
+    GlobalScope symbolTable = new GlobalScope(modelPath, cd4AnalysisLanguage, resolvingConfiguration);
+    CD4AnalysisSymbolTableCreator symbolTableCreator = cd4AnalysisLanguage.getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
+
+    ASTEmfCDDecorator astcdDecorator = new ASTEmfCDDecorator(glex, symbolTableCreator, fullEmfDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
+        millDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator, packageImplDecorator, packageInterfaceDecorator);
+    ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
+
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(compilationUnit);
+  }
+
+
   public void generateFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit oldCD, ASTCDCompilationUnit decoratedCD,
                              File outputDirectory, IterablePath handcodedPath) {
     // need symboltable of the old cd
@@ -508,6 +574,21 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setModelName(diagramName);
     setup.setGlex(glex);
     CDGenerator generator = new CDGenerator(setup);
+    generator.generate(decoratedCD);
+  }
+
+  public void generateEmfFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit oldCD, ASTCDCompilationUnit decoratedCD,
+                                File outputDirectory, IterablePath handcodedPath) {
+    // need symboltable of the old cd
+    glex.setGlobalValue("service", new EmfService(oldCD));
+    glex.setGlobalValue("astHelper", new DecorationHelper());
+    final String diagramName = decoratedCD.getCDDefinition().getName();
+    GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(outputDirectory);
+    setup.setHandcodedPath(handcodedPath);
+    setup.setModelName(diagramName);
+    setup.setGlex(glex);
+    CDEmfGenerator generator = new CDEmfGenerator(setup);
     generator.generate(decoratedCD);
   }
 
@@ -536,21 +617,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
-   * Decorates class diagram AST by adding of new classes and methods using in
-   * ast files TODO: rephrase!
-   *
-   * @param glex            - object for managing hook points, features and global
-   *                        variables
-   * @param astClassDiagram - class diagram AST
-   * @param targetPath      the directory to produce output in
-   */
-  public void decorateEmfCd(GlobalExtensionManagement glex,
-                            ASTCDCompilationUnit astClassDiagram, GlobalScope symbolTable, IterablePath targetPath) {
-    boolean emfCompatible = true;
-    createCdDecorator(glex, symbolTable, targetPath, emfCompatible).decorate(astClassDiagram);
-  }
-
-  /**
    * Generates ast files for the given class diagram AST TODO: rephrase!
    *
    * @param glex            - object for managing hook points, features and global
@@ -567,23 +633,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, handcodedPath);
     CoCoGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
     ODGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
-  }
-
-  /**
-   * Creates instance of the {@link CdDecorator}
-   *
-   * @param glex
-   * @param symbolTable
-   * @param targetPath
-   * @param emfCompatible - create the CdDecorator for the emf compatible code
-   * @return
-   */
-  private CdDecorator createCdDecorator(GlobalExtensionManagement glex, GlobalScope symbolTable,
-                                        IterablePath targetPath, boolean emfCompatible) {
-    if (emfCompatible) {
-      return new CdEmfDecorator(glex, symbolTable, targetPath);
-    }
-    return new CdDecorator(glex, symbolTable, targetPath);
   }
 
   private void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
