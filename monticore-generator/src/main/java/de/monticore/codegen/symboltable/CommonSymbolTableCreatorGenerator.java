@@ -37,6 +37,8 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
     String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "SymbolTableCreator"),
             genHelper.getTargetPackage(), handCodedPath);
 
+    final String languageName = genHelper.getGrammarSymbol().getName();
+
     Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
   
     Set<ProdSymbol> symbolDefiningRules = Sets.newHashSet();
@@ -61,7 +63,16 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
       genEngine
           .generate("symboltable.SymbolTableCreator", filePath, grammarSymbol.getAstNode().get(),
               className, directSuperCds, symbolDefiningRules, nonSymbolDefiningRules, symbolKinds, handCodedPath);
-    
+
+      String stcName = className;;
+
+      className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "SymbolTableCreatorBuilder"),
+          genHelper.getTargetPackage(), handCodedPath);
+
+      filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
+
+      genEngine.generate("symboltable.SymbolTableCreatorBuilder",filePath,grammarSymbol.getAstNode().get(),className, stcName);
+
       className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "SymbolTableCreatorDelegator"),
           genHelper.getTargetPackage(), handCodedPath);
     
@@ -93,6 +104,16 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
         }
       
       }
+      if(!grammarSymbol.isComponent()) {
+        stcName = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName()) + "SymbolTableCreatorDelegator", genHelper.getTargetPackage(), handCodedPath);
+
+        className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName()) + "SymbolTableCreatorDelegatorBuilder", genHelper.getTargetPackage(), handCodedPath);
+
+        filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
+
+
+        genEngine.generate("symboltable.SymbolTableCreatorDelegatorBuilder", filePath, grammarSymbol.getAstNode().get(), className, stcName);
+      }
     }
   
     String name = grammarSymbol.getName() + millName;
@@ -122,7 +143,7 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
     // scope
     String qualifiedScopeName = String.format(scopeTemplate, genHelper.getTargetPackage(), grammarSymbol.getName());
     localSymbolsAndScope.put(qualifiedScopeName, grammarSymbol.getName()+"Scope");
-    
+
     // super mills
     Set<String> mills = Sets.newHashSet();
     for(String s : genHelper.getSuperGrammarCds()){
@@ -130,8 +151,9 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
       String grammar = Names.getSimpleName(s);
       mills.add(String.format(millTemplate, _package, grammar.toLowerCase(), grammar));
     }
-    
+    final boolean existsHW = existsHandwrittenClass(getSimpleName(grammarSymbol.getFullName() + "Language"),
+        genHelper.getTargetPackage(), handCodedPath);
     genEngine.generate("symboltable.SymTabMill", filePath, grammarSymbol.getAstNode().get(),
-        hasHWCImpl, className, name,localSymbolsAndScope,mills, superSymbols,symbolToMill);
+        hasHWCImpl, className, name,localSymbolsAndScope,mills, superSymbols,symbolToMill, languageName, existsHW);
   }
 }

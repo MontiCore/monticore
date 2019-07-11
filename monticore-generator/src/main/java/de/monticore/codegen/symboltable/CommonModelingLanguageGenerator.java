@@ -20,16 +20,25 @@ public class CommonModelingLanguageGenerator implements ModelingLanguageGenerato
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
                        IterablePath handCodedPath, MCGrammarSymbol grammarSymbol, Collection<String> grammarRuleNames) {
-    final String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "Language"),
+    String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "Language"),
             genHelper.getTargetPackage(), handCodedPath);
 
-    final Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
+    String languageName = genHelper.getGrammarSymbol().getName();
+
+    Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     final boolean existsHW = existsHandwrittenClass(getSimpleName(grammarSymbol.getFullName() + "Language"),
             genHelper.getTargetPackage(), handCodedPath);
     
     if(grammarSymbol.getStartProd().isPresent()) {
       genEngine.generate("symboltable.ModelingLanguage", filePath, grammarSymbol.getAstNode().get(),
           className, existsHW);
+      if(!grammarSymbol.isComponent()&&existsHW) {
+        String modelLoaderName = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName())+"ModelLoader",
+            genHelper.getTargetPackage(), handCodedPath);
+        className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName()) + "LanguageBuilder", genHelper.getTargetPackage(), handCodedPath);
+        filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
+        genEngine.generate("symboltable.LanguageBuilder", filePath, grammarSymbol.getAstNode().get(), className,languageName);
+      }
     }
   }
 }
