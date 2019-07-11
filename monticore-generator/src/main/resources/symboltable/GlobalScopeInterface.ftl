@@ -88,12 +88,4 @@ public interface ${className} extends ${interfaceName} {
   }
 </#if>
 
-
-
-
-
-
-
-
-
 }
