@@ -4,7 +4,7 @@ package mc.feature.referencesymbol;
 
 grammar SupGrammarRef extends mc.feature.referencesymbol.Reference {
 
-  scope SupRand = "begin" Name "{" (SupRef | SupRefList | SupRefOpt | SupRefRand | Test)+ "}" "end";
+  symbol scope SupRand = "begin" Name "{" (SupRef | SupRefList | SupRefOpt | SupRefRand | Test)+ "}" "end";
 
   SupRef = "supRef" Name@Test ";";
 

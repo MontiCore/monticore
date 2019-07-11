@@ -4,7 +4,7 @@ package mc.feature.referencesymbol;
 
 grammar Reference extends mc.common.Basics {
 
-   symbol Rand = "begin" Name "{" (Test | ReferenceToTest | OptionalRef | NoRef | ListRef)+ "}" "end";
+   symbol scope Rand = "begin" Name "{" (Test | ReferenceToTest | OptionalRef | NoRef | ListRef)+ "}" "end";
 
    symbol Test = "symbol" Name ";";
 
