@@ -18,14 +18,25 @@ public class CommonModelLoaderGenerator implements ModelLoaderGenerator {
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
                        IterablePath handCodedPath, MCGrammarSymbol grammarSymbol) {
-    final String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "ModelLoader"),
+    String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "ModelLoader"),
             genHelper.getTargetPackage(), handCodedPath);
 
-    final Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
+    String languageName = genHelper.getGrammarSymbol().getName();
+
+
+    Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
 
     if(grammarSymbol.getStartProd().isPresent()) {
       genEngine.generate("symboltable.ModelLoader", filePath, grammarSymbol.getAstNode().get(),
           className);
+
+      if(!grammarSymbol.isComponent()){
+        className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName())+"ModelLoaderBuilder",
+            genHelper.getTargetPackage(),handCodedPath);
+        filePath = get(getPathFromPackage(genHelper.getTargetPackage()),className+".java");
+        genEngine.generate("symboltable.ModelLoaderBuilder", filePath, grammarSymbol.getAstNode().get(),className, languageName);
+
+      }
     }
   }
 }
