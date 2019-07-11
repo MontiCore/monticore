@@ -69,7 +69,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
   public void testAcceptMethod(){
     ASTCDMethod method = getMethodBy("accept",  dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());

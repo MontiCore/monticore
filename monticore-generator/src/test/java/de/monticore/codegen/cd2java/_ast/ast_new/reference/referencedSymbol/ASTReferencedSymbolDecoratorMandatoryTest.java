@@ -91,7 +91,8 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
     ASTCDMethod method = getMethodBy("getNameSymbol", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(NAME_SYMBOL);
-    assertDeepEquals(astType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(astType, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -99,7 +100,8 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
   public void testGetNameSymbolOptMethod() {
     ASTCDMethod method = getMethodBy("getNameSymbolOpt", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertOptionalOf(NAME_SYMBOL, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertOptionalOf(NAME_SYMBOL, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -107,7 +109,8 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
   public void testIsPresentNameSymbolMethod() {
     ASTCDMethod method = getMethodBy("isPresentNameSymbol", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 

@@ -8,6 +8,7 @@ import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,7 +44,8 @@ public class OptionalAccessorDecoratorTest {
   public void testGetMethod() {
     ASTCDMethod method = getMethodBy("getA", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    assertDeepEquals(String.class, method.getMCReturnType());
+    Assert.assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
@@ -52,14 +54,16 @@ public class OptionalAccessorDecoratorTest {
     ASTCDMethod method = getMethodBy("getAOpt", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
     ASTMCType expectedReturnType = CDTypeFacade.getInstance().createOptionalTypeOf("String");
-    assertDeepEquals(expectedReturnType, method.getMCReturnType());
+    Assert.assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
   @Test
   public void testIsPresentMethod() {
     ASTCDMethod method = getMethodBy("isPresentA", this.methods);
-    assertBoolean(method.getMCReturnType());
+    Assert.assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getCDParameterList().isEmpty());
   }

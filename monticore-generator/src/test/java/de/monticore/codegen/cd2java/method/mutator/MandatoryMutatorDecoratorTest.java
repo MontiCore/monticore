@@ -13,11 +13,11 @@ import org.junit.Test;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class MandatoryMutatorDecoratorTest {
 
@@ -41,7 +41,7 @@ public class MandatoryMutatorDecoratorTest {
   @Test
   public void testGetMethod() {
     ASTCDMethod method = getMethodBy("setA", this.methods);
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);

@@ -21,6 +21,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
 
@@ -50,7 +51,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, cdInterface.getCDMethodList().size());
     ASTCDMethod method = cdInterface.getCDMethod(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
     assertEquals("check", method.getName());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -65,7 +66,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, cdInterface.getCDMethodList().size());
     ASTCDMethod method = cdInterface.getCDMethod(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("check", method.getName());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -80,7 +81,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, cdInterface.getCDMethodList().size());
     ASTCDMethod method = cdInterface.getCDMethod(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertVoid(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("check", method.getName());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);

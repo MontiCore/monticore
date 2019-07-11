@@ -100,7 +100,8 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testBuildMethod() {
     ASTCDMethod build = getMethodBy(BUILD_METHOD, builderClass);
-    assertDeepEquals(originalClass.getName(), build.getMCReturnType());
+    assertTrue(build.getMCReturnType().isPresentMCType());
+    assertDeepEquals(originalClass.getName(), build.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, build.getModifier());
     assertTrue(build.getCDParameterList().isEmpty());
   }
@@ -108,7 +109,8 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testIsValidMethod() {
     ASTCDMethod isValid = getMethodBy(IS_VALID, builderClass);
-    assertBoolean(isValid.getMCReturnType());
+    assertTrue(isValid.getMCReturnType().isPresentMCType());
+    assertBoolean(isValid.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, isValid.getModifier());
     assertTrue(isValid.getCDParameterList().isEmpty());
   }

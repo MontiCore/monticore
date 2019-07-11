@@ -1,6 +1,8 @@
 package de.monticore.codegen.cd2java.factories;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.cd.cd4code._parser.CD4CodeParser;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
@@ -97,16 +99,17 @@ public class CDTypeFacade {
     return createListTypeOf(MCCollectionTypesHelper.printType(type));
   }
 
-  public ASTMCSetType createCollectionTypeOf(final Class<?> clazz) {
+  public ASTMCType createCollectionTypeOf(final Class<?> clazz) {
     return createCollectionTypeOf(clazz.getSimpleName());
   }
 
-  public ASTMCSetType createCollectionTypeOf(final String name) {
+  public ASTMCType createCollectionTypeOf(final String name) {
     ASTMCTypeArgument arg = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
-    return CD4AnalysisMill.mCSetTypeBuilder().setName("set").setMCTypeArgument(arg).build();
+    // TODO Ersetze CD4Code durch was besseres
+    return CD4CodeMill.mCBasicGenericTypeBuilder().setNameList(Lists.newArrayList("Collection")).setMCTypeArgumentList(Lists.newArrayList(arg)).build();
   }
 
-  public ASTMCSetType createCollectionTypeOf(final ASTMCType type) {
+  public ASTMCType createCollectionTypeOf(final ASTMCType type) {
     return createCollectionTypeOf(MCCollectionTypesHelper.printType(type));
   }
 

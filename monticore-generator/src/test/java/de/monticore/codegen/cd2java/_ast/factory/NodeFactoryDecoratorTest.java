@@ -99,7 +99,8 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
     //test returnType
     ASTMCType returnType = cdTypeFacade.createTypeByDefinition("AutomatonNodeFactory");
-    assertDeepEquals(returnType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -113,7 +114,8 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
     //test returnType
     ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertDeepEquals(returnType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -127,7 +129,8 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
     //test returnType
     ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertDeepEquals(returnType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -139,7 +142,8 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
     //test returnType
     ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertDeepEquals(returnType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
     //testParameter
     assertFalse(method.isEmptyCDParameters());
 
@@ -168,7 +172,8 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     assertTrue(PROTECTED.build().deepEquals(method.getModifier()));
     //test returnType
     ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertDeepEquals(returnType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
     //testParameter
     assertFalse(method.isEmptyCDParameters());
 

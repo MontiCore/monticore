@@ -132,7 +132,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   @Override
   protected RuleComponentSymbol create_Terminal(ASTTerminal ast) {
     final String symbolName = ast.getUsageNameOpt().orElse(ast.getName());
-    return new RuleComponentSymbol(ast.getName());
+    return new RuleComponentSymbol(symbolName);
   }
 
   @Override

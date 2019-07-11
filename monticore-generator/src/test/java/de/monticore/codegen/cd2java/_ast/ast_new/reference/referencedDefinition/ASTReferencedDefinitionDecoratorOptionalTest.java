@@ -73,7 +73,8 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
     ASTCDMethod method = getMethodBy("getNameDefinition", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(NAME_DEFINITION);
-    assertDeepEquals(astType, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(astType, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -81,7 +82,8 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
   public void testGetNameDefinitionOptMethod() {
     ASTCDMethod method = getMethodBy("getNameDefinitionOpt", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertOptionalOf(NAME_DEFINITION, method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertOptionalOf(NAME_DEFINITION, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -89,7 +91,8 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
   public void testIsPresentNameDefinitionMethod() {
     ASTCDMethod method = getMethodBy("isPresentNameDefinition", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getMCReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
