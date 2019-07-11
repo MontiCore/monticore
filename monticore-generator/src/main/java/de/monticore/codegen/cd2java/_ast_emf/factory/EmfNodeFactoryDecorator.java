@@ -1,6 +1,5 @@
 package de.monticore.codegen.cd2java._ast_emf.factory;
 
-import com.google.common.collect.Lists;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -11,6 +10,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
@@ -27,17 +27,22 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
     ASTType factoryType = this.getCDTypeFacade().createSimpleReferenceType(factoryClassName);
 
+    //remove abstract classes
+    List<ASTCDClass> astcdClassList = astcdDefinition.deepClone().getCDClassList()
+        .stream()
+        .filter(ASTCDClass::isPresentModifier)
+        .filter(x -> !x.getModifier().isAbstract())
+        .collect(Collectors.toList());
+
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, factoryClassName);
 
     ASTCDAttribute factoryAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC, factoryType, FACTORY);
 
     ASTCDMethod getFactoryMethod = addGetFactoryMethod(factoryType, astcdDefinition.getName(), factoryClassName);
 
-    ASTCDMethod emfCreateMethod = addEmfCreateMethod(astcdDefinition.getCDClassList(), astcdDefinition.getName(), factoryClassName);
+    ASTCDMethod emfCreateMethod = addEmfCreateMethod(astcdClassList, astcdDefinition.getName(), factoryClassName);
 
     ASTCDMethod getPackageMethod = addGetPackageMethod(astcdDefinition.getName());
-
-    List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
 
     List<ASTCDMethod> createMethodList = new ArrayList<>();
 
