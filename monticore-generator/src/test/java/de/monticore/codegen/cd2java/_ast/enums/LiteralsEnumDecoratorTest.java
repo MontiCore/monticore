@@ -91,7 +91,8 @@ public class LiteralsEnumDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = cdEnum.getCDMethod(0);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals("getIntValue", method.getName());
-    assertInt(method.getMCReturnType());
+    assertTrue((method.getMCReturnType().isPresentMCType()));
+    assertInt(method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -101,6 +102,6 @@ public class LiteralsEnumDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.ENUM, cdEnum, cdEnum);
-    System.out.println(sb.toString());
+    // TODO Check: System.out.println(sb.toString());
   }
 }

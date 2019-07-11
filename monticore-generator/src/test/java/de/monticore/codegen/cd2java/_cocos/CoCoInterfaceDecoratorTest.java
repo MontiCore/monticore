@@ -51,7 +51,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, cdInterface.getCDMethodList().size());
     ASTCDMethod method = cdInterface.getCDMethod(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("check", method.getName());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -95,9 +95,9 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     for (ASTCDInterface i : interfaces) {
-      System.out.printf("==================== %s ====================\n", i.getName());
+      // System.out.printf("==================== %s ====================\n", i.getName());
       StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, i, i);
-      System.out.println(sb.toString());
+      // TODO: Check System.out.println(sb.toString());
     }
   }
 }

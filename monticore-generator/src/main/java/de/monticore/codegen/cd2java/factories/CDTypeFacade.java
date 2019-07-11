@@ -9,6 +9,8 @@ import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
 import de.monticore.types.MCCollectionTypesHelper;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -119,6 +121,20 @@ public class CDTypeFacade {
     return CD4AnalysisMill.mCMapTypeBuilder().setName("Map").setKey(first).setValue(second).build();
   }
 
+  public ASTMCArrayType createArrayType(final Class<?> clazz, int dimension) {
+    return createArrayType(clazz.getSimpleName(), dimension);
+  }
+
+  public ASTMCArrayType createArrayType(final String name, int dimension) {
+    return createArrayType(this.createQualifiedType(name), dimension);
+  }
+
+  private ASTMCArrayType createArrayType(final ASTMCType type, int dimension) {
+    return MCFullGenericTypesMill.mCArrayTypeBuilder()
+            .setMCType(type)
+            .setDimensions(dimension)
+            .build();
+  }
 
   public ASTMCVoidType createVoidType() {
     return MCBasicTypesMill.mCVoidTypeBuilder()

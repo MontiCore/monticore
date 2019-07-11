@@ -6,6 +6,7 @@ package de.monticore.codegen.mc2cd;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 
@@ -45,11 +46,17 @@ public enum AttributeCategory {
   }
   
   private static boolean isGenericList(ASTCDAttribute cdAttribute) {
-    return cdAttribute.getMCType() instanceof ASTMCListType;
+    if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
+      return "List".equals(cdAttribute.getMCType().getBaseName());
+    }
+    return false;
   }
-  
+
   private static boolean isOptional(ASTCDAttribute cdAttribute) {
-    return cdAttribute.getMCType() instanceof ASTMCOptionalType;
+    if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
+      return "Optional".equals(cdAttribute.getMCType().getBaseName());
+    }
+    return false;
   }
   
 }

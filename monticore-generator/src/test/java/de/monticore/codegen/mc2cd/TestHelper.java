@@ -16,6 +16,7 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.se_rwth.commons.Names;
 import parser.MCGrammarParser;
@@ -68,14 +69,14 @@ public class TestHelper {
     if (!TransformationHelper.typeToString(typeRef).equals("java.util.List")) {
       return false;
     }
-    if (!(typeRef instanceof ASTMCListType)) {
+    if (!(typeRef instanceof ASTMCGenericType)) {
       return false;
     }
-    ASTMCListType type = (ASTMCListType) typeRef;
-    if (!type.getMCTypeArgument().getMCTypeOpt().isPresent()) {
+    ASTMCGenericType type = (ASTMCGenericType) typeRef;
+    if (type.getMCTypeArgumentList().size() != 1) {
       return false;
     }
-    if (type.getMCTypeArgument().getMCTypeOpt().get().getName().equals(typeArg)) {
+    if (type.getMCTypeArgumentList().get(0).getMCTypeOpt().get().getBaseName().equals(typeArg)) {
       return false;
     }
     return true;

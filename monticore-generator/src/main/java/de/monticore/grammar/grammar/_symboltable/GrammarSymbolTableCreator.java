@@ -142,13 +142,16 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     if (currentSymbol.isPresent()) {
       prodComponent.setUsageName(usageName);
-
-      setComponentMultiplicity(prodComponent, ast);
-
       prodComponent.setTerminal(true);
-
       setComponentMultiplicity(prodComponent, ast);
+      prodComponent = currentSymbol.get().addProdComponent(prodComponent);
+
     }
+  }
+
+  @Override
+  public void addToScopeAndLinkWithNode(de.monticore.grammar.grammar._symboltable.RuleComponentSymbol symbol, de.monticore.grammar.grammar._ast.ASTTerminal astNode) {
+    setLinkBetweenSymbolAndNode(symbol, astNode);
   }
 
   @Override
@@ -277,6 +280,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   public void visit(ASTConstant astNode) {
+    // TODO: Kann diese Methode weg?
     final ProdSymbol currentSymbol = getProdSymbol().orElse(null);
     if (currentSymbol != null) {
       final String symbolName = astNode.isPresentHumanName()
@@ -287,6 +291,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
       prodComponent.setUsageName(astNode.getHumanNameOpt().orElse(null));
 
       prodComponent = currentSymbol.addProdComponent(prodComponent);
+      // setLinkBetweenSymbolAndNode(prodComponent, astNode);
     }
   }
 
@@ -380,6 +385,9 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
       Collection<AdditionalAttributeSymbol> astAttributes = prodSymbol.getProdAttributes();
       for (RuleComponentSymbol component : prodSymbol.getProdComponents()) {
         if (component.isNonterminal()) {
+          if (!component.getAstNode().isPresent()) {
+            System.out.println("SS");
+          }
           setComponentMultiplicity(component, component.getAstNode().get());
           Optional<AdditionalAttributeSymbol> attribute = astAttributes.stream()
                   .filter(a -> a.getName().equals(component.getName())).findAny();

@@ -63,7 +63,9 @@ public final class DecoratorAssert {
   }
 
   public static void assertBoolean(ASTNode actual) {
-    assertDeepEquals(CD_TYPE_FACADE.createBooleanType(), actual);
+    assertTrue(actual instanceof ASTMCPrimitiveType);
+    assertTrue(((ASTMCPrimitiveType) actual).isBoolean());
+    // TODO Alte Fassung: assertDeepEquals(CD_TYPE_FACADE.createBooleanType(), actual);
   }
 
   public static void assertInt(ASTNode actual) {

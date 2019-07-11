@@ -17,6 +17,7 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTsTest extends CocoTest
 
   @BeforeClass
   public static void disableFailQuick() {
+    Log.init();
     Log.enableFailQuick(false);
     checker.addCoCo(new ProdAndOverriddenProdUseSameAttrNameForDiffNTs());
   }

@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java.factories;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.cd.cd4analysis._symboltable.CDTypes;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
@@ -29,13 +30,8 @@ public class DecorationHelper extends MCCollectionTypesHelper {
   public static final String GET_PREFIX = "get";
 
   public static String getGeneratedErrorCode(ASTNode node) {
-    int hashCode;
-    if (node.isPresentSymbol()) {
-      String nodeName = node.getSymbol().getFullName();
-      hashCode = Math.abs(node.getClass().getSimpleName().hashCode() + nodeName.hashCode());
-    } else { // Else use the string representation
-      hashCode = Math.abs(node.toString().hashCode());
-    }
+    // Use the string representation
+    int hashCode = Math.abs(node.toString().hashCode());
     String errorCodeSuffix = String.valueOf(hashCode);
     return "x" + (hashCode < 1000 ? errorCodeSuffix : errorCodeSuffix
         .substring(errorCodeSuffix.length() - 3));

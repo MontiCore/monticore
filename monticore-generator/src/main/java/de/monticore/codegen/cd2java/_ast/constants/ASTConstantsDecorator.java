@@ -67,7 +67,7 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
         .addCDAttribute(getLanguageAttribute(grammarName))
         .addCDAttribute(getDefaultAttribute())
         .addAllCDAttributes(getConstantAttribute(enumConstants))
-       // TODO Check .addCDAttribute(getSuperGrammarsAttribute(superSymbolList))
+        .addCDAttribute(getSuperGrammarsAttribute(superSymbolList))
         .addCDConstructor(getDefaultConstructor(className))
         .addCDMethod(getGetAllLanguagesMethod(superSymbolList))
         .build();
@@ -87,6 +87,18 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
       attributeList.add(attribute);
     }
     return attributeList;
+  }
+
+  protected ASTCDAttribute getSuperGrammarsAttribute(Collection<CDDefinitionSymbol> superSymbolList) {
+    List<String> superGrammarNames = superSymbolList.stream().map(CDDefinitionSymbol::getFullName).map(x -> "\"" + x + "\"").collect(Collectors.toList());
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC, getCDTypeFacade().createArrayType(String.class, 1), SUPER_GRAMMARS);
+    if (!superSymbolList.isEmpty()) {
+      String s = superGrammarNames.stream().reduce((a, b) -> a + ", " + b).get();
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= {" + s + "}"));
+    } else {
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= {}"));
+    }
+    return attribute;
   }
 
   protected ASTCDAttribute getDefaultAttribute() {

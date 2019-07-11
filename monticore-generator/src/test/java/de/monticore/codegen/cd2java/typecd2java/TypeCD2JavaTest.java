@@ -12,6 +12,7 @@ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConcep
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,8 +65,8 @@ public class TypeCD2JavaTest {
 
   @Test
   public void testTypeJavaConformList() {
-    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTMCListType);
-    ASTMCListType simpleReferenceType = (ASTMCListType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType();
+    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTMCGenericType);
+    ASTMCGenericType simpleReferenceType = (ASTMCGenericType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType();
     assertFalse(simpleReferenceType.getNameList().isEmpty());
     assertEquals(3, simpleReferenceType.getNameList().size());
     assertEquals("java", simpleReferenceType.getNameList().get(0));
@@ -76,12 +77,12 @@ public class TypeCD2JavaTest {
   @Test
   public void testTypeJavaConformASTPackage() {
     //test that for AST classes the package is now java conform
-    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTMCListType);
-    ASTMCListType listType = (ASTMCListType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType();
-    assertTrue(listType.getMCTypeArgument().getMCTypeOpt().isPresent());
+    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTMCGenericType);
+    ASTMCGenericType listType = (ASTMCGenericType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType();
     assertEquals(1, listType.getMCTypeArgumentList().size());
-    assertTrue(listType.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    ASTMCQualifiedType typeArgument = (ASTMCQualifiedType) listType.getMCTypeArgument().getMCTypeOpt().get();
+    assertTrue(listType.getMCTypeArgumentList().get(0).getMCTypeOpt().isPresent());
+    assertTrue(listType.getMCTypeArgumentList().get(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    ASTMCQualifiedType typeArgument = (ASTMCQualifiedType) listType.getMCTypeArgumentList().get(0).getMCTypeOpt().get();
     assertEquals(3, typeArgument.getNameList().size());
     assertEquals("automaton", typeArgument.getNameList().get(0));
     assertEquals("_ast", typeArgument.getNameList().get(1));
