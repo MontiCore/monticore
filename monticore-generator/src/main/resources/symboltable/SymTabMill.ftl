@@ -1,6 +1,10 @@
 <#-- (c)  https://github.com/MontiCore/monticore -->
-${tc.signature("isTop", "className", "plainName", "symbolsAndScopes", "superMills", "superSymbols", "symbolToMill")}
+${tc.signature("isTop", "className", "plainName", "symbolsAndScopes", "superMills", "superSymbols", "symbolToMill", "languageName", "existsHW")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
+<#assign existsSTC = genHelper.getGrammarSymbol().getStartProd().isPresent()>
+<#assign existsSTCDel = !genHelper.getGrammarSymbol().isComponent() && existsSTC>
+<#assign existsModelLoader = existsSTCDel>
+<#assign existsLanguage = existsModelLoader && existsHW>
 
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -28,12 +32,19 @@ public <#if isTop>abstract </#if> class ${className} {
     <#list symbolsAndScopes?keys as s>
       mill${genHelper.getJavaConformName(symbolsAndScopes[s])} = a;
     </#list>
+    ${languageName?uncap_first}ModelLoaderMill = a;
+    ${languageName?uncap_first}LanguageMill = a;
+    ${languageName?uncap_first}SymbolTableCreatorMill = a;
+    ${languageName?uncap_first}SymbolTableCreatorDelegatorMill = a;
   }
 
 <#list symbolsAndScopes?keys as s>
   protected static ${plainName} mill${genHelper.getJavaConformName(symbolsAndScopes[s])} = null;
 </#list>
-
+  protected static ${plainName} ${languageName?uncap_first}ModelLoaderMill = null;
+  protected static ${plainName} ${languageName?uncap_first}LanguageMill = null;
+  protected static ${plainName} ${languageName?uncap_first}SymbolTableCreatorMill = null;
+  protected static ${plainName} ${languageName?uncap_first}SymbolTableCreatorDelegatorMill = null;
 
   protected ${className} () {}
 
@@ -66,9 +77,60 @@ public  static  void reset()   {
   <#list symbolsAndScopes?keys as s>
     mill${genHelper.getJavaConformName(symbolsAndScopes[s])} = null;
   </#list>
+  ${languageName?uncap_first}ModelLoaderMill = null;
+  ${languageName?uncap_first}LanguageMill = null;
+  ${languageName?uncap_first}SymbolTableCreatorMill = null;
+  ${languageName?uncap_first}SymbolTableCreatorDelegatorMill = null;
   <#list superMills as m>
     ${m}.reset();
   </#list>
 }
+<#if existsLanguage>
+  public static ${languageName}LanguageBuilder ${languageName?uncap_first}LanguageBuilder(){
+    if(${languageName?uncap_first}LanguageMill == null){
+      ${languageName?uncap_first}LanguageMill = getMill();
+    }
+    return ${languageName?uncap_first}LanguageMill._${languageName?uncap_first}LanguageBuilder();
+  }
 
+  protected ${languageName}LanguageBuilder _${languageName?uncap_first}LanguageBuilder(){
+    return new ${languageName}LanguageBuilder();
+}
+</#if>
+<#if existsModelLoader>
+  public static ${languageName}ModelLoaderBuilder ${languageName?uncap_first}ModelLoaderBuilder(){
+    if(${languageName?uncap_first}ModelLoaderMill == null){
+      ${languageName?uncap_first}ModelLoaderMill = getMill();
+    }
+    return ${languageName?uncap_first}ModelLoaderMill._${languageName?uncap_first}ModelLoaderBuilder();
+  }
+
+  protected ${languageName}ModelLoaderBuilder _${languageName?uncap_first}ModelLoaderBuilder(){
+    return new ${languageName}ModelLoaderBuilder();
+  }
+</#if>
+<#if existsSTCDel>
+  public static ${languageName}SymbolTableCreatorDelegatorBuilder ${languageName?uncap_first}SymbolTableCreatorDelegatorBuilder(){
+    if(${languageName?uncap_first}SymbolTableCreatorDelegatorMill == null){
+      ${languageName?uncap_first}SymbolTableCreatorDelegatorMill = getMill();
+    }
+    return ${languageName?uncap_first}SymbolTableCreatorDelegatorMill._${languageName?uncap_first}SymbolTableCreatorDelegatorBuilder();
+  }
+
+  protected ${languageName}SymbolTableCreatorDelegatorBuilder _${languageName?uncap_first}SymbolTableCreatorDelegatorBuilder(){
+    return new ${languageName}SymbolTableCreatorDelegatorBuilder();
+  }
+</#if>
+<#if existsSTC>
+  public static ${languageName}SymbolTableCreatorBuilder ${languageName?uncap_first}SymbolTableCreatorBuilder(){
+    if(${languageName?uncap_first}SymbolTableCreatorMill == null){
+      ${languageName?uncap_first}SymbolTableCreatorMill = getMill();
+    }
+    return ${languageName?uncap_first}SymbolTableCreatorMill._${languageName?uncap_first}SymbolTableCreatorBuilder();
+  }
+
+  protected ${languageName}SymbolTableCreatorBuilder _${languageName?uncap_first}SymbolTableCreatorBuilder(){
+    return new ${languageName}SymbolTableCreatorBuilder();
+  }
+</#if>
 }

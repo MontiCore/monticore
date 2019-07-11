@@ -17,7 +17,7 @@ import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 </#list>
 
 /**
-* Builder for {@link ${symbolName}}.
+* Builder for {@link ${symbolName}Symbol}.
 */
 
 public class ${className} {

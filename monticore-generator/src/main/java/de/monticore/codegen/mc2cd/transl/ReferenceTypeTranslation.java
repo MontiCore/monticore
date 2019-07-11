@@ -48,7 +48,7 @@ public class ReferenceTypeTranslation implements
         ASTCDAttribute.class)) {
       ASTType type = determineTypeToSetForAttributeInAST(link.source().getMCType(), rootLink.source());
       link.target().setType(type);
-        addStereotypeForASTTypes(link.source(), link.target(), rootLink.source());
+      addStereotypeForASTTypes(link.source(), link.target(), rootLink.source());
     }
 
     return rootLink;
@@ -136,7 +136,8 @@ public class ReferenceTypeTranslation implements
   }
 
   private void addStereotypeForASTTypes(ASTAdditionalAttribute astAdditionalAttributes, ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
-    Optional<MCProdSymbol> mcProdSymbol = resolveAstRuleType(astmcGrammar, astAdditionalAttributes.getMCType());
+    String simpleName = astAdditionalAttributes.getMCType().getNameList().stream().reduce((a, b) -> a + "." + b).get();
+    Optional<MCProdSymbol> mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, simpleName);
     if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
       TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
     }
