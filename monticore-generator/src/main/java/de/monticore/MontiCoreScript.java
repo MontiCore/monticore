@@ -517,6 +517,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
     NodeFactoryService nodeFactoryService = new NodeFactoryService(cd);
+    EmfService emfService = new EmfService(cd);
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     EmfMutatorDecorator emfMutatorDecorator = new EmfMutatorDecorator(glex, astService);
     DataEmfDecorator dataEmfDecorator = new DataEmfDecorator(glex, methodDecorator, astService, new DataDecoratorUtil(), emfMutatorDecorator);
@@ -545,8 +546,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, new DataDecoratorUtil(), methodDecorator, astService);
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator);
 
-    PackageImplDecorator packageImplDecorator = new PackageImplDecorator(glex, new MandatoryAccessorDecorator(glex), new DecorationHelper());
-    PackageInterfaceDecorator packageInterfaceDecorator = new PackageInterfaceDecorator(glex, new DecorationHelper());
+    PackageImplDecorator packageImplDecorator = new PackageImplDecorator(glex, new MandatoryAccessorDecorator(glex),emfService);
+    PackageInterfaceDecorator packageInterfaceDecorator = new PackageInterfaceDecorator(glex, emfService);
 
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());

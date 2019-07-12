@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
@@ -21,11 +21,12 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
 
   private static final String GET = "get%s";
 
-  private final DecorationHelper decorationHelper;
+  private final EmfService emfService;
 
-  public PackageInterfaceDecorator(GlobalExtensionManagement glex, DecorationHelper decorationHelper) {
+  public PackageInterfaceDecorator(final GlobalExtensionManagement glex,
+                                   final EmfService emfService) {
     super(glex);
-    this.decorationHelper = decorationHelper;
+    this.emfService = emfService;
   }
 
   @Override
@@ -154,13 +155,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdClassList) {
       for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
-        ASTSimpleReferenceType returnType;
-        if (decorationHelper.isAstNode(astcdAttribute) || decorationHelper.isOptionalAstNode(astcdAttribute)
-            || decorationHelper.isListAstNode(astcdAttribute)) {
-          returnType = getCDTypeFacade().createSimpleReferenceType(E_REFERENCE_TYPE);
-        } else {
-          returnType = getCDTypeFacade().createSimpleReferenceType(E_ATTRIBUTE_TYPE);
-        }
+        ASTSimpleReferenceType returnType = emfService.getEmfAttributeType(astcdAttribute);
         String methodName = String.format(GET, astcdClass.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
         methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName));
       }

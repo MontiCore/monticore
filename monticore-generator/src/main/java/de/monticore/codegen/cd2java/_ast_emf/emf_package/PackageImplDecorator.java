@@ -2,7 +2,6 @@ package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -27,21 +26,21 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
   private final MandatoryAccessorDecorator accessorDecorator;
 
-  private final DecorationHelper decorationHelper;
-  EmfService emfService;
+  private  final EmfService emfService;
 
 
-  public PackageImplDecorator(GlobalExtensionManagement glex, MandatoryAccessorDecorator accessorDecorator,
-                              DecorationHelper decorationHelper) {
+  public PackageImplDecorator(final GlobalExtensionManagement glex,
+                              final MandatoryAccessorDecorator accessorDecorator,
+                              final EmfService emfService
+                              ) {
     super(glex);
     this.accessorDecorator = accessorDecorator;
-    this.decorationHelper = decorationHelper;
+    this.emfService = emfService;
   }
 
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
     ASTCDDefinition definition = compilationUnit.deepClone().getCDDefinition();
-    emfService = new EmfService(compilationUnit);
     String definitionName = definition.getName();
     String packageImplName = definitionName + PACKAGE_IMPL_SUFFIX;
     String packageName = definitionName + PACKAGE_SUFFIX;
@@ -168,13 +167,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
     for (ASTCDClass astcdClass : astcdClassList) {
       for (int i = 0; i < astcdClass.getCDAttributeList().size(); i++) {
         ASTCDAttribute astcdAttribute = astcdClass.getCDAttribute(i);
-        ASTSimpleReferenceType returnType;
-        if (decorationHelper.isAstNode(astcdAttribute) || decorationHelper.isOptionalAstNode(astcdAttribute)
-            || decorationHelper.isListAstNode(astcdAttribute)) {
-          returnType = getCDTypeFacade().createSimpleReferenceType(E_REFERENCE_TYPE);
-        } else {
-          returnType = getCDTypeFacade().createSimpleReferenceType(E_ATTRIBUTE_TYPE);
-        }
+        ASTSimpleReferenceType returnType = emfService.getEmfAttributeType(astcdAttribute);
         String methodName = String.format(GET, astcdClass.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
         ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName);
 

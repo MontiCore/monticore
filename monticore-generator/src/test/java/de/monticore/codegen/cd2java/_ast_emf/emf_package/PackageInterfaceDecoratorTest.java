@@ -2,6 +2,7 @@ package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -34,7 +35,7 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    PackageInterfaceDecorator decorator = new PackageInterfaceDecorator(this.glex, new DecorationHelper());
+    PackageInterfaceDecorator decorator = new PackageInterfaceDecorator(this.glex, new EmfService(ast));
     packageInterface = decorator.decorate(ast);
   }
 

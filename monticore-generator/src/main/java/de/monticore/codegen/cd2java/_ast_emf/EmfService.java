@@ -3,9 +3,11 @@ package de.monticore.codegen.cd2java._ast_emf;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTPrimitiveType;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
@@ -13,7 +15,7 @@ import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 import de.se_rwth.commons.StringTransformations;
 
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
-import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.PACKAGE_IMPL_SUFFIX;
+import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 
 public class EmfService extends AbstractService {
 
@@ -118,5 +120,15 @@ public class EmfService extends AbstractService {
 
   public boolean isLiteralsEnum(ASTCDEnum astcdEnum, String definitionName){
     return astcdEnum.getName().equals(definitionName + LITERALS_SUFFIX);
+  }
+
+  public ASTSimpleReferenceType getEmfAttributeType(ASTCDAttribute astcdAttribute){
+    DecorationHelper decorationHelper = new DecorationHelper();
+    if (decorationHelper.isAstNode(astcdAttribute) || decorationHelper.isOptionalAstNode(astcdAttribute)
+        || decorationHelper.isListAstNode(astcdAttribute)) {
+      return  CDTypeFacade.getInstance().createSimpleReferenceType(E_REFERENCE_TYPE);
+    } else {
+      return  CDTypeFacade.getInstance().createSimpleReferenceType(E_ATTRIBUTE_TYPE);
+    }
   }
 }

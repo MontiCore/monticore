@@ -80,6 +80,7 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
     ASTService astService = new ASTService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    EmfService emfService = new EmfService(decoratedCompilationUnit);
     NodeFactoryService nodeFactoryService = new NodeFactoryService(decoratedCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     EmfMutatorDecorator emfMutatorDecorator = new EmfMutatorDecorator(glex, astService);
@@ -109,8 +110,8 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
     InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, new DataDecoratorUtil(), methodDecorator, astService);
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator);
 
-    PackageImplDecorator packageImplDecorator = new PackageImplDecorator(glex, new MandatoryAccessorDecorator(glex), new DecorationHelper());
-    PackageInterfaceDecorator packageInterfaceDecorator = new PackageInterfaceDecorator(glex, new DecorationHelper());
+    PackageImplDecorator packageImplDecorator = new PackageImplDecorator(glex, new MandatoryAccessorDecorator(glex), emfService);
+    PackageInterfaceDecorator packageInterfaceDecorator = new PackageInterfaceDecorator(glex, emfService);
 
     ASTEmfCDDecorator astcdDecorator = new ASTEmfCDDecorator(glex, symbolTableCreator, fullEmfDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
         millDecorator, astConstantsDecorator, emfEnumDecorator, fullASTInterfaceDecorator, packageImplDecorator, packageInterfaceDecorator);

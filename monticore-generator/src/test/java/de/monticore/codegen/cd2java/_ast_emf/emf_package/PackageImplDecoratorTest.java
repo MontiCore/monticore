@@ -31,7 +31,7 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("service", new EmfService(ast));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    PackageImplDecorator decorator = new PackageImplDecorator(this.glex, new MandatoryAccessorDecorator(glex), new DecorationHelper());
+    PackageImplDecorator decorator = new PackageImplDecorator(this.glex, new MandatoryAccessorDecorator(glex), new EmfService(ast));
     packageClass = decorator.decorate(ast);
   }
 
