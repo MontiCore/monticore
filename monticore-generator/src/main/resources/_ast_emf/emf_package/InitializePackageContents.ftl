@@ -37,14 +37,7 @@ de.monticore.emf._ast.ASTENodePackage theASTENodePackage = (de.monticore.emf._as
         ${interfaceName?uncap_first}.getESuperTypes().add(theASTENodePackage.getENode());
     <#else>
         <#list astClass.getSymbol().getSuperTypes() as superType>
-            <#if superType.getModelName()?lower_case==service.getQualifiedCDName()?lower_case>
-                <#--local definded supertype-->
-                <#assign package = "this">
-            <#else>
-                <#--before loaded supertype-->
-                <#assign identifierName = service.getSimplePackageImplName(superType.getModelName())>
-                <#assign package = identifierName?uncap_first>
-            </#if>
+            <#assign package = service.getClassPackage(superType)>
             ${interfaceName?uncap_first}.getESuperTypes().add(${package}.get${superType.getName()}());
         </#list>
     </#if>
@@ -62,11 +55,7 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
 <#--initialisation for all classes-->
 <#list definition.getCDClassList() as cdClass>
     <#assign className = cdClass.getName()>
-    <#if cdClass.isPresentModifier() && cdClass.getModifier().isAbstract()>
-        <#assign abstract = "IS_ABSTRACT">
-    <#else>
-        <#assign abstract = "!IS_ABSTRACT">
-    </#if>
+    <#assign abstract = service.determineAbstractString(cdClass)>
     initEClass(${className?uncap_first}, ${className}.class, "${className}", ${abstract}, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 </#list>
 
@@ -79,22 +68,12 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
 
 <#list definition.getCDClassList() as cdClass>
     <#list cdClass.getCDAttributeList() as attribute>
-        <#if service.isExternal(attribute)>
-            <#assign get = "theASTENodePackage.getENode">
-        <#else>
-            <#assign sGrammarName = service.getGrammarFromClass(definition, attribute)?uncap_first>
-            <#assign get = sGrammarName + ".get" + service.getSimpleNativeAttributeType(attribute.getType())?cap_first>
-        </#if>
-        <#if genHelper.isListType(attribute.printType())>
-            <#assign isList = "-1">
-        <#else>
-            <#assign isList = "1">
-        </#if>
+        <#assign get = service.determineGetEmfMethod(attribute, definition)>
+        <#assign isList = service.determineListInteger(attribute.getType())>
         <#if genHelper.isSimpleAstNode(attribute) || genHelper.isListAstNode(attribute) ||genHelper.isOptionalAstNode(attribute)>
             initEReference(get${cdClass.getName()}_${attribute.getName()?cap_first}(), ${get}(), null, "${attribute.getName()?cap_first}", null,
             0, ${isList}, ${cdClass.getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, <#if isList == "1">!</#if>IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         <#else>
-            <#assign get = "ecorePackage.getE" + service.getSimpleNativeAttributeType(attribute.getType())?cap_first>
             initEAttribute(get${cdClass.getName()}_${attribute.getName()?cap_first}(), ${get}(), "${attribute.getName()?cap_first}", null,
             0, ${isList}, ${cdClass.getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, <#if isList == "1">!</#if>IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         </#if>

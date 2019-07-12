@@ -26,6 +26,8 @@ public final class EmfConstants {
 
   public static final String E_CLASS_TYPE = "org.eclipse.emf.ecore.EClass";
 
+  public static final String E_DATA_TYPE = "org.eclipse.emf.ecore.EDataType";
+
   public static final String E_ATTRIBUTE_TYPE = "org.eclipse.emf.ecore.EAttribute";
 
   public static final String E_REFERENCE_TYPE = "org.eclipse.emf.ecore.EReference";

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
@@ -41,17 +40,19 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
+    ASTCDDefinition definition = compilationUnit.deepClone().getCDDefinition();
     emfService = new EmfService(compilationUnit);
-    String definitionName = compilationUnit.deepClone().getCDDefinition().getName();
+    String definitionName = definition.getName();
     String packageImplName = definitionName + PACKAGE_IMPL_SUFFIX;
     String packageName = definitionName + PACKAGE_SUFFIX;
 
-    List<ASTCDClass> classList = compilationUnit.deepClone().getCDDefinition().getCDClassList();
+    List<ASTCDClass> classList = definition.getCDClassList();
 
-    List<ASTCDAttribute> eClassAttributes = getEClassAttributes(compilationUnit.deepClone().getCDDefinition());
+    List<ASTCDAttribute> eAttributes = getEClassAttributes(definition);
+    eAttributes.addAll(getEEnumsAttributes(definition));
     //e.g. public EClass getAutomaton() { return automaton; }
     List<ASTCDMethod> eClassMethods = new ArrayList<>();
-    for (ASTCDAttribute eClassAttribute : eClassAttributes) {
+    for (ASTCDAttribute eClassAttribute : eAttributes) {
       eClassMethods.addAll(accessorDecorator.decorate(eClassAttribute));
     }
 
@@ -65,7 +66,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
         .setSuperclass(getCDTypeFacade().createSimpleReferenceType(E_PACKAGE_IMPL))
         .addInterface(getCDTypeFacade().createSimpleReferenceType(packageName))
         .addCDAttribute(constantsEEnumAttribute)
-        .addAllCDAttributes(eClassAttributes)
+        .addAllCDAttributes(eAttributes)
         .addCDAttribute(createISCreatedAttribute())
         .addCDAttribute(createIsInitializedAttribute())
         .addCDAttribute(createIsIntitedAttribute())
@@ -92,6 +93,16 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
       if (!astcdInterface.getName().equals("AST" + astcdDefinition.getName() + "Node")) {
         attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdInterface.getName())));
       }
+    }
+    return attributeList;
+  }
+
+  protected List<ASTCDAttribute> getEEnumsAttributes(ASTCDDefinition astcdDefinition) {
+    //e.g.  private EClass automaton;
+    List<ASTCDAttribute> attributeList = new ArrayList<>();
+    for (ASTCDEnum astcdEnum : astcdDefinition.getCDEnumList()) {
+      if (!emfService.isLiteralsEnum(astcdEnum, astcdDefinition.getName()))
+        attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_DATA_TYPE, StringTransformations.uncapitalize(astcdEnum.getName())));
     }
     return attributeList;
   }
@@ -186,7 +197,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
     //find literalsEnum in CD
     Optional<ASTCDEnum> literalsEnum = astcdDefinition.getCDEnumList()
         .stream()
-        .filter(x -> x.getName().equals(astcdDefinition.getName() + LITERALS_SUFFIX))
+        .filter(x -> emfService.isLiteralsEnum(x, astcdDefinition.getName()))
         .findFirst();
     if (literalsEnum.isPresent()) {
       replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.InitializePackageContents",
