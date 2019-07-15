@@ -64,7 +64,12 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
           .generate("symboltable.SymbolTableCreator", filePath, grammarSymbol.getAstNode().get(),
               className, directSuperCds, symbolDefiningRules, nonSymbolDefiningRules, symbolKinds, handCodedPath);
 
-      String stcName = className;;
+      String stcName;
+      if(className.endsWith("TOP")){
+        stcName = className.replaceAll("TOP","");
+      }else{
+        stcName = className;
+      }
 
       className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "SymbolTableCreatorBuilder"),
           genHelper.getTargetPackage(), handCodedPath);
