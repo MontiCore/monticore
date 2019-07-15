@@ -5,7 +5,7 @@ ${tc.signature("attributeList", "packageName", "className")}
     <#list attributeList as attribute>
       <#assign getter = astHelper.getPlainGetter(attribute)>
       case ${packageName}.${className}_${attribute.getName()?cap_first}:
-      <#if genHelper.isListType(attribute.getType())>
+      <#if genHelper.isListType(attribute.printType())>
         return !${getter}().isEmpty();
       <#elseif genHelper.isOptional(attribute.getType())>
         return ${getter}().isPresent();

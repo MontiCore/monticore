@@ -5,7 +5,7 @@ ${tc.signature("attributeList", "packageName", "className")}
     <#list attributeList as attribute>
       <#assign setter = astHelper.getPlainSetter(attribute)>
       case ${packageName}.${className}_${attribute.getName()?cap_first}:
-      <#if genHelper.isListType(attribute)>
+      <#if genHelper.isListType(attribute.printType())>
         ${attribute.getName()}.clear();
       <#elseif genHelper.isOptional(attribute.getType())>
         ${setter}Absent();

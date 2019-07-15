@@ -11,7 +11,7 @@
       result.append(" ${attribute.getName()?cap_first}: ");
       result.append(${attribute.getName()}.get());
     } 
-    <#elseif genHelper.isListType(attribute.getType())>
+    <#elseif genHelper.isListType(attribute.printType())>
     if (!${attribute.getName()}.isEmpty()) {
       result.append(" ${attribute.getName()?cap_first}: ");
       result.append(${attribute.getName()});
