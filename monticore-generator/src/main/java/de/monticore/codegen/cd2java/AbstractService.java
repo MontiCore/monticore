@@ -141,6 +141,12 @@ public class AbstractService<T extends AbstractService> {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
     // if not generic returns simple Type like 'int'
     String nativeAttributeType = getNativeAttributeType(astType);
+    return getSimpleNativeAttributeType(nativeAttributeType);
+  }
+
+  public String getSimpleNativeAttributeType(String nativeAttributeType) {
+    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
+    // if not generic returns simple Type like 'int'
     return nativeAttributeType.contains(".") ? nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".") + 1) :
         nativeAttributeType;
   }
@@ -232,7 +238,7 @@ public class AbstractService<T extends AbstractService> {
       Collection<CDSymbol> superCDs = getSuperCDs(resolveCD(astcdDefinition.getName()));
       for (CDSymbol superCD : superCDs) {
         if (superCD.getTypes().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
-         return superCD.getName()+"PackageImpl";
+          return superCD.getName() + "PackageImpl";
         }
       }
     }

@@ -14,6 +14,8 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
@@ -26,13 +28,13 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
   private final MandatoryAccessorDecorator accessorDecorator;
 
-  private  final EmfService emfService;
+  private final EmfService emfService;
 
 
   public PackageImplDecorator(final GlobalExtensionManagement glex,
                               final MandatoryAccessorDecorator accessorDecorator,
                               final EmfService emfService
-                              ) {
+  ) {
     super(glex);
     this.accessorDecorator = accessorDecorator;
     this.emfService = emfService;
@@ -48,7 +50,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
     List<ASTCDClass> classList = definition.getCDClassList();
 
     List<ASTCDAttribute> eAttributes = getEClassAttributes(definition);
-    eAttributes.addAll(getEEnumsAttributes(definition));
+    eAttributes.addAll(getEDataTypeAttributes(definition));
     //e.g. public EClass getAutomaton() { return automaton; }
     List<ASTCDMethod> eClassMethods = new ArrayList<>();
     for (ASTCDAttribute eClassAttribute : eAttributes) {
@@ -96,14 +98,13 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
     return attributeList;
   }
 
-  protected List<ASTCDAttribute> getEEnumsAttributes(ASTCDDefinition astcdDefinition) {
-    //e.g.  private EClass automaton;
-    List<ASTCDAttribute> attributeList = new ArrayList<>();
-    for (ASTCDEnum astcdEnum : astcdDefinition.getCDEnumList()) {
-      if (!emfService.isLiteralsEnum(astcdEnum, astcdDefinition.getName()))
-        attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_DATA_TYPE, StringTransformations.uncapitalize(astcdEnum.getName())));
-    }
-    return attributeList;
+  protected List<ASTCDAttribute> getEDataTypeAttributes(ASTCDDefinition astcdDefinition) {
+    //map of <nativeAttributeType, attributeName>
+    Set< String> eDataTypes = emfService.getEDataTypes(astcdDefinition);
+    return eDataTypes.stream()
+        .map(x -> getCDAttributeFacade().createAttribute(PUBLIC, E_DATA_TYPE,
+            StringTransformations.uncapitalize(emfService.getSimpleNativeAttributeType(x))))
+        .collect(Collectors.toList());
   }
 
 

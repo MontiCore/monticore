@@ -80,6 +80,10 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
     </#list>
 </#list>
 
+<#list service.getEDataTypes(definition) as dataType>
+  initEDataType(ectorEDataType, ${dataType.get}, "EVector", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+</#list>
+
 // Create resource
 createResource(eNS_URI);
 
