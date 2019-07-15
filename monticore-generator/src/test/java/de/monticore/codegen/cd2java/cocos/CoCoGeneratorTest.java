@@ -46,7 +46,7 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
   @BeforeClass
   public static void setup() {
     LogStub.init();
-    Log.enableFailQuick(false);
+    LogStub.enableFailQuick(false);
   }
 
   @Ignore("not ready yet")

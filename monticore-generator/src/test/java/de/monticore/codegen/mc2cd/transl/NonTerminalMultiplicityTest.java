@@ -43,7 +43,7 @@ public class NonTerminalMultiplicityTest {
 
   public NonTerminalMultiplicityTest() {
     LogStub.init();
-    Log.enableFailQuick(false);
+    LogStub.enableFailQuick(false);
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/NonTerminalMultiplicityGrammar.mc4")).get();
     astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();

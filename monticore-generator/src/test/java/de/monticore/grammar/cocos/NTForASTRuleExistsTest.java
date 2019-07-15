@@ -2,11 +2,10 @@
 
 package de.monticore.grammar.cocos;
 
+import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.se_rwth.commons.logging.Log;
 
 public class NTForASTRuleExistsTest extends CocoTest{
 
@@ -17,7 +16,7 @@ public class NTForASTRuleExistsTest extends CocoTest{
 
   @BeforeClass
   public static void disableFailQuick() {
-    Log.enableFailQuick(false);
+    LogStub.enableFailQuick(false);
     checker.addCoCo(new NTForASTRuleExists());
   }
 

@@ -28,8 +28,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    Log.init();
-    Log.enableFailQuick(false);
+    LogStub.init();
+    LogStub.enableFailQuick(false);
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "symboltable", "Builder");
     ASTCDClass cdClass = getClassBy("A", ast);
     this.glex.setGlobalValue("service", new AbstractService(ast));
@@ -67,6 +67,6 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, builderClass, builderClass);
-    System.out.println(sb.toString());
+    // TODO Check System.out.println(sb.toString());
   }
 }

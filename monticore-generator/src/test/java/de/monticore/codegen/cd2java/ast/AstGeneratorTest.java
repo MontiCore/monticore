@@ -14,6 +14,7 @@ import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,8 +42,8 @@ public class AstGeneratorTest extends GeneratorTest {
 
   @BeforeClass
   public static void setup() {
-    //    LogStub.init();
-    Log.enableFailQuick(false);
+    LogStub.init();
+    LogStub.enableFailQuick(false);
   }
 
   @Test

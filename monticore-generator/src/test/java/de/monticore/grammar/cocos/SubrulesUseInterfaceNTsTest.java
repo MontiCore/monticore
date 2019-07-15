@@ -2,11 +2,10 @@
 
 package de.monticore.grammar.cocos;
 
+import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.se_rwth.commons.logging.Log;
 
 public class SubrulesUseInterfaceNTsTest extends CocoTest {
   
@@ -16,7 +15,7 @@ public class SubrulesUseInterfaceNTsTest extends CocoTest {
   
   @BeforeClass
   public static void disableFailQuick() {
-    Log.enableFailQuick(false);
+    LogStub.enableFailQuick(false);
     checker.addCoCo(new SubrulesUseInterfaceNTs());
   }
   
@@ -47,13 +46,13 @@ public class SubrulesUseInterfaceNTsTest extends CocoTest {
   @Test
   public void TestInvalid5() {
     testInvalidGrammar(grammar + "e", SubrulesUseInterfaceNTs.ERROR_CODE,
-            String.format(MESSAGE, "AImpl", "D*", "A"), checker);
+            String.format(MESSAGE, "AImpl", "ds*", "A"), checker);
   }
 
   @Test
   public void TestInvalid6() {
     testInvalidGrammar(grammar + "f", SubrulesUseInterfaceNTs.ERROR_CODE,
-            String.format(MESSAGE, "BImpl", "D*", "B"), checker);
+            String.format(MESSAGE, "BImpl", "ds*", "B"), checker);
   }
 
   @Test

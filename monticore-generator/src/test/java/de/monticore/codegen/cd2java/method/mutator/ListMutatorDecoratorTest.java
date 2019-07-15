@@ -8,7 +8,7 @@ import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.methods.mutator.ListMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,8 +31,8 @@ public class ListMutatorDecoratorTest {
 
   @Before
   public void setup() {
-    Log.init();
-    Log.enableFailQuick(false);
+    LogStub.init();
+    LogStub.enableFailQuick(false);
     ASTMCType listType = CDTypeFacade.getInstance().createListTypeOf(String.class);
     ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED, listType, "a");
     ListMutatorDecorator listMutatorDecorator = new ListMutatorDecorator(glex);

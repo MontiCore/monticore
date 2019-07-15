@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.typecd2java;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.cd.cd4analysis._visitor.CD4AnalysisVisitor;
@@ -24,10 +25,17 @@ public class TypeCD2JavaVisitor implements CD4AnalysisVisitor {
   public void visit(ASTMCQualifiedType node) {
     //only take first one because at first the type has just one name which contains the complete qualified name
     //e.g. "de.monticore.Automaton.ASTAutomaton"
-    Optional<CDTypeSymbol> typeSymbol = scope.resolveCDType(node.getNameList().get(0));
+    Optional<CDTypeSymbol> typeSymbol = scope.resolveCDType(String.join(".", node.getNameList()));
     if (typeSymbol.isPresent()) {
-      String javaType = String.join(".", typeSymbol.get().getModelName().toLowerCase(), ASTConstants.AST_PACKAGE, typeSymbol.get().getName());
-      node.getMCQualifiedName().setPart(0, javaType);
+      ArrayList<String> l = Lists.newArrayList();
+      for (String name: node.getNameList()) {
+        l.add(name.toLowerCase());
+      }
+      l.remove(node.getNameList().size()-1);
+      l.add( ASTConstants.AST_PACKAGE);
+      l.add(node.getBaseName()
+      );
+      node.getMCQualifiedName().setPartList(l);
     }
     if(node.getNameList().size() <= 1){
       node.getMCQualifiedName().setPartList(new ArrayList<>(Arrays.asList(node.getNameList().get(0).split(PACKAGE_SEPARATOR))));

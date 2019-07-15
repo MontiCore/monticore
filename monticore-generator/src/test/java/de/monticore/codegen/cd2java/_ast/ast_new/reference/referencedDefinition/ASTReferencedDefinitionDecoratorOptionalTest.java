@@ -16,7 +16,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,8 +38,8 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
 
   @Before
   public void setup() {
-    Log.init();
-    Log.enableFailQuick(false);
+    LogStub.init();
+    LogStub.enableFailQuick(false);
     this.cdTypeFacade = CDTypeFacade.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
@@ -102,6 +102,6 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, astClass, astClass);
-    System.out.println(sb.toString());
+    // TODO Check System.out.println(sb.toString());
   }
 }

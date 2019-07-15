@@ -11,7 +11,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,8 +32,8 @@ public class FullConstructorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    Log.init();
-    Log.enableFailQuick(false);
+    LogStub.init();
+    LogStub.enableFailQuick(false);
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "data", "SupData");
@@ -111,7 +111,7 @@ public class FullConstructorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, subAClass, subAClass);
-    System.out.println(sb.toString());
+    // TODO Check System.out.println(sb.toString());
   }
 
 
@@ -121,6 +121,6 @@ public class FullConstructorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, subBClass, subBClass);
-    System.out.println(sb.toString());
+    // TODO Check System.out.println(sb.toString());
   }
 }

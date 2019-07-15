@@ -7,7 +7,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -21,7 +21,8 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
   
   @BeforeClass
   public static void disableFailQuick() {
-    Log.enableFailQuick(false);
+    LogStub.init();
+    LogStub.enableFailQuick(false);
   }
   
   @Test
@@ -314,7 +315,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertNotNull(transition);
     
     try {
-      Optional<RuleComponentSymbol> r = transition.getSpannedScope().resolveRuleComponent("arg");
+      Optional<RuleComponentSymbol> r = transition.getSpannedScope().resolveRuleComponent("args");
       assertTrue(r.isPresent());
     }
     catch (ResolvedSeveralEntriesException e) {

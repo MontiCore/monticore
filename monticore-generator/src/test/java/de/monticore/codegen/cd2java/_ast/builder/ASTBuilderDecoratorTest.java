@@ -33,7 +33,7 @@ public class ASTBuilderDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     LogStub.init();
-    Log.enableFailQuick(false);
+    LogStub.enableFailQuick(false);
     decoratedCompilationUnit = parse("de", "monticore", "codegen", "ast", "Builder");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
 
@@ -74,6 +74,6 @@ public class ASTBuilderDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, builderClass, builderClass);
-    System.out.println(sb.toString());
+    // TODO Check System.out.println(sb.toString());
   }
 }

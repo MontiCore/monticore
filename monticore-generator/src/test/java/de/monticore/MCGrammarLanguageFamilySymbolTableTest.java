@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import java.util.Optional;
 
-import static de.se_rwth.commons.logging.Log.enableFailQuick;
+import static de.se_rwth.commons.logging.LogStub.enableFailQuick;
 import static java.nio.file.Paths.get;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

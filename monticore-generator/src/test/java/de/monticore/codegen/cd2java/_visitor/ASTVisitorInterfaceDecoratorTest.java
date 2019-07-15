@@ -14,14 +14,13 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
@@ -52,8 +51,8 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    Log.init();
-    Log.enableFailQuick(false);
+    LogStub.init();
+    LogStub.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
     this.cdTypeFacade = CDTypeFacade.getInstance();
 
@@ -286,6 +285,6 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, visitorInterface, visitorInterface);
-    System.out.println(sb.toString());
+    // TODO Check System.out.println(sb.toString());
   }
 }

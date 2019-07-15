@@ -14,7 +14,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,8 +31,8 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    Log.init();
-    Log.enableFailQuick(false);
+    LogStub.init();
+    LogStub.enableFailQuick(false);
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "cocos", "CoCos");
@@ -62,15 +62,15 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassList()) {
-      System.out.printf("==================== %s ====================\n", clazz.getName());
+      // System.out.printf("==================== %s ====================\n", clazz.getName());
       StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
-      System.out.println(sb.toString());
+      // TODO Check System.out.println(sb.toString());
     }
 
     for (ASTCDInterface interfaze : ast.getCDDefinition().getCDInterfaceList()) {
-      System.out.printf("==================== %s ====================\n", interfaze.getName());
+      // System.out.printf("==================== %s ====================\n", interfaze.getName());
       StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, interfaze, interfaze);
-      System.out.println(sb.toString());
+      // TODO Check System.out.println(sb.toString());
     }
   }
 }

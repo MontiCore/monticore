@@ -6,7 +6,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -21,8 +21,8 @@ public class MCGrammarPrettyPrinterTest {
   
   @BeforeClass
   public static void setup() {
-    Log.init();
-    Log.enableFailQuick(false);
+    LogStub.init();
+    LogStub.enableFailQuick(false);
   }
 
   @Test

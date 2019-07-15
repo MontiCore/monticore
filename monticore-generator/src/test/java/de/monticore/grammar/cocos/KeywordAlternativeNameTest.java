@@ -7,6 +7,7 @@ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCo
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ public class KeywordAlternativeNameTest extends CocoTest {
   
   @BeforeClass
   public static void disableFailQuick() {
-    Log.enableFailQuick(false);
+    LogStub.enableFailQuick(false);
   }
   
   @Test

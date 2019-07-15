@@ -612,8 +612,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return createSymbolsFromAST(symbolTable, compUnit);
   }
 
-  public CD4AnalysisGlobalScope createGlobalScope(ModelPath modelPath) {
+  public CD4AnalysisGlobalScope createCD4AGlobalScope(ModelPath modelPath) {
     return new CD4AnalysisGlobalScope(modelPath, new CD4AnalysisLanguage());
+  }
+
+  public Grammar_WithConceptsGlobalScope createMCGlobalScope(ModelPath modelPath) {
+    return new Grammar_WithConceptsGlobalScope(modelPath, new Grammar_WithConceptsLanguage());
   }
 
   /**
