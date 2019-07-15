@@ -33,7 +33,7 @@ build_dev:
 build_latest-grammar:
   stage: build
   script:
-    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy"
+    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -U"
   only:
     - latest-grammar
 

@@ -1,5 +1,6 @@
-${signature("className", "languageName", "globalScopeName")}
+${signature("className", "languageName")}
 
+<#assign globalScopeName = languageName+"GlobalScope">
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 
 <#-- Copyright -->
