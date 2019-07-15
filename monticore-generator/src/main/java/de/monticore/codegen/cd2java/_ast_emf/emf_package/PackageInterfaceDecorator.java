@@ -37,7 +37,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     String interfaceName = definitionName + PACKAGE_SUFFIX;
     List<ASTCDClass> classList = astcdDefinition.getCDClassList();
 
-    List<ASTCDAttribute> prodAttributes = createProdAttributes(classList);
+    List<ASTCDAttribute> prodAttributes = createProdAttributes(astcdDefinition);
 
     //prodAttributeSize + 1 because they start with 0 and you need the next free index
     //e.g. prodAttributes.size = 2 -> last index used is 2 -> next free index 3
@@ -102,13 +102,21 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
   }
 
 
-  protected List<ASTCDAttribute> createProdAttributes(List<ASTCDClass> astcdClassList) {
+  protected List<ASTCDAttribute> createProdAttributes(ASTCDDefinition astcdDefinition) {
     // e.g. int ASTAutomaton = 1; int ASTState = 2;
     List<ASTCDAttribute> attributeList = new ArrayList<>();
-    for (int i = 0; i < astcdClassList.size(); i++) {
+    int i;
+    for (i = 0; i < astcdDefinition.getCDClassList().size(); i++) {
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getCDTypeFacade().createIntType(),
-          astcdClassList.get(i).getName());
+          astcdDefinition.getCDClassList().get(i).getName());
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (i + 1)));
+      attributeList.add(attribute);
+    }
+
+    for (int j = 0; j < astcdDefinition.getCDInterfaceList().size(); j++) {
+      ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getCDTypeFacade().createIntType(),
+          astcdDefinition.getCDInterfaceList().get(j).getName());
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (j + i + 1)));
       attributeList.add(attribute);
     }
     return attributeList;

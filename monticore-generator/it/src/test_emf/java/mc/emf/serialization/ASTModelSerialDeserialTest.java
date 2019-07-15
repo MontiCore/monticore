@@ -2,13 +2,12 @@
 
 package mc.emf.serialization;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
-
+import de.monticore.emf.util.AST2ModelFiles;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
+import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonNodeFactory;
+import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
+import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonPackage;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -17,12 +16,10 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import de.monticore.emf.util.AST2ModelFiles;
-import mc.GeneratorIntegrationsTest;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonNodeFactory;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
-import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonPackage;
+import java.io.File;
+import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 public class ASTModelSerialDeserialTest extends GeneratorIntegrationsTest {
   
@@ -42,7 +39,7 @@ public class ASTModelSerialDeserialTest extends GeneratorIntegrationsTest {
     
     EClass serializedState = (EClass) serializedEPackage.getEClassifier("State");
     
-    int expectedFeatureCountAutomaton = FlatAutomatonPackage.eINSTANCE.getAutomaton().getFeatureCount();
+    int expectedFeatureCountAutomaton = FlatAutomatonPackage.eINSTANCE.getASTAutomaton().getFeatureCount();
     String expectedNameOfInitial = "initial";
     
     assertEquals("FlatAutomaton", serializedEPackage.getName());
@@ -67,7 +64,7 @@ public class ASTModelSerialDeserialTest extends GeneratorIntegrationsTest {
     
     EClass serializedTransitionWithAction = (EClass) serializedEPackage.getEClassifier("TransitionWithAction");
     
-    int expectedFeatureCountAutomaton = ActionAutomatonPackage.eINSTANCE.getAutomaton().getFeatureCount();
+    int expectedFeatureCountAutomaton = ActionAutomatonPackage.eINSTANCE.getASTAutomaton().getFeatureCount();
     String expectedNameOfAction = "action";
     String expectedFirstSuperType = "Transition";
     
