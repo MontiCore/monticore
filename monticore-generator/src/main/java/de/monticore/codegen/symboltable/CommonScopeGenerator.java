@@ -35,44 +35,50 @@ public class CommonScopeGenerator implements ScopeGenerator {
   protected void generateScope(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
                                IterablePath handCodedPath,
                                String scopeName, Collection<ProdSymbol> allSymbolDefiningRules, Collection<ProdSymbol> allSymbolDefiningRulesWithSuperGrammar) {
-    
+
     final String languageName = genHelper.getGrammarSymbol().getName();
-    
+
     String _package = genHelper.getTargetPackage();
-  
+
     String baseNameClass = getSimpleName(scopeName);
     String baseNameInterface = "I" + getSimpleName(scopeName);
     String baseNameArtifactScope = getSimpleName(languageName+GeneratorHelper.ARTIFACT_SCOPE);
+    String baseNameArtifactScopeBuilder = getSimpleName(languageName+GeneratorHelper.ARTIFACT_SCOPE+"Builder");
     String baseNameGlobalScope = getSimpleName(languageName+GeneratorHelper.GLOBAL_SCOPE);
+    String baseNameGlobalScopeBuilder = getSimpleName(languageName+GeneratorHelper.GLOBAL_SCOPE+"Builder");
     String baseNameGlobalScopeInterface = getSimpleName("I"+languageName+GeneratorHelper.GLOBAL_SCOPE);
-  
-  
+
+
     boolean existsHWCScopeImpl = existsHandwrittenClass(baseNameClass, _package , handCodedPath);
     boolean existsHWCArtifactScopeImpl = existsHandwrittenClass(baseNameArtifactScope, _package, handCodedPath);
     boolean existsHWCGlobalScopeImpl = existsHandwrittenClass(baseNameGlobalScope, _package, handCodedPath);
-  
+
     String scopeClassName = getSimpleTypeNameToGenerate(baseNameClass, _package, handCodedPath);
-  
-    
-  
+
+
+
     String interfaceName = getSimpleTypeNameToGenerate(baseNameInterface,
         _package, handCodedPath);
 
     String builderName = getSimpleTypeNameToGenerate(
         getSimpleName(scopeName + GeneratorHelper.BUILDER), _package, handCodedPath);
-    
+
     String deserName = getSimpleTypeNameToGenerate(getSimpleName(scopeName + GeneratorHelper.DESER),
         genHelper.getSerializationTargetPackage(), handCodedPath);
-    
+
     String artifactScopeClassName = getSimpleTypeNameToGenerate(baseNameArtifactScope,
         _package, handCodedPath);
-    
+
+    String artifactScopeBuilderClassName = getSimpleTypeNameToGenerate(baseNameArtifactScopeBuilder,_package,handCodedPath);
+
     String globalScopeClassName = getSimpleTypeNameToGenerate(baseNameGlobalScope, _package, handCodedPath);
-    
+
+    String globalScopeBuilderClassName = getSimpleTypeNameToGenerate(baseNameGlobalScopeBuilder,_package,handCodedPath);
+
     String globalScopeInterfaceClassName = getSimpleTypeNameToGenerate(baseNameGlobalScopeInterface, _package, handCodedPath);
-    
-    
-    
+
+
+
 
     // Maps Symbol Name to Symbol Kind Name
     Map<String, String> symbolNames = new HashMap<String, String>();
@@ -90,7 +96,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
         spanningSymbolNames.put(name,kind);
       }
     }
-  
+
     Map<String, String> allSymbols = new HashMap<String, String>();
     Map<String, String> allSpanningSymbolNames = new HashMap<String, String>();
     for (ProdSymbol sym : allSymbolDefiningRulesWithSuperGrammar) {
@@ -150,7 +156,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
         }
       }
     }
-    
+
     // list of superscopevisitors that the scope must accept
     Set<String> superScopeVisitors = new HashSet<>();
     for (CDDefinitionSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
@@ -159,7 +165,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
         superScopeVisitors.add(qualifiedScopeVisitorName);
       }
     }
-    
+
     List<String> superGrammarPackages = allSuperScopes.stream().map(N -> Names.getQualifier(N)).collect(Collectors.toList());
 
     final Path scopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
@@ -172,11 +178,15 @@ public class CommonScopeGenerator implements ScopeGenerator {
         .get(Names.getPathFromPackage(genHelper.getSerializationTargetPackage()), deserName + ".java");
     final Path artifactScopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         artifactScopeClassName + ".java");
+    final Path artifactScopeBuilderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
+        artifactScopeBuilderClassName+".java");
     final Path globalScopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         globalScopeClassName + ".java");
+    final Path globalScopeBuilderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
+        globalScopeBuilderClassName+".java");
     final Path globalScopeInterfaceFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         globalScopeInterfaceClassName + ".java");
-    
+
 
 
 
@@ -185,15 +195,19 @@ public class CommonScopeGenerator implements ScopeGenerator {
     genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, baseNameInterface, scopeRule, symbolNamesWithSuperGrammar, allSuperScopes, superScopeVisitors,existsHWCScopeImpl);
     genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, localSuperScopes, languageName);
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName);
-  
+
     if(genHelper.getGrammarSymbol().getStartProd().isPresent()) {
       genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, allSymbols,allSpanningSymbolNames, superGrammarPackages);
-    
+
       genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, baseNameClass, languageName, symbolNames,existsHWCArtifactScopeImpl);
-   
+
+      genEngine.generateNoA("symboltable.ArtifactScopeBuilder",artifactScopeBuilderFilePath, artifactScopeBuilderClassName, languageName);
+
       genEngine.generateNoA("symboltable.GlobalScope", globalScopeFilePath, globalScopeClassName,
           languageName, baseNameGlobalScopeInterface, allSymbolDefiningRulesWithSuperGrammar, existsHWCGlobalScopeImpl);
-    
+
+      genEngine.generateNoA("symboltable.GlobalScopeBuilder",globalScopeBuilderFilePath, globalScopeBuilderClassName, languageName, globalScopeClassName);
+
       genEngine.generateNoA("symboltable.GlobalScopeInterface", globalScopeInterfaceFilePath,
           globalScopeInterfaceClassName, baseNameInterface, baseNameGlobalScopeInterface, languageName, allSymbols);
     }

@@ -2,16 +2,10 @@ package de.monticore.aggregation;
 
 import de.monticore.aggregation.blah._ast.ASTBlahModel;
 import de.monticore.aggregation.blah._parser.BlahParser;
-import de.monticore.aggregation.blah._symboltable.BlahLanguage;
-import de.monticore.aggregation.blah._symboltable.BlahScope;
-import de.monticore.aggregation.blah._symboltable.BlahSymbolTableCreator;
-import de.monticore.aggregation.blah._symboltable.DummySymbol;
+import de.monticore.aggregation.blah._symboltable.*;
 import de.monticore.aggregation.foo._ast.ASTBar;
 import de.monticore.aggregation.foo._parser.FooParser;
-import de.monticore.aggregation.foo._symboltable.BarSymbol;
-import de.monticore.aggregation.foo._symboltable.FooLanguage;
-import de.monticore.aggregation.foo._symboltable.FooScope;
-import de.monticore.aggregation.foo._symboltable.FooSymbolTableCreator;
+import de.monticore.aggregation.foo._symboltable.*;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
@@ -43,7 +37,7 @@ public class AggregationTest {
     */
  
   //Create global scope for our language combination
-  BlahLanguage blahLang = new BlahLanguage();
+  BlahLanguage blahLang = BlahSymTabMill.blahLanguageBuilder().build();
   FooLanguage fooLanguage = new FooLanguage("FooLangName","foo") {};
 
   FooBlahGlobalScope globalScope = new FooBlahGlobalScope(new ModelPath(), fooLanguage);
@@ -62,7 +56,7 @@ public class AggregationTest {
   );
   
   // create symbol table for "blah"
-  BlahSymbolTableCreator blahSymbolTableCreator = new BlahSymbolTableCreator(globalScope.getIBlahGS());
+  BlahSymbolTableCreator blahSymbolTableCreator = BlahSymTabMill.blahSymbolTableCreatorBuilder().addToScopeStack(globalScope.getIBlahGS()).build();
   BlahScope blahSymbolTable = blahSymbolTableCreator.createFromAST(blahModel.get());
   
   // check dummy symbol is present in local scope
@@ -93,7 +87,7 @@ public class AggregationTest {
   assertTrue(fooModel.isPresent());
  
   // create symbol table for "foo"
-  FooSymbolTableCreator fooSymbolTableCreator = new FooSymbolTableCreator(globalScope);
+  FooSymbolTableCreator fooSymbolTableCreator = FooSymTabMill.fooSymbolTableCreatorBuilder().addToScopeStack(globalScope).build();
   FooScope fooScope = (FooScope) fooSymbolTableCreator.createFromAST(fooModel.get());
   
   // check Dummy symbol is resolvable

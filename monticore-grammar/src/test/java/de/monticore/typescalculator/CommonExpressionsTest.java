@@ -1,8 +1,10 @@
 package de.monticore.typescalculator;
 
-import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.*;
+import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
@@ -27,15 +29,9 @@ public class CommonExpressionsTest {
 
   @Before
   public void setup(){
-    ExpressionsBasisLanguage expressionsBasisLanguage=new ExpressionsBasisLanguage("CombineExpressionsWithLiteralsWithLiterals","exp") {
-      @Override
-      public MCConcreteParser getParser() {
-        return new CombineExpressionsWithLiteralsParser();
-      }
-    };
     Log.enableFailQuick(false);
 
-    this.scope=new ExpressionsBasisScope();
+    this.scope=ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
 
     EVariableSymbol symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varInt").build();
     MCTypeSymbol typeSymbol = new MCTypeSymbol("int");
@@ -132,13 +128,13 @@ public class CommonExpressionsTest {
     methodSymbol.setReturnType(MCBasicTypesMill.mCReturnTypeBuilder().setMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build()).build());
     scope.add(methodSymbol);
 
-    ExpressionsBasisScope ascope = new ExpressionsBasisScope();
+    ExpressionsBasisScope ascope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     scope.addSubScope(ascope);
     ascope.setName("A");
-    ExpressionsBasisScope bscope = new ExpressionsBasisScope();
+    ExpressionsBasisScope bscope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     bscope.setName("B");
     ascope.addSubScope(bscope);
-    ExpressionsBasisScope cscope = new ExpressionsBasisScope();
+    ExpressionsBasisScope cscope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     cscope.setName("C");
     bscope.addSubScope(cscope);
 

@@ -15,7 +15,7 @@ public class BlahLanguage extends BlahLanguageTOP {
 
   @Override
   protected BlahModelLoader provideModelLoader() {
-    return new BlahModelLoader(this);
+    return BlahSymTabMill.blahModelLoaderBuilder().setModelingLanguage(this).build();
   }
 
   @Override

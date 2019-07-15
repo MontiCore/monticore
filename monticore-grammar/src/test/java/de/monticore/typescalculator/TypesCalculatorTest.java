@@ -3,6 +3,7 @@ package de.monticore.typescalculator;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
@@ -27,7 +28,7 @@ public class TypesCalculatorTest {
   @Before
   public void setup(){
     LogStub.init();
-    scope = new ExpressionsBasisScope();
+    scope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
 
     EVariableSymbol sym = new EVariableSymbol("varInt");
     MCTypeSymbol typeSymbol = new MCTypeSymbol("java.lang.Integer");
