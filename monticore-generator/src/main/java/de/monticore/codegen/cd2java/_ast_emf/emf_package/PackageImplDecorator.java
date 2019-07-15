@@ -79,7 +79,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
         .addCDMethod(createGetPackageMethod(definitionName))
         .addCDMethod(createASTESuperPackagesMethod())
         .addAllCDMethods(createGetEAttributeMethods(classList))
-        .addCDMethod(createCreatePackageContentsMethod(definitionName, classList))
+        .addCDMethod(createCreatePackageContentsMethod(definitionName, definition))
         .addCDMethod(createInitializePackageContentsMethod(compilationUnit.getCDDefinition()))
         .build();
   }
@@ -180,9 +180,10 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
     return methodList;
   }
 
-  protected ASTCDMethod createCreatePackageContentsMethod(String definitionName, List<ASTCDClass> classList) {
+  protected ASTCDMethod createCreatePackageContentsMethod(String definitionName, ASTCDDefinition astcdDefinition) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "createPackageContents");
-    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.CreatePackageContents", definitionName, classList));
+    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.CreatePackageContents",
+        definitionName, astcdDefinition));
     return method;
   }
 

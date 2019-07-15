@@ -10,6 +10,7 @@ import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.FACTORY_SUFFIX;
@@ -31,11 +32,18 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
 
   @Override
   public ASTCDInterface decorate(ASTCDCompilationUnit compilationUnit) {
-    ASTCDDefinition astcdDefinition= compilationUnit.deepClone().getCDDefinition();
+    ASTCDDefinition astcdDefinition = compilationUnit.deepClone().getCDDefinition();
     String definitionName = astcdDefinition.getName();
     String interfaceName = definitionName + PACKAGE_SUFFIX;
-
     List<ASTCDClass> classList = astcdDefinition.getCDClassList();
+
+    List<ASTCDAttribute> prodAttributes = createProdAttributes(classList);
+
+    //prodAttributeSize + 1 because they start with 0 and you need the next free index
+    //e.g. prodAttributes.size = 2 -> last index used is 2 -> next free index 3
+    List<ASTCDAttribute> eDataTypeAttributes = createEDataTypeAttributes(astcdDefinition, prodAttributes.size() + 1);
+    List<ASTCDMethod> eDataTypeMethods = createEDataTypeMethods(eDataTypeAttributes);
+
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(interfaceName)
         .setModifier(PUBLIC.build())
@@ -45,10 +53,12 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
         .addCDAttribute(createENSPrefixAttribute(definitionName))
         .addCDAttribute(createEInstanceAttribute(interfaceName))
         .addCDAttribute(createConstantsAttribute(definitionName))
-        .addAllCDAttributes(createProdAttributes(classList))
+        .addAllCDAttributes(prodAttributes)
+        .addAllCDAttributes(eDataTypeAttributes)
         .addAllCDAttributes(createNonTerminalAttributes(classList))
         .addCDMethod(createNodeFactoryMethod(definitionName))
         .addCDMethod(createEEnumMethod(definitionName))
+        .addAllCDMethods(eDataTypeMethods)
         .addAllCDMethods(createEClassMethods(astcdDefinition))
         .addAllCDMethods(createEAttributeMethods(classList))
         .build();
@@ -118,6 +128,22 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     return attributeList;
   }
 
+  protected List<ASTCDAttribute> createEDataTypeAttributes(ASTCDDefinition astcdDefinition, int startIndex) {
+    //index has to start with the next index after prodAttributes
+    //cannot start with 0
+    Set<String> eDataTypes = emfService.getEDataTypes(astcdDefinition);
+    List<ASTCDAttribute> astcdAttributes = new ArrayList<>();
+
+    for (String eDataType : eDataTypes) {
+      ASTCDAttribute eDataTypeAttribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getCDTypeFacade().createIntType(),
+          emfService.getSimpleNativeAttributeType(eDataType));
+      this.replaceTemplate(VALUE, eDataTypeAttribute, new StringHookPoint("= " + startIndex));
+      astcdAttributes.add(eDataTypeAttribute);
+      startIndex++;
+    }
+    return astcdAttributes;
+  }
+
   protected ASTCDMethod createNodeFactoryMethod(String definitionName) {
     // e.g. AutomataNodeFactory getAutomataFactory();
     ASTSimpleReferenceType nodeFactoryType = getCDTypeFacade().createSimpleReferenceType(definitionName + NODE_FACTORY_SUFFIX);
@@ -142,7 +168,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     }
 
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
-      if(!astcdInterface.getName().equals("AST"+astcdDefinition.getName()+"Node")){
+      if (!astcdInterface.getName().equals("AST" + astcdDefinition.getName() + "Node")) {
         String methodName = String.format(GET, astcdInterface.getName());
         methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eClassType, methodName));
       }
@@ -159,6 +185,17 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
         String methodName = String.format(GET, astcdClass.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
         methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName));
       }
+    }
+    return methodList;
+  }
+
+  protected List<ASTCDMethod> createEDataTypeMethods(List<ASTCDAttribute> astcdAttributes) {
+    // e.g. EAttribute getASTAutomaton_Name() ; EReference getASTAutomaton_States() ;
+    List<ASTCDMethod> methodList = new ArrayList<>();
+    for (ASTCDAttribute astcdAttribute : astcdAttributes) {
+      String methodName = String.format(GET, astcdAttribute.getName());
+      methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT,
+          getCDTypeFacade().createSimpleReferenceType(E_DATA_TYPE), methodName));
     }
     return methodList;
   }

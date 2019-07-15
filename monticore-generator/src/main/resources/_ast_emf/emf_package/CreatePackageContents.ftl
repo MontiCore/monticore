@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("grammarName", "astClasses")}
+${tc.signature("grammarName", "definition")}
 <#assign service = glex.getGlobalVar("service")>
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 // Creates the meta-model objects for the package.  This method is
@@ -13,11 +13,11 @@ isCreated = true;
 // Create classes and their features
 constants${grammarName} = createEEnum(Constants${grammarName});
 
-<#list astClasses as astClass>
+<#list definition.getCDClassList() as astClass>
     ${astClass.getName()?uncap_first} = createEClass(${astClass.getName()});
 </#list>
 
-<#list astClasses as astClass>
+<#list definition.getCDClassList()  as astClass>
     <#list astClass.getCDAttributeList() as attribute>
         <#if genHelper.isAstNode(attribute) || genHelper.isOptionalAstNode(attribute)
             || genHelper.isListAstNode(attribute)>
@@ -27,7 +27,7 @@ constants${grammarName} = createEEnum(Constants${grammarName});
         </#if>
     </#list>
 </#list>
-<#--Todo understand what this is used for-->
-<#--<#list externalTypes as externalType>-->
-<#--    ${externalType?uncap_first}EDataType = createEDataType(${externalType});-->
-<#--</#list>-->
+
+<#list service.getEDataTypes(definition) as dataType>
+  ${service.getSimpleNativeAttributeType(dataType)?uncap_first} = createEDataType(${service.getSimpleNativeAttributeType(dataType)});
+</#list>

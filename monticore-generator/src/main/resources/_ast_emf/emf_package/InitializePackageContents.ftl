@@ -81,7 +81,7 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
 </#list>
 
 <#list service.getEDataTypes(definition) as dataType>
-  initEDataType(ectorEDataType, ${dataType.get}, "EVector", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+  initEDataType(${service.getSimpleNativeAttributeType(dataType)?uncap_first}, ${dataType}.class, "${service.getSimpleNativeAttributeType(dataType)}", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 </#list>
 
 // Create resource
