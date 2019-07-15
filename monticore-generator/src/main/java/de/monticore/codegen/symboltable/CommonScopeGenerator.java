@@ -43,7 +43,9 @@ public class CommonScopeGenerator implements ScopeGenerator {
     String baseNameClass = getSimpleName(scopeName);
     String baseNameInterface = "I" + getSimpleName(scopeName);
     String baseNameArtifactScope = getSimpleName(languageName+GeneratorHelper.ARTIFACT_SCOPE);
+    String baseNameArtifactScopeBuilder = getSimpleName(languageName+GeneratorHelper.ARTIFACT_SCOPE+"Builder");
     String baseNameGlobalScope = getSimpleName(languageName+GeneratorHelper.GLOBAL_SCOPE);
+    String baseNameGlobalScopeBuilder = getSimpleName(languageName+GeneratorHelper.GLOBAL_SCOPE+"Builder");
     String baseNameGlobalScopeInterface = getSimpleName("I"+languageName+GeneratorHelper.GLOBAL_SCOPE);
   
   
@@ -66,8 +68,12 @@ public class CommonScopeGenerator implements ScopeGenerator {
     
     String artifactScopeClassName = getSimpleTypeNameToGenerate(baseNameArtifactScope,
         _package, handCodedPath);
+
+    String artifactScopeBuilderClassName = getSimpleTypeNameToGenerate(baseNameArtifactScopeBuilder,_package,handCodedPath);
     
     String globalScopeClassName = getSimpleTypeNameToGenerate(baseNameGlobalScope, _package, handCodedPath);
+
+    String globalScopeBuilderClassName = getSimpleTypeNameToGenerate(baseNameGlobalScopeBuilder,_package,handCodedPath);
     
     String globalScopeInterfaceClassName = getSimpleTypeNameToGenerate(baseNameGlobalScopeInterface, _package, handCodedPath);
     
@@ -172,8 +178,12 @@ public class CommonScopeGenerator implements ScopeGenerator {
         .get(Names.getPathFromPackage(genHelper.getSerializationTargetPackage()), deserName + ".java");
     final Path artifactScopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         artifactScopeClassName + ".java");
+    final Path artifactScopeBuilderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
+        artifactScopeBuilderClassName+".java");
     final Path globalScopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         globalScopeClassName + ".java");
+    final Path globalScopeBuilderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
+        globalScopeBuilderClassName+".java");
     final Path globalScopeInterfaceFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         globalScopeInterfaceClassName + ".java");
     
@@ -190,10 +200,14 @@ public class CommonScopeGenerator implements ScopeGenerator {
       genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, allSymbols,allSpanningSymbolNames, superGrammarPackages);
     
       genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, baseNameClass, languageName, symbolNames,existsHWCArtifactScopeImpl);
+
+      genEngine.generateNoA("symboltable.ArtifactScopeBuilder",artifactScopeBuilderFilePath, artifactScopeBuilderClassName, languageName);
    
       genEngine.generateNoA("symboltable.GlobalScope", globalScopeFilePath, globalScopeClassName,
           languageName, baseNameGlobalScopeInterface, allSymbolDefiningRulesWithSuperGrammar, existsHWCGlobalScopeImpl);
-    
+
+      genEngine.generateNoA("symboltable.GlobalScopeBuilder",globalScopeBuilderFilePath, globalScopeBuilderClassName, languageName, globalScopeClassName);
+
       genEngine.generateNoA("symboltable.GlobalScopeInterface", globalScopeInterfaceFilePath,
           globalScopeInterfaceClassName, baseNameInterface, baseNameGlobalScopeInterface, languageName, allSymbols);
     }

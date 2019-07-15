@@ -36,6 +36,8 @@ public <#if isTop>abstract </#if> class ${className} {
     ${languageName?uncap_first}LanguageMill = a;
     ${languageName?uncap_first}SymbolTableCreatorMill = a;
     ${languageName?uncap_first}SymbolTableCreatorDelegatorMill = a;
+    ${languageName?uncap_first}GlobalScopeMill = a;
+    ${languageName?uncap_first}ArtifactScopeMill = a;
   }
 
 <#list symbolsAndScopes?keys as s>
@@ -45,6 +47,8 @@ public <#if isTop>abstract </#if> class ${className} {
   protected static ${plainName} ${languageName?uncap_first}LanguageMill = null;
   protected static ${plainName} ${languageName?uncap_first}SymbolTableCreatorMill = null;
   protected static ${plainName} ${languageName?uncap_first}SymbolTableCreatorDelegatorMill = null;
+  protected static ${plainName} ${languageName?uncap_first}GlobalScopeMill = null;
+  protected static ${plainName} ${languageName?uncap_first}ArtifactScopeMill = null;
 
   protected ${className} () {}
 
@@ -81,6 +85,8 @@ public  static  void reset()   {
   ${languageName?uncap_first}LanguageMill = null;
   ${languageName?uncap_first}SymbolTableCreatorMill = null;
   ${languageName?uncap_first}SymbolTableCreatorDelegatorMill = null;
+  ${languageName?uncap_first}GlobalScopeMill = null;
+  ${languageName?uncap_first}ArtifactScopeMill = null;
   <#list superMills as m>
     ${m}.reset();
   </#list>
@@ -131,6 +137,28 @@ public  static  void reset()   {
 
   protected ${languageName}SymbolTableCreatorBuilder _${languageName?uncap_first}SymbolTableCreatorBuilder(){
     return new ${languageName}SymbolTableCreatorBuilder();
+  }
+
+  public static ${languageName}GlobalScopeBuilder ${languageName?uncap_first}GlobalScopeBuilder(){
+    if(${languageName?uncap_first}GlobalScopeMill == null){
+      ${languageName?uncap_first}GlobalScopeMill = getMill();
+   }
+    return ${languageName?uncap_first}GlobalScopeMill._${languageName?uncap_first}GlobalScopeBuilder();
+  }
+
+  protected ${languageName}GlobalScopeBuilder _${languageName?uncap_first}GlobalScopeBuilder(){
+    return new ${languageName}GlobalScopeBuilder();
+  }
+
+  public static ${languageName}ArtifactScopeBuilder ${languageName?uncap_first}ArtifactScopeBuilder(){
+    if(${languageName?uncap_first}ArtifactScopeMill == null){
+      ${languageName?uncap_first}ArtifactScopeMill = getMill();
+    }
+    return ${languageName?uncap_first}ArtifactScopeMill._${languageName?uncap_first}ArtifactScopeBuilder();
+  }
+
+  protected ${languageName}ArtifactScopeBuilder _${languageName?uncap_first}ArtifactScopeBuilder(){
+    return new ${languageName}ArtifactScopeBuilder();
   }
 </#if>
 }
