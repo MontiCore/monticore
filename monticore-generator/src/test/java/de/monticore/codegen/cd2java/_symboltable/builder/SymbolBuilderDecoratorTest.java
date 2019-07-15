@@ -7,6 +7,7 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -36,7 +37,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
     AccessorDecorator methodDecorator = new AccessorDecorator(glex);
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator);
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator, new SymbolTableService(ast));
     SymbolBuilderDecorator astNodeBuilderDecorator = new SymbolBuilderDecorator(glex, builderDecorator);
     this.builderClass = astNodeBuilderDecorator.decorate(cdClass);
   }

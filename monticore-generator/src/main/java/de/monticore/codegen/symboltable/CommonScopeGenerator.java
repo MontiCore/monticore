@@ -206,7 +206,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
       genEngine.generateNoA("symboltable.GlobalScope", globalScopeFilePath, globalScopeClassName,
           languageName, baseNameGlobalScopeInterface, allSymbolDefiningRulesWithSuperGrammar, existsHWCGlobalScopeImpl);
 
-      genEngine.generateNoA("symboltable.GlobalScopeBuilder",globalScopeBuilderFilePath, globalScopeBuilderClassName, languageName, globalScopeClassName);
+      genEngine.generateNoA("symboltable.GlobalScopeBuilder",globalScopeBuilderFilePath, globalScopeBuilderClassName, languageName);
 
       genEngine.generateNoA("symboltable.GlobalScopeInterface", globalScopeInterfaceFilePath,
           globalScopeInterfaceClassName, baseNameInterface, baseNameGlobalScopeInterface, languageName, allSymbols);

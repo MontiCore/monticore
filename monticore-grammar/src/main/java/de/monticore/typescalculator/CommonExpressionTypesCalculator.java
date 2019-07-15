@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static de.monticore.typescalculator.TypesCalculator.isSubtypeOf;
 import static de.monticore.typescalculator.TypesCalculatorHelper.*;
 
 public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalculator implements CommonExpressionsVisitor {
@@ -305,7 +306,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
         if (expr.getArguments().getExpressionList().size()==method.getArguments().size()){
           boolean success = true;
           for(int i=0;i<method.getArguments().size();i++){
-            if(!method.getArguments().get(i).getASTMCType().deepEquals(types.get(expr.getArguments().getExpressionList().get(i)))){
+            if(!method.getArguments().get(i).getASTMCType().deepEquals(types.get(expr.getArguments().getExpressionList().get(i)).getASTMCType())&&!isSubtypeOf(types.get(expr.getArguments().getExpressionList().get(i)),method.getArguments().get(i))){
               success = false;
             }
           }

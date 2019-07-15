@@ -86,6 +86,90 @@ public class TypesCalculatorTest {
     scope.add(sym2);
     TypesCalculator.setExpressionAndLiteralsTypeCalculator(new CombineExpressionsWithLiteralsTypesCalculator(scope));
 
+    EVariableSymbol symLL = new EVariableSymbol("varLinkedList");
+    MCTypeSymbol typeSymbolLL = new MCTypeSymbol("java.util.LinkedList");
+    name = new ArrayList<>();
+    name.add("java");
+    name.add("util");
+    name.add("LinkedList");
+    typeSymbolLL.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
+    symLL.setMCTypeSymbol(typeSymbolLL);
+
+
+    EVariableSymbol symL = new EVariableSymbol("varList");
+    MCTypeSymbol typeSymbolL = new MCTypeSymbol("java.util.List");
+    name = new ArrayList<>();
+    name.add("java");
+    name.add("util");
+    name.add("List");
+    typeSymbolL.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
+    symL.setMCTypeSymbol(typeSymbolL);
+
+
+    EVariableSymbol symD = new EVariableSymbol("varDeque");
+    MCTypeSymbol typeSymbolD = new MCTypeSymbol("java.util.Deque");
+    name = new ArrayList<>();
+    name.add("java");
+    name.add("util");
+    name.add("Deque");
+    typeSymbolD.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
+    symD.setMCTypeSymbol(typeSymbolD);
+
+
+    EVariableSymbol symC = new EVariableSymbol("varCollection");
+    MCTypeSymbol typeSymbolC = new MCTypeSymbol("java.util.Collection");
+    name = new ArrayList<>();
+    name.add("java");
+    name.add("util");
+    name.add("Collection");
+    typeSymbolC.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
+    symC.setMCTypeSymbol(typeSymbolC);
+
+
+    EVariableSymbol symF = new EVariableSymbol("varFoo");
+    MCTypeSymbol typeSymbolF = new MCTypeSymbol("java.util.Foo");
+    name = new ArrayList<>();
+    name.add("java");
+    name.add("util");
+    name.add("Foo");
+    typeSymbolF.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
+    symF.setMCTypeSymbol(typeSymbolF);
+
+    superTypes = new ArrayList<>();
+    subTypes = new ArrayList<>();
+
+    superTypes.add(typeSymbolL);
+    superTypes.add(typeSymbolD);
+    subTypes.add(typeSymbolLL);
+
+    typeSymbolLL.setSupertypes(superTypes);
+    typeSymbolL.setSubtypes(subTypes);
+    typeSymbolD.setSubtypes(subTypes);
+
+    superTypes = new ArrayList<>();
+    subTypes = new ArrayList<>();
+
+    subTypes.add(typeSymbolL);
+    superTypes.add(typeSymbolC);
+
+    typeSymbolL.setSupertypes(superTypes);
+    typeSymbolC.setSubtypes(subTypes);
+
+    superTypes = new ArrayList<>();
+    subTypes = new ArrayList<>();
+
+    subTypes.add(typeSymbolD);
+    superTypes.add(typeSymbolF);
+
+    typeSymbolD.setSupertypes(superTypes);
+    typeSymbolF.setSubtypes(subTypes);
+
+
+    scope.add(symL);
+    scope.add(symC);
+    scope.add(symD);
+    scope.add(symF);
+    scope.add(symLL);
   }
 
   @Test
@@ -194,19 +278,21 @@ public class TypesCalculatorTest {
     Optional<ASTExpression> e = p.parse_StringExpression("5");
 
     assertTrue(a.isPresent());
+    assertTrue(b.isPresent());
+    assertTrue(c.isPresent());
+    assertTrue(d.isPresent());
+    assertTrue(e.isPresent());
     assertTrue(isAssignableFrom(a.get(),b.get()));
 
-    assertTrue(b.isPresent());
     assertFalse(isAssignableFrom(b.get(),a.get()));
 
-    assertTrue(c.isPresent());
     assertTrue(isAssignableFrom(c.get(),d.get()));
 
-    assertTrue(d.isPresent());
     assertFalse(isAssignableFrom(d.get(),c.get()));
 
-    assertTrue(e.isPresent());
     assertTrue(isAssignableFrom(a.get(),e.get()));
+
+    assertTrue(isAssignableFrom(a.get(),a.get()));
   }
 
   @Test
@@ -217,6 +303,10 @@ public class TypesCalculatorTest {
     Optional<ASTExpression> b = p.parse_StringExpression("varInt");
     Optional<ASTExpression> c = p.parse_StringExpression("varSuperTest");
     Optional<ASTExpression> d = p.parse_StringExpression("varTest");
+    Optional<ASTExpression> e = p.parse_StringExpression("varLinkedList");
+    Optional<ASTExpression> f = p.parse_StringExpression("varFoo");
+    Optional<ASTExpression> g = p.parse_StringExpression("varCollection");
+    Optional<ASTExpression> h = p.parse_StringExpression("varList");
 
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
@@ -231,6 +321,18 @@ public class TypesCalculatorTest {
     assertTrue(isSubtypeOf(d.get(),c.get()));
 
     assertFalse(isSubtypeOf(c.get(),d.get()));
+
+    assertTrue(e.isPresent());
+    assertTrue(f.isPresent());
+    assertTrue(g.isPresent());
+    assertTrue(h.isPresent());
+
+    assertTrue(isSubtypeOf(e.get(),f.get()));
+    assertTrue(isSubtypeOf(e.get(),g.get()));
+    assertTrue(isSubtypeOf(e.get(),h.get()));
+    assertTrue(isSubtypeOf(h.get(),g.get()));
+    assertFalse(isSubtypeOf(f.get(),g.get()));
+    assertFalse(isSubtypeOf(h.get(),f.get()));
   }
 
   @Test
@@ -266,9 +368,4 @@ public class TypesCalculatorTest {
     assertTrue(c.isPresent());
     assertEquals("java.lang.Integer",getTypeString(c.get()));
   }
-
-
-
-
-
 }

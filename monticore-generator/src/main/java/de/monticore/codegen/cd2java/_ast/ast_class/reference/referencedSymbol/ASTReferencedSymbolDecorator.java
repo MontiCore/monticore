@@ -12,11 +12,13 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
@@ -57,18 +59,23 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
   }
 
   protected ASTCDAttribute getRefSymbolAttribute(ASTCDAttribute attribute, String referencedSymbol) {
-    ASTMCType attributeType;
-    if (GeneratorHelper.isListType(attribute.printType())) {
-      //if the attribute is a list
-      attributeType = getCDTypeFacade().createTypeByDefinition("Map< String, Optional<" + referencedSymbol + ">>");
-    } else {
-      //if the attribute is mandatory or optional
-      attributeType = getCDTypeFacade().createOptionalTypeOf(referencedSymbol);
-    }
     ASTModifier modifier = PROTECTED.build();
     //add referenced Symbol modifier that it can later be distinguished
     TransformationHelper.addStereotypeValue(modifier, MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE.toString());
-    return this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL);
+
+    if (GeneratorHelper.isListType(attribute.printType())) {
+      //if the attribute is a list
+      ASTMCType attributeType = getCDTypeFacade().createTypeByDefinition("Map< String, Optional<" + referencedSymbol + ">>");
+      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL);
+      replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= new HashMap<>()"));
+      return symbolAttribute;
+    } else {
+      //if the attribute is mandatory or optional
+      ASTMCType attributeType = getCDTypeFacade().createOptionalTypeOf(referencedSymbol);
+      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL);
+      replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= Optional.empty()"));
+      return symbolAttribute;
+    }
   }
 
   private List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol, boolean wasAttributeOptional) {

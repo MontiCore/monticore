@@ -29,16 +29,16 @@ public <#if isTop>abstract </#if> class ${className} {
 
   public static void initMe(${plainName} a) {
     mill = a;
-  <#list symbolsAndScopes?keys as s>
-  mill${genHelper.getJavaConformName(symbolsAndScopes[s])} = a;
-  </#list>
+    <#list symbolsAndScopes?keys as s>
+      mill${genHelper.getJavaConformName(symbolsAndScopes[s])} = a;
+    </#list>
     ${languageName?uncap_first}ModelLoaderMill = a;
     ${languageName?uncap_first}LanguageMill = a;
     ${languageName?uncap_first}SymbolTableCreatorMill = a;
     ${languageName?uncap_first}SymbolTableCreatorDelegatorMill = a;
     ${languageName?uncap_first}GlobalScopeMill = a;
     ${languageName?uncap_first}ArtifactScopeMill = a;
-}
+  }
 
 <#list symbolsAndScopes?keys as s>
   protected static ${plainName} mill${genHelper.getJavaConformName(symbolsAndScopes[s])} = null;
@@ -81,17 +81,17 @@ public <#if isTop>abstract </#if> class ${className} {
   <#list symbolsAndScopes?keys as s>
     mill${genHelper.getJavaConformName(symbolsAndScopes[s])} = null;
   </#list>
-    ${languageName?uncap_first}ModelLoaderMill = null;
-    ${languageName?uncap_first}LanguageMill = null;
-    ${languageName?uncap_first}SymbolTableCreatorMill = null;
-    ${languageName?uncap_first}SymbolTableCreatorDelegatorMill = null;
-    ${languageName?uncap_first}GlobalScopeMill = null;
-    ${languageName?uncap_first}ArtifactScopeMill = null;
+  ${languageName?uncap_first}ModelLoaderMill = null;
+  ${languageName?uncap_first}LanguageMill = null;
+  ${languageName?uncap_first}SymbolTableCreatorMill = null;
+  ${languageName?uncap_first}SymbolTableCreatorDelegatorMill = null;
+  ${languageName?uncap_first}GlobalScopeMill = null;
+  ${languageName?uncap_first}ArtifactScopeMill = null;
   <#list superMills as m>
     ${m}.reset();
   </#list>
 }
-  <#if existsLanguage>
+<#if existsLanguage>
   public static ${languageName}LanguageBuilder ${languageName?uncap_first}LanguageBuilder(){
     if(${languageName?uncap_first}LanguageMill == null){
       ${languageName?uncap_first}LanguageMill = getMill();
@@ -101,9 +101,9 @@ public <#if isTop>abstract </#if> class ${className} {
 
   protected ${languageName}LanguageBuilder _${languageName?uncap_first}LanguageBuilder(){
     return new ${languageName}LanguageBuilder();
-  }
-  </#if>
-  <#if existsModelLoader>
+}
+</#if>
+<#if existsModelLoader>
   public static ${languageName}ModelLoaderBuilder ${languageName?uncap_first}ModelLoaderBuilder(){
     if(${languageName?uncap_first}ModelLoaderMill == null){
       ${languageName?uncap_first}ModelLoaderMill = getMill();
@@ -114,8 +114,8 @@ public <#if isTop>abstract </#if> class ${className} {
   protected ${languageName}ModelLoaderBuilder _${languageName?uncap_first}ModelLoaderBuilder(){
     return new ${languageName}ModelLoaderBuilder();
   }
-  </#if>
-  <#if existsSTCDel>
+</#if>
+<#if existsSTCDel>
   public static ${languageName}SymbolTableCreatorDelegatorBuilder ${languageName?uncap_first}SymbolTableCreatorDelegatorBuilder(){
     if(${languageName?uncap_first}SymbolTableCreatorDelegatorMill == null){
       ${languageName?uncap_first}SymbolTableCreatorDelegatorMill = getMill();
@@ -126,8 +126,8 @@ public <#if isTop>abstract </#if> class ${className} {
   protected ${languageName}SymbolTableCreatorDelegatorBuilder _${languageName?uncap_first}SymbolTableCreatorDelegatorBuilder(){
     return new ${languageName}SymbolTableCreatorDelegatorBuilder();
   }
-  </#if>
-  <#if existsSTC>
+</#if>
+<#if existsSTC>
   public static ${languageName}SymbolTableCreatorBuilder ${languageName?uncap_first}SymbolTableCreatorBuilder(){
     if(${languageName?uncap_first}SymbolTableCreatorMill == null){
       ${languageName?uncap_first}SymbolTableCreatorMill = getMill();
@@ -142,7 +142,7 @@ public <#if isTop>abstract </#if> class ${className} {
   public static ${languageName}GlobalScopeBuilder ${languageName?uncap_first}GlobalScopeBuilder(){
     if(${languageName?uncap_first}GlobalScopeMill == null){
       ${languageName?uncap_first}GlobalScopeMill = getMill();
-    }
+   }
     return ${languageName?uncap_first}GlobalScopeMill._${languageName?uncap_first}GlobalScopeBuilder();
   }
 
@@ -160,5 +160,5 @@ public <#if isTop>abstract </#if> class ${className} {
   protected ${languageName}ArtifactScopeBuilder _${languageName?uncap_first}ArtifactScopeBuilder(){
     return new ${languageName}ArtifactScopeBuilder();
   }
-  </#if>
+</#if>
 }

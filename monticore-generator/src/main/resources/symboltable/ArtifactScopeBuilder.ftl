@@ -18,16 +18,16 @@ import de.monticore.symboltable.ImportStatement;
 
 public class ${className}{
 
-private String packageName;
+    private String packageName;
 
-private List<ImportStatement> imports;
+    private List<ImportStatement> imports;
 
     private I${scopeName} enclosingScope;
 
     public ${artifactScopeName} build(){
         ${artifactScopeName} scope;
         if(enclosingScope==null){
-         scope = new ${artifactScopeName}(packageName, imports);
+            scope = new ${artifactScopeName}(packageName, imports);
         }else{
             scope = new ${artifactScopeName}(Optional.of(enclosingScope), packageName, imports);
         }

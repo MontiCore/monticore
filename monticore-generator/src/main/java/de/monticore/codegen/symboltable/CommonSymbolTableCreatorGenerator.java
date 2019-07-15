@@ -63,7 +63,6 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
       genEngine
           .generate("symboltable.SymbolTableCreator", filePath, grammarSymbol.getAstNode().get(),
               className, directSuperCds, symbolDefiningRules, nonSymbolDefiningRules, symbolKinds, handCodedPath);
-
       String stcName;
       if(className.endsWith("TOP")){
         stcName = className.replaceAll("TOP","");
@@ -78,6 +77,7 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
 
       genEngine.generate("symboltable.SymbolTableCreatorBuilder",filePath,grammarSymbol.getAstNode().get(),className, stcName);
 
+
       className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "SymbolTableCreatorDelegator"),
           genHelper.getTargetPackage(), handCodedPath);
     
@@ -89,7 +89,7 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
       genEngine
           .generate("symboltable.SymbolTableCreatorDelegator", filePath, grammarSymbol.getAstNode().get(),
               className, supergrammars , grammarSymbol.getStartProd().get());
-    
+
       for(MCGrammarSymbol g : grammarSymbol.getAllSuperGrammars()) {
         if(g.getStartProd().isPresent()) {
           className = getSimpleTypeNameToGenerate(
@@ -120,7 +120,7 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
         genEngine.generate("symboltable.SymbolTableCreatorDelegatorBuilder", filePath, grammarSymbol.getAstNode().get(), className, stcName);
       }
     }
-  
+
     String name = grammarSymbol.getName() + millName;
     className = getSimpleTypeNameToGenerate(getSimpleName(name), genHelper.getTargetPackage(), handCodedPath);
   

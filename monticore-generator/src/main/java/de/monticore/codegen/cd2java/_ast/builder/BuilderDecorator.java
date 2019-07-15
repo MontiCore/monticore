@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._ast.builder;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.factories.CDModifier;
@@ -35,9 +36,14 @@ public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> 
 
   private final AccessorDecorator accessorDecorator;
 
-  public BuilderDecorator(final GlobalExtensionManagement glex, final AccessorDecorator accessorDecorator) {
+  protected final AbstractService service;
+
+  public BuilderDecorator(final GlobalExtensionManagement glex,
+                          final AccessorDecorator accessorDecorator,
+                          final AbstractService service) {
     super(glex);
     this.accessorDecorator = accessorDecorator;
+    this.service = service;
   }
 
   @Override
@@ -60,6 +66,7 @@ public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> 
         .filter(a -> !GeneratorHelper.isListType(a.printType()))
         .filter(a -> !GeneratorHelper.isOptional(a))
         .filter(a -> !GeneratorHelper.isPrimitive(a.getMCType()))
+        .filter(a -> !service.isInherited(a))
         .collect(Collectors.toList());
 
 

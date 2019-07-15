@@ -7,7 +7,7 @@ import de.monticore.codegen.parser.Languages
 info("--------------------------------", LOG_ID)
 info("MontiCore IT Facade (Python)", LOG_ID)
 enableFailQuick(true)
-globalScope = createGlobalScope(modelPath)
+globalScope = createMCGlobalScope(modelPath)
 
 // Parse grammar
 astGrammars = parseGrammars(grammars)

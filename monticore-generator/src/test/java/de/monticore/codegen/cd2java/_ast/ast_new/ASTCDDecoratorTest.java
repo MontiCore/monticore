@@ -87,7 +87,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
 
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex));
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex), new ASTService(decoratedCompilationUnit));
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
 
     NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex, nodeFactoryService);

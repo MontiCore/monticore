@@ -1,9 +1,6 @@
 package mc.feature.referencesymbol;
 
-import de.monticore.ModelingLanguage;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolvingConfiguration;
 import mc.feature.referencesymbol.reference._ast.ASTTest;
 import mc.feature.referencesymbol.reference._symboltable.TestSymbol;
 import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRand;
@@ -11,9 +8,7 @@ import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRef;
 import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRefList;
 import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRefOpt;
 import mc.feature.referencesymbol.supgrammarref._parser.SupGrammarRefParser;
-import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefLanguage;
-import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefScope;
-import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefSymbolTableCreator;
+import mc.feature.referencesymbol.supgrammarref._symboltable.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,16 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class SupReferenceTest {
-  ASTSupRand astsupRand;
-  TestSymbol a;
-  TestSymbol b;
-  TestSymbol c;
-  TestSymbol d;
+  private ASTSupRand astsupRand;
+  private TestSymbol a;
+  private TestSymbol b;
+  private TestSymbol c;
+  private TestSymbol d;
 
   @Before
   public void setUp() throws IOException {
@@ -46,22 +39,25 @@ public class SupReferenceTest {
 
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/referencesymbol"));
-    ModelingLanguage lang = new SupGrammarRefLanguage();
-    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(lang.getResolvingFilters());
-    GlobalScope globalScope = new GlobalScope(modelPath, lang, resolvingConfiguration);
-    SupGrammarRefSymbolTableCreator symbolTableCreator = new SupGrammarRefSymbolTableCreator(resolvingConfiguration, globalScope);
-    SupGrammarRefScope fromAST = (SupGrammarRefScope) symbolTableCreator.createFromAST(astsupRand);
+    SupGrammarRefLanguage lang = new SupGrammarRefLanguage();
+    SupGrammarRefGlobalScope globalScope = new SupGrammarRefGlobalScope(modelPath, lang);
+    SupGrammarRefSymbolTableCreatorDelegator symbolTableCreator = lang.getSymbolTableCreator(globalScope);
+    SupGrammarRefScope artifact = symbolTableCreator.createFromAST(astsupRand);
+    Optional<ISupGrammarRefScope> scopeOpt = artifact.getSubScopes().stream().findAny();
+    assertTrue(scopeOpt.isPresent());
+    ISupGrammarRefScope innerScope = scopeOpt.get();
 
-    Optional<TestSymbol> a = globalScope.resolve("SupReferenceTest.A", TestSymbol.KIND);
-    Optional<TestSymbol> b = fromAST.resolve("B", TestSymbol.KIND);
-    Optional<TestSymbol> c = fromAST.resolve("C", TestSymbol.KIND);
-    Optional<TestSymbol> d = fromAST.resolve("D", TestSymbol.KIND);
 
-    assertTrue(a.isPresent());
+    Optional<TestSymbol> a = globalScope.resolveTest("SupReferenceTest.A");
+    Optional<TestSymbol> b = artifact.resolveTest("SupReferenceTest.B");
+    Optional<TestSymbol> c = innerScope.resolveTest("C");
+    Optional<TestSymbol> d = innerScope.resolveTest("D");
+
     assertTrue(b.isPresent());
     assertTrue(c.isPresent());
     assertTrue(d.isPresent());
+    assertTrue(a.isPresent());
+
     this.a = a.get();
     this.b = b.get();
     this.c = c.get();
@@ -132,8 +128,8 @@ public class SupReferenceTest {
     assertEquals(supRef.getNameSymbolOpt(), Optional.ofNullable(b));
     assertEquals(supRef.getNameSymbol(), b);
 
-    assertEquals(supRef.getNameDefinitionOpt(), b.getTestNode());
-    assertEquals(supRef.getNameDefinition(), b.getTestNode().get());
+    assertEquals(supRef.getNameDefinitionOpt(), b.getAstNode());
+    assertEquals(supRef.getNameDefinition(), b.getAstNode().get());
   }
 
   @Test
@@ -149,8 +145,8 @@ public class SupReferenceTest {
     assertEquals(supRef.getNameSymbolOpt(), Optional.ofNullable(c));
     assertEquals(supRef.getNameSymbol(), c);
 
-    assertEquals(supRef.getNameDefinitionOpt(), c.getTestNode());
-    assertEquals(supRef.getNameDefinition(), c.getTestNode().get());
+    assertEquals(supRef.getNameDefinitionOpt(), c.getAstNode());
+    assertEquals(supRef.getNameDefinition(), c.getAstNode().get());
   }
 
   @Test
@@ -164,8 +160,8 @@ public class SupReferenceTest {
     assertEquals(supRefOpt.getNameSymbolOpt(), Optional.ofNullable(a));
     assertEquals(supRefOpt.getNameSymbol(), a);
 
-    assertEquals(supRefOpt.getNameDefinitionOpt(), a.getTestNode());
-    assertEquals(supRefOpt.getNameDefinition(), a.getTestNode().get());
+    assertEquals(supRefOpt.getNameDefinitionOpt(), a.getAstNode());
+    assertEquals(supRefOpt.getNameDefinition(), a.getAstNode().get());
   }
 
   @Test
@@ -181,8 +177,8 @@ public class SupReferenceTest {
     assertEquals(supRefOpt.getNameSymbolOpt(), Optional.ofNullable(c));
     assertEquals(supRefOpt.getNameSymbol(), c);
 
-    assertEquals(supRefOpt.getNameDefinitionOpt(), c.getTestNode());
-    assertEquals(supRefOpt.getNameDefinition(), c.getTestNode().get());
+    assertEquals(supRefOpt.getNameDefinitionOpt(), c.getAstNode());
+    assertEquals(supRefOpt.getNameDefinition(), c.getAstNode().get());
   }
 
   @Test
@@ -209,15 +205,15 @@ public class SupReferenceTest {
 
     assertEquals("A", supRefList.getName(0));
 
-    assertTrue(supRefList.getNameSymbol(0).isPresent());
-    assertEquals(a, supRefList.getNameSymbol(0).get());
+    assertTrue(supRefList.getNamesSymbol(0).isPresent());
+    assertEquals(a, supRefList.getNamesSymbol(0).get());
 
-    assertTrue(supRefList.getNameDefinition(0).isPresent());
-    assertEquals(a.getTestNode(), supRefList.getNameDefinition(0));
+    assertTrue(supRefList.getNamesDefinition(0).isPresent());
+    assertEquals(a.getAstNode(), supRefList.getNamesDefinition(0));
 
     assertTrue(supRefList.containsName("B"));
-    assertTrue(supRefList.containsNameDefinition(b.getTestNode()));
-    assertTrue(supRefList.containsNameSymbol(Optional.ofNullable(b)));
+    assertTrue(supRefList.containsNamesDefinition(b.getAstNode()));
+    assertTrue(supRefList.containsNamesSymbol(Optional.ofNullable(b)));
 
     assertEquals(supRefList.toArrayNames().length, 4);
     assertEquals(supRefList.toArrayNamesSymbol().length, 4);
@@ -246,11 +242,11 @@ public class SupReferenceTest {
 
     assertEquals("D", supRefList.getName(0));
 
-    assertTrue(supRefList.getNameSymbol(0).isPresent());
-    assertEquals(d, supRefList.getNameSymbol(0).get());
+    assertTrue(supRefList.getNamesSymbol(0).isPresent());
+    assertEquals(d, supRefList.getNamesSymbol(0).get());
 
-    assertTrue(supRefList.getNameDefinition(0).isPresent());
-    assertEquals(d.getTestNode(), supRefList.getNameDefinition(0));
+    assertTrue(supRefList.getNamesDefinition(0).isPresent());
+    assertEquals(d.getAstNode(), supRefList.getNamesDefinition(0));
   }
 
 
@@ -270,15 +266,15 @@ public class SupReferenceTest {
 
     assertEquals("B", supRefList.getName(0));
 
-    assertTrue(supRefList.getNameSymbol(0).isPresent());
-    assertEquals(b, supRefList.getNameSymbol(0).get());
+    assertTrue(supRefList.getNamesSymbol(0).isPresent());
+    assertEquals(b, supRefList.getNamesSymbol(0).get());
 
-    assertTrue(supRefList.getNameDefinition(0).isPresent());
-    assertEquals(b.getTestNode(), supRefList.getNameDefinition(0));
+    assertTrue(supRefList.getNamesDefinition(0).isPresent());
+    assertEquals(b.getAstNode(), supRefList.getNamesDefinition(0));
 
     assertTrue(supRefList.containsName("A"));
-    assertTrue(supRefList.containsNameDefinition(a.getTestNode()));
-    assertTrue(supRefList.containsNameSymbol(Optional.ofNullable(a)));
+    assertTrue(supRefList.containsNamesDefinition(a.getAstNode()));
+    assertTrue(supRefList.containsNamesSymbol(Optional.ofNullable(a)));
   }
 
   @Test
@@ -298,11 +294,11 @@ public class SupReferenceTest {
 
     assertEquals("C", supRefList.getName(1));
 
-    assertTrue(supRefList.getNameSymbol(1).isPresent());
-    assertEquals(c, supRefList.getNameSymbol(1).get());
+    assertTrue(supRefList.getNamesSymbol(1).isPresent());
+    assertEquals(c, supRefList.getNamesSymbol(1).get());
 
-    assertTrue(supRefList.getNameDefinition(1).isPresent());
-    assertEquals(c.getTestNode(), supRefList.getNameDefinition(1));
+    assertTrue(supRefList.getNamesDefinition(1).isPresent());
+    assertEquals(c.getAstNode(), supRefList.getNamesDefinition(1));
 
     List<String> list = new ArrayList<>();
     list.add("A");
@@ -317,9 +313,9 @@ public class SupReferenceTest {
     assertEquals(supRefList.getNamesSymbolList(), symbolList);
 
     List<Optional<ASTTest>> definitionList = new ArrayList<>();
-    definitionList.add(a.getTestNode());
-    definitionList.add(c.getTestNode());
-    definitionList.add(d.getTestNode());
+    definitionList.add(a.getAstNode());
+    definitionList.add(c.getAstNode());
+    definitionList.add(d.getAstNode());
     assertEquals(supRefList.getNamesDefinitionList(), definitionList);
   }
 }
