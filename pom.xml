@@ -12,14 +12,14 @@
   <!-- == PROJECT MODULES ================================================= -->
 
   <modules>
-<!--    <module>monticore-cli</module>-->
+    <module>monticore-cli</module>
     <module>monticore-grammar</module>
-<!--    <module>monticore-generator</module>-->
-<!--    <module>monticore-maven</module>-->
+    <module>monticore-generator</module>
+    <module>monticore-maven</module>
     <module>monticore-runtime</module>
-<!--    <module>monticore-emf-runtime</module>-->
-<!--    <module>monticore-templateclassgenerator</module>-->
-<!--    <module>monticore-emf-grammar</module>-->
+    <module>monticore-emf-runtime</module>
+    <module>monticore-templateclassgenerator</module>
+    <module>monticore-emf-grammar</module>
   </modules>
 
   <!-- == PROJECT PROPERTIES ============================================== -->

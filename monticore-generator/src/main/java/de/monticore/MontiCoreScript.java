@@ -335,7 +335,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param ast
    * @param scope
    */
-  public void runGrammarCoCos(ASTMCGrammar ast, GlobalScope scope) {
+  public void runGrammarCoCos(ASTMCGrammar ast, Grammar_WithConceptsGlobalScope scope) {
     // Run context conditions
     Grammar_WithConceptsCoCoChecker checker = new GrammarCoCos().getCoCoChecker();
     checker.handle(ast);
