@@ -11,7 +11,8 @@ debug("Modelpath      : " + _configuration.getModelPathAsStrings(), LOG_ID)
 debug("Output dir     : " + out, LOG_ID)
 debug("Handcoded path : " + _configuration.getHandcodedPathAsStrings(), LOG_ID)
 
-globalScope = createGlobalScope(modelPath)
+cd4AScope = createCD4AGlobalScope(modelPath)
+mcScope = createMCGlobalScope(modelPath)
 
 while (grammarIterator.hasNext()) {
   // Parse grammar
@@ -20,10 +21,10 @@ while (grammarIterator.hasNext()) {
   if (astGrammar.isPresent()) {
     astGrammar = astGrammar.get()
 
-    astGrammar = createSymbolsFromAST(globalScope, astGrammar)
+    astGrammar = createSymbolsFromAST(mcScope, astGrammar)
 
     // Transform AST-Grammar -> AST-CD
-    astClassDiagramWithST = deriveCD(astGrammar, glex, globalScope)
+    astClassDiagramWithST = deriveCD(astGrammar, glex, cd4AScope, mcScope)
 
     // Writes Class Diagram AST to the CD-file (*.cd)
     storeInCdFile(astClassDiagramWithST, out)
@@ -32,9 +33,9 @@ while (grammarIterator.hasNext()) {
 
     // M7: decorate Class Diagram AST
 
-    generateVisitors(glex, globalScope, astClassDiagramWithST, out, handcodedPath)
-    generateCocos(glex, globalScope, astClassDiagramWithST, out)
-    generateODs(glex, globalScope, astClassDiagramWithST, out)
+    generateVisitors(glex, cd4AScope, astClassDiagramWithST, out, handcodedPath)
+    generateCocos(glex, cd4AScope, astClassDiagramWithST, out)
+    generateODs(glex, cd4AScope, mcScope, astClassDiagramWithST, out)
 
     decoratedASTClassDiagramm = decorateForASTPackage(glex, astClassDiagramWithST, modelPath, handcodedPath)
     generateFromCD(glex,astClassDiagramWithST, decoratedASTClassDiagramm, out, handcodedPath)

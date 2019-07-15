@@ -19,7 +19,7 @@ public class ReferenceSymbolSameAttributeTest extends CocoTest {
   @Test
   public void testInvalid() {
     testInvalidGrammar(grammar, ReferenceSymbolSameAttributeVisitor.ERROR_CODE,
-        String.format(ReferenceSymbolSameAttributeVisitor.ERROR_MSG_FORMAT, "\"ref\"", "A","B"), checker);
+        String.format(ReferenceSymbolSameAttributeVisitor.ERROR_MSG_FORMAT, "\"refs\"", "A","B"), checker);
   }
 
   @Test
