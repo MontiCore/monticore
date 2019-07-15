@@ -102,7 +102,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, dataInterface, dataInterface);
-    System.out.println(sb.toString());
+    // TODO Check System.out.println(sb.toString());
   }
 
 }

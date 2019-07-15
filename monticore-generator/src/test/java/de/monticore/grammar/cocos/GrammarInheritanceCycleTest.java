@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import static de.monticore.grammar.cocos.GrammarInheritanceCycle.ERROR_CODE;
-import static de.se_rwth.commons.logging.Log.enableFailQuick;
+import static de.se_rwth.commons.logging.LogStub.enableFailQuick;
 import static de.se_rwth.commons.logging.Log.getFindings;
 import static java.lang.String.format;
 import static java.nio.file.Paths.get;

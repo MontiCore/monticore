@@ -34,8 +34,8 @@ public class ParserGeneratorTest extends AstDependentGeneratorTest {
 
   @BeforeClass
   public static void setup() {
-    Log.init();
-    Log.enableFailQuick(false);
+    LogStub.init();
+    LogStub.enableFailQuick(false);
   }
 
   public void testCommon() {

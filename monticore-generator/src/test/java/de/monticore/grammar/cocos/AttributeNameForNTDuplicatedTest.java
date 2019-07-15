@@ -2,11 +2,11 @@
 
 package de.monticore.grammar.cocos;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class AttributeNameForNTDuplicatedTest extends CocoTest {
   
@@ -20,7 +20,7 @@ public class AttributeNameForNTDuplicatedTest extends CocoTest {
   
   @BeforeClass
   public static void disableFailQuick() {
-    Log.enableFailQuick(false);
+    LogStub.enableFailQuick(false);
   }
   
   @Test
