@@ -28,7 +28,10 @@ build_dev:
   only:
     - dev
     - newSymtab
-    - refactoring_with_new_symtab
+  artifacts:
+    paths:
+      - "*/target"
+    expire_in: 1 week
     
 #build_branches:
 #  stage: build
