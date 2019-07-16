@@ -301,7 +301,7 @@ public class MontiCoreTool {
 
     for (Map.Entry<ASTMCGrammar, ASTCDCompilationUnit> pair : input.entrySet()) {
       ASTCDCompilationUnit cd = pair.getValue();
-      ASTCDCompilationUnit prepareCD = prepareCD(cd);
+      ASTCDCompilationUnit prepareCD = prepareCD(cdSymbolTable, cd);
       createSymbolsFromAST(prepareCD, cdSymbolTable);
       pair.setValue(prepareCD);
     }
@@ -326,10 +326,10 @@ public class MontiCoreTool {
     }
   }
 
-  private ASTCDCompilationUnit prepareCD(ASTCDCompilationUnit cd) {
+  private ASTCDCompilationUnit prepareCD(ICD4AnalysisScope cdScope, ASTCDCompilationUnit cd) {
     ASTCDCompilationUnit preparedCD = cd;
 
-    TypeCD2JavaDecorator typeCD2JavaDecorator = new TypeCD2JavaDecorator();
+    TypeCD2JavaDecorator typeCD2JavaDecorator = new TypeCD2JavaDecorator(cdScope);
     preparedCD = typeCD2JavaDecorator.decorate(preparedCD);
 
     return preparedCD;

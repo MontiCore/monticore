@@ -49,7 +49,7 @@ public class TypeCD2JavaTest {
 
     cdCompilationUnit.setEnclosingScope2(cd4AnalysisGlobalScope);
     //make types java compatible
-    TypeCD2JavaDecorator decorator = new TypeCD2JavaDecorator();
+    TypeCD2JavaDecorator decorator = new TypeCD2JavaDecorator(cd4AnalysisGlobalScope);
     decorator.decorate(cdCompilationUnit);
   }
 

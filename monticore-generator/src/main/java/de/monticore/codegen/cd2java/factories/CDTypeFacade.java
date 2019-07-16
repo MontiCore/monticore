@@ -146,7 +146,8 @@ public class CDTypeFacade {
   }
 
   public boolean isBooleanType(ASTMCType type) {
-    return type.deepEquals(createBooleanType());
+    // TODO : was ist die beste Möglichkeit, um ein Boolen zu erkennen return type.deepEquals(createBooleanType());
+    return type instanceof ASTMCPrimitiveType && ((ASTMCPrimitiveType) type).isBoolean();
   }
 
   public ASTMCType createIntType() {

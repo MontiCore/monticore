@@ -194,7 +194,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
     genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, baseNameInterface, scopeRule, symbolNamesWithSuperGrammar, allSuperScopes, superScopeVisitors,existsHWCScopeImpl);
     genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, localSuperScopes, languageName);
-    genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName);
+    genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName, scopeRule);
 
     if(genHelper.getGrammarSymbol().getStartProd().isPresent()) {
       genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, allSymbols,allSpanningSymbolNames, superGrammarPackages);

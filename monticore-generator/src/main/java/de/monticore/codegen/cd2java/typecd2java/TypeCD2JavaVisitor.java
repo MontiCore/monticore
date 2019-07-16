@@ -21,6 +21,9 @@ public class TypeCD2JavaVisitor implements CD4AnalysisVisitor {
     this.scope = scope;
   }
 
+  private TypeCD2JavaVisitor() {
+  }
+
   @Override
   public void visit(ASTMCQualifiedType node) {
     //only take first one because at first the type has just one name which contains the complete qualified name

@@ -5,10 +5,8 @@ package de.monticore;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreatorDelegator;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.*;
+import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CDGenerator;
@@ -425,15 +423,15 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astClassDiagram - class diagram AST
    */
 
-  public ASTCDCompilationUnit decorateForASTPackage(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ModelPath modelPath, IterablePath handCodedPath) {
-    ASTCDCompilationUnit astcdCompilationUnit = prepareCD(astClassDiagram);
+  public ASTCDCompilationUnit decorateForASTPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope, ASTCDCompilationUnit astClassDiagram, ModelPath modelPath, IterablePath handCodedPath) {
+    ASTCDCompilationUnit astcdCompilationUnit = prepareCD(cdScope, astClassDiagram);
     return decorateWithAST(astcdCompilationUnit, glex, modelPath, handCodedPath);
   }
 
-  private ASTCDCompilationUnit prepareCD(ASTCDCompilationUnit cd) {
+  private ASTCDCompilationUnit prepareCD(ICD4AnalysisScope scope, ASTCDCompilationUnit cd) {
     ASTCDCompilationUnit preparedCD = cd;
 
-    TypeCD2JavaDecorator typeCD2JavaDecorator = new TypeCD2JavaDecorator();
+    TypeCD2JavaDecorator typeCD2JavaDecorator = new TypeCD2JavaDecorator(scope);
     preparedCD = typeCD2JavaDecorator.decorate(preparedCD);
 
     return preparedCD;
@@ -492,6 +490,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new AbstractService(oldCD));
     glex.setGlobalValue("astHelper", new DecorationHelper());
+    glex.setGlobalValue("cdPrinter", new CD4CodePrinter()
+    );
     final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);

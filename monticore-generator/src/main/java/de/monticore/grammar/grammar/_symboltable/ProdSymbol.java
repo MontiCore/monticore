@@ -212,22 +212,8 @@ public class ProdSymbol extends ProdSymbolTOP {
     return isLexerProd;
   }
 
-  public static class MCProdKind implements SymbolKind {
-
-    private static final String NAME = MCProdKind.class.getName();
-
-    protected MCProdKind() {
-    }
-
-    @Override
-    public String getName() {
-      return NAME;
-    }
-
-    @Override
-    public boolean isKindOf(SymbolKind kind) {
-      return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
-    }
-
+  @Override
+  public String toString() {
+    return getName();
   }
 }

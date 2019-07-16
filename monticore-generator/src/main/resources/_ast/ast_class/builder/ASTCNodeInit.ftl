@@ -6,7 +6,7 @@ ${tc.signature("domainClass")}
   <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
   <#if genHelper.isListType(attribute.printType())>
     value.set${methName?remove_ending("s")}List(this.${attribute.getName()});
-  <#elseif genHelper.isOptional(attribute.getType())>
+  <#elseif genHelper.isOptional(attribute.getMCType())>
     value.set${methName}Opt(this.${attribute.getName()});
   <#else>
     value.set${methName}(this.${attribute.getName()});

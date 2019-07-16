@@ -1,12 +1,12 @@
 ${tc.signature("cdClass")}
-<#assign cdprinter = glex.getGlobalVar("cdPrinter")>
+<#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
 
 ${tc.include("core.Package")}
 
 ${tc.include("core.Imports")}
 import de.monticore.ast.ASTCNode;
 
-${cdPrinter.printModifier(cdClass.getModifierOpt())} class ${cdClass.getName()} <#rt><#lt>
+${cdPrinter.printSimpleModifier(cdClass.getModifierOpt())} class ${cdClass.getName()} <#rt><#lt>
 <#if cdClass.isPresentSuperclass()>extends ${cdPrinter.printType(cdClass.getSuperclass())} </#if> <#rt><#lt>
 <#if !cdClass.isEmptyInterfaces()>implements ${cdClass.printInterfaces()} </#if>{
 
