@@ -2,25 +2,22 @@
 
 package de.monticore.generating.templateengine;
 
-import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import com.google.common.collect.Lists;
+import de.monticore.ast.ASTNodeMock;
+import de.monticore.generating.GeneratorSetup;
+import de.monticore.io.FileReaderWriterMock;
+import de.monticore.io.paths.IterablePath;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import de.monticore.ast.ASTNodeMock;
-import de.monticore.io.FileReaderWriterMock;
-import de.monticore.io.paths.IterablePath;
+import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
+import static org.junit.Assert.*;
 
 /**
  * Tests for {@link TemplateController}.
@@ -58,7 +55,7 @@ public class TemplateControllerTest {
   @Ignore
   @Test
   public void testImplicitAstPassing() {
-    assertNull(tc.getAST()); 
+    assertNull(tc.getAST());
     
     tc.include(TEMPLATE_PACKAGE + "A");
     assertNull(tc.getAST());
@@ -105,5 +102,23 @@ public class TemplateControllerTest {
     assertTrue(tc.existsHandwrittenClass(classname));
     assertTrue(!tc.existsHandwrittenClass(notExistName));
   }
-    
+  
+  @Test
+  public void testDefaultMethods() {
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+  
+    fileHandler = new FileReaderWriterMock();
+    GeneratorSetup config = new GeneratorSetup();
+    config.setGlex(glex);
+    config.setFileHandler(fileHandler);
+    config.setOutputDirectory(TARGET_DIR);
+    config.setTracing(false);
+    // .externalTemplatePaths(new File[]{})
+    TemplateController tc = new TemplateControllerMock(config, "");
+    DefaultImpl def = new DefaultImpl();
+    StringBuilder result = tc.includeArgs(TEMPLATE_PACKAGE + "DefaultMethodCall", Lists.newArrayList(def));
+    assertNotNull(result);
+    assertEquals("A", result.toString().trim());
+  }
+  
 }

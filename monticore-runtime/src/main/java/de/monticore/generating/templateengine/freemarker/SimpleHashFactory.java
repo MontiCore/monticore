@@ -1,21 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 /**
- * 
+ *
  */
 package de.monticore.generating.templateengine.freemarker;
 
-import java.util.Map;
-
+import de.monticore.generating.GeneratorSetup;
 import freemarker.log.Logger;
+import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.SimpleHash;
+
+import java.util.Map;
 
 /**
  * Use this factory to instantiate SimpleHash objects.
  *
  */
-// STATE SMELL PN 
+// STATE SMELL PN
 public class SimpleHashFactory {
   
   private static SimpleHashFactory theInstance;
@@ -35,11 +37,11 @@ public class SimpleHashFactory {
   }
   
   public SimpleHash createSimpleHash() {
-    return new SimpleHash();
+    return new SimpleHash(new DefaultObjectWrapper(GeneratorSetup.FREEMARKER_VERSION));
   }
   
   public SimpleHash createSimpleHash(Map<?, ?> map) {
-    return new SimpleHash(map);
+    return new SimpleHash(map, new DefaultObjectWrapper(GeneratorSetup.FREEMARKER_VERSION));
   }
   
   public SimpleHash createSimpleHash(ObjectWrapper wrapper) {
