@@ -154,4 +154,8 @@ public class EmfService extends AbstractService {
         !decorationHelper.isOptionalAstNode(astcdAttribute) && !isPrimitive(astcdAttribute.getType())
         && !isString(astcdAttribute.getType());
   }
+
+  public boolean isASTNodeInterface(ASTCDInterface astcdInterface, ASTCDDefinition astcdDefinition){
+    return astcdInterface.getName().equals("AST" + astcdDefinition.getName() + "Node");
+  }
 }

@@ -106,6 +106,30 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testASTTransitionWithActionAttribute() {
+    ASTCDAttribute attribute = getAttributeBy("aSTTransitionWithAction", packageClass);
+    assertTrue(attribute.isPresentModifier());
+    assertDeepEquals(PRIVATE, attribute.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EClass", attribute.getType());
+  }
+
+  @Test
+  public void testASTAutNameAttribute() {
+    ASTCDAttribute attribute = getAttributeBy("aSTAutName", packageClass);
+    assertTrue(attribute.isPresentModifier());
+    assertDeepEquals(PRIVATE, attribute.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EClass", attribute.getType());
+  }
+
+  @Test
+  public void testASTBodyExtAttribute() {
+    ASTCDAttribute attribute = getAttributeBy("aSTBodyExt", packageClass);
+    assertTrue(attribute.isPresentModifier());
+    assertDeepEquals(PRIVATE, attribute.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EClass", attribute.getType());
+  }
+
+  @Test
   public void testIsCreatedAttribute() {
     ASTCDAttribute attribute = getAttributeBy("isCreated", packageClass);
     assertTrue(attribute.isPresentModifier());

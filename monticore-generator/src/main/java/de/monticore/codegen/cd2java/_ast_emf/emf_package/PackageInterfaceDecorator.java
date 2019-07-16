@@ -55,7 +55,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
         .addCDAttribute(createConstantsAttribute(definitionName))
         .addAllCDAttributes(prodAttributes)
         .addAllCDAttributes(eDataTypeAttributes)
-        .addAllCDAttributes(createNonTerminalAttributes(classList))
+        .addAllCDAttributes(createNonTerminalAttributes(astcdDefinition))
         .addCDMethod(createNodeFactoryMethod(definitionName))
         .addCDMethod(createEEnumMethod(definitionName))
         .addAllCDMethods(eDataTypeMethods)
@@ -114,23 +114,38 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     }
 
     for (int j = 0; j < astcdDefinition.getCDInterfaceList().size(); j++) {
-      ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getCDTypeFacade().createIntType(),
-          astcdDefinition.getCDInterfaceList().get(j).getName());
-      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (j + i + 1)));
-      attributeList.add(attribute);
+      if (!emfService.isASTNodeInterface(astcdDefinition.getCDInterface(j), astcdDefinition)) {
+        ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getCDTypeFacade().createIntType(),
+            astcdDefinition.getCDInterfaceList().get(j).getName());
+        this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (j + i + 1)));
+        attributeList.add(attribute);
+      }
     }
     return attributeList;
   }
 
-  protected List<ASTCDAttribute> createNonTerminalAttributes(List<ASTCDClass> astcdClassList) {
+  protected List<ASTCDAttribute> createNonTerminalAttributes(ASTCDDefinition astcdDefinition) {
     // e.g. int ASTAutomaton_Name = 0; int ASTAutomaton_States = 1;
     List<ASTCDAttribute> attributeList = new ArrayList<>();
-    for (ASTCDClass astcdClass : astcdClassList) {
+
+
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       for (int i = 0; i < astcdClass.getCDAttributeList().size(); i++) {
         ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getCDTypeFacade().createIntType(),
             astcdClass.getName() + "_" + StringTransformations.capitalize(astcdClass.getCDAttribute(i).getName()));
         this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + i));
         attributeList.add(attribute);
+      }
+    }
+
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+      if(!emfService.isASTNodeInterface(astcdInterface, astcdDefinition)){
+        for (int j = 0; j < astcdInterface.getCDAttributeList().size(); j++) {
+          ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getCDTypeFacade().createIntType(),
+              astcdInterface.getName() + "_" + StringTransformations.capitalize(astcdInterface.getCDAttribute(j).getName()));
+          this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (j)));
+          attributeList.add(attribute);
+        }
       }
     }
     return attributeList;
@@ -176,7 +191,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     }
 
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
-      if (!astcdInterface.getName().equals("AST" + astcdDefinition.getName() + "Node")) {
+      if (!emfService.isASTNodeInterface(astcdInterface, astcdDefinition)) {
         String methodName = String.format(GET, astcdInterface.getName());
         methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eClassType, methodName));
       }

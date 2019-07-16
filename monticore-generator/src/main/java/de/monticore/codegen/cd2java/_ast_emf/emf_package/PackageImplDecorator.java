@@ -91,7 +91,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
       attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdClass.getName())));
     }
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
-      if (!astcdInterface.getName().equals("AST" + astcdDefinition.getName() + "Node")) {
+      if (!emfService.isASTNodeInterface(astcdInterface, astcdDefinition)) {
         attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdInterface.getName())));
       }
     }
