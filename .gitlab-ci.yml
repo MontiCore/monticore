@@ -45,11 +45,17 @@ integration-test:
     - cd monticore-generator/it
     - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify"
     
-staging:
+trigger-automata:
   stage: test
   trigger:
     project: monticore/languages/automaton
     branch: newSymtab_gen
+
+trigger-cd4a:
+  stage: test
+  trigger:
+    project: monticore/cd4analysis/cd4analysis
+    branch: newSymTab
 #
 #integration-test-emf:
 #  stage: test
