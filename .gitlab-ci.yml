@@ -28,6 +28,7 @@ build_dev:
   only:
     - dev
     - newSymtab
+    - cibuild
   artifacts:
     paths:
       - "*/target"
