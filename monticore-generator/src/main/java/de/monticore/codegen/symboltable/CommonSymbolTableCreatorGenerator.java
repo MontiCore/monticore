@@ -112,10 +112,13 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
       if(!grammarSymbol.isComponent()) {
         stcName = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName()) + "SymbolTableCreatorDelegator", genHelper.getTargetPackage(), handCodedPath);
 
+        if(stcName.endsWith("TOP")) {
+          stcName = stcName.replaceAll("TOP", "");
+        }
+
         className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName()) + "SymbolTableCreatorDelegatorBuilder", genHelper.getTargetPackage(), handCodedPath);
 
         filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
-
 
         genEngine.generate("symboltable.SymbolTableCreatorDelegatorBuilder", filePath, grammarSymbol.getAstNode().get(), className, stcName);
       }

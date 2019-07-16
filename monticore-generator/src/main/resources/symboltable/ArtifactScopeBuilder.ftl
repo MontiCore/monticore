@@ -12,6 +12,7 @@ ${defineHookPoint("JavaCopyright")}
 package ${genHelper.getTargetPackage()};
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import de.monticore.symboltable.ImportStatement;
@@ -20,7 +21,7 @@ public class ${className}{
 
     private String packageName;
 
-    private List<ImportStatement> imports;
+private List<ImportStatement> imports = new ArrayList<>();
 
     private I${scopeName} enclosingScope;
 
