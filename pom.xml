@@ -567,7 +567,11 @@
           </reportSet>
         </reportSets>
       </plugin>
-      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${surefire-report.plugin}</version>
+      </plugin>
     </plugins>
   </reporting>
 
@@ -803,17 +807,51 @@
           <version>3.0.1</version>
         </plugin>
   
-        
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>test-reports</id>
+              <phase>test</phase>
+              <configuration>
+                <tasks>
+                  <junitreport todir="target/surefire-reports">
+                    <fileset dir="target/surefire-reports">
+                      <include name="**/*.xml"/>
+                    </fileset>
+                    <report format="noframes" todir="target/surefire-reports"/>
+                  </junitreport>
+                </tasks>
+              </configuration>
+              <goals>
+                <goal>run</goal>
+              </goals>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>ant</groupId>
+              <artifactId>ant-junit</artifactId>
+              <version>1.6.2</version>
+            </dependency>
+          </dependencies>
+        </plugin>
 
 
       </plugins>
     </pluginManagement>
     
     <plugins>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
         <version>${surefire-report.plugin}</version>
+        <configuration>
+          <aggregate>true</aggregate>
+          <!--also set this to link to generated source reports-->
+          <linkXRef>true</linkXRef>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
