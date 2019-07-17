@@ -88,7 +88,7 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, symbolTableService);
     ASTEmfDecorator astEmfDecorator = new ASTEmfDecorator(glex, astService, visitorService, nodeFactoryService,
-        astSymbolDecorator, astScopeDecorator, methodDecorator, symbolTableService);
+        astSymbolDecorator, astScopeDecorator, methodDecorator, symbolTableService, emfService);
     ASTReferenceDecorator astReferencedSymbolDecorator = new ASTReferenceDecorator(glex, symbolTableService);
     ASTFullEmfDecorator fullEmfDecorator = new ASTFullEmfDecorator(dataEmfDecorator, astEmfDecorator, astReferencedSymbolDecorator);
 

@@ -42,12 +42,10 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
-    ASTCDDefinition definition = compilationUnit.deepClone().getCDDefinition();
+    ASTCDDefinition definition = emfService.prepareCD(compilationUnit.getCDDefinition());
     String definitionName = definition.getName();
     String packageImplName = definitionName + PACKAGE_IMPL_SUFFIX;
     String packageName = definitionName + PACKAGE_SUFFIX;
-
-    List<ASTCDClass> classList = definition.getCDClassList();
 
     List<ASTCDAttribute> eAttributes = getEClassAttributes(definition);
     eAttributes.addAll(getEDataTypeAttributes(definition));
@@ -56,6 +54,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
     for (ASTCDAttribute eClassAttribute : eAttributes) {
       eClassMethods.addAll(accessorDecorator.decorate(eClassAttribute));
     }
+
 
     ASTCDAttribute constantsEEnumAttribute = createConstantsEEnumAttribute(definitionName);
     // e.g. public EEnum getConstantsAutomata(){ return constantsAutomata;}
@@ -78,7 +77,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
         .addCDMethod(createGetNodeFactoryMethod(definitionName))
         .addCDMethod(createGetPackageMethod(definitionName))
         .addCDMethod(createASTESuperPackagesMethod())
-        .addAllCDMethods(createGetEAttributeMethods(classList))
+        .addAllCDMethods(createGetEAttributeMethods(definition.getCDClassList()))
         .addCDMethod(createCreatePackageContentsMethod(definitionName, definition))
         .addCDMethod(createInitializePackageContentsMethod(compilationUnit.getCDDefinition()))
         .build();
@@ -91,9 +90,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
       attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdClass.getName())));
     }
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
-      if (!emfService.isASTNodeInterface(astcdInterface, astcdDefinition)) {
         attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdInterface.getName())));
-      }
     }
     return attributeList;
   }
@@ -167,14 +164,14 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdClassList) {
       for (int i = 0; i < astcdClass.getCDAttributeList().size(); i++) {
-        ASTCDAttribute astcdAttribute = astcdClass.getCDAttribute(i);
-        ASTSimpleReferenceType returnType = emfService.getEmfAttributeType(astcdAttribute);
-        String methodName = String.format(GET, astcdClass.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
-        ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName);
+          ASTCDAttribute astcdAttribute = astcdClass.getCDAttribute(i);
+          ASTSimpleReferenceType returnType = emfService.getEmfAttributeType(astcdAttribute);
+          String methodName = String.format(GET, astcdClass.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
+          ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName);
 
-        replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + TypesPrinter.printType(returnType) + ")" +
-            StringTransformations.uncapitalize(astcdClass.getName()) + ".getEStructuralFeatures().get(" + i + ");"));
-        methodList.add(method);
+          replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + TypesPrinter.printType(returnType) + ")" +
+              StringTransformations.uncapitalize(astcdClass.getName()) + ".getEStructuralFeatures().get(" + i + ");"));
+          methodList.add(method);
       }
     }
     return methodList;

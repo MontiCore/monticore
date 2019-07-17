@@ -42,7 +42,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     SymbolTableService symbolTableService = new SymbolTableService(ast);
     ASTEmfDecorator decorator = new ASTEmfDecorator(this.glex, new ASTService(ast), new VisitorService(ast), new NodeFactoryService(ast),
         new ASTSymbolDecorator(glex, symbolTableService), new ASTScopeDecorator(glex, symbolTableService), new MethodDecorator(glex),
-        new SymbolTableService(ast));
+        new SymbolTableService(ast), new EmfService(ast));
     ASTCDClass clazz = getClassBy("ASTAutomaton", ast);
     this.emfClass = decorator.decorate(clazz);
   }

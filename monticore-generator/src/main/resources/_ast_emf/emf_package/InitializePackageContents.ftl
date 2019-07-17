@@ -68,6 +68,7 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
 
 <#list definition.getCDClassList() as cdClass>
     <#list cdClass.getCDAttributeList() as attribute>
+        <#if !service.isInherited(attribute)>
         <#assign get = service.determineGetEmfMethod(attribute, definition)>
         <#assign isList = service.determineListInteger(attribute.getType())>
         <#if genHelper.isSimpleAstNode(attribute) || genHelper.isListAstNode(attribute) ||genHelper.isOptionalAstNode(attribute)>
@@ -76,6 +77,7 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
         <#else>
             initEAttribute(get${cdClass.getName()}_${attribute.getName()?cap_first}(), ${get}(), "${attribute.getName()?cap_first}", null,
             0, ${isList}, ${cdClass.getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, <#if isList == "1">!</#if>IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        </#if>
         </#if>
     </#list>
 </#list>

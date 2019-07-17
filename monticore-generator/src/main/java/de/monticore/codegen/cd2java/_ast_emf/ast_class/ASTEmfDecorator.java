@@ -5,6 +5,7 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
+import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.CDModifier;
@@ -19,11 +20,14 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 
 public class ASTEmfDecorator extends ASTDecorator {
+
+  protected final EmfService emfService;
 
   public ASTEmfDecorator(final GlobalExtensionManagement glex,
                          final ASTService astService,
@@ -32,9 +36,11 @@ public class ASTEmfDecorator extends ASTDecorator {
                          final ASTSymbolDecorator symbolDecorator,
                          final ASTScopeDecorator scopeDecorator,
                          final MethodDecorator methodDecorator,
-                         final SymbolTableService symbolTableService) {
+                         final SymbolTableService symbolTableService,
+                         final EmfService emfService) {
     super(glex, astService, visitorService, nodeFactoryService, symbolDecorator,
         scopeDecorator, methodDecorator, symbolTableService);
+    this.emfService = emfService;
   }
 
   @Override
@@ -60,20 +66,27 @@ public class ASTEmfDecorator extends ASTDecorator {
   }
 
   public List<ASTCDMethod> createEMethods(ASTCDClass astcdClass) {
-    List<ASTCDAttribute> astcdAttributes = astcdClass.deepClone().getCDAttributeList();
+    // with inherited attributes
+    List<ASTCDAttribute> copiedAttibuteList = astcdClass.deepClone().getCDAttributeList();
+    // only inherited attributes
+    List<ASTCDAttribute> inheritedAttributes = astcdClass.deepClone().getCDAttributeList()
+        .stream()
+        .filter(emfService::isInherited)
+        .collect(Collectors.toList());
+
     String packageName = astService.getCDName() + PACKAGE_SUFFIX;
     String className = astcdClass.getName();
     List<ASTCDMethod> methodList = new ArrayList<>();
-    methodList.add(createEGetMethod(astcdAttributes, packageName, className));
-    methodList.add(createESetMethod(astcdAttributes, packageName, className));
-    methodList.add(createEUnsetMethod(astcdAttributes, packageName, className));
-    methodList.add(createEIsSetMethod(astcdAttributes, packageName, className));
+    methodList.add(createEGetMethod(copiedAttibuteList, packageName, className));
+    methodList.add(createESetMethod(copiedAttibuteList, packageName, className));
+    methodList.add(createEUnsetMethod(copiedAttibuteList, packageName, className));
+    methodList.add(createEIsSetMethod(copiedAttibuteList, packageName, className));
     methodList.add(createEBaseStructuralFeatureIDMethod());
     methodList.add(createEDerivedStructuralFeatureIDMethod());
     methodList.add(creatEStaticClassMethod(packageName, className));
 
     if (astcdClass.getCDMethodList().stream().noneMatch(x -> x.getName().equals("toString"))) {
-      methodList.add(createEToStringMethod(astcdAttributes));
+      methodList.add(createEToStringMethod(copiedAttibuteList));
     }
     return methodList;
   }

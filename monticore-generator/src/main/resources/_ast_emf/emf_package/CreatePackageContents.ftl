@@ -18,9 +18,7 @@ constants${grammarName} = createEEnum(Constants${grammarName});
 </#list>
 
 <#list definition.getCDInterfaceList() as astInterface>
-     <#if !service.isASTNodeInterface(astInterface, definition)>
     ${astInterface.getName()?uncap_first} = createEClass(${astInterface.getName()});
-    </#if>
 </#list>
 
 <#list definition.getCDClassList()  as astClass>
@@ -35,7 +33,6 @@ constants${grammarName} = createEEnum(Constants${grammarName});
 </#list>
 
 <#list definition.getCDInterfaceList()  as astInterface>
-    <#if !service.isASTNodeInterface(astInterface, definition)>
     <#list astInterface.getCDAttributeList() as attribute>
       <#if genHelper.isAstNode(attribute) || genHelper.isOptionalAstNode(attribute)
       || genHelper.isListAstNode(attribute)>
@@ -44,7 +41,6 @@ constants${grammarName} = createEEnum(Constants${grammarName});
         createEAttribute(${astInterface.getName()?uncap_first}, ${astInterface.getName()}_${attribute.getName()?cap_first});
       </#if>
     </#list>
-    </#if>
 </#list>
 
 <#list service.getEDataTypes(definition) as dataType>
