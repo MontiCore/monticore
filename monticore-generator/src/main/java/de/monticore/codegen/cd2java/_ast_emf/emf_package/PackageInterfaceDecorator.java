@@ -68,7 +68,6 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
   }
 
 
-
   protected ASTCDAttribute createENameAttribute(String definitionName) {
     // e.g. String eNAME = "Automata";
     ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, String.class, E_NAME);
@@ -118,10 +117,10 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     }
 
     for (int j = 0; j < astcdDefinition.getCDInterfaceList().size(); j++) {
-        ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getCDTypeFacade().createIntType(),
-            astcdDefinition.getCDInterfaceList().get(j).getName());
-        this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (j + i + 1)));
-        attributeList.add(attribute);
+      ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getCDTypeFacade().createIntType(),
+          astcdDefinition.getCDInterfaceList().get(j).getName());
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (j + i + 1)));
+      attributeList.add(attribute);
     }
     return attributeList;
   }
@@ -141,11 +140,11 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     }
 
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
-        for (int j = 0; j < astcdInterface.getCDAttributeList().size(); j++) {
-          ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getCDTypeFacade().createIntType(),
-              astcdInterface.getName() + "_" + StringTransformations.capitalize(astcdInterface.getCDAttribute(j).getName()));
-          this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (j)));
-          attributeList.add(attribute);
+      for (int j = 0; j < astcdInterface.getCDAttributeList().size(); j++) {
+        ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getCDTypeFacade().createIntType(),
+            astcdInterface.getName() + "_" + StringTransformations.capitalize(astcdInterface.getCDAttribute(j).getName()));
+        this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (j)));
+        attributeList.add(attribute);
       }
     }
     return attributeList;
@@ -191,8 +190,10 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     }
 
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+      if (!emfService.isASTNodeInterface(astcdInterface, astcdDefinition)) {
         String methodName = String.format(GET, astcdInterface.getName());
         methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eClassType, methodName));
+      }
     }
     return methodList;
   }

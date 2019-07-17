@@ -61,7 +61,7 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethodSize() {
     assertFalse(packageClass.getCDMethodList().isEmpty());
-    assertEquals(24, packageClass.getCDMethodList().size());
+    assertEquals(25, packageClass.getCDMethodList().size());
   }
 
   @Test
@@ -239,6 +239,14 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("getASTAutomaton_Transitions", packageClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EReference", method.getReturnType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGetInterfaceAttributeMethod() {
+    ASTCDMethod method = getMethodBy("getASTBodyExt_Varname", packageClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EAttribute", method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 

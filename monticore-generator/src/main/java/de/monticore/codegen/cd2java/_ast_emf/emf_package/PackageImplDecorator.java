@@ -76,7 +76,7 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
         .addCDMethod(createGetNodeFactoryMethod(definitionName))
         .addCDMethod(createGetPackageMethod(definitionName))
         .addCDMethod(createASTESuperPackagesMethod())
-        .addAllCDMethods(createGetEAttributeMethods(definition.getCDClassList()))
+        .addAllCDMethods(createGetEAttributeMethods(definition))
         .addCDMethod(createCreatePackageContentsMethod(definitionName, definition))
         .addCDMethod(createInitializePackageContentsMethod(compilationUnit.getCDDefinition()))
         .build();
@@ -159,21 +159,30 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
     return method;
   }
 
-  protected List<ASTCDMethod> createGetEAttributeMethods(List<ASTCDClass> astcdClassList) {
+  protected List<ASTCDMethod> createGetEAttributeMethods(ASTCDDefinition astcdDefinition) {
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (ASTCDClass astcdClass : astcdClassList) {
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       for (int i = 0; i < astcdClass.getCDAttributeList().size(); i++) {
-          ASTCDAttribute astcdAttribute = astcdClass.getCDAttribute(i);
-          ASTSimpleReferenceType returnType = emfService.getEmfAttributeType(astcdAttribute);
-          String methodName = String.format(GET, astcdClass.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
-          ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName);
+        methodList.add(createGetEAttributeMethod(astcdClass.getCDAttribute(i), i, astcdClass.getName()));
+      }
+    }
 
-          replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + TypesPrinter.printType(returnType) + ")" +
-              StringTransformations.uncapitalize(astcdClass.getName()) + ".getEStructuralFeatures().get(" + i + ");"));
-          methodList.add(method);
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+      for (int i = 0; i < astcdInterface.getCDAttributeList().size(); i++) {
+        methodList.add(createGetEAttributeMethod(astcdInterface.getCDAttribute(i), i, astcdInterface.getName()));
       }
     }
     return methodList;
+  }
+
+  protected ASTCDMethod createGetEAttributeMethod(ASTCDAttribute astcdAttribute, int index, String astcdClassName){
+    ASTSimpleReferenceType returnType = emfService.getEmfAttributeType(astcdAttribute);
+    String methodName = String.format(GET, astcdClassName + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName);
+
+    replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + TypesPrinter.printType(returnType) + ")" +
+        StringTransformations.uncapitalize(astcdClassName) + ".getEStructuralFeatures().get(" + index + ");"));
+    return method;
   }
 
   protected ASTCDMethod createCreatePackageContentsMethod(String definitionName, ASTCDDefinition astcdDefinition) {

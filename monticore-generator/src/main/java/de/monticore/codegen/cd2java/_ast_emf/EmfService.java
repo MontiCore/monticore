@@ -198,7 +198,6 @@ public class EmfService extends AbstractService {
     return copiedAstClass;
   }
 
-
   public ASTCDInterface removeInheritedAttributes(ASTCDInterface astCDInterface) {
     ASTCDInterface copiedInterface = astCDInterface.deepClone();
     //remove inherited attributes
