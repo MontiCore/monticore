@@ -163,11 +163,11 @@ public class EmfService extends AbstractService {
   public ASTCDDefinition prepareCD(ASTCDDefinition astcdDefinition) {
     ASTCDDefinition copiedDefinition = astcdDefinition.deepClone();
     //remove inherited attributes
-    List<ASTCDClass> preparedClasses = astcdDefinition.getCDClassList()
+    List<ASTCDClass> preparedClasses = copiedDefinition.getCDClassList()
         .stream()
         .map(this::removeInheritedAttributes)
         .collect(Collectors.toList());
-    astcdDefinition.setCDClassList(preparedClasses);
+    copiedDefinition.setCDClassList(preparedClasses);
 
     //remove ast node Interface e.g. ASTAutomataNode
     List<ASTCDInterface> astcdInterfaces = copiedDefinition.getCDInterfaceList()
@@ -181,7 +181,7 @@ public class EmfService extends AbstractService {
         .stream()
         .map(this::removeInheritedAttributes)
         .collect(Collectors.toList());
-    astcdDefinition.setCDInterfaceList(astcdInterfaces);
+    copiedDefinition.setCDInterfaceList(astcdInterfaces);
 
     return copiedDefinition;
   }
@@ -194,8 +194,7 @@ public class EmfService extends AbstractService {
         .stream()
         .filter(x -> !isInherited(x))
         .collect(Collectors.toList());
-    astCDClass.setCDAttributeList(astcdAttributes);
-
+    copiedAstClass.setCDAttributeList(astcdAttributes);
     return copiedAstClass;
   }
 
@@ -207,7 +206,7 @@ public class EmfService extends AbstractService {
         .stream()
         .filter(x -> !isInherited(x))
         .collect(Collectors.toList());
-    astCDInterface.setCDAttributeList(astcdAttributes);
+    copiedInterface.setCDAttributeList(astcdAttributes);
     return copiedInterface;
   }
 

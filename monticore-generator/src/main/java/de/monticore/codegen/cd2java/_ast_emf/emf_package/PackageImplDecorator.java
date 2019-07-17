@@ -55,7 +55,6 @@ public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit
       eClassMethods.addAll(accessorDecorator.decorate(eClassAttribute));
     }
 
-
     ASTCDAttribute constantsEEnumAttribute = createConstantsEEnumAttribute(definitionName);
     // e.g. public EEnum getConstantsAutomata(){ return constantsAutomata;}
     List<ASTCDMethod> constantsEEnumMethod = accessorDecorator.decorate(constantsEEnumAttribute);

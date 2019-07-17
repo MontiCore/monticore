@@ -39,5 +39,7 @@ classdiagram Automata {
       <<inherited="Automata">>protected String to;
     }
 
-    public interface ASTBodyExt;
+    public interface ASTBodyExt{
+      protected String varname;
+    }
 }

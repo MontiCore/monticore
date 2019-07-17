@@ -243,6 +243,13 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testNoInheritedAttributeMethodsMethod() {
+    assertTrue(packageClass.getCDMethodList()
+        .stream()
+        .noneMatch(m->m.getName().equals("getASTAutName_Input")));
+  }
+
+  @Test
   public void testCreatePackageContentsMethod() {
     ASTCDMethod method = getMethodBy("createPackageContents", packageClass);
     assertDeepEquals(PUBLIC, method.getModifier());

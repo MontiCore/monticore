@@ -29,9 +29,9 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "_ast_emf", "Automata");
 
-    astcdDefinition= ast.getCDDefinition();
+    astcdDefinition = ast.getCDDefinition();
 
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -41,7 +41,7 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassName() {
-    assertEquals("AutomatonPackage", packageInterface.getName());
+    assertEquals("AutomataPackage", packageInterface.getName());
   }
 
   @Test
@@ -53,13 +53,13 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(17, packageInterface.getCDAttributeList().size());
+    assertEquals(27, packageInterface.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodSize() {
     assertFalse(packageInterface.getCDMethodList().isEmpty());
-    assertEquals(14, packageInterface.getCDMethodList().size());
+    assertEquals(20, packageInterface.getCDMethodList().size());
   }
 
   @Test
@@ -91,12 +91,12 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("eINSTANCE", packageInterface);
     assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
-    assertDeepEquals("AutomatonPackage", attribute.getType());
+    assertDeepEquals("AutomataPackage", attribute.getType());
   }
 
   @Test
   public void testConstantsAttribute() {
-    ASTCDAttribute attribute = getAttributeBy("ConstantsAutomaton", packageInterface);
+    ASTCDAttribute attribute = getAttributeBy("ConstantsAutomata", packageInterface);
     assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getType());
@@ -121,6 +121,31 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTTransitionAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTTransition", packageInterface);
+    assertTrue(attribute.isPresentModifier());
+    assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
+    assertInt(attribute.getType());
+  }
+
+  @Test
+  public void testASTBodyExtAttribute() {
+    //ASTBodyExt is interface but has to be generated as well
+    ASTCDAttribute attribute = getAttributeBy("ASTBodyExt", packageInterface);
+    assertTrue(attribute.isPresentModifier());
+    assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
+    assertInt(attribute.getType());
+  }
+
+  @Test
+  public void testASTTransitionWithActionAttribute() {
+    ASTCDAttribute attribute = getAttributeBy("ASTTransitionWithAction", packageInterface);
+    assertTrue(attribute.isPresentModifier());
+    assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
+    assertInt(attribute.getType());
+  }
+
+  @Test
+  public void testASTAutNameAttribute() {
+    ASTCDAttribute attribute = getAttributeBy("ASTAutName", packageInterface);
     assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getType());
@@ -199,67 +224,114 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetAutomatonFactoryMethod(){
-    ASTCDMethod method = getMethodBy("getAutomatonFactory", packageInterface);
-    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT,method.getModifier());
-    assertDeepEquals("AutomatonNodeFactory",method.getReturnType() );
+  public void testInheritedAttributeExists() {
+    ASTCDAttribute attribute = getAttributeBy("ASTAutName_Input", packageInterface);
+    assertTrue(attribute.isPresentModifier());
+    assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
+    assertInt(attribute.getType());
+  }
+
+  @Test
+  public void testGetAutomatonFactoryMethod() {
+    ASTCDMethod method = getMethodBy("getAutomataFactory", packageInterface);
+    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
+    assertDeepEquals("AutomataNodeFactory", method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
-  public void testGetConstantsAutomatonMethod(){
-    ASTCDMethod method = getMethodBy("getConstantsAutomaton", packageInterface);
-    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT,method.getModifier());
-    assertDeepEquals("org.eclipse.emf.ecore.EEnum",method.getReturnType() );
+  public void testGetConstantsAutomatonMethod() {
+    ASTCDMethod method = getMethodBy("getConstantsAutomata", packageInterface);
+    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EEnum", method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
-  public void testGetASTAutomatonMethod(){
+  public void testGetASTAutomatonMethod() {
     ASTCDMethod method = getMethodBy("getASTAutomaton", packageInterface);
-    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT,method.getModifier());
-    assertDeepEquals("org.eclipse.emf.ecore.EClass",method.getReturnType() );
+    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
-  public void testGetASTStateMethod(){
+  public void testGetASTStateMethod() {
     ASTCDMethod method = getMethodBy("getASTState", packageInterface);
-    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT,method.getModifier());
-    assertDeepEquals("org.eclipse.emf.ecore.EClass",method.getReturnType() );
+    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
-  public void testGetASTTransitionMethod(){
+  public void testGetASTTransitionMethod() {
     ASTCDMethod method = getMethodBy("getASTTransition", packageInterface);
-    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT,method.getModifier());
-    assertDeepEquals("org.eclipse.emf.ecore.EClass",method.getReturnType() );
+    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
-  public void testGetASTAutomaton_NameMethod(){
+  public void testGetASTTransitionWithActionMethod() {
+    ASTCDMethod method = getMethodBy("getASTTransitionWithAction", packageInterface);
+    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getReturnType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGetASTAutNameMethod() {
+    ASTCDMethod method = getMethodBy("getASTAutName", packageInterface);
+    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getReturnType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGetASTBodyExtMethod() {
+    ASTCDMethod method = getMethodBy("getASTBodyExt", packageInterface);
+    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getReturnType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGetASTAutomaton_NameMethod() {
     ASTCDMethod method = getMethodBy("getASTAutomaton_Name", packageInterface);
-    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT,method.getModifier());
-    assertDeepEquals("org.eclipse.emf.ecore.EAttribute",method.getReturnType() );
+    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EAttribute", method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
-  public void testGetASTAutomaton_StatesMethod(){
+  public void testGetASTAutomaton_StatesMethod() {
     ASTCDMethod method = getMethodBy("getASTAutomaton_States", packageInterface);
-    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT,method.getModifier());
-    assertDeepEquals("org.eclipse.emf.ecore.EReference",method.getReturnType() );
+    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EReference", method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
-  public void testGetASTAutomaton_TransitionsMethod(){
+  public void testGetASTAutomaton_TransitionsMethod() {
     ASTCDMethod method = getMethodBy("getASTAutomaton_Transitions", packageInterface);
-    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT,method.getModifier());
-    assertDeepEquals("org.eclipse.emf.ecore.EReference",method.getReturnType() );
+    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EReference", method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGetInterfaceAttributeMethod() {
+    ASTCDMethod method = getMethodBy("getASTBodyExt_Varname", packageInterface);
+    assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
+    assertDeepEquals("org.eclipse.emf.ecore.EAttribute", method.getReturnType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testNoInheritedAttributeMethod() {
+    assertTrue(packageInterface.getCDMethodList()
+        .stream()
+        .noneMatch(m -> m.getName().equals("getASTAutName_Input")));
   }
 
   @Test

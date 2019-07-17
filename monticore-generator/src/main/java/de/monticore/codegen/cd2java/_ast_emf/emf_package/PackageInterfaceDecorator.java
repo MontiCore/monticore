@@ -11,6 +11,7 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.FACTORY_SUFFIX;
@@ -32,7 +33,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
 
   @Override
   public ASTCDInterface decorate(ASTCDCompilationUnit compilationUnit) {
-    ASTCDDefinition astcdDefinition = compilationUnit.getCDDefinition();
+    ASTCDDefinition astcdDefinition = compilationUnit.deepClone().getCDDefinition();
 
     String definitionName = astcdDefinition.getName();
     String interfaceName = definitionName + PACKAGE_SUFFIX;
@@ -61,7 +62,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
         .addCDMethod(createEEnumMethod(definitionName))
         .addAllCDMethods(eDataTypeMethods)
         .addAllCDMethods(createEClassMethods(astcdDefinition))
-        .addAllCDMethods(createEAttributeMethods(classList))
+        .addAllCDMethods(createEAttributeMethods(astcdDefinition))
         .build();
 
   }
@@ -196,13 +197,33 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     return methodList;
   }
 
-  protected List<ASTCDMethod> createEAttributeMethods(List<ASTCDClass> astcdClassList) {
-    // e.g. EAttribute getASTAutomaton_Name() ; EReference getASTAutomaton_States() ;
+  protected List<ASTCDMethod> createEAttributeMethods(ASTCDDefinition astcdDefinition) {
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (ASTCDClass astcdClass : astcdClassList) {
+
+    //remove attributes that are inherited
+    List<ASTCDClass> noInheritedAttributesClasses = astcdDefinition.getCDClassList()
+        .stream()
+        .map(emfService::removeInheritedAttributes)
+        .collect(Collectors.toList());
+    // e.g. EAttribute getASTAutomaton_Name() ; EReference getASTAutomaton_States() ;
+    for (ASTCDClass astcdClass : noInheritedAttributesClasses) {
       for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
         ASTSimpleReferenceType returnType = emfService.getEmfAttributeType(astcdAttribute);
         String methodName = String.format(GET, astcdClass.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
+        methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName));
+      }
+    }
+
+    //remove attributes that are inherited
+    List<ASTCDInterface> noInheritedAttributesInterfaces = astcdDefinition.getCDInterfaceList()
+        .stream()
+        .map(emfService::removeInheritedAttributes)
+        .collect(Collectors.toList());
+    // e.g. EAttribute getASTAutomaton_Name() ; EReference getASTAutomaton_States() ;
+    for (ASTCDInterface astcdInterface : noInheritedAttributesInterfaces) {
+      for (ASTCDAttribute astcdAttribute : astcdInterface.getCDAttributeList()) {
+        ASTSimpleReferenceType returnType = emfService.getEmfAttributeType(astcdAttribute);
+        String methodName = String.format(GET, astcdInterface.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
         methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName));
       }
     }
