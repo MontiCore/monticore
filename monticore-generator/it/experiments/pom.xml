@@ -12,6 +12,10 @@
   </parent>
 
   <artifactId>experiments</artifactId>
+  
+  <properties>
+    <latest.grammars.version>5.0.6.latestGrammar-SNAPSHOT</latest.grammars.version>
+  </properties>
 
   <packaging>pom</packaging>
 
@@ -62,5 +66,15 @@
     </pluginManagement>
 
   </build>
+  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>monticore-grammar</artifactId>
+        <version>${latest.grammars.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>
