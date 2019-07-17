@@ -91,7 +91,10 @@
     <javadoc.plugin>2.10.3</javadoc.plugin>
     <project-info.plugin>2.8</project-info.plugin>
     <surefire-report.plugin>2.18.1</surefire-report.plugin>
-
+    <jacoco.plugin>0.8.2</jacoco.plugin>
+    <jacoco.reportPath>${project.basedir}/../target/jacoco.exec</jacoco.reportPath>
+  
+  
     <!-- .. Misc .......................................................... -->
 
     <grammars.classifier>grammars</grammars.classifier>
@@ -798,9 +801,40 @@
           <artifactId>maven-bundle-plugin</artifactId>
           <version>3.0.1</version>
         </plugin>
+  
+        
+
 
       </plugins>
     </pluginManagement>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.plugin}</version>
+        <executions>
+          <execution>
+            <id>pre-unit-test</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>post-unit-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <excludes>
+            <exclude>**/_*/*.class</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
 
     <extensions>
       <extension>
