@@ -22,10 +22,10 @@ build_dev:
   stage: build
   script:
     - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -Dpass=$password -Duser=$username -DdeployAtEnd=true"
+    - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, "instructions covered"; print 100*covered/instructions, "% covered" }' */target/site/jacoco/jacoco.csv
     - cd monticore-gradle
     - "./gradlew build"
     - "./gradlew publish -PmavenPassword=$password -PmavenUser=$username"
-    - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, "instructions covered"; print 100*covered/instructions, "% covered" }' */target/site/jacoco/jacoco.csv
   coverage: '/\d+.\d+ \% covered/'
   only:
     - dev

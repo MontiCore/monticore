@@ -90,7 +90,7 @@
 
     <javadoc.plugin>2.10.3</javadoc.plugin>
     <project-info.plugin>2.8</project-info.plugin>
-    <surefire-report.plugin>2.18.1</surefire-report.plugin>
+    <surefire-report.plugin>3.0.0-M3</surefire-report.plugin>
     <jacoco.plugin>0.8.2</jacoco.plugin>
     <jacoco.reportPath>${project.basedir}/../target/jacoco.exec</jacoco.reportPath>
   
@@ -567,6 +567,7 @@
           </reportSet>
         </reportSets>
       </plugin>
+      
     </plugins>
   </reporting>
 
@@ -809,6 +810,11 @@
     </pluginManagement>
     
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${surefire-report.plugin}</version>
+      </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
