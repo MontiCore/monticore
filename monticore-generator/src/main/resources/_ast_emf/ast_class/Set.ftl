@@ -1,6 +1,13 @@
 ${tc.signature("packageName", "className", "attribute")}
-
 <#assign attributeName = attribute.getName()>
+<#assign genHelper = glex.getGlobalVar("astHelper")>
+
+<#if genHelper.isListAstNode(attribute)>
+  if (${attributeName}.isEmpty() && this.${attributeName}.isEmpty()) {
+    return;
+  }
+</#if>
+
 ${attribute.printType()} old${attributeName?cap_first} = this.${attributeName};
 this.${attributeName} = ${attributeName};
 
