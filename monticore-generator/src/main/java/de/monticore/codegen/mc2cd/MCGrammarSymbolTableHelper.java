@@ -299,7 +299,7 @@ public class MCGrammarSymbolTableHelper {
         || !constName.isPresent()) {
       return constName;
     }
-    return Optional.of(currentSymbol.get().getName() + "." + getConstantGroupName(astNode).get());
+    return Optional.of(getConstantGroupName(astNode).get());
   }
   
   public static Set<ProdSymbol> getAllSuperProds(ProdSymbol prod) {
@@ -472,8 +472,8 @@ public class MCGrammarSymbolTableHelper {
     }
     prodComponent.getSubProdComponents();
     Collection<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-    for (RuleComponentSymbol component : prodComponent.getSubProdComponents()) {
-      set.add(component.getName());
+    for (String component : prodComponent.getSubProdComponents()) {
+      set.add(component);
     }
     return set.size() > 1;
   }

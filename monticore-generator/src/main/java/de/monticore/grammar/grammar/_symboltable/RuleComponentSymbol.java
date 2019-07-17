@@ -2,6 +2,8 @@
 
 package de.monticore.grammar.grammar._symboltable;
 
+import com.google.common.collect.Lists;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +27,7 @@ public class RuleComponentSymbol extends RuleComponentSymbolTOP  {
 
   private boolean isLexerNonterminal;
 
-  private List<RuleComponentSymbol> supProds = Collections.EMPTY_LIST;
+  private List<String> supProds = Lists.newArrayList();
 
   /**
    * E.g. usageName:QualifiedName
@@ -171,12 +173,11 @@ public class RuleComponentSymbol extends RuleComponentSymbolTOP  {
   }
 
 
-  public void addSubProdComponent(RuleComponentSymbol prodComp) {
-    errorIfNull(prodComp);
-    supProds.add(prodComp);
+  public void addSubProdComponent(String constantName) {
+    supProds.add(constantName);
   }
 
-  public Collection<RuleComponentSymbol> getSubProdComponents() {
+  public Collection<String> getSubProdComponents() {
     return supProds;
   }
 

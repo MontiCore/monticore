@@ -7,9 +7,7 @@ import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.FullGenericTypesPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.*;
@@ -24,7 +22,6 @@ import static de.monticore.grammar.Multiplicity.*;
 import static de.monticore.grammar.grammar._ast.GrammarMill.symbolDefinitionBuilder;
 import static de.se_rwth.commons.Names.getQualifiedName;
 import static de.se_rwth.commons.StringTransformations.uncapitalize;
-import static de.se_rwth.commons.logging.Log.debug;
 import static de.se_rwth.commons.logging.Log.error;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
@@ -127,6 +124,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   @Override
   public void initialize_EnumProd(ProdSymbol prodSymbol, ASTEnumProd ast) {
     prodSymbol.setEnum(true);
+    // TODO Behandlung der Constants fehlt noch
   }
 
   @Override
@@ -267,31 +265,11 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
         prodComponent.setList(true);
         setLinkBetweenSymbolAndNode(prodComponent, astNode);
       } else {
-        final Optional<RuleComponentSymbol> sym = addRuleComponent(attrName.orElse(""),
-                astNode, astNode.getUsageNameOpt().orElse(null));
-        if (sym.isPresent()) {
-          sym.get().setConstantGroup(true);
-          addToScopeAndLinkWithNode(sym.get(), astNode);
-        }
+        addToScopeAndLinkWithNode(prodComponent, astNode);
       }
-    }
-  }
-
-
-  @Override
-  public void visit(ASTConstant astNode) {
-    // TODO: Kann diese Methode weg?
-    final ProdSymbol currentSymbol = getProdSymbol().orElse(null);
-    if (currentSymbol != null) {
-      final String symbolName = astNode.isPresentHumanName()
-              ? astNode.getHumanName()
-              : astNode.getName();
-      RuleComponentSymbol prodComponent = new RuleComponentSymbol(symbolName);
-      prodComponent.setConstant(true);
-      prodComponent.setUsageName(astNode.getHumanNameOpt().orElse(null));
-
-      prodComponent = currentSymbol.addProdComponent(prodComponent);
-      // setLinkBetweenSymbolAndNode(prodComponent, astNode);
+      for (ASTConstant c:astNode.getConstantList()) {
+        prodComponent.addSubProdComponent(c.getHumanNameOpt().orElse(c.getName()));
+      }
     }
   }
 
@@ -504,10 +482,10 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     if (getCurrentScope().isPresent()) {
       IGrammarScope scope = getCurrentScope().get();
       if (scope.getSpanningSymbol().isPresent() && scope.getSpanningSymbol().get() instanceof ProdSymbol) {
-        return Optional.of((ProdSymbol) scope.getSpanningSymbol().get());
+        return of((ProdSymbol) scope.getSpanningSymbol().get());
       }
     }
-    return Optional.empty();
+    return empty();
   }
 
 }
