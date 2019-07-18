@@ -60,9 +60,13 @@ public final class EmfConstants {
 
   public static final String E_FACTORY_IMPL = "org.eclipse.emf.ecore.impl.EFactoryImpl";
 
-  public static final String ENUMERATOR ="org.eclipse.emf.common.util.Enumerator";
+  public static final String ENUMERATOR = "org.eclipse.emf.common.util.Enumerator";
 
-  public static final String TO_STRING_CALL ="return toString();";
+  public static final String TO_STRING_CALL = "return toString();";
+
+  public static final String E_OBJECT_CONTAINMENT_E_LIST = "org.eclipse.emf.ecore.util.EObjectContainmentEList";
+
+  public static final String E_DATA_TYPE_E_LIST = "org.eclipse.emf.ecore.util.EDataTypeEList";
 
   private EmfConstants() {
   }
