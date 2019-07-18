@@ -11,6 +11,7 @@ import de.monticore.cd.CD4AnalysisHelper;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.*;
 import de.monticore.cd.prettyprint.CDPrettyPrinter;
+import de.monticore.cd.prettyprint.CDPrettyPrinterDelegator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
@@ -142,7 +143,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
 
   static Grammar_WithConceptsPrettyPrinter mcPrettyPrinter;
 
-  static CDPrettyPrinter cdPrettyPrinter;
+  static CDPrettyPrinterDelegator cdPrettyPrinter;
 
   protected static Collection<String> additionalAttributes = Lists.newArrayList(SYMBOL, SCOPE);
 
@@ -723,11 +724,10 @@ return null;
   }
 
   public boolean isAttributeOfTypeEnum(ASTCDAttribute attr) {
-    if (!attr.isPresentSymbol() || !(attr.getSymbol() instanceof CDFieldSymbol)) {
+    if (!attr.isPresentSymbol2() || !(attr.getSymbol2() instanceof CDFieldSymbol)) {
       return false;
     }
-    CDTypeSymbolReference attrType = ((CDFieldSymbol) attr.getSymbol()
-    ).getType();
+    CDTypeSymbolReference attrType =  attr.getSymbol2().getType();
 
     List<CDTypeSymbolReference> typeArgs = attrType.getActualTypeArguments();
     if (typeArgs.size() > 1) {
@@ -801,7 +801,7 @@ return null;
       Log.error("0xA5010 Could not load symbol information for " + type.getName() + ".");
       return false;
     }
-    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol();
+    CDTypeSymbol sym = type.getSymbol2();
     return getAllVisibleFieldsOfSuperTypes(sym).stream().map(a -> a.getName())
         .collect(Collectors.toList()).contains(cdAttribute.getName());
   }
@@ -943,11 +943,11 @@ return null;
    * @return
    */
   public Collection<String> getSuperTypes(ASTCDInterface interf) {
-    if (!interf.isPresentSymbol()) {
+    if (!interf.isPresentSymbol2()) {
       Log.error("0xA5011 Could not load symbol information for " + interf.getName() + ".");
     }
 
-    CDTypeSymbol sym = (CDTypeSymbol) interf.getSymbol();
+    CDTypeSymbol sym = interf.getSymbol2();
     List<CDTypeSymbol> allSuperTypes = getSuperTypes(sym);
     List<String> theSuperTypes = allSuperTypes.stream().map(t -> t.getFullName())
         .collect(Collectors.toList());
@@ -966,11 +966,11 @@ return null;
    * @return
    */
   public List<String> getSuperTypes(ASTCDClass clazz) {
-    if (!clazz.isPresentSymbol()) {
+    if (!clazz.isPresentSymbol2()) {
       Log.error("0xA5007 Could not load symbol information for " + clazz.getName() + ".");
     }
 
-    CDTypeSymbol sym = (CDTypeSymbol) clazz.getSymbol();
+    CDTypeSymbol sym = (CDTypeSymbol) clazz.getSymbol2();
     List<CDTypeSymbol> allSuperTypes = getSuperTypes(sym);
     List<String> theSuperTypes = allSuperTypes.stream().map(t -> t.getFullName())
         .collect(Collectors.toList());
@@ -993,7 +993,7 @@ return null;
       Log.error("0xA4079 Could not load symbol information for " + type.getName() + ".");
     }
 
-    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol();
+    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol2();
     return getAllSuperInterfaces(sym);
   }
 
@@ -1040,26 +1040,22 @@ return null;
     return mcPrettyPrinter;
   }
 
-  public static CDPrettyPrinter getCDPrettyPrinter() {
+  public static CDPrettyPrinterDelegator getCDPrettyPrinter() {
     if (cdPrettyPrinter == null) {
-      cdPrettyPrinter = new CDPrettyPrinter(new IndentPrinter());
+      cdPrettyPrinter = new CDPrettyPrinterDelegator(new IndentPrinter());
     }
     return cdPrettyPrinter;
   }
 
   public boolean isListAstNode(ASTCDAttribute attribute) {
-    if (!attribute.isPresentSymbol()) {
+    if (!attribute.isPresentSymbol2()) {
       return false;
     }
-    if (!(attribute.getSymbol() instanceof CDFieldSymbol)) {
-      Log.error(String.format("0xA5012 Symbol of ASTCDAttribute %s is not CDFieldSymbol.",
-          attribute.getName()));
-    }
-    return isListAstNode(((CDFieldSymbol) attribute.getSymbol()).getType());
+    return isListAstNode( attribute.getSymbol2().getType());
   }
 
   public boolean isListAstNode(CDTypeSymbolReference type) {
-    if (!type.getName().equals(JAVA_LIST)) {
+    if (!isListType(type.getName()))  {
       return false;
     }
     List<CDTypeSymbolReference> typeArgs = type.getActualTypeArguments();
@@ -1152,22 +1148,22 @@ return null;
     if (!attr.isPresentSymbol()) {
       return false;
     }
-    if (!(attr.getSymbol() instanceof CDFieldSymbol)) {
+    if (!(attr.getSymbol2() instanceof CDFieldSymbol)) {
       Log.error(String.format("0xA5013 Symbol of ASTCDAttribute %s is not CDFieldSymbol.",
           attr.getName()));
     }
-    return isAstNode(((CDFieldSymbol) attr.getSymbol()).getType());
+    return isAstNode(((CDFieldSymbol) attr.getSymbol2()).getType());
   }
 
   public boolean isOptionalAstNode(ASTCDAttribute attr) {
     if (!attr.isPresentSymbol()) {
       return false;
     }
-    if (!(attr.getSymbol() instanceof CDFieldSymbol)) {
+    if (!(attr.getSymbol2() instanceof CDFieldSymbol)) {
       Log.error(String.format("0xA5014 Symbol of ASTCDAttribute %s is not CDFieldSymbol.",
           attr.getName()));
     }
-    return isOptionalAstNode(((CDFieldSymbol) attr.getSymbol()).getType());
+    return isOptionalAstNode(((CDFieldSymbol) attr.getSymbol2()).getType());
   }
 
   public String getTypeNameWithoutOptional(ASTCDAttribute attribute) {

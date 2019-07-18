@@ -153,9 +153,9 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
     //get super symbols
     for (CDDefinitionSymbol superSymbol : nodeFactoryService.getSuperCDs()) {
       Optional<ASTCDDefinition> astNode = superSymbol.getAstNode();
-      if (astNode.isPresent() && astNode.get() instanceof ASTCDDefinition) {
+      if (astNode.isPresent()) {
         //get super cddefinition
-        ASTCDDefinition superDefinition = (ASTCDDefinition) astNode.get();
+        ASTCDDefinition superDefinition = astNode.get();
 
         TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor(superSymbol.getEnclosingScope());
         CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build().accept(visitor);

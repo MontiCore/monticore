@@ -62,7 +62,7 @@ public class ReferenceTypeTranslation implements
           .map(lexType -> (ASTMCType) MCBasicTypesNodeFactory.createASTMCPrimitiveType(lexType))
           .orElse(createType("String"));
     } else if (ruleSymbol.isExternal()) {
-      return createType("AST" + typeName + "Ext");
+      return createType(getPackageName(ruleSymbol) + "AST" + typeName + "Ext");
     } else {
       String qualifiedASTNodeName = getPackageName(ruleSymbol)
           + "AST" + ruleSymbol.getName();
