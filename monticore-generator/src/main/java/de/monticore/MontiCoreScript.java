@@ -585,8 +585,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   private void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
                                                CD4AnalysisGlobalScope cdScope,
                                                Grammar_WithConceptsGlobalScope mcScope) {
-    if (astGrammar.isPresentSymbol()) {
-      MCGrammarSymbol sym = (MCGrammarSymbol) astGrammar.getSymbol();
+    if (astGrammar.isPresentSymbol2()) {
+      MCGrammarSymbol sym = (MCGrammarSymbol) astGrammar.getSymbol2();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
         Optional<CDDefinitionSymbol> importedCd = cdScope.resolveCDDefinitionDown(mcgsym.getFullName());
         if (!importedCd.isPresent() && mcgsym.getAstNode().isPresent()) {
