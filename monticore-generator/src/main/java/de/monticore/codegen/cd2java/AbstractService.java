@@ -127,7 +127,7 @@ public class AbstractService<T extends AbstractService> {
     return attributeName.substring(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED.length());
   }
 
-  public String getNativeAttributeType(ASTType astType) {
+  public String getNativeTypeName(ASTType astType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
     // if not generic returns simple Type like 'int'
     if (astType instanceof ASTSimpleReferenceType && ((ASTSimpleReferenceType) astType).isPresentTypeArguments() &&
@@ -137,14 +137,14 @@ public class AbstractService<T extends AbstractService> {
     return TypesPrinter.printType(astType);
   }
 
-  public String getSimpleNativeAttributeType(ASTType astType) {
+  public String getSimpleNativeType(ASTType astType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
     // if not generic returns simple Type like 'int'
-    String nativeAttributeType = getNativeAttributeType(astType);
-    return getSimpleNativeAttributeType(nativeAttributeType);
+    String nativeAttributeType = getNativeTypeName(astType);
+    return getSimpleNativeType(nativeAttributeType);
   }
 
-  public String getSimpleNativeAttributeType(String nativeAttributeType) {
+  public String getSimpleNativeType(String nativeAttributeType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
     // if not generic returns simple Type like 'int'
     return nativeAttributeType.contains(".") ? nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".") + 1) :
@@ -231,7 +231,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public String getGrammarFromClass(ASTCDDefinition astcdDefinition, ASTCDAttribute astcdAttribute) {
-    String simpleNativeAttributeType = getSimpleNativeAttributeType(astcdAttribute.getType());
+    String simpleNativeAttributeType = getSimpleNativeType(astcdAttribute.getType());
     if (astcdDefinition.getCDClassList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
       return "this";
     } else {

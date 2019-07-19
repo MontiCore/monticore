@@ -128,6 +128,7 @@ public class ASTEmfDecorator extends ASTDecorator {
   }
 
   public ASTCDMethod createEDerivedStructuralFeatureIDMethod() {
+    //TODO generate mapping for inherited attributes
     ASTCDParameter featureParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createIntType(), FEATURE_ID);
     ASTCDParameter baseClassParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createComplexReferenceType("Class<?>"), "baseClass");
 
@@ -138,6 +139,7 @@ public class ASTEmfDecorator extends ASTDecorator {
   }
 
   public ASTCDMethod createEBaseStructuralFeatureIDMethod() {
+    //TODO generate mapping for inherited attributes
     ASTCDParameter featureParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createIntType(), FEATURE_ID);
     ASTCDParameter baseClassParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createComplexReferenceType("Class<?>"), "baseClass");
 

@@ -158,7 +158,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
 
     for (String eDataType : eDataTypes) {
       ASTCDAttribute eDataTypeAttribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getCDTypeFacade().createIntType(),
-          emfService.getSimpleNativeAttributeType(eDataType));
+          emfService.getSimpleNativeType(eDataType));
       this.replaceTemplate(VALUE, eDataTypeAttribute, new StringHookPoint("= " + startIndex));
       astcdAttributes.add(eDataTypeAttribute);
       startIndex++;

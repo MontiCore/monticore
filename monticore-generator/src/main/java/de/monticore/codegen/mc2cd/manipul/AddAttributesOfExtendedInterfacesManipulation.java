@@ -2,13 +2,7 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.UnaryOperator;
-
 import com.google.common.collect.Maps;
-
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
@@ -17,6 +11,11 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.utils.ASTNodes;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.UnaryOperator;
 
 public class AddAttributesOfExtendedInterfacesManipulation implements
     UnaryOperator<ASTCDCompilationUnit> {
@@ -51,8 +50,14 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
       if (interf instanceof ASTSimpleReferenceType) {
         List<String> names = ((ASTSimpleReferenceType) interf).getNameList();
         String interfaceName = (names.isEmpty())? "" : names.get(names.size()-1);
-        if (cDInterfaces.get(interfaceName) != null) {
-          attributes.addAll(cDInterfaces.get(interfaceName).getCDAttributeList());
+        if (cDInterfaces.containsKey(interfaceName)) {
+          for (ASTCDAttribute interfaceAttribute :cDInterfaces.get(interfaceName).getCDAttributeList()){
+            if(cdClass.getCDAttributeList()
+                .stream()
+                .noneMatch(x->x.getName().equals(interfaceAttribute.getName()))){
+              attributes.add(interfaceAttribute);
+            }
+          }
         }
       }
     }

@@ -82,8 +82,24 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
     </#list>
 </#list>
 
+<#list definition.getCDInterfaceList() as cdInterface>
+    <#list cdInterface.getCDAttributeList() as attribute>
+        <#if !service.isInherited(attribute)>
+            <#assign get = service.determineGetEmfMethod(attribute, definition)>
+            <#assign isList = service.determineListInteger(attribute.getType())>
+            <#if genHelper.isSimpleAstNode(attribute) || genHelper.isListAstNode(attribute) ||genHelper.isOptionalAstNode(attribute)>
+              initEReference(get${cdInterface.getName()}_${attribute.getName()?cap_first}(), ${get}(), null, "${attribute.getName()?cap_first}", null,
+              0, ${isList}, ${cdInterface.getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, <#if isList == "1">!</#if>IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+            <#else>
+              initEAttribute(get${cdInterface.getName()}_${attribute.getName()?cap_first}(), ${get}(), "${attribute.getName()?cap_first}", null,
+              0, ${isList}, ${cdInterface.getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, <#if isList == "1">!</#if>IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+            </#if>
+        </#if>
+    </#list>
+</#list>
+
 <#list service.getEDataTypes(definition) as dataType>
-  initEDataType(${service.getSimpleNativeAttributeType(dataType)?uncap_first}, ${dataType}.class, "${service.getSimpleNativeAttributeType(dataType)}", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+  initEDataType(${service.getSimpleNativeType(dataType)?uncap_first}, ${dataType}.class, "${service.getSimpleNativeType(dataType)}", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 </#list>
 
 // Create resource

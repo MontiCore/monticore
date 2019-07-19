@@ -69,7 +69,7 @@ public class EmfService extends AbstractService {
   }
 
   public boolean isExternal(ASTCDAttribute attribute) {
-    return getNativeAttributeType(attribute.getType()).endsWith("Ext");
+    return getNativeTypeName(attribute.getType()).endsWith("Ext");
   }
 
   //for InitializePackageContents template
@@ -105,12 +105,12 @@ public class EmfService extends AbstractService {
     if (isExternal(attribute)) {
       return "theASTENodePackage.getENode";
     } else if (isPrimitive(attribute.getType()) || isString(attribute.getType())) {
-      return "ecorePackage.getE" + StringTransformations.capitalize(getSimpleNativeAttributeType(attribute.getType()));
+      return "ecorePackage.getE" + StringTransformations.capitalize(getSimpleNativeType(attribute.getType()));
     } else if (decorationHelper.isSimpleAstNode(attribute) || decorationHelper.isListAstNode(attribute) || decorationHelper.isOptionalAstNode(attribute)) {
       String grammarName = StringTransformations.uncapitalize(getGrammarFromClass(astcdDefinition, attribute));
-      return grammarName + ".get" + StringTransformations.capitalize(getSimpleNativeAttributeType(attribute.getType()));
+      return grammarName + ".get" + StringTransformations.capitalize(getSimpleNativeType(attribute.getType()));
     } else {
-      return "this.get" + StringTransformations.capitalize(getSimpleNativeAttributeType(attribute.getType()));
+      return "this.get" + StringTransformations.capitalize(getSimpleNativeType(attribute.getType()));
     }
   }
 
@@ -119,7 +119,7 @@ public class EmfService extends AbstractService {
   }
 
   public boolean isString(ASTType type) {
-    return getSimpleNativeAttributeType(type).equals("String");
+    return getSimpleNativeType(type).equals("String");
   }
 
   public boolean isLiteralsEnum(ASTCDEnum astcdEnum, String definitionName) {
@@ -142,7 +142,7 @@ public class EmfService extends AbstractService {
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
         if (isEDataType(astcdAttribute)) {
-          eDataTypeMap.add(getNativeAttributeType(astcdAttribute.getType()));
+          eDataTypeMap.add(getNativeTypeName(astcdAttribute.getType()));
         }
       }
     }
@@ -214,9 +214,9 @@ public class EmfService extends AbstractService {
     // simpleSuperType: e.g. ASTExpression
     // fitting package: own grammar -> this, from other grammar -> e.g.
     Map<String, String> superTypes = new HashMap<>();
-    superTypes.put(getSimpleNativeAttributeType(astcdClass.printSuperClass()), getPackage(astcdClass.printSuperClass()));
+    superTypes.put(getSimpleNativeType(astcdClass.printSuperClass()), getPackage(astcdClass.printSuperClass()));
     for (ASTReferenceType astReferenceType : astcdClass.getInterfaceList()) {
-      superTypes.put(getSimpleNativeAttributeType(astReferenceType), getPackage(TypesPrinter.printType(astReferenceType)));
+      superTypes.put(getSimpleNativeType(astReferenceType), getPackage(TypesPrinter.printType(astReferenceType)));
     }
     return superTypes;
   }
