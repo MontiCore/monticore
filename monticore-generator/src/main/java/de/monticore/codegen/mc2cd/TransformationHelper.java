@@ -204,6 +204,17 @@ public final class TransformationHelper {
     return optType.get();
   }
 
+  public static ASTMCReturnType createReturnType(String typeName) {
+    CD4AnalysisParser parser = new CD4AnalysisParser();
+    Optional<ASTMCReturnType> optType = null;
+    try {
+      optType = parser.parse_StringMCReturnType(typeName);
+    } catch (IOException e) {
+      Log.error("0xA4036 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
+    }
+    return optType.get();
+  }
+
   public static ASTMCObjectType createObjectType(String typeName) {
     CD4AnalysisParser parser = new CD4AnalysisParser();
     Optional<ASTMCObjectType> optType = null;
