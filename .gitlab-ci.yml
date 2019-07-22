@@ -1,7 +1,7 @@
 image: maven:3.5.4-jdk-8-alpine
 
-include:
-  - template: Code-Quality.gitlab-ci.yml
+#include:
+#  - template: Code-Quality.gitlab-ci.yml
 
 variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
@@ -32,21 +32,19 @@ build_dev:
   coverage: '/\d+.\d+ \% covered/'
   only:
     - dev
-    - newSymtab
     - cibuild
   artifacts:
     paths:
       - "*/target"
     expire_in: 1 week
     
-#build_branches:
-#  stage: build
-#  script:
-#    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install"
-#  except:
-#    - dev
-#    - master
-#    - ci/gitlab-runner
+build_branches:
+  stage: build
+  script:
+    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install"
+  except:
+    - dev
+    - master
 
 integration-test:
   stage: test
