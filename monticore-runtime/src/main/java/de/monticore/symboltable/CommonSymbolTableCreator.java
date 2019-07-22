@@ -2,18 +2,18 @@
 
 package de.monticore.symboltable;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.references.SymbolReference;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Optional;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.references.SymbolReference;
-import de.se_rwth.commons.logging.Log;
 
 import static de.se_rwth.commons.logging.Log.errorIfNull;
 import static de.se_rwth.commons.logging.Log.warn;
 import static java.util.Optional.*;
 
+@Deprecated
 public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
 
   private final ResolvingConfiguration resolvingConfig;

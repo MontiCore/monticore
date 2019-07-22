@@ -2,21 +2,19 @@
 
 package mc.emf.modularity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EReference;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.google.common.collect.Lists;
-
 import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ASTCounter;
 import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonNodeFactory;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EReference;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ExternalTest extends GeneratorIntegrationsTest {
   
@@ -31,7 +29,7 @@ public class ExternalTest extends GeneratorIntegrationsTest {
   public void testMetaObject() {
     EReference transition = FlatAutomatonPackage.eINSTANCE.getASTAutomaton_Transitions();
     
-    EClass expectedExternalType = FlatAutomatonPackage.eINSTANCE.getTransition();
+    EClass expectedExternalType = FlatAutomatonPackage.eINSTANCE.getASTTransition();
     
     assertTrue(transition.isMany());
     assertEquals(expectedExternalType, transition.getEReferenceType());

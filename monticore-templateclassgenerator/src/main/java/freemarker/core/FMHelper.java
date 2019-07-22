@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package freemarker.core;
 
+import freemarker.template.Template;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import freemarker.template.Template;
 
 
 /**
@@ -19,7 +19,7 @@ public class FMHelper {
    * Finds all MethodCalls within dollarsigns in the passed template. Returns a
    * Map with the methodCallName as key an a list of list of arguments. Each
    * list contains arguments of a single methodCall.
-   * 
+   *
    * @param t
    * @return methodCallName -> [param11, param12,...][param21, param22, ...]
    */
@@ -28,8 +28,8 @@ public class FMHelper {
     TemplateElement e = t.getRootTreeNode();
     if (e instanceof MixedContent) {
       MixedContent mc = (MixedContent) e;
-      for (int i = 0; i < mc.getRegulatedChildCount(); i++) {
-        TemplateElement child = mc.getRegulatedChild(i);
+      for (int i = 0; i < mc.getChildCount(); i++) {
+        TemplateElement child = mc.getChild(i);
         if (child instanceof DollarVariable) {
           DollarVariable d = (DollarVariable) child;
           Object o = d.getParameterValue(0);
@@ -53,7 +53,7 @@ public class FMHelper {
   /**
    * Converts a list of parameter Strings to a List of Type Parameter
    * e.g. "Integer s" -> new Parameter(type, name)
-   * 
+   *
    * @param params
    * @return
    */
@@ -73,7 +73,7 @@ public class FMHelper {
   
   /**
    * Returns a name of MethodCall m as String
-   * 
+   *
    * @param m
    * @return
    */
@@ -83,7 +83,7 @@ public class FMHelper {
   
   /**
    * Returns the list of method arguments as String list.
-   * 
+   *
    * @param m
    * @return
    */

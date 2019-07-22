@@ -1,6 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "symbolName", "symbolRule", "imports")}
+${signature("className", "symbolName", "symbolRule", "imports", "prodSymbol")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
+<#assign ruleName = prodSymbol.getName()>
+<#assign scopeName = genHelper.getGrammarSymbol().getName() + "Scope">
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
 
@@ -8,51 +10,107 @@ ${defineHookPoint("JavaCopyright")}
 package ${genHelper.getTargetPackage()};
 
 import java.util.Optional;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 <#list imports as imp>
-import ${imp}._ast.*;
+  import ${imp}._ast.*;
 </#list>
 
-  /**
-    * Builder for {@link ${symbolName}}.
-    */
+/**
+* Builder for {@link ${symbolName}Symbol}.
+*/
 
 public class ${className} {
 
+
+  protected I${scopeName} enclosingScope;
+
+  protected String fullName;
+
   protected String name;
-  
+
+  protected AST${ruleName} node;
+
+  protected String packageName;
+
+  protected AccessModifier accessModifier = ALL_INCLUSION;
+
   <#if symbolRule.isPresent()>
-  <#list symbolRule.get().getAdditionalAttributeList() as attr>
-  <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
+    <#list symbolRule.get().getAdditionalAttributeList() as attr>
+      <#assign attrType=genHelper.deriveAdditionalAttributeTypeWithMult(attr)>
   protected ${attrType} ${attr.getName()};
-  </#list>
+    </#list>
   </#if>
 
   protected ${className}() {}
 
   public ${symbolName}Symbol build() {
-    ${symbolName}Symbol ${symbolName?uncap_first}Symbol = new ${symbolName}Symbol(name);
-    <#if symbolRule.isPresent()>
+  ${symbolName}Symbol symbol = new ${symbolName}Symbol(name);
+  <#if symbolRule.isPresent()>
     <#list symbolRule.get().getAdditionalAttributeList() as attr>
-    <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
-    ${symbolName?uncap_first}Symbol.set${attr.getName()?cap_first}(${attr.getName()});
+      symbol.set${attr.getName()?cap_first}(${attr.getName()});
     </#list>
-    </#if>
-    return ${symbolName?uncap_first}Symbol;
+  </#if>
+    symbol.setEnclosingScope(this.enclosingScope);
+    symbol.setFullName(this.fullName);
+    return symbol;
   }
 
-  public ${className} name(String name) {
+  public I${scopeName} getEnclosingScope(){
+    return this.enclosingScope;
+  }
+
+  public ${className} setEnclosingScope(I${scopeName} newEnclosingScope){
+    this.enclosingScope = newEnclosingScope;
+    return this;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public ${className} setFullName(String fullName) {
+    this.fullName = fullName;
+    return this;
+  }
+
+  public String getFullName() {
+    return fullName;
+  }
+
+  public ${className} setName(String name) {
     this.name = name;
     return this;
   }
-  
-  <#if symbolRule.isPresent()>
+
+  <#assign names = glex.getGlobalVar("nameHelper")>
+  <#assign astNode = names.getQualifiedName(genHelper.getAstPackage(), "AST" + ruleName)>
+  public Optional<${astNode}> getAstNode() {
+    return Optional.ofNullable(node);
+  }
+
+  public ${className} setAstNode(${astNode} node) {
+    this.node = node;
+    return this;
+  }
+
+  public ${className} setAccessModifier(AccessModifier accessModifier) {
+    this.accessModifier = accessModifier;
+    return this;
+  }
+
+  public AccessModifier getAccessModifier() {
+    return this.accessModifier;
+  }
+
+<#if symbolRule.isPresent()>
   <#list symbolRule.get().getAdditionalAttributeList() as attr>
-  <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
-  public ${className} ${attr.getName()}(${attrType} ${attr.getName()}) {
+    <#assign attrType=genHelper.deriveAdditionalAttributeTypeWithMult(attr)>
+  public ${className} set${attr.getName()?cap_first}(${attrType} ${attr.getName()}) {
     this.${attr.getName()} = ${attr.getName()};
     return this;
   }
-  
+
   </#list>
-  </#if>
+</#if>
 }

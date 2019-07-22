@@ -8,6 +8,7 @@ import java.util.Deque;
 import de.monticore.ast.ASTNode;
 import de.monticore.visitor.CommonVisitor;
 
+@Deprecated
 public class EnclosingScopeOfNodesInitializer implements CommonVisitor {
 
   private final Deque<Scope> scopeStack = new ArrayDeque<>();

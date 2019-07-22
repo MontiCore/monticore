@@ -1,26 +1,20 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
-import java.io.IOException;
-import java.util.Optional;
-
-import org.antlr.v4.runtime.RecognitionException;
+package automaton;/* (c) Monticore license: https://github.com/MontiCore/monticore */
 
 import automaton._ast.ASTAutomaton;
 import automaton._cocos.AutomatonCoCoChecker;
 import automaton._parser.AutomatonParser;
-import automaton._symboltable.AutomatonLanguage;
-import automaton._symboltable.AutomatonSymbolTableCreator;
-import automaton._symboltable.StateSymbol;
+import automaton._symboltable.*;
 import automaton.cocos.AtLeastOneInitialAndFinalState;
 import automaton.cocos.StateNameStartsWithCapitalLetter;
 import automaton.cocos.TransitionSourceExists;
 import automaton.prettyprint.PrettyPrinter;
 import automaton.visitors.CountStates;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
+import org.antlr.v4.runtime.RecognitionException;
+
+import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Main class for the Automaton DSL tool.
@@ -30,7 +24,7 @@ public class AutomatonTool {
   
   /**
    * Use the single argument for specifying the single input automaton file.
-   * 
+   *
    * @param args
    */
   public static void main(String[] args) {
@@ -55,11 +49,10 @@ public class AutomatonTool {
     Log.info(model + " parsed successfully!", AutomatonTool.class.getName());
     
     // setup the symbol table
-    Scope modelTopScope = createSymbolTable(lang, ast);
+    AutomatonArtifactScope modelTopScope = createSymbolTable(lang, ast);
     
     // can be used for resolving names in the model
-    Optional<Symbol> aSymbol =
-    	    modelTopScope.resolve("Ping", StateSymbol.KIND);
+    Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
     if (aSymbol.isPresent()) {
       Log.info("Resolved state symbol \"Ping\"; FQN = "
       	       + aSymbol.get().toString(),
@@ -80,7 +73,7 @@ public class AutomatonTool {
     // check the CoCos
     checker.checkAll(ast);
     
-    // Now we know the model is well-formed 
+    // Now we know the model is well-formed
     
     // analyze the model with a visitor
     CountStates cs = new CountStates();
@@ -96,7 +89,7 @@ public class AutomatonTool {
   
   /**
    * Parse the model contained in the specified file.
-   * 
+   *
    * @param model - file to parse
    * @return
    */
@@ -119,20 +112,18 @@ public class AutomatonTool {
   
   /**
    * Create the symbol table from the parsed AST.
-   * 
+   *
    * @param lang
    * @param ast
    * @return
    */
-  public static Scope createSymbolTable(AutomatonLanguage lang, ASTAutomaton ast) {
-    ResolvingConfiguration rc = new ResolvingConfiguration();
-    rc.addDefaultFilters(lang.getResolvingFilters());
+  public static AutomatonArtifactScope createSymbolTable(AutomatonLanguage lang, ASTAutomaton ast) {
     
-    GlobalScope globalScope = new GlobalScope(new ModelPath(), lang, rc);
+    AutomatonGlobalScope globalScope = new AutomatonGlobalScope(new ModelPath(), lang);
     
-    Optional<AutomatonSymbolTableCreator> symbolTable = lang.getSymbolTableCreator(
-        rc, globalScope);
-    return symbolTable.get().createFromAST(ast);
+    AutomatonSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(
+         globalScope);
+    return symbolTable.createFromAST(ast);
   }
   
 }

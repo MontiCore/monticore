@@ -5,17 +5,13 @@ package de.monticore.symboltable;
 import com.google.common.collect.ImmutableSet;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Maintains a mapping from names and kinds of symbols to {@link ResolvingFilter}s.
  *
  */
+@Deprecated
 public final class ResolvingConfiguration {
   
   private final Map<String, Set<ResolvingFilter<? extends Symbol>>> specificFilters = new HashMap<>();
@@ -39,7 +35,7 @@ public final class ResolvingConfiguration {
   
   /**
    * Retrieves the resolving filters associated with the scope having the specified name.
-   * 
+   *
    * @param scopeName the name of the scope who's filters should be retrieved
    * @return the set of filters added for the scope
    */

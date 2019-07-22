@@ -6,17 +6,15 @@ public class SymbolTableGeneratorBuilder {
 
   private ModelingLanguageGenerator modelingLanguageGenerator;
   private ModelLoaderGenerator modelLoaderGenerator;
-  private ModelNameCalculatorGenerator modelNameCalculatorGenerator;
-  private ResolvingFilterGenerator resolvingFilterGenerator;
 
   private SymbolGenerator symbolGenerator;
-  private SymbolKindGenerator symbolKindGenerator;
-  private ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator;
   private ScopeGenerator scopeGenerator;
 
   private SymbolReferenceGenerator symbolReferenceGenerator;
   private SymbolTableCreatorGenerator symbolTableCreatorGenerator;
   private SymbolInterfaceGenerator symbolInterfaceGenerator;
+  private SymbolTablePrinterGenerator symbolTablePrinterGenerator;
+
 
   public SymbolTableGenerator build() {
     if (modelingLanguageGenerator == null) {
@@ -25,20 +23,8 @@ public class SymbolTableGeneratorBuilder {
     if (modelLoaderGenerator == null) {
       modelLoaderGenerator = new CommonModelLoaderGenerator();
     }
-    if (modelNameCalculatorGenerator == null) {
-      modelNameCalculatorGenerator = new CommonModelNameCalculatorGenerator();
-    }
-    if (resolvingFilterGenerator == null) {
-      resolvingFilterGenerator = new CommonResolvingFilterGenerator();
-    }
     if (symbolGenerator == null) {
       symbolGenerator = new CommonSymbolGenerator();
-    }
-    if (symbolKindGenerator == null) {
-      symbolKindGenerator = new CommonSymbolKindGenerator();
-    }
-    if (scopeSpanningSymbolGenerator == null) {
-      scopeSpanningSymbolGenerator = new CommonScopeSpanningSymbolGenerator();
     }
     if (scopeGenerator == null) {
       scopeGenerator = new CommonScopeGenerator();
@@ -52,12 +38,14 @@ public class SymbolTableGeneratorBuilder {
     if (symbolInterfaceGenerator == null) {
       symbolInterfaceGenerator = new CommonSymbolInterfaceGenerator();
     }
+    if (symbolTablePrinterGenerator == null) {
+      symbolTablePrinterGenerator = new CommonSymbolTablePrinterGenerator();
+    }
 
     return new SymbolTableGenerator(modelingLanguageGenerator, modelLoaderGenerator,
-            modelNameCalculatorGenerator, resolvingFilterGenerator, symbolGenerator,
-            symbolKindGenerator, scopeSpanningSymbolGenerator, scopeGenerator,
-            symbolReferenceGenerator, symbolTableCreatorGenerator, //symbolTableSerializationGenerator,
-            symbolInterfaceGenerator);
+            symbolGenerator, scopeGenerator,
+            symbolReferenceGenerator, symbolTableCreatorGenerator,
+            symbolInterfaceGenerator, symbolTablePrinterGenerator);
   }
 
 
@@ -71,28 +59,8 @@ public class SymbolTableGeneratorBuilder {
     return this;
   }
 
-  public SymbolTableGeneratorBuilder modelNameCalculatorGenerator(ModelNameCalculatorGenerator modelNameCalculatorGenerator) {
-    this.modelNameCalculatorGenerator = modelNameCalculatorGenerator;
-    return this;
-  }
-
-  public SymbolTableGeneratorBuilder resolvingFilterGenerator(ResolvingFilterGenerator resolvingFilterGenerator) {
-    this.resolvingFilterGenerator = resolvingFilterGenerator;
-    return this;
-  }
-
   public SymbolTableGeneratorBuilder symbolGenerator(SymbolGenerator symbolGenerator) {
     this.symbolGenerator = symbolGenerator;
-    return this;
-  }
-
-  public SymbolTableGeneratorBuilder symbolKindGenerator(SymbolKindGenerator symbolKindGenerator) {
-    this.symbolKindGenerator = symbolKindGenerator;
-    return this;
-  }
-
-  public SymbolTableGeneratorBuilder scopeSpanningSymbolGenerator(ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator) {
-    this.scopeSpanningSymbolGenerator = scopeSpanningSymbolGenerator;
     return this;
   }
 
@@ -103,6 +71,11 @@ public class SymbolTableGeneratorBuilder {
 
   public SymbolTableGeneratorBuilder symbolTableCreatorGenerator(SymbolTableCreatorGenerator symbolTableCreatorGenerator) {
     this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
+    return this;
+  }
+  
+  public SymbolTableGeneratorBuilder symbolTablePrinterGenerator(SymbolTablePrinterGenerator symbolTablePrinterGenerator) {
+    this.symbolTablePrinterGenerator = symbolTablePrinterGenerator;
     return this;
   }
 

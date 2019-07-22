@@ -7,6 +7,8 @@ package de.monticore.symboltable.serialization;
 
 /**
  * This class contains constants for Json keys commonly used for the serialization of symbol tables.
+ * These constants avoid inconsistencies between the Json keys used for storing and those expected
+ * while loading an object.
  *
  * @author (last commit) $Author$
  * @version $Revision$, $Date$

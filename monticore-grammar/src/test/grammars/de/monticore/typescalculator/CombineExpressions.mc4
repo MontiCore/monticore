@@ -1,9 +1,0 @@
-/* (c)  https://github.com/MontiCore/monticore */
-
-package de.monticore.typescalculator;
-
-grammar CombineExpressions extends de.monticore.expressions.AssignmentExpressionsWithLiterals, de.monticore.expressions.CommonExpressionsWithLiterals {
-
-    Foo="bar" Expression;
-
-}

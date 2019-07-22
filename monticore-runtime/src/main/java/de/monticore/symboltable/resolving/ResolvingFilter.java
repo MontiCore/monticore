@@ -7,12 +7,12 @@ import de.monticore.symboltable.SymbolKind;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 // TODO PN remove formal type argument, since not needed anymore
+@Deprecated
 public interface ResolvingFilter<S extends Symbol> {
 
   SymbolKind getTargetKind();
@@ -38,8 +38,7 @@ public interface ResolvingFilter<S extends Symbol> {
       return Optional.of(resolved.iterator().next());
     }
     else if (resolved.size() > 1) {
-      throw new ResolvedSeveralEntriesException("0xA4095 Found " + resolved.size() + " symbols: " + resolved,
-          resolved);
+      throw new ResolvedSeveralEntriesException("0xA4095 Found " + resolved.size() + " symbols: " + resolved, resolved);
     }
 
     return Optional.empty();

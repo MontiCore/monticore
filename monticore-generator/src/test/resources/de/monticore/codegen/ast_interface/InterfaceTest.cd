@@ -1,0 +1,21 @@
+package de.monticore.codegen.ast_interface;
+
+import de.monticore.codegen.ast.Lexicals.*;
+
+classdiagram Automaton {
+
+  public class ASTBlub{
+    protected String name;
+  }
+
+  public interface ASTFoo{
+      protected String name;
+      protected de.monticore.codegen.ast_interface.bgrammar._ast.ASTBlub blub;
+  }
+
+  public interface ASTBar;
+
+  public interface ASTBli extends de.monticore.codegen.ast_interface.bgrammar._ast.ASTBar{
+    protected String name;
+  }
+}

@@ -1,0 +1,6 @@
+package de.monticore.codegen.factory;
+
+grammar CGrammar  extends AGrammar{
+
+  C = "c";
+}

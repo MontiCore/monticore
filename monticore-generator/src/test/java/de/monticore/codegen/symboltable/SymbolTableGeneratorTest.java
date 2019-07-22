@@ -2,25 +2,15 @@
 
 package de.monticore.codegen.symboltable;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.google.common.io.Resources;
-
 import de.monticore.MontiCoreScript;
 import de.monticore.codegen.AstDependentGeneratorTest;
 import de.monticore.codegen.parser.ParserGeneratorTest;
-import de.se_rwth.commons.Names;
-import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
-import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.nio.file.Path;
 
 import static com.google.common.io.Resources.asCharSource;
 import static de.se_rwth.commons.Names.getPathFromFilename;
@@ -49,6 +39,7 @@ public class SymbolTableGeneratorTest extends AstDependentGeneratorTest {
     parserTest.testCorrect(grammarPath, false);
     testCorrect(grammarPath, false);
   }
+
 
   @Override
   protected void doGenerate(String model) {

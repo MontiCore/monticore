@@ -2,19 +2,8 @@
 
 package de.monticore.codegen.cd2java.ast;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
 import de.monticore.codegen.GeneratorHelper;
@@ -25,18 +14,30 @@ import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * Test for the MontiCore generator. Generates ast files for the example
  * grammars and performs a compilation task for all generated files.
  * 
  */
+@Ignore
+@Deprecated
 public class AstGeneratorTest extends GeneratorTest {
   
   /**
    * Shows if generated ast code has to be compiled
    */
-  private boolean doCompile = true;
+  private boolean doCompile = false;
   
   @BeforeClass
   public static void setup() {

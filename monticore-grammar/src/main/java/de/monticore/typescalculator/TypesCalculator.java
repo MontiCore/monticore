@@ -1,24 +1,21 @@
 package de.monticore.typescalculator;
 
-import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static de.monticore.typescalculator.TypesCalculatorHelper.isIntegralType;
 import static de.monticore.typescalculator.TypesCalculatorHelper.unbox;
 
 public class TypesCalculator {
 
-  private static CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(null); // was muss hier hin?
+  private static IExpressionAndLiteralsTypeCalculatorVisitor calc;
 
   public static boolean isBoolean(ASTExpression expr){
     return calc.calculateType(expr).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build());
@@ -88,150 +85,6 @@ public class TypesCalculator {
     return calc.calculateType(expr);
   }
 
-  public static boolean isString_StringExpression(String a) throws IOException {
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExpr = p.parse_StringExpression(a);
-    if(optExpr.isPresent()){
-      ASTExpression expr = optExpr.get();
-      return isString(expr);
-    }else{
-      Log.error("given expression not correct");
-    }
-    return false;
-  }
-
-  public static boolean isBoolean_StringExpression(String a) throws IOException {
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExpr = p.parse_StringExpression(a);
-    if(optExpr.isPresent()){
-      ASTExpression expr = optExpr.get();
-      return isBoolean(expr);
-    }else{
-      Log.error("given expression not correct");
-    }
-    return false;
-  }
-
-  public static boolean isInt_StringExpression(String a) throws IOException {
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExpr = p.parse_StringExpression(a);
-    if(optExpr.isPresent()){
-      ASTExpression expr = optExpr.get();
-      return isInt(expr);
-    }else{
-      Log.error("given expression not correct");
-    }
-    return false;
-  }
-
-  public static boolean isDouble_StringExpression(String a) throws IOException {
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExpr = p.parse_StringExpression(a);
-    if(optExpr.isPresent()){
-      ASTExpression expr = optExpr.get();
-      return isDouble(expr);
-    }else{
-      Log.error("given expression not correct");
-    }
-    return false;
-  }
-
-  public static boolean isFloat_StringExpression(String a)throws IOException{
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExp = p.parse_StringExpression(a);
-    if(optExp.isPresent()){
-      ASTExpression expr = optExp.get();
-      return isFloat(expr);
-    }else{
-      Log.error("given expression not correct");
-    }
-    return false;
-  }
-
-  public static boolean isLong_StringExpression(String a) throws IOException {
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExpr = p.parse_StringExpression(a);
-    if(optExpr.isPresent()){
-      ASTExpression expr = optExpr.get();
-      return isLong(expr);
-    }else{
-      Log.error("given expression not correct");
-    }
-    return false;
-  }
-
-  public static boolean isChar_StringExpression(String a) throws IOException {
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExpr = p.parse_StringExpression(a);
-    if(optExpr.isPresent()){
-      ASTExpression expr = optExpr.get();
-      return isChar(expr);
-    }else{
-      Log.error("given expression not correct");
-    }
-    return false;
-  }
-
-  public static boolean isShort_StringExpression(String a) throws IOException {
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExpr = p.parse_StringExpression(a);
-    if(optExpr.isPresent()){
-      ASTExpression expr = optExpr.get();
-      return isShort(expr);
-    }else{
-      Log.error("given expression not correct");
-    }
-    return false;
-  }
-
-  public static boolean isByte_StringExpression(String a) throws IOException {
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExpr = p.parse_StringExpression(a);
-    if(optExpr.isPresent()){
-      ASTExpression expr = optExpr.get();
-      return isByte(expr);
-    }else{
-      Log.error("given expression not correct");
-    }
-    return false;
-  }
-
-  public static boolean isPrimitive_StringExpression(String a) throws IOException {
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExpr = p.parse_StringExpression(a);
-    if(optExpr.isPresent()){
-      ASTExpression expr = optExpr.get();
-      return isBoolean(expr)||isInt(expr)||isLong(expr)||isChar(expr)||isDouble(expr)||isShort(expr)||isByte(expr)||isFloat(expr);
-    }else{
-      Log.error("given expression not correct");
-    }
-    return false;
-  }
-
-  public static String getTypeString_StringExpression(String a)throws IOException{
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExpr = p.parse_StringExpression(a);
-    if(optExpr.isPresent()){
-      ASTExpression expr = optExpr.get();
-      return getTypeString(expr);
-    }else{
-      Log.error("given expression not correct");
-    }
-    return null;
-  }
-
-  public static ASTMCType getType_StringExpression(String a) throws IOException {
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExpr = p.parse_StringExpression(a);
-    if(optExpr.isPresent()){
-      ASTExpression expr = optExpr.get();
-      return getType(expr);
-    }else{
-      Log.error("given expression not correct");
-    }
-    return null;
-  }
-
   public static boolean isAssignableFrom(ASTExpression left, ASTExpression right){
     calc.calculateType(left);
     calc.calculateType(right);
@@ -263,7 +116,9 @@ public class TypesCalculator {
         }
         return false;
       }else {
-        return calc.getTypes().get(left).getSubtypes().contains(calc.getTypes().get(right));
+        if(isSubtypeOf(right,left)||calc.getTypes().get(right).getASTMCType().deepEquals(calc.getTypes().get(left).getASTMCType())){
+          return true;
+        }
       }
     }
     return false;
@@ -272,36 +127,21 @@ public class TypesCalculator {
   public static boolean isSubtypeOf(ASTExpression subType, ASTExpression superType){
     calc.calculateType(subType);
     calc.calculateType(superType);
-    if(calc.getTypes().get(superType).getSubtypes().contains(calc.getTypes().get(subType))) {
+    return isSubtypeOf(calc.getTypes().get(subType),calc.getTypes().get(superType));
+  }
+
+  public static boolean isSubtypeOf(MCTypeSymbol subType, MCTypeSymbol superType){
+    if(!subType.getSupertypes().isEmpty()&&subType.getSupertypes().contains(superType)){
       return true;
     }
-    return false;
-  }
-
-  public static boolean isSubtypeOf_StringExpression(String subType, String superType)throws IOException{
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExpA = p.parse_StringExpression(subType);
-    Optional<ASTExpression> optExpB = p.parse_StringExpression(superType);
-    if(optExpA.isPresent()&&optExpB.isPresent()){
-      ASTExpression exprA = optExpA.get();
-      ASTExpression exprB = optExpB.get();
-      return isSubtypeOf(exprA,exprB);
+    boolean subtype = false;
+    for(int i = 0;i<subType.getSupertypes().size();i++){
+      if(isSubtypeOf(subType.getSupertypes().get(i),superType)){
+        subtype=true;
+        break;
+      }
     }
-    Log.error("given expression not correct.");
-    return false;
-  }
-
-  public static boolean isAssignableFrom_StringExpression(String left, String right) throws IOException{
-    CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> optExpA = p.parse_StringExpression(left);
-    Optional<ASTExpression> optExpB = p.parse_StringExpression(right);
-    if(optExpA.isPresent()&&optExpB.isPresent()){
-      ASTExpression exprA = optExpA.get();
-      ASTExpression exprB = optExpB.get();
-      return isAssignableFrom(exprA,exprB);
-    }
-    Log.error("given expression not correct");
-    return false;
+    return subtype;
   }
 
   public static boolean isBoolean(ASTMCType type){
@@ -338,6 +178,10 @@ public class TypesCalculator {
 
   public static void setScope(ExpressionsBasisScope scope){
     calc.setScope(scope);
+  }
+
+  public static void setExpressionAndLiteralsTypeCalculator(IExpressionAndLiteralsTypeCalculatorVisitor calc) {
+    TypesCalculator.calc = calc;
   }
 
 }

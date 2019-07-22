@@ -1,0 +1,38 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.statechart;
+
+component grammar Statechart extends mc.grammar.lexicals.ItTestLexicals {
+
+  Statechart implements SCStructure= "statechart" Name "{" (state:State | transition:Transition | userCode:Code)* "}" EOF;
+
+
+  EntryAction= "entry" ":" block:BlockStatement;
+
+  ExitAction= "exit" ":" block:BlockStatement;
+
+
+  State implements SCStructure = "state" Name ("<<" (initial:["initial"] | final:["final"])* ">>")?
+    ( ("{ options{}" (entryAction:EntryAction)? (exitAction:ExitAction)? (state:State | transition:Transition)* "}") | ";") ;
+
+  Transition = from:Name "->" to:Name
+    				(":" (event:Name ( "(" (arguments:(Argument || ",")+) ")" )? )?
+  					 ("[" guard: Expression "]")?
+  					 ("/" action: BlockStatement)? ";"
+  				| ";");
+
+  Argument= paramType:Name paramName:Name;
+
+  Code= "code" body: Classbody ;
+
+  interface SCStructure;
+
+  abstract AbstractAnything;
+
+  external BlockStatement;
+
+  external Expression;
+
+  external Classbody;
+
+ }

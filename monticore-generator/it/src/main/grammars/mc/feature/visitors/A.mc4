@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.visitors;
+
+grammar A {
+  interface J;
+
+  P implements J = "p";
+  
+  interface I extends J;
+  
+  X implements I = "x";
+ 
+}

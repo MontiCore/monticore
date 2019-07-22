@@ -2,10 +2,11 @@
 
 package de.monticore;
 
-import java.util.Set;
-
 import de.monticore.symboltable.SymbolKind;
 
+import java.util.Set;
+
+@Deprecated
 public interface ModelNameCalculator {
 
 

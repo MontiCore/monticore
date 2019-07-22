@@ -1,8 +1,5 @@
 package mc.feature.scopes.supautomaton._symboltable;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.modelloader.ModelingLanguageModelLoader;
-
 public class SupAutomatonLanguage extends SupAutomatonLanguageTOP{
 
   public static final String FILE_ENDING = "aut";
@@ -12,7 +9,7 @@ public class SupAutomatonLanguage extends SupAutomatonLanguageTOP{
 
   }
   @Override
-  protected ModelingLanguageModelLoader<? extends ASTNode> provideModelLoader() {
-    return null;
+  protected SupAutomatonModelLoader provideModelLoader() {
+    return new SupAutomatonModelLoader(this);
   }
 }

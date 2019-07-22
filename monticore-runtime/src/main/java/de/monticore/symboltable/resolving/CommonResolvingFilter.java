@@ -6,12 +6,7 @@ import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.Names;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Default implementation for {@link ResolvingFilter}.
@@ -19,6 +14,7 @@ import java.util.Set;
  *
  */
 // TODO PN remove formal type argument, since not needed anymore
+  @Deprecated
 public class CommonResolvingFilter<S extends Symbol> implements ResolvingFilter<S> {
 
   private final SymbolKind targetKind;

@@ -14,14 +14,13 @@ import de.monticore.grammar.grammar._od.Grammar2OD;
 import de.monticore.grammar.grammar_withconcepts._od.Grammar_WithConcepts2OD;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsDelegatorVisitor;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
-import de.monticore.java.javadsl._od.JavaDSL2OD;
-import de.monticore.lexicals.lexicals._od.Lexicals2OD;
-import de.monticore.mccommonliterals._od.MCCommonLiterals2OD;
+import de.monticore.javastatements._od.JavaStatements2OD;
 import de.monticore.mcbasics._od.MCBasics2OD;
+import de.monticore.mccommonliterals._od.MCCommonLiterals2OD;
+import de.monticore.mcliteralsbasis._od.MCLiteralsBasis2OD;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._od.MCBasicTypes2OD;
 import de.monticore.types.mccollectiontypes._od.MCCollectionTypes2OD;
-import de.monticore.types.mcfullgenerictypes._od.MCFullGenericTypes2OD;
 import de.monticore.types.mcsimplegenerictypes._od.MCSimpleGenericTypes2OD;
 
 public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
@@ -38,19 +37,18 @@ public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
     visitor.setGrammar_WithConceptsVisitor(this);
     visitor.setAntlrVisitor(new Antlr2OD(printer, reporting));
     visitor.setGrammarVisitor(new Grammar2OD(printer, reporting));
-    visitor.setJavaDSLVisitor(new JavaDSL2OD(printer, reporting));
+    visitor.setJavaStatementsVisitor(new JavaStatements2OD(printer, reporting));
     visitor.setBitExpressionsVisitor(new BitExpressions2OD(printer, reporting));
     visitor.setJavaClassExpressionsVisitor(new JavaClassExpressions2OD(printer, reporting));
     visitor.setMCBasicsVisitor(new MCBasics2OD(printer, reporting));
     visitor.setCommonExpressionsVisitor(new CommonExpressions2OD(printer, reporting));
     visitor.setAssignmentExpressionsVisitor(new AssignmentExpressions2OD(printer, reporting));
     visitor.setExpressionsBasisVisitor(new ExpressionsBasis2OD(printer, reporting));
-    visitor.setLexicalsVisitor(new Lexicals2OD(printer, reporting));
     visitor.setMCSimpleGenericTypesVisitor(new MCSimpleGenericTypes2OD(printer, reporting));
-    visitor.setMCFullGenericTypesVisitor(new MCFullGenericTypes2OD(printer, reporting));
     visitor.setMCCollectionTypesVisitor(new MCCollectionTypes2OD(printer, reporting));
     visitor.setMCBasicTypesVisitor(new MCBasicTypes2OD(printer, reporting));
     visitor.setMCCommonLiteralsVisitor(new MCCommonLiterals2OD(printer, reporting));
+    visitor.setMCLiteralsBasisVisitor(new MCLiteralsBasis2OD(printer, reporting));
     this.printer = printer;
   }
 

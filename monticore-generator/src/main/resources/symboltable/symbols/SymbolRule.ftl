@@ -4,14 +4,11 @@ ${tc.signature("ruleSymbol")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 
 <#list ruleSymbol.getAdditionalAttributeList() as attr>
-  <#assign attrName="_" + attr.getName()>
-  <#assign attrType=attr.getMCType().getBaseName()>
-  private ${genHelper.getQualifiedASTName(attrType)} ${attrName};
-</#list>
+  <#assign attrName = "_" + attr.getName()>
+  <#assign attrType=genHelper.deriveAdditionalAttributeTypeWithMult(attr)>
 
-<#list ruleSymbol.getAdditionalAttributeList() as attr>
-  <#assign attrName=attr.getName()>
-  <#assign attrType=attr.getMCType().getBaseName()>
+  private ${attrType} ${attrName};
+
   <#if attrType == "boolean" || attrType == "Boolean">
     <#if attr.getName()?starts_with("is")>
       <#assign methodName=attr.getName()>
@@ -22,11 +19,11 @@ ${tc.signature("ruleSymbol")}
     <#assign methodName="get" + attr.getName()?cap_first>
   </#if>
   public ${attrType} ${methodName}() {
-    return this._${attrName};
+    return this.${attrName};
   }
   
-  public void set${attrName?cap_first}(${attrType} ${attrName}) {
-    this._${attrName} = ${attrName};
+  public void set${attr.getName()?cap_first}(${attrType} ${attrName}) {
+    this.${attrName} = ${attrName};
   }
   
 </#list>

@@ -13,6 +13,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
@@ -415,6 +416,12 @@ public class ReportManager implements IReportEventHandler {
   }
 
 
+  @Override
+  public void reportSymbolTableScope(IScope scope) {
+    for (IReportEventHandler handler : this.reportEventHandlers) {
+      handler.reportSymbolTableScope(scope);
+    }
+  }
 
   /**
    * A factory for providing tool specific report managers.

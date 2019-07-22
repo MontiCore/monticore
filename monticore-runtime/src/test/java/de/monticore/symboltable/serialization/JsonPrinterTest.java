@@ -7,6 +7,9 @@ package de.monticore.symboltable.serialization;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -23,6 +26,13 @@ import de.se_rwth.commons.logging.Log;
  * @since TODO: add version number
  */
 public class JsonPrinterTest {
+  
+  @Test
+  public void testEscapeSequences() {
+    JsonPrinter printer = new JsonPrinter();
+    printer.attribute("\"\t\\\n\'");
+    assertEquals("\"\\\"\\t\\\\\\n\\'\"", printer.toString());
+  }
   
   @Test
   public void testEmptyObject() {
@@ -97,13 +107,20 @@ public class JsonPrinterTest {
   
   @Test
   public void testInvalidNestings() {
+    //init Log and mute System.err temporarily
     Log.init();
-     Log.enableFailQuick(false);
+    Log.enableFailQuick(false);
+    PrintStream _err = System.err;
+    System.setErr(new PrintStream(new OutputStream() {
+      @Override
+      public void write(int b) throws IOException {
+      }}));
+    
     JsonPrinter printer = new JsonPrinter();
     printer.beginObject();
     printer.beginObject();
     printer.endObject();
-    printer.toString();
+    printer.getContent();
     assertEquals(1, Log.getFindings().size());
     
     Log.init();
@@ -112,7 +129,7 @@ public class JsonPrinterTest {
     printer.beginObject();
     printer.endObject();
     printer.endObject();
-    printer.toString();
+    printer.getContent();
     assertEquals(1, Log.getFindings().size());
     
     Log.init();
@@ -121,7 +138,7 @@ public class JsonPrinterTest {
     printer.beginAttributeList();
     printer.beginAttributeList();
     printer.endAttributeList();
-    printer.toString();
+    printer.getContent();
     assertEquals(1, Log.getFindings().size());
     
     Log.init();
@@ -130,7 +147,7 @@ public class JsonPrinterTest {
     printer.beginAttributeList();
     printer.endAttributeList();
     printer.endAttributeList();
-    printer.toString();
+    printer.getContent();
     assertEquals(1, Log.getFindings().size());
     
     Log.init();
@@ -141,8 +158,11 @@ public class JsonPrinterTest {
     printer.endAttributeList();
     printer.endAttributeList();
     printer.endObject();
-    printer.toString();
+    printer.getContent();
     assertEquals(1, Log.getFindings().size());
+    
+    //unmute Sytem.err
+    System.setErr(_err);
     
   }
   

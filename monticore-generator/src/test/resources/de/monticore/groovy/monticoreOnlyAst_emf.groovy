@@ -31,7 +31,8 @@ while (grammarIterator.hasNext()) {
     storeInCdFile(astClassDiagramWithST, out)
 
     // Decorate AST-CD
-    decorateEmfCd(glex, astClassDiagramWithST, globalScope, handcodedPath)
+    decoratedASTClassDiagramm = decorateEmfForASTPackage(glex, astClassDiagram, modelPath, handcodedPath)
+    generateEmfFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
 
     // Generate AST files
     generateEmfCompatible(glex, globalScope, astClassDiagramWithST, out, templatePath, handcodedPath)

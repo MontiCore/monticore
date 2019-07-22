@@ -14,13 +14,13 @@ public class ASTState extends mc.feature.hwc.statechartdsl._ast.ASTStateTOP {
   protected ASTState(
       Optional<ASTEntryAction> entryAction,
       Optional<ASTExitAction> exitAction,
-      boolean initial,
-      boolean r_final,
       String name,
       List<ASTState> states,
-      List<ASTTransition> transitions
+      List<ASTTransition> transitions,
+      boolean initial,
+      boolean r_final
      ) {
-    super(entryAction, exitAction, r_final, initial, name, states, transitions);
+    super(entryAction, exitAction,  name, states, transitions, r_final, initial);
   }
 
 }

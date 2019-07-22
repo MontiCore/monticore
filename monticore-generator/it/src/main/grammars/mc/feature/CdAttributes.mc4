@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature;
+
+grammar CdAttributes {
+
+    CD = (["association"] | ["composition"]) | C | D | A | B;
+
+    C = CDerived:["cderived"] ;
+
+    D = DDerived:[DDERIVED:"/"];
+
+    A =  Readonly:["readonly"] ;
+
+    B =  Derived:[DERIVED:"/"];
+}

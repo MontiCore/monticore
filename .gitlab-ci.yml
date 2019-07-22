@@ -1,14 +1,20 @@
 image: maven:3.5.4-jdk-8-alpine
 
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
 variables:
-  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
-  MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
+  MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+  MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
 
 cache:
   paths:
     - .m2/
   key: ${CI_COMMIT_REF_SLUG} # Cache per branch
 
+
+before_script:
+    - chmod +x monticore-gradle/gradlew
 
 stages:
   - build
@@ -18,39 +24,56 @@ stages:
 build_dev:
   stage: build
   script:
-    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install -U -pl .,monticore-emf-runtime,monticore-runtime"
-    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS deploy -U -pl monticore-grammar -P emf -Dpass=$password -Duser=$username -DdeployAtEnd=true"
-    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS clean -U -pl monticore-grammar"
-    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS deploy -U -Dpass=$password -Duser=$username -DdeployAtEnd=true"
-    - curl --request POST --form "token=$Automaton" --form ref=master https://git.rwth-aachen.de/api/v4/projects/17630/trigger/pipeline
-    - "curl -X POST -F token=d599ce1aa427de007d331596cbaf86 -F ref=dev https://git.rwth-aachen.de/api/v4/projects/17608/trigger/pipeline"
+    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -Dpass=$password -Duser=$username -DdeployAtEnd=true"
+    - cd monticore-gradle
+    - "./gradlew build"
+    - "./gradlew publish -PmavenPassword=$password -PmavenUser=$username"
+    - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, "instructions covered"; print 100*covered/instructions, "% covered" }' ../*/target/site/jacoco/jacoco.csv
+  coverage: '/\d+.\d+ \% covered/'
   only:
     - dev
-    - ci/gitlab-runner
-
-build_branches:
-  stage: build
-  script:
-    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install -U"
-  except:
-    - dev
-    - master
-    - ci/gitlab-runner
+    - newSymtab
+    - cibuild
+  artifacts:
+    paths:
+      - "*/target"
+    expire_in: 1 week
+    
+#build_branches:
+#  stage: build
+#  script:
+#    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install"
+#  except:
+#    - dev
+#    - master
+#    - ci/gitlab-runner
 
 integration-test:
   stage: test
   script:
     - cd monticore-generator/it
-    - "mvn --settings ../../settings.xml $MAVEN_CLI_OPTS $MAVEN_OPTS clean verify -U"
-
-integration-test-emf:
+    - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify"
+    
+trigger-automata:
   stage: test
-  script:
-    - cd monticore-generator/it
-    - "mvn --settings ../../settings.xml $MAVEN_OPTS clean install -U -P emf-it-tests"
+  trigger:
+    project: monticore/languages/automaton
+    branch: newSymtab_gen
 
-integration-test-experiments:
+trigger-cd4a:
   stage: test
-  script:
-    - cd monticore-generator/it/experiments
-    - "mvn --settings ../../../settings.xml $MAVEN_OPTS clean install -U"
+  trigger:
+    project: monticore/cd4analysis/cd4analysis
+    branch: newSymTab
+#
+#integration-test-emf:
+#  stage: test
+#  script:
+#    - cd monticore-generator/it
+#    - "mvn --settings ../../settings.xml $MAVEN_OPTS clean install -P emf-it-tests"
+#
+#integration-test-experiments:
+#  stage: test
+#  script:
+#    - cd monticore-generator/it/experiments
+#    - "mvn --settings ../../../settings.xml $MAVEN_OPTS clean install"

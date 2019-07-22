@@ -8,6 +8,8 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
+import de.monticore.grammar.grammar._ast.ASTCard;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethod;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
@@ -31,6 +33,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 import static de.se_rwth.commons.Names.getQualifier;
+import static de.se_rwth.commons.Names.getSimpleName;
 
 public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
@@ -73,12 +76,25 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   public String getTargetPackage() {
     return getQualifiedGrammarName().toLowerCase() + "." + SymbolTableGenerator.PACKAGE;
   }
+  
+  /**
+   * @return the package for the generated symbol table files
+   */
+  public String getSerializationTargetPackage() {
+    return getTargetPackage() + "." + SymbolTableGenerator.SERIALIZATION_PACKAGE;
+  }
 
   /**
    * @return the qualified grammar's name
    */
   public String getQualifiedGrammarName() {
     return qualifiedGrammarName;
+  }
+
+  public static String getQualifiedSymbolType(MCProdSymbol symbol) {
+    return SymbolTableGeneratorHelper.getQualifiedSymbolType(
+        getQualifier(symbol.getFullName()).toLowerCase(),
+        Names.getSimpleName(symbol.getName() + SYMBOL));
   }
 
   public static String getQualifiedSymbolType(String packageName, String symbolName) {
@@ -289,6 +305,71 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     }
     return "get";
   }
+  
+  public static String getDefaultInitValue(final String type) {
+    switch(type) {
+      case "boolean":
+        return "false";
+      case "int":
+        return "0";
+      case "float":
+        return "0.0f";
+      case "double":
+        return "0.0";
+      case "long":
+        return "0L";
+      case "byte":
+        return "0";
+      case "short":
+        return "0";
+      case "char":
+        return "0";
+      default:
+        return "null";
+    }
+  }
+
+  public static String getDeserializationType(final String type) {
+    switch (type) {
+      case "boolean":
+        return "Boolean";
+      case "int":
+        return "Int";
+      case "float":
+        return "Double";
+      case "double":
+        return "Double";
+      case "long":
+        return "Long";
+      case "byte":
+        return "Int";
+      case "short":
+        return "Int";
+      case "char":
+        return "Int";
+      case "String":
+        return "String";
+      default:
+        return "";
+    }
+  }
+  
+  public static String getDeserializationCastString(final String type) {
+    switch(type) {
+      case "float":
+        return "(double)";
+      case "long":
+        return "(long)";
+      case "byte":
+        return "(byte)";
+      case "short":
+        return "(short)";
+      case "char":
+        return "(char)";
+      default:
+        return "";
+    }
+  }
 
   /**
    * Returns true, if <code>name</code> is a valid Java name or can be
@@ -473,10 +554,22 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
   public String getQualifiedScopeInterfaceType(String packageName, String cdName) {
-    return getPackageName(packageName, SymbolTableGenerator.PACKAGE) + ".I"
-        + cdName + SCOPE;
+    return getPackageName(packageName, SymbolTableGenerator.PACKAGE) + "." 
+        + getScopeInterfaceType(cdName);
   }
-
+  
+  public String getScopeInterfaceType(String cdName) {
+    return "I" + cdName + SCOPE;
+  }
+  
+  public String getScopeInterfaceType(CDSymbol cdSymbol) {
+    String cdName = getCdName(cdSymbol.getFullName());
+    return getScopeInterfaceType(cdName);
+  }
+  
+  public String getSymbolNameFromQualifiedSymbol (String qualifiedSymbol) {
+	  return qualifiedSymbol.substring(qualifiedSymbol.lastIndexOf(".") + 1);
+  }
   
   public Set<String> getAllQualifiedSymbols() {
     Set<String> qualifiedSymbols = new LinkedHashSet<>();
@@ -489,7 +582,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   /**
    * Computes a set of qualified symbols for all super grammars.
-   * 
+   *
    * @return a set of qualified inherited symbols
    */
   public Set<String> getQualifiedInheritedSymbols() {
@@ -504,7 +597,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   /**
    * Retrieves the qualified symbols for a given grammar.
-   * 
+   *
    * @param grammarSymbol The given grammar symbol.
    * @return a set of qualified symbols.
    */
@@ -569,5 +662,142 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
     return ImmutableList.copyOf(ruleSymbolsWithName);
   }
+  
+  /**
+   * Checks whether the language related to the given class diagram symbol
+   * generates a symbol table.
+   *
+   * @param cdSymbol The input class diagram symbol.
+   * @return A boolean value if the language has a symbol table.
+   */
+  public boolean hasSymbolTable(CDSymbol cdSymbol) {
+    Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(cdSymbol.getFullName(), MCGrammarSymbol.KIND);
+    if (grammarSymbol.isPresent() && grammarSymbol.get().getStartProd().isPresent()) {
+      return true;
+    }
+    return false;
+  }
 
+  /**
+   * Checks whether the language related to the given name of a class diagram
+   * symbol generates a symbol table.
+   *
+   * @param cdSymbolName The name of the input class diagram symbol.
+   * @return A boolean value if the language has a symbol table.
+   */
+  public boolean hasSymbolTable(String cdSymbolName) {
+    Optional<CDSymbol> cdSymbolOpt = resolveCd(cdSymbolName);
+    if (cdSymbolOpt.isPresent()) {
+      return hasSymbolTable(cdSymbolOpt.get());
+    } else {
+      return false;
+    }
+  }
+
+	/**
+	 * Computes the fully qualified ISymbolDelegator for a given symbol.
+	 * 
+	 * @param symbol The input symbol.
+	 * @return A String containing the qualified path of ISymbolDelegator.
+	 */
+	public static String getDelegatorForSymbol(MCProdSymbol symbol) {
+	  return SymbolTableGeneratorHelper.getQualifiedSymbolType(
+        getQualifier(symbol.getFullName()).toLowerCase(),
+        Names.getSimpleName("I" + symbol.getName() + SYMBOL + DELEGATE));
+	}
+	
+  /**
+   * Checks whether the given additional attribute has star cardinality.
+   * 
+   * @param attr The input attribute.
+   * @return true if the attribute has star cardinality, false otherwise.
+   */
+  public static boolean isAdditionalAttributeTypeList(ASTAdditionalAttribute attr) {
+    if (attr.isPresentCard()) {
+      ASTCard card = attr.getCard();
+      if (card.isPresentMax()) {
+        String max = card.getMax();
+        // check for * cardinality
+        if (max.equals("*")) {
+          return true;
+        }
+        // check for any number greater 1
+        try {
+          int maxNumber = Integer.parseInt(max);
+          if (maxNumber > 1) {
+            return true;
+          }
+        }
+        catch (NumberFormatException e) {
+          return false;
+        }
+      }
+    }
+    return false;
+  }
+  
+  /**
+   * Checks whether the given additional attribute is optional.
+   * 
+   * @param attr The input attribute.
+   * @return true if the attribute is optional, false otherwise.
+   */
+  public static boolean isAdditionalAttributeTypeOptional(ASTAdditionalAttribute attr) {
+    if (attr.isPresentCard()) {
+      ASTCard card = attr.getCard();
+      if (card.isPresentMax() && card.isPresentMin()) {
+        if (card.getMin().equals("0") && card.getMax().equals("1")) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Converts the given primitive type in its corresponding object data type.
+   * 
+   * @param primitive The input primitive type.
+   * @return The computed object data type or the input otherwise.
+   */
+  public static String convertToObjectDataType(String primitive) {
+    switch (primitive) {
+      case "boolean":
+        return "Boolean";
+      case "int":
+        return "Integer";
+      case "float":
+        return "Float";
+      case "double":
+        return "Double";
+      case "long":
+        return "Long";
+      case "byte":
+        return "Byte";
+      case "short":
+        return "Short";
+      case "char":
+        return "Character";
+      default:
+        return primitive;
+    }
+  }
+  
+  /**
+   * Computes the type of an additional attribute concerning the cardinality
+   * value.
+   * 
+   * @param attr The input attribute.
+   * @return The qualified type of the attribute as String.
+   */
+  public String deriveAdditionalAttributeTypeWithMult(ASTAdditionalAttribute attr) {
+    String defaultType = getQualifiedASTName(attr.getMCType().getBaseName());
+    if (isAdditionalAttributeTypeList(attr)) {
+      return "java.util.List<" + convertToObjectDataType(defaultType) + ">";
+    }
+    if (isAdditionalAttributeTypeOptional(attr)) {
+      return "java.util.Optional<" + convertToObjectDataType(defaultType) + ">";
+    }
+    return defaultType;
+  }
 }

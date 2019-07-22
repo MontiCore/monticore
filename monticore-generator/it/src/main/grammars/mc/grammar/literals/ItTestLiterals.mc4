@@ -89,7 +89,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeFloat(getSource());
       }
       catch (NumberFormatException e) {
-        return 0f;
+        return 0.0f;
       }
     }
   ;
@@ -109,7 +109,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeDouble(getSource());
       }
       catch (NumberFormatException e) {
-        return 0d;
+        return 0.0;
       }
     }
   ;

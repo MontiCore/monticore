@@ -1,21 +1,17 @@
 /* (c)  https://github.com/MontiCore/monticore */
 package de.monticore.templateclassgenerator.it;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import de.monticore.java.symboltable.JavaMethodSymbol;
+import de.monticore.java.symboltable.JavaTypeSymbol;
+import de.monticore.symboltable.Scope;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import de.monticore.java.symboltable.JavaMethodSymbol;
-import de.monticore.java.symboltable.JavaTypeSymbol;
-import de.monticore.symboltable.Scope;
+import static org.junit.Assert.*;
 
 /**
  * Tests the correctness of the generated template classes methods

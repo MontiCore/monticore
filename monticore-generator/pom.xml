@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>5.0.6-SNAPSHOT</version>
+    <version>5.0.6.NewSymTab-SNAPSHOT</version>
   </parent>
 
   <artifactId>monticore-generator</artifactId>
@@ -100,14 +100,14 @@
     </dependency>
 
     <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>javaDSL</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.8.1</version>
     </dependency>
 
     <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>javaDSL</artifactId>
-      <classifier>${grammars.classifier}</classifier>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
     </dependency>
 
   </dependencies>

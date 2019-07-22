@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  *
  */
+@Deprecated
 public class ResolvingInfo {
 
   private boolean areSymbolsFound = false;

@@ -22,7 +22,7 @@ public class IncGenGradleReporter extends AReporter {
   String outputDir;
 
   public IncGenGradleReporter(String outputDir, String modelName) {
-    super(outputDir + File.separator + modelName, SIMPLE_FILE_NAME, "txt");
+    super(outputDir + File.separator + modelName.replaceAll("\\.", "/"), SIMPLE_FILE_NAME, "txt");
     this.outputDir = outputDir;
   }
 

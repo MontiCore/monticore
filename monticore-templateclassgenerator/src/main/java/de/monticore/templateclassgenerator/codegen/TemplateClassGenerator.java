@@ -1,15 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.templateclassgenerator.codegen;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.ExtendedGeneratorSetup;
 import de.monticore.generating.GeneratorEngine;
@@ -21,6 +12,15 @@ import freemarker.core.FMHelper;
 import freemarker.core.Parameter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * This class generates a template class for each template.

@@ -11,9 +11,8 @@ import de.monticore.grammar.grammar._cocos.GrammarASTEnumProdCoCo;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Checks that nonterminal names start lower-case.
+ * Checks that every EnumConstant is only used once
  *
-
  */
 public class DuplicatedEnumConstant implements GrammarASTEnumProdCoCo {
 

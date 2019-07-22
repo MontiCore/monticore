@@ -1,21 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.generator.typesafety.codegen;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.List;
-
-import org.junit.Test;
-
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-
 import de.monticore.templateclassgenerator.TemplateClassGeneratorConfiguration;
 import de.monticore.templateclassgenerator.TemplateClassGeneratorScript;
 import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.List;
 
 public class GroovyScriptTest {
   /**

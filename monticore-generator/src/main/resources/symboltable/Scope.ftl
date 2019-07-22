@@ -1,10 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className","scopeRule", "symbolNames", "superScopeVisitors")}
+${signature("className", "interfaceName","scopeRule", "symbolNames", "superScopes", "superScopeVisitors", "hasHWC")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign names = glex.getGlobalVar("nameHelper")>
-<#assign superClass = " extends de.monticore.symboltable.CommonScope ">
-<#assign superInterfaces = "implements I"+ className>
+<#assign languageName = genHelper.getGrammarSymbol().getName()>
+<#assign superInterfaces = "implements "+ interfaceName>
 <#if scopeRule.isPresent()>
   <#if !scopeRule.get().isEmptySuperInterfaces()>
     <#assign superInterfaces = superInterfaces + ", "+ stHelper.printGenericTypes(scopeRule.get().getSuperInterfaceList())>
@@ -21,126 +21,202 @@ ${defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${genHelper.getTargetPackage()};
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.Collection;
 
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.resolving.ResolvingInfo;
-import de.monticore.symboltable.Scope;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.LinkedListMultimap;
 
-public class ${className} ${superClass} ${superInterfaces} {
+import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.*;
+import de.se_rwth.commons.logging.Log;
+
+public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
+
+<#list symbolNames?keys as symbol>
+  protected LinkedListMultimap<String, ${symbolNames[symbol]}> ${symbol?lower_case}s = LinkedListMultimap.create();
+
+  protected boolean ${symbol?lower_case}AlreadyResolved = false;
+
+</#list>
+  protected I${languageName}Scope enclosingScope;
+
+  protected List<I${languageName}Scope> subScopes = new ArrayList<>();
+
+  protected Optional<IScopeSpanningSymbol> spanningSymbol = Optional.empty();
+
+  protected boolean shadowing;
+
+  protected boolean exportsSymbols = true;
+
+  protected Optional<String> name = Optional.empty();
+
+  protected ASTNode astNode;
 
   public ${className}() {
     super();
+    this.name = Optional.empty();
   }
 
   public ${className}(boolean isShadowingScope) {
-    super(isShadowingScope);
+    this.shadowing = isShadowingScope;
+    this.name = Optional.empty();
   }
 
-  public ${className}(Optional<Scope> enclosingScope) {
-    super(enclosingScope, true);
+  public ${className}(I${languageName}Scope enclosingScope) {
+    this(enclosingScope, false);
+  }
+
+  public ${className}(I${languageName}Scope enclosingScope, boolean isShadowingScope) {
+    this.setEnclosingScope(enclosingScope);
+    this.shadowing = isShadowingScope;
+    this.name = Optional.empty();
+  }
+
+  @Override
+  public void addSubScope(I${languageName}Scope subScope) {
+    if (!this.subScopes.contains(subScope)) {
+      this.subScopes.add(subScope);
+      subScope.setEnclosingScope(this);
+    }
+  }
+
+  @Override
+  public void removeSubScope(I${languageName}Scope subScope) {
+    this.subScopes.remove(subScope);
+    if (subScope.getEnclosingScope().isPresent() && subScope.getEnclosingScope().get() == this) {
+      subScope.setEnclosingScope(null);
+    }
+  }
+
+  public void setSpanningSymbol(IScopeSpanningSymbol symbol) {
+    this.spanningSymbol =  Optional.of(symbol);
+    setName(symbol.getName());
+  }
+
+  @Override
+  public void setExportsSymbols(boolean b) {
+    this.exportsSymbols = b;
+  }
+
+  @Override
+  public void setShadowing(boolean b) {
+    this.shadowing = b;
+  }
+
+   public Optional<IScopeSpanningSymbol> getSpanningSymbol() {
+    return this.spanningSymbol;
+  }
+
+  public Optional<I${languageName}Scope> getEnclosingScope() {
+    return Optional.ofNullable(enclosingScope);
+  }
+
+  public void setEnclosingScope(I${languageName}Scope newEnclosingScope) {
+    if ((this.enclosingScope != null) && (newEnclosingScope != null)) {
+      if (this.enclosingScope == newEnclosingScope) {
+        return;
+      }
+      Log.warn("0xA1042 Scope \"" + getName() + "\" has already an enclosing scope.");
     }
 
-  <#list symbolNames?keys as symbol>
-  // all resolve Methods for ${symbol}
-  public Optional<${symbolNames[symbol]}> resolve${symbol}(String name) {
-    return resolve(name, ${symbolNames[symbol]}.KIND);
+    // remove this scope from current (old) enclosing scope, if exists.
+    if (this.enclosingScope != null) {
+      this.enclosingScope.removeSubScope(this);
+    }
+
+    // add this scope to new enclosing scope, if exists.
+    if (newEnclosingScope != null) {
+      newEnclosingScope.addSubScope(this);
+    }
+
+    // set new enclosing scope (or null)
+    this.enclosingScope = newEnclosingScope;
   }
 
-  public Optional<${symbolNames[symbol]}> resolve${symbol}(String name, AccessModifier modifier) {
-    return resolve(name, ${symbolNames[symbol]}.KIND, modifier);
+  public List<I${languageName}Scope> getSubScopes() {
+    return ImmutableList.copyOf(subScopes);
   }
 
-  public Optional<${symbolNames[symbol]}> resolve${symbol}(String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolve(name, ${symbolNames[symbol]}.KIND, modifier, predicate);
+  public void setSubScopes(List<I${languageName}Scope> subScopes) {
+    this.subScopes.forEach(this::removeSubScope);
+    subScopes.forEach(this::addSubScope);
   }
 
-  public Optional<${symbolNames[symbol]}> resolve${symbol}(ResolvingInfo resolvingInfo, String name, AccessModifier modifier) {
-    return resolve(resolvingInfo, name, ${symbolNames[symbol]}.KIND, modifier);
+  @Override
+  public boolean isShadowingScope() {
+    return shadowing;
   }
 
-  // all resolveDown Methods for ${symbol}
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name) {
-    return resolveDown(name, ${symbolNames[symbol]}.KIND);
+  @Override
+  public boolean isSpannedBySymbol() {
+    return spanningSymbol.isPresent();
   }
 
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name, AccessModifier modifier) {
-  return resolveDown(name, ${symbolNames[symbol]}.KIND, modifier);
+  @Override
+  public boolean exportsSymbols() {
+    return exportsSymbols;
   }
 
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolveDown(name, ${symbolNames[symbol]}.KIND, modifier, predicate);
+  @Override
+  public void setAstNode(ASTNode node) {
+    this.astNode = node;
   }
 
-  // all resolveDownMany Methods for ${symbol}
-  public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name) {
-    return resolveDownMany(name, ${symbolNames[symbol]}.KIND);
+  @Override
+  public Optional<ASTNode> getAstNode() {
+    return Optional.ofNullable(astNode);
   }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name, AccessModifier modifier) {
-    return resolveDownMany(name, ${symbolNames[symbol]}.KIND, modifier);
+  @Override
+  public void setName(String name) {
+    this.name = Optional.ofNullable(name);
   }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolveDownMany(name, ${symbolNames[symbol]}.KIND, modifier, predicate);
+  @Override
+  public Optional<String> getName() {
+    return this.name;
   }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolveDownMany(resolvingInfo, name, ${symbolNames[symbol]}.KIND, modifier, predicate);
+  @Override public int getSymbolsSize() {
+    <#if (symbolNames?keys?size gt 0)>
+    return <#list symbolNames?keys as symbol>${symbol?lower_case}s.size()<#sep> + </#sep></#list>;
+    <#else>
+      return 0;
+    </#if>
   }
 
-  // all resolveLocally Methods for ${symbol}
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Locally(String name) {
-    return resolveLocally(name, ${symbolNames[symbol]}.KIND);
+<#list symbolNames?keys as symbol>
+  @Override public void add(${symbolNames[symbol]} symbol) {
+    this.${symbol?lower_case}s.put(symbol.getName(), symbol);
+    symbol.setEnclosingScope(this);
+
   }
 
-  // all resolveImported Methods for ${symbol}
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Imported(String name, AccessModifier modifier) {
-    return resolveImported(name, ${symbolNames[symbol]}.KIND, modifier);
+  @Override public void remove(${symbolNames[symbol]} symbol) {
+    this.${symbol?lower_case}s.remove(symbol.getName(), symbol);
   }
 
-  // all resolveMany Methods for ${symbol}
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name) {
-    return resolveMany(name, ${symbolNames[symbol]}.KIND);
+  public LinkedListMultimap<String, ${symbolNames[symbol]}> get${symbol}s() {
+    return this.${symbol?lower_case}s;
   }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, AccessModifier modifier) {
-    return resolveMany(name, ${symbolNames[symbol]}.KIND, modifier);
+  @Override
+  public boolean is${symbol}AlreadyResolved() {
+    return ${symbol?lower_case}AlreadyResolved;
   }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolveMany(name, ${symbolNames[symbol]}.KIND, modifier, predicate);
+  @Override
+  public void set${symbol}AlreadyResolved(boolean symbolAlreadyResolved) {
+    ${symbol?lower_case}AlreadyResolved = symbolAlreadyResolved;
   }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, Predicate<Symbol> predicate) {
-    return resolveMany(name, ${symbolNames[symbol]}.KIND, predicate);
-  }
-
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(ResolvingInfo resolvingInfo, String name, AccessModifier modifier) {
-    return resolveMany(resolvingInfo, name, ${symbolNames[symbol]}.KIND, modifier);
-  }
-
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolveMany(resolvingInfo, name, ${symbolNames[symbol]}.KIND, modifier, predicate);
-  }
-
-  </#list>
-  
+</#list>
   <#if scopeRule.isPresent()>
-    <#list scopeRule.get().getAdditionalAttributeList() as attr>
-      <#assign attrName=attr.getName()>
-      <#assign attrType=attr.getGenericType().getTypeName()>
-      private ${genHelper.getQualifiedASTName(attrType)} ${attrName};
-    </#list>
-
-    <#list scopeRule.get().getMethodList() as meth>
-      ${genHelper.printMethod(meth)}
-    </#list>
+    ${includeArgs("symboltable.ScopeRule", scopeRule.get())}
   </#if>
-  
+
   <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "ScopeVisitor")>
     public void accept(${langVisitorType} visitor) {
   <#if genHelper.isSupertypeOfHWType(className, "")>
@@ -154,7 +230,24 @@ public class ${className} ${superClass} ${superInterfaces} {
     visitor.handle(this);
   </#if>
     }
-  
+
+  <#list superScopes as superScope>
+  @Override
+  public void addSubScope(${superScope} subScope) {
+    this.addSubScope((I${languageName}Scope) subScope);
+  }
+
+  @Override
+  public void removeSubScope(${superScope} subScope) {
+    this.removeSubScope((I${languageName}Scope) subScope);
+  }
+
+  @Override
+  public void setEnclosingScope(${superScope} newEnclosingScope) {
+    this.setEnclosingScope((I${languageName}Scope) newEnclosingScope);
+  }
+  </#list>
+
   <#list superScopeVisitors as superScopeVisitor>
   public void accept(${superScopeVisitor} visitor) {
     if (visitor instanceof ${langVisitorType}) {

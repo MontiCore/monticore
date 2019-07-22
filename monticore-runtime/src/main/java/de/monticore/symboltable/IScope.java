@@ -2,16 +2,20 @@ package de.monticore.symboltable;
 
 import com.google.common.collect.FluentIterable;
 import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.modifiers.IncludesAccessModifierSymbolPredicate;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.se_rwth.commons.Splitters;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 import static com.google.common.collect.FluentIterable.from;
 import static de.se_rwth.commons.Joiners.DOT;
+import static java.util.stream.Collectors.toSet;
 
 public interface IScope  {
+  
+  Optional<? extends IScope> getEnclosingScope();
   
   
   /**
@@ -42,11 +46,21 @@ public interface IScope  {
    */
   boolean exportsSymbols();
   
+  
+  void setExportsSymbols(boolean b);
+  
+  void setShadowing(boolean b);
+  
   /**
    * @param node the corresponding ast node
    */
   void setAstNode(ASTNode node);
   
+  Optional<ASTNode> getAstNode();
+  
+  Optional<? extends IScopeSpanningSymbol> getSpanningSymbol();
+  
+  void setSpanningSymbol(IScopeSpanningSymbol symbol);
   
   /**
    * @param name of the scope
@@ -69,18 +83,34 @@ public interface IScope  {
     return !(foundSymbols && isShadowingScope());
   }
   
-  default <T extends Symbol> Optional<T> getResolvedOrThrowException(final Collection<T> resolved) {
+  default boolean checkIfContinueAsSubScope(String symbolName){
+    if (this.exportsSymbols()) {
+      final List<String> nameParts = getNameParts(symbolName).toList();
+    
+      if (nameParts.size() > 1) {
+        final String firstNamePart = nameParts.get(0);
+        // A scope that exports symbols usually has a name.
+        return firstNamePart.equals(this.getName().orElse(""));
+      }
+    }
+  
+    return false;
+  }
+  
+  default <T extends ISymbol> Optional<T> getResolvedOrThrowException(final Collection<T> resolved) {
     if (resolved.size() == 1) {
       return Optional.of(resolved.iterator().next());
     }
     else if (resolved.size() > 1) {
-      throw new ResolvedSeveralEntriesException("0xA4095 Found " + resolved.size() + " symbols: " + resolved,
+      throw new ResolvedSeveralEntriesForSymbolException("0xA4095 Found " + resolved.size() + " symbols: " + resolved,
           resolved);
     }
     
     return Optional.empty();
   }
   
-  
+  default  <T extends ISymbol> Set<T> filterSymbolsByAccessModifier(AccessModifier modifier, Collection<T> resolvedUnfiltered) {
+    return new LinkedHashSet<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierSymbolPredicate(modifier)).collect(toSet()));
+  }
   
 }

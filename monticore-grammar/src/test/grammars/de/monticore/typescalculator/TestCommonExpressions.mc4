@@ -1,7 +1,0 @@
-/* (c)  https://github.com/MontiCore/monticore */
-
-package de.monticore.typescalculator;
-
-grammar TestCommonExpressions extends de.monticore.expressions.CommonExpressionsWithLiterals, de.monticore.MCBasics, de.monticore.MCCommonLiterals {
-  start Expression;
-}

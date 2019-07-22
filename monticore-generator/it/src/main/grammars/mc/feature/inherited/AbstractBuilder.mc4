@@ -1,0 +1,8 @@
+package mc.feature.inherited;
+
+component grammar AbstractBuilder extends mc.grammar.lexicals.ItTestLexicals {
+
+  abstract D = Name+;
+
+  E extends D = (Name || ",")+;
+}

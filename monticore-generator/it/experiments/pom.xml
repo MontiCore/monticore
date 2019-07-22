@@ -7,11 +7,15 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>5.0.6-SNAPSHOT</version>
+    <version>5.0.6.NewSymTab-SNAPSHOT</version>
     <relativePath>../../../pom.xml</relativePath>
   </parent>
 
   <artifactId>experiments</artifactId>
+  
+  <properties>
+    <latest.grammars.version>5.0.6.latestGrammar-SNAPSHOT</latest.grammars.version>
+  </properties>
 
   <packaging>pom</packaging>
 
@@ -46,7 +50,7 @@
         <plugin>
           <groupId>de.monticore.mojo</groupId>
           <artifactId>monticore-maven-plugin</artifactId>
-          <version>5.0.6-SNAPSHOT</version>
+          <version>5.0.6.NewSymTab-SNAPSHOT</version>
           <executions>
             <execution>
               <configuration>
@@ -62,5 +66,15 @@
     </pluginManagement>
 
   </build>
+  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>monticore-grammar</artifactId>
+        <version>${latest.grammars.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

@@ -2,15 +2,14 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static org.junit.Assert.assertEquals;
-
-import java.nio.file.Paths;
-
-import org.junit.Test;
-
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import org.junit.Test;
+
+import java.nio.file.Paths;
+
+import static org.junit.Assert.assertEquals;
 
 public final class AstRuleInheritanceTest {
 

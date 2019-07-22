@@ -1,0 +1,213 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
+${signature("languageName", "symTabPrinterName", "symbolTablePackage", "visitorPackage", "symbols", "scopeRule", "symbolRules")}
+
+<#assign genHelper = glex.getGlobalVar("stHelper")>
+<#assign superClass = " extends de.monticore.symboltable.CommonScope ">
+<#assign superInterfaces = "">
+
+<#-- Copyright -->
+${defineHookPoint("JavaCopyright")}
+
+<#-- set package -->
+package ${genHelper.getTargetPackage()}.serialization;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import ${symbolTablePackage}.*;
+import ${visitorPackage}.*;
+import de.monticore.symboltable.*;
+import de.monticore.symboltable.serialization.JsonConstants;
+import de.monticore.symboltable.serialization.JsonPrinter;
+
+/**
+ * Prints the Symbol Table of the ${languageName} language.
+ *
+ */
+public class ${symTabPrinterName}
+    implements ${languageName}SymbolVisitor, ${languageName}ScopeVisitor {
+
+  protected JsonPrinter printer = new JsonPrinter();
+
+  public void visit(${languageName}ArtifactScope as) {
+    printer.beginObject();
+    printer.attribute(JsonConstants.KIND, "${symbolTablePackage}.${languageName}ArtifactScope");
+    printer.attribute(JsonConstants.NAME, as.getName());
+    printer.attribute(JsonConstants.PACKAGE, as.getPackageName());
+    printer.attribute(JsonConstants.EXPORTS_SYMBOLS, as.exportsSymbols());
+    printer.beginAttributeList(JsonConstants.IMPORTS);
+    as.getImports().forEach(x -> printer.attribute(x.toString()));
+    printer.endAttributeList();
+    printer.attribute(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(as.getSpanningSymbol()));
+  }
+
+  /**
+   * @see ${languageName}ScopeVisitor#visit(${languageName}Scope)
+   */
+  @Override
+  public void visit(${languageName}Scope scope) {
+    printer.beginObject();
+    printer.attribute(JsonConstants.KIND, "${symbolTablePackage}.${languageName}Scope");
+    printer.attribute(JsonConstants.NAME, scope.getName());
+    printer.attribute(JsonConstants.IS_SHADOWING_SCOPE, scope.isShadowingScope());
+    printer.attribute(JsonConstants.EXPORTS_SYMBOLS, scope.exportsSymbols());
+    printer.attribute(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(scope.getSpanningSymbol()));
+    
+<#if scopeRule.isPresent()>
+<#list scopeRule.get().getAdditionalAttributeList() as attr>
+    printer.attribute("${attr.name}", serialize${attr.name}(scope));
+</#list>
+</#if>
+  }
+  
+<#if scopeRule.isPresent()>
+<#list scopeRule.get().getAdditionalAttributeList() as attr>
+  <#assign attrType=attr.getMCType().getBaseName()>
+  <#if attrType == "boolean" || attrType == "Boolean">
+    <#if attr.getName()?starts_with("is")>
+      <#assign methodName=attr.getName()>
+    <#else>
+      <#assign methodName="is" + attr.getName()?cap_first>
+    </#if>
+  <#else>
+    <#assign methodName="get" + attr.getName()?cap_first>
+  </#if>
+<#if attrType == "boolean" || 
+     attrType == "int" || 
+     attrType == "float" || 
+     attrType == "double" || 
+     attrType == "long" || 
+     attrType == "String">
+<#assign retType=attrType>
+<#assign retStatement="scope."+methodName+"()">
+<#else>
+<#assign retType="String">
+<#assign retStatement="String.valueOf(scope."+methodName+"())">
+</#if>
+  protected ${retType} serialize${attr.name}(${languageName}Scope scope) {
+    return ${retStatement};
+  }
+</#list>
+</#if>
+
+  protected Optional<String> serializeScopeSpanningSymbol(
+      Optional<IScopeSpanningSymbol> spanningSymbol) {
+    if (null != spanningSymbol && spanningSymbol.isPresent()) {
+      JsonPrinter spPrinter = new JsonPrinter();
+      spPrinter.beginObject();
+      spPrinter.attribute(JsonConstants.KIND, spanningSymbol.get().getClass().getName());
+      spPrinter.attribute(JsonConstants.NAME, spanningSymbol.get().getName());
+      spPrinter.endObject();
+      return Optional.ofNullable(spPrinter.getContent());
+    }
+    return Optional.empty();
+  }
+
+   /**
+   * @see ${languageName}ScopeVisitor#traverse(${languageName}Scope)
+   */
+  @Override
+  public void traverse(${languageName}Scope scope) {
+<#list symbols as symbol>
+    if (!scope.getLocal${symbol.name}Symbols().isEmpty()) {
+      printer.beginAttributeList("${symbol.name?lower_case}Symbols");
+      scope.getLocal${symbol.name}Symbols().stream().forEach(s -> s.accept(getRealThis()));
+      printer.endAttributeList();
+    }
+</#list>
+    Collection<I${languageName}Scope> subScopes = filterRelevantSubScopes(scope.getSubScopes());
+    if (!subScopes.isEmpty()) {
+      printer.beginAttributeList(JsonConstants.SUBSCOPES);
+      subScopes.stream().forEach(s -> s.accept(getRealThis()));
+      printer.endAttributeList();
+    }
+  }
+
+  /**
+   * @see ${languageName}ScopeVisitor#endVisit(${languageName}Scope)
+   */
+  @Override
+  public void endVisit(${languageName}Scope scope) {
+    printer.endObject();
+  }
+<#list symbols as symbol>
+
+  /**
+   * @see ${symbol.name}SymbolVisitor#visit(${symbol.name}Symbol)
+   */
+  @Override
+  public void visit(${symbol.name}Symbol symbol) {
+    printer.beginObject();
+    printer.attribute(JsonConstants.KIND, "${symbolTablePackage}.${symbol.name}Symbol");
+    printer.attribute(JsonConstants.NAME, symbol.getName());
+    <#if symbolRules[symbol.name]??>
+    <#list symbolRules[symbol.name].getAdditionalAttributeList() as attr>
+    printer.attribute("${attr.name}", serialize${attr.name}(symbol));
+    </#list>
+    </#if>
+  }
+
+  /**
+   * @see ${symbol.name}SymbolVisitor#endVisit(${symbol.name}Symbol)
+   */
+  @Override
+  public void endVisit(${symbol.name}Symbol symbol) {
+    printer.endObject();
+  }
+  
+<#if symbolRules[symbol.name]??>
+<#list symbolRules[symbol.name].getAdditionalAttributeList() as attr>
+  <#assign attrType=genHelper.deriveAdditionalAttributeTypeWithMult(attr)>
+  <#if attrType == "boolean" || attrType == "Boolean">
+    <#if attr.getName()?starts_with("is")>
+      <#assign methodName=attr.getName()>
+    <#else>
+      <#assign methodName="is" + attr.getName()?cap_first>
+    </#if>
+  <#else>
+    <#assign methodName="get" + attr.getName()?cap_first>
+  </#if>
+<#if attrType == "boolean" || 
+     attrType == "int" || 
+     attrType == "float" || 
+     attrType == "double" || 
+     attrType == "long" || 
+     attrType == "String">
+<#assign retType=attrType>
+<#assign retStatement="symbol."+methodName+"()">
+<#else>
+<#assign retType="String">
+<#assign retStatement="String.valueOf(symbol."+methodName+"())">
+</#if>
+  protected ${retType} serialize${attr.name}(${symbol.name}Symbol symbol) {
+    return ${retStatement};
+  }
+  
+</#list>
+</#if>
+
+</#list>
+
+
+  @Override
+  public ${symTabPrinterName} getRealThis() {
+    return this;
+  }
+
+  public String getSerializedString() {
+    return printer.getContent();
+  }
+
+  protected Collection<I${languageName}Scope> filterRelevantSubScopes(
+      Collection<I${languageName}Scope> subScopes) {
+    List<I${languageName}Scope> result = new ArrayList<>();
+    for (I${languageName}Scope scope : subScopes) {
+      // TODO: start DFS to check whether a transitive subscope exports symbols
+      result.add(scope);
+    }
+    return result;
+  }
+
+}

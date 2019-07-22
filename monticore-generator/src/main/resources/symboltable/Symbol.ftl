@@ -1,9 +1,16 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "ruleName", "ruleSymbol", "hasAst", "imports")}
+${signature("className", "prodSymbol", "ruleSymbol", "imports", "isScopeSpanningSymbol")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign names = glex.getGlobalVar("nameHelper")>
-<#assign superClass = " extends de.monticore.symboltable.CommonSymbol">
-<#assign superInterfaces = "implements ICommon" + genHelper.getGrammarSymbol().getName() + "Symbol">
+<#assign ruleName = prodSymbol.getName()>
+<#assign languageName = genHelper.getGrammarSymbol().getName()>
+<#assign superClass = "">
+
+<#if isScopeSpanningSymbol>
+<#assign superInterfaces = "implements ICommon" + languageName + "Symbol"+", IScopeSpanningSymbol">
+<#else>
+<#assign superInterfaces = "implements ICommon" + languageName + "Symbol">
+</#if>
 <#if ruleSymbol.isPresent()>
   <#if !ruleSymbol.get().isEmptySuperInterfaces()>
     <#assign superInterfaces = ", " + stHelper.printGenericTypes(ruleSymbol.get().getSuperInterfaceList())>
@@ -18,27 +25,47 @@ ${defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${genHelper.getTargetPackage()};
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Optional;
+import java.util.List;
+import de.monticore.symboltable.*;
+import de.se_rwth.commons.Names;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
+
 <#list imports as imp>
 import ${imp}._ast.*;
 </#list>
 
 public class ${className} ${superClass} ${superInterfaces} {
 
-  ${includeArgs("symboltable.symbols.KindConstantDeclaration", ruleName)}
+  protected I${languageName}Scope enclosingScope;
+
+  protected String fullName;
+
+  protected String name;
+
+  protected AST${ruleName} node;
+
+  protected String packageName;
+
+  protected AccessModifier accessModifier = ALL_INCLUSION;
 
   public ${className}(String name) {
-    super(name, KIND);
+    this.name = name;
   }
 
-<#if hasAst>
-  ${includeArgs("symboltable.symbols.GetAstNodeMethod", ruleName)}
+<#if isScopeSpanningSymbol>
+  ${includeArgs("symboltable.symbols.SpannedScope", languageName)}
 </#if>
 
-  <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "SymbolVisitor")>
+  ${includeArgs("symboltable.symbols.GetAstNodeMethod", ruleName)}
+
+  <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), languageName + "SymbolVisitor")>
    public void accept(${langVisitorType} visitor) {
   <#if genHelper.isSupertypeOfHWType(className, "")>
-    <#assign plainName = className?remove_ending("TOP")>
+  <#assign plainName = className?remove_ending("TOP")>
     if (this instanceof ${plainName}) {
       visitor.handle((${plainName}) this);
     } else {
@@ -53,35 +80,117 @@ public class ${className} ${superClass} ${superInterfaces} {
   ${includeArgs("symboltable.symbols.SymbolRule", ruleSymbol.get())}
   </#if>
 
-  protected I${genHelper.getGrammarSymbol().getName()}Scope enclosing${genHelper.getGrammarSymbol().getName()}Scope;
 
-  public I${genHelper.getGrammarSymbol().getName()}Scope getEnclosing${genHelper.getGrammarSymbol().getName()}Scope(){
-    return this.enclosing${genHelper.getGrammarSymbol().getName()}Scope;
+
+  public I${languageName}Scope getEnclosingScope(){
+    return this.enclosingScope;
   }
 
-  public void setEnclosing${genHelper.getGrammarSymbol().getName()}Scope(I${genHelper.getGrammarSymbol().getName()}Scope newEnclosingScope){
-    this.enclosing${genHelper.getGrammarSymbol().getName()}Scope = newEnclosingScope;
+  public void setEnclosingScope(I${languageName}Scope newEnclosingScope){
+    this.enclosingScope = newEnclosingScope;
+  }
 
-    /*
-    if ((this.enclosing${genHelper.getGrammarSymbol().getName()}Scope != null) && (newEnclosingScope != null)) {
-      if (this.enclosing${genHelper.getGrammarSymbol().getName()}Scope == newEnclosingScope) {
-        return;
+  @Override
+  public void setAccessModifier(AccessModifier accessModifier) {
+    this.accessModifier = accessModifier;
+  }
+
+  @Override
+  public AccessModifier getAccessModifier() {
+    return this.accessModifier;
+  }
+
+  @Override public String getName() {
+    return name;
+  }
+
+  @Override public String getPackageName() {
+    if (packageName == null) {
+      packageName = determinePackageName();
+    }
+
+    return packageName;
+  }
+
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
+  }
+
+  public String getFullName() {
+    if (fullName == null) {
+      fullName = determineFullName();
+    }
+
+    return fullName;
+  }
+
+  protected String determinePackageName() {
+    Optional<? extends I${languageName}Scope> optCurrentScope = Optional.ofNullable(enclosingScope);
+
+    while (optCurrentScope.isPresent()) {
+      final I${languageName}Scope currentScope = optCurrentScope.get();
+      if (currentScope.isSpannedBySymbol()) {
+        // If one of the enclosing scope(s) is spanned by a symbol, take its
+        // package name. This check is important, since the package name of the
+        // enclosing symbol might be set manually.
+        return currentScope.getSpanningSymbol().get().getPackageName();
+      } else if (currentScope instanceof ${languageName}ArtifactScope) {
+        return ((${languageName}ArtifactScope) currentScope).getPackageName();
       }
-      warn("0xA1042 Scope \"" + getName() + "\" has already an enclosing scope.");
+
+      optCurrentScope = currentScope.getEnclosingScope();
     }
 
-    // remove this scope from current (old) enclosing scope, if exists.
-    if (this.enclosing${genHelper.getGrammarSymbol().getName()}Scope != null) {
-      this.enclosing${genHelper.getGrammarSymbol().getName()}Scope.removeSubScope(this);
+    return "";
+  }
+
+  /**
+   * Determines <b>dynamically</b> the full name of the symbol.
+   *
+   * @return the full name of the symbol determined dynamically
+   */
+  protected String determineFullName() {
+    if (enclosingScope == null) {
+      // There should not be a symbol that is not defined in any scope. This case should only
+      // occur while the symbol is built (by the symbol table creator). So, here the full name
+      // should not be cached yet.
+      return name;
     }
 
-    // add this scope to new enclosing scope, if exists.
-    if (newEnclosingScope != null) {
-      newEnclosingScope.addSubScope(this);
+    final Deque<String> nameParts = new ArrayDeque<>();
+    nameParts.addFirst(name);
+
+    Optional<? extends I${languageName}Scope> optCurrentScope = Optional.of(enclosingScope);
+
+    while (optCurrentScope.isPresent()) {
+      final I${languageName}Scope currentScope = optCurrentScope.get();
+      if (currentScope.isSpannedBySymbol()) {
+        // If one of the enclosing scope(s) is spanned by a symbol, the full name
+        // of that symbol is the missing prefix, and hence, the calculation
+        // ends here. This check is important, since the full name of the enclosing
+        // symbol might be set manually.
+        nameParts.addFirst(currentScope.getSpanningSymbol().get().getFullName());
+        break;
+      }
+
+      if (!(currentScope instanceof I${languageName}GlobalScope)) {
+        if (currentScope instanceof ${languageName}ArtifactScope) {
+          // We have reached the artifact scope. Get the package name from the
+          // symbol itself, since it might be set manually.
+          if (!getPackageName().isEmpty()) {
+            nameParts.addFirst(getPackageName());
+          }
+        } else {
+          if (currentScope.getName().isPresent()) {
+            nameParts.addFirst(currentScope.getName().get());
+          }
+          // ...else stop? If one of the enclosing scopes is unnamed,
+          //         the full name is same as the simple name.
+        }
+      }
+      optCurrentScope = currentScope.getEnclosingScope();
     }
 
-    // set new enclosing scope (or null)
-     this.enclosingScope = newEnclosingScope;
-    */
+    return Names.getQualifiedName(nameParts);
   }
 }

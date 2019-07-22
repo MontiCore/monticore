@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.generating.templateengine;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import de.monticore.generating.GeneratorSetup;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.monticore.generating.GeneratorSetup;
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * This class adds the signature methods tc.params(...) and tc.result(...) to

@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>5.0.6-SNAPSHOT</version>
+    <version>5.0.6.NewSymTab-SNAPSHOT</version>
   </parent>
 
   <artifactId>monticore-grammar</artifactId>
@@ -72,17 +72,6 @@
               <goal>generate</goal>
             </goals>
           </execution>
-        </executions>
-      </plugin>
-      
-      <!-- create grammar jar with noemf -->
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>de.monticore.mojo</groupId>
-        <artifactId>monticore-maven-plugin</artifactId>
-        <executions>
           <execution>
             <id>test-id</id>
             <goals>
@@ -105,6 +94,11 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      
+      <!-- create grammar jar with noemf -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
       </plugin>
 
       <plugin>

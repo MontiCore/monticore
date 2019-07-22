@@ -438,7 +438,7 @@ public class IncrementalChecker {
       throw new IllegalArgumentException(
               "0xA4064 Report directory for checking incremental regeneration must not be null.");
     }
-    List<Path> inputOutputReportsFiles = getAllInputOutputReports(reportDir);
+    List<Path> inputOutputReportsFiles = getAllInputOutputReports(outputDirectory);
     Map<String, InputOutputStory> result = new HashMap<String, InputOutputStory>();
     for (Path path : inputOutputReportsFiles) {
       collectInputOutputMapFromReport(path, result);

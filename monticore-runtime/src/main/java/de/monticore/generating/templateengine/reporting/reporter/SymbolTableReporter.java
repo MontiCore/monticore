@@ -32,7 +32,7 @@ import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.JTypeReference;
 import de.se_rwth.commons.Names;
 
-
+@Deprecated
 public class SymbolTableReporter extends AReporter {
   
   static final String SIMPLE_FILE_NAME = "13_SymbolTable";

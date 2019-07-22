@@ -1,0 +1,12 @@
+package de.monticore.codegen.ast;
+
+classdiagram Lexicals{
+
+  public interface ASTLexicalsNode;
+
+  enum LexicalsLiterals;
+
+ public class ASTName{
+  protected String name;
+ }
+}

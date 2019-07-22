@@ -2,9 +2,6 @@
 
 package de.monticore;
 
-import java.util.Collection;
-import java.util.Optional;
-
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
@@ -13,6 +10,10 @@ import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serializing.IArtifactScopeSerializer;
 
+import java.util.Collection;
+import java.util.Optional;
+
+@Deprecated
 public interface ModelingLanguage {
 
   /**
