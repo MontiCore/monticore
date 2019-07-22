@@ -314,9 +314,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     startCodeSection(ast);
 
     boolean iterated = false;
-    if (ast.isPresentSymbol() && ast.getSymbol() instanceof RuleComponentSymbol) {
+    if (ast.isPresentSymbol2() && ast.getSymbol2() instanceof RuleComponentSymbol) {
       iterated = MCGrammarSymbolTableHelper
-              .isConstGroupIterated((RuleComponentSymbol) ast.getSymbol());
+              .isConstGroupIterated((RuleComponentSymbol) ast.getSymbol2());
     }
 
     // One entry leads to boolean isMethods
@@ -927,8 +927,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         term.setName(y);
         term.setUsageName(HelperGrammar.getUsuageName(ast));
 
-        Optional<? extends Symbol> ruleComponent = ast.getSymbolOpt();
-        if (ruleComponent.isPresent() && ruleComponent.get() instanceof RuleComponentSymbol) {
+        Optional<RuleComponentSymbol> ruleComponent = ast.getSymbol2Opt();
+        if (ruleComponent.isPresent()) {
           RuleComponentSymbol componentSymbol = (RuleComponentSymbol) ruleComponent.get();
           Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper
                   .getEnclosingRule(componentSymbol);
