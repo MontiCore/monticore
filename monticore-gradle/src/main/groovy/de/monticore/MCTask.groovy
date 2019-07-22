@@ -40,6 +40,11 @@ public class MCTask extends DefaultTask {
   
   
   @Input @Optional
+  public void modelPath(String... strings){
+    modelPath.addAll(strings)
+  }
+  
+  @Input @Optional
   public void includeConfigs(String... configurations){
     includeConfigs.addAll(configurations)
   }
