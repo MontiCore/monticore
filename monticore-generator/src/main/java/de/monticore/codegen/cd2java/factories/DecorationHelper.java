@@ -29,6 +29,9 @@ public class DecorationHelper extends MCCollectionTypesHelper {
 
   public static final String GET_PREFIX = "get";
 
+  public static final String SET_PREFIX = "set";
+
+
   public static String getGeneratedErrorCode(ASTNode node) {
     // Use the string representation
     int hashCode = Math.abs(node.toString().hashCode());
@@ -157,5 +160,48 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     return typeArgument.existsReferencedSymbol() && typeArgument.isEnum();
   }
 
+
+  public static String getPlainSetter(ASTCDAttribute ast) {
+    StringBuilder sb = new StringBuilder(SET_PREFIX).append(
+        StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
+    String astType = printType(ast.getMCType());
+    if (isListType(astType))
+      if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }
+    return sb.toString();
+  }
+
+
+  public String getDefaultValue(ASTCDAttribute attribute) {
+    if (isAstNode(attribute)) {
+      return "null";
+    }
+    if (isOptional(attribute.getMCType())) {
+      return "Optional.empty()";
+    }
+    String typeName = attribute.printType();
+    switch (typeName) {
+      case "boolean":
+        return "false";
+      case "int":
+        return "0";
+      case "short":
+        return "(short) 0";
+      case "long":
+        return "0";
+      case "float":
+        return "0.0f";
+      case "double":
+        return "0.0";
+      case "char":
+        return "'\u0000'";
+      default:
+        return "null";
+    }
+  }
 
 }

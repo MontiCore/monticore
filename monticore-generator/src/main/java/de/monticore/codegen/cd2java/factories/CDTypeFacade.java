@@ -159,4 +159,8 @@ public class CDTypeFacade {
         .setPrimitive(constantsType)
         .build();
   }
+
+  public ASTMCType createStringType() {
+    return createQualifiedType("String");
+  }
 }

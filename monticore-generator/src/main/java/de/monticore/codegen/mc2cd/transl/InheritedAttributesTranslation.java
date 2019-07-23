@@ -14,7 +14,6 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.symboltable.Symbol;
 import de.monticore.utils.Link;
 
 import java.util.*;
@@ -35,6 +34,7 @@ public class InheritedAttributesTranslation implements
       handleInheritedNonTerminals(link);
       handleInheritedAttributeInASTs(link);
     }
+
     return rootLink;
   }
   
@@ -97,6 +97,11 @@ public class InheritedAttributesTranslation implements
     List<ASTInterfaceProd> directInterfaces = GeneratorHelper.getDirectSuperProds(astNode).stream()
         .filter(ASTInterfaceProd.class::isInstance)
         .map(ASTInterfaceProd.class::cast)
+        .collect(Collectors.toList());
+    // only interfaces without a right side
+    directInterfaces = directInterfaces
+        .stream()
+        .filter(ASTInterfaceProd::isEmptyAlts)
         .collect(Collectors.toList());
     List<ASTInterfaceProd> allSuperRules = new ArrayList<>();
     for (ASTInterfaceProd superInterface : directInterfaces) {

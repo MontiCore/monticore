@@ -173,7 +173,7 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>5.0.6-SNAPSHOT</version><!--$NO-MVN-MAN-VER$ -->
+            <version>5.0.6.NewSymTab-SNAPSHOT</version><!--$NO-MVN-MAN-VER$ -->
             <executions>
               <execution>
                 <id>it-python</id>

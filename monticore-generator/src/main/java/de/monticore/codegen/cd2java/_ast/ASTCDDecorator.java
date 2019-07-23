@@ -26,21 +26,21 @@ import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 
 public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
-  private final ASTFullDecorator astFullDecorator;
+  protected final ASTFullDecorator astFullDecorator;
 
-  private final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator;
+  protected final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator;
 
-  private final ASTBuilderDecorator astBuilderDecorator;
+  protected final ASTBuilderDecorator astBuilderDecorator;
 
-  private final NodeFactoryDecorator nodeFactoryDecorator;
+  protected final NodeFactoryDecorator nodeFactoryDecorator;
 
-  private final MillDecorator millDecorator;
+  protected final MillDecorator millDecorator;
 
-  private final ASTConstantsDecorator astConstantsDecorator;
+  protected final ASTConstantsDecorator astConstantsDecorator;
 
-  private final EnumDecorator enumDecorator;
+  protected final EnumDecorator enumDecorator;
 
-  private final FullASTInterfaceDecorator astInterfaceDecorator;
+  protected final FullASTInterfaceDecorator astInterfaceDecorator;
 
   private final CD4AnalysisSymbolTableCreatorDelegator symbolTableCreator;
 
@@ -101,7 +101,7 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
         .build();
   }
 
-  private List<ASTCDClass> createASTClasses(final ASTCDCompilationUnit ast) {
+  protected List<ASTCDClass> createASTClasses(final ASTCDCompilationUnit ast) {
     ASTCDCompilationUnit copyedCD = ast.deepClone();
     symbolTableCreator.createFromAST(copyedCD);
     return copyedCD.getCDDefinition().getCDClassList().stream()
@@ -109,35 +109,35 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
         .collect(Collectors.toList());
   }
 
-  private ASTCDInterface createLanguageInterface(final ASTCDCompilationUnit ast) {
+  protected ASTCDInterface createLanguageInterface(final ASTCDCompilationUnit ast) {
     return astLanguageInterfaceDecorator.decorate(ast);
   }
 
-  private List<ASTCDClass> createASTBuilderClasses(final ASTCDCompilationUnit ast) {
+  protected List<ASTCDClass> createASTBuilderClasses(final ASTCDCompilationUnit ast) {
     return ast.getCDDefinition().getCDClassList().stream()
         .map(astBuilderDecorator::decorate)
         .collect(Collectors.toList());
   }
 
-  private ASTCDClass createNodeFactoryClass(final ASTCDCompilationUnit ast) {
+  protected ASTCDClass createNodeFactoryClass(final ASTCDCompilationUnit ast) {
     return nodeFactoryDecorator.decorate(ast);
   }
 
-  private ASTCDClass createMillClass(final ASTCDCompilationUnit ast) {
+  protected ASTCDClass createMillClass(final ASTCDCompilationUnit ast) {
     return millDecorator.decorate(ast);
   }
 
-  private ASTCDClass createASTConstantsClass(final ASTCDCompilationUnit ast) {
+  protected ASTCDClass createASTConstantsClass(final ASTCDCompilationUnit ast) {
     return astConstantsDecorator.decorate(ast);
   }
 
-  private List<ASTCDInterface> createASTInterfaces(final ASTCDCompilationUnit ast) {
+  protected List<ASTCDInterface> createASTInterfaces(final ASTCDCompilationUnit ast) {
     return ast.getCDDefinition().getCDInterfaceList().stream()
         .map(astInterfaceDecorator::decorate)
         .collect(Collectors.toList());
   }
 
-  private List<ASTCDEnum> createEnums(final ASTCDCompilationUnit ast) {
+  protected List<ASTCDEnum> createEnums(final ASTCDCompilationUnit ast) {
     return ast.getCDDefinition().getCDEnumList().stream()
         .map(enumDecorator::decorate)
         .collect(Collectors.toList());

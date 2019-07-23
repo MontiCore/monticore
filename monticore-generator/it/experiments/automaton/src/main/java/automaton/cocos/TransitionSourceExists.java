@@ -1,26 +1,23 @@
 /* (c) Monticore license: https://github.com/MontiCore/monticore */
 package automaton.cocos;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
-import java.util.Optional;
-
 import automaton._ast.ASTTransition;
 import automaton._cocos.AutomatonASTTransitionCoCo;
+import automaton._symboltable.IAutomatonScope;
 import automaton._symboltable.StateSymbol;
-import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Optional;
 
 public class TransitionSourceExists
                 implements AutomatonASTTransitionCoCo {
 
   @Override
   public void check(ASTTransition node) {
-    checkArgument(node.isPresentEnclosingScope());
-
-    Scope enclosingScope = node.getEnclosingScope();
+  
+    IAutomatonScope enclosingScope = node.getEnclosingScope2();
     Optional<StateSymbol> sourceState =
-      enclosingScope.resolve(node.getFrom(), StateSymbol.KIND);
+        enclosingScope.resolveState(node.getFrom());
 
     if (!sourceState.isPresent()) {
       // Issue error...

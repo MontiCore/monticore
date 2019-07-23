@@ -22,19 +22,19 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDClass> {
 
-  private static final String LITERALS_SUFFIX = "Literals";
+  public static final String LITERALS_SUFFIX = "Literals";
 
-  private static final String LANGUAGE = "LANGUAGE";
+  protected static final String LANGUAGE = "LANGUAGE";
 
-  private static final String DEFAULT = "DEFAULT";
+  protected static final String DEFAULT = "DEFAULT";
 
-  private static final String SUPER_GRAMMARS = "superGrammars";
+  protected static final String SUPER_GRAMMARS = "superGrammars";
 
-  private static final String AST_CONSTANTS = "ASTConstants";
+  protected static final String AST_CONSTANTS = "ASTConstants";
 
-  private static final String GET_ALL_LANGUAGES = "getAllLanguages";
+  protected static final String GET_ALL_LANGUAGES = "getAllLanguages";
 
-  private final AbstractService<?> service;
+  protected final AbstractService<?> service;
 
   public ASTConstantsDecorator(GlobalExtensionManagement glex, AbstractService abstractService) {
     super(glex);

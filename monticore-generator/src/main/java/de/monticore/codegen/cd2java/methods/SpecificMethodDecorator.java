@@ -11,11 +11,11 @@ import java.util.List;
 
 abstract class SpecificMethodDecorator extends AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> {
 
-  private final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> mandatoryMethodDecorator;
+  protected final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> mandatoryMethodDecorator;
 
-  private final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> optionalMethodDecorator;
+  protected final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> optionalMethodDecorator;
 
-  private final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> listMethodDecorator;
+  protected final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> listMethodDecorator;
 
   SpecificMethodDecorator(final GlobalExtensionManagement glex,
       final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> mandatoryMethodDecorator,

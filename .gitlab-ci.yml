@@ -1,5 +1,8 @@
 image: maven:3.5.4-jdk-8-alpine
 
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
 variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
@@ -25,9 +28,25 @@ build_dev:
     - cd monticore-gradle
     - "./gradlew build"
     - "./gradlew publish -PmavenPassword=$password -PmavenUser=$username"
+    - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, "instructions covered"; print 100*covered/instructions, "% covered" }' ../*/target/site/jacoco/jacoco.csv
+  coverage: '/\d+.\d+ \% covered/'
   only:
     - dev
     - newSymtab
+    - cibuild
+  artifacts:
+    paths:
+      - "*/target"
+    expire_in: 1 week
+    
+#build_branches:
+#  stage: build
+#  script:
+#    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install"
+#  except:
+#    - dev
+#    - master
+#    - ci/gitlab-runner
     - refactoring_with_new_symtab
 
 build_latest-grammar:
@@ -53,11 +72,17 @@ integration-test:
     - cd monticore-generator/it
     - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify"
     
-staging:
+trigger-automata:
   stage: test
   trigger:
     project: monticore/languages/automaton
     branch: newSymtab_gen
+
+trigger-cd4a:
+  stage: test
+  trigger:
+    project: monticore/cd4analysis/cd4analysis
+    branch: newSymTab
 #
 #integration-test-emf:
 #  stage: test

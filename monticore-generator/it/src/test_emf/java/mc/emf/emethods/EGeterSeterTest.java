@@ -2,24 +2,17 @@
 
 package mc.emf.emethods;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.action.expression._ast.ASTAssignment;
 import mc.feature.fautomaton.action.expression._ast.ExpressionNodeFactory;
 import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTState;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTTransition;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonNodeFactory;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
+import mc.feature.fautomaton.automaton.flatautomaton._ast.*;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class EGeterSeterTest extends GeneratorIntegrationsTest {
   
@@ -28,7 +21,7 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
   private ASTAssignment assign;
   
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     aut = FlatAutomatonNodeFactory.createASTAutomaton();
     aut.setName("aut1");
     ASTState state1 = FlatAutomatonNodeFactory.createASTState();

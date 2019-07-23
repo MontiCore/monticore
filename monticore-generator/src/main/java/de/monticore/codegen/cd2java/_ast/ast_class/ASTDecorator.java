@@ -31,19 +31,19 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   private static final String VISITOR = "visitor";
 
-  private final ASTService astService;
+  protected final ASTService astService;
 
-  private final VisitorService visitorService;
+  protected final VisitorService visitorService;
 
-  private final NodeFactoryService nodeFactoryService;
+  protected final NodeFactoryService nodeFactoryService;
 
-  private final ASTSymbolDecorator symbolDecorator;
+  protected final ASTSymbolDecorator symbolDecorator;
 
-  private final ASTScopeDecorator scopeDecorator;
+  protected final ASTScopeDecorator scopeDecorator;
 
-  private final MethodDecorator methodDecorator;
+  protected final MethodDecorator methodDecorator;
 
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public ASTDecorator(final GlobalExtensionManagement glex,
                       final ASTService astService,

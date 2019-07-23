@@ -2,15 +2,15 @@
 
 package de.monticore.generating.templateengine;
 
+import com.google.common.collect.Lists;
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.GeneratorSetup;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
-
-import com.google.common.collect.Lists;
-
-import de.monticore.ast.ASTNode;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 
 public class TemplateStringHookPoint extends HookPoint {
   private Template template;
@@ -18,7 +18,7 @@ public class TemplateStringHookPoint extends HookPoint {
   public TemplateStringHookPoint(String statement) throws IOException {
     super();
     template = new Template("template", new StringReader(statement),
-        new Configuration(Configuration.VERSION_2_3_26));
+        new Configuration(GeneratorSetup.FREEMARKER_VERSION));
   }
   
   @Override

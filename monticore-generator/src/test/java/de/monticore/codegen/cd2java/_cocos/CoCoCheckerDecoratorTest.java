@@ -152,7 +152,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(18, cocoChecker.getCDMethodList().size());
+    assertEquals(20, cocoChecker.getCDMethodList().size());
   }
 
   @Test

@@ -134,11 +134,20 @@ public class ReferenceTypeTranslation implements
     }
   }
 
-  private void addStereotypeForASTTypes(ASTAdditionalAttribute astAdditionalAttributes, ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
+  private void addStereotypeForASTTypes(ASTAdditionalAttribute astAdditionalAttributes,
+                                        ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
+    //if in astrule is Prod given without AST prefix e.g. foo:Foo
     String simpleName = astAdditionalAttributes.getMCType().getNameList().stream().reduce((a, b) -> a + "." + b).get();
     Optional<ProdSymbol> mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, simpleName);
     if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
       TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
+    } else if (simpleName.startsWith("AST")) {
+      //if in astrule is Prod given with AST prefix e.g. foo:ASTFoo
+      simpleName = simpleName.replaceFirst("AST", "");
+      mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, simpleName);
+      if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
+        TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
+      }
     }
   }
 

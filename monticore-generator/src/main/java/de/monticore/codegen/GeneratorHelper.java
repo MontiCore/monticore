@@ -10,14 +10,11 @@ import de.monticore.ast.ASTNode;
 import de.monticore.cd.CD4AnalysisHelper;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.*;
-import de.monticore.cd.prettyprint.CDPrettyPrinter;
 import de.monticore.cd.prettyprint.CDPrettyPrinterDelegator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
-import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.symboltable.SymbolTableGenerator;
-import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
@@ -25,13 +22,11 @@ import de.monticore.grammar.grammar._symboltable.IGrammarScope;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolReference;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ISymbol;
-import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.CollectionTypesPrinter;
 import de.monticore.types.MCCollectionTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
@@ -56,18 +51,13 @@ import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_E
 import static de.monticore.grammar.Multiplicity.multiplicityByAlternative;
 import static de.monticore.grammar.Multiplicity.multiplicityByIteration;
 import static de.monticore.types.MCFullGenericTypesHelper.getReferenceNameFromOptional;
-import static de.se_rwth.commons.Names.getQualifier;
 import static java.util.Collections.max;
 
 public class GeneratorHelper extends MCCollectionTypesHelper {
 
   public static final String AST_PREFIX = "AST";
 
-  public static final String AST_NODE = "ASTNode";
-
   public static final String AST_NODE_CLASS_NAME = "de.monticore.ast.ASTNode";
-
-  public static final String ASTC_NODE_CLASS_NAME = "mc.ast.ASTCNode";
 
   public static final String AST_PACKAGE_SUFFIX = "_ast";
 
@@ -79,19 +69,13 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
 
   public static final String COCOS_PACKAGE_SUFFIX = "_cocos";
 
-  public static final String PARSER_PACKAGE_SUFFIX = "._parser";
-
   public static final String AST_DOT_PACKAGE_SUFFIX = "._ast";
 
   public static final String AST_PACKAGE_SUFFIX_DOT = "_ast.";
 
   public static final String AST_DOT_PACKAGE_SUFFIX_DOT = "._ast.";
 
-  public static final String MC_CONCRETE_PARSER_CONTEXT = "MCParser";
-
   public static final String BUILDER = "Builder";
-
-  public static final String BUILDER_PREFIX = "Builder_";
 
   public static final String DELEGATE = "Delegate";
 
@@ -481,19 +465,11 @@ return null;
 
   /**
    * @return full qualified name of the overall interface for AST nodes
-   * @see #getASTNodeType()
    */
   public static String getQualifiedASTNodeType() {
     return AST_NODE_CLASS_NAME;
   }
 
-  /**
-   * @return name of the overall interface for AST nodes
-   * @see #getQualifiedASTNodeType()
-   */
-  public static String getASTNodeType() {
-    return AST_NODE;
-  }
 
   /**
    * @return name of the language's AST-Nodes marker interface
@@ -541,11 +517,6 @@ return null;
   public static boolean isSymbolOrScopeAttribute(ASTCDAttribute attr) {
     return CD4AnalysisHelper.hasStereotype(attr, SYMBOL)
         || CD4AnalysisHelper.hasStereotype(attr, SCOPE);
-  }
-
-  public static List<ASTCDAttribute> getNativeCDAttributes(ASTCDClass clazz) {
-    return clazz.getCDAttributeList().stream().filter(attr -> !isAdditionalAttribute(attr))
-        .collect(Collectors.toList());
   }
 
   public boolean hasOnlyAstAttributes(ASTCDClass type) {
@@ -1210,14 +1181,6 @@ return null;
     return StringTransformations.capitalize(getNativeAttributeName(ast.getName()));
   }
 
-  public static String getSimpleListName(ASTCDAttribute ast) {
-    String name = ast.getName();
-    if (name.endsWith(TransformationHelper.LIST_SUFFIX)) {
-      name = name.substring(0, name.length() - TransformationHelper.LIST_SUFFIX.length());
-    }
-    return StringTransformations.capitalize(name);
-  }
-
   public static String getPlainGetter(CDFieldSymbol field) {
     String astType = field.getType().getName();
     StringBuilder sb = new StringBuilder();
@@ -1600,16 +1563,6 @@ return null;
     return resolveCdType(nameToResolve).isPresent();
   }
 
-  public boolean isAstInterface(ASTCDInterface interf) {
-    String simpleName = Names.getSimpleName(interf.getName());
-    if (!simpleName.startsWith(AST_PREFIX)) {
-      return false;
-    }
-    String nameToResolve = interf.getName().contains(".") ? interf.getName() : qualifiedName + "."
-        + interf.getName();
-    return resolveCdType(nameToResolve).isPresent();
-  }
-
   public String getCdName() {
     return cdDefinition.getName();
   }
@@ -1663,18 +1616,6 @@ return null;
 
   public static String getCdName(String qualifiedCdName) {
     return Names.getSimpleName(qualifiedCdName);
-  }
-
-  public String getReferencedSymbolName(ASTCDAttribute attribute) {
-    String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
-        MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
-
-    if (!getQualifier(referencedSymbol).isEmpty()) {
-      referencedSymbol = SymbolTableGeneratorHelper
-          .getQualifiedSymbolType(getQualifier(referencedSymbol)
-              .toLowerCase(), Names.getSimpleName(referencedSymbol));
-    }
-    return referencedSymbol;
   }
 
   /**
@@ -1775,23 +1716,6 @@ return null;
         .substring(errorCodeSuffix.length() - 3));
   }
 
-  /**
-   * Creates an instance of the generator helper
-   *
-   * @param astClassDiagram
-   * @param cdScope
-   * @param emfCompatible
-   * @return
-   */
-  public static AstGeneratorHelper createGeneratorHelper(ASTCDCompilationUnit astClassDiagram,
-                                                         CD4AnalysisGlobalScope cdScope,
-                                                         Grammar_WithConceptsGlobalScope mcScope,
-                                                         boolean emfCompatible) {
-    if (emfCompatible) {
-      return new AstEmfGeneratorHelper(astClassDiagram, cdScope, mcScope);
-    }
-    return new AstGeneratorHelper(astClassDiagram, cdScope, mcScope);
-  }
 
   public String getQualifiedSymbolName(IGrammarScope enclosingScope, String simpleSymbolName) {
     Optional<ProdSymbol> symbolType = enclosingScope.resolveProd(simpleSymbolName);

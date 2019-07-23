@@ -49,8 +49,14 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
       if (interf instanceof ASTMCObjectType) {
         List<String> names = ((ASTMCObjectType) interf).getNameList();
         String interfaceName = (names.isEmpty())? "" : names.get(names.size()-1);
-        if (cDInterfaces.get(interfaceName) != null) {
-          attributes.addAll(cDInterfaces.get(interfaceName).getCDAttributeList());
+        if (cDInterfaces.containsKey(interfaceName)) {
+          for (ASTCDAttribute interfaceAttribute :cDInterfaces.get(interfaceName).getCDAttributeList()){
+            if(cdClass.getCDAttributeList()
+                .stream()
+                .noneMatch(x->x.getName().equals(interfaceAttribute.getName()))){
+              attributes.add(interfaceAttribute);
+            }
+          }
         }
       }
     }

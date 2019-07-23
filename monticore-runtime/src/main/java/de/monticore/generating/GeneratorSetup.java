@@ -2,14 +2,7 @@
 
 package de.monticore.generating;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import com.google.common.collect.Lists;
-
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
@@ -24,6 +17,13 @@ import freemarker.cache.TemplateLoader;
 import freemarker.core.Macro;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.Version;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Setup for generator (see {@link GeneratorEngine}).
@@ -77,9 +77,9 @@ public class GeneratorSetup {
   
   /**
    * The model name
-   * (if the arftifacts are generated from one model, this could 
+   * (if the arftifacts are generated from one model, this could
    * be an identifier of this model)
-   * By default the model name is absent -- 
+   * By default the model name is absent --
    * and then the according tracing info is not printed at all.
    */
   private Optional<String> modelName = Optional.empty();
@@ -100,11 +100,12 @@ public class GeneratorSetup {
   private String defaultFileExtension = "java";
 
   /**
-   * Additional Suffix for a generated Class, if the 
+   * Additional Suffix for a generated Class, if the
    * class itself already exists.
    */
   public final static String GENERATED_CLASS_SUFFIX = "TOP";
   
+  public final static Version FREEMARKER_VERSION = Configuration.VERSION_2_3_28;
   /**
    * A list of all freemarker functions that serve as aliases for Java methods,
    * e.g. 'include' as alias for 'tc.include'
@@ -114,9 +115,9 @@ public class GeneratorSetup {
   public static final String ALIASES_TEMPLATE = "de.monticore.generating.templateengine.freemarker.Aliases";
   
   public  Configuration getConfig() {
-    Configuration config = new Configuration(Configuration.VERSION_2_3_26);
+    Configuration config = new Configuration(FREEMARKER_VERSION);
 
-    DefaultObjectWrapper o = new DefaultObjectWrapper(Configuration.VERSION_2_3_26);
+    DefaultObjectWrapper o = new DefaultObjectWrapper(FREEMARKER_VERSION);
     o.setTreatDefaultMethodsAsBeanMembers(true);
     config.setObjectWrapper(o);
     // don't look for templateName.de.ftl when templateName.ftl requested
@@ -139,7 +140,7 @@ public class GeneratorSetup {
           Log.warn("0xA1020 Unable to load templates from path " + file.getPath(), e);
         }
       }
-            
+
       // this loader is added last such that all "built-in" templates located on the additionaltemplatepath are
       // taking precedence over this one
       loaders.add(mcClassLoader);
@@ -182,7 +183,7 @@ public class GeneratorSetup {
   }
 
   public FileReaderWriter getFileHandler() {
-    if (this.fileHandler == null) 
+    if (this.fileHandler == null)
         this.fileHandler = new FileReaderWriter(); //default
     return fileHandler;
   }
@@ -228,7 +229,7 @@ public class GeneratorSetup {
   }
 
   public GlobalExtensionManagement getGlex() {
-    if (this.glex == null) 
+    if (this.glex == null)
     	this.glex = new GlobalExtensionManagement();  //default
     return this.glex;
   }
@@ -245,13 +246,13 @@ public class GeneratorSetup {
    * @return targetPath
    */
   public IterablePath getHandcodedPath() {
-    if (this.handcodedPath == null) 
+    if (this.handcodedPath == null)
     	this.handcodedPath = IterablePath.empty();  //default
     return this.handcodedPath;
   }
 
   /**
-   * @param hwcpath the handcoded path to set
+   * @param hwcPath the handcoded path to set
    */
   public void setHandcodedPath(IterablePath hwcPath) {
     this.handcodedPath = hwcPath;

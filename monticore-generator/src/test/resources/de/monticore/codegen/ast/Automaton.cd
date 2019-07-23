@@ -6,14 +6,14 @@ classdiagram Automaton {
 
     <<scope, symbol>> public class ASTAutomaton{
       protected String name;
-      protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;
-      protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition> transitions;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition> transitions;
     }
 
     <<symbol>> public class ASTState{
       protected String name;
-      protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;
-      protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition> transitions;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition> transitions;
     }
 
     public class ASTTransition{

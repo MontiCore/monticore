@@ -23,11 +23,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDClass> {
 
-  private static final String FACTORY = "factory";
-
-  private ASTCDCompilationUnit compilationUnit;
-
-  private final NodeFactoryService nodeFactoryService;
+  protected final NodeFactoryService nodeFactoryService;
 
   public NodeFactoryDecorator(final GlobalExtensionManagement glex, final NodeFactoryService nodeFactoryService) {
     super(glex);
@@ -35,7 +31,6 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
   }
 
   public ASTCDClass decorate(final ASTCDCompilationUnit astcdCompilationUnit) {
-    this.compilationUnit = astcdCompilationUnit;
     ASTCDDefinition astcdDefinition = astcdCompilationUnit.getCDDefinition();
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
     ASTMCType factoryType = this.getCDTypeFacade().createQualifiedType(factoryClassName);
@@ -64,7 +59,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
     }
 
     //add factory delegate Methods form Super Classes
-    List<ASTCDMethod> delegateMethodList = addFactoryDelegateMethods();
+    List<ASTCDMethod> delegateMethodList = addFactoryDelegateMethods(astcdClassList);
 
 
     return CD4AnalysisMill.cDClassBuilder()
@@ -148,7 +143,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
   }
 
 
-  protected List<ASTCDMethod> addFactoryDelegateMethods() {
+  protected List<ASTCDMethod> addFactoryDelegateMethods(List<ASTCDClass> classList) {
     List<ASTCDMethod> delegateMethodList = new ArrayList<>();
     //get super symbols
     for (CDDefinitionSymbol superSymbol : nodeFactoryService.getSuperCDs()) {
@@ -161,7 +156,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
         CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build().accept(visitor);
 
         for (ASTCDClass superClass : superDefinition.getCDClassList()) {
-          if (!nodeFactoryService.isClassOverwritten(superClass, compilationUnit.getCDDefinition().getCDClassList())
+          if (!nodeFactoryService.isClassOverwritten(superClass, classList)
               && !(superClass.isPresentModifier() && superClass.getModifier().isAbstract())
               && !nodeFactoryService.isMethodAlreadyDefined(CREATE_METHOD + superClass.getName(), delegateMethodList)) {
             String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";

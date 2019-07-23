@@ -7,7 +7,10 @@ import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.JavaNamesHelper;
+import de.se_rwth.commons.Names;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -102,6 +105,10 @@ public class AbstractService<T extends AbstractService> {
     return "";
   }
 
+  public String getQualifiedCDName() {
+    return Names.getQualifiedName(getBasePackage(), getCDName());
+  }
+
   public Collection<T> getServicesOfSuperCDs() {
     return getSuperCDs().stream()
         .map(this::createService)
@@ -112,11 +119,34 @@ public class AbstractService<T extends AbstractService> {
     return (T) new AbstractService(cdSymbol);
   }
 
-  public static String getNativeAttributeName(String attributeName) {
+  public String getNativeAttributeName(String attributeName) {
     if (!attributeName.startsWith(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED)) {
       return attributeName;
     }
     return attributeName.substring(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED.length());
+  }
+
+  public String getNativeTypeName(ASTMCType astType) {
+    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
+    // if not generic returns simple Type like 'int'
+    if (astType instanceof ASTMCBasicGenericType && ((ASTMCBasicGenericType) astType).getMCTypeArgumentList().size() == 1 ) {
+      return ((ASTMCBasicGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get().printType();
+    }
+    return astType.printType();
+  }
+
+  public String getSimpleNativeType(ASTMCType astType) {
+    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
+    // if not generic returns simple Type like 'int'
+    String nativeAttributeType = getNativeTypeName(astType);
+    return getSimpleNativeType(nativeAttributeType);
+  }
+
+  public String getSimpleNativeType(String nativeAttributeType) {
+    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
+    // if not generic returns simple Type like 'int'
+    return nativeAttributeType.contains(".") ? nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".") + 1) :
+        nativeAttributeType;
   }
 
   public boolean isMethodBodyPresent(ASTCDMethod method) {
@@ -137,6 +167,10 @@ public class AbstractService<T extends AbstractService> {
 
   public boolean isInherited(ASTCDAttribute attribute) {
     return hasStereotype(attribute.getModifier(), MC2CDStereotypes.INHERITED);
+  }
+
+  public String getInheritedGrammarName(ASTCDAttribute attribute) {
+    return getStereotypeValues(attribute.getModifier(), MC2CDStereotypes.INHERITED).get(0);
   }
 
   public boolean hasStereotype(ASTModifier modifier, MC2CDStereotypes stereotype) {
@@ -192,6 +226,21 @@ public class AbstractService<T extends AbstractService> {
       }
     }
     return true;
+  }
+
+  public String getGrammarFromClass(ASTCDDefinition astcdDefinition, ASTCDAttribute astcdAttribute) {
+    String simpleNativeAttributeType = getSimpleNativeType(astcdAttribute.getMCType());
+    if (astcdDefinition.getCDClassList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
+      return "this";
+    } else {
+      Collection<CDDefinitionSymbol> superCDs = getSuperCDs(resolveCD(astcdDefinition.getName()));
+      for (CDDefinitionSymbol superCD : superCDs) {
+        if (superCD.getTypes().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
+          return superCD.getName() + "PackageImpl";
+        }
+      }
+    }
+    return "this";
   }
 
 }

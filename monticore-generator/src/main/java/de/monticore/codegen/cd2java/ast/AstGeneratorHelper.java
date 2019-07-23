@@ -7,7 +7,6 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
@@ -18,8 +17,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.Optional;
 
 public class AstGeneratorHelper extends GeneratorHelper {
 
@@ -81,28 +78,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
         .filter(c -> className.equals(GeneratorHelper.getPlainName(c))).findAny()
         .isPresent();
   }
-  
-  public Optional<ASTCDClass> getASTBuilder(ASTCDClass clazz) {
-    return getCdDefinition().getCDClassList().stream()
-        .filter(c -> {
-          String name = getNameOfBuilderClass(clazz);
-          return c.getName().equals(name)
-            || c.getName().equals(name + GeneratorSetup.GENERATED_CLASS_SUFFIX);
-        }).findAny();
-  }
-  
-  public static boolean inheritsFromASTNodeBuilder(ASTCDClass clazz) {
-    if(clazz.isPresentSuperclass()) {
-      String type = clazz.printSuperClass();
-      int index = type.indexOf('<');
-      if (index != -1) {
-        type = type.substring(0, index);
-      }
-      return "ASTNodeBuilder".equals(type) || "de.monticore.ast.ASTNodeBuilder".equals(type);
-    }
-    return false;
-  }
-  
+
   public static boolean compareAstTypes(String qualifiedType, String type) {
     if (type.indexOf('.') != -1) {
       return qualifiedType.equals(type);
@@ -113,14 +89,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
     }
     return false;
   }
-  
-  public static boolean isSuperClassExternal(ASTCDClass clazz) {
-    return clazz.isPresentSuperclass()
-        && hasStereotype(clazz, MC2CDStereotypes.EXTERNAL_TYPE.toString())
-        && getStereotypeValues(clazz, MC2CDStereotypes.EXTERNAL_TYPE.toString())
-            .contains(clazz.printSuperClass());
-  }
-  
+
   /**
    * @param qualifiedName
    * @return The lower case qualifiedName + AST_PACKAGE_SUFFIX
@@ -218,7 +187,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   public static boolean hasReturnTypeVoid(ASTCDMethod method) {
     return method.getMCReturnType().isPresentMCVoidType();
   }
-  
+
   /**
    * Transforms all CD types to Java types using the given package suffix.
    */

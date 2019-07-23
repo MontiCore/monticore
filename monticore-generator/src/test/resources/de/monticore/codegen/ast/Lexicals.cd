@@ -6,4 +6,7 @@ classdiagram Lexicals{
 
   enum LexicalsLiterals;
 
+ public class ASTName{
+  protected String name;
+ }
 }

@@ -23,13 +23,15 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
-  private static final String DEEP_CLONE_METHOD = "deepClone";
+  protected static final String DEEP_CLONE_METHOD = "deepClone";
 
-  private final MethodDecorator methodDecorator;
+  protected final MethodDecorator methodDecorator;
 
-  private final AbstractService<?> service;
+  protected final AbstractService<?> service;
 
-  private final DataDecoratorUtil dataDecoratorUtil;
+  protected final DataDecoratorUtil dataDecoratorUtil;
+
+  protected String clazzName;
 
   public DataDecorator(final GlobalExtensionManagement glex, final MethodDecorator methodDecorator,
                        final AbstractService service, final DataDecoratorUtil dataDecoratorUtil) {
@@ -41,6 +43,7 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   @Override
   public ASTCDClass decorate(ASTCDClass clazz) {
+    this.clazzName= clazz.deepClone().getName();
     clazz.addCDConstructor(createDefaultConstructor(clazz));
     if (!clazz.getCDAttributeList().isEmpty()) {
       clazz.addCDConstructor(createFullConstructor(clazz));
@@ -49,12 +52,9 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     clazz.addAllCDMethods(getAllDataMethods(clazz));
     clazz.addCDMethod(createDeepCloneWithParam(clazz));
 
-    List<ASTCDMethod> attributeMethods = clazz.getCDAttributeList().stream()
-        .map(methodDecorator::decorate)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
     //remove methods that are already defined by ast rules
-    clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), attributeMethods));
+    clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), createGetter(clazz.getCDAttributeList())));
+    clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), createSetter(clazz.getCDAttributeList())));
 
     return clazz;
   }
@@ -140,5 +140,19 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC, returnType, DEEP_CLONE_METHOD, parameter);
     this.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("data.DeepCloneWithParameters", clazz));
     return deepCloneWithParam;
+  }
+
+  protected List<ASTCDMethod> createGetter(List<ASTCDAttribute> attributeList){
+    return attributeList.stream()
+        .map(methodDecorator.getAccessorDecorator()::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+  }
+
+  protected List<ASTCDMethod> createSetter(List<ASTCDAttribute> attributeList){
+    return attributeList.stream()
+        .map(methodDecorator.getMutatorDecorator()::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
   }
 }
