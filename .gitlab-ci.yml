@@ -32,7 +32,7 @@ build_dev:
   coverage: '/\d+.\d+ \% covered/'
   only:
     - dev
-    - newSymtab
+    - latest-grammar
     - cibuild
   artifacts:
     paths:
@@ -47,24 +47,6 @@ build_dev:
 #    - dev
 #    - master
 #    - ci/gitlab-runner
-    - refactoring_with_new_symtab
-
-build_latest-grammar:
-  stage: build
-  script:
-    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -U"
-  only:
-    - latest-grammar
-
-build_branches:
-  stage: build
-  script:
-    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
-  except:
-    - dev
-    - master
-    - ci/gitlab-runner
-    - latest-grammar
 
 integration-test:
   stage: test
