@@ -3,8 +3,6 @@
 package de.monticore.grammar.grammar._symboltable;
 
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.modifiers.AccessModifier;
 
 import java.util.Collection;
@@ -16,17 +14,17 @@ import java.util.function.Predicate;
 import static de.monticore.codegen.GeneratorHelper.isQualified;
 import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 import static de.se_rwth.commons.Names.getSimpleName;
-import static de.se_rwth.commons.logging.Log.trace;
 import static java.util.Optional.empty;
 
 public interface IGrammarScope extends IGrammarScopeTOP {
 
-
-
-
   // all resolveImported Methods for ProdSymbol
   default public Optional<ProdSymbol> resolveProdImported(String name, AccessModifier modifier) {
-    return this.resolveProdLocally(name);
+    Optional<ProdSymbol> s = this.resolveProdLocally(name);
+    if (s.isPresent()) {
+      return s;
+    }
+    return resolveInSuperGrammars(name, modifier);
   }
 
 
