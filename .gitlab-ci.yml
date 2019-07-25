@@ -81,4 +81,4 @@ it-experiments-gradle:
   stage: test
   script:
     - cd monticore-generator/it/experiments
-  - "./gradlew build --continue"
+    - "./gradlew build --continue"
