@@ -44,6 +44,7 @@ public class ${className} implements ${grammarName}Visitor {
     putOnStack(Log.errorIfNull(enclosingScope));
   }
 
+  @SuppressWarnings("unchecked")
   public ${className}(final Deque<? extends ${scopeName}> scopeStack) {
     this.scopeStack = Log.errorIfNull((Deque<${scopeName}>)scopeStack);
   }
@@ -102,7 +103,7 @@ public class ${className} implements ${grammarName}Visitor {
   }
 
   public final Optional<${scopeName}> removeCurrent${grammarName}Scope() {
-    return Optional.of(scopeStack.pollLast());
+    return Optional.ofNullable(scopeStack.pollLast());
   }
 
   protected void set${grammarName}ScopeStack(final Deque<${scopeName}> scopeStack) {
