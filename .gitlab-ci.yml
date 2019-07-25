@@ -76,9 +76,11 @@ integration-test-experiments:
   script:
     - cd monticore-generator/it/experiments
     - "mvn --settings ../../../settings.xml $MAVEN_OPTS clean install -fae"
+  allow_failure: true
 
 it-experiments-gradle:
   stage: test
   script:
     - cd monticore-generator/it/experiments
     - "./gradlew build --continue"
+  allow_failure: true
