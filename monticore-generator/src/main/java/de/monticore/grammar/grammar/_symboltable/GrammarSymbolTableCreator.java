@@ -215,6 +215,11 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     // Do nothing: see method visit(ASTASTRule ast)
   }
 
+  @Override
+  public void visit(ASTBlock ast) {
+    // Do nothing:
+  }
+
   void setComponentMultiplicity(RuleComponentSymbol prod, ASTNode ast) {
     Multiplicity multiplicity = determineMultiplicity(astGrammar, ast);
     if (multiplicity == LIST) {
