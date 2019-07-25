@@ -1,7 +1,7 @@
 /* (c) Monticore license: https://github.com/MontiCore/monticore */
 
-grammar Questionnaire extends de.monticore.MCCommonLiterals {
- 
+grammar Questionnaire extends de.monticore.literals.MCCommonLiterals {
+
   symbol scope QDefinition = "questionnaire" Name "{"
     ( Item | Scale )*
   "}";
@@ -9,12 +9,12 @@ grammar Questionnaire extends de.monticore.MCCommonLiterals {
   symbol Item = "item" Name question:String (scale:Name | ScaleType);
 
   symbol Scale = "scale" Name ScaleType;
-  
+
   interface ScaleType;
 
   Range implements ScaleType = "range" "["
     minTitle:String? min:NatLiteral
-   ".." 
+   ".."
     max:NatLiteral maxTitle:String?
   "]";
   Number implements ScaleType = "number";

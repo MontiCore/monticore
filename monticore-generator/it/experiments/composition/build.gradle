@@ -1,0 +1,20 @@
+description = 'Experiments: composition'
+
+fileTree(grammarDir).each {
+  def g = it
+  task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
+    grammar = file g
+    outputDir = file outDir
+    handcodedPath "$projectDir/src/main/java"
+    modelPath "$projectDir/$grammarDir"
+    def incCheckDir = file(grammarDir).toURI().relativize(g.toURI()).toString()
+    incCheckDir = incCheckDir.substring(0,incCheckDir.lastIndexOf('.')).toLowerCase()
+    def uptoDate = incCheck(outputDir.toString() +"/$incCheckDir/IncGenGradleCheck.txt")
+    outputs.upToDateWhen { uptoDate }
+  }
+}
+
+generateAutomaton2.dependsOn generateInvAutomaton
+generateAutomaton3.dependsOn generateInvAutomaton, generateExpression
+generateHierarchicalAutomaton.dependsOn generateAutomaton1
+generateHierInvAutomaton.dependsOn generateAutomaton3

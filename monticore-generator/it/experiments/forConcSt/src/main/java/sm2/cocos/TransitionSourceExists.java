@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import sm2._ast.ASTTransition;
 import sm2._cocos.SM2ASTTransitionCoCo;
+import sm2._symboltable.ISM2Scope;
 import sm2._symboltable.StateSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -15,10 +16,9 @@ public class TransitionSourceExists implements SM2ASTTransitionCoCo {
   
   @Override
   public void check(ASTTransition node) {
-    checkArgument(node.isPresentEnclosingScope());
     
-    Scope enclosingScope = node.getEnclosingScope();
-    Optional<StateSymbol> sourceState = enclosingScope.resolve(node.getFrom(), StateSymbol.KIND);
+    ISM2Scope enclosingScope = node.getEnclosingScope2();
+    Optional<StateSymbol> sourceState = enclosingScope.resolveState(node.getFrom());
     
     if (!sourceState.isPresent()) {
       // Issue error...

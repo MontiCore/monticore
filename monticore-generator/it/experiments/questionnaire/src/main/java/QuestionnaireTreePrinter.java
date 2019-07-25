@@ -1,8 +1,8 @@
 /* (c) Monticore license: https://github.com/MontiCore/monticore */
 
 import de.monticore.ast.ASTNode;
-import de.monticore.mccommonliterals._ast.ASTMCCommonLiteralsNode;
-import de.monticore.mccommonliterals._ast.ASTNatLiteral;
+import de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode;
+import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
 import questionnaire._ast.*;
 import questionnaire._visitor.*;
 
@@ -55,7 +55,7 @@ public class QuestionnaireTreePrinter implements
   public void endVisit(ASTScaleType node) {
     print("|ST"+depth+"]");
   }
-      
+  
 
   // additional function: helps the others ...
   public void print(String s) {
@@ -63,15 +63,15 @@ public class QuestionnaireTreePrinter implements
   }
 
   int depth = 0;
-      
+  
   public void visit(ASTQDefinition node) {
     print("<Q"+depth+">" +"questionnaire " + node.getName() + " {\n\n");
   }
-      
+  
   public void endVisit(ASTQDefinition node) {
     print("\n} </Q"+depth+">\n");
   }
-      
+  
   public void visit(ASTItem node) {
     print("<I"+depth+">" +"  item " + node.getName() +" \""+ node.getQuestion() + "\" ");
     Optional<String> scale = node.getScaleOpt();
@@ -79,15 +79,15 @@ public class QuestionnaireTreePrinter implements
       print(scale.get());
     }
   }
-      
+  
   public void endVisit(ASTItem node) {
     print("\n </I"+depth+">\n");
   }
-      
+  
   public void visit(ASTScale node) {
     print("<S"+depth+">" +"  scale " + node.getName() + " ");
   }
-      
+  
   public void endVisit(ASTScale node) {
     print("</S"+depth+">");
   }
@@ -98,7 +98,7 @@ public class QuestionnaireTreePrinter implements
     print("<R"+depth+">" +"range  [" + minTitle +" "+ node.getMin().getValue() + " .. "
           + node.getMax().getValue() +" "+ maxTitle +"]\n" );
   }
-      
+  
   public void endVisit(ASTRange node) {
     print("</R"+depth+">");
   }
@@ -106,11 +106,11 @@ public class QuestionnaireTreePrinter implements
   public void visit(ASTNumber node) {
     print("<N"+depth+">" +"number");
   }
-      
+  
   public void endVisit(ASTNumber node) {
     print("</N"+depth+">");
   }
-      
+  
   public void visit(ASTText node) {
     if(node.isPresentMaxCharacters()) {
       print("<T"+depth+">" +"text " + node.getMaxCharacters().getValue());
@@ -118,7 +118,7 @@ public class QuestionnaireTreePrinter implements
       print("text");
     }
   }
-      
+  
   public void endVisit(ASTText node) {
     print("</T"+depth+">");
   }
@@ -126,11 +126,11 @@ public class QuestionnaireTreePrinter implements
   public void visit(ASTSelect node) {
     print("<E"+depth+">" +"select { ");
   }
-      
+  
   public void endVisit(ASTSelect node) {
     print("} </E"+depth+">");
   }
-      
+  
   public void visit(ASTSelectOption node) {
     print("<O"+depth+">" +node.getId()+":"+node.getTitle()+" ");
   }
@@ -147,4 +147,4 @@ public class QuestionnaireTreePrinter implements
     print("</L"+depth+">");
   }
 
-} 
+}

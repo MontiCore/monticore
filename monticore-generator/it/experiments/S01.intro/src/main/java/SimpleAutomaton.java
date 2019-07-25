@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.*;
 
 public class SimpleAutomaton {
-    
+  
   /**
    *
    */
   public static void main(String[] args) {
-     List<Character> e = new ArrayList();
+     List<Character> e = new ArrayList<>();
      System.out.println("  Result: " +simple(e) +" on: "+e);
      e.add('a');
      System.out.println("  Result: " +simple(e) +" on: "+e);

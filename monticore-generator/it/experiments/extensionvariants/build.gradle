@@ -1,0 +1,46 @@
+description = 'Experiments: extensionvariants'
+
+sourceSets {
+  main.java {
+    exclude 'eproblemoptinheritance/**'
+    exclude 'eproblemstarinheritance/**'
+  }
+}
+
+fileTree(grammarDir).each {
+  def g = it
+  task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
+    grammar = file g
+    outputDir = file outDir
+    handcodedPath "$projectDir/src/main/java"
+    modelPath "$projectDir/$grammarDir"
+    def incCheckDir = file(grammarDir).toURI().relativize(g.toURI()).toString()
+    incCheckDir = incCheckDir.substring(0,incCheckDir.lastIndexOf('.')).toLowerCase()
+    def uptoDate = incCheck(outputDir.toString() +"/$incCheckDir/IncGenGradleCheck.txt")
+    outputs.upToDateWhen { uptoDate }
+  }
+}
+
+generateB1.dependsOn generateA
+generateB2.dependsOn generateA
+generateB3.dependsOn generateA
+generateB4.dependsOn generateA
+generateB5.dependsOn generateA
+generateB6.dependsOn generateA
+generateB7.dependsOn generateA
+generateB8.dependsOn generateA
+generateB9.dependsOn generateA
+generateB10.dependsOn generateA
+generateB11.dependsOn generateA
+generateBX1.dependsOn generateA
+generateBX2.dependsOn generateA
+generateBX3.dependsOn generateA
+generateE1.dependsOn generateD
+generateE2.dependsOn generateD
+generateE3.dependsOn generateD
+generateEProblemOptInheritance.dependsOn generateD
+generateEProblemStarInheritance.dependsOn generateD
+generateESolution1OptInheritance.dependsOn generateD
+generateEX1.dependsOn generateD
+generateEX3.dependsOn generateD
+generateEX4.dependsOn generateD

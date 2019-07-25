@@ -1,29 +1,20 @@
 /* (c) Monticore license: https://github.com/MontiCore/monticore */
 package sm2;
 
-import java.io.IOException;
-import java.util.Optional;
-
+import de.monticore.io.paths.ModelPath;
+import de.se_rwth.commons.logging.Log;
+import org.antlr.v4.runtime.RecognitionException;
 import sm2._ast.ASTAutomaton;
-import sm2._parser.SM2Parser;
-import sm2._symboltable.SM2Language;
-import sm2._symboltable.SM2SymbolTableCreator;
-import sm2._symboltable.StateSymbol;
-import sm2.PrettyPrinter;
-import sm2.CountStates;
 import sm2._cocos.SM2CoCoChecker;
+import sm2._parser.SM2Parser;
+import sm2._symboltable.*;
 import sm2.cocos.AtLeastOneInitialState;
 import sm2.cocos.SM2CoCos;
 import sm2.cocos.StateNameStartsWithCapitalLetter;
 import sm2.cocos.TransitionSourceExists;
 
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.logging.Log;
-import org.antlr.v4.runtime.RecognitionException;
+import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Main class for the SM2 DSL tool.
@@ -33,7 +24,7 @@ public class SM2Tool {
   
   /**
    * Use the single argument for specifying the single input sm2 file.
-   * 
+   *
    * @param args
    */
   public static void main(String[] args) {
@@ -57,9 +48,9 @@ public class SM2Tool {
     Log.info(model + " parsed successfully!", SM2Tool.class.getName());
     
     // setup the symbol table
-    Scope modelTopScope = createSymbolTable(lang, ast);
+    SM2ArtifactScope modelTopScope = createSymbolTable(lang, ast);
     // can be used for resolving things in the model
-    Optional<Symbol> aSymbol = modelTopScope.resolve("Ping", StateSymbol.KIND);
+    Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
     if (aSymbol.isPresent()) {
       Log.info("Resolved state symbol \"Ping\"; FQN = " + aSymbol.get().toString(),
           SM2Tool.class.getName());
@@ -87,7 +78,7 @@ public class SM2Tool {
   
   /**
    * Parse the model contained in the specified file.
-   * 
+   *
    * @param model - file to parse
    * @return
    */
@@ -109,27 +100,25 @@ public class SM2Tool {
   
   /**
    * Create the symbol table from the parsed AST.
-   * 
+   *
    * @param lang
    * @param ast
    * @return
    */
-  public static Scope createSymbolTable(SM2Language lang, ASTAutomaton ast) {
-    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(lang.getResolvingFilters());
+  public static SM2ArtifactScope createSymbolTable(SM2Language lang, ASTAutomaton ast) {
     
-    GlobalScope globalScope = new GlobalScope(new ModelPath(), lang, resolvingConfiguration);
+    SM2GlobalScope globalScope = new SM2GlobalScope(new ModelPath(), lang);
     
-    Optional<SM2SymbolTableCreator> symbolTable = lang.getSymbolTableCreator(
-        resolvingConfiguration, globalScope);
-    return symbolTable.get().createFromAST(ast);
+    SM2SymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(
+         globalScope);
+    return symbolTable.createFromAST(ast);
   }
   
   /**
    * Run the default context conditions {@link AtLeastOneInitialState},
    * {@link TransitionSourceExists}, and
    * {@link StateNameStartsWithCapitalLetter}.
-   * 
+   *
    * @param ast
    */
   public static void runDefaultCoCos(ASTAutomaton ast) {

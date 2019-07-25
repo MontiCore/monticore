@@ -38,6 +38,7 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-grammar</artifactId>
       <classifier>${grammars.classifier}</classifier>
+    <version>${latest.grammars.version}</version>
       <scope>provided</scope>
     </dependency>
 

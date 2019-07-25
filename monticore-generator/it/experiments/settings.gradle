@@ -1,0 +1,36 @@
+pluginManagement {
+  repositories {
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url repo
+    }
+    gradlePluginPortal()
+    mavenLocal()
+  }
+}
+
+rootProject.name = 'experiments'
+include(':automaton_experiments')
+include(':builderAtm')
+include(':ch17')
+include(':codeChecks')
+include(':composition')
+include(':extensionvariants')
+include(':forAst')
+include(':forConcSt')
+include(':forParser')
+include(':forVisitors')
+include(':generator')
+include(':glex')
+include(':patternAccess')
+include(':questionnaire')
+include(':S01_intro')
+include(':scannerless')
+include(':spaceOnOff-negative')
+include(':spacesOffWithPositionCheck')
+include(':symbols')
+include(':visit_L_inherit')
+project(':automaton_experiments').projectDir = file('automaton')
+project(':S01_intro').projectDir = file('S01.intro')
+project(':visit_L_inherit').projectDir = file('visit.L.inherit')

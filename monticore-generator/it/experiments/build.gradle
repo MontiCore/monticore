@@ -1,0 +1,54 @@
+import de.monticore.MCTask
+plugins {
+  id "monticore" version "5.0.6-SNAPSHOT" // MontiCore Plugin
+}
+allprojects {
+  group = 'de.monticore'
+  version = '5.0.6-SNAPSHOT'
+}
+
+subprojects {
+  apply plugin: 'java'
+  
+  buildDir = file("$projectDir/target")
+  
+  repositories {
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url repo
+    }
+    mavenLocal()
+  }
+  
+  ext.grammarDir = 'src/main/grammars'
+  ext.grammar_version = '5.0.6.latestGrammar-SNAPSHOT'
+  ext.mc_version = '5.0.6-SNAPSHOT'
+  ext.junit_version = '4.12'
+  ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
+  
+  configurations {grammar}
+  
+  dependencies {
+    implementation group:'de.monticore', name:'monticore-runtime', version:grammar_version, force:true
+    implementation group:'de.monticore', name:'monticore-grammar', version:grammar_version, force:true
+    testImplementation group:'junit', name:'junit', version:junit_version
+    grammar group:'de.monticore', name:'monticore-grammar', version:grammar_version, classifier:"grammars"
+  }
+  
+  sourceSets {
+    main.java.srcDirs += [ outDir ]
+  }
+  
+  
+  sourceCompatibility = '1.8'
+  
+  tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.deprecation false
+  }
+  
+  compileJava {
+    dependsOn project.collect { it.tasks.withType(MCTask) }
+  }
+}

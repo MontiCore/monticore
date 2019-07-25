@@ -10,13 +10,8 @@ public class AutomatonSymbol extends AutomatonSymbolTOP {
     super(name);
   }
 
-  @Override
-  protected SM2Scope createSpannedScope() {
-    return new SM2Scope(Optional.empty());
-  }
-
   public Optional<StateSymbol> getState(final String name) {
-    return getSpannedScope().resolveLocally(name, StateSymbol.KIND);
+    return getSpannedScope().resolveStateLocally(name);
   }
 
 }
