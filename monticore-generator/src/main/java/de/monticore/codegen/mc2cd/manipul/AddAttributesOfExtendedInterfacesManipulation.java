@@ -10,6 +10,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.utils.ASTNodes;
+import de.se_rwth.commons.Joiners;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,21 +42,18 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
     
     return cdCompilationUnit;
   }
-  
+
   private void addAttributesOfExtendedInterfaces(ASTCDClass cdClass) {
     List<ASTCDAttribute> attributes = new ArrayList<>();
     // TODO GV:use Cd4Analysis symboltable to get all interfaces recursively
     for (ASTMCObjectType interf : cdClass.getInterfaceList()) {
-      if (interf instanceof ASTMCObjectType) {
-        List<String> names = ((ASTMCObjectType) interf).getNameList();
-        String interfaceName = (names.isEmpty())? "" : names.get(names.size()-1);
-        if (cDInterfaces.containsKey(interfaceName)) {
-          for (ASTCDAttribute interfaceAttribute :cDInterfaces.get(interfaceName).getCDAttributeList()){
-            if(cdClass.getCDAttributeList()
-                .stream()
-                .noneMatch(x->x.getName().equals(interfaceAttribute.getName()))){
-              attributes.add(interfaceAttribute);
-            }
+      String interfaceName = Joiners.DOT.join(interf.getNameList());
+      if (cDInterfaces.containsKey(interfaceName)) {
+        for (ASTCDAttribute interfaceAttribute :cDInterfaces.get(interfaceName).getCDAttributeList()){
+          if(cdClass.getCDAttributeList()
+                  .stream()
+                  .noneMatch(x->x.getName().equals(interfaceAttribute.getName()))){
+            attributes.add(interfaceAttribute);
           }
         }
       }
@@ -64,5 +62,5 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
       cdClass.getCDAttributeList().add(attr.deepClone());
     }
   }
-  
+
 }
