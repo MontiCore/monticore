@@ -18,7 +18,6 @@ import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVi
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -511,10 +510,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       boolean isAttribute = ast.isPresentUsageName();
 
       boolean isList = iteratedItself;
-      Optional<? extends Symbol> ruleComponent = ast.getSymbolOpt();
-      if (ruleComponent.isPresent() && ruleComponent.get() instanceof RuleComponentSymbol) {
-        RuleComponentSymbol componentSymbol = (RuleComponentSymbol) ruleComponent.get();
-        isList = componentSymbol.isList();
+      Optional<RuleComponentSymbol> ruleComponent = ast.getSymbol2Opt();
+      if (ruleComponent.isPresent()) {
+        isList = ruleComponent.get().isList();
       }
       // Add Actions
       if (isAttribute) {
