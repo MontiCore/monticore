@@ -98,11 +98,6 @@ public class InheritedAttributesTranslation implements
         .filter(ASTInterfaceProd.class::isInstance)
         .map(ASTInterfaceProd.class::cast)
         .collect(Collectors.toList());
-    // only interfaces without a right side
-    directInterfaces = directInterfaces
-        .stream()
-        .filter(ASTInterfaceProd::isEmptyAlts)
-        .collect(Collectors.toList());
     List<ASTInterfaceProd> allSuperRules = new ArrayList<>();
     for (ASTInterfaceProd superInterface : directInterfaces) {
       allSuperRules.addAll(getAllInterfacesWithoutImplementation(superInterface));
