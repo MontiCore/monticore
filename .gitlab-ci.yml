@@ -1,7 +1,7 @@
 image: maven:3.5.4-jdk-8-alpine
 
-include:
-  - template: Code-Quality.gitlab-ci.yml
+#include:
+#  - template: Code-Quality.gitlab-ci.yml
 
 variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
@@ -16,6 +16,7 @@ cache:
 before_script:
     - chmod +x monticore-gradle/gradlew
     - chmod +x monticore-generator/it/experiments/gradlew
+    - chmod +x monticore-generator/it/gradlew
   
 stages:
   - build
@@ -53,11 +54,23 @@ integration-test:
     - cd monticore-generator/it
     - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify"
     
+it-gradle:
+  stage: test
+  script:
+    - cd monticore-generator/it
+    - "./gradlew build"
+
+it-emf-gradle:
+  stage: test
+  script:
+    - cd monticore-generator/it
+    - "./gradlew compileEmfJava"
+    
 trigger-automata:
   stage: test
   trigger:
     project: monticore/languages/automaton
-    branch: newSymtab_gen
+    branch: master
 
 trigger-cd4a:
   stage: test

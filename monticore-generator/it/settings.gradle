@@ -1,0 +1,13 @@
+pluginManagement {
+  repositories {
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url repo
+    }
+    mavenLocal()
+    gradlePluginPortal()
+  }
+}
+
+rootProject.name = 'monticore-generator-it'

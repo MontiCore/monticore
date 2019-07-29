@@ -1,0 +1,118 @@
+import de.monticore.MCTask
+
+plugins {
+    id 'java'
+    id "monticore" version "5.0.6-SNAPSHOT"
+    id 'maven-publish'
+}
+
+group = 'de.monticore'
+version = '5.0.6-SNAPSHOT'
+description = 'MontiCore Generator Main Integration Test'
+sourceCompatibility = '1.8'
+
+ext.grammarDir = 'src/main/grammars'
+ext.grammar_version = '5.0.6-SNAPSHOT'
+ext.mc_version = '5.0.6-SNAPSHOT'
+ext.junit_version = '4.12'
+
+
+configurations {grammar}
+
+dependencies {
+    implementation group:'de.monticore', name:'javaDSL', version:'4.3.17-SNAPSHOT'
+    implementation group:'de.monticore', name:'monticore-runtime', version:grammar_version, force:true
+    implementation group:'de.monticore', name:'monticore-grammar', version:grammar_version, force:true
+    implementation group:'de.monticore', name:'monticore-generator', version:mc_version
+    testImplementation group:'junit', name:'junit', version:junit_version
+    grammar group:'de.monticore', name:'monticore-grammar', version:grammar_version, classifier:"grammars"
+}
+
+buildDir = file("$projectDir/target")
+ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
+ext.emfDir = "$buildDir/generated-sources/monticore/emf"
+sourceSets {
+    main.java.srcDirs += [ outDir ]
+    emf{
+        java.srcDirs = ["$projectDir/src/main/java", emfDir ]
+        compileClasspath = configurations.compileClasspath
+    }
+}
+
+
+fileTree(dir:grammarDir, include:'**/*.mc4').each {
+    def g = it
+    def taskname = file(grammarDir).toURI().relativize(g.toURI()).toString()
+    taskname = taskname.substring(0, taskname.lastIndexOf(".")).replaceAll("/",'_')
+    task  "generate${taskname}" (type: MCTask) {
+        grammar = file g
+        outputDir = file outDir
+        handcodedPath file("$projectDir/src/main/java")
+        modelPath file("$projectDir/$grammarDir")
+        script file('it.groovy')
+        def incCheckDir = file(grammarDir).toURI().relativize(g.toURI()).toString()
+        incCheckDir = incCheckDir.substring(0,incCheckDir.lastIndexOf('.')).toLowerCase()
+        def uptoDate = incCheck(outputDir.toString() +"/$incCheckDir/IncGenGradleCheck.txt")
+        outputs.upToDateWhen { uptoDate }
+    }
+}
+
+fileTree(dir:grammarDir, include:'**/*.mc4').each {
+    def g = it
+    def taskname = file(grammarDir).toURI().relativize(g.toURI()).toString()
+    taskname = taskname.substring(0, taskname.lastIndexOf(".")).replaceAll("/",'_')
+    task  "generateEMF${taskname}" (type: MCTask) {
+        grammar = file g
+        outputDir = file emfDir
+        handcodedPath file("$projectDir/src/main/java")
+        modelPath file("$projectDir/$grammarDir")
+        script file('it.groovy')
+        def incCheckDir = file(grammarDir).toURI().relativize(g.toURI()).toString()
+        incCheckDir = incCheckDir.substring(0,incCheckDir.lastIndexOf('.')).toLowerCase()
+        def uptoDate = incCheck(outputDir.toString() +"/$incCheckDir/IncGenGradleCheck.txt")
+        outputs.upToDateWhen { uptoDate }
+    }
+}
+
+task generatePython(type:MCTask){
+    grammar = file "$grammarDir/mc/feature/python3/PythonAutomaton.mc4"
+    outputDir = file outDir+"/python"
+    handcodedPath file("$projectDir/src/main/java")
+    modelPath file("$projectDir/$grammarDir")
+    script file('it-python.groovy')
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+compileJava {
+    dependsOn project.collect { it.tasks.withType(MCTask).matching { !it.name.contains ("EMF")} }
+}
+
+compileEmfJava {
+    dependsOn project.collect { it.tasks.withType(MCTask).matching { it.name.startsWith("generateEMF")} }
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from(sourceSets.main.allJava)
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+            artifact(sourcesJar)
+        }
+    }
+}
+
+repositories {
+    maven {
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        url repo
+    }
+    mavenLocal()
+}
