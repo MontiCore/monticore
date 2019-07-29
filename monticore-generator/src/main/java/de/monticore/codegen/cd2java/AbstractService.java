@@ -221,7 +221,7 @@ public class AbstractService<T extends AbstractService> {
       return false;
     }
     for (int i = 0; i < method1.getCDParameterList().size(); i++) {
-      if (!method1.getCDParameter(i).getMCType().deepEquals(method2.getCDParameter(i).getMCType())) {
+      if (!method1.getCDParameter(i).getMCType().printType().equals(method2.getCDParameter(i).getMCType().printType())) {
         return false;
       }
     }
