@@ -17,26 +17,43 @@ public class MCTask extends DefaultTask {
   boolean addGrammarConfig = true
   
   @Input @Optional
-  List<String> handcodedPath = []
+  List<File> handcodedPath = []
   
   @Input @Optional
-  List<String> modelPath = []
+  List<File> modelPath = []
   
   @Input @Optional
-  List<String> templatePath = []
+  List<File> templatePath = []
   
   @Input @Optional
   List<String> includeConfigs = []
   
+  @Input @Optional
+  File script
   
   @Input @Optional
-  public void handcodedPath(String... strings){
-    handcodedPath.addAll(strings)
-  }
+  boolean dev = false
+  
+  @Input@Optional
+  File customLog
+  
   @Input @Optional
-  public void modelPath(String... strings){
-    modelPath.addAll(strings)
+  public void handcodedPath(File... paths){
+    handcodedPath.addAll(paths)
   }
+  
+  @Input @Optional
+  public void modelPath(File... paths){
+    modelPath.addAll(paths)
+  }
+  
+  @Input @Optional
+  public void templatePath(File... paths){
+    templatePath.addAll(paths)
+  }
+  
+  @Input @Optional
+  boolean help = false
   
   @Input @Optional
   public void includeConfigs(String... configurations){
@@ -69,6 +86,20 @@ public class MCTask extends DefaultTask {
       params.addAll(handcodedPath)
       params.add("-fp")
       params.addAll(templatePath)
+      if(script != null){
+        params.add("-s")
+        params.add(script)
+      }
+      if(dev){
+        params.add("-d")
+      }
+      if(customLog != null){
+        params.add("-cl")
+        params.add(customLog)
+      }
+      if(help){
+        params.add("-h")
+      }
       def p = params.toArray() as String[]
       MontiCoreCLI.main(p)
     })
