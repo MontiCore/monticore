@@ -57,7 +57,7 @@ trigger-automata:
   stage: test
   trigger:
     project: monticore/languages/automaton
-    branch: newSymtab_gen
+    branch: master
 
 trigger-cd4a:
   stage: test
