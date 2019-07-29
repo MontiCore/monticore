@@ -1,4 +1,4 @@
 package de.monticore.typescalculator;
 
-public class TypeConstant extends TypeExpression {
+public final class TypeConstant extends TypeExpression {
 }

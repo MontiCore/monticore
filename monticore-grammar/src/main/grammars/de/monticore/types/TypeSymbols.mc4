@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.types;
+
+component grammar TypeSymbols extends de.monticore.MCBasics {
+
+  symbol Type = (Field|Method)*;
+
+  symbol Field = Name ;
+
+  symbol Method = Name parameter:Field*;
+
+  symbolrule  Field = type: de.monticore.types.ASTType;
+
+}
