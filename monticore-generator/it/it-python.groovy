@@ -14,6 +14,8 @@ astGrammars = parseGrammars(grammars)
 
 IncrementalChecker.initialize(out, report)
 
+Reporting.off()
+
 for (astGrammar in astGrammars) {
     input = grammarIterator.next()
     if (force || !IncrementalChecker.isUpToDate(input, modelPath, templatePath, handcodedPath)) {

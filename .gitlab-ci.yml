@@ -16,6 +16,7 @@ cache:
 before_script:
     - chmod +x monticore-gradle/gradlew
     - chmod +x monticore-generator/it/experiments/gradlew
+    - chmod +x monticore-generator/it/gradlew
   
 stages:
   - build
@@ -52,6 +53,18 @@ integration-test:
   script:
     - cd monticore-generator/it
     - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify"
+    
+it-gradle:
+  stage: test
+  script:
+    - cd monticore-generator/it
+    - "./gradlew build"
+
+it-emf-gradle:
+  stage: test
+  script:
+    - cd monticore-generator/it
+    - "./gradlew compileEmfJava"
     
 trigger-automata:
   stage: test
