@@ -3,7 +3,7 @@ description = 'Experiments: spaceOnOff-negative'
 task generate (type: MCTask) {
   grammar = file "$projectDir/$grammarDir/de/monticore/SpaceOnOff.mc4"
   outputDir = file outDir
-  handcodedPath "$projectDir/src/main/java"
+  handcodedPath file("$projectDir/src/main/java")
   def uptoDate = incCheck(outputDir.toString() + "/de/monticore/spaceonoff/IncGenGradleCheck.txt")
   outputs.upToDateWhen { uptoDate }
 }
