@@ -11,6 +11,7 @@ import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -93,8 +94,16 @@ public class CDTypeFacade {
   }
 
   public ASTMCListType createListTypeOf(final String name) {
-    ASTMCTypeArgument arg = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
-    return CD4AnalysisMill.mCListTypeBuilder().setName("List").setMCTypeArgument(arg).build();
+    Optional<ASTMCTypeArgument> arg = null;
+    try {
+      arg = new CD4CodeParser().parse_StringMCTypeArgument(name);
+    } catch (IOException e) {
+      Log.error("0xA0115 Cannot generate TypeArgument for " + name);
+    }
+    if (!arg.isPresent()) {
+      Log.error("0xA0116 Cannot generate TypeArgument for " + name);
+    }
+    return CD4CodeMill.mCListTypeBuilder().setName("List").setMCTypeArgument(arg.get()).build();
   }
 
   public ASTMCListType createListTypeOf(final ASTMCType type) {

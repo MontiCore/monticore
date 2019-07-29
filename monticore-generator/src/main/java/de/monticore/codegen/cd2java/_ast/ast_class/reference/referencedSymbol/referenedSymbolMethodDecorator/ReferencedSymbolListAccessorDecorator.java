@@ -20,11 +20,6 @@ public class ReferencedSymbolListAccessorDecorator extends ListAccessorDecorator
   }
 
   @Override
-  public String getAttributeType(ASTCDAttribute attribute) {
-    return "Optional<" + getTypeArgumentFromListType(attribute.getMCType()) + ">";
-  }
-
-  @Override
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
     String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithS);
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
