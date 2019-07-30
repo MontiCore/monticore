@@ -68,6 +68,7 @@
     <!-- .. Plugins ....................................................... -->
     <monticore.plugin>5.0.4.1</monticore.plugin>
 
+    <se-groovy.plugin>1.2.3</se-groovy.plugin>
     <archetype.plugin>2.3</archetype.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
@@ -78,7 +79,6 @@
     <jar.plugin>2.6</jar.plugin>
     <plugin.plugin>3.5.2</plugin.plugin>
     <release.plugin>2.5.2</release.plugin>
-    <replacer.plugin>1.5.3</replacer.plugin>
     <resources.plugin>2.7</resources.plugin>
     <site.plugin>3.4</site.plugin>
     <source.plugin>2.4</source.plugin>
@@ -88,7 +88,7 @@
 
     <!-- .. Reporting ..................................................... -->
 
-    <javadoc.plugin>2.10.3</javadoc.plugin>
+    <javadoc.plugin>3.1.1</javadoc.plugin>
     <project-info.plugin>2.8</project-info.plugin>
     <surefire-report.plugin>3.0.0-M3</surefire-report.plugin>
     <jacoco.plugin>0.8.2</jacoco.plugin>
@@ -539,6 +539,7 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${javadoc.plugin}</version>
         <inherited>false</inherited>
@@ -571,6 +572,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
         <version>${surefire-report.plugin}</version>
+      </plugin>
+      <plugin>
+        <groupId>de.se_rwth.maven</groupId>
+        <artifactId>se-groovy-maven-plugin</artifactId>
+        <version>${se-groovy.plugin}</version>
       </plugin>
     </plugins>
   </reporting>
@@ -714,7 +720,6 @@
           <configuration>
             <projectsDirectory>it</projectsDirectory>
             <ignoreFailures>false</ignoreFailures>
-            <cleanClone>true</cleanClone>
             <pomIncludes>
               <pomInclude>**/pom.xml</pomInclude>
             </pomIncludes>
@@ -742,43 +747,6 @@
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>target-platform-configuration</artifactId>
           <version>${tycho.plugin}</version>
-          <configuration>
-            <target>
-              <artifact>
-                <groupId>de.se_rwth.eclipse</groupId>
-                <artifactId>de.se_rwth.eclipse.targetplatform.mars</artifactId>
-                <version>1.0.3-SNAPSHOT</version>
-              </artifact>
-            </target>
-            <pomDependencies>consider</pomDependencies>
-            <environments>
-              <environment>
-                <os>linux</os>
-                <ws>gtk</ws>
-                <arch>x86</arch>
-              </environment>
-              <environment>
-                <os>linux</os>
-                <ws>gtk</ws>
-                <arch>x86_64</arch>
-              </environment>
-              <environment>
-                <os>win32</os>
-                <ws>win32</ws>
-                <arch>x86</arch>
-              </environment>
-              <environment>
-                <os>win32</os>
-                <ws>win32</ws>
-                <arch>x86_64</arch>
-              </environment>
-              <environment>
-                <os>macosx</os>
-                <ws>cocoa</ws>
-                <arch>x86_64</arch>
-              </environment>
-            </environments>
-          </configuration>
         </plugin>
 
         <plugin>
@@ -805,36 +773,6 @@
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
           <version>3.0.1</version>
-        </plugin>
-  
-        <plugin>
-          <artifactId>maven-antrun-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>test-reports</id>
-              <phase>test</phase>
-              <configuration>
-                <tasks>
-                  <junitreport todir="target/surefire-reports">
-                    <fileset dir="target/surefire-reports">
-                      <include name="**/*.xml"/>
-                    </fileset>
-                    <report format="noframes" todir="target/surefire-reports"/>
-                  </junitreport>
-                </tasks>
-              </configuration>
-              <goals>
-                <goal>run</goal>
-              </goals>
-            </execution>
-          </executions>
-          <dependencies>
-            <dependency>
-              <groupId>ant</groupId>
-              <artifactId>ant-junit</artifactId>
-              <version>1.6.2</version>
-            </dependency>
-          </dependencies>
         </plugin>
 
 
@@ -897,160 +835,6 @@
   <!-- == PROFILES ======================================================== -->
 
   <profiles>
-    <profile>
-      <!-- the bootstrap profile; setting <inherited> to false prevents from
-        doing this in the modules -->
-      <id>bootstrap</id>
-      <properties>
-        <monticore.plugin>${bootstrap.version}</monticore.plugin>
-      </properties>
-      <build>
-        <!-- this is what happens for building the bootstrap temporary local
-          release -->
-        <plugins>
-          <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <version>${resources.plugin}</version>
-            <inherited>false</inherited>
-            <executions>
-              <execution>
-                <id>bootstrap</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>copy-resources</goal>
-                </goals>
-                <configuration>
-                  <resources>
-                    <resource>
-                      <directory>..</directory>
-                      <includes>
-                        <include>mc4/**/*</include>
-                      </includes>
-                      <excludes>
-                        <exclude>**/target/**/*</exclude>
-                      </excludes>
-                    </resource>
-                  </resources>
-                  <includeEmptyDirs>true</includeEmptyDirs>
-                  <outputDirectory>${project.build.directory}/bootstrap</outputDirectory>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>com.google.code.maven-replacer-plugin</groupId>
-            <artifactId>replacer</artifactId>
-            <version>${replacer.plugin}</version>
-            <inherited>false</inherited>
-            <executions>
-              <execution>
-                <id>bootstrap</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>replace</goal>
-                </goals>
-                <configuration>
-                  <basedir>${basedir}</basedir>
-                  <outputDir>target/bootstrap/mc4</outputDir>
-                  <includes>
-                    <include>**/pom.xml</include>
-                  </includes>
-                  <excludes>
-                    <exclude>target/**/*.*</exclude>
-                  </excludes>
-                  <regex>false</regex>
-                  <replacements>
-                    <replacement>
-                      <token>&lt;version&gt;${project.version}&lt;/version&gt;</token>
-                      <value>&lt;version&gt;${bootstrap.version}&lt;/version&gt;</value>
-                    </replacement>
-                    <replacement>
-                      <token>&lt;bootstrap.parent&gt;XXX&lt;/bootstrap.parent&gt;</token>
-                      <value>&lt;bootstrap.parent&gt;${project.version}&lt;/bootstrap.parent&gt;</value>
-                    </replacement>
-                  </replacements>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-invoker-plugin</artifactId>
-            <version>${invoker.plugin}</version>
-            <inherited>false</inherited>
-            <executions>
-              <execution>
-                <id>bootstrap</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <goals>
-                    <goal>install</goal>
-                  </goals>
-                  <pom>${project.build.directory}/bootstrap/mc4/pom.xml</pom>
-                  <profiles>
-                    <profile>in-bootstrap</profile>
-                  </profiles>
-                  <streamLogs>true</streamLogs>
-                  <skipInvocation>false</skipInvocation>
-                  <skipInstallation>false</skipInstallation>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>in-bootstrap</id>
-      <!-- this profile determines what happens (or not) after the temporary
-        bootstrap version has been built; e.g. set properties such that the temporary
-        bootstrap version is used for this build -->
-      <properties>
-        <monticore.plugin>${bootstrap.parent}</monticore.plugin>
-        <invoker.skip>true</invoker.skip>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <inherited>false</inherited>
-            <executions>
-              <execution>
-                <id>bootstrap</id>
-                <phase></phase>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>com.google.code.maven-replacer-plugin</groupId>
-            <artifactId>replacer</artifactId>
-            <inherited>false</inherited>
-            <executions>
-              <execution>
-                <id>bootstrap</id>
-                <phase></phase>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-invoker-plugin</artifactId>
-            <inherited>false</inherited>
-            <executions>
-              <execution>
-                <id>bootstrap</id>
-                <phase></phase>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
 
     <profile>
       <id>skipTests</id>

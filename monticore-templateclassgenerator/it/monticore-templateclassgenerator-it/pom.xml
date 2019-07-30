@@ -8,7 +8,7 @@
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
     <version>5.0.6-SNAPSHOT</version>
-    <relativePath>../../pom.xml</relativePath>
+    <relativePath>../../../pom.xml</relativePath>
   </parent>
 
 	<artifactId>monticore-templateclassgenerator-it</artifactId>
@@ -39,6 +39,13 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>de.monticore</groupId>
+			<artifactId>javaDSL</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -46,6 +53,7 @@
 			<plugin>
 				<groupId>de.se_rwth.maven</groupId>
 				<artifactId>se-groovy-maven-plugin</artifactId>
+				<version>${se-groovy.plugin}</version>
 				<configuration>
 					<baseClass>de.monticore.templateclassgenerator.TemplateClassGeneratorScript</baseClass>
 					<arguments>
