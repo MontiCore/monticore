@@ -59,7 +59,7 @@ public enum Multiplicity {
       return LIST;
     }
     else if (cardinality.getIteration() == ASTConstantsGrammar.QUESTION
-            || (cardinality.isPresentMin() && getMinCardinality(cardinality)==0))  {
+            || (!cardinality.isPresentMin() || getMinCardinality(cardinality)==0))  {
       return OPTIONAL;
     }
     return STANDARD;
