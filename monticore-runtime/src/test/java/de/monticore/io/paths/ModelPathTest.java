@@ -2,8 +2,10 @@
 
 package de.monticore.io.paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -12,11 +14,8 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.monticore.AmbiguityException;
-import de.se_rwth.commons.logging.Log;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ModelPathTest {
   
@@ -40,6 +39,7 @@ public class ModelPathTest {
   
   @BeforeClass
   public static void disableFailQuick() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 

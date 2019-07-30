@@ -2,21 +2,20 @@
 
 package de.monticore.types;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.se_rwth.commons.logging.Log;
+import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 public class WildcardTypesTest {
   
   @BeforeClass
   public static void disableFailQuick() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
   
@@ -44,7 +43,7 @@ public class WildcardTypesTest {
           
       // Negative test with a wildcard as upper bound
       assertNull(
-          TypesTestHelper.getInstance().parseType("ParameterizedType<? extends ? extends Invalid>"));         
+          TypesTestHelper.getInstance().parseType("ParameterizedType<? extends ? extends Invalid>"));
     }
     catch (IOException e) {
       fail(e.getMessage());

@@ -5,18 +5,17 @@
  */
 package de.monticore.symboltable.serialization;
 
-import static org.junit.Assert.assertEquals;
+import com.google.common.collect.Lists;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Optional;
 
-import org.junit.Test;
-
-import com.google.common.collect.Lists;
-
-import de.se_rwth.commons.logging.Log;
+import static org.junit.Assert.assertEquals;
 
 /**
  * TODO: Write me!
@@ -108,7 +107,7 @@ public class JsonPrinterTest {
   @Test
   public void testInvalidNestings() {
     //init Log and mute System.err temporarily
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
     PrintStream _err = System.err;
     System.setErr(new PrintStream(new OutputStream() {
@@ -122,8 +121,8 @@ public class JsonPrinterTest {
     printer.endObject();
     printer.getContent();
     assertEquals(1, Log.getFindings().size());
-    
-    Log.init();
+  
+    LogStub.init();
     Log.enableFailQuick(false);
     printer = new JsonPrinter();
     printer.beginObject();
@@ -131,8 +130,8 @@ public class JsonPrinterTest {
     printer.endObject();
     printer.getContent();
     assertEquals(1, Log.getFindings().size());
-    
-    Log.init();
+  
+    LogStub.init();
     Log.enableFailQuick(false);
     printer = new JsonPrinter();
     printer.beginAttributeList();
@@ -140,8 +139,8 @@ public class JsonPrinterTest {
     printer.endAttributeList();
     printer.getContent();
     assertEquals(1, Log.getFindings().size());
-    
-    Log.init();
+  
+    LogStub.init();
     Log.enableFailQuick(false);
     printer = new JsonPrinter();
     printer.beginAttributeList();
@@ -149,8 +148,8 @@ public class JsonPrinterTest {
     printer.endAttributeList();
     printer.getContent();
     assertEquals(1, Log.getFindings().size());
-    
-    Log.init();
+  
+    LogStub.init();
     Log.enableFailQuick(false);
     printer = new JsonPrinter();
     printer.beginObject();

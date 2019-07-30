@@ -11,6 +11,7 @@ import de.monticore.symboltable.mocks.languages.entity.cocos.UniquePropertyNames
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,6 +30,7 @@ public class CocoCheckTest {
   
   @Before
   public void setUp() {
+    LogStub.init();
     Log.getFindings().clear();
   }
   

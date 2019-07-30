@@ -2,27 +2,24 @@
 
 package de.monticore.types;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.util.HashMap;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import de.monticore.types.types._ast.ASTArrayType;
 import de.monticore.types.types._ast.ASTPrimitiveType;
 import de.monticore.types.types._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.util.HashMap;
+
+import static org.junit.Assert.*;
 
 public class PrimitiveArrayTypesTest {
   
   @BeforeClass
   public static void disableFailQuick() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
   

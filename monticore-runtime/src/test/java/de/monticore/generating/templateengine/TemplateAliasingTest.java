@@ -2,28 +2,25 @@
 
 package de.monticore.generating.templateengine;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import com.google.common.base.Joiner;
+import de.monticore.generating.GeneratorSetup;
+import de.monticore.io.FileReaderWriterMock;
+import de.se_rwth.commons.logging.Finding;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import de.se_rwth.commons.logging.Slf4jLog;
+import freemarker.core.Macro;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.google.common.base.Joiner;
-
-import de.monticore.generating.GeneratorSetup;
-import de.monticore.io.FileReaderWriterMock;
-import de.se_rwth.commons.logging.Finding;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
-import freemarker.core.Macro;
+import static org.junit.Assert.*;
 
 public class TemplateAliasingTest {
 
@@ -39,7 +36,7 @@ public class TemplateAliasingTest {
 
   @BeforeClass
   public static void init() {
-    Slf4jLog.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 
@@ -118,7 +115,7 @@ public class TemplateAliasingTest {
   /**
    * Asserts that each of the expectedErrors is found at least once in the
    * actualErrors.
-   * 
+   *
    * @param expectedErrors
    * @param actualErrors
    */

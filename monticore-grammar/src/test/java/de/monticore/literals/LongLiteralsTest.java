@@ -2,18 +2,25 @@
 
 package de.monticore.literals;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import de.monticore.literals.literals._ast.ASTLiteral;
+import de.monticore.literals.literals._ast.ASTLongLiteral;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
-import de.monticore.literals.literals._ast.ASTLiteral;
-import de.monticore.literals.literals._ast.ASTLongLiteral;
+import static org.junit.Assert.*;
 
 public class LongLiteralsTest {
+  
+  @BeforeClass
+  public static void disableFailQuick() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   
   private void checkLongLiteral(long l, String s) throws IOException {
     ASTLiteral lit = LiteralsTestHelper.getInstance().parseLiteral(s);

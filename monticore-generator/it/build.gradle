@@ -66,7 +66,7 @@ fileTree(dir:grammarDir, include:'**/*.mc4').each {
         outputDir = file emfDir
         handcodedPath file("$projectDir/src/main/java")
         modelPath file("$projectDir/$grammarDir")
-        script file('it.groovy')
+        script file('it-emf.groovy')
         def incCheckDir = file(grammarDir).toURI().relativize(g.toURI()).toString()
         incCheckDir = incCheckDir.substring(0,incCheckDir.lastIndexOf('.')).toLowerCase()
         def uptoDate = incCheck(outputDir.toString() +"/$incCheckDir/IncGenGradleCheck.txt")

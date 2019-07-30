@@ -2,18 +2,25 @@
 
 package de.monticore.literals;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import de.monticore.literals.literals._ast.ASTDoubleLiteral;
+import de.monticore.literals.literals._ast.ASTLiteral;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
-import de.monticore.literals.literals._ast.ASTDoubleLiteral;
-import de.monticore.literals.literals._ast.ASTLiteral;
+import static org.junit.Assert.*;
 
 public class DoubleLiteralsTest {
+  
+  @BeforeClass
+  public static void disableFailQuick() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   
   private void checkDoubleLiteral(double d, String s) throws IOException {
     ASTLiteral lit = LiteralsTestHelper.getInstance().parseLiteral(s);

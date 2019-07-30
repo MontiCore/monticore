@@ -127,29 +127,6 @@
             </goals>
             <phase>generate-sources</phase>
           </execution>
-        </executions>
-      </plugin>
-      
-      <!-- package with emf -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.6</version>
-        <executions>
-          <execution>
-            <id>default-jar</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <phase>package</phase>
-          </execution>
-        </executions>
-      </plugin>
-  
-      <plugin>
-        <groupId>de.monticore.mojo</groupId>
-        <artifactId>monticore-maven-plugin</artifactId>
-        <executions>
           <execution>
             <id>test-id</id>
             <goals>
@@ -170,6 +147,22 @@
               <outputDirectory>target/generated-test-sources/monticore/sourcecode</outputDirectory>
               <skip>${maven.test.skip}</skip>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <!-- package with emf -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <phase>package</phase>
           </execution>
         </executions>
       </plugin>
