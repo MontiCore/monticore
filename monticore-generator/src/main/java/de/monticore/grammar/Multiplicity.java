@@ -47,21 +47,20 @@ public enum Multiplicity {
     }
     return multiplicityOfASTNodeWithInheritance(rootNode, astNode);
   }
-  
+
   public static Multiplicity multiplicityOfAttributeInAST(ASTAdditionalAttribute attributeInAST) {
     if (!attributeInAST.isPresentCard()) {
       return STANDARD;
     }
     ASTCard cardinality = attributeInAST.getCard();
-    if (!cardinality.isPresentMax() || cardinality.isUnbounded()
-        || "*".equals(cardinality.getMax())
-        || getMaxCardinality(cardinality) != 1) {
+    if (cardinality.getIteration() == ASTConstantsGrammar.STAR
+            || cardinality.getIteration() == ASTConstantsGrammar.PLUS
+            || (cardinality.isPresentMax() && (cardinality.getMax().equals("*") || getMaxCardinality(cardinality)>1))) {
       return LIST;
     }
-    else {
-      if (!cardinality.isPresentMin() || getMinCardinality(cardinality)==0)  {
-        return OPTIONAL;
-      }
+    else if (cardinality.getIteration() == ASTConstantsGrammar.QUESTION
+            || (cardinality.isPresentMin() && getMinCardinality(cardinality)==0))  {
+      return OPTIONAL;
     }
     return STANDARD;
   }

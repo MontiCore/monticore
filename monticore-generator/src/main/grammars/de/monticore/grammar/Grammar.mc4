@@ -259,7 +259,7 @@ component grammar Grammar extends de.monticore.MCCommonLiterals, de.monticore.ty
   */
   Card =
    (
-     Unbounded:["*"]
+     iteration:["?"|"*"|"+"]
    |
      "min" "=" min:Digits
      ("max" "=" ( max:Digits | max:"*"))?
