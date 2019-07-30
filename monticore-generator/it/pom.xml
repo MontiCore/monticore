@@ -60,21 +60,21 @@
 
   </dependencies>
 
-  <build>
-    <plugins>
-      <!-- Create grammars jar -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-      </plugin>
+<!--  <build>-->
+<!--    <plugins>-->
+<!--      &lt;!&ndash; Create grammars jar &ndash;&gt;-->
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-assembly-plugin</artifactId>-->
+<!--      </plugin>-->
 
-      <!-- Source plugin -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+<!--      &lt;!&ndash; Source plugin &ndash;&gt;-->
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-source-plugin</artifactId>-->
+<!--      </plugin>-->
+<!--    </plugins>-->
+<!--  </build>-->
 
   <profiles>
     <profile>
