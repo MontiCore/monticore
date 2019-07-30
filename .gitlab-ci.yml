@@ -17,6 +17,7 @@ before_script:
     - chmod +x monticore-gradle/gradlew
     - chmod +x monticore-generator/it/experiments/gradlew
     - chmod +x monticore-generator/it/gradlew
+    - export GRADLE_USER_HOME=`pwd`/.gradle
   
 stages:
   - build
@@ -56,12 +57,20 @@ integration-test:
     
 it-gradle:
   stage: test
+  cache:
+    paths:
+      - monticore-generator/it/.gradle/wrapper
+      - monticore-generator/it/.gradle/caches
   script:
     - cd monticore-generator/it
     - "./gradlew build"
 
 it-emf-gradle:
   stage: test
+  cache:
+    paths:
+      - monticore-generator/it/.gradle/wrapper
+      - monticore-generator/it/.gradle/caches
   script:
     - cd monticore-generator/it
     - "./gradlew compileEmfJava"
@@ -93,6 +102,10 @@ integration-test-experiments:
 
 it-experiments-gradle:
   stage: test
+  cache:
+    paths:
+      - monticore-generator/it/experiments/.gradle/wrapper
+      - monticore-generator/it/experiments/.gradle/caches
   script:
     - cd monticore-generator/it/experiments
     - "./gradlew build --continue"
