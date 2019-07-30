@@ -7,8 +7,8 @@ import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._cocos.GrammarASTNonTerminalCoCo;
-import de.monticore.grammar.symboltable.MCProdComponentSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -28,22 +28,22 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
   public void check(ASTNonTerminal a) {
     if (a.isPresentUsageName()) {
       String attributename = a.getUsageName();
-      Optional<MCProdComponentSymbol> componentSymbol = a.getEnclosingScope()
-          .resolve(attributename, MCProdComponentSymbol.KIND);
+      Optional<RuleComponentSymbol> componentSymbol = a.getEnclosingScope2()
+          .resolveRuleComponent(attributename);
       if (componentSymbol.isPresent()) {
-        Optional<MCProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(a);
+        Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(a);
         if (rule.isPresent() && rule.get().getAstNode().get() instanceof ASTClassProd) {
           ASTClassProd prod = (ASTClassProd) rule.get().getAstNode().get();
           if (!prod.getSuperRuleList().isEmpty()) {
             ASTRuleReference type = prod.getSuperRuleList().get(0);
             String typename = type.getTypeName();
-            Optional<MCProdSymbol> ruleSymbol = type.getEnclosingScope().getEnclosingScope()
-                .get().resolve(typename, MCProdSymbol.KIND);
+            Optional<ProdSymbol> ruleSymbol = type.getEnclosingScope2().getEnclosingScope()
+                .get().resolveProd(typename);
             if (ruleSymbol.isPresent()) {
-              Optional<MCProdComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
-                  .resolve(attributename, MCProdComponentSymbol.KIND);
-              if (rcs.isPresent() && rcs.get().getReferencedProd().isPresent() && componentSymbol.get().getReferencedProd().isPresent()
-                  && !rcs.get().getReferencedProd().get().getName().equals(componentSymbol.get().getReferencedProd().get().getName())) {
+              Optional<RuleComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
+                  .resolveRuleComponent(attributename);
+              if (rcs.isPresent() && !rcs.get().getReferencedProd().get().getName()
+                  .equals(componentSymbol.get().getReferencedProd().get().getName())) {
                 Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
                     prod.getName(),
                     ruleSymbol.get().getName(),

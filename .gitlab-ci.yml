@@ -22,7 +22,7 @@ cache:
   key: ${CI_COMMIT_REF_SLUG} # Cache per branch
 
 
-  
+
 stages:
   - build
   - test
@@ -72,7 +72,7 @@ it-experiments:
     - "mvn --settings ../../../settings.xml $MAVEN_OPTS clean install -fae"
   allow_failure: true
 
-  
+
 it-gradle:
   stage: test-gradle
   script:
@@ -84,7 +84,7 @@ it-emf-gradle:
   script:
     - cd monticore-generator/it
     - "./gradlew compileEmfJava"
-    
+
 
 it-experiments-gradle:
   stage: test-gradle

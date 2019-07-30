@@ -2,18 +2,14 @@
 
 package de.monticore.codegen.mc2cd.transl.creation;
 
-import java.util.function.UnaryOperator;
-
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.utils.ASTNodes;
 import de.monticore.utils.Link;
+
+import java.util.function.UnaryOperator;
 
 public class AttributeInASTsToCDAttributes implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

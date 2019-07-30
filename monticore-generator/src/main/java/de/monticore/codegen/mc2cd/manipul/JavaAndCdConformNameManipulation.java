@@ -2,12 +2,12 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import java.util.function.UnaryOperator;
-
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.ASTNodes;
+
+import java.util.function.UnaryOperator;
 
 /**
  * Ensures that attributes are spelled with lower case in order to comply with the standard Java

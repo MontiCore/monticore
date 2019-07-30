@@ -38,7 +38,7 @@ component grammar MCSimpleGenericTypes
    *  @attribute typeArgumentList The types between '<...>'
   */
 
-  MCBasicGenericType implements MCGenericType <20> =
+  symbol (MCType) MCBasicGenericType implements MCGenericType <20> =
        (Name || ".")+ "<" (MCTypeArgument || ",")* ">";
 
   

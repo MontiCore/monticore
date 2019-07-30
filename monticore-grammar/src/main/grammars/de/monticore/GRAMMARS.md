@@ -57,7 +57,7 @@ It should be useful in many languages.
 These grammars generally deal with type definitions and build on each 
 other:
 
-### MCBasicTypes.mc4 (stable)
+### MCCommonTypes.mc4 (stable)
 * This grammar defines basic types. This eases the reuse of type 
 structures in languages similar to Java, that are somewhat 
 simplified, e.g. without generics.

@@ -2,9 +2,13 @@
 
 package de.monticore.codegen.mc2cd;
 
-import de.monticore.types.types._ast.ASTPrimitiveType;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 
 /**
  * An enumeration of the different categories that ASTCDAttributes in a CD AST can fall into.
@@ -29,7 +33,7 @@ public enum AttributeCategory {
   GENERICLIST;
   
   public static AttributeCategory determineCategory(ASTCDAttribute cdAttribute) {
-    if (cdAttribute.getType() instanceof ASTPrimitiveType) {
+    if (cdAttribute.getMCType() instanceof ASTMCPrimitiveType) {
       return PRIMITIVE;
     }
     if (isGenericList(cdAttribute)) {
@@ -42,13 +46,17 @@ public enum AttributeCategory {
   }
   
   private static boolean isGenericList(ASTCDAttribute cdAttribute) {
-    boolean hasGenerics = ((ASTSimpleReferenceType) cdAttribute.getType()).getTypeArgumentsOpt() != null;
-    return "java.util.List".equals(TransformationHelper.typeToString(cdAttribute.getType()))
-        && hasGenerics;
+    if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
+      return "List".equals(cdAttribute.getMCType().getBaseName());
+    }
+    return false;
   }
-  
+
   private static boolean isOptional(ASTCDAttribute cdAttribute) {
-    return "Optional".equals(TransformationHelper.typeToString(cdAttribute.getType()));
+    if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
+      return "Optional".equals(cdAttribute.getMCType().getBaseName());
+    }
+    return false;
   }
   
 }

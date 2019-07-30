@@ -20,7 +20,8 @@ Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 // initialize incremental generation; enabling of reporting; create global scope
 IncrementalChecker.initialize(out, report)
 InputOutputFilesReporter.resetModelToArtifactMap()
-globalScope = createGlobalScope(modelPath)
+mcScope = createMCGlobalScope(modelPath)
+cdScope = createCD4AGlobalScope(modelPath)
 Reporting.init(report.getAbsolutePath(), reportManagerFactory)
 // ############################################################
 
@@ -44,16 +45,16 @@ while (grammarIterator.hasNext()) {
       Reporting.reportParseInputFile(input, grammarName)
 
       // M3: populate symbol table
-      astGrammar = createSymbolsFromAST(globalScope, astGrammar)
+      astGrammar = createSymbolsFromAST(mcScope, astGrammar)
 
       // M4: execute context conditions
-      runGrammarCoCos(astGrammar, globalScope)
+      runGrammarCoCos(astGrammar, mcScope)
 
       // M5: transform grammar AST into Class Diagram AST
-      astClassDiagramWithST = deriveCD(astGrammar, glex, globalScope)
+      astClassDiagramWithST = deriveCD(astGrammar, glex, cdScope, mcScope)
 
       // M6: generate parser and wrapper
-      generateParser(glex, astGrammar, globalScope, handcodedPath, out)
+      generateParser(glex, astGrammar, mcScope, handcodedPath, out)
     }
   }
 }
@@ -67,14 +68,18 @@ while (grammarIterator.hasNext()) {
 for (astGrammar in getParsedGrammars()) {
   // make sure to use the right report manager again
   Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
-  reportGrammarCd(astGrammar, globalScope, report)
+  reportGrammarCd(astGrammar, cdScope, mcScope, report)
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
 
+  // M7: decorate Class Diagram AST
+  decorateEmfCd(glex, astClassDiagram, cdScope, mcScope, handcodedPath)
+  
   // M8: generate symbol table
-  generateSymbolTable(glex, astGrammar, globalScope, astClassDiagram, out, handcodedPath)
+  generateSymbolTable(glex, mcScope, astGrammar, cdScope, astClassDiagram, out, handcodedPath)
   
   // M9 Generate ast classes, visitor and context condition
+  generateEmfCompatible(glex, cdScope, mcScope, astClassDiagram, out, templatePath, handcodedPath)
   generateVisitors(glex, globalScope, astClassDiagram, out, handcodedPath)
   generateCocos(glex, globalScope, astClassDiagram, out)
   generateODs(glex, globalScope, astClassDiagram, out)

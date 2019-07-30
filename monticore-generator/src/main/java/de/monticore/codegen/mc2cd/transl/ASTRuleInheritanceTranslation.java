@@ -2,13 +2,13 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
@@ -50,7 +50,7 @@ public class ASTRuleInheritanceTranslation implements
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdInterface);
 
       cdInterface.getInterfaceList().add(
-          TransformationHelper.createSimpleReference(qualifiedSuperInterface));
+          TransformationHelper.createObjectType(qualifiedSuperInterface));
     }
   }
 
@@ -59,7 +59,7 @@ public class ASTRuleInheritanceTranslation implements
     for (ASTMCType superClass : rule.getASTSuperClassList()) {
       String qualifiedSuperClass = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superClass, astGrammar, cdClass);
-      cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedSuperClass));
+      cdClass.setSuperclass(TransformationHelper.createObjectType(qualifiedSuperClass));
     }
 
     // translates "astimplements"
@@ -67,7 +67,7 @@ public class ASTRuleInheritanceTranslation implements
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdClass);
       cdClass.getInterfaceList()
-          .add(TransformationHelper.createSimpleReference(qualifiedSuperInterface));
+          .add(TransformationHelper.createObjectType(qualifiedSuperInterface));
     }
   }
 }

@@ -4,6 +4,7 @@ package de.monticore.grammar.cocos;
 
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import parser.MCGrammarParser;
@@ -17,7 +18,7 @@ public class GrammarNameEqualsFileNameTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    Log.enableFailQuick(false);
+    LogStub.enableFailQuick(false);
   }
 
   @Test

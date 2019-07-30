@@ -2,8 +2,8 @@
 
 package de.monticore.codegen.mc2cd.transl.creation;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;

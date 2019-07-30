@@ -8,7 +8,7 @@ import java.util.Optional;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTAbstractProdCoCo;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.se_rwth.commons.logging.Log;
 
@@ -27,7 +27,7 @@ public class OverridingAbstractNTsHaveNoSuperRules implements GrammarASTAbstract
   @Override
   public void check(ASTAbstractProd a) {
     Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(a);
+        .getMCGrammarSymbol(a.getEnclosingScope2());
     List<MCGrammarSymbol> grammarSymbols = grammarSymbol.get().getSuperGrammarSymbols();
     
     if (!a.getSuperRuleList().isEmpty() || !a.getASTSuperClassList().isEmpty()) {

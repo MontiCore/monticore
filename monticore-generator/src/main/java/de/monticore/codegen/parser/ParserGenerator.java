@@ -12,18 +12,15 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Scopes;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 public class ParserGenerator {
 
@@ -33,31 +30,6 @@ public class ParserGenerator {
 
   public static final String LOG = "ParserGenerator";
 
-  /**
-   * Code generation from grammar ast to an antlr compatible file format and wrapper parser
-   *
-   * @param astGrammar - grammar AST
-   * @param symbolTable - symbol table already derived from grammar AST
-   * @param targetDir - target dir
-   */
-  public static void generateFullParser(ASTMCGrammar astGrammar,
-                                        IterablePath handcodedPath,
-                                        File targetDir)
-  {
-    Optional<GlobalScope> symbolTable;
-    if (!astGrammar.getEnclosingScopeOpt().isPresent()) {
-      Log.error("0xA0163 Cannot generate the parser because the symbol table does not exist.");
-      return;
-    }
-    symbolTable = Scopes.getGlobalScope(astGrammar.getEnclosingScope());
-    if (!symbolTable.isPresent()) {
-      Log.error("0xA0164 Cannot generate the parser because the global scope does not exist.");
-      return;
-    }
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
-    generateParser(glex, astGrammar, symbolTable.get(), handcodedPath, targetDir);
-    generateParserWrapper(glex, astGrammar, symbolTable.get(), handcodedPath, targetDir);
-  }
 
   /**
    * Code generation from grammar ast to an antlr compatible file format and wrapper parser
@@ -69,36 +41,13 @@ public class ParserGenerator {
    */
   public static void generateFullParser(GlobalExtensionManagement glex,
                                         ASTMCGrammar astGrammar,
-                                        Scope symbolTable,
+                                        Grammar_WithConceptsGlobalScope symbolTable,
                                         IterablePath handcodedPath,
                                         File targetDir) {
     generateParser(glex, astGrammar, symbolTable, handcodedPath, targetDir);
     generateParserWrapper(glex, astGrammar, symbolTable, handcodedPath, targetDir);
   }
 
-  /**
-   * Code generation from grammar ast to an antlr compatible file format
-   *
-   * @param astGrammar - grammar AST
-   * @param symbolTable - symbol table already derived from grammar AST
-   * @param targetDir - target dir
-   */
-  public static void generateParser(ASTMCGrammar astGrammar,
-                                    IterablePath handcodedPath,
-                                    File targetDir) {
-    Optional<GlobalScope> symbolTable;
-    if (!astGrammar.getEnclosingScopeOpt().isPresent()) {
-      Log.error("0xA0135 Cannot generate the parser because the symbol table does not exist.");
-      return;
-    }
-    symbolTable = Scopes.getGlobalScope(astGrammar.getEnclosingScope());
-    if (!symbolTable.isPresent()) {
-      Log.error("0xA0136 Cannot generate the parser because the global scope does not exist.");
-      return;
-    }
-    generateParser(new GlobalExtensionManagement(),
-            astGrammar, symbolTable.get(), handcodedPath, targetDir);
-  }
 
   /**
    * Code generation from grammar ast to an antlr compatible file format
@@ -110,7 +59,7 @@ public class ParserGenerator {
    */
   public static void generateParser(GlobalExtensionManagement glex,
                                     ASTMCGrammar astGrammar,
-                                    Scope symbolTable,
+                                    Grammar_WithConceptsGlobalScope symbolTable,
                                     IterablePath handcodedPath,
                                     File targetDir) {
     generateParser(glex, astGrammar, symbolTable, handcodedPath, targetDir, true, Languages.JAVA);
@@ -128,7 +77,7 @@ public class ParserGenerator {
    */
   public static void generateParser(GlobalExtensionManagement glex,
                                     ASTMCGrammar astGrammar,
-                                    Scope symbolTable,
+                                    Grammar_WithConceptsGlobalScope symbolTable,
                                     IterablePath handcodedPath,
                                     File targetDir,
                                     boolean embeddedJavaCode,
@@ -145,8 +94,8 @@ public class ParserGenerator {
             ? astGrammar.getName()
             : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
             astGrammar.getName());
-    MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolve(
-            qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
+    MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolveMCGrammar(
+            qualifiedGrammarName).orElse(null);
     Log.errorIfNull(grammarSymbol, "0xA4034 Grammar " + qualifiedGrammarName
             + " can't be resolved in the scope " + symbolTable);
 
@@ -182,7 +131,8 @@ public class ParserGenerator {
    * @param astGrammar - grammar AST
    * @param targetDir - target dir
    */
-  public static void generateParserWrapper(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, Scope symbolTable,
+  public static void generateParserWrapper(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
+                                           Grammar_WithConceptsGlobalScope symbolTable,
                                            IterablePath handcodedPath, File targetDir) {
     if (astGrammar.isComponent()) {
       return;
@@ -194,8 +144,8 @@ public class ParserGenerator {
             ? astGrammar.getName()
             : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
             astGrammar.getName());
-    MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolve(
-            qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
+    MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolveMCGrammar(
+            qualifiedGrammarName).orElse(null);
     Log.errorIfNull(grammarSymbol, "0xA4035 Grammar " + qualifiedGrammarName
             + " can't be resolved in the scope " + symbolTable);
     glex.setGlobalValue("nameHelper", new Names());

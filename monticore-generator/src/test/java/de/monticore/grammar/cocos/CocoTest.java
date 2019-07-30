@@ -2,27 +2,23 @@
 
 package de.monticore.grammar.cocos;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import de.monticore.GrammarGlobalScopeTestFactory;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.symboltable.Scope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
+
+import static org.junit.Assert.*;
 
 public abstract class CocoTest {
   
   protected void testValidGrammar(String grammar, Grammar_WithConceptsCoCoChecker checker) {
-    final Scope globalScope = GrammarGlobalScopeTestFactory.create();
+    final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
     
     // test grammar symbol
-    final MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) globalScope
-        .resolve(grammar,
-            MCGrammarSymbol.KIND)
+    final MCGrammarSymbol grammarSymbol = globalScope
+        .resolveMCGrammar(grammar)
         .orElse(null);
     assertNotNull(grammarSymbol);
     assertTrue(grammarSymbol.getAstGrammar().isPresent());
@@ -40,12 +36,11 @@ public abstract class CocoTest {
   
   protected void testInvalidGrammar(String grammar, String code, String message,
       Grammar_WithConceptsCoCoChecker checker, int numberOfFindings) {
-    final Scope globalScope = GrammarGlobalScopeTestFactory.create();
+    final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
     
     // test grammar symbol
-    final MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) globalScope
-        .resolve(grammar,
-            MCGrammarSymbol.KIND)
+    final MCGrammarSymbol grammarSymbol = globalScope
+        .resolveMCGrammar(grammar)
         .orElse(null);
     assertNotNull(grammarSymbol);
     assertTrue(grammarSymbol.getAstGrammar().isPresent());
@@ -62,12 +57,11 @@ public abstract class CocoTest {
   
   protected void testInvalidGrammarKeepFindings(String grammar, String code, String message,
       Grammar_WithConceptsCoCoChecker checker) {
-    final Scope globalScope = GrammarGlobalScopeTestFactory.create();
+    final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
     
     // test grammar symbol
-    final MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) globalScope
-        .resolve(grammar,
-            MCGrammarSymbol.KIND)
+    final MCGrammarSymbol grammarSymbol = globalScope
+        .resolveMCGrammar(grammar)
         .orElse(null);
     assertNotNull(grammarSymbol);
     assertTrue(grammarSymbol.getAstGrammar().isPresent());

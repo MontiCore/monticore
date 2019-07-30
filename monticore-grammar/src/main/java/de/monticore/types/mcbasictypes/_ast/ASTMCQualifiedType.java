@@ -18,4 +18,5 @@ public class ASTMCQualifiedType extends ASTMCQualifiedTypeTOP {
   public String getBaseName() {
     return this.getMCQualifiedName().getBaseName();
   }
+
 }

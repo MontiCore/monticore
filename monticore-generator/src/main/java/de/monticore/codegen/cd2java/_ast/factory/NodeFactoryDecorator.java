@@ -1,14 +1,15 @@
 package de.monticore.codegen.cd2java._ast.factory;
 
 import com.google.common.collect.Lists;
-import de.monticore.ast.ASTNode;
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaVisitor;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
   public ASTCDClass decorate(final ASTCDCompilationUnit astcdCompilationUnit) {
     ASTCDDefinition astcdDefinition = astcdCompilationUnit.getCDDefinition();
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
-    ASTType factoryType = this.getCDTypeFacade().createSimpleReferenceType(factoryClassName);
+    ASTMCType factoryType = this.getCDTypeFacade().createQualifiedType(factoryClassName);
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, factoryClassName);
 
@@ -74,13 +75,14 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
   }
 
 
-  protected ASTCDMethod addGetFactoryMethod(ASTType factoryType, String factoryClassName) {
-    ASTCDMethod getFactoryMethod = this.getCDMethodFacade().createMethod(PRIVATE_STATIC, factoryType, GET_FACTORY_METHOD);
+  protected ASTCDMethod addGetFactoryMethod(ASTMCType factoryType, String factoryClassName) {
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(factoryType).build();
+    ASTCDMethod getFactoryMethod = this.getCDMethodFacade().createMethod(PRIVATE_STATIC, returnType, GET_FACTORY_METHOD);
     this.replaceTemplate(EMPTY_BODY, getFactoryMethod, new TemplateHookPoint("_ast.nodefactory.GetFactory", factoryClassName));
     return getFactoryMethod;
   }
 
-  protected ASTCDAttribute addAttributes(ASTCDClass astcdClass, ASTType factoryType) {
+  protected ASTCDAttribute addAttributes(ASTCDClass astcdClass, ASTMCType factoryType) {
     // create attribute for AST
     return this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC, factoryType, FACTORY + astcdClass.getName());
   }
@@ -88,7 +90,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
   protected List<ASTCDMethod> addFactoryMethods(ASTCDClass astcdClass) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     String astName = astcdClass.getName();
-    ASTType astType = this.getCDTypeFacade().createSimpleReferenceType(astName);
+    ASTMCType astType = this.getCDTypeFacade().createQualifiedType(astName);
 
     // add create Method for AST without parameters
     methodList.add(addCreateMethod(astName, astType));
@@ -112,26 +114,30 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
     return methodList;
   }
 
-  protected ASTCDMethod addCreateMethod(String astName, ASTType astType) {
-    ASTCDMethod createWithoutParameters = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, astType, CREATE_METHOD + astName);
+  protected ASTCDMethod addCreateMethod(String astName, ASTMCType astType) {
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(astType).build();
+    ASTCDMethod createWithoutParameters = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, CREATE_METHOD + astName);
     this.replaceTemplate(EMPTY_BODY, createWithoutParameters, new TemplateHookPoint("_ast.nodefactory.Create", astName));
     return createWithoutParameters;
   }
 
-  protected ASTCDMethod addDoCreateMethod(String astName, ASTType astType) {
-    ASTCDMethod doCreateWithoutParameters = this.getCDMethodFacade().createMethod(PROTECTED, astType, DO_CREATE_METHOD + astName);
+  protected ASTCDMethod addDoCreateMethod(String astName, ASTMCType astType) {
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(astType).build();
+    ASTCDMethod doCreateWithoutParameters = this.getCDMethodFacade().createMethod(PROTECTED, returnType, DO_CREATE_METHOD + astName);
     this.replaceTemplate(EMPTY_BODY, doCreateWithoutParameters, new TemplateHookPoint("_ast.nodefactory.DoCreate", astName));
     return doCreateWithoutParameters;
   }
 
-  protected ASTCDMethod addCreateWithParamMethod(String astName, ASTType astType, List<ASTCDParameter> params, String paramCall) {
-    ASTCDMethod createWithParameters = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, astType, CREATE_METHOD + astName, params);
+  protected ASTCDMethod addCreateWithParamMethod(String astName, ASTMCType astType, List<ASTCDParameter> params, String paramCall) {
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(astType).build();
+    ASTCDMethod createWithParameters = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, CREATE_METHOD + astName, params);
     this.replaceTemplate(EMPTY_BODY, createWithParameters, new TemplateHookPoint("_ast.nodefactory.CreateWithParams", astName, paramCall));
     return createWithParameters;
   }
 
-  protected ASTCDMethod addDoCreateWithParamMethod(String astName, ASTType astType, List<ASTCDParameter> params, String paramCall) {
-    ASTCDMethod doCreateWithParameters = this.getCDMethodFacade().createMethod(PROTECTED, astType, DO_CREATE_METHOD + astName, params);
+  protected ASTCDMethod addDoCreateWithParamMethod(String astName, ASTMCType astType, List<ASTCDParameter> params, String paramCall) {
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(astType).build();
+    ASTCDMethod doCreateWithParameters = this.getCDMethodFacade().createMethod(PROTECTED, returnType, DO_CREATE_METHOD + astName, params);
     this.replaceTemplate(EMPTY_BODY, doCreateWithParameters, new TemplateHookPoint("_ast.nodefactory.DoCreateWithParams", astName, paramCall));
     return doCreateWithParameters;
   }
@@ -140,13 +146,13 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
   protected List<ASTCDMethod> addFactoryDelegateMethods(List<ASTCDClass> classList) {
     List<ASTCDMethod> delegateMethodList = new ArrayList<>();
     //get super symbols
-    for (CDSymbol superSymbol : nodeFactoryService.getSuperCDs()) {
-      Optional<ASTNode> astNode = superSymbol.getAstNode();
-      if (astNode.isPresent() && astNode.get() instanceof ASTCDDefinition) {
+    for (CDDefinitionSymbol superSymbol : nodeFactoryService.getSuperCDs()) {
+      Optional<ASTCDDefinition> astNode = superSymbol.getAstNode();
+      if (astNode.isPresent()) {
         //get super cddefinition
-        ASTCDDefinition superDefinition = (ASTCDDefinition) astNode.get();
+        ASTCDDefinition superDefinition = astNode.get();
 
-        TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor();
+        TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor(superSymbol.getEnclosingScope());
         CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build().accept(visitor);
 
         for (ASTCDClass superClass : superDefinition.getCDClassList()) {
@@ -154,7 +160,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
               && !(superClass.isPresentModifier() && superClass.getModifier().isAbstract())
               && !nodeFactoryService.isMethodAlreadyDefined(CREATE_METHOD + superClass.getName(), delegateMethodList)) {
             String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
-            ASTType superAstType = this.getCDTypeFacade().createSimpleReferenceType(packageName + superClass.getName());
+            ASTMCType superAstType = this.getCDTypeFacade().createQualifiedType(packageName + superClass.getName());
 
             //add create method without parameters
             delegateMethodList.add(addCreateDelegateMethod(superAstType, superClass.getName(), packageName, superSymbol.getName()));
@@ -169,22 +175,25 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
     return delegateMethodList;
   }
 
-  protected ASTCDMethod addCreateDelegateMethod(ASTType superAstType, String className, String packageName, String symbolName) {
-    ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, CREATE_METHOD + className);
+  protected ASTCDMethod addCreateDelegateMethod(ASTMCType superAstType, String className, String packageName, String symbolName) {
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(superAstType).build();
+    ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, CREATE_METHOD + className);
     this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("_ast.nodefactory.CreateDelegateMethod", packageName + symbolName, className, ""));
     return createDelegateMethod;
   }
 
-  protected ASTCDMethod addCreateDelegateWithParamMethod(ASTType superAstType, ASTCDClass superClass, String packageName, String symbolName) {
+  protected ASTCDMethod addCreateDelegateWithParamMethod(ASTMCType superAstType, ASTCDClass superClass, String packageName, String symbolName) {
     List<ASTCDParameter> params = this.getCDParameterFacade().createParameters(superClass.getCDAttributeList());
     String paramCall = params.stream()
         .map(ASTCDParameter::getName)
         .collect(Collectors.joining(", "));
 
-    ASTCDMethod createDelegateWithParamMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, CREATE_METHOD + superClass.getName(), params);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(superAstType).build();
+    ASTCDMethod createDelegateWithParamMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, CREATE_METHOD + superClass.getName(), params);
     this.replaceTemplate(EMPTY_BODY, createDelegateWithParamMethod, new TemplateHookPoint("_ast.nodefactory.CreateDelegateMethod", packageName + symbolName, superClass.getName(), paramCall));
     return createDelegateWithParamMethod;
   }
+
 }
 
 

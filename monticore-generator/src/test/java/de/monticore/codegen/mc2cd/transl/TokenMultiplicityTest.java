@@ -2,10 +2,10 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -28,7 +28,7 @@ public class TokenMultiplicityTest {
   @Test
   public void testTokenStar() {
     List<ASTCDAttribute> attributes = testListClass.getCDAttributeList();
-    String name = typeToString(attributes.get(0).getType());
+    String name = typeToString(attributes.get(0).getMCType());
     assertEquals("java.util.List", name);
   }
 }

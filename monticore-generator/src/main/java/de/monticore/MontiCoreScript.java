@@ -4,6 +4,9 @@ package de.monticore;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.*;
+import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CDGenerator;
@@ -59,18 +62,13 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
-import de.monticore.grammar.symboltable.MontiCoreGrammarSymbolTableCreator;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.umlcd4a.CD4AnalysisLanguage;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.symboltable.CD4AnalysisSymbolTableCreator;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.configuration.Configuration;
@@ -230,7 +228,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory output directory for generated Java code
    */
   public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar,
-                             GlobalScope symbolTable,
+                             Grammar_WithConceptsGlobalScope symbolTable,
                              IterablePath handcodedPath, File outputDirectory) {
     Log.errorIfNull(
         grammar,
@@ -246,7 +244,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory output directory for generated Java code
    */
   public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar,
-                             GlobalScope symbolTable,
+                             Grammar_WithConceptsGlobalScope symbolTable,
                              IterablePath handcodedPath, File outputDirectory, boolean embeddedJavaCode, Languages lang) {
     Log.errorIfNull(
         grammar,
@@ -259,15 +257,15 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * modeling language, model loader, symbols, symbol kinds, etc.)
    *
    * @param astGrammar      to generate the parser for
-   * @param symbolTable
    * @param astCd
    * @param outputDirectory output directory for generated Java code
    */
-  public void generateSymbolTable(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
-                                  GlobalScope symbolTable, ASTCDCompilationUnit astCd,
+  public void generateSymbolTable(GlobalExtensionManagement glex,
+                                  Grammar_WithConceptsGlobalScope mcGlobal,ASTMCGrammar astGrammar,
+                                  CD4AnalysisGlobalScope cdGlobal, ASTCDCompilationUnit astCd,
                                   File outputDirectory, IterablePath handcodedPath) {
     Log.errorIfNull(astGrammar);
-    SymbolTableGeneratorHelper genHelper = new SymbolTableGeneratorHelper(astGrammar, symbolTable, astCd);
+    SymbolTableGeneratorHelper genHelper = new SymbolTableGeneratorHelper(mcGlobal, astGrammar, cdGlobal, astCd);
     SymbolTableGenerator symbolTableGenerator = new SymbolTableGeneratorBuilder().build();
     symbolTableGenerator.generate(glex, astGrammar, genHelper, outputDirectory, handcodedPath);
   }
@@ -278,29 +276,25 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param ast
    * @return
    */
-  public ASTMCGrammar createSymbolsFromAST(GlobalScope globalScope, ASTMCGrammar ast) {
+  public ASTMCGrammar createSymbolsFromAST(Grammar_WithConceptsGlobalScope globalScope, ASTMCGrammar ast) {
     // Build grammar symbol table (if not already built)
     String qualifiedGrammarName = Names.getQualifiedName(ast.getPackageList(), ast.getName());
     Optional<MCGrammarSymbol> grammarSymbol = globalScope
-        .<MCGrammarSymbol>resolveDown(qualifiedGrammarName, MCGrammarSymbol.KIND);
+        .resolveMCGrammarDown(qualifiedGrammarName);
 
     ASTMCGrammar result = ast;
 
     if (grammarSymbol.isPresent()) {
-      result = (ASTMCGrammar) grammarSymbol.get().getAstNode().get();
+      result = grammarSymbol.get().getAstNode().get();
     } else {
-      MontiCoreGrammarLanguage language = new MontiCoreGrammarLanguage();
+      Grammar_WithConceptsLanguage language = new Grammar_WithConceptsLanguage();
 
-      ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-      resolvingConfiguration.addDefaultFilters(language.getResolvingFilters());
-
-      MontiCoreGrammarSymbolTableCreator stCreator = language.getSymbolTableCreator(resolvingConfiguration,
-          globalScope).get();
+      Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = language.getSymbolTableCreator(globalScope);
       stCreator.createFromAST(result);
-      globalScope.cache(language.getModelLoader(), qualifiedGrammarName);
+      globalScope.cache(qualifiedGrammarName);
     }
 
-    MCGrammarSymbol symbol = (MCGrammarSymbol) result.getSymbol();
+    MCGrammarSymbol symbol =  result.getSymbol2();
     for (MCGrammarSymbol it : MCGrammarSymbolTableHelper.getAllSuperGrammars(symbol)) {
       if (!it.getFullName().equals(symbol.getFullName())) {
         Reporting.reportOpenInputFile(Optional.empty(),
@@ -320,15 +314,14 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param ast
    * @return
    */
-  public ASTCDCompilationUnit createSymbolsFromAST(GlobalScope globalScope,
+  public ASTCDCompilationUnit createSymbolsFromAST(CD4AnalysisGlobalScope globalScope,
                                                    ASTCDCompilationUnit ast) {
     // Build grammar symbol table (if not already built)
 
     final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getCDDefinition()
         .getName());
-    Optional<CDSymbol> cdSymbol = globalScope.<CDSymbol>resolveDown(
-        qualifiedCDName,
-        CDSymbol.KIND);
+    Optional<CDDefinitionSymbol> cdSymbol = globalScope.resolveCDDefinitionDown(
+        qualifiedCDName);
 
     ASTCDCompilationUnit result = ast;
 
@@ -336,13 +329,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       result = (ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode().get();
       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
     } else {
-      ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-      resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());
-
-      CD4AnalysisSymbolTableCreator stCreator = cd4AnalysisLanguage.getSymbolTableCreator(resolvingConfiguration,
-          globalScope).get();
+      CD4AnalysisSymbolTableCreatorDelegator stCreator = cd4AnalysisLanguage.getSymbolTableCreator(globalScope);
       stCreator.createFromAST(result);
-      globalScope.cache(cd4AnalysisLanguage.getModelLoader(), qualifiedCDName);
+      globalScope.cache(qualifiedCDName);
     }
 
     return result;
@@ -352,7 +341,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param ast
    * @param scope
    */
-  public void runGrammarCoCos(ASTMCGrammar ast, GlobalScope scope) {
+  public void runGrammarCoCos(ASTMCGrammar ast, Grammar_WithConceptsGlobalScope scope) {
     // Run context conditions
     Grammar_WithConceptsCoCoChecker checker = new GrammarCoCos().getCoCoChecker();
     checker.handle(ast);
@@ -365,10 +354,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astGrammar  - grammar AST
    * @param glex        - object for managing hook points, features and global
    *                    variables
-   * @param symbolTable - grammar symbol table
+   * @param symbolTable - cd symbol table
    */
   public ASTCDCompilationUnit getOrCreateCD(ASTMCGrammar astGrammar,
-                                            GlobalExtensionManagement glex, GlobalScope symbolTable) {
+                                            GlobalExtensionManagement glex, CD4AnalysisGlobalScope symbolTable) {
     // transformation
     return TransformationHelper.getCDforGrammar(symbolTable, astGrammar)
         .orElse(new MC2CDTransformation(glex)
@@ -381,14 +370,16 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astGrammar  - grammar AST
    * @param glex        - object for managing hook points, features and global
    *                    variables
-   * @param symbolTable - grammar symbol table
+   * @param cdScope - grammar symbol table
    */
   public ASTCDCompilationUnit deriveCD(ASTMCGrammar astGrammar,
-                                       GlobalExtensionManagement glex, GlobalScope symbolTable) {
+                                       GlobalExtensionManagement glex,
+                                       CD4AnalysisGlobalScope cdScope,
+                                       Grammar_WithConceptsGlobalScope mcScope) {
     // transformation
-    Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(symbolTable, astGrammar);
-    ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTable(astGrammar, glex, symbolTable));
-    createCDSymbolsForSuperGrammars(glex, astGrammar, symbolTable);
+    Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar);
+    ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTable(astGrammar, glex, cdScope));
+    createCDSymbolsForSuperGrammars(glex, astGrammar, cdScope, mcScope);
     storeCDForGrammar(astGrammar, astCD);
     return astCD;
   }
@@ -399,7 +390,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * can be deleted after MontiCore 5
    * <p>
    * Prints Cd4Analysis AST to the CD-file (*.cd) in the subdirectory
-   * {@link MontiCoreScript#DIR_REPORTS}
    *
    * @param astCd           - the top node of the Cd4Analysis AST
    * @param outputDirectory - output directory
@@ -410,12 +400,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   /**
    * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory
-   * {@link MontiCoreScript#DIR_REPORTS}
    *
    * @param astCd           - the top node of the Cd4Analysis AST
    * @param outputDirectory - output directory
    */
-  public void reportGrammarCd(ASTMCGrammar astCd, GlobalScope globalScope, File outputDirectory) {
+  public void reportGrammarCd(ASTMCGrammar astCd, CD4AnalysisGlobalScope globalScope,
+                              Grammar_WithConceptsGlobalScope mcScope,File outputDirectory) {
     ASTCDCompilationUnit cd = getCDOfParsedGrammar(astCd);
     // we also store the class diagram fully qualified such that we can later on
     // resolve it properly for the generation of sub languages
@@ -425,9 +415,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         : reportSubDir.concat(".").concat(cd.getCDDefinition().getName());
 
     // Write reporting CD
-    ASTCDCompilationUnit astCdForReporting = new AstGeneratorHelper(cd, globalScope).getASTCDForReporting();
+    ASTCDCompilationUnit astCdForReporting = new AstGeneratorHelper(cd, globalScope, mcScope).getASTCDForReporting();
     // No star imports in reporting CDs
-    astCdForReporting.getImportStatementList().forEach(s -> s.setStar(false));
+    astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
     GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
 
   }
@@ -441,20 +431,20 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astClassDiagram - class diagram AST
    */
 
-  public ASTCDCompilationUnit decorateForASTPackage(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ModelPath modelPath, IterablePath handCodedPath) {
-    ASTCDCompilationUnit astcdCompilationUnit = prepareCD(astClassDiagram);
+  public ASTCDCompilationUnit decorateForASTPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope, ASTCDCompilationUnit astClassDiagram, ModelPath modelPath, IterablePath handCodedPath) {
+    ASTCDCompilationUnit astcdCompilationUnit = prepareCD(cdScope, astClassDiagram);
     return decorateWithAST(astcdCompilationUnit, glex, modelPath, handCodedPath);
   }
 
-  public ASTCDCompilationUnit decorateEmfForASTPackage(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ModelPath modelPath, IterablePath handCodedPath) {
-    ASTCDCompilationUnit astcdCompilationUnit = prepareCD(astClassDiagram);
+  public ASTCDCompilationUnit decorateEmfForASTPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,ASTCDCompilationUnit astClassDiagram, ModelPath modelPath, IterablePath handCodedPath) {
+    ASTCDCompilationUnit astcdCompilationUnit = prepareCD(cdScope, astClassDiagram);
     return decorateEmfWithAST(astcdCompilationUnit, glex, modelPath, handCodedPath);
   }
 
-  private ASTCDCompilationUnit prepareCD(ASTCDCompilationUnit cd) {
+  private ASTCDCompilationUnit prepareCD(ICD4AnalysisScope scope, ASTCDCompilationUnit cd) {
     ASTCDCompilationUnit preparedCD = cd;
 
-    TypeCD2JavaDecorator typeCD2JavaDecorator = new TypeCD2JavaDecorator();
+    TypeCD2JavaDecorator typeCD2JavaDecorator = new TypeCD2JavaDecorator(scope);
     preparedCD = typeCD2JavaDecorator.decorate(preparedCD);
 
     return preparedCD;
@@ -497,10 +487,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, decoratorUtil, methodDecorator, astService);
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator);
 
-    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());
-    GlobalScope symbolTable = new GlobalScope(modelPath, cd4AnalysisLanguage, resolvingConfiguration);
-    CD4AnalysisSymbolTableCreator symbolTableCreator = cd4AnalysisLanguage.getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
+    CD4AnalysisGlobalScope symbolTable = new CD4AnalysisGlobalScope(modelPath, cd4AnalysisLanguage);
+    CD4AnalysisSymbolTableCreatorDelegator symbolTableCreator = cd4AnalysisLanguage.getSymbolTableCreator(symbolTable);
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, symbolTableCreator, fullDecorator, astLanguageInterfaceDecorator,
         astBuilderDecorator, nodeFactoryDecorator, millDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
@@ -549,10 +537,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     PackageImplDecorator packageImplDecorator = new PackageImplDecorator(glex, new MandatoryAccessorDecorator(glex),emfService);
     PackageInterfaceDecorator packageInterfaceDecorator = new PackageInterfaceDecorator(glex, emfService);
 
-    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());
-    GlobalScope symbolTable = new GlobalScope(modelPath, cd4AnalysisLanguage, resolvingConfiguration);
-    CD4AnalysisSymbolTableCreator symbolTableCreator = cd4AnalysisLanguage.getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
+    CD4AnalysisGlobalScope symbolTable = new CD4AnalysisGlobalScope(modelPath, cd4AnalysisLanguage);
+    CD4AnalysisSymbolTableCreatorDelegator symbolTableCreator = cd4AnalysisLanguage.getSymbolTableCreator(symbolTable);
 
     ASTEmfCDDecorator astcdDecorator = new ASTEmfCDDecorator(glex, symbolTableCreator, fullEmfDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
         millDecorator, astConstantsDecorator, emfEnumDecorator, fullASTInterfaceDecorator, packageImplDecorator, packageInterfaceDecorator);
@@ -568,6 +554,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new AbstractService(oldCD));
     glex.setGlobalValue("astHelper", new DecorationHelper());
+    glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
@@ -603,31 +590,33 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astClassDiagram - class diagram AST
    * @param outputDirectory TODO
    */
-  public void generateVisitors(GlobalExtensionManagement glex, GlobalScope globalScope,
+  public void generateVisitors(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
                                ASTCDCompilationUnit astClassDiagram, File outputDirectory,
                                IterablePath handcodedPath) {
     VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, handcodedPath);
   }
 
-  public void generateCocos(GlobalExtensionManagement glex, GlobalScope globalScope,
+  public void generateCocos(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
                             ASTCDCompilationUnit astClassDiagram, File outputDirectory) {
     CoCoGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
   }
 
-  public void generateODs(GlobalExtensionManagement glex, GlobalScope globalScope,
+  public void generateODs(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
+                          Grammar_WithConceptsGlobalScope mcScope,
                           ASTCDCompilationUnit astClassDiagram, File outputDirectory) {
-    ODGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
+    ODGenerator.generate(glex, astClassDiagram, globalScope , mcScope, outputDirectory);
   }
 
 
   private void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
-                                               GlobalScope symbolTable) {
-    if (astGrammar.isPresentSymbol()) {
-      MCGrammarSymbol sym = (MCGrammarSymbol) astGrammar.getSymbol();
+                                               CD4AnalysisGlobalScope cdScope,
+                                               Grammar_WithConceptsGlobalScope mcScope) {
+    if (astGrammar.isPresentSymbol2()) {
+      MCGrammarSymbol sym = (MCGrammarSymbol) astGrammar.getSymbol2();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
-        Optional<CDSymbol> importedCd = symbolTable.resolveDown(mcgsym.getFullName(), CDSymbol.KIND);
+        Optional<CDDefinitionSymbol> importedCd = cdScope.resolveCDDefinitionDown(mcgsym.getFullName());
         if (!importedCd.isPresent() && mcgsym.getAstNode().isPresent()) {
-          transformAndCreateSymbolTable((ASTMCGrammar) mcgsym.getAstNode().get(), glex, symbolTable);
+          transformAndCreateSymbolTable((ASTMCGrammar) mcgsym.getAstNode().get(), glex, cdScope);
         }
       }
     }
@@ -642,20 +631,18 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param symbolTable grammar symbol table
    */
   private ASTCDCompilationUnit transformAndCreateSymbolTable(ASTMCGrammar astGrammar,
-                                                             GlobalExtensionManagement glex, GlobalScope symbolTable) {
+                                                             GlobalExtensionManagement glex, CD4AnalysisGlobalScope symbolTable) {
     // transformation
     ASTCDCompilationUnit compUnit = new MC2CDTransformation(glex).apply(astGrammar);
     return createSymbolsFromAST(symbolTable, compUnit);
   }
 
-  public GlobalScope createGlobalScope(ModelPath modelPath) {
-    final MontiCoreGrammarLanguage mcLanguage = new MontiCoreGrammarLanguage();
+  public CD4AnalysisGlobalScope createCD4AGlobalScope(ModelPath modelPath) {
+    return new CD4AnalysisGlobalScope(modelPath, new CD4AnalysisLanguage());
+  }
 
-    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(mcLanguage.getResolvingFilters());
-    resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());
-
-    return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage), resolvingConfiguration);
+  public Grammar_WithConceptsGlobalScope createMCGlobalScope(ModelPath modelPath) {
+    return new Grammar_WithConceptsGlobalScope(modelPath, new Grammar_WithConceptsLanguage());
   }
 
   /**

@@ -2,14 +2,15 @@
 
 package de.monticore.codegen.cd2java.od;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -25,17 +26,18 @@ public class ODGenerator {
    * Generates the different visitor default implementations for the given class
    * diagram.
    */
-  public static void generate(GlobalExtensionManagement glex, GlobalScope globalScope,
-      ASTCDCompilationUnit astClassDiagram,
-      File outputDirectory) {
+  public static void generate(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram,
+                              CD4AnalysisGlobalScope cdScope,
+                              Grammar_WithConceptsGlobalScope mcScope,
+                              File outputDirectory) {
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
-    AstGeneratorHelper odHelper = new AstGeneratorHelper(astClassDiagram, globalScope);
+    AstGeneratorHelper odHelper = new AstGeneratorHelper(astClassDiagram, cdScope, mcScope);
     glex.setGlobalValue("odHelper", odHelper);
     setup.setGlex(glex);
     final GeneratorEngine generator = new GeneratorEngine(setup);
     final String diagramName = astClassDiagram.getCDDefinition().getName();
-    final CDSymbol cd = odHelper.getCd();
+    final CDDefinitionSymbol cd = odHelper.getCd();
     
     final String astPackage = GeneratorHelper.getPackageName(odHelper.getPackageName(),
         AstGeneratorHelper.getAstPackageSuffix());

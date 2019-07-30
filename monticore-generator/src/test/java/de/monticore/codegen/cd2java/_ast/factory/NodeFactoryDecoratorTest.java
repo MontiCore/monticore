@@ -1,5 +1,7 @@
 package de.monticore.codegen.cd2java._ast.factory;
 
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -9,8 +11,8 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,6 +36,8 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
+    LogStub.init();
+    LogStub.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
     this.cdTypeFacade = CDTypeFacade.getInstance();
     this.cdParameterFacade = CDParameterFacade.getInstance();
@@ -42,6 +46,7 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
     NodeFactoryDecorator decorator = new NodeFactoryDecorator(this.glex, new NodeFactoryService(decoratedCompilationUnit));
     this.factoryClass = decorator.decorate(decoratedCompilationUnit);
@@ -93,8 +98,9 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTType returnType = cdTypeFacade.createTypeByDefinition("AutomatonNodeFactory");
-    assertDeepEquals(returnType, method.getReturnType());
+    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("AutomatonNodeFactory");
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -107,8 +113,9 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertDeepEquals(returnType, method.getReturnType());
+    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -121,8 +128,9 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertDeepEquals(returnType, method.getReturnType());
+    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -133,24 +141,25 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     //test modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
     //test returnType
-    ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertDeepEquals(returnType, method.getReturnType());
+    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
     //testParameter
     assertFalse(method.isEmptyCDParameters());
 
-    ASTType nameType = cdTypeFacade.createTypeByDefinition("String");
+    ASTMCType nameType = cdTypeFacade.createTypeByDefinition("String");
     ASTCDParameter nameParameter = cdParameterFacade.createParameter(nameType, "name");
-    assertDeepEquals(nameParameter.getType(), method.getCDParameter(0).getType());
+    assertDeepEquals(nameParameter.getMCType(), method.getCDParameter(0).getMCType());
     assertEquals(nameParameter.getName(), method.getCDParameter(0).getName());
 
-    ASTType statesType = cdTypeFacade.createTypeByDefinition("java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState>");
+    ASTMCType statesType = cdTypeFacade.createTypeByDefinition("java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState>");
     ASTCDParameter statesParameter = cdParameterFacade.createParameter(statesType, "states");
-    assertDeepEquals(statesParameter.getType(), method.getCDParameter(1).getType());
+    assertDeepEquals(statesParameter.getMCType(), method.getCDParameter(1).getMCType());
     assertEquals(statesParameter.getName(), method.getCDParameter(1).getName());
 
-    ASTType transitionsType = cdTypeFacade.createTypeByDefinition("java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition>");
+    ASTMCType transitionsType = cdTypeFacade.createTypeByDefinition("java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition>");
     ASTCDParameter transitionsParameter = cdParameterFacade.createParameter(transitionsType, "transitions");
-    assertDeepEquals(transitionsParameter.getType(), method.getCDParameter(2).getType());
+    assertDeepEquals(transitionsParameter.getMCType(), method.getCDParameter(2).getMCType());
     assertEquals(transitionsParameter.getName(), method.getCDParameter(2).getName());
   }
 
@@ -162,24 +171,25 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     //test modifier
     assertTrue(PROTECTED.build().deepEquals(method.getModifier()));
     //test returnType
-    ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertDeepEquals(returnType, method.getReturnType());
+    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
     //testParameter
     assertFalse(method.isEmptyCDParameters());
 
-    ASTType nameType = cdTypeFacade.createTypeByDefinition("String");
+    ASTMCType nameType = cdTypeFacade.createTypeByDefinition("String");
     ASTCDParameter nameParameter = cdParameterFacade.createParameter(nameType, "name");
-    assertDeepEquals(nameParameter.getType(), method.getCDParameter(0).getType());
+    assertDeepEquals(nameParameter.getMCType(), method.getCDParameter(0).getMCType());
     assertEquals(nameParameter.getName(), method.getCDParameter(0).getName());
 
-    ASTType statesType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTState>");
+    ASTMCType statesType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTState>");
     ASTCDParameter statesParameter = cdParameterFacade.createParameter(statesType, "states");
-    assertDeepEquals(statesParameter.getType(), statesType);
+    assertDeepEquals(statesParameter.getMCType(), statesType);
     assertEquals(statesParameter.getName(), method.getCDParameter(1).getName());
 
-    ASTType transitionsType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTTransition>");
+    ASTMCType transitionsType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTTransition>");
     ASTCDParameter transitionsParameter = cdParameterFacade.createParameter(transitionsType, "transitions");
-    assertDeepEquals(transitionsParameter.getType(), transitionsType);
+    assertDeepEquals(transitionsParameter.getMCType(), transitionsType);
     assertEquals(transitionsParameter.getName(), method.getCDParameter(2).getName());
   }
 
@@ -189,6 +199,6 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, factoryClass, factoryClass);
-    System.out.println(sb.toString());
+    // TODO Check System.out.println(sb.toString());
   }
 }

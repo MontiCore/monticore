@@ -60,7 +60,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
       @attribute primitive BOOLEAN, BYTE, CHAR, SHORT, INT, FLOAT, LONG,
                                or DOUBLE
   */
-  MCPrimitiveType implements MCType =
+  symbol (MCType) MCPrimitiveType implements MCType =
       primitive: ["boolean" | "byte" | "short" | "int" | "long" | "char" |"float" | "double"];
 
 
@@ -73,12 +73,12 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
    *
    * This is also an extension point for generic types.
   */
-  interface MCObjectType extends MCType;
+  interface symbol (MCType)  MCObjectType extends MCType;
 
   /** ASTMCQualifiedType represents types like class or interface types
           which could have a qualified name like this: a.b.c.D
       */
-  MCQualifiedType implements MCObjectType = MCQualifiedName;
+  symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;
 
 
   /*=================================================================*/

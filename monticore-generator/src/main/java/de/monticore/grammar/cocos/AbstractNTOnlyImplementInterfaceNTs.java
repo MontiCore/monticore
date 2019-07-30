@@ -8,7 +8,7 @@ import java.util.Optional;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._cocos.GrammarASTAbstractProdCoCo;
-import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -28,10 +28,9 @@ public class AbstractNTOnlyImplementInterfaceNTs implements GrammarASTAbstractPr
     if (!a.getSuperInterfaceRuleList().isEmpty()) {
       List<ASTRuleReference> interfaces = a.getSuperInterfaceRuleList();
       for (ASTRuleReference i : interfaces) {
-        Optional<MCProdSymbol> ruleSymbol = a.getEnclosingScope().resolve(i.getName(),
-            MCProdSymbol.KIND);
+        Optional<ProdSymbol> ruleSymbol = a.getEnclosingScope2().resolveProd(i.getName());
         if (ruleSymbol.isPresent()) {
-          MCProdSymbol r = ruleSymbol.get();
+          ProdSymbol r = ruleSymbol.get();
           if (!r.isInterface()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(), r.getName()),
                 a.get_SourcePositionStart());

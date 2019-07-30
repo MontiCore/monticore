@@ -1,10 +1,10 @@
 package de.monticore.codegen.cd2java._cocos;
 
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class CoCoInterfaceDecorator extends AbstractDecorator<ASTCDDefinition, L
   }
 
   protected ASTCDMethod createCheckMethod() {
-    ASTType parameterType = astService.getASTBaseInterface();
+    ASTMCType parameterType = astService.getASTBaseInterface();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(parameterType, "node");
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, CoCoConstants.CHECK, parameter);
   }
@@ -64,7 +64,7 @@ public class CoCoInterfaceDecorator extends AbstractDecorator<ASTCDDefinition, L
   }
 
   protected ASTCDMethod createCheckMethod(ASTCDType cdType) {
-    ASTType parameterType = astService.getASTType(cdType);
+    ASTMCType parameterType = astService.getASTType(cdType);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(parameterType, "node");
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, CoCoConstants.CHECK, parameter);
   }

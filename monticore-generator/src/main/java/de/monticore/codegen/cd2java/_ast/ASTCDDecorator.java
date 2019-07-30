@@ -1,5 +1,8 @@
 package de.monticore.codegen.cd2java._ast;
 
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreator;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreatorDelegator;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
@@ -12,8 +15,6 @@ import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.mill.MillDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.symboltable.CD4AnalysisSymbolTableCreator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,10 +42,10 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
 
   protected final FullASTInterfaceDecorator astInterfaceDecorator;
 
-  protected final CD4AnalysisSymbolTableCreator symbolTableCreator;
+  private final CD4AnalysisSymbolTableCreatorDelegator symbolTableCreator;
 
   public ASTCDDecorator(final GlobalExtensionManagement glex,
-                        final CD4AnalysisSymbolTableCreator symbolTableCreator,
+                        final CD4AnalysisSymbolTableCreatorDelegator symbolTableCreator,
                         final ASTFullDecorator astFullDecorator,
                         final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator,
                         final ASTBuilderDecorator astBuilderDecorator,

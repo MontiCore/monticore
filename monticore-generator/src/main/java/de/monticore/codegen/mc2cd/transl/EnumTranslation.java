@@ -2,17 +2,17 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import java.util.function.UnaryOperator;
-
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
+import de.monticore.cd.cd4analysis._ast.ASTCDEnumConstant;
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTEnumProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnumConstant;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.utils.Link;
+
+import java.util.function.UnaryOperator;
 
 public class EnumTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
   

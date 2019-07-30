@@ -3,18 +3,21 @@
 package de.monticore.codegen.mc2cd;
 
 import de.monticore.MontiCoreScript;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsScope;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.CD4AnalysisLanguage;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.se_rwth.commons.Names;
 import parser.MCGrammarParser;
 
@@ -37,22 +40,17 @@ public class TestHelper {
       return Optional.empty();
     }
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
+    Grammar_WithConceptsGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
     mc.createSymbolsFromAST(symbolTable, grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDTransformation(
         new GlobalExtensionManagement()).apply(grammar.get());
     return Optional.of(cdCompilationUnit);
   }
   
-  public static GlobalScope createGlobalScope(ModelPath modelPath) {
-    final MontiCoreGrammarLanguage mcLanguage = new MontiCoreGrammarLanguage();
-    
-    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(mcLanguage.getResolvingFilters());
-    final CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
-    resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());
-    
-    return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage), resolvingConfiguration);
+  public static Grammar_WithConceptsGlobalScope createGlobalScope(ModelPath modelPath) {
+
+    Grammar_WithConceptsLanguage mcLanguage = new Grammar_WithConceptsLanguage();
+    return new Grammar_WithConceptsGlobalScope(modelPath, mcLanguage);
   }
 
   public static Optional<ASTCDClass> getCDClass(ASTCDCompilationUnit cdCompilationUnit, String cdClassName) {
@@ -67,27 +65,20 @@ public class TestHelper {
         .findAny();
   }
 
-  public static boolean isListOfType(ASTType typeRef, String typeArg) {
+  public static boolean isListOfType(ASTMCType typeRef, String typeArg) {
     if (!TransformationHelper.typeToString(typeRef).equals("java.util.List")) {
       return false;
     }
-    if (!(typeRef instanceof ASTSimpleReferenceType)) {
+    if (!(typeRef instanceof ASTMCGenericType)) {
       return false;
     }
-    ASTSimpleReferenceType type = (ASTSimpleReferenceType) typeRef;
-    if (!type.isPresentTypeArguments()) {
+    ASTMCGenericType type = (ASTMCGenericType) typeRef;
+    if (type.getMCTypeArgumentList().size() != 1) {
       return false;
     }
-    if (type.getTypeArguments().getTypeArgumentList().size() != 1) {
+    if (type.getMCTypeArgumentList().get(0).getMCTypeOpt().get().getBaseName().equals(typeArg)) {
       return false;
     }
-    if (!(type.getTypeArguments().getTypeArgumentList()
-        .get(0) instanceof ASTSimpleReferenceType)) {
-      return false;
-    }
-    return Names.getQualifiedName(
-        ((ASTSimpleReferenceType) type.getTypeArguments().getTypeArgumentList().get(0))
-            .getNameList())
-        .equals(typeArg);
+    return true;
   }
 }
