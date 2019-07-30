@@ -2,6 +2,7 @@
 
 package de.monticore.codegen.parser;
 
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.transformation.GrammarTransformer;
 import de.se_rwth.commons.logging.Log;
@@ -13,8 +14,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class MCGrammarParserTest {
   
