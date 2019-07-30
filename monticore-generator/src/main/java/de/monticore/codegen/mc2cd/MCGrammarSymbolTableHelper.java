@@ -548,7 +548,7 @@ public class MCGrammarSymbolTableHelper {
     if (!ast.isPresentCard()) {
       return false;
     }
-    if (ast.getCard().isUnbounded()) {
+    if (ast.getCard().getIteration()==ASTConstantsGrammar.PLUS || ast.getCard().getIteration()==ASTConstantsGrammar.STAR) {
       return true;
     }
     Optional<Integer> max = getMax(ast);
