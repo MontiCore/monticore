@@ -93,14 +93,14 @@ it-experiments-gradle:
     - "./gradlew build --continue"
   allow_failure: true
 
-  trigger-automata:
-    stage: test
-    trigger:
-      project: monticore/languages/automaton
-      branch: master
+trigger-automata:
+  stage: test
+  trigger:
+    project: monticore/languages/automaton
+    branch: master
 
-  trigger-cd4a:
-    stage: test
-    trigger:
-      project: monticore/cd4analysis/cd4analysis
-      branch: newSymTab
+trigger-cd4a:
+  stage: test
+  trigger:
+    project: monticore/cd4analysis/cd4analysis
+    branch: newSymTab
