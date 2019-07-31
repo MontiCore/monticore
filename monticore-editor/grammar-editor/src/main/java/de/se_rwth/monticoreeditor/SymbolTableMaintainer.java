@@ -2,93 +2,90 @@
 
 package de.se_rwth.monticoreeditor;
 
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.ImmutableList;
-
-import de.monticore.ModelingLanguageFamily;
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
-import de.monticore.grammar.symboltable.MontiCoreGrammarModelLoader;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsModelLoader;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Scopes;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.langeditor.modelstates.ModelState;
 
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 final class SymbolTableMaintainer {
   
-  private final MontiCoreGrammarLanguage grammarLanguage = new MontiCoreGrammarLanguage();
+  private final Grammar_WithConceptsLanguage grammarLanguage = new Grammar_WithConceptsLanguage();
   
-  private final GlobalScope globalScope;
+  private final Grammar_WithConceptsGlobalScope globalScope;
   
   SymbolTableMaintainer(ModelStatesInProject astMapper, ImmutableList<Path> modelPath) {
-    MontiCoreGrammarModelLoader modelLoader =
-        (MontiCoreGrammarModelLoader) grammarLanguage.getModelLoader();
-    modelLoader.setAstProvider(astMapper);
-    ModelingLanguageFamily languageFamily = new ModelingLanguageFamily();
-    languageFamily.addModelingLanguage(grammarLanguage);
-    this.globalScope = new GlobalScope(new ModelPath(modelPath), languageFamily);
+    Grammar_WithConceptsModelLoader modelLoader = grammarLanguage.getModelLoader();
+    this.globalScope = new Grammar_WithConceptsGlobalScope(new ModelPath(modelPath), grammarLanguage);
   }
   
   void acceptModelState(ModelState modelState) {
     ASTNode rootNode = modelState.getRootNode();
     if (rootNode instanceof ASTMCGrammar) {
         ASTMCGrammar mcGrammar = (ASTMCGrammar) rootNode;
-        if (!mcGrammar.isPresentSymbol()) {
-          grammarLanguage.getSymbolTableCreator(new ResolvingConfiguration(), globalScope)
-              .ifPresent(symbolTableCreator -> {
-                removeOldScope(mcGrammar);
-                Scope newScope = symbolTableCreator.createFromAST(mcGrammar);
-                setNewSuperGrammarScope(newScope);
-              });
-        }
+        // TODO Auf neue SymTab umstellen
+//        if (!mcGrammar.isPresentSymbol2()) {
+//          grammarLanguage.getSymbolTableCreator(globalScope)
+//              .ifPresent(symbolTableCreator -> {
+//                removeOldScope(mcGrammar);
+//                Scope newScope = symbolTableCreator.createFromAST(mcGrammar);
+//                setNewSuperGrammarScope(newScope);
+//              });
+//        }
     }
   }
   
   private void removeOldScope(ASTMCGrammar mcGrammar) {
-    globalScope.getSubScopes().stream()
-        .filter(scope -> Scopes.getLocalSymbolsAsCollection(scope).stream()
-            .filter(MCGrammarSymbol.class::isInstance)
-            .map(MCGrammarSymbol.class::cast)
-            .map(MCGrammarSymbol::getName)
-            .anyMatch(name -> name.endsWith(mcGrammar.getName())))
-        .forEach(globalScope::removeSubScope);
-  }
-  
-  private void setNewSuperGrammarScope(Scope newScope) {
-    List<MCGrammarSymbol> existingGrammarSymbols = globalScope.getSubScopes().stream()
-        .map(scope -> Scopes.getLocalSymbolsAsCollection(scope))
-        .flatMap(Collection::stream)
-        .filter(MCGrammarSymbol.class::isInstance)
-        .map(MCGrammarSymbol.class::cast)
-        .collect(Collectors.toList());
-    
-    List<MCGrammarSymbol> newGrammarSymbols = Scopes.getLocalSymbolsAsCollection(newScope).stream()
-        .filter(MCGrammarSymbol.class::isInstance)
-        .map(MCGrammarSymbol.class::cast)
-        .collect(Collectors.toList());
-    
-    for (MCGrammarSymbol existingGrammarSymbol : existingGrammarSymbols) {
-      for (MCGrammarSymbol newGrammarSymbol : newGrammarSymbols) {
-        try {
-          replaceSuperGrammar(existingGrammarSymbol, newGrammarSymbol);
-        }
-        catch (Exception e) {
-          Log.error(
-              "0xA1100 Error while updating supergrammar references for " + existingGrammarSymbol.getName(),
-              e);
-        }
-      }
+    if (!mcGrammar.getSymbol2Opt().isPresent()) {
+      return;
+    }
+    Optional<MCGrammarSymbol> s = globalScope.resolveMCGrammar(mcGrammar.getSymbol2().getFullName());
+    if (s.isPresent()) {
+      globalScope.remove(s.get());
     }
   }
+
+  // TODO Auf neue symtab umstellen
+//  private void setNewSuperGrammarScope(Scope newScope) {
+//    List<MCGrammarSymbol> existingGrammarSymbols = globalScope.getSubScopes().stream()
+//        .map(scope -> Scopes.getLocalSymbolsAsCollection(scope))
+//        .flatMap(Collection::stream)
+//        .filter(MCGrammarSymbol.class::isInstance)
+//        .map(MCGrammarSymbol.class::cast)
+//        .collect(Collectors.toList());
+//
+//    List<MCGrammarSymbol> newGrammarSymbols = Scopes.getLocalSymbolsAsCollection(newScope).stream()
+//        .filter(MCGrammarSymbol.class::isInstance)
+//        .map(MCGrammarSymbol.class::cast)
+//        .collect(Collectors.toList());
+//
+//    for (MCGrammarSymbol existingGrammarSymbol : existingGrammarSymbols) {
+//      for (MCGrammarSymbol newGrammarSymbol : newGrammarSymbols) {
+//        try {
+//          replaceSuperGrammar(existingGrammarSymbol, newGrammarSymbol);
+//        }
+//        catch (Exception e) {
+//          Log.error(
+//              "0xA1100 Error while updating supergrammar references for " + existingGrammarSymbol.getName(),
+//              e);
+//        }
+//      }
+//    }
+//  }
   
   private void replaceSuperGrammar(MCGrammarSymbol existingGrammarSymbol,
       MCGrammarSymbol newGrammarSymbol) {
