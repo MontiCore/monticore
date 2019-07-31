@@ -4,7 +4,7 @@ package de.monticore.types;
 
 component grammar TypeSymbols extends de.monticore.MCBasics {
 
-  symbol Type = (Field|Method)*;
+  symbol Type = Name (Field|Method)*;
 
   symbol Field = Name ;
 

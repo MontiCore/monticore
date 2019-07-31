@@ -14,7 +14,7 @@
   <artifactId>experiments</artifactId>
   
   <properties>
-    <latest.grammars.version>5.0.6.latestGrammar-SNAPSHOT</latest.grammars.version>
+    <latest.grammars.version>5.0.7-SNAPSHOT</latest.grammars.version>
   </properties>
 
   <packaging>pom</packaging>
