@@ -8,10 +8,13 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
 
   symbol Field = Name ;
 
-  symbol Method = Name parameter:Field*;
 
   symbolrule  Field =
-//    type: de.monticore.types.typesymbols._symboltable.TypeSymbol
+    type: de.monticore.types.typesymbols._symboltable.TypeSymbol
 ;
 
+  symbol Method = Name;
+  symbolrule Method =
+    parameters: de.monticore.types.typessymbols._symboltable.FieldSymbol
+  ;
 }
