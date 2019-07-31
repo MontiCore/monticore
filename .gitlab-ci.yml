@@ -6,13 +6,13 @@ image: maven:3.5.4-jdk-8-alpine
 variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
-  GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
 
 
 before_script:
   - chmod +x monticore-gradle/gradlew
   - chmod +x monticore-generator/it/experiments/gradlew
   - chmod +x monticore-generator/it/gradlew
+  - export GRADLE_USER_HOME=`pwd`/.gradle
 
 cache:
   paths:
@@ -21,12 +21,9 @@ cache:
     - .gradle/caches
   key: ${CI_COMMIT_REF_SLUG} # Cache per branch
 
-
-
 stages:
   - build
   - test
-  - test-gradle
 
 build_dev:
   stage: build
@@ -55,39 +52,23 @@ build_branches:
 
 integration-test:
   stage: test
+  dependencies: []
   script:
     - cd monticore-generator/it
     - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify"
-
-it-emf:
-  stage: test
-  script:
-    - cd monticore-generator/it
-    - "mvn --settings ../../settings.xml $MAVEN_OPTS clean install -P emf-it-tests"
-
-it-experiments:
-  stage: test
-  script:
-    - cd monticore-generator/it/experiments
-    - "mvn --settings ../../../settings.xml $MAVEN_OPTS clean install -fae"
-  allow_failure: true
-
+    - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify -P emf-it-tests"
 
 it-gradle:
-  stage: test-gradle
+  stage: test
+  dependencies: []
   script:
     - cd monticore-generator/it
     - "./gradlew build"
-
-it-emf-gradle:
-  stage: test-gradle
-  script:
-    - cd monticore-generator/it
-    - "./gradlew compileEmfJava"
-
+    - "./gradlew build -PbuildProfile=emf"
 
 it-experiments-gradle:
-  stage: test-gradle
+  stage: test
+  dependencies: []
   script:
     - cd monticore-generator/it/experiments
     - "./gradlew build --continue"
