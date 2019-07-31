@@ -2,7 +2,7 @@ import de.monticore.MCTask
 
 plugins {
   id 'java'
-  id "monticore" version "5.0.6-SNAPSHOT"
+  id "monticore" version "5.0.7-SNAPSHOT"
 }
 
 group = 'de.monticore'

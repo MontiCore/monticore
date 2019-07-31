@@ -1,6 +1,7 @@
 # Release Notes
 
 ##  MontiCore 5.0.7-SNAPSHOT
+##  MontiCore 5.0.6
 - The IncGen-reports are stored in the source code directory
 - Removed MutableScope
 - IncGen-Reports are stored 
