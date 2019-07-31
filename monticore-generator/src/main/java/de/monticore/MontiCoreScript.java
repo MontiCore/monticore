@@ -570,6 +570,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new EmfService(oldCD));
     glex.setGlobalValue("astHelper", new DecorationHelper());
+    glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
