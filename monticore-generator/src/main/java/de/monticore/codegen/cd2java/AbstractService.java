@@ -8,7 +8,7 @@ import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 
@@ -129,8 +129,8 @@ public class AbstractService<T extends AbstractService> {
   public String getNativeTypeName(ASTMCType astType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
     // if not generic returns simple Type like 'int'
-    if (astType instanceof ASTMCBasicGenericType && ((ASTMCBasicGenericType) astType).getMCTypeArgumentList().size() == 1 ) {
-      return ((ASTMCBasicGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get().printType();
+    if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentList().size() == 1 ) {
+      return ((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get().printType();
     }
     return astType.printType();
   }
