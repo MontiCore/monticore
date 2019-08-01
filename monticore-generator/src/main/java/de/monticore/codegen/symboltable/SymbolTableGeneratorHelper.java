@@ -13,10 +13,7 @@ import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
-import de.monticore.grammar.grammar._ast.ASTCard;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTMethod;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsScope;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
@@ -721,6 +718,9 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   public static boolean isAdditionalAttributeTypeList(ASTAdditionalAttribute attr) {
     if (attr.isPresentCard()) {
       ASTCard card = attr.getCard();
+      if (card.getIteration() == ASTConstantsGrammar.STAR || card.getIteration() == ASTConstantsGrammar.PLUS) {
+        return true;
+      }
       if (card.isPresentMax()) {
         String max = card.getMax();
         // check for * cardinality
@@ -751,6 +751,9 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   public static boolean isAdditionalAttributeTypeOptional(ASTAdditionalAttribute attr) {
     if (attr.isPresentCard()) {
       ASTCard card = attr.getCard();
+      if (card.getIteration() == ASTConstantsGrammar.QUESTION) {
+        return true;
+      }
       if (card.isPresentMax() && card.isPresentMin()) {
         if (card.getMin().equals("0") && card.getMax().equals("1")) {
           return true;
