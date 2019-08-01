@@ -28,7 +28,6 @@
 
     <!-- .. Libraries ..................................................... -->
 
-    <mc.java.version>4.3.17</mc.java.version>
     <cd4analysis.version>1.3.19.NewSymTab-SNAPSHOT</cd4analysis.version>
 
     <se-commons.version>1.7.9</se-commons.version>
@@ -352,21 +351,6 @@
         <groupId>de.monticore</groupId>
         <artifactId>monticore-emf-runtime</artifactId>
         <version>${project.version}</version>
-      </dependency>
-
-      <!-- Java -->
-      <dependency>
-        <groupId>de.monticore</groupId>
-        <artifactId>javaDSL</artifactId>
-        <version>${mc.java.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>de.monticore</groupId>
-        <artifactId>javaDSL</artifactId>
-        <classifier>${grammars.classifier}</classifier>
-        <version>${mc.java.version}</version>
-        <scope>provided</scope>
       </dependency>
 
       <dependency>
