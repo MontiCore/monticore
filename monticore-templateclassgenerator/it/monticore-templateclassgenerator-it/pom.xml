@@ -27,11 +27,6 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>de.monticore</groupId>
-			<artifactId>javaDSL</artifactId>
-		</dependency>
-
 		<!-- .. Test Libraries ............................................... -->
 		<dependency>
 			<groupId>junit</groupId>
