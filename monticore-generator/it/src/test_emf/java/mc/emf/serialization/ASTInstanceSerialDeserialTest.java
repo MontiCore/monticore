@@ -40,11 +40,11 @@ public class ASTInstanceSerialDeserialTest extends GeneratorIntegrationsTest {
           .parse("src/test/resources/mc/emf/diff/Testautomat2.aut");
       if (transB.isPresent() && transC.isPresent()) {
         AST2ModelFiles.get().serializeASTInstance(transB.get(),
-            "B");
+            "B1");
         AST2ModelFiles.get().serializeASTInstance(transC.get(),
-            "C");
+            "C1");
             
-        EObject deserAstTransB = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_B",
+        EObject deserAstTransB = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_B1",
             FlatAutomatonPackage.eINSTANCE);
         assertNotNull(deserAstTransB);
         assertTrue(deserAstTransB instanceof ASTAutomaton);

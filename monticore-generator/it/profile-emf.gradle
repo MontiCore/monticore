@@ -18,11 +18,11 @@ fileTree(dir: grammarDir, include: '**/*.mc4').each {
 sourceSets.test.java.srcDirs += ["$projectDir/src/test_emf/java"]
 
 def compare_version = '1.2.0'
-def ecore_version = '2.15.0'
-def equinox_version ='3.10.0'
+def ecore_version = '2.16.0'
+def equinox_version ='3.10.400'
 dependencies {
-  testImplementation group:"org.eclipse.emf", name:"org.eclipse.emf.ecore", version:ecore_version
   testImplementation group:"org.eclipse.emf", name:"org.eclipse.emf.ecore.xmi", version:ecore_version
+  testImplementation group:"org.eclipse.emf", name:"org.eclipse.emf.ecore", version:ecore_version
   testImplementation group:"org.eclipse.emf", name:"org.eclipse.emf.common", version:ecore_version
   testImplementation group:"org.eclipse.emf", name:"org.eclipse.emf.compare", version:compare_version
   testImplementation group:"org.eclipse.emf", name:"org.eclipse.emf.compare.match", version:compare_version
