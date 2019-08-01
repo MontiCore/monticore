@@ -796,7 +796,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    * @return The qualified type of the attribute as String.
    */
   public String deriveAdditionalAttributeTypeWithMult(ASTAdditionalAttribute attr) {
-    String defaultType = getQualifiedASTName(attr.getMCType().getBaseName());
+    String defaultType = getQualifiedASTName(attr.getMCType().getName());
     if (isAdditionalAttributeTypeList(attr)) {
       return "java.util.List<" + convertToObjectDataType(defaultType) + ">";
     }
