@@ -26,6 +26,7 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.types.FullGenericTypesPrinter;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -796,7 +797,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    * @return The qualified type of the attribute as String.
    */
   public String deriveAdditionalAttributeTypeWithMult(ASTAdditionalAttribute attr) {
-    String defaultType = getQualifiedASTName(attr.getMCType().getName());
+    String defaultType = FullGenericTypesPrinter.printType(attr.getMCType());
     if (isAdditionalAttributeTypeList(attr)) {
       return "java.util.List<" + convertToObjectDataType(defaultType) + ">";
     }
