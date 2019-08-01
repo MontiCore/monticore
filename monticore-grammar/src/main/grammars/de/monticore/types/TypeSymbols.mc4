@@ -6,8 +6,8 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
 
   symbol Type = Name ;
   symbolrule Type =
-    methods: de.monticore.types.typessymbols._symboltable.MethodSymbol*
-    fields: de.monticore.types.typessymbols._symboltable.FieldSymbol+
+    methods: de.monticore.types.typesymbols._symboltable.MethodSymbol*
+    fields: de.monticore.types.typesymbols._symboltable.FieldSymbol*
   ;
 
   symbol Field = Name ;
@@ -19,6 +19,6 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
 
   symbol Method = Name;
   symbolrule Method =
-    parameter: java.util.List<de.monticore.types.typessymbols._symboltable.FieldSymbol>
+    parameter: java.util.List<de.monticore.types.typesymbols._symboltable.FieldSymbol>*
   ;
 }

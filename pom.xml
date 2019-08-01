@@ -66,7 +66,7 @@
     <xml-apis.version>1.0.b2</xml-apis.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>5.0.7-SNAPSHOT</monticore.plugin>
+    <monticore.plugin>5.0.6.1</monticore.plugin>
 
     <se-groovy.plugin>1.2.3</se-groovy.plugin>
     <archetype.plugin>2.3</archetype.plugin>
