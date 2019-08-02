@@ -45,7 +45,7 @@ build_dev:
 build_branches:
   stage: build
   script:
-    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install"
+    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS deploy -Dpass=$password -Duser=$username -DdeployAtEnd=true"
   except:
     - dev
     - master
