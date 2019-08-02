@@ -83,7 +83,7 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>5.0.7.latestgrammar-SNAPSHOT</version><!--$NO-MVN-MAN-VER$ -->
+            <version>5.0.7-SNAPSHOT</version><!--$NO-MVN-MAN-VER$ -->
             <executions>
               <execution>
                 <id>it-python</id>
