@@ -50,3 +50,10 @@ repositories {
   }
   mavenLocal()
 }
+
+test {
+  testLogging {
+    showStandardStreams = true
+  }
+  
+}

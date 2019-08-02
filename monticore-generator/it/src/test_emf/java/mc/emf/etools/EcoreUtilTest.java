@@ -1,17 +1,16 @@
 /* (c)  https://github.com/MontiCore/monticore */
 package mc.emf.etools;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.monticore.emf.util.AST2ModelFiles;
@@ -23,50 +22,87 @@ import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonNodeFacto
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
 
+import static org.junit.Assert.*;
+
 public class EcoreUtilTest extends GeneratorIntegrationsTest {
+
   @Test
   public void testSerializeAndDeserializeParseInstance() {
     try {
-      Optional<ASTAutomaton> transB = new FlatAutomatonParser()
-          .parse("src/test/resources/mc/emf/diff/Testautomat.aut");
-          
+      
       Optional<ASTAutomaton> transC = new FlatAutomatonParser()
           .parse("src/test/resources/mc/emf/Testautomat.aut");
       
       Optional<ASTAutomaton> transA = new FlatAutomatonParser()
           .parse("src/test/resources/mc/emf/diff/Testautomat2.aut");
       
-      if (transB.isPresent() && transC.isPresent() && transA.isPresent()) {
+      if (transC.isPresent() && transA.isPresent()) {
         
-        assertTrue(EcoreUtil.equals(transB.get(), transC.get()));
         
-        assertFalse(EcoreUtil.equals(transB.get(), transA.get()));
-        
-        AST2ModelFiles.get().serializeASTInstance(transB.get(),
-            "B");
         AST2ModelFiles.get().serializeASTInstance(transC.get(),
             "C");
         AST2ModelFiles.get().serializeASTInstance(transA.get(),
             "A");
-            
-        EObject deserAstTransB = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_B",
-            FlatAutomatonPackage.eINSTANCE);
-        assertNotNull(deserAstTransB);
-        assertTrue(deserAstTransB instanceof ASTAutomaton);
-        
+  
         EObject deserAstTransC = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_C",
             FlatAutomatonPackage.eINSTANCE);
         assertNotNull(deserAstTransC);
         assertTrue(deserAstTransC instanceof ASTAutomaton);
         
+        
+        
         EObject deserAstTransA = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_A",
             FlatAutomatonPackage.eINSTANCE);
         assertNotNull(deserAstTransA);
         assertTrue(deserAstTransA instanceof ASTAutomaton);
-        
-        assertTrue(EcoreUtil.equals(deserAstTransB, deserAstTransC));
+        assertNotEquals(deserAstTransA.toString(),deserAstTransC.toString());
         
         assertFalse(EcoreUtil.equals(deserAstTransA, deserAstTransC));
+        
+      }
+      else {
+        fail("Parse errors");
+      }
+      
+    }
+    catch (RecognitionException | IOException e) {
+      fail("Should not reach this, but: " + e);
+    }
+  }
+  
+  @Test
+  public void testSerializeAndDeserializeParseInstance2() {
+    try {
+      Optional<ASTAutomaton> transB = new FlatAutomatonParser()
+          .parse("src/test/resources/mc/emf/diff/Testautomat.aut");
+      
+      Optional<ASTAutomaton> transC = new FlatAutomatonParser()
+          .parse("src/test/resources/mc/emf/Testautomat.aut");
+      
+      
+      if (transB.isPresent() && transC.isPresent()) {
+        
+        assertTrue(EcoreUtil.equals(transB.get(), transC.get()));
+        
+        
+        AST2ModelFiles.get().serializeASTInstance(transB.get(),
+            "B2");
+        AST2ModelFiles.get().serializeASTInstance(transC.get(),
+            "C2");
+        
+        EObject deserAstTransC = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_C2",
+            FlatAutomatonPackage.eINSTANCE);
+        assertNotNull(deserAstTransC);
+        assertTrue(deserAstTransC instanceof ASTAutomaton);
+        
+        EObject deserAstTransB = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_B2",
+            FlatAutomatonPackage.eINSTANCE);
+        assertNotNull(deserAstTransB);
+        assertTrue(deserAstTransB instanceof ASTAutomaton);
+        
+        
+        assertEquals(deserAstTransB.toString(),deserAstTransC.toString());
+        assertTrue(EcoreUtil.equals(deserAstTransB, deserAstTransC));
         
       }
       else {
