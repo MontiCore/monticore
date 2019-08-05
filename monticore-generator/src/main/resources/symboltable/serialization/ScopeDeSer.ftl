@@ -207,8 +207,8 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
 
 <#if scopeRule.isPresent()>
 <#list scopeRule.get().getAdditionalAttributeList() as attr>
-<#assign attrType=attr.getMCType().getBaseName()>
-  protected ${genHelper.getQualifiedASTName(attrType)} deserialize${attr.getName()?cap_first}(JsonObject scopeJson){
+  <#assign attrType=stHelper.deriveAdditionalAttributeTypeWithMult(attr)>
+  protected ${attrType} deserialize${attr.getName()?cap_first}(JsonObject scopeJson){
 <#switch attrType>
 <#case "String">
     return scopeJson.get("${attr.getName()}").getAsJsonString().getValue();
