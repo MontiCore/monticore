@@ -19,6 +19,6 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
 
   symbol Method = Name;
   symbolrule Method =
-    parameter: java.util.List<de.monticore.types.typesymbols._symboltable.FieldSymbol>*
+    parameter: de.monticore.types.typesymbols._symboltable.FieldSymbol*
   ;
 }
