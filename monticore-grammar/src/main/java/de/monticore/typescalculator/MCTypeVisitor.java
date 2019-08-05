@@ -1,40 +1,84 @@
 package de.monticore.typescalculator;
 
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class MCTypeVisitor implements MCFullGenericTypesVisitor {
 
   TypeExpression typeExpression = null;
 
-  public Map<ASTMCType, TypeExpression> mapping = new HashMap<>();
+  public Map<ASTMCBasicTypesNode, TypeExpression> mapping = new HashMap<>();
 
   public void endVisit(ASTMCListType listType) {
-    typeExpression = new GenericTypeExpression();
-    typeExpression.setName("List");
+    GenericTypeExpression listGenericType = new GenericTypeExpression();
+    listGenericType.setName("List");
+    List<TypeExpression> argumentList = new LinkedList<TypeExpression>();
+    argumentList.add(mapping.get(listType.getMCTypeArgument().getMCTypeOpt().get()));
+    listGenericType.setArguments(argumentList);
+    mapping.put(listType,listGenericType);
   }
 
   public void endVisit(ASTMCSetType setType) {
-
+    GenericTypeExpression listGenericType = new GenericTypeExpression();
+    listGenericType.setName("Set");
+    List<TypeExpression> argumentList = new LinkedList<TypeExpression>();
+    argumentList.add(mapping.get(setType.getMCTypeArgument().getMCTypeOpt().get()));
+    listGenericType.setArguments(argumentList);
+    mapping.put(setType,listGenericType);
   }
 
-  public void endVisit(ASTMCObjectType objectType) {
+  public void endVisit(ASTMCOptionalType optType) {
+    GenericTypeExpression listGenericType = new GenericTypeExpression();
+    listGenericType.setName("Optional");
+    List<TypeExpression> argumentList = new LinkedList<TypeExpression>();
+    argumentList.add(mapping.get(optType.getMCTypeArgument().getMCTypeOpt().get()));
+    listGenericType.setArguments(argumentList);
+    mapping.put(optType,listGenericType);
+  }
+
+  public void endVisit(ASTMCMapType mapType) {
+    GenericTypeExpression listGenericType = new GenericTypeExpression();
+    listGenericType.setName("Map");
+    List<TypeExpression> argumentList = new LinkedList<TypeExpression>();
+    argumentList.add(mapping.get(mapType.getKey().getMCTypeOpt().get()));
+    argumentList.add(mapping.get(mapType.getValue().getMCTypeOpt().get()));
+    listGenericType.setArguments(argumentList);
+    mapping.put(mapType,listGenericType);
+  }
 
 
+  public void endVisit(ASTMCQualifiedType qType) {
+    ObjectType oType = new ObjectType();
+    oType.setName(qType.getName());
+    mapping.put(qType,oType);
+  }
+
+  public void endVisit(ASTMCQualifiedName qName) {
+    ObjectType oType = new ObjectType();
+    oType.setName(qName.toString());
+    mapping.put(qName,oType);
   }
 
   public void endVisit(ASTMCPrimitiveType primitiveType) {
     TypeConstant typeConstant = new TypeConstant();
     typeConstant.setName(primitiveType.getName());
     mapping.put(primitiveType,typeConstant);
+  }
+
+  public void endVisit(ASTMCVoidType voidType) {
+    TypeConstant typeConstant = new TypeConstant();
+    typeConstant.setName("void");
+    mapping.put(voidType,typeConstant);
   }
 
   public TypeExpression getTypeExpression() {
