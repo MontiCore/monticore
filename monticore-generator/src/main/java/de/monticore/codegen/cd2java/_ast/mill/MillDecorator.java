@@ -77,7 +77,7 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
 
     ASTCDMethod initMeMethod = addInitMeMethod(millType, astcdClassList);
 
-    ASTCDMethod initMethod = addInitMethod(millType);
+    ASTCDMethod initMethod = addInitMethod(millType, superSymbolList);
 
     ASTCDMethod resetMethod = addResetMethod(astcdClassList, superSymbolList);
 
@@ -122,9 +122,9 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
     return initMeMethod;
   }
 
-  protected ASTCDMethod addInitMethod(ASTType millType) {
+  protected ASTCDMethod addInitMethod(ASTType millType, Collection<CDSymbol> superSymbolList) {
     ASTCDMethod initMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, INIT);
-    this.replaceTemplate(EMPTY_BODY, initMethod, new TemplateHookPoint("_ast.mill.InitMethod", TypesPrinter.printType(millType)));
+    this.replaceTemplate(EMPTY_BODY, initMethod, new TemplateHookPoint("_ast.mill.InitMethod", TypesPrinter.printType(millType), superSymbolList));
     return initMethod;
   }
 

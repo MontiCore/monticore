@@ -14,6 +14,7 @@ import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._ast.mill.MillDecorator;
+import de.monticore.codegen.cd2java._ast.mill.MillForSuperDecorator;
 import de.monticore.codegen.cd2java._cocos.CoCoCheckerDecorator;
 import de.monticore.codegen.cd2java._cocos.CoCoDecorator;
 import de.monticore.codegen.cd2java._cocos.CoCoInterfaceDecorator;
@@ -374,6 +375,8 @@ public class MontiCoreTool {
 
     MillDecorator millDecorator = new MillDecorator(glex, astService);
 
+    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, astService);
+
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
 
     EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex), astService);
@@ -388,7 +391,7 @@ public class MontiCoreTool {
     CD4AnalysisSymbolTableCreator symbolTableCreator = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, symbolTableCreator, fullDecorator, astLanguageInterfaceDecorator,
-        astBuilderDecorator, nodeFactoryDecorator, millDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
+        astBuilderDecorator, nodeFactoryDecorator, millDecorator, millForSuperDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
     return astcdDecorator.decorate(cd);
   }
 

@@ -20,6 +20,7 @@ import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._ast.mill.MillDecorator;
+import de.monticore.codegen.cd2java._ast.mill.MillForSuperDecorator;
 import de.monticore.codegen.cd2java._ast_emf.ASTEmfCDDecorator;
 import de.monticore.codegen.cd2java._ast_emf.CDEmfGenerator;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
@@ -489,6 +490,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     MillDecorator millDecorator = new MillDecorator(glex, astService);
 
+    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, astService);
+
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
 
     EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex), astService);
@@ -503,7 +506,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CD4AnalysisSymbolTableCreator symbolTableCreator = cd4AnalysisLanguage.getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, symbolTableCreator, fullDecorator, astLanguageInterfaceDecorator,
-        astBuilderDecorator, nodeFactoryDecorator, millDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
+        astBuilderDecorator, nodeFactoryDecorator, millDecorator, millForSuperDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
     ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
@@ -537,6 +540,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     MillDecorator millDecorator = new MillDecorator(glex, astService);
 
+    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, astService);
+
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
 
     EmfEnumDecorator emfEnumDecorator = new EmfEnumDecorator(glex, new AccessorDecorator(glex), astService);
@@ -555,7 +560,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CD4AnalysisSymbolTableCreator symbolTableCreator = cd4AnalysisLanguage.getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
 
     ASTEmfCDDecorator astcdDecorator = new ASTEmfCDDecorator(glex, symbolTableCreator, fullEmfDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
-        millDecorator, astConstantsDecorator, emfEnumDecorator, fullASTInterfaceDecorator, packageImplDecorator, packageInterfaceDecorator);
+        millDecorator, millForSuperDecorator, astConstantsDecorator, emfEnumDecorator, fullASTInterfaceDecorator, packageImplDecorator, packageInterfaceDecorator);
     ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
