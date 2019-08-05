@@ -7,14 +7,14 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>5.0.7.latestgrammar-SNAPSHOT</version>
+    <version>5.0.7-SNAPSHOT</version>
     <relativePath>../../../pom.xml</relativePath>
   </parent>
 
   <artifactId>experiments</artifactId>
   
   <properties>
-    <latest.grammars.version>5.0.7.latestgrammar-SNAPSHOT</latest.grammars.version>
+    <latest.grammars.version>5.0.7-SNAPSHOT</latest.grammars.version>
   </properties>
 
   <packaging>pom</packaging>
@@ -50,7 +50,7 @@
         <plugin>
           <groupId>de.monticore.mojo</groupId>
           <artifactId>monticore-maven-plugin</artifactId>
-          <version>5.0.7.latestgrammar-SNAPSHOT</version>
+          <version>5.0.7-SNAPSHOT</version>
           <executions>
             <execution>
               <configuration>

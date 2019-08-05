@@ -6,7 +6,7 @@
 
   <groupId>de.monticore</groupId>
   <artifactId>monticore</artifactId>
-  <version>5.0.7.latestgrammar-SNAPSHOT</version>
+  <version>5.0.7-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- == PROJECT MODULES ================================================= -->
