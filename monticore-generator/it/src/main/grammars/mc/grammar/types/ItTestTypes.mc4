@@ -97,7 +97,7 @@ grammar ItTestTypes extends mc.grammar.literals.ItTestLiterals {
     astrule ReferenceType astextends ASTType;
     
     astrule ArrayType astimplements ASTReferenceType =
-        componentType:ASTType
+        componentType:Type
         dimensions:int;
     
     /** ASTType defines types like primitives, Set, List, Collection, or

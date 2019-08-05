@@ -1,0 +1,1025 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- == PROJECT COORDINATES ============================================= -->
+
+  <groupId>de.monticore</groupId>
+  <artifactId>monticore</artifactId>
+  <version>5.0.6.NewSymTab-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <!-- == PROJECT MODULES ================================================= -->
+
+  <modules>
+    <module>monticore-cli</module>
+    <module>monticore-grammar</module>
+    <module>monticore-generator</module>
+    <module>monticore-maven</module>
+    <module>monticore-runtime</module>
+    <module>monticore-emf-runtime</module>
+    <module>monticore-templateclassgenerator</module>
+    <module>monticore-emf-grammar</module>
+  </modules>
+
+  <!-- == PROJECT PROPERTIES ============================================== -->
+
+  <properties>
+
+    <!-- .. Libraries ..................................................... -->
+
+    <mc.java.version>4.3.17-SNAPSHOT</mc.java.version>
+    <cd4analysis.version>1.3.18-SNAPSHOT</cd4analysis.version>
+
+    <se-commons.version>1.7.9</se-commons.version>
+    <antlr.version>4.7.1</antlr.version>
+    <commons.io.version>2.4</commons.io.version>
+    <doxia-sink-api.version>1.6</doxia-sink-api.version>
+    <doxia-site-renderer.version>1.6</doxia-site-renderer.version>
+    <groovy.version>2.3.7</groovy.version>
+    <guava.version>23.0</guava.version>
+    <guice.version>3.0</guice.version>
+    <hamcrest.version>1.3</hamcrest.version>
+    <javax.inject.version>1</javax.inject.version>
+    <jgrapht.version>0.9.1</jgrapht.version>
+    <jline.version>2.12</jline.version>
+    <jsr305.version>3.0.0</jsr305.version>
+    <junit.version>4.12</junit.version>
+    <logback.version>1.1.2</logback.version>
+    <maven-artifact.version>3.2.3</maven-artifact.version>
+    <maven-core.version>3.2.3</maven-core.version>
+    <maven-plugin-api.version>3.3.3</maven-plugin-api.version>
+    <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
+    <maven-reporting-api.version>3.0</maven-reporting-api.version>
+    <maven-reporting-impl.version>2.3</maven-reporting-impl.version>
+    <mockito.version>2.24.0</mockito.version>
+    <powermock.version>1.6.1</powermock.version>
+    <reflections.version>0.9.9</reflections.version>
+    <slf4j.version>1.7.10</slf4j.version>
+    <freemarker.version>2.3.23</freemarker.version>
+    <emf.common.version>2.15.0</emf.common.version>
+    <emf.ecore.version>2.15.0</emf.ecore.version>
+    <emf.ecore.xmi.version>2.15.0</emf.ecore.xmi.version>
+    <emf.compare.version>1.2.0</emf.compare.version>
+    <equinox.common.version>3.10.0</equinox.common.version>
+    <!-- has been relocated to that version -->
+    <xml-apis.version>1.0.b2</xml-apis.version>
+
+    <!-- .. Plugins ....................................................... -->
+    <monticore.plugin>5.0.4.1</monticore.plugin>
+
+    <archetype.plugin>2.3</archetype.plugin>
+    <assembly.plugin>2.5.4</assembly.plugin>
+    <compiler.plugin>3.3</compiler.plugin>
+    <build.helper.plugin>3.0.0</build.helper.plugin>
+    <dependency.plugin>2.10</dependency.plugin>
+    <deploy.plugin>2.8.2</deploy.plugin>
+    <invoker.plugin>1.10</invoker.plugin>
+    <jar.plugin>2.6</jar.plugin>
+    <plugin.plugin>3.5.2</plugin.plugin>
+    <release.plugin>2.5.2</release.plugin>
+    <replacer.plugin>1.5.3</replacer.plugin>
+    <resources.plugin>2.7</resources.plugin>
+    <site.plugin>3.4</site.plugin>
+    <source.plugin>2.4</source.plugin>
+    <surefire.plugin>2.18.1</surefire.plugin>
+    <tycho.plugin>0.22.0</tycho.plugin>
+    <wagon.plugin>1.0</wagon.plugin>
+
+    <!-- .. Reporting ..................................................... -->
+
+    <javadoc.plugin>2.10.3</javadoc.plugin>
+    <project-info.plugin>2.8</project-info.plugin>
+    <surefire-report.plugin>2.18.1</surefire-report.plugin>
+
+    <!-- .. Misc .......................................................... -->
+
+    <grammars.classifier>grammars</grammars.classifier>
+    <emf.classifier>emf</emf.classifier>
+    <java.version>1.8</java.version>
+    <mc.grammars.assembly.version>0.0.11-SNAPSHOT</mc.grammars.assembly.version>
+    <wagon.provider.version>2.3</wagon.provider.version>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <archetype.test.skip>true</archetype.test.skip>
+    <invoker.skip>true</invoker.skip>
+
+    <!-- .. Bootstrap Configuration ....................................... -->
+
+    <bootstrap.parent>XXX</bootstrap.parent>
+    <bootstrap.version>4.1.5-BOOTSTRAP</bootstrap.version>
+  </properties>
+
+  <!-- == PROJECT METAINFORMATION ========================================= -->
+
+  <name>MontiCore</name>
+  <description>Agile Domain Specific Language Workbench</description>
+  <url>https://nexus.se.rwth-aachen.de/service/local/repositories/se-sites/content/monticore/${project.version}/</url>
+  <inceptionYear>2005</inceptionYear>
+
+  <organization>
+    <name>SE RWTH Aachen</name>
+    <url>http://www.se-rwth.de/</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <name>Robert Heim</name>
+      <email>heim@se-rwth.de</email>
+      <id>SE RWTH Aachen</id>
+      <url>http://www.se-rwth.de/</url>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Andreas Horst</name>
+      <email>horst@se-rwth.de</email>
+      <id>SE RWTH Aachen</id>
+      <url>http://www.se-rwth.de/</url>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Pedram Mir Seyed Nazari</name>
+      <email>nazari@se-rwth.de</email>
+      <id>SE RWTH Aachen</id>
+      <url>http://www.se-rwth.de/</url>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Antonio Navarro Pérez</name>
+      <email>perez@se-rwth.de</email>
+      <id>SE RWTH Aachen</id>
+      <url>http://www.se-rwth.de/</url>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <mailingLists>
+    <mailingList>
+      <name>Developer</name>
+      <post>monticore-dev@se-rwth.de</post>
+    </mailingList>
+  </mailingLists>
+
+  <issueManagement>
+    <system>Trac</system>
+    <url>https://sselab.de/lab2/private/trac/MontiCore/</url>
+  </issueManagement>
+
+  <!-- == DEPENDENCIES ==================================================== -->
+  <dependencyManagement>
+    <dependencies>
+
+      <!-- .. Common Libraries ............................................. -->
+      <dependency>
+        <groupId>de.se_rwth.commons</groupId>
+        <artifactId>se-commons-utilities</artifactId>
+        <version>${se-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>de.se_rwth.commons</groupId>
+        <artifactId>se-commons-groovy</artifactId>
+        <version>${se-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>de.se_rwth.commons</groupId>
+        <artifactId>se-commons-logging</artifactId>
+        <version>${se-commons.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.reflections</groupId>
+        <artifactId>reflections</artifactId>
+        <version>${reflections.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons.io.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>${jsr305.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>${guice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject.extensions</groupId>
+        <artifactId>guice-assistedinject</artifactId>
+        <version>${guice.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>${javax.inject.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy</artifactId>
+        <version>${groovy.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jgrapht</groupId>
+        <artifactId>jgrapht-core</artifactId>
+        <version>${jgrapht.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>jline</groupId>
+        <artifactId>jline</artifactId>
+        <version>${jline.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4</artifactId>
+        <version>${antlr.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-runtime</artifactId>
+        <version>${antlr.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>${freemarker.version}</version>
+      </dependency>
+
+      <!-- EMF dependencies -->
+      <dependency>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>org.eclipse.emf.ecore</artifactId>
+        <version>${emf.ecore.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+        <version>${emf.ecore.xmi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>org.eclipse.emf.common</artifactId>
+        <version>${emf.common.version}</version>
+      </dependency>
+
+      <!-- MontiCore 4 -->
+      <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>monticore-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>monticore-grammar</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>monticore-grammar</artifactId>
+        <version>${project.version}</version>
+        <classifier>${emf.classifier}</classifier>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>monticore-grammar</artifactId>
+        <version>${project.version}</version>
+        <classifier>${grammars.classifier}</classifier>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>monticore-generator</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>monticore-emf-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- Java -->
+      <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>javaDSL</artifactId>
+        <version>${mc.java.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>javaDSL</artifactId>
+        <classifier>${grammars.classifier}</classifier>
+        <version>${mc.java.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>de.monticore.lang</groupId>
+        <artifactId>cd4analysis</artifactId>
+        <version>${cd4analysis.version}</version>
+      </dependency>
+
+      <!-- .. Test Libraries ............................................... -->
+
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-library</artifactId>
+        <version>${hamcrest.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-integration</artifactId>
+        <version>${hamcrest.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-module-junit4</artifactId>
+        <version>${powermock.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-api-mockito</artifactId>
+        <version>${powermock.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava-testlib</artifactId>
+        <version>${guava.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>org.eclipse.emf.compare</artifactId>
+        <version>${emf.compare.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>org.eclipse.emf.compare.match</artifactId>
+        <version>${emf.compare.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>org.eclipse.emf.compare.diff</artifactId>
+        <version>${emf.compare.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.platform</groupId>
+        <artifactId>org.eclipse.equinox.common</artifactId>
+        <version>${equinox.common.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+
+      <!-- all the stuff for the Maven plugin -->
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${maven-core.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${maven-artifact.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${maven-plugin-api.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven.reporting</groupId>
+        <artifactId>maven-reporting-api</artifactId>
+        <version>${maven-reporting-api.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven.reporting</groupId>
+        <artifactId>maven-reporting-impl</artifactId>
+        <version>${maven-reporting-impl.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven.doxia</groupId>
+        <artifactId>doxia-sink-api</artifactId>
+        <version>${doxia-sink-api.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven.doxia</groupId>
+        <artifactId>doxia-site-renderer</artifactId>
+        <version>${doxia-site-renderer.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>xml-apis</groupId>
+        <artifactId>xml-apis</artifactId>
+        <version>${xml-apis.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-annotations</artifactId>
+        <version>${maven-plugin-annotations.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <!-- == BUILD INFRASTRUCTURE ============================================ -->
+
+  <scm>
+    <connection>scm:svn:https://sselab.de/lab2/private/svn/MontiCore/tags/monticore-@{project.version}</connection>
+    <developerConnection>scm:svn:https://sselab.de/lab2/private/svn/MontiCore/tags/monticore-@{project.version}</developerConnection>
+  </scm>
+
+  <ciManagement>
+    <system>Jenkins CI</system>
+    <url>http://ci.se.rwth-aachen.de/view/monticore/</url>
+  </ciManagement>
+
+  <!-- == PROJECT REPORTING =============================================== -->
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>${project-info.plugin}</version>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${javadoc.plugin}</version>
+        <inherited>false</inherited>
+        <configuration>
+          <additionalparam>-Xdoclint:none</additionalparam>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <plugin>
+        <groupId>de.monticore.mojo</groupId>
+        <artifactId>monticore-maven-plugin</artifactId>
+        <version>${monticore.plugin}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>script-report</report>
+              <report>reporting-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${compiler.plugin}</version>
+          <configuration>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-archetype-plugin</artifactId>
+          <version>${archetype.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${jar.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${dependency.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${deploy.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${release.plugin}</version>
+          <configuration>
+            <tagNameFormat>monticore-@{project.version}</tagNameFormat>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${source.plugin}</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire.plugin}</version>
+          <configuration>
+            <runOrder>alphabetical</runOrder>
+          </configuration>
+        </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${build.helper.plugin}</version>
+        </plugin>
+
+        <!-- Monticore Generation -->
+        <plugin>
+          <groupId>de.monticore.mojo</groupId>
+          <artifactId>monticore-maven-plugin</artifactId>
+          <version>${monticore.plugin}</version>
+          <configuration>
+            <skip>false</skip>
+            <script>de/monticore/monticore_noemf.groovy</script>
+          </configuration>
+          <!--<executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>-->
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${assembly.plugin}</version>
+          <dependencies>
+            <dependency>
+              <groupId>de.monticore</groupId>
+              <artifactId>mc-assemblies</artifactId>
+              <version>${mc.grammars.assembly.version}</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <id>grammars</id>
+              <configuration>
+                <finalName>${project.artifactId}-${project.version}</finalName>
+                <descriptorRefs>
+                  <descriptorRef>grammars-assembly</descriptorRef>
+                </descriptorRefs>
+                <formats>
+                  <format>jar</format>
+                </formats>
+              </configuration>
+              <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>${plugin.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${site.plugin}</version>
+          <executions>
+            <execution>
+              <id>attach-site-descriptor</id>
+              <goals>
+                <goal>attach-descriptor</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <version>${invoker.plugin}</version>
+          <configuration>
+            <projectsDirectory>it</projectsDirectory>
+            <ignoreFailures>false</ignoreFailures>
+            <cleanClone>true</cleanClone>
+            <pomIncludes>
+              <pomInclude>**/pom.xml</pomInclude>
+            </pomIncludes>
+            <postBuildHookScript>verify</postBuildHookScript>
+            <streamLogs>true</streamLogs>
+          </configuration>
+          <executions>
+            <execution>
+              <id>integration-test</id>
+              <goals>
+                <goal>install</goal>
+                <goal>run</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-maven-plugin</artifactId>
+          <version>${tycho.plugin}</version>
+          <extensions>true</extensions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>target-platform-configuration</artifactId>
+          <version>${tycho.plugin}</version>
+          <configuration>
+            <target>
+              <artifact>
+                <groupId>de.se_rwth.eclipse</groupId>
+                <artifactId>de.se_rwth.eclipse.targetplatform.mars</artifactId>
+                <version>1.0.3-SNAPSHOT</version>
+              </artifact>
+            </target>
+            <pomDependencies>consider</pomDependencies>
+            <environments>
+              <environment>
+                <os>linux</os>
+                <ws>gtk</ws>
+                <arch>x86</arch>
+              </environment>
+              <environment>
+                <os>linux</os>
+                <ws>gtk</ws>
+                <arch>x86_64</arch>
+              </environment>
+              <environment>
+                <os>win32</os>
+                <ws>win32</ws>
+                <arch>x86</arch>
+              </environment>
+              <environment>
+                <os>win32</os>
+                <ws>win32</ws>
+                <arch>x86_64</arch>
+              </environment>
+              <environment>
+                <os>macosx</os>
+                <ws>cocoa</ws>
+                <arch>x86_64</arch>
+              </environment>
+            </environments>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>wagon-maven-plugin</artifactId>
+          <version>${wagon.plugin}</version>
+          <executions>
+            <execution>
+              <id>deploy-repository</id>
+              <phase>deploy</phase>
+              <goals>
+                <goal>upload-single</goal>
+              </goals>
+              <configuration>
+                <fromFile>${project.build.directory}/${project.build.finalName}.zip</fromFile>
+                <serverId>se-nexus</serverId>
+                <url>https://nexus.se.rwth-aachen.de/service/local/repositories/monticore-snapshots/content-compressed</url>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>3.0.1</version>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav-jackrabbit</artifactId>
+        <version>${wagon.provider.version}</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.archetype</groupId>
+        <artifactId>archetype-packaging</artifactId>
+        <version>${archetype.plugin}</version>
+      </extension>
+    </extensions>
+  </build>
+
+  <!-- == PROFILES ======================================================== -->
+
+  <profiles>
+    <profile>
+      <!-- the bootstrap profile; setting <inherited> to false prevents from
+        doing this in the modules -->
+      <id>bootstrap</id>
+      <properties>
+        <monticore.plugin>${bootstrap.version}</monticore.plugin>
+      </properties>
+      <build>
+        <!-- this is what happens for building the bootstrap temporary local
+          release -->
+        <plugins>
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>${resources.plugin}</version>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>bootstrap</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <resources>
+                    <resource>
+                      <directory>..</directory>
+                      <includes>
+                        <include>mc4/**/*</include>
+                      </includes>
+                      <excludes>
+                        <exclude>**/target/**/*</exclude>
+                      </excludes>
+                    </resource>
+                  </resources>
+                  <includeEmptyDirs>true</includeEmptyDirs>
+                  <outputDirectory>${project.build.directory}/bootstrap</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>com.google.code.maven-replacer-plugin</groupId>
+            <artifactId>replacer</artifactId>
+            <version>${replacer.plugin}</version>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>bootstrap</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>replace</goal>
+                </goals>
+                <configuration>
+                  <basedir>${basedir}</basedir>
+                  <outputDir>target/bootstrap/mc4</outputDir>
+                  <includes>
+                    <include>**/pom.xml</include>
+                  </includes>
+                  <excludes>
+                    <exclude>target/**/*.*</exclude>
+                  </excludes>
+                  <regex>false</regex>
+                  <replacements>
+                    <replacement>
+                      <token>&lt;version&gt;${project.version}&lt;/version&gt;</token>
+                      <value>&lt;version&gt;${bootstrap.version}&lt;/version&gt;</value>
+                    </replacement>
+                    <replacement>
+                      <token>&lt;bootstrap.parent&gt;XXX&lt;/bootstrap.parent&gt;</token>
+                      <value>&lt;bootstrap.parent&gt;${project.version}&lt;/bootstrap.parent&gt;</value>
+                    </replacement>
+                  </replacements>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <version>${invoker.plugin}</version>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>bootstrap</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <goals>
+                    <goal>install</goal>
+                  </goals>
+                  <pom>${project.build.directory}/bootstrap/mc4/pom.xml</pom>
+                  <profiles>
+                    <profile>in-bootstrap</profile>
+                  </profiles>
+                  <streamLogs>true</streamLogs>
+                  <skipInvocation>false</skipInvocation>
+                  <skipInstallation>false</skipInstallation>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>in-bootstrap</id>
+      <!-- this profile determines what happens (or not) after the temporary
+        bootstrap version has been built; e.g. set properties such that the temporary
+        bootstrap version is used for this build -->
+      <properties>
+        <monticore.plugin>${bootstrap.parent}</monticore.plugin>
+        <invoker.skip>true</invoker.skip>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>bootstrap</id>
+                <phase></phase>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>com.google.code.maven-replacer-plugin</groupId>
+            <artifactId>replacer</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>bootstrap</id>
+                <phase></phase>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>bootstrap</id>
+                <phase></phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>skipTests</id>
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>run-its</id>
+      <properties>
+<!--         <archetype.test.skip>false</archetype.test.skip> -->
+        <invoker.skip>false</invoker.skip>
+      </properties>
+    </profile>
+  </profiles>
+
+  <!-- == DISTRIBUTION ==================================================== -->
+
+  <distributionManagement>
+    <repository>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/</url>
+    </snapshotRepository>
+    <site>
+      <id>se-nexus</id>
+      <url>dav:https://nexus.se.rwth-aachen.de/content/sites/se-sites/monticore/${project.version}/</url>
+    </site>
+  </distributionManagement>
+
+  <!-- == DEPENDENCY & PLUGIN REPOSITORIES ================================= -->
+
+  <repositories>
+    <repository>
+      <id>se-public</id>
+      <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>se-public</id>
+      <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+</project>

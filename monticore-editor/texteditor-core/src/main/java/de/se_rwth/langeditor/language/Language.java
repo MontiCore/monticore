@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import de.monticore.symboltable.ArtifactScope;
+import de.monticore.symboltable.IScope;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.templates.TemplateProposal;
@@ -16,11 +18,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.SymbolKind;
-import de.monticore.symboltable.types.JTypeSymbol;
 import de.se_rwth.langeditor.modelstates.ModelState;
 
 public interface Language {
@@ -73,8 +70,8 @@ public interface Language {
   /**
    * @return the set of elements that should be listed in the outline of each file
    */
-  default Collection<? extends SymbolKind> getCompletionKinds() {
-    return Sets.newHashSet(JTypeSymbol.KIND);
+  default Collection<String> getCompletionKinds() {
+    return Sets.newHashSet();
   }
 
   /**
@@ -90,19 +87,20 @@ public interface Language {
     return Optional.empty();
   }
   
-  default Optional<ArtifactScope> getScope(ASTNode node) {
-    if (node.isPresentEnclosingScope()) {
-      if (node.getEnclosingScope() instanceof ArtifactScope) {
-        return Optional.of((ArtifactScope) node.getEnclosingScope());
-      }
-      Optional<? extends Scope> scope = node.getEnclosingScope().getEnclosingScope();
-      if (scope.isPresent() && scope.get() instanceof ArtifactScope) {
-        return Optional.of((ArtifactScope) scope.get());
-      }
-      if (scope.get().getAstNode().isPresent()) {
-        return getScope(scope.get().getAstNode().get());
-      }
-    }
+  default Optional<IScope> getScope(ASTNode node) {
+    // TODO auf neue Symtab umstellen
+//    if (node.isPresentEnclosingScope()) {
+//      if (node.getEnclosingScope() instanceof ArtifactScope) {
+//        return Optional.of((ArtifactScope) node.getEnclosingScope());
+//      }
+//      Optional<? extends Scope> scope = node.getEnclosingScope().getEnclosingScope();
+//      if (scope.isPresent() && scope.get() instanceof ArtifactScope) {
+//        return Optional.of((ArtifactScope) scope.get());
+//      }
+//      if (scope.get().getAstNode().isPresent()) {
+//        return getScope(scope.get().getAstNode().get());
+//      }
+//    }
     return Optional.empty();
   }
   

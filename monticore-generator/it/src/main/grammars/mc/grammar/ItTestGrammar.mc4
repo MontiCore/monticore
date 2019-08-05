@@ -61,7 +61,7 @@ component grammar ItTestGrammar extends mc.grammar.literals.ItTestLiterals {
 
   // One OptionBlock only 
   astrule MCGrammar =
-    ASTGrammarOption max=1 ;
+    GrammarOption max=1 ;
    
  
   /** A GrammarReference references another grammar

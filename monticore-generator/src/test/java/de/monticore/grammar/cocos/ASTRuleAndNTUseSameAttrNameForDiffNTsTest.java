@@ -15,7 +15,7 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTsTest extends CocoTest{
   @BeforeClass
   public static void disableFailQuick() {
     LogStub.init();
-    Log.enableFailQuick(false);
+    LogStub.enableFailQuick(false);
     checker.addCoCo(new ASTRuleAndNTUseSameAttrNameForDiffNTs());
   }
 

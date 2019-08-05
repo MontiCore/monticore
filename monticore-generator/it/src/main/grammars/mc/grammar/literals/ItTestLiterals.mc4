@@ -24,7 +24,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   astrule CharLiteral = 
     method public char getValue() {
       try {
-        return de.monticore.literals.LiteralsHelper.getInstance().decodeChar(getSource());
+        return de.monticore.MCLiteralsDecoder.decodeChar(getSource());
       }
       catch (Exception e) {
         return ' '; 
@@ -35,7 +35,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   astrule StringLiteral = 
     method public String getValue() {
       try {
-        return de.monticore.literals.LiteralsHelper.getInstance().decodeString(getSource());
+        return de.monticore.MCLiteralsDecoder.decodeString(getSource());
       }
       catch (Exception e) {
         return "";
@@ -46,7 +46,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   astrule IntLiteral = 
     method public int getValue() {
       try {
-        return de.monticore.literals.LiteralsHelper.getInstance().decodeInt(getSource());
+        return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
       }
       catch (NumberFormatException e) {
         return 0;
@@ -66,7 +66,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   astrule LongLiteral = 
     method public long getValue() {
       try {
-        return de.monticore.literals.LiteralsHelper.getInstance().decodeLong(getSource());
+        return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
       }
       catch (NumberFormatException e) {
         return 0;
@@ -86,7 +86,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   astrule FloatLiteral = 
     method public float getValue() {
       try {
-        return de.monticore.literals.LiteralsHelper.getInstance().decodeFloat(getSource());
+        return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
       }
       catch (NumberFormatException e) {
         return 0.0f;
@@ -106,7 +106,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   astrule DoubleLiteral = 
     method public double getValue() {
       try {
-        return de.monticore.literals.LiteralsHelper.getInstance().decodeDouble(getSource());
+        return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
       }
       catch (NumberFormatException e) {
         return 0.0;

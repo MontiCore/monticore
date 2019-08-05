@@ -1,10 +1,10 @@
 import de.monticore.MCTask
 plugins {
-  id "monticore" version "5.0.6-SNAPSHOT" // MontiCore Plugin
+  id "monticore" version "5.0.7-SNAPSHOT" // MontiCore Plugin
 }
 allprojects {
   group = 'de.monticore'
-  version = '5.0.6-SNAPSHOT'
+  version = '5.0.7-SNAPSHOT'
 }
 
 subprojects {
@@ -23,7 +23,7 @@ subprojects {
   
   ext.grammarDir = 'src/main/grammars'
   ext.grammar_version = '5.0.6.latestGrammar-SNAPSHOT'
-  ext.mc_version = '5.0.6-SNAPSHOT'
+  ext.mc_version = '5.0.7-SNAPSHOT'
   ext.junit_version = '4.12'
   ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
   

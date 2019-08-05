@@ -2,8 +2,8 @@
 
 package de.monticore;
 
-import de.monticore.mccommonliterals._ast.*;
-import de.monticore.mccommonliterals._visitor.MCCommonLiteralsVisitor;
+import de.monticore.literals.mccommonliterals._ast.*;
+import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 

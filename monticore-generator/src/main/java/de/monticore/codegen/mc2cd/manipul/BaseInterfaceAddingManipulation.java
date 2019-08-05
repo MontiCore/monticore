@@ -2,13 +2,13 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import java.util.function.UnaryOperator;
-
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
+
+import java.util.function.UnaryOperator;
 
 /**
  * Adds the base interface for all AST nodes of the handled grammar

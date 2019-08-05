@@ -2,12 +2,12 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import java.util.function.UnaryOperator;
-
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.utils.ASTNodes;
+
+import java.util.function.UnaryOperator;
 
 public class ListInitializingManipulation implements UnaryOperator<ASTCDCompilationUnit> {
   
@@ -16,7 +16,7 @@ public class ListInitializingManipulation implements UnaryOperator<ASTCDCompilat
     
     for (ASTCDAttribute cdAttribute : ASTNodes.getSuccessors(cdCompilationUnit,
         ASTCDAttribute.class)) {
-      if ("List".equals(((ASTSimpleReferenceType) cdAttribute.getType()).getNameList().get(0))) {
+      if ("List".equals(((ASTMCObjectType) cdAttribute.getMCType()).getNameList().get(0))) {
         // TODO: Implement
       }
     }

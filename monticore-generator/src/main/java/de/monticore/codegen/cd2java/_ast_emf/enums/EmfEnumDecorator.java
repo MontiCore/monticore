@@ -6,8 +6,10 @@ import de.monticore.codegen.cd2java.factories.CDModifier;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.ENUMERATOR;
@@ -25,7 +27,7 @@ public class EmfEnumDecorator extends EnumDecorator {
   public ASTCDEnum decorate(final ASTCDEnum input) {
     ASTCDEnum astcdEnum = super.decorate(input);
     //add emf interface
-    astcdEnum.addInterface(getCDTypeFacade().createSimpleReferenceType(ENUMERATOR));
+    astcdEnum.addInterface(getCDTypeFacade().createQualifiedType(ENUMERATOR));
     astcdEnum.addCDMethod(createGetNameMethod());
     astcdEnum.addCDMethod(createGetLiteralMethod());
     astcdEnum.addCDMethod(createGetValueMethod());
@@ -33,20 +35,23 @@ public class EmfEnumDecorator extends EnumDecorator {
   }
 
   protected ASTCDMethod createGetNameMethod(){
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getCDTypeFacade().createStringType(), "getName");
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createStringType()).build();
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, returnType, "getName");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint(TO_STRING_CALL));
     return method;
   }
 
   protected ASTCDMethod createGetLiteralMethod(){
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getCDTypeFacade().createStringType(), "getLiteral");
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createStringType()).build();
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, returnType, "getLiteral");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint(TO_STRING_CALL));
     return method;
   }
 
 
   protected ASTCDMethod createGetValueMethod(){
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getCDTypeFacade().createIntType(), "getValue");
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createIntType()).build();
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, returnType, "getValue");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return intValue;"));
     return method;
   }

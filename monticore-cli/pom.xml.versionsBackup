@@ -1,0 +1,180 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- == PROJECT COORDINATES ============================================= -->
+
+  <parent>
+    <groupId>de.monticore</groupId>
+    <artifactId>monticore</artifactId>
+    <version>5.0.6.NewSymTab-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>monticore-cli</artifactId>
+
+  <!-- == PROJECT METAINFORMATION ========================================= -->
+
+  <name>MontiCore: CLI</name>
+  <description>MontiCore Command Line Interface Distribution</description>
+
+  <!-- == PROJECT DEPENDENCIES ============================================ -->
+
+  <dependencies>
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-runtime</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-generator</artifactId>
+    </dependency>
+
+    <!-- <dependency> -->
+    <!-- <groupId>de.monticore</groupId> -->
+    <!-- <artifactId>monticore-grammar</artifactId> -->
+    <!-- </dependency> -->
+
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-grammar</artifactId>
+      <classifier>${grammars.classifier}</classifier>
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- <dependency> -->
+    <!-- <groupId>de.monticore.lang</groupId> -->
+    <!-- <artifactId>cd4analysis</artifactId> -->
+    <!-- </dependency> -->
+
+    <!-- <dependency> -->
+    <!-- <groupId>de.monticore</groupId> -->
+    <!-- <artifactId>de.monticore.java</artifactId> -->
+    <!-- </dependency> -->
+
+    <dependency>
+      <groupId>de.se_rwth.commons</groupId>
+      <artifactId>se-commons-utilities</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.se_rwth.commons</groupId>
+      <artifactId>se-commons-logging</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+
+    <!-- <dependency> -->
+    <!-- <groupId>com.google.inject</groupId> -->
+    <!-- <artifactId>guice</artifactId> -->
+    <!-- </dependency> -->
+
+    <!-- <dependency> -->
+    <!-- <groupId>de.se_rwth.commons</groupId> -->
+    <!-- <artifactId>se-commons-groovy</artifactId> -->
+    <!-- </dependency> -->
+
+    <!-- <dependency> -->
+    <!-- <groupId>javax.inject</groupId> -->
+    <!-- <artifactId>javax.inject</artifactId> -->
+    <!-- </dependency> -->
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>monticore-cli-assembly</id>
+            <configuration>
+              <attach>false</attach>
+              <formats>
+                <format>jar</format>
+              </formats>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <archive>
+                <manifest>
+                  <mainClass>de.monticore.cli.MontiCoreCLI</mainClass>
+                </manifest>
+                <manifestEntries>
+                  <Class-Path>./</Class-Path>
+                </manifestEntries>
+              </archive>
+            </configuration>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>monticore-cli-zip-assembly</id>
+            <configuration>
+              <attach>false</attach>
+              <formats>
+                <format>zip</format>
+              </formats>
+              <descriptor>src/main/assemblies/zip-assembly.xml</descriptor>
+              <appendAssemblyId>false</appendAssemblyId>
+            </configuration>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>grammars</id>
+            <!-- we skip this as this project has no grammars -->
+            <phase />
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>wagon-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>deploy-repository</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>upload-single</goal>
+            </goals>
+            <configuration>
+              <fromFile>${project.build.directory}/monticore-cli-${project.version}.zip</fromFile>
+              <serverId>se-nexus</serverId>
+              <url>https://nexus.se.rwth-aachen.de/service/local/repositories/monticore-snapshots/content-compressed</url>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

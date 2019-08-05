@@ -16,7 +16,6 @@ public class RuleComponentListFinder implements ASTTraverser.Visitor{
   
   /**
    * Constructor for de.monticore.grammar.transformation.RuleComponentListFinder.
-   * @param grammar
    * @param map
    */
   public RuleComponentListFinder(Map<ASTNonTerminalSeparator, ASTAlt> map) {

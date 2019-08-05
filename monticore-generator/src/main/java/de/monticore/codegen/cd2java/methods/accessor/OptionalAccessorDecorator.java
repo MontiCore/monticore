@@ -1,13 +1,15 @@
 package de.monticore.codegen.cd2java.methods.accessor;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.TypesHelper;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -44,23 +46,26 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
 
   protected ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
     String name = String.format(GET, naiveAttributeName);
-    ASTType type = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
+    ASTMCType type = MCCollectionTypesHelper.getReferenceTypeFromOptional(ast.getMCType().deepClone()).getMCTypeOpt().get();
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, returnType, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get", ast, naiveAttributeName));
     return method;
   }
 
   protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
     String name = String.format(GET_OPT, naiveAttributeName);
-    ASTType type = ast.getType().deepClone();
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
+    ASTMCType type = ast.getMCType().deepClone();
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, returnType, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Get", ast));
     return method;
   }
 
   protected ASTCDMethod createIsPresentMethod() {
     String name = String.format(IS_PRESENT, naiveAttributeName);
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, this.getCDTypeFacade().createBooleanType(), name);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, returnType, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.IsPresent", naiveAttributeName));
     return method;
   }

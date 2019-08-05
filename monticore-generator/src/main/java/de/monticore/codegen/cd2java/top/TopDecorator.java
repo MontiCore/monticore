@@ -1,8 +1,8 @@
 package de.monticore.codegen.cd2java.top;
 
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PACKAGE_PRIVATE_ABSTRACT;
 import static de.monticore.codegen.mc2cd.TransformationHelper.existsHandwrittenClass;

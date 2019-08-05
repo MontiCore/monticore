@@ -2,15 +2,15 @@
 
 package de.monticore.codegen.mc2cd.transl.creation;
 
-import java.util.function.UnaryOperator;
-
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.utils.Link;
+
+import java.util.function.UnaryOperator;
 
 public class InterfaceProdsToCDInterfaces implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

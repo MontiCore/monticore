@@ -2,11 +2,11 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -38,7 +38,7 @@ public class AttributeInASTOverridingTest {
     List<ASTCDAttribute> attributes = astA.getCDAttributeList();
     assertEquals(1, attributes.size());
     assertEquals("mc2cdtransformation.AttributeInASTOverridingGrammar.ASTY",
-        TransformationHelper.typeToString(attributes.get(0).getType()));
+        TransformationHelper.typeToString(attributes.get(0).getMCType()));
   }
   
   @Test

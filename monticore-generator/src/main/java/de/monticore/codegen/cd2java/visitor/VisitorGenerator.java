@@ -2,16 +2,16 @@
 
 package de.monticore.codegen.cd2java.visitor;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -37,9 +37,9 @@ public class VisitorGenerator {
    * Generates the different visitor default implementations for the given class
    * diagram.
    */
-  public static void generate(GlobalExtensionManagement glex, GlobalScope globalScope,
-      ASTCDCompilationUnit astClassDiagram, File outputDirectory,
-      IterablePath handcodedPath) {
+  public static void generate(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
+                              ASTCDCompilationUnit astClassDiagram, File outputDirectory,
+                              IterablePath handcodedPath) {
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
     VisitorGeneratorHelper visitorHelper = new VisitorGeneratorHelper(astClassDiagram, globalScope);
@@ -47,7 +47,7 @@ public class VisitorGenerator {
     setup.setGlex(glex);
     final GeneratorEngine generator = new GeneratorEngine(setup);
     final String diagramName = astClassDiagram.getCDDefinition().getName();
-    final CDSymbol cd = visitorHelper.getCd();
+    final CDDefinitionSymbol cd = visitorHelper.getCd();
     
     final String astPackage = VisitorGeneratorHelper.getPackageName(visitorHelper.getPackageName(),
         AstGeneratorHelper.getAstPackageSuffix());
@@ -83,7 +83,7 @@ public class VisitorGenerator {
         parentAwareVisitorName, astClassDiagram.getCDDefinition(), astPackage, cd);
     Log.trace(LOGGER_NAME, "Generated basic parent aware visitor for the diagram: " + diagramName);
     
-    List<CDSymbol> allCds = visitorHelper.getAllCds(cd);
+    List<CDDefinitionSymbol> allCds = visitorHelper.getAllCds(cd);
     
     // common delegator visitor
     String commonDelegatorVisitorName = getSimpleTypeNameToGenerate(getSimpleName(visitorHelper.getDelegatorVisitorType()),
@@ -96,7 +96,7 @@ public class VisitorGenerator {
     Log.trace(LOGGER_NAME, "Generated delegator visitor for the diagram: " + diagramName);
     
     // symbol visitor interface
-    Collection<MCProdSymbol> symbols  = new LinkedHashSet<>();
+    Collection<ProdSymbol> symbols  = new LinkedHashSet<>();
     Object stHelperObj = glex.getGlobalVar("stHelper");
     if (stHelperObj != null && stHelperObj instanceof SymbolTableGeneratorHelper) {
       SymbolTableGeneratorHelper stHelper = (SymbolTableGeneratorHelper) stHelperObj;
@@ -118,7 +118,7 @@ public class VisitorGenerator {
         existsST = true;
       }
       // super scope visitors
-      for (CDSymbol cdSymbol : stHelper.getDirectSuperCds(stHelper.getCd())) {
+      for (CDDefinitionSymbol cdSymbol : stHelper.getDirectSuperCds(stHelper.getCd())) {
         String qualifiedScopeVisitorName = stHelper.getQualifiedScopeVisitorType(cdSymbol);
         if (!qualifiedScopeVisitorName.isEmpty() && !cdSymbol.equals(stHelper.getCd())) {
           superScopeVisitors.add(qualifiedScopeVisitorName);

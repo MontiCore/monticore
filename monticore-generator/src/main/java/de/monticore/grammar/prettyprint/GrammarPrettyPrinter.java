@@ -149,7 +149,7 @@ public class GrammarPrettyPrinter
     CommentPrettyPrinter.printPostComments(a, getPrinter());
 
   }
-
+  
   @Override
   public void handle(ASTBlock a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());

@@ -1,6 +1,6 @@
 package de.monticore.codegen.cocos;
 
-import de.monticore.codegen.cocos.Super;
+import de.monticore.codegen.cocos.Super1;
 
 classdiagram CoCos {
 

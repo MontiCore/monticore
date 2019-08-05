@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- == PROJECT COORDINATES ============================================= -->
+
+  <parent>
+    <groupId>de.monticore</groupId>
+    <artifactId>monticore</artifactId>
+    <version>5.0.6.NewSymTab-SNAPSHOT</version>
+  </parent>
+
+  <groupId>de.monticore.mojo</groupId>
+  <artifactId>monticore-maven</artifactId>
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>monticore-maven-plugin</module>
+    <!-- build this manually -->
+    <!-- CI builds this "manually" as well as we do not want to deploy the 
+      archetypes before having them integration tested -->
+    <!-- <module>monticore-maven-archetypes</module> -->
+  </modules>
+
+  <profiles>
+    <profile>
+      <id>m2e</id>
+      <modules>
+        <module>monticore-m2e</module>
+      </modules>
+    </profile>
+  </profiles>
+
+  <!-- == PROJECT METAINFORMATION ========================================= -->
+
+  <name>MontiCore: Maven Support</name>
+  <description>Maven Plugin that executes MontiCore</description>
+
+</project>

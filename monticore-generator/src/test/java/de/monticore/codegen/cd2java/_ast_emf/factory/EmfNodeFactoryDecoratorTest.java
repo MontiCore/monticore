@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java._ast_emf.factory;
 
+import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
@@ -8,9 +9,9 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,6 +32,8 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("service", new EmfService(compilationUnit));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+
     EmfNodeFactoryDecorator decorator = new EmfNodeFactoryDecorator(this.glex, new NodeFactoryService(compilationUnit));
 
     this.emfClass = decorator.decorate(compilationUnit);
@@ -63,7 +66,7 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
   public void testGetFactoryMethod() {
     ASTCDMethod method = getMethodBy("getFactory", emfClass);
     assertDeepEquals(PUBLIC_STATIC, method.getModifier());
-    assertDeepEquals("AutomatonNodeFactory", method.getReturnType());
+    assertDeepEquals("AutomatonNodeFactory", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -71,18 +74,18 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
   public void testCreateMethod() {
     ASTCDMethod method = getMethodBy("create", emfClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("org.eclipse.emf.ecore.EObject", method.getReturnType());
+    assertDeepEquals("org.eclipse.emf.ecore.EObject", method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertEquals("eClass", method.getCDParameter(0).getName());
-    assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getCDParameter(0).getType());
+    assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getCDParameter(0).getMCType());
   }
 
   @Test
   public void testAutomatonPackageMethod() {
     ASTCDMethod method = getMethodBy("getAutomatonPackage", emfClass);
     assertDeepEquals(PACKAGE_PRIVATE, method.getModifier());
-    assertDeepEquals("AutomatonPackage", method.getReturnType());
+    assertDeepEquals("AutomatonPackage", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
@@ -93,7 +96,7 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, emfClass, emfClass);
-    System.out.println(sb.toString());
+    // TODO Check System.out.println(sb.toString());
   }
 
 }

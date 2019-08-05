@@ -52,32 +52,32 @@ public <#if isTop>abstract </#if> class ${className} {
 
   protected ${className} () {}
 
-<#list symbolsAndScopes?keys as s>
+  <#list symbolsAndScopes?keys as s>
   public  static  ${s}Builder ${symbolsAndScopes[s]?uncap_first}Builder()   {
     if (mill${genHelper.getJavaConformName(symbolsAndScopes[s])} == null) {
-      mill${genHelper.getJavaConformName(symbolsAndScopes[s])} = getMill();
-    }
+    mill${genHelper.getJavaConformName(symbolsAndScopes[s])} = getMill();
+  }
     return mill${genHelper.getJavaConformName(symbolsAndScopes[s])}._${symbolsAndScopes[s]?uncap_first}Builder();
   }
 
   protected  ${s}Builder _${symbolsAndScopes[s]?uncap_first}Builder()   {
     return new ${s}Builder();
   }
-</#list>
+  </#list>
 
-<#list superSymbols?keys as s>
-public  static  ${s}Builder ${superSymbols[s]?uncap_first}Builder()   {
-  return ${symbolToMill[s]}.${superSymbols[s]?uncap_first}Builder();
-}
-</#list>
+  <#list superSymbols?keys as s>
+  public  static  ${s}Builder ${superSymbols[s]?uncap_first}Builder()   {
+    return ${symbolToMill[s]}.${superSymbols[s]?uncap_first}Builder();
+  }
+  </#list>
 
-public  static  void init()   {
-  mill = new ${plainName}();
-}
+  public  static  void init()   {
+    mill = new ${plainName}();
+  }
 
-public  static  void reset()   {
+  public  static  void reset()   {
 
-  mill = null;
+    mill = null;
   <#list symbolsAndScopes?keys as s>
     mill${genHelper.getJavaConformName(symbolsAndScopes[s])} = null;
   </#list>

@@ -9,8 +9,8 @@ import java.util.Optional;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -32,12 +32,12 @@ public class OverridingInterfaceNTs implements GrammarASTMCGrammarCoCo {
     prods.addAll(a.getInterfaceProdList());
     prods.addAll(a.getEnumProdList());
     prods.addAll(a.getAbstractProdList());
-    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
+    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
     List<MCGrammarSymbol> grammarSymbols = grammarSymbol.getSuperGrammarSymbols();
     
     for (ASTProd p : prods) {
       for (MCGrammarSymbol s : grammarSymbols) {
-        Optional<MCProdSymbol> typeSymbol = s.getProd(p.getName());
+        Optional<ProdSymbol> typeSymbol = s.getProd(p.getName());
         if (typeSymbol.isPresent() && typeSymbol.get().isInterface()) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, typeSymbol.get().getName()));
         }
