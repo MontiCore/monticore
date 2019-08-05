@@ -94,11 +94,11 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${languageName}Scop
     return adapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList;
   }
   
-  public void setAdapted${names.getSimpleName(symbol.getName())}SymbolDelegateList(Collection<${genHelper.getDelegatorForSymbol(symbol)}> adapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList) {
+  public void setAdapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList(Collection<${genHelper.getDelegatorForSymbol(symbol)}> adapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList) {
     this.adapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList = adapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList;
   }
   
-  public void addAdapted${names.getSimpleName(symbol.getName())}SymbolDelegate(${genHelper.getDelegatorForSymbol(symbol)} ${names.getSimpleName(symbol.getName())}SymbolResolvingDelegate) {
+  public void addAdapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegate(${genHelper.getDelegatorForSymbol(symbol)} ${names.getSimpleName(symbol.getName())}SymbolResolvingDelegate) {
     this.adapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList.add(${names.getSimpleName(symbol.getName())}SymbolResolvingDelegate);
   }
 
