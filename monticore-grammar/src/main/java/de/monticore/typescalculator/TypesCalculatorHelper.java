@@ -211,4 +211,16 @@ public class TypesCalculatorHelper {
     }
     return false;
   }
+
+
+  public static TypeExpression mcType2TypeExpression(ASTMCType type) {
+    TypeExpression typeExpression = new TypeExpression();
+    MCTypeVisitor visitor = new MCTypeVisitor();
+    type.accept(visitor);
+
+    ;
+
+    return visitor.mapping.get(type);
+  }
+
 }
