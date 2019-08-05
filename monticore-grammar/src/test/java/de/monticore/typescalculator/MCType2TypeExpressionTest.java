@@ -1,11 +1,10 @@
 package de.monticore.typescalculator;
 
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
+import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
+import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,12 +12,57 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class MCType2TypeExpressionTest {
 
   List<String> primitiveTypes = Arrays
           .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
+
+  @Test
+  public void testBasicGeneric() throws IOException {
+    Optional<ASTMCType> type = new MCFullGenericTypesTestParser().parse_StringMCType("de.util.Pair<de.mc.PairA,de.mc.PairB>");
+    assertTrue(type.isPresent());
+    TypeExpression listTypeExpression = TypesCalculatorHelper.mcType2TypeExpression(type.get());
+    assertTrue(listTypeExpression instanceof GenericTypeExpression);
+    assertTrue("de.util.Pair".equals(listTypeExpression.getName()));
+    TypeExpression keyTypeArgument = ((GenericTypeExpression) listTypeExpression).getArguments().get(0);
+    assertTrue(keyTypeArgument instanceof ObjectType);
+    assertTrue("de.mc.PairA".equals(keyTypeArgument.getName()));
+
+    TypeExpression valueTypeArgument = ((GenericTypeExpression) listTypeExpression).getArguments().get(1);
+    assertTrue(valueTypeArgument instanceof ObjectType);
+    assertTrue("de.mc.PairB".equals(valueTypeArgument.getName()));
+  }
+
+  @Test
+  public void testBasicGenericRekursiv() throws IOException {
+    Optional<ASTMCType> type = new MCFullGenericTypesTestParser().parse_StringMCType("de.util.Pair<de.mc.PairA,de.util.Pair2<de.mc.PairB,de.mc.PairC>>");
+    assertTrue(type.isPresent());
+    TypeExpression listTypeExpression = TypesCalculatorHelper.mcType2TypeExpression(type.get());
+    assertTrue(listTypeExpression instanceof GenericTypeExpression);
+    assertTrue("de.util.Pair".equals(listTypeExpression.getName()));
+    TypeExpression keyTypeArgument = ((GenericTypeExpression) listTypeExpression).getArguments().get(0);
+    assertTrue(keyTypeArgument instanceof ObjectType);
+    assertTrue("de.mc.PairA".equals(keyTypeArgument.getName()));
+
+    TypeExpression valueTypeArgument = ((GenericTypeExpression) listTypeExpression).getArguments().get(1);
+    assertTrue(valueTypeArgument instanceof GenericTypeExpression);
+    assertEquals("de.util.Pair2",valueTypeArgument.getName());
+
+    GenericTypeExpression valueTypeArg = (GenericTypeExpression) valueTypeArgument;
+
+    TypeExpression argument1 = valueTypeArg.getArguments().get(0);
+    assertTrue(keyTypeArgument instanceof ObjectType);
+    assertEquals("de.mc.PairB",argument1.getName());
+
+    TypeExpression argument2 = valueTypeArg.getArguments().get(1);
+    assertTrue(keyTypeArgument instanceof ObjectType);
+    assertEquals("de.mc.PairC",argument2.getName());
+
+
+  }
 
   @Test
   public void testMap() throws IOException {

@@ -1,11 +1,9 @@
 package de.monticore.typescalculator;
 
 import de.monticore.types.mcbasictypes._ast.*;
-import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
+import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -57,17 +55,28 @@ public class MCTypeVisitor implements MCFullGenericTypesVisitor {
   }
 
 
+  public void endVisit(ASTMCBasicGenericType genType) {
+    GenericTypeExpression genericTypeExpression = new GenericTypeExpression();
+    genericTypeExpression.setName(genType.getName());
+    List<TypeExpression> argumentList = new LinkedList<TypeExpression>();
+    for(ASTMCTypeArgument typeArg : genType.getMCTypeArgumentList()) {
+      argumentList.add(mapping.get(typeArg.getMCTypeOpt().get()));
+    }
+    genericTypeExpression.setArguments(argumentList);
+    mapping.put(genType,genericTypeExpression);
+  }
+
   public void endVisit(ASTMCQualifiedType qType) {
     ObjectType oType = new ObjectType();
     oType.setName(qType.getName());
     mapping.put(qType,oType);
   }
 
-  public void endVisit(ASTMCQualifiedName qName) {
-    ObjectType oType = new ObjectType();
-    oType.setName(qName.toString());
-    mapping.put(qName,oType);
-  }
+//  public void endVisit(ASTMCQualifiedName qName) {
+//    ObjectType oType = new ObjectType();
+//    oType.setName(qName.toString());
+//    mapping.put(qName,oType);
+//  }
 
   public void endVisit(ASTMCPrimitiveType primitiveType) {
     TypeConstant typeConstant = new TypeConstant();
