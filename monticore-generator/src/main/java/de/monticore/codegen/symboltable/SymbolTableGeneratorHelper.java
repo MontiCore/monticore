@@ -8,10 +8,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
-import de.monticore.grammar.grammar._ast.ASTCard;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTMethod;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
@@ -19,6 +16,7 @@ import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.JavaNamesHelper;
@@ -715,6 +713,9 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   public static boolean isAdditionalAttributeTypeList(ASTAdditionalAttribute attr) {
     if (attr.isPresentCard()) {
       ASTCard card = attr.getCard();
+      if (card.getIteration() == ASTConstantsGrammar.STAR || card.getIteration() == ASTConstantsGrammar.PLUS) {
+        return true;
+      }
       if (card.isPresentMax()) {
         String max = card.getMax();
         // check for * cardinality
@@ -745,6 +746,9 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   public static boolean isAdditionalAttributeTypeOptional(ASTAdditionalAttribute attr) {
     if (attr.isPresentCard()) {
       ASTCard card = attr.getCard();
+      if (card.getIteration() == ASTConstantsGrammar.QUESTION) {
+        return true;
+      }
       if (card.isPresentMax() && card.isPresentMin()) {
         if (card.getMin().equals("0") && card.getMax().equals("1")) {
           return true;
@@ -791,7 +795,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    * @return The qualified type of the attribute as String.
    */
   public String deriveAdditionalAttributeTypeWithMult(ASTAdditionalAttribute attr) {
-    String defaultType = getQualifiedASTName(attr.getMCType().getBaseName());
+    String defaultType = FullGenericTypesPrinter.printType(attr.getMCType());
     if (isAdditionalAttributeTypeList(attr)) {
       return "java.util.List<" + convertToObjectDataType(defaultType) + ">";
     }

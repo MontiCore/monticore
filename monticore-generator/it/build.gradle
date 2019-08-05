@@ -2,17 +2,17 @@ import de.monticore.MCTask
 
 plugins {
     id 'java'
-    id "monticore" version "5.0.6"
+    id "monticore" version "5.0.6.1"
 }
 
 group = 'de.monticore'
-version = '5.0.6'
+version = '5.0.6.1'
 description = 'MontiCore Generator Main Integration Test'
 sourceCompatibility = '1.8'
 
 ext.grammarDir = 'src/main/grammars'
-ext.grammar_version = '5.0.6'
-ext.mc_version = '5.0.6'
+ext.grammar_version = '5.0.6.1'
+ext.mc_version = '5.0.6.1'
 ext.junit_version = '4.12'
 
 configurations {grammar}
