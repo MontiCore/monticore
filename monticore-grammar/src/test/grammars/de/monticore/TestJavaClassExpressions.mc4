@@ -1,0 +1,12 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar TestJavaClassExpressions extends de.monticore.JavaClassExpressions {
+	PrimaryExpression implements Expression<20000> = 
+	  Name;
+	ELiteral implements Expression = Name;
+	EType implements Expression = (int:"int" | double:"double" | float:"float" | long:"long");
+	EReturnType implements Expression = (EType | void:"void");
+	ETypeArguments implements Expression = "<" (Name || ",")* ">";
+}

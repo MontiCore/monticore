@@ -2,20 +2,20 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
-import de.monticore.cd.cd4analysis._ast.ASTCDEnumConstant;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
-import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.grammar.LexNamer;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.utils.Link;
-
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+
+import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.grammar.LexNamer;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnumConstant;
+import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.utils.Link;
 
 public class ConstantsTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

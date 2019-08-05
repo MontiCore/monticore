@@ -1,13 +1,11 @@
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
-import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -51,7 +49,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(interfaceName)
         .setModifier(PUBLIC.build())
-        .addInterface(getCDTypeFacade().createQualifiedType(ASTE_PACKAGE))
+        .addInterface(getCDTypeFacade().createSimpleReferenceType(ASTE_PACKAGE))
         .addCDAttribute(createENameAttribute(definitionName))
         .addCDAttribute(createENSURIAttribute(definitionName))
         .addCDAttribute(createENSPrefixAttribute(definitionName))
@@ -170,36 +168,31 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
 
   protected ASTCDMethod createNodeFactoryMethod(String definitionName) {
     // e.g. AutomataNodeFactory getAutomataFactory();
-    ASTMCQualifiedType nodeFactoryType = getCDTypeFacade().createQualifiedType(definitionName + NODE_FACTORY_SUFFIX);
+    ASTSimpleReferenceType nodeFactoryType = getCDTypeFacade().createSimpleReferenceType(definitionName + NODE_FACTORY_SUFFIX);
     String methodName = String.format(GET, definitionName + FACTORY_SUFFIX);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(nodeFactoryType).build();
-    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName);
+    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, nodeFactoryType, methodName);
   }
 
   protected ASTCDMethod createEEnumMethod(String definitionName) {
     // e.g. EEnum getConstantsAutomata();
-    ASTMCQualifiedType eEnumType = getCDTypeFacade().createQualifiedType(E_ENUM_TYPE);
+    ASTSimpleReferenceType eEnumType = getCDTypeFacade().createSimpleReferenceType(E_ENUM_TYPE);
     String methodName = String.format(GET, CONSTANTS_PREFIX + definitionName);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(eEnumType).build();
-    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName);
+    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eEnumType, methodName);
   }
 
   protected List<ASTCDMethod> createEClassMethods(ASTCDDefinition astcdDefinition) {
     // e.g. EClass getAutomaton(); EClass getState();
     List<ASTCDMethod> methodList = new ArrayList<>();
+    ASTSimpleReferenceType eClassType = getCDTypeFacade().createSimpleReferenceType(E_CLASS_TYPE);
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       String methodName = String.format(GET, astcdClass.getName());
-      ASTMCQualifiedType eClassType = getCDTypeFacade().createQualifiedType(E_CLASS_TYPE);
-      ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(eClassType).build();
-      methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName));
+      methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eClassType, methodName));
     }
 
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
       if (!emfService.isASTNodeInterface(astcdInterface, astcdDefinition)) {
         String methodName = String.format(GET, astcdInterface.getName());
-        ASTMCQualifiedType eClassType = getCDTypeFacade().createQualifiedType(E_CLASS_TYPE);
-        ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(eClassType).build();
-        methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName));
+        methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eClassType, methodName));
       }
     }
     return methodList;
@@ -216,7 +209,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     // e.g. EAttribute getASTAutomaton_Name() ; EReference getASTAutomaton_States() ;
     for (ASTCDClass astcdClass : noInheritedAttributesClasses) {
       for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
-        ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(emfService.getEmfAttributeType(astcdAttribute)).build();
+        ASTSimpleReferenceType returnType = emfService.getEmfAttributeType(astcdAttribute);
         String methodName = String.format(GET, astcdClass.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
         methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName));
       }
@@ -230,7 +223,7 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     // e.g. EAttribute getASTAutomaton_Name() ; EReference getASTAutomaton_States() ;
     for (ASTCDInterface astcdInterface : noInheritedAttributesInterfaces) {
       for (ASTCDAttribute astcdAttribute : astcdInterface.getCDAttributeList()) {
-        ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(emfService.getEmfAttributeType(astcdAttribute)).build();
+        ASTSimpleReferenceType returnType = emfService.getEmfAttributeType(astcdAttribute);
         String methodName = String.format(GET, astcdInterface.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
         methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName));
       }
@@ -243,9 +236,8 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : astcdAttributes) {
       String methodName = String.format(GET, astcdAttribute.getName());
-      ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createQualifiedType(E_DATA_TYPE)).build();
       methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT,
-          returnType, methodName));
+          getCDTypeFacade().createSimpleReferenceType(E_DATA_TYPE), methodName));
     }
     return methodList;
   }

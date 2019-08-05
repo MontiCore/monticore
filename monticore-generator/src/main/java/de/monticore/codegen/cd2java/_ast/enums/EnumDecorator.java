@@ -1,13 +1,13 @@
 package de.monticore.codegen.cd2java._ast.enums;
 
-import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,12 +53,12 @@ public class EnumDecorator extends AbstractDecorator<ASTCDEnum, ASTCDEnum> {
   }
 
   protected ASTCDAttribute getIntValueAttribute() {
-    ASTMCType intType = getCDTypeFacade().createIntType();
+    ASTType intType = getCDTypeFacade().createIntType();
     return getCDAttributeFacade().createAttribute(PROTECTED, intType, INT_VALUE);
   }
 
   protected ASTCDConstructor getLiteralsConstructor(String enumName) {
-    ASTMCType intType = getCDTypeFacade().createIntType();
+    ASTType intType = getCDTypeFacade().createIntType();
     ASTCDParameter intParameter = getCDParameterFacade().createParameter(intType, INT_VALUE);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PRIVATE.build(), enumName, intParameter);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + INT_VALUE + " = " + INT_VALUE + ";"));

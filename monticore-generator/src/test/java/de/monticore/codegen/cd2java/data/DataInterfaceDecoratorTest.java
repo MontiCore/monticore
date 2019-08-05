@@ -1,9 +1,5 @@
 package de.monticore.codegen.cd2java.data;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -13,6 +9,10 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,14 +60,13 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testDeepEquals() {
     ASTCDMethod method = getMethodBy("deepEquals", 1, dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertBoolean(method.getMCReturnType().getMCType());
+    assertBoolean(method.getReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(Object.class, parameter.getMCType());
+    assertDeepEquals(Object.class, parameter.getType());
     assertEquals("o", parameter.getName());
   }
 
@@ -75,18 +74,17 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testDeepEqualsForceSameOrder() {
     ASTCDMethod method = getMethodBy("deepEquals", 2, dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertBoolean(method.getMCReturnType().getMCType());
+    assertBoolean(method.getReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(Object.class, parameter.getMCType());
+    assertDeepEquals(Object.class, parameter.getType());
     assertEquals("o", parameter.getName());
 
     parameter = method.getCDParameter(1);
-    assertBoolean(parameter.getMCType());
+    assertBoolean(parameter.getType());
     assertEquals("forceSameOrder", parameter.getName());
   }
 
@@ -94,14 +92,13 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testDeepEqualsWithComments() {
     ASTCDMethod method = getMethodBy("deepEqualsWithComments", 1, dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertBoolean(method.getMCReturnType().getMCType());
+    assertBoolean(method.getReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(Object.class, parameter.getMCType());
+    assertDeepEquals(Object.class, parameter.getType());
     assertEquals("o", parameter.getName());
   }
 
@@ -109,18 +106,17 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testDeepEqualsWithCommentsForceSameOrder() {
     ASTCDMethod method = getMethodBy("deepEqualsWithComments", 2, dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertBoolean(method.getMCReturnType().getMCType());
+    assertBoolean(method.getReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(Object.class, parameter.getMCType());
+    assertDeepEquals(Object.class, parameter.getType());
     assertEquals("o", parameter.getName());
 
     parameter = method.getCDParameter(1);
-    assertBoolean(parameter.getMCType());
+    assertBoolean(parameter.getType());
     assertEquals("forceSameOrder", parameter.getName());
   }
 
@@ -128,14 +124,13 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testEqualAttributes() {
     ASTCDMethod method = getMethodBy("equalAttributes", dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertBoolean(method.getMCReturnType().getMCType());
+    assertBoolean(method.getReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(Object.class, parameter.getMCType());
+    assertDeepEquals(Object.class, parameter.getType());
     assertEquals("o", parameter.getName());
   }
 
@@ -143,14 +138,13 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testEqualsWithComments() {
     ASTCDMethod method = getMethodBy("equalsWithComments", dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertBoolean(method.getMCReturnType().getMCType());
+    assertBoolean(method.getReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(Object.class, parameter.getMCType());
+    assertDeepEquals(Object.class, parameter.getType());
     assertEquals("o", parameter.getName());
   }
 
@@ -158,8 +152,7 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testDeepClone() {
     ASTCDMethod method = getMethodBy("deepClone", 0, dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(dataInterface.getName(), method.getMCReturnType().getMCType());
+    assertDeepEquals(dataInterface.getName(), method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -169,7 +162,7 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, dataInterface, dataInterface);
-    // TODO Check System.out.println(sb.toString());
+    System.out.println(sb.toString());
   }
 
 }

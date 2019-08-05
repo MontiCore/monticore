@@ -1,14 +1,15 @@
 package de.monticore.codegen.cd2java;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.TypesPrinter;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 
@@ -21,21 +22,21 @@ import java.util.stream.Stream;
 
 public class AbstractService<T extends AbstractService> {
 
-  private final CDDefinitionSymbol cdSymbol;
+  private final CDSymbol cdSymbol;
 
   private final CDTypeFacade cdTypeFacade;
 
 
   public AbstractService(final ASTCDCompilationUnit compilationUnit) {
-    this(compilationUnit.getCDDefinition().getCDDefinitionSymbol());
+    this((CDSymbol) compilationUnit.getCDDefinition().getSymbol());
   }
 
-  public AbstractService(final CDDefinitionSymbol cdSymbol) {
+  public AbstractService(final CDSymbol cdSymbol) {
     this.cdSymbol = cdSymbol;
     this.cdTypeFacade = CDTypeFacade.getInstance();
   }
 
-  public CDDefinitionSymbol getCDSymbol() {
+  public CDSymbol getCDSymbol() {
     return this.cdSymbol;
   }
 
@@ -43,26 +44,26 @@ public class AbstractService<T extends AbstractService> {
     return this.cdTypeFacade;
   }
 
-  public Collection<CDDefinitionSymbol> getAllCDs() {
+  public Collection<CDSymbol> getAllCDs() {
     return Stream.of(Collections.singletonList(getCDSymbol()), getSuperCDs())
         .flatMap(Collection::stream)
         .collect(Collectors.toList());
   }
 
-  public Collection<CDDefinitionSymbol> getSuperCDs() {
+  public Collection<CDSymbol> getSuperCDs() {
     return getSuperCDs(getCDSymbol());
   }
 
-  public Collection<CDDefinitionSymbol> getSuperCDs(CDDefinitionSymbol cdSymbol) {
+  public Collection<CDSymbol> getSuperCDs(CDSymbol cdSymbol) {
     // get direct parent CDSymbols
-    List<CDDefinitionSymbol> directSuperCdSymbols = cdSymbol.getImports().stream()
+    List<CDSymbol> directSuperCdSymbols = cdSymbol.getImports().stream()
         .map(this::resolveCD)
         .collect(Collectors.toList());
     // search for super Cds in super Cds
-    List<CDDefinitionSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
-    for (CDDefinitionSymbol superSymbol : directSuperCdSymbols) {
-      Collection<CDDefinitionSymbol> superCDs = getSuperCDs(superSymbol);
-      for (CDDefinitionSymbol superCD : superCDs) {
+    List<CDSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
+    for (CDSymbol superSymbol : directSuperCdSymbols) {
+      Collection<CDSymbol> superCDs = getSuperCDs(superSymbol);
+      for (CDSymbol superCD : superCDs) {
         if (resolvedCds
             .stream()
             .noneMatch(c -> c.getFullName().equals(superCD.getFullName()))) {
@@ -73,8 +74,8 @@ public class AbstractService<T extends AbstractService> {
     return resolvedCds;
   }
 
-  public CDDefinitionSymbol resolveCD(String qualifiedName) {
-    return getCDSymbol().getEnclosingScope().<CDDefinitionSymbol>resolveCDDefinition(qualifiedName)
+  public CDSymbol resolveCD(String qualifiedName) {
+    return getCDSymbol().getEnclosingScope().<CDSymbol>resolve(qualifiedName, CDSymbol.KIND)
         .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
   }
 
@@ -82,7 +83,7 @@ public class AbstractService<T extends AbstractService> {
     return getCDSymbol().getName();
   }
 
-  private String getBasePackage(CDDefinitionSymbol cdSymbol) {
+  private String getBasePackage(CDSymbol cdSymbol) {
     return cdSymbol.getPackageName();
   }
 
@@ -94,7 +95,7 @@ public class AbstractService<T extends AbstractService> {
     return getPackage(getCDSymbol());
   }
 
-  public String getPackage(CDDefinitionSymbol cdSymbol) {
+  public String getPackage(CDSymbol cdSymbol) {
     if (getBasePackage(cdSymbol).isEmpty()) {
       return String.join(".", cdSymbol.getName(), getSubPackage()).toLowerCase();
     }
@@ -115,7 +116,7 @@ public class AbstractService<T extends AbstractService> {
         .collect(Collectors.toList());
   }
 
-  protected T createService(CDDefinitionSymbol cdSymbol) {
+  protected T createService(CDSymbol cdSymbol) {
     return (T) new AbstractService(cdSymbol);
   }
 
@@ -126,16 +127,17 @@ public class AbstractService<T extends AbstractService> {
     return attributeName.substring(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED.length());
   }
 
-  public String getNativeTypeName(ASTMCType astType) {
+  public String getNativeTypeName(ASTType astType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
     // if not generic returns simple Type like 'int'
-    if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentList().size() == 1 ) {
-      return ((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get().printType();
+    if (astType instanceof ASTSimpleReferenceType && ((ASTSimpleReferenceType) astType).isPresentTypeArguments() &&
+        ((ASTSimpleReferenceType) astType).getTypeArguments().sizeTypeArguments() == 1) {
+      return TypesPrinter.printTypeArgument(((ASTSimpleReferenceType) astType).getTypeArguments().getTypeArgument(0));
     }
-    return astType.printType();
+    return TypesPrinter.printType(astType);
   }
 
-  public String getSimpleNativeType(ASTMCType astType) {
+  public String getSimpleNativeType(ASTType astType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
     // if not generic returns simple Type like 'int'
     String nativeAttributeType = getNativeTypeName(astType);
@@ -221,7 +223,7 @@ public class AbstractService<T extends AbstractService> {
       return false;
     }
     for (int i = 0; i < method1.getCDParameterList().size(); i++) {
-      if (!method1.getCDParameter(i).getMCType().printType().equals(method2.getCDParameter(i).getMCType().printType())) {
+      if (!method1.getCDParameter(i).getType().deepEquals(method2.getCDParameter(i).getType())) {
         return false;
       }
     }
@@ -229,12 +231,12 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public String getGrammarFromClass(ASTCDDefinition astcdDefinition, ASTCDAttribute astcdAttribute) {
-    String simpleNativeAttributeType = getSimpleNativeType(astcdAttribute.getMCType());
+    String simpleNativeAttributeType = getSimpleNativeType(astcdAttribute.getType());
     if (astcdDefinition.getCDClassList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
       return "this";
     } else {
-      Collection<CDDefinitionSymbol> superCDs = getSuperCDs(resolveCD(astcdDefinition.getName()));
-      for (CDDefinitionSymbol superCD : superCDs) {
+      Collection<CDSymbol> superCDs = getSuperCDs(resolveCD(astcdDefinition.getName()));
+      for (CDSymbol superCD : superCDs) {
         if (superCD.getTypes().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
           return superCD.getName() + "PackageImpl";
         }

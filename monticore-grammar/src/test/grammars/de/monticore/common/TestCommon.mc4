@@ -1,0 +1,7 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
+package de.monticore.common;
+
+grammar TestCommon extends de.monticore.common.Common {
+
+}

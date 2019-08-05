@@ -2,12 +2,20 @@
 
 package de.monticore.codegen.mc2cd.transl.creation;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.grammar.grammar._ast.*;
+import java.util.function.UnaryOperator;
+
+import de.monticore.grammar.grammar._ast.ASTAbstractProd;
+import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTNonTerminal;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.utils.ASTNodes;
 import de.monticore.utils.Link;
-
-import java.util.function.UnaryOperator;
 
 /**
  * Creates the ASTCDAttributes corresponding to NonTerminals

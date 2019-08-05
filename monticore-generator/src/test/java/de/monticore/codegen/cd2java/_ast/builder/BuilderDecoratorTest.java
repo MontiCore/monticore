@@ -1,7 +1,5 @@
 package de.monticore.codegen.cd2java._ast.builder;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -11,7 +9,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +21,7 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderDecorator.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
 public class BuilderDecoratorTest extends DecoratorTestCase {
@@ -36,11 +35,9 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "builder", "Builder");
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
     originalClass = getClassBy("A", ast);
 
@@ -79,30 +76,29 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
 
     ASTCDAttribute attribute = getAttributeBy("i", builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertInt(attribute.getMCType());
+    assertInt(attribute.getType());
 
     attribute = getAttributeBy("s", builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertDeepEquals(String.class, attribute.getMCType());
+    assertDeepEquals(String.class, attribute.getType());
 
     attribute = getAttributeBy("opt", builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertOptionalOf(String.class, attribute.getMCType());
+    assertOptionalOf(String.class, attribute.getType());
 
     attribute = getAttributeBy("list", builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertListOf(String.class, attribute.getMCType());
+    assertListOf(String.class, attribute.getType());
 
     attribute = getAttributeBy(REAL_BUILDER, builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertDeepEquals(builderClass.getName(), attribute.getMCType());
+    assertDeepEquals(builderClass.getName(), attribute.getType());
   }
 
   @Test
   public void testBuildMethod() {
     ASTCDMethod build = getMethodBy(BUILD_METHOD, builderClass);
-    assertTrue(build.getMCReturnType().isPresentMCType());
-    assertDeepEquals(originalClass.getName(), build.getMCReturnType().getMCType());
+    assertDeepEquals(originalClass.getName(), build.getReturnType());
     assertDeepEquals(PUBLIC, build.getModifier());
     assertTrue(build.getCDParameterList().isEmpty());
   }
@@ -110,8 +106,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testIsValidMethod() {
     ASTCDMethod isValid = getMethodBy(IS_VALID, builderClass);
-    assertTrue(isValid.getMCReturnType().isPresentMCType());
-    assertBoolean(isValid.getMCReturnType().getMCType());
+    assertBoolean(isValid.getReturnType());
     assertDeepEquals(PUBLIC, isValid.getModifier());
     assertTrue(isValid.getCDParameterList().isEmpty());
   }
@@ -122,6 +117,6 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, builderClass, builderClass);
-    // TODO Check System.out.println(sb.toString());
+    System.out.println(sb.toString());
   }
 }

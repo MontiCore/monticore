@@ -1,11 +1,11 @@
 package de.monticore.codegen.cd2java._ast.factory;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.symboltable.CDSymbol;
 
 public class NodeFactoryService extends AbstractService<NodeFactoryService> {
 
@@ -13,7 +13,7 @@ public class NodeFactoryService extends AbstractService<NodeFactoryService> {
     super(compilationUnit);
   }
 
-  public NodeFactoryService(CDDefinitionSymbol cdSymbol) {
+  public NodeFactoryService(CDSymbol cdSymbol) {
     super(cdSymbol);
   }
 
@@ -23,11 +23,11 @@ public class NodeFactoryService extends AbstractService<NodeFactoryService> {
   }
 
   @Override
-  protected NodeFactoryService createService(CDDefinitionSymbol cdSymbol) {
+  protected NodeFactoryService createService(CDSymbol cdSymbol) {
     return createNodeFactoryService(cdSymbol);
   }
 
-  public static NodeFactoryService createNodeFactoryService(CDDefinitionSymbol cdSymbol) {
+  public static NodeFactoryService createNodeFactoryService(CDSymbol cdSymbol) {
     return new NodeFactoryService(cdSymbol);
   }
 
@@ -39,8 +39,8 @@ public class NodeFactoryService extends AbstractService<NodeFactoryService> {
     return String.join(".", getPackage(), getNodeFactorySimpleTypeName());
   }
 
-  public ASTMCType getNodeFactoryType() {
-    return getCDTypeFactory().createQualifiedType(getNodeFactoryFullTypeName());
+  public ASTType getNodeFactoryType() {
+    return getCDTypeFactory().createSimpleReferenceType(getNodeFactoryFullTypeName());
   }
 
   public String getCreateInvocation(ASTCDClass clazz) {

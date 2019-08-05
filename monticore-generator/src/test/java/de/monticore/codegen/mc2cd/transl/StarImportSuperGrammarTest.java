@@ -2,9 +2,9 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types.types._ast.ASTImportStatement;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -23,7 +23,7 @@ public class StarImportSuperGrammarTest {
   
   @Test
   public void testStarImport() {
-    ASTMCImportStatement importStatement = cdCompilationUnit.getMCImportStatementList().get(0);
+    ASTImportStatement importStatement = cdCompilationUnit.getImportStatementList().get(0);
     assertTrue(importStatement.isStar());
     assertEquals("mc2cdtransformation", importStatement.getImportList().get(0));
     assertEquals("Supergrammar", importStatement.getImportList().get(1));

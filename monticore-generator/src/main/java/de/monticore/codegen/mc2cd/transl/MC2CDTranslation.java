@@ -2,11 +2,11 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.transl.creation.CDASTCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;

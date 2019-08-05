@@ -2,10 +2,14 @@
 
 package de.monticore.grammar.cocos;
 
-import de.monticore.grammar.grammar._ast.*;
+import de.monticore.ast.ASTNode;
+import de.monticore.grammar.grammar._ast.ASTASTRule;
+import de.monticore.grammar.grammar._ast.ASTAbstractProd;
+import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.se_rwth.commons.logging.Log;
 
@@ -23,14 +27,14 @@ public class NTAndASTRuleExtendType implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
     for (ASTASTRule rule : a.getASTRuleList()) {
       if (!rule.getASTSuperClassList().isEmpty()) {
-        Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(rule.getType());
+        Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(rule.getType());
         if (ruleSymbol.isPresent()) {
           if (ruleSymbol.get().isClass()) {
-            Optional<ASTProd> prod = ruleSymbol.get().getAstNode();
-            if (prod.isPresent()
+            Optional<ASTNode> prod = ruleSymbol.get().getAstNode();
+            if (prod.isPresent() && prod.get() instanceof ASTClassProd
                     && (!((ASTClassProd) prod.get()).getASTSuperClassList().isEmpty()
                     || !((ASTClassProd) prod.get()).getSuperRuleList().isEmpty())) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rule.getType(),

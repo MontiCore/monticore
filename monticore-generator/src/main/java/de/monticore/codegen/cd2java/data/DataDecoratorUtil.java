@@ -1,12 +1,10 @@
 package de.monticore.codegen.cd2java.data;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,45 +46,38 @@ public class DataDecoratorUtil extends AbstractDecorator<ASTCDType, List<ASTCDMe
 
   public ASTCDMethod createDeepEqualsMethod(ASTCDParameter objectParameter) {
     // public  boolean deepEquals(Object o)
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
-    return getCDMethodFacade().createMethod(PUBLIC, returnType, DEEP_EQUALS_METHOD, objectParameter);
+    return getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), DEEP_EQUALS_METHOD, objectParameter);
   }
 
   public ASTCDMethod createDeepEqualsWithOrderMethod(ASTCDParameter objectParameter, ASTCDParameter forceSameOrderParameter) {
     // public  boolean deepEquals(Object o,boolean forceSameOrder)
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
-    return getCDMethodFacade().createMethod(PUBLIC, returnType, DEEP_EQUALS_METHOD, objectParameter, forceSameOrderParameter);
+    return getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), DEEP_EQUALS_METHOD, objectParameter, forceSameOrderParameter);
   }
 
   public ASTCDMethod createDeepEqualsWithComments(ASTCDParameter objectParameter) {
     // public  boolean deepEqualsWithComments(Object o)
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
-    return getCDMethodFacade().createMethod(PUBLIC, returnType, DEEP_EQUALS_METHOD + WITH_COMMENTS_SUFFIX, objectParameter);
+    return getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), DEEP_EQUALS_METHOD + WITH_COMMENTS_SUFFIX, objectParameter);
   }
 
   public ASTCDMethod createDeepEqualsWithCommentsWithOrder(ASTCDParameter objectParameter, ASTCDParameter forceSameOrderParameter) {
     // public  boolean deepEqualsWithComments(Object o,boolean forceSameOrder)
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
-    return getCDMethodFacade().createMethod(PUBLIC, returnType, DEEP_EQUALS_METHOD + WITH_COMMENTS_SUFFIX, objectParameter, forceSameOrderParameter);
+    return getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), DEEP_EQUALS_METHOD + WITH_COMMENTS_SUFFIX, objectParameter, forceSameOrderParameter);
   }
 
   public ASTCDMethod createEqualAttributesMethod(ASTCDParameter objectParameter) {
     // public  boolean equalAttributes(Object o)
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
-    return getCDMethodFacade().createMethod(PUBLIC, returnType, EQUAL_ATTRIBUTES_METHOD, objectParameter);
+    return getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), EQUAL_ATTRIBUTES_METHOD, objectParameter);
   }
 
   public ASTCDMethod createEqualsWithComments(ASTCDParameter objectParameter) {
     // public  boolean equalsWithComments(Object o)
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
-    return getCDMethodFacade().createMethod(PUBLIC, returnType, EQUALS_METHOD + WITH_COMMENTS_SUFFIX, objectParameter);
+    return getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), EQUALS_METHOD + WITH_COMMENTS_SUFFIX, objectParameter);
   }
 
   public ASTCDMethod createDeepClone(ASTCDType cdType) {
     // deep clone without parameters
-    ASTMCType type = getCDTypeFacade().createQualifiedType(getSimpleName(cdType));
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
-    return getCDMethodFacade().createMethod(PUBLIC, returnType, DEEP_CLONE_METHOD);
+    ASTType type = getCDTypeFacade().createSimpleReferenceType(getSimpleName(cdType));
+    return getCDMethodFacade().createMethod(PUBLIC, type, DEEP_CLONE_METHOD);
   }
 
   protected String getSimpleName(ASTCDType astcdType) {

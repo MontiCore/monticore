@@ -4,7 +4,6 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -17,7 +16,7 @@ public class OverridingLexNTsTest extends CocoTest{
 
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     checker.addCoCo(new OverridingLexNTs());
   }
 

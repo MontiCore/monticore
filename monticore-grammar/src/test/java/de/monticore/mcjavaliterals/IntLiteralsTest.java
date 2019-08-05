@@ -2,8 +2,8 @@
 
 package de.monticore.mcjavaliterals;
 
-import de.monticore.literals.mcjavaliterals._ast.ASTIntLiteral;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.mcjavaliterals._ast.ASTIntLiteral;
+import de.monticore.mcliteralsbasis._ast.ASTLiteral;
 import org.junit.Test;
 
 import java.io.IOException;

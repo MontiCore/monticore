@@ -1,6 +1,6 @@
 package de.monticore.codegen.cd2java.factories;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.util.Arrays;
 import java.util.Collections;

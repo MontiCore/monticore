@@ -1,8 +1,8 @@
 package de.monticore.codegen.cd2java.top;
 
-import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;

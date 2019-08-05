@@ -45,30 +45,27 @@ build_dev:
 build_branches:
   stage: build
   script:
-    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
+    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install"
   except:
     - dev
     - master
 
 integration-test:
   stage: test
-  dependencies: []
   script:
     - cd monticore-generator/it
     - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify"
     - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify -P emf-it-tests"
-
+  
 it-gradle:
   stage: test
-  dependencies: []
   script:
     - cd monticore-generator/it
     - "./gradlew build"
-    - "./gradlew build -PbuildProfile=emf"
+    - "./gradlew compileEmfJava"
 
 it-experiments-gradle:
   stage: test
-  dependencies: []
   script:
     - cd monticore-generator/it/experiments
     - "./gradlew build --continue"

@@ -2,17 +2,18 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import com.google.common.collect.Iterables;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.utils.ASTNodes;
-
 import java.util.List;
 import java.util.function.UnaryOperator;
 import java.util.stream.StreamSupport;
+
+import com.google.common.collect.Iterables;
+
+import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.types.types._ast.ASTReferenceType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import de.monticore.utils.ASTNodes;
 
 public class RemoveRedundantSupertypesManipulation implements UnaryOperator<ASTCDCompilationUnit> {
   
@@ -30,10 +31,10 @@ public class RemoveRedundantSupertypesManipulation implements UnaryOperator<ASTC
     return cdCompilationUnit;
   }
   
-  private void removeRedundantSuperTypes(List<ASTMCObjectType> superClasses) {
+  private void removeRedundantSuperTypes(List<ASTReferenceType> superClasses) {
     for (int i = 0; i < superClasses.size();) {
-      ASTMCObjectType inspectedAttribute = superClasses.get(i);
-      Iterable<ASTMCObjectType> remainingAttributes = Iterables.filter(superClasses,
+      ASTReferenceType inspectedAttribute = superClasses.get(i);
+      Iterable<ASTReferenceType> remainingAttributes = Iterables.filter(superClasses,
           attribute -> !attribute.equals(inspectedAttribute));
       if (isRedundant(inspectedAttribute, remainingAttributes)) {
         superClasses.remove(i);
@@ -44,8 +45,8 @@ public class RemoveRedundantSupertypesManipulation implements UnaryOperator<ASTC
     }
   }
   
-  private boolean isRedundant(ASTMCObjectType inspectedReference,
-      Iterable<ASTMCObjectType> remainingReferences) {
+  private boolean isRedundant(ASTReferenceType inspectedReference,
+      Iterable<ASTReferenceType> remainingReferences) {
     return StreamSupport.stream(remainingReferences.spliterator(), false)
         .anyMatch(
             ref -> TransformationHelper.typeToString(inspectedReference).equals(

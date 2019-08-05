@@ -1,0 +1,8 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar TestCommonExpressions extends de.monticore.CommonExpressions {
+	PrimaryExpression implements Expression<20000> = 
+	  Name;
+}

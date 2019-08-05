@@ -1,12 +1,12 @@
 package de.monticore.codegen.cd2java._ast.ast_class;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDType;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.types._ast.ASTReferenceType;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
+import de.monticore.umlcd4a.symboltable.CDSymbol;
 
 public class ASTService extends AbstractService<ASTService> {
 
@@ -14,7 +14,7 @@ public class ASTService extends AbstractService<ASTService> {
     super(compilationUnit);
   }
 
-  public ASTService(CDDefinitionSymbol cdSymbol) {
+  public ASTService(CDSymbol cdSymbol) {
     super(cdSymbol);
   }
 
@@ -24,11 +24,11 @@ public class ASTService extends AbstractService<ASTService> {
   }
 
   @Override
-  protected ASTService createService(CDDefinitionSymbol cdSymbol) {
+  protected ASTService createService(CDSymbol cdSymbol) {
     return createASTService(cdSymbol);
   }
 
-  public static ASTService createASTService(CDDefinitionSymbol cdSymbol) {
+  public static ASTService createASTService(CDSymbol cdSymbol) {
     return new ASTService(cdSymbol);
   }
 
@@ -40,8 +40,8 @@ public class ASTService extends AbstractService<ASTService> {
     return String.join(".", getPackage(), getASTBaseInterfaceSimpleName());
   }
 
-  public ASTMCQualifiedType getASTBaseInterface() {
-    return getCDTypeFactory().createQualifiedType(getASTBaseInterfaceFullName());
+  public ASTReferenceType getASTBaseInterface() {
+    return getCDTypeFactory().createSimpleReferenceType(getASTBaseInterfaceFullName());
   }
 
   public String getSimpleTypeName(ASTCDType type) {
@@ -56,12 +56,12 @@ public class ASTService extends AbstractService<ASTService> {
     return String.join(".", getPackage(), getASTSimpleTypeName(type));
   }
 
-  public ASTMCType getASTType(ASTCDType type) {
-    return getCDTypeFactory().createQualifiedType(getASTFullTypeName(type));
+  public ASTType getASTType(ASTCDType type) {
+    return getCDTypeFactory().createSimpleReferenceType(getASTFullTypeName(type));
   }
 
-  public ASTMCQualifiedType getASTNodeInterfaceType() {
-    return getCDTypeFactory().createQualifiedType(ASTNode.class);
+  public ASTReferenceType getASTNodeInterfaceType() {
+    return getCDTypeFactory().createSimpleReferenceType(ASTNode.class);
   }
 
   public String getASTConstantClassName() {

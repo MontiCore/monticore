@@ -7,10 +7,10 @@ import java.util.Optional;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolReference;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdComponentSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbolReference;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -26,16 +26,16 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar a) {
-    Optional<MCGrammarSymbol> symbol = a.getMCGrammarSymbolOpt();
+    Optional<MCGrammarSymbol> symbol = MCGrammarSymbolTableHelper.getGrammarSymbol(a);
     if (!symbol.isPresent()) {
       Log.error(
           "0xA5001 The CoCo 'SubrulesUseInterfaceNTs' can't be checked: There is no grammar symbol for the grammar "
               + a.getName(),
           a.get_SourcePositionStart());
     }
-    for (ProdSymbol prodSymbol : symbol.get().getProds()) {
+    for (MCProdSymbol prodSymbol : symbol.get().getProds()) {
       if (!prodSymbol.isInterface()) {
-        for (ProdSymbol interfaceSymbol : MCGrammarSymbolTableHelper
+        for (MCProdSymbol interfaceSymbol : MCGrammarSymbolTableHelper
             .getAllSuperInterfaces(prodSymbol)) {
           compareComponents(prodSymbol, interfaceSymbol);
         }
@@ -43,14 +43,14 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
     }
   }
   
-  private void compareComponents(ProdSymbol prodSymbol, ProdSymbol interfaceSymbol) {
-    for (RuleComponentSymbol interfaceComponent : interfaceSymbol.getProdComponents()) {
-      Optional<RuleComponentSymbol> prodComponentOpt = prodSymbol.getProdComponent(interfaceComponent.getName());
+  private void compareComponents(MCProdSymbol prodSymbol, MCProdSymbol interfaceSymbol) {
+    for (MCProdComponentSymbol interfaceComponent : interfaceSymbol.getProdComponents()) {
+      Optional<MCProdComponentSymbol> prodComponentOpt = prodSymbol.getProdComponent(interfaceComponent.getName());
       if (!prodComponentOpt.isPresent()) {
         logError(prodSymbol, interfaceSymbol, interfaceComponent);
         continue;
       }
-      RuleComponentSymbol prodComponent = prodComponentOpt.get();
+      MCProdComponentSymbol prodComponent = prodComponentOpt.get();
 
       if (prodComponent.isList() != interfaceComponent.isList()
          || prodComponent.isOptional() != interfaceComponent.isOptional()) {
@@ -65,8 +65,8 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
         }
       }
 
-      Optional<ProdSymbolReference> prodComponentRefOpt = prodComponent.getReferencedProd();
-      Optional<ProdSymbolReference> interfaceComponentRefOpt = interfaceComponent.getReferencedProd();
+      Optional<MCProdSymbolReference> prodComponentRefOpt = prodComponent.getReferencedProd();
+      Optional<MCProdSymbolReference> interfaceComponentRefOpt = interfaceComponent.getReferencedProd();
 
       if (prodComponentRefOpt.isPresent() != interfaceComponentRefOpt.isPresent()) {
         logError(prodSymbol, interfaceSymbol, interfaceComponent);
@@ -84,7 +84,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
     }
   }
 
-  private void logError(ProdSymbol prodSymbol, ProdSymbol interfaceSymbol, RuleComponentSymbol interfaceComponent) {
+  private void logError(MCProdSymbol prodSymbol, MCProdSymbol interfaceSymbol, MCProdComponentSymbol interfaceComponent) {
     String suffix = interfaceComponent.isList() ? "*" : interfaceComponent.isOptional() ? "?" : "";
     Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodSymbol.getName(),
           interfaceComponent.getName() + suffix, interfaceSymbol.getName()),

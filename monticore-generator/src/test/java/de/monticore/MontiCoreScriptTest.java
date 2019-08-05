@@ -36,8 +36,8 @@ public class MontiCoreScriptTest {
 //
 //  @BeforeClass
 //  public static void setup() {
-//    LogStub.init();
-//    LogStub.enableFailQuick(false);
+//    Log.init();
+//    Log.enableFailQuick(false);
 //    for (AstAdditionalMethods additionalMethod : AstAdditionalMethods.class.getEnumConstants()) {
 //      additionalMethods.add(additionalMethod.name());
 //    }

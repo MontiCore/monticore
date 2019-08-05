@@ -1,12 +1,5 @@
 package de.monticore.codegen.cd2java._ast.ast_new;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisModelLoader;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreatorDelegator;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -36,7 +29,13 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.umlcd4a.CD4AnalysisLanguage;
+import de.monticore.umlcd4a.CD4AnalysisModelLoader;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.symboltable.CD4AnalysisSymbolTableCreator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,20 +56,20 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    LogStub.enableFailQuick(false);
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     this.decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");
     this.originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/de/monticore/codegen"));
     CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
+    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
 
-    CD4AnalysisGlobalScope symbolTable = new CD4AnalysisGlobalScope(modelPath, cd4aLanguage);
+    GlobalScope symbolTable = new GlobalScope(modelPath, cd4aLanguage, resolvingConfiguration);
     CD4AnalysisModelLoader cd4aModelLoader = new CD4AnalysisModelLoader(cd4aLanguage);
 
-    CD4AnalysisSymbolTableCreatorDelegator symbolTableCreator = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(symbolTable);
+    CD4AnalysisSymbolTableCreator symbolTableCreator = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
 
 
     ASTService astService = new ASTService(decoratedCompilationUnit);
@@ -135,7 +134,9 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     for (ASTCDClass clazz : decoratedCompilationUnit.getCDDefinition().getCDClassList()) {
+      System.out.printf("==================== %s ====================\n", clazz.getName());
       StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
+      System.out.println(sb.toString());
     }
   }
 }

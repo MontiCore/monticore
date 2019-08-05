@@ -2,15 +2,15 @@
 
 package de.monticore.codegen.mc2cd;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
+import java.util.function.Function;
+
 import de.monticore.codegen.mc2cd.manipul.CDManipulation;
 import de.monticore.codegen.mc2cd.transl.MC2CDTranslation;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.utils.Link;
-
-import java.util.function.Function;
 
 /**
  * This is the top-level function accepting a MC AST and taking it all the way

@@ -2,14 +2,17 @@
 
 package de.monticore.grammar.cocos;
 
-import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.se_rwth.commons.logging.Finding;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.se_rwth.commons.logging.Finding;
+import de.se_rwth.commons.logging.Log;
 
 public class UsedNTNotDefinedTest extends CocoTest {
 
@@ -20,7 +23,7 @@ public class UsedNTNotDefinedTest extends CocoTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     checker.addCoCo(new UsedNTNotDefined());
   }
 

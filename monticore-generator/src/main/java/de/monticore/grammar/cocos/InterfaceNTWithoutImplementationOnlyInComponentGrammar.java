@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolReference;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbolReference;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -26,7 +26,7 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
 
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
 
     if (!a.isComponent()) {
 //      for (ASTProd p : a.getInterfaceProdList()) {
@@ -46,22 +46,22 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
 //          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName()), a.get_SourcePositionStart());
 //        }
 //      }
-      List<ProdSymbol> interfaceProds = grammarSymbol.getProds().stream().
-          filter(ProdSymbol::isInterface).collect(Collectors.toList());
+      List<MCProdSymbol> interfaceProds = grammarSymbol.getProds().stream().
+          filter(MCProdSymbol::isInterface).collect(Collectors.toList());
       for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
-        Collection<ProdSymbol> prodSymbols = symbol.getProds();
-        for(ProdSymbol mcProdSymbol : prodSymbols){
+        Collection<MCProdSymbol> prodSymbols = symbol.getProds();
+        for(MCProdSymbol mcProdSymbol : prodSymbols){
           if (mcProdSymbol.isInterface()) {
             interfaceProds.add(mcProdSymbol);
           }
         }
       }
 
-      List<ProdSymbol> prods = grammarSymbol.getProds().stream().
+      List<MCProdSymbol> prods = grammarSymbol.getProds().stream().
           filter(prodSymbol -> prodSymbol.isClass() || prodSymbol.isAbstract()).collect(Collectors.toList());
       for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
-        Collection<ProdSymbol> prodSymbols = symbol.getProds();
-        for(ProdSymbol mcProdSymbol : prodSymbols){
+        Collection<MCProdSymbol> prodSymbols = symbol.getProds();
+        for(MCProdSymbol mcProdSymbol : prodSymbols){
           if (mcProdSymbol.isAbstract() || mcProdSymbol.isClass()) {
             prods.add(mcProdSymbol);
           }
@@ -69,11 +69,11 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
       }
 
       if(!interfaceProds.isEmpty()) {
-        List<ProdSymbol> temp = new ArrayList<>(interfaceProds);
-        for(ProdSymbol interfaceProdSymbol : interfaceProds){
-          for(ProdSymbolReference interfaceProdExtended : interfaceProdSymbol.getSuperInterfaceProds()){
+        List<MCProdSymbol> temp = new ArrayList<>(interfaceProds);
+        for(MCProdSymbol interfaceProdSymbol : interfaceProds){
+          for(MCProdSymbolReference interfaceProdExtended : interfaceProdSymbol.getSuperInterfaceProds()){
             for(int i = interfaceProds.size()-1;i>=0;--i){
-              ProdSymbol interfaceProd = interfaceProds.get(i);
+              MCProdSymbol interfaceProd = interfaceProds.get(i);
               if(interfaceProdExtended.getReferencedSymbol().getName().equals(interfaceProd.getName())){
                 temp.remove(interfaceProdExtended.getReferencedSymbol());
               }
@@ -96,10 +96,10 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
       }
         
       if(!interfaceProds.isEmpty()){
-        for (ProdSymbol prodSymbol : prods) {
-          for (ProdSymbolReference interfaceProdImplemented : prodSymbol.getSuperInterfaceProds()) {
+        for (MCProdSymbol prodSymbol : prods) {
+          for (MCProdSymbolReference interfaceProdImplemented : prodSymbol.getSuperInterfaceProds()) {
             for (int i = interfaceProds.size() - 1; i >= 0; --i) {
-              ProdSymbol interfaceProd = interfaceProds.get(i);
+              MCProdSymbol interfaceProd = interfaceProds.get(i);
               if (interfaceProdImplemented.getName().equals(interfaceProd.getName())) {
                 interfaceProds.remove(i);
               }

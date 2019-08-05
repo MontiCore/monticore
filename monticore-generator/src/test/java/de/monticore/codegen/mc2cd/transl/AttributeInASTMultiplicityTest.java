@@ -2,10 +2,10 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -43,13 +43,13 @@ public class AttributeInASTMultiplicityTest {
   @Test
   public void testStarMultiplicity() {
     List<ASTCDAttribute> attributes = astA.getCDAttributeList();
-    assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
+    assertTrue(TestHelper.isListOfType(attributes.get(0).getType(),
         "mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTX"));
     /*
-    String name = typeToString(attributes.get(0).getMCType());
+    String name = typeToString(attributes.get(0).getType());
     assertEquals("java.util.List", name);
-    assertTrue(attributes.get(0).getMCType() instanceof ASTSimpleReferenceType);
-    ASTSimpleReferenceType type = (ASTSimpleReferenceType) attributes.get(0).getMCType();
+    assertTrue(attributes.get(0).getType() instanceof ASTSimpleReferenceType);
+    ASTSimpleReferenceType type = (ASTSimpleReferenceType) attributes.get(0).getType();
     assertTrue(type.getTypeArguments().isPresent());
     assertEquals(1, type.getTypeArguments().get().getTypeArguments().size());
     assertEquals("mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTX",
@@ -64,14 +64,14 @@ public class AttributeInASTMultiplicityTest {
   @Test
   public void testOptionalCardinality() {
     List<ASTCDAttribute> attributes = astB.getCDAttributeList();
-    String name = typeToString(attributes.get(0).getMCType());
+    String name = typeToString(attributes.get(0).getType());
     assertEquals("Optional", name);
   }
   
   @Test
   public void testOneCardinality() {
     List<ASTCDAttribute> attributes = astC.getCDAttributeList();
-    String name = typeToString(attributes.get(0).getMCType());
+    String name = typeToString(attributes.get(0).getType());
     assertEquals("mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTZ", name);
   }
 }

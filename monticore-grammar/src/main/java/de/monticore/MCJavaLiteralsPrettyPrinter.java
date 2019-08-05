@@ -2,8 +2,8 @@
 
 package de.monticore;
 
-import de.monticore.literals.mcjavaliterals._ast.*;
-import de.monticore.literals.mcjavaliterals._visitor.MCJavaLiteralsVisitor;
+import de.monticore.mcjavaliterals._ast.*;
+import de.monticore.mcjavaliterals._visitor.MCJavaLiteralsVisitor;
 import de.monticore.prettyprint.IndentPrinter;
 
 public class MCJavaLiteralsPrettyPrinter extends MCCommonLiteralsPrettyPrinter implements MCJavaLiteralsVisitor {

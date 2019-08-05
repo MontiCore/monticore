@@ -1,9 +1,5 @@
 package de.monticore.codegen.cd2java._cocos;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -14,7 +10,9 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,10 +29,7 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    LogStub.init();
-    LogStub.enableFailQuick(false);
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "cocos", "CoCos");
     this.glex.setGlobalValue("service", new AbstractService(ast));
 
@@ -62,15 +57,15 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassList()) {
-      // System.out.printf("==================== %s ====================\n", clazz.getName());
+      System.out.printf("==================== %s ====================\n", clazz.getName());
       StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
-      // TODO Check System.out.println(sb.toString());
+      System.out.println(sb.toString());
     }
 
     for (ASTCDInterface interfaze : ast.getCDDefinition().getCDInterfaceList()) {
-      // System.out.printf("==================== %s ====================\n", interfaze.getName());
+      System.out.printf("==================== %s ====================\n", interfaze.getName());
       StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, interfaze, interfaze);
-      // TODO Check System.out.println(sb.toString());
+      System.out.println(sb.toString());
     }
   }
 }

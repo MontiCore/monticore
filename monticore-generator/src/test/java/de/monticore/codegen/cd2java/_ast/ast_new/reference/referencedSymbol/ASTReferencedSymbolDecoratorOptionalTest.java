@@ -1,7 +1,5 @@
 package de.monticore.codegen.cd2java._ast.ast_new.reference.referencedSymbol;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -12,8 +10,8 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,11 +32,8 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
 
   @Before
   public void setup() {
-    LogStub.init();
-    LogStub.enableFailQuick(false);
     this.cdTypeFacade = CDTypeFacade.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
     this.glex.setGlobalValue("service", new AbstractService(ast));
 
@@ -68,14 +63,14 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
     assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
     assertEquals("de.monticore.codegen.ast.referencedSymbol.FooSymbol", stereotype.getValue(0).getValue());
-    assertDeepEquals(cdTypeFacade.createTypeByDefinition("Optional<String>"), nameAttribute.getMCType());
+    assertDeepEquals(cdTypeFacade.createTypeByDefinition("Optional<String>"), nameAttribute.getType());
   }
 
   @Test
   public void testSymbolAttribute() {
     ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astClass);
     assertTrue(symbolAttribute.getModifier().isProtected());
-    assertOptionalOf(NAME_SYMBOL, symbolAttribute.getMCType());
+    assertOptionalOf(NAME_SYMBOL, symbolAttribute.getType());
   }
 
   @Test
@@ -88,9 +83,8 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
   public void testGetNameSymbolMethod() {
     ASTCDMethod method = getMethodBy("getNameSymbol", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(NAME_SYMBOL);
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(astType, method.getMCReturnType().getMCType());
+    ASTType astType = this.cdTypeFacade.createTypeByDefinition(NAME_SYMBOL);
+    assertDeepEquals(astType, method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -98,8 +92,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
   public void testGetNameSymbolOptMethod() {
     ASTCDMethod method = getMethodBy("getNameSymbolOpt", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertOptionalOf(NAME_SYMBOL, method.getMCReturnType().getMCType());
+    assertOptionalOf(NAME_SYMBOL, method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -107,8 +100,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
   public void testIsPresentNameSymbolMethod() {
     ASTCDMethod method = getMethodBy("isPresentNameSymbol", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertBoolean(method.getMCReturnType().getMCType());
+    assertBoolean(method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -118,7 +110,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, astClass, astClass);
-    // TODO Check System.out.println(sb.toString());
+    System.out.println(sb.toString());
   }
 
 }

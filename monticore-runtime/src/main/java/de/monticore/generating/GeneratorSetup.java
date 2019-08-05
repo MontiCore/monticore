@@ -140,7 +140,7 @@ public class GeneratorSetup {
           Log.warn("0xA1020 Unable to load templates from path " + file.getPath(), e);
         }
       }
-
+      
       // this loader is added last such that all "built-in" templates located on the additionaltemplatepath are
       // taking precedence over this one
       loaders.add(mcClassLoader);

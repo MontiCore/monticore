@@ -2,17 +2,19 @@
 
 package de.monticore.grammar.cocos;
 
-import de.monticore.GrammarGlobalScopeTestFactory;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import de.monticore.GrammarGlobalScopeTestFactory;
+import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.symboltable.Scope;
+import de.se_rwth.commons.logging.Log;
 
 public class NoNTInheritanceCycleTest extends CocoTest{
 
@@ -21,7 +23,7 @@ public class NoNTInheritanceCycleTest extends CocoTest{
 
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     checker.addCoCo( new NoNTInheritanceCycle());
   }
 
@@ -34,10 +36,11 @@ public class NoNTInheritanceCycleTest extends CocoTest{
   @Test
   public void testInvalid2() {
 
-    final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
+    final Scope globalScope = GrammarGlobalScopeTestFactory.create();
 
     // test grammar symbol
-    final MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) globalScope.resolveMCGrammar(grammar+ "b").orElse(null);
+    final MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) globalScope.resolve(grammar+ "b",
+        MCGrammarSymbol.KIND).orElse(null);
     assertNotNull(grammarSymbol);
     assertTrue(grammarSymbol.getAstGrammar().isPresent());
 

@@ -1,12 +1,12 @@
 package de.monticore.codegen.cd2java.methods;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.methods.mutator.ListMutatorDecorator;
 import de.monticore.codegen.cd2java.methods.mutator.MandatoryMutatorDecorator;
 import de.monticore.codegen.cd2java.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
 import java.util.List;
 

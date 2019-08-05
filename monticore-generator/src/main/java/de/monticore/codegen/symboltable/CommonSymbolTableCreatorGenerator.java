@@ -4,11 +4,11 @@ package de.monticore.codegen.symboltable;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.generating.GeneratorEngine;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 
 import java.nio.file.Path;
@@ -41,11 +41,11 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
 
     Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
   
-    Set<ProdSymbol> symbolDefiningRules = Sets.newHashSet();
-    Set<ProdSymbol> nonSymbolDefiningRules = Sets.newHashSet();
+    Set<MCProdSymbol> symbolDefiningRules = Sets.newHashSet();
+    Set<MCProdSymbol> nonSymbolDefiningRules = Sets.newHashSet();
     Set<String> symbolKinds = Sets.newHashSet();
 
-    for(ProdSymbol rule: grammarSymbol.getProds()) {
+    for(MCProdSymbol rule: grammarSymbol.getProds()) {
       if(rule.isSymbolDefinition()) {
         symbolDefiningRules.add(rule);
       }
@@ -58,7 +58,7 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
     symbolDefiningRules.forEach(p -> symbolKinds.add(genHelper.getQualifiedSymbolName(p.getEnclosingScope(),
         p.getSymbolDefinitionKind().orElse(""))));
 
-    List<CDDefinitionSymbol> directSuperCds = genHelper.getDirectSuperCds(genHelper.getCd());
+    List<CDSymbol> directSuperCds = genHelper.getDirectSuperCds(genHelper.getCd());
     if(grammarSymbol.getStartProd().isPresent()) {
       genEngine
           .generate("symboltable.SymbolTableCreator", filePath, grammarSymbol.getAstNode().get(),
@@ -77,7 +77,7 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
 
       genEngine.generate("symboltable.SymbolTableCreatorBuilder",filePath,grammarSymbol.getAstNode().get(),className, stcName);
 
-
+    
       className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "SymbolTableCreatorDelegator"),
           genHelper.getTargetPackage(), handCodedPath);
     
@@ -120,6 +120,7 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
 
         filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
 
+
         genEngine.generate("symboltable.SymbolTableCreatorDelegatorBuilder", filePath, grammarSymbol.getAstNode().get(), className, stcName);
       }
     }
@@ -133,16 +134,16 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
   
     // local symbols
     Map<String,String> localSymbolsAndScope = Maps.newHashMap();
-    for(ProdSymbol s : genHelper.getAllSymbolDefiningRules()) {
+    for(MCProdSymbol s : genHelper.getAllSymbolDefiningRules()) {
       localSymbolsAndScope.put(genHelper.getQualifiedProdName(s)+"Symbol", s.getName()+"Symbol");
     }
     
     // super grammar symbols
     Map<String,String> superSymbols = Maps.newHashMap();
     Map<String,String> symbolToMill = Maps.newHashMap();
-    Set<ProdSymbol> superSyms = Sets.newHashSet(genHelper.getAllSymbolDefiningRulesInSuperGrammar());
+    Set<MCProdSymbol> superSyms = Sets.newHashSet(genHelper.getAllSymbolDefiningRulesInSuperGrammar());
     superSyms.removeAll(genHelper.getAllSymbolDefiningRules());
-    for(ProdSymbol s : superSyms) {
+    for(MCProdSymbol s : superSyms) {
       superSymbols.put(genHelper.getQualifiedProdName(s)+"Symbol", s.getName()+"Symbol");
       String mill = Names.getQualifier(genHelper.getQualifiedProdName(s))+ "." + s.getEnclosingScope().getName().get() + millName;
       symbolToMill.put(genHelper.getQualifiedProdName(s)+"Symbol", mill);
@@ -151,7 +152,7 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
     // scope
     String qualifiedScopeName = String.format(scopeTemplate, genHelper.getTargetPackage(), grammarSymbol.getName());
     localSymbolsAndScope.put(qualifiedScopeName, grammarSymbol.getName()+"Scope");
-
+    
     // super mills
     Set<String> mills = Sets.newHashSet();
     for(String s : genHelper.getSuperGrammarCds()){

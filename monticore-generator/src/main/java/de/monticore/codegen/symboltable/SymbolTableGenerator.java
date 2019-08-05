@@ -6,8 +6,8 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 
@@ -76,16 +76,16 @@ public class SymbolTableGenerator {
     debug("Start symbol table generation for the grammar " + astGrammar.getName(), LOG);
 
     // TODO PN consider only class rules?
-    final Collection<ProdSymbol> allSymbolDefiningRules = genHelper.getAllSymbolDefiningRules();
-    final Collection<ProdSymbol> allSymbolDefiningRulesWithSuperGrammar = genHelper.getAllSymbolDefiningRulesInSuperGrammar();
-    final Collection<ProdSymbol> allScopeSpanningRules = genHelper.getAllScopeSpanningRules();
+    final Collection<MCProdSymbol> allSymbolDefiningRules = genHelper.getAllSymbolDefiningRules();
+    final Collection<MCProdSymbol> allSymbolDefiningRulesWithSuperGrammar = genHelper.getAllSymbolDefiningRulesInSuperGrammar();
+    final Collection<MCProdSymbol> allScopeSpanningRules = genHelper.getAllScopeSpanningRules();
     Collection<String> ruleNames = newArrayList();
     Collection<String> ruleNamesWithSuperGrammar = newArrayList();
-    for (ProdSymbol prod : allSymbolDefiningRules) {
+    for (MCProdSymbol prod : allSymbolDefiningRules) {
       ruleNames.add(prod.getSymbolDefinitionKind().isPresent() ? prod.getSymbolDefinitionKind().get() : prod.getName());
     }
 
-    for (ProdSymbol prod : genHelper.getAllSymbolDefiningRulesInSuperGrammar()) {
+    for (MCProdSymbol prod : genHelper.getAllSymbolDefiningRulesInSuperGrammar()) {
       ruleNamesWithSuperGrammar.add(genHelper.getQualifiedProdName(prod));
     }
 
@@ -109,7 +109,7 @@ public class SymbolTableGenerator {
 
       symbolTableCreatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
 
-      for (ProdSymbol ruleSymbol : allSymbolDefiningRules) {
+      for (MCProdSymbol ruleSymbol : allSymbolDefiningRules) {
         generateSymbolOrScopeSpanningSymbol(genEngine, genHelper, ruleSymbol, handCodedPath);
         symbolReferenceGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol,
             genHelper.isScopeSpanningSymbol(ruleSymbol));
@@ -127,7 +127,7 @@ public class SymbolTableGenerator {
 
   private void generateSymbolOrScopeSpanningSymbol(GeneratorEngine genEngine,
                                                    SymbolTableGeneratorHelper genHelper,
-                                                   ProdSymbol ruleSymbol, IterablePath handCodedPath) {
+                                                   MCProdSymbol ruleSymbol, IterablePath handCodedPath) {
     if (ruleSymbol.getAstNode().isPresent()) {
         symbolGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol, genHelper.isScopeSpanningSymbol(ruleSymbol));
     }

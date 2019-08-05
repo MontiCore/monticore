@@ -3,29 +3,19 @@
 package de.monticore;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral;
-import de.monticore.literals.mccommonliterals._ast.ASTCharLiteral;
-import de.monticore.literals.mccommonliterals._ast.ASTNullLiteral;
-import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
-import de.monticore.literals.mcjavaliterals._ast.ASTDoubleLiteral;
-import de.monticore.literals.mcjavaliterals._ast.ASTFloatLiteral;
-import de.monticore.literals.mcjavaliterals._ast.ASTIntLiteral;
-import de.monticore.literals.mcjavaliterals._ast.ASTLongLiteral;
-import de.monticore.types.MCBasicTypesNodeIdentHelper;
-import de.monticore.types.MCSimpleGenericTypesNodeIdentHelper;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeVariableDeclaration;
+import de.monticore.literals.literals._ast.*;
+import de.monticore.types.TypesNodeIdentHelper;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.types._ast.ASTQualifiedName;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
 import de.se_rwth.commons.Names;
 
 import static de.monticore.generating.templateengine.reporting.commons.Layouter.nodeName;
 
-public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdentHelper {
+public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
   
   // ##############
   // Identifier helper for Literals (could be moved into the grammars module?)
@@ -123,21 +113,44 @@ public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdent
   public String getIdent(ASTRuleReference ast) {
     return format(ast.getName(), nodeName(ast));
   }
-  public String getIdent(ASTMCType a)
-  {
-    return format(a.getBaseName(), Layouter.nodeName(a));
-  }
+  
   /**
    * @see de.monticore.generating.templateengine.reporting.commons.IASTNodeIdentHelper#getIdent(de.monticore.ast.ASTNode)
    */
   @Override
   public String getIdent(ASTNode ast) {
-
-    if (ast instanceof ASTMCQualifiedName) {
-      return getIdent((ASTMCQualifiedName) ast);
+    if (ast instanceof ASTBooleanLiteral) {
+      return getIdent((ASTBooleanLiteral) ast);
     }
-    else if (ast instanceof ASTMCType) {
-      return getIdent((ASTMCType) ast);
+    else if (ast instanceof ASTCharLiteral) {
+      return getIdent((ASTCharLiteral) ast);
+    }
+    else if (ast instanceof ASTDoubleLiteral) {
+      return getIdent((ASTDoubleLiteral) ast);
+    }
+    else if (ast instanceof ASTFloatLiteral) {
+      return getIdent((ASTFloatLiteral) ast);
+    }
+    else if (ast instanceof ASTIntLiteral) {
+      return getIdent((ASTIntLiteral) ast);
+    }
+    else if (ast instanceof ASTLongLiteral) {
+      return getIdent((ASTLongLiteral) ast);
+    }
+    else if (ast instanceof ASTNullLiteral) {
+      return getIdent((ASTNullLiteral) ast);
+    }
+    else if (ast instanceof ASTStringLiteral) {
+      return getIdent((ASTStringLiteral) ast);
+    }
+    else if (ast instanceof ASTQualifiedName) {
+      return getIdent((ASTQualifiedName) ast);
+    }
+    else if (ast instanceof ASTSimpleReferenceType) {
+      return getIdent((ASTSimpleReferenceType) ast);
+    }
+    else if (ast instanceof ASTTypeVariableDeclaration) {
+      return getIdent((ASTTypeVariableDeclaration) ast);
     }
     else if (ast instanceof ASTAntlrOption) {
       return getIdent((ASTAntlrOption) ast);
@@ -153,6 +166,9 @@ public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdent
     }
     else if (ast instanceof ASTFollowOption) {
       return getIdent((ASTFollowOption) ast);
+    }
+    else if (ast instanceof ASTMCBasicGenericType) {
+      return getIdent((ASTMCBasicGenericType) ast);
     }
     else if (ast instanceof ASTGrammarReference) {
       return getIdent((ASTGrammarReference) ast);

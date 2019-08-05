@@ -1,8 +1,5 @@
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -12,7 +9,10 @@ import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -72,13 +72,12 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("accept", languageInterface);
     assertTrue(method.getModifier().isAbstract());
     assertTrue(method.getModifier().isPublic());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType()
-    );
+    assertVoid(method.getReturnType());
 
     assertEquals(1, method.sizeCDParameters());
     assertEquals("visitor", method.getCDParameter(0).getName());
-    ASTMCType visitorType = this.cdTypeFacade.createQualifiedType("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor");
-    assertDeepEquals(visitorType, method.getCDParameter(0).getMCType());
+    ASTType visitorType = this.cdTypeFacade.createSimpleReferenceType("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor");
+    assertDeepEquals(visitorType, method.getCDParameter(0).getType());
   }
 
   @Test
@@ -87,6 +86,6 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, languageInterface, languageInterface);
-    // TODO Check System.out.println(sb.toString());
+    System.out.println(sb.toString());
   }
 }

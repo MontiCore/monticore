@@ -4,13 +4,14 @@ package de.monticore.templateclassgenerator.it;
 import _templates._setup.GeneratorConfig;
 import _templates.templates.b.JavaClass;
 import _templates.templates.maintemplates.HelloMainImpl;
+import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.java.javadsl._ast.ASTConstructorDeclaration;
 import de.monticore.java.javadsl._parser.JavaDSLParser;
 import de.monticore.java.symboltable.JavaTypeSymbol;
+import de.monticore.symboltable.Scope;
 import de.monticore.templateclassgenerator.EmptyNode;
 import de.monticore.templateclassgenerator.util.GeneratorInterface;
-import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,11 +29,12 @@ import static org.junit.Assert.assertTrue;
 
 public class UsageTest extends AbstractSymtabTest {
   private static Path outputDirectory = Paths.get("target/generated-sources/templateClasses/");
-
+  
+  private static Scope symTab = null;
+  
   @BeforeClass
-  public static void setup(){
-    Log.init();
-    Log.enableFailQuick(false);
+  public static void setup() {
+    symTab = createJavaSymTab(outputDirectory);
   }
   
   /**
@@ -50,8 +52,10 @@ public class UsageTest extends AbstractSymtabTest {
     Path filePath = Paths.get("test/" + classname + ".java");
     JavaClass.generate(filePath, new EmptyNode(), "test", classname,
         attributes);
-    assertTrue(Paths.get(outputDirectory+File.separator+"test"+File.separator+"Test1.java").toFile().exists());
-    // TODO Test output
+    JavaTypeSymbol testClass = symTab.<JavaTypeSymbol> resolve("test.Test1", JavaTypeSymbol.KIND)
+        .orElse(null);
+    assertNotNull(testClass);
+    ASTNode node = new EmptyNode();
   }
   
   /**

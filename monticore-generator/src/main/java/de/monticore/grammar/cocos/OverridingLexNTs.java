@@ -8,8 +8,8 @@ import java.util.Optional;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -26,7 +26,7 @@ public class OverridingLexNTs implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
     List<MCGrammarSymbol> grammarSymbols = grammarSymbol.getSuperGrammarSymbols();
     
     for (MCGrammarSymbol s : grammarSymbols) {
@@ -36,7 +36,7 @@ public class OverridingLexNTs implements GrammarASTMCGrammarCoCo {
     }
   }
   
-  private void doCheck(Optional<ProdSymbol> prodSymbol, ASTLexProd lexProd) {
+  private void doCheck(Optional<MCProdSymbol> prodSymbol, ASTLexProd lexProd) {
     if (prodSymbol.isPresent() && prodSymbol.get().isLexerProd()
         && !((ASTLexProd) prodSymbol.get().getAstNode().get()).getTypeList()
             .equals(lexProd.getTypeList())) {

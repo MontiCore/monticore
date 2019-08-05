@@ -5,11 +5,13 @@ package de.monticore.grammar.cocos;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolReference;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbolReference;
+import de.se_rwth.commons.logging.Log;
 
 import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.getAllSuperGrammars;
 import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.getMCGrammarSymbol;
@@ -26,7 +28,7 @@ public class ProdWithExtensionMustNotBeOverridden implements GrammarASTProdCoCo 
   @Override
   public void check(ASTProd a) {
 
-    Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(a.getEnclosingScope2());
+    Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(a);
 
     boolean isOverriding = false;
     for (MCGrammarSymbol sup : getAllSuperGrammars(grammarSymbol.get())) {
@@ -41,10 +43,10 @@ public class ProdWithExtensionMustNotBeOverridden implements GrammarASTProdCoCo 
 
     boolean extensionFound = false;
     entryLoop:
-    for (Entry<String, ProdSymbol> entry : grammarSymbol.get().getProdsWithInherited()
+    for (Entry<String, MCProdSymbol> entry : grammarSymbol.get().getProdsWithInherited()
             .entrySet()) {
-      ProdSymbol rs = entry.getValue();
-      for (ProdSymbolReference typeSymbol : rs.getSuperProds()) {
+      MCProdSymbol rs = entry.getValue();
+      for (MCProdSymbolReference typeSymbol : rs.getSuperProds()) {
         if (a.getName().equals(typeSymbol.getName())) {
           extensionFound = true;
           break entryLoop;

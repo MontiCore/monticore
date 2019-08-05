@@ -8,15 +8,15 @@ ${tc.signature("astcdClass")}
 <#if attribute.isPresentModifier() && !service.isReferencedSymbolAttribute(attribute) && !service.isInherited(attribute)>
   <#assign attributeName = attribute.getName()>
   <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
-  <#assign attrType = attribute.getMCType()>
-  <#assign typeName = genHelper.printType(attribute.getMCType())>
+  <#assign attrType = attribute.getType()>
+  <#assign typeName = genHelper.printType(attribute.getType())>
   <#if genHelper.isSimpleAstNode(attribute)>
     result.set${methName}(get${methName}().deepClone());
   <#elseif genHelper.isPrimitive(attrType)>
     result.set${methName}(${genHelper.getPlainGetter(attribute)}());
-  <#elseif genHelper.isOptional(attribute.getMCType())>
-    <#assign reference = genHelper.getFirstTypeArgumentOfOptional(attrType)>
-    <#assign referenceName = typeName>
+  <#elseif genHelper.isOptional(attribute.getType())>
+    <#assign reference = genHelper.getSimpleReferenceTypeFromOptional(attrType)>
+    <#assign referenceName = genHelper.getQualifiedReferenceNameFromOptional(attrType)>
     <#if genHelper.isString(reference) || genHelper.isAttributeOfTypeEnum(attribute)>
     result.set${methName}Opt(get${methName}Opt());
     <#elseif genHelper.isOptionalAstNode(attribute)>

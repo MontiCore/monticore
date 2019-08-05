@@ -1,7 +1,5 @@
 package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.emfMutatorMethodDecorator.EmfMutatorDecorator;
@@ -11,7 +9,10 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.TypesPrinter;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.List;
@@ -44,8 +45,8 @@ public class DataEmfDecorator extends DataDecorator {
   }
 
   private String calculateListType(ASTCDAttribute attribute, String grammarName, String classname) {
-    if (attribute.getMCType() instanceof ASTMCBasicGenericType && ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentList().size() == 1) {
-      String simpleAttributeType = ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().get().printType();
+    if (attribute.getType() instanceof ASTSimpleReferenceType && ((ASTSimpleReferenceType) attribute.getType()).getTypeArguments().sizeTypeArguments() == 1) {
+      String simpleAttributeType = TypesPrinter.printType((ASTSimpleReferenceType) ((ASTSimpleReferenceType) attribute.getType()).getTypeArguments().getTypeArgument(0));
       DecorationHelper decorationHelper = new DecorationHelper();
       String listType;
       if (decorationHelper.isListAstNode(attribute)) {

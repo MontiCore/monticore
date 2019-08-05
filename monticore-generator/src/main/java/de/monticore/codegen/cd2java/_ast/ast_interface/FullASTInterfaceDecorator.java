@@ -1,8 +1,8 @@
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.CompositeDecorator;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 
 import java.util.stream.Stream;
 

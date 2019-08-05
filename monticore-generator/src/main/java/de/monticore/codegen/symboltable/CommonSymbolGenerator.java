@@ -2,27 +2,23 @@
 
 package de.monticore.codegen.symboltable;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static de.monticore.codegen.GeneratorHelper.BUILDER;
-import static de.monticore.codegen.GeneratorHelper.DESER;
-import static de.monticore.codegen.GeneratorHelper.SYMBOL;
-import static de.monticore.codegen.GeneratorHelper.DELEGATE;
-import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
-import static de.se_rwth.commons.Names.getPathFromPackage;
-import static de.se_rwth.commons.Names.getSimpleName;
-import static java.nio.file.Paths.get;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTSymbolRule;
+import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.io.paths.IterablePath;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import de.monticore.generating.GeneratorEngine;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTSymbolRule;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.io.paths.IterablePath;
+import static com.google.common.collect.Lists.newArrayList;
+import static de.monticore.codegen.GeneratorHelper.*;
+import static de.se_rwth.commons.Names.getPathFromPackage;
+import static de.se_rwth.commons.Names.getSimpleName;
+import static java.nio.file.Paths.get;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 public class CommonSymbolGenerator implements SymbolGenerator {
 
@@ -30,12 +26,12 @@ public class CommonSymbolGenerator implements SymbolGenerator {
 
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-                       IterablePath handCodedPath, ProdSymbol prodSymbol, boolean isScopeSpanningSymbol) {
+                       IterablePath handCodedPath, MCProdSymbol prodSymbol, boolean isScopeSpanningSymbol) {
     generateSymbol(genEngine, genHelper, handCodedPath, prodSymbol, isScopeSpanningSymbol);
   }
 
   protected void generateSymbol(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-                                IterablePath handCodedPath, ProdSymbol prodSymbol, boolean isScopeSpanningSymbol) {
+                                IterablePath handCodedPath, MCProdSymbol prodSymbol, boolean isScopeSpanningSymbol) {
 
     String className = prodSymbol.getSymbolDefinitionKind().isPresent()
             ? prodSymbol.getSymbolDefinitionKind().get()

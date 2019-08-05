@@ -2,10 +2,11 @@
 
 package de.monticore.grammar;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.symboltable.Symbol;
 import de.monticore.utils.ASTNodes;
+import de.monticore.ast.ASTNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +99,7 @@ public enum Multiplicity {
     }
     
     // resolve defining grammar or switch to default behavior without inheritance
-    Optional<MCGrammarSymbol> grammarSymbol = ((ASTMCGrammar) rootNode).getEnclosingScope2().resolveMCGrammar(definingGrammarName);
+    Optional<Symbol> grammarSymbol = rootNode.getEnclosingScope().resolve(definingGrammarName, MCGrammarSymbol.KIND);
     if (!grammarSymbol.isPresent() || !grammarSymbol.get().getAstNode().isPresent()) {
       return multiplicityOfASTNode(rootNode, astNode);
     }

@@ -4,10 +4,14 @@ ${tc.signature("scopeRule")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 
 <#list scopeRule.getAdditionalAttributeList() as attr>
-  <#assign attrName=attr.getName()>
-  <#assign attrType=stHelper.deriveAdditionalAttributeTypeWithMult(attr)>
-  private ${genHelper.getQualifiedASTName(attrType)} _${attrName};
+  <#assign attrName="_" + attr.getName()>
+  <#assign attrType=attr.getMCType().getBaseName()>
+  private ${genHelper.getQualifiedASTName(attrType)} ${attrName};
+</#list>
 
+<#list scopeRule.getAdditionalAttributeList() as attr>
+  <#assign attrName=attr.getName()>
+  <#assign attrType=attr.getMCType().getBaseName()>
   <#if attrType == "boolean" || attrType == "Boolean">
     <#if attr.getName()?starts_with("is")>
       <#assign methodName=attr.getName()>

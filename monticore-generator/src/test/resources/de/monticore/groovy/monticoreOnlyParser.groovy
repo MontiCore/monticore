@@ -11,7 +11,7 @@ debug("Modelpath      : " + _configuration.getModelPathAsStrings(), LOG_ID)
 debug("Output dir     : " + out, LOG_ID)
 debug("Handcoded path : " + _configuration.getHandcodedPathAsStrings(), LOG_ID)
 
-globalScope = createCD4AGlobalScope(modelPath)
+globalScope = createGlobalScope(modelPath)
 
 // Parse grammar
 astGrammars = parseGrammars(grammars)

@@ -2,25 +2,7 @@
 
 package de.se_rwth.monticoreeditor;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import de.monticore.ast.ASTNode;
-import de.monticore.grammar.cocos.GrammarCoCos;
-import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsAntlrLexer;
-import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsAntlrParser;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.langeditor.language.Language;
-import de.se_rwth.langeditor.language.OutlineElementSet;
-import de.se_rwth.langeditor.language.OutlineElementSet.Builder;
-import de.se_rwth.langeditor.language.ParserConfig;
-import de.se_rwth.langeditor.modelstates.ModelState;
-import de.se_rwth.monticoreeditor.templates.ProdTemplate;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.templates.TemplateProposal;
+import static de.se_rwth.langeditor.util.Misc.loadImage;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -29,14 +11,42 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static de.se_rwth.langeditor.util.Misc.loadImage;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.templates.TemplateProposal;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.grammar.cocos.GrammarCoCos;
+import de.monticore.grammar.grammar._ast.ASTASTRule;
+import de.monticore.grammar.grammar._ast.ASTAbstractProd;
+import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTExternalProd;
+import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
+import de.monticore.grammar.grammar._ast.ASTLexProd;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsAntlrLexer;
+import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsAntlrParser;
+import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.symboltable.SymbolKind;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.langeditor.language.Language;
+import de.se_rwth.langeditor.language.OutlineElementSet;
+import de.se_rwth.langeditor.language.OutlineElementSet.Builder;
+import de.se_rwth.langeditor.language.ParserConfig;
+import de.se_rwth.langeditor.modelstates.ModelState;
+import de.se_rwth.monticoreeditor.templates.ProdTemplate;
 
 public final class MonticoreLanguage implements Language {
   
   private final Resolving resolving = new Resolving();
   
-  private final Collection<String> completionKinds = Sets
-      .newHashSet("ProdSymbol");
+  private final Collection<? extends SymbolKind> completionKinds = Sets
+      .newHashSet(MCProdSymbol.KIND);
       
   private final ImmutableList<String> keywords = ImmutableList.of("component", "package", "grammar",
       "options", "astimplements",
@@ -89,7 +99,7 @@ public final class MonticoreLanguage implements Language {
    * @see de.se_rwth.langeditor.language.Language#getCompletionKinds()
    */
   @Override
-  public Collection<String> getCompletionKinds() {
+  public Collection<? extends SymbolKind> getCompletionKinds() {
     return completionKinds;
   }
   

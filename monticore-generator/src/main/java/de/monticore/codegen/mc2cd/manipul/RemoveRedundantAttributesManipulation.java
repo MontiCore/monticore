@@ -2,16 +2,8 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import com.google.common.collect.Iterables;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.codegen.mc2cd.AttributeCategory;
-import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.utils.ASTNodes;
+import static de.monticore.codegen.mc2cd.AttributeCategory.determineCategory;
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 
 import java.util.Iterator;
 import java.util.List;
@@ -20,11 +12,19 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.StreamSupport;
 
-import static de.monticore.codegen.mc2cd.AttributeCategory.determineCategory;
+import com.google.common.collect.Iterables;
+
+import de.monticore.codegen.mc2cd.AttributeCategory;
+import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import de.monticore.utils.ASTNodes;
 
 /**
  * Removes duplicate attributes that may result from rules having multiple nonterminals referencing
-
  * the same rule.
  *
  */
@@ -91,18 +91,22 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
         return firstArgument.get();
       }
     }
-    return TransformationHelper.typeToString(cdAttribute.getMCType());
+    return TransformationHelper.typeToString(cdAttribute.getType());
   }
 
   private static Optional<String> getFirstTypeArgument(ASTCDAttribute cdAttribute) {
     // the 'List' in 'List<String>'
-    if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
-      List<ASTMCTypeArgument> argList = ((ASTMCGenericType) cdAttribute.getMCType()).getMCTypeArgumentList();
-      if (!argList.isEmpty()) {
-        return Optional.of(argList.get(0).getMCTypeOpt().get().getBaseName());
-      }
-    }
-    return Optional.empty();
-  }
+    ASTSimpleReferenceType outerType = (ASTSimpleReferenceType) cdAttribute
+        .getType();
 
+    if (!outerType.isPresentTypeArguments() || outerType
+        .getTypeArguments().getTypeArgumentList().isEmpty()) {
+      return Optional.empty();
+    }
+    // the 'String' in 'List<String>'
+    ASTSimpleReferenceType typeArgument = (ASTSimpleReferenceType) outerType
+        .getTypeArguments().getTypeArgumentList().get(0);
+
+    return Optional.of(typeToString(typeArgument));
+  }
 }

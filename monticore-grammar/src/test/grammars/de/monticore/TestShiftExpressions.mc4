@@ -1,0 +1,8 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar TestShiftExpressions extends de.monticore.ShiftExpressions {
+	PrimaryExpression implements Expression<20000> = 
+	  Name;
+}

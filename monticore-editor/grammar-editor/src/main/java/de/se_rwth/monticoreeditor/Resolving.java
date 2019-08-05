@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import org.eclipse.core.resources.IProject;
 
 import com.google.common.collect.ImmutableList;
@@ -49,29 +47,28 @@ class Resolving {
   }
   
   Optional<Supplier<Optional<ASTNode>>> createResolver(ASTNode astNode) {
-    // TODO umbau auf neue SymTab
-//    Optional<Supplier<Optional<ASTNode>>> resolveByNonTerminal = getEnclosingASTNode(astNode,
-//        ASTNonTerminal.class)
-//            .map(nonTerminal -> createSupplier(nonTerminal, nonTerminal.getName()));
-//    if (resolveByNonTerminal.isPresent()) {
-//      return resolveByNonTerminal;
-//    }
+    Optional<Supplier<Optional<ASTNode>>> resolveByNonTerminal = getEnclosingASTNode(astNode,
+        ASTNonTerminal.class)
+            .map(nonTerminal -> createSupplier(nonTerminal, nonTerminal.getName()));
+    if (resolveByNonTerminal.isPresent()) {
+      return resolveByNonTerminal;
+    }
     
-//    Optional<ASTNonTerminalSeparator> nonTerminalSep = getEnclosingASTNode(astNode,
-//        ASTNonTerminalSeparator.class);
-//    if (nonTerminalSep.isPresent()) {
-//      Optional<ASTMCGrammar> grammarNode = getEnclosingASTNode(nonTerminalSep.get(), ASTMCGrammar.class);
-//      if (grammarNode.isPresent()) {
-//        return Optional.of(createSupplier(grammarNode.get(),
-//            nonTerminalSep.get().getName()));
-//      }
-//    }
+    Optional<ASTNonTerminalSeparator> nonTerminalSep = getEnclosingASTNode(astNode,
+        ASTNonTerminalSeparator.class);
+    if (nonTerminalSep.isPresent()) {
+      Optional<ASTMCGrammar> grammarNode = getEnclosingASTNode(nonTerminalSep.get(), ASTMCGrammar.class);
+      if (grammarNode.isPresent()) {
+        return Optional.of(createSupplier(grammarNode.get(),
+            nonTerminalSep.get().getName()));
+      }   
+    }
     
     return Optional.empty();
   }
   
-  private Supplier<Optional<ASTProd>> createSupplier(ASTMCGrammar astNode, String name) {
-    return () -> MCGrammarSymbolTableHelper.resolveRule(astNode, name).flatMap(ProdSymbol::getAstNode);
+  private Supplier<Optional<ASTNode>> createSupplier(ASTNode astNode, String name) {
+    return () -> MCGrammarSymbolTableHelper.resolveRule(astNode, name).flatMap(Symbol::getAstNode);
   }
   
   private <T extends ASTNode> Optional<T> getEnclosingASTNode(ASTNode astNode, Class<T> type) {

@@ -5,6 +5,7 @@ package de.monticore.codegen.parser;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.transformation.GrammarTransformer;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,7 +21,7 @@ public class MCGrammarParserTest {
   @BeforeClass
   public static void setup() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
   }
 
   @Test
@@ -62,6 +63,16 @@ public class MCGrammarParserTest {
     
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTSemanticpredicateOrAction> result = parser.parseSemanticpredicateOrAction(new StringReader(str));
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+  }
+  
+  @Test
+  public void testParseTypes() throws IOException {
+    String model = "src/test/resources/mc/grammars/types/TestTypes.mc4";
+    
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Optional<ASTMCGrammar> result = parser.parse(model.toString());
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
   }

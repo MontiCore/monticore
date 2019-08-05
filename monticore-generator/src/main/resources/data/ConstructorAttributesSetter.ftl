@@ -5,7 +5,7 @@ ${tc.signature("attributes")}
   <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
   <#if genHelper.isListType(attribute.printType())>
     set${methName?remove_ending("s")}List(${attribute.getName()});
-  <#elseif genHelper.isOptional(attribute.getMCType())>
+  <#elseif genHelper.isOptional(attribute.getType())>
     set${methName}Opt(${attribute.getName()});
   <#else>
     set${methName}(${attribute.getName()});

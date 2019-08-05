@@ -2,27 +2,30 @@
 
 package de.monticore;
 
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
+import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.ResolvingConfiguration;
 
 import java.nio.file.Paths;
 
 public class GrammarGlobalScopeTestFactory {
 
-  public static Grammar_WithConceptsGlobalScope create() {
-    return create(new Grammar_WithConceptsLanguage());
+  public static GlobalScope create() {
+    return create(new MontiCoreGrammarLanguage());
   }
 
-  public static Grammar_WithConceptsGlobalScope createUsingEssentialMCLanguage() {
-    return create(new Grammar_WithConceptsLanguage());
+  public static GlobalScope createUsingEssentialMCLanguage() {
+    return create(new MontiCoreGrammarLanguage());
   }
 
 
-  private static Grammar_WithConceptsGlobalScope create(Grammar_WithConceptsLanguage grammarLanguage) {
+  private static GlobalScope create(ModelingLanguage grammarLanguage) {
+    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addDefaultFilters(grammarLanguage.getResolvingFilters());
 
-    return  new Grammar_WithConceptsGlobalScope(new ModelPath(Paths.get("src/test/resources")),
-        grammarLanguage);
+    return  new GlobalScope(new ModelPath(Paths.get("src/test/resources")),
+        grammarLanguage, resolvingConfiguration);
   }
 
 }

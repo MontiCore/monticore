@@ -2,18 +2,19 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.types.FullGenericTypesPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesNodeFactory;
+import de.monticore.types.types._ast.ASTConstantsTypes;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.types.types._ast.TypesNodeFactory;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.Names;
 
@@ -34,101 +35,101 @@ public class ReferenceTypeTranslation implements
 
     for (Link<ASTNonTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTNonTerminal.class,
         ASTCDAttribute.class)) {
-      link.target().setMCType(determineTypeToSet(link.source().getName(), rootLink.source()));
+      link.target().setType(determineTypeToSet(link.source().getName(), rootLink.source()));
       addStereotypeForASTTypes(link.source(), link.target(), rootLink.source());
     }
 
     for (Link<ASTTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTTerminal.class,
         ASTCDAttribute.class)) {
-      link.target().setMCType(createType("String"));
+      link.target().setType(createSimpleReference("String"));
     }
 
     for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
         ASTCDAttribute.class)) {
-      ASTMCType type = determineTypeToSetForAttributeInAST(link.source().getMCType(), rootLink.source());
-      link.target().setMCType(type);
-        addStereotypeForASTTypes(link.source(), link.target(), rootLink.source());
+      ASTType type = determineTypeToSetForAttributeInAST(link.source().getMCType(), rootLink.source());
+      link.target().setType(type);
+      addStereotypeForASTTypes(link.source(), link.target(), rootLink.source());
     }
 
     return rootLink;
   }
 
-  private ASTMCType ruleSymbolToType(ProdSymbol ruleSymbol, String typeName) {
+  private ASTType ruleSymbolToType(MCProdSymbol ruleSymbol, String typeName) {
     if (ruleSymbol.isLexerProd()) {
       if (!ruleSymbol.getAstNode().isPresent() || !(ruleSymbol.getAstNode().get() instanceof ASTLexProd)) {
-        return createType("String");
+        return createSimpleReference("String");
       }
       return determineConstantsType(HelperGrammar.createConvertType((ASTLexProd) ruleSymbol.getAstNode().get()))
-          .map(lexType -> (ASTMCType) MCBasicTypesNodeFactory.createASTMCPrimitiveType(lexType))
-          .orElse(createType("String"));
+          .map(lexType -> (ASTType) TypesNodeFactory.createASTPrimitiveType(lexType))
+          .orElse(createSimpleReference("String"));
     } else if (ruleSymbol.isExternal()) {
-      return createType(getPackageName(ruleSymbol) + "AST" + typeName + "Ext");
+      return createSimpleReference("AST" + typeName + "Ext");
     } else {
       String qualifiedASTNodeName = getPackageName(ruleSymbol)
           + "AST" + ruleSymbol.getName();
-      return createType(qualifiedASTNodeName);
+      return createSimpleReference(qualifiedASTNodeName);
     }
   }
 
-  private ASTMCType determineTypeToSetForAttributeInAST(ASTMCType astGenericType,
+  private ASTType determineTypeToSetForAttributeInAST(ASTMCType astGenericType,
                                                       ASTMCGrammar astMCGrammar) {
-    Optional<ProdSymbol> ruleSymbol = TransformationHelper
+    Optional<MCProdSymbol> ruleSymbol = TransformationHelper
         .resolveAstRuleType(astMCGrammar, astGenericType);
     if (!ruleSymbol.isPresent()) {
       return determineTypeToSet(astGenericType, astMCGrammar);
     } else if (ruleSymbol.get().isExternal()) {
-      return createType(astGenericType + "Ext");
+      return createSimpleReference(astGenericType + "Ext");
     } else {
       String qualifiedASTNodeName = TransformationHelper
           .getPackageName(ruleSymbol.get()) + "AST" + ruleSymbol.get().getName();
-      return createType(qualifiedASTNodeName);
+      return createSimpleReference(qualifiedASTNodeName);
     }
   }
 
-  private ASTMCType determineTypeToSet(ASTMCType astGenericType, ASTMCGrammar astMCGrammar) {
+  private ASTType determineTypeToSet(ASTMCType astGenericType, ASTMCGrammar astMCGrammar) {
     String typeName = Names.getQualifiedName(astGenericType.getNameList());
-    Optional<ASTMCType> byReference = MCGrammarSymbolTableHelper
+    Optional<ASTType> byReference = MCGrammarSymbolTableHelper
         .resolveRule(astMCGrammar, typeName)
         .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeName));
-    Optional<ASTMCType> byPrimitive = determineConstantsType(typeName)
-        .map(MCBasicTypesNodeFactory::createASTMCPrimitiveType);
+    Optional<ASTType> byPrimitive = determineConstantsType(typeName)
+        .map(TypesNodeFactory::createASTPrimitiveType);
     return byReference.orElse(byPrimitive.orElse(createType(FullGenericTypesPrinter.printType(astGenericType))));
   }
 
-  private ASTMCType determineTypeToSet(String typeName, ASTMCGrammar astMCGrammar) {
-    Optional<ASTMCType> byReference = MCGrammarSymbolTableHelper
+  private ASTType determineTypeToSet(String typeName, ASTMCGrammar astMCGrammar) {
+    Optional<ASTType> byReference = MCGrammarSymbolTableHelper
         .resolveRule(astMCGrammar, typeName)
         .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeName));
-    Optional<ASTMCType> byPrimitive = determineConstantsType(typeName)
-        .map(MCBasicTypesNodeFactory::createASTMCPrimitiveType);
-    return byReference.orElse(byPrimitive.orElse(createType(typeName)));
+    Optional<ASTType> byPrimitive = determineConstantsType(typeName)
+        .map(TypesNodeFactory::createASTPrimitiveType);
+    return byReference.orElse(byPrimitive.orElse(createSimpleReference(typeName)));
   }
 
   private Optional<Integer> determineConstantsType(String typeName) {
     switch (typeName) {
       case "int":
-        return Optional.of(ASTConstantsMCBasicTypes.INT);
+        return Optional.of(ASTConstantsTypes.INT);
       case "boolean":
-        return Optional.of(ASTConstantsMCBasicTypes.BOOLEAN);
+        return Optional.of(ASTConstantsTypes.BOOLEAN);
       case "double":
-        return Optional.of(ASTConstantsMCBasicTypes.DOUBLE);
+        return Optional.of(ASTConstantsTypes.DOUBLE);
       case "float":
-        return Optional.of(ASTConstantsMCBasicTypes.FLOAT);
+        return Optional.of(ASTConstantsTypes.FLOAT);
       case "char":
-        return Optional.of(ASTConstantsMCBasicTypes.CHAR);
+        return Optional.of(ASTConstantsTypes.CHAR);
       case "byte":
-        return Optional.of(ASTConstantsMCBasicTypes.BYTE);
+        return Optional.of(ASTConstantsTypes.BYTE);
       case "short":
-        return Optional.of(ASTConstantsMCBasicTypes.SHORT);
+        return Optional.of(ASTConstantsTypes.SHORT);
       case "long":
-        return Optional.of(ASTConstantsMCBasicTypes.LONG);
+        return Optional.of(ASTConstantsTypes.LONG);
       default:
         return Optional.empty();
     }
   }
 
   private void addStereotypeForASTTypes(ASTNonTerminal nonTerminal, ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
-    Optional<ProdSymbol> mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, nonTerminal.getName());
+    Optional<MCProdSymbol> mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, nonTerminal.getName());
     if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
       TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
     }
@@ -138,7 +139,7 @@ public class ReferenceTypeTranslation implements
                                         ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
     //if in astrule is Prod given without AST prefix e.g. foo:Foo
     String simpleName = astAdditionalAttributes.getMCType().getNameList().stream().reduce((a, b) -> a + "." + b).get();
-    Optional<ProdSymbol> mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, simpleName);
+    Optional<MCProdSymbol> mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, simpleName);
     if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
       TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
     } else if (simpleName.startsWith("AST")) {
@@ -151,7 +152,7 @@ public class ReferenceTypeTranslation implements
     }
   }
 
-  private boolean isASTType(ProdSymbol mcProdSymbol) {
+  private boolean isASTType(MCProdSymbol mcProdSymbol) {
     return !mcProdSymbol.isLexerProd() && !mcProdSymbol.isEnum();
   }
 

@@ -1,6 +1,5 @@
 package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
-import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -12,8 +11,8 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,7 +33,6 @@ public class DataEmfDecoratorTest extends DecoratorTestCase {
     ASTCDClass clazz = getClassBy("ASTAutomaton", compilationUnit);
     this.glex.setGlobalValue("service", new AbstractService(compilationUnit));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     EmfMutatorDecorator emfMutatorDecorator= new EmfMutatorDecorator(glex, new ASTService(compilationUnit));
@@ -62,6 +60,6 @@ public class DataEmfDecoratorTest extends DecoratorTestCase {
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, emfClass, emfClass);
     //check if list types where changed
     assertTrue(sb.toString().contains("EObjectContainmentEList"));
-    // TODO Check System.out.println(sb.toString());
+    System.out.println(sb.toString());
   }
 }

@@ -10,9 +10,9 @@ import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdAttributeSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 
 /**
  * MinMax-constraint checks
@@ -30,9 +30,9 @@ public class AttributeCardinalityConstraint {
   
   public String addActionForRuleBeforeRuleBody(ASTClassProd ast) {
     StringBuilder ret = new StringBuilder();
-    Optional<ProdSymbol> prodSymbol = symbolTable.getProdWithInherited(ast.getName());
+    Optional<MCProdSymbol> prodSymbol = symbolTable.getProdWithInherited(ast.getName());
     if (prodSymbol.isPresent()) {
-      for (AdditionalAttributeSymbol att : prodSymbol.get().getProdAttributes()) {
+      for (MCProdAttributeSymbol att : prodSymbol.get().getProdAttributes()) {
         String usageName = att.getName();
         if (MCGrammarSymbolTableHelper.getMax(att).isPresent()
             || MCGrammarSymbolTableHelper.getMin(att).isPresent()) {
@@ -45,11 +45,11 @@ public class AttributeCardinalityConstraint {
   
   public String addActionForRuleAfterRuleBody(ASTClassProd ast) {
     StringBuilder ret = new StringBuilder();
-    Optional<ProdSymbol> prodSymbol = symbolTable.getProdWithInherited(ast.getName());
+    Optional<MCProdSymbol> prodSymbol = symbolTable.getProdWithInherited(ast.getName());
     if (!prodSymbol.isPresent()) {
       return ret.toString();
     }
-    for (AdditionalAttributeSymbol att : prodSymbol.get().getProdAttributes()) {
+    for (MCProdAttributeSymbol att : prodSymbol.get().getProdAttributes()) {
       
       String usageName = att.getName();
       Optional<Integer> min = MCGrammarSymbolTableHelper.getMin(att);
@@ -108,12 +108,12 @@ public class AttributeCardinalityConstraint {
     
     String usageName = HelperGrammar.getUsuageName(ast);
     
-    Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
+    Optional<MCProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
     if (!rule.isPresent()) {
       return ret.toString();
     }
     
-    Optional<AdditionalAttributeSymbol> att = rule.get().getProdAttribute(usageName);
+    Optional<MCProdAttributeSymbol> att = rule.get().getProdAttribute(usageName);
     if (att.isPresent() && (MCGrammarSymbolTableHelper.getMax(att.get()).isPresent()
         || MCGrammarSymbolTableHelper.getMin(att.get()).isPresent())) {
       ret.append(getCounterName(usageName) + "++;\n");

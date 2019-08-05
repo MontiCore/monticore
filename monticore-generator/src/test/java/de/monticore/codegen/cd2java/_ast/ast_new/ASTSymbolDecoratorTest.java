@@ -1,14 +1,14 @@
 package de.monticore.codegen.cd2java._ast.ast_new;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,7 +50,7 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
     Optional<ASTCDAttribute> symbolAttribute = attributes.stream().filter(x -> x.getName().equals("aSymbol")).findFirst();
     assertTrue(symbolAttribute.isPresent());
     assertDeepEquals(PROTECTED, symbolAttribute.get().getModifier());
-    assertOptionalOf("de.monticore.codegen.ast.ast._symboltable.ASymbol", symbolAttribute.get().getMCType());
+    assertOptionalOf("de.monticore.codegen.ast.ast._symboltable.ASymbol", symbolAttribute.get().getType());
   }
 
   @Test
@@ -58,6 +58,6 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
     Optional<ASTCDAttribute> symbolAttribute = attributes.stream().filter(x -> x.getName().equals("symbol2")).findFirst();
     assertTrue(symbolAttribute.isPresent());
     assertDeepEquals(PROTECTED, symbolAttribute.get().getModifier());
-    assertOptionalOf("de.monticore.codegen.ast.ast._symboltable.ASymbol", symbolAttribute.get().getMCType());
+    assertOptionalOf("de.monticore.codegen.ast.ast._symboltable.ASymbol", symbolAttribute.get().getType());
   }
 }

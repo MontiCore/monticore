@@ -3,10 +3,10 @@
 package de.monticore.codegen.cd2java.visitor;
 
 import com.google.common.base.Joiner;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.GeneratorHelper;
+import de.monticore.symboltable.GlobalScope;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 
@@ -20,7 +20,7 @@ public class VisitorGeneratorHelper extends GeneratorHelper {
   public static final String SYMBOL_VISITOR = "Symbol" + VISITOR;
   public static final String SCOPE_VISITOR = "Scope" + VISITOR;
   
-  public VisitorGeneratorHelper(ASTCDCompilationUnit topAst, CD4AnalysisGlobalScope symbolTable) {
+  public VisitorGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     super(topAst, symbolTable);
   }
   
@@ -186,7 +186,7 @@ public class VisitorGeneratorHelper extends GeneratorHelper {
    * @param allCDs
    * @return
    */
-  public static String getVisitorType(String cDName, int index, List<CDDefinitionSymbol> allCDs) {
+  public static String getVisitorType(String cDName, int index, List<CDSymbol> allCDs) {
     List<String> names = new ArrayList<>();
     allCDs.forEach(a -> names.add(a.getName()));
     if (Collections.frequency(names, cDName) > 1) {
@@ -196,7 +196,7 @@ public class VisitorGeneratorHelper extends GeneratorHelper {
   }
   
   /**
-   * @param name
+   * @param cDName
    * @return name of the language's visitor interface, lowers first char and
    * checks for reserved java-keyword.
    * @see #getVisitorType(String)
@@ -280,7 +280,7 @@ public class VisitorGeneratorHelper extends GeneratorHelper {
    * @return the qualified name of the visitor interface with dots replaced by
    * underscores.
    */
-  public String getQualifiedVisitorNameAsJavaName(CDDefinitionSymbol cd) {
+  public String getQualifiedVisitorNameAsJavaName(CDSymbol cd) {
     return qualifiedJavaTypeToName(getQualifiedVisitorType(cd));
   }
   
@@ -291,7 +291,7 @@ public class VisitorGeneratorHelper extends GeneratorHelper {
    * @param cd the class diagram to get the visitor interface for.
    * @return the full-qualified java name of the visitor interface.
    */
-  public String getQualifiedVisitorType(CDDefinitionSymbol cd) {
+  public String getQualifiedVisitorType(CDSymbol cd) {
     return getQualifiedVisitorType(cd.getFullName());
   }
   

@@ -102,8 +102,7 @@ public interface IScope  {
       return Optional.of(resolved.iterator().next());
     }
     else if (resolved.size() > 1) {
-      throw new ResolvedSeveralEntriesForSymbolException("0xA4095 Found " + resolved.size()
-              + " symbols: " + resolved.iterator().next().getFullName(),
+      throw new ResolvedSeveralEntriesForSymbolException("0xA4095 Found " + resolved.size() + " symbols: " + resolved,
           resolved);
     }
     

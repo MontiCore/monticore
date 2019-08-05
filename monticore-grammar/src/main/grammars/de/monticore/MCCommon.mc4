@@ -8,5 +8,5 @@ component grammar MCCommon extends de.monticore.Cardinality,
 	de.monticore.Completeness, de.monticore.UMLModifier,
 	de.monticore.UMLStereotype
 {
-       scope symbol Foo="bar" Name; //TODO: wieder aus Grammatik entfernen, wenn Generator richtige Methoden generiert
+
 }

@@ -1,14 +1,14 @@
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.factories.CDMethodFacade;
 import de.monticore.codegen.cd2java.factories.CDParameterFacade;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.types._ast.ASTReferenceType;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
+import de.monticore.umlcd4a.symboltable.CDSymbol;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     super(compilationUnit);
   }
 
-  public VisitorService(CDDefinitionSymbol cdSymbol) {
+  public VisitorService(CDSymbol cdSymbol) {
     super(cdSymbol);
   }
 
@@ -31,11 +31,11 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
 
   @Override
-  protected VisitorService createService(CDDefinitionSymbol cdSymbol) {
+  protected VisitorService createService(CDSymbol cdSymbol) {
     return createVisitorService(cdSymbol);
   }
 
-  public VisitorService createVisitorService(CDDefinitionSymbol cdSymbol) {
+  public VisitorService createVisitorService(CDSymbol cdSymbol) {
     return new VisitorService(cdSymbol);
   }
 
@@ -47,22 +47,22 @@ public class VisitorService extends AbstractService<VisitorService> {
     return String.join(".",getPackage(), getVisitorSimpleTypeName());
   }
 
-  public ASTMCType getVisitorType() {
-    return getCDTypeFactory().createQualifiedType(getVisitorFullTypeName());
+  public ASTType getVisitorType() {
+    return getCDTypeFactory().createSimpleReferenceType(getVisitorFullTypeName());
   }
 
-  public ASTMCQualifiedType getVisitorReferenceType() {
-    return getCDTypeFactory().createQualifiedType(getVisitorFullTypeName());
+  public ASTReferenceType getVisitorReferenceType() {
+    return getCDTypeFactory().createSimpleReferenceType(getVisitorFullTypeName());
   }
 
-  public List<ASTMCQualifiedType> getAllVisitorTypesInHierarchy() {
+  public List<ASTReferenceType> getAllVisitorTypesInHierarchy() {
     return getServicesOfSuperCDs().stream()
         .map(VisitorService::getVisitorReferenceType)
         .collect(Collectors.toList());
   }
 
 
-  public ASTCDMethod getVisitorMethod(String methodName, ASTMCType nodeType) {
+  public ASTCDMethod getVisitorMethod(String methodName, ASTType nodeType) {
     ASTCDParameter visitorParameter = CDParameterFacade.getInstance().createParameter(nodeType, "node");
     return CDMethodFacade.getInstance().createMethod(PUBLIC, methodName, visitorParameter);
   }

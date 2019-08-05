@@ -3,7 +3,7 @@
 package de.monticore.codegen.symboltable;
 
 import de.monticore.generating.GeneratorEngine;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
 
 import java.nio.file.Path;
@@ -22,7 +22,6 @@ public class CommonModelingLanguageGenerator implements ModelingLanguageGenerato
                        IterablePath handCodedPath, MCGrammarSymbol grammarSymbol, Collection<String> grammarRuleNames) {
     String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "Language"),
             genHelper.getTargetPackage(), handCodedPath);
-
     String languageName = genHelper.getGrammarSymbol().getName();
 
     Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");

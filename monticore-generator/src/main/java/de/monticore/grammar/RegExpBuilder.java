@@ -12,8 +12,8 @@ import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTLexString;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 
 public class RegExpBuilder implements Grammar_WithConceptsVisitor {
   
@@ -136,7 +136,7 @@ public class RegExpBuilder implements Grammar_WithConceptsVisitor {
   
   @Override
   public void visit(ASTLexNonTerminal a) {
-    Optional<ProdSymbol> lexrule = st.getProd(a.getName());
+    Optional<MCProdSymbol> lexrule = st.getProd(a.getName());
     b.append(lexrule.isPresent()? lexrule.get().getName():"");
     
   }

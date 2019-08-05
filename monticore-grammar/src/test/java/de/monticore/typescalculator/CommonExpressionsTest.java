@@ -1,10 +1,11 @@
 package de.monticore.typescalculator;
 
+import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisLanguage;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
@@ -29,25 +30,32 @@ public class CommonExpressionsTest {
 
   @Before
   public void setup(){
+    ExpressionsBasisLanguage expressionsBasisLanguage=new ExpressionsBasisLanguage("CombineExpressionsWithLiteralsWithLiterals","exp") {
+      @Override
+      public MCConcreteParser getParser() {
+        return new CombineExpressionsWithLiteralsParser();
+      }
+    };
     Log.enableFailQuick(false);
 
-    this.scope=ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    this.scope=new ExpressionsBasisScope();
+    scope.setResolvingFilters(expressionsBasisLanguage.getResolvingFilters());
 
-    EVariableSymbol symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varInt").build();
+    EVariableSymbol symbol = new EVariableSymbol("varInt");
     MCTypeSymbol typeSymbol = new MCTypeSymbol("int");
     typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build());
     typeSymbol.setEVariableSymbol(symbol);
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
 
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varDouble").build();
+    symbol = new EVariableSymbol("varDouble");
     typeSymbol = new MCTypeSymbol("double");
     typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build());
     typeSymbol.setEVariableSymbol(symbol);
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
 
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varString").build();
+    symbol = new EVariableSymbol("varString");
     List<String> name = new ArrayList<>();
     name.add("java");
     name.add("lang");
@@ -58,7 +66,7 @@ public class CommonExpressionsTest {
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
 
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varList").build();
+    symbol = new EVariableSymbol("varList");
     name = new ArrayList<>();
     name.add("java");
     name.add("util");
@@ -69,14 +77,14 @@ public class CommonExpressionsTest {
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
 
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varChar").build();
+    symbol = new EVariableSymbol("varChar");
     typeSymbol= new MCTypeSymbol("char");
     typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build());
     typeSymbol.setEVariableSymbol(symbol);
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
 
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varInteger").build();
+    symbol = new EVariableSymbol("varInteger");
     name=new ArrayList<>();
     name.add("java");
     name.add("lang");
@@ -87,7 +95,7 @@ public class CommonExpressionsTest {
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
 
-    EVariableSymbol symbolB = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varB").build();
+    EVariableSymbol symbolB = new EVariableSymbol("varB");
     name=new ArrayList<>();
     name.add("B");
     typeSymbol=new MCTypeSymbol("B");
@@ -95,7 +103,7 @@ public class CommonExpressionsTest {
     typeSymbol.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
     symbolB.setMCTypeSymbol(typeSymbol);
 
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varA").build();
+    symbol = new EVariableSymbol("varA");
     name=new ArrayList<>();
     name.add("A");
     typeSymbol=new MCTypeSymbol("A");
@@ -111,7 +119,7 @@ public class CommonExpressionsTest {
     scope.add(symbolB);
     scope.add(symbol);
 
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varName").build();
+    symbol = new EVariableSymbol("varName");
     name=new ArrayList<>();
     name.add("Test");
     typeSymbol= new MCTypeSymbol("Name");
@@ -121,27 +129,27 @@ public class CommonExpressionsTest {
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
 
-    EMethodSymbol methodSymbol = ExpressionsBasisSymTabMill.eMethodSymbolBuilder().setName("call").build();
+    EMethodSymbol methodSymbol = new EMethodSymbol("call");
     typeSymbol = new MCTypeSymbol("call");
     typeSymbol.setMethodSymbol(methodSymbol);
     methodSymbol.setMCTypeSymbol(typeSymbol);
     methodSymbol.setReturnType(MCBasicTypesMill.mCReturnTypeBuilder().setMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build()).build());
     scope.add(methodSymbol);
 
-    ExpressionsBasisScope ascope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    ExpressionsBasisScope ascope = new ExpressionsBasisScope();
     scope.addSubScope(ascope);
     ascope.setName("A");
-    ExpressionsBasisScope bscope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    ExpressionsBasisScope bscope = new ExpressionsBasisScope();
     bscope.setName("B");
     ascope.addSubScope(bscope);
-    ExpressionsBasisScope cscope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    ExpressionsBasisScope cscope = new ExpressionsBasisScope();
     cscope.setName("C");
     bscope.addSubScope(cscope);
 
     cscope.add(methodSymbol);
 
 
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("QName").build();
+    symbol = new EVariableSymbol("QName");
     name=new ArrayList<>();
     typeSymbol= new MCTypeSymbol("QName");
     type = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
@@ -150,14 +158,14 @@ public class CommonExpressionsTest {
     symbol.setMCTypeSymbol(typeSymbol);
     cscope.add(symbol);
 
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varBool").build();
+    symbol = new EVariableSymbol("varBool");
     typeSymbol=new MCTypeSymbol("boolean");
     typeSymbol.setEVariableSymbol(symbol);
     typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build());
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
 
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varBool2").build();
+    symbol = new EVariableSymbol("varBool2");
     typeSymbol=new MCTypeSymbol("boolean");
     typeSymbol.setEVariableSymbol(symbol);
     typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build());

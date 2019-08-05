@@ -6,7 +6,7 @@
     }
     StringBuffer result = new StringBuffer(getClass().getSimpleName());
   <#list attributeList as attribute>
-    <#if genHelper.isOptional(attribute.getMCType())>
+    <#if genHelper.isOptional(attribute.getType())>
     if (${attribute.getName()}.isPresent()) {
       result.append(" ${attribute.getName()?cap_first}: ");
       result.append(${attribute.getName()}.get());

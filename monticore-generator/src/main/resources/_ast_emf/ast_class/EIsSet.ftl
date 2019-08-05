@@ -7,7 +7,7 @@ ${tc.signature("attributeList", "packageName", "className")}
       case ${packageName}.${className}_${attribute.getName()?cap_first}:
       <#if genHelper.isListType(attribute.printType())>
         return !${getter}().isEmpty();
-      <#elseif genHelper.isOptional(attribute.getMCType())>
+      <#elseif genHelper.isOptional(attribute.getType())>
         return ${getter}().isPresent();
       <#else>  
         return ${getter}() != ${genHelper.getDefaultValue(attribute)};

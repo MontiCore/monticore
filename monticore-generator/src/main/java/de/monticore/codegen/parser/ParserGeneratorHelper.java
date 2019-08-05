@@ -11,14 +11,14 @@ import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolReference;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbolReference;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.javastatements._ast.ASTBlockStatement;
 import de.monticore.javastatements._ast.ASTClassMemberDeclaration;
 import de.monticore.prettyprint.IndentPrinter;
@@ -170,7 +170,7 @@ public class ParserGeneratorHelper {
    * @param rule
    * @return
    */
-  public boolean generateParserForRule(ProdSymbol rule) {
+  public boolean generateParserForRule(MCProdSymbol rule) {
     boolean generateParserForRule = false;
     String ruleName = rule.getName();
 
@@ -192,9 +192,9 @@ public class ParserGeneratorHelper {
    *
    * @return List of interface rules
    */
-  public List<ProdSymbol> getInterfaceRulesToGenerate() {
-    List<ProdSymbol> interfaceRules = Lists.newArrayList();
-    for (ProdSymbol ruleSymbol : grammarSymbol.getProdsWithInherited()
+  public List<MCProdSymbol> getInterfaceRulesToGenerate() {
+    List<MCProdSymbol> interfaceRules = Lists.newArrayList();
+    for (MCProdSymbol ruleSymbol : grammarSymbol.getProdsWithInherited()
             .values()) {
       if (ruleSymbol.isAbstract() || ruleSymbol.isInterface()) {
         List<PredicatePair> subRules = grammarInfo
@@ -212,12 +212,12 @@ public class ParserGeneratorHelper {
    *
    * @return List of ident types
    */
-  public List<ProdSymbol> getIdentsToGenerate() {
+  public List<MCProdSymbol> getIdentsToGenerate() {
     return embeddedJavaCode ? grammarSymbol.getProdsWithInherited().values().stream()
             .filter(r -> r.isLexerProd() && !r.isExternal()).collect(Collectors.toList()) : Collections.emptyList();
   }
 
-  public static String getConvertFunction(ProdSymbol symbol) {
+  public static String getConvertFunction(MCProdSymbol symbol) {
     Optional<ASTLexProd> ast = symbol.getAstNode().filter(ASTLexProd.class::isInstance)
             .map(ASTLexProd.class::cast);
     return ast.isPresent()? HelperGrammar.createConvertFunction(ast.get(), getPrettyPrinter()):"";
@@ -239,20 +239,20 @@ public class ParserGeneratorHelper {
   public List<ASTLexProd> getLexerRulesToGenerate() {
     // Iterate over all LexRules
     List<ASTLexProd> prods = Lists.newArrayList();
-    ProdSymbol mcanything = null;
-    final Map<String, ProdSymbol> rules = new LinkedHashMap<>();
+    MCProdSymbol mcanything = null;
+    final Map<String, MCProdSymbol> rules = new LinkedHashMap<>();
 
     // Don't use grammarSymbol.getRulesWithInherited because of changed order
-    for (final ProdSymbol ruleSymbol : grammarSymbol.getProds()) {
+    for (final MCProdSymbol ruleSymbol : grammarSymbol.getProds()) {
       rules.put(ruleSymbol.getName(), ruleSymbol);
     }
     for (int i = grammarSymbol.getSuperGrammars().size() - 1; i >= 0; i--) {
       rules.putAll(grammarSymbol.getSuperGrammarSymbols().get(i).getProdsWithInherited());
     }
 
-    for (Entry<String, ProdSymbol> ruleSymbol : rules.entrySet()) {
+    for (Entry<String, MCProdSymbol> ruleSymbol : rules.entrySet()) {
       if (ruleSymbol.getValue().isLexerProd()) {
-        ProdSymbol lexProd = ruleSymbol.getValue();
+        MCProdSymbol lexProd = ruleSymbol.getValue();
         // MONTICOREANYTHING must be last rule
         if (lexProd.getName().equals(MONTICOREANYTHING)) {
           mcanything = lexProd;
@@ -401,12 +401,39 @@ public class ParserGeneratorHelper {
             .toLowerCase());
   }
 
+  /**
+   * Returns Human-Readable, antlr conformed name for a rulename
+   *
+   * @param rule rule name
+   * @return Human-Readable, antlr conformed rule name
+   */
+  public static String getRuleNameForAntlr(ASTClassProd rule) {
+    return getRuleNameForAntlr(getRuleName(rule));
+  }
 
   public String getTmpVarNameForAntlrCode(ASTNonTerminal node) {
-    Optional<ProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
+    Optional<MCProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
     if (!prod.isPresent()) {
       Log.error("0xA1006 ASTNonterminal " + node.getName() + "(usageName: " + node.getUsageName()
               + ") can't be resolved.");
+      return "";
+    }
+    return getTmpVarName(node);
+  }
+
+  public String getTmpVarNameForAntlrCode(ASTLexNonTerminal node) {
+    Optional<MCProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
+    if (!prod.isPresent()) {
+      Log.error("0xA1007 ASTNonterminal " + node.getName() + " can't be resolved.");
+      return "";
+    }
+    return getTmpVarName(node);
+  }
+
+  public String getTmpVarNameForAntlrCode(String name, ASTNode node) {
+    Optional<MCProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
+    if (!prod.isPresent()) {
+      Log.error("0xA1008 ASTNonterminal " + name + " can't be resolved.");
       return "";
     }
     return getTmpVarName(node);
@@ -424,9 +451,9 @@ public class ParserGeneratorHelper {
       return ast.getAltList();
     }
     for (MCGrammarSymbolReference g : grammarSymbol.getSuperGrammars()) {
-      final Optional<ProdSymbol> ruleByName = g.getReferencedSymbol().getProdWithInherited(ast.getName());
+      final Optional<MCProdSymbol> ruleByName = g.getReferencedSymbol().getProdWithInherited(ast.getName());
       if (ruleByName.isPresent() && ruleByName.get().isClass()) {
-        Optional<ASTProd> astProd = ruleByName.get().getAstNode();
+        Optional<ASTNode> astProd = ruleByName.get().getAstNode();
         if (astProd.isPresent() && astProd.get() instanceof ASTClassProd) {
           return ((ASTClassProd)astProd.get()).getAltList();
         }
@@ -435,7 +462,7 @@ public class ParserGeneratorHelper {
     return Lists.newArrayList();
   }
 
-  public static String getASTClassName(ProdSymbol rule) {
+  public static String getASTClassName(MCProdSymbol rule) {
     return MCGrammarSymbolTableHelper.getQualifiedName(rule);
   }
 
@@ -486,11 +513,11 @@ public class ParserGeneratorHelper {
     return "";
   }
 
-  public static String getParseRuleName(ProdSymbol rule) {
+  public static String getParseRuleName(MCProdSymbol rule) {
     return JavaNamesHelper.getNonReservedName(StringTransformations.uncapitalize(rule.getName()));
   }
 
-  public static String getMCParserWrapperName(ProdSymbol rule) {
+  public static String getMCParserWrapperName(MCProdSymbol rule) {
     return StringTransformations.capitalize(JavaNamesHelper.getNonReservedName(rule.getName()));
   }
 
@@ -498,7 +525,7 @@ public class ParserGeneratorHelper {
    * @return the qualified name for this type
    */
   // TODO GV: change implementation
-  public static String getQualifiedName(ProdSymbol symbol) {
+  public static String getQualifiedName(MCProdSymbol symbol) {
     if (!symbol.getAstNode().isPresent()) {
       return "UNKNOWN_TYPE";
     }
@@ -515,7 +542,7 @@ public class ParserGeneratorHelper {
             GeneratorHelper.AST_PREFIX, "");
   }
 
-  public static String getDefaultValue(ProdSymbol symbol) {
+  public static String getDefaultValue(MCProdSymbol symbol) {
     String name = getQualifiedName(symbol);
     if ("int".equals(name)) {
       return "0";
@@ -526,7 +553,7 @@ public class ParserGeneratorHelper {
     return "null";
   }
 
-  private static String getLexType(Optional<? extends ASTNode> node) {
+  private static String getLexType(Optional<ASTNode> node) {
     if (node.isPresent()) {
       if (node.get() instanceof ASTLexProd) {
         return HelperGrammar.createConvertType((ASTLexProd) node.get());

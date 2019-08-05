@@ -74,5 +74,4 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
   public List<String> getNameList() {
     return Lists.newArrayList(toString());
   }
-
 }

@@ -15,11 +15,11 @@ ${tc.signature("astcdClass", "simpleClassName")}
          <#assign attributeName = attribute.getName()>
          <#if !genHelper.isSimpleAstNode(attribute) && !genHelper.isOptionalAstNode(attribute) && !genHelper.isListAstNode(attribute)>
 	// comparing ${attributeName} 
-	      <#if genHelper.isPrimitive(attribute.getMCType())>
+	      <#if genHelper.isPrimitive(attribute.getType())>
     if (!(this.${attributeName} == comp.${attributeName})) {
       return false;
     }
-         <#elseif genHelper.isOptional(attribute.getMCType())>
+         <#elseif genHelper.isOptional(attribute.getType())>
     if ( this.${attributeName}.isPresent() != comp.${attributeName}.isPresent() ||
        (this.${attributeName}.isPresent() && !this.${attributeName}.get().equals(comp.${attributeName}.get())) ) {
       return false;

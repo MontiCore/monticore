@@ -2,16 +2,16 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.logging.Log;
 
@@ -47,15 +47,15 @@ public class ImplementsTranslation implements
   
   private void translateClassProd(ASTClassProd classProd,
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
-    MCGrammarSymbol grammarSymbol = astGrammar.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol();
     // translates "implements"
     for (ASTRuleReference ruleReference : classProd.getSuperInterfaceRuleList()) {
-      Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
+      Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
       if (!ruleSymbol.isPresent()) {
         Log.error("0xA0137 The rule '" + ruleReference.getName() + "' does not exist!", ruleReference.get_SourcePositionStart());
       }
       cdClass.getInterfaceList().add(
-          TransformationHelper.createObjectType(TransformationHelper
+          TransformationHelper.createSimpleReference(TransformationHelper
               .getPackageName(ruleSymbol.get())
               + "AST"
               + ruleReference.getName()));
@@ -68,7 +68,7 @@ public class ImplementsTranslation implements
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);
       cdClass.getInterfaceList().add(
-          TransformationHelper.createObjectType(qualifiedRuleName));
+          TransformationHelper.createSimpleReference(qualifiedRuleName));
     }
   }
   
@@ -77,13 +77,13 @@ public class ImplementsTranslation implements
     // translates "implements"
     for (ASTRuleReference ruleReference : abstractProd
         .getSuperInterfaceRuleList()) {
-      MCGrammarSymbol grammarSymbol = astGrammar.getMCGrammarSymbol();
-      Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
+      MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol();
+      Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
       if (!ruleSymbol.isPresent()) {
         Log.error("0xA0138 The rule '" + ruleReference.getName() + "' does not exist!");
       }
       cdClass.getInterfaceList().add(
-          TransformationHelper.createObjectType(TransformationHelper
+          TransformationHelper.createSimpleReference(TransformationHelper
               .getPackageName(ruleSymbol.get())
               + "AST"
               + ruleReference.getName()));
@@ -96,7 +96,7 @@ public class ImplementsTranslation implements
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);
       cdClass.getInterfaceList().add(
-          TransformationHelper.createObjectType(qualifiedRuleName));
+          TransformationHelper.createSimpleReference(qualifiedRuleName));
     }
   }
   

@@ -2,11 +2,13 @@
 
 package de.monticore.mcjavaliterals;
 
-import de.monticore.literals.mcjavaliterals._ast.ASTDoubleLiteral;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.literals.LiteralsTestHelper;
+import de.monticore.mcjavaliterals._ast.ASTDoubleLiteral;
+import de.monticore.mcliteralsbasis._ast.ASTLiteral;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;

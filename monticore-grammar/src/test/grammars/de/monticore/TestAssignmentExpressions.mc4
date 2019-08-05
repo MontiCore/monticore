@@ -1,0 +1,8 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar TestAssignmentExpressions extends de.monticore.AssignmentExpressions {
+	PrimaryExpression implements Expression<20000> = 
+	  Name;
+}

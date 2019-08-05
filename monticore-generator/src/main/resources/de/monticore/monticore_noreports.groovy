@@ -23,8 +23,7 @@ reportManagerFactory = new MontiCoreReportsLight(out.getAbsolutePath(), handcode
 // initialize incremental generation; enabling of reporting; create global scope
 IncrementalChecker.initialize(out, report)
 InputOutputFilesReporter.resetModelToArtifactMap()
-mcScope = createMCGlobalScope(modelPath)
-cdScope = createCD4AGlobalScope(modelPath)
+globalScope = createGlobalScope(modelPath)
 Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
 // ############################################################
 
@@ -44,21 +43,21 @@ while (grammarIterator.hasNext()) {
       // start reporting
       grammarName = Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName())
       Reporting.on(grammarName)
-      Reporting.reportModelStart(astGrammar, grammarName, "")
-
+	    Reporting.reportModelStart(astGrammar, grammarName, "")
+	  
       Reporting.reportParseInputFile(input, grammarName)
 
       // M3: populate symbol table
-      astGrammar = createSymbolsFromAST(mcScope, astGrammar)
+      astGrammar = createSymbolsFromAST(globalScope, astGrammar)
 
       // M4: execute context conditions
-      runGrammarCoCos(astGrammar, mcScope)
+      runGrammarCoCos(astGrammar, globalScope)
 
       // M5: transform grammar AST into Class Diagram AST
-      astClassDiagramWithST = deriveCD(astGrammar, glex, cdScope, mcScope)
+      astClassDiagramWithST = deriveCD(astGrammar, glex, globalScope)
 
       // M6: generate parser and wrapper
-      generateParser(glex, astGrammar, mcScope, handcodedPath, out)
+      generateParser(glex, astGrammar, globalScope, handcodedPath, out)
     }
   }
 }
@@ -72,21 +71,18 @@ while (grammarIterator.hasNext()) {
 for (astGrammar in getParsedGrammars()) {
   // make sure to use the right report manager again
   Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
-  reportGrammarCd(astGrammar, cdScope, mcScope, report)
+  reportGrammarCd(astGrammar, globalScope, report)
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
 
-  // M8: generate symbol table
-  generateSymbolTable(glex, mcScope, astGrammar, cdScope, astClassDiagram, out, handcodedPath)
-
-  // M9 Generate ast classes, visitor and context condition
-  generateVisitors(glex, cdScope, astClassDiagram, out, handcodedPath)
-  generateCocos(glex, cdScope, astClassDiagram, out)
-  generateODs(glex, cdScope, mcScope, astClassDiagram, out)
-
   // M7: decorate Class Diagram AST
-  decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, modelPath, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
+  decorateCd(glex, astClassDiagram, globalScope, handcodedPath)
+
+  // M8: generate symbol table
+  generateSymbolTable(glex, astGrammar, globalScope, astClassDiagram, out, handcodedPath)
+  
+  // M9 Generate ast classes, visitor and context condition
+  generate(glex, globalScope, astClassDiagram, out, templatePath, handcodedPath)
 
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 

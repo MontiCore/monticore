@@ -7,8 +7,8 @@ import java.util.Map;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -25,12 +25,12 @@ public class NTForASTRuleExists implements GrammarASTMCGrammarCoCo {
   
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
     boolean prodFound = false;
     for(ASTASTRule astrule : a.getASTRuleList()){
       if(!grammarSymbol.getProdWithInherited(astrule.getType()).isPresent()){
-        for(Map.Entry<String, ProdSymbol> entry : grammarSymbol.getProdsWithInherited().entrySet()){
-          ProdSymbol rs = (ProdSymbol) entry.getValue();
+        for(Map.Entry<String, MCProdSymbol> entry : grammarSymbol.getProdsWithInherited().entrySet()){
+          MCProdSymbol rs = (MCProdSymbol) entry.getValue();
             if (astrule.getType().equals(rs.getName())) {
               prodFound = true;
               break ;

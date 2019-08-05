@@ -2,11 +2,16 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.utils.ASTNodes;
-
 import java.util.Optional;
 import java.util.function.UnaryOperator;
+
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
+import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.utils.ASTNodes;
 
 /**
  * Sets the visibility of classes and interfaces to public, and attributes to

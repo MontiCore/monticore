@@ -1,23 +1,25 @@
 package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDType;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
-import de.monticore.cd.cd4analysis._symboltable.CDTypes;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.symboltable.types.references.ActualTypeArgument;
+import de.monticore.types.TypesHelper;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.symboltable.CDFieldSymbol;
+import de.monticore.umlcd4a.symboltable.CDTypes;
+import de.monticore.umlcd4a.symboltable.references.CDTypeSymbolReference;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 
-public class DecorationHelper extends MCCollectionTypesHelper {
+public class DecorationHelper extends TypesHelper {
 
   public static final String OPTIONAL = "Optional";
 
@@ -33,8 +35,13 @@ public class DecorationHelper extends MCCollectionTypesHelper {
 
 
   public static String getGeneratedErrorCode(ASTNode node) {
-    // Use the string representation
-    int hashCode = Math.abs(node.toString().hashCode());
+    int hashCode;
+    if (node.isPresentSymbol()) {
+      String nodeName = node.getSymbol().getFullName();
+      hashCode = Math.abs(node.getClass().getSimpleName().hashCode() + nodeName.hashCode());
+    } else { // Else use the string representation
+      hashCode = Math.abs(node.toString().hashCode());
+    }
     String errorCodeSuffix = String.valueOf(hashCode);
     return "x" + (hashCode < 1000 ? errorCodeSuffix : errorCodeSuffix
         .substring(errorCodeSuffix.length() - 3));
@@ -48,11 +55,11 @@ public class DecorationHelper extends MCCollectionTypesHelper {
   }
 
   public boolean isSimpleAstNode(ASTCDAttribute attr) {
-    return !DecorationHelper.isOptional(attr.getMCType()) && !DecorationHelper.isListType(attr.printType()) && isAstNode(attr);
+    return !DecorationHelper.isOptional(attr.getType()) && !DecorationHelper.isListType(attr.printType()) && isAstNode(attr);
   }
 
   public boolean isOptionalAstNode(ASTCDAttribute attr) {
-    return DecorationHelper.isOptional(attr.getMCType()) && isAstNode(attr);
+    return DecorationHelper.isOptional(attr.getType()) && isAstNode(attr);
   }
 
   public boolean isListAstNode(ASTCDAttribute attribute) {
@@ -69,19 +76,26 @@ public class DecorationHelper extends MCCollectionTypesHelper {
   }
 
   public static String getAstClassNameForASTLists(CDTypeSymbolReference field) {
-    List<CDTypeSymbolReference> typeArgs = field.getActualTypeArguments();
+    List<ActualTypeArgument> typeArgs = field.getActualTypeArguments();
     if (typeArgs.size() != 1) {
       return AST_INTERFACE;
     }
 
-    return (typeArgs.get(0)).getStringRepresentation();
+    if (!(typeArgs.get(0).getType() instanceof CDTypeSymbolReference)) {
+      return AST_INTERFACE;
+    }
+    return ((CDTypeSymbolReference) typeArgs.get(0).getType()).getStringRepresentation();
   }
 
   public static String getAstClassNameForASTLists(ASTCDAttribute attr) {
-    if (!attr.isPresentSymbol2()) {
+    if (!attr.isPresentSymbol()) {
       return "";
     }
-    return getAstClassNameForASTLists((attr.getSymbol2()).getType());
+    if (!(attr.getSymbol() instanceof CDFieldSymbol)) {
+      Log.error(String.format("0xA04125 Symbol of ASTCDAttribute %s is not CDFieldSymbol.",
+          attr.getName()));
+    }
+    return getAstClassNameForASTLists(((CDFieldSymbol) attr.getSymbol()).getType());
   }
 
   public static String getNativeAttributeName(String attributeName) {
@@ -105,9 +119,41 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     return "String".equals(type) || "java.lang.String".equals(type);
   }
 
+  public boolean isAttributeOfTypeEnum(ASTCDAttribute attr) {
+    if (!attr.isPresentSymbol() || !(attr.getSymbol() instanceof CDFieldSymbol)) {
+      return false;
+    }
+    CDTypeSymbolReference attrType = ((CDFieldSymbol) attr.getSymbol()
+    ).getType();
+
+    List<ActualTypeArgument> typeArgs = attrType.getActualTypeArguments();
+    if (typeArgs.size() > 1) {
+      return false;
+    }
+
+    String typeName = typeArgs.isEmpty()
+        ? attrType.getName()
+        : typeArgs.get(0).getType().getName();
+    if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
+      return false;
+    }
+
+    List<String> listName = TypesHelper.createListFromDotSeparatedString(typeName);
+    if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
+      return false;
+    }
+
+    if (typeArgs.isEmpty()) {
+      return attrType.existsReferencedSymbol() && attrType.isEnum();
+    }
+
+    CDTypeSymbolReference typeArgument = (CDTypeSymbolReference) typeArgs
+        .get(0).getType();
+    return typeArgument.existsReferencedSymbol() && typeArgument.isEnum();
+  }
 
   public static String getPlainGetter(ASTCDAttribute ast) {
-    String astType = printType(ast.getMCType());
+    String astType = printType(ast.getType());
     StringBuilder sb = new StringBuilder();
     if (CDTypes.isBoolean(astType)) {
       sb.append(GET_PREFIX_BOOLEAN);
@@ -115,7 +161,7 @@ public class DecorationHelper extends MCCollectionTypesHelper {
       sb.append(GET_PREFIX);
     }
     sb.append(StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
-    if (isOptional(ast.getMCType())) {
+    if (isOptional(ast.getType())) {
       sb.append(GET_SUFFIX_OPTINAL);
     } else if (isListType(astType)) {
       if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
@@ -128,43 +174,10 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     return sb.toString();
   }
 
-  public boolean isAttributeOfTypeEnum(ASTCDAttribute attr) {
-    if (!attr.isPresentSymbol2()) {
-      return false;
-    }
-    CDTypeSymbolReference attrType =  attr.getSymbol2().getType();
-
-    List<CDTypeSymbolReference> typeArgs = attrType.getActualTypeArguments();
-    if (typeArgs.size() > 1) {
-      return false;
-    }
-
-    String typeName = typeArgs.isEmpty()
-            ? attrType.getName()
-            : typeArgs.get(0).getName();
-    if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
-      return false;
-    }
-
-    List<String> listName = MCCollectionTypesHelper.createListFromDotSeparatedString(typeName);
-    if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
-      return false;
-    }
-
-    if (typeArgs.isEmpty()) {
-      return attrType.existsReferencedSymbol() && attrType.isEnum();
-    }
-
-    CDTypeSymbolReference typeArgument = (CDTypeSymbolReference) typeArgs
-            .get(0);
-    return typeArgument.existsReferencedSymbol() && typeArgument.isEnum();
-  }
-
-
   public static String getPlainSetter(ASTCDAttribute ast) {
     StringBuilder sb = new StringBuilder(SET_PREFIX).append(
         StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
-    String astType = printType(ast.getMCType());
+    String astType = printType(ast.getType());
     if (isListType(astType))
       if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
         sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
@@ -180,7 +193,7 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     if (isAstNode(attribute)) {
       return "null";
     }
-    if (isOptional(attribute.getMCType())) {
+    if (isOptional(attribute.getType())) {
       return "Optional.empty()";
     }
     String typeName = attribute.printType();

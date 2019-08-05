@@ -7,8 +7,8 @@ import java.util.Optional;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -24,9 +24,9 @@ public class NoASTRuleForEnumNTs implements GrammarASTMCGrammarCoCo {
   
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
     for (ASTASTRule rule : a.getASTRuleList()) {
-      Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(rule.getType());
+      Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(rule.getType());
       if (ruleSymbol.isPresent() && ruleSymbol.get().isEnum()) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rule.getType()),
                 rule.get_SourcePositionStart());

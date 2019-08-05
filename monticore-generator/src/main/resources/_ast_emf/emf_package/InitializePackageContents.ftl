@@ -33,10 +33,10 @@ de.monticore.emf._ast.ASTENodePackage theASTENodePackage = (de.monticore.emf._as
 <#--add super types if existend, if not standard ENode-->
 <#list definition.getCDClassList() as astClass>
     <#assign interfaceName = astClass.getName()>
-    <#if !astClass.getSymbol2().getSuperTypes()?has_content>
+    <#if !astClass.getSymbol().getSuperTypes()?has_content>
         ${interfaceName?uncap_first}.getESuperTypes().add(theASTENodePackage.getENode());
     <#else>
-        <#list astClass.getSymbol2().getSuperTypes() as superType>
+        <#list astClass.getSymbol().getSuperTypes() as superType>
             <#assign package = service.getClassPackage(superType)>
             ${interfaceName?uncap_first}.getESuperTypes().add(${package}.get${superType.getName()}());
         </#list>
@@ -70,7 +70,7 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
     <#list cdClass.getCDAttributeList() as attribute>
         <#if !service.isInherited(attribute)>
         <#assign get = service.determineGetEmfMethod(attribute, definition)>
-        <#assign isList = service.determineListInteger(attribute.getMCType())>
+        <#assign isList = service.determineListInteger(attribute.getType())>
         <#if genHelper.isSimpleAstNode(attribute) || genHelper.isListAstNode(attribute) ||genHelper.isOptionalAstNode(attribute)>
             initEReference(get${cdClass.getName()}_${attribute.getName()?cap_first}(), ${get}(), null, "${attribute.getName()?cap_first}", null,
             0, ${isList}, ${cdClass.getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, <#if isList == "1">!</#if>IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -86,7 +86,7 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
     <#list cdInterface.getCDAttributeList() as attribute>
         <#if !service.isInherited(attribute)>
             <#assign get = service.determineGetEmfMethod(attribute, definition)>
-            <#assign isList = service.determineListInteger(attribute.getMCType())>
+            <#assign isList = service.determineListInteger(attribute.getType())>
             <#if genHelper.isSimpleAstNode(attribute) || genHelper.isListAstNode(attribute) ||genHelper.isOptionalAstNode(attribute)>
               initEReference(get${cdInterface.getName()}_${attribute.getName()?cap_first}(), ${get}(), null, "${attribute.getName()?cap_first}", null,
               0, ${isList}, ${cdInterface.getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, <#if isList == "1">!</#if>IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

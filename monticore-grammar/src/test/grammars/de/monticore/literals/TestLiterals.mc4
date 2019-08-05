@@ -1,0 +1,7 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
+package de.monticore.literals;
+
+grammar TestLiterals extends de.monticore.literals.Literals {
+
+}

@@ -37,7 +37,7 @@ grammar ItTestCommon extends mc.grammar.types.ItTestTypes {
           try {
             if (source.isPresent()) {
               return
-                de.monticore.MCLiteralsDecoder.decodeString(source.get());
+                de.monticore.literals.LiteralsHelper.getInstance().decodeString(source.get());
             } else {
               return "";
             }

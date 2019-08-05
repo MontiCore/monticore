@@ -1,13 +1,13 @@
 package de.monticore.codegen.cd2java._ast.ast_class.reference.referencedDefinition.referencedDefinitionMethodDecorator;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.referencedDefinition.ASTReferencedDefinitionDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import org.apache.commons.lang3.StringUtils;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
@@ -29,7 +29,7 @@ public class ReferencedDefinitionListAccessorDecorator extends ListAccessorDecor
 
   @Override
   public String getAttributeType(ASTCDAttribute attribute) {
-    return "Optional<" + getTypeArgumentFromListType(attribute.getMCType()) + ">";
+    return "Optional<" + getTypeArgumentFromListType(attribute.getType()) + ">";
   }
 
   @Override

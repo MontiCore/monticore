@@ -1,15 +1,19 @@
 package de.monticore.codegen.cd2java.methods;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.exception.DecorateException;
+import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.FullGenericTypesPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.TypesPrinter;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.types.types._ast.ASTTypeArgument;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -47,10 +51,17 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
 
   protected abstract List<String> getMethodSignatures();
 
-  protected String getTypeArgumentFromListType(ASTMCType type) {
-    String typeString = FullGenericTypesPrinter.printType(type);
-    int lastListIndex = typeString.lastIndexOf("List<") + 5;
-    return typeString.substring(lastListIndex, typeString.length() - 1);
+  protected String getTypeArgumentFromListType(ASTType type) {
+    if (type instanceof ASTSimpleReferenceType && ((ASTSimpleReferenceType) type).getNameList().stream().anyMatch(s -> s.contains("List"))
+        && ((ASTSimpleReferenceType) type).getTypeArguments().sizeTypeArguments() == 1) {
+      //try to get inner TypeArgument for List
+      ASTTypeArgument typeArgument = ((ASTSimpleReferenceType) type).getTypeArguments().getTypeArgument(0);
+      return TypesPrinter.printTypeArgument(typeArgument);
+    } else {
+      //error if the List type was not correct
+      String typeString = TypesPrinter.printType(type);
+      throw new DecorateException(DecoratorErrorCode.EXPECTED_LIST_TYPE, typeString);
+    }
   }
 
   private HookPoint createListImplementation(final ASTCDMethod method) {
@@ -71,6 +82,6 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
   }
 
   public String getAttributeType(ASTCDAttribute attribute) {
-    return getTypeArgumentFromListType(attribute.getMCType());
+    return getTypeArgumentFromListType(attribute.getType());
   }
 }

@@ -9,7 +9,7 @@ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCo
 import de.se_rwth.commons.logging.Log;
 
 import static de.monticore.grammar.cocos.NTOnlyExtendsOneNTOrClass.ERROR_CODE;
-import static de.se_rwth.commons.logging.LogStub.enableFailQuick;
+import static de.se_rwth.commons.logging.Log.enableFailQuick;
 import static java.lang.String.format;
 
 public class NTOnlyExtendsOneNTOrClassTest extends CocoTest {

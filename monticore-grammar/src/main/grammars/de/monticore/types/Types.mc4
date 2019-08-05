@@ -1,0 +1,258 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/**
+ * This grammar defines Java compliant types. The scope of this grammar is to
+ * ease the reuse of type structures in Java-like sublanguages, e.g., by grammar
+ * inheritance or grammar embedment.
+ * The grammar contains types from Java, e.g., primitives, void, types with
+ * dimensions, reference types, generics, and type parameters.
+ *
+ *
+ * version 27.01.2016;
+*/
+@Deprecated
+component grammar Types extends de.monticore.literals.Literals {
+
+    /*========================================================================*/
+    /*======================= AST Definition =================================*/
+    /*========================================================================*/
+    
+    astrule QualifiedName =
+        method public String toString(){
+          return de.se_rwth.commons.Names.getQualifiedName(
+              this.getPartList());
+        };
+    
+    astrule PrimitiveType =
+        method public String toString(){
+          if (isBoolean()){
+            return "boolean";
+          }
+          if (isByte()){
+            return "byte";
+          }
+          if (isChar()){
+            return "char";
+          }
+          if (isShort()){
+            return "short";
+          }
+          if (isInt()){
+            return "int";
+          }
+          if (isFloat()){
+            return "float";
+          }
+          if (isLong()){
+            return "long";
+          }
+          if (isDouble()){
+            return "double";
+          }
+          return "";
+        }
+        method public boolean isBoolean(){
+          return this.getPrimitive()==ASTConstantsTypes.BOOLEAN;
+        }
+        method public boolean isByte(){
+          return this.getPrimitive()==ASTConstantsTypes.BYTE;
+        }
+        method public boolean isChar(){
+          return this.getPrimitive()==ASTConstantsTypes.CHAR;
+        }
+        method public boolean isShort(){
+          return this.getPrimitive()==ASTConstantsTypes.SHORT;
+        }
+        method public boolean isInt(){
+          return this.getPrimitive()==ASTConstantsTypes.INT;
+        }
+        method public boolean isFloat(){
+          return this.getPrimitive()==ASTConstantsTypes.FLOAT;
+        }
+        method public boolean isLong(){
+          return this.getPrimitive()==ASTConstantsTypes.LONG;
+        }
+        method public boolean isDouble(){
+          return this.getPrimitive()==ASTConstantsTypes.DOUBLE;
+        };
+    
+    astrule ReferenceType astextends ASTType;
+    
+    astrule ArrayType astimplements ASTReferenceType =
+        componentType:ASTType
+        dimensions:int;
+    
+    /*========================================================================*/
+    /*======================= INTERFACE DEFINITIONS ==========================*/
+    /*========================================================================*/
+
+    /** ASTType defines types like primitives, Set, List, Collection, or
+        class types. It might also be an array or generic type.
+    */
+    interface Type extends TypeArgument, ReturnType;
+    
+    /** ASTReferenceType defines a reference type like arrays or complex types.
+    */
+    interface ReferenceType;
+    
+    /** ASTTypeArgument represents a type argument (generics).
+    */
+    interface TypeArgument;
+    
+    /** ASTReturnType represents return types.
+    */
+    interface ReturnType;
+    
+    
+    /*========================================================================*/
+    /*============================ PARSER RULES ==============================*/
+    /*========================================================================*/
+    
+    /** The ASTQualifiedName represents a possibly qualified name in the AST.
+        The different parts of a qualified name are separated by '.'; they are
+        stored in an ASTStringList.
+        @attribute parts A List of ASTStringList concludes all name parts
+    */
+    QualifiedName =
+        part:(Name || ".")+;
+        
+    /** The ASTAbstractArrayType represents array of Type
+    */
+    abstract ArrayType implements Type;
+    
+    /** The ASTArrayType represents an array of any type. The rule
+        ComplexArrayType itself treats all arrays except the primitive
+        ones. Especially it treats generic types.
+        @attribute componentType The kind of type which is used for the array.
+                                 Could be every complex type.
+        @attribute dimensions    Counts the number of '[]'
+    */
+    ComplexArrayType extends ArrayType implements Type 
+    =
+        // Things are getting ugly. We have to disambiguate between
+        // Class<List<Anything>>[]
+        // and
+        // Class<List<Anything>[]>
+        // So we have to make sure that we only take the array dimensions if we
+        // are at the right level. If we would not, we wouldn't know that ">>"
+        // actually closes two levels and not just one as ">" does. It would
+        // then count the array dimensions to the inner type resulting in the
+        // same tree for each of the cases above.
+        componentType:ComplexReferenceType
+        (
+          (
+            (
+              "[" "]"
+              {_aNode.setDimensions(_aNode.getDimensions()+1);}
+            )+
+          )
+        );
+    
+    /** The ASTArrayType represents an array of any type. The rule
+        PrimitiveArrayType itself treats arrays of primitive types, such as
+        'int[]'.
+        @attribute componentType The kind of which is used for the array.
+                                 Could be every primitive type.
+        @attribute dimensions    Counts the number of '[]'
+    */
+    PrimitiveArrayType extends ArrayType implements Type =
+        componentType:PrimitiveType
+          (
+            "[" "]"
+            {_aNode.setDimensions(_aNode.getDimensions()+1);}
+          )+;
+    
+    /** ASTVoidType represents the return type "void".
+    */
+    VoidType implements ReturnType =
+        "void";
+    
+    /** ASTPrimitiveType represents every primitive type supported by Java.
+    	The type is not realized by an enumeration, because enumerations cannot 
+    	be extended.
+        @attribute primitive BOOLEAN, BYTE, CHAR, SHORT, INT, FLOAT, LONG,
+                             or DOUBLE
+    */
+    PrimitiveType implements Type =
+        primitive: ["boolean" | "byte" | "short" | "int" | "long" | "char" |"float" | "double"];
+        
+    /** ASTSimpleReferenceType represents types like class or interface types
+        which could have a qualified name like this: a.b.c<Arg>. The
+        qualification stored in the name (a.b) could be package or a type name.
+        The qualified name could contain type arguments only at the end.
+        a.b.c<Arg>.d would be one ASTSimpleReferenceType (a.b.c<Arg>) and one
+        ASTQualifiedType (d).
+        @attribute name          Name of the type
+                                 Note: Although the class name contains the
+                                 word 'simple', the name could be a qualified
+                                 one. So it is saved in an ASTStringList
+        @attribute typeArguments The types between '<...>'
+    */
+    SimpleReferenceType implements ReferenceType, Type =
+        Name
+        ("." Name)*
+        (TypeArguments)?;
+    
+    /** ASTComplexReferenceType represents types like class or interface types which
+        always have  ASTSimpleReferenceType as
+        qualification.
+        For example:
+        a.b.c<Arg>.d.e<Arg>
+        @attribute name          Name of the type
+        @attribute typeArguments The types between '<...>'
+        @attribute qualification Another ASTQualifiedType or
+                                 ASTSimpleReferenceType.
+    */        
+    ComplexReferenceType implements ReferenceType, Type =
+        (SimpleReferenceType || ".")+;
+    
+    /** ASTTypeArguments represents a list of generic arguments parenthesized
+        by '<...>'. It is also possible to nest type arguments in each other
+        like this <A<B<C>>>.
+        @attribute typeArguments List of arguments
+    */
+    TypeArguments =
+        (
+          "<" (TypeArgument || ",")* ">"
+        );
+    
+    /** ASTWildcardType represents a wildcard type in a type argument (generics)
+        It could also contain an upper- or lower bound.
+        @attribute upperBound Supertye of the type argument
+        @attribute lowerBound Subtype of the type argument
+    */
+    WildcardType implements TypeArgument =
+        "?" (
+              ("extends" upperBound:Type) | ("super" lowerBound:Type)
+            )?;
+    
+    /** ASTTypeParameters represents a list of generic parameter parenthesized
+        by '<...>' in type declarations (e.g., class-, interface-, method-, or
+        constructor declarations).
+        @attribute typeVariableDeclarations List of parameters
+    */
+    TypeParameters =
+         (
+           "<" (TypeVariableDeclaration || ",")+ ">"
+         );
+    
+    /** ASTTypeVariableDeclaration represents the generic variable declaration
+        in '<'...'>' (e.g., in front of method or constructor declarations or
+        behind the class or interface name).
+        E.g.: public <T extends SuperClass> void test(T t)
+        @attribute name        Name of the type variable
+        @attribute upperBound Optional list of required super classes
+    */
+    TypeVariableDeclaration =
+        Name
+        (
+          "extends" upperBound:(ComplexReferenceType || "&")+
+        )?;
+
+	/** ImportStatement represents the import list for diagrams
+	    E.g.: import A.b;
+	    E.g.: import A.*;
+	*/
+    ImportStatement = "import" import:(Name || ".")+ ("." Star:["*"])? ";" ;
+}

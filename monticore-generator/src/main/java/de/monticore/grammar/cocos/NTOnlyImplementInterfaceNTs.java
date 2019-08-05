@@ -8,7 +8,7 @@ import java.util.Optional;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._cocos.GrammarASTClassProdCoCo;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -29,9 +29,10 @@ public class NTOnlyImplementInterfaceNTs implements GrammarASTClassProdCoCo {
     if (!a.getSuperInterfaceRuleList().isEmpty()) {
       List<ASTRuleReference> interfaces = a.getSuperInterfaceRuleList();
       for (ASTRuleReference i : interfaces) {
-        Optional<ProdSymbol> ruleSymbol = a.getEnclosingScope2().resolveProd(i.getName());
+        Optional<MCProdSymbol> ruleSymbol = a.getEnclosingScope().resolve(i.getName(),
+            MCProdSymbol.KIND);
         if (ruleSymbol.isPresent()) {
-          ProdSymbol r = ruleSymbol.get();
+          MCProdSymbol r = ruleSymbol.get();
           if (!r.isInterface()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(), r.getName()),
                 a.get_SourcePositionStart());

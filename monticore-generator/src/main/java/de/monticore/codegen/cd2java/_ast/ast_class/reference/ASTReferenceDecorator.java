@@ -1,6 +1,5 @@
 package de.monticore.codegen.cd2java._ast.ast_class.reference;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.codegen.cd2java.CompositeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.referencedDefinition.ASTReferencedDefinitionDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.referencedDefinition.referencedDefinitionMethodDecorator.ReferencedDefinitionAccessorDecorator;
@@ -8,6 +7,7 @@ import de.monticore.codegen.cd2java._ast.ast_class.reference.referencedSymbol.AS
 import de.monticore.codegen.cd2java._ast.ast_class.reference.referencedSymbol.referenedSymbolMethodDecorator.ReferencedSymbolAccessorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 
 public class ASTReferenceDecorator extends CompositeDecorator<ASTCDClass> {
 

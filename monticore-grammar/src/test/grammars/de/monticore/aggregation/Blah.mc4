@@ -8,6 +8,7 @@ grammar Blah extends de.monticore.MCBasics {
 
   scope symbol Blub = "blubScope" Name "{" (Dummy|Blub)* "}";
 
+
   symbol Dummy = "symbol" Name;
 
 }

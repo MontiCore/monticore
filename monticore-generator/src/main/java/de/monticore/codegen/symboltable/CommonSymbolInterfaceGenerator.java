@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 

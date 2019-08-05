@@ -1,0 +1,103 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+/**
+ * This grammar defines a set of types. The scope of this grammar is to
+ * ease the reuse of type structures in languages similar to Java,
+ * but potentials simplified, e.g. without generics
+ * by grammar inheritance or grammar embedding.
+ * The grammar contains types from Java, e.g., primitives, void, 
+ * classes (reference types).
+ * It does not contain generics or arrays (which can be added 
+ * in grammar extensions).
+ *
+*/
+@Deprecated
+component grammar MCBasicTypes1 extends de.monticore.MCBasics {
+
+    /*========================================================================*/
+    /*= Qualified Names ======================================================*/
+    /*========================================================================*/
+    
+    /** The ASTQualifiedName represents a possibly qualified name in the AST.
+        The different parts of a qualified name are separated by '.'; they are
+        stored in an ASTStringList.
+        @attribute parts A List of ASTStringList concludes all name parts
+    */
+    QualifiedName =
+        part:(Name || ".")+;
+
+    astrule QualifiedName =
+        method public String getQName(){
+          return de.se_rwth.commons.Names.getQualifiedName(
+              this.getPartList());
+        };
+    
+
+    /*========================================================================*/
+    /*= ImportStatement ======================================================*/
+    /*========================================================================*/
+    
+    /** ImportStatement represents the import list for diagrams
+        E.g.: import A.b;
+        E.g.: import A.*;
+    */
+    ImportStatement =
+    		"import" QualifiedName ("." Star:["*"])? ";" ;
+
+    astrule ImportStatement =
+        method public String getQName(){
+          return getQualifiedName().getQName();
+        };
+
+
+    /*========================================================================*/
+    /*= The Type Interfaces ==================================================*/
+    /*========================================================================*/
+    
+    interface Type;
+
+    interface PrimitiveType extends Type;
+
+
+    /*========================================================================*/
+    /*= Primitives ===========================================================*/
+    /*========================================================================*/
+    
+    BooleanType implements PrimitiveType = "boolean" ;
+       ByteType implements PrimitiveType = "byte" ;
+       CharType implements PrimitiveType = "char" ;
+      ShortType implements PrimitiveType = "short" ;
+        IntType implements PrimitiveType = "int" ;
+      FloatType implements PrimitiveType = "float" ;
+       LongType implements PrimitiveType = "long" ;
+     DoubleType implements PrimitiveType = "double" ;
+
+
+    /*========================================================================*/
+    /*= Reference Types (Classes, Interfaces in OO) ==========================*/
+    /*========================================================================*/
+    
+    interface ReferenceType extends Type;
+    
+    NameAsReferenceType implements ReferenceType =
+    	(Name || ".")+;
+
+    astrule NameAsReferenceType =
+        method public String getQName(){
+          return de.se_rwth.commons.Names.getQualifiedName(
+              this.getNameList());
+        };
+
+
+    /*========================================================================*/
+    /*= ReturnTypes and void =================================================*/
+    /*========================================================================*/
+    
+    ReturnType = VoidType | Type;
+
+    /** ASTVoidType represents the return type "void".
+    */
+    VoidType = "void";
+
+}

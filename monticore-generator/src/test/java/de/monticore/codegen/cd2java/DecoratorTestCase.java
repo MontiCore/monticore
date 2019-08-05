@@ -1,10 +1,11 @@
 package de.monticore.codegen.cd2java;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisModelLoader;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.umlcd4a.CD4AnalysisLanguage;
+import de.monticore.umlcd4a.CD4AnalysisModelLoader;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -18,10 +19,12 @@ public abstract class DecoratorTestCase {
   public ASTCDCompilationUnit parse(String... names) {
     String qualifiedName = String.join(".", names);
     CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
+    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());
     CD4AnalysisModelLoader modelLoader = new CD4AnalysisModelLoader(cd4AnalysisLanguage);
     ModelPath modelPath = new ModelPath(Paths.get(MODEL_PATH));
-    CD4AnalysisGlobalScope globalScope = new CD4AnalysisGlobalScope(modelPath, cd4AnalysisLanguage);
-    Collection<ASTCDCompilationUnit> ast = modelLoader.loadModelsIntoScope(qualifiedName, modelPath, globalScope);
+    GlobalScope globalScope = new GlobalScope(modelPath, cd4AnalysisLanguage);
+    Collection<ASTCDCompilationUnit> ast = modelLoader.loadModelsIntoScope(qualifiedName, modelPath, globalScope, resolvingConfiguration);
     if (ast.isEmpty())
       fail(String.format("Failed to load model '%s'", qualifiedName));
     if (ast.size() > 1)

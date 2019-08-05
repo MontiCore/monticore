@@ -2,10 +2,10 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.types._ast.ASTReferenceType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -30,7 +30,7 @@ public class OverridingClassProdTest {
    */
   @Test
   public void testOverride() {
-    java.util.Optional<ASTMCObjectType> superClasses = astX.getSuperclassOpt();
+    java.util.Optional<ASTReferenceType> superClasses = astX.getSuperclassOpt();
     assertTrue(superClasses.isPresent());
     String name = typeToString(superClasses.get());
     assertEquals("mc2cdtransformation.Supergrammar.ASTX", name);

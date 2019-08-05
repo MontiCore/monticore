@@ -2,9 +2,9 @@
 
 package de.monticore.mccommonliterals;
 
-import de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
+import de.monticore.mccommonliterals._ast.ASTBasicLongLiteral;
+import de.monticore.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;

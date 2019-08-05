@@ -2,10 +2,11 @@
 
 package de.monticore.grammar.cocos;
 
-import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.se_rwth.commons.logging.Log;
 
 public class ProdAndOverriddenProdUseSameAttrNameForDiffNTsTest extends CocoTest{
 
@@ -16,8 +17,7 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTsTest extends CocoTest
 
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     checker.addCoCo(new ProdAndOverriddenProdUseSameAttrNameForDiffNTs());
   }
 

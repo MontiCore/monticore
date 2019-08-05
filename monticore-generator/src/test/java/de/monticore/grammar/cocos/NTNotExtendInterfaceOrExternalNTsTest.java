@@ -2,7 +2,6 @@
 
 package de.monticore.grammar.cocos;
 
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,7 +17,7 @@ public class NTNotExtendInterfaceOrExternalNTsTest extends CocoTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     checker.addCoCo(new NTNotExtendInterfaceOrExternalNTs());
   }
 
