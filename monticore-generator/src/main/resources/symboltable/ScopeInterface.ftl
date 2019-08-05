@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("interfaceName", "symbolNames", "superScopes", "scopeName")}
+${signature("interfaceName", "symbolNames", "superScopes", "scopeName", "scopeRule")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign names = glex.getGlobalVar("nameHelper")>
 
@@ -26,6 +26,9 @@ import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolExcepti
 
 public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScopes?join(", ")} <#else> extends IScope</#if>  {
 
+<#if scopeRule.isPresent()>
+${includeArgs("symboltable.ScopeRuleGetSet", scopeRule.get(), true)}
+</#if>
 <#list symbolNames?keys as symbol>
 
   public boolean is${symbol}SymbolAlreadyResolved();

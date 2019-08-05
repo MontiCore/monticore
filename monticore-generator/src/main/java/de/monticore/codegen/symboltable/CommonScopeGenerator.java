@@ -182,7 +182,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
     Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
     genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, baseNameInterface, scopeRule, symbolNamesWithSuperGrammar, allSuperScopes, superScopeVisitors,existsHWCScopeImpl);
-    genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, allSuperScopes, languageName);
+    genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, allSuperScopes, languageName, scopeRule);
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName, scopeRule);
 
     if(genHelper.getGrammarSymbol().getStartProd().isPresent()) {
