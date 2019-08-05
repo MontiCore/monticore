@@ -91,6 +91,8 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
 
   public static final String GLOBAL_SCOPE = "GlobalScope";
 
+  public static final String RESOLVING = "Resolving";
+
   public static final String BASE = "Node";
 
   public static final String CD_EXTENSION = ".cd";

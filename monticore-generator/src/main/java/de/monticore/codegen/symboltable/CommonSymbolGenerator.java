@@ -6,6 +6,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static de.monticore.codegen.GeneratorHelper.BUILDER;
 import static de.monticore.codegen.GeneratorHelper.DESER;
 import static de.monticore.codegen.GeneratorHelper.SYMBOL;
+import static de.monticore.codegen.GeneratorHelper.RESOLVING;
 import static de.monticore.codegen.GeneratorHelper.DELEGATE;
 import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
 import static de.se_rwth.commons.Names.getPathFromPackage;
@@ -50,7 +51,7 @@ public class CommonSymbolGenerator implements SymbolGenerator {
         getSimpleName(className + SYMBOL + DESER),
         genHelper.getSerializationTargetPackage(), handCodedPath);
     String delegateName = getSimpleTypeNameToGenerate(
-            getSimpleName("I" + className + SYMBOL + DELEGATE),
+            getSimpleName("I" + className + SYMBOL + RESOLVING + DELEGATE),
             genHelper.getSerializationTargetPackage(), handCodedPath);
 
     final Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()),
