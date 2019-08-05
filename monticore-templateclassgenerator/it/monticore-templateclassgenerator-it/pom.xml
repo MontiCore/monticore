@@ -40,12 +40,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>de.monticore</groupId>
-			<artifactId>javaDSL</artifactId>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 	<build>

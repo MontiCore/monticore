@@ -8,6 +8,7 @@ import java.util.Set;
 
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Class generates human readable names for Lexersymbols
@@ -117,7 +118,7 @@ public class LexNamer {
       return goodName;
     }
     
-    return "'" + sym + "'";
+    return "'" + convertKeyword(sym) + "'";
   }
   
   public String getConstantName(String sym) {
@@ -138,7 +139,14 @@ public class LexNamer {
     
     return name;
   }
-  
+
+  private String convertKeyword(String key)  {
+    key = StringUtils.replace(key, "\\\"", "\"");
+    key = StringUtils.replace(key, "'", "\\'");
+    return key;
+  }
+
+
   public Set<String> getLexnames() {
     return usedLex.keySet();
   }

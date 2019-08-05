@@ -41,8 +41,8 @@ public class ${className} {
 <#if scopeRule.isPresent()>
   <#list scopeRule.get().getAdditionalAttributeList() as attr>
     <#assign attrName="_" + attr.getName()>
-    <#assign attrType=attr.getMCType().getBaseName()>
-  protected ${genHelper.getQualifiedASTName(attrType)} ${attrName};
+    <#assign attrType=stHelper.deriveAdditionalAttributeTypeWithMult(attr)>
+  protected ${attrType} ${attrName};
   </#list>
 </#if>
 
@@ -59,7 +59,6 @@ public class ${className} {
     this.subScopes.forEach(s -> s.setEnclosingScope(scope));
   <#if scopeRule.isPresent()>
     <#list scopeRule.get().getAdditionalAttributeList() as attr>
-      <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
       scope.set${attr.getName()?cap_first}(_${attr.getName()});
     </#list>
   </#if>
@@ -144,7 +143,7 @@ public class ${className} {
   <#if scopeRule.isPresent()>
     <#list scopeRule.get().getAdditionalAttributeList() as attr>
       <#assign attrName=attr.getName()>
-      <#assign attrType=attr.getMCType().getBaseName()>
+      <#assign attrType=stHelper.deriveAdditionalAttributeTypeWithMult(attr)>
       <#if attrType == "boolean" || attrType == "Boolean">
         <#if attr.getName()?starts_with("is")>
           <#assign methodName=attr.getName()>

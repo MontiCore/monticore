@@ -146,17 +146,6 @@ public class CommonScopeGenerator implements ScopeGenerator {
       }
     }
 
-    // list of local superscope interfaces that the interface must extend
-    Set<String> localSuperScopes = new HashSet<>();
-    for (String symbol : genHelper.getSuperGrammarCds()) {
-      if (genHelper.hasSymbolTable(symbol)) {
-        String qualifiedSymbolName = genHelper.getQualifiedScopeInterfaceType(symbol);
-        if (!qualifiedSymbolName.isEmpty()) {
-        	localSuperScopes.add(qualifiedSymbolName);
-        }
-      }
-    }
-
     // list of superscopevisitors that the scope must accept
     Set<String> superScopeVisitors = new HashSet<>();
     for (CDDefinitionSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
@@ -193,7 +182,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
     Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
     genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, baseNameInterface, scopeRule, symbolNamesWithSuperGrammar, allSuperScopes, superScopeVisitors,existsHWCScopeImpl);
-    genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, localSuperScopes, languageName);
+    genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, allSuperScopes, languageName, scopeRule);
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName, scopeRule);
 
     if(genHelper.getGrammarSymbol().getStartProd().isPresent()) {

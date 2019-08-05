@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
  * Tests the correctness of the generated template classes methods
  *
  */
-public class CorrectnessTest extends AbstractSymtabTest {
+public class CorrectnessTest  {
   
   private static Path outputDirectory = Paths.get("target/generated-sources/templateClasses");
 

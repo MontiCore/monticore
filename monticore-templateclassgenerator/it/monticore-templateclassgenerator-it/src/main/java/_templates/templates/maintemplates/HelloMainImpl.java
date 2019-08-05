@@ -2,17 +2,14 @@
 package _templates.templates.maintemplates;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.CommonSymbol;
+import de.monticore.symboltable.ISymbol;
 
 import java.nio.file.Path;
 
 public class HelloMainImpl extends HelloMain{
 
-  /**
-   * @see _templates.templates.maintemplates.HelloMain#doGenerate(java.nio.file.Path, de.monticore.ast.ASTNode, de.monticore.symboltable.CommonSymbol)
-   */
   @Override
-  public void generate(Path filepath, ASTNode node, CommonSymbol symbol) {
+  public void generate(Path filepath, ASTNode node, ISymbol symbol) {
     generate(filepath, node, "s", 2, 2.1);
   }
 

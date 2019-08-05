@@ -27,7 +27,7 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${languageName}Scop
   protected final Map<String, Set<${languageName}ModelLoader>> modelName2ModelLoaderCache = new HashMap<>();
 
 <#list symbolProds as symbol>
-  protected Collection<${genHelper.getDelegatorForSymbol(symbol)}> adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList = new HashSet<${genHelper.getDelegatorForSymbol(symbol)}>();
+  protected Collection<${genHelper.getDelegatorForSymbol(symbol)}> adapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList = new HashSet<${genHelper.getDelegatorForSymbol(symbol)}>();
   
 </#list>
 
@@ -71,7 +71,7 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${languageName}Scop
   @Override
   public Collection<${genHelper.getQualifiedProdName(symbol)}Symbol> resolveAdapted${names.getSimpleName(symbol.getName())}(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<${genHelper.getQualifiedProdName(symbol)}Symbol> predicate){
     List<${genHelper.getQualifiedSymbolType(symbol)}> adaptedSymbols = new ArrayList<${genHelper.getQualifiedSymbolType(symbol)}>();
-    for (${genHelper.getDelegatorForSymbol(symbol)} symDel : adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList) {
+    for (${genHelper.getDelegatorForSymbol(symbol)} symDel : adapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList) {
       adaptedSymbols.addAll(symDel.resolveAdapted${symbol}Symbol(foundSymbols, symbolName, modifier, predicate));
     }
     return adaptedSymbols;
@@ -90,16 +90,16 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${languageName}Scop
 </#list>  
 
 <#list symbolProds as symbol>
-  public Collection<${genHelper.getDelegatorForSymbol(symbol)}> getAdapted${names.getSimpleName(symbol.getName())}SymbolDelegateList(){
-    return adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList;
+  public Collection<${genHelper.getDelegatorForSymbol(symbol)}> getAdapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList(){
+    return adapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList;
   }
   
-  public void setAdapted${names.getSimpleName(symbol.getName())}SymbolDelegateList(Collection<${genHelper.getDelegatorForSymbol(symbol)}> adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList) {
-    this.adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList = adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList;
+  public void setAdapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList(Collection<${genHelper.getDelegatorForSymbol(symbol)}> adapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList) {
+    this.adapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList = adapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList;
   }
   
-  public void addAdapted${names.getSimpleName(symbol.getName())}SymbolDelegate(${genHelper.getDelegatorForSymbol(symbol)} ${names.getSimpleName(symbol.getName())}SymbolDelegate) {
-    this.adapted${names.getSimpleName(symbol.getName())}SymbolDelegateList.add(${names.getSimpleName(symbol.getName())}SymbolDelegate);
+  public void addAdapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegate(${genHelper.getDelegatorForSymbol(symbol)} ${names.getSimpleName(symbol.getName())}SymbolResolvingDelegate) {
+    this.adapted${names.getSimpleName(symbol.getName())}SymbolResolvingDelegateList.add(${names.getSimpleName(symbol.getName())}SymbolResolvingDelegate);
   }
 
 </#list>  

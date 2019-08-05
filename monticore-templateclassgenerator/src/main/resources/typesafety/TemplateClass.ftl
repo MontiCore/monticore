@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import de.monticore.ast.ASTNode;
 import ${glex.getGlobalVar("TemplateClassPackage")}.${glex.getGlobalVar("TemplateClassSetupPackage")}.GeneratorConfig;
 import de.monticore.templateclassgenerator.util.GeneratorInterface;
-import de.monticore.symboltable.CommonSymbol;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.ExtendedTemplateController;
 

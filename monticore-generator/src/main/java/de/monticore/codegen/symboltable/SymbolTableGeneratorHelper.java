@@ -706,7 +706,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 	public static String getDelegatorForSymbol(ProdSymbol symbol) {
 	  return SymbolTableGeneratorHelper.getQualifiedSymbolType(
         getQualifier(symbol.getFullName()).toLowerCase(),
-        Names.getSimpleName("I" + symbol.getName() + SYMBOL + DELEGATE));
+        Names.getSimpleName("I" + symbol.getName() + SYMBOL + RESOLVING + DELEGATE));
 	}
 	
   /**
