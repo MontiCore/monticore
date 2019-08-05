@@ -218,9 +218,6 @@ public class TypesCalculatorHelper {
     TypeExpression typeExpression = new TypeExpression();
     MCTypeVisitor visitor = new MCTypeVisitor();
     type.accept(visitor);
-
-    ;
-
     return visitor.mapping.get(type);
   }
 
