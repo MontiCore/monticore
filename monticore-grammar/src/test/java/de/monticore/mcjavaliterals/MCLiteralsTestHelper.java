@@ -2,9 +2,8 @@
 
 package de.monticore.mcjavaliterals;
 
-import de.monticore.literals.testliterals._parser.TestLiteralsParser;
-import de.monticore.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.testmcjavaliterals._parser.TestMCJavaLiteralsParser;
+import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.literals.testmcjavaliterals._parser.TestMCJavaLiteralsParser;
 import junit.framework.TestCase;
 
 import java.io.IOException;

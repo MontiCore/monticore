@@ -2,14 +2,12 @@
 
 package de.monticore.grammar.cocos;
 
+import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.se_rwth.commons.logging.Log;
-
 import static de.monticore.grammar.cocos.UsedLexNTNotDefined.ERROR_CODE;
-import static de.se_rwth.commons.logging.Log.enableFailQuick;
 
 public class UsedLexNTNotDefinedTest extends CocoTest {
 
@@ -20,7 +18,8 @@ public class UsedLexNTNotDefinedTest extends CocoTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    enableFailQuick(false);
+    LogStub.init();
+    LogStub.enableFailQuick(false);
     checker.addCoCo(new UsedLexNTNotDefined());
   }
 
@@ -32,47 +31,6 @@ public class UsedLexNTNotDefinedTest extends CocoTest {
   @Test
   public void testCorrect() {
     testValidGrammar("cocos.valid.Attributes", checker);
-  }
-
-  @Test
-  public void test2() {
-    test();
-  }
-
-  public Stringc test() {
-    Stringc a;
-    String y="y",x="j",c="e";
-
-    y = x = c = 1+y +1   ;
-
-    int i = 1;
-
-    double h =  i + 1;
-    System.out.println(h);
-    Stringb b = new Stringb();
-
-//    while( (a=readLine(file))!=null) {
-//      print a;
-//    }
-
-      if((a=b) instanceof Stringb) {
-        System.out.println("b");
-      }
-
-    if((a=b) instanceof Stringc) {
-      System.out.println("c");
-    }
-
-    return (a=b);
-  }
-
-  private class Stringb extends Stringc {
-
-  }
-
-
-  private class Stringc {
-
   }
 
 }

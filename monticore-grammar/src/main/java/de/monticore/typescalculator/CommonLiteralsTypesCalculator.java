@@ -1,9 +1,9 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.mccommonliterals._ast.*;
-import de.monticore.mccommonliterals._visitor.MCCommonLiteralsVisitor;
-import de.monticore.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.literals.mccommonliterals._ast.*;
+import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
+import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 

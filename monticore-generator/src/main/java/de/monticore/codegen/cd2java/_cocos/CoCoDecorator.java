@@ -1,9 +1,9 @@
 package de.monticore.codegen.cd2java._cocos;
 
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -3,15 +3,17 @@
 package de.monticore.codegen.cd2java.ast;
 
 import com.google.common.base.Joiner;
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
+import de.monticore.cd.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.types.TypesPrinter;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisVisitor;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.types.CollectionTypesPrinter;
+import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -20,15 +22,15 @@ public class AstGeneratorHelper extends GeneratorHelper {
 
   private final MCGrammarSymbol grammarSymbol;
   
-  public AstGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
+  public AstGeneratorHelper(ASTCDCompilationUnit topAst, CD4AnalysisGlobalScope symbolTable, Grammar_WithConceptsGlobalScope grammarScope) {
     super(topAst, symbolTable);
     String qualifiedGrammarName = topAst.getPackageList().isEmpty()
         ? this.cdDefinition.getName()
         : Joiner.on('.').join(Names.getQualifiedName(topAst.getPackageList()),
         this.cdDefinition.getName());
 
-    grammarSymbol = symbolTable.<MCGrammarSymbol> resolve(
-        qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
+    grammarSymbol = grammarScope.resolveMCGrammar(
+        qualifiedGrammarName).orElse(null);
   }
 
   public MCGrammarSymbol getGrammarSymbol() {
@@ -46,7 +48,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
     if (isOptional(attribute)) {
       return "Optional.empty()";
     }
-    String typeName = TypesPrinter.printType(attribute.getType());
+    String typeName = CollectionTypesPrinter.printType(attribute.getMCType());
     if (isListType(typeName)) {
       return "new java.util.ArrayList<>()";
     }
@@ -76,7 +78,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
         .filter(c -> className.equals(GeneratorHelper.getPlainName(c))).findAny()
         .isPresent();
   }
-  
+
   public static boolean compareAstTypes(String qualifiedType, String type) {
     if (type.indexOf('.') != -1) {
       return qualifiedType.equals(type);
@@ -87,7 +89,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
     }
     return false;
   }
-  
+
   /**
    * @param qualifiedName
    * @return The lower case qualifiedName + AST_PACKAGE_SUFFIX
@@ -97,12 +99,57 @@ public class AstGeneratorHelper extends GeneratorHelper {
     return Joiners.DOT.join(qualifiedName.toLowerCase(), AST_PACKAGE_SUFFIX_DOT);
   }
   
+  /**
+   * @param qualifiedCdName
+   * @return The lower case qualifiedName + AST_PACKAGE_SUFFIX
+   */
+  public static String getAstPackageForCD(String qualifiedCdName) {
+    Log.errorIfNull(qualifiedCdName);
+    return Joiners.DOT.join(qualifiedCdName.toLowerCase(),
+        Names.getSimpleName(qualifiedCdName).toLowerCase(), getAstPackageSuffix());
+  }
+  
   public static String getAstPackageSuffix() {
     return GeneratorHelper.AST_PACKAGE_SUFFIX;
   }
   
   public static String getSymbolTablePackageSuffix() {
     return GeneratorHelper.SYMBOLTABLE_PACKAGE_SUFFIX;
+  }
+  
+  public static String getNameOfBuilderClass(ASTCDClass astClass) {
+    String name = Names.getSimpleName(astClass.getName());
+    if(astClass.getName().endsWith(GeneratorSetup.GENERATED_CLASS_SUFFIX)) {
+      name = name.substring(0, name.indexOf(GeneratorSetup.GENERATED_CLASS_SUFFIX));
+    }
+    return name + BUILDER;
+  }
+  
+  public static String getSuperClassForBuilder(ASTCDClass clazz) {
+    if (!clazz.isPresentSuperclass()) {
+      return "";
+    }
+    String superClassName = Names.getSimpleName(clazz.printSuperClass());
+    return superClassName.endsWith(GeneratorSetup.GENERATED_CLASS_SUFFIX)
+        ? superClassName.substring(0, superClassName.indexOf(GeneratorSetup.GENERATED_CLASS_SUFFIX))
+        : superClassName;
+
+  }
+  
+  public static boolean generateSetter(ASTCDClass clazz, ASTCDAttribute cdAttribute, String typeName) {
+    if (GeneratorHelper.isInherited(cdAttribute)) {
+      return false;
+    }
+    String methodName = GeneratorHelper.getPlainSetter(cdAttribute);
+    if (clazz.getCDMethodList().stream()
+        .filter(m -> methodName.equals(m.getName()) && m.getCDParameterList().size() == 1
+            && compareAstTypes(typeName,
+                MCCollectionTypesHelper.printSimpleRefType(m.getCDParameterList().get(0).getMCType())))
+        .findAny()
+        .isPresent()) {
+      return false;
+    }
+    return true;
   }
   
   public static String getConstantClassName(MCGrammarSymbol grammarSymbol) {
@@ -137,6 +184,23 @@ public class AstGeneratorHelper extends GeneratorHelper {
     return clazz.isPresentModifier() && clazz.getModifier().isAbstract();
   }
   
+  public static boolean hasReturnTypeVoid(ASTCDMethod method) {
+    return method.getMCReturnType().isPresentMCVoidType();
+  }
+
+  /**
+   * Transforms all CD types to Java types using the given package suffix.
+   */
+  public void transformCdTypes2Java() {
+    new Cd2JavaTypeConverter() {
+      @Override
+      public void visit(ASTMCQualifiedType node) {
+        AstGeneratorHelper.this.transformTypeCd2Java(node, GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
+      }
+    }.handle(topAst);
+    
+  }
+  
   /**
    * Clones the top ast and transforms CD types defined in this- or in one of the super CDs to simple CD types
    * @return cloned transformed ast
@@ -146,7 +210,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
     
     new Cd2JavaTypeConverter() {
       @Override
-      public void visit(ASTSimpleReferenceType node) {
+      public void visit(ASTMCQualifiedType node) {
        AstGeneratorHelper.this.transformQualifiedToSimpleIfPossible(node, GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
       }
     }.handle(ast);
@@ -154,8 +218,8 @@ public class AstGeneratorHelper extends GeneratorHelper {
     return ast;
   }
   
-  public String printFullType(ASTType ast) {
-    return TypesPrinter.printType(ast);
+  public String printFullType(ASTMCType ast) {
+    return CollectionTypesPrinter.printType(ast);
   }
   
   public class Cd2JavaTypeConverter implements CD4AnalysisVisitor {}

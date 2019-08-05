@@ -1,17 +1,14 @@
 package de.monticore.aggregation.blah._symboltable;
 
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Scope;
-
 import java.util.Deque;
 
 public class BlahSymbolTableCreator  extends BlahSymbolTableCreatorTOP {
-  public BlahSymbolTableCreator(ResolvingConfiguration resolvingConfig, Scope enclosingScope) {
-    super(resolvingConfig, enclosingScope);
+  public BlahSymbolTableCreator(IBlahScope enclosingScope) {
+    super(enclosingScope);
   }
 
-  public BlahSymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<Scope> scopeStack) {
-    super(resolvingConfig, scopeStack);
+  public BlahSymbolTableCreator(Deque<IBlahScope> scopeStack) {
+    super(scopeStack);
   }
   
   protected de.monticore.aggregation.blah._symboltable.BlubSymbol create_Blub(de.monticore.aggregation.blah._ast.ASTBlub ast) {
@@ -19,6 +16,6 @@ public class BlahSymbolTableCreator  extends BlahSymbolTableCreatorTOP {
     BlahScope bla = new BlahScope(false);
     bla.setExportsSymbols(true);
 
-    return new BlubSymbolBuilder().name(ast.getName()).build();
+    return new BlubSymbolBuilder().setName(ast.getName()).build();
   }
 }

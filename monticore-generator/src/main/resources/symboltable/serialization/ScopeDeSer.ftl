@@ -229,7 +229,7 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
     return scopeJson.get("${attr.getName()}").getAsJsonNumber().getNumberAsLong();
 <#break>
 <#default>
-    Log.error("Unable to deserialize scope attribute ${attr.getName()} of type ${attrType}. Please override the method ${className}#deserialize${attr.getName()?cap_first}(JsonObject) using the TOP mechanism!);
+    Log.error("Unable to deserialize scope attribute ${attr.getName()} of type ${attrType}. Please override the method ${className}#deserialize${attr.getName()?cap_first}(JsonObject) using the TOP mechanism!");
     return null;
 </#switch>
   }

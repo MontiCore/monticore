@@ -3,11 +3,11 @@
 package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.types.FullGenericTypesPrinter;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.utils.Link;
 
 import java.util.Optional;

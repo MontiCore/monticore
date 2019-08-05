@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import de.monticore.symboltable.*;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -17,10 +18,6 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import com.google.inject.Inject;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Scopes;
-import de.monticore.symboltable.Symbol;
 import de.se_rwth.langeditor.injection.TextEditorScoped;
 import de.se_rwth.langeditor.language.Language;
 import de.se_rwth.langeditor.modelstates.ModelState;
@@ -60,17 +57,18 @@ public class ContentAssistProcessorImpl implements IContentAssistProcessor {
       if (currentModelState.get().getLastLegalRootNode()
           .isPresent() && actNode.isPresent()) {
         ASTNode legalRoot = currentModelState.get().getLastLegalRootNode().get();
-        Optional<? extends Scope> rootScope = language.getScope(legalRoot);
+        Optional<IScope> rootScope = language.getScope(legalRoot);
         if (rootScope.isPresent()) {
           // Get all symbols in global scope
-          GlobalScope globalScope = (GlobalScope) rootScope.get().getEnclosingScope().get();
-          Optional<? extends Scope> enclosingScope;
-          if (actNode.get().isPresentEnclosingScope()) {
-            enclosingScope = actNode.get().getEnclosingScopeOpt();
-          } else {
+          IScope globalScope =  rootScope.get().getEnclosingScope().get();
+          Optional<IScope> enclosingScope;
+          // TODO Auf neue symtab umbauen
+//          if (actNode.get().isPresentEnclosingScope()) {
+//            enclosingScope = actNode.get().getEnclosingScopeOpt();
+//          } else {
             enclosingScope = rootScope;
-          }
-          for (Symbol symbol : getSymbols(globalScope)) {
+//          }
+          for (ISymbol symbol : getSymbols(globalScope)) {
             if (findMatch(incomplete, symbol, enclosingScope)) {
               proposalList
                   .add(new CompletionProposal(symbol.getName(), start, incomplete.length(),
@@ -98,19 +96,20 @@ public class ContentAssistProcessorImpl implements IContentAssistProcessor {
    * @param rootNode
    * @return
    */
-  private List<Symbol> getSymbols(Scope rootScope) {
-    List<Symbol> names = new ArrayList<>();
-    if (rootScope.exportsSymbols()) {
-      for (Symbol symbol : Scopes.getLocalSymbolsAsCollection(rootScope)) {
-        if (language.getCompletionKinds().contains(symbol.getKind())) {
-          names.add(symbol);
-        }
-      }
-    }
-    List<? extends Scope> subScopes = rootScope.getSubScopes();
-    for (Scope scope : subScopes) {
-      names.addAll(getSymbols(scope));
-    }
+  private List<ISymbol> getSymbols(IScope rootScope) {
+    List<ISymbol> names = new ArrayList<>();
+    // TODO Umbau auf neue Symboltabelle
+//    if (rootScope.exportsSymbols()) {
+//      for (ISymbol symbol : Scopes.getLocalSymbolsAsCollection(rootScope)) {
+//        if (language.getCompletionKinds().contains(symbol.getKind())) {
+//          names.add(symbol);
+//        }
+//      }
+//    }
+//    List<IScope> subScopes = rootScope.getSubScopes();
+//    for (IScope scope : subScopes) {
+//      names.addAll(getSymbols(scope));
+//    }
     return names;
   }
   
@@ -118,10 +117,11 @@ public class ContentAssistProcessorImpl implements IContentAssistProcessor {
     currentModelState = Optional.of(modelState);
   }
   
-  private boolean findMatch(String incomplete, Symbol proposal, Optional<? extends Scope> scope) {
+  private boolean findMatch(String incomplete, ISymbol proposal, Optional<IScope> scope) {
     if (proposal.getName().startsWith(incomplete)) {
       if (scope.isPresent()) {
-        return scope.get().resolve(proposal.getName(), proposal.getKind()).isPresent();
+        // TODO Umbau auf neue Symtab
+        // return scope.get().resolve(proposal.getName(), proposal.getKind()).isPresent();
       }
       else {
         return true;

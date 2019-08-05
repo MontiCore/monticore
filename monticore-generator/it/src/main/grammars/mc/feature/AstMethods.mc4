@@ -10,14 +10,14 @@ grammar AstMethods extends mc.grammar.lexicals.ItTestLexicals {
 
    C = Name;
 
-   astrule A = method public ASTC getC() { return c; }
-   method public Optional<ASTB> getOptB() { return Optional.empty(); }
-   method public void setB(ASTB newB) { this.b = Optional.ofNullable(newB); }
-   method public void setC(ASTC newC) { this.c = newC; };
+   astrule A = method public mc.feature.astmethods._ast.ASTC getC() { return c; }
+   method public Optional<mc.feature.astmethods._ast.ASTB> getOptB() { return Optional.empty(); }
+   method public void setB(mc.feature.astmethods._ast.ASTB newB) { this.b = Optional.ofNullable(newB); }
+   method public void setC(mc.feature.astmethods._ast.ASTC newC) { this.c = newC; };
 
    astrule B = method void setNames(java.util.List<String> name) { this.names = name; };
 
-   astrule C = method public Optional<ASTB> getName(String name) { return Optional.empty(); }
+   astrule C = method public Optional<mc.feature.astmethods._ast.ASTB> getName(String name) { return Optional.empty(); }
    method public void setName() {}
    method public void setName(int i) {};
 

@@ -25,7 +25,7 @@ component grammar Antlr {
 	/** Additional Java code for the parser
 	@attribute Text	Java Code
 	*/		
-	AntlrParserAction= 
+	AntlrParserAction=
 		"parserjava" "{" text:JavaCode "}";
 		
 	/** Additional Additional Java code for the lexer

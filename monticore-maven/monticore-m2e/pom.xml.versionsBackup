@@ -1,0 +1,79 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- == PROJECT COORDINATES ===================================== -->
+
+  <parent>
+    <groupId>de.monticore.mojo</groupId>
+    <artifactId>monticore-maven</artifactId>
+    <version>5.0.6.NewSymTab-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>monticore-m2e</artifactId>
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>de.monticore.m2e</module>
+    <module>de.monticore.m2e.feature</module>
+    <module>de.monticore.m2e.site</module>
+  </modules>
+
+  <!-- == PROJECT METAINFORMATION ========================================= -->
+
+  <name>MontiCore M2E Connector</name>
+  <description>M2E Connector for the MontiCore Maven Plugin</description>
+  <inceptionYear>2012</inceptionYear>
+
+  <organization>
+    <name>SE RWTH Aachen</name>
+    <url>http://www.se-rwth.de/</url>
+  </organization>
+
+  <!-- == PROJECT PROPERTIES ============================================== -->
+
+  <properties>
+    <skip.m2e.deployment>true</skip.m2e.deployment>
+  </properties>
+
+  <!-- == BUILD ================================================= -->
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-maven-plugin</artifactId>
+        </plugin>
+
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>target-platform-configuration</artifactId>
+         </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>wagon-maven-plugin</artifactId>
+          <version>${wagon.plugin}</version>
+          <configuration>
+            <skip>${skip.m2e.deployment}</skip>
+            <fromFile>${project.build.directory}/${project.build.finalName}.zip</fromFile>
+            <serverId>se-nexus</serverId>
+            <url>https://nexus.se.rwth-aachen.de/service/local/repositories/monticore-snapshots/content-compressed</url>
+          </configuration>
+          <executions>
+            <execution>
+              <id>deploy-repository</id>
+              <phase>install</phase>
+              <goals>
+                <goal>upload-single</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>

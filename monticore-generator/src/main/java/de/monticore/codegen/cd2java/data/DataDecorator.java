@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.data;
 
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -7,8 +8,9 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,18 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), createSetter(clazz.getCDAttributeList())));
 
     return clazz;
+  }
+
+  protected boolean isSameMethodSignature(ASTCDMethod method1, ASTCDMethod method2) {
+    if (!method1.getName().equals(method2.getName()) || method1.sizeCDParameters() != method2.sizeCDParameters()) {
+      return false;
+    }
+    for (int i = 0; i < method1.getCDParameterList().size(); i++) {
+      if (!method1.getCDParameter(i).getMCType().deepEquals(method2.getCDParameter(i).getMCType())) {
+        return false;
+      }
+    }
+    return true;
   }
 
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
@@ -120,9 +134,10 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   protected ASTCDMethod createDeepCloneWithParam(ASTCDClass clazz) {
     String simpleName = dataDecoratorUtil.getSimpleName(clazz);
     // deep clone with result parameter
-    ASTType classType = this.getCDTypeFacade().createSimpleReferenceType(simpleName);
+    ASTMCType classType = this.getCDTypeFacade().createQualifiedType(simpleName);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(classType, "result");
-    ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC, classType, DEEP_CLONE_METHOD, parameter);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(classType).build();
+    ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC, returnType, DEEP_CLONE_METHOD, parameter);
     this.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("data.DeepCloneWithParameters", clazz));
     return deepCloneWithParam;
   }

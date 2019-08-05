@@ -2,11 +2,11 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import java.util.function.UnaryOperator;
-
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
+
+import java.util.function.UnaryOperator;
 
 /**
  * This function copies over the package statement from the source root to the target root.

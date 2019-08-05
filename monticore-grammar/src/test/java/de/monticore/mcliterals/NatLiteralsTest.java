@@ -2,8 +2,8 @@
 
 package de.monticore.mcliterals;
 
-import de.monticore.mccommonliterals._ast.ASTNatLiteral;
-import de.monticore.testmccommonliterals._parser.TestMCCommonLiteralsParser;
+import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
+import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;

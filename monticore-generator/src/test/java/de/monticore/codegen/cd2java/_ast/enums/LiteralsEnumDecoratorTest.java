@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java._ast.enums;
 
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -10,7 +11,6 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -63,7 +63,7 @@ public class LiteralsEnumDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute intValueAttribute = cdEnum.getCDAttribute(0);
     assertEquals("intValue", intValueAttribute.getName());
     assertDeepEquals(CDModifier.PROTECTED, intValueAttribute.getModifier());
-    assertInt(intValueAttribute.getType());
+    assertInt(intValueAttribute.getMCType());
   }
 
   @Test
@@ -77,7 +77,7 @@ public class LiteralsEnumDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PRIVATE, constructor.getModifier());
     assertEquals("AutomatonLiterals", constructor.getName());
     assertEquals(1, constructor.sizeCDParameters());
-    assertInt(constructor.getCDParameter(0).getType());
+    assertInt(constructor.getCDParameter(0).getMCType());
     assertEquals("intValue", constructor.getCDParameter(0).getName());
   }
 
@@ -91,7 +91,8 @@ public class LiteralsEnumDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = cdEnum.getCDMethod(0);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals("getIntValue", method.getName());
-    assertInt(method.getReturnType());
+    assertTrue((method.getMCReturnType().isPresentMCType()));
+    assertInt(method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -101,6 +102,6 @@ public class LiteralsEnumDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.ENUM, cdEnum, cdEnum);
-    System.out.println(sb.toString());
+    // TODO Check: System.out.println(sb.toString());
   }
 }

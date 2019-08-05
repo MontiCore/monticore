@@ -1,27 +1,24 @@
 /* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.global;
 
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.templates.TemplateProposal;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
 import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.langeditor.language.Language;
 import de.se_rwth.langeditor.language.OutlineElementSet;
 import de.se_rwth.langeditor.language.ParserConfig;
 import de.se_rwth.langeditor.modelstates.ModelState;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.templates.TemplateProposal;
+
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 final class ErrorCatchingLanguage implements Language {
   
@@ -82,7 +79,7 @@ final class ErrorCatchingLanguage implements Language {
   
  
   @Override
-  public Collection<? extends SymbolKind> getCompletionKinds() {
+  public Collection<String> getCompletionKinds() {
     try {
       return language.getCompletionKinds();
     }
@@ -106,7 +103,7 @@ final class ErrorCatchingLanguage implements Language {
    * @see de.se_rwth.langeditor.language.Language#getScope()
    */
   @Override
-  public Optional<ArtifactScope> getScope(ASTNode node) {
+  public Optional<IScope> getScope(ASTNode node) {
     return language.getScope(node);
   }
 

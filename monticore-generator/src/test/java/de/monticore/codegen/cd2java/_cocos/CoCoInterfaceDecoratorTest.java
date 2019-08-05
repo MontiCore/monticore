@@ -1,5 +1,9 @@
 package de.monticore.codegen.cd2java._cocos;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -7,10 +11,6 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +21,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
 
@@ -50,11 +51,11 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, cdInterface.getCDMethodList().size());
     ASTCDMethod method = cdInterface.getCDMethod(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertVoid(method.getReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("check", method.getName());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTCoCosNode", parameter.getType());
+    assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTCoCosNode", parameter.getMCType());
     assertEquals("node", parameter.getName());
   }
 
@@ -65,11 +66,11 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, cdInterface.getCDMethodList().size());
     ASTCDMethod method = cdInterface.getCDMethod(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertVoid(method.getReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("check", method.getName());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTA", parameter.getType());
+    assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTA", parameter.getMCType());
     assertEquals("node", parameter.getName());
   }
 
@@ -80,11 +81,11 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, cdInterface.getCDMethodList().size());
     ASTCDMethod method = cdInterface.getCDMethod(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertVoid(method.getReturnType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("check", method.getName());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTI", parameter.getType());
+    assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTI", parameter.getMCType());
     assertEquals("node", parameter.getName());
   }
 
@@ -94,9 +95,9 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     for (ASTCDInterface i : interfaces) {
-      System.out.printf("==================== %s ====================\n", i.getName());
+      // System.out.printf("==================== %s ====================\n", i.getName());
       StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, i, i);
-      System.out.println(sb.toString());
+      // TODO: Check System.out.println(sb.toString());
     }
   }
 }

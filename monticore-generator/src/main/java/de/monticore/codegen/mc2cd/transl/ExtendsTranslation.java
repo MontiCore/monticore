@@ -2,13 +2,13 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
@@ -50,9 +50,9 @@ public class ExtendsTranslation implements
       ASTMCGrammar astGrammar) {
     // translates "extends"
     for (ASTRuleReference ruleReference : classProd.getSuperRuleList()) {
-      MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
+      ProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdClass.setSuperclass(TransformationHelper.createSimpleReference(
+      cdClass.setSuperclass(TransformationHelper.createObjectType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -60,7 +60,7 @@ public class ExtendsTranslation implements
     for (ASTMCType typeReference : classProd.getASTSuperClassList()) {
       String qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
-      cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedRuleName));
+      cdClass.setSuperclass(TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }
 
@@ -68,9 +68,9 @@ public class ExtendsTranslation implements
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     // translates "extends"
     for (ASTRuleReference ruleReference : abstractProd.getSuperRuleList()) {
-      MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
+      ProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdClass.setSuperclass(TransformationHelper.createSimpleReference(
+      cdClass.setSuperclass(TransformationHelper.createObjectType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -79,7 +79,7 @@ public class ExtendsTranslation implements
     for (ASTMCType typeReference : abstractProd.getASTSuperClassList()) {
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
-      cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedRuleName));
+      cdClass.setSuperclass(TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }
 
@@ -87,9 +87,9 @@ public class ExtendsTranslation implements
       ASTCDInterface cdInterface, ASTMCGrammar astGrammar) {
     // translates "extends"
     for (ASTRuleReference ruleReference : interfaceProd.getSuperInterfaceRuleList()) {
-      MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
+      ProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdInterface.getInterfaceList().add(TransformationHelper.createSimpleReference(
+      cdInterface.getInterfaceList().add(TransformationHelper.createObjectType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -99,7 +99,7 @@ public class ExtendsTranslation implements
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdInterface);
       cdInterface.getInterfaceList().add(
-          TransformationHelper.createSimpleReference(qualifiedRuleName));
+          TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }
 }

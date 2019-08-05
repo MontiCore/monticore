@@ -5,7 +5,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>5.0.6-SNAPSHOT</version>
+    <version>5.0.7-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -34,11 +34,6 @@
       <artifactId>monticore-grammar</artifactId>
     </dependency>
     <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>javaDSL</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
@@ -60,21 +55,21 @@
 
   </dependencies>
 
-  <build>
-    <plugins>
-      <!-- Create grammars jar -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-      </plugin>
+<!--  <build>-->
+<!--    <plugins>-->
+<!--      &lt;!&ndash; Create grammars jar &ndash;&gt;-->
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-assembly-plugin</artifactId>-->
+<!--      </plugin>-->
 
-      <!-- Source plugin -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+<!--      &lt;!&ndash; Source plugin &ndash;&gt;-->
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-source-plugin</artifactId>-->
+<!--      </plugin>-->
+<!--    </plugins>-->
+<!--  </build>-->
 
   <profiles>
     <profile>
@@ -88,7 +83,7 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>5.0.6-SNAPSHOT</version><!--$NO-MVN-MAN-VER$ -->
+            <version>5.0.7-SNAPSHOT</version><!--$NO-MVN-MAN-VER$ -->
             <executions>
               <execution>
                 <id>it-python</id>
@@ -173,7 +168,7 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>5.0.6-SNAPSHOT</version><!--$NO-MVN-MAN-VER$ -->
+            <version>5.0.7-SNAPSHOT</version><!--$NO-MVN-MAN-VER$ -->
             <executions>
               <execution>
                 <id>it-python</id>

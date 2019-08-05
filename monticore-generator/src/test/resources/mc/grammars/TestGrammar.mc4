@@ -8,14 +8,14 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
 
   /** Used for embedding actions */
   external Action;
-  
+
   /** Used as Expression in syntactic predicates */
-  external ExpressionPredicate;  
-	
-  /** Used for embedding concepts */  
+  external ExpressionPredicate;
+
+  /** Used for embedding concepts */
   external MCConcept;
- 
-  /** A MontiCore grammar describes a context free grammar in an own format   
+
+  /** A MontiCore grammar describes a context free grammar in an own format
   @attribute name The name of this grammar
   @attribute supergrammar Supergrammars of this grammar
   @attribute GrammarOption Options for this grammar
@@ -30,10 +30,10 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
   @attribute Concepts List of additional concepts
   */
   MCGrammar =
-    ("package" Package:(Name& || ".")+ ";")? 
+    ("package" Package:(Name& || ".")+ ";")?
   	(ImportStatements:MCImportStatement)*
-    
-    (["component"])? "grammar" Name       
+
+    (["component"])? "grammar" Name
       ("extends" supergrammar:(GrammarReference || ",")+ )?
       "{"
          (
@@ -43,7 +43,7 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
          |
            ClassProd
          |
-           EnumProd   
+           EnumProd
          |
            ExternalProd
          |
@@ -59,24 +59,24 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
  
   MCImportStatement = "import" ImportList:Name& ( "." ImportList:Name&)* ("." Star:["*"])? ";" ;
 
-  // One OptionBlock only 
+  // One OptionBlock only
   astrule MCGrammar =
     ASTGrammarOption max=1 ;
-   
- 
+
+
   /** A GrammarReference references another grammar
   @attribute name Qualified name of the other grammar
   */
   GrammarReference =
     (Name& || ".")+  ;
-   
+
   // ------------------------------------------------------------------------------
   // Options
-   
+
   /** Options for a grammar
   @attribute followOption Expression that shall be realized by lexer rules
   @attribute genericOption Expression that shall be realized by lexer rules
-  */        
+  */
   GrammarOption=
     "options" "{"
       (
@@ -85,41 +85,41 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
         AntlrOption
       )*
     "}" ;
-    
+
   /** A FollowOption specifies an additional follow set for a production
-  @attribute prodName name of the production  
+  @attribute prodName name of the production
   @attribute alt the follow set
-  */ 
+  */
   FollowOption =
-    "follow" prodName:Name Alt ";"; 
+    "follow" prodName:Name Alt ";";
 
 
   /** A antlr option is an option that is passed on Anltr
-  itself   
+  itself
   @attribute name name of the option
   @attribute value optional value
-  */ 
+  */
   AntlrOption =
-    Name  ("=" value:Name |"=" value:String)? ; 
-    
+    Name  ("=" value:Name |"=" value:String)? ;
+
   // ------------------------------------------------------------------------------
   // Productions
- 
+
   /** Productions form the syntactical structure of the grammar
-  */      
+  */
   interface Prod;
- 
+
   astrule Prod =
     Name ;
-  
- 
+
+
   /** ParserProduction are handled by the parser
   */
-  interface ParserProd extends Prod;      
- 
+  interface ParserProd extends Prod;
+
  // ------------------------------------------------------------------------------
  // Productions
- 
+
   /** A LexProd is formed by the keyword ident in the beginning followed by an option
   slash indicating that this LexProd is protected. The following name, options and
   symbol are handed to antlr directly
@@ -144,14 +144,14 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
         "{" InitAction:Action "}"
       )?
       "=" Alts:(LexAlt || "|")+
-      
+
       (":" ("{" EndAction:Action  "}")? (Variable:Name&
         ("->" Type:( Name& || ".")+ (":" "{" Block:Action "}" )? )? )? // Statements
-      )? 
+      )?
     )
     ";";
- 
- 
+
+
   /** An Enumeration-Production
   @attribute name Name of the production
   @attribute constant List of all constants
@@ -165,10 +165,10 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
   @attribute name Name of the hole
   @attribute genericType External type used for this hole rule
   */
-  ExternalProd implements Prod =                 
+  ExternalProd implements Prod =
     "external" Name SymbolDefinition? GenericType? ";";
- 
- 
+
+
   /** An ASTInterfaceRule represents an explicit definition for an interface production
   and may overwrite the standard generated rule which is mentioned in the productions
   @attribute external True if this interface is programmed manually
@@ -187,8 +187,8 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
       "astextends" aSTSuperInterface:(GenericType || ",")+
     )*
     ";";
- 
- 
+
+
   /** An ASTInterfaceRule represents an explicit definition for an interface rule and
   overwrites the standard generated rule which is mentioned in the rules
   @attribute name Name of the production
@@ -211,8 +211,8 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
     |
       "astimplements" aSTSuperInterface:(GenericType || ",")+
     )*  ";";
-    
-     
+
+
   /** A rule represents a rule (production) in a context free grammar.
   @attribute name Name of the rule
   @attribute type Type this rule contributes to
@@ -237,14 +237,14 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
     |
        "astimplements" aSTSuperInterface:(GenericType || ",")+
     )*
-       
+
     ("{" Action "}")?    // Statements
     ("=" alts:(Alt || "|")+ )? ";";
 
   astrule ClassProd =
     method public String toString() { return name; } ;
- 
- 
+
+
   /** Cardinality
   @attribute True if unbounded cardinality (min and max are meaningless)
   @attribute min Minimal cardinality
@@ -253,36 +253,36 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
   Card =
    (
      Unbounded:["*"]
-   |  
+   |
      "min" "=" Min:Num_Int
      ("max" "=" ( Max:Num_Int | Max:"*"))?
-   |  
-     "max" "=" ( Max:Num_Int | Max:"*")    
+   |
+     "max" "=" ( Max:Num_Int | Max:"*")
    );
- 
- 
- 
+
+
+
   /** A RuleReference refers to another production
-  */   
+  */
   RuleReference  =
     SemanticpredicateOrAction? Name ;
-     
+
   astrule RuleReference =
     method public String getTypeName() {
-      return getName(); 
+      return getName();
     }
-    method public boolean isExternal() { 
+    method public boolean isExternal() {
         return false;
     };
- 
+
   // ------------------------------------------------------------------------------
   // Production body
- 
-     
+
+
   /** An alternative represents an alternative in a rule or block and contains
   (Rule)Components
   @attribute Components List of the rule components of this alternative
-  */ 
+  */
   Alt =
     Components:RuleComponent* ;
 
@@ -298,12 +298,12 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
   @attribute name The name of the nonterminal
   @attribute separator The terminal as list separator
   @attribute plusKeywords True indicates that all keywords are allowed as well
-  @attribute iteration Iteration of nonterminal 
+  @attribute iteration Iteration of nonterminal
   */
   NonTerminalSeparator implements RuleComponent =
     (variableName:Name& "=" | usageName:Name&  ":")?
     "(" Name (plusKeywords:["&"])? "||" separator:String ")" Iteration:["*"|"+"];
-   
+
 
 
   /** A block is something used in rules which is surrounded by ()
@@ -322,97 +322,97 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
       ":"
     )?
     Alts:(Alt || "|")+ ")"
-    (Iteration:["?"|"*"|"+"])?; 
- 
- 
+    (Iteration:["?"|"*"|"+"])?;
+
+
   /** Option values handed to Antlr
   @attribute optionValue Value handes to Antlr
-  */ 
+  */
   Option =
     "options" "{" OptionValue+ "}";
- 
- 
+
+
   /** Key/Value pairs handed to Antlr
   @attribute key Key
   @attribute value Value
-  */ 
+  */
   OptionValue =
     key:Name "=" value:Name ";" ;
- 
- 
+
+
   /** Reference to another rule
   @attribute variableName Name for a variable binding (Note: Only one attribute of
                           VariableName and UsuageName may have a value)
   @attribute usageName Name for attribute
   @attribute plusKeywords True indicates that all keywords are allowed as well
   @attribute iteration Iteration of nonterminal
-  */    
+  */
   NonTerminal implements RuleComponent =
     (variableName:Name&? "=" | usageName:Name&?  ":")?
     Name ("@" referencedSymbol:Name)?
     (plusKeywords:["&"] | iteration:["?"|"*"|"+"] )*;
- 
- 
+
+
   interface ITerminal;
-  
+
   astrule ITerminal =
       Name;
- 
+
   /** A Terminal is usually something like "," or "start" */
   Terminal implements RuleComponent, ITerminal =
-    (variableName:Name& "=" | usageName:Name&  ":")?     
+    (variableName:Name& "=" | usageName:Name&  ":")?
     name:String
     (iteration:["?"|"*"|"+"])*;
 
-       
+
   /** Constants are constant string but lead to an attribute */
   Constant implements ITerminal =
     (humanName:Name& ":")? name:String ;
- 
+
   /** constants are sth like keywords which one needs to know that they where there,
   e.g. public. In the ast-class they are reflected as int oder boolean isMethods  */
   ConstantGroup implements RuleComponent =
      (variableName:Name& "=" | usageName:Name&  ":")?
      "[" Constant ("|" Constant )* "]"
      (iteration:["?"|"*"|"+"])? ;
-        
-          
+
+
   /** End of file as EOF keyword */
   Eof implements RuleComponent =
     "EOF";
- 
-  /** MCAnything is a special lexer production which represents 
+
+  /** MCAnything is a special lexer production which represents
   */
   MCAnything implements RuleComponent =
-    "MCA"; 
- 
+    "MCA";
+
   Anything implements RuleComponent=
-    "."; 
- 
+    ".";
+
   /** Handed on as antlr action or predicate, realised by external JavaDSLParser */
   SemanticpredicateOrAction implements RuleComponent=
-     "{" ExpressionPredicate "}" Predicate:["?"] 
+     "{" ExpressionPredicate "}" Predicate:["?"]
      |
       "{" Action "}"
      ;
-      
+
 
   // ------------------------------------------------------------------------------
   // Concept
- 
- 
+
+
   /** The grammar can be extended by using concepts
   @attribute name Name of the concept
   @attribute concept The concept itself
-  */   
+  */
   Concept=
     "concept" Name& Concept:MCConcept;
- 
-     
+
+
   // --------------------------------------------------------------------------------
   // AST
- 
- 
+
+
   /** A ASTClassgenWithinGrammar additional information for the class generation
   process
   @attribute
@@ -433,7 +433,7 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
     (
       "=" ( Method | AttributeInAST )*
     )? ";";
- 
+
 
   /** A method to be added to a certain ASTClass
   @attribute public True if method is public
@@ -452,20 +452,20 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
       (["public"] | ["private"] | ["protected"])?
       (["final"])?
       (["static"])?
-      returnType:GenericType Name  
+      returnType:GenericType Name
       "(" (MethodParameter || ",")* ")"
       ("throws" exceptions:(GenericType || ",")+)?
       "{" body:Action "}" ; // Statements
- 
- 
+
+
   /** Formal parameter of a method
   @attribute type Qualified name of the type
   @attribute name Name of the parameter
-  */         
+  */
   MethodParameter =
     type:GenericType Name;
- 
- 
+
+
   /** New Sons (=another ASTClass or String) or changed type (changed on difference to
   the automatic inference rules) in ASTClass
   @attribute name Name of the son
@@ -474,44 +474,44 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
   @attribute card Cardinality
 
   */
-  AttributeInAST =   
+  AttributeInAST =
     (Name  ":")?
     GenericType (Iterated:["*"]|Optional:["?"])?
     Card?;
- 
- 
+
+
   /**
   A GenericType represents an generic java type
   @attribute name List containing the name of the type
   @attribute genericType List of all type parameters
   @attribute dimension Array dimension of the type
   */
-  GenericType  = 
+  GenericType  =
     (Name& || ".")+
     ("<" (GenericType || ",")+  ">")?
     {_aNode.setDimension(0);} ("[" "]"
       {_aNode.setDimension(_aNode.getDimension()+1);} )*;
- 
+
   astrule GenericType =
     Dimension:int
     method public String toString() {
-      return  de.monticore._grammar.HelperGrammar.printGenericType(this); 
+      return  de.monticore._grammar.HelperGrammar.printGenericType(this);
     }
     method public String getTypeName() {
-      return de.monticore._grammar.HelperGrammar.printGenericType(this); 
+      return de.monticore._grammar.HelperGrammar.printGenericType(this);
     }
-    method public boolean isExternal() { 
+    method public boolean isExternal() {
         return true;
     };
-   
+
   // ------------------------------------------------------------------------------
   // Lexer
-   
+
   LexAlt =
     (lexComponents:LexComponent)*;
- 
+
   interface LexComponent;
-      
+
   LexBlock implements LexComponent =
     (negate:["~"])? "("
     (
@@ -523,28 +523,28 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
       ":"
      )?
      lexAlts:(LexAlt || "|")+ ")"
-     (iteration:["?"|"*"|"+"])?; 
-  
+     (iteration:["?"|"*"|"+"])?;
+
   LexCharRange implements LexComponent =
      (negate:["~"])? lowerChar:Char ".." upperChar:Char;
-    
+
   LexChar implements LexComponent =
     (negate:["~"])? Char ;
 
   LexString implements LexComponent =
     string:String ;
 
-  LexActionOrPredicate implements LexComponent = 
-     "{" ExpressionPredicate "}" Predicate:["?"] 
+  LexActionOrPredicate implements LexComponent =
+     "{" ExpressionPredicate "}" Predicate:["?"]
      ;
-      
-     
+
+
   LexNonTerminal implements LexComponent =
     (variable:Name& "=")? Name ;
-   
+
   LexSimpleIteration implements LexComponent =
     (LexString | LexChar) iteration:["?"|"*"|"+"];
-   
+
   LexOption =
     "options" "{" iD:Name "=" value:Name ";" "}";
 

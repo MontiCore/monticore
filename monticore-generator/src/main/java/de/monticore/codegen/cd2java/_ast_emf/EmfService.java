@@ -1,18 +1,17 @@
 package de.monticore.codegen.cd2java._ast_emf;
 
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.types.TypesPrinter;
-import de.monticore.types.types._ast.ASTPrimitiveType;
-import de.monticore.types.types._ast.ASTReferenceType;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
-import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
@@ -29,7 +28,7 @@ public class EmfService extends AbstractService {
     super(compilationUnit);
   }
 
-  public EmfService(CDSymbol cdSymbol) {
+  public EmfService(CDDefinitionSymbol cdSymbol) {
     super(cdSymbol);
   }
 
@@ -39,12 +38,12 @@ public class EmfService extends AbstractService {
   }
 
   @Override
-  protected ASTService createService(CDSymbol cdSymbol) {
+  protected ASTService createService(CDDefinitionSymbol cdSymbol) {
     return createEmfService(cdSymbol);
   }
 
 
-  public static ASTService createEmfService(CDSymbol cdSymbol) {
+  public static ASTService createEmfService(CDDefinitionSymbol cdSymbol) {
     return new ASTService(cdSymbol);
   }
 
@@ -52,7 +51,7 @@ public class EmfService extends AbstractService {
     return getQualifiedPackageImplName(getCDSymbol());
   }
 
-  public String getQualifiedPackageImplName(CDSymbol cdSymbol) {
+  public String getQualifiedPackageImplName(CDDefinitionSymbol cdSymbol) {
     return String.join(".", getPackage(cdSymbol), getSimplePackageImplName(cdSymbol));
   }
 
@@ -60,7 +59,7 @@ public class EmfService extends AbstractService {
     return getSimplePackageImplName(getCDSymbol());
   }
 
-  public String getSimplePackageImplName(CDSymbol cdSymbol) {
+  public String getSimplePackageImplName(CDDefinitionSymbol cdSymbol) {
     return cdSymbol.getName() + PACKAGE_IMPL_SUFFIX;
   }
 
@@ -69,7 +68,7 @@ public class EmfService extends AbstractService {
   }
 
   public boolean isExternal(ASTCDAttribute attribute) {
-    return getNativeTypeName(attribute.getType()).endsWith("Ext");
+    return getNativeTypeName(attribute.getMCType()).endsWith("Ext");
   }
 
   //for InitializePackageContents template
@@ -82,8 +81,8 @@ public class EmfService extends AbstractService {
   }
 
   //for InitializePackageContents template
-  public String determineListInteger(ASTType astType) {
-    if (DecorationHelper.isListType(TypesPrinter.printType(astType))) {
+  public String determineListInteger(ASTMCType astType) {
+    if (DecorationHelper.isListType(astType.printType())) {
       return "-1";
     } else {
       return "1";
@@ -104,21 +103,21 @@ public class EmfService extends AbstractService {
     DecorationHelper decorationHelper = new DecorationHelper();
     if (isExternal(attribute)) {
       return "theASTENodePackage.getENode";
-    } else if (isPrimitive(attribute.getType()) || isString(attribute.getType())) {
-      return "ecorePackage.getE" + StringTransformations.capitalize(getSimpleNativeType(attribute.getType()));
+    } else if (isPrimitive(attribute.getMCType()) || isString(attribute.getMCType())) {
+      return "ecorePackage.getE" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType()));
     } else if (decorationHelper.isSimpleAstNode(attribute) || decorationHelper.isListAstNode(attribute) || decorationHelper.isOptionalAstNode(attribute)) {
       String grammarName = StringTransformations.uncapitalize(getGrammarFromClass(astcdDefinition, attribute));
-      return grammarName + ".get" + StringTransformations.capitalize(getSimpleNativeType(attribute.getType()));
+      return grammarName + ".get" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType()));
     } else {
-      return "this.get" + StringTransformations.capitalize(getSimpleNativeType(attribute.getType()));
+      return "this.get" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType()));
     }
   }
 
-  public boolean isPrimitive(ASTType type) {
-    return type instanceof ASTPrimitiveType;
+  public boolean isPrimitive(ASTMCType type) {
+    return type instanceof ASTMCPrimitiveType;
   }
 
-  public boolean isString(ASTType type) {
+  public boolean isString(ASTMCType type) {
     return getSimpleNativeType(type).equals("String");
   }
 
@@ -126,13 +125,13 @@ public class EmfService extends AbstractService {
     return astcdEnum.getName().equals(definitionName + LITERALS_SUFFIX);
   }
 
-  public ASTSimpleReferenceType getEmfAttributeType(ASTCDAttribute astcdAttribute) {
+  public ASTMCQualifiedType getEmfAttributeType(ASTCDAttribute astcdAttribute) {
     DecorationHelper decorationHelper = new DecorationHelper();
     if (decorationHelper.isAstNode(astcdAttribute) || decorationHelper.isOptionalAstNode(astcdAttribute)
         || decorationHelper.isListAstNode(astcdAttribute)) {
-      return CDTypeFacade.getInstance().createSimpleReferenceType(E_REFERENCE_TYPE);
+      return CDTypeFacade.getInstance().createQualifiedType(E_REFERENCE_TYPE);
     } else {
-      return CDTypeFacade.getInstance().createSimpleReferenceType(E_ATTRIBUTE_TYPE);
+      return CDTypeFacade.getInstance().createQualifiedType(E_ATTRIBUTE_TYPE);
     }
   }
 
@@ -142,7 +141,7 @@ public class EmfService extends AbstractService {
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
         if (isEDataType(astcdAttribute)) {
-          eDataTypeMap.add(getNativeTypeName(astcdAttribute.getType()));
+          eDataTypeMap.add(getNativeTypeName(astcdAttribute.getMCType()));
         }
       }
     }
@@ -152,8 +151,8 @@ public class EmfService extends AbstractService {
   public boolean isEDataType(ASTCDAttribute astcdAttribute) {
     DecorationHelper decorationHelper = new DecorationHelper();
     return !decorationHelper.isSimpleAstNode(astcdAttribute) && !decorationHelper.isListAstNode(astcdAttribute) &&
-        !decorationHelper.isOptionalAstNode(astcdAttribute) && !isPrimitive(astcdAttribute.getType())
-        && !isString(astcdAttribute.getType());
+        !decorationHelper.isOptionalAstNode(astcdAttribute) && !isPrimitive(astcdAttribute.getMCType())
+        && !isString(astcdAttribute.getMCType());
   }
 
   public boolean isASTNodeInterface(ASTCDInterface astcdInterface, ASTCDDefinition astcdDefinition) {
@@ -215,8 +214,8 @@ public class EmfService extends AbstractService {
     // fitting package: own grammar -> this, from other grammar -> e.g.
     Map<String, String> superTypes = new HashMap<>();
     superTypes.put(getSimpleNativeType(astcdClass.printSuperClass()), getPackage(astcdClass.printSuperClass()));
-    for (ASTReferenceType astReferenceType : astcdClass.getInterfaceList()) {
-      superTypes.put(getSimpleNativeType(astReferenceType), getPackage(TypesPrinter.printType(astReferenceType)));
+    for (ASTMCObjectType astReferenceType : astcdClass.getInterfaceList()) {
+      superTypes.put(getSimpleNativeType(astReferenceType), getPackage(astReferenceType.printType()));
     }
     return superTypes;
   }
