@@ -72,11 +72,11 @@ public class MCTypeVisitor implements MCFullGenericTypesVisitor {
     mapping.put(qType,oType);
   }
 
-//  public void endVisit(ASTMCQualifiedName qName) {
-//    ObjectType oType = new ObjectType();
-//    oType.setName(qName.toString());
-//    mapping.put(qName,oType);
-//  }
+  public void endVisit(ASTMCQualifiedName qName) {
+    ObjectType oType = new ObjectType();
+    oType.setName(qName.toString());
+    mapping.put(qName,oType);
+  }
 
   public void endVisit(ASTMCPrimitiveType primitiveType) {
     TypeConstant typeConstant = new TypeConstant();
@@ -89,10 +89,5 @@ public class MCTypeVisitor implements MCFullGenericTypesVisitor {
     typeConstant.setName("void");
     mapping.put(voidType,typeConstant);
   }
-
-  public TypeExpression getTypeExpression() {
-    return typeExpression;
-  }
-
 
 }
