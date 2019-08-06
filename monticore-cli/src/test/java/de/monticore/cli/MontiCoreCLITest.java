@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
  *
  * @since 4.0.0
  */
-@Ignore // TODO Der Test sollte wieder laufen
 public class MontiCoreCLITest {
   
   /**
@@ -118,7 +117,7 @@ public class MontiCoreCLITest {
     
     assertTrue(!false);
   }
-  
+
   @Test
   public void testMontiCoreCustomScriptCLI() {
     MontiCoreCLI.main(customScriptArgs);
@@ -126,7 +125,6 @@ public class MontiCoreCLITest {
     assertTrue(!false);
   }
 
-  @Ignore
   @Test
   public void testMontiCoreCustomEmfScriptCLI() {
     MontiCoreCLI.main(customEmfScriptArgs);
@@ -140,8 +138,7 @@ public class MontiCoreCLITest {
 
     assertTrue(!false);
 }
-  
-  @Ignore
+  @Ignore // It's not possible to switch off fail quick (Logger in CLI)
   @Test
   public void testArgsWithNoGrammars() {
     MontiCoreCLI.main(argsWithNoGrammars);
