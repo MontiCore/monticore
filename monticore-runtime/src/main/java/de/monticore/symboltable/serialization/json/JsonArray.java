@@ -16,10 +16,10 @@ import de.monticore.symboltable.serialization.JsonPrinter;
  */
 public class JsonArray implements JsonElement {
   
-  protected List<JsonElement> elements;
+  protected List<JsonElement> values;
   
   public JsonArray() {
-    this.elements = new ArrayList<>();
+    this.values = new ArrayList<>();
   }
   
   /**
@@ -41,15 +41,26 @@ public class JsonArray implements JsonElement {
   /**
    * @return elements
    */
-  public List<JsonElement> getElements() {
-    return this.elements;
+  public List<JsonElement> getValues() {
+    return this.values;
   }
   
   /**
-   * @param elements the elements to set
+   * @param values the elements to set
    */
-  public void setElements(List<JsonElement> elements) {
-    this.elements = elements;
+  public void setValues(List<JsonElement> values) {
+    this.values = values;
+  }
+
+  @Deprecated
+  public List<JsonElement> getElements() {
+    return this.getValues();
+  }
+  
+
+  @Deprecated
+  public void setElements(List<JsonElement> values) {
+    setValues(values);
   }
   
   /**
@@ -57,7 +68,7 @@ public class JsonArray implements JsonElement {
    * @see java.util.List#size()
    */
   public int size() {
-    return this.elements.size();
+    return this.values.size();
   }
   
   /**
@@ -65,7 +76,7 @@ public class JsonArray implements JsonElement {
    * @see java.util.List#isEmpty()
    */
   public boolean isEmpty() {
-    return this.elements.isEmpty();
+    return this.values.isEmpty();
   }
   
   /**
@@ -74,7 +85,7 @@ public class JsonArray implements JsonElement {
    * @see java.util.List#contains(java.lang.Object)
    */
   public boolean contains(Object o) {
-    return this.elements.contains(o);
+    return this.values.contains(o);
   }
   
   /**
@@ -83,7 +94,7 @@ public class JsonArray implements JsonElement {
    * @see java.util.List#add(java.lang.Object)
    */
   public boolean add(JsonElement e) {
-    return this.elements.add(e);
+    return this.values.add(e);
   }
   
   /**
@@ -92,7 +103,7 @@ public class JsonArray implements JsonElement {
    * @see java.util.List#remove(java.lang.Object)
    */
   public boolean remove(Object o) {
-    return this.elements.remove(o);
+    return this.values.remove(o);
   }
   
   /**
@@ -101,7 +112,7 @@ public class JsonArray implements JsonElement {
    * @see java.util.List#addAll(java.util.Collection)
    */
   public boolean addAll(Collection<? extends JsonElement> c) {
-    return this.elements.addAll(c);
+    return this.values.addAll(c);
   }
   
   /**
@@ -110,7 +121,7 @@ public class JsonArray implements JsonElement {
    * @see java.util.List#get(int)
    */
   public JsonElement get(int index) {
-    return this.elements.get(index);
+    return this.values.get(index);
   }
   
   /**
@@ -119,7 +130,7 @@ public class JsonArray implements JsonElement {
    * @see java.util.List#remove(int)
    */
   public JsonElement remove(int index) {
-    return this.elements.remove(index);
+    return this.values.remove(index);
   }
   
   /**
@@ -128,11 +139,11 @@ public class JsonArray implements JsonElement {
   @Override
   public String toString() {
     JsonPrinter printer = new JsonPrinter();
-    printer.beginAttributeList();
-    for (JsonElement e : elements) {
-      printer.attribute(e.toString());
+    printer.beginArray();
+    for (JsonElement e : values) {
+      printer.value(e.toString());
     }
-    printer.endAttributeList();
+    printer.endArray();
     return printer.getContent();
   }
   

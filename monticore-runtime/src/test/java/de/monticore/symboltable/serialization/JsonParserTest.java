@@ -23,7 +23,7 @@ public class JsonParserTest {
   
   @Test
   public void testSimpleObject() {
-    JsonObject result = JsonParser.deserializeJsonObject("{\"foo\":false,\"bar\":3,\"bla\":\"yes\",\"blub\":3.4}");
+    JsonObject result = JsonParser.parseJsonObject("{\"foo\":false,\"bar\":3,\"bla\":\"yes\",\"blub\":3.4}");
     assertTrue(result.get("foo").isJsonBoolean());
     assertEquals(false, result.get("foo").getAsJsonBoolean().getValue());
     

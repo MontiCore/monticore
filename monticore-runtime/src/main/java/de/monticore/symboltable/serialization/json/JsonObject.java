@@ -8,8 +8,8 @@ package de.monticore.symboltable.serialization.json;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -23,10 +23,10 @@ import de.monticore.symboltable.serialization.JsonPrinter;
  */
 public class JsonObject implements JsonElement {
   
-  protected Map<String, JsonElement> attributes;
+  protected Map<String, JsonElement> members;
   
   public JsonObject() {
-    this.attributes = new HashMap<>();
+    this.members = new HashMap<>();
   }
   
   /**
@@ -48,15 +48,25 @@ public class JsonObject implements JsonElement {
   /**
    * @return attributes
    */
-  public Map<String, JsonElement> getAttributes() {
-    return this.attributes;
+  public Map<String, JsonElement> getMembers() {
+    return this.members;
   }
   
   /**
-   * @param attributes the attributes to set
+   * @param members the attributes to set
    */
-  public void setAttributes(Map<String, JsonElement> attributes) {
-    this.attributes = attributes;
+  public void setMembers(Map<String, JsonElement> members) {
+    this.members = members;
+  }
+
+  @Deprecated
+  public Map<String, JsonElement> getAttributes() {
+    return getMembers();
+  }
+  
+  @Deprecated
+  public void setAttributes(Map<String, JsonElement> members) {
+    setMembers(members);
   }
   
   /**
@@ -66,7 +76,7 @@ public class JsonObject implements JsonElement {
    * @see java.util.Map#size()
    */
   public int size() {
-    return this.attributes.size();
+    return this.members.size();
   }
   
   /**
@@ -76,7 +86,7 @@ public class JsonObject implements JsonElement {
    * @see java.util.Map#isEmpty()
    */
   public boolean isEmpty() {
-    return this.attributes.isEmpty();
+    return this.members.isEmpty();
   }
   
   /**
@@ -85,7 +95,7 @@ public class JsonObject implements JsonElement {
    * @see java.util.Map#containsKey(java.lang.Object)
    */
   public boolean containsKey(String key) {
-    return this.attributes.containsKey(key);
+    return this.members.containsKey(key);
   }
   
   /**
@@ -94,7 +104,7 @@ public class JsonObject implements JsonElement {
    * @see java.util.Map#containsValue(java.lang.Object)
    */
   public boolean containsValue(JsonElement value) {
-    return this.attributes.containsValue(value);
+    return this.members.containsValue(value);
   }
   
   /**
@@ -103,19 +113,19 @@ public class JsonObject implements JsonElement {
    * @see java.util.Map#get(java.lang.Object)
    */
   public JsonElement get(String key) {
-    return this.attributes.get(key);
+    return this.members.get(key);
   }
   
   public Optional<String> getStringOpt(String key) {
-    if(attributes.containsKey(key)) {
-      Optional.ofNullable(attributes.get(key).getAsJsonString().getValue());
+    if (members.containsKey(key)) {
+      Optional.ofNullable(members.get(key).getAsJsonString().getValue());
     }
     return Optional.empty();
   }
   
   public Optional<Boolean> getBooleanOpt(String key) {
-    if(attributes.containsKey(key)) {
-      Optional.ofNullable(attributes.get(key).getAsJsonBoolean().getValue());
+    if (members.containsKey(key)) {
+      Optional.ofNullable(members.get(key).getAsJsonBoolean().getValue());
     }
     return Optional.empty();
   }
@@ -127,7 +137,7 @@ public class JsonObject implements JsonElement {
    * @see java.util.Map#put(java.lang.Object, java.lang.Object)
    */
   public JsonElement put(String key, JsonElement value) {
-    return this.attributes.put(key, value);
+    return this.members.put(key, value);
   }
   
   /**
@@ -136,7 +146,7 @@ public class JsonObject implements JsonElement {
    * @see java.util.Map#remove(java.lang.Object)
    */
   public JsonElement remove(String key) {
-    return this.attributes.remove(key);
+    return this.members.remove(key);
   }
   
   /**
@@ -144,7 +154,7 @@ public class JsonObject implements JsonElement {
    * @see java.util.Map#keySet()
    */
   public Set<String> keySet() {
-    return this.attributes.keySet();
+    return this.members.keySet();
   }
   
   /**
@@ -152,7 +162,7 @@ public class JsonObject implements JsonElement {
    * @see java.util.Map#values()
    */
   public Collection<JsonElement> values() {
-    return this.attributes.values();
+    return this.members.values();
   }
   
   /**
@@ -160,7 +170,7 @@ public class JsonObject implements JsonElement {
    * @see java.util.Map#entrySet()
    */
   public Set<Entry<String, JsonElement>> entrySet() {
-    return this.attributes.entrySet();
+    return this.members.entrySet();
   }
   
   /**
@@ -170,8 +180,8 @@ public class JsonObject implements JsonElement {
   public String toString() {
     JsonPrinter printer = new JsonPrinter();
     printer.beginObject();
-    for (String s : attributes.keySet()) {
-      printer.attribute(s, attributes.get(s).toString());
+    for (String s : members.keySet()) {
+      printer.member(s, members.get(s).toString());
     }
     printer.endObject();
     return printer.getContent();
