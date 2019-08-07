@@ -38,7 +38,7 @@ public class ${symTabPrinterName}
     printer.member(JsonConstants.PACKAGE, as.getPackageName());
     printer.member(JsonConstants.EXPORTS_SYMBOLS, as.exportsSymbols());
     printer.beginArray(JsonConstants.IMPORTS);
-    as.getImports().forEach(x -> printer.member(x.toString()));
+    as.getImports().forEach(x -> printer.value(x.toString()));
     printer.endArray();
     printer.member(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(as.getSpanningSymbol()));
   }
