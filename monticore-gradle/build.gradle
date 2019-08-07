@@ -8,12 +8,12 @@ version = "5.0.7-SNAPSHOT"
 group = "de.monticore"
 
 repositories {
-  mavenLocal()
   maven {
     credentials.username mavenUser
     credentials.password mavenPassword
     url repo
   }
+  mavenLocal()
 }
 
 dependencies {
