@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import automaton._ast.ASTActState;
@@ -83,7 +84,7 @@ public class BuildersTest {
   // tests whether handcoded subclass of Builder is used
   // for the subclass-NT as well
   // Yes: here it works
-  @Test
+  @Test @Ignore
   public void testHWCClassHWCBuilderInSubNT() throws IOException {
     ASTActStateBuilder b = AutomatonMill.actStateBuilder();
 	b.setName("x2");
