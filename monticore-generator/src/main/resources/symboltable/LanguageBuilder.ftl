@@ -14,15 +14,16 @@ import de.monticore.IModelingLanguage;
 
 public class ${className} {
 
-    private String name;
-    private String fileEnding;
+protected String name;
 
-    protected ${className}(){}
+protected String fileEnding;
 
-    public ${languageName}Language build(){
-        ${languageName}Language obj = new ${languageName}Language();
-        return obj;
-    }
+protected ${className}(){}
+
+public ${languageName}Language build(){
+${languageName}Language obj = new ${languageName}Language();
+return obj;
+}
 
 <#--    public String getName(){-->
 <#--        return name;-->

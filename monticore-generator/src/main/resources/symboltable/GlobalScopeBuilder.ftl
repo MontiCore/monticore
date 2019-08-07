@@ -14,31 +14,31 @@ import de.monticore.io.paths.ModelPath;
 
 public class ${className}{
 
-    private ${languageName}Language language;
+protected ${languageName}Language language;
 
-    private ModelPath modelPath;
+protected ModelPath modelPath;
 
-    public ${globalScopeName} build(){
-        ${globalScopeName} scope = new ${globalScopeName}(modelPath, language);
-        return scope;
-    }
+public ${globalScopeName} build(){
+${globalScopeName} scope = new ${globalScopeName}(modelPath, language);
+return scope;
+}
 
-    public ${className} setLanguage(${languageName}Language language){
-        this.language= language;
-        return this;
-    }
+public ${className} setLanguage(${languageName}Language language){
+this.language= language;
+return this;
+}
 
-    public ${languageName}Language getLanguage(){
-        return this.language;
-    }
+public ${languageName}Language getLanguage(){
+return this.language;
+}
 
-    public ModelPath getModelPath(){
-        return this.modelPath;
-    }
+public ModelPath getModelPath(){
+return this.modelPath;
+}
 
-    public ${className} setModelPath(ModelPath modelPath){
-        this.modelPath = modelPath;
-        return this;
-    }
+public ${className} setModelPath(ModelPath modelPath){
+this.modelPath = modelPath;
+return this;
+}
 
 }
