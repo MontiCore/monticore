@@ -1,0 +1,76 @@
+import de.monticore.GroovyTask
+buildscript {
+  dependencies {
+    classpath 'de.se_rwth.commons:se-commons-groovy:1.7.9'
+    classpath 'de.monticore:monticore-templateclassgenerator:5.0.7-SNAPSHOT'
+  }
+}
+
+plugins {
+  id 'java'
+  id "monticore" version "5.0.7-SNAPSHOT"
+}
+
+ext.mc_version = '5.0.7-SNAPSHOT'
+ext.junit_version = '4.12'
+ext.commons_version = '1.7.9'
+ext.javaDSL_version = '4.3.17'
+
+group = 'de.monticore'
+version = '5.0.7-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+dependencies {
+  implementation group:'de.se_rwth.commons', name:'se-commons-groovy', version:commons_version
+  implementation group:'de.monticore', name:'monticore-templateclassgenerator', version:mc_version
+  implementation group:'de.monticore', name:'monticore-runtime', version:mc_version
+  testImplementation group:'de.monticore', name:'javaDSL', version:javaDSL_version
+  testImplementation group:'junit', name:'junit', version:junit_version
+  testImplementation group:'ch.qos.logback', name:'logback-classic', version:'1.1.2'
+}
+
+def outDir = "$projectDir/target/generated-sources/templateClasses/"
+
+buildDir = "$projectDir/target"
+
+sourceSets {
+  main.java.srcDirs += [ outDir]
+}
+
+
+task generate(type:GroovyTask){
+  outputDir = file outDir
+  arguments.put("templatepath", "$projectDir/src/test/resources/" )
+  arguments.put("out", outputDir.toString())
+  script = "de/monticore/templateclassgenerator/templateclassgenerator.groovy"
+  baseClass = "de.monticore.templateclassgenerator.TemplateClassGeneratorScript"
+}
+
+compileJava {
+  dependsOn project.collect { it.tasks.withType(GroovyTask) }
+}
+
+
+tasks.withType(JavaCompile) {
+  options.encoding = 'UTF-8'
+}
+
+repositories {
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+  mavenLocal()
+}
+
+test {
+  testLogging {
+    // Make sure output from
+    // standard out or error is shown
+    // in Gradle output.
+    
+  }
+}
+
+

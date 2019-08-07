@@ -12,6 +12,7 @@ before_script:
   - chmod +x monticore-gradle/gradlew
   - chmod +x monticore-generator/it/experiments/gradlew
   - chmod +x monticore-generator/it/gradlew
+  - chmod +x monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/gradlew
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 cache:
@@ -65,13 +66,15 @@ it-gradle:
     - cd monticore-generator/it
     - "./gradlew build"
     - "./gradlew build -PbuildProfile=emf"
+    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
+    - "./gradlew build"
 
 it-experiments-gradle:
   stage: test
   dependencies: []
   script:
     - cd monticore-generator/it/experiments
-    - "./gradlew build --continue"
+    - "./gradlew build"
   allow_failure: true
 
 trigger-automata:
