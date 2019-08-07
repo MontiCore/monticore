@@ -65,8 +65,8 @@ simplified, e.g. without generics.
 classes (also sometimes called "reference types").
  
 ### MCCollectionTypes.mc4 (stable)
-* This grammar defines four generics: List<A>, Map<A,B>, Set<A> and 
-Optional<A> on top of basic types.
+* This grammar defines four generics: `List<A>`, `Map<A,B>`, `Set<A>` and 
+`Optional<A>` on top of basic types.
 * These four generics correspond to a typical predefined set of generic 
 types for example used in connection with UML class diagrams or the
 OCL. UML associations typically have those association multiplicities and 
