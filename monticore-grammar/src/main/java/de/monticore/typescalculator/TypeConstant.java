@@ -1,4 +1,5 @@
 package de.monticore.typescalculator;
 
-public final class TypeConstant extends TypeExpression {
+public class TypeConstant extends TypeExpression {
+  //hier enum attr für primitive types
 }

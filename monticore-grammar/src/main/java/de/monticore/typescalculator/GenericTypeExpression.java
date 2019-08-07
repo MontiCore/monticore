@@ -1,18 +1,20 @@
 package de.monticore.typescalculator;
 
+import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 public class GenericTypeExpression extends TypeExpression {
-
-  public Optional<ETypeSymbol> getWhoAmI() {
+  //String name;
+  public Optional<TypeSymbol> getWhoAmI() {
     return whoAmI;
   }
 
-  public void setWhoAmI(Optional<ETypeSymbol> whoAmI) {
+  public void setWhoAmI(Optional<TypeSymbol> whoAmI) {
     this.whoAmI = whoAmI;
   }
 
@@ -22,9 +24,10 @@ public class GenericTypeExpression extends TypeExpression {
 
   public void setArguments(List<TypeExpression> arguments) {
     this.arguments = arguments;
+    Lists.newArrayList();
   }
 
-  Optional<ETypeSymbol> whoAmI;
+  Optional<TypeSymbol> whoAmI;
 
   List<TypeExpression> arguments = new LinkedList<>();
 
