@@ -17,6 +17,9 @@ public class MCTypeVisitor implements MCFullGenericTypesVisitor {
 
   public Map<ASTMCBasicTypesNode, TypeExpression> mapping = new HashMap<>();
 
+
+
+
   public void endVisit(ASTMCListType listType) {
     GenericTypeExpression listGenericType = new GenericTypeExpression();
     listGenericType.setName("List");
