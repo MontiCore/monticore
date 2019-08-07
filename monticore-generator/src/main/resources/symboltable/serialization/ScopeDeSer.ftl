@@ -75,7 +75,7 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
    */
   @Override
   public Optional<I${languageName}Scope> deserialize(String serialized) {
-    JsonObject scope = JsonParser.deserializeJsonObject(serialized);
+    JsonObject scope = JsonParser.parseJsonObject(serialized);
     return deserialize(scope);
   }
   
@@ -137,7 +137,7 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
   protected void addSymbols(JsonObject scopeJson, ${languageName}Scope scope) {
 <#list symbolNames?keys as symbol>  
     if (scopeJson.containsKey("${symbol?lower_case}Symbols")) {
-      List<JsonElement> ${symbol?lower_case}Symbols = scopeJson.get("${symbol?lower_case}Symbols").getAsJsonArray().getElements();
+      List<JsonElement> ${symbol?lower_case}Symbols = scopeJson.get("${symbol?lower_case}Symbols").getAsJsonArray().getValues();
       for (JsonElement ${symbol?lower_case}Symbol : ${symbol?lower_case}Symbols) {
         deserialize${symbol}Symbol(${symbol?lower_case}Symbol.getAsJsonObject(), scope);
       }
@@ -148,7 +148,7 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
   protected void addAndLinkSubScopes(JsonObject scopeJson, ${languageName}Scope scope) {
     if (scopeJson.containsKey(JsonConstants.SUBSCOPES)) {
       List<JsonElement> elements = scopeJson.get(JsonConstants.SUBSCOPES).getAsJsonArray()
-          .getElements();
+          .getValues();
       for (JsonElement subScopeJson : elements) {
         JsonObject s = subScopeJson.getAsJsonObject();
         Optional<I${languageName}Scope> subScope = deserialize(s);
