@@ -16,12 +16,13 @@ public class JsonBoolean implements JsonElement {
   
   /**
    * Constructor for automata._symboltable.serialization.json.JsonBoolean
+   * 
    * @param value
    */
   public JsonBoolean(boolean value) {
     this.value = value;
   }
-
+  
   /**
    * @see automata._symboltable.serialization.json.JsonElement#isJsonBoolean()
    */
@@ -58,7 +59,7 @@ public class JsonBoolean implements JsonElement {
   @Override
   public String toString() {
     JsonPrinter p = new JsonPrinter();
-    p.attribute(value);
+    p.value(value);
     return p.getContent();
   }
   

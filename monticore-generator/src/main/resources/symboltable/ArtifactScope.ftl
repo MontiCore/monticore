@@ -153,7 +153,7 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${scopeClass} {
 
   public Path getFilePath(${languageName}Language lang) {
     String fileName = getName().orElse("symbols")+"."+lang.getSymbolFileExtension();
-    return Paths.get(getPackageName(), fileName);
+    return Paths.get(Names.getPathFromPackage(getPackageName()), fileName);
   }
 
 <#list symbolNames?keys as symbol>

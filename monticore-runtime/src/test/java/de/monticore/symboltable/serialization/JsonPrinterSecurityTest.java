@@ -46,7 +46,7 @@ public class JsonPrinterSecurityTest {
     String s = printFoo(bar);
     
     // use JsonParser to produce JsonObject form seriaiized stnirg
-    JsonObject o = JsonParser.deserializeJsonObject(s);
+    JsonObject o = JsonParser.parseJsonObject(s);
     
     assertEquals("Bar", getName(o));
     assertEquals(2, getChildren(o).size());
@@ -80,13 +80,13 @@ public class JsonPrinterSecurityTest {
   protected String printFoo(Foo f) {
     JsonPrinter p = new JsonPrinter();
     p.beginObject();
-    p.attribute("name", f.name);
+    p.member("name", f.name);
     if (!f.children.isEmpty()) {
-      p.beginAttributeList("children");
-      f.children.stream().forEach(F -> p.attribute(printFoo(F)));
-      p.endAttributeList();
+      p.beginArray("children");
+      f.children.stream().forEach(F -> p.value(printFoo(F)));
+      p.endArray();
     }
-    p.attribute("name2", f.name);
+    p.member("name2", f.name);
     p.endObject();
     return p.getContent();
   }

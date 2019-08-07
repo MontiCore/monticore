@@ -8,6 +8,7 @@ package de.monticore.symboltable.serialization;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -21,31 +22,24 @@ import de.monticore.symboltable.serialization.json.JsonObject;
  */
 public class JsonUtil {
   
-  /**
-   * Adds escape sequences for all characters that are escaped in Java Strings according to
-   * https://docs.oracle.com/javase/tutorial/java/data/characters.html
-   */
-  public static String escapeSpecialChars(String input) {
-    return input
-    .replace("\\", "\\\\")  // Insert a backslash character in the text at this point.
-    .replace("\t", "\\t")   // Insert a tab in the text at this point.
-    .replace("\b", "\\b")   // Insert a backspace in the text at this point.
-    .replace("\n", "\\n")   // Insert a newline in the text at this point.
-    .replace("\r", "\\r")   // Insert a carriage return in the text at this point.
-    .replace("\f", "\\f")   // Insert a formfeed in the text at this point.
-    .replace("\'", "\\\'")  // Insert a single quote character in the text at this point.
-    .replace("\"", "\\\""); // Insert a double quote character in the text at this point.
-  }
-  
   public static List<ImportStatement> deserializeImports(JsonObject scope) {
     List<ImportStatement> result = new ArrayList<>();
-    if(scope.containsKey(JsonConstants.IMPORTS)) {
-      for (JsonElement e : scope.get(JsonConstants.IMPORTS).getAsJsonArray().getElements()) {
+    if (scope.containsKey(JsonConstants.IMPORTS)) {
+      for (JsonElement e : scope.get(JsonConstants.IMPORTS).getAsJsonArray().getValues()) {
         String i = e.getAsJsonString().getValue();
         result.add(new ImportStatement(i, i.endsWith("*")));
       }
     }
     return result;
+  }
+  
+  public static JsonPrinter serializeScopeSpanningSymbol(IScopeSpanningSymbol spanningSymbol) {
+    JsonPrinter spPrinter = new JsonPrinter();
+    spPrinter.beginObject();
+    spPrinter.member(JsonConstants.KIND, spanningSymbol.getClass().getName());
+    spPrinter.member(JsonConstants.NAME, spanningSymbol.getName());
+    spPrinter.endObject();
+    return spPrinter;
   }
   
 }

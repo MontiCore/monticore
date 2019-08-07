@@ -14,16 +14,16 @@ package de.monticore.symboltable.serialization.json;
  */
 public class JsonNumber implements JsonElement {
   
-  protected String number;
+  protected String value;
   
   /**
    * Constructor for automata._symboltable.serialization.json.JsonNumber
    * 
    * @param number
    */
-  public JsonNumber(String number) {
+  public JsonNumber(String value) {
     super();
-    this.number = number;
+    this.value = value;
   }
   
   /**
@@ -46,61 +46,61 @@ public class JsonNumber implements JsonElement {
    * @return number
    */
   public float getNumberAsFloat() {
-    return Float.parseFloat(number);
+    return Float.parseFloat(value);
   }
   
   /**
    * @param number the number to set
    */
-  public void setNumber(float number) {
-    this.number = number + "";
+  public void setNumber(float value) {
+    this.value = value + "";
   }
   
   /**
    * @return number
    */
   public double getNumberAsDouble() {
-    return Double.parseDouble(number);
+    return Double.parseDouble(value);
   }
   
   /**
    * @param number the number to set
    */
-  public void setNumber(double number) {
-    this.number = number + "";
+  public void setNumber(double value) {
+    this.value = value + "";
   }
   
   /**
    * @return number
    */
   public int getNumberAsInt() {
-    return Integer.parseInt(number);
+    return Integer.parseInt(value);
   }
   
   /**
    * @param number the number to set
    */
-  public void setNumber(int number) {
-    this.number = number + "";
+  public void setNumber(int value) {
+    this.value = value + "";
   }
   
   /**
    * @return number
    */
   public long getNumberAsLong() {
-    return Long.parseLong(number);
+    return Long.parseLong(value);
   }
   
   /**
    * @param number the number to set
    */
-  public void setNumber(long number) {
-    this.number = number + "";
+  public void setNumber(long value) {
+    this.value = value + "";
   }
   
   @Override
   public String toString() {
-    return number;
+    return value;
   }
   
 }
