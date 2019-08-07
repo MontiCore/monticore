@@ -26,9 +26,9 @@ public class CommonSymbolReferenceGenerator implements SymbolReferenceGenerator 
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
                        IterablePath handCodedPath, ProdSymbol prodSymbol, boolean isScopeSpanningSymbol) {
     final String ruleName = prodSymbol.getSymbolDefinitionKind().isPresent() ? prodSymbol.getSymbolDefinitionKind().get() : prodSymbol.getName();
-    final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleName + "SymbolReference"),
+    String className = getSimpleTypeNameToGenerate(getSimpleName(ruleName + "SymbolReference"),
         genHelper.getTargetPackage(), handCodedPath);
-    final Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
+    Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
 
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
     Optional<ASTSymbolRule> symbolRule = empty();
@@ -47,6 +47,17 @@ public class CommonSymbolReferenceGenerator implements SymbolReferenceGenerator 
     if (prodSymbol.getAstNode().isPresent()) {
       genEngine.generate("symboltable.SymbolReference", filePath, prodSymbol.getAstNode().get(),
           className, ruleName, prodSymbol, symbolRule);
+
+      String symbolReferenceName = className.endsWith("TOP")? className.replace("TOP","") : className;
+
+      String languageName = genHelper.getGrammarSymbol().getName();
+
+      className = getSimpleTypeNameToGenerate(getSimpleName(ruleName + "SymbolReferenceBuilder"),
+          genHelper.getTargetPackage(), handCodedPath);
+      filePath = get(getPathFromPackage(genHelper.getTargetPackage()),className+".java");
+
+      genEngine.generate("symboltable.SymbolReferenceBuilder", filePath, prodSymbol.getAstNode().get(),
+          className,languageName,symbolReferenceName);
     }
 
   }

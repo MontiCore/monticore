@@ -19,56 +19,56 @@ import de.monticore.symboltable.ImportStatement;
 
 public class ${className}{
 
-    private String packageName;
+protected String packageName;
 
-    private List<ImportStatement> imports = new ArrayList<>();
+protected List<ImportStatement> imports = new ArrayList<>();
 
-    private I${scopeName} enclosingScope;
+    protected I${scopeName} enclosingScope;
 
     public ${artifactScopeName} build(){
-        ${artifactScopeName} scope;
-        if(enclosingScope==null){
-            scope = new ${artifactScopeName}(packageName, imports);
-        }else{
-            scope = new ${artifactScopeName}(Optional.of(enclosingScope), packageName, imports);
-        }
-        return scope;
+    ${artifactScopeName} scope;
+    if(enclosingScope==null){
+    scope = new ${artifactScopeName}(packageName, imports);
+    }else{
+    scope = new ${artifactScopeName}(Optional.of(enclosingScope), packageName, imports);
+    }
+    return scope;
     }
 
     public ${className} setEnclosingScope(I${scopeName} enclosingScope){
-        this.enclosingScope = enclosingScope;
-        return this;
+    this.enclosingScope = enclosingScope;
+    return this;
     }
 
     public I${scopeName} getEnclosingScope(){
-        return this.enclosingScope;
+    return this.enclosingScope;
     }
 
     public ${className} setPackageName(String packageName){
-        this.packageName = packageName;
-        return this;
+    this.packageName = packageName;
+    return this;
     }
 
     public String getPackageName(){
-        return this.packageName;
+    return this.packageName;
     }
 
     public ${className} setImportList(List<ImportStatement> imports){
         this.imports = imports;
         return this;
-    }
+        }
 
-    public List<ImportStatement> getImportList(){
-        return this.imports;
-    }
+        public List<ImportStatement> getImportList(){
+            return this.imports;
+            }
 
-    public ${className} addImport(ImportStatement statement){
-        imports.add(statement);
-        return this;
-    }
+            public ${className} addImport(ImportStatement statement){
+            imports.add(statement);
+            return this;
+            }
 
-    public ${className} removeImport(ImportStatement statement){
-        imports.remove(statement);
-        return this;
-    }
-}
+            public ${className} removeImport(ImportStatement statement){
+            imports.remove(statement);
+            return this;
+            }
+            }
