@@ -32,7 +32,7 @@ public class MCGrammarPrettyPrinterTest {
     
     // Parsing input
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
-    Optional<ASTMCGrammar> result = parser.parse(model);
+    Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
@@ -42,7 +42,7 @@ public class MCGrammarPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(grammar);
 
     // Parsing printed input
-    result = parser.parse(new StringReader (output));
+    result = parser.parseMCGrammar(new StringReader (output));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
@@ -57,7 +57,7 @@ public class MCGrammarPrettyPrinterTest {
     
     // Parsing input
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
-    Optional<ASTMCGrammar> result = parser.parse(model);
+    Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
@@ -67,7 +67,7 @@ public class MCGrammarPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(grammar);
     
     // Parsing printed input
-    result = parser.parse(new StringReader(output));
+    result = parser.parseMCGrammar(new StringReader(output));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
@@ -82,7 +82,7 @@ public class MCGrammarPrettyPrinterTest {
 
     // Parsing input
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
-    Optional<ASTMCGrammar> result = parser.parse(model);
+    Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
@@ -92,7 +92,7 @@ public class MCGrammarPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(grammar);
 
     // Parsing printed input
-    result = parser.parse(new StringReader(output));
+    result = parser.parseMCGrammar(new StringReader(output));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
@@ -107,7 +107,7 @@ public class MCGrammarPrettyPrinterTest {
 
     // Parsing input
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
-    Optional<ASTMCGrammar> result = parser.parse(model);
+    Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
@@ -117,7 +117,7 @@ public class MCGrammarPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(grammar);
 
     // Parsing printed input
-    result = parser.parse(new StringReader(output));
+    result = parser.parseMCGrammar(new StringReader(output));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
