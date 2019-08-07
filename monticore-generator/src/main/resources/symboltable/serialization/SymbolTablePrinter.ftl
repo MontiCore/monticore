@@ -97,8 +97,8 @@ public class ${symTabPrinterName}
     if (null != spanningSymbol && spanningSymbol.isPresent()) {
       JsonPrinter spPrinter = new JsonPrinter();
       spPrinter.beginObject();
-      spprinter.member(JsonConstants.KIND, spanningSymbol.get().getClass().getName());
-      spprinter.member(JsonConstants.NAME, spanningSymbol.get().getName());
+      spPrinter.member(JsonConstants.KIND, spanningSymbol.get().getClass().getName());
+      spPrinter.member(JsonConstants.NAME, spanningSymbol.get().getName());
       spPrinter.endObject();
       return Optional.ofNullable(spPrinter.getContent());
     }
