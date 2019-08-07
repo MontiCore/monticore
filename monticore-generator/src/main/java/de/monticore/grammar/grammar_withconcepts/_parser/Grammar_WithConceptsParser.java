@@ -10,10 +10,29 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.file.Paths;
 import java.util.Optional;
 
 public class Grammar_WithConceptsParser extends Grammar_WithConceptsParserTOP {
+
+  @Override
+  public Optional<ASTMCGrammar> parse_String(String str) throws IOException {
+    Optional<ASTMCGrammar> grammar = super.parse_String(str);
+    if (grammar.isPresent()) {
+      GrammarTransformer.transform(grammar.get());
+    }
+    return grammar;
+  }
+
+  @Override
+  public Optional<ASTMCGrammar> parse(Reader reader) throws IOException {
+    Optional<ASTMCGrammar> grammar = super.parse(reader);
+    if (grammar.isPresent()) {
+      GrammarTransformer.transform(grammar.get());
+    }
+    return grammar;
+  }
 
   /**
    * @see MCConcreteParser#parse(String)

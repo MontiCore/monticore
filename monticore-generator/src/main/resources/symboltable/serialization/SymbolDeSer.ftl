@@ -15,8 +15,6 @@ package ${genHelper.getTargetPackage()}.serialization;
 
 import ${genHelper.getSymbolTablePackage()}.*;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
 import java.util.List;
 
@@ -53,7 +51,7 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
    */
   @Override
   public Optional<${symbolName}Symbol> deserialize(String serialized) {
-    JsonObject symbol = JsonParser.deserializeJsonObject(serialized);
+    JsonObject symbol = JsonParser.parseJsonObject(serialized);
     return deserialize(symbol);
   }
   

@@ -33,14 +33,14 @@ public class ${symTabPrinterName}
 
   public void visit(${languageName}ArtifactScope as) {
     printer.beginObject();
-    printer.attribute(JsonConstants.KIND, "${symbolTablePackage}.${languageName}ArtifactScope");
-    printer.attribute(JsonConstants.NAME, as.getName());
-    printer.attribute(JsonConstants.PACKAGE, as.getPackageName());
-    printer.attribute(JsonConstants.EXPORTS_SYMBOLS, as.exportsSymbols());
-    printer.beginAttributeList(JsonConstants.IMPORTS);
-    as.getImports().forEach(x -> printer.attribute(x.toString()));
-    printer.endAttributeList();
-    printer.attribute(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(as.getSpanningSymbol()));
+    printer.member(JsonConstants.KIND, "${symbolTablePackage}.${languageName}ArtifactScope");
+    printer.member(JsonConstants.NAME, as.getName());
+    printer.member(JsonConstants.PACKAGE, as.getPackageName());
+    printer.member(JsonConstants.EXPORTS_SYMBOLS, as.exportsSymbols());
+    printer.beginArray(JsonConstants.IMPORTS);
+    as.getImports().forEach(x -> printer.value(x.toString()));
+    printer.endArray();
+    printer.member(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(as.getSpanningSymbol()));
   }
 
   /**
@@ -49,15 +49,15 @@ public class ${symTabPrinterName}
   @Override
   public void visit(${languageName}Scope scope) {
     printer.beginObject();
-    printer.attribute(JsonConstants.KIND, "${symbolTablePackage}.${languageName}Scope");
-    printer.attribute(JsonConstants.NAME, scope.getName());
-    printer.attribute(JsonConstants.IS_SHADOWING_SCOPE, scope.isShadowingScope());
-    printer.attribute(JsonConstants.EXPORTS_SYMBOLS, scope.exportsSymbols());
-    printer.attribute(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(scope.getSpanningSymbol()));
+    printer.member(JsonConstants.KIND, "${symbolTablePackage}.${languageName}Scope");
+    printer.member(JsonConstants.NAME, scope.getName());
+    printer.member(JsonConstants.IS_SHADOWING_SCOPE, scope.isShadowingScope());
+    printer.member(JsonConstants.EXPORTS_SYMBOLS, scope.exportsSymbols());
+    printer.member(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(scope.getSpanningSymbol()));
     
 <#if scopeRule.isPresent()>
 <#list scopeRule.get().getAdditionalAttributeList() as attr>
-    printer.attribute("${attr.name}", serialize${attr.name}(scope));
+    printer.member("${attr.name}", serialize${attr.name}(scope));
 </#list>
 </#if>
   }
@@ -97,8 +97,8 @@ public class ${symTabPrinterName}
     if (null != spanningSymbol && spanningSymbol.isPresent()) {
       JsonPrinter spPrinter = new JsonPrinter();
       spPrinter.beginObject();
-      spPrinter.attribute(JsonConstants.KIND, spanningSymbol.get().getClass().getName());
-      spPrinter.attribute(JsonConstants.NAME, spanningSymbol.get().getName());
+      spprinter.member(JsonConstants.KIND, spanningSymbol.get().getClass().getName());
+      spprinter.member(JsonConstants.NAME, spanningSymbol.get().getName());
       spPrinter.endObject();
       return Optional.ofNullable(spPrinter.getContent());
     }
@@ -112,16 +112,16 @@ public class ${symTabPrinterName}
   public void traverse(${languageName}Scope scope) {
 <#list symbols as symbol>
     if (!scope.getLocal${symbol.name}Symbols().isEmpty()) {
-      printer.beginAttributeList("${symbol.name?lower_case}Symbols");
+      printer.beginArray("${symbol.name?lower_case}Symbols");
       scope.getLocal${symbol.name}Symbols().stream().forEach(s -> s.accept(getRealThis()));
-      printer.endAttributeList();
+      printer.endArray();
     }
 </#list>
     Collection<I${languageName}Scope> subScopes = filterRelevantSubScopes(scope.getSubScopes());
     if (!subScopes.isEmpty()) {
-      printer.beginAttributeList(JsonConstants.SUBSCOPES);
+      printer.beginArray(JsonConstants.SUBSCOPES);
       subScopes.stream().forEach(s -> s.accept(getRealThis()));
-      printer.endAttributeList();
+      printer.endArray();
     }
   }
 
@@ -140,11 +140,11 @@ public class ${symTabPrinterName}
   @Override
   public void visit(${symbol.name}Symbol symbol) {
     printer.beginObject();
-    printer.attribute(JsonConstants.KIND, "${symbolTablePackage}.${symbol.name}Symbol");
-    printer.attribute(JsonConstants.NAME, symbol.getName());
+    printer.member(JsonConstants.KIND, "${symbolTablePackage}.${symbol.name}Symbol");
+    printer.member(JsonConstants.NAME, symbol.getName());
     <#if symbolRules[symbol.name]??>
     <#list symbolRules[symbol.name].getAdditionalAttributeList() as attr>
-    printer.attribute("${attr.name}", serialize${attr.name}(symbol));
+    printer.member("${attr.name}", serialize${attr.name}(symbol));
     </#list>
     </#if>
   }

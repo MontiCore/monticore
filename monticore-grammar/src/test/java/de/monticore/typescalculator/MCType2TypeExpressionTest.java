@@ -20,6 +20,8 @@ public class MCType2TypeExpressionTest {
   List<String> primitiveTypes = Arrays
           .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
 
+
+
   @Test
   public void testBasicGeneric() throws IOException {
     Optional<ASTMCType> type = new MCFullGenericTypesTestParser().parse_StringMCType("de.util.Pair<de.mc.PairA,de.mc.PairB>");
