@@ -243,4 +243,12 @@ public class AbstractService<T extends AbstractService> {
     return "this";
   }
 
+  public boolean hasScopeStereotype(ASTModifier modifier) {
+    return hasStereotype(modifier, MC2CDStereotypes.SCOPE);
+  }
+
+  public boolean hasSymbolStereotype(ASTModifier modifier) {
+    return hasStereotype(modifier, MC2CDStereotypes.SYMBOL);
+  }
+
 }

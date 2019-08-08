@@ -19,8 +19,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class FullConstructorTest extends DecoratorTestCase {
 
@@ -47,33 +46,36 @@ public class FullConstructorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testClassName() {
+  public void testClassNameSubB() {
     assertEquals("SupB", subBClass.getName());
   }
 
   @Test
-  public void testAttributesCount() {
-    assertEquals(2, subBClass.getCDAttributeList().size());
+  public void testAttributesCountSubB() {
+    assertEquals(1, subBClass.getCDAttributeList().size());
   }
 
   @Test
-  public void testPrimitiveAttribute() {
-    ASTCDAttribute attribute = getAttributeBy("i", subBClass);
+  public void testOwnAttributeSubB() {
+    ASTCDAttribute attribute = getAttributeBy("b", subBClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertInt(attribute.getMCType());
+    assertBoolean(attribute.getMCType());
+  }
+
+
+  @Test
+  public void testNoInheritedAttributeSubB() {
+    //test that inherited attributes are not contained in new class
+    assertTrue(subBClass.getCDAttributeList().stream().noneMatch(a -> a.getName().equals("i")));
+    assertTrue(subBClass.getCDAttributeList().stream().noneMatch(a -> a.getName().equals("s")));
   }
 
   @Test
-  public void testConstructorsCount() {
-    assertEquals(2, subBClass.getCDConstructorList().size());
-  }
-
-  @Test
-  public void testFullConstructor() {
+  public void testFullConstructorSubB() {
     ASTCDConstructor fullConstructor = subBClass.getCDConstructor(1);
     assertDeepEquals(PROTECTED, fullConstructor.getModifier());
     assertFalse(fullConstructor.isEmptyCDParameters());
-    assertEquals(2, fullConstructor.sizeCDParameters());
+    assertEquals(3, fullConstructor.sizeCDParameters());
 
     ASTCDParameter parameter = fullConstructor.getCDParameter(0);
     assertInt(parameter.getMCType());
@@ -82,6 +84,31 @@ public class FullConstructorTest extends DecoratorTestCase {
     parameter = fullConstructor.getCDParameter(1);
     assertDeepEquals(String.class, parameter.getMCType());
     assertEquals("s", parameter.getName());
+
+    parameter = fullConstructor.getCDParameter(2);
+    assertBoolean(parameter.getMCType());
+    assertEquals("b", parameter.getName());
+  }
+
+  @Test
+  public void testAttributesCountSubA() {
+    assertEquals(1, subAClass.getCDAttributeList().size());
+  }
+
+  @Test
+  public void testOwnAttributeSubA() {
+    ASTCDAttribute attribute = getAttributeBy("c", subAClass);
+    assertDeepEquals(PROTECTED, attribute.getModifier());
+    assertDeepEquals("char", attribute.getMCType());
+  }
+
+
+  @Test
+  public void testNoInheritedAttributeSubA() {
+    //test that inherited attributes are not contained in new class
+    assertTrue(subAClass.getCDAttributeList().stream().noneMatch(a -> a.getName().equals("i")));
+    assertTrue(subAClass.getCDAttributeList().stream().noneMatch(a -> a.getName().equals("s")));
+    assertTrue(subAClass.getCDAttributeList().stream().noneMatch(a -> a.getName().equals("b")));
   }
 
   @Test
@@ -90,7 +117,7 @@ public class FullConstructorTest extends DecoratorTestCase {
     ASTCDConstructor fullConstructor = subAClass.getCDConstructor(1);
     assertDeepEquals(PROTECTED, fullConstructor.getModifier());
     assertFalse(fullConstructor.isEmptyCDParameters());
-    assertEquals(3, fullConstructor.sizeCDParameters());
+    assertEquals(4, fullConstructor.sizeCDParameters());
 
     ASTCDParameter parameter = fullConstructor.getCDParameter(0);
     assertInt(parameter.getMCType());
@@ -103,6 +130,10 @@ public class FullConstructorTest extends DecoratorTestCase {
     parameter = fullConstructor.getCDParameter(2);
     assertDeepEquals(String.class, parameter.getMCType());
     assertEquals("s", parameter.getName());
+
+    parameter = fullConstructor.getCDParameter(3);
+    assertDeepEquals("char", parameter.getMCType());
+    assertEquals("c", parameter.getName());
   }
 
   @Test

@@ -10,7 +10,6 @@ ${tc.signature("astcdClass", "simpleClassName")}
     } else {
       return false;
     }
-      <#-- TODO: attributes of super class - use symbol table -->
        <#list astcdClass.getCDAttributeList()  as attribute>
          <#assign attributeName = attribute.getName()>
          <#if !genHelper.isSimpleAstNode(attribute) && !genHelper.isOptionalAstNode(attribute) && !genHelper.isListAstNode(attribute)>
@@ -31,7 +30,7 @@ ${tc.signature("astcdClass", "simpleClassName")}
     }
 	      </#if>
 	    </#if>  
-      </#list>      
-    return true;     
-    </#if> 
+      </#list>
+    return true;
+    </#if>
 

@@ -1,9 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("astcdClass", "simpleClassName")}
+${tc.signature("allAttributes", "simpleClassName")}
    <#assign genHelper = glex.getGlobalVar("astHelper")>
-   <#if astcdClass.getCDAttributeList()?size == 0>
-    return o instanceof ${simpleClassName};
-   <#else>
       ${simpleClassName} comp;
     if ((o instanceof ${simpleClassName})) {
       comp = (${simpleClassName}) o;
@@ -14,7 +11,7 @@ ${tc.signature("astcdClass", "simpleClassName")}
       return false;
     }
     <#-- TODO: attributes of super class - use symbol table -->
-    <#list astcdClass.getCDAttributeList()  as attribute>
+    <#list allAttributes  as attribute>
        <#assign attrName = attribute.getName()>
        <#if genHelper.isOptionalAstNode(attribute)>
     // comparing ${attrName}   
@@ -63,5 +60,4 @@ ${tc.signature("astcdClass", "simpleClassName")}
        </#if>
      </#list>
     return true;     
-   </#if>
 

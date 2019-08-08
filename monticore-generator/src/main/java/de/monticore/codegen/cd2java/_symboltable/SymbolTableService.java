@@ -117,10 +117,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return attribute.isPresentModifier() && hasStereotype(attribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL);
   }
 
-  public boolean hasSymbolStereotype(ASTModifier modifier) {
-    return hasStereotype(modifier, MC2CDStereotypes.SYMBOL);
-  }
-
   public Optional<String> getSymbolTypeValue(ASTModifier modifier) {
     List<String> stereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.SYMBOL);
     if (!stereotypeValues.isEmpty()) {
@@ -129,7 +125,4 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return Optional.empty();
   }
 
-  public boolean hasScopeStereotype(ASTModifier modifier) {
-    return hasStereotype(modifier, MC2CDStereotypes.SCOPE);
-  }
 }
