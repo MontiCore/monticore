@@ -5,6 +5,7 @@ package de.monticore.grammar;
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.utils.ASTNodes;
 
 import java.util.ArrayList;
@@ -89,16 +90,16 @@ public enum Multiplicity {
     ASTMCGrammar grammar = (ASTMCGrammar) rootNode;
     
     // check if own grammar is the defining grammar
-    if (!astNode.isPresentEnclosingScope()) {
-      return multiplicityOfASTNode(rootNode, astNode);
-    }
-    String definingGrammarName = astNode.getEnclosingScope().getEnclosingScope().get().getSpanningSymbol().get().getName();
+    IScopeSpanningSymbol definingGrammarSymbol = ((ASTNonTerminal) astNode).getEnclosingScope2().getEnclosingScope().get().getSpanningSymbol().get();
+
+    String definingGrammarName = definingGrammarSymbol.getName();
+    String definingGrammarFullName = definingGrammarSymbol.getFullName();
     if (grammar.getName().equals(definingGrammarName)) {
       return multiplicityOfASTNode(rootNode, astNode);
     }
     
     // resolve defining grammar or switch to default behavior without inheritance
-    Optional<MCGrammarSymbol> grammarSymbol = ((ASTMCGrammar) rootNode).getEnclosingScope2().resolveMCGrammar(definingGrammarName);
+    Optional<MCGrammarSymbol> grammarSymbol = ((ASTMCGrammar) rootNode).getEnclosingScope2().resolveMCGrammar(definingGrammarFullName);
     if (!grammarSymbol.isPresent() || !grammarSymbol.get().getAstNode().isPresent()) {
       return multiplicityOfASTNode(rootNode, astNode);
     }

@@ -1,10 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("astcdClass")}
+${tc.signature("attributeList")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 <#assign service = glex.getGlobalVar("service")>
     super.deepClone(result);
 
-<#list astcdClass.getCDAttributeList() as attribute>
+<#list attributeList as attribute>
 <#if attribute.isPresentModifier() && !service.isReferencedSymbolAttribute(attribute) && !service.isInherited(attribute)>
   <#assign attributeName = attribute.getName()>
   <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>

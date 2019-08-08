@@ -43,32 +43,37 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   @Override
   public ASTCDClass decorate(ASTCDClass clazz) {
-    this.clazzName= clazz.deepClone().getName();
+    this.clazzName = clazz.deepClone().getName();
     clazz.addCDConstructor(createDefaultConstructor(clazz));
     if (!clazz.getCDAttributeList().isEmpty()) {
       clazz.addCDConstructor(createFullConstructor(clazz));
     }
+
+    //remove symbol and scope attributes for deepEquals and deepClone methods
+    List<ASTCDAttribute> noSymboAttributes = clazz.deepClone().getCDAttributeList().stream()
+        .filter(a -> !service.isReferencedSymbolAttribute(a))
+        .filter(ASTCDAttributeTOP::isPresentModifier)
+        .filter(a -> !service.hasScopeStereotype(a.getModifier()))
+        .filter(a -> !service.hasSymbolStereotype(a.getModifier()))
+        .collect(Collectors.toList());
+
+    clazz.addAllCDMethods(getAllDataMethods(clazz.deepClone(), noSymboAttributes));
+    clazz.addCDMethod(createDeepCloneWithParam(clazz.deepClone(), noSymboAttributes));
+
+    //remove inherited attributes, because this should not be generated again
+    List<ASTCDAttribute> ownAttributes = clazz.getCDAttributeList()
+        .stream()
+        .filter(a -> !service.isInherited(a))
+        .collect(Collectors.toList());
+
+    clazz.setCDAttributeList(ownAttributes);
     clazz.getCDAttributeList().forEach(this::addAttributeDefaultValues);
-    clazz.addAllCDMethods(getAllDataMethods(clazz));
-    clazz.addCDMethod(createDeepCloneWithParam(clazz));
 
     //remove methods that are already defined by ast rules
-    clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), createGetter(clazz.getCDAttributeList())));
-    clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), createSetter(clazz.getCDAttributeList())));
+    clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), createGetter(ownAttributes)));
+    clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), createSetter(ownAttributes)));
 
     return clazz;
-  }
-
-  protected boolean isSameMethodSignature(ASTCDMethod method1, ASTCDMethod method2) {
-    if (!method1.getName().equals(method2.getName()) || method1.sizeCDParameters() != method2.sizeCDParameters()) {
-      return false;
-    }
-    for (int i = 0; i < method1.getCDParameterList().size(); i++) {
-      if (!method1.getCDParameter(i).getMCType().deepEquals(method2.getCDParameter(i).getMCType())) {
-        return false;
-      }
-    }
-    return true;
   }
 
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
@@ -94,8 +99,9 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     return fullConstructor;
   }
 
-  protected List<ASTCDMethod> getAllDataMethods(ASTCDClass clazz) {
-    String simpleClassName = dataDecoratorUtil.getSimpleName(clazz);
+  protected List<ASTCDMethod> getAllDataMethods(ASTCDClass astcdClass, List<ASTCDAttribute> attributeList) {
+    String simpleClassName = dataDecoratorUtil.getSimpleName(astcdClass);
+
     List<ASTCDMethod> methods = new ArrayList<>();
     ASTCDParameter objectParameter = getCDParameterFacade().createParameter(Object.class, "o");
     ASTCDParameter forceSameOrderParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "forceSameOrder");
@@ -105,7 +111,11 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     methods.add(deepEqualsMethod);
 
     ASTCDMethod deepEqualsWithOrder = dataDecoratorUtil.createDeepEqualsWithOrderMethod(objectParameter, forceSameOrderParameter);
-    this.replaceTemplate(EMPTY_BODY, deepEqualsWithOrder, new TemplateHookPoint("data.DeepEqualsWithOrder", clazz, simpleClassName));
+    if (attributeList.isEmpty()) {
+      this.replaceTemplate(EMPTY_BODY, deepEqualsWithOrder, new StringHookPoint("return o instanceof " + simpleClassName + ";"));
+    } else {
+      this.replaceTemplate(EMPTY_BODY, deepEqualsWithOrder, new TemplateHookPoint("data.DeepEqualsWithOrder", attributeList, simpleClassName));
+    }
     methods.add(deepEqualsWithOrder);
 
     ASTCDMethod deepEqualsWithComments = dataDecoratorUtil.createDeepEqualsWithComments(objectParameter);
@@ -113,43 +123,50 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     methods.add(deepEqualsWithComments);
 
     ASTCDMethod deepEqualsWithCommentsWithOrder = dataDecoratorUtil.createDeepEqualsWithCommentsWithOrder(objectParameter, forceSameOrderParameter);
-    this.replaceTemplate(EMPTY_BODY, deepEqualsWithCommentsWithOrder, new TemplateHookPoint("data.DeepEqualsWithComments", clazz, simpleClassName));
+    if (attributeList.isEmpty()) {
+      this.replaceTemplate(EMPTY_BODY, deepEqualsWithCommentsWithOrder, new StringHookPoint("return o instanceof " + simpleClassName + ";"));
+    } else {
+      this.replaceTemplate(EMPTY_BODY, deepEqualsWithCommentsWithOrder, new TemplateHookPoint("data.DeepEqualsWithComments", attributeList, simpleClassName));
+    }
     methods.add(deepEqualsWithCommentsWithOrder);
 
     ASTCDMethod equalAttributes = dataDecoratorUtil.createEqualAttributesMethod(objectParameter);
-    this.replaceTemplate(EMPTY_BODY, equalAttributes, new TemplateHookPoint("data.EqualAttributes", clazz, simpleClassName));
+    this.replaceTemplate(EMPTY_BODY, equalAttributes, new TemplateHookPoint("data.EqualAttributes", astcdClass, simpleClassName));
     methods.add(equalAttributes);
 
     ASTCDMethod equalsWithComments = dataDecoratorUtil.createEqualsWithComments(objectParameter);
     this.replaceTemplate(EMPTY_BODY, equalsWithComments, new TemplateHookPoint("data.EqualsWithComments", simpleClassName));
     methods.add(equalsWithComments);
 
-    ASTCDMethod deepClone = dataDecoratorUtil.createDeepClone(clazz);
+    ASTCDMethod deepClone = dataDecoratorUtil.createDeepClone(astcdClass);
     this.replaceTemplate(EMPTY_BODY, deepClone, new StringHookPoint("    return deepClone(_construct());"));
     methods.add(deepClone);
     return methods;
   }
 
 
-  protected ASTCDMethod createDeepCloneWithParam(ASTCDClass clazz) {
+  protected ASTCDMethod createDeepCloneWithParam(ASTCDClass clazz, List<ASTCDAttribute> attributeList) {
     String simpleName = dataDecoratorUtil.getSimpleName(clazz);
     // deep clone with result parameter
     ASTMCType classType = this.getCDTypeFacade().createQualifiedType(simpleName);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(classType, "result");
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(classType).build();
     ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC, returnType, DEEP_CLONE_METHOD, parameter);
-    this.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("data.DeepCloneWithParameters", clazz));
+    List<ASTCDAttribute> noInheritedAttributes = attributeList.stream()
+        .filter(a -> !service.isInherited(a))
+        .collect(Collectors.toList());
+    this.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("data.DeepCloneWithParameters", noInheritedAttributes));
     return deepCloneWithParam;
   }
 
-  protected List<ASTCDMethod> createGetter(List<ASTCDAttribute> attributeList){
+  protected List<ASTCDMethod> createGetter(List<ASTCDAttribute> attributeList) {
     return attributeList.stream()
         .map(methodDecorator.getAccessorDecorator()::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
   }
 
-  protected List<ASTCDMethod> createSetter(List<ASTCDAttribute> attributeList){
+  protected List<ASTCDMethod> createSetter(List<ASTCDAttribute> attributeList) {
     return attributeList.stream()
         .map(methodDecorator.getMutatorDecorator()::decorate)
         .flatMap(List::stream)
