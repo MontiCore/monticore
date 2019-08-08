@@ -138,11 +138,9 @@ public class CommonScopeGenerator implements ScopeGenerator {
     // list of all superscope interfaces of the current scope
     Set<String> allSuperScopes = new HashSet<>();
     for (CDDefinitionSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
-      if (genHelper.hasSymbolTable(cdSymbol.getFullName())) {
-        String qualifiedSymbolName = genHelper.getQualifiedScopeInterfaceType(cdSymbol);
-        if (!qualifiedSymbolName.isEmpty()) {
-          allSuperScopes.add(qualifiedSymbolName);
-        }
+      String qualifiedSymbolName = genHelper.getQualifiedScopeInterfaceType(cdSymbol);
+      if (!qualifiedSymbolName.isEmpty()) {
+        allSuperScopes.add(qualifiedSymbolName);
       }
     }
 
