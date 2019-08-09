@@ -70,8 +70,10 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     changedClass.addAllCDMethods(createAcceptSuperMethods(originalClass));
     changedClass.addCDMethod(getConstructMethod(originalClass));
     changedClass.addCDMethod(createGetChildrenMethod(originalClass));
-    if (!changedClass.isPresentSuperclass()) {
+    if (!originalClass.isPresentSuperclass()) {
       changedClass.setSuperclass(this.getCDTypeFacade().createQualifiedType(ASTCNode.class));
+    }else {
+      changedClass.setSuperclass(originalClass.getSuperclass());
     }
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(originalClass);

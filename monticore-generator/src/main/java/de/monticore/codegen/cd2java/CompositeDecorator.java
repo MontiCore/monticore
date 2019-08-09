@@ -47,7 +47,7 @@ public abstract class CompositeDecorator<T> extends AbstractTransformer<T> {
 
   protected T applyDecorations(final T originalInput, T changedInput) {
     for (AbstractTransformer<T> decorator : decorators) {
-      decorator.decorate(originalInput, changedInput);
+      changedInput = decorator.decorate(originalInput, changedInput);
     }
     return changedInput;
   }

@@ -1,7 +1,6 @@
 package de.monticore.codegen.cd2java._ast;
 
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreatorDelegator;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
@@ -44,10 +43,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
   protected final FullASTInterfaceDecorator astInterfaceDecorator;
 
-  private final CD4AnalysisSymbolTableCreatorDelegator symbolTableCreator;
-
   public ASTCDDecorator(final GlobalExtensionManagement glex,
-                        final CD4AnalysisSymbolTableCreatorDelegator symbolTableCreator,
                         final ASTFullDecorator astFullDecorator,
                         final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator,
                         final ASTBuilderDecorator astBuilderDecorator,
@@ -67,7 +63,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     this.astConstantsDecorator = astConstantsDecorator;
     this.enumDecorator = enumDecorator;
     this.astInterfaceDecorator = astInterfaceDecorator;
-    this.symbolTableCreator = symbolTableCreator;
   }
 
   @Override
@@ -112,8 +107,8 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
       ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(astcdClass.getName())
           .setModifier(astcdClass.getModifier())
           .build();
-      ASTCDClass decoratedASTClass = astFullDecorator.decorate(astcdClass, changedClass);
-      astcdClassList.add(decoratedASTClass);
+      astFullDecorator.decorate(astcdClass, changedClass);
+      astcdClassList.add(changedClass);
     }
     return astcdClassList;
   }

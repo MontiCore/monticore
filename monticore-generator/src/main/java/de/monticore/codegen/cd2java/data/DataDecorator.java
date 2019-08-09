@@ -48,20 +48,26 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     if (!originalClass.isEmptyCDAttributes()) {
       changedClass.addCDConstructor(createFullConstructor(originalClass));
     }
+    if (originalClass.isPresentSuperclass()) {
+      changedClass.setSuperclass(originalClass.getSuperclass());
+    }
+    if (!originalClass.isEmptyInterfaces()) {
+      changedClass.addAllInterfaces(originalClass.getInterfaceList());
+    }
 
     //remove symbol and scope attributes for deepEquals and deepClone methods
-    List<ASTCDAttribute> noSymboAttributes = originalClass.getCDAttributeList().stream()
+    List<ASTCDAttribute> noSymbolAttributes = originalClass.getCDAttributeList().stream()
         .filter(a -> !service.isReferencedSymbolAttribute(a))
         .filter(ASTCDAttributeTOP::isPresentModifier)
         .filter(a -> !service.hasScopeStereotype(a.getModifier()))
         .filter(a -> !service.hasSymbolStereotype(a.getModifier()))
         .collect(Collectors.toList());
 
-    changedClass.addAllCDMethods(getAllDataMethods(originalClass, noSymboAttributes));
-    changedClass.addCDMethod(createDeepCloneWithParam(originalClass, noSymboAttributes));
+    changedClass.addAllCDMethods(getAllDataMethods(originalClass, noSymbolAttributes));
+    changedClass.addCDMethod(createDeepCloneWithParam(originalClass, noSymbolAttributes));
 
     //remove inherited attributes, because this should not be generated again
-    List<ASTCDAttribute> ownAttributes = originalClass.getCDAttributeList()
+    List<ASTCDAttribute> ownAttributes = originalClass.deepClone().getCDAttributeList()
         .stream()
         .filter(a -> !service.isInherited(a))
         .collect(Collectors.toList());
