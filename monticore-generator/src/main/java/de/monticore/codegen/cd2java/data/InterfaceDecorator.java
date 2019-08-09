@@ -2,15 +2,15 @@ package de.monticore.codegen.cd2java.data;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class InterfaceDecorator extends AbstractDecorator<ASTCDInterface, ASTCDInterface> {
+public class InterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
 
   private final DataDecoratorUtil dataDecoratorUtil;
 
@@ -27,22 +27,22 @@ public class InterfaceDecorator extends AbstractDecorator<ASTCDInterface, ASTCDI
   }
 
   @Override
-  public ASTCDInterface decorate(ASTCDInterface cdInterface) {
+  public ASTCDInterface decorate(final ASTCDInterface originalInput, ASTCDInterface changedInput) {
     //add abstract methods like deepClone, deepEquals etc.
-    List<ASTCDMethod> dataMethods = dataDecoratorUtil.decorate(cdInterface);
+    List<ASTCDMethod> dataMethods = dataDecoratorUtil.decorate(originalInput);
     dataMethods.forEach(m -> m.getModifier().setAbstract(true));
-    cdInterface.addAllCDMethods(dataMethods);
+    originalInput.addAllCDMethods(dataMethods);
 
     //add abstract methods for attributes of the interface
-    List<ASTCDMethod> attributeMethods = cdInterface.getCDAttributeList().stream()
+    List<ASTCDMethod> attributeMethods = originalInput.getCDAttributeList().stream()
         .map(methodDecorator::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
-    List<ASTCDMethod> methodListWithoutDuplicates = service.getMethodListWithoutDuplicates(cdInterface.getCDMethodList(), attributeMethods);
+    List<ASTCDMethod> methodListWithoutDuplicates = service.getMethodListWithoutDuplicates(originalInput.getCDMethodList(), attributeMethods);
     methodListWithoutDuplicates.forEach(m -> m.getModifier().setAbstract(true));
-    cdInterface.addAllCDMethods(methodListWithoutDuplicates);
+    originalInput.addAllCDMethods(methodListWithoutDuplicates);
 
-    cdInterface.getCDAttributeList().clear();
-    return cdInterface;
+    originalInput.getCDAttributeList().clear();
+    return originalInput;
   }
 }

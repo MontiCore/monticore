@@ -2,25 +2,25 @@ package de.monticore.codegen.cd2java.methods;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MethodDecorator extends AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> {
+public class MethodDecorator extends AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> {
 
-  private final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> accessorDecorator;
+  private final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> accessorDecorator;
 
-  private final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
+  private final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
 
   public MethodDecorator(final GlobalExtensionManagement glex) {
     this(glex, new AccessorDecorator(glex), new MutatorDecorator(glex));
   }
 
   public MethodDecorator(final GlobalExtensionManagement glex,
-      final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> accessorDecorator,
-      final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator) {
+      final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> accessorDecorator,
+      final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator) {
     super(glex);
     this.accessorDecorator = accessorDecorator;
     this.mutatorDecorator = mutatorDecorator;
@@ -47,11 +47,11 @@ public class MethodDecorator extends AbstractDecorator<ASTCDAttribute, List<ASTC
     return result;
   }
 
-  public AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> getAccessorDecorator() {
+  public AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> getAccessorDecorator() {
     return accessorDecorator;
   }
 
-  public AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> getMutatorDecorator() {
+  public AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> getMutatorDecorator() {
     return mutatorDecorator;
   }
 }

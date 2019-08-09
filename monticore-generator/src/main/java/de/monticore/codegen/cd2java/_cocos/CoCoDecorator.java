@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java._cocos;
 
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
@@ -11,7 +11,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 
-public class CoCoDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
+public class CoCoDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
   private final CoCoCheckerDecorator cocoCheckerDecorator;
 

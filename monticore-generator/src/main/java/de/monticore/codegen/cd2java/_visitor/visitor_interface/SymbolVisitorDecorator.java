@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java._visitor.visitor_interface;
 
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -12,7 +12,7 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYM
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKGE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
-public class SymbolVisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDInterface> {
+public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
   private final VisitorInterfaceDecorator visitorInterfaceDecorator;
 

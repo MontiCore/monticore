@@ -4,7 +4,7 @@ import de.monticore.ast.ASTCNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderDecorator.*;
 
-public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
+public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   private static final String DEFAULT_SUPER_CLASS = "de.monticore.ast.ASTNodeBuilder<%s>";
 

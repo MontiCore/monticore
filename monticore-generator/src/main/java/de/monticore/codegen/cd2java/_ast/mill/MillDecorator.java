@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java._ast.mill;
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -21,10 +21,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDClass> {
+public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   private static final String MILL_SUFFIX = "Mill";
 

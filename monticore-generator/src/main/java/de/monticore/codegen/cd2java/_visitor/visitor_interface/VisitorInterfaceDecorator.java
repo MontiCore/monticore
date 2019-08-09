@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java._visitor.visitor_interface;
 
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -17,7 +17,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class VisitorInterfaceDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDInterface> {
+public class VisitorInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
   private final VisitorService visitorService;
 

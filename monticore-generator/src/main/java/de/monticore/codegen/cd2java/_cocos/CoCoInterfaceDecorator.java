@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java._cocos;
 
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
-public class CoCoInterfaceDecorator extends AbstractDecorator<ASTCDDefinition, List<ASTCDInterface>> {
+public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, List<ASTCDInterface>> {
 
   private final CoCoService cocoService;
 

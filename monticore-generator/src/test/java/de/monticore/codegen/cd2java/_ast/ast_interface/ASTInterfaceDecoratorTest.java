@@ -1,9 +1,6 @@
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -22,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
@@ -47,7 +43,10 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     ASTInterfaceDecorator decorator = new ASTInterfaceDecorator(this.glex, new ASTService(astcdCompilationUnit)
         , new VisitorService(astcdCompilationUnit), new ASTSymbolDecorator(this.glex, symbolTableService),
         new ASTScopeDecorator(this.glex, symbolTableService), new MethodDecorator(this.glex));
-    this.dataInterface = decorator.decorate(interfaceBy);
+    ASTCDInterface changeInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(interfaceBy.getName())
+        .setModifier(interfaceBy.getModifier())
+        .build();
+    this.dataInterface = decorator.decorate(interfaceBy, changeInterface);
   }
 
   @Test

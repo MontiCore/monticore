@@ -1,5 +1,8 @@
 package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
@@ -14,8 +17,6 @@ import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,9 +37,9 @@ public class ASTFullEmfDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
-    ASTCDClass clazz = getClassBy("A", decoratedCompilationUnit);
+    ASTCDClass clazz = getClassBy("ASTAutomaton", decoratedCompilationUnit);
 
     ASTService astService = new ASTService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
@@ -53,8 +54,10 @@ public class ASTFullEmfDecoratorTest extends DecoratorTestCase {
         astSymbolDecorator, astScopeDecorator, new MethodDecorator(glex), symbolTableService, new EmfService(decoratedCompilationUnit));
     ASTReferenceDecorator astReferencedSymbolDecorator = new ASTReferenceDecorator(glex, symbolTableService);
     ASTFullEmfDecorator fullDecorator = new ASTFullEmfDecorator(dataEmfDecorator, astEmfDecorator, astReferencedSymbolDecorator);
-
-    this.astClass = fullDecorator.decorate(clazz);
+    ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
+        .setModifier(clazz.getModifier())
+        .build();
+    this.astClass = fullDecorator.decorate(clazz, changedClass);
   }
 
   @Test
@@ -65,23 +68,23 @@ public class ASTFullEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassName() {
-    assertEquals("A", astClass.getName());
+    assertEquals("ASTAutomaton", astClass.getName());
   }
 
   @Test
   public void testAttributeSize() {
-    assertEquals(5, astClass.getCDAttributeList().size());
+    assertEquals(3, astClass.getCDAttributeList().size());
   }
 
   @Test
   public void testConstructorSize() {
-    assertEquals(1, astClass.getCDConstructorList().size());
+    assertEquals(2, astClass.getCDConstructorList().size());
   }
 
   @Test
   public void testMethodSize() {
     assertFalse(astClass.getCDMethodList().isEmpty());
-    assertEquals(47, astClass.getCDMethodList().size());
+    assertEquals(90, astClass.getCDMethodList().size());
   }
 
 }

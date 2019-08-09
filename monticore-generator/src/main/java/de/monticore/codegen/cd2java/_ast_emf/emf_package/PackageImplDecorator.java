@@ -1,12 +1,12 @@
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -24,7 +24,7 @@ import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-public class PackageImplDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDClass> {
+public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   private static final String GET = "get%s";
 

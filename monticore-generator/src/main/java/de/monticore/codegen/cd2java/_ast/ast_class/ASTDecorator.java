@@ -5,7 +5,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -27,7 +27,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 
-public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
+public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
 
   private static final String VISITOR = "visitor";
 
@@ -64,23 +64,23 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDClass clazz) {
-    clazz.addInterface(this.astService.getASTBaseInterface());
-    clazz.addCDMethod(createAcceptMethod(clazz));
-    clazz.addAllCDMethods(createAcceptSuperMethods(clazz));
-    clazz.addCDMethod(getConstructMethod(clazz));
-    clazz.addCDMethod(createGetChildrenMethod(clazz));
-    if (!clazz.isPresentSuperclass()) {
-      clazz.setSuperclass(this.getCDTypeFacade().createQualifiedType(ASTCNode.class));
+  public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
+    changedClass.addInterface(this.astService.getASTBaseInterface());
+    changedClass.addCDMethod(createAcceptMethod(originalClass));
+    changedClass.addAllCDMethods(createAcceptSuperMethods(originalClass));
+    changedClass.addCDMethod(getConstructMethod(originalClass));
+    changedClass.addCDMethod(createGetChildrenMethod(originalClass));
+    if (!changedClass.isPresentSuperclass()) {
+      changedClass.setSuperclass(this.getCDTypeFacade().createQualifiedType(ASTCNode.class));
     }
 
-    List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(clazz);
-    addSymboltableMethods(symbolAttributes, clazz);
+    List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(originalClass);
+    addSymboltableMethods(symbolAttributes, changedClass);
 
-    List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(clazz);
-    addSymboltableMethods(scopeAttributes, clazz);
+    List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(originalClass);
+    addSymboltableMethods(scopeAttributes, changedClass);
 
-    return clazz;
+    return changedClass;
   }
 
   protected void addSymboltableMethods(List<ASTCDAttribute> astcdAttributes, ASTCDClass clazz) {

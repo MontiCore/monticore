@@ -5,7 +5,7 @@ import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 
-public abstract class AbstractDecorator<I, R> implements Decorator<I, R> {
+public abstract class AbstractDecorator{
 
   protected final GlobalExtensionManagement glex;
 

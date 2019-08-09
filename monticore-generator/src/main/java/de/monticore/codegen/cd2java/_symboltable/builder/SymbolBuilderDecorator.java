@@ -4,7 +4,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 
-public class SymbolBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
+public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   private static final String SYMBOL_BUILD_INIT_TEMPLATE = "_symboltable.builder.SymbolInit";
 

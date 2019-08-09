@@ -1,5 +1,9 @@
 package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
@@ -13,16 +17,11 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
@@ -46,35 +45,30 @@ public class ASTEmfDecorator extends ASTDecorator {
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDClass clazz) {
-    clazz.addInterface(this.astService.getASTBaseInterface());
-    clazz.addCDMethod(createAcceptMethod(clazz));
-    clazz.addAllCDMethods(createAcceptSuperMethods(clazz));
-    clazz.addCDMethod(getConstructMethod(clazz));
-    clazz.addCDMethod(createGetChildrenMethod(clazz));
-    clazz.addAllCDMethods(createEMethods(clazz));
+  public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
+    changedClass.addInterface(this.astService.getASTBaseInterface());
+    changedClass.addCDMethod(createAcceptMethod(originalClass));
+    changedClass.addAllCDMethods(createAcceptSuperMethods(originalClass));
+    changedClass.addCDMethod(getConstructMethod(originalClass));
+    changedClass.addCDMethod(createGetChildrenMethod(originalClass));
+    changedClass.addAllCDMethods(createEMethods(originalClass));
 
-    if (!clazz.isPresentSuperclass()) {
-      clazz.setSuperclass(this.getCDTypeFacade().createQualifiedType(AST_EC_NODE));
+    if (!originalClass.isPresentSuperclass()) {
+      changedClass.setSuperclass(this.getCDTypeFacade().createQualifiedType(AST_EC_NODE));
     }
 
-    List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(clazz);
-    addSymboltableMethods(symbolAttributes, clazz);
+    List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(originalClass);
+    addSymboltableMethods(symbolAttributes, originalClass);
 
-    List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(clazz);
-    addSymboltableMethods(scopeAttributes, clazz);
+    List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(originalClass);
+    addSymboltableMethods(scopeAttributes, originalClass);
 
-    return clazz;
+    return changedClass;
   }
 
   public List<ASTCDMethod> createEMethods(ASTCDClass astcdClass) {
     // with inherited attributes
     List<ASTCDAttribute> copiedAttibuteList = astcdClass.deepClone().getCDAttributeList();
-    // only inherited attributes
-    List<ASTCDAttribute> inheritedAttributes = astcdClass.deepClone().getCDAttributeList()
-        .stream()
-        .filter(emfService::isInherited)
-        .collect(Collectors.toList());
 
     String packageName = astService.getCDName() + PACKAGE_SUFFIX;
     String className = astcdClass.getName();
