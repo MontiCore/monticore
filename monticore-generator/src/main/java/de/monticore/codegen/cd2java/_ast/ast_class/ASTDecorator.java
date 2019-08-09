@@ -66,7 +66,9 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   @Override
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
     changedClass.addInterface(this.astService.getASTBaseInterface());
-    changedClass.addCDMethod(createAcceptMethod(originalClass));
+    // have to use the changed one here because this one will get the TOP prefix
+    // todo: find better way to determine if TOP class than by TOP prefix
+    changedClass.addCDMethod(createAcceptMethod(changedClass));
     changedClass.addAllCDMethods(createAcceptSuperMethods(originalClass));
     changedClass.addCDMethod(getConstructMethod(originalClass));
     changedClass.addCDMethod(createGetChildrenMethod(originalClass));
