@@ -51,9 +51,8 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     if (originalClass.isPresentSuperclass()) {
       changedClass.setSuperclass(originalClass.getSuperclass());
     }
-    if (!originalClass.isEmptyInterfaces()) {
-      changedClass.addAllInterfaces(originalClass.getInterfaceList());
-    }
+    changedClass.addAllInterfaces(originalClass.getInterfaceList());
+    changedClass.addAllCDMethods(originalClass.getCDMethodList());
 
     //remove symbol and scope attributes for deepEquals and deepClone methods
     List<ASTCDAttribute> noSymbolAttributes = originalClass.getCDAttributeList().stream()
