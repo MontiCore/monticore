@@ -20,19 +20,10 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
-
-  public static final String BUILD_INIT_TEMPLATE = "_ast.builder.BuildInit";
-
-  public static final String BUILDER_SUFFIX = "Builder";
-
-  public static final String REAL_BUILDER = "realBuilder";
-
-  public static final String BUILD_METHOD = "build";
-
-  public static final String IS_VALID = "isValid";
 
   private final AccessorDecorator accessorDecorator;
 

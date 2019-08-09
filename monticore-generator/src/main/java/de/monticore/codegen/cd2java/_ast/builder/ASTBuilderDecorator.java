@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderDecorator.*;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
 
 public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 

@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_INIT_TEMPLATE;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 
 public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
@@ -38,9 +40,9 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
 
     ASTCDClass symbolBuilder = builderDecorator.decorate(decoratedSymbolClass);
 
-    Optional<ASTCDMethod> buildMethod = symbolBuilder.getCDMethodList().stream().filter(m -> BuilderDecorator.BUILD_METHOD.equals(m.getName())).findFirst();
+    Optional<ASTCDMethod> buildMethod = symbolBuilder.getCDMethodList().stream().filter(m -> BUILD_METHOD.equals(m.getName())).findFirst();
     buildMethod.ifPresent(b ->
-        this.replaceTemplate(BuilderDecorator.BUILD_INIT_TEMPLATE, b, new TemplateHookPoint(SYMBOL_BUILD_INIT_TEMPLATE, symbolBuilder)));
+        this.replaceTemplate(BUILD_INIT_TEMPLATE, b, new TemplateHookPoint(SYMBOL_BUILD_INIT_TEMPLATE, symbolBuilder)));
 
     return symbolBuilder;
   }
