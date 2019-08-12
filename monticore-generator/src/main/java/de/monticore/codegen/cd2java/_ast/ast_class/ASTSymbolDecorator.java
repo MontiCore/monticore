@@ -2,7 +2,7 @@ package de.monticore.codegen.cd2java._ast.ast_class;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -17,7 +17,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_SUFFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
-public class ASTSymbolDecorator extends AbstractDecorator<ASTCDType, List<ASTCDAttribute>> {
+public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttribute>> {
 
 
   private final SymbolTableService symbolTableService;

@@ -1,9 +1,6 @@
 package de.monticore.codegen.cd2java._ast.ast_new;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
@@ -61,7 +58,10 @@ public class ASTDecoratorTest extends DecoratorTestCase {
         new ASTSymbolDecorator(glex, symbolTableService), new ASTScopeDecorator(glex, symbolTableService), new MethodDecorator(glex),
         new SymbolTableService(ast));
     ASTCDClass clazz = getClassBy("A", ast);
-    this.astClass = decorator.decorate(clazz);
+    ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
+        .setModifier(clazz.getModifier())
+        .build();
+    this.astClass = decorator.decorate(clazz , changedClass);
   }
 
   @Test

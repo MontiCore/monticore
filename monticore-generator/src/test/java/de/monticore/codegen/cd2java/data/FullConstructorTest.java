@@ -40,9 +40,15 @@ public class FullConstructorTest extends DecoratorTestCase {
 
     DataDecorator dataDecorator = new DataDecorator(this.glex, new MethodDecorator(glex), new ASTService(ast), new DataDecoratorUtil());
     ASTCDClass clazz = getClassBy("SupB", ast);
-    this.subBClass = dataDecorator.decorate(clazz);
+    ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
+        .setModifier(clazz.getModifier())
+        .build();
+    this.subBClass = dataDecorator.decorate(clazz, changedClass);
     clazz = getClassBy("SupA", ast);
-    this.subAClass = dataDecorator.decorate(clazz);
+    changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
+        .setModifier(clazz.getModifier())
+        .build();
+    this.subAClass = dataDecorator.decorate(clazz, changedClass);
   }
 
   @Test

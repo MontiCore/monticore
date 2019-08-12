@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._ast.ast_new.reference.referencedDefinition
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
@@ -24,7 +25,8 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestCase {
 
@@ -49,7 +51,10 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
     SymbolTableService symbolTableService = new SymbolTableService(ast);
     ASTReferencedDefinitionDecorator decorator = new ASTReferencedDefinitionDecorator(this.glex, new ReferencedDefinitionAccessorDecorator(glex, symbolTableService), symbolTableService);
     ASTCDClass clazz = getClassBy("ASTBarOpt", ast);
-    this.astClass = decorator.decorate(clazz);
+    ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
+        .setModifier(clazz.getModifier())
+        .build();
+    this.astClass = decorator.decorate(clazz, changedClass);
   }
 
   @Test
@@ -59,8 +64,7 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
 
   @Test
   public void testAttributes() {
-    assertFalse(astClass.isEmptyCDAttributes());
-    assertEquals(1, astClass.sizeCDAttributes());
+    assertTrue(astClass.isEmptyCDAttributes());
   }
 
   @Test

@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java._ast.factory;
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaVisitor;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -21,7 +21,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKA
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDClass> {
+public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final NodeFactoryService nodeFactoryService;
 

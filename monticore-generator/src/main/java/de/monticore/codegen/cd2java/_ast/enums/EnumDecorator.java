@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java._ast.enums;
 
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -17,7 +17,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
-public class EnumDecorator extends AbstractDecorator<ASTCDEnum, ASTCDEnum> {
+public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
 
   protected static final String INT_VALUE = "intValue";
 
@@ -25,7 +25,9 @@ public class EnumDecorator extends AbstractDecorator<ASTCDEnum, ASTCDEnum> {
 
   protected final ASTService astService;
 
-  public EnumDecorator(GlobalExtensionManagement glex, final AccessorDecorator accessorDecorator, final ASTService astService) {
+  public EnumDecorator(final GlobalExtensionManagement glex,
+                       final AccessorDecorator accessorDecorator,
+                       final ASTService astService) {
     super(glex);
     this.accessorDecorator = accessorDecorator;
     this.astService = astService;

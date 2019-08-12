@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java._cocos;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -24,7 +24,7 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class CoCoCheckerDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDClass> {
+public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   private static final String REAL_THIS = "realThis";
 

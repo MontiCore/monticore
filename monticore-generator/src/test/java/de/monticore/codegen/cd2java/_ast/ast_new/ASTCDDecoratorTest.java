@@ -2,10 +2,6 @@ package de.monticore.codegen.cd2java._ast.ast_new;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisModelLoader;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreatorDelegator;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
@@ -35,12 +31,10 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,15 +57,6 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     this.decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");
     this.originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
-
-    ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/de/monticore/codegen"));
-    CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
-
-    CD4AnalysisGlobalScope symbolTable = new CD4AnalysisGlobalScope(modelPath, cd4aLanguage);
-    CD4AnalysisModelLoader cd4aModelLoader = new CD4AnalysisModelLoader(cd4aLanguage);
-
-    CD4AnalysisSymbolTableCreatorDelegator symbolTableCreator = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(symbolTable);
-
 
     ASTService astService = new ASTService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
@@ -106,7 +91,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, new DataDecoratorUtil(), methodDecorator, astService);
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator);
 
-    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, symbolTableCreator, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
+    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
         millDecorator, millForSuperDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
     this.decoratedCompilationUnit = astcdDecorator.decorate(decoratedCompilationUnit);
   }

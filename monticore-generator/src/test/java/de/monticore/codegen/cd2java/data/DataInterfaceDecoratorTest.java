@@ -1,9 +1,6 @@
 package de.monticore.codegen.cd2java.data;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -36,7 +33,10 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
 
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     InterfaceDecorator dataDecorator = new InterfaceDecorator(this.glex, new DataDecoratorUtil(), methodDecorator, new ASTService(cd));
-    this.dataInterface = dataDecorator.decorate(clazz);
+    ASTCDInterface changeInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(clazz.getName())
+        .setModifier(clazz.getModifier())
+        .build();
+    this.dataInterface = dataDecorator.decorate(clazz, changeInterface);
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
   }

@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java.data;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
@@ -14,7 +14,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class DataDecoratorUtil extends AbstractDecorator<ASTCDType, List<ASTCDMethod>> {
+public class DataDecoratorUtil extends AbstractCreator<ASTCDType, List<ASTCDMethod>> {
 
   private static final String DEEP_EQUALS_METHOD = "deepEquals";
 

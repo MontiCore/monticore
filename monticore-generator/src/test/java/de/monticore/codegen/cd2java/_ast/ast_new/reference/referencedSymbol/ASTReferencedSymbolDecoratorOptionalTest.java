@@ -28,6 +28,8 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
 
   private ASTCDClass astClass;
 
+  private ASTCDClass originalClass;
+
   private CDTypeFacade cdTypeFacade = CDTypeFacade.getInstance();
 
   private static final String NAME_SYMBOL = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol";
@@ -43,8 +45,11 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
     this.glex.setGlobalValue("service", new AbstractService(ast));
 
     ASTReferenceDecorator decorator = new ASTReferenceDecorator(this.glex, new SymbolTableService(ast));
-    ASTCDClass clazz = getClassBy("ASTBarOpt", ast);
-    this.astClass = decorator.decorate(clazz);
+    originalClass = getClassBy("ASTBarOpt", ast);
+    ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(originalClass.getName())
+        .setModifier(originalClass.getModifier())
+        .build();
+    this.astClass = decorator.decorate(originalClass, changedClass);
   }
 
   @Test
@@ -55,12 +60,12 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
   @Test
   public void testAttributes() {
     assertFalse(astClass.isEmptyCDAttributes());
-    assertEquals(2, astClass.sizeCDAttributes());
+    assertEquals(1, astClass.sizeCDAttributes());
   }
 
   @Test
   public void testNameAttribute() {
-    ASTCDAttribute nameAttribute = getAttributeBy("name", astClass);
+    ASTCDAttribute nameAttribute = getAttributeBy("name", originalClass);
     assertTrue(nameAttribute.getModifier().isProtected());
     assertTrue(nameAttribute.getModifier().isPresentStereotype());
     ASTCDStereotype stereotype = nameAttribute.getModifier().getStereotype();

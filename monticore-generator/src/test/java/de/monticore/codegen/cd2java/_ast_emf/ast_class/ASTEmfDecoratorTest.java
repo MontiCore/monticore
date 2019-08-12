@@ -1,5 +1,9 @@
 package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -10,21 +14,16 @@ import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import org.junit.Before;
 import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
@@ -47,7 +46,10 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
         new ASTSymbolDecorator(glex, symbolTableService), new ASTScopeDecorator(glex, symbolTableService), new MethodDecorator(glex),
         new SymbolTableService(ast), new EmfService(ast));
     ASTCDClass clazz = getClassBy("ASTAutomaton", ast);
-    this.emfClass = decorator.decorate(clazz);
+    ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
+        .setModifier(clazz.getModifier())
+        .build();
+    this.emfClass = decorator.decorate(clazz,changedClass);
   }
 
   @Test
@@ -69,7 +71,18 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(8, emfClass.getCDAttributeList().size());
+    assertEquals(5, emfClass.getCDAttributeList().size());
+
+
+  }
+
+  @Test
+  public void testAttributeNames(){
+    getAttributeBy("automatonSymbol", emfClass);
+    getAttributeBy("symbol2", emfClass);
+    getAttributeBy("spannedAutomatonScope", emfClass);
+    getAttributeBy("spannedScope2", emfClass);
+    getAttributeBy("enclosingScope2", emfClass);
   }
 
   @Test

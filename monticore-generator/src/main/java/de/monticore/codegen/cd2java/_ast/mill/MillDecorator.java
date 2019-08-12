@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java._ast.mill;
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -21,28 +21,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
+import static de.monticore.codegen.cd2java._ast.mill.MillConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDClass> {
+public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
-  private static final String MILL_SUFFIX = "Mill";
+  protected ASTCDDefinition astcdDefinition;
 
-  private static final String MILL_INFIX = "mill";
-
-  private static final String INIT = "init";
-
-  private static final String RESET = "reset";
-
-  private static final String INIT_ME = "initMe";
-
-  private static final String GET_MILL = "getMill";
-
-  private static final String BUILDER = "Builder";
-
-  private ASTCDDefinition astcdDefinition;
-
-  private final AbstractService<?> service;
+  protected final AbstractService<?> service;
 
   public MillDecorator(final GlobalExtensionManagement glex, final AbstractService service) {
     super(glex);
@@ -143,8 +130,8 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
     for (ASTCDClass astcdClass : astcdClassList) {
       String astName = astcdClass.getName();
       ASTMCReturnType builderType = MCBasicTypesMill.mCReturnTypeBuilder().
-              setMCType(this.getCDTypeFacade().createQualifiedType(astName + BUILDER)).build();
-      String methodName = StringTransformations.uncapitalize(astName.replaceFirst("AST", "")) + BUILDER;
+              setMCType(this.getCDTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX)).build();
+      String methodName = StringTransformations.uncapitalize(astName.replaceFirst("AST", "")) + BUILDER_SUFFIX;
 
       // add public static Method for Builder
       ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, builderType, methodName);
@@ -179,8 +166,8 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
           if (!service.isClassOverwritten(superClass, astcdDefinition.getCDClassList())) {
             String packageName = superSymbol.getFullName().toLowerCase() + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
             ASTMCReturnType superAstType = MCBasicTypesMill.mCReturnTypeBuilder().
-                    setMCType(this.getCDTypeFacade().createQualifiedType(packageName + superClass.getName() + BUILDER)).build();
-            String methodName = StringTransformations.uncapitalize(superClass.getName().replaceFirst("AST", "")) + BUILDER;
+                    setMCType(this.getCDTypeFacade().createQualifiedType(packageName + superClass.getName() + BUILDER_SUFFIX)).build();
+            String methodName = StringTransformations.uncapitalize(superClass.getName().replaceFirst("AST", "")) + BUILDER_SUFFIX;
 
             //add builder method
             ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, methodName);

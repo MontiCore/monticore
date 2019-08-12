@@ -6,7 +6,7 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -20,16 +20,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
+import static de.monticore.codegen.cd2java._ast.mill.MillConstants.MILL_FOR;
+import static de.monticore.codegen.cd2java._ast.mill.MillConstants.MILL_SUFFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class MillForSuperDecorator extends AbstractDecorator<ASTCDCompilationUnit, Collection<ASTCDClass>> {
-
-  private static final String MILL_SUFFIX = "Mill";
-
-  private static final String BUILDER = "Builder";
-  
-  private static final String MILL_FOR = "MillFor";
+public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit, Collection<ASTCDClass>> {
 
   private ASTCDDefinition astcdDefinition;
 
@@ -40,7 +37,7 @@ public class MillForSuperDecorator extends AbstractDecorator<ASTCDCompilationUni
     this.service = service;
   }
 
-  public Collection<ASTCDClass> decorate(final ASTCDCompilationUnit compilationUnit) {
+  public List<ASTCDClass> decorate(final ASTCDCompilationUnit compilationUnit) {
     astcdDefinition = compilationUnit.getCDDefinition().deepClone();
     //filter out all classes that are abstract and remove AST prefix
     astcdDefinition.setCDClassList(astcdDefinition.getCDClassList()
@@ -94,19 +91,19 @@ public class MillForSuperDecorator extends AbstractDecorator<ASTCDCompilationUni
       }
       
       String astName = clazz.getName();
-      String methodName = StringTransformations.uncapitalize(astName.replaceFirst("AST", "")) + BUILDER;
+      String methodName = StringTransformations.uncapitalize(astName.replaceFirst("AST", "")) + BUILDER_SUFFIX;
       ASTCDMethod protectedMethod = null;
       
       // Add method body based on whether method is overridden by this cdType
       if (firstClasses.contains(cdType)) {
         ASTMCReturnType builderType = CD4AnalysisMill.
-                mCReturnTypeBuilder().setMCType(this.getCDTypeFacade().createQualifiedType(astName + BUILDER)).build();
+                mCReturnTypeBuilder().setMCType(this.getCDTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX)).build();
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
         this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderForSuperMethod", astcdDefinition.getName() + MILL_SUFFIX, methodName));
       }
       else {
         ASTMCReturnType builderType = CD4AnalysisMill.
-                mCReturnTypeBuilder().setMCType(this.getCDTypeFacade().createQualifiedType(AstGeneratorHelper.getAstPackage(superSymbol.getFullName()) + astName + BUILDER)).build();
+                mCReturnTypeBuilder().setMCType(this.getCDTypeFacade().createQualifiedType(AstGeneratorHelper.getAstPackage(superSymbol.getFullName()) + astName + BUILDER_SUFFIX)).build();
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
         this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("Log.error(\"0xA7009" + AstGeneratorHelper.getGeneratedErrorCode(clazz) + " Overridden production " + AstGeneratorHelper.getPlainName(clazz) + " is not reachable\");\nreturn null;\n"));
       }

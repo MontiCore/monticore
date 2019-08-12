@@ -1,11 +1,10 @@
 package de.monticore.codegen.cd2java.typecd2java;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 
-public class TypeCD2JavaDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
+public class TypeCD2JavaDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
   protected ICD4AnalysisScope scope;
 

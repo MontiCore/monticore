@@ -71,10 +71,6 @@ for (astGrammar in getParsedGrammars()) {
   reportGrammarCd(astGrammar, cdScope, mcScope, report)
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
-
-  // M7: decorate Class Diagram AST
-  decoratedASTClassDiagramm = decorateEmfForASTPackage(glex, cdScope, astClassDiagram, modelPath, handcodedPath)
-  generateEmfFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
   
   // M8: generate symbol table
   generateSymbolTable(glex, mcScope, astGrammar, cdScope, astClassDiagram, out, handcodedPath)

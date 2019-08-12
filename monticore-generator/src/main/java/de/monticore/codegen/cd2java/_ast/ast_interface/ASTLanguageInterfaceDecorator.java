@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -10,7 +10,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_ME
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
-public class ASTLanguageInterfaceDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDInterface> {
+public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
   private final ASTService astService;
 

@@ -2,10 +2,6 @@ package de.monticore.codegen.cd2java._ast_emf;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisModelLoader;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreatorDelegator;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -41,11 +37,9 @@ import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.io.paths.ModelPath;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -68,15 +62,6 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
     this.decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");
     this.originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new EmfService(decoratedCompilationUnit));
-
-    ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/de/monticore/codegen"));
-    CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
-
-    CD4AnalysisGlobalScope symbolTable = new CD4AnalysisGlobalScope(modelPath, cd4aLanguage);
-    CD4AnalysisModelLoader cd4aModelLoader = new CD4AnalysisModelLoader(cd4aLanguage);
-
-    CD4AnalysisSymbolTableCreatorDelegator symbolTableCreator = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(symbolTable);
-
 
     ASTService astService = new ASTService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
@@ -116,7 +101,7 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
     PackageImplDecorator packageImplDecorator = new PackageImplDecorator(glex, new MandatoryAccessorDecorator(glex), emfService);
     PackageInterfaceDecorator packageInterfaceDecorator = new PackageInterfaceDecorator(glex, emfService);
 
-    ASTEmfCDDecorator astcdDecorator = new ASTEmfCDDecorator(glex, symbolTableCreator, fullEmfDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
+    ASTEmfCDDecorator astcdDecorator = new ASTEmfCDDecorator(glex, fullEmfDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
         millDecorator, millForSuperDecorator, astConstantsDecorator, emfEnumDecorator, fullASTInterfaceDecorator, packageImplDecorator, packageInterfaceDecorator);
     this.decoratedCompilationUnit = astcdDecorator.decorate(decoratedCompilationUnit);
   }

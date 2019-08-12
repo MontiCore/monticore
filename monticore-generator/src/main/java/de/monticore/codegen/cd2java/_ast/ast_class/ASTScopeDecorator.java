@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java._ast.ast_class;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -19,7 +19,7 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENC
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SPANNED_SCOPE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
-public class ASTScopeDecorator extends AbstractDecorator<ASTCDType, List<ASTCDAttribute>> {
+public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttribute>> {
 
   private final SymbolTableService symbolTableService;
 

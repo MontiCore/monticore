@@ -4,29 +4,26 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public abstract class CompositeDecorator<T> extends AbstractDecorator<T, T> {
+public abstract class CompositeDecorator<T> extends AbstractTransformer<T> {
 
-  protected final Collection<AbstractDecorator<T, T>> decorators;
+  protected final Collection<AbstractTransformer<T>> decorators;
 
   @SafeVarargs
-  public CompositeDecorator(final AbstractDecorator<T, T>... decorators) {
+  public CompositeDecorator(final AbstractTransformer<T>... decorators) {
     this(Arrays.asList(decorators));
   }
 
-  public CompositeDecorator(final Collection<AbstractDecorator<T, T>> decorators) {
+  public CompositeDecorator(final Collection<AbstractTransformer<T>> decorators) {
     this(null, decorators);
   }
 
   @SafeVarargs
-  public CompositeDecorator(final GlobalExtensionManagement glex, final AbstractDecorator<T, T>... decorators) {
+  public CompositeDecorator(final GlobalExtensionManagement glex, final AbstractTransformer<T>... decorators) {
     this(glex, Arrays.asList(decorators));
   }
 
-  public CompositeDecorator(final GlobalExtensionManagement glex, final Collection<AbstractDecorator<T, T>> decorators) {
+  public CompositeDecorator(final GlobalExtensionManagement glex, final Collection<AbstractTransformer<T>> decorators) {
     super(glex);
     this.decorators = decorators;
   }
@@ -44,27 +41,14 @@ public abstract class CompositeDecorator<T> extends AbstractDecorator<T, T> {
   }
 
   @Override
-  public T decorate(final T input) {
-    Stream<T> stream = Stream.of(input);
-    return applyDecorations(stream);
+  public T decorate(final T originalInput, T changedInput) {
+    return applyDecorations(originalInput, changedInput);
   }
 
-  protected T applyDecorations(Stream<T> stream) {
-    for (AbstractDecorator<T, T> decorator : decorators) {
-      stream = stream.map(decorator::decorate);
+  protected T applyDecorations(final T originalInput, T changedInput) {
+    for (AbstractTransformer<T> decorator : decorators) {
+      changedInput = decorator.decorate(originalInput, changedInput);
     }
-    return stream.collect(toSingleton());
-  }
-
-  private static <T> Collector<T, ?, T> toSingleton() {
-    return Collectors.collectingAndThen(
-        Collectors.toList(),
-        list -> {
-          if (list.size() != 1) {
-            throw new IllegalStateException();
-          }
-          return list.get(0);
-        }
-    );
+    return changedInput;
   }
 }

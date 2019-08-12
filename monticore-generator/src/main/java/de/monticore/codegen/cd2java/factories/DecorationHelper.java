@@ -3,18 +3,17 @@ package de.monticore.codegen.cd2java.factories;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.cd.cd4analysis._symboltable.CDTypes;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.List;
 
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 
 public class DecorationHelper extends MCCollectionTypesHelper {
@@ -68,20 +67,11 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     return true;
   }
 
-  public static String getAstClassNameForASTLists(CDTypeSymbolReference field) {
-    List<CDTypeSymbolReference> typeArgs = field.getActualTypeArguments();
-    if (typeArgs.size() != 1) {
-      return AST_INTERFACE;
-    }
-
-    return (typeArgs.get(0)).getStringRepresentation();
-  }
-
   public static String getAstClassNameForASTLists(ASTCDAttribute attr) {
-    if (!attr.isPresentSymbol2()) {
-      return "";
+    if (attr.getMCType() instanceof ASTMCBasicGenericType && ((ASTMCBasicGenericType) attr.getMCType()).sizeMCTypeArguments() == 1) {
+      return MCCollectionTypesHelper.printType(((ASTMCBasicGenericType) attr.getMCType()).getMCTypeArgumentList().get(0));
     }
-    return getAstClassNameForASTLists((attr.getSymbol2()).getType());
+    return "";
   }
 
   public static String getNativeAttributeName(String attributeName) {

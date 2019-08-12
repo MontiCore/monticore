@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -21,7 +21,7 @@ import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.NOD
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDInterface> {
+public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
   private static final String GET = "get%s";
 
@@ -34,12 +34,11 @@ public class PackageInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
   }
 
   @Override
-  public ASTCDInterface decorate(ASTCDCompilationUnit compilationUnit) {
+  public ASTCDInterface decorate(final ASTCDCompilationUnit compilationUnit) {
     ASTCDDefinition astcdDefinition = compilationUnit.deepClone().getCDDefinition();
 
     String definitionName = astcdDefinition.getName();
     String interfaceName = definitionName + PACKAGE_SUFFIX;
-    List<ASTCDClass> classList = astcdDefinition.getCDClassList();
 
     List<ASTCDAttribute> prodAttributes = createProdAttributes(astcdDefinition);
 

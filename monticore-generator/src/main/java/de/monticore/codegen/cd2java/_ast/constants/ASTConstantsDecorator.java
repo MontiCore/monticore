@@ -2,7 +2,7 @@ package de.monticore.codegen.cd2java._ast.constants;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -20,7 +20,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDClass> {
+public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   public static final String LITERALS_SUFFIX = "Literals";
 
@@ -36,7 +36,8 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
 
   protected final AbstractService<?> service;
 
-  public ASTConstantsDecorator(GlobalExtensionManagement glex, AbstractService abstractService) {
+  public ASTConstantsDecorator(final GlobalExtensionManagement glex,
+                               final AbstractService abstractService) {
     super(glex);
     this.service = abstractService;
   }

@@ -2,8 +2,8 @@ package de.monticore.codegen.cd2java.data;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -21,7 +21,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
+public class DataDecorator extends AbstractTransformer<ASTCDClass> {
 
   protected static final String DEEP_CLONE_METHOD = "deepClone";
 
@@ -42,38 +42,43 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDClass clazz) {
-    this.clazzName = clazz.deepClone().getName();
-    clazz.addCDConstructor(createDefaultConstructor(clazz));
-    if (!clazz.getCDAttributeList().isEmpty()) {
-      clazz.addCDConstructor(createFullConstructor(clazz));
+  public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
+    this.clazzName = originalClass.deepClone().getName();
+    changedClass.addCDConstructor(createDefaultConstructor(originalClass));
+    if (!originalClass.isEmptyCDAttributes()) {
+      changedClass.addCDConstructor(createFullConstructor(originalClass));
     }
+    if (originalClass.isPresentSuperclass()) {
+      changedClass.setSuperclass(originalClass.getSuperclass());
+    }
+    changedClass.addAllInterfaces(originalClass.getInterfaceList());
+    changedClass.addAllCDMethods(originalClass.getCDMethodList());
 
     //remove symbol and scope attributes for deepEquals and deepClone methods
-    List<ASTCDAttribute> noSymboAttributes = clazz.deepClone().getCDAttributeList().stream()
+    List<ASTCDAttribute> noSymbolAttributes = originalClass.getCDAttributeList().stream()
         .filter(a -> !service.isReferencedSymbolAttribute(a))
         .filter(ASTCDAttributeTOP::isPresentModifier)
         .filter(a -> !service.hasScopeStereotype(a.getModifier()))
         .filter(a -> !service.hasSymbolStereotype(a.getModifier()))
         .collect(Collectors.toList());
 
-    clazz.addAllCDMethods(getAllDataMethods(clazz.deepClone(), noSymboAttributes));
-    clazz.addCDMethod(createDeepCloneWithParam(clazz.deepClone(), noSymboAttributes));
+    changedClass.addAllCDMethods(getAllDataMethods(originalClass, noSymbolAttributes));
+    changedClass.addCDMethod(createDeepCloneWithParam(originalClass, noSymbolAttributes));
 
     //remove inherited attributes, because this should not be generated again
-    List<ASTCDAttribute> ownAttributes = clazz.getCDAttributeList()
+    List<ASTCDAttribute> ownAttributes = originalClass.deepClone().getCDAttributeList()
         .stream()
         .filter(a -> !service.isInherited(a))
         .collect(Collectors.toList());
 
-    clazz.setCDAttributeList(ownAttributes);
-    clazz.getCDAttributeList().forEach(this::addAttributeDefaultValues);
+    changedClass.setCDAttributeList(ownAttributes);
+    changedClass.getCDAttributeList().forEach(this::addAttributeDefaultValues);
 
     //remove methods that are already defined by ast rules
-    clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), createGetter(ownAttributes)));
-    clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), createSetter(ownAttributes)));
+    changedClass.addAllCDMethods(service.getMethodListWithoutDuplicates(originalClass.getCDMethodList(), createGetter(ownAttributes)));
+    changedClass.addAllCDMethods(service.getMethodListWithoutDuplicates(originalClass.getCDMethodList(), createSetter(ownAttributes)));
 
-    return clazz;
+    return changedClass;
   }
 
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {

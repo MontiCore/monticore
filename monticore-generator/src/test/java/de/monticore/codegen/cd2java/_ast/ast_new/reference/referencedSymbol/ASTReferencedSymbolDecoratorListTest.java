@@ -1,9 +1,6 @@
 package de.monticore.codegen.cd2java._ast.ast_new.reference.referencedSymbol;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDStereotype;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
@@ -31,6 +28,8 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
 
   private ASTCDClass astClass;
 
+  private ASTCDClass originalClass;
+
   private CDTypeFacade cdTypeFacade = CDTypeFacade.getInstance();
 
   private static final String NAME_SYMBOL_MAP = "Map<String, Optional<de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol>>";
@@ -46,8 +45,11 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(ast));
 
     ASTReferenceDecorator decorator = new ASTReferenceDecorator(this.glex, new SymbolTableService(ast));
-    ASTCDClass clazz = getClassBy("ASTBarList", ast);
-    this.astClass = decorator.decorate(clazz);
+    originalClass= getClassBy("ASTBarList", ast);
+    ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(originalClass.getName())
+        .setModifier(originalClass.getModifier())
+        .build();
+    this.astClass = decorator.decorate(originalClass, changedClass);
   }
 
   @Test
@@ -58,12 +60,12 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
   @Test
   public void testAttributes() {
     assertFalse(astClass.isEmptyCDAttributes());
-    assertEquals(2, astClass.sizeCDAttributes());
+    assertEquals(1, astClass.sizeCDAttributes());
   }
 
   @Test
   public void testNameAttribute() {
-    ASTCDAttribute nameAttribute = getAttributeBy("name", astClass);
+    ASTCDAttribute nameAttribute = getAttributeBy("name", originalClass);
     assertTrue(nameAttribute.getModifier().isProtected());
     assertTrue(nameAttribute.getModifier().isPresentStereotype());
     ASTCDStereotype stereotype = nameAttribute.getModifier().getStereotype();

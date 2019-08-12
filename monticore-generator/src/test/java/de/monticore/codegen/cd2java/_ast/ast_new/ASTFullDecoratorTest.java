@@ -2,6 +2,7 @@ package de.monticore.codegen.cd2java._ast.ast_new;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.*;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
@@ -48,7 +49,10 @@ public class ASTFullDecoratorTest extends DecoratorTestCase {
     ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astReferencedSymbolDecorator);
 
     ASTCDClass clazz = getClassBy("A", decoratedCompilationUnit);
-    this.astClass = fullDecorator.decorate(clazz);
+    ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
+        .setModifier(clazz.getModifier())
+        .build();
+    this.astClass = fullDecorator.decorate(clazz, changedClass);
   }
 
   @Test

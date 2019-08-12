@@ -4,7 +4,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.referencedDefinition.referencedDefinitionMethodDecorator.ReferencedDefinitionAccessorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
@@ -17,7 +17,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
-public class ASTReferencedDefinitionDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
+public class ASTReferencedDefinitionDecorator extends AbstractTransformer<ASTCDClass> {
 
   public static final String DEFINITION = "Definition";
 
@@ -33,19 +33,17 @@ public class ASTReferencedDefinitionDecorator extends AbstractDecorator<ASTCDCla
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDClass input) {
-    List<ASTCDAttribute> attributeList = new ArrayList<>();
+  public ASTCDClass decorate(final ASTCDClass originalInput, ASTCDClass changedInput) {
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (ASTCDAttribute astcdAttribute : input.getCDAttributeList()) {
+    for (ASTCDAttribute astcdAttribute : originalInput.getCDAttributeList()) {
       if (symbolTableService.isReferencedSymbol(astcdAttribute)) {
         String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(astcdAttribute);
         //create referenced symbol attribute and methods
         methodList.addAll(getRefDefinitionMethods(astcdAttribute, referencedSymbolType));
       }
     }
-    input.addAllCDMethods(methodList);
-    input.addAllCDAttributes(attributeList);
-    return input;
+    changedInput.addAllCDMethods(methodList);
+    return changedInput;
   }
 
   protected List<ASTCDMethod> getRefDefinitionMethods(ASTCDAttribute astcdAttribute, String referencedSymbol) {
