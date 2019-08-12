@@ -42,6 +42,7 @@ import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
+import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -423,6 +424,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   }
 
+  public ASTCDCompilationUnit addListSuffixToAttributeName(ASTCDCompilationUnit originalCD) {
+    ListSuffixDecorator listSuffixDecorator = new ListSuffixDecorator();
+    return listSuffixDecorator.decorate(originalCD, originalCD);
+  }
+
   /**
    * Decorates class diagram AST by adding of new classes and methods using in
    * ast files TODO: rephrase!
@@ -432,14 +438,14 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astClassDiagram - class diagram AST
    */
 
-  public ASTCDCompilationUnit decorateForASTPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope, ASTCDCompilationUnit astClassDiagram, ModelPath modelPath, IterablePath handCodedPath) {
+  public ASTCDCompilationUnit decorateForASTPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope, ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
     ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
-    return decorateWithAST(preparedCD, glex, modelPath, handCodedPath);
+    return decorateWithAST(preparedCD, glex, handCodedPath);
   }
 
-  public ASTCDCompilationUnit decorateEmfForASTPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope, ASTCDCompilationUnit astClassDiagram, ModelPath modelPath, IterablePath handCodedPath) {
+  public ASTCDCompilationUnit decorateEmfForASTPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope, ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
     ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
-    return decorateEmfWithAST(preparedCD, glex, modelPath, handCodedPath);
+    return decorateEmfWithAST(preparedCD, glex, handCodedPath);
   }
 
   private ASTCDCompilationUnit prepareCD(ICD4AnalysisScope scope, ASTCDCompilationUnit cd) {
@@ -451,8 +457,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return preparedCD;
   }
 
-  private ASTCDCompilationUnit decorateWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, ModelPath modelPath,
-                                               IterablePath handCodedPath) {
+  private ASTCDCompilationUnit decorateWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, IterablePath handCodedPath) {
     ASTService astService = new ASTService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
@@ -499,8 +504,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
 
-  private ASTCDCompilationUnit decorateEmfWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, ModelPath modelPath,
-                                                  IterablePath handCodedPath) {
+  private ASTCDCompilationUnit decorateEmfWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, IterablePath handCodedPath) {
     ASTService astService = new ASTService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);

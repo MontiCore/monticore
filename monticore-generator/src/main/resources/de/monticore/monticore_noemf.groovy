@@ -73,6 +73,8 @@ for (astGrammar in getParsedGrammars()) {
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
 
+  astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
+
   // M8: generate symbol table
   generateSymbolTable(glex, mcScope, astGrammar, cdScope, astClassDiagram, out, handcodedPath)
   
@@ -82,7 +84,7 @@ for (astGrammar in getParsedGrammars()) {
   generateODs(glex, cdScope, mcScope, astClassDiagram, out)
 
   // M7: decorate Class Diagram AST
-  decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, modelPath, handcodedPath)
+  decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
 
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
