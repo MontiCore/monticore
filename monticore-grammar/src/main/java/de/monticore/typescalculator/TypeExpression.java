@@ -5,7 +5,7 @@ import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 
 import java.util.Optional;
 
-public class TypeExpression<E> {
+public class TypeExpression {
   private String name;
 
   private TypeSymbolsScope enclosingScope;

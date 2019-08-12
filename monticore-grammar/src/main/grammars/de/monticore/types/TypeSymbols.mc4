@@ -8,7 +8,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   symbolrule Type =
     methods: de.monticore.types.typesymbols._symboltable.MethodSymbol*
     fields: de.monticore.types.typesymbols._symboltable.FieldSymbol*
-    typeParam: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
+    typeParameter: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
   ;
 
   interface TypeVar = Name;
@@ -17,7 +17,6 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   ;
 
   interface symbol  Field = Name ;
-
   symbolrule  Field =
     type: de.monticore.typescalculator.TypeExpression
   ;
