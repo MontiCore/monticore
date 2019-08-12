@@ -156,7 +156,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     List<String> superGrammarPackages = Lists.newArrayList();
     for (CDDefinitionSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
       if (genHelper.hasSymbolTable(cdSymbol.getFullName())) {
-        String qualifiedSymbolName = genHelper.getQualifiedScopeInterfaceType(cdSymbol);
+        String qualifiedSymbolName = Names.getQualifier(genHelper.getQualifiedScopeInterfaceType(cdSymbol));
         if (!qualifiedSymbolName.isEmpty()) {
           superGrammarPackages.add(qualifiedSymbolName);
         }
