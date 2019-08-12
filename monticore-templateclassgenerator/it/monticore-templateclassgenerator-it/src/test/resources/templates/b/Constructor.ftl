@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.params("String name", "java.util.List<types.Attribute> params", "types.Helper helper")}
-${tc.result("de.monticore.javastatements._ast.ASTConstructorDeclaration")}
+${tc.result("de.monticore.javalight._ast.ASTConstructorDeclaration")}
 
 
 public ${name}(${helper.printAttributes(params)}) {
