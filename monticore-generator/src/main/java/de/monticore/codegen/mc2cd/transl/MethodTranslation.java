@@ -12,7 +12,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethod;
 import de.monticore.grammar.grammar._ast.ASTMethodParameter;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
-import de.monticore.javastatements._ast.ASTBlockStatement;
+import de.monticore.statements.mccommonstatements._ast.ASTBlockStatement;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.utils.Link;

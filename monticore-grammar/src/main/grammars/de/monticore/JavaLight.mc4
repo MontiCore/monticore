@@ -1,0 +1,172 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+component grammar JavaLight extends de.monticore.expressions.CommonExpressions,
+                                    de.monticore.statements.MCCommonStatements,
+                                    de.monticore.types.MCBasicTypes {
+
+external ExtTypeParameters;
+
+// Type declarations
+interface TypeDeclaration extends ClassMemberDeclaration,
+        InterfaceMemberDeclaration, AnnotationTypeElementDeclaration;
+
+ExtendedBlockStatement extends BlockStatement
+    = LocalVariableDeclaration
+    | MCStatement
+    | TypeDeclaration
+    ;
+
+
+EmptyDeclaration implements TypeDeclaration
+    =   ";"
+    ;
+    
+interface ClassBodyDeclaration ;
+
+interface InterfaceBodyDeclaration ;
+
+ClassBlock implements ClassBodyDeclaration
+    = (["static"])? MCJavaBlock
+    ;
+
+interface ClassMemberDeclaration extends ClassBodyDeclaration ;
+
+MethodDeclaration implements ClassMemberDeclaration
+    =   MethodSignature (methodBody:MCJavaBlock | ";")
+    ;
+
+ConstructorDeclaration implements ClassMemberDeclaration
+    =   MCModifier* ExtTypeParameters? Name FormalParameters ("throws" Throws)?
+        constructorBody:MCJavaBlock
+    ;
+
+FieldDeclaration implements ClassMemberDeclaration
+    =   MCModifier* MCType (VariableDeclarator || ",")+ ";"
+    ;
+
+interface InterfaceMemberDeclaration extends InterfaceBodyDeclaration ;
+
+ConstDeclaration implements InterfaceMemberDeclaration
+    =   MCModifier* MCType (ConstantDeclarator || ",")+ ";"
+    ;
+
+ConstantDeclarator
+    =   Name (dim:"[" "]")* "=" VariableInititializerOrExpression
+    ;
+
+InterfaceMethodDeclaration implements InterfaceMemberDeclaration
+    =   MethodSignature ";"
+    ;
+
+/* We use rule this even for void methods which cannot have [] after parameters.
+   This simplifies grammar and we can consider void to be a type, which
+   renders the [] matching as a context-sensitive issue or a semantic check
+   for invalid return type after parsing.
+ */
+MethodSignature
+    =   MCModifier* ExtTypeParameters?
+        MCReturnType Name FormalParameters (dim:"[" "]")*
+        ("throws" Throws)?
+    ;
+
+Throws
+    =   (MCQualifiedName || ",")+
+    ;
+
+FormalParameters
+    =   "(" FormalParameterListing? ")"
+    ;
+
+FormalParameterListing
+    =   (FormalParameter || ",")+ ("," LastFormalParameter)?
+    |   LastFormalParameter
+    ;
+
+FormalParameter
+    =   PrimitiveModifier* MCType DeclaratorId
+    ;
+
+LastFormalParameter
+    =   PrimitiveModifier* MCType "..." DeclaratorId
+    ;
+
+// ANNOTATIONS
+
+Annotation implements MCModifier,  ElementValue
+    =   "@" annotationName:MCQualifiedName ( "(" AnnotationArguments? ")" )?
+    ;
+
+interface AnnotationArguments ;
+
+AnnotationPairArguments implements AnnotationArguments
+   =   (ElementValuePair || ",")+
+   ;
+
+ElementValuePair
+    =   Name "=" ElementValueOrExpr
+    ;
+
+interface ElementValue;
+
+ElementValueOrExpr implements AnnotationArguments
+	= ElementValue | Expression;
+
+ElementValueArrayInitializer implements ElementValue
+    =   "{" (ElementValueOrExpr || ",")* (",")? "}"
+    ;
+
+AnnotationTypeDeclaration implements TypeDeclaration
+    =   MCModifier* "@" "interface" Name AnnotationTypeBody
+    ;
+
+AnnotationTypeBody
+    =   "{" (AnnotationTypeElementDeclaration)* "}"
+    ;
+
+interface AnnotationTypeElementDeclaration ;
+
+AnnotationMethod implements AnnotationTypeElementDeclaration
+    =   MCModifier* MCType Name "(" ")" DefaultValue? ";"
+    ;
+
+AnnotationConstant implements AnnotationTypeElementDeclaration
+    =   MCModifier* MCType (VariableDeclarator || ",")+ ";"
+    ;
+
+DefaultValue
+    =   "default" ElementValueOrExpr
+    ;
+
+CreatorExpression implements Expression <235> =
+	"new" Creator;
+
+interface Creator ;
+
+// TODO Reicht das so? Siehe ursprüngliche Definition
+// =   TypeArguments? CreatedName ClassCreatorRest
+AnonymousClass implements Creator
+    =  CreatedName Arguments
+    ;
+
+ArrayCreator implements Creator
+    =   CreatedName ArrayDimensionSpecifier
+    ;
+
+interface ArrayDimensionSpecifier ;
+    
+ArrayDimensionByInitializer implements ArrayDimensionSpecifier
+    =   (dim:"[" "]")+ ArrayInitializer
+    ;
+    
+ArrayDimensionByExpression implements ArrayDimensionSpecifier
+    =   ("[" Expression "]")+ (dim:"[" "]")*
+    ;
+    
+CreatedName
+    =   (MCObjectType || ".")+
+    |   MCPrimitiveType
+    ;
+
+}

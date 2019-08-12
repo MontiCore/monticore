@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+component grammar MCLowLevelStatements extends de.monticore.statements.MCCommonStatements {
+
+BreakStatement implements MCStatement
+    =   "break" label:Name? ";"
+    ;
+
+ContinueStatement implements MCStatement
+    =   "continue" label:Name? ";"
+    ;
+
+LabeledStatement implements MCStatement
+    =   label:Name ":" MCStatement
+    ;
+
+}

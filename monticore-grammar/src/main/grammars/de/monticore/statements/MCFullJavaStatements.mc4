@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+component grammar MCFullJavaStatements extends de.monticore.statements.MCCommonStatements,
+                                               de.monticore.statements.MCAssertStatements,
+                                               de.monticore.statements.MCExceptionStatements,
+                                               de.monticore.statements.MCLowLevelStatements,
+                                               de.monticore.statements.MCReturnStatements,
+                                               de.monticore.statements.MCSynchronizedStatements {
+
+  // TODO: Lösche dieses Statement, wenn der IScope-Generator gefixt ist
+  Bla = Name;
+}

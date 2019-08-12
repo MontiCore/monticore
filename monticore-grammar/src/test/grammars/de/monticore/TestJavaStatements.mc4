@@ -1,8 +1,0 @@
-/* (c)  https://github.com/MontiCore/monticore */
-
-package de.monticore;
-
-grammar TestJavaStatements extends de.monticore.JavaStatements, de.monticore.types.MCFullGenericTypes, de.monticore.literals.MCJavaLiterals {
-
-MCTypeParameters implements TypeParameters = "<" (MCTypeVariableDeclaration || ",")+ ">";
-}

@@ -23,19 +23,6 @@ public class MontiCoreReports implements ReportManagerFactory {
   
   private IterablePath templatePath;
   
-  /**
-   * Constructor for de.monticore.MontiCoreReports
-   */
-  @Deprecated
-  protected MontiCoreReports(
-      String reportDirectory,
-      IterablePath handwrittenPath,
-      IterablePath templatePath) {
-    this.outputDirectory = reportDirectory;
-    this.reportDirectory = reportDirectory;
-    this.handwrittenPath = handwrittenPath;
-    this.templatePath = templatePath;
-  }
 
   /**
    * Constructor for de.monticore.MontiCoreReports
