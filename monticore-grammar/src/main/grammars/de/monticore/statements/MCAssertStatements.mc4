@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+component grammar MCAssertStatements extends de.monticore.statements.MCCommonStatements {
+
+AssertStatement implements MCStatement
+    =   "assert" assertion:Expression (":" message:Expression)? ";"
+    ;
+
+}

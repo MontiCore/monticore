@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+component grammar MCSynchronizedStatements extends de.monticore.statements.MCCommonStatements {
+
+SynchronizedStatement implements MCStatement
+    =   "synchronized" "(" Expression ")" MCJavaBlock
+    ;
+
+}

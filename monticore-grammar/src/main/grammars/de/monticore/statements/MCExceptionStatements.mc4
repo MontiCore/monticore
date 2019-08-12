@@ -1,0 +1,41 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+component grammar MCExceptionStatements extends de.monticore.statements.MCCommonStatements {
+
+TryStatement implements MCStatement
+    =   "try" MCJavaBlock ExceptionHandler
+    ;
+
+interface ExceptionHandler ;
+
+CatchExceptionsHandler implements ExceptionHandler
+    =   CatchClause+ ("finally" MCJavaBlock)?
+    ;
+
+FinallyBlockOnlyHandler implements ExceptionHandler
+    =   ("finally" MCJavaBlock)
+    ;
+
+TryStatementWithResources implements MCStatement
+    =   "try" "(" (Resource || ";")+ ";"? ")" MCJavaBlock CatchClause* ("finally" finallyBlock:MCJavaBlock)?
+    ;
+
+Resource
+    =   PrimitiveModifier* MCType DeclaratorId "=" Expression
+    ;
+
+CatchClause
+    =   "catch" "(" PrimitiveModifier* CatchType Name ")" MCJavaBlock
+    ;
+
+CatchType
+    =   (MCQualifiedName || "|")+
+    ;
+
+ThrowStatement implements MCStatement
+    =   "throw" Expression ";"
+    ;
+
+}

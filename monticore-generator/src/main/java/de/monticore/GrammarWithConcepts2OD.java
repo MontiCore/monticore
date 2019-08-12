@@ -14,11 +14,15 @@ import de.monticore.grammar.grammar._od.Grammar2OD;
 import de.monticore.grammar.grammar_withconcepts._od.Grammar_WithConcepts2OD;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsDelegatorVisitor;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
-import de.monticore.javastatements._od.JavaStatements2OD;
 import de.monticore.literals.mccommonliterals._od.MCCommonLiterals2OD;
 import de.monticore.literals.mcliteralsbasis._od.MCLiteralsBasis2OD;
 import de.monticore.mcbasics._od.MCBasics2OD;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.statements.mcassertstatements._od.MCAssertStatements2OD;
+import de.monticore.statements.mcexceptionstatements._od.MCExceptionStatements2OD;
+import de.monticore.statements.mclowlevelstatements._od.MCLowLevelStatements2OD;
+import de.monticore.statements.mcreturnstatements._od.MCReturnStatements2OD;
+import de.monticore.statements.mcsynchronizedstatements._od.MCSynchronizedStatements2OD;
 import de.monticore.types.mcbasictypes._od.MCBasicTypes2OD;
 import de.monticore.types.mccollectiontypes._od.MCCollectionTypes2OD;
 import de.monticore.types.mcsimplegenerictypes._od.MCSimpleGenericTypes2OD;
@@ -37,7 +41,6 @@ public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
     visitor.setGrammar_WithConceptsVisitor(this);
     visitor.setAntlrVisitor(new Antlr2OD(printer, reporting));
     visitor.setGrammarVisitor(new Grammar2OD(printer, reporting));
-    visitor.setJavaStatementsVisitor(new JavaStatements2OD(printer, reporting));
     visitor.setBitExpressionsVisitor(new BitExpressions2OD(printer, reporting));
     visitor.setJavaClassExpressionsVisitor(new JavaClassExpressions2OD(printer, reporting));
     visitor.setMCBasicsVisitor(new MCBasics2OD(printer, reporting));
@@ -49,6 +52,11 @@ public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
     visitor.setMCBasicTypesVisitor(new MCBasicTypes2OD(printer, reporting));
     visitor.setMCCommonLiteralsVisitor(new MCCommonLiterals2OD(printer, reporting));
     visitor.setMCLiteralsBasisVisitor(new MCLiteralsBasis2OD(printer, reporting));
+    visitor.setMCAssertStatementsVisitor(new MCAssertStatements2OD(printer, reporting));
+    visitor.setMCExceptionStatementsVisitor(new MCExceptionStatements2OD(printer, reporting));
+    visitor.setMCLowLevelStatementsVisitor(new MCLowLevelStatements2OD(printer, reporting));
+    visitor.setMCReturnStatementsVisitor(new MCReturnStatements2OD(printer, reporting));
+    visitor.setMCSynchronizedStatementsVisitor(new MCSynchronizedStatements2OD(printer, reporting));
     this.printer = printer;
   }
 

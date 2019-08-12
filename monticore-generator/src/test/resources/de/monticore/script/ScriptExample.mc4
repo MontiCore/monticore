@@ -129,7 +129,7 @@ grammar ScriptExample {
   astrule State =
 	  reachableStates:State*
     method public boolean isReachable(State s) {
-  	  return reachableStates.contains(s);
+  	  return reachableStates.contains(sss);
   	};
   //-- endfile gen/ASTRule.x
 

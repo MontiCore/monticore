@@ -2,12 +2,13 @@
 package de.monticore.grammar;
 
 grammar Grammar_WithConcepts extends de.monticore.grammar.Grammar,
-                                     de.monticore.JavaStatements,
+                                     de.monticore.statements.MCFullJavaStatements,
+                                     de.monticore.expressions.JavaClassExpressions,
+                                     de.monticore.JavaLight,
                                      de.monticore.grammar.concepts.antlr.Antlr,
                                      de.monticore.expressions.ExpressionsBasis,
                                      de.monticore.expressions.CommonExpressions,
                                      de.monticore.expressions.AssignmentExpressions,
-                                     de.monticore.expressions.JavaClassExpressions,
                                      de.monticore.expressions.BitExpressions {
   
   start MCGrammar;
@@ -20,12 +21,13 @@ grammar Grammar_WithConcepts extends de.monticore.grammar.Grammar,
     
   JavaCode = ClassMemberDeclaration*;
 
-  EmptyTypeParameters implements TypeParameters = "<" ">";
-
   ExtType = MCType;
 
   ExtReturnType = MCReturnType;
 
-  ExtTypeArguments = EmptyTypeParameters;
+  ExtTypeArguments = "<" (MCTypeArgument || ",")+ ">"*;
+
+  // Empty TypeParameters
+  ExtTypeParameters = ;
 
 }

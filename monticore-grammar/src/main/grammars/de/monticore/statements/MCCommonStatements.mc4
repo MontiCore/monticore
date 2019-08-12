@@ -1,0 +1,110 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+component grammar MCCommonStatements extends de.monticore.statements.MCStatementsBasis,
+                                             de.monticore.types.MCBasicTypes,
+                                             de.monticore.expressions.ExpressionsBasis {
+
+MCJavaBlock implements MCStatement
+    =   "{" BlockStatement* "}"
+    ;
+
+BlockStatement
+    = LocalVariableDeclaration
+    | MCStatement
+    ;
+
+// Modifiers
+interface MCModifier ;
+
+PrimitiveModifier implements MCModifier =
+        Modifier:["private" | "public" | "protected" | "static" | "transient"
+        | "final" | "abstract" | "native" | "threadsafe" | "synchronized"
+        | "const" | "volatile" | "strictfp"]
+        ;
+
+LocalVariableDeclaration implements ForInit
+    =   PrimitiveModifier* MCType (VariableDeclarator || ",")+
+    ;
+
+VariableDeclarator
+    =   DeclaratorId ("=" VariableInititializerOrExpression)?
+    ;
+
+DeclaratorId
+    =   Name (dim:"[" "]")*
+    ;
+
+interface VariableInitializer;
+
+VariableInititializerOrExpression
+	= VariableInitializer | Expression;
+
+ArrayInitializer implements VariableInitializer
+    =   "{" (VariableInititializerOrExpression || ",")* (",")? "}"
+    ;
+
+IfStatement implements MCStatement
+    =   "if" "(" condition:Expression ")" thenStatement:MCStatement ("else" elseStatement:MCStatement)?
+    ;
+
+ForStatement implements MCStatement
+    =   "for" "(" ForControl ")" MCStatement
+    ;
+
+interface ForControl ;
+
+CommonForControl implements ForControl
+    =   ForInit? ";" condition:Expression? ";" (Expression || ",")*
+    ;
+
+interface ForInit ;
+
+ForInitByExpressions implements ForInit
+    =   (Expression || ",")+
+    ;
+
+WhileStatement implements MCStatement
+    =   "while" "(" condition:Expression ")" MCStatement
+    ;
+
+DoWhileStatement implements MCStatement
+    =   "do" MCStatement "while" "(" condition:Expression ")" ";"
+    ;
+
+SwitchStatement implements MCStatement
+    =   "switch" "(" Expression ")" "{" SwitchBlockStatementGroup* SwitchLabel* "}"
+    ;
+
+EmptyStatement implements MCStatement
+    =   ";"
+    ;
+
+// TODO: Bleibt das hier?
+ExpressionStatement implements MCStatement
+    =   Expression ";"
+    ;
+
+/** Matches cases then statements, both of which are mandatory.
+ *  To handle empty cases at the end, we add switchLabel* to statement.
+ */
+SwitchBlockStatementGroup
+    =   SwitchLabel+ BlockStatement+
+    ;
+
+interface SwitchLabel ;
+
+ConstantExpressionSwitchLabel implements SwitchLabel
+    =   "case" constantExpression:Expression ":"
+    ;
+
+EnumConstantSwitchLabel implements SwitchLabel
+    =   "case" enumConstantName:Name ":"
+    ;
+
+DefaultSwitchLabel implements SwitchLabel
+    =   "default" ":"
+    ;
+
+}
