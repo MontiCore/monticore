@@ -5,6 +5,12 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 public abstract class AbstractTransformer<I> extends AbstractDecorator {
 
+  /*
+  Use when Decorator has to change another object
+  Has to be used when Decorator is part if a CompositeDecorator
+  Do not change the originalInput, but change the ChangedInput
+   */
+
   public AbstractTransformer(final GlobalExtensionManagement glex) {
     super(glex,
         CDTypeFacade.getInstance(),

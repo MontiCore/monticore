@@ -7,6 +7,12 @@ import de.monticore.generating.templateengine.HookPoint;
 
 public abstract class AbstractDecorator{
 
+  /*
+  Do not use for creation of new Decorators
+  Decide if your new Decorator is a Creator or a Transformer, to overwrite the correct decorate method
+  Only a class to sum up general Decorator functionality
+   */
+
   protected final GlobalExtensionManagement glex;
 
   private boolean templatesEnabled;

@@ -31,13 +31,13 @@ public abstract class CompositeDecorator<T> extends AbstractTransformer<T> {
   @Override
   public void enableTemplates() {
     super.enableTemplates();
-    this.decorators.forEach(AbstractDecorator::enableTemplates);
+    this.decorators.forEach(AbstractTransformer::enableTemplates);
   }
 
   @Override
   public void disableTemplates() {
     super.disableTemplates();
-    this.decorators.forEach(AbstractDecorator::disableTemplates);
+    this.decorators.forEach(AbstractTransformer::disableTemplates);
   }
 
   @Override
