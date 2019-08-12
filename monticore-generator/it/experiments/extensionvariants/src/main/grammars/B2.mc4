@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 grammar B2 extends A {
 
   // Harmless overwriting existing NT's with other keywords

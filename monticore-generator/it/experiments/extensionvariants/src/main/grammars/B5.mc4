@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 grammar B5 extends A {
 
   // M is changed, but only used in new productions

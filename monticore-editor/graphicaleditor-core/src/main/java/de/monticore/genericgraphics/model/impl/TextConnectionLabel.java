@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.model.impl;
+package de.monticore.genericgraphics.model.impl;
 
 import java.util.ArrayList;
 import java.util.List;

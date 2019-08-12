@@ -1,4 +1,3 @@
-/* (c)  https://github.com/MontiCore/monticore */
 package mc.feature.hwc.statechartdsl._ast;
 
 public class ASTStateBuilder extends ASTStateBuilderTOP {

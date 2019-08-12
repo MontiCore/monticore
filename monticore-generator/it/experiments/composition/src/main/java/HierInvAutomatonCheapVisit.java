@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 import automaton3._ast.ASTInvariant;
 import expression._ast.ASTAnd;
 import expression._ast.ASTNot;

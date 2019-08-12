@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.actions;
+package de.monticore.genericgraphics.controller.actions;
 
 import org.eclipse.gef.ui.actions.EditorPartAction;
 import org.eclipse.jface.resource.ImageDescriptor;

@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 grammar B3 extends A {
 
   // M is unchanged

@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 import automaton3._ast.*;
 import automaton3._visitor.*;
 import de.monticore.prettyprint.IndentPrinter;

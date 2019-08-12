@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.editparts.defaults;
+package de.monticore.genericgraphics.controller.editparts.defaults;
 
 import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.FreeformLayer;

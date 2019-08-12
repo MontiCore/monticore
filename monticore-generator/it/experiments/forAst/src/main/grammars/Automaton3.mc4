@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 
 grammar Automaton3 extends de.monticore.MCBasics, de.monticore.literals.MCCommonLiterals {
 

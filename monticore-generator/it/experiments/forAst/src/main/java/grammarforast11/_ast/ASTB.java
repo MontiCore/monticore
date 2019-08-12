@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 /* handcoded Extension in order to Implement the Observer Interface */
 
 package grammarforast11._ast;

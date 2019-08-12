@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.texteditor.contentassist;
+package de.se_rwth.langeditor.texteditor.contentassist;
 
 import java.util.ArrayList;
 import java.util.List;

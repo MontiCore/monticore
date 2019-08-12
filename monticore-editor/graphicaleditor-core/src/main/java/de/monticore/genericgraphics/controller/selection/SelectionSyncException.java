@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.selection;
+package de.monticore.genericgraphics.controller.selection;
 
 /**
  * A simple {@link Exception} for indication of Selection Synchronization

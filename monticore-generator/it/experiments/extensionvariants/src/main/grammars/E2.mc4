@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 grammar E2 extends D {
 
   // empty grammar

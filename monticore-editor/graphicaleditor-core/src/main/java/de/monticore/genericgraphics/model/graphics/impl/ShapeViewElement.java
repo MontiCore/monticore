@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.model.graphics.impl;
+package de.monticore.genericgraphics.model.graphics.impl;
 
 import de.monticore.genericgraphics.model.graphics.IShapeViewElement;
 import de.monticore.genericgraphics.model.graphics.ViewElementFactory;

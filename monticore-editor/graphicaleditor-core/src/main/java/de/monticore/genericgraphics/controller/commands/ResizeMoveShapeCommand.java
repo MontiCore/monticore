@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.commands;
+package de.monticore.genericgraphics.controller.commands;
 
 import org.eclipse.gef.commands.Command;
 

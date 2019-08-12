@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 package sm2.cocos;
 
 import sm2._ast.ASTAutomaton;

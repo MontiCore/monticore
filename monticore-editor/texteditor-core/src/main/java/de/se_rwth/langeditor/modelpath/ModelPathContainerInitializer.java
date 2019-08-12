@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.modelpath;
+package de.se_rwth.langeditor.modelpath;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;

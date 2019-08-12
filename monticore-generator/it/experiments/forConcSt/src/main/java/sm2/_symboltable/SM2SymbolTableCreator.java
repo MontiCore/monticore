@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 package sm2._symboltable;
 
 import static java.util.Objects.requireNonNull;

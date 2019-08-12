@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.commands.connections;
+package de.monticore.genericgraphics.controller.commands.connections;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.gef.commands.Command;

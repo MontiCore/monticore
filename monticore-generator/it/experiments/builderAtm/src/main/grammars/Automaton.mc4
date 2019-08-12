@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 grammar Automaton extends de.monticore.MCBasics {
 
 symbol scope Automaton =

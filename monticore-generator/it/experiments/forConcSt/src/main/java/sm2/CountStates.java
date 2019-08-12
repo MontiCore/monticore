@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 package sm2;
 
 import sm2._ast.ASTState;

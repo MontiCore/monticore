@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2017 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
 package de.monticore.codegen.symboltable;
 
 import com.google.common.collect.Lists;

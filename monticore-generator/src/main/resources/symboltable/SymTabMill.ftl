@@ -1,4 +1,3 @@
-<#-- (c)  https://github.com/MontiCore/monticore -->
 ${tc.signature("isTop", "className", "plainName", "symbolsAndScopes", "superMills", "superSymbols", "symbolToMill", "languageName", "existsHW", "symbols")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign existsSTC = genHelper.getGrammarSymbol().getStartProd().isPresent()>

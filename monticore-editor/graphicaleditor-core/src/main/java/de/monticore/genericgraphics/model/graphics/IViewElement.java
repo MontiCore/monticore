@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.model.graphics;
+package de.monticore.genericgraphics.model.graphics;
 
 import java.io.Serializable;
 

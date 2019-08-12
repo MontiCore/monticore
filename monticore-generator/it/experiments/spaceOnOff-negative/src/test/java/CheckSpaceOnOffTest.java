@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 import static org.junit.Assert.*;
 
 import java.io.IOException;

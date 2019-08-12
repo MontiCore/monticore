@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.texteditor.outline;
+package de.se_rwth.langeditor.texteditor.outline;
 
 import java.util.List;
 import java.util.stream.Collectors;

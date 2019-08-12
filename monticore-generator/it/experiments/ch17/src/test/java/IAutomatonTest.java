@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 import iautomaton._parser.IAutomatonParser;
 import iautomatoncomp._ast.ASTAutomaton;
 import org.junit.Test;

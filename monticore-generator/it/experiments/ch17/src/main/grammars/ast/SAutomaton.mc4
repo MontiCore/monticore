@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 package ast;
 
 grammar SAutomaton extends de.monticore.MCBasics {

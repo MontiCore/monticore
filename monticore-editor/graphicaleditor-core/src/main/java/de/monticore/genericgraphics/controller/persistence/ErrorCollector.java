@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.persistence;
+package de.monticore.genericgraphics.controller.persistence;
 
 import java.util.ArrayList;
 import java.util.List;

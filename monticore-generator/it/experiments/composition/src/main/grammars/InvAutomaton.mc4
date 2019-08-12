@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 
 component grammar InvAutomaton
 			extends de.monticore.MCBasics {

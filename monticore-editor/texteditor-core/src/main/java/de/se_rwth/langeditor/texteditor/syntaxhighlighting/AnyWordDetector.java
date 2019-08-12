@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.texteditor.syntaxhighlighting;
+package de.se_rwth.langeditor.texteditor.syntaxhighlighting;
 
 import org.eclipse.jface.text.rules.IWordDetector;
 

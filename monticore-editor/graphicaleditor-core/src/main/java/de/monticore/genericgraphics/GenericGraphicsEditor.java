@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics;
+package de.monticore.genericgraphics;
 
 import java.util.EventObject;
 

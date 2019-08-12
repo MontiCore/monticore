@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.view.figures.connections.locators;
+package de.monticore.genericgraphics.view.figures.connections.locators;
 
 import java.util.ArrayList;
 import java.util.List;

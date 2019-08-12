@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.selection;
+package de.monticore.genericgraphics.controller.selection;
 
 import java.util.ArrayList;
 import java.util.Iterator;

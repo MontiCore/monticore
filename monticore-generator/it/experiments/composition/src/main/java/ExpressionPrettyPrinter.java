@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 import de.monticore.prettyprint.IndentPrinter;
 import expression._ast.*;
 import expression._visitor.*;

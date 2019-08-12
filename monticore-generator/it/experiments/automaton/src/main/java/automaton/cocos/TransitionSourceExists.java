@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 package automaton.cocos;
 
 import automaton._ast.ASTTransition;

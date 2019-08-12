@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.model.graphics.impl;
+package de.monticore.genericgraphics.model.graphics.impl;
 
 import java.util.Observable;
 

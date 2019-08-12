@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.editparts;
+package de.monticore.genericgraphics.controller.editparts;
 
 import java.util.Observer;
 

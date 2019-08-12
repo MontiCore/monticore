@@ -1,4 +1,3 @@
-/* (c)  https://github.com/MontiCore/monticore */
 
 package de.monticore.grammar.grammar_withconcepts._symboltable;
 

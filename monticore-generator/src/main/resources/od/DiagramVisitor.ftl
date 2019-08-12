@@ -1,4 +1,3 @@
-<#-- (c)  https://github.com/MontiCore/monticore -->
 
 ${tc.signature("astType", "astPackage", "cd")}
 <#assign genHelper = glex.getGlobalVar("odHelper")>

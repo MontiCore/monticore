@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 
 /**
  * Statemachine: a flat automaton, reading input strings

@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 grammar G1 extends de.monticore.MCBasics {
   S = "...S1" a:T;
   T = "T1";

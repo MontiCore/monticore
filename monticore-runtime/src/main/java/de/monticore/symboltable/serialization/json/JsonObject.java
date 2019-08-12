@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2019 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
 package de.monticore.symboltable.serialization.json;
 
 import java.util.Collection;

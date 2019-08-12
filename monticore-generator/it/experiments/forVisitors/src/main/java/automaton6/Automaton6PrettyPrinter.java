@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 package automaton6;
 
 import automaton5._ast.*;

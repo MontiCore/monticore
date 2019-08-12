@@ -1,4 +1,3 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
 // Very simplified grammar to mimic expressions 
 
 component grammar Expression extends de.monticore.MCBasics {

@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.view.icons;
+package de.monticore.genericgraphics.view.icons;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
