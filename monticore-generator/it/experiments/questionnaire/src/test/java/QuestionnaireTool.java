@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 
 import java.util.*;
 import questionnaire._ast.*;

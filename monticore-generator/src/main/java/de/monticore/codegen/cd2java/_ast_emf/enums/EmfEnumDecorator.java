@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.enums;
 
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;

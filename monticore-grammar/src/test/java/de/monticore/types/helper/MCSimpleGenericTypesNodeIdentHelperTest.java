@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.helper;
 
 import de.monticore.types.MCSimpleGenericTypesNodeIdentHelper;

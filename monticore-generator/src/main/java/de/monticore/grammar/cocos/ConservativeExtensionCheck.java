@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.cocos;
 
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;

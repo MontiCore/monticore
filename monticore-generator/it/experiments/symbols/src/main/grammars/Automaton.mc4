@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 
 grammar Automaton extends de.monticore.MCNumbers {
 

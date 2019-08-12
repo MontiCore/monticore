@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 component grammar IAutomatonComp extends de.monticore.MCBasics {
 
   Automaton =

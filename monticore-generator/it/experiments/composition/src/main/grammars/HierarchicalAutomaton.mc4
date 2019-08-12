@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 grammar HierarchicalAutomaton extends Automaton1 {
 
   // keep the old start

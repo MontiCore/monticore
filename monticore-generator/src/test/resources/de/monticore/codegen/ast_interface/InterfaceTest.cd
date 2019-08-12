@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.ast_interface;
 
 import de.monticore.codegen.ast.Lexicals.*;

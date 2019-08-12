@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.commonexpressions._ast;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;

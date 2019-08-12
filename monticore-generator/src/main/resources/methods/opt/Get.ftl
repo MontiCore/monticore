@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("attribute", "naiveAttributeName")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
         if (isPresent${naiveAttributeName}()) {

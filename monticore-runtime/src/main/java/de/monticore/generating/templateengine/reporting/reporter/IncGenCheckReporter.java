@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.generating.templateengine.reporting.reporter;
 
 import de.monticore.ast.ASTNode;

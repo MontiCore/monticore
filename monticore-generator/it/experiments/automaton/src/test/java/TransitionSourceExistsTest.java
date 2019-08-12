@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 
 import automaton._ast.ASTAutomaton;
 import automaton._ast.ASTState;

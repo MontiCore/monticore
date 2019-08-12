@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.typecd2java;
 
 import com.google.common.collect.Lists;

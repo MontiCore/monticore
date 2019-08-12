@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 
 grammar Automaton15 extends de.monticore.MCBasics {
 

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package automaton.visitors;
 
 import automaton._ast.ASTState;

@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("cdInterface")}
 ${tc.include("core.Package")}
 

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typescalculator;
 
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;

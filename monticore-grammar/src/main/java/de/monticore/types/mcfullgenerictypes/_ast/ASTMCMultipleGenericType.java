@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.mcfullgenerictypes._ast;
 
 import com.google.common.collect.ImmutableList;

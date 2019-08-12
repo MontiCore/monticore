@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 grammar HierInvAutomaton extends Automaton3 {
 
   // keep the old axiom

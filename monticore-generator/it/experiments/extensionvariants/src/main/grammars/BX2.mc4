@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 grammar BX2 extends A {
 
   // M changed; Q changed; M? reused in Q

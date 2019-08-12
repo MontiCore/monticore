@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 grammar G3 extends G2 {
   N = "...N3" ["opt"]?;
   S = "...S3" a:T b:T? c:T*;

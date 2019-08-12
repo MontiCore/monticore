@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 // One might think that we could call traverse(subelement) immediately,
 // but this is not true for interface-types where we do not know the
 // concrete type of the element.

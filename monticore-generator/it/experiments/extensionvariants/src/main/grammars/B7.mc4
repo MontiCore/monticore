@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 grammar B7 extends A {
 
   // R is adapted and reused in its body

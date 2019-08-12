@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.referencesymbol;
 
 import de.monticore.io.paths.ModelPath;

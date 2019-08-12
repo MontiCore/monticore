@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.referencesymbol.reference._symboltable;
 
 public class ReferenceLanguage extends ReferenceLanguageTOP {

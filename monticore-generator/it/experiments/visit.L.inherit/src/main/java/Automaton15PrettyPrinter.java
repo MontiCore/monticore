@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package automaton15;
 
 import automaton15._ast.*;

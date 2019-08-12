@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import java.io.IOException;
 import java.util.Optional;
 

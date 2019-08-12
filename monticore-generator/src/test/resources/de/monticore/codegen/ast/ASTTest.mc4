@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.ast;
 
 grammar ASTTest extends mc.grammars.lexicals.TestLexicals {

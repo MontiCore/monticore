@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization.json;
 
 import java.util.Collection;

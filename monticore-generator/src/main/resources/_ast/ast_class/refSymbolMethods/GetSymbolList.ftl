@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("attributeName", "referencedSymbol", "simpleSymbolName")}
     java.util.List<Optional<${referencedSymbol}>> temp = new java.util.ArrayList<>();
     if (this.${attributeName}.isEmpty() && getEnclosingScope2() != null) {

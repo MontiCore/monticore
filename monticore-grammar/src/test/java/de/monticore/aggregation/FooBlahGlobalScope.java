@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.aggregation;
 
 import de.monticore.aggregation.blah.Bar2DummySymbol;

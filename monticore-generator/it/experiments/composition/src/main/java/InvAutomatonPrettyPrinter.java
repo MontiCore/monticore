@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import de.monticore.prettyprint.IndentPrinter;
 import invautomaton._ast.*;
 import invautomaton._visitor.*;

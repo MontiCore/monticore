@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("factoryClassName", "packageName", "classList")}
 switch (eClass.getClassifierID()) {
 <#list classList as clazz>

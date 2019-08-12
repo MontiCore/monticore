@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 grammar EX3 extends D {
 
   // Orig:  S = "text" a:S* b:S? c:S;

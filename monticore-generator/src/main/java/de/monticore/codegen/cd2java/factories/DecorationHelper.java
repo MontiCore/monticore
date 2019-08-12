@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.ast.ASTNode;

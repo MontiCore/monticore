@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package sm2;
 
 import de.monticore.io.paths.ModelPath;

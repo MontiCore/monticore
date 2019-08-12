@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("cdEnum")}
 
 ${tc.include("core.Package")}

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package automaton._symboltable;
 
 import de.monticore.symboltable.ISymbol;

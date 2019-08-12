@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package grammarforast15;
 
 import java.io.IOException;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.se_rwth.langeditor.injection;
 
 import org.eclipse.core.resources.IProject;

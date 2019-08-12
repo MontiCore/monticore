@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.editorconnector.menus;
 
 import org.eclipse.core.commands.AbstractHandler;

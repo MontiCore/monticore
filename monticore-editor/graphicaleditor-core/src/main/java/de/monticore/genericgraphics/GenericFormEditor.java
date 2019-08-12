@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.genericgraphics;
 
 import org.eclipse.core.resources.IFile;

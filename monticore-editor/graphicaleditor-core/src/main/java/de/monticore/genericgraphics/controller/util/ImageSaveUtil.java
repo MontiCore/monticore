@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.genericgraphics.controller.util;
 
 import org.eclipse.draw2d.Graphics;

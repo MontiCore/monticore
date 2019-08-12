@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.builder.buildermethods;
 
 import de.monticore.codegen.cd2java.methods.MutatorDecorator;

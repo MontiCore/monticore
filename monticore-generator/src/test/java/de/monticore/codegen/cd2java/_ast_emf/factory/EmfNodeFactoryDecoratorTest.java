@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.factory;
 
 import de.monticore.cd.prettyprint.CD4CodePrinter;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.mcsimplegenerictypes._ast;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCType;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import de.monticore.MCTask
 plugins {
   id "monticore" version "5.0.7-SNAPSHOT" // MontiCore Plugin

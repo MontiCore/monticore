@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.genericgraphics.controller.commands.handler;
 
 import org.eclipse.core.commands.AbstractHandler;

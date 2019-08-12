@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 
 /*
  * WARNING: This file has been generated, don't modify !!

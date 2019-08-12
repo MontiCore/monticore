@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.expressionsbasis._symboltable;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;

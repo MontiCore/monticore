@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 grammar G12 extends G1 {
   N = "...N12" ["opt"]? a:T*;
   S = "...S12" a:T c:T* d:T+;

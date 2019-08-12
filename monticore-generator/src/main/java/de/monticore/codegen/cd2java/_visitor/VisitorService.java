@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 fileTree(dir: grammarDir, include: '**/*.mc4').each {
   def g = it
   def taskname = file(grammarDir).toURI().relativize(g.toURI()).toString()

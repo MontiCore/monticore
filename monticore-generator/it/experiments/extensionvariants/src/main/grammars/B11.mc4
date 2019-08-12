@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 grammar B11 extends A {
 
   // M is adapted and reused, but its cardinality adapted

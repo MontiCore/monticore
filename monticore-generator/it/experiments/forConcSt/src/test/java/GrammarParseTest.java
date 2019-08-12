@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 

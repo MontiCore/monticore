@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import expression._ast.*;
 import expression._visitor.*;
 

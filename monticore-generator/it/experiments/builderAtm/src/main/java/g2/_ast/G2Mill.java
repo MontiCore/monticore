@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package g2._ast;
 
 public class G2Mill extends G2MillTOP {

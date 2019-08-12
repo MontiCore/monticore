@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${glex.defineGlobalVar("v1",[])}
 ${glex.addToGlobalVar("v1",16)}
 ${glex.addToGlobalVar("v1",17)}

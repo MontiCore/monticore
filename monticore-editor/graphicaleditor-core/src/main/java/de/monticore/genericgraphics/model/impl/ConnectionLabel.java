@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.genericgraphics.model.impl;
 
 import org.eclipse.draw2d.Locator;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package org.nest.nestml;
 
 grammar NESTML extends org.nest.spl.SPL {

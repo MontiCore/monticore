@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.scopes.superautomaton._symboltable;
 
 import de.monticore.symboltable.ISymbol;

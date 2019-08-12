@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package test;
 
 import static org.junit.Assert.*;

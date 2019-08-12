@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#--
    Template, belongs to Transition @ grammar HierAutomaton
 -->

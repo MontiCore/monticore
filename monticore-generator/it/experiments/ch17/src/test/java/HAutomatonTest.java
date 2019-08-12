@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import hautomaton._parser.HAutomatonParser;
 import org.junit.Test;
 import sautomaton._ast.ASTAutomaton;

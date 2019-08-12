@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("packageName", "className", "attribute")}
 <#assign attributeName = attribute.getName()>
 <#assign genHelper = glex.getGlobalVar("astHelper")>

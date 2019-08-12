@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.resolve;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
