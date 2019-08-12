@@ -197,7 +197,6 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public boolean isMethodAlreadyDefined(String methodname, List<ASTCDMethod> definedMethods) {
-    //if there is a Class with the same name in the current CompilationUnit, then the methods are only generated once
     return definedMethods
         .stream()
         .anyMatch(x -> x.getName().equals(methodname));

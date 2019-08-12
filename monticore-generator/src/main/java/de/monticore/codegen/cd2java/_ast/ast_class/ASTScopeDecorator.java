@@ -66,7 +66,6 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
 
   protected ASTCDAttribute createSpannedScope2Attribute(ASTMCType scopeType) {
     //todo better name with the grammar name in the attributeName, like it was before
-//    String attributeName = String.format(SPANNED_SCOPE, symbolTableService.getCDName()) + "2";
     String attributeName = String.format(SPANNED_SCOPE, "") + "2";
     ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
     this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));

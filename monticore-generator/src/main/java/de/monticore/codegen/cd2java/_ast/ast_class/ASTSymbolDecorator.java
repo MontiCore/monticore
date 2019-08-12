@@ -37,7 +37,7 @@ public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAtt
       String attributeName = StringUtils.uncapitalize(symbolTableService.getSimpleSymbolNameFromOptional(symbolType)) + SYMBOL_SUFFIX;
 
       attributeList.add(createSymbolAttribute(symbolType, attributeName));
-      attributeList.add(createSymbol2Attribute(symbolType, attributeName));
+      attributeList.add(createSymbol2Attribute(symbolType));
     }
     return attributeList;
   }
@@ -61,10 +61,9 @@ public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAtt
     return attribute;
   }
 
-  protected ASTCDAttribute createSymbol2Attribute(ASTMCType symbolType, String attributeName) {
+  protected ASTCDAttribute createSymbol2Attribute(ASTMCType symbolType) {
     //todo better name with the grammar name in the attributeName, like it was before
-//    attributeName += "2";
-    attributeName = "symbol2";
+    String attributeName = "symbol2";
     ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, symbolType, attributeName);
     this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     return attribute;

@@ -73,7 +73,7 @@ public class EmfService extends AbstractService {
 
   //for InitializePackageContents template
   public String getClassPackage(CDTypeSymbol cdTypeSymbol) {
-    if (cdTypeSymbol.getModelName().toLowerCase().equals(getQualifiedCDName().toLowerCase())) {
+    if (cdTypeSymbol.getModelName().equalsIgnoreCase(getQualifiedCDName())) {
       return "this";
     } else {
       return StringTransformations.uncapitalize(getSimplePackageImplName(cdTypeSymbol.getModelName()));
@@ -118,7 +118,7 @@ public class EmfService extends AbstractService {
   }
 
   public boolean isString(ASTMCType type) {
-    return getSimpleNativeType(type).equals("String");
+    return "String".equals(getSimpleNativeType(type));
   }
 
   public boolean isLiteralsEnum(ASTCDEnum astcdEnum, String definitionName) {
