@@ -54,22 +54,15 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     changedClass.addAllInterfaces(originalClass.getInterfaceList());
     changedClass.addAllCDMethods(originalClass.getCDMethodList());
 
-    //remove symbol and scope attributes for deepEquals and deepClone methods
-    List<ASTCDAttribute> noSymbolAttributes = originalClass.getCDAttributeList().stream()
-        .filter(a -> !service.isReferencedSymbolAttribute(a))
-        .filter(ASTCDAttributeTOP::isPresentModifier)
-        .filter(a -> !service.hasScopeStereotype(a.getModifier()))
-        .filter(a -> !service.hasSymbolStereotype(a.getModifier()))
-        .collect(Collectors.toList());
-
-    changedClass.addAllCDMethods(getAllDataMethods(originalClass, noSymbolAttributes));
-    changedClass.addCDMethod(createDeepCloneWithParam(originalClass, noSymbolAttributes));
-
-    //remove inherited attributes, because this should not be generated again
+    //remove inherited attributes, because these are already defined in superclass
     List<ASTCDAttribute> ownAttributes = originalClass.deepClone().getCDAttributeList()
         .stream()
         .filter(a -> !service.isInherited(a))
         .collect(Collectors.toList());
+
+    changedClass.addAllCDMethods(getAllDataMethods(originalClass, originalClass.getCDAttributeList()));
+    // no Inherited attributes only, because inherited once are cloned through super.deepClone()
+    changedClass.addCDMethod(createDeepCloneWithParam(originalClass, ownAttributes));
 
     changedClass.setCDAttributeList(ownAttributes);
     changedClass.getCDAttributeList().forEach(this::addAttributeDefaultValues);
@@ -150,16 +143,13 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
   }
 
 
-  protected ASTCDMethod createDeepCloneWithParam(ASTCDClass clazz, List<ASTCDAttribute> attributeList) {
+  protected ASTCDMethod createDeepCloneWithParam(ASTCDClass clazz, List<ASTCDAttribute> noInheritedAttributes) {
     String simpleName = dataDecoratorUtil.getSimpleName(clazz);
     // deep clone with result parameter
     ASTMCType classType = this.getCDTypeFacade().createQualifiedType(simpleName);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(classType, "result");
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(classType).build();
     ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC, returnType, DEEP_CLONE_METHOD, parameter);
-    List<ASTCDAttribute> noInheritedAttributes = attributeList.stream()
-        .filter(a -> !service.isInherited(a))
-        .collect(Collectors.toList());
     this.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("data.DeepCloneWithParameters", noInheritedAttributes));
     return deepCloneWithParam;
   }

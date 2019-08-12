@@ -98,14 +98,6 @@ public class InheritedAttributesTranslation implements
         .filter(ASTInterfaceProd.class::isInstance)
         .map(ASTInterfaceProd.class::cast)
         .collect(Collectors.toList());
-    // only interfaces without a right side
-/* TODO Dadurch geht das deepCone kaputt (Beispiel: In CD4A hat CDType eine rechte Seite mit Namen, in
-CDClassProd wird beim deepClone der Name nicht kopiert
-    directInterfaces = directInterfaces
-        .stream()
-        .filter(ASTInterfaceProd::isEmptyAlts)
-        .collect(Collectors.toList());
-*/
     List<ASTInterfaceProd> allSuperRules = new ArrayList<>();
     for (ASTInterfaceProd superInterface : directInterfaces) {
       allSuperRules.addAll(getAllInterfacesWithoutImplementation(superInterface));
