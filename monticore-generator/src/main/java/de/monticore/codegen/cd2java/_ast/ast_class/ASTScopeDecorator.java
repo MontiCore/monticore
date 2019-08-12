@@ -13,6 +13,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE;
@@ -33,7 +34,8 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
   public List<ASTCDAttribute> decorate(final ASTCDType clazz) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     ASTMCType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
-    if (clazz.getModifierOpt().isPresent() && symbolTableService.hasScopeStereotype(clazz.getModifierOpt().get())) {
+    Optional<ASTCDType> superScope = symbolTableService.getTypeWithScopeInfo(clazz);
+    if (superScope.isPresent()) {
       //create attributes
       attributeList.add(createSpannedScopeAttribute());
 

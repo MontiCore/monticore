@@ -31,8 +31,9 @@ public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAtt
   @Override
   public List<ASTCDAttribute> decorate(final ASTCDType clazz) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
-    if (clazz.getModifierOpt().isPresent() && symbolTableService.hasSymbolStereotype(clazz.getModifierOpt().get())) {
-      ASTMCType symbolType = createSymbolType(clazz);
+    Optional<ASTCDType> symbolClass = symbolTableService.getTypeWithSymbolInfo(clazz);
+    if (symbolClass.isPresent()) {
+      ASTMCType symbolType = createSymbolType(symbolClass.get());
 
       String attributeName = StringUtils.uncapitalize(symbolTableService.getSimpleSymbolNameFromOptional(symbolType)) + SYMBOL_SUFFIX;
 
