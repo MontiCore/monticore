@@ -36,7 +36,8 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
   protected final AbstractService<?> service;
 
-  public ASTConstantsDecorator(GlobalExtensionManagement glex, AbstractService abstractService) {
+  public ASTConstantsDecorator(final GlobalExtensionManagement glex,
+                               final AbstractService abstractService) {
     super(glex);
     this.service = abstractService;
   }

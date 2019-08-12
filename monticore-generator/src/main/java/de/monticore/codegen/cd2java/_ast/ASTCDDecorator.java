@@ -133,7 +133,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
   }
 
   protected List<ASTCDClass> createMillForSuperClasses(final ASTCDCompilationUnit ast) {
-    return millForSuperDecorator.decorate(ast).stream().collect(Collectors.toList());
+    return millForSuperDecorator.decorate(ast);
   }
 
   protected ASTCDClass createASTConstantsClass(final ASTCDCompilationUnit ast) {

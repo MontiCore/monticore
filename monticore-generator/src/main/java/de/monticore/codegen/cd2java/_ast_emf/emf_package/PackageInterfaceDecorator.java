@@ -34,12 +34,11 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   @Override
-  public ASTCDInterface decorate(ASTCDCompilationUnit compilationUnit) {
+  public ASTCDInterface decorate(final ASTCDCompilationUnit compilationUnit) {
     ASTCDDefinition astcdDefinition = compilationUnit.deepClone().getCDDefinition();
 
     String definitionName = astcdDefinition.getName();
     String interfaceName = definitionName + PACKAGE_SUFFIX;
-    List<ASTCDClass> classList = astcdDefinition.getCDClassList();
 
     List<ASTCDAttribute> prodAttributes = createProdAttributes(astcdDefinition);
 

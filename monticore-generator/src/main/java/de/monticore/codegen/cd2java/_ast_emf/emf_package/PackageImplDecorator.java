@@ -43,8 +43,8 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
-    ASTCDDefinition definition = emfService.prepareCD(compilationUnit.getCDDefinition());
+  public ASTCDClass decorate(final ASTCDCompilationUnit compilationUnit) {
+    ASTCDDefinition definition = emfService.prepareCDForEmfPackageDecoration(compilationUnit.getCDDefinition());
     String definitionName = definition.getName();
     String packageImplName = definitionName + PACKAGE_IMPL_SUFFIX;
     String packageName = definitionName + PACKAGE_SUFFIX;

@@ -159,7 +159,7 @@ public class EmfService extends AbstractService {
     return astcdInterface.getName().equals("AST" + astcdDefinition.getName() + "Node");
   }
 
-  public ASTCDDefinition prepareCD(ASTCDDefinition astcdDefinition) {
+  public ASTCDDefinition prepareCDForEmfPackageDecoration(ASTCDDefinition astcdDefinition) {
     ASTCDDefinition copiedDefinition = astcdDefinition.deepClone();
     //remove inherited attributes
     List<ASTCDClass> preparedClasses = copiedDefinition.getCDClassList()

@@ -25,7 +25,9 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
 
   protected final ASTService astService;
 
-  public EnumDecorator(GlobalExtensionManagement glex, final AccessorDecorator accessorDecorator, final ASTService astService) {
+  public EnumDecorator(final GlobalExtensionManagement glex,
+                       final AccessorDecorator accessorDecorator,
+                       final ASTService astService) {
     super(glex);
     this.accessorDecorator = accessorDecorator;
     this.astService = astService;

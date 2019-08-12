@@ -23,8 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
@@ -72,13 +71,24 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertTrue(emfClass.isEmptyCDAttributes());
+    assertEquals(5, emfClass.getCDAttributeList().size());
+
+
+  }
+
+  @Test
+  public void testAttributeNames(){
+    getAttributeBy("automatonSymbol", emfClass);
+    getAttributeBy("symbol2", emfClass);
+    getAttributeBy("spannedAutomatonScope", emfClass);
+    getAttributeBy("spannedScope2", emfClass);
+    getAttributeBy("enclosingScope2", emfClass);
   }
 
   @Test
   public void testMethodSize() {
     assertFalse(emfClass.getCDMethodList().isEmpty());
-    assertEquals(12, emfClass.getCDMethodList().size());
+    assertEquals(39, emfClass.getCDMethodList().size());
   }
 
   @Test

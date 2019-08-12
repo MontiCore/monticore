@@ -51,7 +51,7 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
 
   @Override
   public ASTCDInterface decorate(final ASTCDInterface originalInput, ASTCDInterface changedInput) {
-    changedInput.addCDMethod(getAcceptMethod(visitorService.getVisitorType()));
+    changedInput.addCDMethod(getAcceptMethod());
     changedInput.addInterface(getCDTypeFacade().createReferenceTypeByDefinition(AST_INTERFACE));
     changedInput.addInterface(astService.getASTBaseInterface());
     changedInput.clearCDAttributes();
@@ -95,7 +95,8 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
 
   }
 
-  protected ASTCDMethod getAcceptMethod(ASTMCType visitorType) {
+  protected ASTCDMethod getAcceptMethod() {
+    ASTMCType visitorType = visitorService.getVisitorType();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(visitorType, "visitor");
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCVoidType(getCDTypeFacade().createVoidType()).build();
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, returnType, ACCEPT_METHOD, parameter);

@@ -21,15 +21,15 @@ public class TopDecorator extends AbstractTransformer<ASTCDCompilationUnit> {
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalCD, ASTCDCompilationUnit changedCD) {
     changedCD.getCDDefinition().getCDClassList().stream()
-        .filter(cdClass -> existsHandwrittenClass(hwPath, constructQualifiedName(changedCD.getPackageList(),cdClass.getName())))
+        .filter(cdClass -> existsHandwrittenClass(hwPath, constructQualifiedName(changedCD.getPackageList(), cdClass.getName())))
         .forEach(this::applyTopMechanism);
 
     changedCD.getCDDefinition().getCDInterfaceList().stream()
-        .filter(cdInterface -> existsHandwrittenClass(hwPath, constructQualifiedName(changedCD.getPackageList(),cdInterface.getName())))
+        .filter(cdInterface -> existsHandwrittenClass(hwPath, constructQualifiedName(changedCD.getPackageList(), cdInterface.getName())))
         .forEach(this::applyTopMechanism);
 
     changedCD.getCDDefinition().getCDEnumList().stream()
-        .filter(cdEnum -> existsHandwrittenClass(hwPath, constructQualifiedName(changedCD.getPackageList(),cdEnum.getName())))
+        .filter(cdEnum -> existsHandwrittenClass(hwPath, constructQualifiedName(changedCD.getPackageList(), cdEnum.getName())))
         .forEach(this::applyTopMechanism);
 
     return changedCD;
