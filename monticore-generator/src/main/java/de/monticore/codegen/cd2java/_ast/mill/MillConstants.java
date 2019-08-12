@@ -16,4 +16,6 @@ public class MillConstants {
 
   public static final String MILL_FOR = "MillFor";
 
+  private MillConstants() {
+  }
 }

@@ -11,4 +11,7 @@ public class BuilderConstants {
   public static final String BUILD_METHOD = "build";
 
   public static final String IS_VALID = "isValid";
+
+  private BuilderConstants() {
+  }
 }
