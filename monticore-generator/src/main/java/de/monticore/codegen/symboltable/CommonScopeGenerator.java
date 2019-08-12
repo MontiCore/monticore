@@ -5,6 +5,7 @@
  */
 package de.monticore.codegen.symboltable;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
@@ -17,7 +18,6 @@ import de.se_rwth.commons.Names;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static de.monticore.codegen.GeneratorHelper.existsHandwrittenClass;
 import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
@@ -152,8 +152,16 @@ public class CommonScopeGenerator implements ScopeGenerator {
         superScopeVisitors.add(qualifiedScopeVisitorName);
       }
     }
-
-    List<String> superGrammarPackages = allSuperScopes.stream().map(N -> Names.getQualifier(N)).collect(Collectors.toList());
+  
+    List<String> superGrammarPackages = Lists.newArrayList();
+    for (CDDefinitionSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
+      if (genHelper.hasSymbolTable(cdSymbol.getFullName())) {
+        String qualifiedSymbolName = genHelper.getQualifiedScopeInterfaceType(cdSymbol);
+        if (!qualifiedSymbolName.isEmpty()) {
+          superGrammarPackages.add(qualifiedSymbolName);
+        }
+      }
+    }
 
     final Path scopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         scopeClassName + ".java");
