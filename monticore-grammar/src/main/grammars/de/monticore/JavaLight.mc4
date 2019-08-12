@@ -169,4 +169,8 @@ CreatedName
     |   MCPrimitiveType
     ;
 
+EnhancedForControl implements ForControl
+    =   FormalParameter ":" Expression
+    ;
+
 }

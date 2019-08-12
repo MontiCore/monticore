@@ -349,6 +349,15 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
+  @Override
+  public void handle(ASTEnhancedForControl a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    a.getFormalParameter().accept(getRealThis());
+    getPrinter().print(": ");
+    a.getExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
   protected void printJavaLightList(Iterator<? extends ASTJavaLightNode> iter, String separator) {
     // print by iterate through all items
     String sep = "";
