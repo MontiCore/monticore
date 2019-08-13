@@ -55,11 +55,7 @@
       <artifactId>groovy</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-generator</artifactId>
-      <version>5.1.0</version>
-    </dependency>
+
   </dependencies>
   
   <build>

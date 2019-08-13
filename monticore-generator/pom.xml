@@ -82,6 +82,7 @@
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-grammar</artifactId>
+      <scope>provided</scope>
       <classifier>${grammars.classifier}</classifier>
     </dependency>
 
