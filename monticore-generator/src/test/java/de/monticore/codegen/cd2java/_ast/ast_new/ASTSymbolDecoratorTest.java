@@ -55,7 +55,7 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testSymbol2Attribute() {
+  public void testSymbolAttribute2() {
     Optional<ASTCDAttribute> symbolAttribute = attributes.stream().filter(x -> x.getName().equals("symbol")).findFirst();
     assertTrue(symbolAttribute.isPresent());
     assertDeepEquals(PROTECTED, symbolAttribute.get().getModifier());

@@ -2,7 +2,6 @@
 package de.monticore.templateclassgenerator.util;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.ISymbol;
 
 import java.nio.file.Path;

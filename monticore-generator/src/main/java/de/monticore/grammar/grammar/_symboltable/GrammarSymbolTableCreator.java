@@ -9,6 +9,7 @@ import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
@@ -149,6 +150,9 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   public void addToScopeAndLinkWithNode(de.monticore.grammar.grammar._symboltable.RuleComponentSymbol symbol, de.monticore.grammar.grammar._ast.ASTTerminal astNode) {
+    if (getCurrentScope().isPresent()) {
+      symbol.setEnclosingScope(getCurrentScope().get());
+    }
     setLinkBetweenSymbolAndNode(symbol, astNode);
   }
 
@@ -213,11 +217,25 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   @Override
   public void visit(ASTAdditionalAttribute ast) {
     // Do nothing: see method visit(ASTASTRule ast)
+    if (getCurrentScope().isPresent()) {
+      ast.setEnclosingScope(getCurrentScope().get());
+    }
+    else {
+      Log.error("Could not set enclosing scope of ASTNode \"" + ast
+          + "\", because no scope is set yet!");
+    }
   }
 
   @Override
   public void visit(ASTBlock ast) {
     // Do nothing:
+    if (getCurrentScope().isPresent()) {
+      ast.setEnclosingScope(getCurrentScope().get());
+    }
+    else {
+      Log.error("Could not set enclosing scope of ASTNode \"" + ast
+          + "\", because no scope is set yet!");
+    }
   }
 
   void setComponentMultiplicity(RuleComponentSymbol prod, ASTNode ast) {
