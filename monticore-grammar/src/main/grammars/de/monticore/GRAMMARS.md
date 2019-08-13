@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 
 # MontiCore Grammars - an Overview
 
