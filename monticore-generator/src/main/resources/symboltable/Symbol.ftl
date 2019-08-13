@@ -11,14 +11,16 @@ ${signature("className", "prodSymbol", "ruleSymbol", "imports", "isScopeSpanning
 <#else>
 <#assign superInterfaces = "implements ICommon" + languageName + "Symbol">
 </#if>
+
 <#if ruleSymbol.isPresent()>
-  <#if !ruleSymbol.get().isEmptySuperInterfaces()>
-    <#assign superInterfaces = ", " + stHelper.printGenericTypes(ruleSymbol.get().getSuperInterfaceList())>
-  </#if>
+  <#list ruleSymbol.get().getSuperInterfaceList() as s>
+    <#assign superInterfaces = superInterfaces + ", "+ s.printType()>
+  </#list>
   <#if !ruleSymbol.get().isEmptySuperClasss()>
-    <#assign superClass = " extends " + stHelper.printGenericTypes(ruleSymbol.get().getSuperClassList())>
+    <#assign superClass = " extends " + ruleSymbol.get().getSuperClass(0).printType()>
   </#if>
 </#if>
+
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
 
