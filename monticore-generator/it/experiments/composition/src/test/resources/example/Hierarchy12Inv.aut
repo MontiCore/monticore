@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 automaton Hierarchy12Inv {
 
   state A true  <<initial>> {

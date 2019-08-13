@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 sup TopPingPong {
  automaton PingPong {
        state NoGame;
