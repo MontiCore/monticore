@@ -6,7 +6,7 @@ import de.monticore.GrammarGlobalScopeTestFactory;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -52,7 +52,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     // AST
     assertTrue(grammar.getAstNode().isPresent());
     assertTrue(grammar.getAstNode().get() instanceof ASTMCGrammar);
-    assertSame(grammar.getEnclosingScope(), grammar.getAstNode().get().getEnclosingScope2());
+    assertSame(grammar.getEnclosingScope(), grammar.getAstNode().get().getEnclosingScope());
     
     final ProdSymbol stateChartProd = grammar.getProd("Statechart").orElse(null);
     assertNotNull(stateChartProd);
@@ -181,9 +181,9 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
   
   private void testLinkBetweenSymbolAndAst(ProdSymbol prodSymbol) {
     assertTrue(prodSymbol.getAstNode().isPresent());
-    assertSame(prodSymbol, prodSymbol.getAstNode().get().getSymbol2());
+    assertSame(prodSymbol, prodSymbol.getAstNode().get().getSymbol());
     assertSame(prodSymbol.getEnclosingScope(),
-        prodSymbol.getAstNode().get().getEnclosingScope2());
+        prodSymbol.getAstNode().get().getEnclosingScope());
     
     if (prodSymbol.isClass()) {
       assertTrue(prodSymbol.getAstNode().get() instanceof ASTClassProd);
@@ -204,9 +204,9 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
   
   private void testLinkBetweenSymbolAndAst(RuleComponentSymbol prodCompSymbol) {
     assertTrue(prodCompSymbol.getAstNode().isPresent());
-    assertSame(prodCompSymbol, prodCompSymbol.getAstNode().get().getSymbol2());
+    assertSame(prodCompSymbol, prodCompSymbol.getAstNode().get().getSymbol());
     assertSame(prodCompSymbol.getEnclosingScope(),
-        prodCompSymbol.getAstNode().get().getEnclosingScope2());
+        prodCompSymbol.getAstNode().get().getEnclosingScope());
   }
   
   @Test
@@ -318,7 +318,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
       Optional<RuleComponentSymbol> r = transition.getSpannedScope().resolveRuleComponent("args");
       assertTrue(r.isPresent());
     }
-    catch (ResolvedSeveralEntriesException e) {
+    catch (ResolvedSeveralEntriesForSymbolException e) {
       fail("Only one prod component should be resolved instead of " + e.getSymbols().size());
     }
   }
