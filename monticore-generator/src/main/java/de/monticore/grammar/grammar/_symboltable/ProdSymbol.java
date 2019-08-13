@@ -2,7 +2,6 @@
 
 package de.monticore.grammar.grammar._symboltable;
 
-import de.monticore.symboltable.SymbolKind;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -2,7 +2,7 @@
 <feature
       id="de.monticore.m2e.feature"
       label="MontiCore m2e Extension"
-      version="5.1.0">
+      version="5.2.0">
 
    <plugin
          id="de.monticore.m2e"

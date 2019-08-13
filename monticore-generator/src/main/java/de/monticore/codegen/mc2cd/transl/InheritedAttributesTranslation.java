@@ -66,7 +66,7 @@ public class InheritedAttributesTranslation implements
     List<ASTInterfaceProd> interfacesWithoutImplementation = getAllInterfacesWithoutImplementation(
         inheritingNode);
     
-    String superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(definingNode.getEnclosingScope2())
+    String superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(definingNode.getEnclosingScope())
         .map(MCGrammarSymbol::getFullName)
         .orElse("");
     

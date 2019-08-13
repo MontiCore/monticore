@@ -27,7 +27,7 @@ public class OverridingAbstractNTsHaveNoSuperRules implements GrammarASTAbstract
   @Override
   public void check(ASTAbstractProd a) {
     Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(a.getEnclosingScope2());
+        .getMCGrammarSymbol(a.getEnclosingScope());
     List<MCGrammarSymbol> grammarSymbols = grammarSymbol.get().getSuperGrammarSymbols();
     
     if (!a.getSuperRuleList().isEmpty() || !a.getASTSuperClassList().isEmpty()) {

@@ -27,7 +27,7 @@ public class LexNTsOnlyUseLexNTs implements GrammarASTLexNonTerminalCoCo {
   @Override
   public void check(ASTLexNonTerminal a) {
     Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(a.getEnclosingScope2());
+        .getMCGrammarSymbol(a.getEnclosingScope());
     
     Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.getEnclosingRule(a);
     String ruleName = ruleSymbol.isPresent() ? ruleSymbol.get().getName() : "";

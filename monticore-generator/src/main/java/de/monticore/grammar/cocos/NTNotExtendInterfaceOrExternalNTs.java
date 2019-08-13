@@ -29,7 +29,7 @@ public class NTNotExtendInterfaceOrExternalNTs implements GrammarASTClassProdCoC
     if (!a.getSuperRuleList().isEmpty()) {
       List<ASTRuleReference> superRules = a.getSuperRuleList();
       for (ASTRuleReference sr : superRules) {
-        Optional<ProdSymbol> ruleSymbol = a.getEnclosingScope2().resolveProd(sr.getName());
+        Optional<ProdSymbol> ruleSymbol = a.getEnclosingScope().resolveProd(sr.getName());
         if (ruleSymbol.isPresent()) {
           ProdSymbol r = ruleSymbol.get();
           boolean isInterface = r.isInterface();

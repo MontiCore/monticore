@@ -6,7 +6,6 @@ import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
-import de.monticore.symboltable.ArtifactScope;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
@@ -29,7 +28,6 @@ public class ExpressionsBasisTest {
 
   private LiteralTypeCalculator literalsVisitor;
 
-  private ArtifactScope artifactScope;
 
   @Before
   public void setup(){

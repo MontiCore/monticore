@@ -430,8 +430,8 @@ public final class TransformationHelper {
       return FullGenericTypesPrinter.printType(type);
     }
     String refGrammarName = getGrammarName(typeSymbol.get());
-    if (grammar.isPresentSymbol2()
-        && grammar.getSymbol2().getFullName().equals(refGrammarName)) {
+    if (grammar.isPresentSymbol()
+        && grammar.getSymbol().getFullName().equals(refGrammarName)) {
       return FullGenericTypesPrinter.printType(type);
     }
     return refGrammarName + "." + FullGenericTypesPrinter.printType(type);

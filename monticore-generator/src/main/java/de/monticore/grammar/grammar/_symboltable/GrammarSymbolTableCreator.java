@@ -207,7 +207,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
               ast.get_SourcePositionStart());
     }
     ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a));
-    ast.setEnclosingScope2(getCurrentScope().get());
+    ast.setEnclosingScope(getCurrentScope().get());
   }
 
   @Override

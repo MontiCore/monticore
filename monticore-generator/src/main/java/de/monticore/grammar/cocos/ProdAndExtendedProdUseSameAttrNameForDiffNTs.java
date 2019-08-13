@@ -28,7 +28,7 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
   public void check(ASTNonTerminal a) {
     if (a.isPresentUsageName()) {
       String attributename = a.getUsageName();
-      Optional<RuleComponentSymbol> componentSymbol = a.getEnclosingScope2()
+      Optional<RuleComponentSymbol> componentSymbol = a.getEnclosingScope()
           .resolveRuleComponent(attributename);
       if (componentSymbol.isPresent()) {
         Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(a);
@@ -37,7 +37,7 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
           if (!prod.getSuperRuleList().isEmpty()) {
             ASTRuleReference type = prod.getSuperRuleList().get(0);
             String typename = type.getTypeName();
-            Optional<ProdSymbol> ruleSymbol = type.getEnclosingScope2().getEnclosingScope()
+            Optional<ProdSymbol> ruleSymbol = type.getEnclosingScope().getEnclosingScope()
                 .get().resolveProd(typename);
             if (ruleSymbol.isPresent()) {
               Optional<RuleComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()

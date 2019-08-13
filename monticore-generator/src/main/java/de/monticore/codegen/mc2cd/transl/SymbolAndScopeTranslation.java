@@ -48,13 +48,13 @@ public class SymbolAndScopeTranslation implements
     for (ASTSymbolDefinition symbolDefinition : grammarProd.getSymbolDefinitionList()) {
       if (symbolDefinition.isGenSymbol()) {
         final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-            .getMCGrammarSymbol(grammarProd.getEnclosingScope2());
+            .getMCGrammarSymbol(grammarProd.getEnclosingScope());
         if (symbolDefinition.isPresentSymbolName()
             && grammarSymbol.isPresent()) {
           //extra information into stereotype value if a symboltype is already defined in the grammar
           String symbolName = symbolDefinition.getSymbolName();
           String qualifiedName;
-          Optional<ProdSymbol> symbolType = grammarProd.getEnclosingScope2().resolveProd(symbolName);
+          Optional<ProdSymbol> symbolType = grammarProd.getEnclosingScope().resolveProd(symbolName);
           if (symbolType.isPresent()) {
             String packageName = symbolType.get().getFullName().substring(0, symbolType.get().getFullName().lastIndexOf(".")).toLowerCase();
             qualifiedName = packageName + "." + SymbolTableGenerator.PACKAGE + "." + symbolName;

@@ -26,7 +26,7 @@ public class UsedNTNotDefined implements GrammarASTNonTerminalCoCo {
   @Override
   public void check(ASTNonTerminal a) {
     Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(a.getEnclosingScope2());
+        .getMCGrammarSymbol(a.getEnclosingScope());
     Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.getEnclosingRule(a);
     String ruleName = ruleSymbol.isPresent()? ruleSymbol.get().getName() : "";
     if (grammarSymbol.isPresent() && !grammarSymbol.get().getProdWithInherited(a.getName()).isPresent()) {

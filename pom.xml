@@ -6,7 +6,7 @@
 
   <groupId>de.monticore</groupId>
   <artifactId>monticore</artifactId>
-  <version>5.1.0</version>
+  <version>5.2.0</version>
   <packaging>pom</packaging>
 
   <!-- == PROJECT MODULES ================================================= -->
@@ -65,7 +65,7 @@
     <xml-apis.version>1.0.b2</xml-apis.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>5.0.6.1</monticore.plugin>
+    <monticore.plugin>5.1.0</monticore.plugin>
 
     <se-groovy.plugin>1.2.3</se-groovy.plugin>
     <archetype.plugin>2.3</archetype.plugin>

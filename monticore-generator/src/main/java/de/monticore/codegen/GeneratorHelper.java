@@ -770,7 +770,7 @@ return null;
    * @return
    */
   public boolean isAttributeOfSuperType(ASTCDAttribute cdAttribute, ASTCDType type) {
-    if (!type.isPresentSymbol()) {
+    if (!type.isPresentSymbol2()) {
       Log.error("0xA5010 Could not load symbol information for " + type.getName() + ".");
       return false;
     }
@@ -962,7 +962,7 @@ return null;
    * @return
    */
   public List<CDTypeSymbol> getAllSuperInterfaces(ASTCDType type) {
-    if (!type.isPresentSymbol()) {
+    if (!type.isPresent()) {
       Log.error("0xA4079 Could not load symbol information for " + type.getName() + ".");
     }
 
@@ -1682,7 +1682,7 @@ return null;
                                                     ASTProd nodeWithSymbol) {
     List<ASTProd> superRuleNodes = new ArrayList<>();
     for (ASTRuleReference superRule : ruleReferences) {
-      Optional<ProdSymbol> symbol = nodeWithSymbol.getEnclosingScope2().resolveProd(superRule.getName());
+      Optional<ProdSymbol> symbol = nodeWithSymbol.getEnclosingScope().resolveProd(superRule.getName());
       if (symbol.isPresent() && symbol.get().getAstNode().isPresent()) {
         superRuleNodes.add((ASTProd) symbol.get().getAstNode().get());
       }
