@@ -6,7 +6,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Test;
 
@@ -64,7 +63,7 @@ public class NonTerminalMultiplicityTest {
   @Test
   public void testNonTerminalName() {
     List<ASTCDAttribute> attributes = astA.getCDAttributeList();
-    assertEquals("xs", attributes.get(0).getName());
+    assertEquals("x", attributes.get(0).getName());
   }
   
   /**

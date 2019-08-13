@@ -315,7 +315,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertNotNull(transition);
     
     try {
-      Optional<RuleComponentSymbol> r = transition.getSpannedScope().resolveRuleComponent("args");
+      Optional<RuleComponentSymbol> r = transition.getSpannedScope().resolveRuleComponent("arg");
       assertTrue(r.isPresent());
     }
     catch (ResolvedSeveralEntriesException e) {

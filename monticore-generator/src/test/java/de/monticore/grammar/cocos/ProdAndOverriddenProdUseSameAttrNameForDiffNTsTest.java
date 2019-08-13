@@ -10,7 +10,7 @@ import org.junit.Test;
 public class ProdAndOverriddenProdUseSameAttrNameForDiffNTsTest extends CocoTest{
 
   private final String MESSAGE = " The overriding production QualifiedName must not use " +
-          "the name parts for the nonterminal StringLiteral as the overridden production uses this name for the nonterminal Name";;
+          "the name part for the nonterminal StringLiteral as the overridden production uses this name for the nonterminal Name";
           private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4025.A4025";
 
