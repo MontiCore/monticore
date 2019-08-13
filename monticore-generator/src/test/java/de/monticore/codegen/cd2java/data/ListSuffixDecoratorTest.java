@@ -39,7 +39,6 @@ public class ListSuffixDecoratorTest extends DecoratorTestCase {
 
     ListSuffixDecorator listSuffixDecorator = new ListSuffixDecorator();
     cd = listSuffixDecorator.decorate(cd, cd);
-
     classWithS = getClassBy("A", cd);
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -72,11 +71,10 @@ public class ListSuffixDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testNonListAttributesWithoutS(){
+  public void testNonListAttributesWithoutS() {
     getAttributeBy("i", classWithS);
     getAttributeBy("s", classWithS);
     getAttributeBy("opt", classWithS);
     getAttributeBy("b", classWithS);
-
   }
 }
