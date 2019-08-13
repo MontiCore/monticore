@@ -14,7 +14,6 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import de.se_rwth.commons.logging.Log;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import com.google.common.collect.Lists;
@@ -22,9 +21,6 @@ import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
 import de.monticore.prettyprint.AstPrettyPrinter;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
 
 /**
@@ -40,12 +36,6 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   protected List<Comment> precomments = Lists.newArrayList();
   
   protected List<Comment> postcomments = Lists.newArrayList();
-  
-  protected Optional<? extends Symbol> symbol = Optional.empty();
-  
-  protected Optional<? extends Scope> enclosingScope = Optional.empty();
-  
-  protected Optional<? extends Scope> spannedScope = Optional.empty();
   
   protected Optional<AstPrettyPrinter<ASTNode>> prettyPrinter = Optional.empty();
   
@@ -111,123 +101,6 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   
   public void set_SourcePositionStartOpt(Optional<SourcePosition> value)   {
     this.start = value;
-  }
-  
-  @Override
-  public void setEnclosingScope(Scope enclosingScope) {
-    this.enclosingScope = Optional.ofNullable(enclosingScope);
-  }
-
-  @Override
-  public void setEnclosingScopeOpt(Optional<? extends Scope > enclosingScopeOpt) {
-    this.enclosingScope = enclosingScopeOpt ;
-  }
-
-  @Override
-  public void setEnclosingScopeAbsent() {
-    this.enclosingScope = Optional.empty();
-  }
-
-
-  @Override
-  public Scope getEnclosingScope() {
-    if (getEnclosingScopeOpt().isPresent()) {
-      return getEnclosingScopeOpt().get();
-    }
-    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
-    // Normally this statement is not reachable
-    throw new IllegalStateException();
-  }
-
-  @Override
-  public Optional<? extends Scope> getEnclosingScopeOpt() {
-    return this.enclosingScope;
-  }
-
-  @Deprecated
-  @Override
-  public void setSymbol(Symbol symbol) {
-    this.symbol = Optional.ofNullable(symbol);
-  }
-
-  @Deprecated
-  @Override
-  public void setSymbolOpt(Optional<? extends Symbol > enclosingSymbolOpt) {
-    this.symbol = enclosingSymbolOpt ;
-  }
-
-  @Deprecated
-  @Override
-  public void setSymbolAbsent() {
-    this.symbol = Optional.empty();
-  }
-
-  @Deprecated
-  @Override
-  public Symbol getSymbol() {
-    if (getSymbolOpt().isPresent()) {
-      return getSymbolOpt().get();
-    }
-    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
-    // Normally this statement is not reachable
-    throw new IllegalStateException();
-  }
-
-  @Deprecated
-  @Override
-  public Optional<? extends Symbol> getSymbolOpt() {
-    return this.symbol;
-  }
-
-  @Deprecated
-  @Override
-  public boolean isPresentSpannedScope() {
-    return spannedScope.isPresent();
-  }
-
-  @Deprecated
-  @Override
-  public boolean isPresentSymbol() {
-    return symbol.isPresent();
-  }
-  
-  @Override
-  public boolean isPresentEnclosingScope() {
-    return enclosingScope.isPresent();
-  }
-
-  @Deprecated
-  @Override
-  public void setSpannedScope(Scope spannedScope) {
-    this.spannedScope = Optional.ofNullable(spannedScope);
-  }
-
-  @Deprecated
-  @Override
-  public void setSpannedScopeOpt(Optional<? extends Scope > spannedScopeOpt) {
-    this.spannedScope = spannedScopeOpt ;
-  }
-
-  @Deprecated
-  @Override
-  public void setSpannedScopeAbsent() {
-    this.spannedScope = Optional.empty();
-  }
-
-  @Deprecated
-  @Override
-  public Scope getSpannedScope() {
-    if (getSpannedScopeOpt().isPresent()) {
-      return getSpannedScopeOpt().get();
-    }
-    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
-    // Normally this statement is not reachable
-    throw new IllegalStateException();
-  }
-  @Deprecated
-  @Override
-  public Optional<? extends Scope> getSpannedScopeOpt() {
-    return this.spannedScope;
   }
   
   /**

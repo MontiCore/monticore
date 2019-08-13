@@ -11,7 +11,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.IScope;
-import de.monticore.symboltable.Scope;
 
 public interface IReportEventHandler {
 
@@ -207,12 +206,6 @@ public interface IReportEventHandler {
   public void reportOpenInputFile(Optional<Path> parentPath, Path file);
 
   void reportParseInputFile(Path inputFilePath, String modelName);
-
-  /**
-   * @param scope
-   */
-  @Deprecated
-  public void reportSymbolTableScope(Scope scope);
 
   /**
    * @param scope

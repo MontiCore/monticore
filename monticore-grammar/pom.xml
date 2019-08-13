@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>5.0.7-SNAPSHOT</version>
+    <version>5.1.0</version>
   </parent>
 
   <artifactId>monticore-grammar</artifactId>
@@ -21,6 +21,7 @@
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
+      <version>${monticore.plugin}</version>
     </dependency>
     
     <dependency>

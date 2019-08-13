@@ -21,9 +21,9 @@ import java.util.Optional;
  */
 public final class ParserBasedAstProvider<T extends ASTNode> implements AstProvider<T> {
 
-  private final IModelingLanguage modelingLanguage;
+  private final IModelingLanguage<?> modelingLanguage;
 
-  public ParserBasedAstProvider(IModelingLanguage modelingLanguage) {
+  public ParserBasedAstProvider(IModelingLanguage<?> modelingLanguage) {
     this.modelingLanguage = modelingLanguage;
   }
 
@@ -32,7 +32,7 @@ public final class ParserBasedAstProvider<T extends ASTNode> implements AstProvi
 
     try {
       Log.debug("Start parsing model " + modelCoordinate + ".",
-          ModelingLanguageModelLoader.class.getSimpleName());
+          ParserBasedAstProvider.class.getSimpleName());
   
       URL loc = modelCoordinate.getLocation();
       if (!"jar".equals(loc.getProtocol())){
@@ -49,7 +49,7 @@ public final class ParserBasedAstProvider<T extends ASTNode> implements AstProvi
 
       if (ast.isPresent()) {
         Log.debug("Parsed model " + modelCoordinate + " successfully.",
-            ModelingLanguageModelLoader.class.getSimpleName());
+            ParserBasedAstProvider.class.getSimpleName());
       }
       else {
         Log.error("0xA1025 Could not parse model '" + modelCoordinate + "' of the grammar "

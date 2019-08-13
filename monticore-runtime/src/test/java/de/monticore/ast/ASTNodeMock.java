@@ -10,8 +10,6 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import com.google.common.collect.Lists;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
 import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
 import de.se_rwth.commons.SourcePosition;
@@ -172,95 +170,95 @@ public class ASTNodeMock implements ASTNode {
     
   }
   
-  @Override
-  public void setEnclosingScope(Scope enclosingScope) {
-    
-  }
-
-  @Override
-  public void setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt) {
-
-  }
-
-  @Override
-  public void setEnclosingScopeAbsent() {
-
-  }
-
-  @Override
-  public Scope  getEnclosingScope() {
-    return null;
-  }
-
-  @Override
-  public Optional<? extends Scope> getEnclosingScopeOpt() {
-    return Optional.empty();
-  }
-
-  @Override
-  public void setSymbol(Symbol symbol) {
-    
-  }
-
-  @Override
-  public void setSymbolOpt(Optional<? extends Symbol> spannedScopeOpt) {
-
-  }
-
-  @Override
-  public void setSymbolAbsent() {
-
-  }
-
-  @Override
-  public Symbol  getSymbol() {
-    return null;
-  }
-
-  @Override
-  public Optional<? extends Symbol> getSymbolOpt() {
-    return Optional.empty();
-  }
-
-  @Override
-  public boolean isPresentEnclosingScope() {
-    return false;
-  }
-
-  @Override
-  public boolean isPresentSymbol() {
-    return false;
-  }
-
-  @Override
-  public void setSpannedScope(Scope spannedScope) {
-
-  }
-
-  @Override
-  public void setSpannedScopeOpt(Optional<? extends Scope> spannedScopeOpt) {
-
-  }
-
-  @Override
-  public void setSpannedScopeAbsent() {
-
-  }
-
-  @Override
-  public Scope getSpannedScope() {
-    return null;
-  }
-
-  @Override
-  public Optional<? extends Scope> getSpannedScopeOpt() {
-    return Optional.empty();
-  }
-
-  @Override
-  public boolean isPresentSpannedScope() {
-    return false;
-  }
+//  @Override
+//  public void setEnclosingScope(Scope enclosingScope) {
+//    
+//  }
+//
+//  @Override
+//  public void setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt) {
+//
+//  }
+//
+//  @Override
+//  public void setEnclosingScopeAbsent() {
+//
+//  }
+//
+//  @Override
+//  public Scope  getEnclosingScope() {
+//    return null;
+//  }
+//
+//  @Override
+//  public Optional<? extends Scope> getEnclosingScopeOpt() {
+//    return Optional.empty();
+//  }
+//
+//  @Override
+//  public void setSymbol(Symbol symbol) {
+//    
+//  }
+//
+//  @Override
+//  public void setSymbolOpt(Optional<? extends Symbol> spannedScopeOpt) {
+//
+//  }
+//
+//  @Override
+//  public void setSymbolAbsent() {
+//
+//  }
+//
+//  @Override
+//  public Symbol  getSymbol() {
+//    return null;
+//  }
+//
+//  @Override
+//  public Optional<? extends Symbol> getSymbolOpt() {
+//    return Optional.empty();
+//  }
+//
+//  @Override
+//  public boolean isPresentEnclosingScope() {
+//    return false;
+//  }
+//
+//  @Override
+//  public boolean isPresentSymbol() {
+//    return false;
+//  }
+//
+//  @Override
+//  public void setSpannedScope(Scope spannedScope) {
+//
+//  }
+//
+//  @Override
+//  public void setSpannedScopeOpt(Optional<? extends Scope> spannedScopeOpt) {
+//
+//  }
+//
+//  @Override
+//  public void setSpannedScopeAbsent() {
+//
+//  }
+//
+//  @Override
+//  public Scope getSpannedScope() {
+//    return null;
+//  }
+//
+//  @Override
+//  public Optional<? extends Scope> getSpannedScopeOpt() {
+//    return Optional.empty();
+//  }
+//
+//  @Override
+//  public boolean isPresentSpannedScope() {
+//    return false;
+//  }
   
   @Override
   public void clear_PreComments() { }

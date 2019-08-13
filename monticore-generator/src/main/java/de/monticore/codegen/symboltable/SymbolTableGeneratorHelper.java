@@ -2,40 +2,48 @@
 
 package de.monticore.codegen.symboltable;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
-import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisScope;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
-import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsScope;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.io.paths.IterablePath;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.types.FullGenericTypesPrinter;
-import de.se_rwth.commons.JavaNamesHelper;
-import de.se_rwth.commons.Names;
-import de.se_rwth.commons.logging.Log;
-
-import java.util.*;
-import java.util.regex.Pattern;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 import static de.se_rwth.commons.Names.getQualifier;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
+import de.monticore.grammar.grammar._ast.ASTCard;
+import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTMethod;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.io.paths.IterablePath;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.FullGenericTypesPrinter;
+import de.se_rwth.commons.JavaNamesHelper;
+import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
 
 public class SymbolTableGeneratorHelper extends GeneratorHelper {
 

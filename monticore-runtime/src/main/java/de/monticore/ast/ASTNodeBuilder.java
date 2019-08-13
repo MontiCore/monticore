@@ -2,23 +2,27 @@
 
 package de.monticore.ast;
 
-import com.google.common.collect.Lists;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.Log;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Optional;
+import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+import com.google.common.collect.Lists;
+
+import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Log;
+
 /**
  * Foundation class for all ASTBuilder.
  */
-public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
+public abstract class ASTNodeBuilder<T extends ASTNodeBuilder<?>> {
   
   protected Optional<SourcePosition> sourcePositionStart = Optional.empty();
   
@@ -27,12 +31,6 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   protected List<Comment> precomments = Lists.newArrayList();
   
   protected List<Comment> postcomments = Lists.newArrayList();
-  
-  protected Optional<? extends Symbol> symbol = Optional.empty();
-  
-  protected Optional<? extends Scope> enclosingScope = Optional.empty();
-  
-  protected Optional<? extends Scope> spannedScope = Optional.empty();
   
   protected T realBuilder;
   
@@ -109,117 +107,6 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   
   public T set_SourcePositionStartOpt(Optional<SourcePosition> value) {
     this.sourcePositionStart = value;
-    return this.realBuilder;
-  }
-  
-  // ----------------------------------------------------------------------
-  // Handle the Optional Enclosing Scope
-  // ----------------------------------------------------------------------
-  
-  /**
-   * set Enclosing Scope
-   */
-  public T setEnclosingScope(Scope enclosingScope) {
-    this.enclosingScope = Optional.ofNullable(enclosingScope);
-    return this.realBuilder;
-  }
-  
-  public Optional<? extends Scope> getEnclosingScopeOpt() {
-    return enclosingScope;
-  }
-  
-  public Scope getEnclosingScope() {
-    if (getEnclosingScopeOpt().isPresent()) {
-      return getEnclosingScopeOpt().get();
-    }
-    Log.error("0xB9262 getEnclosingScopeOpt can't return a value. It is empty.");
-    // Normally this statement is not reachable
-    throw new IllegalStateException();
-  }
-  
-  public boolean isPresentEnclosingScope() {
-    return getEnclosingScopeOpt().isPresent();
-  }
-  
-  public T setEnclosingScopeAbsent() {
-    enclosingScope = Optional.empty();
-    return this.realBuilder;
-  }
-  
-  public T setEnclosingScopeOpt(Optional<? extends Scope> value) {
-    this.enclosingScope = value;
-    return this.realBuilder;
-  }
-  
-  // ----------------------------------------------------------------------
-  // Handle the optional Symbol
-  // ----------------------------------------------------------------------
-  
-  public T setSymbol(Symbol symbol) {
-    this.symbol = Optional.ofNullable(symbol);
-    return this.realBuilder;
-  }
-  
-  public Optional<? extends Symbol> getSymbolOpt() {
-    return symbol;
-  }
-  
-  public Symbol getSymbol() {
-    if (getSymbolOpt().isPresent()) {
-      return getSymbolOpt().get();
-    }
-    Log.error("0xB9263 getSymbolOpt can't return a value. It is empty.");
-    // Normally this statement is not reachable
-    throw new IllegalStateException();
-  }
-  
-  public boolean isPresentSymbol() {
-    return getSymbolOpt().isPresent();
-  }
-  
-  public T setSymbolAbsent() {
-    symbol = Optional.empty();
-    return this.realBuilder;
-  }
-  
-  public T setSymbolOpt(Optional<? extends Symbol> value) {
-    this.symbol = value;
-    return this.realBuilder;
-  }
-  
-  // ----------------------------------------------------------------------
-  // Handle the optional Spanned Scope
-  // ----------------------------------------------------------------------
-  
-  public T setSpannedScope(Scope spannedScope) {
-    this.spannedScope = Optional.ofNullable(spannedScope);
-    return this.realBuilder;
-  }
-  
-  public Optional<? extends Scope> getSpannedScopeOpt() {
-    return spannedScope;
-  }
-  
-  public Scope getSpannedScope() {
-    if (getSpannedScopeOpt().isPresent()) {
-      return getSpannedScopeOpt().get();
-    }
-    Log.error("0xB9264 getSpannedScopeOpt can't return a value. It is empty.");
-    // Normally this statement is not reachable
-    throw new IllegalStateException();
-  }
-  
-  public boolean isPresentSpannedScope() {
-    return getSpannedScopeOpt().isPresent();
-  }
-  
-  public T setSpannedScopeAbsent() {
-    spannedScope = Optional.empty();
-    return this.realBuilder;
-  }
-  
-  public T setSpannedScopeOpt(Optional<? extends Scope> value) {
-    this.spannedScope = value;
     return this.realBuilder;
   }
   

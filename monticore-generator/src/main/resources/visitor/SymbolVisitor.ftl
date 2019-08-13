@@ -11,7 +11,6 @@ package ${genHelper.getVisitorPackage()};
 <#if symbols?has_content>
 import ${symbolTablePackage}.*;
 </#if>
-import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.ISymbol;
 
 /**
@@ -28,7 +27,7 @@ import de.monticore.symboltable.ISymbol;
  *   <li><b>Handling of nodes</b>: You may override the {@code handle(node)} methods, if you want to change its default implementation (depth-first iteration): {@code visit(node); traverse(node); endVisit(node);}<br><br></li>
  * </ul>
  */
-public interface ${symbolVisitorName} { 
+public interface ${symbolVisitorName} {
 
   /**
    * Sets the visitor to use for handling and traversing nodes.
@@ -41,7 +40,7 @@ public interface ${symbolVisitorName} {
    * the visitor still can be reused, by implementing this method in a
    * decorator.
    * @param realThis the real instance to use for handling and traversing nodes.
-   * @see ${genHelper.getCdName()}DelegatorVisitor 
+   * @see ${genHelper.getCdName()}DelegatorVisitor
    */
   default public void setRealThis(${genHelper.getSymbolVisitorType()} realThis) {
     throw new UnsupportedOperationException("0xA7011${genHelper.getGeneratedErrorCode(ast)} The setter for realThis is not implemented. You might want to implement a wrapper class to allow setting/getting realThis.");
@@ -59,17 +58,17 @@ public interface ${symbolVisitorName} {
   default public ${genHelper.getSymbolVisitorType()} getRealThis() {
     return (${genHelper.getSymbolVisitorType()}) this;
   }
-  
+
   /* ------------------------------------------------------------------------*/
-  
+
   /**
    * By default this method is not called, because the default visitor only
    * visits a symbol in its dynamic runtime type. Use an InheritanceVisitor
    * if you want to visit a node in its super types as well.
    *
-   * @param symbol the symbol that is entered 
+   * @param symbol the symbol that is entered
    */
-  default public void visit(Symbol symbol) {
+  default public void visit(ISymbol symbol) {
   }
 
   /**
@@ -77,9 +76,9 @@ public interface ${symbolVisitorName} {
    * visits a symbol in its dynamic runtime type. Use an InheritanceVisitor
    * if you want to visit a node in its super types as well.
    *
-   * @param symbol the symbol that is left 
+   * @param symbol the symbol that is left
    */
-  default public void endVisit(Symbol symbol) {
+  default public void endVisit(ISymbol symbol) {
   }
 
   /**
@@ -93,22 +92,22 @@ public interface ${symbolVisitorName} {
   }
 
  /* ------------------------------------------------------------------------*/
-  
-  
+
+
   <#list symbols as symbol>
     <#assign symbolType = symbol.getName() + "Symbol">
-      
+
     default public void visit(${symbolType} symbol) {}
-      
+
       default public void endVisit(${symbolType} symbol) {}
-      
+
       default public void handle(${symbolType} symbol) {
         getRealThis().visit(symbol);
         getRealThis().traverse(symbol);
         getRealThis().endVisit(symbol);
       }
-    
+
       default public void traverse(${symbolType} symbol) {}
   </#list>
-  
+
 }

@@ -19,7 +19,6 @@ import de.se_rwth.commons.logging.Log;
 import ${fqn}._ast.*;
 import ${fqn}._visitor.${genHelper.getVisitorType()};
 import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.EnclosingScopeOfNodesInitializer;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.references.ISymbolReference;
 import de.se_rwth.commons.logging.Log;
@@ -160,13 +159,13 @@ public class ${className} implements ${grammarName}Visitor {
     symbol.setAstNode(astNode);
 
     // ast -> symbol
-    astNode.setSymbol2(symbol);
+    astNode.setSymbol(symbol);
     astNode.set${genHelper.getSymbolNameFromQualifiedSymbol(symbolName)}(symbol);
-    astNode.setEnclosingScope2(symbol.getEnclosingScope());
+    astNode.setEnclosingScope(symbol.getEnclosingScope());
 
 <#if isScopeSpanning>
     // ast -> spannedScope
-      astNode.setSpannedScope2(symbol.getSpannedScope());
+      astNode.setSpannedScope(symbol.getSpannedScope());
 </#if>
   }
 
@@ -176,7 +175,7 @@ public class ${className} implements ${grammarName}Visitor {
     scope.setAstNode(astNode);
 
     // ast -> scope
-    astNode.setSpannedScope2((${grammarName}Scope) scope);
+    astNode.setSpannedScope((${grammarName}Scope) scope);
   }
   </#if>
 
@@ -187,7 +186,7 @@ public class ${className} implements ${grammarName}Visitor {
   @Override
   public void visit(AST${ruleSymbol.getName()} node) {
     if (getCurrentScope().isPresent()) {
-      node.setEnclosingScope2(getCurrentScope().get());
+      node.setEnclosingScope(getCurrentScope().get());
     }
     else {
       Log.error("Could not set enclosing scope of ASTNode \"" + node
@@ -225,7 +224,7 @@ public class ${className} implements ${grammarName}Visitor {
       scope.setAstNode(astNode);
 
       // ast -> scope
-      astNode.setSpannedScope2((${grammarName}Scope) scope);
+      astNode.setSpannedScope((${grammarName}Scope) scope);
     }
   </#if>
 </#list>

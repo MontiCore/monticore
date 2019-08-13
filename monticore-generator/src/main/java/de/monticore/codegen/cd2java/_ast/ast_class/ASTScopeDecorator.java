@@ -41,19 +41,19 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
       attributeList.add(createSpannedScopeAttribute());
 
       ASTMCType optScopeInterfaceType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType());
-      attributeList.add(createSpannedScope2Attribute(optScopeInterfaceType));
+      attributeList.add(createSpannedScopeAttribute(optScopeInterfaceType));
     }
-    //always add enclosingScope2 for attribute that has a scope
-    attributeList.add(createEnclosingScope2Attribute(scopeInterfaceType));
+    //always add enclosingScope for attribute that has a scope
+    attributeList.add(createEnclosingScopeAttribute(scopeInterfaceType));
 
-    //add methods for super intrefaces because otherwise the class will not compile
+    //add methods for super interfaces because otherwise the class will not compile
     //todo only add methods for scopes that are needed from the interfaces the class extends
     //mechanism: search interfaces, get grammar from interface, add scope from grammar
     for (CDDefinitionSymbol superCD : symbolTableService.getSuperCDs()) {
       ASTMCType superScopeInterfaceType = symbolTableService.getScopeInterfaceType(superCD);
-      ASTCDAttribute enclosingScope2Attribute = createEnclosingScope2Attribute(superScopeInterfaceType);
-      TransformationHelper.addStereotypeValue(enclosingScope2Attribute.getModifier(), MC2CDStereotypes.INHERITED.toString());
-      attributeList.add(enclosingScope2Attribute);
+      ASTCDAttribute enclosingScopeAttribute = createEnclosingScopeAttribute(superScopeInterfaceType);
+      TransformationHelper.addStereotypeValue(enclosingScopeAttribute.getModifier(), MC2CDStereotypes.INHERITED.toString());
+      attributeList.add(enclosingScopeAttribute);
     }
     return attributeList;
   }
@@ -67,16 +67,16 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
     return attribute;
   }
 
-  protected ASTCDAttribute createSpannedScope2Attribute(ASTMCType scopeType) {
+  protected ASTCDAttribute createSpannedScopeAttribute(ASTMCType scopeType) {
     //todo better name with the grammar name in the attributeName, like it was before
-    String attributeName = String.format(SPANNED_SCOPE, "") + "2";
+    String attributeName = String.format(SPANNED_SCOPE, "");
     ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
     this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     return attribute;
   }
 
-  protected ASTCDAttribute createEnclosingScope2Attribute(ASTMCType scopeType) {
-    String attributeName = ENCLOSING_SCOPE + "2";
+  protected ASTCDAttribute createEnclosingScopeAttribute(ASTMCType scopeType) {
+    String attributeName = ENCLOSING_SCOPE;
     return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
   }
 }

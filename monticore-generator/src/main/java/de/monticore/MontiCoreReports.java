@@ -70,7 +70,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     NodeTreeDecoratedReporter nodeTreeDecorated = new NodeTreeDecoratedReporter(
         this.reportDirectory, lowerCaseName, repository);
     NodeTypesReporter nodeTypes = new NodeTypesReporter(this.reportDirectory, lowerCaseName);
-    SymbolTableReporter symbolTable = new SymbolTableReporter(this.reportDirectory, lowerCaseName, repository);
+//    SymbolTableReporter2 symbolTable = new SymbolTableReporter2(this.reportDirectory, lowerCaseName, repository);
     TransformationReporter transformations = new TransformationReporter(this.reportDirectory,
         lowerCaseName, repository);
     ArtifactGmlReporter artifactGml = new ArtifactGmlReporter(this.reportDirectory, lowerCaseName);
@@ -93,7 +93,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     reports.addReportEventHandler(nodeTree); // 10_NodeTree
     reports.addReportEventHandler(nodeTreeDecorated); // 11_NodeTreeDecorated
     reports.addReportEventHandler(nodeTypes); // 12_TypesOfNodes
-    reports.addReportEventHandler(symbolTable); // 13_SymbolTable
+//    reports.addReportEventHandler(symbolTable); // 13_SymbolTable  //TODO: update this report to new symbol table infrastructure
     reports.addReportEventHandler(transformations); // 14_Transformations
     reports.addReportEventHandler(artifactGml); // 15_ArtifactGml
     reports.addReportEventHandler(artifactGV); // 16_ArtifactGv

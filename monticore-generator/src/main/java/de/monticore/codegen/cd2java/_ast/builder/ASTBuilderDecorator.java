@@ -96,16 +96,6 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
     set_SourcePositionStart("public void set_SourcePositionStart(SourcePosition start);"),
     set_SourcePositionStartOpt("public void set_SourcePositionStartOpt(Optional<SourcePosition> Start);"),
     set_SourcePositionStartAbsent("public void set_SourcePositionStartAbsent();"),
-    // ----------- Scope & Symbol -----------------------------
-    setEnclosingScope("public void setEnclosingScope(Scope enclosingScope);"),
-    setEnclosingScopeOpt("public void setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt);"),
-    setEnclosingScopeAbsent("public void setEnclosingScopeAbsent();"),
-    setSymbol("public void setSymbol(Symbol symbol);"),
-    setSymbolOpt("public void setSymbolOpt(Optional<? extends Symbol> symbol);"),
-    setSymbolAbsent("public void setSymbolAbsent();"),
-    setSpannedScope("public void setSpannedScope(Scope spannedScope);"),
-    setSpannedScopeOpt("public void setSpannedScopeOpt(Optional<? extends Scope> enclosingScopeOpt);"),
-    setSpannedScopeAbsent("public void setSpannedScopeAbsent();"),
     // ----------- PreComments -----------------------------
     clear_PreComments("public void clear_PreComments();"),
     add_PreComment("public void add_PreComment(Comment precomment);"),

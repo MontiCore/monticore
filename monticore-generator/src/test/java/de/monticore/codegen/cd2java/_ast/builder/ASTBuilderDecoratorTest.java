@@ -13,7 +13,6 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +66,7 @@ public class ASTBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(47, builderClass.getCDMethodList().size());
+    assertEquals(38, builderClass.getCDMethodList().size());
   }
 
   @Test

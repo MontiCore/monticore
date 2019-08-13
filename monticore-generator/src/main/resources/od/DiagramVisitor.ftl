@@ -53,16 +53,12 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
           pp.println("symbol = absent;");
         }
       </#if>
-        if (node.isPresentEnclosingScope()) {
-          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getEnclosingScopeOpt().get()));
+          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getEnclosingScope()));
           pp.println("enclosingScope = " + scopeName + ";");
-        } else if (printEmptyOptional) {
-          pp.println("enclosingScope = absent;");
-        }
       <#if genHelper.isScopeClass(astName, genHelper)>
         if (node.isPresentSpanned${genHelper.getCdName()}Scope()) {
-          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpannedScopeOpt().get()));
-          pp.println("spanningScope = " + scopeName + ";");
+          String spannedScopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpannedScope()));
+          pp.println("spanningScope = " + spannedScopeName + ";");
         } else if (printEmptyOptional) {
           pp.println("spannedScope = absent;");
         }

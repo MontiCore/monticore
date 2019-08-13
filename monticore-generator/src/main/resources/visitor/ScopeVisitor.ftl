@@ -10,8 +10,7 @@ package ${genHelper.getVisitorPackage()};
 
 import ${symbolTablePackage}.*;
 import de.monticore.symboltable.ISymbol;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.IScope;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -72,7 +71,7 @@ public interface ${scopeVisitorName} extends ${genHelper.getSymbolVisitorType()}
    *
    * @param scope the scope that is entered
    */
-  default public void visit(Scope scope) {
+  default public void visit(IScope scope) {
   }
 
   /**
@@ -82,16 +81,16 @@ public interface ${scopeVisitorName} extends ${genHelper.getSymbolVisitorType()}
    *
    * @param scope the scope that is left
    */
-  default public void endVisit(Scope scope) {
+  default public void endVisit(IScope scope) {
   }
 
   @Override
-  default void visit(Symbol symbol) {
+  default void visit(ISymbol symbol) {
     ${genHelper.getSymbolVisitorType()}.super.visit(symbol);
   }
 
   @Override
-  default void endVisit(Symbol symbol) {
+  default void endVisit(ISymbol symbol) {
     ${genHelper.getSymbolVisitorType()}.super.endVisit(symbol);
   }
 

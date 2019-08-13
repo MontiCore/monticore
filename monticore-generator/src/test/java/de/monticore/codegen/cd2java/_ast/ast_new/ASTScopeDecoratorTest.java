@@ -70,18 +70,18 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSpannedScope2Attribute() {
-    Optional<ASTCDAttribute> symbolAttribute = attributes.stream().filter(x -> x.getName().equals("spannedScope2")).findFirst();
+    Optional<ASTCDAttribute> symbolAttribute = attributes.stream().filter(x -> x.getName().equals("spannedScope")).findFirst();
     assertTrue(symbolAttribute.isPresent());
     assertDeepEquals(PROTECTED, symbolAttribute.get().getModifier());
     assertOptionalOf(AST_I_SCOPE, symbolAttribute.get().getMCType());
   }
 
   @Test
-  public void testEnclosingScope2AttributeInherited() {
-    List<ASTCDAttribute> enclosingScope2 = attributes.stream().filter(x -> x.getName().equals("enclosingScope2")).collect(Collectors.toList());
-    assertFalse(enclosingScope2.isEmpty());
-    assertEquals(2, enclosingScope2.size());
-    ASTCDAttribute scope = enclosingScope2.get(1);
+  public void testEnclosingScopeAttributeInherited() {
+    List<ASTCDAttribute> enclosingScope = attributes.stream().filter(x -> x.getName().equals("enclosingScope")).collect(Collectors.toList());
+    assertFalse(enclosingScope.isEmpty());
+    assertEquals(2, enclosingScope.size());
+    ASTCDAttribute scope = enclosingScope.get(1);
     ASTModifier astModifier= PROTECTED.build();
     TransformationHelper.addStereotypeValue(astModifier, MC2CDStereotypes.INHERITED.toString());
     assertDeepEquals(astModifier, scope.getModifier());
@@ -89,11 +89,11 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testEnclosingScope2Attribute() {
-    List<ASTCDAttribute> enclosingScope2 = attributes.stream().filter(x -> x.getName().equals("enclosingScope2")).collect(Collectors.toList());
-    assertFalse(enclosingScope2.isEmpty());
-    assertEquals(2, enclosingScope2.size());
-    ASTCDAttribute scope = enclosingScope2.get(0);
+  public void testEnclosingScopeAttribute() {
+    List<ASTCDAttribute> enclosingScope = attributes.stream().filter(x -> x.getName().equals("enclosingScope")).collect(Collectors.toList());
+    assertFalse(enclosingScope.isEmpty());
+    assertEquals(2, enclosingScope.size());
+    ASTCDAttribute scope = enclosingScope.get(0);
     assertDeepEquals(PROTECTED, scope.getModifier());
     assertDeepEquals(AST_I_SCOPE, scope.getMCType());
   }

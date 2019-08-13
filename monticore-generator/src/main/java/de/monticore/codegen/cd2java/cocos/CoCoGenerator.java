@@ -2,6 +2,11 @@
 
 package de.monticore.codegen.cd2java.cocos;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
+
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
@@ -13,13 +18,7 @@ import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.symboltable.GlobalScope;
 import de.se_rwth.commons.Names;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
 
 /**
  * Generates the infrastructure for context conditions: For the different ast

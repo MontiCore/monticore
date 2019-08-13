@@ -1,20 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
-import java.io.IOException;
-import java.io.StringReader;
-
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
-
-import de.monticore.symboltable.serialization.json.JsonArray;
-import de.monticore.symboltable.serialization.json.JsonBoolean;
-import de.monticore.symboltable.serialization.json.JsonElement;
-import de.monticore.symboltable.serialization.json.JsonNull;
-import de.monticore.symboltable.serialization.json.JsonNumber;
-import de.monticore.symboltable.serialization.json.JsonObject;
-import de.monticore.symboltable.serialization.json.JsonString;
+import de.monticore.symboltable.serialization.json.*;
 import de.se_rwth.commons.logging.Log;
+
+import java.io.IOException;
+import java.io.StringReader;
 
 /**
  * Parses serialized JSON Strings into an intermediate JSON data structure. This data structure can
