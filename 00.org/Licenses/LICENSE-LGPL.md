@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 GNU LESSER GENERAL PUBLIC LICENSE
 =================================
 

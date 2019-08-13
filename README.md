@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 [![Build Status](https://travis-ci.org/MontiCore/monticore.svg?branch=master)](https://travis-ci.org/MontiCore/monticore)
 
 
@@ -18,8 +19,8 @@ grammar languages is rather comfortable.
 
 ## License overview (informal description) 
 
-Summary: This project is free software; you can redistribute the 
-MontiCore language workbench according to the following rules.
+Summary: This project is freely available software; you can redistribute 
+the MontiCore language workbench according to the following rules.
 
 The MontiCore Languag Workbench deals with three levels of code 
 (MontiCore, tool derivates, product code). Each with different 

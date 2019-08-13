@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 
 # MontiCore 3-Level License model 
 

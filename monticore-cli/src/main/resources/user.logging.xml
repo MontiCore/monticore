@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 <configuration>
 
   <timestamp key="bySecond" datePattern="yyyy-MM-dd-HHmmss"/>
