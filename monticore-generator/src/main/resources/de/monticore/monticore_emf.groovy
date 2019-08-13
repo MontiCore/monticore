@@ -71,7 +71,9 @@ for (astGrammar in getParsedGrammars()) {
   reportGrammarCd(astGrammar, cdScope, mcScope, report)
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
-  
+
+  astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
+
   // M8: generate symbol table
   generateSymbolTable(glex, mcScope, astGrammar, cdScope, astClassDiagram, out, handcodedPath)
   
