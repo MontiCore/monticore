@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.referencesymbol.supgrammarref._symboltable;
 
 public class SupGrammarRefLanguage extends SupGrammarRefLanguageTOP {

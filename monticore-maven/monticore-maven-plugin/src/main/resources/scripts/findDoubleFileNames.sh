@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 #
 # Find filenames, that are in use twice
 # e.g. same class, but in different packages

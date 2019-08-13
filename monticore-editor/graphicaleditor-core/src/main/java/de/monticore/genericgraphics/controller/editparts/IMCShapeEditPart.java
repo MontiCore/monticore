@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.editparts;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.genericgraphics.controller.editparts;
 
 import de.monticore.genericgraphics.model.graphics.IShapeViewElement;
 

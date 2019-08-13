@@ -2,29 +2,22 @@
 
 package de.monticore.codegen.mc2cd;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+
 import de.monticore.MontiCoreScript;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsScope;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
-import de.se_rwth.commons.Names;
 import parser.MCGrammarParser;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Optional;
 
 public class TestHelper {
 

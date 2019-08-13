@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.texteditor;
+/* (c) https://github.com/MontiCore/monticore */
+package de.se_rwth.langeditor.texteditor;
 
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;

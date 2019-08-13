@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#if isCurrentDiagram>
     ${cocoCollectionName}.add(coco);
 <#else>

@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.global;
+/* (c) https://github.com/MontiCore/monticore */
+package de.se_rwth.langeditor.global;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IStorage;

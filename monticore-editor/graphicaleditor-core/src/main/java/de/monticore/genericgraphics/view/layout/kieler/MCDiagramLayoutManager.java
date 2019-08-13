@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.view.layout.kieler;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.genericgraphics.view.layout.kieler;
 
 import java.util.ArrayList;
 import java.util.HashMap;

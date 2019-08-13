@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.editorconnector;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.editorconnector;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

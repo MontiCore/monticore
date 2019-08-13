@@ -1,4 +1,4 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
 package hierautomaton;
 
 import static org.junit.Assert.assertEquals;

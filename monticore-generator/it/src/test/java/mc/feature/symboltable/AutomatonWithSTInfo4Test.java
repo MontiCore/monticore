@@ -31,8 +31,8 @@ public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
     AutomatonWithSTInfo4ModelLoader automatonWithSTInfo4ModelLoader;
     AutomatonWithSTInfo4SymbolTableCreator automatonWithSTInfo4SymbolTableCreator;
     ASTState s = AutomatonWithSTInfo4Mill.stateBuilder().setName("S").build();
-    s.setSymbol2(new AutomatonElementSymbol("S") );
-    AutomatonElementSymbol aESymbol = s.getSymbol2();
+    s.setSymbol(new AutomatonElementSymbol("S") );
+    AutomatonElementSymbol aESymbol = s.getSymbol();
 
 
   }

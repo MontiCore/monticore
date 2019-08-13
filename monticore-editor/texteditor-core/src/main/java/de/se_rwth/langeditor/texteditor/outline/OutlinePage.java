@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.texteditor.outline;
+/* (c) https://github.com/MontiCore/monticore */
+package de.se_rwth.langeditor.texteditor.outline;
 
 import static de.se_rwth.langeditor.util.antlr.ParseTrees.getTokenLength;
 

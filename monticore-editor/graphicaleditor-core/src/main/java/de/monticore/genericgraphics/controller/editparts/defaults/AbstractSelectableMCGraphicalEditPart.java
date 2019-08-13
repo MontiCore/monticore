@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.editparts.defaults;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.genericgraphics.controller.editparts.defaults;
 
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;

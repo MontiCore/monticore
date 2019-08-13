@@ -1,4 +1,4 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
 package automaton.prettyprint;
 
 import automaton._ast.ASTAutomaton;

@@ -1,4 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.builder;
+
+import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
@@ -8,7 +16,7 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.modifiers.AccessModifier;
 
 import java.util.ArrayList;
@@ -49,7 +57,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
 
   protected List<ASTCDAttribute> createSymbolAttributes() {
     ASTCDAttribute name = this.getCDAttributeFacade().createAttribute(PRIVATE, String.class, "name");
-    ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PRIVATE, Scope.class, "scope");
+    ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PRIVATE, IScope.class, "scope");
     ASTCDAttribute node = this.getCDAttributeFacade().createAttribute(PRIVATE, ASTNode.class, "astNode");
     ASTCDAttribute accessModifier = this.getCDAttributeFacade().createAttribute(PRIVATE, AccessModifier.class, "accessModifier");
     return new ArrayList<>(Arrays.asList(name, enclosingScope, node, accessModifier));

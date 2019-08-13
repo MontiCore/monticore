@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
 import de.monticore.types.mccollectiontypes._ast.*;

@@ -71,6 +71,7 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
     builder.set${attr.getName()?cap_first}(deserialize${attr.getName()?cap_first}(symbolJson));
 </#list>   
 </#if> 
+    deserializeAdditionalAttributes(builder, symbolJson);
     return builder.build();
   }
   
@@ -104,5 +105,14 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
   }
 </#list>   
 </#if>
+
+  /**
+   * Override this method to deserialize additional attributes
+   * @param builder
+   * @param symbolJson
+   */
+  protected void deserializeAdditionalAttributes(${symbolName}SymbolBuilder builder, JsonObject symbolJson) {
+    
+  }
   
 }

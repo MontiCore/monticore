@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#if glex.hasGlobalVar("v1")>
   A:ERROR
 <#else>

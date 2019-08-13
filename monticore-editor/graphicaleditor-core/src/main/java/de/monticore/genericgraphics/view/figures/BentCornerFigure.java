@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.view.figures;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.genericgraphics.view.figures;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;

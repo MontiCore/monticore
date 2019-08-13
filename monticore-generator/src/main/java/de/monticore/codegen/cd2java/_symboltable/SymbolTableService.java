@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable;
 
 import de.monticore.cd.CD4AnalysisHelper;
@@ -6,6 +7,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
@@ -92,12 +94,12 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getReferencedSymbolTypeName(ASTCDAttribute attribute) {
     String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
-        MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
+            MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
 
     if (!getQualifier(referencedSymbol).isEmpty() && !referencedSymbol.contains(SYMBOL_TABLE_PACKGE)) {
       referencedSymbol = SymbolTableGeneratorHelper
-          .getQualifiedSymbolType(getQualifier(referencedSymbol)
-              .toLowerCase(), Names.getSimpleName(referencedSymbol));
+              .getQualifiedSymbolType(getQualifier(referencedSymbol)
+                      .toLowerCase(), Names.getSimpleName(referencedSymbol));
     }
     return referencedSymbol;
   }
@@ -121,6 +123,42 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     List<String> stereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.SYMBOL);
     if (!stereotypeValues.isEmpty()) {
       return Optional.ofNullable(stereotypeValues.get(0));
+    }
+    return Optional.empty();
+  }
+
+  public Optional<ASTCDType> getTypeWithSymbolInfo(ASTCDType type) {
+    if (type.getModifierOpt().isPresent() && hasSymbolStereotype(type.getModifierOpt().get())) {
+      return Optional.of(type);
+    }
+    if (!type.getCDTypeSymbolOpt().isPresent()) {
+      return Optional.empty();
+    }
+    for (CDTypeSymbolReference superType: type.getCDTypeSymbol().getCdInterfaces()) {
+      if (superType.existsReferencedSymbol() && superType.getReferencedSymbol().getAstNode().isPresent()) {
+        Optional<ASTCDType> result = getTypeWithSymbolInfo(superType.getReferencedSymbol().getAstNode().get());
+        if (result.isPresent()) {
+          return result;
+        }
+      }
+    }
+    return Optional.empty();
+  }
+
+  public Optional<ASTCDType> getTypeWithScopeInfo(ASTCDType type) {
+    if (type.getModifierOpt().isPresent() && hasScopeStereotype(type.getModifierOpt().get())) {
+      return Optional.of(type);
+    }
+    if (!type.getCDTypeSymbolOpt().isPresent()) {
+      return Optional.empty();
+    }
+    for (CDTypeSymbolReference superType: type.getCDTypeSymbol().getCdInterfaces()) {
+      if (superType.existsReferencedSymbol() && superType.getReferencedSymbol().getAstNode().isPresent()) {
+        Optional<ASTCDType> result = getTypeWithScopeInfo(superType.getReferencedSymbol().getAstNode().get());
+        if (result.isPresent()) {
+          return result;
+        }
+      }
     }
     return Optional.empty();
   }

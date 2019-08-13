@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.util;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.genericgraphics.controller.util;
 
 import java.util.ArrayList;
 import java.util.Collection;

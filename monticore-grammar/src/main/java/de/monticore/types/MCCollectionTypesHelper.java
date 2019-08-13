@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
 import com.google.common.base.Preconditions;

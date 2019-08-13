@@ -8,6 +8,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Optional;
 
+import de.monticore.io.paths.ModelPath;
+import mc.examples.automaton.automaton._symboltable.AutomatonGlobalScope;
+import mc.examples.automaton.automaton._symboltable.AutomatonLanguage;
+import mc.examples.automaton.automaton._symboltable.AutomatonSymbolTableCreatorDelegator;
 import org.junit.Test;
 
 import de.monticore.generating.templateengine.reporting.commons.ASTNodeIdentHelper;
@@ -19,16 +23,21 @@ import mc.examples.automaton.automaton._od.Automaton2OD;
 import mc.examples.automaton.automaton._parser.AutomatonParser;
 
 public class TestAutomaton extends GeneratorIntegrationsTest {
-  
+
   private ASTAutomaton parse() throws IOException {
     AutomatonParser parser = new AutomatonParser();
     Optional<ASTAutomaton> optAutomaton;
     optAutomaton = parser.parseAutomaton("src/test/resources/examples/automaton/Testautomat.aut");
     assertFalse(parser.hasErrors());
     assertTrue(optAutomaton.isPresent());
+    AutomatonLanguage lang = new AutomatonLanguage();
+    AutomatonGlobalScope globalScope = new AutomatonGlobalScope(new ModelPath(), lang);
+
+    AutomatonSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
+    symbolTable.createFromAST(optAutomaton.get());
     return optAutomaton.get();
   }
-  
+
 
   private void printOD(ASTAutomaton ast, String symbolName) {
     ReportingRepository reporting = new ReportingRepository(new ASTNodeIdentHelper());
@@ -38,11 +47,11 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
     // TODO Check the output?
     assertTrue(printer.getContent().length()>0);
   }
-  
+
   @Test
   public void test() throws IOException {
     ASTAutomaton ast = parse();
     printOD(ast, "Testautomat");
   }
-  
+
 }

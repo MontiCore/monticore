@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
 package mc.emf.serialization;
 
 import static org.junit.Assert.assertEquals;

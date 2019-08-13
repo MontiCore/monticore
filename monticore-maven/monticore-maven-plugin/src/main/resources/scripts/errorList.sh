@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 #
 # gets the list of currently defined errors
 #

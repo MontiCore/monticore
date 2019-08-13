@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
 package mc.emf.etools;
 
 import java.io.IOException;

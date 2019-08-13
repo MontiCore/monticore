@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen._ast_emf;
 
 import de.monticore.codegen.ast.Lexicals.*;

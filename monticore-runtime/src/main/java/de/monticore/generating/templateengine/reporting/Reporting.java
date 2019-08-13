@@ -15,7 +15,7 @@ import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 
@@ -54,7 +54,6 @@ public class Reporting extends Slf4jLog {
    * @param factory for creating specific report manager configurations
    */
   private Reporting(String reportDirectory, ReportManagerFactory factory) {
-    this.outputDirectory = outputDirectory;
     this.reportDirectory = reportDirectory;
     this.factory = factory;
   }
@@ -849,7 +848,7 @@ public class Reporting extends Slf4jLog {
    *
    * @param scope
    */
-  public static void reportSymbolTableScope(Scope scope) {
+  public static void reportSymbolTableScope(IScope scope) {
     if (isEnabled()) {
       getReportManager().reportSymbolTableScope(scope);
     }

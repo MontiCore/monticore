@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.commands.connections;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.genericgraphics.controller.commands.connections;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;

@@ -1,4 +1,4 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
 
 import de.monticore.ast.ASTNode;
 import de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode;

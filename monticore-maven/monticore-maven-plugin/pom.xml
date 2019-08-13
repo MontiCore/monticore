@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore.mojo</groupId>
     <artifactId>monticore-maven</artifactId>
-    <version>5.0.7-SNAPSHOT</version>
+    <version>5.1.0</version>
   </parent>
 
   <artifactId>monticore-maven-plugin</artifactId>
@@ -32,9 +32,17 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-generator</artifactId>
     </dependency>
+
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
+      <version>${monticore.plugin}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-emf-runtime</artifactId>
+      <version>${monticore.plugin}</version>
     </dependency>
 
     <dependency>
@@ -127,7 +135,7 @@
 
     <pluginManagement>
       <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings 
+        <!--This plugin's configuration is used to store Eclipse m2e settings
           only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>

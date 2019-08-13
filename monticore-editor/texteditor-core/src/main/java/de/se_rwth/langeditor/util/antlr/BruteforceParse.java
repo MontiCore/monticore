@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.util.antlr;
+/* (c) https://github.com/MontiCore/monticore */
+package de.se_rwth.langeditor.util.antlr;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -2,17 +2,21 @@
 
 package de.monticore.ast;
 
-import com.google.common.collect.Lists;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.Log;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Optional;
+import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
+
+import com.google.common.collect.Lists;
+
+import de.se_rwth.commons.SourcePosition;
 
 /**
  * Foundation class of all AST-classes Shouldn't be used in an implementation, all AST-classes also
@@ -29,11 +33,6 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
 
   protected List<Comment> postcomments = Lists.newArrayList();
 
-  protected Optional<? extends Symbol> symbol = Optional.empty();
-
-  protected Optional<? extends Scope> enclosingScope = Optional.empty();
-
-  protected Optional<? extends Scope> spannedScope = Optional.empty();
   
   public abstract ASTNode deepClone();
 
@@ -100,138 +99,6 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   }
 
 
-  // ----------------------------------------------------------------------
-  // Handle the Optional Enclosing Scope
-  // ----------------------------------------------------------------------
-  @Deprecated
-  @Override
-  public void setEnclosingScope(Scope enclosingScope) {
-    this.enclosingScope = Optional.ofNullable(enclosingScope);
-  }
-
-  @Deprecated
-  @Override
-  public void setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt) {
-    this.enclosingScope = enclosingScopeOpt;
-  }
-
-  @Deprecated
-  @Override
-  public void setEnclosingScopeAbsent() {
-    this.enclosingScope = Optional.empty();
-  }
-
-  @Deprecated
-  @Override
-  public Scope getEnclosingScope() {
-    if (getEnclosingScopeOpt().isPresent()) {
-      return getEnclosingScopeOpt().get();
-    }
-    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
-    // Normally this statement is not reachable
-    throw new IllegalStateException();
-  }
-
-  @Deprecated
-  @Override
-  public Optional<? extends Scope> getEnclosingScopeOpt() {
-    return this.enclosingScope;
-  }
-
-  @Deprecated
-  @Override
-  public boolean isPresentEnclosingScope() {
-    return enclosingScope.isPresent();
-  }
-
-  // ----------------------------------------------------------------------
-  // Handle the optional Symbol
-  // ----------------------------------------------------------------------
-
-  @Deprecated
-  @Override
-  public void setSymbol(Symbol symbol) {
-    this.symbol = Optional.ofNullable(symbol);
-  }
-
-  @Deprecated
-  @Override
-  public void setSymbolOpt(Optional<? extends Symbol> enclosingSymbolOpt) {
-    this.symbol = enclosingSymbolOpt;
-  }
-
-  @Deprecated
-  @Override
-  public void setSymbolAbsent() {
-    this.symbol = Optional.empty();
-  }
-
-  @Deprecated
-  @Override
-  public Symbol getSymbol() {
-    if (getSymbolOpt().isPresent()) {
-      return getSymbolOpt().get();
-    }
-    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
-    // Normally this statement is not reachable
-    throw new IllegalStateException();
-  }
-
-  @Deprecated
-  @Override
-  public Optional<? extends Symbol> getSymbolOpt() {
-    return this.symbol;
-  }
-
-  @Deprecated
-  @Override
-  public boolean isPresentSymbol() {
-    return symbol.isPresent();
-  }
-
-  // ----------------------------------------------------------------------
-  // Handle the optional Spanned Scope
-  // ----------------------------------------------------------------------
-  @Deprecated
-  @Override
-  public void setSpannedScope(Scope spannedScope) {
-    this.spannedScope = Optional.ofNullable(spannedScope);
-  }
-
-  @Deprecated
-  @Override
-  public void setSpannedScopeOpt(Optional<? extends Scope> spannedScopeOpt) {
-    this.spannedScope = spannedScopeOpt;
-  }
-
-  @Deprecated
-  @Override
-  public void setSpannedScopeAbsent() {
-    this.spannedScope = Optional.empty();
-  }
-
-  @Deprecated
-  @Override
-  public Scope getSpannedScope() {
-    if (getSpannedScopeOpt().isPresent()) {
-      return getSpannedScopeOpt().get();
-    }
-    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
-    // Normally this statement is not reachable
-    throw new IllegalStateException();
-  }
-
-  @Deprecated
-  @Override
-  public Optional<? extends Scope> getSpannedScopeOpt() {
-    return this.spannedScope;
-  }
-
-  @Deprecated
-  @Override
-  public boolean isPresentSpannedScope() {
-    return spannedScope.isPresent();
-  }
 
   // ----------------------------------------------------------------------
   // Handle Pre Comments
@@ -581,6 +448,4 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     return this.postcomments.toArray();
   }
   
-  
-
 }

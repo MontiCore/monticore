@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.persistence;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.genericgraphics.controller.persistence;
 
 /**
  * Simple Exception for errors during parsing.

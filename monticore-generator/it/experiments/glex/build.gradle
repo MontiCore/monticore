@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 description = 'Experiments: glex'
 
 task generate (type: MCTask) {

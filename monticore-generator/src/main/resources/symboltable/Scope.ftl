@@ -5,12 +5,13 @@ ${signature("className", "interfaceName","scopeRule", "symbolNames", "superScope
 <#assign names = glex.getGlobalVar("nameHelper")>
 <#assign languageName = genHelper.getGrammarSymbol().getName()>
 <#assign superInterfaces = "implements "+ interfaceName>
+<#assign superClass = "">
 <#if scopeRule.isPresent()>
-  <#if !scopeRule.get().isEmptySuperInterfaces()>
-    <#assign superInterfaces = superInterfaces + ", "+ stHelper.printGenericTypes(scopeRule.get().getSuperInterfaceList())>
-  </#if>
+  <#list scopeRule.get().getSuperInterfaceList() as s>
+    <#assign superInterfaces = superInterfaces + ", "+ s.printType()>
+  </#list>
   <#if !scopeRule.get().isEmptySuperClasss()>
-    <#assign superClass = " extends " + stHelper.printGenericTypes(scopeRule.get().getSuperClassList())>
+    <#assign superClass = " extends " + scopeRule.get().getSuperClass(0).printType()>
   </#if>
 </#if>
 
@@ -32,7 +33,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
-public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
+public <#if hasHWC>abstract</#if> class ${className} ${superClass} ${superInterfaces} {
 
 <#list symbolNames?keys as symbol>
   protected LinkedListMultimap<String, ${symbolNames[symbol]}> ${symbol?lower_case}s = LinkedListMultimap.create();

@@ -1,4 +1,5 @@
-package automaton;/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
+package automaton;
 
 import automaton._ast.ASTAutomaton;
 import automaton._cocos.AutomatonCoCoChecker;

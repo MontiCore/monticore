@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${signature()}
 <#-- --------------------------------------------------------- 
      Block 1: explicit binding a hook point to a template

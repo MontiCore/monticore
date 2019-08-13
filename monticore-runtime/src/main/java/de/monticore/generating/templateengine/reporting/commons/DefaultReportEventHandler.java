@@ -6,7 +6,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.IScope;
-import de.monticore.symboltable.Scope;
 
 import java.nio.file.Path;
 import java.util.Collection;
@@ -181,10 +180,6 @@ public class DefaultReportEventHandler implements IReportEventHandler {
 
   @Override
   public void reportParseInputFile(Path inputFilePath, String modelName) {
-  }
-
-  @Override
-  public void reportSymbolTableScope(Scope scope) {
   }
 
   @Override

@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.modelstates;
+/* (c) https://github.com/MontiCore/monticore */
+package de.se_rwth.langeditor.modelstates;
 
 import java.util.Optional;
 import java.util.Set;

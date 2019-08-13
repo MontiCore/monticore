@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
@@ -79,10 +80,10 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAttributeNames(){
     getAttributeBy("automatonSymbol", emfClass);
-    getAttributeBy("symbol2", emfClass);
+    getAttributeBy("symbol", emfClass);
     getAttributeBy("spannedAutomatonScope", emfClass);
-    getAttributeBy("spannedScope2", emfClass);
-    getAttributeBy("enclosingScope2", emfClass);
+    getAttributeBy("spannedScope", emfClass);
+    getAttributeBy("enclosingScope", emfClass);
   }
 
   @Test

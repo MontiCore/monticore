@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_new;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
@@ -55,7 +56,7 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSymbol2Attribute() {
-    Optional<ASTCDAttribute> symbolAttribute = attributes.stream().filter(x -> x.getName().equals("symbol2")).findFirst();
+    Optional<ASTCDAttribute> symbolAttribute = attributes.stream().filter(x -> x.getName().equals("symbol")).findFirst();
     assertTrue(symbolAttribute.isPresent());
     assertDeepEquals(PROTECTED, symbolAttribute.get().getModifier());
     assertOptionalOf("de.monticore.codegen.ast.ast._symboltable.ASymbol", symbolAttribute.get().getMCType());

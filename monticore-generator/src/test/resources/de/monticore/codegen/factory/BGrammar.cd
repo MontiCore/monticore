@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.factory;
 
 import de.monticore.codegen.factory.AGrammar;

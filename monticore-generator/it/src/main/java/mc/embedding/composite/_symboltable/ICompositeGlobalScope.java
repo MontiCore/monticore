@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.embedding.composite._symboltable;
 
 import de.monticore.symboltable.modifiers.AccessModifier;

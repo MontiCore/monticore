@@ -68,6 +68,8 @@ it-gradle:
     - "./gradlew build -PbuildProfile=emf"
     - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
     - "./gradlew build"
+  only:
+    - dev
 
 it-experiments-gradle:
   stage: test
@@ -76,15 +78,21 @@ it-experiments-gradle:
     - cd monticore-generator/it/experiments
     - "./gradlew build"
   allow_failure: true
+  only:
+    - dev
 
 trigger-automata:
   stage: test
   trigger:
     project: monticore/languages/automaton
     branch: master
+  only:
+    - dev
 
 trigger-cd4a:
   stage: test
   trigger:
     project: monticore/cd4analysis/cd4analysis
     branch: newSymTab
+  only:
+    - dev

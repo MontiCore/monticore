@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.templateclassgenerator.it;
 
 import de.se_rwth.commons.logging.Log;

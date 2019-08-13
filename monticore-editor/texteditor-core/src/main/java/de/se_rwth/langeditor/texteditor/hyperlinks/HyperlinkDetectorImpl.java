@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.texteditor.hyperlinks;
+/* (c) https://github.com/MontiCore/monticore */
+package de.se_rwth.langeditor.texteditor.hyperlinks;
 
 import java.util.Collections;
 import java.util.Optional;

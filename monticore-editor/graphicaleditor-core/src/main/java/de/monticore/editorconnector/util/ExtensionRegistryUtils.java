@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.editorconnector.util;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.editorconnector.util;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;

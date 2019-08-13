@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${signature("className", "languageName", "symbolReferenceName")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>

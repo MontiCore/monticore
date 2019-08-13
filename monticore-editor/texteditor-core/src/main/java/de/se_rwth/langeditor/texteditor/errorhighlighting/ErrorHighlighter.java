@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.texteditor.errorhighlighting;
+/* (c) https://github.com/MontiCore/monticore */
+package de.se_rwth.langeditor.texteditor.errorhighlighting;
 
 import java.util.HashMap;
 import java.util.Map;

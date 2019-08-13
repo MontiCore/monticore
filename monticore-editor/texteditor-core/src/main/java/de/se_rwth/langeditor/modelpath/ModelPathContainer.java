@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.modelpath;
+/* (c) https://github.com/MontiCore/monticore */
+package de.se_rwth.langeditor.modelpath;
 
 import java.util.Arrays;
 import java.util.List;

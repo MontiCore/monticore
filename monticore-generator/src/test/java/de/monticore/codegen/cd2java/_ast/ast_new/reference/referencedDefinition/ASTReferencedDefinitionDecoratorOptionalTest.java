@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_new.reference.referencedDefinition;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;

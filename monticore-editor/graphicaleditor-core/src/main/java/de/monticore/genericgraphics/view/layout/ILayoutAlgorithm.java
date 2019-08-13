@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.view.layout;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.genericgraphics.view.layout;
 
 import java.util.List;
 

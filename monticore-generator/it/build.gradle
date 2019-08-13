@@ -1,18 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
 import de.monticore.MCTask
 
 plugins {
   id 'java'
-  id "monticore" version "5.0.7-SNAPSHOT"
+  id "monticore" version "5.1.0"
 }
 
 group = 'de.monticore'
-version = '5.0.7-SNAPSHOT'
+version = '5.1.0'
 description = 'MontiCore Generator Main Integration Test'
 sourceCompatibility = '1.8'
 
 ext.grammarDir = 'src/main/grammars'
-ext.grammar_version = '5.0.7-SNAPSHOT'
-ext.mc_version = '5.0.7-SNAPSHOT'
+ext.grammar_version = '5.1.0'
+ext.mc_version = '5.1.0'
 ext.junit_version = '4.12'
 
 configurations {grammar}

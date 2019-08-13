@@ -5,7 +5,7 @@
   <parent>
     <artifactId>monticore</artifactId>
     <groupId>de.monticore</groupId>
-    <version>5.0.7-SNAPSHOT</version>
+    <version>5.1.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   
@@ -17,6 +17,7 @@
       <dependency>
         <groupId>de.monticore</groupId>
         <artifactId>monticore-runtime</artifactId>
+        <version>${monticore.plugin}</version>
       </dependency>
     
       <dependency>
@@ -54,6 +55,7 @@
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-emf-runtime</artifactId>
+      <version>${monticore.plugin}</version>
     </dependency>
     <!-- EMF dependencies -->
     <dependency>

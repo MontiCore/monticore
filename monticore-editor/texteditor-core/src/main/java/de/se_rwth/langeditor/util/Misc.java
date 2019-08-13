@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.util;
+/* (c) https://github.com/MontiCore/monticore */
+package de.se_rwth.langeditor.util;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
@@ -29,6 +30,12 @@ public class SymbolAndScopeTranslation implements
       addSymbolAndScopeStereotypes(astClassProd, astcdClass);
     }
 
+    for (Link<ASTAbstractProd, ASTCDClass> link : links.getLinks(ASTAbstractProd.class, ASTCDClass.class)) {
+      final ASTAbstractProd astClassProd = link.source();
+      final ASTCDClass astcdClass = link.target();
+      addSymbolAndScopeStereotypes(astClassProd, astcdClass);
+    }
+
     for (Link<ASTInterfaceProd, ASTCDInterface> link : links.getLinks(ASTInterfaceProd.class, ASTCDInterface.class)) {
       final ASTInterfaceProd astInterfaceProd = link.source();
       final ASTCDInterface astcdInterface = link.target();
@@ -37,7 +44,7 @@ public class SymbolAndScopeTranslation implements
     return links;
   }
 
-  private void addSymbolAndScopeStereotypes(ASTParserProd grammarProd, ASTCDType cdType) {
+  private void addSymbolAndScopeStereotypes(ASTProd grammarProd, ASTCDType cdType) {
     for (ASTSymbolDefinition symbolDefinition : grammarProd.getSymbolDefinitionList()) {
       if (symbolDefinition.isGenSymbol()) {
         final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper

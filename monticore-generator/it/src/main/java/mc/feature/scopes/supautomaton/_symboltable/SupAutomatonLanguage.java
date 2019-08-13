@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.scopes.supautomaton._symboltable;
 
 public class SupAutomatonLanguage extends SupAutomatonLanguageTOP{

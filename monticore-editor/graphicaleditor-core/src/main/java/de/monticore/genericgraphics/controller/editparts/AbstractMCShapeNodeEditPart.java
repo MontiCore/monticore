@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.editparts;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.genericgraphics.controller.editparts;
 
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;

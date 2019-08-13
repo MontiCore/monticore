@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.selection;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.genericgraphics.controller.selection;
 
 /**
  * An interface providing methods for accessing line numbers.

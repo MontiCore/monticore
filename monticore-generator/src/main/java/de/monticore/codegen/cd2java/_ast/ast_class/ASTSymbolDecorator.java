@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
@@ -31,13 +32,14 @@ public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAtt
   @Override
   public List<ASTCDAttribute> decorate(final ASTCDType clazz) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
-    if (clazz.getModifierOpt().isPresent() && symbolTableService.hasSymbolStereotype(clazz.getModifierOpt().get())) {
-      ASTMCType symbolType = createSymbolType(clazz);
+    Optional<ASTCDType> symbolClass = symbolTableService.getTypeWithSymbolInfo(clazz);
+    if (symbolClass.isPresent()) {
+      ASTMCType symbolType = createSymbolType(symbolClass.get());
 
       String attributeName = StringUtils.uncapitalize(symbolTableService.getSimpleSymbolNameFromOptional(symbolType)) + SYMBOL_SUFFIX;
 
       attributeList.add(createSymbolAttribute(symbolType, attributeName));
-      attributeList.add(createSymbol2Attribute(symbolType));
+      attributeList.add(createSymbolAttribute(symbolType));
     }
     return attributeList;
   }
@@ -61,9 +63,9 @@ public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAtt
     return attribute;
   }
 
-  protected ASTCDAttribute createSymbol2Attribute(ASTMCType symbolType) {
+  protected ASTCDAttribute createSymbolAttribute(ASTMCType symbolType) {
     //todo better name with the grammar name in the attributeName, like it was before
-    String attributeName = "symbol2";
+    String attributeName = "symbol";
     ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, symbolType, attributeName);
     this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     return attribute;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.scopes;
 
 import de.monticore.io.paths.ModelPath;

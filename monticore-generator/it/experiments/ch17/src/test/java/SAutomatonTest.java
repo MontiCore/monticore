@@ -1,4 +1,4 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 import sautomaton._ast.ASTAutomaton;

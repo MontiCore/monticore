@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.inheritence.sup.sub;
 
 grammar SubGrammar extends mc.feature.inheritence.sup.SuperGrammar {

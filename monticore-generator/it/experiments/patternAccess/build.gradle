@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 description = 'Experiments: patternAccess'
 
 task generate (type: MCTask) {

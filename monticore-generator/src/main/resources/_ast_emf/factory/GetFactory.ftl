@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("factoryClassName", "grammarName")}
 try {
   ${factoryClassName} eFactory = (${factoryClassName})org.eclipse.emf.ecore.EPackage.Registry.INSTANCE.getEFactory("http://${grammarName}/1.0");

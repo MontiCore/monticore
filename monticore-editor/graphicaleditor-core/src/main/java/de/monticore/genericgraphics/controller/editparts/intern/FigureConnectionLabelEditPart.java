@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.editparts.intern;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.genericgraphics.controller.editparts.intern;
 
 import java.util.Collections;
 import java.util.List;

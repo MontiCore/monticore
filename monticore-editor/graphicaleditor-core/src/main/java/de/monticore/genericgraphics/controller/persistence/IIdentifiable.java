@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.controller.persistence;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.genericgraphics.controller.persistence;
 
 /**
  * Simple interface providing a method for unique identification.

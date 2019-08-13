@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.injection;
+/* (c) https://github.com/MontiCore/monticore */
+package de.se_rwth.langeditor.injection;
 
 import java.nio.file.Path;
 import java.util.Optional;

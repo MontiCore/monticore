@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.ast;
 
 import de.se_rwth.commons.SourcePosition;

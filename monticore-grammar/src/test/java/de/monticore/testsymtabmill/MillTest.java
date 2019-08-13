@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.testsymtabmill;
 
 import de.monticore.io.paths.ModelPath;

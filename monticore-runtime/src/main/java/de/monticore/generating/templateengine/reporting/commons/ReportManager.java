@@ -14,7 +14,6 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.IScope;
-import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 public class ReportManager implements IReportEventHandler {
@@ -407,14 +406,6 @@ public class ReportManager implements IReportEventHandler {
       handler.reportParseInputFile(inputFilePath, modelName);
     }
   }
-  
-  @Override
-  public void reportSymbolTableScope(Scope scope) {
-    for (IReportEventHandler handler : this.reportEventHandlers) {
-      handler.reportSymbolTableScope(scope);
-    }
-  }
-
 
   @Override
   public void reportSymbolTableScope(IScope scope) {

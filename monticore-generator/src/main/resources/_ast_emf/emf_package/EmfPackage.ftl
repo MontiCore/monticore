@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("packageInterface", "astCDDefinition")}
 ${tc.include("core.Package")}
 

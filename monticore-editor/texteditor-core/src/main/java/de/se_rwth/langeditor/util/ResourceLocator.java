@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.util;
+/* (c) https://github.com/MontiCore/monticore */
+package de.se_rwth.langeditor.util;
 
 import java.nio.file.Path;
 import java.util.Arrays;

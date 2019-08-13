@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.editorconnector.menus;
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.editorconnector.menus;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;

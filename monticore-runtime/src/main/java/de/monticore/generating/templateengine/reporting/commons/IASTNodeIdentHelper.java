@@ -3,9 +3,9 @@
 package de.monticore.generating.templateengine.reporting.commons;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.*;
+import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.references.ISymbolReference;
-import de.monticore.symboltable.references.SymbolReference;
 
 public interface IASTNodeIdentHelper {
   
@@ -23,16 +23,6 @@ public interface IASTNodeIdentHelper {
   
   public String getIdent(ASTNode ast);
   
-  @Deprecated
-  default public String getIdent(Symbol symbol) {
-    return format(maskSpecialChars(symbol.getName()), "Symbol");
-  }
-  
-  @Deprecated
-  default public String getIdent(SymbolReference<?> symbol) {
-    return format(maskSpecialChars(symbol.getName()), "SymbolReference");
-  }
-  
   default public String getIdent(ISymbol symbol) {
     return format(maskSpecialChars(symbol.getName()), "Symbol");
   }
@@ -49,19 +39,6 @@ public interface IASTNodeIdentHelper {
       name = "_".concat(name);
     }
     return name;
-  }
-
-  @Deprecated
-  default public String getIdent(Scope scope) {
-    String type;
-    if (scope instanceof ArtifactScope) {
-      type = "ArtifactScope";
-    } else if (scope instanceof GlobalScope) {
-      type = "GlobalScope";
-    } else {
-      type = "Scope";
-    }
-    return format(maskSpecialChars(scope.getName().orElse("")), type);
   }
   
   default public String getIdent(IScope scope) {

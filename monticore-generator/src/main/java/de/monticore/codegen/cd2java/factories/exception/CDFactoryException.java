@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.factories.exception;
 
 public class CDFactoryException extends RuntimeException {

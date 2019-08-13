@@ -1,4 +1,5 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.se_rwth.langeditor.language;
+/* (c) https://github.com/MontiCore/monticore */
+package de.se_rwth.langeditor.language;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;

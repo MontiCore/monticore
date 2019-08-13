@@ -1,4 +1,4 @@
-/* (c)  https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.deepclone;
 
 import mc.feature.deepclone.deepclone._ast.*;
