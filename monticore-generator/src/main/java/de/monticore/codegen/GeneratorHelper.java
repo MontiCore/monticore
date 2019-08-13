@@ -1225,12 +1225,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     StringBuilder sb = new StringBuilder(SET_PREFIX).append(
         StringTransformations.capitalize(getNativeAttributeName(field.getName())));
     if (isListType(field.getType().getName())) {
-      if (field.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
-        sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
-            sb.length(), GET_SUFFIX_LIST);
-      } else {
         sb.append(GET_SUFFIX_LIST);
-      }
     }
     return sb.toString();
   }
