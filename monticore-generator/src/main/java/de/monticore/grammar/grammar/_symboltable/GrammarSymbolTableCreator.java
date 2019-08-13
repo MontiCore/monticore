@@ -312,6 +312,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
         prodSymbol.setLexerProd(true);
       }
     }
+    super.visit(action);
   }
 
   private Optional<RuleComponentSymbol> addRuleComponent(String name, ASTRuleComponent node,
