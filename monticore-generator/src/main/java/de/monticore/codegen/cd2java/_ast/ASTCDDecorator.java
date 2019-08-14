@@ -106,7 +106,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     List<ASTCDClass> astcdClassList = new ArrayList<>();
     for (ASTCDClass astcdClass : ast.getCDDefinition().getCDClassList()) {
       ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(astcdClass.getName())
-          .setModifier(astcdClass.getModifier())
+          .setModifier(astcdClass.getModifier().deepClone())
           .build();
       astFullDecorator.decorate(astcdClass, changedClass);
       astcdClassList.add(changedClass);
@@ -146,7 +146,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     List<ASTCDInterface> astcdInterfaceList = new ArrayList<>();
     for (ASTCDInterface astcdInterface : ast.getCDDefinition().getCDInterfaceList()) {
       ASTCDInterface changedInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(astcdInterface.getName())
-          .setModifier(astcdInterface.getModifier())
+          .setModifier(astcdInterface.getModifier().deepClone())
           .build();
       ASTCDInterface decoratedASTClass = astInterfaceDecorator.decorate(astcdInterface, changedInterface);
       astcdInterfaceList.add(decoratedASTClass);

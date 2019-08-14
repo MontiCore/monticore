@@ -495,7 +495,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
-    return topDecorator.decorate(cd, compilationUnit);
+    return topDecorator.decorate(compilationUnit);
   }
 
 
@@ -544,7 +544,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
-    return topDecorator.decorate(cd, compilationUnit);
+    return topDecorator.decorate(compilationUnit);
   }
 
 
