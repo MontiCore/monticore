@@ -3,8 +3,6 @@ package de.monticore.templateclassgenerator;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
 
 import java.util.*;
@@ -165,100 +163,9 @@ public class EmptyNode implements ASTNode {
   public void remove_Child(ASTNode child) {
   }
   
-  /**
-   * @see de.monticore.ast.ASTNode#setEnclosingScope(de.monticore.symboltable.Scope)
-   */
-  @Override
-  public void setEnclosingScope(Scope enclosingScope) {
-  }
-
-  @Override
-  public void setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt) {
-  }
-
-  @Override
-  public void setEnclosingScopeAbsent() {
-  }
-
-  /**
-   * @see de.monticore.ast.ASTNode#getEnclosingScope()
-   */
-  @Override
-  public Scope getEnclosingScope() {
-    return null;
-  }
-
-  @Override
-  public Optional<? extends Scope> getEnclosingScopeOpt() {
-    return Optional.empty();
-  }
-
-  /**
-   * @see de.monticore.ast.ASTNode#setSymbol(de.monticore.symboltable.Symbol)
-   */
-  @Override
-  public void setSymbol(Symbol symbol) {
-  }
-
-  @Override
-  public void setSymbolOpt(Optional<? extends Symbol> spannedSymbolOpt) {
-  }
-
-  @Override
-  public void setSymbolAbsent() {
-  }
-
-  /**
-   * @see de.monticore.ast.ASTNode#getSymbol()
-   */
-  @Override
-  public Symbol getSymbol() {
-    return null;
-  }
-
-  @Override
-  public Optional<? extends Symbol> getSymbolOpt() {
-    return Optional.empty();
-  }
 
 
-  @Override
-  public boolean isPresentEnclosingScope() {
-    return false;
-  }
-  
 
-  @Override
-  public boolean isPresentSymbol() {
-    return false;
-  }
-
-  @Override
-  public void setSpannedScope(Scope spannedScope) {
-  }
-
-  @Override
-  public void setSpannedScopeOpt(Optional<? extends Scope> spannedScopeOpt) {
-  }
-
-  @Override
-  public void setSpannedScopeAbsent() {
-  }
-
-  @Override
-  public Scope getSpannedScope() {
-    return null;
-  }
-
-  @Override
-  public Optional<? extends Scope> getSpannedScopeOpt() {
-    return Optional.empty();
-  }
-
-  @Override
-  public boolean isPresentSpannedScope() {
-    return false;
-  }
   
   @Override
   public void clear_PreComments() {

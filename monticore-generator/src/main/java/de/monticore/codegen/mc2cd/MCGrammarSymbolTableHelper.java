@@ -36,7 +36,7 @@ public class MCGrammarSymbolTableHelper {
   }
 
   public static Optional<ProdSymbol> resolveRuleInSupersOnly(ASTClassProd astNode, String name) {
-    Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode.getEnclosingScope2());
+    Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode.getEnclosingScope());
     Stream<MCGrammarSymbol> superGrammars = grammarSymbol
         .map(symbol -> Util.preOrder(symbol, MCGrammarSymbol::getSuperGrammarSymbols)
             .stream())
@@ -63,7 +63,7 @@ public class MCGrammarSymbolTableHelper {
   }
 
     public static Optional<ProdSymbol> getEnclosingRule(ASTRuleComponent astNode) {
-    return getAllScopes(astNode.getEnclosingScope2()).stream()
+    return getAllScopes(astNode.getEnclosingScope()).stream()
         .map(IScope::getSpanningSymbol)
         .filter(Optional::isPresent)
         .map(Optional::get)
@@ -227,7 +227,7 @@ public class MCGrammarSymbolTableHelper {
       return symbol.getName();
     }
     else {
-      Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode.getEnclosingScope2());
+      Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode.getEnclosingScope());
       String string = (grammarSymbol.isPresent()
           ? grammarSymbol.get().getFullName().toLowerCase()
           : "")

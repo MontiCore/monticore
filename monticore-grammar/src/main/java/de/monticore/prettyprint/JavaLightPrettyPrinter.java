@@ -43,13 +43,6 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     if (a.isPresentMCStatement()) {
       a.getMCStatement().accept(getRealThis());
     }
-    // TODO Nach dem nächsen Release(>5.0.6) muss das raus !!!
-    if (a.getMCStatement()!= null) {
-      a.getMCStatement().accept(getRealThis());
-    }
-    if (a.getLocalVariableDeclaration()!= null) {
-      a.getLocalVariableDeclaration().accept(getRealThis());
-    }
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 

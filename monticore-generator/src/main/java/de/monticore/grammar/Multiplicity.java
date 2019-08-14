@@ -90,7 +90,7 @@ public enum Multiplicity {
     ASTMCGrammar grammar = (ASTMCGrammar) rootNode;
     
     // check if own grammar is the defining grammar
-    IScopeSpanningSymbol definingGrammarSymbol = ((ASTNonTerminal) astNode).getEnclosingScope2().getEnclosingScope().get().getSpanningSymbol().get();
+    IScopeSpanningSymbol definingGrammarSymbol = ((ASTNonTerminal) astNode).getEnclosingScope().getEnclosingScope().get().getSpanningSymbol().get();
 
     String definingGrammarName = definingGrammarSymbol.getName();
     String definingGrammarFullName = definingGrammarSymbol.getFullName();
@@ -99,7 +99,7 @@ public enum Multiplicity {
     }
     
     // resolve defining grammar or switch to default behavior without inheritance
-    Optional<MCGrammarSymbol> grammarSymbol = ((ASTMCGrammar) rootNode).getEnclosingScope2().resolveMCGrammar(definingGrammarFullName);
+    Optional<MCGrammarSymbol> grammarSymbol = ((ASTMCGrammar) rootNode).getEnclosingScope().resolveMCGrammar(definingGrammarFullName);
     if (!grammarSymbol.isPresent() || !grammarSymbol.get().getAstNode().isPresent()) {
       return multiplicityOfASTNode(rootNode, astNode);
     }

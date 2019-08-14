@@ -2,14 +2,19 @@
 package de.monticore.codegen.cd2java.top;
 
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.codegen.cd2java.AbstractTransformer;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.io.paths.IterablePath;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PACKAGE_PRIVATE_ABSTRACT;
 import static de.monticore.codegen.mc2cd.TransformationHelper.existsHandwrittenClass;
 import static de.monticore.utils.Names.constructQualifiedName;
 
-public class TopDecorator extends AbstractTransformer<ASTCDCompilationUnit> {
+public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDCompilationUnit> {
+
+  /*
+  Adds the suffix TOP to hand coded ASTs and makes generated TOP class abstract
+  Attention! does not actually create a new CD object, because then the glex has the wrong objects referenced
+   */
 
   private static final String TOP_SUFFIX = "TOP";
 
@@ -20,20 +25,21 @@ public class TopDecorator extends AbstractTransformer<ASTCDCompilationUnit> {
   }
 
   @Override
-  public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalCD, ASTCDCompilationUnit changedCD) {
-    changedCD.getCDDefinition().getCDClassList().stream()
-        .filter(cdClass -> existsHandwrittenClass(hwPath, constructQualifiedName(changedCD.getPackageList(), cdClass.getName())))
+  public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalCD) {
+    ASTCDCompilationUnit topCD = originalCD;
+    topCD.getCDDefinition().getCDClassList().stream()
+        .filter(cdClass -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getPackageList(), cdClass.getName())))
         .forEach(this::applyTopMechanism);
 
-    changedCD.getCDDefinition().getCDInterfaceList().stream()
-        .filter(cdInterface -> existsHandwrittenClass(hwPath, constructQualifiedName(changedCD.getPackageList(), cdInterface.getName())))
+    topCD.getCDDefinition().getCDInterfaceList().stream()
+        .filter(cdInterface -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getPackageList(), cdInterface.getName())))
         .forEach(this::applyTopMechanism);
 
-    changedCD.getCDDefinition().getCDEnumList().stream()
-        .filter(cdEnum -> existsHandwrittenClass(hwPath, constructQualifiedName(changedCD.getPackageList(), cdEnum.getName())))
+    topCD.getCDDefinition().getCDEnumList().stream()
+        .filter(cdEnum -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getPackageList(), cdEnum.getName())))
         .forEach(this::applyTopMechanism);
 
-    return changedCD;
+    return topCD;
   }
 
   private void applyTopMechanism(ASTCDClass cdClass) {

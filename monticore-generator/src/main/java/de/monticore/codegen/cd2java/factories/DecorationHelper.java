@@ -120,10 +120,10 @@ public class DecorationHelper extends MCCollectionTypesHelper {
   }
 
   public boolean isAttributeOfTypeEnum(ASTCDAttribute attr) {
-    if (!attr.isPresentSymbol2()) {
+    if (!attr.isPresentSymbol()) {
       return false;
     }
-    CDTypeSymbolReference attrType =  attr.getSymbol2().getType();
+    CDTypeSymbolReference attrType =  attr.getSymbol().getType();
 
     List<CDTypeSymbolReference> typeArgs = attrType.getActualTypeArguments();
     if (typeArgs.size() > 1) {

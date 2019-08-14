@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) https://github.com/MontiCore/monticore -->
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="de.monticore.GraphicsViewer" name="GraphicsViewer" schema="src/main/resources/schema/GraphicsViewer.exsd"/>

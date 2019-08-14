@@ -66,7 +66,7 @@ public class InheritedAttributesTranslation implements
     List<ASTInterfaceProd> interfacesWithoutImplementation = getAllInterfacesWithoutImplementation(
         inheritingNode);
     
-    String superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(definingNode.getEnclosingScope2())
+    String superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(definingNode.getEnclosingScope())
         .map(MCGrammarSymbol::getFullName)
         .orElse("");
     
@@ -83,7 +83,7 @@ public class InheritedAttributesTranslation implements
       ASTProd astNode) {
     return GeneratorHelper.getAllSuperProds(astNode).stream()
         .distinct()
-        .collect(Collectors.toMap(Function.identity(), astProd -> astProd.getSymbol2Opt()
+        .collect(Collectors.toMap(Function.identity(), astProd -> astProd.getSymbolOpt()
             .map(ProdSymbol::getProdAttributes)
             .orElse(Collections.emptyList())));
   }

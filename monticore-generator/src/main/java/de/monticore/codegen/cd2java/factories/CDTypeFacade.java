@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.factories;
 
 import com.google.common.collect.Lists;
@@ -73,7 +74,7 @@ public class CDTypeFacade {
 
   public ASTMCQualifiedType createQualifiedType(final String name) {
     ASTMCQualifiedName qualName = MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(Arrays.asList(name.split(PACKAGE_SEPARATOR))).build();
-    return MCCollectionTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(qualName).build();
+    return MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(qualName).build();
   }
 
   public ASTMCObjectType createOptionalTypeOf(final Class<?> clazz) {

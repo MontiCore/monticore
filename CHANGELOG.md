@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Release Notes
 
 ##  MontiCore 5.1.0

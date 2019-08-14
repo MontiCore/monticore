@@ -48,7 +48,7 @@ public class TypeCD2JavaTest {
     cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
         cd4AnalysisGlobalScope,grammar_withConceptsGlobalScope);
 
-    cdCompilationUnit.setEnclosingScope2(cd4AnalysisGlobalScope);
+    cdCompilationUnit.setEnclosingScope(cd4AnalysisGlobalScope);
     //make types java compatible
     TypeCD2JavaDecorator decorator = new TypeCD2JavaDecorator(cd4AnalysisGlobalScope);
     decorator.decorate(cdCompilationUnit);

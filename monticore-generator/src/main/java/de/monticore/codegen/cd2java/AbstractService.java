@@ -50,11 +50,11 @@ public class AbstractService<T extends AbstractService> {
         .collect(Collectors.toList());
   }
 
-  public Collection<CDDefinitionSymbol> getSuperCDs() {
+  public List<CDDefinitionSymbol> getSuperCDs() {
     return getSuperCDs(getCDSymbol());
   }
 
-  public Collection<CDDefinitionSymbol> getSuperCDs(CDDefinitionSymbol cdSymbol) {
+  public List<CDDefinitionSymbol> getSuperCDs(CDDefinitionSymbol cdSymbol) {
     // get direct parent CDSymbols
     List<CDDefinitionSymbol> directSuperCdSymbols = cdSymbol.getImports().stream()
         .map(this::resolveCD)
@@ -62,7 +62,7 @@ public class AbstractService<T extends AbstractService> {
     // search for super Cds in super Cds
     List<CDDefinitionSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
     for (CDDefinitionSymbol superSymbol : directSuperCdSymbols) {
-      Collection<CDDefinitionSymbol> superCDs = getSuperCDs(superSymbol);
+      List<CDDefinitionSymbol> superCDs = getSuperCDs(superSymbol);
       for (CDDefinitionSymbol superCD : superCDs) {
         if (resolvedCds
             .stream()
@@ -233,7 +233,7 @@ public class AbstractService<T extends AbstractService> {
     if (astcdDefinition.getCDClassList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
       return "this";
     } else {
-      Collection<CDDefinitionSymbol> superCDs = getSuperCDs(resolveCD(astcdDefinition.getName()));
+      List<CDDefinitionSymbol> superCDs = getSuperCDs(resolveCD(astcdDefinition.getName()));
       for (CDDefinitionSymbol superCD : superCDs) {
         if (superCD.getTypes().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
           return superCD.getName() + "PackageImpl";

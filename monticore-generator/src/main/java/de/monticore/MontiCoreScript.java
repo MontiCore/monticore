@@ -296,7 +296,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       globalScope.cache(qualifiedGrammarName);
     }
 
-    MCGrammarSymbol symbol = result.getSymbol2();
+    MCGrammarSymbol symbol = result.getSymbol();
     for (MCGrammarSymbol it : MCGrammarSymbolTableHelper.getAllSuperGrammars(symbol)) {
       if (!it.getFullName().equals(symbol.getFullName())) {
         Reporting.reportOpenInputFile(Optional.empty(),
@@ -500,7 +500,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
-    return topDecorator.decorate(cd, compilationUnit);
+    return topDecorator.decorate(compilationUnit);
   }
 
 
@@ -548,7 +548,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
-    return topDecorator.decorate(cd, compilationUnit);
+    return topDecorator.decorate(compilationUnit);
   }
 
 
@@ -615,8 +615,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   private void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
                                                CD4AnalysisGlobalScope cdScope,
                                                Grammar_WithConceptsGlobalScope mcScope) {
-    if (astGrammar.isPresentSymbol2()) {
-      MCGrammarSymbol sym = (MCGrammarSymbol) astGrammar.getSymbol2();
+    if (astGrammar.isPresentSymbol()) {
+      MCGrammarSymbol sym = astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
         Optional<CDDefinitionSymbol> importedCd = cdScope.resolveCDDefinitionDown(mcgsym.getFullName());
         if (!importedCd.isPresent() && mcgsym.getAstNode().isPresent()) {

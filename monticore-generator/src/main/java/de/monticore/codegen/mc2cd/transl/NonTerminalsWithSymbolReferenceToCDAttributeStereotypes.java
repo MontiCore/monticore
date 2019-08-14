@@ -34,7 +34,7 @@ class NonTerminalsWithSymbolReferenceToCDAttributeStereotypes implements
       
       if (nonTerminal.isPresentReferencedSymbol()) {
         final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-            .getMCGrammarSymbol(nonTerminal.getEnclosingScope2());
+            .getMCGrammarSymbol(nonTerminal.getEnclosingScope());
         if (grammarSymbol.isPresent()) {
           final Optional<ProdSymbol> referencedSymbol = grammarSymbol.get()
               .getProdWithInherited(nonTerminal.getReferencedSymbol());

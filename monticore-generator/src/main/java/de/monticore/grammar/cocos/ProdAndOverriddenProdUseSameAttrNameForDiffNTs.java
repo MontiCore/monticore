@@ -26,7 +26,7 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
   public void check(ASTNonTerminal a) {
     if (a.isPresentUsageName()) {
       String attributename = a.getUsageName();
-      Optional<RuleComponentSymbol> componentSymbol = a.getEnclosingScope2()
+      Optional<RuleComponentSymbol> componentSymbol = a.getEnclosingScope()
               .resolveRuleComponentLocally(attributename);
       if (!componentSymbol.isPresent()) {
         Log.error("0xA1124 ASTNonterminal " + a.getName() + " couldn't be resolved.");
@@ -37,7 +37,7 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
                 + " couldn't be resolved.");
       }
       Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-              .getMCGrammarSymbol(a.getEnclosingScope2());
+              .getMCGrammarSymbol(a.getEnclosingScope());
       if (!grammarSymbol.isPresent()) {
         Log.error(
                 "0xA1126 grammar symbol for the component " + a.getName() + " couldn't be resolved.");

@@ -39,13 +39,13 @@ public class CreateConstantAttributeTranslation implements
   // TODO SO <- GV : please change and move to the ConstantTypeTranslation
   private void createConstantAttributes(Link<ASTClassProd, ASTCDClass> link) {
     Optional<ProdSymbol> typeProd = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(link.source().getEnclosingScope2()).get()
+        .getMCGrammarSymbol(link.source().getEnclosingScope()).get()
         .getSpannedScope()
         .resolveProd(link.source().getName());
     if (!typeProd.isPresent()) {
       Log.debug("Unknown type of the grammar rule "
           + link.source().getName() + " in the grammar "
-          + MCGrammarSymbolTableHelper.getMCGrammarSymbol(link.source().getEnclosingScope2()).get()
+          + MCGrammarSymbolTableHelper.getMCGrammarSymbol(link.source().getEnclosingScope()).get()
               .getFullName()
           + "\n Check if this a kind of rule A:B=... ",
           CreateConstantAttributeTranslation.class.getName());

@@ -4,7 +4,6 @@ package de.monticore.cli;
 
 import de.monticore.MontiCoreConfiguration;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -92,6 +91,7 @@ public class MontiCoreCLITest {
   
   @BeforeClass
   public static void deactivateFailQuick() {
+    Log.enableFailQuick(false);
   }
   
   @Test

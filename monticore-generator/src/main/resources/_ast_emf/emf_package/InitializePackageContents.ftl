@@ -33,10 +33,10 @@ de.monticore.emf._ast.ASTENodePackage theASTENodePackage = (de.monticore.emf._as
 <#--add super types if existend, if not standard ENode-->
 <#list definition.getCDClassList() as astClass>
     <#assign interfaceName = astClass.getName()>
-    <#if !astClass.getSymbol2().getSuperTypes()?has_content>
+    <#if !astClass.getSymbol().getSuperTypes()?has_content>
         ${interfaceName?uncap_first}.getESuperTypes().add(theASTENodePackage.getENode());
     <#else>
-        <#list astClass.getSymbol2().getSuperTypes() as superType>
+        <#list astClass.getSymbol().getSuperTypes() as superType>
             <#assign package = service.getClassPackage(superType)>
             ${interfaceName?uncap_first}.getESuperTypes().add(${package}.get${superType.getName()}());
         </#list>

@@ -18,7 +18,7 @@ public class ReferencedSymbolExists implements GrammarASTNonTerminalCoCo {
   @Override
   public void check(ASTNonTerminal node) {
     Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(node.getEnclosingScope2());
+        .getMCGrammarSymbol(node.getEnclosingScope());
     if (node.isPresentReferencedSymbol()) {
       String symbol = node.getReferencedSymbol();
       if (grammarSymbol.get().getProdWithInherited(symbol).isPresent() &&
