@@ -97,10 +97,10 @@ public class VisitorService extends AbstractService<VisitorService> {
   public ASTCDCompilationUnit calculateCDTypeNamesWithPackage(ASTCDCompilationUnit input) {
     ASTCDCompilationUnit compilationUnit = input.deepClone();
     //set classname to correct Name with path
-    String astPath = compilationUnit.getCDDefinition().getName().toLowerCase() + AST_PACKAGE;
-    compilationUnit.getCDDefinition().getCDClassList().forEach(c -> c.setName(astPath + c.getName()));
-    compilationUnit.getCDDefinition().getCDInterfaceList().forEach(i -> i.setName(astPath + i.getName()));
-    compilationUnit.getCDDefinition().getCDEnumList().forEach(e -> e.setName(astPath + e.getName()));
+    String astPath = compilationUnit.getCDDefinition().getName().toLowerCase() + "." + AST_PACKAGE;
+    compilationUnit.getCDDefinition().getCDClassList().forEach(c -> c.setName(astPath + "." + c.getName()));
+    compilationUnit.getCDDefinition().getCDInterfaceList().forEach(i -> i.setName(astPath + "." + i.getName()));
+    compilationUnit.getCDDefinition().getCDEnumList().forEach(e -> e.setName(astPath + "." + e.getName()));
     return compilationUnit;
   }
 }
