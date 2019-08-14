@@ -1,4 +1,4 @@
-/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;

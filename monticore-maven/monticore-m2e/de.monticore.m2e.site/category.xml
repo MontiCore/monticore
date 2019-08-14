@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) https://github.com/MontiCore/monticore -->
 <site>
   <feature url="features/de.monticore.m2e.feature_5.0.5-SNAPSHOT.jar"
     id="de.monticore.m2e.feature" version="5.3.0-SNAPSHOT">
