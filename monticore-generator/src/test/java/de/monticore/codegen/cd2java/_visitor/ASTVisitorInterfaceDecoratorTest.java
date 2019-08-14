@@ -25,8 +25,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
 
@@ -45,6 +44,10 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
   private static final String AST_TRANSITION = "automaton._ast.ASTTransition";
 
   private static final String AST_STATE = "automaton._ast.ASTState";
+
+  private static final String AST_AUTOMATON_NODE = "ASTAutomatonNode";
+
+  private static final String AUTOMATON_LITERALS = "automaton._ast.AutomatonLiterals";
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
@@ -281,11 +284,65 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void tesVisitASTAutomatonNode() {
+    List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorInterface);
+    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_TRANSITION);
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  }
+
+  @Test
+  public void testEndVisitASTAutomatonNode() {
+    List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorInterface);
+    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_AUTOMATON_NODE);
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  }
+
+  @Test
+  public void tesHandleASTAutomatonNode() {
+    List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorInterface);
+    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_AUTOMATON_NODE);
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  }
+
+
+  @Test
+  public void testNoAutomatonLiteralsVisitorMethods() {
+    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AUTOMATON_LITERALS);
+
+    List<ASTCDMethod> traversMethodList = getMethodsBy("traverse", 1, visitorInterface);
+    assertFalse(traversMethodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+
+    List<ASTCDMethod> handleMethodList = getMethodsBy("handle", 1, visitorInterface);
+    assertFalse(handleMethodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+
+    List<ASTCDMethod> visitMethodList = getMethodsBy("visit", 1, visitorInterface);
+    assertFalse(visitMethodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+
+    List<ASTCDMethod> endVisitMethodList = getMethodsBy("endVisit", 1, visitorInterface);
+    assertFalse(endVisitMethodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+  }
+
+  @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, visitorInterface, visitorInterface);
-    // TODO Check System.out.println(sb.toString());
+    System.out.println(sb.toString());
   }
 }

@@ -22,7 +22,8 @@ public class VisitorInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
 
   private final VisitorService visitorService;
 
-  public VisitorInterfaceDecorator(final GlobalExtensionManagement glex, VisitorService visitorService) {
+  public VisitorInterfaceDecorator(final GlobalExtensionManagement glex,
+                                   VisitorService visitorService) {
     super(glex);
     this.visitorService = visitorService;
   }
@@ -31,16 +32,34 @@ public class VisitorInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
   public ASTCDInterface decorate(final ASTCDCompilationUnit compilationUnit) {
     ASTCDDefinition astcdDefinition = compilationUnit.getCDDefinition();
     ASTMCType visitorType = this.visitorService.getVisitorType();
-    return CD4AnalysisMill.cDInterfaceBuilder()
+    ASTCDInterface symbolVisitorInterface = CD4AnalysisMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitorSimpleTypeName())
         .addAllInterfaces(this.visitorService.getAllVisitorTypesInHierarchy())
         .setModifier(PUBLIC.build())
         .addCDMethod(addGetRealThisMethods(visitorType))
         .addCDMethod(addSetRealThisMethods(visitorType))
-        .addAllCDMethods(addClassVisitorMethods(astcdDefinition.getCDClassList()))
-        .addAllCDMethods(addInterfaceVisitorMethods(astcdDefinition.getCDInterfaceList()))
-        .addAllCDMethods(addEnumVisitorMethods(astcdDefinition.getCDEnumList()))
         .build();
+
+    // add methods but, no double signatures
+    List<ASTCDMethod> classMethods = addClassVisitorMethods(astcdDefinition.getCDClassList());
+    for (ASTCDMethod classMethod : classMethods) {
+      if (!visitorService.isMethodAlreadyDefined(classMethod, symbolVisitorInterface.getCDMethodList())) {
+        symbolVisitorInterface.addCDMethod(classMethod);
+      }
+    }
+    List<ASTCDMethod> interfaceMethods = addInterfaceVisitorMethods(astcdDefinition.getCDInterfaceList());
+    for (ASTCDMethod interfaceMethod : interfaceMethods) {
+      if (!visitorService.isMethodAlreadyDefined(interfaceMethod, symbolVisitorInterface.getCDMethodList())) {
+        symbolVisitorInterface.addCDMethod(interfaceMethod);
+      }
+    }
+    List<ASTCDMethod> enumMethods = addEnumVisitorMethods(astcdDefinition.getCDEnumList(), astcdDefinition.getName());
+    for (ASTCDMethod enumMethod : enumMethods) {
+      if (!visitorService.isMethodAlreadyDefined(enumMethod, symbolVisitorInterface.getCDMethodList())) {
+        symbolVisitorInterface.addCDMethod(enumMethod);
+      }
+    }
+    return symbolVisitorInterface;
   }
 
   protected ASTCDMethod addGetRealThisMethods(ASTMCType visitorType) {
@@ -53,7 +72,9 @@ public class VisitorInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
   protected ASTCDMethod addSetRealThisMethods(ASTMCType visitorType) {
     ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, "realThis");
     ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
-    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("    throw new UnsupportedOperationException(\"0xA7011x709 The setter for realThis is not implemented. You might want to implement a wrapper class to allow setting/getting realThis.\");\n"));
+    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(
+        "    throw new UnsupportedOperationException(\"0xA7011x709 The setter for realThis is " +
+            "not implemented. You might want to implement a wrapper class to allow setting/getting realThis.\");\n"));
     return getRealThisMethod;
   }
 
@@ -70,13 +91,15 @@ public class VisitorInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     return visitorMethods;
   }
 
-  protected List<ASTCDMethod> addEnumVisitorMethods(List<ASTCDEnum> astcdEnumList) {
+  protected List<ASTCDMethod> addEnumVisitorMethods(List<ASTCDEnum> astcdEnumList, String definitionName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDEnum astcdEnum : astcdEnumList) {
-      ASTMCType enumType = getCDTypeFacade().createTypeByDefinition(astcdEnum.getName());
-      visitorMethods.add(addVisitMethod(enumType));
-      visitorMethods.add(addEndVisitMethod(enumType));
-      visitorMethods.add(addHandleMethod(enumType, false));
+      if (!visitorService.isLiteralsEnum(astcdEnum, definitionName)) {
+        ASTMCType enumType = getCDTypeFacade().createTypeByDefinition(astcdEnum.getName());
+        visitorMethods.add(addVisitMethod(enumType));
+        visitorMethods.add(addEndVisitMethod(enumType));
+        visitorMethods.add(addHandleMethod(enumType, false));
+      }
     }
     return visitorMethods;
   }

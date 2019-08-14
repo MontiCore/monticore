@@ -49,7 +49,7 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
     //add methods for super interfaces because otherwise the class will not compile
     //todo only add methods for scopes that are needed from the interfaces the class extends
     //mechanism: search interfaces, get grammar from interface, add scope from grammar
-    for (CDDefinitionSymbol superCD : symbolTableService.getSuperCDs()) {
+    for (CDDefinitionSymbol superCD : symbolTableService.getSuperCDsTransitive()) {
       ASTMCType superScopeInterfaceType = symbolTableService.getScopeInterfaceType(superCD);
       ASTCDAttribute enclosingScopeAttribute = createEnclosingScopeAttribute(superScopeInterfaceType);
       TransformationHelper.addStereotypeValue(enclosingScopeAttribute.getModifier(), MC2CDStereotypes.INHERITED.toString());

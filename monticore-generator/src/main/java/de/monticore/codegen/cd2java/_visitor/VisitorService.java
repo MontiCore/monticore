@@ -14,6 +14,8 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.INHERITANCE_SUFFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class VisitorService extends AbstractService<VisitorService> {
@@ -41,19 +43,43 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
 
   public String getVisitorSimpleTypeName() {
-    return getCDName() + VisitorConstants.VISITOR_SUFFIX;
+    return getVisitorSimpleTypeName(getCDSymbol());
+  }
+
+  public String getInheritanceVisitorSimpleTypeName() {
+    return getInheritanceVisitorSimpleTypeName(getCDSymbol());
   }
 
   public String getVisitorFullTypeName() {
-    return String.join(".",getPackage(), getVisitorSimpleTypeName());
+    return getVisitorFullTypeName(getCDSymbol());
   }
 
   public ASTMCType getVisitorType() {
-    return getCDTypeFactory().createQualifiedType(getVisitorFullTypeName());
+    return getVisitorType(getCDSymbol());
   }
 
   public ASTMCQualifiedType getVisitorReferenceType() {
-    return getCDTypeFactory().createQualifiedType(getVisitorFullTypeName());
+    return getVisitorReferenceType(getCDSymbol());
+  }
+
+  public String getVisitorSimpleTypeName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + VisitorConstants.VISITOR_SUFFIX;
+  }
+
+  public String getInheritanceVisitorSimpleTypeName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + INHERITANCE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
+  }
+
+  public String getVisitorFullTypeName(CDDefinitionSymbol cdSymbol) {
+    return String.join(".", getPackage(cdSymbol), getVisitorSimpleTypeName(cdSymbol));
+  }
+
+  public ASTMCType getVisitorType(CDDefinitionSymbol cdSymbol) {
+    return getCDTypeFactory().createQualifiedType(getVisitorFullTypeName(cdSymbol));
+  }
+
+  public ASTMCQualifiedType getVisitorReferenceType(CDDefinitionSymbol cdSymbol) {
+    return getCDTypeFactory().createQualifiedType(getVisitorFullTypeName(cdSymbol));
   }
 
   public List<ASTMCQualifiedType> getAllVisitorTypesInHierarchy() {
@@ -66,5 +92,15 @@ public class VisitorService extends AbstractService<VisitorService> {
   public ASTCDMethod getVisitorMethod(String methodName, ASTMCType nodeType) {
     ASTCDParameter visitorParameter = CDParameterFacade.getInstance().createParameter(nodeType, "node");
     return CDMethodFacade.getInstance().createMethod(PUBLIC, methodName, visitorParameter);
+  }
+
+  public ASTCDCompilationUnit calculateCDTypeNamesWithPackage(ASTCDCompilationUnit input) {
+    ASTCDCompilationUnit compilationUnit = input.deepClone();
+    //set classname to correct Name with path
+    String astPath = compilationUnit.getCDDefinition().getName().toLowerCase() + AST_PACKAGE;
+    compilationUnit.getCDDefinition().getCDClassList().forEach(c -> c.setName(astPath + c.getName()));
+    compilationUnit.getCDDefinition().getCDInterfaceList().forEach(i -> i.setName(astPath + i.getName()));
+    compilationUnit.getCDDefinition().getCDEnumList().forEach(e -> e.setName(astPath + e.getName()));
+    return compilationUnit;
   }
 }

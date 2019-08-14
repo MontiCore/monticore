@@ -7,7 +7,7 @@
 ${tc.signature("cdClass")}
 
 <#list cdClass.getCDAttributeList() as attr>
-  <#if genHelper.isAstNode(attr) || genHelper.isOptionalAstNode(attr) >
+  <#if genHelper.isSimpleAstNode(attr) || genHelper.isOptionalAstNode(attr) >
     <#assign attrGetter = "get"+ attr.getName()?cap_first>
     <#if genHelper.isOptional(attr.getMCType())>
       if (node.${attrGetter}().isPresent()) {

@@ -47,7 +47,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
         .filter(x -> !x.getModifier().isAbstract())
         .collect(Collectors.toList()));
     
-    Collection<CDDefinitionSymbol> superSymbolList = service.getSuperCDs();
+    Collection<CDDefinitionSymbol> superSymbolList = service.getSuperCDsTransitive();
     List<ASTCDClass> superMills = new ArrayList<ASTCDClass>();
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
     

@@ -77,6 +77,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getSymbolName(ASTCDType clazz) {
+    // normal symbol name calculation from
     if (clazz.getName().startsWith(AST_PREFIX)) {
       return clazz.getName().substring(AST_PREFIX.length()) + SymbolTableConstants.SYMBOL_SUFFIX;
     } else {
@@ -85,6 +86,13 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getSymbolTypeName(ASTCDType clazz) {
+    //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
+    if(clazz.getModifierOpt().isPresent()){
+      Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifierOpt().get());
+      if(symbolTypeValue.isPresent()){
+        return symbolTypeValue.get();
+      }
+    }
     return getPackage() + "." + getSymbolName(clazz);
   }
 
@@ -105,7 +113,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getSimpleSymbolNameFromOptional(ASTMCType type) {
-    String bla = type.printType();
     ASTMCType referencedSymbolType = MCSimpleGenericTypesHelper.getReferenceTypeFromOptional(type).getMCTypeOpt().get();
     String referencedSymbol = referencedSymbolType.printType();
     return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SymbolTableConstants.SYMBOL_SUFFIX));
