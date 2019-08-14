@@ -20,8 +20,8 @@ configurations {grammar}
 
 dependencies {
   implementation group:'de.monticore', name:'javaDSL', version:'4.3.17-SNAPSHOT'
-  implementation group:'de.monticore', name:'monticore-runtime', version:grammar_version, force:true
-  implementation group:'de.monticore', name:'monticore-grammar', version:grammar_version, force:true
+  implementation group:'de.monticore', name:'monticore-runtime', version:grammar_version
+  implementation group:'de.monticore', name:'monticore-grammar', version:grammar_version
   implementation group:'de.monticore', name:'monticore-generator', version:mc_version
   testImplementation group:'junit', name:'junit', version:junit_version
   grammar group:'de.monticore', name:'monticore-grammar', version:grammar_version, classifier:"grammars"
