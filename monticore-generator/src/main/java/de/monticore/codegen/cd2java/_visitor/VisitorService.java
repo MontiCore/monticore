@@ -14,8 +14,8 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.INHERITANCE_SUFFIX;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.PARENT_AWARE_SUFFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class VisitorService extends AbstractService<VisitorService> {
@@ -48,6 +48,10 @@ public class VisitorService extends AbstractService<VisitorService> {
 
   public String getInheritanceVisitorSimpleTypeName() {
     return getInheritanceVisitorSimpleTypeName(getCDSymbol());
+  }
+
+  public String getParentAwareVisitorSimpleTypeName() {
+    return getCDName() + PARENT_AWARE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }
 
   public String getVisitorFullTypeName() {
@@ -97,7 +101,7 @@ public class VisitorService extends AbstractService<VisitorService> {
   public ASTCDCompilationUnit calculateCDTypeNamesWithPackage(ASTCDCompilationUnit input) {
     ASTCDCompilationUnit compilationUnit = input.deepClone();
     //set classname to correct Name with path
-    String astPath = compilationUnit.getCDDefinition().getName().toLowerCase() + "." + AST_PACKAGE;
+    String astPath = getASTPackage();
     compilationUnit.getCDDefinition().getCDClassList().forEach(c -> c.setName(astPath + "." + c.getName()));
     compilationUnit.getCDDefinition().getCDInterfaceList().forEach(i -> i.setName(astPath + "." + i.getName()));
     compilationUnit.getCDDefinition().getCDEnumList().forEach(e -> e.setName(astPath + "." + e.getName()));

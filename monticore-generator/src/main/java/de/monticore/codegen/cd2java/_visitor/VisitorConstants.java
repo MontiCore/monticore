@@ -9,6 +9,14 @@ public final class VisitorConstants {
 
   public static final String INHERITANCE_SUFFIX = "Inheritance";
 
+  public static final String PARENT_AWARE_SUFFIX = "ParentAware";
+
+  public static final String PARENTS_ATTRIBUTE = "parents";
+
+  public static final String GET_PARENT_METHOD = "getParent";
+
+  public static final String GET_PARENTS_METHOD = "getParents";
+
   public static final String VISITOR_PREFIX = "visitor";
 
   public static final String GET_REAL_THIS = "getRealThis";

@@ -38,7 +38,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     ASTCDInterface astcdInterface = visitorInterfaceDecorator.decorate(compilationUnit);
     astcdInterface.addCDMethod(addVisitASTNodeMethods());
     astcdInterface.addCDMethod(addEndVisitASTNodeMethods());
-    astcdInterface.addAllCDMethods(addLanguageInterfaceVisitorMethods(compilationUnit.getCDDefinition().getName()));
+    astcdInterface.addAllCDMethods(addLanguageInterfaceVisitorMethods());
     return astcdInterface;
   }
 
@@ -52,9 +52,9 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     return visitorService.getVisitorMethod(VisitorConstants.END_VISIT, astNodeType);
   }
 
-  protected List<ASTCDMethod> addLanguageInterfaceVisitorMethods(String definitionName) {
+  protected List<ASTCDMethod> addLanguageInterfaceVisitorMethods() {
     List<ASTCDMethod> languageVisitorMethod = new ArrayList<>();
-    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(visitorService.getLanguageInterfaceName(definitionName));
+    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(visitorService.getLanguageInterfaceName());
 
     ASTCDMethod visitMethod = visitorService.getVisitorMethod(VisitorConstants.VISIT, astNodeType);
     languageVisitorMethod.add(visitMethod);

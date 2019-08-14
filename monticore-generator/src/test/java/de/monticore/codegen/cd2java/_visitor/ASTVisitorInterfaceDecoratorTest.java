@@ -36,17 +36,17 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
 
   private static final String VISITOR_FULL_NAME = "de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor";
 
-  private static final String AST_AUTOMATON = "automaton._ast.ASTAutomaton";
+  private static final String AST_AUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
 
   private static final String AST_NODE = "de.monticore.ast.ASTNode";
 
-  private static final String AST_TRANSITION = "automaton._ast.ASTTransition";
+  private static final String AST_TRANSITION = "de.monticore.codegen.ast.automaton._ast.ASTTransition";
 
-  private static final String AST_STATE = "automaton._ast.ASTState";
+  private static final String AST_STATE = "de.monticore.codegen.ast.automaton._ast.ASTState";
 
-  private static final String AST_AUTOMATON_NODE = "ASTAutomatonNode";
+  private static final String AST_AUTOMATON_NODE = "de.monticore.codegen.ast.automaton._ast.ASTAutomatonNode";
 
-  private static final String AUTOMATON_LITERALS = "automaton._ast.AutomatonLiterals";
+  private static final String AUTOMATON_LITERALS = "de.monticore.codegen.ast.automaton._ast.AutomatonLiterals";
 
   private ASTCDCompilationUnit originalCompilationUnit;
 

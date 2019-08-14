@@ -18,7 +18,6 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
-
   private final VisitorService visitorService;
 
   public InheritanceVisitorDecorator(final GlobalExtensionManagement glex,
@@ -30,7 +29,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
   @Override
   public ASTCDInterface decorate(ASTCDCompilationUnit input) {
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithPackage(input);
-    String languageInterfaceName = visitorService.getLanguageInterfaceName(compilationUnit.getCDDefinition().getName());
+    String languageInterfaceName = visitorService.getLanguageInterfaceName();
 
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(visitorService.getInheritanceVisitorSimpleTypeName())

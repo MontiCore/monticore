@@ -20,8 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.NODE_SUFFIX;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 
 public class AbstractService<T extends AbstractService> {
@@ -99,7 +98,7 @@ public class AbstractService<T extends AbstractService> {
     return getCDSymbol().getName();
   }
 
-  private String getBasePackage(CDDefinitionSymbol cdSymbol) {
+  protected String getBasePackage(CDDefinitionSymbol cdSymbol) {
     return cdSymbol.getPackageName();
   }
 
@@ -282,7 +281,14 @@ public class AbstractService<T extends AbstractService> {
     return enumName.equals(definitionName + LITERALS_SUFFIX);
   }
 
-  public String getLanguageInterfaceName(String definitionName) {
-    return AST_PREFIX + definitionName + NODE_SUFFIX;
+  public String getLanguageInterfaceName() {
+    return getASTPackage() + "." + AST_PREFIX + getCDName() + NODE_SUFFIX;
+  }
+
+  public String getASTPackage() {
+    if (getBasePackage(getCDSymbol()).isEmpty()) {
+      return String.join(".", getCDSymbol().getName(), AST_PACKAGE).toLowerCase();
+    }
+    return String.join(".", getBasePackage(getCDSymbol()), getCDSymbol().getName(), AST_PACKAGE).toLowerCase();
   }
 }
