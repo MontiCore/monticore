@@ -37,13 +37,11 @@
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
-      <version>${monticore.plugin}</version>
     </dependency>
 
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-emf-runtime</artifactId>
-      <version>${monticore.plugin}</version>
     </dependency>
 
     <dependency>

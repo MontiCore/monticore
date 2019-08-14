@@ -18,7 +18,7 @@
       <dependency>
         <groupId>de.monticore</groupId>
         <artifactId>monticore-runtime</artifactId>
-        <version>${monticore.plugin}</version>
+        <version>${project.version}</version>
       </dependency>
     
       <dependency>
@@ -56,7 +56,7 @@
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-emf-runtime</artifactId>
-      <version>${monticore.plugin}</version>
+      <version>${project.version}</version>
     </dependency>
     <!-- EMF dependencies -->
     <dependency>

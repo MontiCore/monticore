@@ -35,7 +35,7 @@
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
-      <version>${monticore.plugin}</version>
+      <version>${last.mc.release}</version>
     </dependency>
 
 

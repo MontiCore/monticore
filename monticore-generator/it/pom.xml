@@ -25,6 +25,7 @@
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>de.monticore</groupId>
@@ -33,6 +34,7 @@
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-grammar</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

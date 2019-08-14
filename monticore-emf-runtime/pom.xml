@@ -78,6 +78,7 @@
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
+      <version>${project.version}</version>
     </dependency>
     
     <!-- EMF test dependencies -->
