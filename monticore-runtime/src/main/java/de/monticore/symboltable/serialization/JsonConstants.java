@@ -18,9 +18,6 @@ public interface JsonConstants {
   
   public static final String SUBSCOPES = "subScopes";
   
-  @Deprecated // there will be lists of symbols per individual kind
-  public static final String SYMBOLS = "symbols";
-  
   public static final String EXPORTS_SYMBOLS = "exportsSymbols";
   
   public static final String IS_SHADOWING_SCOPE = "isShadowingScope";

@@ -386,20 +386,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
-   * Deprecated, because this cd generation does not exist anymore
-   * so no reporting should be done
-   * can be deleted after MontiCore 5
-   * <p>
-   * Prints Cd4Analysis AST to the CD-file (*.cd) in the subdirectory
-   *
-   * @param astCd           - the top node of the Cd4Analysis AST
-   * @param outputDirectory - output directory
-   */
-  @Deprecated
-  public void storeInCdFile(ASTCDCompilationUnit astCd, File outputDirectory) {
-  }
-
-  /**
    * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory
    *
    * @param astCd           - the top node of the Cd4Analysis AST

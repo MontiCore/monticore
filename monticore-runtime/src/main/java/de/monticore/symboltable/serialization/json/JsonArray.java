@@ -48,17 +48,6 @@ public class JsonArray implements JsonElement {
     this.values = values;
   }
 
-  @Deprecated
-  public List<JsonElement> getElements() {
-    return this.getValues();
-  }
-  
-
-  @Deprecated
-  public void setElements(List<JsonElement> values) {
-    setValues(values);
-  }
-  
   /**
    * @return
    * @see java.util.List#size()

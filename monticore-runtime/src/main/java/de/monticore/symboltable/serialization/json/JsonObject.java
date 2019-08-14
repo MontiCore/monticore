@@ -54,16 +54,6 @@ public class JsonObject implements JsonElement {
   public void setMembers(Map<String, JsonElement> members) {
     this.members = members;
   }
-
-  @Deprecated
-  public Map<String, JsonElement> getAttributes() {
-    return getMembers();
-  }
-  
-  @Deprecated
-  public void setAttributes(Map<String, JsonElement> members) {
-    setMembers(members);
-  }
   
   /**
    * TODO: Write me!

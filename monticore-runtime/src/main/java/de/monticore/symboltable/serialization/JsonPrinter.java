@@ -27,6 +27,11 @@ public class JsonPrinter {
   
   protected int nestedObjectDepth;
   
+  /**
+   * 
+   * Constructor for de.monticore.symboltable.serialization.JsonPrinter
+   * @param serializeEmptyLists
+   */
   public JsonPrinter(boolean serializeEmptyLists) {
     this.serializeEmptyLists = serializeEmptyLists;
     this.printer = new IndentPrinter();
@@ -35,10 +40,17 @@ public class JsonPrinter {
     this.nestedObjectDepth = 0;
   }
   
+  /**
+   * 
+   * Constructor for de.monticore.symboltable.serialization.JsonPrinter that does not print empty lists
+   */
   public JsonPrinter() {
     this(false);
   }
   
+  /**
+   * Prints the begin of an object in Json notation.
+   */
   public void beginObject() {
     printCommaIfNecessary();
     printer.print("{");
@@ -70,11 +82,6 @@ public class JsonPrinter {
     nestedListDepth++;
   }
   
-  @Deprecated
-  public void beginAttributeList(String kind) {
-    beginArray(kind);
-  }
-  
   /**
    * Prints the beginning of a collection in Json notation. If the optional parameter "kind" is
    * present, it prints the collection as attribute of the given kind.
@@ -86,11 +93,6 @@ public class JsonPrinter {
     nestedListDepth++;
   }
   
-  @Deprecated
-  public void beginAttributeList() {
-    beginArray();
-  }
-  
   /**
    * Prints the end of a collection in Json notation.
    */
@@ -98,11 +100,6 @@ public class JsonPrinter {
     printer.print("]");
     nestedListDepth--;
     isFirstAttribute = false; // This is to handle empty lists
-  }
-  
-  @Deprecated
-  public void endAttributeList() {
-    endArray();
   }
   
   /**
@@ -116,19 +113,14 @@ public class JsonPrinter {
    */
   public void member(String kind, Collection<String> values) {
     if (!values.isEmpty()) {
-      beginAttributeList(kind);
-      values.stream().forEach(o -> attribute(o));
-      endAttributeList();
+      beginArray(kind);
+      values.stream().forEach(o -> value(o));
+      endArray();
     }
     else if (serializeEmptyLists) {
-      beginAttributeList(kind);
-      endAttributeList();
+      beginArray(kind);
+      endArray();
     }
-  }
-  
-  @Deprecated
-  public void attribute(String kind, Collection<String> values) {
-    member(kind, values);
   }
   
   /**
@@ -143,18 +135,12 @@ public class JsonPrinter {
    */
   public void member(String kind, Optional<String> value) {
     if (null != value && value.isPresent()) {
-      attribute(kind, value.get());
+      member(kind, value.get());
     }
     else if (serializeEmptyLists) {
       internalAttribute(kind, null);
     }
   }
-  
-  @Deprecated
-  public void attribute(String kind, Optional<String> value) {
-    member(kind, value);
-  }
-  
   /**
    * Prints a Json member with the given kind as key and the given double value, which is a basic
    * data type in Json.
@@ -164,11 +150,6 @@ public class JsonPrinter {
    */
   public void member(String kind, double value) {
     internalAttribute(kind, value);
-  }
-  
-  @Deprecated
-  public void attribute(String kind, double value) {
-    member(kind, value);
   }
   
   /**
@@ -182,11 +163,6 @@ public class JsonPrinter {
     internalAttribute(kind, value);
   }
   
-  @Deprecated
-  public void attribute(String kind, long value) {
-    member(kind, value);
-  }
-  
   /**
    * Prints a Json member with the given kind as key and the given float value, which is a basic
    * data type in Json.
@@ -196,11 +172,6 @@ public class JsonPrinter {
    */
   public void member(String kind, float value) {
     internalAttribute(kind, value);
-  }
-  
-  @Deprecated
-  public void attribute(String kind, float value) {
-    member(kind, value);
   }
   
   /**
@@ -214,11 +185,6 @@ public class JsonPrinter {
     internalAttribute(kind, value);
   }
   
-  @Deprecated
-  public void attribute(String kind, int value) {
-    member(kind, value);
-  }
-  
   /**
    * Prints a Json member with the given kind as key and the given boolean value, which is a basic
    * data type in Json.
@@ -230,26 +196,16 @@ public class JsonPrinter {
     internalAttribute(kind, value);
   }
   
-  @Deprecated
-  public void attribute(String kind, boolean value) {
-    member(kind, value);
-  }
-  
   /**
    * Prints a Json member with the given kind as key and the given String value, which is a basic
    * data type in Json. NOTE: if the parameter value is a serialized String, use the
-   * value(JsonPrinter) method instead!
+   * value(JsonPrinter) method instead! Otherwise escaped symbols are double escaped!
    * 
    * @param kind The key of the Json attribute
    * @param value The boolean value of the Json attribute
    */
   public void member(String kind, String value) {
     internalAttribute(kind, preprocessString(value));
-  }
-  
-  @Deprecated
-  public void attribute(String kind, String value) {
-    member(kind, value);
   }
   
   /**
@@ -273,11 +229,6 @@ public class JsonPrinter {
     internalAttribute(value);
   }
   
-  @Deprecated
-  public void attribute(double value) {
-    value(value);
-  }
-  
   /**
    * Prints a long as Json value
    * 
@@ -286,11 +237,6 @@ public class JsonPrinter {
    */
   public void value(long value) {
     internalAttribute(value);
-  }
-  
-  @Deprecated
-  public void attribute(long value) {
-    value(value);
   }
   
   /**
@@ -303,11 +249,6 @@ public class JsonPrinter {
     internalAttribute(value);
   }
   
-  @Deprecated
-  public void attribute(float value) {
-    value(value);
-  }
-  
   /**
    * Prints a String as int value
    * 
@@ -316,11 +257,6 @@ public class JsonPrinter {
    */
   public void value(int value) {
     internalAttribute(value);
-  }
-  
-  @Deprecated
-  public void attribute(int value) {
-    value(value);
   }
   
   /**
@@ -333,25 +269,15 @@ public class JsonPrinter {
     internalAttribute(value);
   }
   
-  @Deprecated
-  public void attribute(boolean value) {
-    value(value);
-  }
-  
   /**
    * Prints a String as Json value. NOTE: if the parameter value is a serialized String, use the
-   * value(JsonPrinter) method instead!
+   * value(JsonPrinter) method instead! Otherwise escaped symbols are double escaped!
    * 
    * @param kind The key of the Json attribute
    * @param value The String value of the Json attribute
    */
   public void value(String value) {
     internalAttribute(preprocessString(value));
-  }
-  
-  @Deprecated
-  public void attribute(String value) {
-    value(value);
   }
   
   /**

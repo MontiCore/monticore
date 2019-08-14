@@ -188,11 +188,6 @@ public class Reporting extends Slf4jLog {
     return singleton;
   }
 
-  @Deprecated // Delete afer release 5.0.6
-  public static void init(String reportDirectory, ReportManagerFactory factory) {
-    init(reportDirectory, reportDirectory, factory);
-  }
-
   public static void init(String outputDirectory, String reportDirectory, ReportManagerFactory factory) {
     if (outputDirectory == null || outputDirectory.isEmpty()) {
       Log.error("0xA4050 Output directory must not be null or empty.");
