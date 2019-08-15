@@ -1,233 +1,112 @@
-/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
-import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
-import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.typescalculator.combineexpressionswithliterals._ast.ASTFoo;
+import de.monticore.typescalculator.combineexpressionswithliterals._ast.CombineExpressionsWithLiteralsMill;
 import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import de.monticore.typescalculator.combineexpressionswithliterals._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ExpressionsBasisTest {
 
-  private ExpressionsBasisScope scope;
+  private CombineExpressionsWithLiteralsGlobalScope globalScope;
 
-  private LiteralTypeCalculator literalsVisitor;
-
+  private CombineExpressionsWithLiteralsArtifactScope artifactScope;
 
   @Before
-  public void setup(){
+  public void setup() throws IOException{
     Log.enableFailQuick(false);
 
-    this.scope=ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-
-    EVariableSymbol symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varInt").build();
-    MCTypeSymbol typeSymbol = new MCTypeSymbol("int");
-    typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build());
-    typeSymbol.setEVariableSymbol(symbol);
-    symbol.setMCTypeSymbol(typeSymbol);
-    scope.add(symbol);
-
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varDouble").build();
-    typeSymbol = new MCTypeSymbol("double");
-    typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build());
-    typeSymbol.setEVariableSymbol(symbol);
-    symbol.setMCTypeSymbol(typeSymbol);
-    scope.add(symbol);
-
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varString").build();
-    List<String> name = new ArrayList<>();
-    name.add("java");
-    name.add("lang");
-    name.add("String");
-    typeSymbol = new MCTypeSymbol("java.lang.String");
-    typeSymbol.setEVariableSymbol(symbol);
-    typeSymbol.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
-    symbol.setMCTypeSymbol(typeSymbol);
-    scope.add(symbol);
-
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varList").build();
-    name = new ArrayList<>();
-    name.add("java");
-    name.add("util");
-    name.add("List");
-    typeSymbol = new MCTypeSymbol("java.lang.String");
-    typeSymbol.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
-    typeSymbol.setEVariableSymbol(symbol);
-    symbol.setMCTypeSymbol(typeSymbol);
-    scope.add(symbol);
-
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varChar").build();
-    typeSymbol= new MCTypeSymbol("char");
-    typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build());
-    typeSymbol.setEVariableSymbol(symbol);
-    symbol.setMCTypeSymbol(typeSymbol);
-    scope.add(symbol);
-
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varInteger").build();
-    name=new ArrayList<>();
-    name.add("java");
-    name.add("lang");
-    name.add("Integer");
-    typeSymbol=new MCTypeSymbol("java.lang.Integer");
-    typeSymbol.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
-    typeSymbol.setEVariableSymbol(symbol);
-    symbol.setMCTypeSymbol(typeSymbol);
-    scope.add(symbol);
-
-    EVariableSymbol symbolB = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varB").build();
-    name=new ArrayList<>();
-    name.add("B");
-    typeSymbol=new MCTypeSymbol("B");
-    typeSymbol.setEVariableSymbol(symbolB);
-    typeSymbol.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
-    symbolB.setMCTypeSymbol(typeSymbol);
-
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varA").build();
-    name=new ArrayList<>();
-    name.add("A");
-    typeSymbol=new MCTypeSymbol("A");
-    List<MCTypeSymbol> subtypes= new ArrayList<>();
-    subtypes.add(symbolB.getMCTypeSymbol());
-    typeSymbol.setSubtypes(subtypes);
-    typeSymbol.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
-    typeSymbol.setEVariableSymbol(symbol);
-    symbol.setMCTypeSymbol(typeSymbol);
-    List<MCTypeSymbol> superTypes= new ArrayList<>();
-    superTypes.add(symbol.getMCTypeSymbol());
-    symbolB.getMCTypeSymbol().setSupertypes(superTypes);
-    scope.add(symbolB);
-    scope.add(symbol);
-
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varName").build();
-    name=new ArrayList<>();
-    name.add("Test");
-    typeSymbol= new MCTypeSymbol("Name");
-    ASTMCType type = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
-    typeSymbol.setASTMCType(type);
-    typeSymbol.setEVariableSymbol(symbol);
-    symbol.setMCTypeSymbol(typeSymbol);
-    scope.add(symbol);
-
-    EMethodSymbol methodSymbol = ExpressionsBasisSymTabMill.eMethodSymbolBuilder().setName("call").build();
-    typeSymbol = new MCTypeSymbol("call");
-    typeSymbol.setMethodSymbol(methodSymbol);
-    methodSymbol.setMCTypeSymbol(typeSymbol);
-    methodSymbol.setReturnType(MCBasicTypesMill.mCReturnTypeBuilder().setMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build()).build());
-    scope.add(methodSymbol);
-
-    ExpressionsBasisScope ascope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    scope.addSubScope(ascope);
-    ascope.setName("A");
-    ExpressionsBasisScope bscope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    bscope.setName("B");
-    ascope.addSubScope(bscope);
-    ExpressionsBasisScope cscope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    cscope.setName("C");
-    bscope.addSubScope(cscope);
-
-    cscope.add(methodSymbol);
-
-
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("QName").build();
-    name=new ArrayList<>();
-    typeSymbol= new MCTypeSymbol("QName");
-    type = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
-    typeSymbol.setASTMCType(type);
-    typeSymbol.setEVariableSymbol(symbol);
-    symbol.setMCTypeSymbol(typeSymbol);
-    cscope.add(symbol);
-
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varBool").build();
-    typeSymbol=new MCTypeSymbol("boolean");
-    typeSymbol.setEVariableSymbol(symbol);
-    typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build());
-    symbol.setMCTypeSymbol(typeSymbol);
-    scope.add(symbol);
-
-    symbol = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName("varBool2").build();
-    typeSymbol=new MCTypeSymbol("boolean");
-    typeSymbol.setEVariableSymbol(symbol);
-    typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build());
-    symbol.setMCTypeSymbol(typeSymbol);
-    scope.add(symbol);
+    ASTExpression expression = new CombineExpressionsWithLiteralsParser().parse_StringExpression("A").get();
+    ASTFoo ast = CombineExpressionsWithLiteralsMill.fooBuilder().setExpression(expression).build();
+    CombineExpressionsWithLiteralsLanguage language = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsLanguageBuilder().build();
+    globalScope = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsGlobalScopeBuilder().setLanguage(language).setModelPath(new ModelPath()).build();
+    CombineExpressionsWithLiteralsSymbolTableCreatorDelegator stc = language.getSymbolTableCreator(globalScope);
+    artifactScope = stc.createFromAST(ast);
+    globalScope.addAdaptedEMethodSymbolResolvingDelegate(new DummyAdapter(artifactScope));
+    globalScope.addAdaptedETypeSymbolResolvingDelegate(new DummyAdapter(artifactScope));
+    globalScope.addAdaptedEVariableSymbolResolvingDelegate(new DummyAdapter(artifactScope));
   }
 
   @Test
   public void nameTest() throws IOException {
-    CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
+    CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> o = p.parse_StringExpression("varInt");
+    Optional<ASTExpression> o = p.parse_StringExpression("int");
+    Optional<ASTExpression> r = p.parse_StringExpression("vardouble");
 
+    TypeExpression exp = new TypeExpression();
+    exp.setName("int");
     assertTrue(o.isPresent());
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(o.get())));
+    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
 
+    exp.setName("double");
+    assertTrue(r.isPresent());
+    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
   }
 
   @Test
   public void qualifiedNameTest() throws IOException{
-    CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
+    CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("A.B.C.QName");
 
-
+    TypeExpression exp = new TypeExpression();
+    exp.setName("A.B.C.QName");
     assertTrue(o.isPresent());
-    List<String> nameList = new ArrayList<>();
-    nameList.add("A");
-    nameList.add("B");
-    nameList.add("C");
-    nameList.add("QName");
-    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameList).build()).build().deepEquals(calc.calculateType(o.get())));
-
+    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals("A.B.C.QName", calc.calculateType(o.get()).getName());
   }
 
   @Test
   public void literalTest() throws IOException{
-    CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
+    CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("3");
-
-    assertTrue(o.isPresent());
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(o.get())));
-
-
     Optional<ASTExpression> q = p.parse_StringExpression("true");
-
-    assertTrue(q.isPresent());
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build().deepEquals(calc.calculateType(q.get())));
-
-
     Optional<ASTExpression> r = p.parse_StringExpression("4.5");
-    assertTrue(r.isPresent());
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(r.get())));
-
-    List<String> nameList = new ArrayList<>();
-    nameList.add("String");
-
     Optional<ASTExpression> s = p.parse_StringExpression("\"Hallo\"");
-    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameList).build()).build().deepEquals(calc.calculateType(s.get())));
-
     Optional<ASTExpression> t = p.parse_StringExpression("\'a\'");
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
-
     Optional<ASTExpression> u = p.parse_StringExpression("3.0f");
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build().deepEquals(calc.calculateType(u.get())));
-
     Optional<ASTExpression> v = p.parse_StringExpression("3L");
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build().deepEquals(calc.calculateType(v.get())));
+
+    TypeExpression exp = new TypeExpression();
+    exp.setName("int");
+    assertTrue(o.isPresent());
+    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+
+    exp.setName("boolean");
+    assertTrue(q.isPresent());
+    assertTrue(exp.deepEquals(calc.calculateType(q.get())));
+
+    exp.setName("double");
+    assertTrue(r.isPresent());
+    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+
+    exp.setName("String");
+    assertTrue(s.isPresent());
+    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+
+    exp.setName("char");
+    assertTrue(t.isPresent());
+    assertTrue(exp.deepEquals(calc.calculateType(t.get())));
+
+    exp.setName("float");
+    assertTrue(u.isPresent());
+    assertTrue(exp.deepEquals(calc.calculateType(u.get())));
+
+    exp.setName("long");
+    assertTrue(v.isPresent());
+    assertTrue(exp.deepEquals(calc.calculateType(v.get())));
   }
+
 }

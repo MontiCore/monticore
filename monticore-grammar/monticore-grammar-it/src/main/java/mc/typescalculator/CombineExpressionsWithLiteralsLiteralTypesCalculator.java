@@ -1,9 +1,10 @@
-/* (c) https://github.com/MontiCore/monticore */
-package de.monticore.typescalculator;
+package mc.typescalculator;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsVisitor;
+import de.monticore.typescalculator.CommonLiteralsTypesCalculator;
+import de.monticore.typescalculator.TypeExpression;
+import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsVisitor;
 
 import java.util.Map;
 

@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class MCType2TypeExpressionTest {
 
   List<String> primitiveTypes = Arrays
-          .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
+      .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
 
 
 
@@ -224,19 +224,19 @@ public class MCType2TypeExpressionTest {
   }
 
 
-    @Test
-    public void testListPrimitive() throws IOException {
-      for(String primitive : primitiveTypes) {
-        Optional<ASTMCListType> type = new MCCollectionTypesTestParser().parse_StringMCListType("List<" + primitive + ">");
-        assertTrue(type.isPresent());
-        TypeExpression listTypeExpression = TypesCalculatorHelper.mcType2TypeExpression(type.get());
-        assertTrue(listTypeExpression instanceof GenericTypeExpression);
-        assertTrue("List".equals(listTypeExpression.getName()));
-        TypeExpression listTypeArgument = ((GenericTypeExpression) listTypeExpression).getArguments().get(0);
-        assertTrue(listTypeArgument instanceof TypeConstant);
-        assertTrue(primitive.equals(listTypeArgument.getName()));
-      }
+  @Test
+  public void testListPrimitive() throws IOException {
+    for(String primitive : primitiveTypes) {
+      Optional<ASTMCListType> type = new MCCollectionTypesTestParser().parse_StringMCListType("List<" + primitive + ">");
+      assertTrue(type.isPresent());
+      TypeExpression listTypeExpression = TypesCalculatorHelper.mcType2TypeExpression(type.get());
+      assertTrue(listTypeExpression instanceof GenericTypeExpression);
+      assertTrue("List".equals(listTypeExpression.getName()));
+      TypeExpression listTypeArgument = ((GenericTypeExpression) listTypeExpression).getArguments().get(0);
+      assertTrue(listTypeArgument instanceof TypeConstant);
+      assertTrue(primitive.equals(listTypeArgument.getName()));
     }
+  }
 
 
   @Test
@@ -253,12 +253,12 @@ public class MCType2TypeExpressionTest {
   }
   @Test
   public void testVoid() throws IOException {
-      Optional<ASTMCVoidType> type = new MCCollectionTypesTestParser().parse_StringMCVoidType("void");
-      assertTrue(type.isPresent());
-      ASTMCVoidType booleanType = type.get();
-      TypeExpression typeExpression = TypesCalculatorHelper.mcType2TypeExpression(booleanType);
-      assertTrue(typeExpression instanceof TypeConstant);
-      assertTrue("void".equals(typeExpression.getName()));
+    Optional<ASTMCVoidType> type = new MCCollectionTypesTestParser().parse_StringMCVoidType("void");
+    assertTrue(type.isPresent());
+    ASTMCVoidType booleanType = type.get();
+    TypeExpression typeExpression = TypesCalculatorHelper.mcType2TypeExpression(booleanType);
+    assertTrue(typeExpression instanceof TypeConstant);
+    assertTrue("void".equals(typeExpression.getName()));
   }
 
 

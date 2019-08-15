@@ -13,6 +13,7 @@ before_script:
   - chmod +x monticore-generator/it/experiments/gradlew
   - chmod +x monticore-generator/it/gradlew
   - chmod +x monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/gradlew
+  - chmod +x monticore-grammar/monticore-grammar-it/gradlew
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 cache:
@@ -67,6 +68,8 @@ it-gradle:
     - "./gradlew build"
     - "./gradlew build -PbuildProfile=emf"
     - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
+    - "./gradlew build"
+    - "cd ../../../monticore-grammar/monticore-grammar-it"
     - "./gradlew build"
   only:
     - dev

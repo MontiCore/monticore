@@ -8,12 +8,12 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasictypes._ast.*;
-import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 
+import static de.monticore.typescalculator.TypesCalculator.isSubtypeOf;
 import static de.monticore.typescalculator.TypesCalculatorHelper.*;
 
 public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCalculator implements AssignmentExpressionsVisitor {
@@ -36,13 +36,13 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTIncSuffixExpression expr){
-    ASTMCType result = getUnaryNumericPromotionType(expr.getExpression());
+    TypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
 
     if(result!=null){
-      this.result = result;
-      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-      res.setASTMCType(result);
-      types.put(expr,res);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0170 The resulting type cannot be calculated");
     }
@@ -50,13 +50,13 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTDecSuffixExpression expr){
-    ASTMCType result = getUnaryNumericPromotionType(expr.getExpression());
+    TypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
 
     if(result!=null){
-      this.result = result;
-      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-      res.setASTMCType(result);
-      types.put(expr,res);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0171 The resulting type cannot be calculated");
     }
@@ -64,13 +64,13 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTIncPrefixExpression expr){
-    ASTMCType result = getUnaryNumericPromotionType(expr.getExpression());
+    TypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
 
     if(result!=null){
-      this.result = result;
-      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-      res.setASTMCType(result);
-      types.put(expr,res);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0172 The resulting type cannot be calculated");
     }
@@ -78,13 +78,13 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTDecPrefixExpression expr){
-    ASTMCType result = getUnaryNumericPromotionType(expr.getExpression());
+    TypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
 
     if(result!=null){
-      this.result = result;
-      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-      res.setASTMCType(result);
-      types.put(expr,res);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0173 The resulting type cannot be calculated");
     }
@@ -92,12 +92,12 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTPlusPrefixExpression expr){
-    ASTMCType result = getUnaryNumericPromotionType(expr.getExpression());
+    TypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
     if(result!=null){
-      this.result = result;
-      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-      res.setASTMCType(result);
-      types.put(expr,res);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0174 The resulting type cannot be calculated");
     }
@@ -105,78 +105,75 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTMinusPrefixExpression expr){
-    ASTMCType result = getUnaryNumericPromotionType(expr.getExpression());
+    TypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
     if(result!=null){
-      this.result = result;
-      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-      res.setASTMCType(result);
-      types.put(expr,res);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0175 The resulting type cannot be calculated");
     }
   }
 
   private void calculatePlusAssignment(ASTRegularAssignmentExpression expr){
-    ASTMCType result = calculateTypeArithmeticWithString(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeArithmeticWithString(expr.getLeft(),expr.getRight());
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
-      List<String> name = new ArrayList<>();
-      name.add("String");
-      if(types.get(expr.getLeft()).deepEqualsWithType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build())&&types.get(expr.getRight()).deepEqualsWithType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build())){
-        result = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+      if(types.get(expr.getLeft()).getName().equals("String")&&types.get(expr.getRight()).getName().equals("String")){
+        result = new TypeExpression();
+        result.setName("String");
       }
-      ArrayList<String> nameB = new ArrayList<>();
-      nameB.add("String");
-      nameB.add(0,"lang");
-      nameB.add(0,"java");
-      if(types.get(expr.getLeft()).deepEqualsWithType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameB).build()).build())&&types.get(expr.getRight()).deepEqualsWithType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameB).build()).build())){
-        result = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameB).build()).build();
+      if(types.get(expr.getLeft()).getName().equals("java.lang.String")&&types.get(expr.getRight()).getName().equals("java.lang.String")){
+        result = new TypeExpression();
+        result.setName("String");
       }
-      if(types.get(expr.getLeft()).deepEqualsWithType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build())&&types.get(expr.getRight()).deepEqualsWithType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameB).build()).build())
-       ||types.get(expr.getLeft()).deepEqualsWithType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameB).build()).build())&&types.get(expr.getRight()).deepEqualsWithType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build())){
-        result = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+      if((types.get(expr.getLeft()).getName().equals("String")&&types.get(expr.getRight()).getName().equals("java.lang.String"))
+          ||(types.get(expr.getLeft()).getName().equals("java.lang.String")&&types.get(expr.getRight()).getName().equals("String"))){
+        result = new TypeExpression();
+        result.setName("String");
       }
     }
     if(result!=null){
-      this.result = result;
-      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-      res.setASTMCType(result);
-      types.put(expr,res);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0176 The resulting type cannot be calculated");
     }
   }
 
   private void calculateMinusAssignment(ASTRegularAssignmentExpression expr){
-    ASTMCType result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(result!=null){
-      this.result = result;
-      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-      res.setASTMCType(result);
-      types.put(expr,res);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0177 The resulting type cannot be calculated");
     }
   }
 
   private void calculateMultAssignment(ASTRegularAssignmentExpression expr){
-    ASTMCType result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(result!=null){
-      this.result = result;
-      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-      res.setASTMCType(result);
-      types.put(expr,res);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0178 The resulting type cannot be calculated");
     }
   }
 
   private void calculateDivideAssignment(ASTRegularAssignmentExpression expr){
-    ASTMCType result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(result!=null){
-      this.result = result;
-      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-      res.setASTMCType(result);
-      types.put(expr,res);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0179 The resulting type cannot be calculated");
     }
@@ -211,26 +208,19 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.PERCENTEQUALS){
       calculateModuloAssignment(expr);
     }else {
-      ASTMCType result = null;
-      Optional<EVariableSymbol> left = Optional.empty();
-      Optional<EVariableSymbol> right = Optional.empty();
-      if (types.get(expr.getLeft()).getEVariableSymbol() != null && types.get(expr.getRight()).getEVariableSymbol() != null) {
-        left = scope.resolveEVariable(types.get(expr.getLeft()).getEVariableSymbol().getName());
-        right = scope.resolveEVariable(types.get(expr.getRight()).getEVariableSymbol().getName());
-      }
       if (types.containsKey(expr.getLeft()) && types.containsKey(expr.getRight())) {
+        TypeExpression right =types.get(expr.getRight());
+        TypeExpression left = types.get(expr.getLeft());
         result=calculateRegularAssignment(expr.getLeft(),expr.getRight());
-        if (left.isPresent() && right.isPresent()) {
-          if (left.get().getMCTypeSymbol().getSubtypes().contains(right.get().getMCTypeSymbol())||types.get(expr.getLeft()).getASTMCType().deepEquals(types.get(expr.getRight()).getASTMCType())) {
-            result = types.get(expr.getLeft()).getASTMCType().deepClone();
-          }
+        if (isSubtypeOf(right,left)||right.getName().equals(left.getName())) {
+          result = types.get(expr.getLeft()).clone();
         }
       }
       if (result != null) {
-        this.result = result;
-        MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-        res.setASTMCType(result);
-        types.put(expr, res);
+        TypeExpression sym = new TypeExpression();
+        sym.setName(result.getName());
+        types.put(expr, sym);
+        this.result = sym;
       }
       else {
         Log.error("0xA0180 The resulting type cannot be calculated");
@@ -240,12 +230,12 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   private void calculateAndAssigment(ASTRegularAssignmentExpression expr){
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
-    ASTMCType result = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
     if(result!=null){
-      this.result=result;
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
-      types.put(expr,sym);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0181 The resulting type cannot be calculated");
     }
@@ -253,12 +243,12 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   private void calculateOrAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
-    ASTMCType result = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
     if(result!=null){
-      this.result=result;
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
-      types.put(expr,sym);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0182 The resulting type cannot be calculated");
     }
@@ -266,12 +256,12 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   private void calculateBinaryXorAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
-    ASTMCType result = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
     if(result!=null){
-      this.result=result;
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
-      types.put(expr,sym);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0183 The resulting type cannot be calculated");
     }
@@ -279,12 +269,12 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   private void calculateDoubleRightAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf Ganzzahl - Ganzzahl
-    ASTMCType result = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
     if(result!=null){
-      this.result=result;
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
-      types.put(expr,sym);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0184 The resulting type cannot be calculated");
     }
@@ -292,12 +282,12 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   private void calculateDoubleLeftAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf Ganzzahl - Ganzzahl
-    ASTMCType result = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
     if(result!=null){
-      this.result=result;
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
-      types.put(expr,sym);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0185 The resulting type cannot be calculated");
     }
@@ -305,81 +295,87 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   private void calculateLogicalRightAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf Ganzzahl - Ganzzahl
-    ASTMCType result = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
     if(result!=null){
-      this.result=result;
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
-      types.put(expr,sym);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0186 The resulting type cannot be calculated");
     }
   }
 
   private void calculateModuloAssignment(ASTRegularAssignmentExpression expr){
-    ASTMCType result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(result!=null){
-      this.result = result;
-      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-      res.setASTMCType(result);
-      types.put(expr,res);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0187 The resulting type cannot be calculated");
     }
   }
 
-  public ASTMCType getBinaryNumericPromotion(ASTExpression leftType,
-                                             ASTExpression rightType) {
-    if(types.containsKey(leftType)&&types.containsKey(rightType)){
-      if("double".equals(unbox(types.get(leftType).getASTMCType()).getBaseName())||"double".equals(unbox(types.get(rightType).getASTMCType()).getBaseName())){
-        return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
+  public TypeExpression getBinaryNumericPromotion(ASTExpression leftType,
+                                                  ASTExpression rightType) {
+    TypeExpression res = null;
+    if(types.containsKey(leftType)&&types.containsKey(rightType)&&isPrimitiveType(types.get(leftType))&&isPrimitiveType(types.get(rightType))){
+      if("double".equals(unbox(types.get(leftType)).getName())||"double".equals(unbox(types.get(rightType)).getName())){
+        res = new TypeExpression();
+        res.setName("double");
       }
-      if("float".equals(unbox(types.get(leftType).getASTMCType()).getBaseName())||"float".equals(unbox(types.get(rightType).getASTMCType()).getBaseName())){
-        return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build();
+      if("float".equals(unbox(types.get(leftType)).getName())||"float".equals(unbox(types.get(rightType)).getName())){
+        res=new TypeExpression();
+        res.setName("float");
       }
-      if("long".equals(unbox(types.get(leftType).getASTMCType()).getBaseName())||"long".equals(unbox(types.get(rightType).getASTMCType()).getBaseName())){
-        return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build();
+      if("long".equals(unbox(types.get(leftType)).getName())||"long".equals(unbox(types.get(rightType)).getName())){
+        res = new TypeExpression();
+        res.setName("long");
       }
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
+      res = new TypeExpression();
+      res.setName("int");
+    }
+    return res;
+  }
+
+  public TypeExpression getUnaryNumericPromotionType(ASTExpression expr){
+    if(types.containsKey(expr))
+      if("byte".equals(unbox(types.get(expr)).getName())||
+          "short".equals(unbox(types.get(expr)).getName())||
+          "char".equals(unbox(types.get(expr)).getName())||
+          "int".equals(unbox(types.get(expr)).getName())
+      ){
+        TypeExpression sym = new TypeExpression();
+        sym.setName("int");
+        return sym;
+      }
+    if("long".equals(unbox(types.get(expr)).getName())||
+        "double".equals(unbox(types.get(expr)).getName())||
+        "float".equals(unbox(types.get(expr)).getName())
+    ){
+      return unbox(types.get(expr)).clone();
     }
     return null;
   }
 
-  public ASTMCType getUnaryNumericPromotionType(ASTExpression expr){
-    if(types.containsKey(expr))
-      if("byte".equals(unbox(types.get(expr).getASTMCType()).getBaseName())||
-          "short".equals(unbox(types.get(expr).getASTMCType()).getBaseName())||
-          "char".equals(unbox(types.get(expr).getASTMCType()).getBaseName())||
-          "int".equals(unbox(types.get(expr).getASTMCType()).getBaseName())
-      ){
-        return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
-      }
-      if("long".equals(unbox(types.get(expr).getASTMCType()).getBaseName())||
-          "double".equals(unbox(types.get(expr).getASTMCType()).getBaseName())||
-          "float".equals(unbox(types.get(expr).getASTMCType()).getBaseName())
-      ){
-        return unbox(types.get(expr).getASTMCType());
-      }
-    return null;
-  }
-
-  private ASTMCType calculateTypeArithmetic(ASTExpression left, ASTExpression right){
-    ASTMCType result = null;
+  private TypeExpression calculateTypeArithmetic(ASTExpression left, ASTExpression right){
+    TypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)) {
-      if(isNumericType(types.get(left).getASTMCType())&&isNumericType(types.get(right).getASTMCType())){
-        return types.get(left).getASTMCType();
+      if(isNumericType(types.get(left))&&isNumericType(types.get(right))){
+        result = types.get(left).clone();
       }
     }
     return result;
   }
 
-  private ASTMCType calculateTypeArithmeticWithString(ASTExpression left, ASTExpression right){
-    ASTMCType result = null;
+  private TypeExpression calculateTypeArithmeticWithString(ASTExpression left, ASTExpression right){
+    TypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)){
-      List<String> name = new ArrayList<>();
-      name.add("String");
-      if(unbox(types.get(left).getASTMCType()).deepEquals(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build())){
-        result= MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+      if(unbox(types.get(left)).getName().equals("String")){
+        result= new TypeExpression();
+        result.setName("String");
       }else{
         result=calculateTypeArithmetic(left,right);
       }
@@ -387,46 +383,46 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     return result;
   }
 
-  private ASTMCType calculateTypeBitOperation(ASTExpression left, ASTExpression right){
-    ASTMCType result = null;
+  private TypeExpression calculateTypeBitOperation(ASTExpression left, ASTExpression right){
+    TypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)){
-      if(isIntegralType(types.get(left).getASTMCType())&&isIntegralType(types.get(right).getASTMCType())){
-        result=types.get(left).getASTMCType().deepClone();
+      if(isIntegralType(types.get(left))&&isIntegralType(types.get(right))){
+        result=types.get(left).clone();
       }
     }
     return result;
   }
 
-  private ASTMCType calculateTypeBinaryOperations(ASTExpression left, ASTExpression right){
-    ASTMCType result = null;
+  private TypeExpression calculateTypeBinaryOperations(ASTExpression left, ASTExpression right){
+    TypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)){
-      if(isIntegralType(types.get(left).getASTMCType())&&isIntegralType(types.get(right).getASTMCType())){
-        result=types.get(left).getASTMCType().deepClone();
-      }else if(types.get(left).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build())&&types.get(right).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build())) {
-        result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build();
+      if(isIntegralType(types.get(left))&&isIntegralType(types.get(right))){
+        result=types.get(left).clone();
+      }else if(types.get(left).getName().equals("boolean")&&types.get(right).getName().equals("boolean")) {
+        result = new TypeExpression();
+        result.setName("boolean");
       }
     }
     return result;
   }
 
-  public ASTMCType calculateRegularAssignment(ASTExpression left,
-                                                         ASTExpression right) {
+  public TypeExpression calculateRegularAssignment(ASTExpression left,
+                                                   ASTExpression right) {
     if(types.containsKey(left)&&types.containsKey(right)) {
-      if(isNumericType(types.get(left).getASTMCType())&&isNumericType(types.get(right).getASTMCType())){
-        return types.get(left).getASTMCType().deepClone();
+      if(isNumericType(types.get(left))&&isNumericType(types.get(right))){
+        return types.get(left).clone();
       }
     }
     return null;
   }
 
-  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+  public void setTypes(Map<ASTNode,TypeExpression> types){
     this.types=types;
   }
 
-  public ASTMCType calculateType(ASTExpression expr){
+  public TypeExpression calculateType(ASTExpression expr){
     expr.accept(realThis);
-    return types.get(expr).getASTMCType();
+    return types.get(expr);
   }
 
-  //TODO: bisher nur double und int behandelt, bei += auch String, es fehlen noch RegularAssignmentExpr, AndAssignmentExpr, OrAssignmentExpr, BinaryXorAssignmentExpr, RightShiftAssignmentExpr, LeftShiftAssignmentExpr, LogicalRightAssignmentExpr und die Tests
 }
