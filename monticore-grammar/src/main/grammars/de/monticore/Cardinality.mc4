@@ -5,10 +5,9 @@ package de.monticore;
  * Grammar to describe Cardinalities
  */
 component grammar Cardinality extends
-	de.monticore.MCBasics, 
-	de.monticore.MCNumbers 
+	de.monticore.MCBasics, de.monticore.literals.MCCommonLiterals
 {
-    
+
   /** ASTCardinality represents a Cardinality in the UML/P
     @attribute many          True if "*" is set as Cardinality
     @attribute lowerBound    Minimum number of associated Classes/Objects
@@ -21,25 +20,25 @@ component grammar Cardinality extends
   Cardinality =
     "["
     ( many:["*"] {_aNode.setLowerBound(0);_aNode.setUpperBound(0);}
-      | lowerBoundLit:Decimal
+      | lowerBoundLit:NatLiteral
         { _aNode.setLowerBound(
-             _aNode.getLowerBoundLit().getValueInt());
+             _aNode.getLowerBoundLit().getValue());
           _aNode.setUpperBound(_aNode.getLowerBound()); }
       ( ".." (
-        upperBoundLit:Decimal
+        upperBoundLit:NatLiteral
         ( {_aNode.setUpperBound(
-	     _aNode.getUpperBoundLit().getValueInt());})
+	     _aNode.getUpperBoundLit().getValue());})
         |
         noUpperLimit:["*"] {_aNode.setUpperBound(0);} ) )?
     ) "]";
-  
 
-  /** 
+
+  /**
     A Cardinality Object stores the bounds as integers.
    */
 
   astrule Cardinality =
     lowerBound:int
     upperBound:int;
-       
+
 }

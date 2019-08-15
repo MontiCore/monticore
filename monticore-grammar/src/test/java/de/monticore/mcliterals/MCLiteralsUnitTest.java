@@ -2,30 +2,25 @@
 
 package de.monticore.mcliterals;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import de.monticore.testmcliteralsv2._ast.*;
+import de.monticore.testmcliteralsv2._parser.TestMCLiteralsV2Parser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import mcnumbers._ast.ASTDecimal;
+import mcnumbers._ast.ASTInteger;
+import mcnumbers._ast.ASTNumber;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import stringliterals._ast.ASTCharLiteral;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import de.monticore.mcnumbers._ast.ASTDecimal;
-import de.monticore.mcnumbers._ast.ASTInteger;
-import de.monticore.mcnumbers._ast.ASTNumber;
-import de.monticore.stringliterals._ast.ASTCharLiteral;
 // import de.monticore.mcliteralsv2._ast.*;
-import de.monticore.testmcliteralsv2._ast.ASTAnyToken;
-import de.monticore.testmcliteralsv2._ast.ASTAnyTokenList;
-import de.monticore.testmcliteralsv2._ast.ASTBTest;
-import de.monticore.testmcliteralsv2._ast.ASTCharList;
-import de.monticore.testmcliteralsv2._ast.ASTIntegerList;
-import de.monticore.testmcliteralsv2._ast.ASTStringList;
-import de.monticore.testmcliteralsv2._parser.TestMCLiteralsV2Parser;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 
 public class MCLiteralsUnitTest {
   
@@ -41,7 +36,7 @@ public class MCLiteralsUnitTest {
   
 
   @Before
-  public void setUp() { 
+  public void setUp() {
     Log.getFindings().clear();
   }
   
@@ -174,7 +169,7 @@ public class MCLiteralsUnitTest {
     // "-" is still present
     assertEquals("-0", ast.getInteger(2).getSource());
     assertEquals(-47, ast.getInteger(3).getValue());
-    // space between the two token is missing 
+    // space between the two token is missing
     assertEquals("-47", ast.getInteger(3).getSource());
   }
 
@@ -205,7 +200,7 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testString() throws IOException {
-    ASTStringList ast = parser.parse_StringStringList( 
+    ASTStringList ast = parser.parse_StringStringList(
      "[\"ZWeR\",\"4\", \"',\\b,\\\\;\", \"S\\u34F4W\", \"o\"]" ).get();
     assertEquals("ZWeR", ast.getStringLiteral(0).getValue());
     assertEquals("4", ast.getStringLiteral(1).getValue());
@@ -232,7 +227,7 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testChar2() throws IOException {
-    ASTCharList ast = parser.parse_StringCharList( 
+    ASTCharList ast = parser.parse_StringCharList(
      "['Z','4','\\'', '\\b', '\\\\', '\7', '\\7', 'o']" ).get();
     assertEquals('Z', ast.getCharLiteral(0).getValue());
     assertEquals('4', ast.getCharLiteral(1).getValue());
@@ -248,7 +243,7 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testCharUnicode() throws IOException {
-    ASTCharList ast = parser.parse_StringCharList( 
+    ASTCharList ast = parser.parse_StringCharList(
      "['\\u2345', '\\u23EF', '\\u0001', '\\uAFFA']" ).get();
     assertEquals('\u2345', ast.getCharLiteral(0).getValue());
     assertEquals('\u23EF', ast.getCharLiteral(1).getValue());
