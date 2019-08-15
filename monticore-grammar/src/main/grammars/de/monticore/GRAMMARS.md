@@ -47,7 +47,7 @@ There may also be further unclarfied grammars around.
 
 ## General: List of Grammars in package de.monticore
 
-### [MCBasics.mc4](de/monticore/MCBasics.mc4)  (stable)
+### [MCBasics.mc4](monticore-grammar/src/main/grammars/de/monticore/MCBasics.mc4)  (stable)
 * This grammar defines absolute basics, such as spaces, 
 Java-like comments and Names. 
 It should be useful in many languages.
@@ -58,14 +58,14 @@ It should be useful in many languages.
 These grammars generally deal with type definitions and build on each 
 other:
 
-### [MCBasicTypes.mc4](de/monticore/types/MCBasicTypes.mc4) (stable)
+### [MCBasicTypes.mc4](monticore-grammar/src/main/grammars/de/monticore/types/MCBasicTypes.mc4) (stable)
 * This grammar defines basic types. This eases the reuse of type 
 structures in languages similar to Java, that are somewhat 
 simplified, e.g. without generics.
 * The grammar contains types from Java, e.g., primitives, void, 
 classes (also sometimes called "reference types").
  
-### [MCCollectionTypes.mc4](de/monticore/types/MCCollectionTypes.mc4) (stable)
+### [MCCollectionTypes.mc4](monticore-grammar/src/main/grammars/de/monticore/types/MCCollectionTypes.mc4) (stable)
 * This grammar defines four generics: `List<A>`, `Map<A,B>`, `Set<A>` and 
 `Optional<A>` on top of basic types.
 * These four generics correspond to a typical predefined set of generic 
@@ -76,7 +76,7 @@ therefore these types are of interest.
 that are somewhat simplified, e.g. without general generics.
 
 
-### [MCSimpleGenericTypes.mc4](de/monticore/types/MCSimpleGenericTypes.mc4) (stable)
+### [MCSimpleGenericTypes.mc4](monticore-grammar/src/main/grammars/de/monticore/types/MCSimpleGenericTypes.mc4) (stable)
 * This grammar introduces freely defined generic types
 such as Blubb<A>, Bla<B,C>, Foo<Blubb<D>>
 * These generics are covering a wide range of uses for generic types,
@@ -84,7 +84,7 @@ although they don't cover type restrictions on the arguments, like in
 Java. 
 
 
-### [MCFullGenericTypes.mc4](de/monticore/types/MCFullGenericTypes.mc4) (stable)
+### [MCFullGenericTypes.mc4](monticore-grammar/src/main/grammars/de/monticore/types/MCFullGenericTypes.mc4) (stable)
 * This grammar completes the type definitions to 
 support the full Java type system including wildcards Blubb<? extends A>
 * A general advice: When you are not sure that you need this kind of
@@ -151,9 +151,9 @@ UML's OCL.
 
 ## Literals: List of Grammars in package de.monticore.literals
 
-* [MCLiteralsBasis.mc4](de/monticore/literals/MCLiteralsBasis.mc4)
-* [MCCommonLiterals.mc4](de/monticore/literals/MCCommonLiterals.mc4)
-* [MCJavaLiterals.mc4](de/monticore/literals/MCJavaLiterals.mc4)
+* [MCLiteralsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCLiteralsBasis.mc4)
+* [MCCommonLiterals.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCCommonLiterals.mc4)
+* [MCJavaLiterals.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCJavaLiterals.mc4)
 
 ## Further grammars (status: to be handled):
 
@@ -164,29 +164,29 @@ UML's OCL.
 * [JavaLight.mc4](de/monticore/JavaLight.mc4)
 
 #### Statements: List of Grammars in package de.monticore.statements
-* [MCAssertStatements.mc4](de/monticore/statements/MCAssertStatements.mc4)
-* [MCCommonStatements.mc4](de/monticore/statements/MCCommonStatements.mc4)
-* [MCExceptionStatements.mc4](de/monticore/statements/MCExceptionStatements.mc4)
-* [MCFullJavaStatements.mc4](de/monticore/statements/MCFullJavaStatements.mc4)
-* [MCLowLevelStatements.mc4](de/monticore/statements/MCLowLevelStatements.mc4)
-* [MCReturnStatements.mc4](de/monticore/statements/MCReturnStatements.mc4)
-* [MCStatementsBasis.mc4](de/monticore/statements/MCStatementsBasis.mc4)
-* [MCSynchronizedStatements.mc4](de/monticore/statements/MCSynchronizedStatements.mc4)
+* [MCAssertStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCAssertStatements.mc4)
+* [MCCommonStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCCommonStatements.mc4)
+* [MCExceptionStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCExceptionStatements.mc4)
+* [MCFullJavaStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCFullJavaStatements.mc4)
+* [MCLowLevelStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCLowLevelStatements.mc4)
+* [MCReturnStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCReturnStatements.mc4)
+* [MCStatementsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCStatementsBasis.mc4)
+* [MCSynchronizedStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCSynchronizedStatements.mc4)
 
 
 ### Alpha: also to become stable (one phase later)
 
-* [Cardinality.mc4](de/monticore/Cardinality.mc4)
-* [Completeness.mc4](de/monticore/Cardinality.mc4)
-* [MCCommon.mc4](de/monticore/Cardinality.mc4)
+* [Cardinality.mc4](monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4)
+* [Completeness.mc4](monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4)
+* [MCCommon.mc4](monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4)
 
 ### Examples for Grammars:
 
 These can also be used if someone is interested:
 
-* [StringLiterals.mc4](../examples/MCHexNumbers.mc4)
-* [MCHexNumbers.mc4](../examples/MCHexNumbers.mc4)
-* [MCNumbers.mc4](../examples/MCNumbers.mc4)
+* [StringLiterals.mc4](monticore-grammar/src/main/examples/MCHexNumbers.mc4)
+* [MCHexNumbers.mc4](monticore-grammar/src/main/examples/MCHexNumbers.mc4)
+* [MCNumbers.mc4](monticore-grammar/src/main/examples/MCNumbers.mc4)
 
 
 
