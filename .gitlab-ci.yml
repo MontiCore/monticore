@@ -69,6 +69,8 @@ it-gradle:
     - "./gradlew build -PbuildProfile=emf"
     - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
     - "./gradlew build"
+    - "cd ../../../monticore-grammar/monticore-grammar-it"
+    - "./gradlew build"
   only:
     - dev
 
