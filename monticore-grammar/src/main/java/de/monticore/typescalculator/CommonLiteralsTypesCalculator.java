@@ -2,36 +2,35 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.types.mcbasictypes._ast.*;
-import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator implements MCCommonLiteralsVisitor {
 
-  private ASTMCType result;
+  private TypeExpression result;
 
   private MCCommonLiteralsVisitor realThis = this;
 
-  private Map<ASTNode, MCTypeSymbol> types;
+  private Map<ASTNode, TypeExpression> types;
+
+  private IExpressionsBasisScope scope;
 
 
   @Override
-  public ASTMCType calculateType(ASTLiteral lit) {
+  public TypeExpression calculateType(ASTLiteral lit) {
     lit.accept(this);
     return result;
   }
 
-  public void setTypes(Map<ASTNode, MCTypeSymbol> types) {
+  public void setTypes(Map<ASTNode, TypeExpression> types) {
     this.types = types;
   }
 
-  public Map<ASTNode, MCTypeSymbol> getTypes() {
+  public Map<ASTNode,TypeExpression> getTypes() {
     return types;
   }
 
@@ -57,61 +56,63 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTCharLiteral lit){
-    result= MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build();
-    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-    sym.setASTMCType(result);
-    types.put(lit,sym);
+    TypeExpression res = new TypeExpression();
+    res.setName("char");
+    this.result=res;
+    types.put(lit,res);
   }
 
   @Override
   public void visit(ASTBooleanLiteral lit){
-    result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build();
-    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-    sym.setASTMCType(result);
-    types.put(lit,sym);
+    TypeExpression res = new TypeExpression();
+    res.setName("boolean");
+    this.result=res;
+    types.put(lit,res);
   }
 
   @Override
   public void visit(ASTNatLiteral lit){
-    result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
-    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-    sym.setASTMCType(result);
-    types.put(lit,sym);
+    TypeExpression res = new TypeExpression();
+    res.setName("int");
+    this.result=res;
+    types.put(lit,res);
   }
 
   @Override
   public void visit(ASTBasicDoubleLiteral lit){
-    result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
-    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-    sym.setASTMCType(result);
-    types.put(lit,sym);
+    TypeExpression res = new TypeExpression();
+    res.setName("double");
+    this.result=res;
+    types.put(lit,res);
   }
 
   @Override
   public void visit(ASTBasicFloatLiteral lit){
-    result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build();
-    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-    sym.setASTMCType(result);
-    types.put(lit,sym);
+    TypeExpression res = new TypeExpression();
+    res.setName("float");
+    this.result=res;
+    types.put(lit,res);
   }
 
   @Override
   public void visit(ASTBasicLongLiteral lit){
-    result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build();
-    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-    sym.setASTMCType(result);
-    types.put(lit,sym);
+    TypeExpression res = new TypeExpression();
+    res.setName("long");
+    this.result=res;
+    types.put(lit,res);
   }
 
   @Override
   public void visit(ASTStringLiteral lit){
-    List<String> name = new ArrayList<>();
-    name.add("String");
-    ASTMCQualifiedName qualifiedName = MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build();
-    result = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(qualifiedName).build();
-    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-    sym.setASTMCType(result);
-    types.put(lit,sym);
+    TypeExpression res = new TypeExpression();
+    res.setName("String");
+    this.result=res;
+    types.put(lit,res);
+  }
+
+
+  public void setScope(IExpressionsBasisScope scope){
+    this.scope=scope;
   }
 
 

@@ -9,10 +9,6 @@ import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
-import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -43,12 +39,12 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTPlusExpression expr){
-    ASTMCType result = getBinaryNumericPromotionWithString(expr.getLeft(),expr.getRight());
+    TypeExpression result = getBinaryNumericPromotionWithString(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0188 The resulting type cannot be calculated");
     }
@@ -56,12 +52,12 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTMultExpression expr){
-    ASTMCType result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
+    TypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0189 The resulting type cannot be calculated");
     }
@@ -69,12 +65,12 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTDivideExpression expr){
-    ASTMCType result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
+    TypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0190 The resulting type cannot be calculated");
     }
@@ -82,12 +78,12 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTMinusExpression expr){
-    ASTMCType result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
+    TypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0191 The resulting type cannot be calculated");
     }
@@ -95,25 +91,25 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTModuloExpression expr){
-    ASTMCType result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
+    TypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0192 The resulting type cannot be calculated");
     }
   }
-  
+
   @Override
   public void endVisit(ASTLessEqualExpression expr){
-    ASTMCType result = calculateTypeCompare(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0193 The resulting type cannot be calculated");
     }
@@ -121,12 +117,12 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTGreaterEqualExpression expr){
-    ASTMCType result = calculateTypeCompare(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0194 The resulting type cannot be calculated");
     }
@@ -134,12 +130,12 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTLessThanExpression expr){
-    ASTMCType result = calculateTypeCompare(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0195 The resulting type cannot be calculated");
     }
@@ -147,12 +143,12 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTGreaterThanExpression expr){
-    ASTMCType result = calculateTypeCompare(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0196 The resulting type cannot be calculated");
     }
@@ -160,12 +156,12 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTEqualsExpression expr){
-    ASTMCType result = calculateTypeLogical(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeLogical(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0197 The resulting type cannot be calculated");
     }
@@ -173,12 +169,12 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTNotEqualsExpression expr){
-    ASTMCType result = calculateTypeLogical(expr.getLeft(),expr.getRight());
+    TypeExpression result = calculateTypeLogical(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0198 The resulting type cannot be calculated");
     }
@@ -186,17 +182,20 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTBooleanAndOpExpression expr){
-    ASTMCType result = null;
+    TypeExpression result = null;
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
-      if (types.get(expr.getLeft()).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build()) && types.get(expr.getRight()).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build())) {
-        result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build();
+      TypeExpression exp = new TypeExpression();
+      exp.setName("boolean");
+      if (types.get(expr.getLeft()).deepEquals(exp) && types.get(expr.getRight()).deepEquals(exp)) {
+        result = new TypeExpression();
+        result.setName("boolean");
       }
     }
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0199 The resulting type cannot be calculated");
     }
@@ -204,17 +203,20 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTBooleanOrOpExpression expr){
-    ASTMCType result = null;
+    TypeExpression result = null;
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
-      if (types.get(expr.getLeft()).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build()) && types.get(expr.getRight()).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build())) {
-        result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build();
+      TypeExpression exp = new TypeExpression();
+      exp.setName("boolean");
+      if (types.get(expr.getLeft()).deepEquals(exp) && types.get(expr.getRight()).deepEquals(exp)) {
+        result = new TypeExpression();
+        result.setName("boolean");
       }
     }
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0200 The resulting type cannot be calculated");
     }
@@ -222,17 +224,20 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTLogicalNotExpression expr) {
-    ASTMCType result = null;
+    TypeExpression result = null;
     if(types.containsKey(expr.getExpression())){
-      if (types.get(expr.getExpression()).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build())) {
-        result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build();
+      TypeExpression exp = new TypeExpression();
+      exp.setName("boolean");
+      if (types.get(expr.getExpression()).deepEquals(exp)) {
+        result = new TypeExpression();
+        result.setName("boolean");
       }
     }
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0201 The resulting type cannot be calculated");
     }
@@ -240,15 +245,15 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTBracketExpression expr){
-    ASTMCType result = null;
+    TypeExpression result = null;
     if(types.containsKey(expr.getExpression())){
-      result=types.get(expr.getExpression()).getASTMCType().deepClone();
+      result=types.get(expr.getExpression()).clone();
     }
     if(result!=null) {
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
       types.put(expr, sym);
-      this.result = result;
+      this.result = sym;
     }else{
       Log.error("0xA0202 The resulting type cannot be calculated");
     }
@@ -256,21 +261,23 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTConditionalExpression expr){
-    ASTMCType result = null;
+    TypeExpression result = null;
     if(types.containsKey(expr.getTrueExpression())&&types.containsKey(expr.getFalseExpression())){
-      if(types.containsKey(expr.getCondition())&&types.get(expr.getCondition()).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build())){
-        if(types.get(expr.getTrueExpression()).getASTMCType().deepEquals(types.get(expr.getFalseExpression()).getASTMCType())){
-          result=types.get(expr.getFalseExpression()).getASTMCType().deepClone();
+      TypeExpression exp = new TypeExpression();
+      exp.setName("boolean");
+      if(types.containsKey(expr.getCondition())&&types.get(expr.getCondition()).deepEquals(exp)){
+        if(types.get(expr.getTrueExpression()).deepEquals(types.get(expr.getFalseExpression()))){
+          result=types.get(expr.getFalseExpression()).clone();
         }else{
           result=getBinaryNumericPromotion(expr.getTrueExpression(),expr.getFalseExpression());
         }
       }
     }
-    if(result!=null){
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
-      this.result=result;
-      types.put(expr,sym);
+    if(result!=null) {
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0204 The resulting type cannot be calculated");
     }
@@ -278,17 +285,17 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTBooleanNotExpression expr){
-    ASTMCType result = null;
+    TypeExpression result = null;
     if(types.containsKey(expr.getExpression())){
-      if(isIntegralType(types.get(expr.getExpression()).getASTMCType())){
-        result = getUnaryNumericPromotionType(types.get(expr.getExpression()).getASTMCType());
+      if(isIntegralType(types.get(expr.getExpression()))){
+        result = getUnaryNumericPromotionType(types.get(expr.getExpression()));
       }
     }
     if(result!=null){
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
-      this.result=result;
-      types.put(expr,sym);
+      TypeExpression sym = new TypeExpression();
+      sym.setName(result.getName());
+      types.put(expr, sym);
+      this.result = sym;
     }else{
       Log.error("0xA0205 The resulting type cannot be calculated");
     }
@@ -301,32 +308,27 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       String exprString = printer.prettyprint(expr);
       ExpressionsBasisPrettyPrinter prettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
       String exp = prettyPrinter.prettyprint(expr.getExpression());
-      Collection<EMethodSymbol> methodcollection = scope.resolveEMethodDownMany(exp);
+      Collection<EMethodSymbol> methodcollection = scope.resolveEMethodMany(exp);
       List<EMethodSymbol> methodlist = new ArrayList<>(methodcollection);
       for (EMethodSymbol method : methodlist) {
-        if (expr.getArguments().getExpressionList().size()==method.getArguments().size()){
+        if (expr.getArguments().getExpressionList().size()==method.getParameterList().size()){
           boolean success = true;
-          for(int i=0;i<method.getArguments().size();i++){
-            if(!method.getArguments().get(i).getASTMCType().deepEquals(types.get(expr.getArguments().getExpressionList().get(i)).getASTMCType())&&!isSubtypeOf(types.get(expr.getArguments().getExpressionList().get(i)),method.getArguments().get(i))){
+          for(int i=0;i<method.getParameterList().size();i++){
+            if(!method.getParameterList().get(i).getType().deepEquals(types.get(expr.getArguments().getExpressionList().get(i)))&&!isSubtypeOf(types.get(expr.getArguments().getExpressionList().get(i)),method.getParameterList().get(i).getType())){
               success = false;
             }
           }
           if(success){
             String nameString = printer.prettyprint(expr.getExpression());
-            if(method.getReturnType().isPresentMCType()){
-              ASTMCType result=method.getReturnType().getMCType();
+            if(!method.getReturnType().getName().equals("void")){
+              TypeExpression result=method.getReturnType();
               this.result=result;
-              MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-              sym.setASTMCType(result);
-              types.put(expr,sym);
-            }else if(method.getReturnType().isPresentMCVoidType()){
-              List<String> name = new ArrayList<>();
-              name.add("void");
-              ASTMCType result = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
-              this.result=result;
-              MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-              sym.setASTMCType(result);
-              types.put(expr,sym);
+              types.put(expr,result);
+            }else if(method.getReturnType().getName().equals("void")){
+              TypeExpression result = new TypeExpression();
+              result.setName("void");
+              types.put(expr, result);
+              this.result = result;
             }else{
               Log.error("0xA209 the resulting type cannot be resolved");
             }
@@ -340,72 +342,87 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
     }
   }
 
-  private ASTMCType calculateTypeCompare(ASTExpression left, ASTExpression right){
-    ASTMCType result = null;
+  private TypeExpression calculateTypeCompare(ASTExpression left, ASTExpression right){
+    TypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)) {
-      if(isNumericType(types.get(left).getASTMCType())&&isNumericType(types.get(right).getASTMCType())){
-        result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build();
+      if(isNumericType(types.get(left))&&isNumericType(types.get(right))){
+        result = new TypeExpression();
+        result.setName("boolean");
       }
     }
     return result;
   }
 
-  private ASTMCType calculateTypeLogical(ASTExpression left, ASTExpression right) {
-    ASTMCType result = null;
+  private TypeExpression calculateTypeLogical(ASTExpression left, ASTExpression right) {
+    TypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)) {
-      if(isPrimitiveType(types.get(left).getASTMCType())&&isPrimitiveType(types.get(right).getASTMCType())){
-        return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build();
+      if(isPrimitiveType(types.get(left))&&isPrimitiveType(types.get(right))){
+        result = new TypeExpression();
+        result.setName("boolean");
+        return result;
       }
-      if(!isPrimitiveType(types.get(left).getASTMCType())&&!isPrimitiveType(types.get(right).getASTMCType())&&(types.get(left).getASTMCType().deepEquals(types.get(right).getASTMCType())||types.get(left).getSubtypes().contains(types.get(right))||types.get(left).getSupertypes().contains(types.get(right)))){
-        return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build();
+      if(!isPrimitiveType(types.get(left))&&!isPrimitiveType(types.get(right))&&(types.get(left).deepEquals(types.get(right))||types.get(left).getSubTypes().contains(types.get(right))||types.get(left).getSuperTypes().contains(types.get(right)))){
+        result = new TypeExpression();
+        result.setName("boolean");
+        return result;
       }
     }
     return result;
   }
 
-  public ASTMCType getBinaryNumericPromotion(ASTExpression leftType,
-                                                    ASTExpression rightType) {
+  public TypeExpression getBinaryNumericPromotion(ASTExpression leftType,
+                                                  ASTExpression rightType) {
+    TypeExpression result = null;
     if(types.containsKey(leftType)&&types.containsKey(rightType)){
-      if("double".equals(unbox(types.get(leftType).getASTMCType()).getBaseName())||"double".equals(unbox(types.get(rightType).getASTMCType()).getBaseName())){
-        return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
+      if("double".equals(unbox(types.get(leftType)).getName())||"double".equals(unbox(types.get(rightType)).getName())){
+        result = new TypeExpression();
+        result.setName("double");
+        return result;
       }
-      if("float".equals(unbox(types.get(leftType).getASTMCType()).getBaseName())||"float".equals(unbox(types.get(rightType).getASTMCType()).getBaseName())){
-        return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build();
+      if("float".equals(unbox(types.get(leftType)).getName())||"float".equals(unbox(types.get(rightType)).getName())){
+        result = new TypeExpression();
+        result.setName("float");
+        return result;
       }
-      if("long".equals(unbox(types.get(leftType).getASTMCType()).getBaseName())||"long".equals(unbox(types.get(rightType).getASTMCType()).getBaseName())){
-        return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build();
+      if("long".equals(unbox(types.get(leftType)).getName())||"long".equals(unbox(types.get(rightType)).getName())){
+        result = new TypeExpression();
+        result.setName("long");
+        return result;
       }
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
+      result = new TypeExpression();
+      result.setName("int");
     }
-    return null;
+    return result;
   }
 
-  public ASTMCType getBinaryNumericPromotionWithString(ASTExpression leftType,
-                                             ASTExpression rightType) {
+  public TypeExpression getBinaryNumericPromotionWithString(ASTExpression leftType,
+                                                            ASTExpression rightType) {
+    TypeExpression result = null;
     if(types.containsKey(leftType)&&types.containsKey(rightType)){
-      List<String> name = new ArrayList<>();
-      name.add("java");
-      name.add("lang");
-      name.add("String");
-      if(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(types.get(leftType).getASTMCType())||MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(types.get(rightType).getASTMCType())){
-        return MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+      TypeExpression exp = new TypeExpression();
+      exp.setName("java.lang.String");
+      if(exp.deepEquals(types.get(leftType))||exp.deepEquals(types.get(rightType))){
+        result = new TypeExpression();
+        result.setName("String");
+        return result;
       }
-      name.remove("java");
-      name.remove("lang");
-      if(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(types.get(leftType).getASTMCType())||MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(types.get(rightType).getASTMCType())){
-        return MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+      exp.setName("String");
+      if(exp.deepEquals(types.get(leftType))||exp.deepEquals(types.get(rightType))){
+        result = new TypeExpression();
+        result.setName("String");
+        return result;
       }
       return getBinaryNumericPromotion(leftType,rightType);
     }
-    return null;
+    return result;
   }
 
-  public ASTMCType calculateType(ASTExpression expr){
+  public TypeExpression calculateType(ASTExpression expr){
     expr.accept(realThis);
-    return types.get(expr).getASTMCType();
+    return types.get(expr);
   }
 
-  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+  public void setTypes(Map<ASTNode,TypeExpression> types){
     this.types=types;
   }
 }

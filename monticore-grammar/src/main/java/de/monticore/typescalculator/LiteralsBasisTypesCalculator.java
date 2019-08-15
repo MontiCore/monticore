@@ -3,11 +3,10 @@ package de.monticore.typescalculator;
 
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 public class LiteralsBasisTypesCalculator implements LiteralTypeCalculator {
 
-  private ASTMCType result;
+  private TypeExpression result;
   private MCLiteralsBasisVisitor realThis;
 
   @Override
@@ -21,7 +20,7 @@ public class LiteralsBasisTypesCalculator implements LiteralTypeCalculator {
   }
 
   @Override
-  public ASTMCType calculateType(ASTLiteral lit) {
+  public TypeExpression calculateType(ASTLiteral lit) {
     lit.accept(realThis);
     return result;
   }
