@@ -1,0 +1,92 @@
+/* (c) https://github.com/MontiCore/monticore */
+import de.monticore.MCTask
+
+plugins{
+    id "java"
+    id "monticore" version "5.2.0" //Monticore Plugin
+}
+
+group = 'de.monticore'
+version = '5.3.0-SNAPSHOT'
+description = 'MontiCore Grammars Main Integration Test'
+sourceCompatibility = '1.8'
+
+ext.grammarDir = 'src/main/grammars'
+ext.mc_version = '5.3.0-SNAPSHOT'
+ext.generator_version = '5.3.0-SNAPSHOT'
+ext.junit_version = '4.12'
+ext.cd4a_version = '1.3.20'
+
+configurations {grammar}
+
+dependencies {
+    implementation group:'de.monticore', name:'javaDSL',version:'4.3.17-SNAPSHOT'
+    implementation group:'de.monticore', name:'monticore-runtime', version:mc_version, force:true
+    implementation group:'de.monticore', name:'monticore-generator', version:generator_version, force:true
+    implementation group:'de.monticore', name:'monticore-grammar', version:mc_version, force:true
+    implementation group:'de.monticore.lang', name:'cd4analysis', version:cd4a_version,force:true
+    testImplementation group:'junit', name:'junit', version: junit_version
+    grammar group:'de.monticore', name:'monticore-grammar', version: mc_version, classifier:'grammars'
+}
+
+buildDir = file("$projectDir/target")
+ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
+sourceSets.main.java.srcDirs += [ outDir ]
+
+// one task per file
+fileTree(grammarDir).each {
+    def g = it
+    task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
+        grammar = file g
+        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+        handcodedPath file("$projectDir/src/main/java")
+        modelPath file("$grammarDir")
+        def incCheckDir = file(grammarDir).toURI().relativize(g.toURI()).toString()
+        incCheckDir = incCheckDir.substring(0,incCheckDir.lastIndexOf('.')).toLowerCase()
+        def uptoDate = incCheck(outputDir.toString() +"/$incCheckDir/IncGenGradleCheck.txt")
+        outputs.upToDateWhen { uptoDate }
+    }
+}
+
+compileJava {
+    dependsOn project.collect { it.tasks.withType(MCTask) }
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from(sourceSets.main.allJava)
+}
+
+// build javadoc jar in addition
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier =  "javadoc"
+}
+// generated java doc contains errors, disable for now
+javadoc.failOnError(false)
+
+
+// build grammar jar as well
+task grammarJar(type: Jar) {
+    from ("$projectDir/$grammarDir"){ include "**/*.mc4" }
+    archiveClassifier = "grammars"
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        url repo
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+task testReport(type: TestReport) {
+    destinationDir = file("$buildDir/reports/allTests")
+    // Include the results from the 'test' task
+    reportOn tasks.withType(Test)
+}
