@@ -159,9 +159,9 @@ UML's OCL.
 
 ### Beta: to become stable in the next iteration
 
-* [UMLModifier.mc4](de/monticore/UMLModifier.mc4)
-* [UMLStereotype.mc4](de/monticore/UMLStereotype.mc4)
-* [JavaLight.mc4](de/monticore/JavaLight.mc4)
+* [UMLModifier.mc4](monticore-grammar/src/main/grammars/de/monticore/UMLModifier.mc4)
+* [UMLStereotype.mc4](monticore-grammar/src/main/grammars/de/monticore/UMLStereotype.mc4)
+* [JavaLight.mc4](monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
 
 #### Statements: List of Grammars in package de.monticore.statements
 * [MCAssertStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCAssertStatements.mc4)
@@ -177,14 +177,14 @@ UML's OCL.
 ### Alpha: also to become stable (one phase later)
 
 * [Cardinality.mc4](monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4)
-* [Completeness.mc4](monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4)
-* [MCCommon.mc4](monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4)
+* [Completeness.mc4](monticore-grammar/src/main/grammars/de/monticore/Completeness.mc4)
+* [MCCommon.mc4](monticore-grammar/src/main/grammars/de/monticore/MCCommon.mc4)
 
 ### Examples for Grammars:
 
 These can also be used if someone is interested:
 
-* [StringLiterals.mc4](monticore-grammar/src/main/examples/MCHexNumbers.mc4)
+* [StringLiterals.mc4](monticore-grammar/src/main/examples/StringLiterals.mc4)
 * [MCHexNumbers.mc4](monticore-grammar/src/main/examples/MCHexNumbers.mc4)
 * [MCNumbers.mc4](monticore-grammar/src/main/examples/MCNumbers.mc4)
 
