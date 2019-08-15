@@ -54,7 +54,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     // add template
     String visitorSimpleTypeName = visitorService.getVisitorSimpleTypeName();
     handleMethods.forEach(m -> replaceTemplate(EMPTY_BODY, m,
-        new TemplateHookPoint("_visitor.HandleInheritance",
+        new TemplateHookPoint("_visitor.inheritance.Handle",
             languageInterfaceName, visitorSimpleTypeName)));
 
     return handleMethods;
@@ -66,7 +66,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
 
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(VisitorConstants.HANDLE, astNodeType);
     this.replaceTemplate(EMPTY_BODY, handleMethod,
-        new TemplateHookPoint("_visitor.HandleInheritance", languageInterfaceName, visitorSimpleTypeName));
+        new TemplateHookPoint("_visitor.inheritance.Handle", languageInterfaceName, visitorSimpleTypeName));
 
     return handleMethod;
   }

@@ -56,7 +56,7 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     ASTMCType type = getCDTypeFacade().createOptionalTypeOf(languageInterfaceName);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
     ASTCDMethod getParentMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, GET_PARENT_METHOD);
-    this.replaceTemplate(EMPTY_BODY, getParentMethod, new TemplateHookPoint("_visitor.GetParent", languageInterfaceName));
+    this.replaceTemplate(EMPTY_BODY, getParentMethod, new TemplateHookPoint("_visitor.parentaware.GetParent", languageInterfaceName));
     return getParentMethod;
   }
 
@@ -83,7 +83,7 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     // add template
     String visitorSimpleTypeName = visitorService.getVisitorSimpleTypeName();
     handleMethods.forEach(m -> replaceTemplate(EMPTY_BODY, m,
-        new TemplateHookPoint("_visitor.TraversParentAware", visitorSimpleTypeName)));
+        new TemplateHookPoint("_visitor.parentaware.Travers", visitorSimpleTypeName)));
 
     return handleMethods;
   }

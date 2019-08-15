@@ -115,7 +115,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
 
     ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new TemplateHookPoint(
-        "_visitor.SetRealThisDelegator", delegatorVisitorSimpleName, simpleVisitorType,
+        "_visitor.delegator.SetRealThis", delegatorVisitorSimpleName, simpleVisitorType,
         superVisitorNames));
     return getRealThisMethod;
   }
@@ -145,7 +145,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
       ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, StringTransformations.uncapitalize(simpleName));
       ASTCDMethod setVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "set" + simpleName, visitorParameter);
       this.replaceTemplate(EMPTY_BODY, setVisitorMethod, new TemplateHookPoint(
-          "_visitor.SetVisitor", simpleName));
+          "_visitor.delegator.SetVisitor", simpleName));
       methodList.add(setVisitorMethod);
 
       //add getter for visitor attribute
@@ -220,7 +220,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
   protected ASTCDMethod addVisitorMethod(ASTMCType astType, List<String> simpleVisitorName, String methodName) {
     ASTCDMethod visitorMethod = visitorService.getVisitorMethod(methodName, astType);
     this.replaceTemplate(EMPTY_BODY, visitorMethod, new TemplateHookPoint(
-        "_visitor.DelegateorVisitorMethods", simpleVisitorName, methodName));
+        "_visitor.delegator.VisitorMethods", simpleVisitorName, methodName));
     return visitorMethod;
   }
 
