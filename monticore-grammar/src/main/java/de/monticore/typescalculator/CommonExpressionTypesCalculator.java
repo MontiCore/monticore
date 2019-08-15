@@ -247,7 +247,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
   public void endVisit(ASTBracketExpression expr){
     TypeExpression result = null;
     if(types.containsKey(expr.getExpression())){
-      result=types.get(expr.getExpression()).clone();
+      result=types.get(expr.getExpression()).deepClone();
     }
     if(result!=null) {
       TypeExpression sym = new TypeExpression();
@@ -267,7 +267,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       exp.setName("boolean");
       if(types.containsKey(expr.getCondition())&&types.get(expr.getCondition()).deepEquals(exp)){
         if(types.get(expr.getTrueExpression()).deepEquals(types.get(expr.getFalseExpression()))){
-          result=types.get(expr.getFalseExpression()).clone();
+          result=types.get(expr.getFalseExpression()).deepClone();
         }else{
           result=getBinaryNumericPromotion(expr.getTrueExpression(),expr.getFalseExpression());
         }
