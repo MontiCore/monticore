@@ -139,6 +139,7 @@
             <configuration>
               <grammars>
                 <grammar>${basedir}/target/src/test/grammars</grammar>
+                <grammar>${basedir}/target/src/main/examples</grammar>
               </grammars>
               <handcodedPaths>
                 <handcodedPath>${basedir}/target/src/test/java</handcodedPath>
