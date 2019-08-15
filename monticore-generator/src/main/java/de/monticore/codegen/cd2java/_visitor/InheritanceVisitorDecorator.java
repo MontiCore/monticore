@@ -1,11 +1,9 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
@@ -35,19 +33,10 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
         .setName(visitorService.getInheritanceVisitorSimpleTypeName())
         .setModifier(PUBLIC.build())
         .addInterface(visitorService.getVisitorReferenceType())
-        .addAllInterfaces(getSuperVisitor())
+        .addAllInterfaces(visitorService.getSuperVisitors())
         .addAllCDMethods(getHandleMethods(compilationUnit.getCDDefinition(), languageInterfaceName))
         .addCDMethod(addLanguageInterfaceHandleMethod(languageInterfaceName))
         .build();
-  }
-
-  protected List<ASTMCQualifiedType> getSuperVisitor() {
-    //only direct super cds, not transitive
-    List<CDDefinitionSymbol> superCDs = visitorService.getSuperCDsDirect();
-    return superCDs
-        .stream()
-        .map(visitorService::getVisitorReferenceType)
-        .collect(Collectors.toList());
   }
 
   protected List<ASTCDMethod> getHandleMethods(ASTCDDefinition astcdDefinition, String languageInterfaceName) {

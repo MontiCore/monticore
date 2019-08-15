@@ -11,6 +11,8 @@ public final class VisitorConstants {
 
   public static final String PARENT_AWARE_SUFFIX = "ParentAware";
 
+  public static final String DELEGATOR_SUFFIX = "Delegator";
+
   public static final String PARENTS_ATTRIBUTE = "parents";
 
   public static final String GET_PARENT_METHOD = "getParent";
@@ -22,6 +24,8 @@ public final class VisitorConstants {
   public static final String GET_REAL_THIS = "getRealThis";
 
   public static final String SET_REAL_THIS = "setRealThis";
+
+  public static final String REAL_THIS = "realThis";
 
   public static final String VISIT = "visit";
 

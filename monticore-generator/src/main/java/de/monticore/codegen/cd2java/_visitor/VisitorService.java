@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
@@ -14,8 +15,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.INHERITANCE_SUFFIX;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.PARENT_AWARE_SUFFIX;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class VisitorService extends AbstractService<VisitorService> {
@@ -52,6 +52,10 @@ public class VisitorService extends AbstractService<VisitorService> {
 
   public String getParentAwareVisitorSimpleTypeName() {
     return getCDName() + PARENT_AWARE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
+  }
+
+  public String geDelegatorVisitorSimpleTypeName() {
+    return getCDName() + DELEGATOR_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }
 
   public String getVisitorFullTypeName() {
@@ -100,11 +104,26 @@ public class VisitorService extends AbstractService<VisitorService> {
 
   public ASTCDCompilationUnit calculateCDTypeNamesWithPackage(ASTCDCompilationUnit input) {
     ASTCDCompilationUnit compilationUnit = input.deepClone();
+    compilationUnit.setCDDefinition(calculateCDTypeNamesWithPackage(input.getCDDefinition()));
+    return compilationUnit;
+  }
+
+  public ASTCDDefinition calculateCDTypeNamesWithPackage(ASTCDDefinition input) {
+    ASTCDDefinition compilationUnit = input.deepClone();
     //set classname to correct Name with path
     String astPath = getASTPackage();
-    compilationUnit.getCDDefinition().getCDClassList().forEach(c -> c.setName(astPath + "." + c.getName()));
-    compilationUnit.getCDDefinition().getCDInterfaceList().forEach(i -> i.setName(astPath + "." + i.getName()));
-    compilationUnit.getCDDefinition().getCDEnumList().forEach(e -> e.setName(astPath + "." + e.getName()));
+    compilationUnit.getCDClassList().forEach(c -> c.setName(astPath + "." + c.getName()));
+    compilationUnit.getCDInterfaceList().forEach(i -> i.setName(astPath + "." + i.getName()));
+    compilationUnit.getCDEnumList().forEach(e -> e.setName(astPath + "." + e.getName()));
     return compilationUnit;
+  }
+
+  public List<ASTMCQualifiedType> getSuperVisitors() {
+    //only direct super cds, not transitive
+    List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
+    return superCDs
+        .stream()
+        .map(this::getVisitorReferenceType)
+        .collect(Collectors.toList());
   }
 }

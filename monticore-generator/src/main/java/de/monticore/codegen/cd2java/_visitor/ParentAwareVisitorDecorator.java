@@ -48,7 +48,7 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
   protected ASTCDAttribute getParentAttribute(String languageInterfaceName) {
     ASTMCType stackType = getCDTypeFacade().createTypeByDefinition("java.util.Stack<" + languageInterfaceName + ">");
     ASTCDAttribute parentsAttribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE_FINAL, stackType, PARENTS_ATTRIBUTE);
-    this.replaceTemplate(VALUE, parentsAttribute, new StringHookPoint("= new java.util.Stack<>()"));
+    this.replaceTemplate(VALUE, parentsAttribute, new StringHookPoint("= new java.util.Stack<>();"));
     return parentsAttribute;
   }
 
