@@ -15,6 +15,8 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_SUFFIX;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_SUFFIX;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
@@ -54,8 +56,20 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getCDName() + PARENT_AWARE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }
 
-  public String geDelegatorVisitorSimpleTypeName() {
+  public String getDelegatorVisitorSimpleTypeName() {
     return getCDName() + DELEGATOR_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
+  }
+
+  public String getScopeVisitorSimpleTypeName() {
+    return getScopeVisitorSimpleTypeName(getCDSymbol());
+  }
+
+  public String getScopeVisitorSimpleTypeName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SCOPE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
+  }
+
+  public String getSymbolVisitorSimpleTypeName() {
+    return getCDName() + SYMBOL_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }
 
   public String getVisitorFullTypeName() {

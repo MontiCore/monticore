@@ -10,4 +10,9 @@ classdiagram Lexicals{
  public class ASTName{
   protected String name;
  }
+
+  <<symbol>> public class QualifiedName{
+      protected String name;
+      protected java.util.List<String> nameList;
+  }
 }

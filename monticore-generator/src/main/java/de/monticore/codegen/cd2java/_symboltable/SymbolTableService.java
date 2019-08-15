@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.types.MCSimpleGenericTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Names;
 
@@ -19,8 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.INTERFACE_PREFIX;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKGE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.utils.Names.getSimpleName;
 import static de.se_rwth.commons.Names.getQualifier;
 
@@ -60,6 +60,18 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getScopeInterfaceTypeName(getCDSymbol());
   }
 
+  public String getArtifactScopeTypeName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + cdSymbol.getName() + ARTIFACT_PREFIX + SymbolTableConstants.SCOPE_SUFFIX;
+  }
+
+  public String getArtifactScopeTypeName() {
+    return getArtifactScopeTypeName(getCDSymbol());
+  }
+
+  public ASTMCQualifiedType getArtifactScopeType() {
+    return getCDTypeFactory().createQualifiedType(getArtifactScopeTypeName(getCDSymbol()));
+  }
+
   public String getScopeInterfaceTypeName(CDDefinitionSymbol cdSymbol) {
     return getPackage(cdSymbol) + "." + INTERFACE_PREFIX + cdSymbol.getName() + SymbolTableConstants.SCOPE_SUFFIX;
   }
@@ -87,9 +99,9 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getSymbolTypeName(ASTCDType clazz) {
     //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
-    if(clazz.getModifierOpt().isPresent()){
+    if (clazz.getModifierOpt().isPresent()) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifierOpt().get());
-      if(symbolTypeValue.isPresent()){
+      if (symbolTypeValue.isPresent()) {
         return symbolTypeValue.get();
       }
     }
@@ -102,12 +114,12 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getReferencedSymbolTypeName(ASTCDAttribute attribute) {
     String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
-            MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
+        MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
 
     if (!getQualifier(referencedSymbol).isEmpty() && !referencedSymbol.contains(SYMBOL_TABLE_PACKGE)) {
       referencedSymbol = SymbolTableGeneratorHelper
-              .getQualifiedSymbolType(getQualifier(referencedSymbol)
-                      .toLowerCase(), Names.getSimpleName(referencedSymbol));
+          .getQualifiedSymbolType(getQualifier(referencedSymbol)
+              .toLowerCase(), Names.getSimpleName(referencedSymbol));
     }
     return referencedSymbol;
   }
@@ -141,7 +153,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (!type.getCDTypeSymbolOpt().isPresent()) {
       return Optional.empty();
     }
-    for (CDTypeSymbolReference superType: type.getCDTypeSymbol().getCdInterfaces()) {
+    for (CDTypeSymbolReference superType : type.getCDTypeSymbol().getCdInterfaces()) {
       if (superType.existsReferencedSymbol() && superType.getReferencedSymbol().getAstNode().isPresent()) {
         Optional<ASTCDType> result = getTypeWithSymbolInfo(superType.getReferencedSymbol().getAstNode().get());
         if (result.isPresent()) {
@@ -159,7 +171,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (!type.getCDTypeSymbolOpt().isPresent()) {
       return Optional.empty();
     }
-    for (CDTypeSymbolReference superType: type.getCDTypeSymbol().getCdInterfaces()) {
+    for (CDTypeSymbolReference superType : type.getCDTypeSymbol().getCdInterfaces()) {
       if (superType.existsReferencedSymbol() && superType.getReferencedSymbol().getAstNode().isPresent()) {
         Optional<ASTCDType> result = getTypeWithScopeInfo(superType.getReferencedSymbol().getAstNode().get());
         if (result.isPresent()) {

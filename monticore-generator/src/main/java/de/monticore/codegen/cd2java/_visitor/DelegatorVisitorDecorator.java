@@ -43,7 +43,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
     // change class names to qualified name
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithPackage(input);
     // get visitor names of current node
-    String delegatorVisitorSimpleName = visitorService.geDelegatorVisitorSimpleTypeName();
+    String delegatorVisitorSimpleName = visitorService.getDelegatorVisitorSimpleTypeName();
     ASTMCQualifiedType visitorType = visitorService.getVisitorReferenceType();
     String simpleVisitorName = visitorService.getVisitorSimpleTypeName();
 

@@ -13,9 +13,13 @@ public class SymbolTableConstants {
 
   public static final String SYMBOL_FULL_NAME = "de.monticore.symboltable.ISymbol";
 
+  public static final String SCOPE_FULL_NAME = "de.monticore.symboltable.IScope";
+
   public static final String ENCLOSING_SCOPE = "enclosingScope";
 
   public static final String INTERFACE_PREFIX = "I";
+
+  public static final String ARTIFACT_PREFIX = "Artifact";
 
   public static final String SCOPE_INTERFACE_FULL_NAME = "de.monticore.symboltable.IScope";
 
