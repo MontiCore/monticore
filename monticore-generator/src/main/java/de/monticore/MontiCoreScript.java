@@ -36,7 +36,10 @@ import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorat
 import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
 import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java._visitor.*;
+import de.monticore.codegen.cd2java._visitor.visitor_interface.ASTVisitorDecorator;
+import de.monticore.codegen.cd2java._visitor.visitor_interface.SymbolVisitorDecorator;
+import de.monticore.codegen.cd2java._visitor.visitor_interface.VisitorInterfaceDecorator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
@@ -421,6 +424,35 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
     GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
 
+  }
+
+  public ASTCDCompilationUnit decorateForVisitorPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+                                                        ASTCDCompilationUnit astClassDiagram, ModelPath modelPath, IterablePath handCodedPath) {
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
+    return decorateWithVisitor(preparedCD, glex, modelPath, handCodedPath);
+  }
+
+  private ASTCDCompilationUnit decorateWithVisitor(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, ModelPath modelPath,
+                                                   IterablePath handCodedPath) {
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    VisitorService visitorService = new VisitorService(cd);
+    VisitorInterfaceDecorator visitorInterfaceDecorator = new VisitorInterfaceDecorator(glex, visitorService);
+
+    ASTVisitorDecorator astVisitorDecorator = new ASTVisitorDecorator(glex, visitorInterfaceDecorator, visitorService);
+    SymbolVisitorDecorator symbolVisitorDecorator = new SymbolVisitorDecorator(glex, visitorInterfaceDecorator, visitorService, symbolTableService);
+    ScopeVisitorDecorator scopeVisitorDecorator = new ScopeVisitorDecorator(glex, visitorService, symbolTableService);
+    DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(glex, visitorService);
+    ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(glex, visitorService);
+    InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(glex, visitorService);
+
+    CDVisitorDecorator decorator = new CDVisitorDecorator(glex,
+        astVisitorDecorator, symbolVisitorDecorator, scopeVisitorDecorator,
+        delegatorVisitorDecorator, inheritanceVisitorDecorator, parentAwareVisitorDecorator);
+
+    ASTCDCompilationUnit visitorCompilationUnit = decorator.decorate(cd);
+
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(visitorCompilationUnit);
   }
 
   /**

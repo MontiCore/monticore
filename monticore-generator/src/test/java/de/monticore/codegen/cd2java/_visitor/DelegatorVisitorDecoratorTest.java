@@ -103,7 +103,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(30, visitorClass.sizeCDMethods());
+    assertEquals(34, visitorClass.sizeCDMethods());
   }
 
   @Test
