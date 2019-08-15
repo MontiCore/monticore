@@ -3,31 +3,26 @@ package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.*;
-import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
-import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
-import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
+import static de.monticore.typescalculator.TypesCalculatorHelper.unbox;
+
 public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor {
 
-  protected ExpressionsBasisScope scope;
+  protected IExpressionsBasisScope scope;
 
   protected LiteralTypeCalculator literalsVisitor;
 
-  protected ASTMCType result;
+  protected TypeExpression result;
 
-  protected Map<ASTNode, MCTypeSymbol> types;
+  protected Map<ASTNode, TypeExpression> types;
 
   private ExpressionsBasisVisitor realThis;
 
@@ -48,15 +43,13 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
 
   @Override
   public void endVisit(ASTLiteralExpression expr){
-    ASTMCType result = null;
+    TypeExpression result = null;
     if(types.containsKey(expr.getLiteral())){
-      result = types.get(expr.getLiteral()).getASTMCType();
+      result = types.get(expr.getLiteral());
     }
     if(result!=null) {
       this.result=result;
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
-      types.put(expr, sym);
+      types.put(expr, result);
     }else{
       Log.error("0xA0207 The resulting type cannot be calculated");
     }
@@ -65,11 +58,9 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
   @Override
   public void endVisit(ASTLiteral lit){
     if(!types.containsKey(lit)) {
-      ASTMCType result = literalsVisitor.calculateType(lit);
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
+      TypeExpression result = literalsVisitor.calculateType(lit);
       this.result=result;
-      types.put(lit,sym);
+      types.put(lit,result);
     }
   }
 
@@ -80,30 +71,25 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     Optional<EMethodSymbol> optMethod = scope.resolveEMethod(expr.getName());
     if(optVar.isPresent()){
       EVariableSymbol var = optVar.get();
-      this.result=var.getMCTypeSymbol().getASTMCType();
-      types.put(expr,var.getMCTypeSymbol());
+      this.result=var.getType();
+      types.put(expr,var.getType());
     }else if(optType.isPresent()) {
-      ASTMCType type = optType.get().getType();
-      this.result=type;
-      MCTypeSymbol sym = new MCTypeSymbol(type.getBaseName());
-      sym.setASTMCType(type);
-      types.put(expr,sym);
+      ETypeSymbol type = optType.get();
+      TypeExpression res =new TypeExpression();
+      res.setName(type.getName());
+      this.result = res;
+      types.put(expr,res);
     }else if(optMethod.isPresent()) {
       EMethodSymbol method = optMethod.get();
-      if(method.getReturnType().isPresentMCType()){
-        ASTMCType type=method.getReturnType().getMCType();
+      if(!method.getReturnType().getName().equals("void")){
+        TypeExpression type=method.getReturnType();
         this.result=type;
-        MCTypeSymbol sym = new MCTypeSymbol(type.getBaseName());
-        sym.setASTMCType(type);
-        types.put(expr,sym);
+        types.put(expr,type);
       }else{
-        List<String> name = new ArrayList<>();
-        name.add("void");
-        ASTMCType type = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
-        this.result=type;
-        MCTypeSymbol sym = new MCTypeSymbol(type.getBaseName());
-        sym.setASTMCType(type);
-        types.put(expr,sym);
+        TypeExpression res =new TypeExpression();
+        res.setName("void");
+        this.result=res;
+        types.put(expr,res);
       }
     }else{
       Log.info("package suspected","ExpressionBasisTypesCalculator");
@@ -114,95 +100,100 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
   public void endVisit(ASTQualifiedNameExpression expr) {
     String toResolve;
     if(types.containsKey(expr)) {
-      MCFullGenericTypesPrettyPrinter printer = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
-      toResolve = printer.prettyprint(types.get(expr).getASTMCType()) + expr.getName();
+      result=types.get(expr);
+      return;
     }else{
       ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
       toResolve = printer.prettyprint(expr);
     }
-      Optional<ETypeSymbol> typeSymbolopt = scope.resolveETypeDown(toResolve);//TODO: resolve statt resolveDown
-      Optional<EVariableSymbol> variableSymbolopt = scope.resolveEVariableDown(toResolve);//TODO: resolve statt resolveDown
-      Optional<EMethodSymbol> methodSymbolopt = scope.resolveEMethodDown(toResolve);
-      if(typeSymbolopt.isPresent()){
-        String fullName= typeSymbolopt.get().getFullName();
-        addToTypesMapQName(expr,fullName);
-      }else if(variableSymbolopt.isPresent()){
-        ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
-        String exprString = printer.prettyprint(expr);
-        String[] stringParts = exprString.split("\\.");
-        String beforeName="";
-        if(stringParts.length!=1){
-          for(int i=0;i<stringParts.length-1;i++){
-            beforeName+=stringParts[i]+".";
-          }
-          beforeName=beforeName.substring(0,beforeName.length()-1);
-          if(!scope.resolveETypeDown(beforeName).isPresent()&&scope.resolveEMethodDownMany(beforeName).isEmpty()){ //TODO: replace resolveDown with resolve
-            Log.info("package suspected","ExpressionsBasisTypesCalculator");
-          }else{
-            if(scope.resolveETypeDown(beforeName).isPresent()) {
-              Optional<ETypeSymbol> typeSymbol = scope.resolveETypeDown(beforeName); //TODO: replace resolveDown with resolve
-              if (!typeSymbol.get().getVariableSymbols().contains(variableSymbolopt.get())) {
-                Log.error("0xA208 the resulting type cannot be calculated");
+    Optional<ETypeSymbol> typeSymbolopt = scope.resolveEType(toResolve);
+    Optional<EVariableSymbol> variableSymbolopt = scope.resolveEVariable(toResolve);
+    Optional<EMethodSymbol> methodSymbolopt = scope.resolveEMethod(toResolve);
+    if(typeSymbolopt.isPresent()){
+      String fullName= typeSymbolopt.get().getFullName();
+      addToTypesMapQName(expr,fullName,typeSymbolopt.get().getSuperTypes());
+    }else if(variableSymbolopt.isPresent()){
+      ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
+      String exprString = printer.prettyprint(expr);
+      String[] stringParts = exprString.split("\\.");
+      String beforeName="";
+      if(stringParts.length!=1){
+        for(int i=0;i<stringParts.length-1;i++){
+          beforeName+=stringParts[i]+".";
+        }
+        beforeName=beforeName.substring(0,beforeName.length()-1);
+        if(!scope.resolveEType(beforeName).isPresent()&&scope.resolveEMethodMany(beforeName).isEmpty()){
+          Log.info("package suspected","ExpressionsBasisTypesCalculator");
+        }else{
+          if(scope.resolveEType(beforeName).isPresent()) {
+            Optional<ETypeSymbol> typeSymbol = scope.resolveEType(beforeName);
+            boolean test = false;
+            for(int i=0;i<typeSymbol.get().getVariableSymbols().size();i++){
+              if(!test&&typeSymbol.get().getVariableSymbols().get(i).getFullName().equals(variableSymbolopt.get().getFullName())){
+                test = true;
               }
-            }else{
-              boolean success = true;
-              Collection<EMethodSymbol> methodSymbols = scope.resolveEMethodDownMany(beforeName);
-              for(EMethodSymbol methodSymbol:methodSymbols){
-                if(methodSymbol.getReturnType().isPresentMCVoidType()){
-                  success = false;
-                }else{
-                  ASTMCType returnType = methodSymbol.getReturnType().getMCType();
-                  if(returnType.getNameList().size()==1){
-                    String[] primitives = new String[]{"int","double","char","float","long","short","byte","boolean"};
-                    for(String primitive: primitives){
-                      if(primitive.equals(returnType.getBaseName())){
-                        success=false;
-                      }
-                    }
-                  }else{
-                    if(!methodSymbol.geteVariableSymbols().contains(variableSymbolopt.get())){
-                      success=false;
+            }
+            if(!test){
+              Log.error("0xA208 the resulting type cannot be calculated");
+            }
+          }else{
+            boolean success = true;
+            Collection<EMethodSymbol> methodSymbols = scope.resolveEMethodMany(beforeName);
+            for(EMethodSymbol methodSymbol:methodSymbols){
+              if(methodSymbol.getReturnType().getName().equals("void")){
+                success = false;
+              }else{
+                TypeExpression returnType = methodSymbol.getReturnType();
+                String[] primitives = new String[]{"int","double","char","float","long","short","byte","boolean"};
+                for(String primitive: primitives){
+                  if(primitive.equals(returnType.getName())){
+                    success=false;
+                  }
+                  if(success) {
+                    if (!methodSymbol.getParameterList().contains(variableSymbolopt.get())) {
+                      success = false;
                     }
                   }
-                  if(!success){
-                    Log.error("0xA0208 the resulting type cannot be calculated");
-                  }
+                }
+                if(!success){
+                  Log.error("0xA0208 the resulting type cannot be calculated");
                 }
               }
             }
           }
         }
-
-        String fullName= variableSymbolopt.get().getFullName();
-        addToTypesMapQName(expr,fullName);
-      }else if(methodSymbolopt.isPresent()) {
-        String fullName = methodSymbolopt.get().getFullName();
-        addToTypesMapQName(expr,fullName);
-      }else{
-        Log.info("package suspected","ExpressionsBasisTypesCalculator");
       }
+      String fullName= variableSymbolopt.get().getType().getName();
+      addToTypesMapQName(expr,fullName,variableSymbolopt.get().getType().getSuperTypes());
+    }else if(methodSymbolopt.isPresent()) {
+      String fullName = methodSymbolopt.get().getReturnType().getName()
+          ;
+      addToTypesMapQName(expr,fullName,methodSymbolopt.get().getReturnType().getSuperTypes());
+    }else{
+      Log.info("package suspected","ExpressionsBasisTypesCalculator");
+    }
   }
 
-  private void addToTypesMapQName (ASTExpression expr, String fullName){
+  private void addToTypesMapQName (ASTExpression expr, String fullName, List<TypeExpression> superTypes){
     String[] parts = fullName.split("\\.");
     ArrayList<String> nameList = new ArrayList<>();
     Collections.addAll(nameList,parts);
-    ASTMCType result= MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameList).build()).build();
-    this.result=result;
-    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-    sym.setASTMCType(result);
-    types.put(expr,sym);
+    TypeExpression res = new TypeExpression();
+    res.setName(fullName);
+    res.setSuperTypes(superTypes);
+    this.result=res;
+    types.put(expr,unbox(res));
   }
 
-  public ASTMCType getResult() {
+  public TypeExpression getResult() {
     return result;
   }
 
-  protected ExpressionsBasisScope getScope() {
+  protected IExpressionsBasisScope getScope() {
     return scope;
   }
 
-  protected void setScope(ExpressionsBasisScope scope) {
+  public void setScope(IExpressionsBasisScope scope) {
     this.scope = scope;
   }
 
@@ -214,16 +205,16 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     this.literalsVisitor = literalsVisitor;
   }
 
-  protected Map<ASTNode, MCTypeSymbol> getTypes() {
+  protected Map<ASTNode, TypeExpression> getTypes() {
     return types;
   }
 
-  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+  public void setTypes(Map<ASTNode,TypeExpression> types){
     this.types=types;
   }
 
-  public ASTMCType calculateType(ASTExpression expr){
+  public TypeExpression calculateType(ASTExpression expr){
     expr.accept(realThis);
-    return types.get(expr).getASTMCType();
+    return types.get(expr);
   }
 }

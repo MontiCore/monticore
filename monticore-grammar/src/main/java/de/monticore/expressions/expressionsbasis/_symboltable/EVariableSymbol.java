@@ -1,21 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.expressionsbasis._symboltable;
 
-import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
+import de.monticore.typescalculator.TypeExpression;
 
 public class EVariableSymbol extends EVariableSymbolTOP {
 
-  private MCTypeSymbol type;
+  protected TypeExpression type;
 
   public EVariableSymbol(String name) {
     super(name);
   }
 
-  public MCTypeSymbol getMCTypeSymbol() {
+  public TypeExpression getType(){
     return type;
   }
 
-  public void setMCTypeSymbol(MCTypeSymbol type) {
-    this.type = type;
+  public void setType(TypeExpression type){
+    this.type=type;
   }
+
 }

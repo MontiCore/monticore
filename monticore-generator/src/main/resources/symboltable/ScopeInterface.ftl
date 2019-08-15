@@ -195,17 +195,6 @@ ${includeArgs("symboltable.ScopeRuleGetSet", scopeRule.get(), true)}
     return filteredSymbols;
   }
 
-  /**
-   * @deprecated use the method resolve${symbol}LocallyMany instead
-   *             this one will be deleted soon
-   */
-
-  @Deprecated
-  default Set<${symbolNames[symbol]}> resolve${symbol}ManyLocally(boolean foundSymbols, String name, AccessModifier modifier,
-          Predicate<${symbolNames[symbol]}> predicate) {
-    return resolve${symbol}LocallyMany(foundSymbols, name, modifier, predicate);
-  }
-
   default Optional<${symbolNames[symbol]}> filter${symbol}(String name, LinkedListMultimap<String, ${symbolNames[symbol]}> symbols) {
     final Set<${symbolNames[symbol]}> resolvedSymbols = new LinkedHashSet<>();
 

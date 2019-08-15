@@ -2,14 +2,7 @@
 package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
-import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
-
-import java.util.ArrayList;
-import java.util.List;
+import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 
 import static de.monticore.typescalculator.TypesCalculatorHelper.isIntegralType;
 import static de.monticore.typescalculator.TypesCalculatorHelper.unbox;
@@ -18,53 +11,58 @@ public class TypesCalculator {
 
   private static IExpressionAndLiteralsTypeCalculatorVisitor calc;
 
+  private static IExpressionsBasisScope scope;
+
   public static boolean isBoolean(ASTExpression expr){
-    return calc.calculateType(expr).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build());
+    TypeExpression exp = new TypeExpression();
+    exp.setName("boolean");
+    return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
 
   public static boolean isString(ASTExpression expr){
-    List<String> name = new ArrayList<>();
-    name.add("java");
-    name.add("lang");
-    name.add("String");
-    if(calc.calculateType(expr).deepEquals(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build())){
-      return true;
-    }
-    name.remove("java");
-    name.remove("lang");
-    if(calc.calculateType(expr).deepEquals(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build())){
+    TypeExpression exp = new TypeExpression();
+    exp.setName("String");
+    if(exp.deepEquals(unbox(calc.calculateType(expr)))){
       return true;
     }
     return false;
   }
 
-  public static boolean isInt(ASTExpression expr){
-    return unbox(calc.calculateType(expr)).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build());
+  public static boolean isInt(ASTExpression expr) {
+    TypeExpression exp = new TypeExpression();
+    exp.setName("int");
+    return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
 
   public static boolean isLong(ASTExpression expr){
-    return unbox(calc.calculateType(expr)).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build());
-  }
+    TypeExpression exp = new TypeExpression();
+    exp.setName("long");
+    return exp.deepEquals(unbox(calc.calculateType(expr)));  }
 
   public static boolean isChar(ASTExpression expr){
-    return unbox(calc.calculateType(expr)).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build());
-  }
+    TypeExpression exp = new TypeExpression();
+    exp.setName("char");
+    return exp.deepEquals(unbox(calc.calculateType(expr)));  }
 
   public static boolean isFloat(ASTExpression expr){
-    return unbox(calc.calculateType(expr)).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build());
-  }
+    TypeExpression exp = new TypeExpression();
+    exp.setName("float");
+    return exp.deepEquals(unbox(calc.calculateType(expr)));  }
 
   public static boolean isDouble(ASTExpression expr){
-    return unbox(calc.calculateType(expr)).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build());
-  }
+    TypeExpression exp = new TypeExpression();
+    exp.setName("double");
+    return exp.deepEquals(unbox(calc.calculateType(expr)));  }
 
   public static boolean isShort(ASTExpression expr){
-    return unbox(calc.calculateType(expr)).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.SHORT).build());
-  }
+    TypeExpression exp = new TypeExpression();
+    exp.setName("short");
+    return exp.deepEquals(unbox(calc.calculateType(expr)));  }
 
   public static boolean isByte(ASTExpression expr){
-    return unbox(calc.calculateType(expr)).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BYTE).build());
-  }
+    TypeExpression exp = new TypeExpression();
+    exp.setName("byte");
+    return exp.deepEquals(unbox(calc.calculateType(expr)));  }
 
   public static boolean isPrimitive(ASTExpression expr){
     return isBoolean(expr)||isInt(expr)||isLong(expr)||isChar(expr)||isDouble(expr)||isShort(expr)||isByte(expr)||isFloat(expr);
@@ -74,15 +72,12 @@ public class TypesCalculator {
     calc.calculateType(expr);
     String result = "";
     if(calc.getTypes().get(expr)!=null) {
-      for (String part : calc.getTypes().get(expr).getASTMCType().getNameList()) {
-        result += part + ".";
-      }
-      result = result.substring(0, result.length() - 1);
+      result = calc.getTypes().get(expr).getName();
     }
     return result;
   }
 
-  public static ASTMCType getType(ASTExpression expr){
+  public static TypeExpression getType(ASTExpression expr){
     return calc.calculateType(expr);
   }
 
@@ -94,16 +89,16 @@ public class TypesCalculator {
         if(isBoolean(left)&&isBoolean(right)){
           return true;
         }
-        if(isDouble(left)&&TypesCalculatorHelper.isNumericType(calc.getTypes().get(right).getASTMCType())){
+        if(isDouble(left)&&TypesCalculatorHelper.isNumericType(calc.getTypes().get(right))){
           return true;
         }
-        if(isFloat(left)&&(isIntegralType(calc.getTypes().get(right).getASTMCType())||isFloat(right))){
+        if(isFloat(left)&&(isIntegralType(calc.getTypes().get(right))||isFloat(right))){
           return true;
         }
-        if(isLong(left)&&isIntegralType(calc.getTypes().get(right).getASTMCType())){
+        if(isLong(left)&&isIntegralType(calc.getTypes().get(right))){
           return true;
         }
-        if(isInt(left)&&isIntegralType(calc.getTypes().get(right).getASTMCType())&&!isLong(right)){
+        if(isInt(left)&&isIntegralType(calc.getTypes().get(right))&&!isLong(right)){
           return true;
         }
         if(isChar(left)&&isChar(right)){
@@ -117,7 +112,7 @@ public class TypesCalculator {
         }
         return false;
       }else {
-        if(isSubtypeOf(right,left)||calc.getTypes().get(right).getASTMCType().deepEquals(calc.getTypes().get(left).getASTMCType())){
+        if(isSubtypeOf(right,left)||calc.getTypes().get(right).deepEquals(calc.getTypes().get(left))){
           return true;
         }
       }
@@ -128,16 +123,39 @@ public class TypesCalculator {
   public static boolean isSubtypeOf(ASTExpression subType, ASTExpression superType){
     calc.calculateType(subType);
     calc.calculateType(superType);
+
+    if(isPrimitive(subType)&&isPrimitive(superType)) {
+      if (isBoolean(superType) && isBoolean(subType)) {
+        return true;
+      }
+      if (isDouble(superType) && TypesCalculatorHelper.isNumericType(calc.getTypes().get(subType))&&!isDouble(subType)) {
+        return true;
+      }
+      if (isFloat(superType) && isIntegralType(calc.getTypes().get(subType))) {
+        return true;
+      }
+      if (isLong(superType) && isIntegralType(calc.getTypes().get(subType)) && !isLong(subType)) {
+        return true;
+      }
+      if (isInt(superType) && isIntegralType(calc.getTypes().get(subType)) && !isLong(subType) && !isInt(subType)) {
+        return true;
+      }
+      return false;
+    }
     return isSubtypeOf(calc.getTypes().get(subType),calc.getTypes().get(superType));
   }
 
-  public static boolean isSubtypeOf(MCTypeSymbol subType, MCTypeSymbol superType){
-    if(!subType.getSupertypes().isEmpty()&&subType.getSupertypes().contains(superType)){
-      return true;
+  public static boolean isSubtypeOf(TypeExpression subType, TypeExpression superType){
+    if(!subType.getSuperTypes().isEmpty()){
+      for(TypeExpression type: subType.getSuperTypes()){
+        if(type.deepEquals(superType)){
+          return true;
+        }
+      }
     }
     boolean subtype = false;
-    for(int i = 0;i<subType.getSupertypes().size();i++){
-      if(isSubtypeOf(subType.getSupertypes().get(i),superType)){
+    for(int i = 0;i<subType.getSuperTypes().size();i++){
+      if(isSubtypeOf(subType.getSuperTypes().get(i),superType)){
         subtype=true;
         break;
       }
@@ -145,40 +163,45 @@ public class TypesCalculator {
     return subtype;
   }
 
-  public static boolean isBoolean(ASTMCType type){
-    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build());
+  public static boolean isBoolean(TypeExpression type){
+    return unbox(type).getName().equals("boolean");
   }
 
-  public static boolean isInt(ASTMCType type){
-    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build());
+  public static boolean isInt(TypeExpression type){
+    return unbox(type).getName().equals("int");
   }
 
-  public static boolean isDouble(ASTMCType type){
-    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build());
+  public static boolean isDouble(TypeExpression type){
+    return unbox(type).getName().equals("double");
   }
 
-  public static boolean isFloat(ASTMCType type){
-    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build());
+  public static boolean isFloat(TypeExpression type){
+    return unbox(type).getName().equals("float");
   }
 
-  public static boolean isLong(ASTMCType type){
-    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build());
+  public static boolean isLong(TypeExpression type){
+    return unbox(type).getName().equals("long");
   }
 
-  public static boolean isChar(ASTMCType type){
-    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build());
+  public static boolean isChar(TypeExpression type){
+    return unbox(type).getName().equals("char");
   }
 
-  public static boolean isShort(ASTMCType type){
-    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.SHORT).build());
+  public static boolean isShort(TypeExpression type){
+    return unbox(type).getName().equals("short");
   }
 
-  public static boolean isByte(ASTMCType type){
-    return unbox(type).deepEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BYTE).build());
+  public static boolean isByte(TypeExpression type){
+    return unbox(type).getName().equals("byte");
   }
 
-  public static void setScope(ExpressionsBasisScope scope){
-    calc.setScope(scope);
+  public static boolean isVoid(TypeExpression type){
+    return type.getName().equals("void");
+  }
+
+  public static void setScope(IExpressionsBasisScope ascope){
+    scope=ascope;
+    calc.setScope(ascope);
   }
 
   public static void setExpressionAndLiteralsTypeCalculator(IExpressionAndLiteralsTypeCalculatorVisitor calc) {

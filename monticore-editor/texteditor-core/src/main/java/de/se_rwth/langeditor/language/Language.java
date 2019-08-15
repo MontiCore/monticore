@@ -1,25 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.se_rwth.langeditor.language;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.IScope;
+import de.se_rwth.langeditor.modelstates.ModelState;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.templates.TemplateProposal;
+
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-
-import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.IScope;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.templates.TemplateProposal;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-
-import de.monticore.ast.ASTNode;
-import de.se_rwth.langeditor.modelstates.ModelState;
 
 public interface Language {
   

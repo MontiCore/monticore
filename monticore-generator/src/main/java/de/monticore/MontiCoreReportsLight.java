@@ -19,25 +19,9 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
 
   private String outputDirectory;
 
-  private String reportDirectory;
-
   private IterablePath handwrittenPath;
 
   private IterablePath templatePath;
-
-  /**
-   * Constructor for de.monticore.MontiCoreReports
-   */
-  @Deprecated
-  protected MontiCoreReportsLight(
-      String reportDirectory,
-      IterablePath handwrittenPath,
-      IterablePath templatePath) {
-    this.outputDirectory = reportDirectory;
-    this.reportDirectory = reportDirectory;
-    this.handwrittenPath = handwrittenPath;
-    this.templatePath = templatePath;
-  }
 
   /**
    * Constructor for de.monticore.MontiCoreReports
@@ -48,7 +32,6 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
           IterablePath handwrittenPath,
           IterablePath templatePath) {
     this.outputDirectory = outputDirectory;
-    this.reportDirectory = reportDiretory;
     this.handwrittenPath = handwrittenPath;
     this.templatePath = templatePath;
   }

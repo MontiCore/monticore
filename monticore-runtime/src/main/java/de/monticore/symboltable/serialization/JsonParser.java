@@ -15,34 +15,40 @@ import java.io.StringReader;
  */
 public class JsonParser {
   
+  /**
+   * 
+   * Parses a given String encoded in JSON to a {@link JsonElement}. This method should be used if 
+   * the Json type (i.e., Object, Array,...) of the encoded JSON is unclear.
+   * @param s
+   * @return
+   */
   public static JsonElement parseJson(String s) {
     JsonReader reader = new JsonReader(new StringReader(s));
     return parseJson(reader);
   }
   
+  /**
+   * 
+   * Parses a given String encoded in JSON to a {@link JsonObject}. Parsing of the String fails with an error
+   * if the encoded String cannot be parsed into a Json object.
+   * @param s
+   * @return
+   */
   public static JsonObject parseJsonObject(String s) {
     JsonReader reader = new JsonReader(new StringReader(s));
     return parseJsonObject(reader);
   }
   
+  /**
+   * 
+   * Parses a given String encoded in JSON to a {@link JsonArray}. Parsing of the String fails with an error
+   * if the encoded String cannot be parsed into a Json array.
+   * @param s
+   * @return
+   */
   public static JsonArray parseJsonArray(String s) {
     JsonReader reader = new JsonReader(new StringReader(s));
     return parseJsonArray(reader);
-  }
-  
-  @Deprecated
-  public static JsonElement deserializeJson(String s) {
-    return parseJson(s);
-  }
-  
-  @Deprecated
-  public static JsonObject deserializeJsonObject(String s) {
-    return parseJsonObject(s);
-  }
-  
-  @Deprecated
-  public static JsonArray deserializeJsonArray(String s) {
-    return parseJsonArray(s);
   }
   
   protected static JsonElement parseJson(JsonReader reader) {

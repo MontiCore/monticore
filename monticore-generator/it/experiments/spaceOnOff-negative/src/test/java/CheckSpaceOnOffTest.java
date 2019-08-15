@@ -1,24 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.*;
-
-import org.antlr.v4.runtime.RecognitionException;
-import org.junit.*;
 
 import de.monticore.spaceonoff._ast.*;
-import de.monticore.spaceonoff._cocos.*;
-import de.monticore.spaceonoff._symboltable.*;
-import de.monticore.spaceonoff._parser.*;
+import de.monticore.spaceonoff._parser.SpaceOnOffParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import de.monticore.ModelingLanguage;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.*;
-import de.monticore.ast.*;
-import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.*;
+import java.io.IOException;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 
 public class CheckSpaceOnOffTest {
