@@ -81,6 +81,16 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testInterfaceCount() {
+    assertEquals(1, visitorClass.sizeInterfaces());
+  }
+
+  @Test
+  public void testInterface() {
+    assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor", visitorClass.getInterface(0));
+  }
+
+  @Test
   public void testParentsAttribute() {
     ASTCDAttribute parents = getAttributeBy("parents", visitorClass);
     assertTrue(parents.isPresentModifier());

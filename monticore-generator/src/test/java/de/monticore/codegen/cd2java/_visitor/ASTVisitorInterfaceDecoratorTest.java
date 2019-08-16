@@ -92,6 +92,16 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testInterfaceCount() {
+    assertEquals(1, visitorInterface.sizeInterfaces());
+  }
+
+  @Test
+  public void testInterface() {
+    assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsVisitor", visitorInterface.getInterface(0));
+  }
+
+  @Test
   public void testGetRealThis() {
     ASTCDMethod method = getMethodBy("getRealThis", visitorInterface);
     assertDeepEquals(PUBLIC, method.getModifier());

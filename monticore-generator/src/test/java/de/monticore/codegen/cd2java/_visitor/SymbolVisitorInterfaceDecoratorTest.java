@@ -78,6 +78,10 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(9, visitorInterface.sizeCDMethods());
   }
 
+  @Test
+  public void testInterfaceEmpty() {
+    assertTrue(visitorInterface.isEmptyInterfaces());
+  }
 
   @Test
   public void testGetRealThis() {

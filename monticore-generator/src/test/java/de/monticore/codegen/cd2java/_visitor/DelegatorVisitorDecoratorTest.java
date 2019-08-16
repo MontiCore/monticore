@@ -78,6 +78,16 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testInterfaceCount() {
+    assertEquals(1, visitorClass.sizeInterfaces());
+  }
+
+  @Test
+  public void testInterface() {
+    assertDeepEquals("AutomatonInheritanceVisitor", visitorClass.getInterface(0));
+  }
+
+  @Test
   public void testRealThisAttribute() {
     ASTCDAttribute automatonVisitor = getAttributeBy("realThis", visitorClass);
     assertTrue(automatonVisitor.isPresentModifier());

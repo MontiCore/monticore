@@ -80,6 +80,17 @@ public class InheritanceVisitorDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testInterfaceCount() {
+    assertEquals(2, visitorInterface.sizeInterfaces());
+  }
+
+  @Test
+  public void testInterface() {
+    assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor", visitorInterface.getInterface(0));
+    assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsVisitor", visitorInterface.getInterface(1));
+  }
+
+  @Test
   public void tesHandleASTAutomaton() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorInterface);
     ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_AUTOMATON);

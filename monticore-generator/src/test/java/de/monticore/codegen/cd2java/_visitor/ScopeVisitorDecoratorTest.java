@@ -80,6 +80,16 @@ public class ScopeVisitorDecoratorTest extends DecoratorTestCase {
     assertEquals(15, visitorInterface.sizeCDMethods());
   }
 
+  @Test
+  public void testInterfaceCount() {
+    assertEquals(2, visitorInterface.sizeInterfaces());
+  }
+
+  @Test
+  public void testInterface() {
+    assertDeepEquals("SymbolTestSymbolVisitor", visitorInterface.getInterface(0));
+    assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsScopeVisitor", visitorInterface.getInterface(1));
+  }
 
   @Test
   public void testGetRealThis() {

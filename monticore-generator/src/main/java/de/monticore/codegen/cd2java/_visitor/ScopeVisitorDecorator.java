@@ -43,6 +43,8 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
     ASTCDCompilationUnit compilationUnit = input.deepClone();
 
     String scopeVisitorName = visitorService.getScopeVisitorSimpleTypeName();
+    String symbolVisitorName = visitorService.getSymbolVisitorSimpleTypeName();
+
     ASTMCQualifiedType scopeVisitorType = getCDTypeFacade().createQualifiedType(scopeVisitorName);
 
     String scopeTypeName = symbolTableService.getScopeTypeName();
@@ -63,7 +65,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
         .addCDMethod(addGetRealThisMethods(scopeVisitorType))
         .addCDMethod(addSetRealThisMethods(scopeVisitorType))
         .addAllCDMethods(createIScopeVisitorMethods())
-        .addAllCDMethods(createISymbolVisitorMethods(scopeVisitorName))
+        .addAllCDMethods(createISymbolVisitorMethods(symbolVisitorName))
         .addAllCDMethods(createScopeVisitorMethods(getSuperSymbols()))
         .build();
   }

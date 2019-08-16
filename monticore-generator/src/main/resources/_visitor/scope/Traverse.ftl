@@ -6,12 +6,12 @@ ${tc.signature("superSymbols", "ownSymbol")}
     <#if superSymbol?contains(".")>
       <#assign simpleName= superSymbol?substring(superSymbol?last_index_of(".")+1)>
     </#if>
-  for (${superSymbol} s : scope.getLocal${simpleName}s()) {
+  for (${superSymbol} s : node.getLocal${simpleName}s()) {
     s.accept(getRealThis());
   }
 </#list>
 
   // traverse sub-scopes
-  for (${ownSymbol} s : scope.getSubScopes()) {
+  for (${ownSymbol} s : node.getSubScopes()) {
     s.accept(getRealThis());
   }
