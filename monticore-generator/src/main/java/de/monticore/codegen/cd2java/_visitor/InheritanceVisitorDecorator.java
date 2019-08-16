@@ -35,7 +35,6 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
         .addInterface(visitorService.getVisitorReferenceType())
         .addAllInterfaces(visitorService.getSuperVisitors())
         .addAllCDMethods(getHandleMethods(compilationUnit.getCDDefinition(), languageInterfaceName))
-        .addCDMethod(addLanguageInterfaceHandleMethod(languageInterfaceName))
         .build();
   }
 

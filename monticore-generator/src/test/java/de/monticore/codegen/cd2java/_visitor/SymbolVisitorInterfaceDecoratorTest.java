@@ -8,8 +8,6 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._visitor.visitor_interface.SymbolVisitorDecorator;
-import de.monticore.codegen.cd2java._visitor.visitor_interface.VisitorInterfaceDecorator;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
@@ -40,8 +38,6 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
-  private static final String VISITOR_FULL_NAME = "de.monticore.codegen.ast.symboltest._visitor.SymbolTestVisitor";
-
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.symboltest._symboltable.AutomatonSymbol";
 
   private static final String I_SYMBOL = "de.monticore.symboltable.ISymbol";
@@ -58,7 +54,6 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     SymbolVisitorDecorator decorator = new SymbolVisitorDecorator(this.glex,
-        new VisitorInterfaceDecorator(this.glex, new VisitorService(decoratedCompilationUnit)),
         new VisitorService(decoratedCompilationUnit), new SymbolTableService(decoratedCompilationUnit));
     this.visitorInterface = decorator.decorate(decoratedCompilationUnit);
   }
@@ -80,7 +75,7 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(8, visitorInterface.sizeCDMethods());
+    assertEquals(9, visitorInterface.sizeCDMethods());
   }
 
 
@@ -88,7 +83,7 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
   public void testGetRealThis() {
     ASTCDMethod method = getMethodBy("getRealThis", visitorInterface);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(VISITOR_FULL_NAME);
+    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition("SymbolTestSymbolVisitor");
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(astType, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
@@ -99,7 +94,7 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setRealThis", visitorInterface);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(VISITOR_FULL_NAME);
+    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition("SymbolTestSymbolVisitor");
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("realThis", method.getCDParameter(0).getName());

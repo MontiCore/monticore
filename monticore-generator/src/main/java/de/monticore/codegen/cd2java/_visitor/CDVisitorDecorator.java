@@ -4,7 +4,6 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._visitor.visitor_interface.ASTVisitorDecorator;
-import de.monticore.codegen.cd2java._visitor.visitor_interface.SymbolVisitorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.ArrayList;

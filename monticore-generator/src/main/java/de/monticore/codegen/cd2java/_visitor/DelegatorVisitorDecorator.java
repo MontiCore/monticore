@@ -75,7 +75,6 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDAttributes(getVisitorAttributes(visitorFullNameList))
         .addAllCDMethods(addVisitorMethods(visitorFullNameList))
         .addAllCDMethods(createVisitorDelegatorMethods(definitionList, simpleVisitorName))
-        .addAllCDMethods(createVisitorDelegatorInterfaceMethod(getCDTypeFacade().createQualifiedType(visitorService.getLanguageInterfaceName()), simpleVisitorName))
         .addAllCDMethods(addASTNodeVisitorMethods(visitorSimpleNameList))
         .build();
   }

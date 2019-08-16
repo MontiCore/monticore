@@ -8,7 +8,6 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.visitor_interface.ASTVisitorDecorator;
-import de.monticore.codegen.cd2java._visitor.visitor_interface.SymbolVisitorDecorator;
 import de.monticore.codegen.cd2java._visitor.visitor_interface.VisitorInterfaceDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -49,7 +48,6 @@ public class CDVisitorDecoratorTest extends DecoratorTestCase {
         new VisitorInterfaceDecorator(this.glex, new VisitorService(decoratedCompilationUnit)),
         new VisitorService(decoratedCompilationUnit));
     SymbolVisitorDecorator symbolVisitorDecorator = new SymbolVisitorDecorator(this.glex,
-        new VisitorInterfaceDecorator(this.glex, new VisitorService(decoratedCompilationUnit)),
         new VisitorService(decoratedCompilationUnit), new SymbolTableService(decoratedCompilationUnit));
     ScopeVisitorDecorator scopeVisitorDecorator = new ScopeVisitorDecorator(this.glex,
         new VisitorService(decoratedCompilationUnit), new SymbolTableService(decoratedCompilationUnit));

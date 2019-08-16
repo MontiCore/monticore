@@ -68,23 +68,24 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     return getParentsMethod;
   }
 
-  protected List<ASTCDMethod> getTraversMethod(ASTCDDefinition astcdDefinition){
-    List<ASTCDMethod> handleMethods = new ArrayList<>();
-    handleMethods.addAll(astcdDefinition.getCDClassList()
+  protected List<ASTCDMethod> getTraversMethod(ASTCDDefinition astcdDefinition) {
+    List<ASTCDMethod> traverseMethods = new ArrayList<>();
+    traverseMethods.addAll(astcdDefinition.getCDClassList()
         .stream()
         .map(c -> visitorService.getVisitorMethod(TRAVERSE, getCDTypeFacade().createQualifiedType(c.getName())))
         .collect(Collectors.toList()));
 
-    handleMethods.addAll(astcdDefinition.getCDInterfaceList()
+    traverseMethods.addAll(astcdDefinition.getCDInterfaceList()
         .stream()
+        .filter(c -> !visitorService.getLanguageInterfaceName().equals(c.getName()))
         .map(c -> visitorService.getVisitorMethod(TRAVERSE, getCDTypeFacade().createQualifiedType(c.getName())))
         .collect(Collectors.toList()));
 
     // add template
     String visitorSimpleTypeName = visitorService.getVisitorSimpleTypeName();
-    handleMethods.forEach(m -> replaceTemplate(EMPTY_BODY, m,
+    traverseMethods.forEach(m -> replaceTemplate(EMPTY_BODY, m,
         new TemplateHookPoint("_visitor.parentaware.Travers", visitorSimpleTypeName)));
 
-    return handleMethods;
+    return traverseMethods;
   }
 }

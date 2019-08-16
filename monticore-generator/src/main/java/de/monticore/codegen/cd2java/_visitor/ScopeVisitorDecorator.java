@@ -104,7 +104,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
   protected void addTemplatesforISymbol(List<ASTCDMethod> methodList, String scopeVisitorName) {
     for (ASTCDMethod astcdMethod : methodList) {
-      replaceTemplate(EMPTY_BODY, astcdMethod, new StringHookPoint(scopeVisitorName + ".super.handle(symbol);"));
+      replaceTemplate(EMPTY_BODY, astcdMethod, new StringHookPoint(scopeVisitorName + ".super.handle(node);"));
     }
   }
 
