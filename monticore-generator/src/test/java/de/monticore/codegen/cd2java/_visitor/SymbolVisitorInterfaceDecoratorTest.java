@@ -70,7 +70,7 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testVisitorName() {
-    assertEquals("SymbolTestVisitor", visitorInterface.getName());
+    assertEquals("SymbolTestSymbolVisitor", visitorInterface.getName());
   }
 
   @Test

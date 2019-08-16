@@ -286,9 +286,13 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public String getASTPackage() {
-    if (getBasePackage(getCDSymbol()).isEmpty()) {
-      return String.join(".", getCDSymbol().getName(), AST_PACKAGE).toLowerCase();
+    return getASTPackage(getCDSymbol());
+  }
+
+  public String getASTPackage(CDDefinitionSymbol cdSymbol) {
+    if (getBasePackage(cdSymbol).isEmpty()) {
+      return String.join(".", cdSymbol.getName(), AST_PACKAGE).toLowerCase();
     }
-    return String.join(".", getBasePackage(getCDSymbol()), getCDSymbol().getName(), AST_PACKAGE).toLowerCase();
+    return String.join(".", getBasePackage(cdSymbol), cdSymbol.getName(), AST_PACKAGE).toLowerCase();
   }
 }

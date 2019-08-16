@@ -65,12 +65,14 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     // to not generate implementation of traverse method
     visitorInterfaceDecorator.disableTemplates();
     ASTCDInterface astcdInterface = visitorInterfaceDecorator.decorate(compilationUnit);
+    astcdInterface.setName(visitorService.getSymbolVisitorSimpleTypeName());
 
     // set handle template
     astcdInterface.getCDMethodList().stream().filter(m -> HANDLE.equals(m.getName())).forEach(m ->
         this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_visitor.Handle", true)));
+    // set get and set realThis templates
     astcdInterface.getCDMethodList().stream().filter(m -> GET_REAL_THIS.equals(m.getName())).forEach(m ->
-        new StringHookPoint("return this;"));
+        this.replaceTemplate(EMPTY_BODY, m, new StringHookPoint("return this;")));
     astcdInterface.getCDMethodList().stream().filter(m -> SET_REAL_THIS.equals(m.getName())).forEach(m ->
         this.replaceTemplate(EMPTY_BODY, m, new StringHookPoint(
             "    throw new UnsupportedOperationException(\"0xA7011x709 The setter for realThis is " +

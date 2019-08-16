@@ -71,11 +71,11 @@ public class VisitorInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDMethod addSetRealThisMethods(ASTMCType visitorType) {
     ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, "realThis");
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
-    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(
+    ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
+    this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint(
         "    throw new UnsupportedOperationException(\"0xA7011x709 The setter for realThis is " +
             "not implemented. You might want to implement a wrapper class to allow setting/getting realThis.\");\n"));
-    return getRealThisMethod;
+    return setRealThis;
   }
 
   protected List<ASTCDMethod> addClassVisitorMethods(List<ASTCDClass> astcdClassList) {

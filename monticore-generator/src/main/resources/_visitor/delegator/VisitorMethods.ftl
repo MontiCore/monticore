@@ -2,6 +2,6 @@
 ${tc.signature("simpleVisitorNameList", "methodName")}
 <#list simpleVisitorNameList as simpleVisitorName>
   if (getRealThis().get${simpleVisitorName}().isPresent()) {
-    getRealThis().getget${simpleVisitorName}().get().get${methodName}(node);
+    getRealThis().get${simpleVisitorName}().get().${methodName}(node);
   }
 </#list>

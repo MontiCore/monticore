@@ -5,6 +5,7 @@
 // Instead we double-dispatch the call, to call the correctly typed
 // traverse(...) method with the elements concrete type.
 ${tc.signature("cdClass")}
+<#assign genHelper = glex.getGlobalVar("astHelper")>
 
 <#list cdClass.getCDAttributeList() as attr>
   <#if genHelper.isSimpleAstNode(attr) || genHelper.isOptionalAstNode(attr) >
@@ -19,8 +20,8 @@ ${tc.signature("cdClass")}
       }
     </#if>
   <#elseif genHelper.isListAstNode(attr)>
-    <#assign attrGetter = "get"+ attr.getName()?cap_first + "List">
-    <#assign astChildTypeName = attr.printType()>
+    <#assign attrGetter = "get"+ attr.getName()?remove_ending("s")?cap_first + "List">
+    <#assign astChildTypeName = genHelper.getAstClassNameForASTLists(attr)>
     {
       Iterator<${astChildTypeName}> iter_${attr.getName()} = node.${attrGetter}().iterator();
       while (iter_${attr.getName()}.hasNext()) {

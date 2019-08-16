@@ -15,8 +15,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_SUFFIX;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_SUFFIX;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
@@ -61,11 +60,11 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
 
   public String getScopeVisitorSimpleTypeName() {
-    return getScopeVisitorSimpleTypeName(getCDSymbol());
+    return getCDName() + SCOPE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }
 
-  public String getScopeVisitorSimpleTypeName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + SCOPE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
+  public String getScopeVisitorFullTypeName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + SYMBOL_TABLE_PACKGE + "." + cdSymbol.getName() + SCOPE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }
 
   public String getSymbolVisitorSimpleTypeName() {
@@ -117,19 +116,25 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
 
   public ASTCDCompilationUnit calculateCDTypeNamesWithPackage(ASTCDCompilationUnit input) {
+    // transform own cd
     ASTCDCompilationUnit compilationUnit = input.deepClone();
-    compilationUnit.setCDDefinition(calculateCDTypeNamesWithPackage(input.getCDDefinition()));
+    //set classname to correct Name with path
+    String astPath = getASTPackage();
+    compilationUnit.getCDDefinition().getCDClassList().forEach(c -> c.setName(astPath + "." + c.getName()));
+    compilationUnit.getCDDefinition().getCDInterfaceList().forEach(i -> i.setName(astPath + "." + i.getName()));
+    compilationUnit.getCDDefinition().getCDEnumList().forEach(e -> e.setName(astPath + "." + e.getName()));
     return compilationUnit;
   }
 
-  public ASTCDDefinition calculateCDTypeNamesWithPackage(ASTCDDefinition input) {
-    ASTCDDefinition compilationUnit = input.deepClone();
+  public ASTCDDefinition calculateCDTypeNamesWithPackage(CDDefinitionSymbol input) {
+    // transform inherited cd
+    ASTCDDefinition astcdDefinition = input.getAstNode().get().deepClone();
     //set classname to correct Name with path
-    String astPath = getASTPackage();
-    compilationUnit.getCDClassList().forEach(c -> c.setName(astPath + "." + c.getName()));
-    compilationUnit.getCDInterfaceList().forEach(i -> i.setName(astPath + "." + i.getName()));
-    compilationUnit.getCDEnumList().forEach(e -> e.setName(astPath + "." + e.getName()));
-    return compilationUnit;
+    String astPath = getASTPackage(input);
+    astcdDefinition.getCDClassList().forEach(c -> c.setName(astPath + "." + c.getName()));
+    astcdDefinition.getCDInterfaceList().forEach(i -> i.setName(astPath + "." + i.getName()));
+    astcdDefinition.getCDEnumList().forEach(e -> e.setName(astPath + "." + e.getName()));
+    return astcdDefinition;
   }
 
   public List<ASTMCQualifiedType> getSuperVisitors() {

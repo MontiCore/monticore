@@ -2,7 +2,6 @@ package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbolTOP;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -18,7 +17,6 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
@@ -63,9 +61,6 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
     // create list of cdDefinitions from superclass and own class
     List<ASTCDDefinition> definitionList = superCDsTransitive
         .stream()
-        .map(CDDefinitionSymbolTOP::getAstNode)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
         .map(visitorService::calculateCDTypeNamesWithPackage)
         .collect(Collectors.toList());
     definitionList.add(compilationUnit.getCDDefinition());

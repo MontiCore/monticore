@@ -78,9 +78,8 @@ for (astGrammar in getParsedGrammars()) {
   
   // M9 Generate ast classes, visitor and context condition
   decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, modelPath, handcodedPath)
-  generateFromCD(glex, decoratedVisitorCD, decoratedASTClassDiagramm, out, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedVisitorCD, out, handcodedPath)
 
-  generateVisitors(glex, cdScope, astClassDiagram, out, handcodedPath)
   generateCocos(glex, cdScope, astClassDiagram, out)
   generateODs(glex, cdScope, mcScope, astClassDiagram, out)
 
