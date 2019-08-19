@@ -80,7 +80,6 @@ it-experiments-gradle:
   script:
     - cd monticore-generator/it/experiments
     - "./gradlew build"
-  allow_failure: true
   only:
     - dev
 
