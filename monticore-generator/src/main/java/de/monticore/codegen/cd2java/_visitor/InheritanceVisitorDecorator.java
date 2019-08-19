@@ -8,6 +8,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
@@ -33,30 +34,46 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
         .setName(visitorService.getInheritanceVisitorSimpleTypeName())
         .setModifier(PUBLIC.build())
         .addInterface(visitorService.getVisitorReferenceType())
-        .addAllInterfaces(visitorService.getSuperVisitors())
+        .addAllInterfaces(visitorService.getSuperInheritanceVisitors())
         .addAllCDMethods(getHandleMethods(compilationUnit.getCDDefinition(), languageInterfaceName))
         .build();
   }
 
   protected List<ASTCDMethod> getHandleMethods(ASTCDDefinition astcdDefinition, String languageInterfaceName) {
+    String visitorSimpleTypeName = visitorService.getVisitorSimpleTypeName();
+
     List<ASTCDMethod> handleMethods = new ArrayList<>();
     handleMethods.addAll(astcdDefinition.getCDClassList()
         .stream()
-        .map(c -> visitorService.getVisitorMethod(HANDLE, getCDTypeFacade().createQualifiedType(c.getName())))
+        .map(c -> getHandleMethod(c, languageInterfaceName, visitorSimpleTypeName))
         .collect(Collectors.toList()));
 
     handleMethods.addAll(astcdDefinition.getCDInterfaceList()
         .stream()
-        .map(c -> visitorService.getVisitorMethod(HANDLE, getCDTypeFacade().createQualifiedType(c.getName())))
+        .map(c -> getHandleMethod(c, languageInterfaceName, visitorSimpleTypeName))
         .collect(Collectors.toList()));
 
-    // add template
-    String visitorSimpleTypeName = visitorService.getVisitorSimpleTypeName();
-    handleMethods.forEach(m -> replaceTemplate(EMPTY_BODY, m,
-        new TemplateHookPoint("_visitor.inheritance.Handle",
-            languageInterfaceName, visitorSimpleTypeName)));
-
     return handleMethods;
+  }
+
+  protected ASTCDMethod getHandleMethod(ASTCDClass astcdClass, String languageInterfaceName, String visitorSimpleTypeName) {
+    ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getCDTypeFacade().createQualifiedType(astcdClass.getName()));
+    Optional<String> superType = Optional.empty();
+    if (astcdClass.isPresentSuperclass() && !astcdClass.printSuperClass().isEmpty()) {
+      superType = Optional.ofNullable(astcdClass.printSuperClass());
+    }
+    replaceTemplate(EMPTY_BODY, handleMethod,
+        new TemplateHookPoint("_visitor.inheritance.Handle",
+            languageInterfaceName, visitorSimpleTypeName, superType));
+    return handleMethod;
+  }
+
+  protected ASTCDMethod getHandleMethod(ASTCDInterface astcdInterface, String languageInterfaceName, String visitorSimpleTypeName) {
+    ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getCDTypeFacade().createQualifiedType(astcdInterface.getName()));
+    replaceTemplate(EMPTY_BODY, handleMethod,
+        new TemplateHookPoint("_visitor.inheritance.Handle",
+            languageInterfaceName, visitorSimpleTypeName, Optional.empty()));
+    return handleMethod;
   }
 
   protected ASTCDMethod addLanguageInterfaceHandleMethod(String languageInterfaceName) {
@@ -65,7 +82,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
 
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(VisitorConstants.HANDLE, astNodeType);
     this.replaceTemplate(EMPTY_BODY, handleMethod,
-        new TemplateHookPoint("_visitor.inheritance.Handle", languageInterfaceName, visitorSimpleTypeName));
+        new TemplateHookPoint("_visitor.inheritance.Handle", languageInterfaceName, visitorSimpleTypeName, Optional.empty()));
 
     return handleMethod;
   }

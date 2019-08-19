@@ -74,7 +74,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMethod(addSetRealThisMethods(visitorType, delegatorVisitorSimpleName, simpleVisitorName))
         .addAllCDAttributes(getVisitorAttributes(visitorFullNameList))
         .addAllCDMethods(addVisitorMethods(visitorFullNameList))
-        .addAllCDMethods(createVisitorDelegatorMethods(definitionList, simpleVisitorName))
+        .addAllCDMethods(createVisitorDelegatorMethods(definitionList))
         .addAllCDMethods(addASTNodeVisitorMethods(visitorSimpleNameList))
         .build();
   }
@@ -154,9 +154,10 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
     return methodList;
   }
 
-  protected List<ASTCDMethod> createVisitorDelegatorMethods(List<ASTCDDefinition> definitionList, String simpleVisitorName) {
+  protected List<ASTCDMethod> createVisitorDelegatorMethods(List<ASTCDDefinition> definitionList) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDDefinition astcdDefinition : definitionList) {
+      String simpleVisitorName = visitorService.getVisitorSimpleTypeName(astcdDefinition);
       visitorMethods.addAll(createVisitorDelegatorClassMethods(astcdDefinition.getCDClassList(), simpleVisitorName));
       visitorMethods.addAll(createVisitorDelegatorInterfaceMethods(astcdDefinition.getCDInterfaceList(), simpleVisitorName));
     }

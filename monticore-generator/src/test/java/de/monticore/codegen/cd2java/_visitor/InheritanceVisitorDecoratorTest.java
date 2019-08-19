@@ -87,7 +87,7 @@ public class InheritanceVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testInterface() {
     assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor", visitorInterface.getInterface(0));
-    assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsVisitor", visitorInterface.getInterface(1));
+    assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsInheritanceVisitor", visitorInterface.getInterface(1));
   }
 
   @Test

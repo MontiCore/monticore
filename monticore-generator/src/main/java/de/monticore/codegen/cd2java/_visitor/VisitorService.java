@@ -88,8 +88,16 @@ public class VisitorService extends AbstractService<VisitorService> {
     return cdSymbol.getName() + VisitorConstants.VISITOR_SUFFIX;
   }
 
+  public String getVisitorSimpleTypeName(ASTCDDefinition astcdDefinition) {
+    return astcdDefinition.getName() + VisitorConstants.VISITOR_SUFFIX;
+  }
+
   public String getInheritanceVisitorSimpleTypeName(CDDefinitionSymbol cdSymbol) {
     return cdSymbol.getName() + INHERITANCE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
+  }
+
+  public String getInheritanceVisitorFullTypeName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getInheritanceVisitorSimpleTypeName(cdSymbol);
   }
 
   public String getVisitorFullTypeName(CDDefinitionSymbol cdSymbol) {
@@ -136,6 +144,16 @@ public class VisitorService extends AbstractService<VisitorService> {
     astcdDefinition.getCDInterfaceList().forEach(i -> i.setName(astPath + "." + i.getName()));
     astcdDefinition.getCDEnumList().forEach(e -> e.setName(astPath + "." + e.getName()));
     return astcdDefinition;
+  }
+
+  public List<ASTMCQualifiedType> getSuperInheritanceVisitors() {
+    //only direct super cds, not transitive
+    List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
+    return superCDs
+        .stream()
+        .map(this::getInheritanceVisitorFullTypeName)
+        .map(getCDTypeFactory()::createQualifiedType)
+        .collect(Collectors.toList());
   }
 
   public List<ASTMCQualifiedType> getSuperVisitors() {
