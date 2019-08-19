@@ -20,7 +20,6 @@ cache:
   paths:
     - .m2/
     - .gradle/wrapper
-    - .gradle/caches
   key: ${CI_COMMIT_REF_SLUG} # Cache per branch
 
 stages:
