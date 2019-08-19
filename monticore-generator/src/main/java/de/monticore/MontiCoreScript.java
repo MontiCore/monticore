@@ -36,7 +36,9 @@ import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorat
 import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
 import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java._visitor.*;
+import de.monticore.codegen.cd2java._visitor.visitor_interface.ASTVisitorDecorator;
+import de.monticore.codegen.cd2java._visitor.visitor_interface.VisitorInterfaceDecorator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
@@ -50,7 +52,6 @@ import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.codegen.cd2java.od.ODGenerator;
 import de.monticore.codegen.cd2java.top.TopDecorator;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
-import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -387,20 +388,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
-   * Deprecated, because this cd generation does not exist anymore
-   * so no reporting should be done
-   * can be deleted after MontiCore 5
-   * <p>
-   * Prints Cd4Analysis AST to the CD-file (*.cd) in the subdirectory
-   *
-   * @param astCd           - the top node of the Cd4Analysis AST
-   * @param outputDirectory - output directory
-   */
-  @Deprecated
-  public void storeInCdFile(ASTCDCompilationUnit astCd, File outputDirectory) {
-  }
-
-  /**
    * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory
    *
    * @param astCd           - the top node of the Cd4Analysis AST
@@ -422,6 +409,35 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
     GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
 
+  }
+
+  public ASTCDCompilationUnit decorateForVisitorPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+                                                        ASTCDCompilationUnit astClassDiagram, ModelPath modelPath, IterablePath handCodedPath) {
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
+    return decorateWithVisitor(preparedCD, glex, modelPath, handCodedPath);
+  }
+
+  private ASTCDCompilationUnit decorateWithVisitor(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, ModelPath modelPath,
+                                                   IterablePath handCodedPath) {
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    VisitorService visitorService = new VisitorService(cd);
+    VisitorInterfaceDecorator visitorInterfaceDecorator = new VisitorInterfaceDecorator(glex, visitorService);
+
+    ASTVisitorDecorator astVisitorDecorator = new ASTVisitorDecorator(glex, visitorInterfaceDecorator, visitorService);
+    SymbolVisitorDecorator symbolVisitorDecorator = new SymbolVisitorDecorator(glex, visitorService, symbolTableService);
+    ScopeVisitorDecorator scopeVisitorDecorator = new ScopeVisitorDecorator(glex, visitorService, symbolTableService);
+    DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(glex, visitorService);
+    ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(glex, visitorService);
+    InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(glex, visitorService);
+
+    CDVisitorDecorator decorator = new CDVisitorDecorator(glex,
+        astVisitorDecorator, symbolVisitorDecorator, scopeVisitorDecorator,
+        delegatorVisitorDecorator, inheritanceVisitorDecorator, parentAwareVisitorDecorator);
+
+    ASTCDCompilationUnit visitorCompilationUnit = decorator.decorate(cd);
+
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(visitorCompilationUnit);
   }
 
   public ASTCDCompilationUnit addListSuffixToAttributeName(ASTCDCompilationUnit originalCD) {
@@ -586,19 +602,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     generator.generate(decoratedCD);
   }
 
-  /**
-   * Generates ast files for the given class diagram AST TODO: rephrase!
-   *
-   * @param glex            - object for managing hook points, features and global
-   *                        variables
-   * @param astClassDiagram - class diagram AST
-   * @param outputDirectory TODO
-   */
-  public void generateVisitors(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
-                               ASTCDCompilationUnit astClassDiagram, File outputDirectory,
-                               IterablePath handcodedPath) {
-    VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, handcodedPath);
-  }
 
   public void generateCocos(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
                             ASTCDCompilationUnit astClassDiagram, File outputDirectory) {

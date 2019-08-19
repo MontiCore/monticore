@@ -21,7 +21,6 @@ dependencies {
   compile gradleApi()
   compile localGroovy()
   compile group: 'de.monticore', name: 'monticore-cli', version: "$version"
-  compile group: 'de.monticore', name: 'monticore-runtime', version: "$version"
   compile group: 'de.monticore', name: 'monticore-generator', version: "$version"
 }
 

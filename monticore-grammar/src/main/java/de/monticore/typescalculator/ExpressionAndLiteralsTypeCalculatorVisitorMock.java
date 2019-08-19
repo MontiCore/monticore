@@ -3,19 +3,17 @@ package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ExpressionAndLiteralsTypeCalculatorVisitorMock implements IExpressionAndLiteralsTypeCalculatorVisitor {
 
-  Map<ASTExpression,ASTMCType> lookUp = new HashMap<>();
+  Map<ASTExpression,TypeExpression> lookUp = new HashMap<>();
 
   @Override
-  public ASTMCType calculateType(ASTExpression e) {
+  public TypeExpression calculateType(ASTExpression e) {
 
     if(lookUp.containsKey(e)) {
       return lookUp.get(e);
@@ -24,16 +22,16 @@ public class ExpressionAndLiteralsTypeCalculatorVisitorMock implements IExpressi
   }
 
   @Override
-  public Map<ASTNode, MCTypeSymbol> getTypes() {
+  public Map<ASTNode, TypeExpression> getTypes() {
     return null;
   }
 
   @Override
-  public void setScope(ExpressionsBasisScope scope) {
+  public void setScope(IExpressionsBasisScope scope) {
 
   }
 
-  public void addLookUp(ASTExpression e, ASTMCType type) {
+  public void addLookUp(ASTExpression e, TypeExpression type) {
     lookUp.put(e,type);
   }
 

@@ -1,10 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.prettyprint;
+package prettyprint;
 
-import de.monticore.mchexnumbers._ast.ASTHexInteger;
-import de.monticore.mchexnumbers._ast.ASTHexadecimal;
-import de.monticore.mchexnumbers._ast.ASTMCHexNumbersNode;
-import de.monticore.mchexnumbers._visitor.MCHexNumbersVisitor;
+import de.monticore.prettyprint.IndentPrinter;
+import mchexnumbers._ast.ASTHexInteger;
+import mchexnumbers._ast.ASTHexadecimal;
+import mchexnumbers._ast.ASTMCHexNumbersNode;
+import mchexnumbers._visitor.MCHexNumbersVisitor;
 
 public class MCHexNumbersPrettyPrinter implements MCHexNumbersVisitor {
   

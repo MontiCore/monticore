@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-grammar A extends de.monticore.MCNumbers {
+grammar A extends MCNumbers {
 
   // Top grammar to test forms of extension
 
@@ -10,5 +10,5 @@ grammar A extends de.monticore.MCNumbers {
   Q = "optional" M?;
 
   R = "several" M "," N* "," P? "," (Q|R) ".";
-  
+
 }

@@ -80,7 +80,9 @@ for (astGrammar in getParsedGrammars()) {
   generateSymbolTable(glex, mcScope, astGrammar, cdScope, astClassDiagram, out, handcodedPath)
 
   // M9 Generate ast classes, visitor and context condition
-  generateVisitors(glex, cdScope, astClassDiagram, out, handcodedPath)
+  decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, modelPath, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedVisitorCD, out, handcodedPath)
+
   generateCocos(glex, cdScope, astClassDiagram, out)
   generateODs(glex, cdScope, mcScope, astClassDiagram, out)
 

@@ -18,7 +18,6 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 
 public class EmfService extends AbstractService {
@@ -120,10 +119,6 @@ public class EmfService extends AbstractService {
 
   public boolean isString(ASTMCType type) {
     return "String".equals(getSimpleNativeType(type));
-  }
-
-  public boolean isLiteralsEnum(ASTCDEnum astcdEnum, String definitionName) {
-    return astcdEnum.getName().equals(definitionName + LITERALS_SUFFIX);
   }
 
   public ASTMCQualifiedType getEmfAttributeType(ASTCDAttribute astcdAttribute) {

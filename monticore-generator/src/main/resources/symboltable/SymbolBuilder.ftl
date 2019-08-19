@@ -29,7 +29,7 @@ public class ${className} {
 
   protected String name;
 
-  protected AST${ruleName} node;
+  protected ${genHelper.getQualifiedGrammarName()?lower_case}._ast.AST${ruleName} node;
 
   protected String packageName;
 

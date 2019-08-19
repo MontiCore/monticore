@@ -1,179 +1,124 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typescalculator;
 
-import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class TypesCalculatorHelper {
-  
-  public static ASTMCType getUnaryNumericPromotionType(ASTMCType type){
-    if("byte".equals(unbox(type).getBaseName())||
-        "short".equals(unbox(type).getBaseName())||
-        "char".equals(unbox(type).getBaseName())||
-        "int".equals(unbox(type).getBaseName())
+
+  public static TypeExpression getUnaryNumericPromotionType(TypeExpression type){
+    if("byte".equals(unbox(type).getName())||
+        "short".equals(unbox(type).getName())||
+        "char".equals(unbox(type).getName())||
+        "int".equals(unbox(type).getName())
     ){
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
+      type = new TypeExpression();
+      type.setName("int");
+      return type;
     }
-    if("long".equals(unbox(type).getBaseName())||
-        "double".equals(unbox(type).getBaseName())||
-        "float".equals(unbox(type).getBaseName())
+    if("long".equals(unbox(type).getName())||
+        "double".equals(unbox(type).getName())||
+        "float".equals(unbox(type).getName())
     ){
       return unbox(type);
     }
     return type;
   }
-  
-  public static ASTMCType unbox(ASTMCType type){
-    List<String> name = new ArrayList<>();
-    name.add("java");
-    name.add("lang");
-    name.add("Boolean");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build();
-    }
-    name.remove("Boolean");
-    name.add("Byte");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BYTE).build();
-    }
-    name.remove("Byte");
-    name.add("Character");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build();
-    }
-    name.remove("Character");
-    name.add("Short");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.SHORT).build();
-    }
-    name.remove("Short");
-    name.add("Integer");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
-    }
-    name.remove("Integer");
-    name.add("Long");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build();
-    }
-    name.remove("Long");
-    name.add("Float");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build();
-    }
-    name.remove("Float");
-    name.add("Double");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
-    }
-    name.remove("Double");
-    name.add("String");
-    if(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      name.remove("java");
-      name.remove("lang");
-      return MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
-    }
-    name=new ArrayList<>();
-    name.add("Boolean");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build();
-    }
-    name.remove("Boolean");
-    name.add("Byte");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BYTE).build();
-    }
-    name.remove("Byte");
-    name.add("Character");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build();
-    }
-    name.remove("Character");
-    name.add("Short");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.SHORT).build();
-    }
-    name.remove("Short");
-    name.add("Integer");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
-    }
-    name.remove("Integer");
-    name.add("Long");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build();
-    }
-    name.remove("Long");
-    name.add("Float");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build();
-    }
-    name.remove("Float");
-    name.add("Double");
-    if (MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
-    }
-    name.remove("Double");
-    name.add("String");
-    if(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
-      name.remove("java");
-      name.remove("lang");
-      return MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
-    }
 
+  public static TypeExpression unbox(TypeExpression type){
+    if(type.getName().equals("java.lang.Boolean")){
+      type = new TypeExpression();
+      type.setName("boolean");
+    }else if(type.getName().equals("java.lang.Byte")){
+      type = new TypeExpression();
+      type.setName("byte");
+    }else if(type.getName().equals("java.lang.Character")){
+      type = new TypeExpression();
+      type.setName("char");
+    }else if(type.getName().equals("java.lang.Short")){
+      type = new TypeExpression();
+      type.setName("short");
+    }else if(type.getName().equals("java.lang.Integer")){
+      type = new TypeExpression();
+      type.setName("int");
+    }else if(type.getName().equals("java.lang.Long")){
+      type = new TypeExpression();
+      type.setName("long");
+    }else if(type.getName().equals("java.lang.Float")){
+      type = new TypeExpression();
+      type.setName("float");
+    }else if(type.getName().equals("java.lang.Double")){
+      type = new TypeExpression();
+      type.setName("double");
+    }else if(type.getName().equals("java.lang.String")){
+      type = new TypeExpression();
+      type.setName("String");
+    }else if(type.getBaseName().equals("Boolean")){
+      type = new TypeExpression();
+      type.setName("boolean");
+    }else if(type.getBaseName().equals("Byte")){
+      type = new TypeExpression();
+      type.setName("byte");
+    }else if(type.getBaseName().equals("Character")){
+      type = new TypeExpression();
+      type.setName("char");
+    }else if(type.getBaseName().equals("Short")){
+      type = new TypeExpression();
+      type.setName("short");
+    }else if(type.getBaseName().equals("Integer")){
+      type = new TypeExpression();
+      type.setName("int");
+    }else if(type.getBaseName().equals("Long")){
+      type = new TypeExpression();
+      type.setName("long");
+    }else if(type.getBaseName().equals("Float")){
+      type = new TypeExpression();
+      type.setName("float");
+    }else if(type.getBaseName().equals("Double")) {
+      type = new TypeExpression();
+      type.setName("double");
+    }else if(type.getBaseName().equals("String")){
+      type = new TypeExpression();
+      type.setName("String");
+    }
     return type;
   }
 
-  public static ASTMCType box(ASTMCType type) {
-    List<String> name = new ArrayList<>();
-    name.add("java");
-    name.add("lang");
-    name.add("Boolean");
-    if (type.getBaseName().equals("boolean")) {
-      MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+  public static TypeExpression box(TypeExpression type) {
+    if (type.getName().equals("boolean")) {
+      type = new TypeExpression();
+      type.setName("java.lang.Boolean");
     }
-    name.remove("Boolean");
-    name.add("Byte");
-    if (type.getBaseName().equals("byte")) {
-      MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+    if (type.getName().equals("byte")) {
+      type = new TypeExpression();
+      type.setName("java.lang.Byte");
     }
-    name.remove("Byte");
-    name.add("Character");
-    if (type.getBaseName().equals("char")) {
-      MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+    if (type.getName().equals("char")) {
+      type = new TypeExpression();
+      type.setName("java.lang.Character");
     }
-    name.remove("Character");
-    name.add("Short");
-    if (type.getBaseName().equals("short")) {
-      MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+    if (type.getName().equals("short")) {
+      type = new TypeExpression();
+      type.setName("java.lang.Short");
     }
-    name.remove("Short");
-    name.add("Integer");
-    if (type.getBaseName().equals("int")) {
-      MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+    if (type.getName().equals("int")) {
+      type = new TypeExpression();
+      type.setName("java.lang.Integer");
     }
-    name.remove("Integer");
-    name.add("Long");
-    if (type.getBaseName().equals("long")) {
-      MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+    if (type.getName().equals("long")) {
+      type = new TypeExpression();
+      type.setName("java.lang.Long");
     }
-    name.remove("Long");
-    name.add("Float");
-    if (type.getBaseName().equals("float")) {
-      MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+    if (type.getName().equals("float")) {
+      type = new TypeExpression();
+      type.setName("java.lang.Float");
     }
-    name.remove("Float");
-    name.add("Double");
-    if (type.getBaseName().equals("double")) {
-      MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+    if (type.getName().equals("double")) {
+      type = new TypeExpression();
+      type.setName("java.lang.Double");
     }
-
     return type;
   }
 
@@ -181,45 +126,43 @@ public class TypesCalculatorHelper {
    * @param type
    * @return true if the given type is an integral type
    */
-  public static boolean isIntegralType(ASTMCType type) {
-    if ("int".equals(unbox(type).getBaseName()))
+  public static boolean isIntegralType(TypeExpression type) {
+    if ("int".equals(unbox(type).getName()))
       return true;
-    if ("byte".equals(unbox(type).getBaseName()))
+    if ("byte".equals(unbox(type).getName()))
       return true;
-    if ("short".equals(unbox(type).getBaseName()))
+    if ("short".equals(unbox(type).getName()))
       return true;
-    if ("long".equals(unbox(type).getBaseName()))
+    if ("long".equals(unbox(type).getName()))
       return true;
-    if ("char".equals(unbox(type).getBaseName()))
+    if ("char".equals(unbox(type).getName()))
       return true;
     return false;
   }
 
-  public static boolean isNumericType(ASTMCType type) {
+  public static boolean isNumericType(TypeExpression type) {
     if (isIntegralType(type))
       return true;
-    if ("float".equals(unbox(type).getBaseName()))
+    if ("float".equals(unbox(type).getName()))
       return true;
-    if ("double".equals(unbox(type).getBaseName()))
+    if ("double".equals(unbox(type).getName()))
       return true;
     return false;
   }
 
-  public static boolean isPrimitiveType(ASTMCType type) {
+  public static boolean isPrimitiveType(TypeExpression type) {
     List<String> primitiveTypes = Arrays
         .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
     if (type != null ) {
-      return primitiveTypes.contains(unbox(type).getBaseName());
+      return primitiveTypes.contains(unbox(type).getName());
     }
     return false;
   }
 
 
-  public static TypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type) {
-    TypeExpression typeExpression = new TypeExpression();
+  public static TypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type){
     MCTypeVisitor visitor = new MCTypeVisitor();
     type.accept(visitor);
     return visitor.mapping.get(type);
   }
-
 }

@@ -17,11 +17,6 @@ public  class ASTMCImportStatement extends ASTMCImportStatementTOP {
     setStar(star);
   }
 
-  @Deprecated
-  public List<String> getImportList()   {
-    return this.mCQualifiedName.parts;
-  }
-
   public String getQName(){
     return getMCQualifiedName().toString();
   }

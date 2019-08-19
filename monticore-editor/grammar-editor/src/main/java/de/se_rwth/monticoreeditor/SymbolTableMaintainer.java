@@ -10,17 +10,10 @@ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConcep
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsModelLoader;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Scopes;
-import de.se_rwth.commons.logging.Log;
 import de.se_rwth.langeditor.modelstates.ModelState;
 
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 final class SymbolTableMaintainer {
   
@@ -50,10 +43,10 @@ final class SymbolTableMaintainer {
   }
   
   private void removeOldScope(ASTMCGrammar mcGrammar) {
-    if (!mcGrammar.getSymbol2Opt().isPresent()) {
+    if (!mcGrammar.getSymbolOpt().isPresent()) {
       return;
     }
-    Optional<MCGrammarSymbol> s = globalScope.resolveMCGrammar(mcGrammar.getSymbol2().getFullName());
+    Optional<MCGrammarSymbol> s = globalScope.resolveMCGrammar(mcGrammar.getSymbol().getFullName());
     if (s.isPresent()) {
       globalScope.remove(s.get());
     }

@@ -2,24 +2,22 @@
 
 package de.monticore.prettyprint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import de.monticore.teststringliterals._parser.TestStringLiteralsParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import prettyprint.StringLiteralsPrettyPrinter;
+import stringliterals._ast.ASTCharLiteral;
+import stringliterals._ast.ASTStringLiteral;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.prettyprint.StringLiteralsPrettyPrinter;
-import de.monticore.stringliterals._ast.ASTCharLiteral;
-import de.monticore.stringliterals._ast.ASTStringLiteral;
-import de.monticore.teststringliterals._parser.TestStringLiteralsParser;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class StringLiteralsPrettyPrinterTest {
   

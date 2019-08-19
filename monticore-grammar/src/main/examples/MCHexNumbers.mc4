@@ -1,17 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore;
 
 /**
  * This grammar defines several additional literals for Numbers,
  * which ar enot based on decimals, but other formats common in computing,
  * such as hexadecimals.
  * The scope of this grammar is to
- * ease the reuse of literals structures in Java-like sublanguages, e.g., by 
+ * ease the reuse of literals structures in Java-like sublanguages, e.g., by
  * grammar inheritance or grammar embedment.
 */
 
-component grammar MCHexNumbers extends 
-		de.monticore.MCNumbers, de.monticore.MCBasics {
+component grammar MCHexNumbers extends
+		MCNumbers, de.monticore.MCBasics {
 
   /*========================================================================*/
   /*== Hexadecimal =========================================================*/
