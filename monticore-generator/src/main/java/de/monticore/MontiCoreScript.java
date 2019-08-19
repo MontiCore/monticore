@@ -51,7 +51,6 @@ import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.codegen.cd2java.od.ODGenerator;
 import de.monticore.codegen.cd2java.top.TopDecorator;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
-import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -599,19 +598,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     generator.generate(decoratedCD);
   }
 
-  /**
-   * Generates ast files for the given class diagram AST TODO: rephrase!
-   *
-   * @param glex            - object for managing hook points, features and global
-   *                        variables
-   * @param astClassDiagram - class diagram AST
-   * @param outputDirectory TODO
-   */
-  public void generateVisitors(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
-                               ASTCDCompilationUnit astClassDiagram, File outputDirectory,
-                               IterablePath handcodedPath) {
-    VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, handcodedPath);
-  }
 
   public void generateCocos(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
                             ASTCDCompilationUnit astClassDiagram, File outputDirectory) {

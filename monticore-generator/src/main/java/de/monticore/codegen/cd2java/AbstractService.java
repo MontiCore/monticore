@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java;
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
@@ -91,6 +92,11 @@ public class AbstractService<T extends AbstractService> {
 
   public CDDefinitionSymbol resolveCD(String qualifiedName) {
     return getCDSymbol().getEnclosingScope().<CDDefinitionSymbol>resolveCDDefinition(qualifiedName)
+        .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
+  }
+
+  public CDTypeSymbol resolveCDType(String qualifiedName) {
+    return getCDSymbol().getEnclosingScope().<CDDefinitionSymbol>resolveCDType(qualifiedName)
         .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
   }
 
@@ -298,5 +304,27 @@ public class AbstractService<T extends AbstractService> {
       return String.join(".", cdSymbol.getName(), AST_PACKAGE).toLowerCase();
     }
     return String.join(".", getBasePackage(cdSymbol), cdSymbol.getName(), AST_PACKAGE).toLowerCase();
+  }
+
+  public List<String> getAllSuperClassesTransitive(ASTCDClass astcdClass) {
+    return getAllSuperClassesTransitive(astcdClass.getSymbol());
+  }
+
+  public List<String> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
+    List<String> superSymbolList = new ArrayList<>();
+    if (cdTypeSymbol.getSuperClass().isPresent()) {
+      String fullName = cdTypeSymbol.getSuperClass().get().getFullName();
+      superSymbolList.add(createASTFullName(fullName));
+      CDTypeSymbol superSymbol = resolveCDType(fullName);
+      superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
+    }
+    return superSymbolList;
+  }
+
+  public String createASTFullName(String simpleName) {
+    String packageName = simpleName.substring(0, simpleName.lastIndexOf("."));
+    packageName = packageName.toLowerCase();
+    String astName = simpleName.substring(simpleName.lastIndexOf(".") + 1);
+    return packageName + "." + AST_PACKAGE + "." + astName;
   }
 }

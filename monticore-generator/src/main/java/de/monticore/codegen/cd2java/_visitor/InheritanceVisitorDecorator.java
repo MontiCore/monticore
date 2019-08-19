@@ -58,9 +58,9 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected ASTCDMethod getHandleMethod(ASTCDClass astcdClass, String languageInterfaceName, String visitorSimpleTypeName) {
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getCDTypeFacade().createQualifiedType(astcdClass.getName()));
-    Optional<String> superType = Optional.empty();
+    List<String> superType = new ArrayList<>();
     if (astcdClass.isPresentSuperclass() && !astcdClass.printSuperClass().isEmpty()) {
-      superType = Optional.ofNullable(astcdClass.printSuperClass());
+      superType= visitorService.getAllSuperClassesTransitive(astcdClass);
     }
     replaceTemplate(EMPTY_BODY, handleMethod,
         new TemplateHookPoint("_visitor.inheritance.Handle",
@@ -72,7 +72,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getCDTypeFacade().createQualifiedType(astcdInterface.getName()));
     replaceTemplate(EMPTY_BODY, handleMethod,
         new TemplateHookPoint("_visitor.inheritance.Handle",
-            languageInterfaceName, visitorSimpleTypeName, Optional.empty()));
+            languageInterfaceName, visitorSimpleTypeName, new ArrayList<>()));
     return handleMethod;
   }
 

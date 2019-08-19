@@ -16,6 +16,7 @@ import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,17 +54,19 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
         .collect(Collectors.toList());
     visitorFullNameList.add(visitorService.getVisitorFullTypeName());
 
-    List<String> visitorSimpleNameList = superCDsTransitive.stream()
-        .map(visitorService::getVisitorSimpleTypeName)
-        .collect(Collectors.toList());
+    List<String> visitorSimpleNameList =new ArrayList<>();
     visitorSimpleNameList.add(simpleVisitorName);
+    visitorSimpleNameList.addAll(superCDsTransitive.stream()
+        .map(visitorService::getVisitorSimpleTypeName)
+        .collect(Collectors.toList()));
 
     // create list of cdDefinitions from superclass and own class
-    List<ASTCDDefinition> definitionList = superCDsTransitive
+    List<ASTCDDefinition> definitionList = new ArrayList<>();
+    definitionList.add(compilationUnit.getCDDefinition());
+    definitionList.addAll(superCDsTransitive
         .stream()
         .map(visitorService::calculateCDTypeNamesWithPackage)
-        .collect(Collectors.toList());
-    definitionList.add(compilationUnit.getCDDefinition());
+        .collect(Collectors.toList()));
 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(delegatorVisitorSimpleName)
@@ -208,7 +211,9 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     ASTMCQualifiedType interfaceType = getCDTypeFacade().createQualifiedType(AST_INTERFACE);
     visitorMethods.add(addVisitorMethod(interfaceType, simpleVisitorNameList, VISIT));
-    visitorMethods.add(addVisitorMethod(interfaceType, simpleVisitorNameList, END_VISIT));
+    ArrayList<String> reversedList = new ArrayList<>(simpleVisitorNameList);
+    Collections.reverse(reversedList);
+    visitorMethods.add(addVisitorMethod(interfaceType, reversedList, END_VISIT));
     return visitorMethods;
   }
 
