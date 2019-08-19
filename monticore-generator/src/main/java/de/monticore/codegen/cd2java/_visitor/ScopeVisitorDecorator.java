@@ -7,7 +7,6 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.MCTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -20,7 +19,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_FULL_NAME;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_FULL_NAME;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
@@ -40,16 +40,11 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
   @Override
   public ASTCDInterface decorate(ASTCDCompilationUnit input) {
-    ASTCDCompilationUnit compilationUnit = input.deepClone();
 
     String scopeVisitorName = visitorService.getScopeVisitorSimpleTypeName();
     String symbolVisitorName = visitorService.getSymbolVisitorSimpleTypeName();
 
     ASTMCQualifiedType scopeVisitorType = getCDTypeFacade().createQualifiedType(scopeVisitorName);
-
-    String scopeTypeName = symbolTableService.getScopeTypeName();
-    String scopeInterfaceTypeName = symbolTableService.getScopeInterfaceTypeName();
-    String artifactScopeTypeName = symbolTableService.getArtifactScopeTypeName();
 
     List<ASTMCQualifiedType> superScopeVisitorTypes = visitorService.getSuperCDsTransitive()
         .stream()
@@ -66,7 +61,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
         .addCDMethod(addSetRealThisMethods(scopeVisitorType))
         .addAllCDMethods(createIScopeVisitorMethods())
         .addAllCDMethods(createISymbolVisitorMethods(symbolVisitorName))
-        .addAllCDMethods(createScopeVisitorMethods(getSuperSymbols()))
+        .addAllCDMethods(createScopeVisitorMethods(getSuperSymbols(), input.getCDDefinition()))
         .build();
   }
 
@@ -110,14 +105,16 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
     }
   }
 
-  protected List<ASTCDMethod> createScopeVisitorMethods(Set<String> symbolsNameList) {
+  protected List<ASTCDMethod> createScopeVisitorMethods(Set<String> symbolsNameList, ASTCDDefinition astcdDefinition) {
 
     ASTMCType scopeType = symbolTableService.getScopeType();
     ASTMCQualifiedType artifactScopeType = symbolTableService.getArtifactScopeType();
 
     List<ASTCDMethod> methodList = new ArrayList<>();
     methodList.addAll(createVisitorMethods(symbolsNameList, scopeType));
-    methodList.addAll(createVisitorMethods(symbolsNameList, artifactScopeType));
+    if(hasProd(astcdDefinition)){
+      methodList.addAll(createVisitorMethods(symbolsNameList, artifactScopeType));
+    }
     return methodList;
   }
 
@@ -131,7 +128,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, scopeName);
     methodList.add(traverseMethod);
     this.replaceTemplate(EMPTY_BODY, traverseMethod,
-        new TemplateHookPoint("_visitor.scope.Traverse", superSymbolList, MCTypesHelper.printType(scopeName)));
+        new TemplateHookPoint("_visitor.scope.Traverse", superSymbolList, symbolTableService.getScopeInterfaceTypeName()));
     return methodList;
   }
 
@@ -145,18 +142,29 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
       // add all symbol definitions to list
       for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
         if (astcdInterface.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdInterface.getModifier())) {
-          superSymbolNames.add(cdSymbol.getPackageName() + "." + astcdDefinition.getName().toLowerCase() + "."
-              + SYMBOL_TABLE_PACKGE + "." + astcdInterface.getName());
+          superSymbolNames.add(symbolTableService.getSymbolTypeName(astcdInterface, cdSymbol));
         }
       }
       for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
         if (astcdClass.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdClass.getModifier())) {
-          superSymbolNames.add(cdSymbol.getPackageName() + "." + astcdDefinition.getName().toLowerCase() + "."
-              + SYMBOL_TABLE_PACKGE + "." + astcdClass.getName());
+          superSymbolNames.add(symbolTableService.getSymbolTypeName(astcdClass,cdSymbol));
         }
       }
     }
     return superSymbolNames;
+  }
+
+  protected boolean hasProd(ASTCDDefinition astcdDefinition) {
+    // is true if it has any class productions or any interface productions that are not the language interface
+    if (!astcdDefinition.isEmptyCDClasss()) {
+      return true;
+    } else if (!astcdDefinition.isEmptyCDInterfaces() &&
+        !(astcdDefinition.sizeCDInterfaces() == 1
+            && astcdDefinition.getCDInterface(0).getName().equals(visitorService.getSimleLanguageInterfaceName()))) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

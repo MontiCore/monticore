@@ -20,7 +20,8 @@ import de.se_rwth.commons.Names;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.*;
+import static de.monticore.codegen.mc2cd.TransformationHelper.createType;
+import static de.monticore.codegen.mc2cd.TransformationHelper.getPackageName;
 
 /**
  * Infers the type that ASTCDAttributes should have according to what kind of rule the original
@@ -47,7 +48,7 @@ public class ReferenceTypeTranslation implements
         ASTCDAttribute.class)) {
       ASTMCType type = determineTypeToSetForAttributeInAST(link.source().getMCType(), rootLink.source());
       link.target().setMCType(type);
-        addStereotypeForASTTypes(link.source(), link.target(), rootLink.source());
+      addStereotypeForASTTypes(link.source(), link.target(), rootLink.source());
     }
 
     return rootLink;
@@ -71,7 +72,7 @@ public class ReferenceTypeTranslation implements
   }
 
   private ASTMCType determineTypeToSetForAttributeInAST(ASTMCType astGenericType,
-                                                      ASTMCGrammar astMCGrammar) {
+                                                        ASTMCGrammar astMCGrammar) {
     Optional<ProdSymbol> ruleSymbol = TransformationHelper
         .resolveAstRuleType(astMCGrammar, astGenericType);
     if (!ruleSymbol.isPresent()) {
@@ -90,6 +91,12 @@ public class ReferenceTypeTranslation implements
     Optional<ASTMCType> byReference = MCGrammarSymbolTableHelper
         .resolveRule(astMCGrammar, typeName)
         .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeName));
+    if (!byReference.isPresent() && typeName.startsWith("AST")) {
+      String typeNameWithoutAST = typeName.replaceFirst("AST", "");
+      byReference = MCGrammarSymbolTableHelper
+          .resolveRule(astMCGrammar, typeNameWithoutAST)
+          .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeNameWithoutAST));
+    }
     Optional<ASTMCType> byPrimitive = determineConstantsType(typeName)
         .map(MCBasicTypesNodeFactory::createASTMCPrimitiveType);
     return byReference.orElse(byPrimitive.orElse(createType(FullGenericTypesPrinter.printType(astGenericType))));

@@ -9,7 +9,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,17 +68,10 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
   }
 
   protected List<ASTCDMethod> getTraversMethod(ASTCDDefinition astcdDefinition) {
-    List<ASTCDMethod> traverseMethods = new ArrayList<>();
-    traverseMethods.addAll(astcdDefinition.getCDClassList()
+    List<ASTCDMethod> traverseMethods = astcdDefinition.getCDClassList()
         .stream()
         .map(c -> visitorService.getVisitorMethod(TRAVERSE, getCDTypeFacade().createQualifiedType(c.getName())))
-        .collect(Collectors.toList()));
-
-    traverseMethods.addAll(astcdDefinition.getCDInterfaceList()
-        .stream()
-        .filter(c -> !visitorService.getLanguageInterfaceName().equals(c.getName()))
-        .map(c -> visitorService.getVisitorMethod(TRAVERSE, getCDTypeFacade().createQualifiedType(c.getName())))
-        .collect(Collectors.toList()));
+        .collect(Collectors.toList());
 
     // add template
     String visitorSimpleTypeName = visitorService.getVisitorSimpleTypeName();

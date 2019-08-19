@@ -285,6 +285,10 @@ public class AbstractService<T extends AbstractService> {
     return getASTPackage() + "." + AST_PREFIX + getCDName() + NODE_SUFFIX;
   }
 
+  public String getSimleLanguageInterfaceName() {
+    return AST_PREFIX + getCDName() + NODE_SUFFIX;
+  }
+
   public String getASTPackage() {
     return getASTPackage(getCDSymbol());
   }
