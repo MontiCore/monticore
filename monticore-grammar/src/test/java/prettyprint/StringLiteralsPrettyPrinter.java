@@ -1,10 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.prettyprint;
+package prettyprint;
 
-import de.monticore.stringliterals._ast.ASTCharLiteral;
-import de.monticore.stringliterals._ast.ASTStringLiteral;
-import de.monticore.stringliterals._ast.ASTStringLiteralsNode;
-import de.monticore.stringliterals._visitor.StringLiteralsVisitor;
+import de.monticore.prettyprint.IndentPrinter;
+import stringliterals._ast.ASTCharLiteral;
+import stringliterals._ast.ASTStringLiteral;
+import stringliterals._ast.ASTStringLiteralsNode;
+import stringliterals._visitor.StringLiteralsVisitor;
 
 public class StringLiteralsPrettyPrinter implements StringLiteralsVisitor {
   

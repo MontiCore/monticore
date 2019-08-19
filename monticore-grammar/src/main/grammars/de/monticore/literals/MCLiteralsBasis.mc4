@@ -2,7 +2,7 @@
 
 package de.monticore.literals;
 
-component grammar MCLiteralsBasis extends de.monticore.MCBasics {
+component grammar MCLiteralsBasis  {
 
 
   /** ASTLiteral is the interface for all literals (NullLiteral,

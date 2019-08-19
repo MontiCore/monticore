@@ -2,23 +2,22 @@
 
 package de.monticore.prettyprint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import de.monticore.testmcnumbers._parser.TestMCNumbersParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import mcnumbers._ast.ASTDecimal;
+import mcnumbers._ast.ASTInteger;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import prettyprint.MCNumbersPrettyPrinter;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import de.monticore.mcnumbers._ast.ASTDecimal;
-import de.monticore.mcnumbers._ast.ASTInteger;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.prettyprint.MCNumbersPrettyPrinter;
-import de.monticore.testmcnumbers._parser.TestMCNumbersParser;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MCNumbersPrettyPrinterTest {
   

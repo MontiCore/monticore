@@ -5,27 +5,27 @@ package de.monticore;
  * Grammar for common elements of the UML/P-Language-Family
  */
 component grammar UMLModifier extends de.monticore.UMLStereotype {
-    
+
     /** ASTModifier represents a Modifier for Classes, Interfaces, Methods,
         Constructors and Attributes in the UML/P
         @attribute stereotype Optional Stereotype
-        @attribute public     true if Modifier is public 
+        @attribute public     true if Modifier is public
                               (i.e. Modifier written as "public" or "+")
-        @attribute private    true if Modifier is private 
+        @attribute private    true if Modifier is private
                               (i.e. Modifier written as "private" or "-")
-        @attribute protected  true if Modifier is protected 
+        @attribute protected  true if Modifier is protected
                               (i.e. Modifier written as "protected" or "#")
-        @attribute final      true if Modifier is final 
+        @attribute final      true if Modifier is final
                               (i.e. Modifier written as "final")
-        @attribute abstract   true if Modifier is abstract 
+        @attribute abstract   true if Modifier is abstract
                               (i.e. Modifier written as "abstract")
-        @attribute local      true if Modifier is local 
+        @attribute local      true if Modifier is local
                               (i.e. Modifier written as "local")
-        @attribute derived    true if Modifier is derived 
+        @attribute derived    true if Modifier is derived
                               (i.e. Modifier written as "derived" or "/")
-        @attribute readonly   true if Modifier is readonly 
+        @attribute readonly   true if Modifier is readonly
                               (i.e. Modifier written as "readonly" or "?")
-        @attribute static     true if Modifier is static 
+        @attribute static     true if Modifier is static
                               (i.e. Modifier written as "static")
     */
     Modifier =

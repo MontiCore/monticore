@@ -20,12 +20,12 @@ cache:
   paths:
     - .m2/
     - .gradle/wrapper
-    - .gradle/caches
   key: ${CI_COMMIT_REF_SLUG} # Cache per branch
 
 stages:
   - build
-  - test
+  - test1
+  - test2
 
 build_dev:
   stage: build
@@ -52,16 +52,8 @@ build_branches:
     - dev
     - master
 
-integration-test:
-  stage: test
-  dependencies: []
-  script:
-    - cd monticore-generator/it
-    - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify"
-    - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify -P emf-it-tests"
-
-it-gradle:
-  stage: test
+it:
+  stage: test2
   dependencies: []
   script:
     - cd monticore-generator/it
@@ -69,23 +61,22 @@ it-gradle:
     - "./gradlew build -PbuildProfile=emf"
     - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
     - "./gradlew build"
+  only:
+    - dev
+
+it-experiments-grammar:
+  stage: test1
+  dependencies: []
+  script:
+    - cd monticore-generator/it/experiments
+    - "./gradlew build"
     - "cd ../../../monticore-grammar/monticore-grammar-it"
     - "./gradlew build"
   only:
     - dev
 
-it-experiments-gradle:
-  stage: test
-  dependencies: []
-  script:
-    - cd monticore-generator/it/experiments
-    - "./gradlew build"
-  allow_failure: true
-  only:
-    - dev
-
 trigger-automata:
-  stage: test
+  stage: test1
   trigger:
     project: monticore/languages/automaton
     branch: master
@@ -93,7 +84,7 @@ trigger-automata:
     - dev
 
 trigger-cd4a:
-  stage: test
+  stage: test1
   trigger:
     project: monticore/cd4analysis/cd4analysis
     branch: newSymTab

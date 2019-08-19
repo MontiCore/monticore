@@ -8,7 +8,7 @@ package de.monticore.literals;
  * The grammar contains literals from Java, e.g., Boolean, Char, String, ....
 */
 
-component grammar MCCommonLiterals extends de.monticore.literals.MCLiteralsBasis {
+component grammar MCCommonLiterals extends de.monticore.MCBasics, de.monticore.literals.MCLiteralsBasis {
 
 
 

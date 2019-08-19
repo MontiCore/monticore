@@ -47,7 +47,7 @@ There may also be further unclarfied grammars around.
 
 ## General: List of Grammars in package de.monticore
 
-### MCBasics.mc4  (stable)
+### [MCBasics.mc4](monticore-grammar/src/main/grammars/de/monticore/MCBasics.mc4)  (stable)
 * This grammar defines absolute basics, such as spaces, 
 Java-like comments and Names. 
 It should be useful in many languages.
@@ -58,14 +58,14 @@ It should be useful in many languages.
 These grammars generally deal with type definitions and build on each 
 other:
 
-### MCCommonTypes.mc4 (stable)
+### [MCBasicTypes.mc4](monticore-grammar/src/main/grammars/de/monticore/types/MCBasicTypes.mc4) (stable)
 * This grammar defines basic types. This eases the reuse of type 
 structures in languages similar to Java, that are somewhat 
 simplified, e.g. without generics.
 * The grammar contains types from Java, e.g., primitives, void, 
 classes (also sometimes called "reference types").
  
-### MCCollectionTypes.mc4 (stable)
+### [MCCollectionTypes.mc4](monticore-grammar/src/main/grammars/de/monticore/types/MCCollectionTypes.mc4) (stable)
 * This grammar defines four generics: `List<A>`, `Map<A,B>`, `Set<A>` and 
 `Optional<A>` on top of basic types.
 * These four generics correspond to a typical predefined set of generic 
@@ -76,7 +76,7 @@ therefore these types are of interest.
 that are somewhat simplified, e.g. without general generics.
 
 
-### MCSimpleGenericTypes.mc4 (stable)
+### [MCSimpleGenericTypes.mc4](monticore-grammar/src/main/grammars/de/monticore/types/MCSimpleGenericTypes.mc4) (stable)
 * This grammar introduces freely defined generic types
 such as Blubb<A>, Bla<B,C>, Foo<Blubb<D>>
 * These generics are covering a wide range of uses for generic types,
@@ -84,7 +84,7 @@ although they don't cover type restrictions on the arguments, like in
 Java. 
 
 
-### MCFullGenericTypes.mc4 (stable)
+### [MCFullGenericTypes.mc4](monticore-grammar/src/main/grammars/de/monticore/types/MCFullGenericTypes.mc4) (stable)
 * This grammar completes the type definitions to 
 support the full Java type system including wildcards Blubb<? extends A>
 * A general advice: When you are not sure that you need this kind of
@@ -94,7 +94,7 @@ types, then use a simpler version from above. Type checking ist tricky.
 
 ## Expressions: List of Grammars in package de.monticore.expressions
 
-Expressions are defined in several grammars forming a (nonlinear) hierachy,
+Expressions are defined in several grammars forming a (nonlinear) hierarchy,
 so that developers can choose the optimal grammar they want to build on 
 for their language and combine these with the appropriate typing 
 infrastructure.
@@ -103,14 +103,14 @@ This modularity of expressions and associated types greatly eases
 the reuse of type structures in languages similar to Java.
 
 
-### ExpressionsBasis.mc4 (stable)
+### [ExpressionsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/expressions/ExpressionsBasis.mc4) (stable)
 * This grammar defines core interfaces for expressions and the 
 kinds of symbols necessary.
 * A hierarchy of conservative extensions to this grammar realize
 these interfaces in various forms.
 
 
-### CommonExpressions.mc4 (stable)
+### [CommonExpressions.mc4](monticore-grammar/src/main/grammars/de/monticore/expressions/CommonExpressions.mc4) (stable)
 * This grammar defines a typical standard set of operations for
 expressions. 
 * This is a subset of Java as well as OCL/P, 
@@ -118,20 +118,20 @@ mainly for arithmetic, comparisons, variable use (v),
 attribute use (o.att), method call (foo(arg,arg2)) and brackets (exp).
 
 
-### BitExpressions.mc4 (stable)
+### [BitExpressions.mc4](monticore-grammar/src/main/grammars/de/monticore/expressions/BitExpressions.mc4) (stable)
 * This grammar defines a typical standard set of operations for
 expressions. 
 * This is a subset of Java for binary expressions 
 like <<, >>, >>>, &, ^ and |
 
 
-### AssignmentExpressions.mc4 (stable)
+### [AssignmentExpressions.mc4](monticore-grammar/src/main/grammars/de/monticore/expressions/AssignmentExpressions.mc4) (stable)
 * This grammar defines all Java expressions that have side effects.
 * This includes assignment expressions like =, +=, etc. and 
 suffix and prefix expressions like ++, --, etc.
 
 
-### JavaClassExpressions.mc4 (stable)
+### [JavaClassExpressions.mc4](monticore-grammar/src/main/grammars/de/monticore/expressions/JavaClassExpressions.mc4) (stable)
 * This grammar defines Java specific class expressions like super, 
 this, type cast, etc.
 * This grammar should only be included, when a mapping to Java is
@@ -139,75 +139,54 @@ intended and the full power of Java should be available in the
 modelling language.
 
 
-### SetExpressions.mc4 (Beta: In Stabilization)
+### [SetExpressions.mc4](monticore-grammar/src/main/grammars/de/monticore/expressions/SetExpressions.mc4) (Beta: In Stabilization)
 * This grammar defines set expressions like union, intersection etc.
 these operations are typical for a logic with set operations, like 
 UML's OCL.
 
 
-### OCLExpressions.mc4 (Alpha: Needs restructuring)
+### [OCLExpressions.mc4](monticore-grammar/src/main/grammars/de/monticore/expressions/OCLExpressions.mc4) (Alpha: Needs restructuring)
 * This grammar defines a expressions typical to UMLs OCL .
 * This grammar will be restructured especially for the non expression part.
 
+## Literals: List of Grammars in package de.monticore.literals
 
+### [MCLiteralsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCLiteralsBasis.mc4) (Beta: In Stabilization)
+### [MCCommonLiterals.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCCommonLiterals.mc4) (Beta: In Stabilization)
+### [MCJavaLiterals.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCJavaLiterals.mc4) (Beta: In Stabilization)
 
 ## Further grammars (status: to be handled):
 
 ### Beta: to become stable in the next iteration
 
-* MCLiteralsBasis.mc4
-* MCCommonLiterals.mc4
-* MCJavaLiterals.mc4
+* [UMLModifier.mc4](monticore-grammar/src/main/grammars/de/monticore/UMLModifier.mc4) (Beta: In Stabilization)
+* [UMLStereotype.mc4](monticore-grammar/src/main/grammars/de/monticore/UMLStereotype.mc4) (Beta: In Stabilization)
+* [JavaLight.mc4](monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) 
 
-TODO Defizite:
-* interface Literal und interface SignedLiteral in verschiedenen
-  Grammatiken.
-* Die Trennung Literals und SignedLiterals ist aus Nutzersicht immer 
-  noch unschön
-* Alle Expression-Grammatiken sind jetzt abhängig von 
-   MCLiteralsBasis.mc4, und während die Expressions als Stable 
-   deklariert sind, ist es MCLiteralsBasis.mc4 nicht
-* Literals sind auch Expressions, warum also nicht im Directory
-  expressions ansiedeln (oder eigenes Subdirectory)
-* Literals haben einen Typ --> aber in der MCLiteralsBasis.mc4
-  grammatik werden die Grundlagen dafür (zB symbol EType)
-  nicht gelegt. Wie wollen wir das handhaben?
-* Man könnte auch das Interface "Literals" direkt in ExpressionsBasis
-  einbauen (was wiederum die Literals-Grammatiken leider von 
-  ExpressionsBasis abhängig macht)
-* Wieso halten wir es für gerechtfertigt / notwendig diese Grammatiken
-nochmal extra in die Kern-Library zu legen:
- expressions/AssignmentExpressionsWithLiterals.mc4
- expressions/CombineExpressionsWithLiterals.mc4
- expressions/CommonExpressionsWithLiterals.mc4.
- Ausserdem scheinen die veraltet zu sein (da taucht ExtLiteral auf).
- Überdies scheinen die maximal tests zu sein (da taucht Foo="bar" auf).
- Wir tun uns nicht weh die zu entfernen oder in eine Test-Sammlung zu verschieben?
-* Ergänzend: eine Grammatik, die nur das Interface "Literal" 
-beinhaltet könnte auch so heissen: "LiteralInterface"
-(ohne "MC"). Dito für Expressions.
-
-* Meta: Anscheinend müssen wir den Prozess zur Anpassung bereits
-stabiler und anderer Grammatiken sowie deren Dokumentation
-im MC-Kern nochmal klären.
-
+#### Statements: List of Grammars in package de.monticore.statements
+* [MCAssertStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCAssertStatements.mc4)
+* [MCCommonStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCCommonStatements.mc4)
+* [MCExceptionStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCExceptionStatements.mc4)
+* [MCFullJavaStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCFullJavaStatements.mc4)
+* [MCLowLevelStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCLowLevelStatements.mc4)
+* [MCReturnStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCReturnStatements.mc4)
+* [MCStatementsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCStatementsBasis.mc4)
+* [MCSynchronizedStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCSynchronizedStatements.mc4)
 
 
 ### Alpha: also to become stable (one phase later)
 
-* Cardinality.mc4
-* Completeness.mc4
-* MCCommon.mc4
-* UMLModifier.mc4
-* UMLStereotype.mc4
+* [Cardinality.mc4](monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4)
+* [Completeness.mc4](monticore-grammar/src/main/grammars/de/monticore/Completeness.mc4)
+* [MCCommon.mc4](monticore-grammar/src/main/grammars/de/monticore/MCCommon.mc4)
 
-### Examples for Grammars 
+### Examples for Grammars:
 
 These can also be used if someone is interested:
 
-* StringLiterals.mc4
-* MCHexNumbers.mc4
-* MCNumbers.mc4
+* [StringLiterals.mc4](monticore-grammar/src/main/examples/StringLiterals.mc4)
+* [MCHexNumbers.mc4](monticore-grammar/src/main/examples/MCHexNumbers.mc4)
+* [MCNumbers.mc4](monticore-grammar/src/main/examples/MCNumbers.mc4)
 
 
 
