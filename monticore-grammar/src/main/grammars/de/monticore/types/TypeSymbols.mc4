@@ -4,19 +4,19 @@ package de.monticore.types;
 
 component grammar TypeSymbols extends de.monticore.MCBasics {
 
-  interface scope symbol  Type = Name ;
+  interface scope symbol Type = Name ;
   symbolrule Type =
     methods: de.monticore.types.typesymbols._symboltable.MethodSymbol*
     fields: de.monticore.types.typesymbols._symboltable.FieldSymbol*
     typeParameter: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
   ;
 
-  interface TypeVar = Name;
+  interface symbol TypeVar = Name;
   symbolrule TypeVar =
     upperBound: de.monticore.typescalculator.TypeExpression*
   ;
 
-  interface symbol  Field = Name ;
+  interface symbol Field = Name ;
   symbolrule  Field =
     type: de.monticore.typescalculator.TypeExpression
   ;

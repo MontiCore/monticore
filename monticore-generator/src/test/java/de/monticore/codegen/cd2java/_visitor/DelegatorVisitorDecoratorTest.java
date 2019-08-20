@@ -378,6 +378,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, visitorClass, visitorClass);
-    System.out.println(sb.toString());
+    //todo: find better way to check java code
+//    System.out.println(sb.toString());
   }
 }

@@ -87,6 +87,6 @@ trigger-cd4a:
   stage: test1
   trigger:
     project: monticore/cd4analysis/cd4analysis
-    branch: newSymTab
+    branch: develop
   only:
     - dev

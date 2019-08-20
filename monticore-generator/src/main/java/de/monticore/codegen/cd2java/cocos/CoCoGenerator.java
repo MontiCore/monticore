@@ -2,23 +2,22 @@
 
 package de.monticore.codegen.cd2java.cocos;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
-import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.Names;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
 
 /**
  * Generates the infrastructure for context conditions: For the different ast
@@ -32,7 +31,6 @@ public class CoCoGenerator {
   
   /**
    * Generates the infrastructure for CoCos based on Visitor and the double
-   * dispatch mechanism of {@link VisitorGenerator}.
    */
   public static void generate(GlobalExtensionManagement glex,
                               CD4AnalysisGlobalScope globalScope,

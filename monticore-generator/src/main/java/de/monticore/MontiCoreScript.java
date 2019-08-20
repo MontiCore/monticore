@@ -37,8 +37,6 @@ import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
 import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.*;
-import de.monticore.codegen.cd2java._visitor.visitor_interface.ASTVisitorDecorator;
-import de.monticore.codegen.cd2java._visitor.visitor_interface.VisitorInterfaceDecorator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
@@ -421,9 +419,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                                    IterablePath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
-    VisitorInterfaceDecorator visitorInterfaceDecorator = new VisitorInterfaceDecorator(glex, visitorService);
 
-    ASTVisitorDecorator astVisitorDecorator = new ASTVisitorDecorator(glex, visitorInterfaceDecorator, visitorService);
+    ASTVisitorDecorator astVisitorDecorator = new ASTVisitorDecorator(glex, visitorService);
     SymbolVisitorDecorator symbolVisitorDecorator = new SymbolVisitorDecorator(glex, visitorService, symbolTableService);
     ScopeVisitorDecorator scopeVisitorDecorator = new ScopeVisitorDecorator(glex, visitorService, symbolTableService);
     DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(glex, visitorService);

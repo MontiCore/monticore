@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java._visitor.visitor_interface;
+package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -15,51 +14,68 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class VisitorInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
+public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
+
 
   private final VisitorService visitorService;
 
-  public VisitorInterfaceDecorator(final GlobalExtensionManagement glex,
-                                   VisitorService visitorService) {
+  public ASTVisitorDecorator(final GlobalExtensionManagement glex,
+                             final VisitorService visitorService) {
     super(glex);
     this.visitorService = visitorService;
   }
 
   @Override
-  public ASTCDInterface decorate(final ASTCDCompilationUnit compilationUnit) {
-    ASTCDDefinition astcdDefinition = compilationUnit.getCDDefinition();
+  public ASTCDInterface decorate(ASTCDCompilationUnit ast) {
+    ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithPackage(ast);
     ASTMCType visitorType = this.visitorService.getVisitorType();
+
     ASTCDInterface symbolVisitorInterface = CD4AnalysisMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitorSimpleTypeName())
         .addAllInterfaces(this.visitorService.getAllVisitorTypesInHierarchy())
         .setModifier(PUBLIC.build())
         .addCDMethod(addGetRealThisMethods(visitorType))
         .addCDMethod(addSetRealThisMethods(visitorType))
+        .addCDMethod(addEndVisitASTNodeMethods())
+        .addCDMethod(addVisitASTNodeMethods())
         .build();
 
-    // add methods but, no double signatures
-    List<ASTCDMethod> classMethods = addClassVisitorMethods(astcdDefinition.getCDClassList());
+    // add visitor methods, but no double signatures
+    List<ASTCDMethod> classMethods = addClassVisitorMethods(compilationUnit.getCDDefinition().getCDClassList());
     for (ASTCDMethod classMethod : classMethods) {
       if (!visitorService.isMethodAlreadyDefined(classMethod, symbolVisitorInterface.getCDMethodList())) {
         symbolVisitorInterface.addCDMethod(classMethod);
       }
     }
-    List<ASTCDMethod> interfaceMethods = addInterfaceVisitorMethods(astcdDefinition.getCDInterfaceList());
+    List<ASTCDMethod> interfaceMethods = addInterfaceVisitorMethods(compilationUnit.getCDDefinition().getCDInterfaceList());
     for (ASTCDMethod interfaceMethod : interfaceMethods) {
       if (!visitorService.isMethodAlreadyDefined(interfaceMethod, symbolVisitorInterface.getCDMethodList())) {
         symbolVisitorInterface.addCDMethod(interfaceMethod);
       }
     }
-    List<ASTCDMethod> enumMethods = addEnumVisitorMethods(astcdDefinition.getCDEnumList(), astcdDefinition.getName());
+    List<ASTCDMethod> enumMethods = addEnumVisitorMethods(compilationUnit.getCDDefinition().getCDEnumList(),
+        compilationUnit.getCDDefinition().getName());
     for (ASTCDMethod enumMethod : enumMethods) {
       if (!visitorService.isMethodAlreadyDefined(enumMethod, symbolVisitorInterface.getCDMethodList())) {
         symbolVisitorInterface.addCDMethod(enumMethod);
       }
     }
+
     return symbolVisitorInterface;
+  }
+
+  protected ASTCDMethod addVisitASTNodeMethods() {
+    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(AST_INTERFACE);
+    return visitorService.getVisitorMethod(VisitorConstants.VISIT, astNodeType);
+  }
+
+  protected ASTCDMethod addEndVisitASTNodeMethods() {
+    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(AST_INTERFACE);
+    return visitorService.getVisitorMethod(VisitorConstants.END_VISIT, astNodeType);
   }
 
   protected ASTCDMethod addGetRealThisMethods(ASTMCType visitorType) {
@@ -85,13 +101,16 @@ public class VisitorInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
       ASTMCType classType = getCDTypeFacade().createTypeByDefinition(astcdClass.getName());
       visitorMethods.add(addVisitMethod(classType));
       visitorMethods.add(addEndVisitMethod(classType));
-      visitorMethods.add(addTraversMethod(classType, astcdClass));
       visitorMethods.add(addHandleMethod(classType, doTraverse));
+      if (doTraverse){
+        visitorMethods.add(addTraversMethod(classType, astcdClass));
+      }
     }
     return visitorMethods;
   }
 
   protected List<ASTCDMethod> addEnumVisitorMethods(List<ASTCDEnum> astcdEnumList, String definitionName) {
+    // no traverse method and not for literals Enum
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDEnum astcdEnum : astcdEnumList) {
       if (!visitorService.isLiteralsEnum(astcdEnum, definitionName)) {
@@ -105,6 +124,7 @@ public class VisitorInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   protected List<ASTCDMethod> addInterfaceVisitorMethods(List<ASTCDInterface> astcdInterfaceList) {
+    // no traverse method
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDInterface astcdInterface : astcdInterfaceList) {
       ASTMCType interfaceType = getCDTypeFacade().createTypeByDefinition(astcdInterface.getName());
@@ -125,13 +145,13 @@ public class VisitorInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDMethod addHandleMethod(ASTMCType astType, boolean traverse) {
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, astType);
-    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint("_visitor.Handle", traverse));
+    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, traverse));
     return handleMethod;
   }
 
   protected ASTCDMethod addTraversMethod(ASTMCType astType, ASTCDClass astcdClass) {
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, astType);
-    this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint("_visitor.Traverse", astcdClass));
+    this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TRAVERSE_TEMPLATE, astcdClass));
     return traverseMethod;
   }
 }

@@ -114,6 +114,22 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getPackage(cdDefinitionSymbol) + "." + getSymbolName(clazz);
   }
 
+  public Optional<String> getDefiningSymbolTypeName(ASTCDType clazz) {
+    // does only return symbol defining parts not parts with e.g. symbol (MCType)
+    return getDefiningSymbolTypeName(clazz, getCDSymbol());
+  }
+
+  public Optional<String> getDefiningSymbolTypeName(ASTCDType clazz, CDDefinitionSymbol cdDefinitionSymbol) {
+    //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
+    if (clazz.getModifierOpt().isPresent()) {
+      Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifierOpt().get());
+      if (symbolTypeValue.isPresent()) {
+        return Optional.empty();
+      }
+    }
+    return Optional.of(getPackage(cdDefinitionSymbol) + "." + getSymbolName(clazz));
+  }
+
   public ASTMCType getSymbolType(ASTCDType clazz) {
     return getCDTypeFactory().createQualifiedType(getSymbolTypeName(clazz));
   }
