@@ -70,9 +70,9 @@ it-experiments-grammar:
   dependencies: []
   script:
     - cd monticore-generator/it/experiments
-    - "./gradlew build"
-    - "cd ../../../monticore-grammar/monticore-grammar-it $GRADLE_OPTS"
-    - "./gradlew build"
+    - "./gradlew build $GRADLE_OPTS"
+    - "cd ../../../monticore-grammar/monticore-grammar-it"
+    - "./gradlew build $GRADLE_OPTS"
   only:
     - dev
 
