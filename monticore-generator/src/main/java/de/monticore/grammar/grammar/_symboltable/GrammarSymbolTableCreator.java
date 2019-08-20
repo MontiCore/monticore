@@ -2,24 +2,18 @@
 
 package de.monticore.grammar.grammar._symboltable;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.grammar.Multiplicity;
-import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.FullGenericTypesPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.se_rwth.commons.logging.Log;
-
-import java.util.*;
-
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
-import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.*;
+import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.getConstantName;
+import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.isSubType;
+import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.resolveRule;
 import static de.monticore.grammar.HelperGrammar.findImplicitTypes;
-import static de.monticore.grammar.Multiplicity.*;
+import static de.monticore.grammar.Multiplicity.LIST;
+import static de.monticore.grammar.Multiplicity.OPTIONAL;
+import static de.monticore.grammar.Multiplicity.determineMultiplicity;
+import static de.monticore.grammar.Multiplicity.multiplicityOfAttributeInAST;
 import static de.monticore.grammar.grammar._ast.GrammarMill.symbolDefinitionBuilder;
 import static de.se_rwth.commons.Names.getQualifiedName;
 import static de.se_rwth.commons.StringTransformations.uncapitalize;
@@ -27,6 +21,42 @@ import static de.se_rwth.commons.logging.Log.error;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+
+import java.util.Collection;
+import java.util.Deque;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.grammar.Multiplicity;
+import de.monticore.grammar.grammar._ast.ASTASTRule;
+import de.monticore.grammar.grammar._ast.ASTAbstractProd;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
+import de.monticore.grammar.grammar._ast.ASTBlock;
+import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTConstant;
+import de.monticore.grammar.grammar._ast.ASTConstantGroup;
+import de.monticore.grammar.grammar._ast.ASTEnumProd;
+import de.monticore.grammar.grammar._ast.ASTExternalProd;
+import de.monticore.grammar.grammar._ast.ASTGrammarReference;
+import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
+import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
+import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
+import de.monticore.grammar.grammar._ast.ASTLexProd;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTNonTerminal;
+import de.monticore.grammar.grammar._ast.ASTProd;
+import de.monticore.grammar.grammar._ast.ASTRuleComponent;
+import de.monticore.grammar.grammar._ast.ASTRuleReference;
+import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
+import de.monticore.grammar.grammar._ast.ASTSymbolRule;
+import de.monticore.grammar.grammar._ast.ASTTerminal;
+import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.FullGenericTypesPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
 
 public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
@@ -50,7 +80,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     this.astGrammar = astGrammar;
     this.grammarSymbol = symbol;
 
-    symbol.setComponent(astGrammar.isComponent());
+    symbol.setIsComponent(astGrammar.isComponent());
 
     addSuperGrammars(astGrammar, symbol);
   }
@@ -82,7 +112,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   public void initialize_InterfaceProd(ProdSymbol prodSymbol, ASTInterfaceProd ast) {
-    prodSymbol.setInterface(true);
+    prodSymbol.setIsInterface(true);
 
     setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
 
@@ -92,7 +122,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   public void initialize_LexProd(ProdSymbol prodSymbol, ASTLexProd ast) {
-    prodSymbol.setLexerProd(true);
+    prodSymbol.setIsLexerProd(true);
   }
 
   @Override
@@ -106,7 +136,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   public void initialize_AbstractProd(ProdSymbol prodSymbol, ASTAbstractProd ast) {
-    prodSymbol.setAbstract(true);
+    prodSymbol.setIsAbstract(true);
 
     setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
 
@@ -117,14 +147,14 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   public void initialize_ExternalProd(ProdSymbol prodSymbol, ASTExternalProd ast) {
-    prodSymbol.setExternal(true);
+    prodSymbol.setIsExternal(true);
 
     setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
   }
 
   @Override
   public void initialize_EnumProd(ProdSymbol prodSymbol, ASTEnumProd ast) {
-    prodSymbol.setEnum(true);
+    prodSymbol.setIsEnum(true);
     // TODO Behandlung der Constants fehlt noch
   }
 
@@ -141,7 +171,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     if (currentSymbol.isPresent()) {
       prodComponent.setUsageName(usageName);
-      prodComponent.setTerminal(true);
+      prodComponent.setIsTerminal(true);
       setComponentMultiplicity(prodComponent, ast);
       prodComponent = currentSymbol.get().addProdComponent(prodComponent);
 
@@ -196,7 +226,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
       prodComponent = currentSymbol.addProdComponent(prodComponent);
       setLinkBetweenSymbolAndNode(prodComponent, ast);
 
-      prodComponent.setNonterminal(true);
+      prodComponent.setIsNonterminal(true);
       prodComponent.setReferencedSymbolName(ast.getReferencedSymbolOpt().orElse(""));
     }
   }
@@ -241,9 +271,9 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   void setComponentMultiplicity(RuleComponentSymbol prod, ASTNode ast) {
     Multiplicity multiplicity = determineMultiplicity(astGrammar, ast);
     if (multiplicity == LIST) {
-      prod.setList(true);
+      prod.setIsList(true);
     } else if (multiplicity == OPTIONAL) {
-      prod.setOptional(true);
+      prod.setIsOptional(true);
     }
   }
 
@@ -254,7 +284,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
 
     if (sym.isPresent()) {
-      sym.get().setLexerNonterminal(true);
+      sym.get().setIsLexerNonterminal(true);
       addToScopeAndLinkWithNode(sym.get(), astNode);
     }
   }
@@ -269,7 +299,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     if (currentSymbol != null && attrName.isPresent()) {
       RuleComponentSymbol prodComponent = new RuleComponentSymbol(attrName.get());
-      prodComponent.setConstantGroup(true);
+      prodComponent.setIsConstantGroup(true);
       prodComponent.setUsageName(usageName);
 
       final String symbolName = isNullOrEmpty(usageName)
@@ -285,7 +315,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
       }
       if (prevProdComp.isPresent()) {
         prodComponent = prevProdComp.get();
-        prodComponent.setList(true);
+        prodComponent.setIsList(true);
         setLinkBetweenSymbolAndNode(prodComponent, astNode);
       } else {
         addToScopeAndLinkWithNode(prodComponent, astNode);
@@ -309,7 +339,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
       if (!rule.isPresent()) {
         // Create entry for an implicit rule
         final ProdSymbol prodSymbol = new ProdSymbol(typeName);
-        prodSymbol.setLexerProd(true);
+        prodSymbol.setIsLexerProd(true);
       }
     }
     super.visit(action);
@@ -396,8 +426,8 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
           if (attribute.isPresent()) {
             Multiplicity multiplicity = multiplicityOfAttributeInAST(
                     (ASTAdditionalAttribute) attribute.get().getAstNode().get());
-            component.setList(multiplicity == LIST);
-            component.setOptional(multiplicity == OPTIONAL);
+            component.setIsList(multiplicity == LIST);
+            component.setIsOptional(multiplicity == OPTIONAL);
           }
         }
       }
@@ -417,7 +447,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
         prodSymbol.setProdDefiningSymbolKind(symbolKindName);
       }
       if (symbolDefinition.isGenScope()) {
-        prodSymbol.setScopeDefinition(symbolDefinition.isGenScope());
+        prodSymbol.setIsScopeSpanning(symbolDefinition.isGenScope());
       }
     }
   }
@@ -429,7 +459,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
       if (!prod.isPresent()) {
         error("0xA0243 Rule " + name + " couldn't be found!");
       } else {
-        prod.get().setStartProd(true);
+        prod.get().setIsStartProd(true);
         grammarSymbol.setStartProd(prod.get());
       }
     } else {
@@ -471,7 +501,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
         error("0xA2174 Prod " + firstProduction.getName() + " couldn't be found! Pos: "
                 + firstProduction.get_SourcePositionStart());
       } else {
-        prod.get().setStartProd(true);
+        prod.get().setIsStartProd(true);
         grammarSymbol.setStartProd(prod.get());
       }
     }

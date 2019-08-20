@@ -20,11 +20,6 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
   private final List<MCGrammarSymbolReference> superGrammars = new ArrayList<>();
 
-  /**
-   * Is the grammar abstract?
-   */
-  private boolean isComponent = false;
-
   // the start production of the grammar
   private ProdSymbol startProd;
 
@@ -44,17 +39,6 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
    */
   public Optional<ProdSymbol> getStartProd() {
     return ofNullable(startProd);
-  }
-
-  /**
-   * @return true, if the grammar is abstract
-   */
-  public boolean isComponent() {
-    return isComponent;
-  }
-
-  public void setComponent(boolean isComponent) {
-    this.isComponent = isComponent;
   }
 
   public List<MCGrammarSymbolReference> getSuperGrammars() {

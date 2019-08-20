@@ -479,7 +479,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
   public boolean spansScope(final ProdSymbol rule) {
-    return rule.isScopeDefinition();
+    return rule.isScopeSpanning();
   }
 
   public boolean isSymbol(final ProdSymbol rule) {
@@ -640,7 +640,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     Optional<MCGrammarSymbol> grammarSymbol = getGrammarSymbol().getEnclosingScope().resolveMCGrammar(symbol);
     if (grammarSymbol.isPresent()) {
       for (ProdSymbol prodSymbol : grammarSymbol.get().getProds()) {
-        if (prodSymbol.isScopeDefinition()) {
+        if (prodSymbol.isScopeSpanning()) {
           return true;
         }
       }
