@@ -17,13 +17,13 @@ public class ListSuffixDecorator extends AbstractTransformer<ASTCDCompilationUni
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalInput, ASTCDCompilationUnit changedInput) {
     for (ASTCDInterface astcdInterface : changedInput.getCDDefinition().getCDInterfaceList()) {
-      addSToAttributes(astcdInterface.getCDAttributeList());
+      addSToListAttributes(astcdInterface.getCDAttributeList());
     }
     for (ASTCDClass astcdClass : changedInput.getCDDefinition().getCDClassList()) {
-      addSToAttributes(astcdClass.getCDAttributeList());
+      addSToListAttributes(astcdClass.getCDAttributeList());
     }
     for (ASTCDEnum astcdEnum : changedInput.getCDDefinition().getCDEnumList()) {
-      addSToAttributes(astcdEnum.getCDAttributeList());
+      addSToListAttributes(astcdEnum.getCDAttributeList());
     }
     return originalInput;
   }
@@ -32,7 +32,7 @@ public class ListSuffixDecorator extends AbstractTransformer<ASTCDCompilationUni
     return astcdAttribute.getName() + LIST_SUFFIX_S;
   }
 
-  protected void addSToAttributes(List<ASTCDAttribute> attributeList) {
+  protected void addSToListAttributes(List<ASTCDAttribute> attributeList) {
     for (ASTCDAttribute astcdAttribute : attributeList) {
       if (DecorationHelper.isListType(astcdAttribute.printType())) {
         astcdAttribute.setName(getAttributeNameWithListSuffix(astcdAttribute));

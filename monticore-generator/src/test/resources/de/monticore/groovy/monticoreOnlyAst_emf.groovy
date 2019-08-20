@@ -14,6 +14,7 @@ debug("Handcoded argument  : " + _configuration.getHandcodedPathAsStrings(), LOG
 debug("Handcoded files     : " + handcodedPath, LOG_ID)
 
 globalScope = createGlobalScope(modelPath)
+cdScope = createCD4AGlobalScope(modelPath)
 
 while (grammarIterator.hasNext()) {
   // Parse grammar
@@ -32,7 +33,7 @@ while (grammarIterator.hasNext()) {
 
     // Decorate AST-CD
     decoratedASTClassDiagramm = decorateEmfForASTPackage(glex, astClassDiagram, modelPath, handcodedPath)
-    generateEmfFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
+    generateEmfFromCD(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
 
     // Generate AST files
     generateEmfCompatible(glex, globalScope, astClassDiagramWithST, out, templatePath, handcodedPath)

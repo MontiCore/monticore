@@ -80,14 +80,14 @@ for (astGrammar in getParsedGrammars()) {
   generateSymbolTable(glex, mcScope, astGrammar, cdScope, astClassDiagram, out, handcodedPath)
 
   // M9 Generate ast classes, visitor and context condition
-  decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, modelPath, handcodedPath)
+  decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedVisitorCD, out, handcodedPath)
 
   generateCocos(glex, cdScope, astClassDiagram, out)
   generateODs(glex, cdScope, mcScope, astClassDiagram, out)
 
   // M7: decorate Class Diagram AST
-  decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, modelPath, handcodedPath)
+  decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
 
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)

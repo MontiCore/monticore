@@ -410,12 +410,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   public ASTCDCompilationUnit decorateForVisitorPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
-                                                        ASTCDCompilationUnit astClassDiagram, ModelPath modelPath, IterablePath handCodedPath) {
+                                                        ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
     ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
-    return decorateWithVisitor(preparedCD, glex, modelPath, handCodedPath);
+    return decorateWithVisitor(preparedCD, glex, handCodedPath);
   }
 
-  private ASTCDCompilationUnit decorateWithVisitor(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, ModelPath modelPath,
+  private ASTCDCompilationUnit decorateWithVisitor(ASTCDCompilationUnit cd, GlobalExtensionManagement glex,
                                                    IterablePath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
@@ -451,12 +451,14 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astClassDiagram - class diagram AST
    */
 
-  public ASTCDCompilationUnit decorateForASTPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope, ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
+  public ASTCDCompilationUnit decorateForASTPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+                                                    ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
     ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
     return decorateWithAST(preparedCD, glex, handCodedPath);
   }
 
-  public ASTCDCompilationUnit decorateEmfForASTPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope, ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
+  public ASTCDCompilationUnit decorateEmfForASTPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+                                                       ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
     ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
     return decorateEmfWithAST(preparedCD, glex, handCodedPath);
   }

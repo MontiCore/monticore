@@ -33,13 +33,13 @@ while (grammarIterator.hasNext()) {
 
     // M7: decorate Class Diagram AST
 
-    decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, modelPath, handcodedPath)
+    decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
     generateFromCD(glex, astClassDiagram, decoratedVisitorCD, out, handcodedPath)
 
     generateCocos(glex, cd4AScope, astClassDiagramWithST, out)
     generateODs(glex, cd4AScope, mcScope, astClassDiagramWithST, out)
 
-    decoratedASTClassDiagramm = decorateForASTPackage(glex, astClassDiagramWithST, modelPath, handcodedPath)
+    decoratedASTClassDiagramm = decorateForASTPackage(glex,cd4AScope, astClassDiagramWithST, handcodedPath)
     generateFromCD(glex,astClassDiagramWithST, decoratedASTClassDiagramm, out, handcodedPath)
 
   }
