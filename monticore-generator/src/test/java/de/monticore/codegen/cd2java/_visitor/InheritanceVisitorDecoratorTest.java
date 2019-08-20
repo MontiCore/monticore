@@ -147,6 +147,7 @@ public class InheritanceVisitorDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, visitorInterface, visitorInterface);
-    System.out.println(sb.toString());
+    //todo: find better way to check java code
+//    System.out.println(sb.toString());
   }
 }

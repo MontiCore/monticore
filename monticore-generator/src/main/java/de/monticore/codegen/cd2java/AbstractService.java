@@ -55,7 +55,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public List<CDDefinitionSymbol> getSuperCDsDirect() {
-    return getSuperCDsTransitive(getCDSymbol());
+    return getSuperCDsDirect(getCDSymbol());
   }
 
   public List<CDDefinitionSymbol> getSuperCDsDirect(CDDefinitionSymbol cdSymbol) {

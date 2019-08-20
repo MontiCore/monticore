@@ -12,10 +12,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_FULL_NAME;
@@ -71,16 +68,19 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   }
 
   protected Set<String> getSymbolNames(ASTCDDefinition astcdDefinition) {
+    // only add defining symbol Names not referencing like e.g. symbol (MCType)
     Set<String> symbolNames = new HashSet<>();
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       if (astcdClass.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdClass.getModifier())) {
-        symbolNames.add(symbolTableService.getSymbolTypeName(astcdClass));
+        Optional<String> definingSymbolTypeName = symbolTableService.getDefiningSymbolTypeName(astcdClass);
+        definingSymbolTypeName.ifPresent(symbolNames::add);
       }
     }
 
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
       if (astcdInterface.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdInterface.getModifier())) {
-        symbolNames.add(symbolTableService.getSymbolTypeName(astcdInterface));
+        Optional<String> definingSymbolTypeName = symbolTableService.getDefiningSymbolTypeName(astcdInterface);
+        definingSymbolTypeName.ifPresent(symbolNames::add);
       }
     }
     return symbolNames;

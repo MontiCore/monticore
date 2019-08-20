@@ -46,7 +46,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
     ASTMCQualifiedType scopeVisitorType = getCDTypeFacade().createQualifiedType(scopeVisitorName);
 
-    List<ASTMCQualifiedType> superScopeVisitorTypes = visitorService.getSuperCDsTransitive()
+    List<ASTMCQualifiedType> superScopeVisitorTypes = visitorService.getSuperCDsDirect()
         .stream()
         .map(visitorService::getScopeVisitorFullTypeName)
         .map(getCDTypeFacade()::createQualifiedType)
