@@ -94,7 +94,7 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
       visitorMethodList.add(visitorService.getVisitorMethod(END_VISIT, symbolType));
       //add template for handle method
       ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, symbolType);
-      this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint("_visitor.Handle", true));
+      this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, true));
       visitorMethodList.add(handleMethod);
       visitorMethodList.add(visitorService.getVisitorMethod(TRAVERSE, symbolType));
     }

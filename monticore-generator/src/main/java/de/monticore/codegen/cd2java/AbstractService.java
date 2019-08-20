@@ -60,10 +60,9 @@ public class AbstractService<T extends AbstractService> {
 
   public List<CDDefinitionSymbol> getSuperCDsDirect(CDDefinitionSymbol cdSymbol) {
     // get direct parent CDSymbols
-    List<CDDefinitionSymbol> directSuperCdSymbols = cdSymbol.getImports().stream()
+    return cdSymbol.getImports().stream()
         .map(this::resolveCD)
         .collect(Collectors.toList());
-    return directSuperCdSymbols;
   }
 
   public List<CDDefinitionSymbol> getSuperCDsTransitive() {

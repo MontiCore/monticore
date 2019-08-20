@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_INHERITANCE_TEMPLATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
@@ -63,7 +64,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
       superType= visitorService.getAllSuperClassesTransitive(astcdClass);
     }
     replaceTemplate(EMPTY_BODY, handleMethod,
-        new TemplateHookPoint("_visitor.inheritance.Handle",
+        new TemplateHookPoint(HANDLE_INHERITANCE_TEMPLATE,
             languageInterfaceName, visitorSimpleTypeName, superType));
     return handleMethod;
   }
@@ -71,7 +72,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
   protected ASTCDMethod getHandleMethod(ASTCDInterface astcdInterface, String languageInterfaceName, String visitorSimpleTypeName) {
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getCDTypeFacade().createQualifiedType(astcdInterface.getName()));
     replaceTemplate(EMPTY_BODY, handleMethod,
-        new TemplateHookPoint("_visitor.inheritance.Handle",
+        new TemplateHookPoint(HANDLE_INHERITANCE_TEMPLATE,
             languageInterfaceName, visitorSimpleTypeName, new ArrayList<>()));
     return handleMethod;
   }
@@ -82,7 +83,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
 
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(VisitorConstants.HANDLE, astNodeType);
     this.replaceTemplate(EMPTY_BODY, handleMethod,
-        new TemplateHookPoint("_visitor.inheritance.Handle", languageInterfaceName, visitorSimpleTypeName, Optional.empty()));
+        new TemplateHookPoint(HANDLE_INHERITANCE_TEMPLATE, languageInterfaceName, visitorSimpleTypeName, Optional.empty()));
 
     return handleMethod;
   }

@@ -40,7 +40,7 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
         .addCDAttribute(getParentAttribute(languageInterfaceName))
         .addCDMethod(getParentMethod(languageInterfaceName))
         .addCDMethod(getParentsMethod(languageInterfaceName))
-        .addAllCDMethods(getTraversMethod(compilationUnit.getCDDefinition()))
+        .addAllCDMethods(getTraversMethod(compilationUnit.getCDDefinition().getCDClassList()))
         .build();
   }
 
@@ -55,7 +55,7 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     ASTMCType type = getCDTypeFacade().createOptionalTypeOf(languageInterfaceName);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
     ASTCDMethod getParentMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, GET_PARENT_METHOD);
-    this.replaceTemplate(EMPTY_BODY, getParentMethod, new TemplateHookPoint("_visitor.parentaware.GetParent", languageInterfaceName));
+    this.replaceTemplate(EMPTY_BODY, getParentMethod, new TemplateHookPoint(GET_PARENT_PAREENTAWARE_TEMPLATE, languageInterfaceName));
     return getParentMethod;
   }
 
@@ -67,16 +67,19 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     return getParentsMethod;
   }
 
-  protected List<ASTCDMethod> getTraversMethod(ASTCDDefinition astcdDefinition) {
-    List<ASTCDMethod> traverseMethods = astcdDefinition.getCDClassList()
+  protected List<ASTCDMethod> getTraversMethod(List<ASTCDClass> astcdClasses) {
+    // only add travers method for non abstract classes
+    List<ASTCDMethod> traverseMethods = astcdClasses
         .stream()
+        .filter(ASTCDClassTOP::isPresentModifier)
+        .filter(c -> !c.getModifier().isAbstract())
         .map(c -> visitorService.getVisitorMethod(TRAVERSE, getCDTypeFacade().createQualifiedType(c.getName())))
         .collect(Collectors.toList());
 
     // add template
     String visitorSimpleTypeName = visitorService.getVisitorSimpleTypeName();
     traverseMethods.forEach(m -> replaceTemplate(EMPTY_BODY, m,
-        new TemplateHookPoint("_visitor.parentaware.Travers", visitorSimpleTypeName)));
+        new TemplateHookPoint(TRAVERSE_PAREENTAWARE_TEMPLATE, visitorSimpleTypeName)));
 
     return traverseMethods;
   }

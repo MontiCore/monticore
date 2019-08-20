@@ -6,8 +6,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java._visitor.visitor_interface.ASTVisitorDecorator;
-import de.monticore.codegen.cd2java._visitor.visitor_interface.VisitorInterfaceDecorator;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
@@ -65,7 +63,6 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("genHelper", new DecorationHelper());
     ASTVisitorDecorator decorator = new ASTVisitorDecorator(this.glex,
-        new VisitorInterfaceDecorator(this.glex, new VisitorService(decoratedCompilationUnit)),
         new VisitorService(decoratedCompilationUnit));
     this.visitorInterface = decorator.decorate(decoratedCompilationUnit);
     this.glex.setGlobalValue("astHelper", new DecorationHelper());

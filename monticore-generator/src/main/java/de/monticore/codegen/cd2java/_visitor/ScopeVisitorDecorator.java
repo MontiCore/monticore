@@ -123,12 +123,12 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
     methodList.add(visitorService.getVisitorMethod(VISIT, scopeName));
     methodList.add(visitorService.getVisitorMethod(END_VISIT, scopeName));
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, scopeName);
-    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint("_visitor.Handle", true));
+    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, true));
     methodList.add(handleMethod);
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, scopeName);
     methodList.add(traverseMethod);
     this.replaceTemplate(EMPTY_BODY, traverseMethod,
-        new TemplateHookPoint("_visitor.scope.Traverse", superSymbolList, symbolTableService.getScopeInterfaceTypeName()));
+        new TemplateHookPoint(TRAVERSE_SCOPE_TEMPLATE, superSymbolList, symbolTableService.getScopeInterfaceTypeName()));
     return methodList;
   }
 
@@ -156,15 +156,10 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
   protected boolean hasProd(ASTCDDefinition astcdDefinition) {
     // is true if it has any class productions or any interface productions that are not the language interface
-    if (!astcdDefinition.isEmptyCDClasss()) {
-      return true;
-    } else if (!astcdDefinition.isEmptyCDInterfaces() &&
-        !(astcdDefinition.sizeCDInterfaces() == 1
-            && astcdDefinition.getCDInterface(0).getName().equals(visitorService.getSimleLanguageInterfaceName()))) {
-      return true;
-    } else {
-      return false;
-    }
+    return !astcdDefinition.isEmptyCDClasss() ||
+          (!astcdDefinition.isEmptyCDInterfaces() &&
+               !(astcdDefinition.sizeCDInterfaces() == 1
+               && astcdDefinition.getCDInterface(0).getName().equals(visitorService.getSimleLanguageInterfaceName())));
   }
 
 }

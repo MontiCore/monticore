@@ -7,8 +7,6 @@ import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._visitor.visitor_interface.ASTVisitorDecorator;
-import de.monticore.codegen.cd2java._visitor.visitor_interface.VisitorInterfaceDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -45,7 +43,6 @@ public class CDVisitorDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
     ASTVisitorDecorator astVisitorDecorator = new ASTVisitorDecorator(this.glex,
-        new VisitorInterfaceDecorator(this.glex, new VisitorService(decoratedCompilationUnit)),
         new VisitorService(decoratedCompilationUnit));
     SymbolVisitorDecorator symbolVisitorDecorator = new SymbolVisitorDecorator(this.glex,
         new VisitorService(decoratedCompilationUnit), new SymbolTableService(decoratedCompilationUnit));
