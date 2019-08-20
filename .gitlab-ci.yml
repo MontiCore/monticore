@@ -5,6 +5,7 @@ image: maven:3.5.4-jdk-8-alpine
 
 variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
   MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
 
 
@@ -57,10 +58,10 @@ it:
   dependencies: []
   script:
     - cd monticore-generator/it
-    - "./gradlew build"
-    - "./gradlew build -PbuildProfile=emf"
+    - "./gradlew build $GRADLE_OPTS"
+    - "./gradlew build -PbuildProfile=emf $GRADLE_OPTS"
     - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
-    - "./gradlew build"
+    - "./gradlew build $GRADLE_OPTS"
   only:
     - dev
 
@@ -70,7 +71,7 @@ it-experiments-grammar:
   script:
     - cd monticore-generator/it/experiments
     - "./gradlew build"
-    - "cd ../../../monticore-grammar/monticore-grammar-it"
+    - "cd ../../../monticore-grammar/monticore-grammar-it $GRADLE_OPTS"
     - "./gradlew build"
   only:
     - dev
