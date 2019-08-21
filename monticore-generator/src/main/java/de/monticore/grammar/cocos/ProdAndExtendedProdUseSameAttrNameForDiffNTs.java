@@ -9,6 +9,7 @@ import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._cocos.GrammarASTNonTerminalCoCo;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -55,8 +56,18 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
                 } else if (rcs.get().isTerminal() && componentSymbol.get().getUsageName().equals(rcs.get().getUsageName())) {
                   logError(prod, ruleSymbol.get(), attributename, componentSymbol.get(),
                       "production that is a terminal named " + rcs.get().getUsageName(), a);
-                } else if (rcs.get().isNonterminal() && !rcs.get().getReferencedProd().get().getName()
-                    .equals(componentSymbol.get().getReferencedProd().get().getName())) {
+                } else if (rcs.get().isNonterminal() && rcs.get().getReferencedProd().isPresent()
+                    && !rcs.get().getReferencedProd().get().getName().equals(componentSymbol.get().getReferencedProd().get().getName())) {
+                  logError(prod, ruleSymbol.get(), attributename,
+                      componentSymbol.get(), "nonterminal " + rcs.get().getReferencedProd().get().getName(), a);
+                }
+              } else {
+                //try to find NonTerminal with same Name, but with capitalised start -> will both become the same attribute
+                rcs = ruleSymbol.get().getSpannedScope().resolveRuleComponent(StringTransformations.capitalize(attributename));
+                if (rcs.isPresent() && rcs.get().isNonterminal() && rcs.get().getReferencedProd().isPresent()
+                    && !rcs.get().getReferencedProd().get().getName().equals(componentSymbol.get().getReferencedProd().get().getName())) {
+                  // logs error when e.g. State = F; A extends State = f:R;
+                  // because F form State will evaluate to attributeName with small f
                   logError(prod, ruleSymbol.get(), attributename,
                       componentSymbol.get(), "nonterminal " + rcs.get().getReferencedProd().get().getName(), a);
                 }

@@ -5,7 +5,6 @@ package de.monticore.grammar.cocos;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ProdAndExtendedProdUseSameAttrNameForDiffNTsTest extends CocoTest {
@@ -27,10 +26,8 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTsTest extends CocoTest {
         checker);
   }
 
-  @Ignore
   @Test
   public void testInvalid_b() {
-    // todo activate
     //Super = C;
     //Sub extends Super = c:A;
     String message = " The production Sub extending the production Super must not use the\n" +
@@ -101,7 +98,7 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTsTest extends CocoTest {
 
   @Test
   public void testCorrect3() {
-    testValidGrammar("cocos.valid.ProdAndExtendedProdUseSameAttrNameForDiffNTs", checker);
+    testValidGrammar("cocos.valid.ProdAndOverriddenProdUseSameAttrNameForDiffNTs_sub", checker);
   }
 
 }
