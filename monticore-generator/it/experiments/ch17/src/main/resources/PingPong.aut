@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 // The ping pong game
 automaton PingPong {
-  state NoGame <<initial>> <<final>>;
-  state Ping;
-  state Pong <<final>>;
+  autstate NoGame <<initial>> <<final>>;
+  autstate Ping;
+  autstate Pong <<final>>;
 
   NoGame - startGame > Ping;
 

@@ -7,8 +7,9 @@ component grammar InvAutomaton
     "automaton" Name "{" (State | Transition)* "}" ;
 
   external Invariant;
-  
-  State = "state" Name
+
+    //todo rename to state, coco ProdAndExtendedProdUseSameAttrNameForDiffNTs is fixed
+  State = "autstate" Name
           Invariant
           ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )* ";" ;
 
