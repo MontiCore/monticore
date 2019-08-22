@@ -14,7 +14,7 @@ public class TypesCalculatorHelper {
         "char".equals(unbox(type).getName())||
         "int".equals(unbox(type).getName())
     ){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("int");
       return type;
     }
@@ -29,58 +29,58 @@ public class TypesCalculatorHelper {
 
   public static TypeExpression unbox(TypeExpression type){
     if(type.getName().equals("java.lang.Boolean")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("boolean");
     }else if(type.getName().equals("java.lang.Byte")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("byte");
     }else if(type.getName().equals("java.lang.Character")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("char");
     }else if(type.getName().equals("java.lang.Short")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("short");
     }else if(type.getName().equals("java.lang.Integer")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("int");
     }else if(type.getName().equals("java.lang.Long")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("long");
     }else if(type.getName().equals("java.lang.Float")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("float");
     }else if(type.getName().equals("java.lang.Double")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("double");
     }else if(type.getName().equals("java.lang.String")){
-      type = new TypeExpression();
+      type = new ObjectType();
       type.setName("String");
     }else if(type.getBaseName().equals("Boolean")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("boolean");
     }else if(type.getBaseName().equals("Byte")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("byte");
     }else if(type.getBaseName().equals("Character")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("char");
     }else if(type.getBaseName().equals("Short")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("short");
     }else if(type.getBaseName().equals("Integer")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("int");
     }else if(type.getBaseName().equals("Long")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("long");
     }else if(type.getBaseName().equals("Float")){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("float");
     }else if(type.getBaseName().equals("Double")) {
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("double");
     }else if(type.getBaseName().equals("String")){
-      type = new TypeExpression();
+      type = new ObjectType();
       type.setName("String");
     }
     return type;
@@ -88,35 +88,35 @@ public class TypesCalculatorHelper {
 
   public static TypeExpression box(TypeExpression type) {
     if (type.getName().equals("boolean")) {
-      type = new TypeExpression();
+      type = new ObjectType();
       type.setName("java.lang.Boolean");
     }
     if (type.getName().equals("byte")) {
-      type = new TypeExpression();
+      type = new ObjectType();
       type.setName("java.lang.Byte");
     }
     if (type.getName().equals("char")) {
-      type = new TypeExpression();
+      type = new ObjectType();
       type.setName("java.lang.Character");
     }
     if (type.getName().equals("short")) {
-      type = new TypeExpression();
+      type = new ObjectType();
       type.setName("java.lang.Short");
     }
     if (type.getName().equals("int")) {
-      type = new TypeExpression();
+      type = new ObjectType();
       type.setName("java.lang.Integer");
     }
     if (type.getName().equals("long")) {
-      type = new TypeExpression();
+      type = new ObjectType();
       type.setName("java.lang.Long");
     }
     if (type.getName().equals("float")) {
-      type = new TypeExpression();
+      type = new ObjectType();
       type.setName("java.lang.Float");
     }
     if (type.getName().equals("double")) {
-      type = new TypeExpression();
+      type = new ObjectType();
       type.setName("java.lang.Double");
     }
     return type;
