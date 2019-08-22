@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.utils.Names.getSimpleName;
 import static de.se_rwth.commons.Names.getQualifier;
@@ -53,7 +54,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getScopeTypeName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + cdSymbol.getName() + SymbolTableConstants.SCOPE_SUFFIX;
+    return getPackage(cdSymbol) + "." + cdSymbol.getName() + SCOPE_SUFFIX;
   }
 
   public String getScopeInterfaceTypeName() {
@@ -61,7 +62,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getArtifactScopeTypeName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + cdSymbol.getName() + ARTIFACT_PREFIX + SymbolTableConstants.SCOPE_SUFFIX;
+    return getPackage(cdSymbol) + "." + cdSymbol.getName() + ARTIFACT_PREFIX + SCOPE_SUFFIX;
   }
 
   public String getArtifactScopeTypeName() {
@@ -72,8 +73,41 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getCDTypeFactory().createQualifiedType(getArtifactScopeTypeName(getCDSymbol()));
   }
 
+  public String getGlobalScopeTypeName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + cdSymbol.getName() + GLOBAL_PREFIX + SCOPE_SUFFIX;
+  }
+
+  public String getGlobalScopeTypeName() {
+    return getGlobalScopeTypeName(getCDSymbol());
+  }
+
+  public ASTMCQualifiedType getGlobalScopeType() {
+    return getCDTypeFactory().createQualifiedType(getGlobalScopeTypeName(getCDSymbol()));
+  }
+
+  public String getGlobalScopeInterfaceTypeName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + INTERFACE_PREFIX + cdSymbol.getName() + GLOBAL_PREFIX + SCOPE_SUFFIX;
+  }
+
+  public String getGlobalScopeInterfaceTypeName() {
+    return getGlobalScopeInterfaceTypeName(getCDSymbol());
+  }
+
+  public ASTMCQualifiedType getGlobalcopeInterfaceType() {
+    return getCDTypeFactory().createQualifiedType(getGlobalScopeInterfaceTypeName(getCDSymbol()));
+  }
+
+  public String getCommonSymbolInterfaceName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + INTERFACE_PREFIX + COMMON_PREFIX + cdSymbol.getName() + SYMBOL_SUFFIX;
+  }
+
+  public String getCommonSymbolInterfaceName() {
+    return getCommonSymbolInterfaceName(getCDSymbol());
+  }
+
+
   public String getScopeInterfaceTypeName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + INTERFACE_PREFIX + cdSymbol.getName() + SymbolTableConstants.SCOPE_SUFFIX;
+    return getPackage(cdSymbol) + "." + INTERFACE_PREFIX + cdSymbol.getName() + SCOPE_SUFFIX;
   }
 
   public ASTMCType getScopeType() {
@@ -91,9 +125,9 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public String getSymbolName(ASTCDType clazz) {
     // normal symbol name calculation from
     if (clazz.getName().startsWith(AST_PREFIX)) {
-      return clazz.getName().substring(AST_PREFIX.length()) + SymbolTableConstants.SYMBOL_SUFFIX;
+      return clazz.getName().substring(AST_PREFIX.length()) + SYMBOL_SUFFIX;
     } else {
-      return clazz.getName() + SymbolTableConstants.SYMBOL_SUFFIX;
+      return clazz.getName() + SYMBOL_SUFFIX;
     }
   }
 
@@ -146,14 +180,18 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return referencedSymbol;
   }
 
+  public String getSymbolBuilderName(ASTCDType astcdType) {
+    return getSymbolName(astcdType) + BUILDER_SUFFIX;
+  }
+
   public String getSimpleSymbolNameFromOptional(ASTMCType type) {
     ASTMCType referencedSymbolType = MCSimpleGenericTypesHelper.getReferenceTypeFromOptional(type).getMCTypeOpt().get();
     String referencedSymbol = referencedSymbolType.printType();
-    return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SymbolTableConstants.SYMBOL_SUFFIX));
+    return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SYMBOL_SUFFIX));
   }
 
   public String getSimpleSymbolName(String referencedSymbol) {
-    return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SymbolTableConstants.SYMBOL_SUFFIX));
+    return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SYMBOL_SUFFIX));
   }
 
   public boolean isReferencedSymbol(ASTCDAttribute attribute) {

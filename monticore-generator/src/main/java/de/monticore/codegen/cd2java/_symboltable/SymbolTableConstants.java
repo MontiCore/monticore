@@ -21,6 +21,24 @@ public class SymbolTableConstants {
 
   public static final String ARTIFACT_PREFIX = "Artifact";
 
+  public static final String GLOBAL_PREFIX = "Global";
+
+  public static final String COMMON_PREFIX = "Common";
+
   public static final String SCOPE_INTERFACE_FULL_NAME = "de.monticore.symboltable.IScope";
+
+  public static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
+
+  public static final String SYMBOL_BUILD_TEMPLATE = "_symboltable.builder.Build";
+
+  public static final String DETERMINE_PACKAGE_NAME_METHOD = "determinePackageName";
+
+  public static final String DETERMINE_FULL_NAME_METHOD = "determineFullName";
+
+  public static final String PACKAGE_NAME = "packageName";
+
+  public static final String FULL_NAME = "fullName";
+
+  public static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
 
 }
