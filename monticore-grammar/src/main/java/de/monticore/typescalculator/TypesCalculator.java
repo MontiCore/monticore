@@ -14,13 +14,13 @@ public class TypesCalculator {
   private static IExpressionsBasisScope scope;
 
   public static boolean isBoolean(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("boolean");
     return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
 
   public static boolean isString(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new ObjectType();
     exp.setName("String");
     if(exp.deepEquals(unbox(calc.calculateType(expr)))){
       return true;
@@ -29,38 +29,38 @@ public class TypesCalculator {
   }
 
   public static boolean isInt(ASTExpression expr) {
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
 
   public static boolean isLong(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("long");
     return exp.deepEquals(unbox(calc.calculateType(expr)));  }
 
   public static boolean isChar(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("char");
     return exp.deepEquals(unbox(calc.calculateType(expr)));  }
 
   public static boolean isFloat(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("float");
     return exp.deepEquals(unbox(calc.calculateType(expr)));  }
 
   public static boolean isDouble(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("double");
     return exp.deepEquals(unbox(calc.calculateType(expr)));  }
 
   public static boolean isShort(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("short");
     return exp.deepEquals(unbox(calc.calculateType(expr)));  }
 
   public static boolean isByte(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("byte");
     return exp.deepEquals(unbox(calc.calculateType(expr)));  }
 

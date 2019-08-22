@@ -48,9 +48,7 @@ public class GenericTypeExpression extends TypeExpression {
     if(!this.typeSymbol.equals(typeExpression.typeSymbol)){
       return false;
     }
-    if(!this.subTypes.equals(typeExpression.subTypes)){
-      return false;
-    }
+
     if(!this.superTypes.equals(typeExpression.superTypes)){
       return false;
     }
@@ -68,9 +66,7 @@ public class GenericTypeExpression extends TypeExpression {
     GenericTypeExpression clone = new GenericTypeExpression();
     clone.setName(this.name);
     clone.setEnclosingScope(this.enclosingScope);
-    for(TypeExpression expr: subTypes){
-      clone.addSubType(expr.deepClone());
-    }
+
     for(TypeExpression expr: superTypes){
       clone.addSuperType(expr.deepClone());
     }

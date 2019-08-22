@@ -15,8 +15,6 @@ public abstract class TypeExpression {
 
   protected Optional<TypeSymbol> typeSymbol = Optional.empty();
 
-  protected List<TypeExpression> subTypes = new ArrayList<>();
-
   protected List<TypeExpression> superTypes = new ArrayList<>();
 
   private void lazyLoadTypeSymbol() {
@@ -44,17 +42,12 @@ public abstract class TypeExpression {
     this.enclosingScope = enclosingScope;
   }
 
-  public List<TypeExpression> getSubTypes() {
-    return subTypes;
-  }
+
 
   public List<TypeExpression> getSuperTypes() {
     return superTypes;
   }
 
-  public void setSubTypes(List<TypeExpression> subTypes) {
-    this.subTypes = subTypes;
-  }
 
   public void setSuperTypes(List<TypeExpression> superTypes) {
     this.superTypes = superTypes;
@@ -64,9 +57,6 @@ public abstract class TypeExpression {
     this.superTypes.add(superType);
   }
 
-  public void addSubType(TypeExpression subType){
-    this.subTypes.add(subType);
-  }
 
   public String getBaseName() {
     String[] parts = this.name.split("\\.");

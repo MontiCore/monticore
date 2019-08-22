@@ -1,5 +1,6 @@
 package de.monticore.typescalculator;
 
+import de.monticore.aggregation.foo._ast.ASTBarBuilder;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.typescalculator.combineexpressionswithliterals._ast.ASTFoo;
@@ -44,7 +45,7 @@ public class ExpressionsBasisTest {
     Optional<ASTExpression> o = p.parse_StringExpression("int");
     Optional<ASTExpression> r = p.parse_StringExpression("vardouble");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -60,7 +61,7 @@ public class ExpressionsBasisTest {
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("A.B.C.QName");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new ObjectType();
     exp.setName("A.B.C.QName");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -79,7 +80,7 @@ public class ExpressionsBasisTest {
     Optional<ASTExpression> u = p.parse_StringExpression("3.0f");
     Optional<ASTExpression> v = p.parse_StringExpression("3L");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -92,9 +93,11 @@ public class ExpressionsBasisTest {
     assertTrue(r.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(r.get())));
 
-    exp.setName("String");
+
+    TypeExpression exp2 = new ObjectType();
+    exp2.setName("String");
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertTrue(exp2.deepEquals(calc.calculateType(s.get())));
 
     exp.setName("char");
     assertTrue(t.isPresent());

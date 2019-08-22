@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typescalculator;
 
+import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
 
 import java.util.Arrays;
@@ -164,5 +167,51 @@ public class TypesCalculatorHelper {
     MCTypeVisitor visitor = new MCTypeVisitor();
     type.accept(visitor);
     return visitor.mapping.get(type);
+  }
+
+  //TODO check correctnes in all situations, in testHelper wenn nur für Dummy benutzt
+  public static TypeExpression fromETypeSymbol(ETypeSymbol type) {
+    List<String> primitiveTypes = Arrays
+            .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
+    if (type != null ) {
+      if (primitiveTypes.contains(type.getName())) {
+        return TypeExpressionBuilder.buildTypeConstant(type.getName());
+      } else {
+        ObjectType o = new ObjectType();
+        o.setName(type.getName());
+        return o;
+      }
+    }
+    return null;
+  }
+  //TODO check correctnes in all situations, in testHelper wenn nur für Dummy benutzt
+  public static TypeExpression fromEVariableSymbol(EVariableSymbol type) {
+    List<String> primitiveTypes = Arrays
+            .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
+    if (type != null ) {
+      if (primitiveTypes.contains(type.getName())) {
+        return TypeExpressionBuilder.buildTypeConstant(type.getName());
+      } else {
+        ObjectType o = new ObjectType();
+        o.setName(type.getName());
+        return o;
+      }
+    }
+    return null;
+  }
+  //TODO check correctnes in all situations, in testHelper wenn nur für Dummy benutzt
+  public static TypeExpression fromEMethodSymbol(EMethodSymbol type) {
+    List<String> primitiveTypes = Arrays
+            .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
+    if (type != null ) {
+      if (primitiveTypes.contains(type.getName())) {
+        return TypeExpressionBuilder.buildTypeConstant(type.getName());
+      } else {
+        ObjectType o = new ObjectType();
+        o.setName(type.getName());
+        return o;
+      }
+    }
+    return null;
   }
 }

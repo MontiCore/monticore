@@ -52,7 +52,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> w = p.parse_StringExpression("\"Hallo\"+\" Welt\"");
     Optional<ASTExpression> x = p.parse_StringExpression("\"Hallo\"+4.3f");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("double");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -79,12 +79,13 @@ public class CommonExpressionsTest {
     assertTrue(v.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(v.get())));
 
-    exp.setName("String");
+    TypeExpression exp2 = new ObjectType();
+    exp2.setName("String");
     assertTrue(w.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(w.get())));
+    assertTrue(exp2.deepEquals(calc.calculateType(w.get())));
 
     assertTrue(x.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(x.get())));
+    assertTrue(exp2.deepEquals(calc.calculateType(x.get())));
   }
 
   @Test
@@ -99,7 +100,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> u = p.parse_StringExpression("\'a\'%13.4");
     Optional<ASTExpression> v = p.parse_StringExpression("\'a\'%\'b\'");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("double");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -139,7 +140,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> u = p.parse_StringExpression("\'a\'*13.4");
     Optional<ASTExpression> v = p.parse_StringExpression("\'a\'*\'b\'");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("double");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -179,7 +180,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> u = p.parse_StringExpression("\'a\'/13.4");
     Optional<ASTExpression> v = p.parse_StringExpression("\'a\'/\'b\'");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("double");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -219,7 +220,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> u = p.parse_StringExpression("\'a\'-13.4");
     Optional<ASTExpression> v = p.parse_StringExpression("\'a\'-\'b\'");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("double");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -255,7 +256,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> r = p.parse_StringExpression("4.5f<7l");
     Optional<ASTExpression> s = p.parse_StringExpression("4.5<\'a\'");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -275,7 +276,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> r = p.parse_StringExpression("4.5f>7l");
     Optional<ASTExpression> s = p.parse_StringExpression("4.5>\'a\'");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -295,7 +296,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> r = p.parse_StringExpression("4.5f<=7l");
     Optional<ASTExpression> s = p.parse_StringExpression("4.5<=\'a\'");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -315,7 +316,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> r = p.parse_StringExpression("4.5f>=7l");
     Optional<ASTExpression> s = p.parse_StringExpression("4.5>=\'a\'");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -334,7 +335,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> o = p.parse_StringExpression("!true");
     Optional<ASTExpression> r = p.parse_StringExpression("!(3<=7)");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -350,7 +351,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> o = p.parse_StringExpression("true||false");
     Optional<ASTExpression> r = p.parse_StringExpression("(4>3)||varboolean");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -366,7 +367,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> o = p.parse_StringExpression("true&&true");
     Optional<ASTExpression> r = p.parse_StringExpression("(4>3)&&varboolean");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -384,7 +385,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> q = p.parse_StringExpression("varList!=varList");
     Optional<ASTExpression> s = p.parse_StringExpression("7.9f!=8l");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -408,7 +409,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> q = p.parse_StringExpression("varList==varList");
     Optional<ASTExpression> s = p.parse_StringExpression("7.9f==8l");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -432,7 +433,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> s = p.parse_StringExpression("(false==(4<3))");
     Optional<ASTExpression> t = p.parse_StringExpression("(7l-2.5f)");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -459,7 +460,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> s = p.parse_StringExpression("7.2f<3l? 7.2f : 3l");
     Optional<ASTExpression> t = p.parse_StringExpression("(\"Hallo\"==\"Welt\")? \"Gleich\" : \"Ungleich\"");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -471,10 +472,10 @@ public class CommonExpressionsTest {
     exp.setName("float");
     assertTrue(s.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(s.get())));
-
-    exp.setName("String");
+    TypeExpression exp2 = new ObjectType();
+    exp2.setName("String");
     assertTrue(t.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(t.get())));
+    assertTrue(exp2.deepEquals(calc.calculateType(t.get())));
   }
 
   @Test
@@ -485,7 +486,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> r = p.parse_StringExpression("~7l");
     Optional<ASTExpression> s = p.parse_StringExpression("~\'a\'");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -511,7 +512,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> u = p.parse_StringExpression("9.2f*(7.2+8)");
     Optional<ASTExpression> v = p.parse_StringExpression("false&&true");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("double");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -547,7 +548,7 @@ public class CommonExpressionsTest {
     Optional<ASTExpression> o = p.parse_StringExpression("call()");
     Optional<ASTExpression> q = p.parse_StringExpression("A.B.C.call()");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
