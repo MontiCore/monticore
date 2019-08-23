@@ -17,12 +17,12 @@ import static de.se_rwth.commons.SourcePosition.getDefaultSourcePosition;
 import static java.util.Collections.sort;
 
 public interface ISymbol {
-  
+
   /**
    * @return the symbol name
    */
   String getName();
-  
+
   /**
    * @return the package of this symbol. The package name of all symbols within an artifact is
    * usually the same. For example, the package name of a state chart <code>p.q.SC</code> and its
@@ -30,7 +30,7 @@ public interface ISymbol {
    * @see #getFullName()
    */
   String getPackageName();
-  
+
   /**
    * @return the package of this symbol. All symbols within an artifact usually have the same
    * package name. For example, the state chart <code>p.q.SC</code> and its containing states all
@@ -38,14 +38,14 @@ public interface ISymbol {
    * @see #getPackageName()
    */
   String getFullName();
-  
+
   /**
    * @return Returns the enclosing scope of this symbol. Symbol classes implementing the
    * {@link ISymbol} interface override this method and refine the return type to the scope
    * classes of the language.
    */
   IScope getEnclosingScope();
-  
+
   /**
    * @return the access modifier, such as public or protected in Java. By default, the
    * {@link AccessModifier#ALL_INCLUSION} is returned, which indicates that the symbol does not have
@@ -55,37 +55,46 @@ public interface ISymbol {
   default AccessModifier getAccessModifier() {
     return ALL_INCLUSION;
   }
-  
+
   /**
    * Sets the access modifier, such as public or protected in Java.
    *
    * @param accessModifier the access modifier
    */
   void setAccessModifier(AccessModifier accessModifier);
-  
+
+  public Optional<? extends ASTNode> getAstNodeOpt();
+
+  public boolean isPresentAstNode();
+
+  /**
+   * @deprecated return type will change from optional to mandatory with next release
+   * use getAstNodeOpt() instead, for Optional return type
+   * new method signature: public ASTNode getAstNode();
+   */
+  @Deprecated
   public Optional<? extends ASTNode> getAstNode();
-  
+
   /**
    * @return the position of this symbol in the source model. By default, it is the source position
    * of the ast node.
-   * @see #getAstNode()
+   * @see #getAstNodeOpt()
    */
   default SourcePosition getSourcePosition() {
-    if (getAstNode().isPresent()) {
-      return getAstNode().get().get_SourcePositionStart();
-    }
-    else {
+    if (getAstNodeOpt().isPresent()) {
+      return getAstNodeOpt().get().get_SourcePositionStart();
+    } else {
       return getDefaultSourcePosition();
     }
   }
-  
+
   static <T extends ISymbol> List<T> sortSymbolsByPosition(final Collection<T> unorderedSymbols) {
     final List<T> sortedSymbols = new ArrayList<>(unorderedSymbols);
-    
+
     sort(sortedSymbols,
         (symbol1, symbol2) -> symbol1.getSourcePosition().compareTo(symbol2.getSourcePosition()));
-    
+
     return copyOf(sortedSymbols);
   }
-  
+
 }

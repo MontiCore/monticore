@@ -2,12 +2,6 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Collectors;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
@@ -19,6 +13,12 @@ import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.se_rwth.commons.Names;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class SymbolTableReporter2 extends AReporter {
   
@@ -229,9 +229,9 @@ public class SymbolTableReporter2 extends AReporter {
     reportAllFields(sym.getClass(), printer);
     printer.println("name = \"" + sym.getName() + "\";");
     printer.println("kind = \"" + sym.getClass().getName() + "\";");
-    if (sym.getAstNode().isPresent()) {
+    if (sym.getAstNodeOpt().isPresent()) {
       printer.print("astNode = ");
-      printer.print(repository.getASTNodeNameFormatted(sym.getAstNode().get()));
+      printer.print(repository.getASTNodeNameFormatted(sym.getAstNodeOpt().get()));
       printer.println(";");
     }
     else if (printEmptyOptional) {

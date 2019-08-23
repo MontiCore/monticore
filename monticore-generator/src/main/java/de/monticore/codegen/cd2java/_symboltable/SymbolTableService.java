@@ -37,7 +37,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   @Override
   public String getSubPackage() {
-    return SYMBOL_TABLE_PACKGE;
+    return SYMBOL_TABLE_PACKAGE;
   }
 
   @Override
@@ -172,7 +172,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
         MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
 
-    if (!getQualifier(referencedSymbol).isEmpty() && !referencedSymbol.contains(SYMBOL_TABLE_PACKGE)) {
+    if (!getQualifier(referencedSymbol).isEmpty() && !referencedSymbol.contains(SYMBOL_TABLE_PACKAGE)) {
       referencedSymbol = SymbolTableGeneratorHelper
           .getQualifiedSymbolType(getQualifier(referencedSymbol)
               .toLowerCase(), Names.getSimpleName(referencedSymbol));

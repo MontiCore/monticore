@@ -41,4 +41,4 @@ ${tc.signature("scopeInterface", "artifactScope", "globalScope")}
       optCurrentScope = currentScope.getEnclosingScope();
     }
 
-    return Names.getQualifiedName(nameParts);
+    return de.se_rwth.commons.Names.getQualifiedName(nameParts);

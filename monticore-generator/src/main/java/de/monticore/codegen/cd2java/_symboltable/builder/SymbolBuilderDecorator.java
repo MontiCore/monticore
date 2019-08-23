@@ -7,13 +7,13 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_BUILD_TEMPLATE;
 
 public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
@@ -43,12 +43,21 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
 
     symbolBuilder.setName(symbolBuilderName);
 
+    // new build method template
     Optional<ASTCDMethod> buildMethod = symbolBuilder.getCDMethodList()
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(SYMBOL_BUILD_TEMPLATE, symbolTableService.getSymbolName(symbolClass))));
+        new TemplateHookPoint(SYMBOL_BUILD_TEMPLATE, symbolClass.getName())));
+
+    // valid method template
+    Optional<ASTCDMethod> validMethod = symbolBuilder.getCDMethodList()
+        .stream()
+        .filter(m -> IS_VALID.equals(m.getName()))
+        .findFirst();
+    validMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
+        new StringHookPoint("return true;")));
 
     return symbolBuilder;
   }

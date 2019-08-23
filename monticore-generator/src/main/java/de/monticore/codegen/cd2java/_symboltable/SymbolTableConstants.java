@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java._symboltable;
 
 public class SymbolTableConstants {
 
-  public static final String SYMBOL_TABLE_PACKGE = "_symboltable";
+  public static final String SYMBOL_TABLE_PACKAGE = "_symboltable";
 
   public static final String SYMBOL_SUFFIX = "Symbol";
 
@@ -38,6 +38,8 @@ public class SymbolTableConstants {
   public static final String PACKAGE_NAME = "packageName";
 
   public static final String FULL_NAME = "fullName";
+
+  public static final String AST_NODE_VARIABLE = "astNode";
 
   public static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
 

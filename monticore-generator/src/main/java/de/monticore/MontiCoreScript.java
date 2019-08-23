@@ -35,7 +35,10 @@ import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
 import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
+import de.monticore.codegen.cd2java._symboltable.SymbolDecorator;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._symboltable.builder.SymbolBuilderDecorator;
 import de.monticore.codegen.cd2java._visitor.*;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
@@ -407,6 +410,32 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
     GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
 
+  }
+
+
+  public ASTCDCompilationUnit decorateForSymbolTablePackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+                                                            ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
+    return decorateWithSymbolTable(preparedCD, glex, handCodedPath);
+  }
+
+  private ASTCDCompilationUnit decorateWithSymbolTable(ASTCDCompilationUnit cd, GlobalExtensionManagement glex,
+                                                       IterablePath handCodedPath) {
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    VisitorService visitorService = new VisitorService(cd);
+    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    AccessorDecorator accessorDecorator = new AccessorDecorator(glex);
+
+    SymbolDecorator symbolDecorator = new SymbolDecorator(glex, symbolTableService, visitorService, methodDecorator);
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, accessorDecorator, symbolTableService);
+    SymbolBuilderDecorator symbolBuilderDecorator = new SymbolBuilderDecorator(glex, builderDecorator, symbolTableService);
+
+    SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, symbolTableService, symbolDecorator, symbolBuilderDecorator);
+
+    ASTCDCompilationUnit visitorCompilationUnit = symbolTableCDDecorator.decorate(cd);
+
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(visitorCompilationUnit);
   }
 
   public ASTCDCompilationUnit decorateForVisitorPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,

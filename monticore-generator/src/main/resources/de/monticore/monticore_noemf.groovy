@@ -75,6 +75,9 @@ for (astGrammar in getParsedGrammars()) {
 
   astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
 
+  decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
+
   // M8: generate symbol table
   generateSymbolTable(glex, mcScope, astGrammar, cdScope, astClassDiagram, out, handcodedPath)
   

@@ -120,7 +120,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testASTNodeAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("aSTNode", builderClass);
+    ASTCDAttribute astcdAttribute = getAttributeBy("astNode", builderClass);
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(cdTypeFacade.createQualifiedType(A_NODE_TYPE_OPT), astcdAttribute.getMCType());
   }
@@ -192,8 +192,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetASTNodeMethod() {
-    ASTCDMethod method = getMethodBy("getASTNode", builderClass);
+  public void testGetAstNodeMethod() {
+    ASTCDMethod method = getMethodBy("getAstNode", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(cdTypeFacade.createQualifiedType(A_NODE_TYPE)
         , method.getMCReturnType().getMCType());
@@ -202,8 +202,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetASTNodeOptMethod() {
-    ASTCDMethod method = getMethodBy("getASTNodeOpt", builderClass);
+  public void testGetAstNodeOptMethod() {
+    ASTCDMethod method = getMethodBy("getAstNodeOpt", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(cdTypeFacade.createQualifiedType(A_NODE_TYPE_OPT)
         , method.getMCReturnType().getMCType());
@@ -212,8 +212,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testisPresentASTNodeMethod() {
-    ASTCDMethod method = getMethodBy("isPresentASTNode", builderClass);
+  public void testisPresentAstNodeMethod() {
+    ASTCDMethod method = getMethodBy("isPresentAstNode", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertBoolean(method.getMCReturnType().getMCType());
 
@@ -276,32 +276,32 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testSetASTNodeMethod() {
-    ASTCDMethod method = getMethodBy("setASTNode", builderClass);
+  public void testSetAstNodeMethod() {
+    ASTCDMethod method = getMethodBy("setAstNode", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(cdTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(cdTypeFacade.createQualifiedType(A_NODE_TYPE),
         method.getCDParameter(0).getMCType());
-    assertEquals("aSTNode", method.getCDParameter(0).getName());
+    assertEquals("astNode", method.getCDParameter(0).getName());
   }
 
   @Test
-  public void testSetASTNodeOptMethod() {
-    ASTCDMethod method = getMethodBy("setASTNodeOpt", builderClass);
+  public void testSetAstNodeOptMethod() {
+    ASTCDMethod method = getMethodBy("setAstNodeOpt", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(cdTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(cdTypeFacade.createQualifiedType(A_NODE_TYPE_OPT),
         method.getCDParameter(0).getMCType());
-    assertEquals("aSTNode", method.getCDParameter(0).getName());
+    assertEquals("astNode", method.getCDParameter(0).getName());
   }
 
   @Test
-  public void testSetASTNodeAbsentMethod() {
-    ASTCDMethod method = getMethodBy("setASTNodeAbsent", builderClass);
+  public void testSetAstNodeAbsentMethod() {
+    ASTCDMethod method = getMethodBy("setAstNodeAbsent", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(cdTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
 

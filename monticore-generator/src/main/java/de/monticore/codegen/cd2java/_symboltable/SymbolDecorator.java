@@ -16,6 +16,7 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
@@ -59,27 +60,34 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     List<ASTCDAttribute> symbolAttributes = createSymbolAttributes(input, scopeInterface);
     List<ASTCDMethod> symbolMethods = createSymbolMethods(symbolAttributes);
 
-    ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
-    List<ASTCDMethod> spannedScopeMethods = createSpannedScopeMethods(spannedScopeAttribute);
 
     ASTCDParameter constructorParam = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "name");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symbolName, constructorParam);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this.name = name;"));
 
 
-    return CD4AnalysisMill.cDClassBuilder()
+    ASTCDClass symbolClass = CD4AnalysisMill.cDClassBuilder()
         .setName(symbolName)
+        .setModifier(PUBLIC.build())
         .addInterface(getCDTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceName()))
-        .addInterface(getCDTypeFacade().createQualifiedType(I_SCOPE_SPANNING_SYMBOL))
         .addCDConstructor(constructor)
         .addAllCDAttributes(symbolAttributes)
         .addAllCDMethods(symbolMethods)
-        .addCDAttribute(spannedScopeAttribute)
-        .addAllCDMethods(spannedScopeMethods)
         .addCDMethod(createAcceptMethod())
         .addCDMethod(createDeterminePackageName(scopeInterface, artifactScope))
         .addCDMethod(createDetermineFullName(scopeInterface, artifactScope, globalScopeInterface))
         .build();
+
+    // add only for scope spanning symbols
+    if (input.isPresentModifier() && symbolTableService.hasScopeStereotype(input.getModifier())) {
+      ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
+      List<ASTCDMethod> spannedScopeMethods = createSpannedScopeMethods(spannedScopeAttribute);
+      symbolClass.addCDAttribute(spannedScopeAttribute);
+      symbolClass.addAllCDMethods(spannedScopeMethods);
+      symbolClass.addInterface(getCDTypeFacade().createQualifiedType(I_SCOPE_SPANNING_SYMBOL));
+    }
+
+    return symbolClass;
   }
 
   protected List<ASTCDAttribute> createSymbolAttributes(ASTCDClass astcdClass, String scopeInterface) {
@@ -90,7 +98,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, "enclosingScope");
 
     ASTMCOptionalType optionalTypeOfASTNode = getCDTypeFacade().createOptionalTypeOf(symbolTableService.getASTPackage() + "." + astcdClass.getName());
-    ASTCDAttribute node = this.getCDAttributeFacade().createAttribute(PROTECTED, optionalTypeOfASTNode, "aSTNode");
+    ASTCDAttribute node = this.getCDAttributeFacade().createAttribute(PROTECTED, optionalTypeOfASTNode, AST_NODE_VARIABLE);
 
     ASTCDAttribute packageName = this.getCDAttributeFacade().createAttribute(PROTECTED, String.class, PACKAGE_NAME);
 
@@ -108,6 +116,9 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         symbolMethods.addAll(createNameMethods(symbolAttribute));
       } else if (symbolAttribute.getName().equals(FULL_NAME)) {
         symbolMethods.addAll(createNameMethods(symbolAttribute));
+      } else if (symbolAttribute.getName().equals(AST_NODE_VARIABLE)) {
+        // todo: remove this if statement when runtime is changed
+        symbolMethods.addAll(createAstNodeMethods(symbolAttribute));
       } else {
         symbolMethods.addAll(methodDecorator.decorate(symbolAttribute));
       }
@@ -132,17 +143,47 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     return symbolMethods;
   }
 
+
+  /**
+   * @deprecated remove when runtime method 'public Optional<? extends ASTNode> getAstNode();' is changed
+   * to ' public ASTNode getAstNode();'
+   * because interface ISymbol from runtime must be implemented correctly for now, the get method return type must be changed manually
+   */
+  @Deprecated
+  protected List<ASTCDMethod> createAstNodeMethods(ASTCDAttribute symbolAttribute) {
+    // create getter and setter separately
+    // setter is not changed
+    List<ASTCDMethod> symbolMethods = new ArrayList<>(mutatorDecorator.decorate(symbolAttribute));
+
+    // template for getter mus be changed
+    List<ASTCDMethod> astNodeMethods = accessorDecorator.decorate(symbolAttribute);
+    // remove getAstNode because of wrong return type
+    symbolMethods.addAll(astNodeMethods
+        .stream()
+        .filter(m -> !m.getName().equals("getAstNode"))
+        .collect(Collectors.toList()));
+
+    // create getAstNode with Optional return Type
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(symbolAttribute.getMCType()).build();
+    ASTCDMethod getAstNodeMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "getAstNode");
+    this.replaceTemplate(EMPTY_BODY, getAstNodeMethod, new StringHookPoint("return this.astNode;"));
+    symbolMethods.add(getAstNodeMethod);
+
+    return symbolMethods;
+  }
+
   protected ASTCDAttribute createSpannedScopeAttribute() {
     return getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getScopeInterfaceType(), String.format(SPANNED_SCOPE, ""));
   }
 
   protected List<ASTCDMethod> createSpannedScopeMethods(ASTCDAttribute spannedScopeAttribute) {
-    List<ASTCDMethod> methodList = new ArrayList<>(mutatorDecorator.decorate(spannedScopeAttribute));
-    accessorDecorator.disableTemplates();
-    List<ASTCDMethod> getter = accessorDecorator.decorate(spannedScopeAttribute);
-    getter.forEach(m -> this.replaceTemplate(EMPTY_BODY, m, new StringHookPoint("this.spannedScope = spannedScope;\n" +
+    List<ASTCDMethod> methodList = new ArrayList<>(accessorDecorator.decorate(spannedScopeAttribute));
+    mutatorDecorator.disableTemplates();
+    List<ASTCDMethod> setter = mutatorDecorator.decorate(spannedScopeAttribute);
+    setter.forEach(m -> this.replaceTemplate(EMPTY_BODY, m, new StringHookPoint("this.spannedScope = spannedScope;\n" +
         "    getSpannedScope().setSpanningSymbol(this);")));
-    accessorDecorator.enableTemplates();
+    methodList.addAll(setter);
+    mutatorDecorator.enableTemplates();
     return methodList;
   }
 
