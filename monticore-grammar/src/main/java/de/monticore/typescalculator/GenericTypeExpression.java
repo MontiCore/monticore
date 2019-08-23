@@ -73,6 +73,7 @@ public class GenericTypeExpression extends TypeExpression {
     for(TypeExpression expr: arguments){
       clone.addArgument(expr.deepClone());
     }
+
     clone.whoAmI = this.whoAmI;
     return clone;
   }
