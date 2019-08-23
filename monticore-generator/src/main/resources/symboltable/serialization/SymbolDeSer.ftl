@@ -14,6 +14,7 @@ ${defineHookPoint("JavaCopyright")}
 package ${genHelper.getTargetPackage()}.serialization;
 
 import ${genHelper.getSymbolTablePackage()}.*;
+import ${genHelper.getQualifiedGrammarName()?lower_case}._ast.*;
 
 import java.util.Optional;
 import java.util.List;
@@ -71,14 +72,15 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
     builder.set${attr.getName()?cap_first}(deserialize${attr.getName()?cap_first}(symbolJson));
 </#list>   
 </#if> 
-    deserializeAdditionalAttributes(builder, symbolJson);
-    return builder.build();
+    ${symbolName}Symbol symbol = builder.build();
+    deserializeAdditionalAttributes(symbol, symbolJson);
+    return symbol;
   }
   
 <#if symbolRule.isPresent()>
 <#list symbolRule.get().getAdditionalAttributeList() as attr>
   <#assign attrType=genHelper.deriveAdditionalAttributeTypeWithMult(attr)>
-  protected ${genHelper.getQualifiedASTName(attrType)} deserialize${attr.getName()?cap_first}(JsonObject symbolJson) {
+  protected ${attrType} deserialize${attr.getName()?cap_first}(JsonObject symbolJson) {
 <#switch attrType>
 <#case "String">
     return symbolJson.get("${attr.getName()}").getAsJsonString().getValue();
@@ -108,10 +110,10 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
 
   /**
    * Override this method to deserialize additional attributes
-   * @param builder
-   * @param symbolJson
+   * @param symbol the symbol object deserialized so far
+   * @param symbolJson json representation of the serialized symbol
    */
-  protected void deserializeAdditionalAttributes(${symbolName}SymbolBuilder builder, JsonObject symbolJson) {
+  protected void deserializeAdditionalAttributes(${symbolName}Symbol symbol, JsonObject symbolJson) {
     
   }
   

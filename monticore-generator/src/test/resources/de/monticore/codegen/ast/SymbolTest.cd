@@ -5,9 +5,25 @@ import de.monticore.codegen.ast.Lexicals.*;
 
 classdiagram SymbolTest {
 
-    public class AutomatonSymbol {
-    }
+public interface ASTAutomataNode;
 
-    public class StateSymbol {
-    }
+  <<symbol, scope>>public class ASTAutomaton{
+    protected String name;
+    <<astType="">>protected java.util.List<Automata.ASTState> states;
+    <<astType="">>protected java.util.List<Automata.ASTTransition> transitions;
+  }
+
+  <<symbol="de.monticore.codegen.ast.symboltest._symboltable.AutomatonSymbol">>public class ASTState{
+    protected String name;
+    <<astType="">>protected java.util.List<Automata.ASTState> states;
+    <<astType="">>protected java.util.List<Automata.ASTTransition> transitions;
+    protected boolean initial;
+    protected boolean r__final;
+  }
+
+  public class ASTTransition{
+    protected String from;
+    protected String input;
+    protected String to;
+  }
 }

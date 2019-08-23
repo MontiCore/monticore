@@ -3,6 +3,7 @@ package de.monticore
 
 import de.monticore.cli.MontiCoreCLI
 import org.gradle.api.DefaultTask
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import org.gradle.api.tasks.incremental.InputFileDetails
@@ -13,6 +14,9 @@ public class MCTask extends DefaultTask {
   
   @OutputDirectory
   File outputDir
+  
+  @Input
+  private Configuration grammarConfig = project.configurations.getByName("grammar")
   
   @Input @Optional
   boolean addGrammarConfig = true
@@ -69,9 +73,7 @@ public class MCTask extends DefaultTask {
   void execute(IncrementalTaskInputs inputs) {
     def List<String> mp = new ArrayList()
     if(addGrammarConfig) {
-      if (project.configurations.find { it.name == 'grammar' }) {
-        project.configurations.getByName("grammar").each { mp.add it }
-      }
+      grammarConfig.each { mp.add it }
     }
     for(c in includeConfigs){
       project.configurations.getByName(c).each { mp.add it}

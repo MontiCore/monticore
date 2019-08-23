@@ -16,24 +16,24 @@ import static java.util.Optional.of;
 public class ProdSymbol extends ProdSymbolTOP {
 
 
-  private boolean isStartProd = false;
+//  private boolean isStartProd = false;
+//
+//  private boolean isInterface;
+//
+//  private boolean isAbstract;
+//
+//  private boolean isExternal;
+//
+//  private boolean isEnum;
+//
+//  private boolean isLexerProd;
+//
+//  private boolean isScope = false;
 
-  private boolean isInterface;
-
-  private boolean isAbstract;
-
-  private boolean isExternal;
-
-  private boolean isEnum;
-
-  private boolean isLexerProd;
-
-  private boolean isScope = false;
-
-  /**
-   * the producution that defines the symbol kind of the current prod symbol
-   * (only if isSymbolDefinition is true)
-   */
+//  /**
+//   * the producution that defines the symbol kind of the current prod symbol
+//   * (only if isSymbolDefinition is true)
+//   */
   private String prodDefiningSymbolKind = "";
 
   /**
@@ -60,35 +60,41 @@ public class ProdSymbol extends ProdSymbolTOP {
     super(name);
   }
 
-  public boolean isStartProd() {
-    return isStartProd;
-  }
-
-  public void setStartProd(boolean isStartProd) {
-    this.isStartProd = isStartProd;
-  }
+//  public boolean isStartProd() {
+//    return isStartProd;
+//  }
+//
+//  public void setStartProd(boolean isStartProd) {
+//    this.isStartProd = isStartProd;
+//  }
 
   public boolean isSymbolDefinition() {
-    return !prodDefiningSymbolKind.isEmpty();
+    return !getProdDefiningSymbolKind().isEmpty();
   }
 
-  public boolean isScopeDefinition() {
-    return isScope;
-  }
-
-  public void setScopeDefinition(boolean isScope) {
-    this.isScope = isScope;
-  }
+//  public boolean isScopeDefinition() {
+//    return isScope;
+//  }
+//
+//  public void setScopeDefinition(boolean isScope) {
+//    this.isScope = isScope;
+//  }
 
   public Optional<String> getSymbolDefinitionKind() {
     if (isSymbolDefinition()) {
-      return of(prodDefiningSymbolKind);
+      return of(getProdDefiningSymbolKind());
     }
     return empty();
   }
 
+  //TODO: Remove if prodDefiningSymbolKind is defined via symbolrule
   public void setProdDefiningSymbolKind(String prodDefiningSymbolKind) {
     this.prodDefiningSymbolKind = prodDefiningSymbolKind;
+  }
+
+  //TODO: Remove if prodDefiningSymbolKind is defined via symbolrule
+  public String getProdDefiningSymbolKind() {
+    return this.prodDefiningSymbolKind;
   }
 
   public RuleComponentSymbol addProdComponent(RuleComponentSymbol prodComp) {
@@ -99,7 +105,7 @@ public class ProdSymbol extends ProdSymbolTOP {
     if (prevProdComp != null) {
       // a prod component is a list (*), if at list one of the prod components
       // is a list
-      prevProdComp.setList(prevProdComp.isList() || prodComp.isList());
+      prevProdComp.setIsList(prevProdComp.isList() || prodComp.isList());
       return prevProdComp;
     } else {
       getSpannedScope().add(prodComp);
@@ -167,49 +173,49 @@ public class ProdSymbol extends ProdSymbolTOP {
     return !isInterface() && !isAbstract() && !isExternal() && !isEnum() && !isLexerProd();
   }
 
-  public void setInterface(boolean anInterface) {
-    isInterface = anInterface;
-  }
-
-  public boolean isInterface() {
-    return isInterface;
-  }
-
-  public void setAbstract(boolean anAbstract) {
-    isAbstract = anAbstract;
-  }
-
-  public boolean isAbstract() {
-    return isAbstract;
-  }
-
-  public void setExternal(boolean external) {
-    isExternal = external;
-  }
-
-  public boolean isExternal() {
-    return isExternal;
-  }
-
-  public void setEnum(boolean anEnum) {
-    isEnum = anEnum;
-  }
-
-  public boolean isEnum() {
-    return isEnum;
-  }
+//  public void setInterface(boolean anInterface) {
+//    isInterface = anInterface;
+//  }
+//
+//  public boolean isInterface() {
+//    return isInterface;
+//  }
+//
+//  public void setAbstract(boolean anAbstract) {
+//    isAbstract = anAbstract;
+//  }
+//
+//  public boolean isAbstract() {
+//    return isAbstract;
+//  }
+//
+//  public void setExternal(boolean external) {
+//    isExternal = external;
+//  }
+//
+//  public boolean isExternal() {
+//    return isExternal;
+//  }
+//
+//  public void setEnum(boolean anEnum) {
+//    isEnum = anEnum;
+//  }
+//
+//  public boolean isEnum() {
+//    return isEnum;
+//  }
 
   public boolean isParserProd() {
     return isClass() || isAbstract();
   }
 
-  public void setLexerProd(boolean lexerProd) {
-    isLexerProd = lexerProd;
-  }
-
-  public boolean isLexerProd() {
-    return isLexerProd;
-  }
+//  public void setLexerProd(boolean lexerProd) {
+//    isLexerProd = lexerProd;
+//  }
+//
+//  public boolean isLexerProd() {
+//    return isLexerProd;
+//  }
 
   @Override
   public String toString() {

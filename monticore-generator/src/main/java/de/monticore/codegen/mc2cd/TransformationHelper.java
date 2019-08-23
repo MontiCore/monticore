@@ -273,7 +273,7 @@ public final class TransformationHelper {
     for (RuleComponentSymbol component : grammarSymbol.getProds().stream()
         .flatMap(p -> p.getProdComponents().stream()).collect(Collectors.toSet())) {
       if (component.isConstantGroup()) {
-        for (String subComponent : component.getSubProdComponents()) {
+        for (String subComponent : component.getSubProds()) {
           constants.add(subComponent);
         }
       }
@@ -400,8 +400,8 @@ public final class TransformationHelper {
 
   // TODO GV, PN: change it
   public static boolean istPartOfGrammar(ProdSymbol rule) {
-    return rule.getEnclosingScope().getAstNode().isPresent()
-        && rule.getEnclosingScope().getAstNode().get() instanceof ASTMCGrammar;
+    return rule.getEnclosingScope().getSpanningSymbol().isPresent()
+        && rule.getEnclosingScope().getSpanningSymbol().get() instanceof MCGrammarSymbol;
   }
 
   public static String getAstPackage(ProdSymbol rule) {
@@ -430,10 +430,6 @@ public final class TransformationHelper {
       return FullGenericTypesPrinter.printType(type);
     }
     String refGrammarName = getGrammarName(typeSymbol.get());
-    if (grammar.isPresentSymbol()
-        && grammar.getSymbol().getFullName().equals(refGrammarName)) {
-      return FullGenericTypesPrinter.printType(type);
-    }
     return refGrammarName + "." + FullGenericTypesPrinter.printType(type);
   }
 

@@ -3,13 +3,11 @@
 package de.monticore.grammar.transformation;
 
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.utils.ASTNodes;
 import de.monticore.utils.ASTTraverser;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
@@ -32,7 +30,7 @@ public class GrammarTransformer {
   
   public static void transform(ASTMCGrammar grammar) {
     removeNonTerminalSeparators(grammar);
-    changeNamesOfMultivaluedAttributes(grammar);
+    uncapitalizeMultivaluedAttributes(grammar);
   }
   
   /**
@@ -66,7 +64,7 @@ public class GrammarTransformer {
       }
     }
   }
-  
+
   /**
    * Append suffix "List" to the names of multi-valued att * Append suffix "List" to
    * the names of multi-valued attributes (NonTerminals and attributesinAst) if
@@ -74,35 +72,35 @@ public class GrammarTransformer {
    * names:Name&)* (State | Transition)* ==> (states:State |
    * transitions:Transition)*
    */
-  public static void changeNamesOfMultivaluedAttributes(ASTMCGrammar grammar) {
+  public static void uncapitalizeMultivaluedAttributes(ASTMCGrammar grammar) {
     grammar.getClassProdList().forEach(c -> transformNonTerminals(grammar, c));
     grammar.getAbstractProdList().forEach(c -> transformNonTerminals(grammar, c));
     grammar.getInterfaceProdList().forEach(c -> transformNonTerminals(grammar, c));
     grammar.getASTRuleList().forEach(c -> transformAttributesInAST(c));
   }
-  
+
   private static void transformNonTerminals(ASTMCGrammar grammar,
-      ASTProd classProd) {
+                                            ASTProd classProd) {
     Set<ASTNonTerminal> components = new LinkedHashSet<>();
-    
+
     ASTNodes.getSuccessors(classProd, ASTNonTerminal.class).stream()
         .filter(nonTerminal -> GeneratorHelper.getMultiplicity(grammar,
             nonTerminal) == Multiplicity.LIST)
         //.filter(nonTerminal -> !nonTerminal.getUsageName().isPresent())
         .forEach(components::add);
-    
+
     ASTNodes.getSuccessors(classProd, ASTNonTerminal.class).stream()
         .filter(nonTerminal -> multiplicityByDuplicates(grammar, nonTerminal) == Multiplicity.LIST)
-       // .filter(nonTerminal -> !nonTerminal.getUsageName().isPresent())
+        // .filter(nonTerminal -> !nonTerminal.getUsageName().isPresent())
         .forEach(components::add);
     components.forEach(s -> {
-      s.setUsageName(s.getUsageNameOpt().orElse(StringTransformations.uncapitalize(s.getName())) + TransformationHelper.LIST_SUFFIX);
+      s.setUsageName(s.getUsageNameOpt().orElse(StringTransformations.uncapitalize(s.getName())));
       Log.debug("Change the name of " + classProd.getName()
           + " list-attribute: " + s.getName(), GrammarTransformer.class.getName());
     });
-    
+
   }
-  
+
   private static void transformAttributesInAST(ASTASTRule astRule) {
     ASTNodes
         .getSuccessors(astRule, ASTAdditionalAttribute.class)
@@ -111,14 +109,14 @@ public class GrammarTransformer {
         .forEach(
             attributeInAST -> {
               String typeName = StringTransformations.uncapitalize(attributeInAST.getMCType().getBaseName());
-              
-              attributeInAST.setName(attributeInAST.getNameOpt().orElse(typeName)+ TransformationHelper.LIST_SUFFIX);
+
+              attributeInAST.setName(attributeInAST.getNameOpt().orElse(typeName));
               Log.debug("Change the name of ast-rule " + astRule.getType()
-                  + " list-attribute: " + attributeInAST.getMCType(),
+                      + " list-attribute: " + attributeInAST.getMCType(),
                   GrammarTransformer.class.getName());
             });
   }
-  
+
   /**
    * @param nonTerminalSep
    * @return

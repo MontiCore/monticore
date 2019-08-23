@@ -2,24 +2,22 @@
 
 package de.monticore.prettyprint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import de.monticore.testmchexnumbers._parser.TestMCHexNumbersParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import mchexnumbers._ast.ASTHexInteger;
+import mchexnumbers._ast.ASTHexadecimal;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import prettyprint.MCHexNumbersPrettyPrinter;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import de.monticore.mchexnumbers._ast.ASTHexInteger;
-import de.monticore.mchexnumbers._ast.ASTHexadecimal;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.prettyprint.MCHexNumbersPrettyPrinter;
-import de.monticore.testmchexnumbers._parser.TestMCHexNumbersParser;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MCHexNumbersPrettyPrinterTest {
   

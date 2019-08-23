@@ -204,10 +204,19 @@ public class ${symTabPrinterName}
       Collection<I${languageName}Scope> subScopes) {
     List<I${languageName}Scope> result = new ArrayList<>();
     for (I${languageName}Scope scope : subScopes) {
-      // TODO: start DFS to check whether a transitive subscope exports symbols
-      result.add(scope);
+      if(hasSymbolsInSubScopes(scope)) {
+        result.add(scope);
+      }
     }
     return result;
   }
-
+  
+  protected boolean hasSymbolsInSubScopes(I${languageName}Scope scope) {
+    boolean hasSymbolsInSubScopes = false;
+    for (I${languageName}Scope subScope : scope.getSubScopes()) {
+      hasSymbolsInSubScopes |= hasSymbolsInSubScopes(subScope);
+    }
+    return hasSymbolsInSubScopes | scope.getSymbolsSize()>0;
+  }
+  
 }

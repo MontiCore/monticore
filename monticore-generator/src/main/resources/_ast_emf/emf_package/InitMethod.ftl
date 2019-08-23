@@ -17,7 +17,7 @@ de.monticore.emf._ast.ASTENodePackageImpl ASTENodePackage = (de.monticore.emf._a
 (org.eclipse.emf.ecore.EPackage.Registry.INSTANCE.getEPackage(de.monticore.emf._ast.ASTENodePackage.eNS_URI)  instanceof de.monticore.emf._ast.ASTENodePackage ?
   org.eclipse.emf.ecore.EPackage.Registry.INSTANCE.getEPackage(de.monticore.emf._ast.ASTENodePackage.eNS_URI) : de.monticore.emf._ast.ASTENodePackage.eINSTANCE);
 
-  <#list service.getSuperCDs() as superCD>
+  <#list service.getSuperCDsTransitive() as superCD>
       <#assign qualifiedName = service.getQualifiedPackageImplName(superCD)>
       <#assign identifierName = service.getSimplePackageImplName(superCD)>
       ${qualifiedName} ${identifierName?uncap_first} =
@@ -30,7 +30,7 @@ de.monticore.emf._ast.ASTENodePackageImpl ASTENodePackage = (de.monticore.emf._a
   // Create package meta-data objects
   ${packageName?uncap_first}.createPackageContents();
   ASTENodePackage.createPackageContents();
-  <#list service.getSuperCDs() as superCD>
+  <#list service.getSuperCDsTransitive() as superCD>
       <#assign identifierName = service.getSimplePackageImplName(superCD)>
     ${identifierName?uncap_first}.createPackageContents();
   </#list>
@@ -38,7 +38,7 @@ de.monticore.emf._ast.ASTENodePackageImpl ASTENodePackage = (de.monticore.emf._a
   // Initialize created meta-data
   ${packageName?uncap_first}.initializePackageContents();
   ASTENodePackage.initializePackageContents();
-  <#list service.getSuperCDs() as superCD>
+  <#list service.getSuperCDsTransitive() as superCD>
       <#assign identifierName = service.getSimplePackageImplName(superCD)>
     ${identifierName?uncap_first}.initializePackageContents();
   </#list>

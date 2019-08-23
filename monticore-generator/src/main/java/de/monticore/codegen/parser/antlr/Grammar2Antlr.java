@@ -13,11 +13,11 @@ import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -897,7 +897,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       if (scope.isPresent()) {
         addToAction(attributeConstraints.addActionForNonTerminal(ast));
         String attributename = HelperGrammar.getUsuageName(ast);
-        if (scope.isPresent() && scope.get().getProdComponent(attributename).isPresent()
+        if (scope.get().getProdComponent(attributename).isPresent()
                 && scope.get().getProdComponent(attributename).get().isList()) {
           addToAction(astActions.getActionForLexerRuleIteratedAttribute(ast));
         } else {

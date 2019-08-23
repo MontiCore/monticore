@@ -6,6 +6,7 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.utils.Link;
+import de.se_rwth.commons.StringTransformations;
 
 import java.util.Optional;
 import java.util.function.UnaryOperator;
@@ -73,9 +74,10 @@ public class NameTranslation implements
         for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
                 ASTCDAttribute.class)) {
             String name = link.source().getNameOpt().orElse(null);
-            String alternativeName = FullGenericTypesPrinter.printType(link.source().getMCType());
+            String alternativeName = StringTransformations.uncapitalize(FullGenericTypesPrinter.printType(link.source().getMCType()));
             String nameToUse = name != null ? name : alternativeName;
             link.target().setName(nameToUse);
+            link.source().setName(nameToUse);
         }
 
         for (Link<ASTConstant, ASTCDAttribute> link : rootLink.getLinks(ASTConstant.class,

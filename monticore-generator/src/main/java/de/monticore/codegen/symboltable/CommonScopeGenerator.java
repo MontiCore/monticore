@@ -88,7 +88,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
         kind = name + GeneratorHelper.SYMBOL;
       }
       symbolNames.put(name, kind);
-      if(sym.isScopeDefinition()){
+      if(sym.isScopeSpanning()){
         spanningSymbolNames.put(name,kind);
       }
     }
@@ -99,7 +99,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
       String name = getSimpleName(sym.getName());
       String kind = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
       allSymbols.put(name, kind);
-      if(sym.isScopeDefinition()){
+      if(sym.isScopeSpanning()){
         allSpanningSymbolNames.put(name,kind);
       }
     }

@@ -315,7 +315,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertNotNull(transition);
     
     try {
-      Optional<RuleComponentSymbol> r = transition.getSpannedScope().resolveRuleComponent("args");
+      Optional<RuleComponentSymbol> r = transition.getSpannedScope().resolveRuleComponent("arg");
       assertTrue(r.isPresent());
     }
     catch (ResolvedSeveralEntriesForSymbolException e) {
@@ -355,12 +355,12 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     ProdSymbol autProd = grammar.getSpannedScope()
         .resolveProd("Automaton").orElse(null);
     assertNotNull(autProd);
-    assertTrue(autProd.isScopeDefinition());
+    assertTrue(autProd.isScopeSpanning());
     assertTrue(autProd.isSymbolDefinition());
 
     ProdSymbol stateProd = grammar.getSpannedScope().resolveProd("State").orElse(null);
     assertNotNull(stateProd);
-    assertFalse(stateProd.isScopeDefinition());
+    assertFalse(stateProd.isScopeSpanning());
     assertTrue(stateProd.isSymbolDefinition());
   }
   

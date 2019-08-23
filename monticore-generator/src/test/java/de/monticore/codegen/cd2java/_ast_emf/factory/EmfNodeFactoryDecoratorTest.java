@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.factory;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -10,9 +13,6 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,7 +60,7 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethodSize() {
     assertFalse(emfClass.getCDMethodList().isEmpty());
-    assertEquals(17, emfClass.getCDMethodList().size());
+    assertEquals(19, emfClass.getCDMethodList().size());
   }
 
   @Test

@@ -147,7 +147,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected List<ASTCDMethod> addFactoryDelegateMethods(List<ASTCDClass> classList) {
     List<ASTCDMethod> delegateMethodList = new ArrayList<>();
     //get super symbols
-    for (CDDefinitionSymbol superSymbol : nodeFactoryService.getSuperCDs()) {
+    for (CDDefinitionSymbol superSymbol : nodeFactoryService.getSuperCDsTransitive()) {
       Optional<ASTCDDefinition> astNode = superSymbol.getAstNode();
       if (astNode.isPresent()) {
         //get super cddefinition

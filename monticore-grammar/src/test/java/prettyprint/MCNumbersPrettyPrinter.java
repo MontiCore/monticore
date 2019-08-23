@@ -1,10 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.prettyprint;
+package prettyprint;
 
-import de.monticore.mcnumbers._ast.ASTDecimal;
-import de.monticore.mcnumbers._ast.ASTInteger;
-import de.monticore.mcnumbers._ast.ASTMCNumbersNode;
-import de.monticore.mcnumbers._visitor.MCNumbersVisitor;
+import de.monticore.prettyprint.IndentPrinter;
+import mcnumbers._ast.ASTDecimal;
+import mcnumbers._ast.ASTInteger;
+import mcnumbers._ast.ASTMCNumbersNode;
+import mcnumbers._visitor.MCNumbersVisitor;
 
 public class MCNumbersPrettyPrinter implements MCNumbersVisitor {
   

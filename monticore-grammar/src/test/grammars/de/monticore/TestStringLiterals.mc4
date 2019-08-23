@@ -2,7 +2,7 @@
 
 package de.monticore;
 
-grammar TestStringLiterals extends de.monticore.StringLiterals {
+grammar TestStringLiterals extends StringLiterals {
 
 	CharLiteralList = "["  (CharLiteral | ",")* "]" ;
 	StringLiteralList = "["  (StringLiteral | ",")* "]" ;

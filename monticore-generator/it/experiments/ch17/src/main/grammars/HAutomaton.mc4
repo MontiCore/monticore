@@ -4,7 +4,8 @@ grammar HAutomaton extends SAutomaton {
   start Automaton;
 
   // redefine a nonterminal
-  State =  "state" Name
+  //todo rename to state, coco ProdAndExtendedProdUseSameAttrNameForDiffNTs is fixed
+  State =  "autstate" Name
     ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )*
     ( ";" | "{" (State | Transition)* "}" );
 }

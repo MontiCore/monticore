@@ -3,9 +3,9 @@
 package de.monticore;
 
 grammar TestMCLiteralsV2 extends
-	de.monticore.MCNumbers,
+	MCNumbers,
 	// de.monticore.MCLiteralsV2,
-	de.monticore.StringLiterals
+	StringLiterals
 	{
 
  DecimalList = "["  (Decimal | ",")* "]" ;
@@ -14,13 +14,13 @@ grammar TestMCLiteralsV2 extends
  StringList = "["  (StringLiteral | ",")* "]" ;
 
  // test reuse of a fragment
- token XHexDigit = 'X' HexDigit* 'X' ; 
- BTest = XHexDigit "," XHexDigit; 
+ token XHexDigit = 'X' HexDigit* 'X' ;
+ BTest = XHexDigit "," XHexDigit;
 
  // List with only optional separator (but also space separates)
  // Thi scan be used to check end-detection for tokens
  AnyTokenList = ":" (AnyToken ","?)* ":" ;
- AnyToken = DecimalToken | CharToken | StringToken 
+ AnyToken = DecimalToken | CharToken | StringToken
         | "[" | "]" | ".." ;
 
 }

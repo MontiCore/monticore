@@ -84,6 +84,7 @@
             <configuration>
               <grammars>
                 <grammar>src/test/grammars</grammar>
+                <grammar>src/main/examples</grammar>
               </grammars>
               <handcodedPaths>
                 <handcodedPath>src/test/java</handcodedPath>

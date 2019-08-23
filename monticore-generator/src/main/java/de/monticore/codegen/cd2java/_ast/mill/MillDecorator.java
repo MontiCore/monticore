@@ -44,7 +44,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
     String millClassName = compilationUnit.getCDDefinition().getName() + MILL_SUFFIX;
     ASTMCType millType = this.getCDTypeFacade().createTypeByDefinition(millClassName);
 
-    List<CDDefinitionSymbol> superSymbolList = service.getSuperCDs();
+    List<CDDefinitionSymbol> superSymbolList = service.getSuperCDsTransitive();
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, millClassName);
 
@@ -166,7 +166,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
 
             //add builder method
             ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, methodName);
-            if (!service.isMethodAlreadyDefined(createDelegateMethod.getName(), superMethods)) {
+            if (!service.isMethodAlreadyDefined(createDelegateMethod, superMethods)) {
               this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("_ast.mill.BuilderDelegatorMethod", packageName + superSymbol.getName(), methodName));
               superMethods.add(createDelegateMethod);
             }
