@@ -1,4 +1,4 @@
-package de.monticore.codegen.cd2java._symboltable;
+package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import com.github.javaparser.StaticJavaParser;
 import de.monticore.cd.cd4analysis._ast.*;
@@ -6,6 +6,7 @@ import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;

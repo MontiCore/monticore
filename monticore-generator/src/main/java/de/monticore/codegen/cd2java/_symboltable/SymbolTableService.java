@@ -2,10 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable;
 
 import de.monticore.cd.CD4AnalysisHelper;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDType;
-import de.monticore.cd.cd4analysis._ast.ASTModifier;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -18,6 +15,7 @@ import de.se_rwth.commons.Names;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
@@ -114,7 +112,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getCDTypeFactory().createQualifiedType(getScopeTypeName());
   }
 
-  public ASTMCType getScopeInterfaceType() {
+  public ASTMCQualifiedType getScopeInterfaceType() {
     return getCDTypeFactory().createQualifiedType(getScopeInterfaceTypeName());
   }
 
@@ -241,5 +239,31 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     }
     return Optional.empty();
   }
+  public List<ASTCDClass> getSymbolClasses(List<ASTCDClass> classList) {
+    return classList.stream()
+        .filter(ASTCDClassTOP::isPresentModifier)
+        .filter(c -> hasSymbolStereotype(c.getModifier()))
+        .collect(Collectors.toList());
+  }
 
+  public List<ASTCDInterface> getSymbolInterfaces(List<ASTCDInterface> astcdInterfaces) {
+    return astcdInterfaces.stream()
+        .filter(ASTCDInterface::isPresentModifier)
+        .filter(c -> hasSymbolStereotype(c.getModifier()))
+        .collect(Collectors.toList());
+  }
+
+  public List<ASTCDClass> getScopeClasses(List<ASTCDClass> classList) {
+    return classList.stream()
+        .filter(ASTCDClassTOP::isPresentModifier)
+        .filter(c -> hasScopeStereotype(c.getModifier()))
+        .collect(Collectors.toList());
+  }
+
+  public List<ASTCDInterface> getScopeInterfaces(List<ASTCDInterface> astcdInterfaces) {
+    return astcdInterfaces.stream()
+        .filter(ASTCDInterface::isPresentModifier)
+        .filter(c -> hasScopeStereotype(c.getModifier()))
+        .collect(Collectors.toList());
+  }
 }

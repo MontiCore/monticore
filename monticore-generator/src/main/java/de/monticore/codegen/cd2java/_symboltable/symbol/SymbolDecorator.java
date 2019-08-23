@@ -1,7 +1,8 @@
-package de.monticore.codegen.cd2java._symboltable;
+package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;

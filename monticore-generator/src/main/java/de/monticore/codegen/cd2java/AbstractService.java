@@ -166,8 +166,14 @@ public class AbstractService<T extends AbstractService> {
   public String getSimpleNativeType(String nativeAttributeType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
     // if not generic returns simple Type like 'int'
-    return nativeAttributeType.contains(".") ? nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".") + 1) :
-        nativeAttributeType;
+    String nativeType = nativeAttributeType;
+    if (nativeAttributeType.contains(".")) {
+      nativeAttributeType = nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".")+1);
+    }
+    if (nativeAttributeType.contains(">")) {
+      nativeAttributeType = nativeAttributeType.replaceAll(">", "");
+    }
+    return nativeAttributeType;
   }
 
   public boolean isMethodBodyPresent(ASTCDMethod method) {

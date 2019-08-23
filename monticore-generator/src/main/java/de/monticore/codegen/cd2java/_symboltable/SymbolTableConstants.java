@@ -41,6 +41,10 @@ public class SymbolTableConstants {
 
   public static final String AST_NODE_VARIABLE = "astNode";
 
+  public static final String ALREADY_RESOLVED = "AlreadyResolved";
+
+    public static final String SHADOWING = "shadowing";
+
   public static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
 
 }

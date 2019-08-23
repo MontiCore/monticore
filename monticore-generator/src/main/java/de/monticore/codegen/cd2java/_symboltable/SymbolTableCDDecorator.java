@@ -3,7 +3,8 @@ package de.monticore.codegen.cd2java._symboltable;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java._symboltable.builder.SymbolBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.ArrayList;
@@ -38,10 +39,10 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     List<String> symbolTablePackage = new ArrayList<>(ast.getPackageList());
     symbolTablePackage.addAll(Arrays.asList(ast.getCDDefinition().getName().toLowerCase(), SYMBOL_TABLE_PACKAGE));
 
-    List<ASTCDClass> symbolClasses = getSymbolClasses(ast.getCDDefinition().getCDClassList());
-    List<ASTCDInterface> symbolInterfaces = getSymbolInterfaces(ast.getCDDefinition().getCDInterfaceList());
-    List<ASTCDClass> scopeClasses = getScopeClasses(ast.getCDDefinition().getCDClassList());
-    List<ASTCDInterface> scopeInterfaces = getScopeInterfaces(ast.getCDDefinition().getCDInterfaceList());
+    List<ASTCDClass> symbolClasses = symbolTableService.getSymbolClasses(ast.getCDDefinition().getCDClassList());
+    List<ASTCDInterface> symbolInterfaces = symbolTableService.getSymbolInterfaces(ast.getCDDefinition().getCDInterfaceList());
+    List<ASTCDClass> scopeClasses = symbolTableService.getScopeClasses(ast.getCDDefinition().getCDClassList());
+    List<ASTCDInterface> scopeInterfaces = symbolTableService.getScopeInterfaces(ast.getCDDefinition().getCDInterfaceList());
 
     List<ASTCDClass> decoratedSymbolClasses = createSymbolClasses(symbolClasses);
     List<ASTCDClass> decoratedSymbolInterfaces = createSymbolClasses(symbolInterfaces);
@@ -83,34 +84,6 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     return symbolASTClasses
         .stream()
         .map(symbolBuilderDecorator::decorate)
-        .collect(Collectors.toList());
-  }
-
-  protected List<ASTCDClass> getSymbolClasses(List<ASTCDClass> classList) {
-    return classList.stream()
-        .filter(ASTCDClassTOP::isPresentModifier)
-        .filter(c -> symbolTableService.hasSymbolStereotype(c.getModifier()))
-        .collect(Collectors.toList());
-  }
-
-  protected List<ASTCDInterface> getSymbolInterfaces(List<ASTCDInterface> astcdInterfaces) {
-    return astcdInterfaces.stream()
-        .filter(ASTCDInterface::isPresentModifier)
-        .filter(c -> symbolTableService.hasSymbolStereotype(c.getModifier()))
-        .collect(Collectors.toList());
-  }
-
-  protected List<ASTCDClass> getScopeClasses(List<ASTCDClass> classList) {
-    return classList.stream()
-        .filter(ASTCDClassTOP::isPresentModifier)
-        .filter(c -> symbolTableService.hasScopeStereotype(c.getModifier()))
-        .collect(Collectors.toList());
-  }
-
-  protected List<ASTCDInterface> getScopeInterfaces(List<ASTCDInterface> astcdInterfaces) {
-    return astcdInterfaces.stream()
-        .filter(ASTCDInterface::isPresentModifier)
-        .filter(c -> symbolTableService.hasScopeStereotype(c.getModifier()))
         .collect(Collectors.toList());
   }
 }
