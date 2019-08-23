@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
 import com.google.common.collect.Lists;

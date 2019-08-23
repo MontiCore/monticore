@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
 import de.monticore.cd.cd4analysis._symboltable.*;
