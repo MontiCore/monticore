@@ -44,11 +44,14 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     List<ASTCDInterface> scopeInterfaces = getScopeInterfaces(ast.getCDDefinition().getCDInterfaceList());
 
     List<ASTCDClass> decoratedSymbolClasses = createSymbolClasses(symbolClasses);
+    List<ASTCDClass> decoratedSymbolInterfaces = createSymbolClasses(symbolInterfaces);
 
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(ast.getCDDefinition().getName())
         .addAllCDClasss(decoratedSymbolClasses)
         .addAllCDClasss(createSymbolBuilderClasses(decoratedSymbolClasses))
+        .addAllCDClasss(decoratedSymbolInterfaces)
+        .addAllCDClasss(createSymbolBuilderClasses(decoratedSymbolInterfaces))
         .build();
 
     for (ASTCDClass cdClass : astCD.getCDClassList()) {
@@ -69,8 +72,8 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
         .build();
   }
 
-  protected List<ASTCDClass> createSymbolClasses(List<ASTCDClass> symbolASTClasses) {
-    return symbolASTClasses
+  protected List<ASTCDClass> createSymbolClasses(List<?extends ASTCDType> astcdTypeList) {
+    return astcdTypeList
         .stream()
         .map(symbolDecorator::decorate)
         .collect(Collectors.toList());

@@ -8,7 +8,7 @@ ${tc.signature("scopeInterface", "artifactScope")}
       // package name. This check is important, since the package name of the
       // enclosing symbol might be set manually.
       return currentScope.getSpanningSymbol().get().getPackageName();
-    } else if (currentScope instanceof AutomataArtifactScope) {
+    } else if (currentScope instanceof ${artifactScope}) {
       return ((${artifactScope}) currentScope).getPackageName();
     }
     optCurrentScope = currentScope.getEnclosingScope();

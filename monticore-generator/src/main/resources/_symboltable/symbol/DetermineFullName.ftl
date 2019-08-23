@@ -13,7 +13,7 @@ ${tc.signature("scopeInterface", "artifactScope", "globalScope")}
     Optional<? extends ${scopeInterface}> optCurrentScope = Optional.of(enclosingScope);
 
     while (optCurrentScope.isPresent()) {
-      final IAutomataScope currentScope = optCurrentScope.get();
+      final ${scopeInterface} currentScope = optCurrentScope.get();
       if (currentScope.isSpannedBySymbol()) {
         // If one of the enclosing scope(s) is spanned by a symbol, the full name
         // of that symbol is the missing prefix, and hence, the calculation
