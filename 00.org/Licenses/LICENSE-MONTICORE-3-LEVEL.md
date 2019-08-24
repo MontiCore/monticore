@@ -73,7 +73,3 @@ The MontiCore 3 Level license is built on:
 
 
 
-# copyright
-
-[(c) see MontiCore 3 Level License](https://github.com/MontiCore/monticore)
-
