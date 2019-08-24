@@ -31,6 +31,7 @@ public class TypeConstant extends TypeExpression {
     for(TypeExpression expr: superTypes){
       clone.addSuperType(expr.deepClone());
     }
+    clone.typeSymbol = this.typeSymbol;
     return clone;
   }
   //hier enum attr für primitive types

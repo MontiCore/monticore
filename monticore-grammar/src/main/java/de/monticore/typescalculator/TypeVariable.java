@@ -42,6 +42,7 @@ public class TypeVariable<ASTMCType> extends TypeExpression {
     for(TypeExpression expr: superTypes){
       clone.addSuperType(expr.deepClone());
     }
+    clone.typeSymbol = this.typeSymbol;
     clone.variableName = this.variableName.deepClone();
     return clone;
   }
