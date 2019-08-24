@@ -72,3 +72,8 @@ The MontiCore 3 Level license is built on:
 * [BSD-3-Clause](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-BSD3CLAUSE.md) 
 
 
+
+# copyright
+
+[(c) see MontiCore 3 Level License](https://github.com/MontiCore/monticore)
+
