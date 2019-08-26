@@ -75,8 +75,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
       types.put(expr,var.getType());
     }else if(optType.isPresent()) {
       ETypeSymbol type = optType.get();
-      TypeExpression res =new TypeExpression();
-      res.setName(type.getName());
+      TypeExpression res = TypesCalculatorHelper.fromETypeSymbol(type);
       this.result = res;
       types.put(expr,res);
     }else if(optMethod.isPresent()) {
@@ -86,7 +85,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
         this.result=type;
         types.put(expr,type);
       }else{
-        TypeExpression res =new TypeExpression();
+        TypeExpression res =new TypeConstant();
         res.setName("void");
         this.result=res;
         types.put(expr,res);
@@ -178,7 +177,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     String[] parts = fullName.split("\\.");
     ArrayList<String> nameList = new ArrayList<>();
     Collections.addAll(nameList,parts);
-    TypeExpression res = new TypeExpression();
+    TypeExpression res = new ObjectType();
     res.setName(fullName);
     res.setSuperTypes(superTypes);
     this.result=res;

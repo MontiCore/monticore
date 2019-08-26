@@ -28,10 +28,53 @@ public class GenericTypeExpression extends TypeExpression {
     Lists.newArrayList();
   }
 
-  Optional<TypeSymbol> whoAmI;
+  public void addArgument(TypeExpression argument){
+    this.arguments.add(argument);
+  }
+
+  Optional<TypeSymbol> whoAmI = Optional.empty();
 
   List<TypeExpression> arguments = new LinkedList<>();
 
 
+  @Override
+  public boolean deepEquals(TypeExpression typeExpression) {
+    if(!(typeExpression instanceof GenericTypeExpression)){
+      return false;
+    }
+    if(!this.name.equals(typeExpression.name)){
+      return false;
+    }
+    if(!this.typeSymbol.equals(typeExpression.typeSymbol)){
+      return false;
+    }
 
+    if(!this.superTypes.equals(typeExpression.superTypes)){
+      return false;
+    }
+    if(!this.arguments.equals(((GenericTypeExpression) typeExpression).arguments)){
+      return false;
+    }
+    if(!this.whoAmI.equals(((GenericTypeExpression) typeExpression).whoAmI)){
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public TypeExpression deepClone() {
+    GenericTypeExpression clone = new GenericTypeExpression();
+    clone.setName(this.name);
+    clone.setEnclosingScope(this.enclosingScope);
+
+    for(TypeExpression expr: superTypes){
+      clone.addSuperType(expr.deepClone());
+    }
+    for(TypeExpression expr: arguments){
+      clone.addArgument(expr.deepClone());
+    }
+    clone.typeSymbol = this.typeSymbol;
+    clone.whoAmI = this.whoAmI;
+    return clone;
+  }
 }
