@@ -1,9 +1,6 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDConstructor;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -19,9 +16,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
 public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
@@ -156,6 +153,20 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("exportsSymbols", scopeBuilderClass);
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
     assertBoolean(astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testMethods() {
+    assertEquals(60, scopeBuilderClass.getCDMethodList().size());
+  }
+
+  @Test
+  public void testBuildMethod() {
+    ASTCDMethod method = getMethodBy("build", scopeBuilderClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(cdTypeFacade.createQualifiedType("AScope"), method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
   }
 
 }

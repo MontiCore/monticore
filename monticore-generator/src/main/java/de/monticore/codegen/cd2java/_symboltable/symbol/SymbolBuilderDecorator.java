@@ -13,7 +13,7 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_BUILD_TEMPLATE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_BUILD_TEMPLATE;
 
 public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
@@ -34,6 +34,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
 
     builderDecorator.disableTemplates();
     ASTCDClass symbolBuilder = builderDecorator.decorate(decoratedSymbolClass);
+    builderDecorator.enableTemplates();
 
     symbolBuilder.setName(symbolBuilderName);
 
@@ -43,7 +44,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(SCOPE_BUILD_TEMPLATE, symbolClass.getName())));
+        new TemplateHookPoint(SYMBOL_BUILD_TEMPLATE, symbolClass.getName())));
 
     // valid method template
     Optional<ASTCDMethod> validMethod = symbolBuilder.getCDMethodList()

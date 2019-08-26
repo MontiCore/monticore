@@ -103,6 +103,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         .addAllCDMethods(symbolMethods)
         .addAllCDAttributes(symbolAlreadyResolvedAttributes)
         .addAllCDMethods(symbolAlreadyResolvedMethods)
+        .addCDMethod(createSymbolSizeMethod(symbolAttributes.keySet()))
         .addCDAttribute(enclosingScopeAttribute)
         .addAllCDMethods(enclosingScopeMethods)
         .addCDAttribute(spanningSymbolAttribute)
@@ -182,6 +183,18 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     }
 
     return acceptMethods;
+  }
+
+  protected ASTCDMethod createSymbolSizeMethod(Collection<String> symbolAttributeNames){
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createIntType()).build();
+    ASTCDMethod getSymbolSize = getCDMethodFacade().createMethod(PUBLIC, returnType, "getSymbolSize");
+    StringBuilder template = new StringBuilder();
+    if(symbolAttributeNames.isEmpty()){
+      this.replaceTemplate(EMPTY_BODY, getSymbolSize, new StringHookPoint("return 0;"));
+    }else {
+      this.replaceTemplate(EMPTY_BODY, getSymbolSize, new TemplateHookPoint("_symboltable.scope.GetSymbolSize", symbolAttributeNames));
+    }
+    return getSymbolSize;
   }
 
   protected Map<String,ASTCDAttribute> getSuperSymbolAttributes() {
