@@ -73,4 +73,6 @@ public class SymbolTableConstants {
 
   public static final String PREDICATE = "java.util.function.Predicate";
 
+  public static final String SYMBOLS_MULTI_MAP  = "com.google.common.collect.LinkedListMultimap<String, %s>";
+
 }

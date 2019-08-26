@@ -224,7 +224,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   protected ASTCDAttribute createSymbolAttributes(ASTCDType cdType, CDDefinitionSymbol cdDefinitionSymbol) {
     String symbolTypeName = symbolTableService.getSymbolFullTypeName(cdType, cdDefinitionSymbol);
     String attrName = StringTransformations.uncapitalize(symbolTableService.getSymbolSimpleTypeName(cdType)) + LIST_SUFFIX_S;
-    ASTMCType symbolMultiMap = getCDTypeFacade().createTypeByDefinition("com.google.common.collect.LinkedListMultimap<String, " + symbolTypeName + ">");
+    ASTMCType symbolMultiMap = getCDTypeFacade().createTypeByDefinition(String.format(SYMBOLS_MULTI_MAP, symbolTypeName));
     ASTCDAttribute symbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolMultiMap, attrName);
     this.replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= com.google.common.collect.LinkedListMultimap.create()"));
     return symbolAttribute;
