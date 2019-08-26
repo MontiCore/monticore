@@ -7,6 +7,7 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -18,9 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
@@ -38,23 +39,26 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  private static final String ENCLOSING_SCOPE_TYPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
-
   private static final String AUTOMATON_SYMBOL_MAP = "com.google.common.collect.LinkedListMultimap<String,de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
 
   private static final String STATE_SYMBOL_MAP = "com.google.common.collect.LinkedListMultimap<String,de.monticore.codegen.ast.automaton._symboltable.StateSymbol>";
+
+  private static final String QUALIFIED_NAME_SYMBOL_MAP = "com.google.common.collect.LinkedListMultimap<String,de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol>";
 
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
 
   private static final String STATE_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.StateSymbol";
 
-  private static final String A_NODE_TYPE = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
+  private static final String QUALIFIED_NAME_SYMBOL = "de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol";
 
-  private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
+  private static final String AST_NODE_TYPE = "de.monticore.ast.ASTNode";
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
 
-  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.ast.automaton._visitor.AutomatonSymbolVisitor";
+  public static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
+
+  public static final String I_LEXICAS_SCOPE = "de.monticore.codegen.ast.lexicals._symboltable.ILexicalsScope";
+
 
   @Before
   public void setUp() {
@@ -69,6 +73,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     ScopeClassDecorator decorator = new ScopeClassDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
+        new VisitorService(decoratedCompilationUnit),
         new MethodDecorator(glex));
 
     //creates normal Symbol
@@ -162,7 +167,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(4, scopeClass.sizeCDAttributes());
+    assertEquals(13, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -175,6 +180,14 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   @Test
   public void testStateSymbolAlreadyResolvedAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("stateSymbolsAlreadyResolved", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertBoolean(astcdAttribute.getMCType());
+  }
+
+
+  @Test
+  public void testQualifiedNameSymbolAlreadyResolvedAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("qualifiedNameSymbolsAlreadyResolved", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertBoolean(astcdAttribute.getMCType());
   }
@@ -194,15 +207,71 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testMethods() {
-    assertEquals(10, scopeClass.getCDMethodList().size());
+  public void testQualifiedNameSymbolAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("qualifiedNameSymbols", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals(QUALIFIED_NAME_SYMBOL_MAP, astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testEnclosingScopeAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("enclosingScope", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertOptionalOf(I_AUTOMATON_SCOPE, astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testSubScopesAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("subScopes", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertListOf(I_AUTOMATON_SCOPE, astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testSpanningSymbolAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("spanningSymbol", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertOptionalOf(I_SCOPE_SPANNING_SYMBOL, astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testShadowingAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("shadowing", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertBoolean(astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testExportsSymbolsAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("exportsSymbols", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertBoolean(astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testNameAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("name", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertOptionalOf(String.class, astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testAstNodeAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("astNode", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertOptionalOf(AST_NODE_TYPE, astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testMethodCount() {
+    assertEquals(52, scopeClass.getCDMethodList().size());
   }
 
   @Test
   public void testRemoveSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("remove", scopeClass);
 
-    assertEquals(2, methodList.size());
+    assertEquals(3, methodList.size());
 
     ASTCDMethod automatonRemove = methodList.get(0);
     assertDeepEquals(PUBLIC, automatonRemove.getModifier());
@@ -219,13 +288,21 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(cdTypeFacade.createQualifiedType(STATE_SYMBOL),
         stateRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", stateRemove.getCDParameter(0).getName());
+
+    ASTCDMethod qualifiedNameRemove = methodList.get(2);
+    assertDeepEquals(PUBLIC, qualifiedNameRemove.getModifier());
+    assertTrue(qualifiedNameRemove.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, qualifiedNameRemove.sizeCDParameters());
+    assertDeepEquals(cdTypeFacade.createQualifiedType(QUALIFIED_NAME_SYMBOL),
+        qualifiedNameRemove.getCDParameter(0).getMCType());
+    assertEquals("symbol", qualifiedNameRemove.getCDParameter(0).getName());
   }
 
   @Test
   public void testAddSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("add", scopeClass);
 
-    assertEquals(2, methodList.size());
+    assertEquals(3, methodList.size());
 
     ASTCDMethod automatonRemove = methodList.get(0);
     assertDeepEquals(PUBLIC, automatonRemove.getModifier());
@@ -242,6 +319,14 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(cdTypeFacade.createQualifiedType(STATE_SYMBOL),
         stateRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", stateRemove.getCDParameter(0).getName());
+
+    ASTCDMethod qualifiedNameRemove = methodList.get(2);
+    assertDeepEquals(PUBLIC, qualifiedNameRemove.getModifier());
+    assertTrue(qualifiedNameRemove.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, qualifiedNameRemove.sizeCDParameters());
+    assertDeepEquals(cdTypeFacade.createQualifiedType(QUALIFIED_NAME_SYMBOL),
+        qualifiedNameRemove.getCDParameter(0).getMCType());
+    assertEquals("symbol", qualifiedNameRemove.getCDParameter(0).getName());
   }
 
   @Test
@@ -305,6 +390,239 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("stateSymbolsAlreadyResolved", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testGetSpanningSymbolMethod() {
+    ASTCDMethod method = getMethodBy("getSpanningSymbol", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(I_SCOPE_SPANNING_SYMBOL, method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGetSpanningSymbolOptMethod() {
+    ASTCDMethod method = getMethodBy("getSpanningSymbolOpt", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertOptionalOf(I_SCOPE_SPANNING_SYMBOL, method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testisPresentSpanningSymbolMethod() {
+    ASTCDMethod method = getMethodBy("isPresentSpanningSymbol", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertBoolean(method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGetEnclosingScopeMethod() {
+    ASTCDMethod method = getMethodBy("getEnclosingScope", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGetEnclosingScopeOptMethod() {
+    ASTCDMethod method = getMethodBy("getEnclosingScopeOpt", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertOptionalOf(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testisPresentEnclosingScopeMethod() {
+    ASTCDMethod method = getMethodBy("isPresentEnclosingScope", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertBoolean(method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+
+  @Test
+  public void testSetSpanningSymbolMethod() {
+    ASTCDMethod method = getMethodBy("setSpanningSymbol", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(I_SCOPE_SPANNING_SYMBOL, method.getCDParameter(0).getMCType());
+    assertEquals("spanningSymbol", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testSetSpanningSymbolOptMethod() {
+    ASTCDMethod method = getMethodBy("setSpanningSymbolOpt", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(cdTypeFacade.createOptionalTypeOf(I_SCOPE_SPANNING_SYMBOL), method.getCDParameter(0).getMCType());
+    assertEquals("spanningSymbol", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testSetSpanningSymbolAbsentMethod() {
+    ASTCDMethod method = getMethodBy("setSpanningSymbolAbsent", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testAddSubScopeAutomatonMethod() {
+    List<ASTCDMethod> methodList = getMethodsBy("addSubScope", scopeClass);
+    assertEquals(2, methodList.size());
+    Optional<ASTCDMethod> method = methodList.stream()
+        .filter(m -> m.sizeCDParameters() == 1)
+        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(cdTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)))
+        .findFirst();
+    assertTrue(method.isPresent());
+
+    assertDeepEquals(PUBLIC, method.get().getModifier());
+    assertTrue(method.get().getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.get().sizeCDParameters());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.get().getCDParameter(0).getMCType());
+    assertEquals("subScope", method.get().getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testRemoveSubScopeAutomatonMethod() {
+    List<ASTCDMethod> methodList = getMethodsBy("removeSubScope", scopeClass);
+    assertEquals(2, methodList.size());
+    Optional<ASTCDMethod> method = methodList.stream()
+        .filter(m -> m.sizeCDParameters() == 1)
+        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(cdTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)))
+        .findFirst();
+    assertTrue(method.isPresent());
+
+    assertDeepEquals(PUBLIC, method.get().getModifier());
+    assertTrue(method.get().getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.get().sizeCDParameters());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.get().getCDParameter(0).getMCType());
+    assertEquals("subScope", method.get().getCDParameter(0).getName());
+  }
+
+
+  @Test
+  public void testSetSubScopesAutomatonMethod() {
+    ASTCDMethod method = getMethodBy("setSubScopes", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertListOf(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
+    assertEquals("subScopes", method.getCDParameter(0).getName());
+  }
+
+
+  @Test
+  public void testGetSubScopessMethod() {
+    ASTCDMethod method = getMethodBy("getSubScopes", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertListOf(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testAddSubScopeLexicalsMethod() {
+    List<ASTCDMethod> methodList = getMethodsBy("addSubScope", scopeClass);
+    assertEquals(2, methodList.size());
+    Optional<ASTCDMethod> method = methodList.stream()
+        .filter(m -> m.sizeCDParameters() == 1)
+        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(cdTypeFacade.createQualifiedType(I_LEXICAS_SCOPE)))
+        .findFirst();
+    assertTrue(method.isPresent());
+
+    assertDeepEquals(PUBLIC, method.get().getModifier());
+    assertTrue(method.get().getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.get().sizeCDParameters());
+    assertDeepEquals(I_LEXICAS_SCOPE, method.get().getCDParameter(0).getMCType());
+    assertEquals("subScope", method.get().getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testRemoveSubScopeLexicalsMethod() {
+    List<ASTCDMethod> methodList = getMethodsBy("removeSubScope", scopeClass);
+    assertEquals(2, methodList.size());
+    Optional<ASTCDMethod> method = methodList.stream()
+        .filter(m -> m.sizeCDParameters() == 1)
+        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(cdTypeFacade.createQualifiedType(I_LEXICAS_SCOPE)))
+        .findFirst();
+    assertTrue(method.isPresent());
+
+    assertDeepEquals(PUBLIC, method.get().getModifier());
+    assertTrue(method.get().getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.get().sizeCDParameters());
+    assertDeepEquals(I_LEXICAS_SCOPE, method.get().getCDParameter(0).getMCType());
+    assertEquals("subScope", method.get().getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testSetEnclosingScopeAutomatonMethod() {
+
+    List<ASTCDMethod> methodList = getMethodsBy("setEnclosingScope", scopeClass);
+    assertEquals(2, methodList.size());
+    Optional<ASTCDMethod> method = methodList.stream()
+        .filter(m -> m.sizeCDParameters() == 1)
+        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(cdTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)))
+        .findFirst();
+    assertTrue(method.isPresent());
+
+    assertDeepEquals(PUBLIC, method.get().getModifier());
+    assertTrue(method.get().getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.get().sizeCDParameters());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.get().getCDParameter(0).getMCType());
+    assertEquals("enclosingScope", method.get().getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testSetEnclosingScopeOptAutomatonMethod() {
+    ASTCDMethod method = getMethodBy("setEnclosingScopeOpt", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertOptionalOf(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testSetEnclosingScopeAbsentAutomatonMethod() {
+    ASTCDMethod method = getMethodBy("setEnclosingScopeAbsent", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetEnclosingScopeLexicalsMethod() {
+
+    List<ASTCDMethod> methodList = getMethodsBy("setEnclosingScope", scopeClass);
+    assertEquals(2, methodList.size());
+    Optional<ASTCDMethod> method = methodList.stream()
+        .filter(m -> m.sizeCDParameters() == 1)
+        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(cdTypeFacade.createQualifiedType(I_LEXICAS_SCOPE)))
+        .findFirst();
+    assertTrue(method.isPresent());
+
+    assertDeepEquals(PUBLIC, method.get().getModifier());
+    assertTrue(method.get().getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.get().sizeCDParameters());
+    assertDeepEquals(I_LEXICAS_SCOPE, method.get().getCDParameter(0).getMCType());
+    assertEquals("newEnclosingScope", method.get().getCDParameter(0).getName());
   }
 
   @Test
