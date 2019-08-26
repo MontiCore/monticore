@@ -18,10 +18,7 @@ import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.StringTransformations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
@@ -65,13 +62,13 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     List<ASTCDClass> symbolClasses = symbolTableService.getSymbolClasses(input.getCDDefinition().getCDClassList());
     List<ASTCDInterface> symbolInterfaces = symbolTableService.getScopeInterfaces(input.getCDDefinition().getCDInterfaceList());
 
-    List<ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolClasses, symbolTableService.getCDSymbol());
-    symbolAttributes.addAll(createSymbolAttributes(symbolInterfaces, symbolTableService.getCDSymbol()));
-    symbolAttributes.addAll(getSuperSymbolAttributes());
+    Map<String,ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolClasses, symbolTableService.getCDSymbol());
+    symbolAttributes.putAll(createSymbolAttributes(symbolInterfaces, symbolTableService.getCDSymbol()));
+    symbolAttributes.putAll(getSuperSymbolAttributes());
 
-    List<ASTCDMethod> symbolMethods = createSymbolMethods(symbolAttributes);
+    List<ASTCDMethod> symbolMethods = createSymbolMethods(symbolAttributes.values());
 
-    List<ASTCDAttribute> symbolAlreadyResolvedAttributes = createSymbolAlreadyResolvedAttributes(symbolAttributes);
+    List<ASTCDAttribute> symbolAlreadyResolvedAttributes = createSymbolAlreadyResolvedAttributes(symbolAttributes.keySet());
 
     List<ASTCDMethod> symbolAlreadyResolvedMethods = symbolAlreadyResolvedAttributes
         .stream()
@@ -102,7 +99,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         .setModifier(PUBLIC.build())
         .addInterface(scopeInterfaceType)
         .addAllCDConstructors(createConstructors(scopeClassName))
-        .addAllCDAttributes(symbolAttributes)
+        .addAllCDAttributes(symbolAttributes.values())
         .addAllCDMethods(symbolMethods)
         .addAllCDAttributes(symbolAlreadyResolvedAttributes)
         .addAllCDMethods(symbolAlreadyResolvedMethods)
@@ -169,7 +166,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   protected List<ASTCDMethod> createAcceptMethods(String scopeClassName) {
     List<ASTCDMethod> acceptMethods = new ArrayList<>();
 
-    String ownScopeVisitor = visitorService.getScopeVisitorSimpleTypeName();
+    String ownScopeVisitor = visitorService.getScopeVisitorFullTypeName();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
     ASTCDMethod ownAcceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
     this.replaceTemplate(EMPTY_BODY, ownAcceptMethod, new StringHookPoint("visitor.handle(this);"));
@@ -187,23 +184,25 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     return acceptMethods;
   }
 
-  protected List<ASTCDAttribute> getSuperSymbolAttributes() {
-    List<ASTCDAttribute> symbolAttributes = new ArrayList<>();
+  protected Map<String,ASTCDAttribute> getSuperSymbolAttributes() {
+    Map<String,ASTCDAttribute> symbolAttributes = new HashMap();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
         if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
-          symbolAttributes.add(createSymbolAttributes(type.getAstNode().get(), cdDefinitionSymbol));
+          ASTCDAttribute symbolAttribute = createSymbolAttributes(type.getAstNode().get(), cdDefinitionSymbol);
+          symbolAttributes.put(symbolAttribute.getName(), symbolAttribute);
         }
       }
     }
     return symbolAttributes;
   }
 
-  protected List<ASTCDAttribute> createSymbolAttributes(List<? extends ASTCDType> symbolClassList, CDDefinitionSymbol cdDefinitionSymbol) {
-    List<ASTCDAttribute> symbolAttributeList = new ArrayList<>();
+  protected Map<String,ASTCDAttribute> createSymbolAttributes(List<? extends ASTCDType> symbolClassList, CDDefinitionSymbol cdDefinitionSymbol) {
+    Map<String,ASTCDAttribute> symbolAttributeList = new HashMap();
     for (ASTCDType astcdClass : symbolClassList) {
-      symbolAttributeList.add(createSymbolAttributes(astcdClass, cdDefinitionSymbol));
+      ASTCDAttribute symbolAttributes = createSymbolAttributes(astcdClass, cdDefinitionSymbol);
+      symbolAttributeList.put(symbolAttributes.getName(), symbolAttributes);
     }
     return symbolAttributeList;
   }
@@ -218,15 +217,15 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     }
     ASTMCType symbolMultiMap = getCDTypeFacade().createTypeByDefinition("com.google.common.collect.LinkedListMultimap<String, " + symbolTypeName + ">");
     ASTCDAttribute symbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolMultiMap, attrName);
-    this.replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= new com.google.common.collect.LinkedListMultimap.create();"));
+    this.replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= com.google.common.collect.LinkedListMultimap.create()"));
     return symbolAttribute;
   }
 
 
-  protected List<ASTCDAttribute> createSymbolAlreadyResolvedAttributes(List<ASTCDAttribute> symbolAttributes) {
+  protected List<ASTCDAttribute> createSymbolAlreadyResolvedAttributes(Collection<String> symbolAttributeNameList) {
     List<ASTCDAttribute> symbolAttributeList = new ArrayList<>();
-    for (ASTCDAttribute attribute : symbolAttributes) {
-      String attrName = attribute.getName() + ALREADY_RESOLVED;
+    for (String attributeName : symbolAttributeNameList) {
+      String attrName = attributeName + ALREADY_RESOLVED;
       ASTMCType booleanType = getCDTypeFacade().createBooleanType();
       ASTCDAttribute symbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED, booleanType, attrName);
       this.replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= false;"));
@@ -235,7 +234,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     return symbolAttributeList;
   }
 
-  protected List<ASTCDMethod> createSymbolMethods(List<ASTCDAttribute> astcdAttributes) {
+  protected List<ASTCDMethod> createSymbolMethods(Collection<ASTCDAttribute> astcdAttributes) {
     List<ASTCDMethod> symbolMethodList = new ArrayList<>();
     for (ASTCDAttribute attribute : astcdAttributes) {
       if (attribute.getMCType() instanceof ASTMCBasicGenericType && ((ASTMCBasicGenericType) attribute.getMCType()).sizeMCTypeArguments() == 2) {

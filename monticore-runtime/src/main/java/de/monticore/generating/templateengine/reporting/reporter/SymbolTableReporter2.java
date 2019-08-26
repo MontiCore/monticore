@@ -79,8 +79,8 @@ public class SymbolTableReporter2 extends AReporter {
     printer.indent();
     reportAllFields(scope.getClass(), printer);
     
-    if (scope.getName().isPresent()) {
-      printer.println("name = \"" + scope.getName().get() + "\";");
+    if (scope.getNameOpt().isPresent()) {
+      printer.println("name = \"" + scope.getNameOpt().get() + "\";");
     }
     else if (printEmptyOptional) {
       printer.println("name = absent;");
@@ -109,27 +109,27 @@ public class SymbolTableReporter2 extends AReporter {
     printer.println("isShadowingScope = " + scope.isShadowingScope() + ";");
     printer.println("exportsSymbols = " + scope.exportsSymbols() + ";");
     
-    if (scope.getAstNode().isPresent()) {
+    if (scope.getAstNodeOpt().isPresent()) {
       printer.print("astNode = ");
-      printer.print(repository.getASTNodeNameFormatted(scope.getAstNode().get()));
+      printer.print(repository.getASTNodeNameFormatted(scope.getAstNodeOpt().get()));
       printer.println(";");
     }
     else if (printEmptyOptional) {
       printer.println("astNode = absent;");
     }
     
-    if (scope.getSpanningSymbol().isPresent()) {
+    if (scope.getSpanningSymbolOpt().isPresent()) {
       printer.print("spanningSymbol = ");
-      reportSymbol(scope.getSpanningSymbol().get(), printer);
+      reportSymbol(scope.getSpanningSymbolOpt().get(), printer);
       printer.println(";");
     }
     else if (printEmptyOptional) {
       printer.println("spanningSymbol = absent;");
     }
     
-    if (scope.getEnclosingScope().isPresent()) {
+    if (scope.getEnclosingScopeOpt().isPresent()) {
       printer.print("enclosingScope = ");
-      printer.print(repository.getScopeNameFormatted(scope.getEnclosingScope().get()));
+      printer.print(repository.getScopeNameFormatted(scope.getEnclosingScopeOpt().get()));
       printer.println(";");
     }
     else if (printEmptyOptional) {

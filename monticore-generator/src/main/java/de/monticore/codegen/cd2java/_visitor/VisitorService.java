@@ -68,6 +68,10 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getPackage(cdSymbol) + "." + cdSymbol.getName() + SCOPE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }
 
+  public String getScopeVisitorFullTypeName() {
+    return getScopeVisitorFullTypeName(getCDSymbol());
+  }
+
   public String getSymbolVisitorSimpleTypeName() {
     return getCDName() + SYMBOL_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }

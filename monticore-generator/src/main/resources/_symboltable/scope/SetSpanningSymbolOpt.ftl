@@ -2,4 +2,4 @@
 ${tc.signature("attribute")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   ${tc.includeArgs("methods.Set", [attribute])}
-  spanningSymbol.ifPresent(setName(spanningSymbol.getName()));
+  spanningSymbol.ifPresent(s -> setName(s.getName()));

@@ -15,9 +15,17 @@ import static de.se_rwth.commons.Joiners.DOT;
 import static java.util.stream.Collectors.toSet;
 
 public interface IScope  {
-  
+
+  Optional<? extends IScope> getEnclosingScopeOpt();
+
+  /**
+   * @deprecated method return type will change from optional to mandatory
+   * if you want optional ues getEnclosingScope()
+   */
+  @Deprecated
   Optional<? extends IScope> getEnclosingScope();
-  
+
+  Optional<? extends IScope> isPresentEnclosingScope();
   
   /**
    * @return number of symbols directly defined/contained in this scope (not in enclosing scope).
@@ -56,18 +64,58 @@ public interface IScope  {
    * @param node the corresponding ast node
    */
   void setAstNode(ASTNode node);
-  
+
+  void setAstNodeOpt(Optional<ASTNode> node);
+
+  void setAstNodeAbsent();
+
+  /**
+   * @deprecated method return type will change from optional to mandatory
+   * if you want optional ues getAstNodeOpt()
+   */
+  @Deprecated
   Optional<ASTNode> getAstNode();
-  
-  Optional<? extends IScopeSpanningSymbol> getSpanningSymbol();
-  
+
+  Optional<ASTNode> getAstNodeOpt();
+
+  boolean isPresentAstNode();
+
+  void setSpanningSymbolOpt(Optional<IScopeSpanningSymbol> symbol);
+
   void setSpanningSymbol(IScopeSpanningSymbol symbol);
+
+  void setSpanningSymbolAbsent();
+
+  /**
+   * @deprecated method return type will change from optional to mandatory
+   * if you want optional ues getSpanningSymbolOpt()
+   */
+  @Deprecated
+  Optional<? extends IScopeSpanningSymbol> getSpanningSymbol();
+
+  Optional<? extends IScopeSpanningSymbol> getSpanningSymbolOpt();
+
+  boolean isPresentSpanningSymbol();
   
   /**
    * @param name of the scope
    */
+  void setNameOpt(Optional<String> name);
+
   void setName(String name);
+
+  void setNameAbsent();
+
+  /**
+   * @deprecated method return type will change from optional to mandatory
+   * if you want optional ues getNameOpt()
+   */
+  @Deprecated
   Optional<String> getName();
+
+  Optional<String> getNameOpt();
+
+  boolean isPresentName();
   
   default String getRemainingNameForResolveDown(String symbolName) {
     final FluentIterable<String> nameParts = getNameParts(symbolName);
@@ -91,7 +139,7 @@ public interface IScope  {
       if (nameParts.size() > 1) {
         final String firstNamePart = nameParts.get(0);
         // A scope that exports symbols usually has a name.
-        return firstNamePart.equals(this.getName().orElse(""));
+        return firstNamePart.equals(this.getNameOpt().orElse(""));
       }
     }
   

@@ -8,12 +8,12 @@
 
   // remove this scope from current (old) enclosing scope, if exists.
   if (this.enclosingScope.isPresent()) {
-    this.enclosingScope.removeSubScope(this);
+    this.enclosingScope.get().removeSubScope(this);
   }
 
   // add this scope to new enclosing scope, if exists.
   if (enclosingScope.isPresent()) {
-    enclosingScope.addSubScope(this);
+    enclosingScope.get().addSubScope(this);
   }
 
   // set new enclosing scope (or empty)

@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java._symboltable.scope.ScopeClassDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -24,14 +25,18 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected final SymbolTableService symbolTableService;
 
+  protected final ScopeClassDecorator scopeClassDecorator;
+
   public SymbolTableCDDecorator(final GlobalExtensionManagement glex,
                                 final SymbolTableService symbolTableService,
                                 final SymbolDecorator symbolDecorator,
-                                final SymbolBuilderDecorator symbolBuilderDecorator) {
+                                final SymbolBuilderDecorator symbolBuilderDecorator,
+                                final ScopeClassDecorator scopeClassDecorator) {
     super(glex);
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
     this.symbolTableService = symbolTableService;
+    this.scopeClassDecorator = scopeClassDecorator;
   }
 
   @Override
@@ -53,6 +58,7 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
         .addAllCDClasss(createSymbolBuilderClasses(decoratedSymbolClasses))
         .addAllCDClasss(decoratedSymbolInterfaces)
         .addAllCDClasss(createSymbolBuilderClasses(decoratedSymbolInterfaces))
+        .addCDClass(createScopeClass(ast))
         .build();
 
     for (ASTCDClass cdClass : astCD.getCDClassList()) {
@@ -73,7 +79,7 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
         .build();
   }
 
-  protected List<ASTCDClass> createSymbolClasses(List<?extends ASTCDType> astcdTypeList) {
+  protected List<ASTCDClass> createSymbolClasses(List<? extends ASTCDType> astcdTypeList) {
     return astcdTypeList
         .stream()
         .map(symbolDecorator::decorate)
@@ -85,5 +91,9 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
         .stream()
         .map(symbolBuilderDecorator::decorate)
         .collect(Collectors.toList());
+  }
+
+  protected ASTCDClass createScopeClass(ASTCDCompilationUnit astcdCompilationUnit) {
+    return scopeClassDecorator.decorate(astcdCompilationUnit);
   }
 }
