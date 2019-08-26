@@ -27,6 +27,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_ME
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
+import static de.monticore.codegen.cd2java.data.ListSuffixDecorator.LIST_SUFFIX_S;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
@@ -60,9 +61,9 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     ASTMCQualifiedType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
 
     List<ASTCDClass> symbolClasses = symbolTableService.getSymbolClasses(input.getCDDefinition().getCDClassList());
-    List<ASTCDInterface> symbolInterfaces = symbolTableService.getScopeInterfaces(input.getCDDefinition().getCDInterfaceList());
+    List<ASTCDInterface> symbolInterfaces = symbolTableService.getSymbolInterfaces(input.getCDDefinition().getCDInterfaceList());
 
-    Map<String,ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolClasses, symbolTableService.getCDSymbol());
+    Map<String, ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolClasses, symbolTableService.getCDSymbol());
     symbolAttributes.putAll(createSymbolAttributes(symbolInterfaces, symbolTableService.getCDSymbol()));
     symbolAttributes.putAll(getSuperSymbolAttributes());
 
@@ -178,27 +179,27 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
       ASTCDParameter SuperVisitorParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(superScopeVisitor), VISITOR_PREFIX);
       ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, SuperVisitorParameter);
       String errorCode = DecorationHelper.getGeneratedErrorCode(acceptMethod);
-      this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_symboltable.scope.Accept", ownScopeVisitor, scopeClassName, superScopeVisitor, errorCode));
+      this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_symboltable.scope.clazz.Accept", ownScopeVisitor, scopeClassName, superScopeVisitor, errorCode));
       acceptMethods.add(acceptMethod);
     }
 
     return acceptMethods;
   }
 
-  protected ASTCDMethod createSymbolSizeMethod(Collection<String> symbolAttributeNames){
+  protected ASTCDMethod createSymbolSizeMethod(Collection<String> symbolAttributeNames) {
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createIntType()).build();
     ASTCDMethod getSymbolSize = getCDMethodFacade().createMethod(PUBLIC, returnType, "getSymbolSize");
     StringBuilder template = new StringBuilder();
-    if(symbolAttributeNames.isEmpty()){
+    if (symbolAttributeNames.isEmpty()) {
       this.replaceTemplate(EMPTY_BODY, getSymbolSize, new StringHookPoint("return 0;"));
-    }else {
-      this.replaceTemplate(EMPTY_BODY, getSymbolSize, new TemplateHookPoint("_symboltable.scope.GetSymbolSize", symbolAttributeNames));
+    } else {
+      this.replaceTemplate(EMPTY_BODY, getSymbolSize, new TemplateHookPoint("_symboltable.scope.clazz.GetSymbolSize", symbolAttributeNames));
     }
     return getSymbolSize;
   }
 
-  protected Map<String,ASTCDAttribute> getSuperSymbolAttributes() {
-    Map<String,ASTCDAttribute> symbolAttributes = new HashMap();
+  protected Map<String, ASTCDAttribute> getSuperSymbolAttributes() {
+    Map<String, ASTCDAttribute> symbolAttributes = new HashMap();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
         if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
@@ -211,8 +212,8 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     return symbolAttributes;
   }
 
-  protected Map<String,ASTCDAttribute> createSymbolAttributes(List<? extends ASTCDType> symbolClassList, CDDefinitionSymbol cdDefinitionSymbol) {
-    Map<String,ASTCDAttribute> symbolAttributeList = new HashMap();
+  protected Map<String, ASTCDAttribute> createSymbolAttributes(List<? extends ASTCDType> symbolClassList, CDDefinitionSymbol cdDefinitionSymbol) {
+    Map<String, ASTCDAttribute> symbolAttributeList = new HashMap();
     for (ASTCDType astcdClass : symbolClassList) {
       ASTCDAttribute symbolAttributes = createSymbolAttributes(astcdClass, cdDefinitionSymbol);
       symbolAttributeList.put(symbolAttributes.getName(), symbolAttributes);
@@ -221,13 +222,8 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDAttribute createSymbolAttributes(ASTCDType cdType, CDDefinitionSymbol cdDefinitionSymbol) {
-    String symbolTypeName = symbolTableService.getSymbolTypeName(cdType, cdDefinitionSymbol);
-    String attrName;
-    if (symbolTypeName.contains(".")) {
-      attrName = StringTransformations.uncapitalize(symbolTypeName.substring(symbolTypeName.lastIndexOf(".") + 1)) + "s";
-    } else {
-      attrName = StringTransformations.uncapitalize(symbolTypeName) + "s";
-    }
+    String symbolTypeName = symbolTableService.getSymbolFullTypeName(cdType, cdDefinitionSymbol);
+    String attrName = StringTransformations.uncapitalize(symbolTableService.getSymbolSimpleTypeName(cdType)) + LIST_SUFFIX_S;
     ASTMCType symbolMultiMap = getCDTypeFacade().createTypeByDefinition("com.google.common.collect.LinkedListMultimap<String, " + symbolTypeName + ">");
     ASTCDAttribute symbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolMultiMap, attrName);
     this.replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= com.google.common.collect.LinkedListMultimap.create()"));
@@ -299,7 +295,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
       if (mutatorMethod.getName().equals("setEnclosingScope")) {
         this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("methods.opt.Set", enclosingScopeAttribute));
       } else if (mutatorMethod.getName().equals("setEnclosingScopeOpt")) {
-        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.SetEnclosingScopeOpt"));
+        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.clazz.SetEnclosingScopeOpt"));
       } else if (mutatorMethod.getName().equals("setEnclosingScopeAbsent")) {
         this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("methods.opt.SetAbsent", enclosingScopeAttribute));
       }
@@ -322,11 +318,11 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     mutatorDecorator.enableTemplates();
     for (ASTCDMethod mutatorMethod : mutatorMethods) {
       if (mutatorMethod.getName().equals("setSpanningSymbol")) {
-        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.SetSpanningSymbol", spanningSymbolAttr));
+        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.clazz.SetSpanningSymbol", spanningSymbolAttr));
       } else if (mutatorMethod.getName().equals("setSpanningSymbolOpt")) {
-        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.SetSpanningSymbolOpt", spanningSymbolAttr));
+        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.clazz.SetSpanningSymbolOpt", spanningSymbolAttr));
       } else if (mutatorMethod.getName().equals("setSpanningSymbolAbsent")) {
-        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.SetSpanningSymbolAbsent", spanningSymbolAttr));
+        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.clazz.SetSpanningSymbolAbsent", spanningSymbolAttr));
       }
     }
     methodList.addAll(mutatorMethods);
@@ -363,13 +359,13 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
   protected List<ASTCDMethod> createSubScopeMethods(ASTMCType scopeInterface) {
     ASTCDMethod addSubScopeMethod = createAddSubScopeMethod(scopeInterface);
-    this.replaceTemplate(EMPTY_BODY, addSubScopeMethod, new TemplateHookPoint("_symboltable.scope.AddSubScope"));
+    this.replaceTemplate(EMPTY_BODY, addSubScopeMethod, new TemplateHookPoint("_symboltable.scope.clazz.AddSubScope"));
     ASTCDMethod removeSubScopeMethod = createRemoveSubScopeMethod(scopeInterface);
-    this.replaceTemplate(EMPTY_BODY, removeSubScopeMethod, new TemplateHookPoint("_symboltable.scope.RemoveSubScope"));
+    this.replaceTemplate(EMPTY_BODY, removeSubScopeMethod, new TemplateHookPoint("_symboltable.scope.clazz.RemoveSubScope"));
     ASTCDMethod getSubScopesMethod = createGetSubScopesMethod(scopeInterface);
-    this.replaceTemplate(EMPTY_BODY, getSubScopesMethod, new TemplateHookPoint("_symboltable.scope.GetSubScopes"));
+    this.replaceTemplate(EMPTY_BODY, getSubScopesMethod, new TemplateHookPoint("_symboltable.scope.clazz.GetSubScopes"));
     ASTCDMethod setSubScopesMethod = createSetSubScopesMethod(scopeInterface);
-    this.replaceTemplate(EMPTY_BODY, setSubScopesMethod, new TemplateHookPoint("_symboltable.scope.SetSubScopes"));
+    this.replaceTemplate(EMPTY_BODY, setSubScopesMethod, new TemplateHookPoint("_symboltable.scope.clazz.SetSubScopes"));
     return new ArrayList<>(Arrays.asList(addSubScopeMethod, removeSubScopeMethod, getSubScopesMethod, setSubScopesMethod));
   }
 

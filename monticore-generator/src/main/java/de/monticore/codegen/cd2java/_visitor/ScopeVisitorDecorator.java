@@ -142,12 +142,12 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
       // add all symbol definitions to list
       for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
         if (astcdInterface.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdInterface.getModifier())) {
-          superSymbolNames.add(symbolTableService.getSymbolTypeName(astcdInterface, cdSymbol));
+          superSymbolNames.add(symbolTableService.getSymbolFullTypeName(astcdInterface, cdSymbol));
         }
       }
       for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
         if (astcdClass.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdClass.getModifier())) {
-          superSymbolNames.add(symbolTableService.getSymbolTypeName(astcdClass,cdSymbol));
+          superSymbolNames.add(symbolTableService.getSymbolFullTypeName(astcdClass,cdSymbol));
         }
       }
     }

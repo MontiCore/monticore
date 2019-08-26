@@ -12,7 +12,7 @@ public class ListSuffixDecorator extends AbstractTransformer<ASTCDCompilationUni
   e.g. List<String> name; -> List<String> names;
    */
 
-  protected static final String LIST_SUFFIX_S = "s";
+  public static final String LIST_SUFFIX_S = "s";
 
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalInput, ASTCDCompilationUnit changedInput) {

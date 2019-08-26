@@ -85,8 +85,6 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
   }
 
-  // ScopeSpanningSymbol
-
   @Test
   public void testClassName() {
     assertEquals("AutomatonScope", scopeClass.getName());

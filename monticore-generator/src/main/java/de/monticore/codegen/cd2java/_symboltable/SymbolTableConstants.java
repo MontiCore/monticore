@@ -45,8 +45,32 @@ public class SymbolTableConstants {
 
   public static final String ALREADY_RESOLVED = "AlreadyResolved";
 
-    public static final String SHADOWING = "shadowing";
+  public static final String SHADOWING = "shadowing";
 
   public static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
+
+  public static final String RESOLVE = "resolve%s";
+
+  public static final String RESOLVE_DOWN = "resolve%sDown";
+
+  public static final String RESOLVE_DOWN_MANY = "resolve%sDownMany";
+
+  public static final String RESOLVE_MANY = "resolve%sMany";
+
+  public static final String RESOLVE_LOCALLY = "resolve%sLocally";
+
+  public static final String RESOLVE_LOCALLY_MANY = "resolve%sLocallyMany";
+
+  public static final String RESOLVE_ADAPTED_LOCALLY_MANY = "resolveAdapted%sLocallyMany";
+
+  public static final String RESOLVE_IMPORTED= "resolve%sImported";
+
+  public static final String FILTER= "filter%s";
+
+  public static final String CONTINUE_WITH_ENCLOSING_SCOPE= "continue%sWithEnclosingScope";
+
+  public static final String CONTINUE_AS_SUB_SCOPE= "continueAs%sSubScope";
+
+  public static final String PREDICATE = "java.util.function.Predicate";
 
 }

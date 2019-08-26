@@ -116,26 +116,31 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getCDTypeFactory().createQualifiedType(getScopeInterfaceTypeName());
   }
 
-  public ASTMCType getScopeInterfaceType(CDDefinitionSymbol cdSymbol) {
+  public ASTMCQualifiedType getScopeInterfaceType(CDDefinitionSymbol cdSymbol) {
     return getCDTypeFactory().createQualifiedType(getScopeInterfaceTypeName(cdSymbol));
   }
 
   public String getSymbolName(ASTCDType clazz) {
     // normal symbol name calculation from
+    return removeASTPrefix(clazz) + SYMBOL_SUFFIX;
+  }
+
+  public String removeASTPrefix(ASTCDType clazz) {
+    // normal symbol name calculation from
     if (clazz.getName().startsWith(AST_PREFIX)) {
-      return clazz.getName().substring(AST_PREFIX.length()) + SYMBOL_SUFFIX;
+      return clazz.getName().substring(AST_PREFIX.length());
     } else {
-      return clazz.getName() + SYMBOL_SUFFIX;
+      return clazz.getName();
     }
   }
 
 
-  public String getSymbolTypeName(ASTCDType clazz) {
+  public String getSymbolFullTypeName(ASTCDType clazz) {
     //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
-    return getSymbolTypeName(clazz, getCDSymbol());
+    return getSymbolFullTypeName(clazz, getCDSymbol());
   }
 
-  public String getSymbolTypeName(ASTCDType clazz, CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getSymbolFullTypeName(ASTCDType clazz, CDDefinitionSymbol cdDefinitionSymbol) {
     //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
     if (clazz.getModifierOpt().isPresent()) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifierOpt().get());
@@ -144,6 +149,17 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       }
     }
     return getPackage(cdDefinitionSymbol) + "." + getSymbolName(clazz);
+  }
+
+  public String getSymbolSimpleTypeName(ASTCDType clazz) {
+    //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
+    if (clazz.getModifierOpt().isPresent()) {
+      Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifierOpt().get());
+      if (symbolTypeValue.isPresent()) {
+        return symbolTypeValue.get();
+      }
+    }
+    return getSymbolName(clazz);
   }
 
   public Optional<String> getDefiningSymbolTypeName(ASTCDType clazz) {
@@ -163,7 +179,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public ASTMCType getSymbolType(ASTCDType clazz) {
-    return getCDTypeFactory().createQualifiedType(getSymbolTypeName(clazz));
+    return getCDTypeFactory().createQualifiedType(getSymbolFullTypeName(clazz));
   }
 
   public String getReferencedSymbolTypeName(ASTCDAttribute attribute) {
@@ -239,6 +255,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     }
     return Optional.empty();
   }
+
   public List<ASTCDClass> getSymbolClasses(List<ASTCDClass> classList) {
     return classList.stream()
         .filter(ASTCDClassTOP::isPresentModifier)

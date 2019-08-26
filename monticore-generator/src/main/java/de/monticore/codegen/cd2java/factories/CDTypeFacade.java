@@ -111,6 +111,27 @@ public class CDTypeFacade {
     return createListTypeOf(MCCollectionTypesHelper.printType(type));
   }
 
+  public ASTMCSetType createSetTypeOf(final Class<?> clazz) {
+    return createSetTypeOf(clazz.getSimpleName());
+  }
+
+  public ASTMCSetType createSetTypeOf(final String name) {
+    Optional<ASTMCTypeArgument> arg = null;
+    try {
+      arg = new CD4CodeParser().parse_StringMCTypeArgument(name);
+    } catch (IOException e) {
+      Log.error("0xA0115 Cannot generate TypeArgument for " + name);
+    }
+    if (!arg.isPresent()) {
+      Log.error("0xA0116 Cannot generate TypeArgument for " + name);
+    }
+    return CD4CodeMill.mCSetTypeBuilder().setName("Set").setMCTypeArgument(arg.get()).build();
+  }
+
+  public ASTMCSetType createSetTypeOf(final ASTMCType type) {
+    return createSetTypeOf(MCCollectionTypesHelper.printType(type));
+  }
+
   public ASTMCType createCollectionTypeOf(final Class<?> clazz) {
     return createCollectionTypeOf(clazz.getSimpleName());
   }
