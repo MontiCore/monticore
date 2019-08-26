@@ -27,7 +27,7 @@ public class TypesCalcMockTest {
 
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> expr = p.parse_StringExpression("9 + 8");
-    TypeExpression type = new TypeExpression();
+    TypeExpression type = new TypeConstant();
     type.setName("boolean");
 
     mock.addLookUp(expr.get(), type);

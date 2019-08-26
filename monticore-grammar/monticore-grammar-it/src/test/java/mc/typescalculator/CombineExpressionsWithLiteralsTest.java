@@ -7,6 +7,11 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.typescalculator.TypeExpression;
+import de.monticore.typescalculator.ObjectType;
+import de.monticore.typescalculator.TypeConstant;
+
+
+
 import de.se_rwth.commons.logging.LogStub;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsGlobalScope;
@@ -47,16 +52,17 @@ public class CombineExpressionsWithLiteralsTest {
 
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("double");
     Optional<ASTExpression> expr = p.parse_StringExpression("mc.typescalculator.TestCD.B.a+=mc.typescalculator.TestCD.D.s");
     assertTrue(expr.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(expr.get())));
 
+    TypeExpression exp2 = new ObjectType();
     Optional<ASTExpression> exprC = p.parse_StringExpression("mc.typescalculator.TestCD.D.f = mc.typescalculator.TestCD.C.f");
-    exp.setName("String");
+    exp2.setName("String");
     assertTrue(exprC.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(exprC.get())));
+    assertTrue(exp2.deepEquals(calc.calculateType(exprC.get())));
 
     Optional<ASTExpression> exprD = p.parse_StringExpression("(mc.typescalculator.TestCD.B.a)++");
     exp.setName("double");
@@ -64,9 +70,9 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(exp.deepEquals(calc.calculateType(exprD.get())));
 
     Optional<ASTExpression> exprB = p.parse_StringExpression("mc.typescalculator.TestCD.B.x = mc.typescalculator.TestCD.B.z");
-    exp.setName("mc.typescalculator.TestCD.C");
+    exp2.setName("mc.typescalculator.TestCD.C");
     assertTrue(exprB.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(exprB.get())));
+    assertTrue(exp2.deepEquals(calc.calculateType(exprB.get())));
 
   }
 }

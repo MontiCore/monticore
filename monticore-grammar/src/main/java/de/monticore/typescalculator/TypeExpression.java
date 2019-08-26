@@ -8,16 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TypeExpression {
-  private String name;
+public abstract class TypeExpression {
+  protected String name;
 
-  private TypeSymbolsScope enclosingScope;
+  protected TypeSymbolsScope enclosingScope;
 
-  private Optional<TypeSymbol> typeSymbol = Optional.empty();
+  protected Optional<TypeSymbol> typeSymbol = Optional.empty();
 
-  private List<TypeExpression> subTypes = new ArrayList<>();
-
-  private List<TypeExpression> superTypes = new ArrayList<>();
+  protected List<TypeExpression> superTypes = new ArrayList<>();
 
   private void lazyLoadTypeSymbol() {
     if(typeSymbol==null || !typeSymbol.isPresent())
@@ -44,17 +42,12 @@ public class TypeExpression {
     this.enclosingScope = enclosingScope;
   }
 
-  public List<TypeExpression> getSubTypes() {
-    return subTypes;
-  }
+
 
   public List<TypeExpression> getSuperTypes() {
     return superTypes;
   }
 
-  public void setSubTypes(List<TypeExpression> subTypes) {
-    this.subTypes = subTypes;
-  }
 
   public void setSuperTypes(List<TypeExpression> superTypes) {
     this.superTypes = superTypes;
@@ -64,40 +57,13 @@ public class TypeExpression {
     this.superTypes.add(superType);
   }
 
-  public void addSubType(TypeExpression subType){
-    this.subTypes.add(subType);
-  }
 
   public String getBaseName() {
     String[] parts = this.name.split("\\.");
     return parts[parts.length - 1];
   }
 
-  public boolean deepEquals(TypeExpression typeExpression){
-    if(!this.name.equals(typeExpression.name)){
-      return false;
-    }
-    if((this.enclosingScope!=null&&typeExpression.enclosingScope!=null)&&(!this.enclosingScope.equals(typeExpression.enclosingScope))){
-      return false;
-    }
-    if(!this.typeSymbol.equals(typeExpression.typeSymbol)){
-      return false;
-    }
-    if(!this.subTypes.equals(typeExpression.subTypes)){
-      return false;
-    }
-    if(!this.superTypes.equals(typeExpression.superTypes)){
-      return false;
-    }
-    return true;
-  }
+  abstract public boolean deepEquals(TypeExpression typeExpression);
 
-  public TypeExpression clone(){
-    TypeExpression clone = new TypeExpression();
-    clone.setName(this.name);
-    clone.setEnclosingScope(this.enclosingScope);
-    clone.setSubTypes(this.subTypes);
-    clone.setSuperTypes(this.superTypes);
-    return clone;
-  }
+  abstract public TypeExpression deepClone();
 }

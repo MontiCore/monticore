@@ -46,7 +46,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> s = p.parse_StringExpression("\'a\'++");
     Optional<ASTExpression> t = p.parse_StringExpression("4.5f++");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -78,7 +78,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> s = p.parse_StringExpression("\'a\'--");
     Optional<ASTExpression> t = p.parse_StringExpression("4.5f--");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -110,7 +110,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> s = p.parse_StringExpression("++\'a\'");
     Optional<ASTExpression> t = p.parse_StringExpression("++4.5f");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -142,7 +142,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> s = p.parse_StringExpression("--\'a\'");
     Optional<ASTExpression> t = p.parse_StringExpression("--4.5f");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -174,7 +174,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> s = p.parse_StringExpression("+\'a\'");
     Optional<ASTExpression> t = p.parse_StringExpression("+4.5f");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -206,7 +206,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> s = p.parse_StringExpression("-\'a\'");
     Optional<ASTExpression> t = p.parse_StringExpression("-4.5f");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -241,7 +241,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> x = p.parse_StringExpression("varString+=13.2");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -257,9 +257,10 @@ public class AssignmentExpressionsTest {
     assertTrue(t.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(t.get())));
 
-    exp.setName("String");
+    TypeExpression exp2 = new ObjectType();
+    exp2.setName("String");
     assertTrue(u.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(u.get())));
+    assertTrue(exp2.deepEquals(calc.calculateType(u.get())));
 
     exp.setName("char");
     assertTrue(v.isPresent());
@@ -269,9 +270,9 @@ public class AssignmentExpressionsTest {
     assertTrue(w.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(w.get())));
 
-    exp.setName("String");
+    exp2.setName("String");
     assertTrue(x.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(x.get())));
+    assertTrue(exp2.deepEquals(calc.calculateType(x.get())));
 
   }
 
@@ -286,7 +287,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> w = p.parse_StringExpression("vardouble-=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -321,7 +322,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> w = p.parse_StringExpression("vardouble*=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -356,7 +357,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> w = p.parse_StringExpression("vardouble/=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -392,7 +393,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> w = p.parse_StringExpression("varchar=\'a\'");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -408,13 +409,14 @@ public class AssignmentExpressionsTest {
     assertTrue(t.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(t.get())));
 
-    exp.setName("String");
+    TypeExpression exp2 = new ObjectType();
+    exp2.setName("String");
     assertTrue(u.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(u.get())));
+    assertTrue(exp2.deepEquals(calc.calculateType(u.get())));
 
-    exp.setName("A");
+    exp2.setName("A");
     assertTrue(v.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(v.get())));
+    assertTrue(exp2.deepEquals(calc.calculateType(v.get())));
 
     exp.setName("char");
     assertTrue(w.isPresent());
@@ -431,7 +433,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> t = p.parse_StringExpression("varchar&=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -463,7 +465,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> t = p.parse_StringExpression("varchar|=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -494,7 +496,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> t = p.parse_StringExpression("varchar^=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -524,7 +526,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> t = p.parse_StringExpression("varchar>>=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -549,7 +551,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> t = p.parse_StringExpression("varchar<<=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -574,7 +576,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> t = p.parse_StringExpression("varchar>>>=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -601,7 +603,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> w = p.parse_StringExpression("vardouble%=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -650,7 +652,7 @@ public class AssignmentExpressionsTest {
 
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
 

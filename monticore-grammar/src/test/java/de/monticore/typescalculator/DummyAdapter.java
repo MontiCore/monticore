@@ -27,7 +27,7 @@ public class DummyAdapter implements IETypeSymbolResolvingDelegate, IEMethodSymb
       symbolName = "int";
     }
     EMethodSymbol sym = ExpressionsBasisSymTabMill.eMethodSymbolBuilder().setAccessModifier(modifier).setName(symbolName).setEnclosingScope(scope).build();
-    TypeExpression returnType= new TypeExpression();
+    TypeExpression returnType =TypesCalculatorHelper.fromEMethodSymbol(sym);
     returnType.setName(symbolName);
     sym.setReturnType(returnType);
     list.add(sym);
@@ -49,20 +49,20 @@ public class DummyAdapter implements IETypeSymbolResolvingDelegate, IEMethodSymb
       symbolName=symbolName.substring(3);
     }
     EVariableSymbol sym = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setAccessModifier(modifier).setName(symbolName).setEnclosingScope(scope).build();
-    TypeExpression type = new TypeExpression();
+
+    TypeExpression type = TypesCalculatorHelper.fromEVariableSymbol(sym);
     type.setName(symbolName);
     if(symbolName.equals("A")){
-      a = new TypeExpression();
+      a = new ObjectType();
       a.setName("A");
-      b = new TypeExpression();
+      b = new ObjectType();
       b.setName("B");
-      List<TypeExpression> subTypes = new ArrayList<>();
-      subTypes.add(b);
+
       List<TypeExpression> superTypes = new ArrayList<>();
       superTypes.add(a);
-      a.setSubTypes(subTypes);
+
       b.setSuperTypes(superTypes);
-      type.setSubTypes(subTypes);
+
     }
     if(symbolName.equals("B")){
       ArrayList<TypeExpression> superTypes = new ArrayList<>();
