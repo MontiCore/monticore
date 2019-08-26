@@ -49,7 +49,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     LogStub.enableFailQuick(false);
     this.cdTypeFacade = CDTypeFacade.getInstance();
 
-    ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "symboltable", "Builder");
+    ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "symboltable", "Symbol_Builder");
     ASTCDClass cdClass = getClassBy("ASymbol", ast);
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
@@ -58,7 +58,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
     AccessorDecorator methodDecorator = new AccessorDecorator(glex);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator, new SymbolTableService(ast));
-    SymbolBuilderDecorator astNodeBuilderDecorator = new SymbolBuilderDecorator(glex, builderDecorator, new SymbolTableService(ast));
+    SymbolBuilderDecorator astNodeBuilderDecorator = new SymbolBuilderDecorator(glex, builderDecorator);
     this.builderClass = astNodeBuilderDecorator.decorate(cdClass);
   }
 

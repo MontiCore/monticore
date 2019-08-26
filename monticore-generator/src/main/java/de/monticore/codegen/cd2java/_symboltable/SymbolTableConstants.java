@@ -29,7 +29,9 @@ public class SymbolTableConstants {
 
   public static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
 
-  public static final String SYMBOL_BUILD_TEMPLATE = "_symboltable.builder.Build";
+  public static final String SYMBOL_BUILD_TEMPLATE = "_symboltable.symbol.builder.Build";
+
+  public static final String SCOPE_BUILD_TEMPLATE = "_symboltable.scope.builder.Build";
 
   public static final String DETERMINE_PACKAGE_NAME_METHOD = "determinePackageName";
 

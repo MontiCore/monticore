@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.builder;
+package de.monticore.codegen.symboltable;
 
-classdiagram Builder {
+classdiagram Symbol_Builder {
 
     class ASymbol{
       protected String name;
