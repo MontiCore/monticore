@@ -43,7 +43,7 @@ component grammar MCFullGenericTypes
    *  generic AND has generic inner classes e.g.
    *  monticore.Generic1<TypeParam1>.GenericInnerClass<TypeParam2>
   */
-  symbol (MCType) MCMultipleGenericType implements MCGenericType, MCType =
+  MCMultipleGenericType implements MCGenericType, MCType =
        MCBasicGenericType  // complex Outer Type qualification
         "."  (MCInnerType || ".")+
    ;
@@ -55,7 +55,7 @@ component grammar MCFullGenericTypes
 
   /** ASTArrayType introduce array for arbitrary types
   */
-  symbol (MCType) MCArrayType implements MCType =
+  MCArrayType implements MCType =
        MCType ("[" "]" {_aNode.setDimensions(_aNode.getDimensions()+1);} )+;
 
   // counter dimensions counts the array depth

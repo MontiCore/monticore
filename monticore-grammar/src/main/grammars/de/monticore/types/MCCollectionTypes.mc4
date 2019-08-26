@@ -46,17 +46,17 @@ component grammar MCCollectionTypes
    * avoid "List" etc. to become keywords
   */
 
-  symbol (MCType) MCListType implements MCGenericType <200> =
+  MCListType implements MCGenericType <200> =
        {next("List")}? Name "<" MCTypeArgument ">";
 
-  symbol (MCType) MCOptionalType implements MCGenericType <200> =
+  MCOptionalType implements MCGenericType <200> =
        {next("Optional")}? Name "<" MCTypeArgument ">";
 
-  symbol (MCType) MCMapType implements MCGenericType  <200> =
+ MCMapType implements MCGenericType  <200> =
       {next("Map")}? Name
        "<" key:MCTypeArgument "," value:MCTypeArgument ">";
 
-  symbol (MCType) MCSetType implements MCGenericType <200> =
+  MCSetType implements MCGenericType <200> =
        {next("Set")}? Name "<" MCTypeArgument ">";
 
   /*=================================================================*/
