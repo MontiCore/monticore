@@ -8,9 +8,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -66,8 +64,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
   }
 
   protected ASTCDMethod addGetRealThisMethods(ASTMCType visitorType) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(visitorType).build();
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, returnType, GET_REAL_THIS);
+    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return this;"));
     return getRealThisMethod;
   }

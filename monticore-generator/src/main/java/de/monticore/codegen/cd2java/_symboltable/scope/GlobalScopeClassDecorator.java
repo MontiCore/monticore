@@ -9,7 +9,9 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.*;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
 import de.se_rwth.commons.StringTransformations;
 
@@ -156,8 +158,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDMethod createGetNameMethod() {
     ASTMCObjectType optOfString = getCDTypeFacade().createOptionalTypeOf(String.class);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(optOfString).build();
-    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "getNameOpt");
+    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, optOfString, "getNameOpt");
     this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint("return Optional.empty();"));
     return getNameMethod;
   }
@@ -170,12 +171,11 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   protected ASTCDMethod createContinueWithModelLoaderMethod(String definitionName) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
     ASTCDParameter modelNameParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "calculatedModelName");
     ASTMCQualifiedType modelLoaderType = getCDTypeFacade().createQualifiedType(definitionName + MODEL_LOADER_SUFFIX);
     ASTCDParameter modelLoaderParameter = getCDParameterFacade().createParameter(modelLoaderType, "modelLoader");
 
-    ASTCDMethod continueWithModelLoaderMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "continueWithModelLoader", modelNameParameter, modelLoaderParameter);
+    ASTCDMethod continueWithModelLoaderMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), "continueWithModelLoader", modelNameParameter, modelLoaderParameter);
     this.replaceTemplate(EMPTY_BODY, continueWithModelLoaderMethod,
         new StringHookPoint("    return !modelName2ModelLoaderCache.containsKey(calculatedModelName)\n" +
             "      || !modelName2ModelLoaderCache.get(calculatedModelName).contains(modelLoader);"));

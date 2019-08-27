@@ -9,9 +9,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 
 import java.util.ArrayList;
@@ -163,8 +161,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
         .collect(Collectors.toList()));
 
     // create getAstNode with Optional return Type
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(symbolAttribute.getMCType()).build();
-    ASTCDMethod getAstNodeMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "getAstNode");
+    ASTCDMethod getAstNodeMethod = getCDMethodFacade().createMethod(PUBLIC, symbolAttribute.getMCType(), "getAstNode");
     this.replaceTemplate(EMPTY_BODY, getAstNodeMethod, new StringHookPoint("return this.astNode;"));
     symbolMethods.add(getAstNodeMethod);
 
@@ -196,9 +193,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
   protected ASTCDMethod createDeterminePackageName(String scopeInterface, String artifactScope) {
     ASTMCType stringType = getCDTypeFacade().createStringType();
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(stringType).build();
 
-    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, returnType, DETERMINE_PACKAGE_NAME_METHOD);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, stringType, DETERMINE_PACKAGE_NAME_METHOD);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.symbol.DeterminePackageName",
         scopeInterface, artifactScope));
     return method;
@@ -206,9 +202,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
   protected ASTCDMethod createDetermineFullName(String scopeInterface, String artifactScope, String globalScope) {
     ASTMCType stringType = getCDTypeFacade().createStringType();
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(stringType).build();
 
-    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, returnType, DETERMINE_FULL_NAME_METHOD);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, stringType, DETERMINE_FULL_NAME_METHOD);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.symbol.DetermineFullName",
         scopeInterface, artifactScope, globalScope));
     return method;

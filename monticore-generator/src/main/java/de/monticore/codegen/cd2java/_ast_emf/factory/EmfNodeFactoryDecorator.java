@@ -1,15 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.factory;
 
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +80,7 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
   }
 
   protected ASTCDMethod addGetFactoryMethod(ASTMCType factoryType, String grammarName, String factoryClassName) {
-    ASTCDMethod getFactoryMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, MCBasicTypesMill.mCReturnTypeBuilder().setMCType(factoryType).build(), GET_FACTORY_METHOD);
+    ASTCDMethod getFactoryMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, factoryType, GET_FACTORY_METHOD);
     this.replaceTemplate(EMPTY_BODY, getFactoryMethod,
         new TemplateHookPoint("_ast_emf.factory.GetFactory", factoryClassName, grammarName));
     return getFactoryMethod;
@@ -90,10 +88,8 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
 
   protected ASTCDMethod addEmfCreateMethod(List<ASTCDClass> astcdClassList, String grammarName, String factoryClassName) {
     ASTCDParameter eClassParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(E_CLASS_TYPE), "eClass");
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createQualifiedType(E_OBJECT_TYPE)).build();
-
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC,
-        returnType, CREATE_METHOD, eClassParameter);
+        getCDTypeFacade().createQualifiedType(E_OBJECT_TYPE), CREATE_METHOD, eClassParameter);
     this.replaceTemplate(EMPTY_BODY, method,
         new TemplateHookPoint("_ast_emf.factory.EmfCreate",
             factoryClassName, grammarName + PACKAGE_SUFFIX, astcdClassList));
@@ -102,9 +98,8 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
 
   protected ASTCDMethod addGetPackageMethod(String grammarName) {
     String packageName = grammarName + PACKAGE_SUFFIX;
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createQualifiedType(packageName)).build();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PACKAGE_PRIVATE,
-        returnType, "get" + packageName);
+        getCDTypeFacade().createQualifiedType(packageName), "get" + packageName);
     this.replaceTemplate(EMPTY_BODY, method,
         new StringHookPoint("return (" + packageName + ")getEPackage();"));
     return method;

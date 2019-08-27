@@ -7,9 +7,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +44,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
         .addCDMethod(createGetModelPathMethod())
         .addCDMethod(createGetLanguageMethod(definitionName))
         .addCDMethod(createCacheMethod())
-        .addCDMethod(creatCheckIfContinueAsSubScopeMethod(definitionName))
+        .addCDMethod(creatCheckIfContinueAsSubScopeMethod())
         .addCDMethod(createContinueWithModelLoaderMethod(definitionName))
         .addCDMethod(createGetRealThisMethod(globalScopeInterfaceName))
         .addAllCDMethods(createResolveMethods(symbolClasses, definitionName))
@@ -61,36 +59,31 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
 
   protected ASTCDMethod createGetModelPathMethod() {
     ASTMCType modelPathType = getCDTypeFacade().createQualifiedType(MODEL_PATH_TYPE);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(modelPathType).build();
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, returnType, "getModelPath");
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, modelPathType, "getModelPath");
   }
 
   protected ASTCDMethod createGetLanguageMethod(String definitionName) {
-    ASTMCType modelPathType = getCDTypeFacade().createQualifiedType(definitionName + LANGUAGE_SUFFIX);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(modelPathType).build();
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, returnType, "get" + definitionName + LANGUAGE_SUFFIX);
+    ASTMCType languageType = getCDTypeFacade().createQualifiedType(definitionName + LANGUAGE_SUFFIX);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, languageType, "get" + definitionName + LANGUAGE_SUFFIX);
   }
 
   protected ASTCDMethod createContinueWithModelLoaderMethod(String definitionName) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
     ASTCDParameter modelNameParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "calculatedModelName");
     ASTMCQualifiedType modelLoaderType = getCDTypeFacade().createQualifiedType(definitionName + MODEL_LOADER_SUFFIX);
     ASTCDParameter modelLoaderParameter = getCDParameterFacade().createParameter(modelLoaderType, "modelLoader");
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, returnType, "continueWithModelLoader", modelNameParameter, modelLoaderParameter);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getCDTypeFacade().createBooleanType(), "continueWithModelLoader", modelNameParameter, modelLoaderParameter);
   }
 
-  protected ASTCDMethod creatCheckIfContinueAsSubScopeMethod(String definitionName) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
+  protected ASTCDMethod creatCheckIfContinueAsSubScopeMethod() {
     ASTCDParameter modelNameParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "symbolName");
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, "checkIfContinueAsSubScope", modelNameParameter);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), "checkIfContinueAsSubScope", modelNameParameter);
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return false;"));
     return method;
   }
 
   protected ASTCDMethod createGetRealThisMethod(String globalScopeName) {
     ASTMCType globalScopeInterfaceType = getCDTypeFacade().createQualifiedType(globalScopeName);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(globalScopeInterfaceType).build();
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, returnType, "getRealThis");
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, globalScopeInterfaceType, "getRealThis");
   }
 
   protected List<ASTCDMethod> createResolveMethods(List<? extends ASTCDType> symbolProds, String definitionName) {
@@ -103,16 +96,15 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
       String className = symbolTableService.removeASTPrefix(symbolProd);
       String symbolFullTypeName = symbolTableService.getSymbolFullTypeName(symbolProd);
       ASTMCType listSymbol = getCDTypeFacade().createCollectionTypeOf(symbolFullTypeName);
-      ASTMCReturnType listReturnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(listSymbol).build();
 
       ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
           .createTypeByDefinition(PREDICATE + "<" + symbolFullTypeName + ">"), "predicate");
 
 
-      resolveMethods.add(createResolveManyMethod(className, symbolFullTypeName, listReturnType, foundSymbolsParameter,
+      resolveMethods.add(createResolveManyMethod(className, symbolFullTypeName, listSymbol, foundSymbolsParameter,
           nameParameter, accessModifierParameter, predicateParameter));
 
-      resolveMethods.add(createResolveAdaptedMethod(className, listReturnType, foundSymbolsParameter,
+      resolveMethods.add(createResolveAdaptedMethod(className, listSymbol, foundSymbolsParameter,
           nameParameter, accessModifierParameter, predicateParameter));
 
 
@@ -122,7 +114,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     return resolveMethods;
   }
 
-  protected ASTCDMethod createResolveManyMethod(String className, String fullSymbolName, ASTMCReturnType returnType,
+  protected ASTCDMethod createResolveManyMethod(String className, String fullSymbolName, ASTMCType returnType,
                                                 ASTCDParameter foundSymbolsParameter, ASTCDParameter nameParameter,
                                                 ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
     String methodName = String.format(RESOLVE_MANY, className);
@@ -133,7 +125,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     return method;
   }
 
-  protected ASTCDMethod createResolveAdaptedMethod(String className, ASTMCReturnType returnType,
+  protected ASTCDMethod createResolveAdaptedMethod(String className, ASTMCType returnType,
                                                    ASTCDParameter foundSymbolsParameter, ASTCDParameter nameParameter,
                                                    ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
     String methodName = String.format(RESOLVE_ADAPTED, className);

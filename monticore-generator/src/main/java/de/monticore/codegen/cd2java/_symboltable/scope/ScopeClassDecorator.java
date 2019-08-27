@@ -12,9 +12,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.StringTransformations;
 
@@ -187,8 +185,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDMethod createSymbolsSizeMethod(Collection<String> symbolAttributeNames) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createIntType()).build();
-    ASTCDMethod getSymbolSize = getCDMethodFacade().createMethod(PUBLIC, returnType, "getSymbolsSize");
+    ASTCDMethod getSymbolSize = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createIntType(), "getSymbolsSize");
     if (symbolAttributeNames.isEmpty()) {
       this.replaceTemplate(EMPTY_BODY, getSymbolSize, new StringHookPoint("return 0;"));
     } else {
@@ -273,8 +270,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDMethod createGetSymbolListMethod(ASTCDAttribute astcdAttribute) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(astcdAttribute.getMCType()).build();
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, "get" + StringTransformations.capitalize(astcdAttribute.getName()));
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, astcdAttribute.getMCType(), "get" + StringTransformations.capitalize(astcdAttribute.getName()));
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return this." + astcdAttribute.getName() + ";"));
     return method;
   }
@@ -399,8 +395,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDMethod createGetSubScopesMethod(ASTMCType scopeType) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createListTypeOf(scopeType)).build();
-    return getCDMethodFacade().createMethod(PUBLIC, returnType, "getSubScopes");
+    return getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createListTypeOf(scopeType), "getSubScopes");
   }
 
   protected ASTCDMethod createSetSubScopesMethod(ASTMCType scopeType) {

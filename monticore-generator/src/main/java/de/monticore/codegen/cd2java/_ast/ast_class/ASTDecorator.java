@@ -17,9 +17,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.CollectionTypesPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,8 +113,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
 
   protected ASTCDMethod createGetChildrenMethod(ASTCDClass astClass) {
     ASTMCType astNodeType = getCDTypeFacade().createCollectionTypeOf(ASTConstants.AST_INTERFACE);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(astNodeType).build();
-    ASTCDMethod getChildrenMethod = this.getCDMethodFacade().createMethod(PUBLIC, returnType, ASTConstants.GET_CHILDREN_METHOD);
+    ASTCDMethod getChildrenMethod = this.getCDMethodFacade().createMethod(PUBLIC, astNodeType, ASTConstants.GET_CHILDREN_METHOD);
     this.replaceTemplate(EMPTY_BODY, getChildrenMethod, new TemplateHookPoint("_ast.ast_class.GetChildren", astClass));
     return getChildrenMethod;
   }
@@ -139,11 +136,10 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   protected ASTCDMethod getConstructMethod(ASTCDClass astClass) {
     ASTCDMethod constructMethod;
     ASTMCType classType = this.getCDTypeFacade().createQualifiedType(astClass.getName());
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(classType).build();
     if (astClass.isPresentModifier() && astClass.getModifier().isAbstract()) {
-      constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT, returnType, ASTConstants.CONSTRUCT_METHOD);
+      constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT, classType, ASTConstants.CONSTRUCT_METHOD);
     } else {
-      constructMethod = this.getCDMethodFacade().createMethod(PROTECTED, returnType, ASTConstants.CONSTRUCT_METHOD);
+      constructMethod = this.getCDMethodFacade().createMethod(PROTECTED, classType, ASTConstants.CONSTRUCT_METHOD);
       this.replaceTemplate(EMPTY_BODY, constructMethod, new StringHookPoint(this.nodeFactoryService.getCreateInvocation(astClass)));
     }
 

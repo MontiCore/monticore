@@ -9,9 +9,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.se_rwth.commons.StringTransformations;
 
@@ -73,9 +71,8 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
   protected List<ASTCDMethod> createAlreadyResolvedMethods(List<? extends ASTCDType> symbolProds) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDType symbolProd : symbolProds) {
-      ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
       String alreadyResolvedName = StringTransformations.capitalize(symbolTableService.getSymbolSimpleTypeName(symbolProd)) + LIST_SUFFIX_S + ALREADY_RESOLVED;
-      methodList.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, returnType, "is" + alreadyResolvedName));
+      methodList.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getCDTypeFacade().createBooleanType(), "is" + alreadyResolvedName));
       ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "symbolAlreadyResolved");
       methodList.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "set" + alreadyResolvedName, parameter));
     }
@@ -93,80 +90,77 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
       String className = symbolTableService.removeASTPrefix(symbolProd);
       String symbolFullTypeName = symbolTableService.getSymbolFullTypeName(symbolProd);
       ASTMCOptionalType optSymbol = getCDTypeFacade().createOptionalTypeOf(symbolFullTypeName);
-      ASTMCReturnType optReturnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(optSymbol).build();
       ASTMCType listSymbol = getCDTypeFacade().createCollectionTypeOf(symbolFullTypeName);
-      ASTMCReturnType listReturnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(listSymbol).build();
       ASTMCType setSymbol = getCDTypeFacade().createSetTypeOf(symbolFullTypeName);
-      ASTMCReturnType setReturnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(setSymbol).build();
 
       ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
           .createTypeByDefinition(PREDICATE + "<" + symbolFullTypeName + ">"), "predicate");
 
       String resolveMethodName = String.format(RESOLVE, className);
-      resolveMethods.add(createResolveNameMethod(resolveMethodName, optReturnType, nameParameter));
-      resolveMethods.add(createResolveNameModifierMethod(resolveMethodName, optReturnType, nameParameter, accessModifierParameter));
-      resolveMethods.add(createResolveNameModifierPredicateMethod(resolveMethodName, optReturnType, nameParameter,
+      resolveMethods.add(createResolveNameMethod(resolveMethodName, optSymbol, nameParameter));
+      resolveMethods.add(createResolveNameModifierMethod(resolveMethodName, optSymbol, nameParameter, accessModifierParameter));
+      resolveMethods.add(createResolveNameModifierPredicateMethod(resolveMethodName, optSymbol, nameParameter,
           accessModifierParameter, predicateParameter));
-      resolveMethods.add(createResolveFoundSymbolsNameModifierMethod(resolveMethodName, optReturnType, foundSymbolsParameter,
+      resolveMethods.add(createResolveFoundSymbolsNameModifierMethod(resolveMethodName, optSymbol, foundSymbolsParameter,
           nameParameter, accessModifierParameter));
 
       String resolveDownMethodName = String.format(RESOLVE_DOWN, className);
-      resolveMethods.add(createResolveDownNameMethod(resolveDownMethodName, optReturnType, nameParameter));
-      resolveMethods.add(createResolveDownNameModifierMethod(resolveDownMethodName, optReturnType, nameParameter, accessModifierParameter));
-      resolveMethods.add(createResolveDownNameModifierPredicateMethod(resolveDownMethodName, optReturnType, nameParameter,
+      resolveMethods.add(createResolveDownNameMethod(resolveDownMethodName, optSymbol, nameParameter));
+      resolveMethods.add(createResolveDownNameModifierMethod(resolveDownMethodName, optSymbol, nameParameter, accessModifierParameter));
+      resolveMethods.add(createResolveDownNameModifierPredicateMethod(resolveDownMethodName, optSymbol, nameParameter,
           accessModifierParameter, predicateParameter));
 
       String resolveDownManyMethodName = String.format(RESOLVE_DOWN_MANY, className);
-      resolveMethods.add(createResolveDownManyNameMethod(resolveDownManyMethodName, listReturnType, nameParameter));
-      resolveMethods.add(createResolveDownManyNameModifierMethod(resolveDownManyMethodName, listReturnType, nameParameter, accessModifierParameter));
-      resolveMethods.add(createResolveDownManyNameModifierPredicateMethod(resolveDownManyMethodName, listReturnType, nameParameter,
+      resolveMethods.add(createResolveDownManyNameMethod(resolveDownManyMethodName, listSymbol, nameParameter));
+      resolveMethods.add(createResolveDownManyNameModifierMethod(resolveDownManyMethodName, listSymbol, nameParameter, accessModifierParameter));
+      resolveMethods.add(createResolveDownManyNameModifierPredicateMethod(resolveDownManyMethodName, listSymbol, nameParameter,
           accessModifierParameter, predicateParameter));
       resolveMethods.add(createResolveDownManyFoundSymbolsNameModifierPredicateMethod(resolveDownManyMethodName, className, symbolFullTypeName,
-          listReturnType, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
+          listSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
       String resolveLocallyMethodName = String.format(RESOLVE_LOCALLY, className);
-      resolveMethods.add(createResolveLocallyNameMethod(resolveLocallyMethodName, optReturnType, nameParameter));
+      resolveMethods.add(createResolveLocallyNameMethod(resolveLocallyMethodName, optSymbol, nameParameter));
 
       String resolveLocallyManyMethodName = String.format(RESOLVE_LOCALLY_MANY, className);
       resolveMethods.add(createResolveLocallyManyMethod(resolveLocallyManyMethodName, className, symbolFullTypeName,
-          setReturnType, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
+          setSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
       String resolveImportedMethodName = String.format(RESOLVE_IMPORTED, className);
-      resolveMethods.add(createResolveImportedNameMethod(resolveImportedMethodName, className, optReturnType, nameParameter));
+      resolveMethods.add(createResolveImportedNameMethod(resolveImportedMethodName, className, optSymbol, nameParameter));
 
       String resolveManyMethodName = String.format(RESOLVE_MANY, className);
-      resolveMethods.add(createResolveManyNameMethod(resolveManyMethodName, listReturnType, nameParameter));
-      resolveMethods.add(createResolveManyNameModifierMethod(resolveManyMethodName, listReturnType, nameParameter, accessModifierParameter));
-      resolveMethods.add(createResolveManyNameModifierPredicateMethod(resolveManyMethodName, listReturnType, nameParameter,
+      resolveMethods.add(createResolveManyNameMethod(resolveManyMethodName, listSymbol, nameParameter));
+      resolveMethods.add(createResolveManyNameModifierMethod(resolveManyMethodName, listSymbol, nameParameter, accessModifierParameter));
+      resolveMethods.add(createResolveManyNameModifierPredicateMethod(resolveManyMethodName, listSymbol, nameParameter,
           accessModifierParameter, predicateParameter));
-      resolveMethods.add(createResolveManyNamePredicateMethod(resolveManyMethodName, listReturnType, nameParameter, predicateParameter));
-      resolveMethods.add(createResolveManyFoundSymbolsNameModifierMethod(resolveManyMethodName, listReturnType, foundSymbolsParameter,
+      resolveMethods.add(createResolveManyNamePredicateMethod(resolveManyMethodName, listSymbol, nameParameter, predicateParameter));
+      resolveMethods.add(createResolveManyFoundSymbolsNameModifierMethod(resolveManyMethodName, listSymbol, foundSymbolsParameter,
           nameParameter, accessModifierParameter));
       resolveMethods.add(createResolveManyFoundSymbolsNameModifierPredicateMethod(resolveManyMethodName, className, symbolFullTypeName,
-          listReturnType, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
+          listSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
       String resolveAdaptedLocallyManyMethodName = String.format(RESOLVE_ADAPTED_LOCALLY_MANY, className);
       resolveMethods.add(createResolveAdaptedLocallyManyMethod(resolveAdaptedLocallyManyMethodName,
-          listReturnType, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
+          listSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
 
       String filterMethodName = String.format(FILTER, className);
-      resolveMethods.add(createFilterMethod(filterMethodName, symbolFullTypeName, optReturnType, nameParameter));
+      resolveMethods.add(createFilterMethod(filterMethodName, symbolFullTypeName, optSymbol, nameParameter));
 
       String continueWithEnclosingScopeMethodName = String.format(CONTINUE_WITH_ENCLOSING_SCOPE, className);
       resolveMethods.add(createContinueWithEnclosingScopeMethod(continueWithEnclosingScopeMethodName, className,
-          listReturnType, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
+          listSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
       String continueAsSubScopeMethodName = String.format(CONTINUE_AS_SUB_SCOPE, className);
       resolveMethods.add(createContinueAsSubScopeMethod(continueAsSubScopeMethodName, className,
-          listReturnType, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
+          listSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
 
       String getSymbolsMethodName = "get" + className + "Symbols";
       resolveMethods.add(createGetSymbolsMethod(getSymbolsMethodName, symbolFullTypeName));
 
       String getLocalSymbolsMethodName = "getLocal" + className + "Symbols";
-      resolveMethods.add(createGetLocalSymbolsMethod(getLocalSymbolsMethodName, className, listReturnType));
+      resolveMethods.add(createGetLocalSymbolsMethod(getLocalSymbolsMethodName, className, listSymbol));
 
       ASTCDParameter symbolParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(symbolFullTypeName), "symbol");
       resolveMethods.add(createAddMethod(symbolParameter));
@@ -176,70 +170,70 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
     return resolveMethods;
   }
 
-  protected ASTCDMethod createResolveNameMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter) {
+  protected ASTCDMethod createResolveNameMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.i.ResolveDelegate",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.iscope.ResolveDelegate",
         methodName, new ArrayList<>(method.getCDParameterList())));
 
     return method;
   }
 
-  protected ASTCDMethod createResolveNameModifierMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter,
+  protected ASTCDMethod createResolveNameModifierMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter,
                                                         ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.i.ResolveDelegate",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.iscope.ResolveDelegate",
         methodName, new ArrayList<>(method.getCDParameterList())));
 
     return method;
   }
 
-  protected ASTCDMethod createResolveNameModifierPredicateMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter,
+  protected ASTCDMethod createResolveNameModifierPredicateMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter,
                                                                  ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter, predicateParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.i.ResolveDelegate",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.iscope.ResolveDelegate",
         methodName, new ArrayList<>(method.getCDParameterList())));
     return method;
   }
 
-  protected ASTCDMethod createResolveFoundSymbolsNameModifierMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter foundSymbolsParameter,
+  protected ASTCDMethod createResolveFoundSymbolsNameModifierMethod(String methodName, ASTMCType returnType, ASTCDParameter foundSymbolsParameter,
                                                                     ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.i.ResolveDelegate",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.iscope.ResolveDelegate",
         methodName, new ArrayList<>(method.getCDParameterList())));
     return method;
   }
 
-  protected ASTCDMethod createResolveDownNameMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter) {
+  protected ASTCDMethod createResolveDownNameMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.i.ResolveDelegate", methodName,
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.iscope.ResolveDelegate", methodName,
         new ArrayList<>(method.getCDParameterList())));
 
     return method;
   }
 
-  protected ASTCDMethod createResolveDownNameModifierMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter,
+  protected ASTCDMethod createResolveDownNameModifierMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter,
                                                             ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.i.ResolveDelegate",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.iscope.ResolveDelegate",
         methodName, new ArrayList<>(method.getCDParameterList())));
 
     return method;
   }
 
-  protected ASTCDMethod createResolveDownNameModifierPredicateMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter,
+  protected ASTCDMethod createResolveDownNameModifierPredicateMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter,
                                                                      ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter, predicateParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.i.ResolveDelegate",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.iscope.ResolveDelegate",
         methodName, new ArrayList<>(method.getCDParameterList())));
     return method;
   }
 
-  protected ASTCDMethod createResolveDownManyNameMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter) {
+  protected ASTCDMethod createResolveDownManyNameMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter);
     this.replaceTemplate(EMPTY_BODY, method,
         new StringHookPoint("return this." + methodName + "(false, name, de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION, x -> true);"));
@@ -247,7 +241,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
     return method;
   }
 
-  protected ASTCDMethod createResolveDownManyNameModifierMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter,
+  protected ASTCDMethod createResolveDownManyNameModifierMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter,
                                                                 ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter);
@@ -256,7 +250,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
     return method;
   }
 
-  protected ASTCDMethod createResolveDownManyNameModifierPredicateMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter,
+  protected ASTCDMethod createResolveDownManyNameModifierPredicateMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter,
                                                                          ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter, predicateParameter);
@@ -266,17 +260,17 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
   protected ASTCDMethod createResolveDownManyFoundSymbolsNameModifierPredicateMethod(String methodName, String className, String fullSymbolName,
-                                                                                     ASTMCReturnType returnType, ASTCDParameter foundSymbolsParameter,
+                                                                                     ASTMCType returnType, ASTCDParameter foundSymbolsParameter,
                                                                                      ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter,
                                                                                      ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.i.ResolveDownMany",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.iscope.ResolveDownMany",
         className, fullSymbolName, symbolTableService.getScopeInterfaceTypeName()));
     return method;
   }
 
-  protected ASTCDMethod createResolveLocallyNameMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter) {
+  protected ASTCDMethod createResolveLocallyNameMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter);
     this.replaceTemplate(EMPTY_BODY, method,
         new StringHookPoint(" return getResolvedOrThrowException(\n" +
@@ -285,13 +279,13 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
     return method;
   }
 
-  protected ASTCDMethod createResolveImportedNameMethod(String methodName, String className, ASTMCReturnType returnType, ASTCDParameter nameParameter) {
+  protected ASTCDMethod createResolveImportedNameMethod(String methodName, String className, ASTMCType returnType, ASTCDParameter nameParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter);
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return this.resolve" + className + "Locally(name);"));
     return method;
   }
 
-  protected ASTCDMethod createResolveManyNameMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter) {
+  protected ASTCDMethod createResolveManyNameMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter);
     this.replaceTemplate(EMPTY_BODY, method,
         new StringHookPoint("return " + methodName + "(name, de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION);"));
@@ -299,7 +293,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
     return method;
   }
 
-  protected ASTCDMethod createResolveManyNameModifierMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter,
+  protected ASTCDMethod createResolveManyNameModifierMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter,
                                                             ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter);
@@ -309,7 +303,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
     return method;
   }
 
-  protected ASTCDMethod createResolveManyNameModifierPredicateMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter,
+  protected ASTCDMethod createResolveManyNameModifierPredicateMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter,
                                                                      ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter, predicateParameter);
@@ -319,7 +313,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
 
-  protected ASTCDMethod createResolveManyNamePredicateMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter nameParameter,
+  protected ASTCDMethod createResolveManyNamePredicateMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter,
                                                              ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, predicateParameter);
@@ -329,7 +323,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
 
-  protected ASTCDMethod createResolveManyFoundSymbolsNameModifierMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter foundSymbolsParameter,
+  protected ASTCDMethod createResolveManyFoundSymbolsNameModifierMethod(String methodName, ASTMCType returnType, ASTCDParameter foundSymbolsParameter,
                                                                         ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter);
@@ -339,17 +333,17 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
   protected ASTCDMethod createResolveManyFoundSymbolsNameModifierPredicateMethod(String methodName, String className, String fullSymbolName,
-                                                                                 ASTMCReturnType returnType, ASTCDParameter foundSymbolsParameter,
+                                                                                 ASTMCType returnType, ASTCDParameter foundSymbolsParameter,
                                                                                  ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter,
                                                                                  ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     this.replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint("_symboltable.scope.i.ResolveMany", className, fullSymbolName));
+        new TemplateHookPoint("_symboltable.scope.iscope.ResolveMany", className, fullSymbolName));
     return method;
   }
 
-  protected ASTCDMethod createResolveAdaptedLocallyManyMethod(String methodName, ASTMCReturnType returnType, ASTCDParameter foundSymbolsParameter,
+  protected ASTCDMethod createResolveAdaptedLocallyManyMethod(String methodName, ASTMCType returnType, ASTCDParameter foundSymbolsParameter,
                                                               ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter,
                                                               ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
@@ -359,56 +353,55 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
   protected ASTCDMethod createResolveLocallyManyMethod(String methodName, String className, String fullSymbolName,
-                                                       ASTMCReturnType returnType, ASTCDParameter foundSymbolsParameter,
+                                                       ASTMCType returnType, ASTCDParameter foundSymbolsParameter,
                                                        ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter,
                                                        ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     this.replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint("_symboltable.scope.i.ResolveManyLocally", className, fullSymbolName));
+        new TemplateHookPoint("_symboltable.scope.iscope.ResolveManyLocally", className, fullSymbolName));
     return method;
   }
 
-  protected ASTCDMethod createFilterMethod(String methodName, String fullSymbolName, ASTMCReturnType returnType, ASTCDParameter nameParameter) {
+  protected ASTCDMethod createFilterMethod(String methodName, String fullSymbolName, ASTMCType returnType, ASTCDParameter nameParameter) {
     ASTMCType symbolsMap = getCDTypeFacade().createTypeByDefinition(String.format(SYMBOLS_MULTI_MAP, fullSymbolName));
     ASTCDParameter symbolsParameter = getCDParameterFacade().createParameter(symbolsMap, "symbols");
 
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, symbolsParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.i.Filter", fullSymbolName));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.iscope.Filter", fullSymbolName));
     return method;
   }
 
   protected ASTCDMethod createContinueWithEnclosingScopeMethod(String methodName, String className,
-                                                               ASTMCReturnType returnType, ASTCDParameter foundSymbolsParameter,
+                                                               ASTMCType returnType, ASTCDParameter foundSymbolsParameter,
                                                                ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter,
                                                                ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     this.replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint("_symboltable.scope.i.ContinueWithEnclosingScope", className));
+        new TemplateHookPoint("_symboltable.scope.iscope.ContinueWithEnclosingScope", className));
     return method;
   }
 
   protected ASTCDMethod createContinueAsSubScopeMethod(String methodName, String className,
-                                                       ASTMCReturnType returnType, ASTCDParameter foundSymbolsParameter,
+                                                       ASTMCType returnType, ASTCDParameter foundSymbolsParameter,
                                                        ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter,
                                                        ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     this.replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint("_symboltable.scope.i.ContinueAsSubScope", className));
+        new TemplateHookPoint("_symboltable.scope.iscope.ContinueAsSubScope", className));
     return method;
   }
 
   protected ASTCDMethod createGetSymbolsMethod(String methodName, String fullSymbolName) {
     ASTMCType symbolsMap = getCDTypeFacade().createTypeByDefinition(String.format(SYMBOLS_MULTI_MAP, fullSymbolName));
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(symbolsMap).build();
 
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, returnType, methodName);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, symbolsMap, methodName);
   }
 
-  protected ASTCDMethod createGetLocalSymbolsMethod(String methodName, String className, ASTMCReturnType returnType) {
+  protected ASTCDMethod createGetLocalSymbolsMethod(String methodName, String className, ASTMCType returnType) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName);
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return get" + className + "Symbols().values();"));
     return method;
@@ -424,8 +417,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
 
   protected List<ASTCDMethod> createSubScopesMethods(String scopeInterface) {
     ASTMCType collectionType = getCDTypeFacade().createCollectionTypeOf("? extends " + scopeInterface);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(collectionType).build();
-    ASTCDMethod getSubScopes = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, returnType, "getSubScopes");
+    ASTCDMethod getSubScopes = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, collectionType, "getSubScopes");
 
     ASTCDParameter subScopeParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), "subScope");
     ASTCDMethod addSubScope = getCDMethodFacade().createMethod(PUBLIC, "addSubScope", subScopeParameter);
@@ -441,8 +433,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
 
   protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {
     ASTMCType optType = getCDTypeFacade().createOptionalTypeOf("? extends " + scopeInterface);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(optType).build();
-    ASTCDMethod getEnclosingScope = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, returnType, "getEnclosingScope");
+    ASTCDMethod getEnclosingScope = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, optType, "getEnclosingScope");
 
     ASTCDParameter enclosingScopeParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), "enclosingScope");
     ASTCDMethod setEnclosingScope = getCDMethodFacade().createMethod(PUBLIC, "setEnclosingScope", enclosingScopeParameter);

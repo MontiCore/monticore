@@ -18,8 +18,6 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,8 +92,7 @@ public class ASTEmfDecorator extends ASTDecorator {
     ASTCDParameter featureParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createIntType(), FEATURE_ID);
     ASTCDParameter resolveParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "resolve");
     ASTCDParameter coreTypeParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "coreType");
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createQualifiedType(Object.class)).build();
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, returnType, E_GET,
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getCDTypeFacade().createQualifiedType(Object.class), E_GET,
         featureParameter, resolveParameter, coreTypeParameter);
     replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.ast_class.EGet", astcdAttributes, packageName, className));
     return method;
@@ -121,8 +118,7 @@ public class ASTEmfDecorator extends ASTDecorator {
   public ASTCDMethod createEIsSetMethod(List<ASTCDAttribute> astcdAttributes, String packageName, String className) {
     ASTCDParameter featureParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createIntType(), FEATURE_ID);
 
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, returnType, E_IS_SET, featureParameter);
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getCDTypeFacade().createBooleanType(), E_IS_SET, featureParameter);
     replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.ast_class.EIsSet", astcdAttributes, packageName, className));
     return method;
   }
@@ -132,8 +128,7 @@ public class ASTEmfDecorator extends ASTDecorator {
     ASTCDParameter featureParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createIntType(), FEATURE_ID);
     ASTCDParameter baseClassParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType("Class<?>"), "baseClass");
 
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createIntType()).build();
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, returnType,
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getCDTypeFacade().createIntType(),
         E_DERIVED_STRUCTURAL_FEATURE_ID, featureParameter, baseClassParameter);
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return super.eDerivedStructuralFeatureID(featureID, baseClass);"));
     return method;
@@ -144,25 +139,22 @@ public class ASTEmfDecorator extends ASTDecorator {
     ASTCDParameter featureParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createIntType(), FEATURE_ID);
     ASTCDParameter baseClassParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType("Class<?>"), "baseClass");
 
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createIntType()).build();
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, returnType,
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getCDTypeFacade().createIntType(),
         E_BASE_STRUCTURAL_FEATURE_ID, featureParameter, baseClassParameter);
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return super.eBaseStructuralFeatureID(featureID, baseClass);"));
     return method;
   }
 
   public ASTCDMethod createEToStringMethod(List<ASTCDAttribute> astcdAttributes) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createQualifiedType(String.class)).build();
     ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC,
-        returnType, "toString");
+        getCDTypeFacade().createQualifiedType(String.class), "toString");
     replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.ast_class.EToString", astcdAttributes));
     return method;
   }
 
   public ASTCDMethod creatEStaticClassMethod(String packageName, String className) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createTypeByDefinition(E_CLASS_TYPE)).build();
     ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PROTECTED,
-        returnType, "eStaticClass");
+        getCDTypeFacade().createTypeByDefinition(E_CLASS_TYPE), "eStaticClass");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return " + packageName + ".Literals." + className + ";"));
     return method;
   }

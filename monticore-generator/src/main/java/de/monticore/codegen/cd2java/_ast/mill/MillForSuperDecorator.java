@@ -14,7 +14,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
@@ -97,14 +97,12 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       
       // Add method body based on whether method is overridden by this cdType
       if (firstClasses.contains(cdType)) {
-        ASTMCReturnType builderType = CD4AnalysisMill.
-                mCReturnTypeBuilder().setMCType(this.getCDTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX)).build();
+        ASTMCType builderType = this.getCDTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX);
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
         this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderForSuperMethod", astcdDefinition.getName() + MILL_SUFFIX, methodName));
       }
       else {
-        ASTMCReturnType builderType = CD4AnalysisMill.
-                mCReturnTypeBuilder().setMCType(this.getCDTypeFacade().createQualifiedType(AstGeneratorHelper.getAstPackage(superSymbol.getFullName()) + astName + BUILDER_SUFFIX)).build();
+        ASTMCQualifiedType builderType = this.getCDTypeFacade().createQualifiedType(AstGeneratorHelper.getAstPackage(superSymbol.getFullName()) + astName + BUILDER_SUFFIX);
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
         this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("Log.error(\"0xA7009" + AstGeneratorHelper.getGeneratedErrorCode(clazz) + " Overridden production " + AstGeneratorHelper.getPlainName(clazz) + " is not reachable\");\nreturn null;\n"));
       }

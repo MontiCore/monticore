@@ -6,9 +6,7 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,8 +77,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDMethod addGetRealThisMethods(ASTMCType visitorType) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(visitorType).build();
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, returnType, GET_REAL_THIS);
+    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return this;"));
     return getRealThisMethod;
   }

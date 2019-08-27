@@ -7,9 +7,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -91,9 +89,8 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDMethod addGetRealThisMethod(String delegatorVisitorSimpleName) {
     ASTMCQualifiedType visitorType = getCDTypeFacade().createQualifiedType(delegatorVisitorSimpleName);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(visitorType).build();
 
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, returnType, GET_REAL_THIS);
+    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return realThis;"));
     return getRealThisMethod;
   }
@@ -148,8 +145,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
       //add getter for visitor attribute
       // e.g. public Optional<automata._visitor.AutomataVisitor> getAutomataVisitor()
       ASTMCOptionalType optionalVisitorType = getCDTypeFacade().createOptionalTypeOf(visitorType);
-      ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(optionalVisitorType).build();
-      ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "get" + simpleName);
+      ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, optionalVisitorType, "get" + simpleName);
       this.replaceTemplate(EMPTY_BODY, getVisitorMethod,
           new StringHookPoint("return " + StringTransformations.uncapitalize(simpleName) + ";"));
       methodList.add(getVisitorMethod);

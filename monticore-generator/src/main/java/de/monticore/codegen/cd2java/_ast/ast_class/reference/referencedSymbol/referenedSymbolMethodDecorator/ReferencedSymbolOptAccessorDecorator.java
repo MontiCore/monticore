@@ -8,9 +8,7 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import org.apache.commons.lang3.StringUtils;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
@@ -30,8 +28,7 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
   protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
     String name = String.format(GET_OPT, StringUtils.capitalize(ast.getName()));
     ASTMCType type = ast.getMCType().deepClone();
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, returnType, name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
     //create correct Name A for resolveA method
     String simpleSymbolName = symbolTableService.getSimpleSymbolName(symbolTableService.getReferencedSymbolTypeName(ast));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetSymbolOpt",

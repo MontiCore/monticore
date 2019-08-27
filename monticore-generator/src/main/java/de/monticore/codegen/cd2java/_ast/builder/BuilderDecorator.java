@@ -12,9 +12,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,12 +63,10 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, builderClassName);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + builderClassName + ") this;"));
 
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(domainType).build();
-    ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier, returnType, BUILD_METHOD);
+    ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier, domainType, BUILD_METHOD);
     this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes));
 
-    returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
-    ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, returnType, IS_VALID);
+    ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), IS_VALID);
     this.replaceTemplate(EMPTY_BODY, isValidMethod, new TemplateHookPoint("_ast.builder.IsValidMethod", mandatoryAttributes));
 
     List<ASTCDMethod> accessorMethods = builderAttributes.stream()
