@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.literals;
 
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
 /**
- *
  *
  * This grammar defines Java compliant literals. The scope of this grammar is to
  * ease the reuse of literals structures in Java-like sublanguages, e.g., by 
@@ -60,7 +61,6 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
   /*========================================================================*/
 
 
-
    /*========================================================================*/
    /* The following section is adapted from                                  */
    /* https://github.com/antlr/grammars-v4/blob/master/java/Java.g4          */
@@ -69,10 +69,14 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
    // §3.10.1 Integer Literals
 
    token Num_Int
-     = DecimalIntegerLiteral | HexIntegerLiteral | OctalIntegerLiteral | BinaryIntegerLiteral;
+     = DecimalIntegerLiteral | HexIntegerLiteral 
+       | OctalIntegerLiteral | BinaryIntegerLiteral;
 
    token Num_Long
-     = (DecimalIntegerLiteral IntegerTypeSuffix) | (HexIntegerLiteral IntegerTypeSuffix) | (OctalIntegerLiteral IntegerTypeSuffix) | (BinaryIntegerLiteral IntegerTypeSuffix);
+     = (DecimalIntegerLiteral IntegerTypeSuffix) 
+       | (HexIntegerLiteral IntegerTypeSuffix) 
+       | (OctalIntegerLiteral IntegerTypeSuffix) 
+       | (BinaryIntegerLiteral IntegerTypeSuffix);
 
    fragment token DecimalIntegerLiteral
      = DecimalNumeral;
@@ -153,10 +157,16 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
      = DecimalDoublePointLiteral | HexadecimalDoublePointLiteral;
 
    fragment token DecimalDoublePointLiteral
-     = Digits '.' (Digits)? (ExponentPart)? (DoubleTypeSuffix)? | '.' Digits (ExponentPart)? (DoubleTypeSuffix)? | Digits ExponentPart (DoubleTypeSuffix)? | Digits DoubleTypeSuffix;
+     = Digits '.' (Digits)? (ExponentPart)? (DoubleTypeSuffix)? 
+       | '.' Digits (ExponentPart)? (DoubleTypeSuffix)? 
+       | Digits ExponentPart (DoubleTypeSuffix)? 
+       | Digits DoubleTypeSuffix;
 
    fragment token DecimalFloatingPointLiteral
-     = Digits '.' (Digits)? (ExponentPart)? (FloatTypeSuffix) | '.' Digits (ExponentPart)? (FloatTypeSuffix) | Digits ExponentPart (FloatTypeSuffix) | Digits FloatTypeSuffix;
+     = Digits '.' (Digits)? (ExponentPart)? (FloatTypeSuffix) 
+       | '.' Digits (ExponentPart)? (FloatTypeSuffix) 
+       | Digits ExponentPart (FloatTypeSuffix) 
+       | Digits FloatTypeSuffix;
 
    fragment token ExponentPart
      = ExponentIndicator SignedInteger;

@@ -6,7 +6,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.se_rwth.commons.logging.Log;
 
 public class MCFullGenericTypesHelper extends MCSimpleGenericTypesHelper {
@@ -15,9 +15,9 @@ public class MCFullGenericTypesHelper extends MCSimpleGenericTypesHelper {
     // Printer instead of last implementation
     Preconditions.checkArgument(isOptional(type));
     ASTMCTypeArgument reference = ((ASTMCGenericType) type).getMCTypeArgumentList().get(0);
-    if (reference instanceof ASTMCWildcardType
-        && ((ASTMCWildcardType) reference).isPresentUpperBound()) {
-      ASTMCType typeRef = ((ASTMCWildcardType)reference).getUpperBound();
+    if (reference instanceof ASTMCWildcardTypeArgument
+        && ((ASTMCWildcardTypeArgument) reference).isPresentUpperBound()) {
+      ASTMCType typeRef = ((ASTMCWildcardTypeArgument)reference).getUpperBound();
       return FullGenericTypesPrinter.printType(typeRef);
     }
     return FullGenericTypesPrinter.printType(reference);
@@ -26,9 +26,9 @@ public class MCFullGenericTypesHelper extends MCSimpleGenericTypesHelper {
   public static String getQualifiedReferenceNameFromOptional(ASTMCType type) {
     Preconditions.checkArgument(isOptional(type));
     ASTMCTypeArgument reference = ((ASTMCGenericType) type).getMCTypeArgumentList().get(0);
-    if (reference instanceof ASTMCWildcardType
-        && ((ASTMCWildcardType) reference).isPresentUpperBound()) {
-      ASTMCType typeRef = ((ASTMCWildcardType)reference).getUpperBound();
+    if (reference instanceof ASTMCWildcardTypeArgument
+        && ((ASTMCWildcardTypeArgument) reference).isPresentUpperBound()) {
+      ASTMCType typeRef = ((ASTMCWildcardTypeArgument)reference).getUpperBound();
       return FullGenericTypesPrinter.printType(typeRef);
     }
     return FullGenericTypesPrinter.printType(reference);
@@ -50,7 +50,7 @@ public class MCFullGenericTypesHelper extends MCSimpleGenericTypesHelper {
         return (ASTMCGenericType) refType.getMCTypeOpt().get();
       }
     }else{
-      ASTMCType typeRef = ((ASTMCWildcardType) refType).getUpperBound();
+      ASTMCType typeRef = ((ASTMCWildcardTypeArgument) refType).getUpperBound();
       Preconditions.checkState(typeRef instanceof ASTMCGenericType);
       return (ASTMCGenericType) typeRef;
     }

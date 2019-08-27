@@ -5,12 +5,12 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.Optional;
 
-public class ASTMCWildcardType extends ASTMCWildcardTypeTOP {
-  public ASTMCWildcardType(){
+public class ASTMCWildcardTypeArgument extends ASTMCWildcardTypeArgumentTOP {
+  public ASTMCWildcardTypeArgument(){
     super();
   }
 
-  public ASTMCWildcardType(Optional<ASTMCType> upperBound, Optional<ASTMCType> lowerBound){
+  public ASTMCWildcardTypeArgument(Optional<ASTMCType> upperBound, Optional<ASTMCType> lowerBound){
     super(upperBound,lowerBound);
   }
 

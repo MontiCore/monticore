@@ -52,7 +52,7 @@ component grammar MCCollectionTypes
   MCOptionalType implements MCGenericType <200> =
        {next("Optional")}? Name "<" MCTypeArgument ">";
 
- MCMapType implements MCGenericType  <200> =
+  MCMapType implements MCGenericType  <200> =
       {next("Map")}? Name
        "<" key:MCTypeArgument "," value:MCTypeArgument ">";
 

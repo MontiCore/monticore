@@ -6,7 +6,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
@@ -84,7 +84,7 @@ public class MCGenericsTypesTest {
     assertFalse(parser.hasErrors());
     assertNotNull(type);
     assertTrue(type.isPresent());
-    assertTrue(type.get() instanceof ASTMCWildcardType);
+    assertTrue(type.get() instanceof ASTMCWildcardTypeArgument);
   }
 
   @Test

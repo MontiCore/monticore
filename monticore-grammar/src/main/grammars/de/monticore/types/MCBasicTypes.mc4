@@ -14,7 +14,6 @@ package de.monticore.types;
  * classes (also sometimes called "reference types").
  *
  * This grammar is part of a hierarchy of types, namely
- * * types/TypeSymbols.mc4
  * * types/MCBasicTypes.mc4
  * * types/MCCollectionTypes.mc4
  * * types/MCSimpleGenericTypes.mc4
@@ -27,7 +26,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
 
   /*=================================================================*/
 
-  /** AASTMCType is the top level interface for all kinds of types
+  /** ASTMCType is the top level interface for all kinds of types
    * (except Void).
    * It is also an extension point for other forms of types.
   */
@@ -62,7 +61,8 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
                                or DOUBLE
   */
   MCPrimitiveType implements MCType =
-     primitive: [ "boolean" | "byte" | "short" | "int" | "long" | "char" |"float" | "double" ];
+     primitive: [ "boolean" | "byte" | "short" | "int" 
+                  | "long" | "char" |"float" | "double" ];
 
 
   /*=================================================================*/

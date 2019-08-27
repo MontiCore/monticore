@@ -24,9 +24,9 @@ public class FullGenericTypesPrinterTest {
   @Test
   public void testPrintType() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
-    Optional<ASTMCWildcardType> astmcWildcardType = parser.parse_StringMCWildcardType("?");
-    Optional<ASTMCWildcardType> astmcWildcardType1 = parser.parse_StringMCWildcardType("? extends List");
-    Optional<ASTMCWildcardType> astmcWildcardType2 = parser.parse_StringMCWildcardType("? super Stream");
+    Optional<ASTMCWildcardTypeArgument> astmcWildcardType = parser.parse_StringMCWildcardTypeArgument("?");
+    Optional<ASTMCWildcardTypeArgument> astmcWildcardType1 = parser.parse_StringMCWildcardTypeArgument("? extends List");
+    Optional<ASTMCWildcardTypeArgument> astmcWildcardType2 = parser.parse_StringMCWildcardTypeArgument("? super Stream");
     Optional<ASTMCMultipleGenericType> astmcMultipleGenericType = parser.parse_StringMCMultipleGenericType("java.util.List<List<String>>.c.d<e,f,g,h>");
     Optional<ASTMCTypeVariableDeclaration> astmcTypeVariableDeclaration = parser.parse_StringMCTypeVariableDeclaration("a extends b&c&d");
     Optional<ASTMCTypeParameters> astmcTypeParameters = parser.parse_StringMCTypeParameters("<a extends b&c&d, e extends f&g>");

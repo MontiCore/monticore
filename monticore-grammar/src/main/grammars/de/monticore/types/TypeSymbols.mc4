@@ -1,10 +1,50 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.types;
+
+/**
+ * This grammar is used to generate an abstract Syntax only.
+ * These AST-classes are then used to store typing information
+ * in the SymbolTable.
+ *
+ * The grammar introduces the symbols for
+ * Types, Methods, Fields and TypeVariables
+ * 
+ * mainly to attach the Type-symbol to it:
+ * It serves as abstract interface that allows various
+ * forms of types to build the same kind of type symbol
+ * (or subclasses thereof)
+ *
+ * This eases the reuse of type structures in languages similar to Java,
+ * that are somewhat simplified, e.g. without generics.
+ *
+ * The grammar contains types from Java, e.g., primitives, void,
+ * classes (also sometimes called "reference types").
+ *
+ * This grammar is part of a hierarchy of types, namely
+ * * types/MCTypeSymbols.mc4
+ * * types/MCBasicTypes.mc4
+ * * types/MCCollectionTypes.mc4
+ * * types/MCSimpleGenericTypes.mc4
+ * * types/MCFullGenericTypes.mc4
+ * also defining generics or arrays.
+ *
+*/
 
 component grammar TypeSymbols extends de.monticore.MCBasics {
 
+  /*=================================================================*/
+
+  /** ASTType is the top level interface for all kinds of types
+   * (except Void).
+   * It mainly introduces the Type-Symbol.
+   */
   interface scope symbol Type = Name ;
+
+  /** Type symbols are extended by three elements:
+  	methods and fields they contain
+	and type parameters they may have   
+	TODO: separate Types from TypeFunctions!
+   */
   symbolrule Type =
     methods: de.monticore.types.typesymbols._symboltable.MethodSymbol*
     fields: de.monticore.types.typesymbols._symboltable.FieldSymbol*
@@ -12,11 +52,19 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   ;
   TypeImpl implements Type = Name;
 
+  /*=================================================================*/
+
+  /** ASTTypeVar is the top level interface for all kinds of types
+   * (except Void).
+   * It mainly introduces the TypeVar-Symbol class
+   */
   interface symbol TypeVar = Name;
   symbolrule TypeVar =
     upperBound: de.monticore.typescalculator.TypeExpression*
   ;
   TypeVarImpl implements TypeVar = Name;
+
+  /*=================================================================*/
 
   interface symbol Field = Name ;
   symbolrule  Field =
@@ -24,11 +72,37 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   ;
   FieldImpl implements Field = Name;
 
-  interface scope symbol  Method = Name;
+  /*=================================================================*/
+
+  interface scope symbol Method = Name;
   symbolrule Method =
     parameter: de.monticore.types.typesymbols._symboltable.FieldSymbol*
     returnType: de.monticore.typescalculator.TypeExpression
   ;
   MethodImpl implements Method = Name;
+
+
+  /*=================================================================*/
+  /*=================================================================*/
+
+
+  
+  interface XType;
+  XVoidType implements XType = "void";
+
+  XTypeVar implements XType = Name;
+
+  XPrimitiveType implements XType = Name;
+  XObjectType implements XType = Name;   // könnte auch MCQualifiedName sein ...
+
+  XTypeConstruct implements XType = constructor:Name argument:XType*; 
+
+  
+
+
+
+
+
+
 
 }
