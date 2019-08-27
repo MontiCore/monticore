@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("simpleName", "symbolFullName", "scopeInterface")}
-  if (!is${simpleName}SymbolAlreadyResolved()) {
-    set${simpleName}SymbolAlreadyResolved(true);
+  if (!is${simpleName}SymbolsAlreadyResolved()) {
+    set${simpleName}SymbolsAlreadyResolved(true);
   } else {
     return new LinkedHashSet<>();
   }
@@ -26,5 +26,5 @@ ${tc.signature("simpleName", "symbolFullName", "scopeInterface")}
     }
   }
   Log.trace("END " + resolveCall + ". Found #" + resolved.size(), "");
-  set${simpleName}SymbolAlreadyResolved(false);
+  set${simpleName}SymbolsAlreadyResolved(false);
   return resolved;

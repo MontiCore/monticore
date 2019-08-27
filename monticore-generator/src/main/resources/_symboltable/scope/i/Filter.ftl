@@ -2,7 +2,7 @@
 ${tc.signature( "symbolFullName")}
   final Set<${symbolFullName}> resolvedSymbols = new LinkedHashSet<>();
 
-  final String simpleName = Names.getSimpleName(name);
+  final String simpleName = de.se_rwth.commons.Names.getSimpleName(name);
 
   if (symbols.containsKey(simpleName)) {
     for (${symbolFullName} symbol : symbols.get(simpleName)) {

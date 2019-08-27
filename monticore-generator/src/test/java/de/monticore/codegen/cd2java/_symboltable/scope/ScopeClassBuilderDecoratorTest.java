@@ -36,8 +36,6 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   private static final String A_NODE_TYPE_OPT = "Optional<de.monticore.codegen.builder.builder._ast.ASTA>";
 
-  private static final String A_NODE_TYPE = "de.monticore.codegen.builder.builder._ast.ASTA";
-
   private static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
 
 

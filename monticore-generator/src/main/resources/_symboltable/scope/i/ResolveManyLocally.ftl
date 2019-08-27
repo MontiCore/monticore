@@ -8,12 +8,12 @@ ${tc.signature("simpleName", "symbolFullName")}
     if (resolvedSymbol.isPresent()) {
       resolvedSymbols.add(resolvedSymbol.get());
     }
-  } catch (ResolvedSeveralEntriesForSymbolException e) {
+  } catch (de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException e) {
     resolvedSymbols.addAll(e.getSymbols());
   }
 
       // filter out symbols that are not included within the access modifier
   Set<${symbolFullName}> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
-  filteredSymbols = new LinkedHashSet<>(filteredSymbols.stream().filter(predicate).collect(Collectors.toSet()));
+  filteredSymbols = new LinkedHashSet<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toSet()));
 
   return filteredSymbols;
