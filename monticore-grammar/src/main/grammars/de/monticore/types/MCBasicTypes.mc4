@@ -78,7 +78,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
 
   /** ASTMCQualifiedType represents types like class or interface types
           which could have a qualified name like this: a.b.c.D
-      */
+  */
   MCQualifiedType implements MCObjectType = MCQualifiedName;
 
 
