@@ -14,7 +14,8 @@ package de.monticore.types;
  * classes (also sometimes called "reference types").
  *
  * This grammar is part of a hierarchy of types, namely
- * * types.MCBasicTypes.mc4
+ * * types/TypeSymbols.mc4
+ * * types/MCBasicTypes.mc4
  * * types/MCCollectionTypes.mc4
  * * types/MCSimpleGenericTypes.mc4
  * * types/MCFullGenericTypes.mc4
