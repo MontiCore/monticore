@@ -61,8 +61,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
                                or DOUBLE
   */
   MCPrimitiveType implements MCType =
-      primitive: [ "boolean" | "byte" | "short" | "int" 
-                   | "long" | "char" |"float" | "double" ];
+     primitive: [ "boolean" | "byte" | "short" | "int" | "long" | "char" |"float" | "double" ];
 
 
   /*=================================================================*/
