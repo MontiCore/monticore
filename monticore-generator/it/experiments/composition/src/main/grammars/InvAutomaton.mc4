@@ -8,8 +8,7 @@ component grammar InvAutomaton
 
   external Invariant;
 
-    //todo rename to state, coco ProdAndExtendedProdUseSameAttrNameForDiffNTs is fixed
-  State = "autstate" Name
+  State = "state" Name
           Invariant
           ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )* ";" ;
 

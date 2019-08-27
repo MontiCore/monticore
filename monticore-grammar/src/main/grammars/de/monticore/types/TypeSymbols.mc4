@@ -26,7 +26,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   interface scope symbol  Method = Name;
   symbolrule Method =
     parameter: de.monticore.types.typesymbols._symboltable.FieldSymbol*
-    type: de.monticore.typescalculator.TypeExpression
+    returnType: de.monticore.typescalculator.TypeExpression
   ;
   MethodImpl implements Method = Name;
 

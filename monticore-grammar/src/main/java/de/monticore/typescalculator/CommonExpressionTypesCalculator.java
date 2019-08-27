@@ -304,7 +304,6 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
   public void endVisit(ASTCallExpression expr){
     if(types.containsKey(expr.getExpression())) {
       CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
-      String exprString = printer.prettyprint(expr);
       ExpressionsBasisPrettyPrinter prettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
       String exp = prettyPrinter.prettyprint(expr.getExpression());
       Collection<EMethodSymbol> methodcollection = scope.resolveEMethodMany(exp);
@@ -318,12 +317,11 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
             }
           }
           if(success){
-            String nameString = printer.prettyprint(expr.getExpression());
-            if(!method.getReturnType().getName().equals("void")){
+            if(!"void".equals(method.getReturnType().getName())){
               TypeExpression result=method.getReturnType();
               this.result=result;
               types.put(expr,result);
-            }else if(method.getReturnType().getName().equals("void")){
+            }else if("void".equals(method.getReturnType().getName())){
               TypeExpression result = new TypeConstant();
               result.setName("void");
               types.put(expr, result);

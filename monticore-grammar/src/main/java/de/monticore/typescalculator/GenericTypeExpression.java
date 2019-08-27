@@ -2,7 +2,6 @@
 package de.monticore.typescalculator;
 
 import com.google.common.collect.Lists;
-import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 
 import java.util.LinkedList;
@@ -49,11 +48,15 @@ public class GenericTypeExpression extends TypeExpression {
       return false;
     }
 
-    if(!this.superTypes.equals(typeExpression.superTypes)){
-      return false;
+    for(int i = 0; i<this.superTypes.size();i++){
+      if(!this.superTypes.get(i).deepEquals(typeExpression.superTypes.get(i))){
+        return false;
+      }
     }
-    if(!this.arguments.equals(((GenericTypeExpression) typeExpression).arguments)){
-      return false;
+    for(int i = 0; i<this.arguments.size();i++){
+      if(!this.arguments.get(i).deepEquals(((GenericTypeExpression) typeExpression).arguments.get(i))){
+        return false;
+      }
     }
     if(!this.whoAmI.equals(((GenericTypeExpression) typeExpression).whoAmI)){
       return false;

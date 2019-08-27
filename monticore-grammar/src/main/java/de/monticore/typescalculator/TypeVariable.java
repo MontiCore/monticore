@@ -2,17 +2,13 @@
 package de.monticore.typescalculator;
 
 
-import com.google.common.collect.Lists;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 
-import java.util.ArrayList;
+import java.util.Optional;
 
-public class TypeVariable<ASTMCType> extends TypeExpression {
+public class TypeVariable extends TypeExpression {
 
-  de.monticore.types.mcbasictypes._ast.ASTMCType variableName;
-  public void g() {
-    ArrayList<Integer> var = Lists.newArrayList(5);
-  }
+  protected Optional<TypeVarSymbol> typeVarSymbol;
 
   @Override
   public boolean deepEquals(TypeExpression typeExpression) {
@@ -22,14 +18,13 @@ public class TypeVariable<ASTMCType> extends TypeExpression {
     if(!this.name.equals(typeExpression.name)){
       return false;
     }
-    if(!this.typeSymbol.equals(typeExpression.typeSymbol)){
+    if(!this.typeVarSymbol.equals(((TypeVariable) typeExpression).typeVarSymbol)){
       return false;
     }
-    if(!this.superTypes.equals(typeExpression.superTypes)){
-      return false;
-    }
-    if(!this.variableName.deepEquals(((TypeVariable) typeExpression).variableName)){
-      return false;
+    for(int i = 0; i<this.superTypes.size();i++){
+      if(!this.superTypes.get(i).deepEquals(typeExpression.superTypes.get(i))){
+        return false;
+      }
     }
     return true;
   }
@@ -42,8 +37,7 @@ public class TypeVariable<ASTMCType> extends TypeExpression {
     for(TypeExpression expr: superTypes){
       clone.addSuperType(expr.deepClone());
     }
-    clone.typeSymbol = this.typeSymbol;
-    clone.variableName = this.variableName.deepClone();
+    clone.typeVarSymbol = this.typeVarSymbol;
     return clone;
   }
 }

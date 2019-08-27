@@ -2,10 +2,8 @@
 package de.monticore.types.mccollectiontypes._ast;
 
 import com.google.common.collect.Lists;
-import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
 

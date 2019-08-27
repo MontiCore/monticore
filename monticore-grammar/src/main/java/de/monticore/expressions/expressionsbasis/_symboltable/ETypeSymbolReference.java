@@ -22,7 +22,7 @@ public class ETypeSymbolReference extends ETypeSymbolReferenceTOP {
     this.genericArguments = genericArguments;
   }
 
-  public ETypeSymbolReference clone(){
+  public ETypeSymbolReference deepClone(){
     ETypeSymbolReference clone = ExpressionsBasisSymTabMill.eTypeSymbolReferenceBuilder().setName(this.name).setEnclosingScopeOfReference(this.enclosingScope).build();
     clone.setFullName(getFullName());
     ArrayList<TypeExpression> supTypes = new ArrayList<>();

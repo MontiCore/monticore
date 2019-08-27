@@ -31,58 +31,58 @@ public class TypesCalculatorHelper {
   }
 
   public static TypeExpression unbox(TypeExpression type){
-    if(type.getName().equals("java.lang.Boolean")){
+    if("java.lang.Boolean".equals(type.getName())){
       type = new TypeConstant();
       type.setName("boolean");
-    }else if(type.getName().equals("java.lang.Byte")){
+    }else if("java.lang.Byte".equals(type.getName())){
       type = new TypeConstant();
       type.setName("byte");
-    }else if(type.getName().equals("java.lang.Character")){
+    }else if("java.lang.Character".equals(type.getName())){
       type = new TypeConstant();
       type.setName("char");
-    }else if(type.getName().equals("java.lang.Short")){
+    }else if("java.lang.Short".equals(type.getName())){
       type = new TypeConstant();
       type.setName("short");
-    }else if(type.getName().equals("java.lang.Integer")){
+    }else if("java.lang.Integer".equals(type.getName())){
       type = new TypeConstant();
       type.setName("int");
-    }else if(type.getName().equals("java.lang.Long")){
+    }else if("java.lang.Long".equals(type.getName())){
       type = new TypeConstant();
       type.setName("long");
-    }else if(type.getName().equals("java.lang.Float")){
+    }else if("java.lang.Float".equals(type.getName())){
       type = new TypeConstant();
       type.setName("float");
-    }else if(type.getName().equals("java.lang.Double")){
+    }else if("java.lang.Double".equals(type.getName())){
       type = new TypeConstant();
       type.setName("double");
-    }else if(type.getName().equals("java.lang.String")){
+    }else if("java.lang.String".equals(type.getName())){
       type = new ObjectType();
       type.setName("String");
-    }else if(type.getBaseName().equals("Boolean")){
+    }else if("Boolean".equals(type.getName())){
       type = new TypeConstant();
       type.setName("boolean");
-    }else if(type.getBaseName().equals("Byte")){
+    }else if("Byte".equals(type.getName())){
       type = new TypeConstant();
       type.setName("byte");
-    }else if(type.getBaseName().equals("Character")){
+    }else if("Character".equals(type.getName())){
       type = new TypeConstant();
       type.setName("char");
-    }else if(type.getBaseName().equals("Short")){
+    }else if("Short".equals(type.getName())){
       type = new TypeConstant();
       type.setName("short");
-    }else if(type.getBaseName().equals("Integer")){
+    }else if("Integer".equals(type.getName())){
       type = new TypeConstant();
       type.setName("int");
-    }else if(type.getBaseName().equals("Long")){
+    }else if("Long".equals(type.getName())){
       type = new TypeConstant();
       type.setName("long");
-    }else if(type.getBaseName().equals("Float")){
+    }else if("Float".equals(type.getName())){
       type = new TypeConstant();
       type.setName("float");
-    }else if(type.getBaseName().equals("Double")) {
+    }else if("Double".equals(type.getName())){
       type = new TypeConstant();
       type.setName("double");
-    }else if(type.getBaseName().equals("String")){
+    }else if("String".equals(type.getName())){
       type = new ObjectType();
       type.setName("String");
     }
@@ -90,35 +90,35 @@ public class TypesCalculatorHelper {
   }
 
   public static TypeExpression box(TypeExpression type) {
-    if (type.getName().equals("boolean")) {
+    if ("boolean".equals(type.getName())) {
       type = new ObjectType();
       type.setName("java.lang.Boolean");
     }
-    if (type.getName().equals("byte")) {
+    if ("byte".equals(type.getName())) {
       type = new ObjectType();
       type.setName("java.lang.Byte");
     }
-    if (type.getName().equals("char")) {
+    if ("char".equals(type.getName())) {
       type = new ObjectType();
       type.setName("java.lang.Character");
     }
-    if (type.getName().equals("short")) {
+    if ("short".equals(type.getName())) {
       type = new ObjectType();
       type.setName("java.lang.Short");
     }
-    if (type.getName().equals("int")) {
+    if ("int".equals(type.getName())) {
       type = new ObjectType();
       type.setName("java.lang.Integer");
     }
-    if (type.getName().equals("long")) {
+    if ("long".equals(type.getName())) {
       type = new ObjectType();
       type.setName("java.lang.Long");
     }
-    if (type.getName().equals("float")) {
+    if ("float".equals(type.getName())) {
       type = new ObjectType();
       type.setName("java.lang.Float");
     }
-    if (type.getName().equals("double")) {
+    if ("double".equals(type.getName())) {
       type = new ObjectType();
       type.setName("java.lang.Double");
     }
@@ -130,26 +130,34 @@ public class TypesCalculatorHelper {
    * @return true if the given type is an integral type
    */
   public static boolean isIntegralType(TypeExpression type) {
-    if ("int".equals(unbox(type).getName()))
+    if ("int".equals(unbox(type).getName())) {
       return true;
-    if ("byte".equals(unbox(type).getName()))
+    }
+    if ("byte".equals(unbox(type).getName())) {
       return true;
-    if ("short".equals(unbox(type).getName()))
+    }
+    if ("short".equals(unbox(type).getName())) {
       return true;
-    if ("long".equals(unbox(type).getName()))
+    }
+    if ("long".equals(unbox(type).getName())) {
       return true;
-    if ("char".equals(unbox(type).getName()))
+    }
+    if ("char".equals(unbox(type).getName())) {
       return true;
+    }
     return false;
   }
 
   public static boolean isNumericType(TypeExpression type) {
-    if (isIntegralType(type))
+    if (isIntegralType(type)) {
       return true;
-    if ("float".equals(unbox(type).getName()))
+    }
+    if ("float".equals(unbox(type).getName())) {
       return true;
-    if ("double".equals(unbox(type).getName()))
+    }
+    if ("double".equals(unbox(type).getName())) {
       return true;
+    }
     return false;
   }
 
