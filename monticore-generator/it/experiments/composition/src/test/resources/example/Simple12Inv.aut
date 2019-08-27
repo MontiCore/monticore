@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 automaton Simple {
 
-  autstate A true  <<initial>>;
+  state A true  <<initial>>;
     A - x > B;
     A - y > A;
 
-  autstate B false  <<final>>;
+  state B false  <<final>>;
     B - x > A;
     B - y > A;
 }

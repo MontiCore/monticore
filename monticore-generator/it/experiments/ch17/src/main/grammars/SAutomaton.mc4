@@ -4,9 +4,8 @@ grammar SAutomaton extends de.monticore.MCBasics {
  symbol scope Automaton =
    "automaton" Name "{" (State | Transition)* "}" ;
 
-  //todo rename to state, coco ProdAndExtendedProdUseSameAttrNameForDiffNTs is fixed
  symbol State =
-   "autstate" Name
+   "state" Name
  (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))* ";" ;
 
  Transition =

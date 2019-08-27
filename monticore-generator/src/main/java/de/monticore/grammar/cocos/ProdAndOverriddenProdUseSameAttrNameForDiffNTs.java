@@ -49,7 +49,7 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
           Optional<RuleComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
               .resolveRuleComponentLocally(attributename);
           if (rcs.isPresent()) {
-            if (rcs.get().isTerminal()) {
+            if (rcs.get().isTerminal() && !"".equals(rcs.get().getUsageName())) {
               logError(rule.get(), attributename, componentSymbol.get(), "production of a terminal", a);
             } else if (rcs.get().isConstantGroup()) {
               logError(rule.get(), attributename, componentSymbol.get(), "production of a constant group", a);
