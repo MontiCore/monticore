@@ -10,6 +10,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
     fields: de.monticore.types.typesymbols._symboltable.FieldSymbol*
     typeParameter: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
   ;
+  TypeImpl implements Type = Name;
 
   interface symbol TypeVar = Name;
   symbolrule TypeVar =
