@@ -165,8 +165,13 @@ UML's OCL.
 
 ## Literals: List of Grammars in package de.monticore.literals
 
-### [MCLiteralsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCLiteralsBasis.mc4) (Beta: In Stabilization)
+### [MCLiteralsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCLiteralsBasis.mc4) (stable)
+* This grammar defines core interface for literals.
+* Several conservative extensions to this grammar realize
+various forms of literals.
+
 ### [MCCommonLiterals.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCCommonLiterals.mc4) (Beta: In Stabilization)
+
 ### [MCJavaLiterals.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCJavaLiterals.mc4) (Beta: In Stabilization)
 
 ## Further grammars (status: to be handled):
