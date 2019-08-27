@@ -53,9 +53,10 @@ There may also be further unclarfied grammars around.
 
 A comment of the following form within the grammar also helps:
 
-1. /* This is a MontiCore stable grammar. */
-2. /* Beta-version: This is intended to become a MontiCore stable grammar. */
-2. /* Alpha-version: This is intended to become a MontiCore stable grammar. */
+1. `/* This is a MontiCore stable grammar.`
+    ` * Adaptations -- if any -- are conservative. */`
+2. `/* Beta-version: This is intended to become a MontiCore stable grammar. */`
+2. `/* Alpha-version: This is intended to become a MontiCore stable grammar. */`
    (but sometimes also omitted)
 
 ## General: List of Grammars in package de.monticore
@@ -164,8 +165,13 @@ UML's OCL.
 
 ## Literals: List of Grammars in package de.monticore.literals
 
-### [MCLiteralsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCLiteralsBasis.mc4) (Beta: In Stabilization)
+### [MCLiteralsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCLiteralsBasis.mc4) (stable)
+* This grammar defines core interface for literals.
+* Several conservative extensions to this grammar realize
+various forms of literals.
+
 ### [MCCommonLiterals.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCCommonLiterals.mc4) (Beta: In Stabilization)
+
 ### [MCJavaLiterals.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCJavaLiterals.mc4) (Beta: In Stabilization)
 
 ## Further grammars (status: to be handled):
