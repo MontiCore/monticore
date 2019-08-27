@@ -55,13 +55,12 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
   }
 
   protected ASTCDMethod createCacheMethod() {
-
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "calculatedModelName");
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "cache", parameter);
   }
 
   protected ASTCDMethod createGetModelPathMethod() {
-    ASTMCType modelPathType = getCDTypeFacade().createQualifiedType(MODEL_PATH);
+    ASTMCType modelPathType = getCDTypeFacade().createQualifiedType(MODEL_PATH_TYPE);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(modelPathType).build();
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, returnType, "getModelPath");
   }

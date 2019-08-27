@@ -3,10 +3,7 @@ package de.monticore.codegen.cd2java._symboltable;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeInterfaceDecorator;
-import de.monticore.codegen.cd2java._symboltable.scope.ScopeClassBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.scope.ScopeClassDecorator;
-import de.monticore.codegen.cd2java._symboltable.scope.ScopeInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -36,6 +33,8 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator;
 
+  protected final GlobalScopeClassDecorator globalScopeClassDecorator;
+
   public SymbolTableCDDecorator(final GlobalExtensionManagement glex,
                                 final SymbolTableService symbolTableService,
                                 final SymbolDecorator symbolDecorator,
@@ -43,7 +42,8 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
                                 final ScopeClassDecorator scopeClassDecorator,
                                 final ScopeClassBuilderDecorator scopeClassBuilderDecorator,
                                 final ScopeInterfaceDecorator scopeInterfaceDecorator,
-                                final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator) {
+                                final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator,
+                                final GlobalScopeClassDecorator globalScopeClassDecorator) {
     super(glex);
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
@@ -52,6 +52,7 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     this.scopeClassBuilderDecorator = scopeClassBuilderDecorator;
     this.scopeInterfaceDecorator = scopeInterfaceDecorator;
     this.globalScopeInterfaceDecorator = globalScopeInterfaceDecorator;
+    this.globalScopeClassDecorator= globalScopeClassDecorator;
   }
 
   @Override
@@ -80,6 +81,7 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
         .build();
     if (symbolTableService.hasProd(ast.getCDDefinition())) {
       astCD.addCDInterface(createGlobalScopeInterface(ast));
+      astCD.addCDClass(createGlobalScopeClass(ast));
     }
 
     for (ASTCDClass cdClass : astCD.getCDClassList()) {
@@ -128,5 +130,9 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected ASTCDInterface createGlobalScopeInterface(ASTCDCompilationUnit compilationUnit) {
     return globalScopeInterfaceDecorator.decorate(compilationUnit);
+  }
+
+  protected ASTCDClass createGlobalScopeClass(ASTCDCompilationUnit compilationUnit) {
+    return globalScopeClassDecorator.decorate(compilationUnit);
   }
 }

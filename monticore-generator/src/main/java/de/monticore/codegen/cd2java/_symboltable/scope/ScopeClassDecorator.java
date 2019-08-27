@@ -189,7 +189,6 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   protected ASTCDMethod createSymbolsSizeMethod(Collection<String> symbolAttributeNames) {
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createIntType()).build();
     ASTCDMethod getSymbolSize = getCDMethodFacade().createMethod(PUBLIC, returnType, "getSymbolsSize");
-    StringBuilder template = new StringBuilder();
     if (symbolAttributeNames.isEmpty()) {
       this.replaceTemplate(EMPTY_BODY, getSymbolSize, new StringHookPoint("return 0;"));
     } else {
@@ -199,12 +198,12 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected Map<String, ASTCDAttribute> getSuperSymbolAttributes() {
-    Map<String, ASTCDAttribute> symbolAttributes = new HashMap();
+    Map<String, ASTCDAttribute> symbolAttributes = new HashMap<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
         if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
-          ASTCDAttribute symbolAttribute = createSymbolAttributes(type.getAstNode().get(), cdDefinitionSymbol);
+          ASTCDAttribute symbolAttribute = createSymbolAttribute(type.getAstNode().get(), cdDefinitionSymbol);
           symbolAttributes.put(symbolAttribute.getName(), symbolAttribute);
         }
       }
@@ -213,15 +212,15 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected Map<String, ASTCDAttribute> createSymbolAttributes(List<? extends ASTCDType> symbolClassList, CDDefinitionSymbol cdDefinitionSymbol) {
-    Map<String, ASTCDAttribute> symbolAttributeList = new HashMap();
+    Map<String, ASTCDAttribute> symbolAttributeList = new HashMap<>();
     for (ASTCDType astcdClass : symbolClassList) {
-      ASTCDAttribute symbolAttributes = createSymbolAttributes(astcdClass, cdDefinitionSymbol);
+      ASTCDAttribute symbolAttributes = createSymbolAttribute(astcdClass, cdDefinitionSymbol);
       symbolAttributeList.put(symbolAttributes.getName(), symbolAttributes);
     }
     return symbolAttributeList;
   }
 
-  protected ASTCDAttribute createSymbolAttributes(ASTCDType cdType, CDDefinitionSymbol cdDefinitionSymbol) {
+  protected ASTCDAttribute createSymbolAttribute(ASTCDType cdType, CDDefinitionSymbol cdDefinitionSymbol) {
     String symbolTypeName = symbolTableService.getSymbolFullTypeName(cdType, cdDefinitionSymbol);
     String attrName = StringTransformations.uncapitalize(symbolTableService.getSymbolSimpleTypeName(cdType)) + LIST_SUFFIX_S;
     ASTMCType symbolMultiMap = getCDTypeFacade().createTypeByDefinition(String.format(SYMBOLS_MULTI_MAP, symbolTypeName));

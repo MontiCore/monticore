@@ -21,9 +21,11 @@ public class SymbolTableConstants {
 
   public static final String ARTIFACT_PREFIX = "Artifact";
 
-  public static final String GLOBAL_PREFIX = "Global";
+  public static final String GLOBAL_SUFFIX = "Global";
 
   public static final String COMMON_PREFIX = "Common";
+
+  public static final String RESOLVING_DELEGATE_SUFFIX = "ResolvingDelegate";
 
   public static final String SCOPE_INTERFACE_FULL_NAME = "de.monticore.symboltable.IScope";
 
@@ -83,6 +85,10 @@ public class SymbolTableConstants {
 
   public static final String MODEL_LOADER_SUFFIX = "ModelLoader";
 
-  public static final String MODEL_PATH = "de.monticore.io.paths.ModelPath";
+  public static final String MODEL_PATH_TYPE = "de.monticore.io.paths.ModelPath";
+
+  public static final String MODEL_PATH_NAME = "modelPath";
+
+  public static final String ADAPTED_RESOLVING_DELEGATE= "adapted%sSymbolResolvingDelegateList";
 
 }

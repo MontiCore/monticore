@@ -72,11 +72,19 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getGlobalScopeTypeName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + cdSymbol.getName() + GLOBAL_PREFIX + SCOPE_SUFFIX;
+    return getPackage(cdSymbol) + "." + getGlobalScopeSimpleName(cdSymbol);
   }
 
   public String getGlobalScopeTypeName() {
     return getGlobalScopeTypeName(getCDSymbol());
+  }
+
+  public String getGlobalScopeSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + GLOBAL_SUFFIX + SCOPE_SUFFIX;
+  }
+
+  public String getGlobalScopeSimpleName() {
+    return getGlobalScopeSimpleName(getCDSymbol());
   }
 
   public ASTMCQualifiedType getGlobalScopeType() {
@@ -92,16 +100,25 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getGlobalScopeInterfaceSimpleName(CDDefinitionSymbol cdSymbol) {
-    return INTERFACE_PREFIX + cdSymbol.getName() + GLOBAL_PREFIX + SCOPE_SUFFIX;
+    return INTERFACE_PREFIX + cdSymbol.getName() + GLOBAL_SUFFIX + SCOPE_SUFFIX;
   }
 
   public String getGlobalScopeInterfaceSimpleName() {
     return getGlobalScopeInterfaceSimpleName(getCDSymbol());
   }
 
-  public ASTMCQualifiedType getGlobalcopeInterfaceType() {
+  public ASTMCQualifiedType getGlobalScopeInterfaceType() {
     return getCDTypeFactory().createQualifiedType(getGlobalScopeInterfaceTypeName(getCDSymbol()));
   }
+
+  public String getSymbolResolvingDelegateInterfaceTypeName(ASTCDType astcdType) {
+    return getSymbolResolvingDelegateInterfaceTypeName(astcdType, getCDSymbol());
+  }
+
+  public String getSymbolResolvingDelegateInterfaceTypeName(ASTCDType astcdType, CDDefinitionSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + INTERFACE_PREFIX + getSymbolName(astcdType) + RESOLVING_DELEGATE_SUFFIX;
+  }
+
 
   public String getCommonSymbolInterfaceName(CDDefinitionSymbol cdSymbol) {
     return getPackage(cdSymbol) + "." + INTERFACE_PREFIX + COMMON_PREFIX + cdSymbol.getName() + SYMBOL_SUFFIX;
@@ -116,7 +133,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getPackage(cdSymbol) + "." + INTERFACE_PREFIX + cdSymbol.getName() + SCOPE_SUFFIX;
   }
 
-  public ASTMCType getScopeType() {
+  public ASTMCQualifiedType getScopeType() {
     return getCDTypeFactory().createQualifiedType(getScopeTypeName());
   }
 

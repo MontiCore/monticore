@@ -38,11 +38,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  private static final String AUTOMATON_SYMBOL_MAP = "com.google.common.collect.LinkedListMultimap<String,de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
-
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
-
-  public static final String I_LEXICAS_SCOPE = "de.monticore.codegen.ast.lexicals._symboltable.ILexicalsScope";
 
   public static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
 
