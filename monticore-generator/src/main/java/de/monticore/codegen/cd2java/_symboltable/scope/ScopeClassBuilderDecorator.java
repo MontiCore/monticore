@@ -16,7 +16,7 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCO
 
 public class ScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
-  private final BuilderDecorator builderDecorator;
+  protected final BuilderDecorator builderDecorator;
 
 
   public ScopeClassBuilderDecorator(final GlobalExtensionManagement glex,

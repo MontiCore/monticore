@@ -17,7 +17,7 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYM
 
 public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
-  private final BuilderDecorator builderDecorator;
+  protected final BuilderDecorator builderDecorator;
 
   public SymbolBuilderDecorator(final GlobalExtensionManagement glex,
                                 final BuilderDecorator builderDecorator) {

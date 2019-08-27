@@ -36,7 +36,7 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
     return method;
   }
 
-  private boolean isOptionalAttribute(final ASTCDAttribute clazz) {
+  protected boolean isOptionalAttribute(final ASTCDAttribute clazz) {
     //have to ask here if the original attribute was an optional or mandatory String attribute
     //the template has to be different
     if (clazz.isPresentModifier() && clazz.getModifier().isPresentStereotype()) {

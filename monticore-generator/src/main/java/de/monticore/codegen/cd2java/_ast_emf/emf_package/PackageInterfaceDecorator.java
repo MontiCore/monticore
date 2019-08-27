@@ -22,9 +22,9 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
-  private static final String GET = "get%s";
+  protected static final String GET = "get%s";
 
-  private final EmfService emfService;
+  protected final EmfService emfService;
 
   public PackageInterfaceDecorator(final GlobalExtensionManagement glex,
                                    final EmfService emfService) {

@@ -25,21 +25,21 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
-  private static final String REAL_THIS = "realThis";
+  protected static final String REAL_THIS = "realThis";
 
-  private static final String COCOS = "CoCos";
+  protected static final String COCOS = "CoCos";
 
-  private static final String NODE = "node";
+  protected static final String NODE = "node";
 
-  private static final String COCO = "coco";
+  protected static final String COCO = "coco";
 
-  private static final String CHECKER = "checker";
+  protected static final String CHECKER = "checker";
 
-  private final MethodDecorator methodDecorator;
+  protected final MethodDecorator methodDecorator;
 
-  private final CoCoService cocoService;
+  protected final CoCoService cocoService;
 
-  private final VisitorService visitorService;
+  protected final VisitorService visitorService;
 
   public CoCoCheckerDecorator(final GlobalExtensionManagement glex, final MethodDecorator methodDecorator,
       final CoCoService cocoService,

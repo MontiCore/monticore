@@ -24,9 +24,9 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
-  private final VisitorService visitorService;
+  protected final VisitorService visitorService;
 
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public ScopeVisitorDecorator(final GlobalExtensionManagement glex,
                                final VisitorService visitorService,

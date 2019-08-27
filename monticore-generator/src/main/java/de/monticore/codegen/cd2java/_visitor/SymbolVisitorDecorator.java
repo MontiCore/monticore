@@ -19,9 +19,9 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
-  private final VisitorService visitorService;
+  protected final VisitorService visitorService;
 
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public SymbolVisitorDecorator(final GlobalExtensionManagement glex,
                                 final VisitorService visitorService,

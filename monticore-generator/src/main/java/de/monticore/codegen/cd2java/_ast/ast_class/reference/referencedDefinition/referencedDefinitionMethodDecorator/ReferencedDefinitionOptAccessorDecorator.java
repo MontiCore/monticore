@@ -20,7 +20,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDecorator {
 
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public ReferencedDefinitionOptAccessorDecorator(final GlobalExtensionManagement glex,
                                                   final SymbolTableService symbolTableService) {

@@ -13,9 +13,9 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
 public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
-  private final ASTService astService;
+  protected final ASTService astService;
 
-  private final VisitorService visitorService;
+  protected final VisitorService visitorService;
 
   public ASTLanguageInterfaceDecorator(ASTService astService, VisitorService visitorService) {
     this.astService = astService;

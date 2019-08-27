@@ -23,7 +23,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttribute>> {
 
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public ASTScopeDecorator(final GlobalExtensionManagement glex,
                            final SymbolTableService symbolTableService) {

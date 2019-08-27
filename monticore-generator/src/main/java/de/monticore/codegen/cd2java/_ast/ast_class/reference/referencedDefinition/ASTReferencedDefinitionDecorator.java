@@ -22,9 +22,9 @@ public class ASTReferencedDefinitionDecorator extends AbstractTransformer<ASTCDC
 
   public static final String DEFINITION = "Definition";
 
-  private final ReferencedDefinitionAccessorDecorator accessorDecorator;
+  protected final ReferencedDefinitionAccessorDecorator accessorDecorator;
 
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public ASTReferencedDefinitionDecorator(final GlobalExtensionManagement glex, final ReferencedDefinitionAccessorDecorator accessorDecorator,
       final SymbolTableService symbolTableService) {

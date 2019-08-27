@@ -18,7 +18,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
 
-  private final ASTMCType builderType;
+  protected final ASTMCType builderType;
 
   public BuilderOptionalMutatorDecorator(final GlobalExtensionManagement glex,
                                          final ASTMCType builderType) {

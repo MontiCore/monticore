@@ -25,11 +25,11 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
-  private static final String GET = "get%s";
+  protected static final String GET = "get%s";
 
-  private final MandatoryAccessorDecorator accessorDecorator;
+  protected final MandatoryAccessorDecorator accessorDecorator;
 
-  private final EmfService emfService;
+  protected final EmfService emfService;
 
 
   public PackageImplDecorator(final GlobalExtensionManagement glex,

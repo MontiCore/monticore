@@ -19,7 +19,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
 
-  private final VisitorService visitorService;
+  protected final VisitorService visitorService;
 
   public ASTVisitorDecorator(final GlobalExtensionManagement glex,
                              final VisitorService visitorService) {

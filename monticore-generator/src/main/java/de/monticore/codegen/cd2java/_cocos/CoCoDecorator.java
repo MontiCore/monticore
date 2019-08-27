@@ -14,9 +14,9 @@ import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 
 public class CoCoDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
-  private final CoCoCheckerDecorator cocoCheckerDecorator;
+  protected final CoCoCheckerDecorator cocoCheckerDecorator;
 
-  private final CoCoInterfaceDecorator cocoInterfaceDecorator;
+  protected final CoCoInterfaceDecorator cocoInterfaceDecorator;
 
   public CoCoDecorator(GlobalExtensionManagement glex,
       CoCoCheckerDecorator cocoCheckerDecorator, CoCoInterfaceDecorator cocoInterfaceDecorator) {

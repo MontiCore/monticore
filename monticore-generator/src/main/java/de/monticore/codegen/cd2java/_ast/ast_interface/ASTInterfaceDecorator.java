@@ -24,15 +24,15 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
 public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
 
-  private final ASTService astService;
+  protected final ASTService astService;
 
-  private final VisitorService visitorService;
+  protected final VisitorService visitorService;
 
-  private final ASTSymbolDecorator symbolDecorator;
+  protected final ASTSymbolDecorator symbolDecorator;
 
-  private final ASTScopeDecorator scopeDecorator;
+  protected final ASTScopeDecorator scopeDecorator;
 
-  private final MethodDecorator methodDecorator;
+  protected final MethodDecorator methodDecorator;
 
   public ASTInterfaceDecorator(final GlobalExtensionManagement glex,
                                final ASTService astService,

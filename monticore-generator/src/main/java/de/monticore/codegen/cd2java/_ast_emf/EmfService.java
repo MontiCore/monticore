@@ -22,7 +22,7 @@ import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 
 public class EmfService extends AbstractService {
 
-  private static final String ABSTRACT = "IS_ABSTRACT";
+  protected static final String ABSTRACT = "IS_ABSTRACT";
 
   public EmfService(ASTCDCompilationUnit compilationUnit) {
     super(compilationUnit);

@@ -14,7 +14,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class BuilderMandatoryMutatorDecorator extends MandatoryMutatorDecorator {
-  private final ASTMCType builderType;
+  protected final ASTMCType builderType;
 
   public BuilderMandatoryMutatorDecorator(final GlobalExtensionManagement glex,
                                           final ASTMCType builderType) {

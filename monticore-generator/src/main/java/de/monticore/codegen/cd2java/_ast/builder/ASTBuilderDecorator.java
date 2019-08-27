@@ -24,11 +24,11 @@ import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
 
 public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
-  private static final String DEFAULT_SUPER_CLASS = "de.monticore.ast.ASTNodeBuilder<%s>";
+  protected static final String DEFAULT_SUPER_CLASS = "de.monticore.ast.ASTNodeBuilder<%s>";
 
-  private static final String AST_BUILDER_INIT_TEMPLATE = "_ast.ast_class.builder.ASTCNodeInit";
+  protected static final String AST_BUILDER_INIT_TEMPLATE = "_ast.ast_class.builder.ASTCNodeInit";
 
-  private final BuilderDecorator builderDecorator;
+  protected final BuilderDecorator builderDecorator;
 
   public ASTBuilderDecorator(final GlobalExtensionManagement glex, final BuilderDecorator builderDecorator) {
     super(glex);

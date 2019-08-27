@@ -29,9 +29,9 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit, Collection<ASTCDClass>> {
 
-  private ASTCDDefinition astcdDefinition;
+  protected ASTCDDefinition astcdDefinition;
 
-  private final AbstractService<?> service;
+  protected final AbstractService<?> service;
 
   public MillForSuperDecorator(final GlobalExtensionManagement glex, final AbstractService<?> service) {
     super(glex);

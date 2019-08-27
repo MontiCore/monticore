@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.CDGenerator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -18,7 +18,7 @@ public class CDEmfGenerator extends CDGenerator {
     super(generatorSetup);
   }
 
-  private ASTCDDefinition originalDefinition;
+  protected ASTCDDefinition originalDefinition;
 
   public ASTCDDefinition getOriginalDefinition() {
     return originalDefinition;

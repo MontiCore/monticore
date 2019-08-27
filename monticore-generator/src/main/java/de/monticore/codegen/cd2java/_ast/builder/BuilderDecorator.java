@@ -24,7 +24,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
-  private final AccessorDecorator accessorDecorator;
+  protected final AccessorDecorator accessorDecorator;
 
   protected final AbstractService service;
 
