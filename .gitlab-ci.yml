@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 image: maven:3.5.4-jdk-8-alpine
 
 #include:
