@@ -9,24 +9,7 @@ package de.monticore.types;
  * The grammar introduces the symbols for
  * Types, Methods, Fields and TypeVariables
  * 
- * mainly to attach the Type-symbol to it:
- * It serves as abstract interface that allows various
- * forms of types to build the same kind of type symbol
- * (or subclasses thereof)
- *
- * This eases the reuse of type structures in languages similar to Java,
- * that are somewhat simplified, e.g. without generics.
- *
- * The grammar contains types from Java, e.g., primitives, void,
- * classes (also sometimes called "reference types").
- *
- * This grammar is part of a hierarchy of types, namely
- * * types/MCTypeSymbols.mc4
- * * types/MCBasicTypes.mc4
- * * types/MCCollectionTypes.mc4
- * * types/MCSimpleGenericTypes.mc4
- * * types/MCFullGenericTypes.mc4
- * also defining generics or arrays.
+ * TODO ...
  *
 */
 
@@ -34,17 +17,8 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
 
   /*=================================================================*/
 
-  /** ASTType is the top level interface for all kinds of types
-   * (except Void).
-   * It mainly introduces the Type-Symbol.
-   */
   interface scope symbol Type = Name ;
 
-  /** Type symbols are extended by three elements:
-  	methods and fields they contain
-	and type parameters they may have   
-	TODO: separate Types from TypeFunctions!
-   */
   symbolrule Type =
     methods: de.monticore.types.typesymbols._symboltable.MethodSymbol*
     fields: de.monticore.types.typesymbols._symboltable.FieldSymbol*
@@ -54,10 +28,6 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
 
   /*=================================================================*/
 
-  /** ASTTypeVar is the top level interface for all kinds of types
-   * (except Void).
-   * It mainly introduces the TypeVar-Symbol class
-   */
   interface symbol TypeVar = Name;
   symbolrule TypeVar =
     upperBound: de.monticore.typescalculator.TypeExpression*
@@ -82,6 +52,8 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   MethodImpl implements Method = Name;
 
 
+  /*=================================================================*/
+  /*=================================================================*/
   /*=================================================================*/
   /*=================================================================*/
 
@@ -141,4 +113,23 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   SymTTypeArgumentType = SymTType 		// darzustellen; Vorzug:
   SymTTypeArgumentExtends = SymTType 	// wenn man weiss "? ext." wird nicht benutzt
   SymTTypeArgumentSuper = SymTType 	// lassen sich manche Klassen ignorieren
+
+
+
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+
+// Die Signatur einer Klasse:
+// Fields, Methoden, 
+
+  SymTClass = Name SymTField* SymTMethod* SymTTypeVariables* inner:SymTClass* ["interface"]? ...
+
+  SymTField = Name SymTType ["static"]? ["public"]? .....
+
+  SymTMethod = Name returnType:SymTType parameter:SymTField* ["isDotted"]? ["public"]? ...
+
+
+
+
 }
