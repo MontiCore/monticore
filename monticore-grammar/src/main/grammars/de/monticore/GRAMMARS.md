@@ -3,13 +3,18 @@
 # MontiCore Grammars - an Overview
 
 [MontiCore](http://www.monticore.de) is a language workbench. It uses 
-grammars to describe DSLs. The extended 
-grammar format allows to compose grammars, to inherit, extend, embedd 
-and aggregate grammars (see the reference manual for details).
+grammars as primary mechanism to describe DSLs. The extended 
+grammar format allows to **compose language components** by
+(1) inheriting, (2) extending, (3) embedding 
+and (4) aggregating grammars (see the reference manual for details).
+From the grammars a lot of infrastructructure is generated, that is as well
+composable, can be **extended with handwrittten code** and most imprtandly, these
+extensions and the grammar composition are compatible, which
+leads to optimal forms of **reuse**.
 
-Here comes a list of grammars available in the MontiCore core project 
+Here comes a list of language components, mainly defined through a 
+primary grammar, available in the MontiCore core project 
 together with short descriptions and their status:
-
 
 ## Status of Grammars 
 
