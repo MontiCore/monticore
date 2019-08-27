@@ -15,15 +15,19 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   symbolrule TypeVar =
     upperBound: de.monticore.typescalculator.TypeExpression*
   ;
+  TypeVarImpl implements TypeVar = Name;
 
   interface symbol Field = Name ;
   symbolrule  Field =
     type: de.monticore.typescalculator.TypeExpression
   ;
+  FieldImpl implements Field = Name;
 
   interface scope symbol  Method = Name;
   symbolrule Method =
     parameter: de.monticore.types.typesymbols._symboltable.FieldSymbol*
     type: de.monticore.typescalculator.TypeExpression
   ;
+  MethodImpl implements Method = Name;
+
 }
