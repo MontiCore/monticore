@@ -53,7 +53,7 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
                 } else if (rcs.get().isConstantGroup()) {
                   logError(prod, ruleSymbol.get(), attributename, componentSymbol.get(),
                       "production that is not a constant group", a);
-                } else if (rcs.get().isTerminal() && componentSymbol.get().getUsageName().equals(rcs.get().getUsageName())) {
+                } else if (rcs.get().isTerminal() && !"".equals(rcs.get().getUsageName())) {
                   logError(prod, ruleSymbol.get(), attributename, componentSymbol.get(),
                       "production that is a terminal named " + rcs.get().getUsageName(), a);
                 } else if (rcs.get().isNonterminal() && rcs.get().getReferencedProd().isPresent()

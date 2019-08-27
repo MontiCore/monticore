@@ -1,16 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 automaton Hierarchy12Inv {
 
-  autstate A true  <<initial>> {
+  state A true  <<initial>> {
     A - x > B;
     A - y > A;
-    autstate C  var1 && var2 {
+    state C  var1 && var2 {
       C - x > B;
       C - y > C;
     }
   }
 
-  autstate B false  <<final>> {
+  state B false  <<final>> {
     B - x > A;
     B - y > A;
   }

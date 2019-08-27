@@ -5,8 +5,7 @@ grammar HierInvAutomaton extends Automaton3 {
   start Automaton; 
 
   // redefine a nonterminal
-    //todo rename to state, coco ProdAndExtendedProdUseSameAttrNameForDiffNTs is fixed
-  State =  "autstate" Name
+  State =  "state" Name
     Invariant
     ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )*
     ( ";" | StateBody );
