@@ -33,8 +33,6 @@ public class CommonModelingLanguageGenerator implements ModelingLanguageGenerato
       genEngine.generate("symboltable.ModelingLanguage", filePath, grammarSymbol.getAstNode().get(),
           className, existsHW);
       if(!grammarSymbol.isComponent()&&existsHW) {
-        String modelLoaderName = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName())+"ModelLoader",
-            genHelper.getTargetPackage(), handCodedPath);
         className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName()) + "LanguageBuilder", genHelper.getTargetPackage(), handCodedPath);
         filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
         genEngine.generate("symboltable.LanguageBuilder", filePath, grammarSymbol.getAstNode().get(), className,languageName);

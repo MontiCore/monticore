@@ -80,7 +80,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
       types.put(expr,res);
     }else if(optMethod.isPresent()) {
       EMethodSymbol method = optMethod.get();
-      if(!method.getReturnType().getName().equals("void")){
+      if(!"void".equals(method.getReturnType().getName())){
         TypeExpression type=method.getReturnType();
         this.result=type;
         types.put(expr,type);

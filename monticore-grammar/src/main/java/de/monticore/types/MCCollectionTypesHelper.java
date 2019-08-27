@@ -50,9 +50,6 @@ public class MCCollectionTypesHelper extends MCBasicTypesHelper {
   }
 
   public static String printSimpleRefType(ASTMCType type) {
-//    if (isOptional(type)) { TODO: auskommentiert, darf das weg?
-//      return printType(getSimpleReferenceTypeFromOptional(type));
-//    }
     return SimpleGenericTypesPrinter.printType(type);
   }
 

@@ -3,7 +3,6 @@ package de.monticore.typescalculator;
 
 
 import com.google.common.collect.Lists;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 
@@ -25,8 +24,10 @@ public class TypeVariable<ASTMCType> extends TypeExpression {
     if(!this.typeSymbol.equals(typeExpression.typeSymbol)){
       return false;
     }
-    if(!this.superTypes.equals(typeExpression.superTypes)){
-      return false;
+    for(int i = 0; i<this.superTypes.size();i++){
+      if(!this.superTypes.get(i).deepEquals(typeExpression.superTypes.get(i))){
+        return false;
+      }
     }
     if(!this.variableName.deepEquals(((TypeVariable) typeExpression).variableName)){
       return false;

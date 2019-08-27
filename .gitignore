@@ -9,3 +9,5 @@ target/
 /monticore-gradle/.gradle
 /monticore-gradle/build
 .mvn/extensions.xml
+/monticore-grammar/monticore-grammar-it/.gradle/
+/monticore-grammar/monticore-grammar-it/out/

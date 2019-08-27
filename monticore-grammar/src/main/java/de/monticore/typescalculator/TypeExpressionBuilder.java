@@ -14,4 +14,19 @@ public class TypeExpressionBuilder {
     }
     return null;
   }
+
+  public static TypeExpression buildObjectType(String name, List<TypeExpression> superTypes) {
+    ObjectType o = new ObjectType();
+    o.setName(name);
+    o.setSuperTypes(superTypes);
+    return o;
+  }
+
+  public static TypeExpression buildGenericTypeExpression(String name, List<TypeExpression> superTypes, List<TypeExpression> arguments){
+    GenericTypeExpression o = new GenericTypeExpression();
+    o.setName(name);
+    o.setArguments(arguments);
+    o.setSuperTypes(superTypes);
+    return o;
+  }
 }

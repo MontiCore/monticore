@@ -119,16 +119,16 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
   private void calculatePlusAssignment(ASTRegularAssignmentExpression expr){
     TypeExpression result = calculateTypeArithmeticWithString(expr.getLeft(),expr.getRight());
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
-      if(types.get(expr.getLeft()).getName().equals("String")&&types.get(expr.getRight()).getName().equals("String")){
+      if("String".equals(types.get(expr.getLeft()).getName())&&"String".equals(types.get(expr.getRight()).getName())){
         result = new ObjectType();
         result.setName("String");
       }
-      if(types.get(expr.getLeft()).getName().equals("java.lang.String")&&types.get(expr.getRight()).getName().equals("java.lang.String")){
+      if("java.lang.String".equals(types.get(expr.getLeft()).getName())&&"java.lang.String".equals(types.get(expr.getRight()).getName())){
         result = new ObjectType();
         result.setName("String");
       }
-      if((types.get(expr.getLeft()).getName().equals("String")&&types.get(expr.getRight()).getName().equals("java.lang.String"))
-          ||(types.get(expr.getLeft()).getName().equals("java.lang.String")&&types.get(expr.getRight()).getName().equals("String"))){
+      if(("String".equals(types.get(expr.getLeft()).getName())&&"java.lang.String".equals(types.get(expr.getRight()).getName()))
+          ||("java.lang.String".equals(types.get(expr.getLeft()).getName())&&"String".equals(types.get(expr.getRight()).getName()))){
         result = new ObjectType();
         result.setName("String");
       }
@@ -341,21 +341,15 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
   }
 
   public TypeExpression getUnaryNumericPromotionType(ASTExpression expr){
-    if(types.containsKey(expr))
-      if("byte".equals(unbox(types.get(expr)).getName())||
-          "short".equals(unbox(types.get(expr)).getName())||
-          "char".equals(unbox(types.get(expr)).getName())||
-          "int".equals(unbox(types.get(expr)).getName())
-      ){
+    if(types.containsKey(expr)) {
+      if ("byte".equals(unbox(types.get(expr)).getName()) || "short".equals(unbox(types.get(expr)).getName()) || "char".equals(unbox(types.get(expr)).getName()) || "int".equals(unbox(types.get(expr)).getName())) {
         TypeExpression sym = new TypeConstant();
         sym.setName("int");
         return sym;
       }
-    if("long".equals(unbox(types.get(expr)).getName())||
-        "double".equals(unbox(types.get(expr)).getName())||
-        "float".equals(unbox(types.get(expr)).getName())
-    ){
-      return unbox(types.get(expr)).deepClone();
+      if ("long".equals(unbox(types.get(expr)).getName()) || "double".equals(unbox(types.get(expr)).getName()) || "float".equals(unbox(types.get(expr)).getName())) {
+        return unbox(types.get(expr)).deepClone();
+      }
     }
     return null;
   }
@@ -373,7 +367,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
   private TypeExpression calculateTypeArithmeticWithString(ASTExpression left, ASTExpression right){
     TypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)){
-      if(unbox(types.get(left)).getName().equals("String")){
+      if("String".equals(unbox(types.get(left)).getName())){
         result= new ObjectType();
         result.setName("String");
       }else{
@@ -398,7 +392,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     if(types.containsKey(left)&&types.containsKey(right)){
       if(isIntegralType(types.get(left))&&isIntegralType(types.get(right))){
         result=types.get(left).deepClone();
-      }else if(types.get(left).getName().equals("boolean")&&types.get(right).getName().equals("boolean")) {
+      }else if("boolean".equals(types.get(left).getName())&&"boolean".equals(types.get(right).getName())) {
         result = new TypeConstant();
         result.setName("boolean");
       }
