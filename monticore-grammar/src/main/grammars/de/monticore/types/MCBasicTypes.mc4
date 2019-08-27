@@ -88,7 +88,6 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
   /* These special types do not implement interface ASTMCType, because
      they will not appear in the type calculations etc.
   */
-
   MCReturnType = MCVoidType | MCType;
 
   /** ASTVoidType represents the return type "void".
