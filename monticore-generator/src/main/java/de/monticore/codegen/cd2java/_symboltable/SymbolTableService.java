@@ -84,11 +84,19 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getGlobalScopeInterfaceTypeName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + INTERFACE_PREFIX + cdSymbol.getName() + GLOBAL_PREFIX + SCOPE_SUFFIX;
+    return getPackage(cdSymbol) + "." + getGlobalScopeInterfaceSimpleName(cdSymbol);
   }
 
   public String getGlobalScopeInterfaceTypeName() {
     return getGlobalScopeInterfaceTypeName(getCDSymbol());
+  }
+
+  public String getGlobalScopeInterfaceSimpleName(CDDefinitionSymbol cdSymbol) {
+    return INTERFACE_PREFIX + cdSymbol.getName() + GLOBAL_PREFIX + SCOPE_SUFFIX;
+  }
+
+  public String getGlobalScopeInterfaceSimpleName() {
+    return getGlobalScopeInterfaceSimpleName(getCDSymbol());
   }
 
   public ASTMCQualifiedType getGlobalcopeInterfaceType() {
@@ -282,5 +290,13 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
         .filter(ASTCDInterface::isPresentModifier)
         .filter(c -> hasScopeStereotype(c.getModifier()))
         .collect(Collectors.toList());
+  }
+
+  public boolean hasProd(ASTCDDefinition astcdDefinition) {
+    // is true if it has any class productions or any interface productions that are not the language interface
+    return !astcdDefinition.isEmptyCDClasss() ||
+        (!astcdDefinition.isEmptyCDInterfaces() &&
+            !(astcdDefinition.sizeCDInterfaces() == 1
+                && astcdDefinition.getCDInterface(0).getName().equals(getSimleLanguageInterfaceName())));
   }
 }

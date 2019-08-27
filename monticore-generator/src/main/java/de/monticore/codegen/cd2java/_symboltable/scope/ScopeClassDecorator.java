@@ -104,7 +104,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         .addAllCDMethods(symbolMethods)
         .addAllCDAttributes(symbolAlreadyResolvedAttributes)
         .addAllCDMethods(symbolAlreadyResolvedMethods)
-        .addCDMethod(createSymbolSizeMethod(symbolAttributes.keySet()))
+        .addCDMethod(createSymbolsSizeMethod(symbolAttributes.keySet()))
         .addCDAttribute(enclosingScopeAttribute)
         .addAllCDMethods(enclosingScopeMethods)
         .addCDAttribute(spanningSymbolAttribute)
@@ -160,7 +160,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     ASTCDParameter scopeParameter = getCDParameterFacade().createParameter(symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE);
     ASTCDConstructor defaultConstructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopeClassName, scopeParameter, shadowingParameter);
     this.replaceTemplate(EMPTY_BODY, defaultConstructor, new StringHookPoint("this.setEnclosingScope(enclosingScope);\n" +
-        "    this.shadowing = shadowing;\n" +
+        "    this." +SHADOWING+" = "+SHADOWING+"; \n"+
         "    this.name = Optional.empty();"));
     return defaultConstructor;
   }
@@ -186,9 +186,9 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     return acceptMethods;
   }
 
-  protected ASTCDMethod createSymbolSizeMethod(Collection<String> symbolAttributeNames) {
+  protected ASTCDMethod createSymbolsSizeMethod(Collection<String> symbolAttributeNames) {
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createIntType()).build();
-    ASTCDMethod getSymbolSize = getCDMethodFacade().createMethod(PUBLIC, returnType, "getSymbolSize");
+    ASTCDMethod getSymbolSize = getCDMethodFacade().createMethod(PUBLIC, returnType, "getSymbolsSize");
     StringBuilder template = new StringBuilder();
     if (symbolAttributeNames.isEmpty()) {
       this.replaceTemplate(EMPTY_BODY, getSymbolSize, new StringHookPoint("return 0;"));

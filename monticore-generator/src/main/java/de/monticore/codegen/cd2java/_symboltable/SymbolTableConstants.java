@@ -45,7 +45,7 @@ public class SymbolTableConstants {
 
   public static final String ALREADY_RESOLVED = "AlreadyResolved";
 
-  public static final String SHADOWING = "shadowing";
+  public static final String SHADOWING = "shadowingScope";
 
   public static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
 
@@ -63,16 +63,26 @@ public class SymbolTableConstants {
 
   public static final String RESOLVE_ADAPTED_LOCALLY_MANY = "resolveAdapted%sLocallyMany";
 
-  public static final String RESOLVE_IMPORTED= "resolve%sImported";
+  public static final String RESOLVE_ADAPTED = "resolveAdapted%s";
 
-  public static final String FILTER= "filter%s";
+  public static final String RESOLVE_IMPORTED = "resolve%sImported";
 
-  public static final String CONTINUE_WITH_ENCLOSING_SCOPE= "continue%sWithEnclosingScope";
+  public static final String FILTER = "filter%s";
 
-  public static final String CONTINUE_AS_SUB_SCOPE= "continueAs%sSubScope";
+  public static final String CONTINUE_WITH_ENCLOSING_SCOPE = "continue%sWithEnclosingScope";
+
+  public static final String CONTINUE_AS_SUB_SCOPE = "continueAs%sSubScope";
+
+  public static final String LOAD_MODELS_FOR = "loadModelsFor%s";
 
   public static final String PREDICATE = "java.util.function.Predicate";
 
-  public static final String SYMBOLS_MULTI_MAP  = "com.google.common.collect.LinkedListMultimap<String, %s>";
+  public static final String SYMBOLS_MULTI_MAP = "com.google.common.collect.LinkedListMultimap<String, %s>";
+
+  public static final String LANGUAGE_SUFFIX = "Language";
+
+  public static final String MODEL_LOADER_SUFFIX = "ModelLoader";
+
+  public static final String MODEL_PATH = "de.monticore.io.paths.ModelPath";
 
 }

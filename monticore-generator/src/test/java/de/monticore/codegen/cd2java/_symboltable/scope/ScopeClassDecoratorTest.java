@@ -129,7 +129,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, cdConstructor.sizeCDParameters());
     assertBoolean(cdConstructor.getCDParameter(0).getMCType());
-    assertEquals("shadowing", cdConstructor.getCDParameter(0).getName());
+    assertEquals("shadowingScope", cdConstructor.getCDParameter(0).getName());
 
     assertTrue(cdConstructor.isEmptyExceptions());
   }
@@ -158,7 +158,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("enclosingScope", cdConstructor.getCDParameter(0).getName());
 
     assertBoolean(cdConstructor.getCDParameter(1).getMCType());
-    assertEquals("shadowing", cdConstructor.getCDParameter(1).getName());
+    assertEquals("shadowingScope", cdConstructor.getCDParameter(1).getName());
 
     assertTrue(cdConstructor.isEmptyExceptions());
   }
@@ -234,7 +234,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testShadowingAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("shadowing", scopeClass);
+    ASTCDAttribute astcdAttribute = getAttributeBy("shadowingScope", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertBoolean(astcdAttribute.getMCType());
   }
@@ -329,8 +329,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
 
   @Test
-  public void testGetSymbolSizeMethod() {
-    ASTCDMethod method = getMethodBy("getSymbolSize", scopeClass);
+  public void testGetSymbolsSizeMethod() {
+    ASTCDMethod method = getMethodBy("getSymbolsSize", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertInt(method.getMCReturnType().getMCType());

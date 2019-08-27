@@ -37,6 +37,7 @@ import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
 import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeInterfaceDecorator;
 import de.monticore.codegen.cd2java._symboltable.scope.ScopeClassBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.scope.ScopeClassDecorator;
 import de.monticore.codegen.cd2java._symboltable.scope.ScopeInterfaceDecorator;
@@ -435,9 +436,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ScopeClassDecorator scopeClassDecorator = new ScopeClassDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ScopeClassBuilderDecorator scopeClassBuilderDecorator= new ScopeClassBuilderDecorator(glex, builderDecorator);
     ScopeInterfaceDecorator scopeInterfaceDecorator= new ScopeInterfaceDecorator(glex, symbolTableService, visitorService);
+    GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator= new GlobalScopeInterfaceDecorator(glex, symbolTableService);
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, symbolTableService, symbolDecorator,
-        symbolBuilderDecorator, scopeClassDecorator, scopeClassBuilderDecorator, scopeInterfaceDecorator);
+        symbolBuilderDecorator, scopeClassDecorator, scopeClassBuilderDecorator, scopeInterfaceDecorator, globalScopeInterfaceDecorator);
 
     ASTCDCompilationUnit visitorCompilationUnit = symbolTableCDDecorator.decorate(cd);
 

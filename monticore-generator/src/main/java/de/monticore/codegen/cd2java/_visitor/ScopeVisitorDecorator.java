@@ -112,7 +112,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
     List<ASTCDMethod> methodList = new ArrayList<>();
     methodList.addAll(createVisitorMethods(symbolsNameList, scopeType));
-    if(hasProd(astcdDefinition)){
+    if(symbolTableService.hasProd(astcdDefinition)){
       methodList.addAll(createVisitorMethods(symbolsNameList, artifactScopeType));
     }
     return methodList;
@@ -154,12 +154,6 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
     return superSymbolNames;
   }
 
-  protected boolean hasProd(ASTCDDefinition astcdDefinition) {
-    // is true if it has any class productions or any interface productions that are not the language interface
-    return !astcdDefinition.isEmptyCDClasss() ||
-          (!astcdDefinition.isEmptyCDInterfaces() &&
-               !(astcdDefinition.sizeCDInterfaces() == 1
-               && astcdDefinition.getCDInterface(0).getName().equals(visitorService.getSimleLanguageInterfaceName())));
-  }
+
 
 }
