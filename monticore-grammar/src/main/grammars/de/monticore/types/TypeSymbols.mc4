@@ -107,6 +107,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   SymTTypeVariableDeclarationVar = Name;
   SymTTypeVariableDeclarationUpperBound = Name SymTType;
   SymTTypeVariableDeclarationAnd = Name;
+  // oder kurz: SymTTypeVariableDeclaration = Name upperBound:SymTType? ["andUpperBound"]?
 
   // Alternativer Ansatz zu oben:
   interface SymTTypeArgument = SymTType ;	// auch eine Art "? extends ..."
@@ -123,7 +124,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
 // Die Signatur einer Klasse:
 // Fields, Methoden, 
 
-  SymTClass = Name SymTField* SymTMethod* SymTTypeVariables* inner:SymTClass* ["interface"]? ...
+  SymTClass = Name SymTField* SymTMethod* SymTTypeVariableDeclaration* inner:SymTClass* ["interface"]? ...
 
   SymTField = Name SymTType ["static"]? ["public"]? .....
 
