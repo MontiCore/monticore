@@ -49,6 +49,14 @@ such a grammar becomes stable, if enough interest exists.
 The deprecated grammars are typically not listed in this overview.
 There may also be further unclarfied grammars around.
 
+### Marking the Status of Grammars
+
+A comment of the following form within the grammar also helps:
+
+1. /* This is a MontiCore stable grammar. */
+2. /* Beta-version: This is intended to become a MontiCore stable grammar. */
+2. /* Alpha-version: This is intended to become a MontiCore stable grammar. */
+   (but sometimes also omitted)
 
 ## General: List of Grammars in package de.monticore
 
