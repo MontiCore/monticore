@@ -85,24 +85,51 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   /*=================================================================*/
   /*=================================================================*/
 
-
+  /** Anbei eine kondensierung der Typ-Ausdrücke:
+   * Annahme: diese Grammatik wurd benutzt um AST-Klassen zu erzeugen
+   * und dort landen nur korrekte Typausdrücke.
+   * (Es gibt keinen Parser dafür, keine CoCo's)
+   * Dennoch sind nicht alle Konstellationen erlaubt.
+   */
   
-  interface XType;
-  XVoidType implements XType = "void";
+  interface SymTType;
+  SymTVoidType implements SymTType = "void";
 
-  XTypeVar implements XType = Name;
+  SymTTypeVar implements SymTType = Name;
 
-  XPrimitiveType implements XType = Name;
-  XObjectType implements XType = Name;   // könnte auch MCQualifiedName sein ...
+  SymTPrimitiveType implements SymTType = Name;
+  SymTObjectType implements SymTType = Name;   // könnte auch MCQualifiedName sein ...
 
-  XTypeConstruct implements XType = constructor:Name argument:XType*; 
+  SymTBasicGenericType implements SymTType = SymTTypeConstructorAppl;
 
-  
+  // Das ist kein voller Type
+  SymTTypeConstructorAppl = constructor:Name SymTTypeArgument+; // Name kann wieder Qualified sein
+
+  interface SymTTypeArgument = SymTType ;	// auch eine Art "? extends ..."
+  SymTTypeArgumentType = SymTType 		// darzustellen; Vorzug:
+  SymTTypeArgumentExtends = SymTType 	// wenn man weiss "? ext." wird nicht benutzt
+  SymTTypeArgumentSuper = SymTType 	// lassen sich manche Klassen ignorieren
 
 
+  SymTArrayType implements SymTType = dimensions:int SymTType;
 
+  SymTMultipleGenericType implements SymTType = SymTTypeConstructorAppl+; 
 
+  // Das kann man benutzen, um die ungebundenen TypVariablen ganz oben
+  // zu fixieren (ist mir unklar, ob man das braucht, die funktionalen
+  // Typchecker nutzen das alle: die halten halt nichts von freien variablen
+  SymTParameterizedType implements SymTType = vars:Name SymTType
 
+  // Und hier noch was für Typkonstruktoren (die ja KEINE Typen sind):
+  // aber auch als Symbole abgelegt werden wollen:
 
+  SymTSimpleTypeConstructor = Name arguments:int;
+
+  SymTWildTypeConstructor = Name SymTTypeVariableDeclaration*;
+
+  interface SymTTypeVariableDeclaration = Name;
+  SymTTypeVariableDeclarationVar = Name;
+  SymTTypeVariableDeclarationUpperBound = Name SymTType;
+  SymTTypeVariableDeclarationAnd = Name;
 
 }

@@ -74,6 +74,6 @@ component grammar MCCollectionTypes
        MCQualifiedType;
 
   MCPrimitiveTypeArgument implements MCTypeArgument <190> =
-         MCPrimitiveType;
+       MCPrimitiveType;
 
 }
