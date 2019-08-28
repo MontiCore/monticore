@@ -11,3 +11,12 @@ target/
 .mvn/extensions.xml
 /monticore-grammar/monticore-grammar-it/.gradle/
 /monticore-grammar/monticore-grammar-it/out/
+/monticore-grammar/monticore-grammar-it/.gradle
+/monticore-grammar/monticore-grammar-it/out
+/monticore-generator/it/.gradle/
+/monticore-generator/it/out/
+/monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/.gradle/
+/monticore-generator/it/experiments/.gradle/
+/monticore-generator/it/experiments/.gradle/
+/.profiler/
+/monticore-generator/.profiler/
