@@ -25,7 +25,7 @@ component grammar MCFullGenericTypes
 
   /*=================================================================*/
 
-  /** ASTWildcardType represents a wildcard type in a type argument
+  /** ASTWildcardTypeArgument represents a wildcard type in a type argument
   *   (generics). It also contains either an upper- or a lower bound.
   *
   *   @attribute upperBound Supertye of the type argument

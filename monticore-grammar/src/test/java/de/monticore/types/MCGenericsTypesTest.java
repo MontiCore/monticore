@@ -78,7 +78,7 @@ public class MCGenericsTypesTest {
   }
 
   @Test
-  public void testMcWildcardType() throws IOException {
+  public void testMcWildcardTypeArgument() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
     Optional<ASTMCTypeArgument> type = parser.parse_StringMCTypeArgument("? extends java.util.Set<Foo>");
     assertFalse(parser.hasErrors());
