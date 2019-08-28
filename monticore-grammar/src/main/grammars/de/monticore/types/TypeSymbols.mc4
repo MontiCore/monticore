@@ -1,29 +1,136 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.types;
+
+/**
+ * This grammar is used to generate an abstract Syntax only.
+ * These AST-classes are then used to store typing information
+ * in the SymbolTable.
+ *
+ * The grammar introduces the symbols for
+ * Types, Methods, Fields and TypeVariables
+ * 
+ * TODO ...
+ *
+*/
 
 component grammar TypeSymbols extends de.monticore.MCBasics {
 
+  /*=================================================================*/
+
   interface scope symbol Type = Name ;
+
   symbolrule Type =
     methods: de.monticore.types.typesymbols._symboltable.MethodSymbol*
     fields: de.monticore.types.typesymbols._symboltable.FieldSymbol*
     typeParameter: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
   ;
+  TypeImpl implements Type = Name;
+
+  /*=================================================================*/
 
   interface symbol TypeVar = Name;
   symbolrule TypeVar =
     upperBound: de.monticore.typescalculator.TypeExpression*
   ;
+  TypeVarImpl implements TypeVar = Name;
+
+  /*=================================================================*/
 
   interface symbol Field = Name ;
   symbolrule  Field =
     type: de.monticore.typescalculator.TypeExpression
   ;
+  FieldImpl implements Field = Name;
 
-  interface scope symbol  Method = Name;
+  /*=================================================================*/
+
+  interface scope symbol Method = Name;
   symbolrule Method =
     parameter: de.monticore.types.typesymbols._symboltable.FieldSymbol*
-    type: de.monticore.typescalculator.TypeExpression
+    returnType: de.monticore.typescalculator.TypeExpression
   ;
+  MethodImpl implements Method = Name;
+
+
+  /*=================================================================*/
+  /*=================================================================*/
+  /*=================================================================*/
+  /*=================================================================*/
+
+  /** Anbei eine kondensierung der Typ-Ausdrücke:
+   * Annahme: diese Grammatik wurd benutzt um AST-Klassen zu erzeugen
+   * und dort landen nur korrekte Typausdrücke.
+   * (Es gibt keinen Parser dafür, keine CoCo's)
+   * Dennoch sind nicht alle Konstellationen erlaubt.
+   */
+  
+  interface SymTType;
+  SymTVoidType implements SymTType = "void";
+
+  SymTTypeVar implements SymTType = Name;
+
+  SymTPrimitiveType implements SymTType = Name;
+
+  SymTObjectType implements SymTType = Name;   // könnte auch MCQualifiedName sein ...
+
+  SymTArrayType implements SymTType = dimensions:int SymTType;
+
+  SymTBasicGenericType implements SymTType = SymTTypeConstructorAppl;
+
+  SymTMultipleGenericType implements SymTType = SymTTypeConstructorAppl+; 
+
+
+  // Das ist kein bzw. nicht nur ein voller Type
+  SymTTypeConstructorAppl = constructor:Name SymTTypeArgument+; // Name kann wieder Qualified sein
+
+  SymTTypeArgument = SymTType ["extends"]? ["super"]?
+
+
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+
+  // Das kann man benutzen, um die ungebundenen TypVariablen ganz oben
+  // zu fixieren (ist mir unklar, ob man das braucht, die funktionalen
+  // Typchecker nutzen das alle: die halten halt nichts von freien variablen
+  SymTParameterizedType implements SymTType = vars:Name SymTType
+
+
+  // Und hier noch was für Typkonstruktoren (die ja KEINE Typen sind):
+  // aber auch als Symbole abgelegt werden wollen:
+
+  SymTSimpleTypeConstructor = Name arguments:int;
+
+  SymTWildTypeConstructor = Name SymTTypeVariableDeclaration*;
+
+  interface SymTTypeVariableDeclaration = Name;
+  SymTTypeVariableDeclarationVar = Name;
+  SymTTypeVariableDeclarationUpperBound = Name SymTType;
+  SymTTypeVariableDeclarationAnd = Name;
+  // oder kurz: SymTTypeVariableDeclaration = Name upperBound:SymTType? ["andUpperBound"]?
+
+  // Alternativer Ansatz zu oben:
+  interface SymTTypeArgument = SymTType ;	// auch eine Art "? extends ..."
+  SymTTypeArgumentType = SymTType 		// darzustellen; Vorzug:
+  SymTTypeArgumentExtends = SymTType 	// wenn man weiss "? ext." wird nicht benutzt
+  SymTTypeArgumentSuper = SymTType 	// lassen sich manche Klassen ignorieren
+
+
+
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+
+// Die Signatur einer Klasse:
+// Fields, Methoden, 
+
+  SymTClass = Name SymTField* SymTMethod* SymTTypeVariableDeclaration* inner:SymTClass* ["interface"]? ...
+
+  SymTField = Name SymTType ["static"]? ["public"]? .....
+
+  SymTMethod = Name returnType:SymTType parameter:SymTField* ["isDotted"]? ["public"]? ...
+
+
+
+
 }

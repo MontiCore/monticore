@@ -70,7 +70,7 @@ public class ${className} extends ${referencedSymbol} implements ISymbolReferenc
     return getReferencedSymbol().getEnclosingScope();
   }
 
-<#if prodSymbol.isScopeDefinition()>
+<#if prodSymbol.isScopeSpanning()>
   @Override
   public I${languageName}Scope getSpannedScope() {
     return getReferencedSymbol().getSpannedScope();

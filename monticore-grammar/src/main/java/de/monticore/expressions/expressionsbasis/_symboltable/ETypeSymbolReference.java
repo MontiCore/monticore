@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.expressionsbasis._symboltable;
 
 import de.monticore.typescalculator.TypeExpression;
@@ -21,7 +22,7 @@ public class ETypeSymbolReference extends ETypeSymbolReferenceTOP {
     this.genericArguments = genericArguments;
   }
 
-  public ETypeSymbolReference clone(){
+  public ETypeSymbolReference deepClone(){
     ETypeSymbolReference clone = ExpressionsBasisSymTabMill.eTypeSymbolReferenceBuilder().setName(this.name).setEnclosingScopeOfReference(this.enclosingScope).build();
     clone.setFullName(getFullName());
     ArrayList<TypeExpression> supTypes = new ArrayList<>();

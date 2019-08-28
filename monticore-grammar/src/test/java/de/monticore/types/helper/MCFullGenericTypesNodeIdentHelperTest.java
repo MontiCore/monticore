@@ -5,7 +5,7 @@ import de.monticore.types.MCFullGenericTypesNodeIdentHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeParameters;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import org.junit.Test;
 

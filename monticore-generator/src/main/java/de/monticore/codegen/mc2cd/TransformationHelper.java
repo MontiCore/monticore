@@ -273,7 +273,7 @@ public final class TransformationHelper {
     for (RuleComponentSymbol component : grammarSymbol.getProds().stream()
         .flatMap(p -> p.getProdComponents().stream()).collect(Collectors.toSet())) {
       if (component.isConstantGroup()) {
-        for (String subComponent : component.getSubProdComponents()) {
+        for (String subComponent : component.getSubProds()) {
           constants.add(subComponent);
         }
       }

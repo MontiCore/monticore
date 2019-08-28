@@ -107,6 +107,7 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
     
     addSymbols(scopeJson, scope);
     addAndLinkSubScopes(scopeJson, scope);
+    deserializeAdditionalAttributes(scope,scopeJson);
     return scope;
   }
 
@@ -130,6 +131,7 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
 
     addSymbols(scopeJson, scope);
     addAndLinkSubScopes(scopeJson, scope);
+    deserializeAdditionalAttributes(scope,scopeJson);
     return scope;
   }
   
@@ -236,4 +238,13 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
 
 </#list>   
 </#if>
+
+  /**
+   * Override this method to deserialize additional attributes
+   * @param scope the scope object deserialized so far
+   * @param scopeJson json representation of the serialized scope
+   */
+  protected void deserializeAdditionalAttributes(I${languageName}Scope scope, JsonObject scopeJson) {
+    
+  }
 }

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -209,14 +210,15 @@ public class TypesCalculatorTest {
     Optional<ASTExpression> a = p.parse_StringExpression("13+12.5-9");
     Optional<ASTExpression> b = p.parse_StringExpression("varTest");
 
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("double");
     assertTrue(a.isPresent());
     assertTrue(exp.deepEquals(getType(a.get())));
 
-    exp.setName("Test");
+    TypeExpression exp2 = new ObjectType();
+    exp2.setName("Test");
     assertTrue(b.isPresent());
-    assertTrue(exp.deepEquals(getType(b.get())));
+    assertTrue(exp2.deepEquals(getType(b.get())));
   }
 
   @Test

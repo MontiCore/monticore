@@ -192,7 +192,7 @@ public class ${className} implements ${grammarName}Visitor {
       Log.error("Could not set enclosing scope of ASTNode \"" + node
           + "\", because no scope is set yet!");
     }
-    <#if ruleSymbol.isScopeDefinition()>
+    <#if ruleSymbol.isScopeSpanning()>
         ${scopeName} scope = create_${ruleSymbol.getName()}(node);
       initialize_${ruleSymbol.getName()}(scope, node);
       putOnStack(scope);
@@ -200,7 +200,7 @@ public class ${className} implements ${grammarName}Visitor {
     </#if>
   }
 
-  <#if ruleSymbol.isScopeDefinition()>
+  <#if ruleSymbol.isScopeSpanning()>
     protected ${scopeName} create_${ruleSymbol.getName()}(AST${ruleSymbol.getName()} ast) {
       <#if !genHelper.isNamed(ruleSymbol)>
         // creates new visibility scope

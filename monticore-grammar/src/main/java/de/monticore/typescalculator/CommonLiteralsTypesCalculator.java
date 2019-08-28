@@ -56,7 +56,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTCharLiteral lit){
-    TypeExpression res = new TypeExpression();
+    TypeExpression res = new TypeConstant();
     res.setName("char");
     this.result=res;
     types.put(lit,res);
@@ -64,7 +64,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTBooleanLiteral lit){
-    TypeExpression res = new TypeExpression();
+    TypeExpression res = new TypeConstant();
     res.setName("boolean");
     this.result=res;
     types.put(lit,res);
@@ -72,7 +72,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTNatLiteral lit){
-    TypeExpression res = new TypeExpression();
+    TypeExpression res = new TypeConstant();
     res.setName("int");
     this.result=res;
     types.put(lit,res);
@@ -80,7 +80,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTBasicDoubleLiteral lit){
-    TypeExpression res = new TypeExpression();
+    TypeExpression res = new TypeConstant();
     res.setName("double");
     this.result=res;
     types.put(lit,res);
@@ -88,7 +88,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTBasicFloatLiteral lit){
-    TypeExpression res = new TypeExpression();
+    TypeExpression res = new TypeConstant();
     res.setName("float");
     this.result=res;
     types.put(lit,res);
@@ -96,7 +96,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTBasicLongLiteral lit){
-    TypeExpression res = new TypeExpression();
+    TypeExpression res = new TypeConstant();
     res.setName("long");
     this.result=res;
     types.put(lit,res);
@@ -104,7 +104,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTStringLiteral lit){
-    TypeExpression res = new TypeExpression();
+    TypeExpression res = new ObjectType();
     res.setName("String");
     this.result=res;
     types.put(lit,res);

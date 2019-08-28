@@ -1584,7 +1584,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     String astName = name.substring(name.lastIndexOf("AST") + 3);
     MCGrammarSymbol grammarSymbol = astGeneratorHelper.getGrammarSymbol();
     Optional<ProdSymbol> mcProdSymbol = grammarSymbol.getProd(astName);
-    if (mcProdSymbol.isPresent() && mcProdSymbol.get().isScopeDefinition()) {
+    if (mcProdSymbol.isPresent() && mcProdSymbol.get().isScopeSpanning()) {
       return true;
     }
     return false;

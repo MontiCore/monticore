@@ -14,7 +14,7 @@ package de.monticore.types;
  * classes (also sometimes called "reference types").
  *
  * This grammar is part of a hierarchy of types, namely
- * * types.MCBasicTypes.mc4
+ * * types/MCBasicTypes.mc4
  * * types/MCCollectionTypes.mc4
  * * types/MCSimpleGenericTypes.mc4
  * * types/MCFullGenericTypes.mc4
@@ -26,11 +26,11 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
 
   /*=================================================================*/
 
-  /** AASTMCType is the top level interface for all kinds of types
+  /** ASTMCType is the top level interface for all kinds of types
    * (except Void).
    * It is also an extension point for other forms of types.
   */
-  interface symbol MCType;
+  interface MCType;
 
   /*=================================================================*/
 
@@ -60,8 +60,9 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
       @attribute primitive BOOLEAN, BYTE, CHAR, SHORT, INT, FLOAT, LONG,
                                or DOUBLE
   */
-  symbol (MCType) MCPrimitiveType implements MCType =
-      primitive: ["boolean" | "byte" | "short" | "int" | "long" | "char" |"float" | "double"];
+  MCPrimitiveType implements MCType =
+     primitive: [ "boolean" | "byte" | "short" | "int" 
+                  | "long" | "char" |"float" | "double" ];
 
 
   /*=================================================================*/
@@ -73,12 +74,12 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
    *
    * This is also an extension point for generic types.
   */
-  interface symbol (MCType)  MCObjectType extends MCType;
+  interface  MCObjectType extends MCType;
 
   /** ASTMCQualifiedType represents types like class or interface types
           which could have a qualified name like this: a.b.c.D
-      */
-  symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;
+  */
+  MCQualifiedType implements MCObjectType = MCQualifiedName;
 
 
   /*=================================================================*/
@@ -87,7 +88,6 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
   /* These special types do not implement interface ASTMCType, because
      they will not appear in the type calculations etc.
   */
-
   MCReturnType = MCVoidType | MCType;
 
   /** ASTVoidType represents the return type "void".

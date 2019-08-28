@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.literals;
 
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
 /**
  * This grammar defines Java compliant literals. The scope of this grammar is to
  * ease the reuse of literals structures in Java-like sublanguages, e.g., by 
@@ -8,8 +10,8 @@ package de.monticore.literals;
  * The grammar contains literals from Java, e.g., Boolean, Char, String, ....
 */
 
-component grammar MCCommonLiterals extends de.monticore.MCBasics, de.monticore.literals.MCLiteralsBasis {
-
+component grammar MCCommonLiterals extends de.monticore.MCBasics,
+				           de.monticore.literals.MCLiteralsBasis {
 
 
   /*========================================================================*/
@@ -157,10 +159,12 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics, de.monticore.l
 
   // §3.10.6 Escape Sequences for Character and String Literals
   fragment token EscapeSequence
-    = '\\' ('b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\') | OctalEscape | UnicodeEscape;
+    = '\\' ('b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\') 
+      | OctalEscape | UnicodeEscape;
 
   fragment token OctalEscape
-    = '\\' OctalDigit | '\\' OctalDigit OctalDigit | '\\' ZeroToThree OctalDigit OctalDigit;
+    = '\\' OctalDigit | '\\' OctalDigit OctalDigit 
+      | '\\' ZeroToThree OctalDigit OctalDigit;
 
   fragment token UnicodeEscape
     = '\\' 'u' HexDigit HexDigit HexDigit HexDigit;

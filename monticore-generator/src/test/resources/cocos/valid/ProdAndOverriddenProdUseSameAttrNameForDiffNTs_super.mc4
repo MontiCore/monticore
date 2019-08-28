@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cocos.valid;
+
+grammar ProdAndOverriddenProdUseSameAttrNameForDiffNTs_super{
+
+  A;
+
+  Prod1 = x:A;
+
+  Prod2 = c:B;
+
+  Prod3 = "b";
+
+
+//todo activate when fixed
+// problem with same name in terminal "state" and State as NonTerminal
+// Terminal and NonTerminal are not allowed to be seen as the same type
+//  State =
+//  "state" Name
+//  ( ("{" (State)* "}") | ";") ;
+}

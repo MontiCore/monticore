@@ -1,9 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
 import de.monticore.cd.cd4analysis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.typescalculator.TypeExpression;
-
+import de.monticore.typescalculator.ObjectType;
 import java.util.List;
 
 public class CD2EHelper {
@@ -42,7 +43,7 @@ public class CD2EHelper {
   }
 
   public static TypeExpression transformCDType2TypeExpression(CDTypeSymbol typeSymbol) {
-    TypeExpression res = new TypeExpression();
+    TypeExpression res = new ObjectType();
     boolean success = false;
       List<CDTypeSymbolReference> superTypes = typeSymbol.getSuperTypes();
       for (CDTypeSymbolReference ref : superTypes) {

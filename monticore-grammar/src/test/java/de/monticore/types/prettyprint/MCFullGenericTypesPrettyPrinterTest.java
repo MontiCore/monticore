@@ -6,7 +6,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeParameters;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeVariableDeclaration;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -34,30 +34,30 @@ public class MCFullGenericTypesPrettyPrinterTest {
   }
 
   @Test
-  public void testMCWildcardTypeExtends() throws IOException {
+  public void testMCWildcardTypeArgumentExtends() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
-    Optional<ASTMCWildcardType> ast = parser.parse_StringMCWildcardType("? extends java.util.List");
+    Optional<ASTMCWildcardTypeArgument> ast = parser.parse_StringMCWildcardTypeArgument("? extends java.util.List");
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
-    ASTMCWildcardType wildcardType = ast.get();
+    ASTMCWildcardTypeArgument wildcardType = ast.get();
     MCFullGenericTypesPrettyPrinter printer = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
-    ast = parser.parse_StringMCWildcardType(output);
+    ast = parser.parse_StringMCWildcardTypeArgument(output);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(wildcardType.deepEquals(ast.get()));
   }
 
   @Test
-  public void testMCWildcardTypeSuper() throws IOException {
+  public void testMCWildcardTypeArgumentSuper() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
-    Optional<ASTMCWildcardType> ast = parser.parse_StringMCWildcardType("? super de.monticore.ASTNode");
+    Optional<ASTMCWildcardTypeArgument> ast = parser.parse_StringMCWildcardTypeArgument("? super de.monticore.ASTNode");
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
-    ASTMCWildcardType wildcardType = ast.get();
+    ASTMCWildcardTypeArgument wildcardType = ast.get();
     MCFullGenericTypesPrettyPrinter printer = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
-    ast = parser.parse_StringMCWildcardType(output);
+    ast = parser.parse_StringMCWildcardTypeArgument(output);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(wildcardType.deepEquals(ast.get()));

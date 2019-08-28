@@ -11,15 +11,15 @@ symbol scope State =
 
 Transition =
   from:Name "-" input:Name ">" to:Name ";" ;
-  
+
 ActTransition extends Transition =
   from:Name "-" input:Name "/" action:Name ">" to:Name ";" ;
-  
+
 ActState extends State =
-  "state" Name
+   "state" Name
   ("entry:" entry:Name)?
   ("exit:" exit:Name)?
   (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
   ( ("{" (State | Transition)* "}") | ";") ;
-  
+
 }

@@ -14,13 +14,13 @@ public class TypesCalculator {
   private static IExpressionsBasisScope scope;
 
   public static boolean isBoolean(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("boolean");
     return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
 
   public static boolean isString(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new ObjectType();
     exp.setName("String");
     if(exp.deepEquals(unbox(calc.calculateType(expr)))){
       return true;
@@ -29,40 +29,46 @@ public class TypesCalculator {
   }
 
   public static boolean isInt(ASTExpression expr) {
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("int");
     return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
 
   public static boolean isLong(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("long");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));  }
+    return exp.deepEquals(unbox(calc.calculateType(expr)));
+  }
 
   public static boolean isChar(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("char");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));  }
+    return exp.deepEquals(unbox(calc.calculateType(expr)));
+  }
 
   public static boolean isFloat(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("float");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));  }
+    return exp.deepEquals(unbox(calc.calculateType(expr)));
+  }
 
   public static boolean isDouble(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("double");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));  }
+    return exp.deepEquals(unbox(calc.calculateType(expr)));
+  }
 
   public static boolean isShort(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("short");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));  }
+    return exp.deepEquals(unbox(calc.calculateType(expr)));
+  }
 
   public static boolean isByte(ASTExpression expr){
-    TypeExpression exp = new TypeExpression();
+    TypeExpression exp = new TypeConstant();
     exp.setName("byte");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));  }
+    return exp.deepEquals(unbox(calc.calculateType(expr)));
+  }
 
   public static boolean isPrimitive(ASTExpression expr){
     return isBoolean(expr)||isInt(expr)||isLong(expr)||isChar(expr)||isDouble(expr)||isShort(expr)||isByte(expr)||isFloat(expr);
@@ -164,39 +170,39 @@ public class TypesCalculator {
   }
 
   public static boolean isBoolean(TypeExpression type){
-    return unbox(type).getName().equals("boolean");
+    return "boolean".equals(unbox(type).getName());
   }
 
   public static boolean isInt(TypeExpression type){
-    return unbox(type).getName().equals("int");
+    return "int".equals(unbox(type).getName());
   }
 
   public static boolean isDouble(TypeExpression type){
-    return unbox(type).getName().equals("double");
+    return "double".equals(unbox(type).getName());
   }
 
   public static boolean isFloat(TypeExpression type){
-    return unbox(type).getName().equals("float");
+    return "float".equals(unbox(type).getName());
   }
 
   public static boolean isLong(TypeExpression type){
-    return unbox(type).getName().equals("long");
+    return "long".equals(unbox(type).getName());
   }
 
   public static boolean isChar(TypeExpression type){
-    return unbox(type).getName().equals("char");
+    return "char".equals(unbox(type).getName());
   }
 
   public static boolean isShort(TypeExpression type){
-    return unbox(type).getName().equals("short");
+    return "short".equals(unbox(type).getName());
   }
 
   public static boolean isByte(TypeExpression type){
-    return unbox(type).getName().equals("byte");
+    return "byte".equals(unbox(type).getName());
   }
 
   public static boolean isVoid(TypeExpression type){
-    return type.getName().equals("void");
+    return "void".equals(unbox(type).getName());
   }
 
   public static void setScope(IExpressionsBasisScope ascope){

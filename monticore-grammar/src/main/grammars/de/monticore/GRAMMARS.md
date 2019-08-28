@@ -3,13 +3,18 @@
 # MontiCore Grammars - an Overview
 
 [MontiCore](http://www.monticore.de) is a language workbench. It uses 
-grammars to describe DSLs. The extended 
-grammar format allows to compose grammars, to inherit, extend, embedd 
-and aggregate grammars (see the reference manual for details).
+grammars as primary mechanism to describe DSLs. The extended 
+grammar format allows to **compose language components** by
+(1) inheriting, (2) extending, (3) embedding 
+and (4) aggregating grammars (see the reference manual for details).
+From the grammars a lot of infrastructructure is generated, that is as well
+composable, can be **extended with handwrittten code** and most imprtandly, these
+extensions and the grammar composition are compatible, which
+leads to optimal forms of **reuse**.
 
-Here comes a list of grammars available in the MontiCore core project 
+Here comes a list of language components, mainly defined through a 
+primary grammar, available in the MontiCore core project 
 together with short descriptions and their status:
-
 
 ## Status of Grammars 
 
@@ -44,6 +49,15 @@ such a grammar becomes stable, if enough interest exists.
 The deprecated grammars are typically not listed in this overview.
 There may also be further unclarfied grammars around.
 
+### Marking the Status of Grammars
+
+A comment of the following form within the grammar also helps:
+
+1. `/* This is a MontiCore stable grammar.`
+    ` * Adaptations -- if any -- are conservative. */`
+2. `/* Beta-version: This is intended to become a MontiCore stable grammar. */`
+2. `/* Alpha-version: This is intended to become a MontiCore stable grammar. */`
+   (but sometimes also omitted)
 
 ## General: List of Grammars in package de.monticore
 
@@ -84,7 +98,7 @@ although they don't cover type restrictions on the arguments, like in
 Java. 
 
 
-### [MCFullGenericTypes.mc4](monticore-grammar/src/main/grammars/de/monticore/types/MCFullGenericTypes.mc4) (stable)
+### [MCFullGenericTypes.mc4](monticore-grammar/src/main/grammars/de/monticore/types/MCFullGenericTypes.mc4) (Beta: In Stabilization)
 * This grammar completes the type definitions to 
 support the full Java type system including wildcards Blubb<? extends A>
 * A general advice: When you are not sure that you need this kind of
@@ -151,8 +165,13 @@ UML's OCL.
 
 ## Literals: List of Grammars in package de.monticore.literals
 
-### [MCLiteralsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCLiteralsBasis.mc4) (Beta: In Stabilization)
+### [MCLiteralsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCLiteralsBasis.mc4) (stable)
+* This grammar defines core interface for literals.
+* Several conservative extensions to this grammar realize
+various forms of literals.
+
 ### [MCCommonLiterals.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCCommonLiterals.mc4) (Beta: In Stabilization)
+
 ### [MCJavaLiterals.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCJavaLiterals.mc4) (Beta: In Stabilization)
 
 ## Further grammars (status: to be handled):

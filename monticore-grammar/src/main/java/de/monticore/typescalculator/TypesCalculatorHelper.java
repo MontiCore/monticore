@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typescalculator;
 
+import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
 
 import java.util.Arrays;
@@ -14,7 +17,7 @@ public class TypesCalculatorHelper {
         "char".equals(unbox(type).getName())||
         "int".equals(unbox(type).getName())
     ){
-      type = new TypeExpression();
+      type = new TypeConstant();
       type.setName("int");
       return type;
     }
@@ -28,95 +31,95 @@ public class TypesCalculatorHelper {
   }
 
   public static TypeExpression unbox(TypeExpression type){
-    if(type.getName().equals("java.lang.Boolean")){
-      type = new TypeExpression();
+    if("java.lang.Boolean".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("boolean");
-    }else if(type.getName().equals("java.lang.Byte")){
-      type = new TypeExpression();
+    }else if("java.lang.Byte".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("byte");
-    }else if(type.getName().equals("java.lang.Character")){
-      type = new TypeExpression();
+    }else if("java.lang.Character".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("char");
-    }else if(type.getName().equals("java.lang.Short")){
-      type = new TypeExpression();
+    }else if("java.lang.Short".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("short");
-    }else if(type.getName().equals("java.lang.Integer")){
-      type = new TypeExpression();
+    }else if("java.lang.Integer".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("int");
-    }else if(type.getName().equals("java.lang.Long")){
-      type = new TypeExpression();
+    }else if("java.lang.Long".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("long");
-    }else if(type.getName().equals("java.lang.Float")){
-      type = new TypeExpression();
+    }else if("java.lang.Float".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("float");
-    }else if(type.getName().equals("java.lang.Double")){
-      type = new TypeExpression();
+    }else if("java.lang.Double".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("double");
-    }else if(type.getName().equals("java.lang.String")){
-      type = new TypeExpression();
+    }else if("java.lang.String".equals(type.getName())){
+      type = new ObjectType();
       type.setName("String");
-    }else if(type.getBaseName().equals("Boolean")){
-      type = new TypeExpression();
+    }else if("Boolean".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("boolean");
-    }else if(type.getBaseName().equals("Byte")){
-      type = new TypeExpression();
+    }else if("Byte".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("byte");
-    }else if(type.getBaseName().equals("Character")){
-      type = new TypeExpression();
+    }else if("Character".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("char");
-    }else if(type.getBaseName().equals("Short")){
-      type = new TypeExpression();
+    }else if("Short".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("short");
-    }else if(type.getBaseName().equals("Integer")){
-      type = new TypeExpression();
+    }else if("Integer".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("int");
-    }else if(type.getBaseName().equals("Long")){
-      type = new TypeExpression();
+    }else if("Long".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("long");
-    }else if(type.getBaseName().equals("Float")){
-      type = new TypeExpression();
+    }else if("Float".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("float");
-    }else if(type.getBaseName().equals("Double")) {
-      type = new TypeExpression();
+    }else if("Double".equals(type.getName())){
+      type = new TypeConstant();
       type.setName("double");
-    }else if(type.getBaseName().equals("String")){
-      type = new TypeExpression();
+    }else if("String".equals(type.getName())){
+      type = new ObjectType();
       type.setName("String");
     }
     return type;
   }
 
   public static TypeExpression box(TypeExpression type) {
-    if (type.getName().equals("boolean")) {
-      type = new TypeExpression();
+    if ("boolean".equals(type.getName())) {
+      type = new ObjectType();
       type.setName("java.lang.Boolean");
     }
-    if (type.getName().equals("byte")) {
-      type = new TypeExpression();
+    if ("byte".equals(type.getName())) {
+      type = new ObjectType();
       type.setName("java.lang.Byte");
     }
-    if (type.getName().equals("char")) {
-      type = new TypeExpression();
+    if ("char".equals(type.getName())) {
+      type = new ObjectType();
       type.setName("java.lang.Character");
     }
-    if (type.getName().equals("short")) {
-      type = new TypeExpression();
+    if ("short".equals(type.getName())) {
+      type = new ObjectType();
       type.setName("java.lang.Short");
     }
-    if (type.getName().equals("int")) {
-      type = new TypeExpression();
+    if ("int".equals(type.getName())) {
+      type = new ObjectType();
       type.setName("java.lang.Integer");
     }
-    if (type.getName().equals("long")) {
-      type = new TypeExpression();
+    if ("long".equals(type.getName())) {
+      type = new ObjectType();
       type.setName("java.lang.Long");
     }
-    if (type.getName().equals("float")) {
-      type = new TypeExpression();
+    if ("float".equals(type.getName())) {
+      type = new ObjectType();
       type.setName("java.lang.Float");
     }
-    if (type.getName().equals("double")) {
-      type = new TypeExpression();
+    if ("double".equals(type.getName())) {
+      type = new ObjectType();
       type.setName("java.lang.Double");
     }
     return type;
@@ -127,26 +130,34 @@ public class TypesCalculatorHelper {
    * @return true if the given type is an integral type
    */
   public static boolean isIntegralType(TypeExpression type) {
-    if ("int".equals(unbox(type).getName()))
+    if ("int".equals(unbox(type).getName())) {
       return true;
-    if ("byte".equals(unbox(type).getName()))
+    }
+    if ("byte".equals(unbox(type).getName())) {
       return true;
-    if ("short".equals(unbox(type).getName()))
+    }
+    if ("short".equals(unbox(type).getName())) {
       return true;
-    if ("long".equals(unbox(type).getName()))
+    }
+    if ("long".equals(unbox(type).getName())) {
       return true;
-    if ("char".equals(unbox(type).getName()))
+    }
+    if ("char".equals(unbox(type).getName())) {
       return true;
+    }
     return false;
   }
 
   public static boolean isNumericType(TypeExpression type) {
-    if (isIntegralType(type))
+    if (isIntegralType(type)) {
       return true;
-    if ("float".equals(unbox(type).getName()))
+    }
+    if ("float".equals(unbox(type).getName())) {
       return true;
-    if ("double".equals(unbox(type).getName()))
+    }
+    if ("double".equals(unbox(type).getName())) {
       return true;
+    }
     return false;
   }
 
@@ -164,5 +175,51 @@ public class TypesCalculatorHelper {
     MCTypeVisitor visitor = new MCTypeVisitor();
     type.accept(visitor);
     return visitor.mapping.get(type);
+  }
+
+  //TODO check correctnes in all situations, in testHelper wenn nur für Dummy benutzt
+  public static TypeExpression fromETypeSymbol(ETypeSymbol type) {
+    List<String> primitiveTypes = Arrays
+            .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
+    if (type != null ) {
+      if (primitiveTypes.contains(type.getName())) {
+        return TypeExpressionBuilder.buildTypeConstant(type.getName());
+      } else {
+        ObjectType o = new ObjectType();
+        o.setName(type.getName());
+        return o;
+      }
+    }
+    return null;
+  }
+  //TODO check correctnes in all situations, in testHelper wenn nur für Dummy benutzt
+  public static TypeExpression fromEVariableSymbol(EVariableSymbol type) {
+    List<String> primitiveTypes = Arrays
+            .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
+    if (type != null ) {
+      if (primitiveTypes.contains(type.getName())) {
+        return TypeExpressionBuilder.buildTypeConstant(type.getName());
+      } else {
+        ObjectType o = new ObjectType();
+        o.setName(type.getName());
+        return o;
+      }
+    }
+    return null;
+  }
+  //TODO check correctnes in all situations, in testHelper wenn nur für Dummy benutzt
+  public static TypeExpression fromEMethodSymbol(EMethodSymbol type) {
+    List<String> primitiveTypes = Arrays
+            .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
+    if (type != null ) {
+      if (primitiveTypes.contains(type.getName())) {
+        return TypeExpressionBuilder.buildTypeConstant(type.getName());
+      } else {
+        ObjectType o = new ObjectType();
+        o.setName(type.getName());
+        return o;
+      }
+    }
+    return null;
   }
 }

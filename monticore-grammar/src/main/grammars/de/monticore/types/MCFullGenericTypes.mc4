@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
-/* This is a MontiCore stable grammar.
- * Adaptations -- if any -- are conservative. */
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
 
 /**
  * This grammar completes the type definitions to 
@@ -25,13 +24,13 @@ component grammar MCFullGenericTypes
 
   /*=================================================================*/
 
-  /** ASTWildcardType represents a wildcard type in a type argument
+  /** ASTWildcardTypeArgument represents a wildcard type in a type argument
   *   (generics). It also contains either an upper- or a lower bound.
   *
   *   @attribute upperBound Supertye of the type argument
   *   @attribute lowerBound Subtype of the type argument
   */
-  MCWildcardType implements MCTypeArgument =
+  MCWildcardTypeArgument implements MCTypeArgument =
        "?" (  ("extends" upperBound:MCType) 
             | ("super"   lowerBound:MCType) )?;
 
@@ -43,10 +42,9 @@ component grammar MCFullGenericTypes
    *  generic AND has generic inner classes e.g.
    *  monticore.Generic1<TypeParam1>.GenericInnerClass<TypeParam2>
   */
-  symbol (MCType) MCMultipleGenericType implements MCGenericType, MCType =
+  MCMultipleGenericType implements MCGenericType, MCType =
        MCBasicGenericType  // complex Outer Type qualification
-        "."  (MCInnerType || ".")+
-   ;
+        "."  (MCInnerType || ".")+  ;
 
   MCInnerType = Name ("<" (MCTypeArgument || ",")+ ">")?;
 
@@ -55,7 +53,7 @@ component grammar MCFullGenericTypes
 
   /** ASTArrayType introduce array for arbitrary types
   */
-  symbol (MCType) MCArrayType implements MCType =
+  MCArrayType implements MCType =
        MCType ("[" "]" {_aNode.setDimensions(_aNode.getDimensions()+1);} )+;
 
   // counter dimensions counts the array depth
@@ -65,7 +63,10 @@ component grammar MCFullGenericTypes
 
   /*=================================================================*/
 
-  /** ASTTypeParameters represents a list of generic parameters enclosed
+// TODO: 2 NT sind zu verschieben, weil dies nicht zu den TypeExpressions
+// gehört, sondern die Parametrisierung bei der Definition festlegt
+
+  /** ASTMCTypeParameters represents a list of generic parameters enclosed
    *  by '<...>' in generic type declarations 
    *  @attribute typeVariableDeclarations List of parameters
   */

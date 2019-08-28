@@ -2,11 +2,9 @@
 package de.monticore.types.mcfullgenerictypes._ast;
 
 import com.google.common.collect.ImmutableList;
-import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ASTMCMultipleGenericType extends ASTMCMultipleGenericTypeTOP {
   public ASTMCMultipleGenericType() {
