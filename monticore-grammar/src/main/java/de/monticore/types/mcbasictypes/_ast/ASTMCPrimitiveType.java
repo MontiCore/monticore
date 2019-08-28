@@ -16,6 +16,8 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
     super(primitive);
   }
 
+  // TODO RE: Sollte man dies nicht in getBaseName und getNameList expandieren
+  // Es gibt eine Regel, die besagt "toString" sollte nicht überschrieben werden?
   public String toString(){
     if (isBoolean()){
       return "boolean";

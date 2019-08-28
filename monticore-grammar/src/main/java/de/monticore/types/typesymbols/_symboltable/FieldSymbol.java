@@ -5,4 +5,5 @@ public class FieldSymbol extends FieldSymbolTOP {
   public FieldSymbol(String name) {
     super(name);
   }
+  // TODO RE: entfernbar?
 }

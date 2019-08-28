@@ -22,11 +22,14 @@ public class ASTMCMultipleGenericType extends ASTMCMultipleGenericTypeTOP {
     setMCInnerTypeList(mCInnerTypes);
   }
 
+  // TODO RE: Diese Klasse ist wohl unfertig. Sie könnte auch entfernbar sein?
+
   @Override
   public String getBaseName() {
     return getNameList().get(getNameList().size()-1);
   }
 
+  // TODO RE: Dieser Rumpf ist Illegal
   @Override
   public List<String> getNameList() {
     ImmutableList.Builder<String> nameList = new ImmutableList.Builder<String>();
@@ -40,15 +43,18 @@ public class ASTMCMultipleGenericType extends ASTMCMultipleGenericTypeTOP {
     return null;
   }
 
+  // TODO RE: Dieser Rumpf ist Illegal
   public void setNameList(List<String> names) {
 
   }
 
+  // TODO RE: Dieser Rumpf ist Illegal
   @Override
   public List<ASTMCTypeArgument> getMCTypeArgumentList() {
     return null;
   }
 
+  // TODO RE: Dieser Rumpf ist Illegal
   public void setMCTypeArgumentList(List<ASTMCTypeArgument> arguments) {
 
   }

@@ -17,6 +17,9 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
         super("Set", typeArgument);
     }
 
+    // TODO BR/RE: Methoden überarbeiten, sobald geklärt wie
+    // selbiges bei List, Map, Optional
+    
     @Override
     public List<String> getNameList() {
         return Lists.newArrayList(getName());

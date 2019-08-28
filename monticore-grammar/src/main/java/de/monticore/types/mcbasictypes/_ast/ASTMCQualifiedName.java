@@ -22,6 +22,8 @@ public class ASTMCQualifiedName extends ASTMCQualifiedNameTOP {
     return parts.get(parts.size()-1);
   }
 
+  // TODO RE: Sollte man dies nicht besser und konsistenter in getQName umsetzen?
+  // Es gibt eine Regel, die besagt "toString" sollte nicht überschrieben werden?
   public String toString(){
     return Names.constructQualifiedName(
             this.getPartList());

@@ -15,6 +15,7 @@ public class ASTMCPrimitiveTypeArgument extends ASTMCPrimitiveTypeArgumentTOP {
     super(type);
   }
 
+  // TODO RE: Kann doch gar nicht optional sein: Methode & Klasse entfernen!
   public Optional<ASTMCType> getMCTypeOpt(){
     return Optional.ofNullable(getMCPrimitiveType());
   }
