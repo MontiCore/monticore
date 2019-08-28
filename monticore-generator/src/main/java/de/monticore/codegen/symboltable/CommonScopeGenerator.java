@@ -186,8 +186,6 @@ public class CommonScopeGenerator implements ScopeGenerator {
     if(genHelper.getGrammarSymbol().getStartProd().isPresent()) {
       genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, allSymbols,allSpanningSymbolNames, superGrammarPackages);
 
-      genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, baseNameClass, languageName, symbolNames,existsHWCArtifactScopeImpl);
-
       genEngine.generateNoA("symboltable.ArtifactScopeBuilder",artifactScopeBuilderFilePath, artifactScopeBuilderClassName, languageName);
 
     }

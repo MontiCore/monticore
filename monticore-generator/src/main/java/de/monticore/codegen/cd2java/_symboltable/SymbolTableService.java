@@ -101,6 +101,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   /*
    artifact scope class names e.g. AutomataArtifactScope
  */
+
   public String getArtifactScopeSimpleName(CDDefinitionSymbol cdSymbol) {
     return cdSymbol.getName() + ARTIFACT_PREFIX + SCOPE_SUFFIX;
   }
@@ -168,7 +169,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getLanguageClassSimpleName(CDDefinitionSymbol cdSymbol) {
-    return  cdSymbol.getName() + LANGUAGE_SUFFIX;
+    return cdSymbol.getName() + LANGUAGE_SUFFIX;
   }
 
   public String getLanguageClassSimpleName() {
@@ -358,15 +359,17 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   only get classes and interfaces with scope or symbol stereotype
    */
 
-  public List<ASTCDType> getSymbolProds(ASTCDDefinition astcdDefinition) {
+  public List<ASTCDType> getSymbolDefiningProds(ASTCDDefinition astcdDefinition) {
     List<ASTCDType> symbolProds = astcdDefinition.getCDClassList().stream()
         .filter(ASTCDClassTOP::isPresentModifier)
         .filter(c -> hasSymbolStereotype(c.getModifier()))
+        .filter(c -> !getSymbolTypeValue(c.getModifierOpt().get()).isPresent())
         .collect(Collectors.toList());
 
     symbolProds.addAll(astcdDefinition.getCDInterfaceList().stream()
         .filter(ASTCDInterface::isPresentModifier)
         .filter(c -> hasSymbolStereotype(c.getModifier()))
+        .filter(c -> !getSymbolTypeValue(c.getModifierOpt().get()).isPresent())
         .collect(Collectors.toList()));
     return symbolProds;
   }

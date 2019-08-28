@@ -50,7 +50,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTMCQualifiedType globalScopeInterfaceType = getCDTypeFacade().createQualifiedType(symbolTableService.getGlobalScopeInterfaceFullName());
     String definitionName = input.getCDDefinition().getName();
 
-    List<ASTCDType> symbolProds = symbolTableService.getSymbolProds(input.getCDDefinition());
+    List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
     ASTCDAttribute modelPathAttribute = createModelPathAttribute();
     List<ASTCDMethod> modelPathMethods = accessorDecorator.decorate(modelPathAttribute);

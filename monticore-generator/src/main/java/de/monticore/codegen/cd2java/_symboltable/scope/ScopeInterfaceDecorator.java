@@ -46,13 +46,16 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
   public ASTCDInterface decorate(ASTCDCompilationUnit input) {
     String scopeInterfaceName = INTERFACE_PREFIX + input.getCDDefinition().getName() + SCOPE_SUFFIX;
 
-    List<ASTCDType> symbolClasses = symbolTableService.getSymbolProds(input.getCDDefinition());
+    List<ASTCDType> symbolClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
     List<CDDefinitionSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
     List<ASTMCQualifiedType> superScopeInterfaces = superCDsTransitive
         .stream()
         .map(symbolTableService::getScopeInterfaceType)
         .collect(Collectors.toList());
+    if (superScopeInterfaces.isEmpty()) {
+      superScopeInterfaces.add(getCDTypeFacade().createQualifiedType(SCOPE_INTERFACE_FULL_NAME));
+    }
 
 
     return CD4AnalysisMill.cDInterfaceBuilder()

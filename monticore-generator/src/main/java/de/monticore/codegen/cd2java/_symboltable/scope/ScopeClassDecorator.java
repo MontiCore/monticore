@@ -58,7 +58,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     String scopeClassName = input.getCDDefinition().getName() + SCOPE_SUFFIX;
     ASTMCQualifiedType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
 
-    List<ASTCDType> symbolClasses = symbolTableService.getSymbolProds(input.getCDDefinition());
+    List<ASTCDType> symbolClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
     Map<String, ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolClasses, symbolTableService.getCDSymbol());
     symbolAttributes.putAll(getSuperSymbolAttributes());

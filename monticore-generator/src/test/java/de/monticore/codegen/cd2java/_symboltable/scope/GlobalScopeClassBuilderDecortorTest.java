@@ -27,6 +27,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
 public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
+
   private ASTCDClass scopeClass;
 
   private GlobalExtensionManagement glex;
@@ -36,10 +37,6 @@ public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
   private ASTCDCompilationUnit originalCompilationUnit;
 
   public static final String MODEL_PATH = "de.monticore.io.paths.ModelPath";
-
-  public static final String AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.AutomatonScope";
-
-  public static final String I_AUTOMATON_GLOBAL_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope";
 
   @Before
   public void setUp() {

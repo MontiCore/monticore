@@ -34,7 +34,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     ASTMCQualifiedType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
     String definitionName = input.getCDDefinition().getName();
 
-    List<ASTCDType> symbolClasses = symbolTableService.getSymbolProds(input.getCDDefinition());
+    List<ASTCDType> symbolClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(globalScopeInterfaceName)

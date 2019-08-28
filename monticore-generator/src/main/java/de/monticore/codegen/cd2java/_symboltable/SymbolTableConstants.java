@@ -15,6 +15,12 @@ public class SymbolTableConstants {
 
   public static final String SCOPE_FULL_NAME = "de.monticore.symboltable.IScope";
 
+  public static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
+
+  public static final String QUALIFIED_NAMES_CALCULATOR = "de.monticore.symboltable.names.QualifiedNamesCalculator";
+
+  public static final String PATH = "java.nio.file.Path";
+
   public static final String ENCLOSING_SCOPE = "enclosingScope";
 
   public static final String INTERFACE_PREFIX = "I";
@@ -91,6 +97,6 @@ public class SymbolTableConstants {
 
   public static final String MODEL_PATH_NAME = "modelPath";
 
-  public static final String ADAPTED_RESOLVING_DELEGATE= "adapted%sResolvingDelegateList";
+  public static final String ADAPTED_RESOLVING_DELEGATE = "adapted%sResolvingDelegateList";
 
 }
