@@ -64,7 +64,10 @@ component grammar MCFullGenericTypes
 
   /*=================================================================*/
 
-  /** ASTTypeParameters represents a list of generic parameters enclosed
+// TODO: 2 NT sind zu verschieben, weil dies nicht zu den TypeExpressions
+// gehört, sondern die Parametrisierung bei der Definition festlegt
+
+  /** ASTMCTypeParameters represents a list of generic parameters enclosed
    *  by '<...>' in generic type declarations 
    *  @attribute typeVariableDeclarations List of parameters
   */
