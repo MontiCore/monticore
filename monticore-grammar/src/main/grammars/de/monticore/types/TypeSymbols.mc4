@@ -64,6 +64,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
    * Dennoch sind nicht alle Konstellationen erlaubt.
    */
   
+  /*
   interface SymTType;
   SymTVoidType implements SymTType = "void";
 
@@ -129,7 +130,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   SymTField = Name SymTType ["static"]? ["public"]? .....
 
   SymTMethod = Name returnType:SymTType parameter:SymTField* ["isDotted"]? ["public"]? ...
-
+*/
 
 
 
