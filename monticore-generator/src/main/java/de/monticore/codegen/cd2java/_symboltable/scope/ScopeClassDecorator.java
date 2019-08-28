@@ -156,7 +156,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     ASTCDParameter scopeParameter = getCDParameterFacade().createParameter(symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE);
     ASTCDConstructor defaultConstructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopeClassName, scopeParameter, shadowingParameter);
     this.replaceTemplate(EMPTY_BODY, defaultConstructor, new StringHookPoint("this.setEnclosingScope(enclosingScope);\n" +
-        "    this." +SHADOWING+" = "+SHADOWING+"; \n"+
+        "    this." + SHADOWING + " = " + SHADOWING + "; \n" +
         "    this.name = Optional.empty();"));
     return defaultConstructor;
   }
@@ -198,8 +198,8 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
         if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
-          ASTCDAttribute symbolAttribute = createSymbolAttribute(type.getAstNode().get(), cdDefinitionSymbol);
-          symbolAttributes.put(symbolAttribute.getName(), symbolAttribute);
+          Optional<ASTCDAttribute> symbolAttribute = createSymbolAttribute(type.getAstNode().get(), cdDefinitionSymbol);
+          symbolAttribute.ifPresent(attr -> symbolAttributes.put(attr.getName(), attr));
         }
       }
     }
@@ -209,19 +209,23 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   protected Map<String, ASTCDAttribute> createSymbolAttributes(List<? extends ASTCDType> symbolClassList, CDDefinitionSymbol cdDefinitionSymbol) {
     Map<String, ASTCDAttribute> symbolAttributeList = new HashMap<>();
     for (ASTCDType astcdClass : symbolClassList) {
-      ASTCDAttribute symbolAttributes = createSymbolAttribute(astcdClass, cdDefinitionSymbol);
-      symbolAttributeList.put(symbolAttributes.getName(), symbolAttributes);
+      Optional<ASTCDAttribute> symbolAttributes = createSymbolAttribute(astcdClass, cdDefinitionSymbol);
+      symbolAttributes.ifPresent(attr -> symbolAttributeList.put(attr.getName(), attr));
     }
     return symbolAttributeList;
   }
 
-  protected ASTCDAttribute createSymbolAttribute(ASTCDType cdType, CDDefinitionSymbol cdDefinitionSymbol) {
-    String symbolTypeName = symbolTableService.getSymbolFullName(cdType, cdDefinitionSymbol);
-    String attrName = StringTransformations.uncapitalize(symbolTableService.getSymbolSimpleName(cdType)) + LIST_SUFFIX_S;
-    ASTMCType symbolMultiMap = getCDTypeFacade().createTypeByDefinition(String.format(SYMBOLS_MULTI_MAP, symbolTypeName));
-    ASTCDAttribute symbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolMultiMap, attrName);
-    this.replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= com.google.common.collect.LinkedListMultimap.create()"));
-    return symbolAttribute;
+  protected Optional<ASTCDAttribute> createSymbolAttribute(ASTCDType cdType, CDDefinitionSymbol cdDefinitionSymbol) {
+    Optional<String> symbolSimpleName = symbolTableService.getDefiningSymbolSimpleName(cdType);
+    Optional<String> symbolFullName = symbolTableService.getDefiningSymbolFullName(cdType, cdDefinitionSymbol);
+    if (symbolFullName.isPresent() && symbolSimpleName.isPresent()) {
+      String attrName = StringTransformations.uncapitalize(symbolSimpleName.get() + LIST_SUFFIX_S);
+      ASTMCType symbolMultiMap = getCDTypeFacade().createTypeByDefinition(String.format(SYMBOLS_MULTI_MAP, symbolFullName.get()));
+      ASTCDAttribute symbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolMultiMap, attrName);
+      this.replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= com.google.common.collect.LinkedListMultimap.create()"));
+      return Optional.ofNullable(symbolAttribute);
+    }
+    return Optional.empty();
   }
 
 

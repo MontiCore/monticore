@@ -70,14 +70,14 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     Set<String> symbolNames = new HashSet<>();
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       if (astcdClass.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdClass.getModifier())) {
-        Optional<String> definingSymbolTypeName = symbolTableService.getDefiningSymbolTypeName(astcdClass);
+        Optional<String> definingSymbolTypeName = symbolTableService.getDefiningSymbolFullName(astcdClass);
         definingSymbolTypeName.ifPresent(symbolNames::add);
       }
     }
 
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
       if (astcdInterface.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdInterface.getModifier())) {
-        Optional<String> definingSymbolTypeName = symbolTableService.getDefiningSymbolTypeName(astcdInterface);
+        Optional<String> definingSymbolTypeName = symbolTableService.getDefiningSymbolFullName(astcdInterface);
         definingSymbolTypeName.ifPresent(symbolNames::add);
       }
     }

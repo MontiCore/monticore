@@ -35,6 +35,8 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected final GlobalScopeClassDecorator globalScopeClassDecorator;
 
+  protected final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator;
+
   public SymbolTableCDDecorator(final GlobalExtensionManagement glex,
                                 final SymbolTableService symbolTableService,
                                 final SymbolDecorator symbolDecorator,
@@ -43,7 +45,8 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
                                 final ScopeClassBuilderDecorator scopeClassBuilderDecorator,
                                 final ScopeInterfaceDecorator scopeInterfaceDecorator,
                                 final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator,
-                                final GlobalScopeClassDecorator globalScopeClassDecorator) {
+                                final GlobalScopeClassDecorator globalScopeClassDecorator,
+                                final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator) {
     super(glex);
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
@@ -52,7 +55,8 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     this.scopeClassBuilderDecorator = scopeClassBuilderDecorator;
     this.scopeInterfaceDecorator = scopeInterfaceDecorator;
     this.globalScopeInterfaceDecorator = globalScopeInterfaceDecorator;
-    this.globalScopeClassDecorator= globalScopeClassDecorator;
+    this.globalScopeClassDecorator = globalScopeClassDecorator;
+    this.globalScopeClassBuilderDecorator = globalScopeClassBuilderDecorator;
   }
 
   @Override
@@ -76,6 +80,7 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     if (symbolTableService.hasProd(ast.getCDDefinition())) {
       astCD.addCDInterface(createGlobalScopeInterface(ast));
       astCD.addCDClass(createGlobalScopeClass(ast));
+      astCD.addCDClass(createGlobalScopeClassBuilder(ast));
     }
 
     for (ASTCDClass cdClass : astCD.getCDClassList()) {
@@ -128,5 +133,9 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected ASTCDClass createGlobalScopeClass(ASTCDCompilationUnit compilationUnit) {
     return globalScopeClassDecorator.decorate(compilationUnit);
+  }
+
+  protected ASTCDClass createGlobalScopeClassBuilder(ASTCDCompilationUnit compilationUnit) {
+    return globalScopeClassBuilderDecorator.decorate(compilationUnit);
   }
 }

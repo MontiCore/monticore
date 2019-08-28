@@ -35,6 +35,8 @@ public class SymbolTableConstants {
 
   public static final String SCOPE_BUILD_TEMPLATE = "_symboltable.scope.builder.Build";
 
+  public static final String GLOBAL_SCOPE_BUILD_TEMPLATE = "_symboltable.scope.globalscopebuilder.Build";
+
   public static final String DETERMINE_PACKAGE_NAME_METHOD = "determinePackageName";
 
   public static final String DETERMINE_FULL_NAME_METHOD = "determineFullName";
@@ -89,6 +91,6 @@ public class SymbolTableConstants {
 
   public static final String MODEL_PATH_NAME = "modelPath";
 
-  public static final String ADAPTED_RESOLVING_DELEGATE= "adapted%sSymbolResolvingDelegateList";
+  public static final String ADAPTED_RESOLVING_DELEGATE= "adapted%sResolvingDelegateList";
 
 }

@@ -435,10 +435,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ScopeInterfaceDecorator scopeInterfaceDecorator= new ScopeInterfaceDecorator(glex, symbolTableService, visitorService);
     GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator= new GlobalScopeInterfaceDecorator(glex, symbolTableService);
     GlobalScopeClassDecorator globalScopeClassDecorator= new GlobalScopeClassDecorator(glex, symbolTableService, methodDecorator);
+    GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator= new GlobalScopeClassBuilderDecorator(glex, symbolTableService, methodDecorator);
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, symbolTableService, symbolDecorator,
         symbolBuilderDecorator, scopeClassDecorator, scopeClassBuilderDecorator, scopeInterfaceDecorator, globalScopeInterfaceDecorator,
-        globalScopeClassDecorator);
+        globalScopeClassDecorator, globalScopeClassBuilderDecorator);
 
     ASTCDCompilationUnit visitorCompilationUnit = symbolTableCDDecorator.decorate(cd);
 

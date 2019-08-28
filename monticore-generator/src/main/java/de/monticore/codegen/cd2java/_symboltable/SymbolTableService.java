@@ -155,13 +155,32 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public String getGlobalScopeInterfaceSimpleName() {
     return getGlobalScopeInterfaceSimpleName(getCDSymbol());
   }
+   /*
+    language class names e.g. AutomataLanguage
+   */
+
+  public String getLanguageClassFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getLanguageClassSimpleName(cdSymbol);
+  }
+
+  public String getLanguageClassFullName() {
+    return getLanguageClassFullName(getCDSymbol());
+  }
+
+  public String getLanguageClassSimpleName(CDDefinitionSymbol cdSymbol) {
+    return  cdSymbol.getName() + LANGUAGE_SUFFIX;
+  }
+
+  public String getLanguageClassSimpleName() {
+    return getLanguageClassSimpleName(getCDSymbol());
+  }
 
     /*
     resolving delegate symbol interface e.g. IAutomatonSymbolResolvingDelegate
    */
 
   public String getSymbolResolvingDelegateInterfaceSimpleName(ASTCDType astcdType) {
-    return INTERFACE_PREFIX + getNameWithSymbolSuffix(astcdType) + RESOLVING_DELEGATE_SUFFIX;
+    return INTERFACE_PREFIX + getSymbolSimpleName(astcdType) + RESOLVING_DELEGATE_SUFFIX;
   }
 
   public String getSymbolResolvingDelegateInterfaceFullName(ASTCDType astcdType) {
@@ -208,7 +227,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (clazz.getModifierOpt().isPresent()) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifierOpt().get());
       if (symbolTypeValue.isPresent()) {
-        return symbolTypeValue.get();
+        return Names.getSimpleName(symbolTypeValue.get());
       }
     }
     return getNameWithSymbolSuffix(clazz);
@@ -230,12 +249,12 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getPackage(cdDefinitionSymbol) + "." + getNameWithSymbolSuffix(clazz);
   }
 
-  public Optional<String> getDefiningSymbolTypeName(ASTCDType clazz) {
+  public Optional<String> getDefiningSymbolFullName(ASTCDType clazz) {
     // does only return symbol defining parts, not parts with e.g. symbol (MCType)
-    return getDefiningSymbolTypeName(clazz, getCDSymbol());
+    return getDefiningSymbolFullName(clazz, getCDSymbol());
   }
 
-  public Optional<String> getDefiningSymbolTypeName(ASTCDType clazz, CDDefinitionSymbol cdDefinitionSymbol) {
+  public Optional<String> getDefiningSymbolFullName(ASTCDType clazz, CDDefinitionSymbol cdDefinitionSymbol) {
     //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
     if (clazz.getModifierOpt().isPresent()) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifierOpt().get());
@@ -244,6 +263,17 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       }
     }
     return Optional.of(getPackage(cdDefinitionSymbol) + "." + getNameWithSymbolSuffix(clazz));
+  }
+
+  public Optional<String> getDefiningSymbolSimpleName(ASTCDType clazz) {
+    // does only return symbol defining parts, not parts with e.g. symbol (MCType)
+    if (clazz.getModifierOpt().isPresent()) {
+      Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifierOpt().get());
+      if (symbolTypeValue.isPresent()) {
+        return Optional.empty();
+      }
+    }
+    return Optional.ofNullable(getNameWithSymbolSuffix(clazz));
   }
 
   public String getSimpleSymbolNameFromOptional(ASTMCType type) {
