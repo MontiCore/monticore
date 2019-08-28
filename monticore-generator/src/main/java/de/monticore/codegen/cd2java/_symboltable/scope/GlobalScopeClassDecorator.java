@@ -47,11 +47,10 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     String globalScopeName = symbolTableService.getGlobalScopeSimpleName();
     ASTMCQualifiedType scopeType = symbolTableService.getScopeType();
-    ASTMCQualifiedType globalScopeInterfaceType = symbolTableService.getGlobalScopeInterfaceType();
+    ASTMCQualifiedType globalScopeInterfaceType = getCDTypeFacade().createQualifiedType(symbolTableService.getGlobalScopeInterfaceFullName());
     String definitionName = input.getCDDefinition().getName();
 
-    List<ASTCDClass> symbolClasses = symbolTableService.getSymbolClasses(input.getCDDefinition().getCDClassList());
-    List<ASTCDInterface> symbolInterfaces = symbolTableService.getSymbolInterfaces(input.getCDDefinition().getCDInterfaceList());
+    List<ASTCDType> symbolProds = symbolTableService.getSymbolProds(input.getCDDefinition());
 
     ASTCDAttribute modelPathAttribute = createModelPathAttribute();
     List<ASTCDMethod> modelPathMethods = accessorDecorator.decorate(modelPathAttribute);
@@ -59,8 +58,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDAttribute languageAttribute = createLanguageAttribute(definitionName);
     List<ASTCDMethod> languageMethods = accessorDecorator.decorate(languageAttribute);
 
-    Map<String, ASTCDAttribute> resolvingDelegateAttributes = createResolvingDelegateAttributes(symbolClasses);
-    resolvingDelegateAttributes.putAll(createResolvingDelegateAttributes(symbolInterfaces));
+    Map<String, ASTCDAttribute> resolvingDelegateAttributes = createResolvingDelegateAttributes(symbolProds);
     resolvingDelegateAttributes.putAll(createResolvingDelegateSuperAttributes());
 
     List<ASTCDMethod> resolvingDelegateMethods = resolvingDelegateAttributes.values()
@@ -86,8 +84,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMethod(createContinueWithModelLoaderMethod(definitionName))
         .addAllCDMethods(resolvingDelegateMethods)
         .addAllCDMethods(createAddResolvingSymbolDelegateMethods(resolvingDelegateAttributes.values()))
-        .addAllCDMethods(createAlreadyResolvedMethods(symbolClasses))
-        .addAllCDMethods(createAlreadyResolvedMethods(symbolInterfaces))
+        .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
         .build();
   }
 
@@ -148,7 +145,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected ASTCDAttribute createResolvingDelegateAttribute(ASTCDType prod, CDDefinitionSymbol cdSymbol) {
     String simpleName = symbolTableService.removeASTPrefix(prod);
     String attrName = String.format(ADAPTED_RESOLVING_DELEGATE, simpleName);
-    String symbolResolvingDelegateInterfaceTypeName = symbolTableService.getSymbolResolvingDelegateInterfaceTypeName(prod, cdSymbol);
+    String symbolResolvingDelegateInterfaceTypeName = symbolTableService.getSymbolResolvingDelegateInterfaceFullName(prod, cdSymbol);
     ASTMCType listType = getCDTypeFacade().createCollectionTypeOf(symbolResolvingDelegateInterfaceTypeName);
 
     ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED, listType, attrName);
@@ -185,7 +182,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected List<ASTCDMethod> createAlreadyResolvedMethods(List<? extends ASTCDType> cdTypeList) {
     List<String> symbolAttributeNameList = cdTypeList
         .stream()
-        .map(symbolTableService::getSymbolSimpleTypeName)
+        .map(symbolTableService::getSymbolSimpleName)
         .map(s -> s + "s")
         .map(StringTransformations::uncapitalize)
         .collect(Collectors.toList());

@@ -44,8 +44,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
   public ASTCDInterface decorate(ASTCDCompilationUnit input) {
     String scopeInterfaceName = INTERFACE_PREFIX + input.getCDDefinition().getName() + SCOPE_SUFFIX;
 
-    List<ASTCDClass> symbolClasses = symbolTableService.getSymbolClasses(input.getCDDefinition().getCDClassList());
-    List<ASTCDInterface> symbolInterfaces = symbolTableService.getSymbolInterfaces(input.getCDDefinition().getCDInterfaceList());
+    List<ASTCDType> symbolClasses = symbolTableService.getSymbolProds(input.getCDDefinition());
 
     List<CDDefinitionSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
     List<ASTMCQualifiedType> superScopeInterfaces = superCDsTransitive
@@ -59,9 +58,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
         .setModifier(PUBLIC.build())
         .addAllInterfaces(superScopeInterfaces)
         .addAllCDMethods(createAlreadyResolvedMethods(symbolClasses))
-        .addAllCDMethods(createAlreadyResolvedMethods(symbolInterfaces))
         .addAllCDMethods(createResolveMethods(symbolClasses))
-        .addAllCDMethods(createResolveMethods(symbolInterfaces))
         .addAllCDMethods(createSubScopesMethods(scopeInterfaceName))
         .addAllCDMethods(createEnclosingScopeMethods(scopeInterfaceName))
         .addCDMethod(createAcceptMethod())
@@ -71,7 +68,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
   protected List<ASTCDMethod> createAlreadyResolvedMethods(List<? extends ASTCDType> symbolProds) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDType symbolProd : symbolProds) {
-      String alreadyResolvedName = StringTransformations.capitalize(symbolTableService.getSymbolSimpleTypeName(symbolProd)) + LIST_SUFFIX_S + ALREADY_RESOLVED;
+      String alreadyResolvedName = StringTransformations.capitalize(symbolTableService.getSymbolSimpleName(symbolProd)) + LIST_SUFFIX_S + ALREADY_RESOLVED;
       methodList.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getCDTypeFacade().createBooleanType(), "is" + alreadyResolvedName));
       ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "symbolAlreadyResolved");
       methodList.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "set" + alreadyResolvedName, parameter));
@@ -88,7 +85,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
 
     for (ASTCDType symbolProd : symbolProds) {
       String className = symbolTableService.removeASTPrefix(symbolProd);
-      String symbolFullTypeName = symbolTableService.getSymbolFullTypeName(symbolProd);
+      String symbolFullTypeName = symbolTableService.getSymbolFullName(symbolProd);
       ASTMCOptionalType optSymbol = getCDTypeFacade().createOptionalTypeOf(symbolFullTypeName);
       ASTMCType listSymbol = getCDTypeFacade().createCollectionTypeOf(symbolFullTypeName);
       ASTMCType setSymbol = getCDTypeFacade().createSetTypeOf(symbolFullTypeName);
@@ -266,7 +263,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.scope.iscope.ResolveDownMany",
-        className, fullSymbolName, symbolTableService.getScopeInterfaceTypeName()));
+        className, fullSymbolName, symbolTableService.getScopeInterfaceFullName()));
     return method;
   }
 
@@ -444,7 +441,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
   protected ASTCDMethod createAcceptMethod() {
-    String ownScopeVisitor = visitorService.getScopeVisitorFullTypeName();
+    String ownScopeVisitor = visitorService.getScopeVisitorFullName();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, parameter);
   }

@@ -58,11 +58,9 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     String scopeClassName = input.getCDDefinition().getName() + SCOPE_SUFFIX;
     ASTMCQualifiedType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
 
-    List<ASTCDClass> symbolClasses = symbolTableService.getSymbolClasses(input.getCDDefinition().getCDClassList());
-    List<ASTCDInterface> symbolInterfaces = symbolTableService.getSymbolInterfaces(input.getCDDefinition().getCDInterfaceList());
+    List<ASTCDType> symbolClasses = symbolTableService.getSymbolProds(input.getCDDefinition());
 
     Map<String, ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolClasses, symbolTableService.getCDSymbol());
-    symbolAttributes.putAll(createSymbolAttributes(symbolInterfaces, symbolTableService.getCDSymbol()));
     symbolAttributes.putAll(getSuperSymbolAttributes());
 
     List<ASTCDMethod> symbolMethods = createSymbolMethods(symbolAttributes.values());
@@ -118,7 +116,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         .addCDAttribute(createSubScopesAttribute(scopeInterfaceType))
         .addAllCDMethods(createSubScopeMethods(scopeInterfaceType))
         .addAllCDMethods(createAcceptMethods(scopeClassName))
-        .addAllCDMethods(createSuperScopeMethods(symbolTableService.getScopeInterfaceTypeName()))
+        .addAllCDMethods(createSuperScopeMethods(symbolTableService.getScopeInterfaceFullName()))
         .build();
   }
 
@@ -166,14 +164,14 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   protected List<ASTCDMethod> createAcceptMethods(String scopeClassName) {
     List<ASTCDMethod> acceptMethods = new ArrayList<>();
 
-    String ownScopeVisitor = visitorService.getScopeVisitorFullTypeName();
+    String ownScopeVisitor = visitorService.getScopeVisitorFullName();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
     ASTCDMethod ownAcceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
     this.replaceTemplate(EMPTY_BODY, ownAcceptMethod, new StringHookPoint("visitor.handle(this);"));
     acceptMethods.add(ownAcceptMethod);
 
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      String superScopeVisitor = visitorService.getScopeVisitorFullTypeName(cdDefinitionSymbol);
+      String superScopeVisitor = visitorService.getScopeVisitorFullName(cdDefinitionSymbol);
       ASTCDParameter SuperVisitorParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(superScopeVisitor), VISITOR_PREFIX);
       ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, SuperVisitorParameter);
       String errorCode = DecorationHelper.getGeneratedErrorCode(acceptMethod);
@@ -218,8 +216,8 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDAttribute createSymbolAttribute(ASTCDType cdType, CDDefinitionSymbol cdDefinitionSymbol) {
-    String symbolTypeName = symbolTableService.getSymbolFullTypeName(cdType, cdDefinitionSymbol);
-    String attrName = StringTransformations.uncapitalize(symbolTableService.getSymbolSimpleTypeName(cdType)) + LIST_SUFFIX_S;
+    String symbolTypeName = symbolTableService.getSymbolFullName(cdType, cdDefinitionSymbol);
+    String attrName = StringTransformations.uncapitalize(symbolTableService.getSymbolSimpleName(cdType)) + LIST_SUFFIX_S;
     ASTMCType symbolMultiMap = getCDTypeFacade().createTypeByDefinition(String.format(SYMBOLS_MULTI_MAP, symbolTypeName));
     ASTCDAttribute symbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolMultiMap, attrName);
     this.replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= com.google.common.collect.LinkedListMultimap.create()"));

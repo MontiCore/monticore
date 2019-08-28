@@ -33,8 +33,8 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected final VisitorService visitorService;
 
   public CoCoCheckerDecorator(final GlobalExtensionManagement glex, final MethodDecorator methodDecorator,
-      final CoCoService cocoService,
-      final VisitorService visitorService) {
+                              final CoCoService cocoService,
+                              final VisitorService visitorService) {
     super(glex);
     this.methodDecorator = methodDecorator;
     this.cocoService = cocoService;
@@ -52,7 +52,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
     ASTCDClass cocoChecker = CD4AnalysisMill.cDClassBuilder()
         .setName(cocoService.getCheckerSimpleTypeName())
-        .addInterface(visitorService.getVisitorReferenceType())
+        .addInterface(visitorService.getVisitorType())
         .addCDAttribute(realThisAttribute)
         .addCDConstructor(constructor)
         .addAllCDMethods(realThisMethods)
@@ -94,8 +94,8 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
           continue;
         }
 
-        ASTMCType cocoType = cocoService.getCoCoType((ASTCDType) cdTypeSymbol.getAstNode().get());
-        ASTMCType astType = astService.getASTType((ASTCDType) cdTypeSymbol.getAstNode().get());
+        ASTMCType cocoType = cocoService.getCoCoType(cdTypeSymbol.getAstNode().get());
+        ASTMCType astType = astService.getASTType(cdTypeSymbol.getAstNode().get());
         String cocoCollectionName = MCCollectionTypesHelper.printType(astType).replaceAll("\\.", "_") + COCOS;
 
         if (isCurrentDiagram) {
@@ -140,17 +140,16 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDMethod createAddCoCoMethod(ASTMCType cocoType, ASTMCType checkerType) {
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(cocoType, COCO_SUFFIX);
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(cocoType, COCO_SIMPLE_NAME);
     return getCDMethodFacade().createMethod(PUBLIC, checkerType, ADD_COCO, parameter);
   }
 
   protected HookPoint createAddCoCoImpl(boolean isCurrentDiagram, String cocoCollectionName, String checkerName) {
     String impl;
     if (isCurrentDiagram) {
-      impl = cocoCollectionName + ".add(" + COCO_SUFFIX + ");\n";
-    }
-    else {
-      impl = checkerName + ".stream().findFirst().get()." + ADD_COCO + "(" + COCO_SUFFIX + ");\n";
+      impl = cocoCollectionName + ".add(" + COCO_SIMPLE_NAME + ");\n";
+    } else {
+      impl = checkerName + ".stream().findFirst().get()." + ADD_COCO + "(" + COCO_SIMPLE_NAME + ");\n";
     }
     return new StringHookPoint(impl + "return this;");
   }
@@ -163,14 +162,13 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected HookPoint createVisitImpl(boolean isCurrentDiagram, ASTMCType cocoType, String cocoCollectionName, String checkerName) {
     if (isCurrentDiagram) {
       return new StringHookPoint(
-          "for (" + MCCollectionTypesHelper.printType(cocoType) + " " + COCO_SUFFIX + " : " + cocoCollectionName + ") {\n" +
-              COCO_SUFFIX + "." + CHECK + "(" + NODE_SIMPLE_NAME + ");\n" +
+          "for (" + MCCollectionTypesHelper.printType(cocoType) + " " + COCO_SIMPLE_NAME + " : " + cocoCollectionName + ") {\n" +
+              COCO_SIMPLE_NAME + "." + CHECK + "(" + NODE_SIMPLE_NAME + ");\n" +
               "}\n" +
               "// and delegate to all registered checkers of the same language as well\n" +
               checkerName + ".stream().forEach(c -> c.visit(" + NODE_SIMPLE_NAME + "));");
-    }
-    else {
-      return new StringHookPoint( checkerName + ".stream().forEach(c -> c.visit(" + NODE_SIMPLE_NAME + "));");
+    } else {
+      return new StringHookPoint(checkerName + ".stream().forEach(c -> c.visit(" + NODE_SIMPLE_NAME + "));");
     }
   }
 

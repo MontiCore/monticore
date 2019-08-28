@@ -49,7 +49,8 @@ public class ASTReferencedDefinitionDecorator extends AbstractTransformer<ASTCDC
 
   protected List<ASTCDMethod> getRefDefinitionMethods(ASTCDAttribute astcdAttribute, String referencedSymbol) {
     ASTMCType symbolType;
-    String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) + GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + GeneratorHelper.AST_PREFIX + symbolTableService.getSimpleSymbolName(referencedSymbol);
+    String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) +
+        GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + GeneratorHelper.AST_PREFIX + symbolTableService.getSimpleNameFromSymbolName(referencedSymbol);
     if (GeneratorHelper.isListType(astcdAttribute.printType())) {
       //if the attribute is a list
       symbolType = getCDTypeFacade().createListTypeOf(referencedNode);

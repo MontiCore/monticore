@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
@@ -33,8 +32,19 @@ public class ASTService extends AbstractService<ASTService> {
     return new ASTService(cdSymbol);
   }
 
+  /*
+  create base interface name e.g. ASTAutomataNode
+   */
   public String getASTBaseInterfaceSimpleName() {
     return ASTConstants.AST_PREFIX + getCDName() + ASTConstants.NODE_SUFFIX;
+  }
+
+  public String getASTBaseInterfaceSimpleName(CDDefinitionSymbol cdSymbol) {
+    return ASTConstants.AST_PREFIX + cdSymbol.getName() + ASTConstants.NODE_SUFFIX;
+  }
+
+  public String getASTBaseInterfaceFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return String.join(".", getPackage(), getASTBaseInterfaceSimpleName());
   }
 
   public String getASTBaseInterfaceFullName() {
@@ -42,30 +52,44 @@ public class ASTService extends AbstractService<ASTService> {
   }
 
   public ASTMCQualifiedType getASTBaseInterface() {
-    return getCDTypeFactory().createQualifiedType(getASTBaseInterfaceFullName());
+    return getCDTypeFacade().createQualifiedType(getASTBaseInterfaceFullName());
   }
 
-  public String getSimpleTypeName(ASTCDType type) {
-    return type.getName().startsWith(ASTConstants.AST_PREFIX) ? type.getName().substring(ASTConstants.AST_PREFIX.length()) : type.getName();
+  /*
+constant class names g.g. ASTConstantsAutomata
+ */
+  public String getASTConstantClassSimpleName() {
+    return getASTConstantClassSimpleName(getCDSymbol());
   }
 
-  public String getASTSimpleTypeName(ASTCDType type) {
+  public String getASTConstantClassSimpleName(CDDefinitionSymbol cdSymbol) {
+    return ASTConstants.AST_CONSTANTS + cdSymbol.getName();
+  }
+
+  public String getASTConstantClassFullName() {
+    return getASTConstantClassFullName(getCDSymbol());
+  }
+
+  public String getASTConstantClassFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "."+ getASTConstantClassSimpleName(cdSymbol);
+  }
+
+  /*
+ast class names g.g. ASTAutomaton
+ */
+  public String getASTSimpleName(ASTCDType type) {
     return ASTConstants.AST_PREFIX + type.getName();
   }
 
-  public String getASTFullTypeName(ASTCDType type) {
-    return String.join(".", getPackage(), getASTSimpleTypeName(type));
+  public String getASTFullName(ASTCDType type) {
+    return String.join(".", getPackage(), getASTSimpleName(type));
+  }
+
+  public String getASTFullName(ASTCDType type, CDDefinitionSymbol cdSymbol) {
+    return String.join(".", getPackage(cdSymbol), getASTSimpleName(type));
   }
 
   public ASTMCType getASTType(ASTCDType type) {
-    return getCDTypeFactory().createQualifiedType(getASTFullTypeName(type));
-  }
-
-  public ASTMCQualifiedType getASTNodeInterfaceType() {
-    return getCDTypeFactory().createQualifiedType(ASTNode.class);
-  }
-
-  public String getASTConstantClassName() {
-    return getPackage() + "." + ASTConstants.AST_CONSTANTS + getCDName();
+    return getCDTypeFacade().createQualifiedType(getASTFullName(type));
   }
 }

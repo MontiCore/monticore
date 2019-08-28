@@ -51,7 +51,7 @@ public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAtt
       return getCDTypeFacade().createOptionalTypeOf(symbolTypeValue.get());
     } else {
       // use default type
-      return this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolType(clazz));
+      return this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolFullName(clazz));
     }
   }
 

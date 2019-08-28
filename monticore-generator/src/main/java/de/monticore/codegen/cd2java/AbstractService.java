@@ -44,7 +44,7 @@ public class AbstractService<T extends AbstractService> {
     return this.cdSymbol;
   }
 
-  protected CDTypeFacade getCDTypeFactory() {
+  protected CDTypeFacade getCDTypeFacade() {
     return this.cdTypeFacade;
   }
 

@@ -60,21 +60,15 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     List<String> symbolTablePackage = new ArrayList<>(ast.getPackageList());
     symbolTablePackage.addAll(Arrays.asList(ast.getCDDefinition().getName().toLowerCase(), SYMBOL_TABLE_PACKAGE));
 
-    List<ASTCDClass> symbolClasses = symbolTableService.getSymbolClasses(ast.getCDDefinition().getCDClassList());
-    List<ASTCDInterface> symbolInterfaces = symbolTableService.getSymbolInterfaces(ast.getCDDefinition().getCDInterfaceList());
-    List<ASTCDClass> scopeClasses = symbolTableService.getScopeClasses(ast.getCDDefinition().getCDClassList());
-    List<ASTCDInterface> scopeInterfaces = symbolTableService.getScopeInterfaces(ast.getCDDefinition().getCDInterfaceList());
+    List<ASTCDType> symbolProds = symbolTableService.getSymbolProds(ast.getCDDefinition());
 
-    List<ASTCDClass> decoratedSymbolClasses = createSymbolClasses(symbolClasses);
-    List<ASTCDClass> decoratedSymbolInterfaces = createSymbolClasses(symbolInterfaces);
+    List<ASTCDClass> decoratedSymbolClasses = createSymbolClasses(symbolProds);
     ASTCDClass scopeClass = createScopeClass(ast);
 
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(ast.getCDDefinition().getName())
         .addAllCDClasss(decoratedSymbolClasses)
         .addAllCDClasss(createSymbolBuilderClasses(decoratedSymbolClasses))
-        .addAllCDClasss(decoratedSymbolInterfaces)
-        .addAllCDClasss(createSymbolBuilderClasses(decoratedSymbolInterfaces))
         .addCDClass(scopeClass)
         .addCDClass(createScopeClassBuilder(scopeClass))
         .addCDInterface(createScopeInterface(ast))

@@ -34,8 +34,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     ASTMCQualifiedType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
     String definitionName = input.getCDDefinition().getName();
 
-    List<ASTCDClass> symbolClasses = symbolTableService.getSymbolClasses(input.getCDDefinition().getCDClassList());
-    List<ASTCDInterface> symbolInterfaces = symbolTableService.getSymbolInterfaces(input.getCDDefinition().getCDInterfaceList());
+    List<ASTCDType> symbolClasses = symbolTableService.getSymbolProds(input.getCDDefinition());
 
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(globalScopeInterfaceName)
@@ -48,7 +47,6 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
         .addCDMethod(createContinueWithModelLoaderMethod(definitionName))
         .addCDMethod(createGetRealThisMethod(globalScopeInterfaceName))
         .addAllCDMethods(createResolveMethods(symbolClasses, definitionName))
-        .addAllCDMethods(createResolveMethods(symbolInterfaces, definitionName))
         .build();
   }
 
@@ -94,7 +92,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
 
     for (ASTCDType symbolProd : symbolProds) {
       String className = symbolTableService.removeASTPrefix(symbolProd);
-      String symbolFullTypeName = symbolTableService.getSymbolFullTypeName(symbolProd);
+      String symbolFullTypeName = symbolTableService.getSymbolFullName(symbolProd);
       ASTMCType listSymbol = getCDTypeFacade().createCollectionTypeOf(symbolFullTypeName);
 
       ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()

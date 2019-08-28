@@ -35,11 +35,11 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   public ASTCDInterface decorate(ASTCDCompilationUnit input) {
     ASTCDCompilationUnit compilationUnit = input.deepClone();
 
-    ASTMCQualifiedType symbolVisitorType = getCDTypeFacade().createQualifiedType(visitorService.getSymbolVisitorSimpleTypeName());
+    ASTMCQualifiedType symbolVisitorType = getCDTypeFacade().createQualifiedType(visitorService.getSymbolVisitorSimpleName());
     Set<String> symbolNames = getSymbolNames(compilationUnit.getCDDefinition());
 
     return CD4AnalysisMill.cDInterfaceBuilder()
-        .setName(visitorService.getSymbolVisitorSimpleTypeName())
+        .setName(visitorService.getSymbolVisitorSimpleName())
         .setModifier(PUBLIC.build())
         .addCDMethod(addEndVisitISymbolMethod())
         .addCDMethod(addVisitISymbolMethod())

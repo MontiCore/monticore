@@ -51,10 +51,10 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
   @Override
   public ASTCDClass decorate(ASTCDType input) {
-    String scopeInterface = symbolTableService.getScopeInterfaceTypeName();
-    String artifactScope = symbolTableService.getArtifactScopeTypeName();
-    String globalScopeInterface = symbolTableService.getGlobalScopeInterfaceTypeName();
-    String symbolName = symbolTableService.getSymbolName(input);
+    String scopeInterface = symbolTableService.getScopeInterfaceFullName();
+    String artifactScope = symbolTableService.getArtifactScopeFullName();
+    String globalScopeInterface = symbolTableService.getGlobalScopeInterfaceFullName();
+    String symbolName = symbolTableService.getNameWithSymbolSuffix(input);
 
     List<ASTCDAttribute> symbolAttributes = createSymbolAttributes(input.getName(), scopeInterface);
     List<ASTCDMethod> symbolMethods = createSymbolMethods(symbolAttributes);
@@ -68,7 +68,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
     ASTCDClass symbolClass = CD4AnalysisMill.cDClassBuilder()
         .setName(symbolName)
         .setModifier(PUBLIC.build())
-        .addInterface(getCDTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceName()))
+        .addInterface(getCDTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName()))
         .addCDConstructor(constructor)
         .addAllCDAttributes(symbolAttributes)
         .addAllCDMethods(symbolMethods)
@@ -184,7 +184,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
   }
 
   protected ASTCDMethod createAcceptMethod() {
-    ASTMCQualifiedType symbolVisitorType = getCDTypeFacade().createQualifiedType(visitorService.getSymbolVisitorFullTypeName());
+    ASTMCQualifiedType symbolVisitorType = getCDTypeFacade().createQualifiedType(visitorService.getSymbolVisitorFullName());
     ASTCDParameter parameter = getCDParameterFacade().createParameter(symbolVisitorType, VISITOR_PREFIX);
     ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
     this.replaceTemplate(EMPTY_BODY, acceptMethod, new StringHookPoint("visitor.handle(this);"));

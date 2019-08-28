@@ -36,7 +36,7 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
   @Override
   public ASTCDEnum decorate(final ASTCDEnum input) {
     String enumName = input.getName();
-    String constantClassName = astService.getASTConstantClassName();
+    String constantClassName = astService.getASTConstantClassFullName();
     ASTCDAttribute intValueAttribute = getIntValueAttribute();
     List<ASTCDMethod> intValueMethod = accessorDecorator.decorate(intValueAttribute);
     List<ASTCDEnumConstant> constants = input.getCDEnumConstantList().stream()

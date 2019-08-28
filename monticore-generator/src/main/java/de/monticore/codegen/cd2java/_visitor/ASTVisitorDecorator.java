@@ -33,7 +33,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     ASTMCType visitorType = this.visitorService.getVisitorType();
 
     ASTCDInterface symbolVisitorInterface = CD4AnalysisMill.cDInterfaceBuilder()
-        .setName(this.visitorService.getVisitorSimpleTypeName())
+        .setName(this.visitorService.getVisitorSimpleName())
         .addAllInterfaces(this.visitorService.getAllVisitorTypesInHierarchy())
         .setModifier(PUBLIC.build())
         .addCDMethod(addGetRealThisMethods(visitorType))

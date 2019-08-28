@@ -30,7 +30,7 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
     ASTMCType type = ast.getMCType().deepClone();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
     //create correct Name A for resolveA method
-    String simpleSymbolName = symbolTableService.getSimpleSymbolName(symbolTableService.getReferencedSymbolTypeName(ast));
+    String simpleSymbolName = symbolTableService.getSimpleNameFromSymbolName(symbolTableService.getReferencedSymbolTypeName(ast));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetSymbolOpt",
         ast.getName(), simpleSymbolName, isOptionalAttribute(ast)));
     return method;

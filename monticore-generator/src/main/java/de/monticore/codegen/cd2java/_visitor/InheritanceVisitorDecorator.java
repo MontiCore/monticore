@@ -32,16 +32,16 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     String languageInterfaceName = visitorService.getLanguageInterfaceName();
 
     return CD4AnalysisMill.cDInterfaceBuilder()
-        .setName(visitorService.getInheritanceVisitorSimpleTypeName())
+        .setName(visitorService.getInheritanceVisitorSimpleName())
         .setModifier(PUBLIC.build())
-        .addInterface(visitorService.getVisitorReferenceType())
+        .addInterface(visitorService.getVisitorType())
         .addAllInterfaces(visitorService.getSuperInheritanceVisitors())
         .addAllCDMethods(getHandleMethods(compilationUnit.getCDDefinition(), languageInterfaceName))
         .build();
   }
 
   protected List<ASTCDMethod> getHandleMethods(ASTCDDefinition astcdDefinition, String languageInterfaceName) {
-    String visitorSimpleTypeName = visitorService.getVisitorSimpleTypeName();
+    String visitorSimpleTypeName = visitorService.getVisitorSimpleName();
 
     List<ASTCDMethod> handleMethods = new ArrayList<>();
     handleMethods.addAll(astcdDefinition.getCDClassList()
@@ -79,7 +79,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected ASTCDMethod addLanguageInterfaceHandleMethod(String languageInterfaceName) {
     ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(languageInterfaceName);
-    String visitorSimpleTypeName = visitorService.getVisitorSimpleTypeName();
+    String visitorSimpleTypeName = visitorService.getVisitorSimpleName();
 
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(VisitorConstants.HANDLE, astNodeType);
     this.replaceTemplate(EMPTY_BODY, handleMethod,

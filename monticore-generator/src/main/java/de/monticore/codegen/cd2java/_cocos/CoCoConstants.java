@@ -25,5 +25,7 @@ public final class CoCoConstants {
 
   public static final String CHECKER_SIMPLE_NAME = "checker";
 
+  public static final String COCO_SIMPLE_NAME = "coco";
+
   private CoCoConstants() {}
 }

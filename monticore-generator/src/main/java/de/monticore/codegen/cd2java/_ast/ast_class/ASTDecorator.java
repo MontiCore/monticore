@@ -7,6 +7,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractTransformer;
+import de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -89,7 +90,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
         clazz.addCDAttribute(attribute);
         clazz.addAllCDMethods(methodDecorator.decorate(attribute));
       } else {
-        String scopeInterfaceType = symbolTableService.getScopeInterfaceTypeName();
+        String scopeInterfaceType = symbolTableService.getScopeInterfaceFullName();
 
         methodDecorator.disableTemplates();
         List<ASTCDMethod> methods = methodDecorator.getMutatorDecorator().decorate(attribute);
@@ -126,7 +127,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
       ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC, ASTConstants.ACCEPT_METHOD, superVisitorParameter);
       String errorCode = DecorationHelper.getGeneratedErrorCode(astClass);
       this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("_ast.ast_class.AcceptSuper",
-          this.visitorService.getVisitorFullTypeName(), errorCode, astClass.getName(), CollectionTypesPrinter.printType(superVisitorType)));
+          this.visitorService.getVisitorFullName(), errorCode, astClass.getName(), CollectionTypesPrinter.printType(superVisitorType)));
       result.add(superAccept);
     }
     return result;
@@ -139,9 +140,9 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT, classType, ASTConstants.CONSTRUCT_METHOD);
     } else {
       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED, classType, ASTConstants.CONSTRUCT_METHOD);
-      this.replaceTemplate(EMPTY_BODY, constructMethod, new StringHookPoint(this.nodeFactoryService.getCreateInvocation(astClass)));
+      this.replaceTemplate(EMPTY_BODY, constructMethod,
+          new StringHookPoint("return " + nodeFactoryService.getNodeFactoryFullTypeName() + "." + NodeFactoryConstants.CREATE_METHOD + astClass.getName() + "();"));
     }
-
     return constructMethod;
   }
 }

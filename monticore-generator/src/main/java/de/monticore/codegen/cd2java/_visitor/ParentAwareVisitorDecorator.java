@@ -32,9 +32,9 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     String languageInterfaceName = visitorService.getLanguageInterfaceName();
 
     return CD4AnalysisMill.cDClassBuilder()
-        .setName(visitorService.getParentAwareVisitorSimpleTypeName())
+        .setName(visitorService.getParentAwareVisitorSimpleName())
         .setModifier(PUBLIC_ABSTRACT.build())
-        .addInterface(visitorService.getVisitorReferenceType())
+        .addInterface(visitorService.getVisitorType())
         .addCDAttribute(getParentAttribute(languageInterfaceName))
         .addCDMethod(getParentMethod(languageInterfaceName))
         .addCDMethod(getParentsMethod(languageInterfaceName))
@@ -73,7 +73,7 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
         .collect(Collectors.toList());
 
     // add template
-    String visitorSimpleTypeName = visitorService.getVisitorSimpleTypeName();
+    String visitorSimpleTypeName = visitorService.getVisitorSimpleName();
     traverseMethods.forEach(m -> replaceTemplate(EMPTY_BODY, m,
         new TemplateHookPoint(TRAVERSE_PAREENTAWARE_TEMPLATE, visitorSimpleTypeName)));
 
