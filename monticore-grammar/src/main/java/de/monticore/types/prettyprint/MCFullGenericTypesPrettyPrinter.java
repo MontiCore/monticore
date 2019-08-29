@@ -101,38 +101,6 @@ public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyP
     }
   }
 
-  @Override
-  public void handle(ASTMCTypeVariableDeclaration node) {
-    getPrinter().print(node.getName() + " ");
-    if (!node.isEmptyUpperBounds()) {
-      getPrinter().print("extends ");
-      boolean first = true;
-      for (ASTMCType type : node.getUpperBoundList()) {
-        if (first) {
-          first = false;
-        } else {
-          getPrinter().print(" &" );
-        }
-        type.accept(getRealThis());
-      }
-    }
-  }
-
-  @Override
-  public void handle(ASTMCTypeParameters node) {
-    getPrinter().print("<");
-    boolean first = true;
-    for (ASTMCTypeVariableDeclaration var : node.getMCTypeVariableDeclarationList()) {
-      if (first) {
-        first = false;
-      } else {
-        getPrinter().print(", ");
-      }
-      var.accept(getRealThis());
-    }
-    getPrinter().print(">");
-  }
-
   public String prettyprint(ASTMCWildcardTypeArgument a) {
     getPrinter().clearBuffer();
     a.accept(getRealThis());

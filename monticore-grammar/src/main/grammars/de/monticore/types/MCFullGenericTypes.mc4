@@ -59,27 +59,4 @@ component grammar MCFullGenericTypes
   // counter dimensions counts the array depth
   astrule MCArrayType =
     dimensions:int;
-
-
-  /*=================================================================*/
-
-// TODO: 2 NT sind zu verschieben, weil dies nicht zu den TypeExpressions
-// gehört, sondern die Parametrisierung bei der Definition festlegt
-
-  /** ASTMCTypeParameters represents a list of generic parameters enclosed
-   *  by '<...>' in generic type declarations 
-   *  @attribute typeVariableDeclarations List of parameters
-  */
-  MCTypeParameters =
-    "<" (MCTypeVariableDeclaration || ",")+ ">";
-
-  /** ASTTypeVariableDeclaration represents a generic variable declaration
-   *  in '<'...'>' (e.g., in front of method or constructor declarations or
-   *  behind the class or interface name).
-   *  E.g.: public <T extends SuperClass> void test(T t)
-   *  @attribute name        Name of the type variable
-   *  @attribute upperBound Optional list of required super classes
-  */
-  MCTypeVariableDeclaration =
-    Name ( "extends" upperBound:(MCType || "&")+ )?;
 }
