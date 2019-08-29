@@ -87,7 +87,7 @@ This product includes the following software:
 * [AntLR](http://www.antlr.org/)
 * [FreeMarker](http://freemarker.org/)
 
-## Build 
+## Contribution 
 
 Please make sure that your complete workspace only uses UNIX line 
 endings (LF) and all files are UTF-8 without BOM. On Windows you should 
@@ -95,6 +95,44 @@ configure git to not automatically replace LF with CRLF during checkout
 by executing the following configuration: 
 
     git config --global core.autocrlf input
+    
+## Build MontiCore
+
+* build the productive code  
+`mvn install`
+* run integration tests    
+  * Integration tests of the generator: 
+    * maven (deprecated): `mvn install -f monticore-generator/it/pom.xml` or 
+    * gradle:     
+      * using wrapper (recommended): in `monticore-generator/it/` call `gradlew build`
+      * local gradle installation: `gradle build -p /monticore-generator/it`   
+  * EMF Integration tests of the generator: 
+    * maven (deprecated): `mvn install -f monticore-generator/it/pom.xml -P emf-it-tests` or 
+    * gradle:     
+      * using wrapper (recommended): in `monticore-generator/it/` call `gradlew build -PbuildProfile=emf`
+      * local gradle installation: `gradle build -p /monticore-generator/it -PbuildProfile=emf`   
+  * Experiments integration tests:
+    * maven (deprecated): `mvn install -f monticore-generator/it/experiments/pom.xml` or
+    * gradle:     
+      * using wrapper (recommended): in `monticore-generator/it/experiments/` call `gradlew build`
+      * local gradle installation: `gradle build -p /monticore-generator/it/experiments`
+  * Grammar integration tests:
+     * using wrapper (recommended): in `monticore-grammar/monticore-grammar-it` call `gradlew build`
+     * local gradle installation: `gradle build -p monticore-grammar/monticore-grammar-it`
+  * TemplateClassGenerator integration tests 
+    * maven (deprecated): `mvn install -f /monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/pom.xml` or 
+    * gradle:     
+      * using wrapper (recommended): in `/monticore-templateclassgenerator/it/monticore-templateclassgenerator-it` call `gradlew build`
+      * local gradle installation: `gradle build -p /monticore-templateclassgenerator/it/monticore-templateclassgenerator-it`  
+* clean:
+  * call `mvn clean`
+  * cleaning integration test 
+    using maven (deprecated): `mvn clean` (including the `-f` argument, see above) 
+    * using gradle
+      * using wrapper (recommended): `gradlew clean` within the corresponding directory (see above) or
+      * using local installation: `gradle clean` (including `-p` argument) 
+    
+  
 ## Build Status
  JavaDSL (dev)  [![JavaDSL (dev) pipeline status](https://git.rwth-aachen.de/monticore/javaDSL/badges/dev/pipeline.svg)](https://git.rwth-aachen.de/monticore/javaDSL/commits/dev)    
 
