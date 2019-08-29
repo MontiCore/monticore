@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+# Programmauswahlunterstuetzung:
+# eine Liste von Kommandos sind durch Auswahl ausfuerhbar
+# Interaktive Eingabe erolgt mit
+#  Auswahlkuerzel weitere Argumente <Return>
+#  Ende mit <return>
+# Vor der Abfrage werden die Zeilen ausgegeben, die
+# die Zeichen "#" und ":" direkt aufenanderfolgend enthalten
+
+file=$0
+grep "#\:" $file | sed "s/#\://g"
+
+#:------------------------------------------
+#:Shortcuts fuer wichtige Kommandos:
+#: 
+
+while true; do
+  read -p "==> " command args
+  echo
+
+#  echo commando: $command
+#  echo args: $args
+
+  case $command in
+#--------------------------------------------------
+
+!) #:shell escape
+    $args ;;
+
+m) #:einmal durchbauen; ohne Int.Tests (mvn install; 5 min)
+    cd ~/monticore/; mvn install ;;
+
+q) #:quick: einmal durchbauen; ohne Tests (mvn install; 5:30 min)
+    cd ~/monticore/; mvn install -Dmaven.test.skip=true ;;
+
+it) #: IntegrationTests (2* gradle'si, XXX min)
+    #   * Integration tests of the generator:
+    cd ~/monticore/monticore-generator/it; gradle build
+    #   * EMF Integration tests of the generator:
+    cd ~/monticore/monticore-generator/it/; gradle build -PbuildProfile=emf
+    #   * Experiments integration tests:
+    cd ~/monticore/monticore-generator/it/experiments/; gradle build
+    #   * Grammar integration tests:
+    cd ~/monticore/monticore-grammar/monticore-grammar-it; gradle build
+    #   * TemplateClassGenerator integration tests:
+    cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it; gradle build
+    ;;
+
+e) #: Tests aus den Experimenten (gradle's; 2:40 min -- 12 sek)
+    #   * Experiments integration tests:
+    cd ~/monticore/monticore-generator/it/experiments; gradle build;
+    ;;
+
+cl) #:           clean main (via mvn)
+    cd ~/monticore/; mvn clean ;;
+
+cla) #:          clean all
+    cd ~/monticore/; mvn clean
+    cd ~/monticore/monticore-generator/it; gradle clean
+    cd ~/monticore/monticore-generator/it/; gradle clean -PbuildProfile=emf
+    cd ~/monticore/monticore-grammar/monticore-grammar-it; gradle clean
+    cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it; gradle clean
+    cd ~/monticore/monticore-generator/it/experiments/; gradle clean
+    ;;
+
+cle) #:          clean experiments
+    cd ~/monticore/monticore-generator/it/experiments/; gradle clean
+    ;;
+
+
+#--------------------------------------------------
+
+#:x) oder "")    Ende der Bearbeitung
+x|"") echo thanks
+    exit ;;
+
+# Hilfe nochmal ausgeben
+*)  echo "Kommando nicht erkannt."
+    grep "#\:" $file | sed "s/#\://g" ;;
+
+#--------------------------------------------------
+  esac
+done
+
+#:
