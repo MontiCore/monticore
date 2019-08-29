@@ -28,7 +28,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected final AbstractService service;
 
-  private boolean printBuildMethodTemplate;
+  private boolean printBuildMethodTemplate = true;
 
   public BuilderDecorator(final GlobalExtensionManagement glex,
                           final AccessorDecorator accessorDecorator,

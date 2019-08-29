@@ -81,7 +81,9 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
 
   protected ASTCDMethod createGetRealThisMethod(String globalScopeName) {
     ASTMCType globalScopeInterfaceType = getCDTypeFacade().createQualifiedType(globalScopeName);
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, globalScopeInterfaceType, "getRealThis");
+    ASTCDMethod getRealThis = getCDMethodFacade().createMethod(PUBLIC, globalScopeInterfaceType, "getRealThis");
+    this.replaceTemplate(EMPTY_BODY,getRealThis, new StringHookPoint("return this;"));
+    return getRealThis;
   }
 
   protected List<ASTCDMethod> createResolveMethods(List<? extends ASTCDType> symbolProds, String definitionName) {
