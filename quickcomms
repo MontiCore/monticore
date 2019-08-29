@@ -49,6 +49,7 @@ it) #: IntegrationTests (2* gradle'si, XXX min)
 
 e) #: Tests aus den Experimenten (gradle's; 2:40 min -- 12 sek)
     #   * Experiments integration tests:
+    #XXX cd ~/monticore/monticore-generator/it/experiments/; gradle build
     cd ~/monticore/monticore-generator/it/experiments; gradle build;
     ;;
 
@@ -61,7 +62,6 @@ cla) #:          clean all
     cd ~/monticore/monticore-generator/it/; gradle clean -PbuildProfile=emf
     cd ~/monticore/monticore-grammar/monticore-grammar-it; gradle clean
     cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it; gradle clean
-    cd ~/monticore/monticore-generator/it/experiments/; gradle clean
     ;;
 
 cle) #:          clean experiments
