@@ -5,7 +5,6 @@
 
 grammar GrammarForAST02 {
 
-
 S = x:A "::="
           y:A "--" (y:A | "," )*;
 

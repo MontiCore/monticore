@@ -59,6 +59,7 @@ cla) #:    clean all
     cd ~/monticore/; mvn clean
     cd ~/monticore/monticore-generator/it; gradle clean
     cd ~/monticore/monticore-generator/it/; gradle clean -PbuildProfile=emf
+    cd ~/monticore/monticore-generator/it/experiments/; gradle clean
     cd ~/monticore/monticore-grammar/monticore-grammar-it; gradle clean
     cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it; gradle clean
     ;;
