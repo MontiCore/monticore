@@ -17,7 +17,8 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
@@ -45,9 +46,9 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
 
     decoratedScopClass.getCDMethodList().clear();
 
-    builderDecorator.disableTemplates();
+    builderDecorator.setPrintBuildMethodTemplate(false);
     ASTCDClass scopeBuilder = builderDecorator.decorate(decoratedScopClass);
-    builderDecorator.enableTemplates();
+    builderDecorator.setPrintBuildMethodTemplate(true);
 
     scopeBuilder.getCDAttributeList().forEach(a -> a.setModifier(PROTECTED.build()));
     scopeBuilder.setName(scopeBuilderName);
@@ -59,14 +60,6 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
         new TemplateHookPoint("_symboltable.scope.artifact.Build", scopeClass.getName())));
-
-    // valid method template
-    Optional<ASTCDMethod> validMethod = scopeBuilder.getCDMethodList()
-        .stream()
-        .filter(m -> IS_VALID.equals(m.getName()))
-        .findFirst();
-    validMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new StringHookPoint("return true;")));
 
     BuilderMutatorMethodDecorator builderMutatorMethodDecorator = new BuilderMutatorMethodDecorator(glex,
         getCDTypeFacade().createQualifiedType(scopeBuilderName));

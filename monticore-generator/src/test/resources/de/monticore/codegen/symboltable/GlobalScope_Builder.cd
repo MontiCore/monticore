@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.symboltable;
+
+classdiagram GlobalScope_Builder {
+
+    class AGlobalScope{
+      protected de.monticore.io.paths.ModelPath modelPath;
+      protected  ALanguage aLanguage;
+    }
+}

@@ -28,6 +28,8 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected final AbstractService service;
 
+  private boolean printBuildMethodTemplate;
+
   public BuilderDecorator(final GlobalExtensionManagement glex,
                           final AccessorDecorator accessorDecorator,
                           final AbstractService service) {
@@ -51,6 +53,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTCDAttribute realThisAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED, builderType, REAL_BUILDER);
     List<ASTCDAttribute> builderAttributes = domainClass.getCDAttributeList().stream()
         .map(ASTCDAttribute::deepClone)
+        .filter(a -> !a.getModifier().isFinal())
         .collect(Collectors.toList());
     List<ASTCDAttribute> mandatoryAttributes = builderAttributes.stream()
         .filter(a -> !GeneratorHelper.isListType(a.printType()))
@@ -64,7 +67,9 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + builderClassName + ") this;"));
 
     ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier, domainType, BUILD_METHOD);
-    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes));
+    if (isPrintBuildMethodTemplate()) {
+      this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes));
+    }
 
     ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), IS_VALID);
     this.replaceTemplate(EMPTY_BODY, isValidMethod, new TemplateHookPoint("_ast.builder.IsValidMethod", mandatoryAttributes));
@@ -102,5 +107,13 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     } else if (GeneratorHelper.isOptional(attribute)) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     }
+  }
+
+  public boolean isPrintBuildMethodTemplate() {
+    return printBuildMethodTemplate;
+  }
+
+  public void setPrintBuildMethodTemplate(boolean printBuildMethodTemplate) {
+    this.printBuildMethodTemplate = printBuildMethodTemplate;
   }
 }

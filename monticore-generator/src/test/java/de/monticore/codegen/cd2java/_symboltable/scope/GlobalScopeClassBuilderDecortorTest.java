@@ -1,14 +1,12 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.github.javaparser.StaticJavaParser;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
@@ -20,8 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
@@ -45,15 +42,17 @@ public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
-    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "GlobalScope_Builder");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex), new SymbolTableService(decoratedCompilationUnit));
+    ASTCDClass cdClass = getClassBy("AGlobalScope", decoratedCompilationUnit);
 
     GlobalScopeClassBuilderDecorator decorator = new GlobalScopeClassBuilderDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
-        new AccessorDecorator(glex));
+        builderDecorator);
 
     //creates normal Symbol
-    this.scopeClass = decorator.decorate(decoratedCompilationUnit);
+    this.scopeClass = decorator.decorate(cdClass);
   }
 
   @Test
@@ -63,7 +62,7 @@ public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
 
   @Test
   public void testClassName() {
-    assertEquals("AutomatonGlobalScopeBuilder", scopeClass.getName());
+    assertEquals("AGlobalScopeBuilder", scopeClass.getName());
   }
 
   @Test
@@ -78,12 +77,23 @@ public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertTrue(scopeClass.isEmptyCDConstructors());
+    assertEquals(1,scopeClass.sizeCDConstructors());
+  }
+
+  @Test
+  public void testDefaultConstructor() {
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(0);
+    assertDeepEquals(PROTECTED, cdConstructor.getModifier());
+    assertEquals("AGlobalScopeBuilder", cdConstructor.getName());
+
+    assertTrue(cdConstructor.isEmptyCDParameters());
+
+    assertTrue(cdConstructor.isEmptyExceptions());
   }
 
   @Test
   public void testAttributeSize() {
-    assertEquals(2, scopeClass.sizeCDAttributes());
+    assertEquals(3, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -95,14 +105,14 @@ public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
 
   @Test
   public void testLanguageAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("language", scopeClass);
+    ASTCDAttribute astcdAttribute = getAttributeBy("aLanguage", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonLanguage", astcdAttribute.getMCType());
+    assertDeepEquals("ALanguage", astcdAttribute.getMCType());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(5, scopeClass.getCDMethodList().size());
+    assertEquals(6, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -118,24 +128,24 @@ public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
 
   @Test
   public void testGetAutomatonLanguageMethod() {
-    ASTCDMethod method = getMethodBy("getLanguage", scopeClass);
+    ASTCDMethod method = getMethodBy("getALanguage", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonLanguage", method.getMCReturnType().getMCType());
+    assertDeepEquals("ALanguage", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
   public void testSetAutomatonLanguageMethod() {
-    ASTCDMethod method = getMethodBy("setLanguage", scopeClass);
+    ASTCDMethod method = getMethodBy("setALanguage", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AutomatonGlobalScopeBuilder",method.getMCReturnType().getMCType());
+    assertDeepEquals("AGlobalScopeBuilder",method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonLanguage", method.getCDParameter(0).getMCType());
-    assertEquals("language", method.getCDParameter(0).getName());
+    assertDeepEquals("ALanguage", method.getCDParameter(0).getMCType());
+    assertEquals("aLanguage", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -143,7 +153,7 @@ public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setModelPath", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AutomatonGlobalScopeBuilder",method.getMCReturnType().getMCType());
+    assertDeepEquals("AGlobalScopeBuilder",method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(MODEL_PATH, method.getCDParameter(0).getMCType());
@@ -154,7 +164,7 @@ public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
   public void testBuildMethod() {
     ASTCDMethod method = getMethodBy("build", scopeClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AutomatonGlobalScope", method.getMCReturnType().getMCType());
+    assertDeepEquals("AGlobalScope", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
