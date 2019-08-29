@@ -11,7 +11,7 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -50,7 +50,7 @@ public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     GlobalScopeClassBuilderDecorator decorator = new GlobalScopeClassBuilderDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
-        new MethodDecorator(glex));
+        new AccessorDecorator(glex));
 
     //creates normal Symbol
     this.scopeClass = decorator.decorate(decoratedCompilationUnit);
@@ -131,7 +131,7 @@ public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setLanguage", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertDeepEquals("AutomatonGlobalScopeBuilder",method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonLanguage", method.getCDParameter(0).getMCType());
@@ -143,7 +143,7 @@ public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setModelPath", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertDeepEquals("AutomatonGlobalScopeBuilder",method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(MODEL_PATH, method.getCDParameter(0).getMCType());

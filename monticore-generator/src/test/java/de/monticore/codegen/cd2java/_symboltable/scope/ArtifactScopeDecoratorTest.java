@@ -38,8 +38,6 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
   private CDTypeFacade cdTypeFacade;
 
-  public static final String MODEL_PATH = "de.monticore.io.paths.ModelPath";
-
   private static final String AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.AutomatonScope";
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";

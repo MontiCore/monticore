@@ -12,7 +12,7 @@ import de.monticore.types.MCCollectionTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
@@ -35,11 +35,12 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     //todo find better util than the DecorationHelper
+    List<ASTCDMethod> methodList= new ArrayList<>();
     naiveAttributeName = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
-    ASTCDMethod set = createSetMethod(ast);
-    ASTCDMethod setOpt = createSetOptMethod(ast);
-    ASTCDMethod setAbsent = createSetAbsentMethod(ast);
-    return Arrays.asList(set, setOpt, setAbsent);
+    methodList.add(createSetMethod(ast));
+    methodList.add(createSetOptMethod(ast));
+    methodList.add( createSetAbsentMethod(ast));
+    return methodList;
   }
 
   protected ASTCDMethod createSetMethod(final ASTCDAttribute ast) {

@@ -2,8 +2,9 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 
@@ -18,15 +19,15 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class GlobalScopeClassBuilderDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
-  protected final MethodDecorator methodDecorator;
-
   protected final SymbolTableService symbolTableService;
+
+  protected final AccessorDecorator accessorDecorator;
 
   public GlobalScopeClassBuilderDecorator(final GlobalExtensionManagement glex,
                                           final SymbolTableService symbolTableService,
-                                          final MethodDecorator methodDecorator) {
+                                          final AccessorDecorator accessorDecorator) {
     super(glex);
-    this.methodDecorator = methodDecorator;
+    this.accessorDecorator = accessorDecorator;
     this.symbolTableService = symbolTableService;
   }
 
@@ -34,10 +35,18 @@ public class GlobalScopeClassBuilderDecorator extends AbstractCreator<ASTCDCompi
   public ASTCDClass decorate(ASTCDCompilationUnit scopeClass) {
     String scopeName = symbolTableService.getGlobalScopeSimpleName();
     String scopeBuilderName = scopeName + BUILDER_SUFFIX;
+
+    BuilderMutatorMethodDecorator builderMutatorMethodDecorator = new BuilderMutatorMethodDecorator(glex,
+        getCDTypeFacade().createQualifiedType(scopeBuilderName));
+
     ASTCDAttribute languageAttribute = createLanguageAttribute();
-    List<ASTCDMethod> languageMethods = methodDecorator.decorate(languageAttribute);
+    List<ASTCDMethod> languageMethods = builderMutatorMethodDecorator.decorate(languageAttribute);
+    languageMethods.addAll(accessorDecorator.decorate(languageAttribute));
+
     ASTCDAttribute modelPathAttribute = createModelPathAttribute();
-    List<ASTCDMethod> modelPathMethods = methodDecorator.decorate(modelPathAttribute);
+    List<ASTCDMethod> modelPathMethods = builderMutatorMethodDecorator.decorate(modelPathAttribute);
+    modelPathMethods.addAll(accessorDecorator.decorate(modelPathAttribute));
+
     return CD4AnalysisMill.cDClassBuilder()
         .setName(scopeBuilderName)
         .setModifier(PUBLIC.build())

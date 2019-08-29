@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.symboltable;
+
+classdiagram ArtifactScope_Builder {
+
+    class AArtifactScope{
+      private String packageName;
+      private  List<de.monticore.symboltable.ImportStatement> imports;
+      private  de.monticore.symboltable.names.QualifiedNamesCalculator qualifiedNamesCalculator ;
+    }
+}

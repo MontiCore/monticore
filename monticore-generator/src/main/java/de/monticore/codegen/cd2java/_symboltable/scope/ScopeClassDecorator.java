@@ -278,8 +278,10 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute() {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED,
+    ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED,
         getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType()), "enclosingScope");
+    this.replaceTemplate(VALUE, enclosingScope, new StringHookPoint("= Optional.empty();"));
+    return enclosingScope;
   }
 
   protected List<ASTCDMethod> createEnclosingScopeMethods(ASTCDAttribute enclosingScopeAttribute) {
