@@ -68,6 +68,15 @@ cle) #:          clean experiments
     cd ~/monticore/monticore-generator/it/experiments/; gradle clean
     ;;
 
+u)  #: update:         git fetch && git pull
+    cd ~/monticore/; git fetch && git pull
+    ;;
+
+c)  #: commit:         git commit -am "BR from q" && git push
+    cd ~/monticore/; git commit -am "BR from q" && git push
+    ;;
+
+
 
 #--------------------------------------------------
 
