@@ -100,6 +100,7 @@ by executing the following configuration:
 
 * build the productive code  
 `mvn install`
+  * skipping tests: `mvn install -Dmaven.test.skip=true`
 * run integration tests    
   * Integration tests of the generator: 
     * maven (deprecated): `mvn install -f monticore-generator/it/pom.xml` or 
