@@ -28,13 +28,13 @@ while true; do
 !) #:shell escape
     $args ;;
 
-m) #:einmal durchbauen; ohne Int.Tests (mvn install; 5 min)
+m) #:durchbauen + Unit -Int.Tests (mvn install; 5 min)
     cd ~/monticore/; mvn install ;;
 
-q) #:quick: einmal durchbauen; ohne Tests (mvn install; 5:30 min)
+q) #:quick: durchbauen; ohne Tests (5:30 min)
     cd ~/monticore/; mvn install -Dmaven.test.skip=true ;;
 
-it) #: IntegrationTests (2* gradle'si, XXX min)
+it) #:IntegrationTests (gradle's, 30 min -- XXX)
     #   * Integration tests of the generator:
     cd ~/monticore/monticore-generator/it; gradle build
     #   * EMF Integration tests of the generator:
@@ -47,16 +47,15 @@ it) #: IntegrationTests (2* gradle'si, XXX min)
     cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it; gradle build
     ;;
 
-e) #: Tests aus den Experimenten (gradle's; 2:40 min -- 12 sek)
+e) #:Tests aus den Experimenten (gradle's; 2:40 min -- 12 sek)
     #   * Experiments integration tests:
-    #XXX cd ~/monticore/monticore-generator/it/experiments/; gradle build
     cd ~/monticore/monticore-generator/it/experiments; gradle build;
     ;;
 
-cl) #:           clean main (via mvn)
+cl) #:     clean main (via mvn)
     cd ~/monticore/; mvn clean ;;
 
-cla) #:          clean all
+cla) #:    clean all
     cd ~/monticore/; mvn clean
     cd ~/monticore/monticore-generator/it; gradle clean
     cd ~/monticore/monticore-generator/it/; gradle clean -PbuildProfile=emf
@@ -64,15 +63,15 @@ cla) #:          clean all
     cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it; gradle clean
     ;;
 
-cle) #:          clean experiments
+cle) #:    clean experiments
     cd ~/monticore/monticore-generator/it/experiments/; gradle clean
     ;;
 
-u)  #: update:         git fetch && git pull
+u)  #: update: (git fetch && git pull)
     cd ~/monticore/; git fetch && git pull
     ;;
 
-c)  #: commit:         git commit -am "BR from q" && git push
+c)  #: commit: (git commit -am "BR from q" && git push)
     cd ~/monticore/; git commit -am "BR from q" && git push
     ;;
 
