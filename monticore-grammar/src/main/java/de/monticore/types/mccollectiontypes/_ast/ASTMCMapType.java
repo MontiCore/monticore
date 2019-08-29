@@ -10,6 +10,7 @@ import java.util.List;
 public class ASTMCMapType extends ASTMCMapTypeTOP {
 
     public ASTMCMapType() {
+        setNameList(Lists.newArrayList("Map"));
     }
 
     public ASTMCMapType(ASTMCTypeArgument key, ASTMCTypeArgument value, List<ASTMCTypeArgument> astmcTypeArguments, List<String> name) {
@@ -18,7 +19,9 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
     public ASTMCMapType( ASTMCTypeArgument key, ASTMCTypeArgument value) {
         super(key, value,Lists.newArrayList(),Lists.newArrayList("Map"));
     }
-
+    public void setName(String name) {
+        // Name is fixed to "Map"
+    }
 
     @Override
     public String getBaseName() {

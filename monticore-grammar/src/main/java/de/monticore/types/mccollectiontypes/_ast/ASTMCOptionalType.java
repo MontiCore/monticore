@@ -8,6 +8,7 @@ import java.util.List;
 public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
 
     public ASTMCOptionalType() {
+        setNameList(Lists.newArrayList("Optional"));
     }
 
     public ASTMCOptionalType( List<ASTMCTypeArgument> typeArgument) {
@@ -17,7 +18,11 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
         super(typeArgument, Lists.newArrayList("Optional") );
 
     }
-
+    public void setName(String name) {
+        // Name is fixed to "Optional"
+        //if(super.getNameList().size()
+        super.setName(0,"Optional");
+    }
     @Override
     public String getBaseName() {
         return getName();

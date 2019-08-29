@@ -7,6 +7,7 @@ import java.util.List;
 
 public class ASTMCListType extends ASTMCListTypeTOP {
     public ASTMCListType() {
+        setNameList(Lists.newArrayList("List"));
     }
 
     public ASTMCListType(List<ASTMCTypeArgument> typeArgument, List<String> name ) {
@@ -19,6 +20,10 @@ public class ASTMCListType extends ASTMCListTypeTOP {
 
     public ASTMCTypeArgument getMCTypeArgument() {
       return this.getMCTypeArgument(0);
+    }
+
+    public void setName(String name) {
+        // Name is fixed to "List"
     }
 
     @Override

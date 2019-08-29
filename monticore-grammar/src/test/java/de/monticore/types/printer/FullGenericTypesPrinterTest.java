@@ -3,7 +3,9 @@ package de.monticore.types.printer;
 
 import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes._ast.*;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
@@ -28,8 +30,8 @@ public class FullGenericTypesPrinterTest {
     Optional<ASTMCWildcardTypeArgument> astmcWildcardTypeArgument1 = parser.parse_StringMCWildcardTypeArgument("? extends List");
     Optional<ASTMCWildcardTypeArgument> astmcWildcardTypeArgument2 = parser.parse_StringMCWildcardTypeArgument("? super Stream");
     Optional<ASTMCMultipleGenericType> astmcMultipleGenericType = parser.parse_StringMCMultipleGenericType("java.util.List<List<String>>.c.d<e,f,g,h>");
-    Optional<ASTMCTypeVariableDeclaration> astmcTypeVariableDeclaration = parser.parse_StringMCTypeVariableDeclaration("a extends b&c&d");
-    Optional<ASTMCTypeParameters> astmcTypeParameters = parser.parse_StringMCTypeParameters("<a extends b&c&d, e extends f&g>");
+//    Optional<ASTMCTypeVariableDeclaration> astmcTypeVariableDeclaration = parser.parse_StringMCTypeVariableDeclaration("a extends b&c&d");
+//    Optional<ASTMCTypeParameters> astmcTypeParameters = parser.parse_StringMCTypeParameters("<a extends b&c&d, e extends f&g>");
     Optional<ASTMCType> astmcArrayType = parser.parse_StringMCType("String[][][]");
 
     assertFalse(parser.hasErrors());
@@ -37,8 +39,8 @@ public class FullGenericTypesPrinterTest {
     assertTrue(astmcWildcardTypeArgument1.isPresent());
     assertTrue(astmcWildcardTypeArgument2.isPresent());
     assertTrue(astmcMultipleGenericType.isPresent());
-    assertTrue(astmcTypeVariableDeclaration.isPresent());
-    assertTrue(astmcTypeParameters.isPresent());
+//    assertTrue(astmcTypeVariableDeclaration.isPresent());
+//    assertTrue(astmcTypeParameters.isPresent());
     assertTrue(astmcArrayType.isPresent());
     assertTrue(astmcArrayType.get() instanceof ASTMCArrayType);
 
@@ -46,8 +48,8 @@ public class FullGenericTypesPrinterTest {
     assertEquals("? extends List", FullGenericTypesPrinter.printType(astmcWildcardTypeArgument1.get()));
     assertEquals("? super Stream", FullGenericTypesPrinter.printType(astmcWildcardTypeArgument2.get()));
     assertEquals("java.util.List<List<String>>.c.d<e,f,g,h>", FullGenericTypesPrinter.printType(astmcMultipleGenericType.get()));
-    assertEquals("<a extends b &c &d, e extends f &g>", FullGenericTypesPrinter.printType(astmcTypeParameters.get()));
-    assertEquals("a extends b &c &d", FullGenericTypesPrinter.printType(astmcTypeVariableDeclaration.get()));
+//    assertEquals("<a extends b &c &d, e extends f &g>", FullGenericTypesPrinter.printType(astmcTypeParameters.get()));
+//    assertEquals("a extends b &c &d", FullGenericTypesPrinter.printType(astmcTypeVariableDeclaration.get()));
     assertEquals("String[][][]", FullGenericTypesPrinter.printType(astmcArrayType.get()));
   }
 }

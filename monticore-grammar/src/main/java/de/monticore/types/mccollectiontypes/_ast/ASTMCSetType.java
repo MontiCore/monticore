@@ -7,6 +7,7 @@ import java.util.List;
 public class ASTMCSetType extends ASTMCSetTypeTOP {
 
     public ASTMCSetType() {
+        setNameList(Lists.newArrayList("Set"));
     }
 
     public ASTMCSetType(List<ASTMCTypeArgument> typeArgument, List<String> name ) {
@@ -30,6 +31,10 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
     @Override
     public String getBaseName() {
         return getName();
+    }
+
+    public void setName(String name) {
+        // Name is fixed to "Set"
     }
 
 }
