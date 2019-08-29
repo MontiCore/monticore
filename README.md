@@ -126,8 +126,8 @@ by executing the following configuration:
       * local gradle installation: `gradle build -p /monticore-templateclassgenerator/it/monticore-templateclassgenerator-it`  
 * clean:
   * call `mvn clean`
-  * cleaning integration test 
-    using maven (deprecated): `mvn clean` (including the `-f` argument, see above) 
+  * cleaning integration tests:
+    * using maven (deprecated): `mvn clean` (including the `-f` argument, see above) 
     * using gradle
       * using wrapper (recommended): `gradlew clean` within the corresponding directory (see above) or
       * using local installation: `gradle clean` (including `-p` argument) 
