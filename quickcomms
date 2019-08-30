@@ -86,8 +86,8 @@ cla) #:    clean all
     cd ~/monticore/; mvn clean || exit
     cd ~/monticore/monticore-generator/it;
     gradle clean || exit
-    cd ~/monticore/monticore-generator/it/;
-    gradle clean -PbuildProfile=emf || exit
+    # cd ~/monticore/monticore-generator/it/;
+    # gradle clean -PbuildProfile=emf || exit
     cd ~/monticore/monticore-generator/it/experiments/;
     gradle clean || exit
     cd ~/monticore/monticore-grammar/monticore-grammar-it;
