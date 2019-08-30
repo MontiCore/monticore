@@ -11,7 +11,7 @@ public class SymTypeVariable extends SymTypeExpression {
   protected String varName;
 
   // TODO BR: The type variable may be bounded; then it probably helps to connect to
-  // the Var-Symbol that contains the bounf
+  // the Var-Symbol that contains the bound
   
   public SymTypeVariable(String varName) {
     this.varName = varName;
@@ -68,4 +68,8 @@ public class SymTypeVariable extends SymTypeExpression {
     }
     return clone;
   }
+  
+  public SymTypeVariable() {
+  }
+  
 }

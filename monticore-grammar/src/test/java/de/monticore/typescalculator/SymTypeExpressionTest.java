@@ -3,6 +3,7 @@ package de.monticore.typescalculator;
 
 import com.google.common.collect.Lists;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class SymTypeExpressionTest {
     assertTrue(a.deepEquals(b));
   }
 
-  @Test
+  @Test @Ignore
   public void deepCloneTypeConstantTest() {
     SymTypeExpression e = buildTypeConstant("double");
     TypeSymbol s = new TypeSymbol("double");
@@ -33,7 +34,7 @@ public class SymTypeExpressionTest {
     assertDeepEquals(e, eClone);
   }
 
-  @Test
+  @Test @Ignore
   public void deepCloneObjectTypeTest() {
     SymTypeExpression e = buildObjectType("String");
     TypeSymbol s = new TypeSymbol("String");
@@ -57,7 +58,7 @@ public class SymTypeExpressionTest {
     assertSame(ex.getSuperTypes().get(0),exClone.getSuperTypes().get(0));
   }
 
-  @Test
+  @Test @Ignore
   public void deepCloneGenericTypeTest() {
     SymTypeExpression expre = buildObjectType("Bar");
     TypeSymbol d = new TypeSymbol("Bar");

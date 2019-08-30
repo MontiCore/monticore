@@ -67,7 +67,7 @@ public class SymObjectType extends SymTypeExpression {
   
   // --------------------------------------------------------------------------
   
-  @Override
+  @Override @Deprecated
   public boolean deepEquals(SymTypeExpression symTypeExpression) {
     if(!(symTypeExpression instanceof SymObjectType)){
       return false;
@@ -87,9 +87,9 @@ public class SymObjectType extends SymTypeExpression {
     return true;
   }
 
-  @Override
+  @Override @Deprecated
   public SymTypeExpression deepClone() {
-    SymObjectType clone = new SymObjectType();
+    SymObjectType clone = new SymObjectType(objname);
     clone.setName(this.name);
     clone.setEnclosingScope(this.enclosingScope);
 
@@ -98,6 +98,10 @@ public class SymObjectType extends SymTypeExpression {
     }
     clone.typeSymbol = this.typeSymbol;
     return clone;
+  }
+  
+  @Deprecated
+  public SymObjectType() {
   }
   
   

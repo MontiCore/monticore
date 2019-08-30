@@ -76,5 +76,10 @@ public class SymTypeConstant extends SymTypeExpression {
     return clone;
   }
   //hier enum attr für primitive types
-
+  
+  @Deprecated
+  public SymTypeConstant() {
+  }
+  
+  
 }

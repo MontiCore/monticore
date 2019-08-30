@@ -89,7 +89,8 @@ public class SymGenericTypeExpression extends SymTypeExpression {
   // --------------------------------------------------------------------------
   
   
-  
+  @Deprecated
+  Optional<TypeSymbol> whoAmI;
   
   //String name;
   @Deprecated
@@ -163,4 +164,9 @@ public class SymGenericTypeExpression extends SymTypeExpression {
     clone.whoAmI = this.whoAmI;
     return clone;
   }
+  
+  @Deprecated
+  public SymGenericTypeExpression() {
+  }
+  
 }
