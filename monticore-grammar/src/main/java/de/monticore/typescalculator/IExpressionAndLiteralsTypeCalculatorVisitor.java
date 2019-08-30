@@ -8,9 +8,9 @@ import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisS
 import java.util.Map;
 
 public interface IExpressionAndLiteralsTypeCalculatorVisitor {
-  public TypeExpression calculateType(ASTExpression e);
+  public SymTypeExpression calculateType(ASTExpression e);
 
-  Map<ASTNode, TypeExpression> getTypes();
+  Map<ASTNode, SymTypeExpression> getTypes();
 
   void setScope(IExpressionsBasisScope scope);
 }

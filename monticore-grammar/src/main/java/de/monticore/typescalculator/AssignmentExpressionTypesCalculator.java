@@ -36,10 +36,10 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTIncSuffixExpression expr){
-    TypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
+    SymTypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
 
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -50,10 +50,10 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTDecSuffixExpression expr){
-    TypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
+    SymTypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
 
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -64,10 +64,10 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTIncPrefixExpression expr){
-    TypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
+    SymTypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
 
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -78,10 +78,10 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTDecPrefixExpression expr){
-    TypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
+    SymTypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
 
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -92,9 +92,9 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTPlusPrefixExpression expr){
-    TypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
+    SymTypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -105,9 +105,9 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   @Override
   public void endVisit(ASTMinusPrefixExpression expr){
-    TypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
+    SymTypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -117,24 +117,24 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
   }
 
   private void calculatePlusAssignment(ASTRegularAssignmentExpression expr){
-    TypeExpression result = calculateTypeArithmeticWithString(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeArithmeticWithString(expr.getLeft(),expr.getRight());
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
       if("String".equals(types.get(expr.getLeft()).getName())&&"String".equals(types.get(expr.getRight()).getName())){
-        result = new ObjectType();
+        result = new SymObjectType();
         result.setName("String");
       }
       if("java.lang.String".equals(types.get(expr.getLeft()).getName())&&"java.lang.String".equals(types.get(expr.getRight()).getName())){
-        result = new ObjectType();
+        result = new SymObjectType();
         result.setName("String");
       }
       if(("String".equals(types.get(expr.getLeft()).getName())&&"java.lang.String".equals(types.get(expr.getRight()).getName()))
           ||("java.lang.String".equals(types.get(expr.getLeft()).getName())&&"String".equals(types.get(expr.getRight()).getName()))){
-        result = new ObjectType();
+        result = new SymObjectType();
         result.setName("String");
       }
     }
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -144,9 +144,9 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
   }
 
   private void calculateMinusAssignment(ASTRegularAssignmentExpression expr){
-    TypeExpression result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -156,9 +156,9 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
   }
 
   private void calculateMultAssignment(ASTRegularAssignmentExpression expr){
-    TypeExpression result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -168,9 +168,9 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
   }
 
   private void calculateDivideAssignment(ASTRegularAssignmentExpression expr){
-    TypeExpression result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -209,15 +209,15 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       calculateModuloAssignment(expr);
     }else {
       if (types.containsKey(expr.getLeft()) && types.containsKey(expr.getRight())) {
-        TypeExpression right =types.get(expr.getRight());
-        TypeExpression left = types.get(expr.getLeft());
+        SymTypeExpression right =types.get(expr.getRight());
+        SymTypeExpression left = types.get(expr.getLeft());
         result=calculateRegularAssignment(expr.getLeft(),expr.getRight());
         if (isSubtypeOf(right,left)||right.getName().equals(left.getName())) {
           result = types.get(expr.getLeft()).deepClone();
         }
       }
       if (result != null) {
-        TypeExpression sym = result.deepClone();
+        SymTypeExpression sym = result.deepClone();
         sym.setName(result.getName());
         types.put(expr, sym);
         this.result = sym;
@@ -230,9 +230,9 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   private void calculateAndAssigment(ASTRegularAssignmentExpression expr){
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
-    TypeExpression result = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -243,9 +243,9 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   private void calculateOrAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
-    TypeExpression result = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -256,9 +256,9 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   private void calculateBinaryXorAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
-    TypeExpression result = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -269,9 +269,9 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   private void calculateDoubleRightAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf Ganzzahl - Ganzzahl
-    TypeExpression result = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -282,9 +282,9 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   private void calculateDoubleLeftAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf Ganzzahl - Ganzzahl
-    TypeExpression result = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -295,9 +295,9 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   private void calculateLogicalRightAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf Ganzzahl - Ganzzahl
-    TypeExpression result = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -307,9 +307,9 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
   }
 
   private void calculateModuloAssignment(ASTRegularAssignmentExpression expr){
-    TypeExpression result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(result!=null){
-      TypeExpression sym = result.deepClone();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -318,32 +318,32 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     }
   }
 
-  public TypeExpression getBinaryNumericPromotion(ASTExpression leftType,
-                                                  ASTExpression rightType) {
-    TypeExpression res = null;
+  public SymTypeExpression getBinaryNumericPromotion(ASTExpression leftType,
+                                                     ASTExpression rightType) {
+    SymTypeExpression res = null;
     if(types.containsKey(leftType)&&types.containsKey(rightType)&&isPrimitiveType(types.get(leftType))&&isPrimitiveType(types.get(rightType))){
       if("double".equals(unbox(types.get(leftType)).getName())||"double".equals(unbox(types.get(rightType)).getName())){
-        res = new TypeConstant();
+        res = new SymTypeConstant();
         res.setName("double");
       }
       if("float".equals(unbox(types.get(leftType)).getName())||"float".equals(unbox(types.get(rightType)).getName())){
-        res=new TypeConstant();
+        res=new SymTypeConstant();
         res.setName("float");
       }
       if("long".equals(unbox(types.get(leftType)).getName())||"long".equals(unbox(types.get(rightType)).getName())){
-        res = new TypeConstant();
+        res = new SymTypeConstant();
         res.setName("long");
       }
-      res = new TypeConstant();
+      res = new SymTypeConstant();
       res.setName("int");
     }
     return res;
   }
 
-  public TypeExpression getUnaryNumericPromotionType(ASTExpression expr){
+  public SymTypeExpression getUnaryNumericPromotionType(ASTExpression expr){
     if(types.containsKey(expr)) {
       if ("byte".equals(unbox(types.get(expr)).getName()) || "short".equals(unbox(types.get(expr)).getName()) || "char".equals(unbox(types.get(expr)).getName()) || "int".equals(unbox(types.get(expr)).getName())) {
-        TypeExpression sym = new TypeConstant();
+        SymTypeExpression sym = new SymTypeConstant();
         sym.setName("int");
         return sym;
       }
@@ -354,8 +354,8 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     return null;
   }
 
-  private TypeExpression calculateTypeArithmetic(ASTExpression left, ASTExpression right){
-    TypeExpression result = null;
+  private SymTypeExpression calculateTypeArithmetic(ASTExpression left, ASTExpression right){
+    SymTypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)) {
       if(isNumericType(types.get(left))&&isNumericType(types.get(right))){
         result = types.get(left).deepClone();
@@ -364,11 +364,11 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     return result;
   }
 
-  private TypeExpression calculateTypeArithmeticWithString(ASTExpression left, ASTExpression right){
-    TypeExpression result = null;
+  private SymTypeExpression calculateTypeArithmeticWithString(ASTExpression left, ASTExpression right){
+    SymTypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)){
       if("String".equals(unbox(types.get(left)).getName())){
-        result= new ObjectType();
+        result= new SymObjectType();
         result.setName("String");
       }else{
         result=calculateTypeArithmetic(left,right);
@@ -377,8 +377,8 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     return result;
   }
 
-  private TypeExpression calculateTypeBitOperation(ASTExpression left, ASTExpression right){
-    TypeExpression result = null;
+  private SymTypeExpression calculateTypeBitOperation(ASTExpression left, ASTExpression right){
+    SymTypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)){
       if(isIntegralType(types.get(left))&&isIntegralType(types.get(right))){
         result=types.get(left).deepClone();
@@ -387,21 +387,21 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     return result;
   }
 
-  private TypeExpression calculateTypeBinaryOperations(ASTExpression left, ASTExpression right){
-    TypeExpression result = null;
+  private SymTypeExpression calculateTypeBinaryOperations(ASTExpression left, ASTExpression right){
+    SymTypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)){
       if(isIntegralType(types.get(left))&&isIntegralType(types.get(right))){
         result=types.get(left).deepClone();
       }else if("boolean".equals(types.get(left).getName())&&"boolean".equals(types.get(right).getName())) {
-        result = new TypeConstant();
+        result = new SymTypeConstant();
         result.setName("boolean");
       }
     }
     return result;
   }
 
-  public TypeExpression calculateRegularAssignment(ASTExpression left,
-                                                   ASTExpression right) {
+  public SymTypeExpression calculateRegularAssignment(ASTExpression left,
+                                                      ASTExpression right) {
     if(types.containsKey(left)&&types.containsKey(right)) {
       if(isNumericType(types.get(left))&&isNumericType(types.get(right))){
         return types.get(left).deepClone();
@@ -410,11 +410,11 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     return null;
   }
 
-  public void setTypes(Map<ASTNode,TypeExpression> types){
+  public void setTypes(Map<ASTNode, SymTypeExpression> types){
     this.types=types;
   }
 
-  public TypeExpression calculateType(ASTExpression expr){
+  public SymTypeExpression calculateType(ASTExpression expr){
     expr.accept(realThis);
     return types.get(expr);
   }

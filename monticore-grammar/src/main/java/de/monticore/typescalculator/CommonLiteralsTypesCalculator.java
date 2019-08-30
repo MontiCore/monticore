@@ -11,26 +11,26 @@ import java.util.Map;
 
 public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator implements MCCommonLiteralsVisitor {
 
-  private TypeExpression result;
+  private SymTypeExpression result;
 
   private MCCommonLiteralsVisitor realThis = this;
 
-  private Map<ASTNode, TypeExpression> types;
+  private Map<ASTNode, SymTypeExpression> types;
 
   private IExpressionsBasisScope scope;
 
 
   @Override
-  public TypeExpression calculateType(ASTLiteral lit) {
+  public SymTypeExpression calculateType(ASTLiteral lit) {
     lit.accept(this);
     return result;
   }
 
-  public void setTypes(Map<ASTNode, TypeExpression> types) {
+  public void setTypes(Map<ASTNode, SymTypeExpression> types) {
     this.types = types;
   }
 
-  public Map<ASTNode,TypeExpression> getTypes() {
+  public Map<ASTNode, SymTypeExpression> getTypes() {
     return types;
   }
 
@@ -56,7 +56,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTCharLiteral lit){
-    TypeExpression res = new TypeConstant();
+    SymTypeExpression res = new SymTypeConstant();
     res.setName("char");
     this.result=res;
     types.put(lit,res);
@@ -64,7 +64,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTBooleanLiteral lit){
-    TypeExpression res = new TypeConstant();
+    SymTypeExpression res = new SymTypeConstant();
     res.setName("boolean");
     this.result=res;
     types.put(lit,res);
@@ -72,7 +72,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTNatLiteral lit){
-    TypeExpression res = new TypeConstant();
+    SymTypeExpression res = new SymTypeConstant();
     res.setName("int");
     this.result=res;
     types.put(lit,res);
@@ -80,7 +80,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTBasicDoubleLiteral lit){
-    TypeExpression res = new TypeConstant();
+    SymTypeExpression res = new SymTypeConstant();
     res.setName("double");
     this.result=res;
     types.put(lit,res);
@@ -88,7 +88,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTBasicFloatLiteral lit){
-    TypeExpression res = new TypeConstant();
+    SymTypeExpression res = new SymTypeConstant();
     res.setName("float");
     this.result=res;
     types.put(lit,res);
@@ -96,7 +96,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTBasicLongLiteral lit){
-    TypeExpression res = new TypeConstant();
+    SymTypeExpression res = new SymTypeConstant();
     res.setName("long");
     this.result=res;
     types.put(lit,res);
@@ -104,7 +104,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTStringLiteral lit){
-    TypeExpression res = new ObjectType();
+    SymTypeExpression res = new SymObjectType();
     res.setName("String");
     this.result=res;
     types.put(lit,res);

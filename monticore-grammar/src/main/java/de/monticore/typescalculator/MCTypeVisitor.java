@@ -8,7 +8,6 @@ import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,44 +15,44 @@ import java.util.Map;
 
 public class MCTypeVisitor implements MCFullGenericTypesVisitor {
 
-  TypeExpression typeExpression = null;
+  SymTypeExpression symTypeExpression = null;
 
-  public Map<ASTMCBasicTypesNode, TypeExpression> mapping = new HashMap<>();
-  public Map<ASTMCTypeArgument, TypeExpression> typeArgumentMapping = new HashMap<>();
+  public Map<ASTMCBasicTypesNode, SymTypeExpression> mapping = new HashMap<>();
+  public Map<ASTMCTypeArgument, SymTypeExpression> typeArgumentMapping = new HashMap<>();
 
 
 
   public void endVisit(ASTMCListType listType) {
-    GenericTypeExpression listGenericType = new GenericTypeExpression();
+    SymGenericTypeExpression listGenericType = new SymGenericTypeExpression();
     listGenericType.setName("List");
-    List<TypeExpression> argumentList = new LinkedList<TypeExpression>();
+    List<SymTypeExpression> argumentList = new LinkedList<SymTypeExpression>();
     argumentList.add(mapping.get(listType.getMCTypeArgument().getMCTypeOpt().get()));
     listGenericType.setArguments(argumentList);
     mapping.put(listType,listGenericType);
   }
 
   public void endVisit(ASTMCSetType setType) {
-    GenericTypeExpression listGenericType = new GenericTypeExpression();
+    SymGenericTypeExpression listGenericType = new SymGenericTypeExpression();
     listGenericType.setName("Set");
-    List<TypeExpression> argumentList = new LinkedList<TypeExpression>();
+    List<SymTypeExpression> argumentList = new LinkedList<SymTypeExpression>();
     argumentList.add(mapping.get(setType.getMCTypeArgument().getMCTypeOpt().get()));
     listGenericType.setArguments(argumentList);
     mapping.put(setType,listGenericType);
   }
 
   public void endVisit(ASTMCOptionalType optType) {
-    GenericTypeExpression listGenericType = new GenericTypeExpression();
+    SymGenericTypeExpression listGenericType = new SymGenericTypeExpression();
     listGenericType.setName("Optional");
-    List<TypeExpression> argumentList = new LinkedList<TypeExpression>();
+    List<SymTypeExpression> argumentList = new LinkedList<SymTypeExpression>();
     argumentList.add(mapping.get(optType.getMCTypeArgument().getMCTypeOpt().get()));
     listGenericType.setArguments(argumentList);
     mapping.put(optType,listGenericType);
   }
 
   public void endVisit(ASTMCMapType mapType) {
-    GenericTypeExpression listGenericType = new GenericTypeExpression();
+    SymGenericTypeExpression listGenericType = new SymGenericTypeExpression();
     listGenericType.setName("Map");
-    List<TypeExpression> argumentList = new LinkedList<TypeExpression>();
+    List<SymTypeExpression> argumentList = new LinkedList<SymTypeExpression>();
     argumentList.add(mapping.get(mapType.getKey().getMCTypeOpt().get()));
     argumentList.add(mapping.get(mapType.getValue().getMCTypeOpt().get()));
     listGenericType.setArguments(argumentList);
@@ -62,9 +61,9 @@ public class MCTypeVisitor implements MCFullGenericTypesVisitor {
 
 
   public void endVisit(ASTMCBasicGenericType genType) {
-    GenericTypeExpression genericTypeExpression = new GenericTypeExpression();
+    SymGenericTypeExpression genericTypeExpression = new SymGenericTypeExpression();
     genericTypeExpression.setName(genType.getName());
-    List<TypeExpression> argumentList = new LinkedList<TypeExpression>();
+    List<SymTypeExpression> argumentList = new LinkedList<SymTypeExpression>();
     for(ASTMCTypeArgument typeArg : genType.getMCTypeArgumentList()) {
       argumentList.add(typeArgumentMapping.get(typeArg));
     }
@@ -73,57 +72,57 @@ public class MCTypeVisitor implements MCFullGenericTypesVisitor {
   }
 
   public void endVisit(ASTMCQualifiedType qType) {
-    ObjectType oType = new ObjectType();
+    SymObjectType oType = new SymObjectType();
     oType.setName(qType.getName());
     mapping.put(qType,oType);
   }
 
   public void endVisit(ASTMCQualifiedName qName) {
-    ObjectType oType = new ObjectType();
+    SymObjectType oType = new SymObjectType();
     oType.setName(qName.toString());
     mapping.put(qName,oType);
   }
 
   public void endVisit(ASTMCPrimitiveType primitiveType) {
-    TypeConstant typeConstant = new TypeConstant();
+    SymTypeConstant typeConstant = new SymTypeConstant();
     typeConstant.setName(primitiveType.getName());
     mapping.put(primitiveType,typeConstant);
   }
 
   public void endVisit(ASTMCVoidType voidType) {
-    TypeConstant typeConstant = new TypeConstant();
+    SymTypeConstant typeConstant = new SymTypeConstant();
     typeConstant.setName("void");
     mapping.put(voidType,typeConstant);
   }
 
   public void endVisit(ASTMCBasicTypeArgument basicTypeArgument) {
-    ObjectType o = new ObjectType();
+    SymObjectType o = new SymObjectType();
     o.setName(basicTypeArgument.getMCQualifiedType().getName());
     //TODO RE rekursiv fehlt!
     typeArgumentMapping.put(basicTypeArgument,o);
   }
 
   public void endVisit(ASTMCTypeArgument arg) {
-    ObjectType o = new ObjectType();
+    SymObjectType o = new SymObjectType();
     o.setName(arg.getMCTypeOpt().get().getName());
     typeArgumentMapping.put(arg,o);
   }
 
   public void endVisit(ASTMCPrimitiveTypeArgument basicTypeArgument) {
-    ObjectType o = new ObjectType();
+    SymObjectType o = new SymObjectType();
     //o.setName(basicTypeArgument.getMCQualifiedType().getName());
     //TODO RE rekursiv fehlt!
     typeArgumentMapping.put(basicTypeArgument,o);
   }
   public void endVisit(ASTMCCustomTypeArgument basicTypeArgument) {
-    ObjectType o = new ObjectType();
+    SymObjectType o = new SymObjectType();
     o.setName(basicTypeArgument.getMCType().getName());
     //TODO RE rekursiv fehlt!
     typeArgumentMapping.put(basicTypeArgument,o);
   }
 
   public void endVisit(ASTMCWildcardTypeArgument basicTypeArgument) {
-    ObjectType o = new ObjectType();
+    SymObjectType o = new SymObjectType();
     o.setName(basicTypeArgument.getMCTypeOpt().get().getName());
     //TODO RE rekursiv fehlt!
     typeArgumentMapping.put(basicTypeArgument,o);

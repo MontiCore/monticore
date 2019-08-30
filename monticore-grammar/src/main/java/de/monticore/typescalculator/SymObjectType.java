@@ -8,10 +8,10 @@ import de.monticore.types.typesymbols._symboltable.TypeSymbol;
  * Therefore, we have the fullName, the baseName and the
  * Symbol behind that full qualified class name to retrieve
  */
-public class ObjectType extends TypeExpression {
+public class SymObjectType extends SymTypeExpression {
   
   /**
-   * An ObjectType has a name.
+   * An SymObjectType has a name.
    * This is always the full qualified name (i.e. including package)
    */
   protected String objname;
@@ -23,7 +23,7 @@ public class ObjectType extends TypeExpression {
   // immer gesetzt ist; man könnte das Symbol gleich beim initialisieren mit setzen lassen
   protected TypeSymbol objTypeSymbol;
   
-  public ObjectType(String objname) {
+  public SymObjectType(String objname) {
     this.objname = objname;
   }
   
@@ -68,19 +68,19 @@ public class ObjectType extends TypeExpression {
   // --------------------------------------------------------------------------
   
   @Override
-  public boolean deepEquals(TypeExpression typeExpression) {
-    if(!(typeExpression instanceof ObjectType)){
+  public boolean deepEquals(SymTypeExpression symTypeExpression) {
+    if(!(symTypeExpression instanceof SymObjectType)){
       return false;
     }
-    if(!this.name.equals(typeExpression.name)){
+    if(!this.name.equals(symTypeExpression.name)){
       return false;
     }
-    if(!this.typeSymbol.equals(typeExpression.typeSymbol)){
+    if(!this.typeSymbol.equals(symTypeExpression.typeSymbol)){
       return false;
     }
     // TODO RE: supertypen muss man doch nicht klonen?
     for(int i = 0; i<this.superTypes.size();i++){
-      if(!this.superTypes.get(i).deepEquals(typeExpression.superTypes.get(i))){
+      if(!this.superTypes.get(i).deepEquals(symTypeExpression.superTypes.get(i))){
         return false;
       }
     }
@@ -88,12 +88,12 @@ public class ObjectType extends TypeExpression {
   }
 
   @Override
-  public TypeExpression deepClone() {
-    ObjectType clone = new ObjectType();
+  public SymTypeExpression deepClone() {
+    SymObjectType clone = new SymObjectType();
     clone.setName(this.name);
     clone.setEnclosingScope(this.enclosingScope);
 
-    for(TypeExpression expr: superTypes){
+    for(SymTypeExpression expr: superTypes){
       clone.addSuperType(expr.deepClone());
     }
     clone.typeSymbol = this.typeSymbol;

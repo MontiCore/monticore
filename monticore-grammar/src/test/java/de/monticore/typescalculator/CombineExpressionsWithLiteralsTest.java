@@ -48,7 +48,7 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
     assertTrue(p.isPresent());
 
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("int");
     assertTrue(exp.deepEquals(calc.calculateType(p.get())));
 
@@ -62,7 +62,7 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
     assertTrue(p.isPresent());
 
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("int");
     assertTrue(exp.deepEquals(calc.calculateType(p.get())));
   }
@@ -75,7 +75,7 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
     assertTrue(p.isPresent());
 
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("double");
     assertTrue(exp.deepEquals(calc.calculateType(p.get())));
   }

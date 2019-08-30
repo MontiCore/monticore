@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.expressionsbasis._symboltable;
 
-import de.monticore.typescalculator.TypeExpression;
+import de.monticore.typescalculator.SymTypeExpression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class EMethodSymbol extends EMethodSymbolTOP {
 
   protected List<EVariableSymbol> parameters = new ArrayList<>();
 
-  protected TypeExpression returnType;
+  protected SymTypeExpression returnType;
 
   public EMethodSymbol(String name) {
     super(name);
@@ -23,11 +23,11 @@ public class EMethodSymbol extends EMethodSymbolTOP {
     return parameters;
   }
 
-  public TypeExpression getReturnType(){
+  public SymTypeExpression getReturnType(){
     return returnType;
   }
 
-  public void setReturnType(TypeExpression returnType){
+  public void setReturnType(SymTypeExpression returnType){
     this.returnType=returnType;
   }
 

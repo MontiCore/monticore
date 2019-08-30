@@ -210,12 +210,12 @@ public class TypesCalculatorTest {
     Optional<ASTExpression> a = p.parse_StringExpression("13+12.5-9");
     Optional<ASTExpression> b = p.parse_StringExpression("varTest");
 
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("double");
     assertTrue(a.isPresent());
     assertTrue(exp.deepEquals(getType(a.get())));
 
-    TypeExpression exp2 = new ObjectType();
+    SymTypeExpression exp2 = new SymObjectType();
     exp2.setName("Test");
     assertTrue(b.isPresent());
     assertTrue(exp2.deepEquals(getType(b.get())));

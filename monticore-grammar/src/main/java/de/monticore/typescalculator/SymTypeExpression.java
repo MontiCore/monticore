@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TypeExpression is the superclass for all typeexpressions, such as
+ * SymTypeExpression is the superclass for all typeexpressions, such as
  * TypeConstants, TypeVariables and applications of Type-Constructors.
  * It shares common functionality
  * (such as comparison, printing)
@@ -106,7 +106,7 @@ public abstract class SymTypeExpression {
   }
   
   @Deprecated
-  abstract public boolean deepEquals(SymTypeExpression typeExpression);
+  abstract public boolean deepEquals(SymTypeExpression symTypeExpression);
   
   @Deprecated
   abstract public SymTypeExpression deepClone();

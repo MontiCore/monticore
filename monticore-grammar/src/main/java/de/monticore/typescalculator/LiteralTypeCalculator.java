@@ -6,5 +6,5 @@ import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
 
 public interface LiteralTypeCalculator extends MCLiteralsBasisVisitor {
 
-  public TypeExpression calculateType(ASTLiteral lit);
+  public SymTypeExpression calculateType(ASTLiteral lit);
 }

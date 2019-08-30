@@ -46,7 +46,7 @@ public class ExpressionsBasisTest {
     Optional<ASTExpression> o = p.parse_StringExpression("int");
     Optional<ASTExpression> r = p.parse_StringExpression("vardouble");
 
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -62,7 +62,7 @@ public class ExpressionsBasisTest {
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("A.B.C.QName");
 
-    TypeExpression exp = new ObjectType();
+    SymTypeExpression exp = new SymObjectType();
     exp.setName("A.B.C.QName");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -81,7 +81,7 @@ public class ExpressionsBasisTest {
     Optional<ASTExpression> u = p.parse_StringExpression("3.0f");
     Optional<ASTExpression> v = p.parse_StringExpression("3L");
 
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
     assertTrue(exp.deepEquals(calc.calculateType(o.get())));
@@ -95,7 +95,7 @@ public class ExpressionsBasisTest {
     assertTrue(exp.deepEquals(calc.calculateType(r.get())));
 
 
-    TypeExpression exp2 = new ObjectType();
+    SymTypeExpression exp2 = new SymObjectType();
     exp2.setName("String");
     assertTrue(s.isPresent());
     assertTrue(exp2.deepEquals(calc.calculateType(s.get())));

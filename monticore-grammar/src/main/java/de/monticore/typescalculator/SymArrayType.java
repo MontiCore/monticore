@@ -1,6 +1,9 @@
 package de.monticore.typescalculator;
 
-public class ArrayType extends TypeExpression {
+/**
+ * Arrays of a certain dimension (>= 1)
+ */
+public class SymArrayType extends SymTypeExpression {
   
   /**
    * An arrayType has a dimension
@@ -10,7 +13,12 @@ public class ArrayType extends TypeExpression {
   /**
    * An Array has an argument Type
    */
-  protected TypeExpression argument;
+  protected SymTypeExpression argument;
+  
+  public SymArrayType(int dim, SymTypeExpression argument) {
+    this.dim = dim;
+    this.argument = argument;
+  }
   
   public int getDim() {
     return dim;
@@ -20,11 +28,11 @@ public class ArrayType extends TypeExpression {
     this.dim = dim;
   }
   
-  public TypeExpression getArgument() {
+  public SymTypeExpression getArgument() {
     return argument;
   }
   
-  public void setArgument(TypeExpression argument) {
+  public void setArgument(SymTypeExpression argument) {
     this.argument = argument;
   }
   
@@ -32,19 +40,23 @@ public class ArrayType extends TypeExpression {
    * print: Umwandlung in einen kompakten String
    */
   public String print() {
-    return getArgument().print() + "[]XXX";
+    StringBuffer r = new StringBuffer(getArgument().print());
+    for(int i = 1; i<=dim;i++){
+      r.append("[]");
+    }
+    return r.toString();
   }
   
   
   // --------------------------------------------------------------------------
   
   @Override @Deprecated // and not implemented yet
-  public boolean deepEquals(TypeExpression typeExpression) {
+  public boolean deepEquals(SymTypeExpression symTypeExpression) {
     return false;
   }
   
   @Override @Deprecated // and not implemented yet
-  public TypeExpression deepClone() {
+  public SymTypeExpression deepClone() {
     return null;
   }
   

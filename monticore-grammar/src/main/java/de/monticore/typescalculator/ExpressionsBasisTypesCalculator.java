@@ -20,9 +20,9 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
 
   protected LiteralTypeCalculator literalsVisitor;
 
-  protected TypeExpression result;
+  protected SymTypeExpression result;
 
-  protected Map<ASTNode, TypeExpression> types;
+  protected Map<ASTNode, SymTypeExpression> types;
 
   private ExpressionsBasisVisitor realThis;
 
@@ -43,7 +43,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
 
   @Override
   public void endVisit(ASTLiteralExpression expr){
-    TypeExpression result = null;
+    SymTypeExpression result = null;
     if(types.containsKey(expr.getLiteral())){
       result = types.get(expr.getLiteral());
     }
@@ -58,7 +58,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
   @Override
   public void endVisit(ASTLiteral lit){
     if(!types.containsKey(lit)) {
-      TypeExpression result = literalsVisitor.calculateType(lit);
+      SymTypeExpression result = literalsVisitor.calculateType(lit);
       this.result=result;
       types.put(lit,result);
     }
@@ -75,17 +75,17 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
       types.put(expr,var.getType());
     }else if(optType.isPresent()) {
       ETypeSymbol type = optType.get();
-      TypeExpression res = TypesCalculatorHelper.fromETypeSymbol(type);
+      SymTypeExpression res = TypesCalculatorHelper.fromETypeSymbol(type);
       this.result = res;
       types.put(expr,res);
     }else if(optMethod.isPresent()) {
       EMethodSymbol method = optMethod.get();
       if(!"void".equals(method.getReturnType().getName())){
-        TypeExpression type=method.getReturnType();
+        SymTypeExpression type=method.getReturnType();
         this.result=type;
         types.put(expr,type);
       }else{
-        TypeExpression res =new TypeConstant();
+        SymTypeExpression res =new SymTypeConstant();
         res.setName("void");
         this.result=res;
         types.put(expr,res);
@@ -142,7 +142,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
               if(methodSymbol.getReturnType().getName().equals("void")){
                 success = false;
               }else{
-                TypeExpression returnType = methodSymbol.getReturnType();
+                SymTypeExpression returnType = methodSymbol.getReturnType();
                 String[] primitives = new String[]{"int","double","char","float","long","short","byte","boolean"};
                 for(String primitive: primitives){
                   if(primitive.equals(returnType.getName())){
@@ -173,18 +173,18 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     }
   }
 
-  private void addToTypesMapQName (ASTExpression expr, String fullName, List<TypeExpression> superTypes){
+  private void addToTypesMapQName (ASTExpression expr, String fullName, List<SymTypeExpression> superTypes){
     String[] parts = fullName.split("\\.");
     ArrayList<String> nameList = new ArrayList<>();
     Collections.addAll(nameList,parts);
-    TypeExpression res = new ObjectType();
+    SymTypeExpression res = new SymObjectType();
     res.setName(fullName);
     res.setSuperTypes(superTypes);
     this.result=res;
     types.put(expr,unbox(res));
   }
 
-  public TypeExpression getResult() {
+  public SymTypeExpression getResult() {
     return result;
   }
 
@@ -204,15 +204,15 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     this.literalsVisitor = literalsVisitor;
   }
 
-  protected Map<ASTNode, TypeExpression> getTypes() {
+  protected Map<ASTNode, SymTypeExpression> getTypes() {
     return types;
   }
 
-  public void setTypes(Map<ASTNode,TypeExpression> types){
+  public void setTypes(Map<ASTNode, SymTypeExpression> types){
     this.types=types;
   }
 
-  public TypeExpression calculateType(ASTExpression expr){
+  public SymTypeExpression calculateType(ASTExpression expr){
     expr.accept(realThis);
     return types.get(expr);
   }

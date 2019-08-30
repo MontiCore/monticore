@@ -13,7 +13,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
   private CombineExpressionsWithLiteralsDelegatorVisitor realThis;
 
-  private Map<ASTNode, TypeExpression> types;
+  private Map<ASTNode, SymTypeExpression> types;
 
   private AssignmentExpressionTypesCalculator assignmentExpressionTypesCalculator;
 
@@ -63,7 +63,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     this.commonLiteralsTypesCalculator=commonLiteralsTypesCalculator;
   }
 
-  public TypeExpression calculateType(ASTExpression e){
+  public SymTypeExpression calculateType(ASTExpression e){
     e.accept(realThis);
     if(types.get(e)!=null){
       return types.get(e);
@@ -76,7 +76,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     return realThis;
   }
 
-  public Map<ASTNode,TypeExpression> getTypes(){
+  public Map<ASTNode, SymTypeExpression> getTypes(){
     return types;
   }
 

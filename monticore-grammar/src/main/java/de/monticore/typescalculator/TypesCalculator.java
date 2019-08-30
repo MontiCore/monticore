@@ -14,13 +14,13 @@ public class TypesCalculator {
   private static IExpressionsBasisScope scope;
 
   public static boolean isBoolean(ASTExpression expr){
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("boolean");
     return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
 
   public static boolean isString(ASTExpression expr){
-    TypeExpression exp = new ObjectType();
+    SymTypeExpression exp = new SymObjectType();
     exp.setName("String");
     if(exp.deepEquals(unbox(calc.calculateType(expr)))){
       return true;
@@ -29,43 +29,43 @@ public class TypesCalculator {
   }
 
   public static boolean isInt(ASTExpression expr) {
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("int");
     return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
 
   public static boolean isLong(ASTExpression expr){
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("long");
     return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
 
   public static boolean isChar(ASTExpression expr){
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("char");
     return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
 
   public static boolean isFloat(ASTExpression expr){
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("float");
     return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
 
   public static boolean isDouble(ASTExpression expr){
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("double");
     return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
 
   public static boolean isShort(ASTExpression expr){
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("short");
     return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
 
   public static boolean isByte(ASTExpression expr){
-    TypeExpression exp = new TypeConstant();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("byte");
     return exp.deepEquals(unbox(calc.calculateType(expr)));
   }
@@ -83,7 +83,7 @@ public class TypesCalculator {
     return result;
   }
 
-  public static TypeExpression getType(ASTExpression expr){
+  public static SymTypeExpression getType(ASTExpression expr){
     return calc.calculateType(expr);
   }
 
@@ -151,9 +151,9 @@ public class TypesCalculator {
     return isSubtypeOf(calc.getTypes().get(subType),calc.getTypes().get(superType));
   }
 
-  public static boolean isSubtypeOf(TypeExpression subType, TypeExpression superType){
+  public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType){
     if(!subType.getSuperTypes().isEmpty()){
-      for(TypeExpression type: subType.getSuperTypes()){
+      for(SymTypeExpression type: subType.getSuperTypes()){
         if(type.deepEquals(superType)){
           return true;
         }
@@ -169,39 +169,39 @@ public class TypesCalculator {
     return subtype;
   }
 
-  public static boolean isBoolean(TypeExpression type){
+  public static boolean isBoolean(SymTypeExpression type){
     return "boolean".equals(unbox(type).getName());
   }
 
-  public static boolean isInt(TypeExpression type){
+  public static boolean isInt(SymTypeExpression type){
     return "int".equals(unbox(type).getName());
   }
 
-  public static boolean isDouble(TypeExpression type){
+  public static boolean isDouble(SymTypeExpression type){
     return "double".equals(unbox(type).getName());
   }
 
-  public static boolean isFloat(TypeExpression type){
+  public static boolean isFloat(SymTypeExpression type){
     return "float".equals(unbox(type).getName());
   }
 
-  public static boolean isLong(TypeExpression type){
+  public static boolean isLong(SymTypeExpression type){
     return "long".equals(unbox(type).getName());
   }
 
-  public static boolean isChar(TypeExpression type){
+  public static boolean isChar(SymTypeExpression type){
     return "char".equals(unbox(type).getName());
   }
 
-  public static boolean isShort(TypeExpression type){
+  public static boolean isShort(SymTypeExpression type){
     return "short".equals(unbox(type).getName());
   }
 
-  public static boolean isByte(TypeExpression type){
+  public static boolean isByte(SymTypeExpression type){
     return "byte".equals(unbox(type).getName());
   }
 
-  public static boolean isVoid(TypeExpression type){
+  public static boolean isVoid(SymTypeExpression type){
     return "void".equals(unbox(type).getName());
   }
 

@@ -6,7 +6,7 @@ import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
 
 public class LiteralsBasisTypesCalculator implements LiteralTypeCalculator {
 
-  private TypeExpression result;
+  private SymTypeExpression result;
   private MCLiteralsBasisVisitor realThis;
 
   @Override
@@ -20,7 +20,7 @@ public class LiteralsBasisTypesCalculator implements LiteralTypeCalculator {
   }
 
   @Override
-  public TypeExpression calculateType(ASTLiteral lit) {
+  public SymTypeExpression calculateType(ASTLiteral lit) {
     lit.accept(realThis);
     return result;
   }

@@ -1,11 +1,8 @@
 package de.monticore.typescalculator;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class TypeVoid extends TypeExpression {
+public class SymTypeVoid extends SymTypeExpression {
     
-    public TypeVoid() {
+    public SymTypeVoid() {
     }
     
     /**
@@ -19,13 +16,13 @@ public class TypeVoid extends TypeExpression {
   // --------------------------------------------------------------------------
   
   @Override @Deprecated // and not implemented yet
-  public boolean deepEquals(TypeExpression typeExpression) {
+  public boolean deepEquals(SymTypeExpression symTypeExpression) {
     return false;
   }
   
   @Override @Deprecated
-  public TypeExpression deepClone() {
-    return new TypeVoid();
+  public SymTypeExpression deepClone() {
+    return new SymTypeVoid();
   }
   
 }

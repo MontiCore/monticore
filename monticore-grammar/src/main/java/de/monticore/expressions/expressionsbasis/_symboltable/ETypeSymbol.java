@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.expressionsbasis._symboltable;
 
-import de.monticore.typescalculator.TypeExpression;
+import de.monticore.typescalculator.SymTypeExpression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +12,11 @@ public class ETypeSymbol extends ETypeSymbolTOP {
 
   protected List<EVariableSymbol> variableSymbols = new ArrayList<>();
 
-  protected List<TypeExpression> genericParameters = new ArrayList<>();
+  protected List<SymTypeExpression> genericParameters = new ArrayList<>();
 
-  protected List<TypeExpression> subTypes = new ArrayList<>();
+  protected List<SymTypeExpression> subTypes = new ArrayList<>();
 
-  protected List<TypeExpression> superTypes = new ArrayList<>();
+  protected List<SymTypeExpression> superTypes = new ArrayList<>();
 
   public ETypeSymbol(String name) {
     super(name);
@@ -30,15 +30,15 @@ public class ETypeSymbol extends ETypeSymbolTOP {
     return variableSymbols;
   }
 
-  public List<TypeExpression> getGenericParameters(){
+  public List<SymTypeExpression> getGenericParameters(){
     return genericParameters;
   }
 
-  public List<TypeExpression> getSubTypes(){
+  public List<SymTypeExpression> getSubTypes(){
     return subTypes;
   }
 
-  public List<TypeExpression> getSuperTypes(){
+  public List<SymTypeExpression> getSuperTypes(){
     return superTypes;
   }
 
@@ -46,15 +46,15 @@ public class ETypeSymbol extends ETypeSymbolTOP {
     this.methodSymbols=methodSymbols;
   }
 
-  public void setGenericParameters(List<TypeExpression> genericParameters) {
+  public void setGenericParameters(List<SymTypeExpression> genericParameters) {
     this.genericParameters = genericParameters;
   }
 
-  public void setSuperTypes(List<TypeExpression> superTypes) {
+  public void setSuperTypes(List<SymTypeExpression> superTypes) {
     this.superTypes = superTypes;
   }
 
-  public void setSubTypes(List<TypeExpression> subTypes) {
+  public void setSubTypes(List<SymTypeExpression> subTypes) {
     this.subTypes = subTypes;
   }
 

@@ -9,16 +9,16 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * GenericTypeExpression stores any kind of TypeConstructor applied
+ * SymGenericTypeExpression stores any kind of TypeConstructor applied
  * to Arguments, such as Map< int,Person >
  * List<Person>, List< Set< List< a >>>.
  * This subsumes all kinds of generic Types from several of the
  * MC-Type grammars.
  */
-public class GenericTypeExpression extends TypeExpression {
+public class SymGenericTypeExpression extends SymTypeExpression {
   
   /**
-   * A TypeExpression has
+   * A SymTypeExpression has
    *    a name (representing a TypeConstructor) and
    *    a list of Type Expressions
    * This is always the full qualified name (i.e. including package)
@@ -28,7 +28,7 @@ public class GenericTypeExpression extends TypeExpression {
   /**
    * List of arguments of a type constructor
    */
-  List<TypeExpression> arguments = new LinkedList<>();
+  protected List<SymTypeExpression> arguments = new LinkedList<>();
   
   /**
    * Symbol corresponding to the type constructors's name (if loaded???)
@@ -37,8 +37,10 @@ public class GenericTypeExpression extends TypeExpression {
   // immer gesetzt ist; man könnte das Symbol gleich beim initialisieren mit setzen lassen
   protected TypeSymbol objTypeConstructorSymbol;
   
-  public ObjectType(String typeConstructorName) {
+  
+  public SymGenericTypeExpression(String typeConstructorName, List<SymTypeExpression> arguments) {
     this.typeConstructorName = typeConstructorName;
+    this.arguments = arguments;
   }
   
   public String getTypeConstructorName() {
@@ -66,7 +68,7 @@ public class GenericTypeExpression extends TypeExpression {
       r.append(arguments.get(i).print());
       if(i<arguments.size()-1) { r.append(','); }
     }
-    return r +">";
+    return r.append('>').toString();
   }
   
   /**
@@ -101,60 +103,60 @@ public class GenericTypeExpression extends TypeExpression {
   }
 
   @Deprecated
-  public List<TypeExpression> getArguments() {
+  public List<SymTypeExpression> getArguments() {
     return arguments;
   }
 
   @Deprecated
-  public void setArguments(List<TypeExpression> arguments) {
+  public void setArguments(List<SymTypeExpression> arguments) {
     this.arguments = arguments;
     Lists.newArrayList();
   }
   
   @Deprecated
-  public void addArgument(TypeExpression argument){
+  public void addArgument(SymTypeExpression argument){
     this.arguments.add(argument);
   }
 
 
   @Override @Deprecated
-  public boolean deepEquals(TypeExpression typeExpression) {
-    if(!(typeExpression instanceof GenericTypeExpression)){
+  public boolean deepEquals(SymTypeExpression symTypeExpression) {
+    if(!(symTypeExpression instanceof SymGenericTypeExpression)){
       return false;
     }
-    if(!this.name.equals(typeExpression.name)){
+    if(!this.name.equals(symTypeExpression.name)){
       return false;
     }
-    if(!this.typeSymbol.equals(typeExpression.typeSymbol)){
+    if(!this.typeSymbol.equals(symTypeExpression.typeSymbol)){
       return false;
     }
 
     for(int i = 0; i<this.superTypes.size();i++){
-      if(!this.superTypes.get(i).deepEquals(typeExpression.superTypes.get(i))){
+      if(!this.superTypes.get(i).deepEquals(symTypeExpression.superTypes.get(i))){
         return false;
       }
     }
     for(int i = 0; i<this.arguments.size();i++){
-      if(!this.arguments.get(i).deepEquals(((GenericTypeExpression) typeExpression).arguments.get(i))){
+      if(!this.arguments.get(i).deepEquals(((SymGenericTypeExpression) symTypeExpression).arguments.get(i))){
         return false;
       }
     }
-    if(!this.whoAmI.equals(((GenericTypeExpression) typeExpression).whoAmI)){
+    if(!this.whoAmI.equals(((SymGenericTypeExpression) symTypeExpression).whoAmI)){
       return false;
     }
     return true;
   }
 
   @Override @Deprecated
-  public TypeExpression deepClone() {
-    GenericTypeExpression clone = new GenericTypeExpression();
+  public SymTypeExpression deepClone() {
+    SymGenericTypeExpression clone = new SymGenericTypeExpression();
     clone.setName(this.name);
     clone.setEnclosingScope(this.enclosingScope);
 
-    for(TypeExpression expr: superTypes){
+    for(SymTypeExpression expr: superTypes){
       clone.addSuperType(expr.deepClone());
     }
-    for(TypeExpression expr: arguments){
+    for(SymTypeExpression expr: arguments){
       clone.addArgument(expr.deepClone());
     }
     clone.typeSymbol = this.typeSymbol;

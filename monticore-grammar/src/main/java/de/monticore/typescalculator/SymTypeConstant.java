@@ -4,7 +4,7 @@ package de.monticore.typescalculator;
 import java.util.Arrays;
 import java.util.List;
 
-public class TypeConstant extends TypeExpression {
+public class SymTypeConstant extends SymTypeExpression {
 
   /**
    * List of potential constants
@@ -18,7 +18,7 @@ public class TypeConstant extends TypeExpression {
    */
   protected String constName;
 
-  public TypeConstant(String constName) {
+  public SymTypeConstant(String constName) {
     this.constName = constName;
   }
   
@@ -46,18 +46,18 @@ public class TypeConstant extends TypeExpression {
 
 
     @Override @Deprecated
-  public boolean deepEquals(TypeExpression typeExpression) {
-    if(!(typeExpression instanceof TypeConstant)){
+  public boolean deepEquals(SymTypeExpression symTypeExpression) {
+    if(!(symTypeExpression instanceof SymTypeConstant)){
       return false;
     }
-    if(!this.name.equals(typeExpression.name)){
+    if(!this.name.equals(symTypeExpression.name)){
       return false;
     }
-    if(!this.typeSymbol.equals(typeExpression.typeSymbol)){
+    if(!this.typeSymbol.equals(symTypeExpression.typeSymbol)){
       return false;
     }
     for(int i = 0; i<this.superTypes.size();i++){
-      if(!this.superTypes.get(i).deepEquals(typeExpression.superTypes.get(i))){
+      if(!this.superTypes.get(i).deepEquals(symTypeExpression.superTypes.get(i))){
         return false;
       }
     }
@@ -65,11 +65,11 @@ public class TypeConstant extends TypeExpression {
   }
 
   @Override @Deprecated
-  public TypeExpression deepClone() {
-    TypeConstant clone = new TypeConstant();
+  public SymTypeExpression deepClone() {
+    SymTypeConstant clone = new SymTypeConstant();
     clone.setName(this.name);
     clone.setEnclosingScope(this.enclosingScope);
-    for(TypeExpression expr: superTypes){
+    for(SymTypeExpression expr: superTypes){
       clone.addSuperType(expr.deepClone());
     }
     clone.typeSymbol = this.typeSymbol;

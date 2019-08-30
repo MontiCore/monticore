@@ -11,13 +11,13 @@ import java.util.List;
 
 public class TypesCalculatorHelper {
 
-  public static TypeExpression getUnaryNumericPromotionType(TypeExpression type){
+  public static SymTypeExpression getUnaryNumericPromotionType(SymTypeExpression type){
     if("byte".equals(unbox(type).getName())||
         "short".equals(unbox(type).getName())||
         "char".equals(unbox(type).getName())||
         "int".equals(unbox(type).getName())
     ){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("int");
       return type;
     }
@@ -30,96 +30,96 @@ public class TypesCalculatorHelper {
     return type;
   }
 
-  public static TypeExpression unbox(TypeExpression type){
+  public static SymTypeExpression unbox(SymTypeExpression type){
     if("java.lang.Boolean".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("boolean");
     }else if("java.lang.Byte".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("byte");
     }else if("java.lang.Character".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("char");
     }else if("java.lang.Short".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("short");
     }else if("java.lang.Integer".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("int");
     }else if("java.lang.Long".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("long");
     }else if("java.lang.Float".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("float");
     }else if("java.lang.Double".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("double");
     }else if("java.lang.String".equals(type.getName())){
-      type = new ObjectType();
+      type = new SymObjectType();
       type.setName("String");
     }else if("Boolean".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("boolean");
     }else if("Byte".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("byte");
     }else if("Character".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("char");
     }else if("Short".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("short");
     }else if("Integer".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("int");
     }else if("Long".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("long");
     }else if("Float".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("float");
     }else if("Double".equals(type.getName())){
-      type = new TypeConstant();
+      type = new SymTypeConstant();
       type.setName("double");
     }else if("String".equals(type.getName())){
-      type = new ObjectType();
+      type = new SymObjectType();
       type.setName("String");
     }
     return type;
   }
 
-  public static TypeExpression box(TypeExpression type) {
+  public static SymTypeExpression box(SymTypeExpression type) {
     if ("boolean".equals(type.getName())) {
-      type = new ObjectType();
+      type = new SymObjectType();
       type.setName("java.lang.Boolean");
     }
     if ("byte".equals(type.getName())) {
-      type = new ObjectType();
+      type = new SymObjectType();
       type.setName("java.lang.Byte");
     }
     if ("char".equals(type.getName())) {
-      type = new ObjectType();
+      type = new SymObjectType();
       type.setName("java.lang.Character");
     }
     if ("short".equals(type.getName())) {
-      type = new ObjectType();
+      type = new SymObjectType();
       type.setName("java.lang.Short");
     }
     if ("int".equals(type.getName())) {
-      type = new ObjectType();
+      type = new SymObjectType();
       type.setName("java.lang.Integer");
     }
     if ("long".equals(type.getName())) {
-      type = new ObjectType();
+      type = new SymObjectType();
       type.setName("java.lang.Long");
     }
     if ("float".equals(type.getName())) {
-      type = new ObjectType();
+      type = new SymObjectType();
       type.setName("java.lang.Float");
     }
     if ("double".equals(type.getName())) {
-      type = new ObjectType();
+      type = new SymObjectType();
       type.setName("java.lang.Double");
     }
     return type;
@@ -129,7 +129,7 @@ public class TypesCalculatorHelper {
    * @param type
    * @return true if the given type is an integral type
    */
-  public static boolean isIntegralType(TypeExpression type) {
+  public static boolean isIntegralType(SymTypeExpression type) {
     if ("int".equals(unbox(type).getName())) {
       return true;
     }
@@ -148,7 +148,7 @@ public class TypesCalculatorHelper {
     return false;
   }
 
-  public static boolean isNumericType(TypeExpression type) {
+  public static boolean isNumericType(SymTypeExpression type) {
     if (isIntegralType(type)) {
       return true;
     }
@@ -161,7 +161,7 @@ public class TypesCalculatorHelper {
     return false;
   }
 
-  public static boolean isPrimitiveType(TypeExpression type) {
+  public static boolean isPrimitiveType(SymTypeExpression type) {
     List<String> primitiveTypes = Arrays
         .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
     if (type != null ) {
@@ -171,21 +171,21 @@ public class TypesCalculatorHelper {
   }
 
 
-  public static TypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type){
+  public static SymTypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type){
     MCTypeVisitor visitor = new MCTypeVisitor();
     type.accept(visitor);
     return visitor.mapping.get(type);
   }
 
   //TODO check correctnes in all situations, in testHelper wenn nur für Dummy benutzt
-  public static TypeExpression fromETypeSymbol(ETypeSymbol type) {
+  public static SymTypeExpression fromETypeSymbol(ETypeSymbol type) {
     List<String> primitiveTypes = Arrays
             .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
     if (type != null ) {
       if (primitiveTypes.contains(type.getName())) {
         return TypeExpressionBuilder.buildTypeConstant(type.getName());
       } else {
-        ObjectType o = new ObjectType();
+        SymObjectType o = new SymObjectType();
         o.setName(type.getName());
         return o;
       }
@@ -193,14 +193,14 @@ public class TypesCalculatorHelper {
     return null;
   }
   //TODO check correctness in all situations, in testHelper wenn nur für Dummy benutzt
-  public static TypeExpression fromEVariableSymbol(EVariableSymbol type) {
+  public static SymTypeExpression fromEVariableSymbol(EVariableSymbol type) {
     List<String> primitiveTypes = Arrays
             .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
     if (type != null ) {
       if (primitiveTypes.contains(type.getName())) {
         return TypeExpressionBuilder.buildTypeConstant(type.getName());
       } else {
-        ObjectType o = new ObjectType();
+        SymObjectType o = new SymObjectType();
         o.setName(type.getName());
         return o;
       }
@@ -208,14 +208,14 @@ public class TypesCalculatorHelper {
     return null;
   }
   //TODO check correctnes in all situations, in testHelper wenn nur für Dummy benutzt
-  public static TypeExpression fromEMethodSymbol(EMethodSymbol type) {
+  public static SymTypeExpression fromEMethodSymbol(EMethodSymbol type) {
     List<String> primitiveTypes = Arrays
             .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
     if (type != null ) {
       if (primitiveTypes.contains(type.getName())) {
         return TypeExpressionBuilder.buildTypeConstant(type.getName());
       } else {
-        ObjectType o = new ObjectType();
+        SymObjectType o = new SymObjectType();
         o.setName(type.getName());
         return o;
       }

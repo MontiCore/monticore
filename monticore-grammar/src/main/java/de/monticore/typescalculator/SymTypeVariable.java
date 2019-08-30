@@ -3,9 +3,7 @@ package de.monticore.typescalculator;
 
 import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 
-import java.util.Optional;
-
-public class TypeVariable extends TypeExpression {
+public class SymTypeVariable extends SymTypeExpression {
 
   /**
    * A typeVariable has a name
@@ -15,7 +13,7 @@ public class TypeVariable extends TypeExpression {
   // TODO BR: The type variable may be bounded; then it probably helps to connect to
   // the Var-Symbol that contains the bounf
   
-  public TypeVariable(String varName) {
+  public SymTypeVariable(String varName) {
     this.varName = varName;
   }
 
@@ -45,15 +43,15 @@ public class TypeVariable extends TypeExpression {
 
 
   @Override @Deprecated
-  public boolean deepEquals(TypeExpression typeExpression) {
-    if(!(typeExpression instanceof TypeVariable)){
+  public boolean deepEquals(SymTypeExpression symTypeExpression) {
+    if(!(symTypeExpression instanceof SymTypeVariable)){
       return false;
     }
-    if(!this.name.equals(typeExpression.name)){
+    if(!this.name.equals(symTypeExpression.name)){
       return false;
     }
     for(int i = 0; i<this.superTypes.size();i++){
-      if(!this.superTypes.get(i).deepEquals(typeExpression.superTypes.get(i))){
+      if(!this.superTypes.get(i).deepEquals(symTypeExpression.superTypes.get(i))){
         return false;
       }
     }
@@ -61,11 +59,11 @@ public class TypeVariable extends TypeExpression {
   }
 
   @Override @Deprecated
-  public TypeExpression deepClone() {
-    TypeVariable clone = new TypeVariable();
+  public SymTypeExpression deepClone() {
+    SymTypeVariable clone = new SymTypeVariable();
     clone.setName(this.name);
     clone.setEnclosingScope(this.enclosingScope);
-    for(TypeExpression expr: superTypes){
+    for(SymTypeExpression expr: superTypes){
       clone.addSuperType(expr.deepClone());
     }
     return clone;
