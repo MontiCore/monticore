@@ -59,7 +59,7 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertTrue(typeArgument.deepEquals(ast.get()));
   }
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE wait for #2378
   @Ignore
   @Test
   public void testMCListType() throws IOException {
@@ -76,7 +76,7 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertTrue(listType.deepEquals(ast.get()));
   }
 
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE wait for #2378
   @Ignore
   @Test
   public void testMCOptionalType() throws IOException {
@@ -107,7 +107,7 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertTrue(mapType.deepEquals(ast.get()));
   }
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE wait for #2378
   @Ignore
   @Test
   public void testMCSetType() throws IOException {

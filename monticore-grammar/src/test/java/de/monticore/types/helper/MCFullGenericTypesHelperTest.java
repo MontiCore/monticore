@@ -44,7 +44,7 @@ public class MCFullGenericTypesHelperTest {
     assertTrue("?".equals(MCFullGenericTypesHelper.printType(astmcTypeArgument6.get())));
   }
 
-  //TODO RE Fix FullGenTypes
+  //TODO RE Wait for #2378
   @Ignore
   @Test
   public void testGetGenericTypeFromOptional() throws IOException {
@@ -99,7 +99,7 @@ public class MCFullGenericTypesHelperTest {
     assertEquals("java.util.List",MCFullGenericTypesHelper.getQualifiedReferenceNameFromOptional(astmcGenericType.get()));
   }
 
-  //TODO RE Fix FullGenTypes
+  //TODO RE wait for #2378
   @Ignore
   @Test
   public void testGetSimpleReferenceTypeFromOptional() throws IOException{

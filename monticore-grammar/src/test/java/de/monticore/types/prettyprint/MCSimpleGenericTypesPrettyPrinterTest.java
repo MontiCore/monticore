@@ -31,7 +31,7 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     Log.getFindings().clear();
   }
 
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE wait for #2378
   @Ignore
   @Test
   public void testMCBasicTypeArgument() throws IOException {
@@ -47,7 +47,7 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertTrue(typeArgument.deepEquals(ast.get()));
   }
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE wait for #2378
   @Ignore
   @Test
   public void testMCBasicTypeArgument2() throws IOException {
@@ -63,7 +63,7 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertTrue(typeArgument.deepEquals(ast.get()));
   }
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE wait for #2378
   @Ignore
   @Test
   public void testMCCustomTypeArgument() throws IOException {
@@ -79,7 +79,7 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertTrue(typeArgument.deepEquals(ast.get()));
   }
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE wait for #2378
   @Ignore
   @Test
   public void testMultipleMCCustomTypeArgument() throws IOException {

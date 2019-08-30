@@ -3,8 +3,10 @@ package de.monticore.typescalculator;
 
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -17,7 +19,7 @@ public class MCTypeVisitor implements MCFullGenericTypesVisitor {
   TypeExpression typeExpression = null;
 
   public Map<ASTMCBasicTypesNode, TypeExpression> mapping = new HashMap<>();
-
+  public Map<ASTMCTypeArgument, TypeExpression> typeArgumentMapping = new HashMap<>();
 
 
 
@@ -64,7 +66,7 @@ public class MCTypeVisitor implements MCFullGenericTypesVisitor {
     genericTypeExpression.setName(genType.getName());
     List<TypeExpression> argumentList = new LinkedList<TypeExpression>();
     for(ASTMCTypeArgument typeArg : genType.getMCTypeArgumentList()) {
-      argumentList.add(mapping.get(typeArg.getMCTypeOpt().get()));
+      argumentList.add(typeArgumentMapping.get(typeArg));
     }
     genericTypeExpression.setArguments(argumentList);
     mapping.put(genType,genericTypeExpression);
@@ -92,6 +94,39 @@ public class MCTypeVisitor implements MCFullGenericTypesVisitor {
     TypeConstant typeConstant = new TypeConstant();
     typeConstant.setName("void");
     mapping.put(voidType,typeConstant);
+  }
+
+  public void endVisit(ASTMCBasicTypeArgument basicTypeArgument) {
+    ObjectType o = new ObjectType();
+    o.setName(basicTypeArgument.getMCQualifiedType().getName());
+    //TODO RE rekursiv fehlt!
+    typeArgumentMapping.put(basicTypeArgument,o);
+  }
+
+  public void endVisit(ASTMCTypeArgument arg) {
+    ObjectType o = new ObjectType();
+    o.setName(arg.getMCTypeOpt().get().getName());
+    typeArgumentMapping.put(arg,o);
+  }
+
+  public void endVisit(ASTMCPrimitiveTypeArgument basicTypeArgument) {
+    ObjectType o = new ObjectType();
+    //o.setName(basicTypeArgument.getMCQualifiedType().getName());
+    //TODO RE rekursiv fehlt!
+    typeArgumentMapping.put(basicTypeArgument,o);
+  }
+  public void endVisit(ASTMCCustomTypeArgument basicTypeArgument) {
+    ObjectType o = new ObjectType();
+    o.setName(basicTypeArgument.getMCType().getName());
+    //TODO RE rekursiv fehlt!
+    typeArgumentMapping.put(basicTypeArgument,o);
+  }
+
+  public void endVisit(ASTMCWildcardTypeArgument basicTypeArgument) {
+    ObjectType o = new ObjectType();
+    o.setName(basicTypeArgument.getMCTypeOpt().get().getName());
+    //TODO RE rekursiv fehlt!
+    typeArgumentMapping.put(basicTypeArgument,o);
   }
 
 }

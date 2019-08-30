@@ -25,10 +25,6 @@ public class ASTMCMultipleGenericType extends ASTMCMultipleGenericTypeTOP {
     return null;
   }
 
-  @Override
-  public String printType() {
-    return null;
-  }
 
   @Override
   public String getName() {

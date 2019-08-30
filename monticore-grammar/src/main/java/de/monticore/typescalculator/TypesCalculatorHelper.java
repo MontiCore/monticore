@@ -192,7 +192,7 @@ public class TypesCalculatorHelper {
     }
     return null;
   }
-  //TODO check correctnes in all situations, in testHelper wenn nur für Dummy benutzt
+  //TODO check correctness in all situations, in testHelper wenn nur für Dummy benutzt
   public static TypeExpression fromEVariableSymbol(EVariableSymbol type) {
     List<String> primitiveTypes = Arrays
             .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
