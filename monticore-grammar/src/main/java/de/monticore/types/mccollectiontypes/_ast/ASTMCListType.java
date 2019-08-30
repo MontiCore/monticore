@@ -7,39 +7,27 @@ import java.util.List;
 
 public class ASTMCListType extends ASTMCListTypeTOP {
     public ASTMCListType() {
+        setNameList(Lists.newArrayList("List"));
     }
 
-    public ASTMCListType(String name, ASTMCTypeArgument typeArgument) {
-        super("List", typeArgument);
+    public ASTMCListType(List<ASTMCTypeArgument> typeArgument, List<String> name ) {
+        super(typeArgument, Lists.newArrayList("List") );
     }
 
-    public ASTMCListType(ASTMCTypeArgument typeArgument) {
-        super("List", typeArgument);
+    public ASTMCListType(List<ASTMCTypeArgument> typeArgument) {
+        super(typeArgument, Lists.newArrayList("List"));
     }
 
-    @Override
-    public List<String> getNameList() {
-        return Lists.newArrayList(getName());
+    public ASTMCTypeArgument getMCTypeArgument() {
+      return this.getMCTypeArgument(0);
+    }
+
+    public void setName(String name) {
+        // Name is fixed to "List"
     }
 
     @Override
     public String getBaseName() {
         return getName();
     }
-
-
-    public void setNameList(List<String> names) {
-       setName(names.get(0));
-    }
-
-    @Override
-    public List<ASTMCTypeArgument> getMCTypeArgumentList() {
-        return Lists.newArrayList(getMCTypeArgument());
-    }
-
-
-    public void setMCTypeArgumentList(List<ASTMCTypeArgument> arguments) {
-        setMCTypeArgument(arguments.get(0));
-    }
-
 }

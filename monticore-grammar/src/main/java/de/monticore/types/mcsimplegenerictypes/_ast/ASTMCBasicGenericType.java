@@ -11,8 +11,8 @@ public class ASTMCBasicGenericType extends ASTMCBasicGenericTypeTOP {
   public ASTMCBasicGenericType() {
   }
 
-  public ASTMCBasicGenericType(List<String> names, List<ASTMCTypeArgument> mCTypeArguments) {
-    super(names, mCTypeArguments);
+  public ASTMCBasicGenericType( List<ASTMCTypeArgument> mCTypeArguments, List<String> names) {
+    super(mCTypeArguments, names);
   }
 
   @Override
