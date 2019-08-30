@@ -11,57 +11,66 @@ import java.util.Optional;
 public class GenericTypeExpression extends TypeExpression {
   
   /**
-   * An ObjectType has a name.
+   * A TypeExpression has
+   *    a name (representing a TypeConstructor) and
+   *    a list of Type Expressions
    * This is always the full qualified name (i.e. including package)
    */
-  protected String objname;
+  protected String typeConstructorName;
   
   /**
-   * Symbol corresponding to the type's name (if loaded)
+   * List of arguments of a type constructor
+   */
+  List<TypeExpression> arguments = new LinkedList<>();
+  
+  /**
+   * Symbol corresponding to the type constructors's name (if loaded???)
    */
   // XXX BR: unklar, ob das optional sein muss, wenn schon der Name
   // immer gesetzt ist; man könnte das Symbol gleich beim initialisieren mit setzen lassen
-  protected TypeSymbol objTypeSymbol;
+  protected TypeSymbol objTypeConstructorSymbol;
   
-  public ObjectType(String objname) {
-    this.objname = objname;
+  public ObjectType(String typeConstructorName) {
+    this.typeConstructorName = typeConstructorName;
   }
   
-  public String getObjName() {
-    return objname;
+  public String getTypeConstructorName() {
+    return typeConstructorName;
   }
   
-  public void setObjName(String objname) {
-    this.objname = objname;
+  public void setTypeConstructorName(String typeConstructorName) {
+    this.typeConstructorName = typeConstructorName;
   }
   
-  public TypeSymbol getObjTypeSymbol() {
-    return objTypeSymbol;
+  public TypeSymbol getObjTypeConstructorSymbol() {
+    return objTypeConstructorSymbol;
   }
   
-  public void setObjTypeSymbol(TypeSymbol objTypeSymbol) {
-    this.objTypeSymbol = objTypeSymbol;
+  public void setObjTypeConstructorSymbol(TypeSymbol objTypeConstructorSymbol) {
+    this.objTypeConstructorSymbol = objTypeConstructorSymbol;
   }
   
   /**
    * print: Umwandlung in einen kompakten String
    */
   public String print() {
-    return getObjName();
+    String r = getTypeConstructorName() + "<";
+    arguments.forEach((a) -> r += a);
+    return r +">";
   }
   
   /**
    * getFullName: get the Qualified Name including Package
    */
   public String getFullName() {
-    return getObjName();
+    return getTypeConstructorName();
   }
   
   /**
    * getBaseName: get the unqualified Name (no ., no Package)
    */
   public String getBaseName() {
-    String[] parts = getObjName().split("\\.");
+    String[] parts = getTypeConstructorName().split("\\.");
     return parts[parts.length - 1];
   }
   
@@ -92,20 +101,13 @@ public class GenericTypeExpression extends TypeExpression {
     Lists.newArrayList();
   }
   
+  @Deprecated
   public void addArgument(TypeExpression argument){
     this.arguments.add(argument);
   }
 
-  // TODO: entfernen?!?
-  Optional<TypeSymbol> whoAmI = Optional.empty();
 
-    /**
-     * Liste der Argumente eines TypKonstruktors
-     */
-  List<TypeExpression> arguments = new LinkedList<>();
-
-
-  @Override
+  @Override @Deprecated
   public boolean deepEquals(TypeExpression typeExpression) {
     if(!(typeExpression instanceof GenericTypeExpression)){
       return false;
@@ -133,7 +135,7 @@ public class GenericTypeExpression extends TypeExpression {
     return true;
   }
 
-  @Override
+  @Override @Deprecated
   public TypeExpression deepClone() {
     GenericTypeExpression clone = new GenericTypeExpression();
     clone.setName(this.name);

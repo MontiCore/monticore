@@ -12,6 +12,9 @@ public class TypeVariable extends TypeExpression {
    */
   protected String varName;
 
+  // TODO BR: The type variable may be bounded; then it probably helps to connect to
+  // the Var-Symbol that contains the bounf
+  
   public TypeVariable(String varName) {
     this.varName = varName;
   }
