@@ -83,6 +83,7 @@ cl) #:     clean main (via mvn)
     cd ~/monticore/; mvn clean ;;
 
 cla) #:    clean all
+    gradle --stop;
     cd ~/monticore/; mvn clean || exit
     cd ~/monticore/monticore-generator/it;
     gradle clean || exit
@@ -97,6 +98,7 @@ cla) #:    clean all
     duration ;;
 
 cle) #:    clean experiments
+    gradle --stop;
     cd ~/monticore/monticore-generator/it/experiments/;
     gradle clean 
     ;;

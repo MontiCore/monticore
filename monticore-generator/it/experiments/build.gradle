@@ -52,4 +52,5 @@ subprojects {
   compileJava {
     dependsOn project.collect { it.tasks.withType(MCTask) }
   }
+
 }
