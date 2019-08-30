@@ -226,8 +226,6 @@ public class MCCollectionTypesTest {
 
   }
 
-  //TODO RE Fix Types Grammar/AST
-  @Ignore
   @Test
   public void collectionTypeWithIntFail() throws IOException {
     MCCollectionTypesWithoutPrimitivesTestParser parser = new MCCollectionTypesWithoutPrimitivesTestParser();

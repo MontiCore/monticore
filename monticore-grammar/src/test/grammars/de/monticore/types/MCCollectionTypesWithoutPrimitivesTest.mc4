@@ -4,6 +4,6 @@ package de.monticore.types;
 
 grammar MCCollectionTypesWithoutPrimitivesTest extends de.monticore.types.MCCollectionTypes {
 
-  //MCPrimitiveTypeArgument implements MCTypeArgument <190> =
-  //         "THIS_MUST_NOT_OCCCUR_SOMEWHERE";
+  MCPrimitiveTypeArgument implements MCTypeArgument <190> =
+           "THIS_MUST_NOT_OCCCUR_SOMEWHERE";
 }

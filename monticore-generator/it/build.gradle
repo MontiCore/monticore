@@ -44,12 +44,12 @@ compileJava {
 }
 
 repositories {
+  mavenLocal()
   maven {
     credentials.username mavenUser
     credentials.password mavenPassword
     url repo
   }
-  mavenLocal()
 }
 
 test {
