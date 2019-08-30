@@ -101,6 +101,12 @@ cle) #:    clean experiments
     gradle clean 
     ;;
 
+db) #:     delete *.bak
+    cd ~/monticore/;
+    find . -print | /usr/bin/grep -a '.bak$'
+    rm -f `find . -print | /usr/bin/grep -a '.bak$'`
+    ;;
+
 u)  #: update: (git fetch && git pull)
     cd ~/monticore/; git fetch && git pull
     duration ;;

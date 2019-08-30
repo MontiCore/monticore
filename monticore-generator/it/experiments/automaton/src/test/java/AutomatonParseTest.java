@@ -23,9 +23,6 @@ public class AutomatonParseTest {
   @Test
   public void testParseMethods() throws IOException {
 
-    // XXX BR
-   // xdecodeChar("tt","ff");
-
     String filename = "src/test/resources/example/PingPong.aut";
     AutomatonParser p = new AutomatonParser();
     

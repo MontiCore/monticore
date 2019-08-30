@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-// XXX BUG #2129: G3MillFor4 fehlt
+// XXX BUG #2129: G3MillFor4 fehlt 
 // sowie auch G2MillForG4
 grammar G4 extends G12,G3 {
   N = "...N4" ["opt"]? a:T* b:T;
