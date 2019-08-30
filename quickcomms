@@ -11,6 +11,14 @@
 file=$0
 grep "#\:" $file | sed "s/#\://g"
 
+#--------------------------------------------------
+# berechnet die Dauer einer Action (aus $start und $command)
+function duration() {
+    end=`date +%s`;
+    sec=`echo $end - $start | bc` 
+    echo "Command" $command $args "dauerte" `date -u -d @$sec +%X` "sek.  um" `date +%R` "Uhr"
+}
+
 #:------------------------------------------
 #:Shortcuts fuer wichtige Kommandos:
 #: 
@@ -22,59 +30,84 @@ while true; do
 #  echo commando: $command
 #  echo args: $args
 
+start=`date +%s`
   case $command in
 #--------------------------------------------------
 
 !) #:shell escape
     $args ;;
 
-m) #:durchbauen + Unit -Int.Tests (mvn install; 5 min)
-    cd ~/monticore/; mvn install ;;
+a) #:= m + e: monticore bauen + experiments (XXX min)
+    cd ~/monticore/;
+    mvn install -Dmaven.test.skip=true || exit
+    cd ~/monticore/monticore-generator/it/experiments;
+    gradle --refresh-dependencies build 
+    duration ; bell ;;
 
-q) #:quick: durchbauen; ohne Tests (5:30 min)
-    cd ~/monticore/; mvn install -Dmaven.test.skip=true ;;
+m) #:bauen +Unit -Int.Tests (mvn install; 7:30 min)
+    cd ~/monticore/; mvn install 
+    duration ; bell ;;
 
-it) #:IntegrationTests (gradle's, 30 min -- XXX)
+b) #:schnell bauen; ohne Tests (5:30 min)
+    cd ~/monticore/;
+    mvn install -Dmaven.test.skip=true || exit
+    duration ; bell ;;
+
+it) #:IntegrationTests (gradle's, 30 min)
     #   * Integration tests of the generator:
-    cd ~/monticore/monticore-generator/it; gradle build
+    cd ~/monticore/monticore-generator/it;
+    gradle build || exit
     #   * EMF Integration tests of the generator:
-    cd ~/monticore/monticore-generator/it/; gradle build -PbuildProfile=emf
+    cd ~/monticore/monticore-generator/it/;
+    gradle build -PbuildProfile=emf || exit
     #   * Experiments integration tests:
-    cd ~/monticore/monticore-generator/it/experiments/; gradle build
+    cd ~/monticore/monticore-generator/it/experiments/;
+    gradle build || exit
     #   * Grammar integration tests:
-    cd ~/monticore/monticore-grammar/monticore-grammar-it; gradle build
+    cd ~/monticore/monticore-grammar/monticore-grammar-it;
+    gradle build || exit
     #   * TemplateClassGenerator integration tests:
-    cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it; gradle build
-    ;;
+    cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it;
+    gradle build || exit
+    duration ; bell ;;
 
 e) #:Tests aus den Experimenten (gradle's; 2:40 min -- 12 sek)
     #   * Experiments integration tests:
-    cd ~/monticore/monticore-generator/it/experiments; gradle build;
-    ;;
+    # cd ~/monticore/monticore-generator/it/experiments;
+    gradle build || exit
+    cd ~/monticore/monticore-generator/it/experiments;
+    gradle --refresh-dependencies build || exit 
+    duration ;;
 
 cl) #:     clean main (via mvn)
     cd ~/monticore/; mvn clean ;;
 
 cla) #:    clean all
-    cd ~/monticore/; mvn clean
-    cd ~/monticore/monticore-generator/it; gradle clean
-    cd ~/monticore/monticore-generator/it/; gradle clean -PbuildProfile=emf
-    cd ~/monticore/monticore-generator/it/experiments/; gradle clean
-    cd ~/monticore/monticore-grammar/monticore-grammar-it; gradle clean
-    cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it; gradle clean
-    ;;
+    cd ~/monticore/; mvn clean || exit
+    cd ~/monticore/monticore-generator/it;
+    gradle clean || exit
+    cd ~/monticore/monticore-generator/it/;
+    gradle clean -PbuildProfile=emf || exit
+    cd ~/monticore/monticore-generator/it/experiments/;
+    gradle clean || exit
+    cd ~/monticore/monticore-grammar/monticore-grammar-it;
+    gradle clean || exit
+    cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it;
+    gradle clean || exit
+    duration ;;
 
 cle) #:    clean experiments
-    cd ~/monticore/monticore-generator/it/experiments/; gradle clean
+    cd ~/monticore/monticore-generator/it/experiments/;
+    gradle clean 
     ;;
 
 u)  #: update: (git fetch && git pull)
     cd ~/monticore/; git fetch && git pull
-    ;;
+    duration ;;
 
 c)  #: commit: (git commit -am "BR from q" && git push)
     cd ~/monticore/; git commit -am "BR from q" && git push
-    ;;
+    duration ;;
 
 
 
@@ -91,5 +124,7 @@ x|"") echo thanks
 #--------------------------------------------------
   esac
 done
+
+#--------------------------------------------------
 
 #:
