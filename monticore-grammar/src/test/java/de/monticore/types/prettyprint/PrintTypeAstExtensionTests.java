@@ -121,8 +121,8 @@ public class PrintTypeAstExtensionTests {
       e.printStackTrace();
     }
   }
-  //TODO RE Fix FullGenTypes
-  @Ignore
+
+
   @Test
   public void printTypeMethodTullGenericType2Test() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
@@ -186,8 +186,7 @@ public class PrintTypeAstExtensionTests {
     }
   }
 
-  //TODO RE Fix FullGenTypes
-  @Ignore
+
   @Test
   public void printTypeMethodTullGenericTypeWildcardExtendsTest() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
@@ -202,8 +201,7 @@ public class PrintTypeAstExtensionTests {
     }
   }
 
-  //TODO RE Fix FullGenTypes
-  @Ignore
+
   @Test
   public void printTypeMethodTullGenericTypeExtendsTest() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
@@ -223,8 +221,7 @@ public class PrintTypeAstExtensionTests {
     }
   }
 
-  //TODO RE Fix FullGenTypes
-  @Ignore
+
   @Test
   public void printTypeMethodTullGenericTypeWildcardSuperTest() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
