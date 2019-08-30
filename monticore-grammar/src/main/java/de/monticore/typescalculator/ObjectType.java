@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typescalculator;
 
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+
 /**
  * An objectType is a full qualified class name.
  * Therefore, we have the fullName, the baseName and the

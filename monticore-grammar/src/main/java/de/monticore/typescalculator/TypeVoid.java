@@ -14,5 +14,18 @@ public class TypeVoid extends TypeExpression {
     public String print() {
       return "void";
     }
+
     
+  // --------------------------------------------------------------------------
+  
+  @Override @Deprecated // and not implemented yet
+  public boolean deepEquals(TypeExpression typeExpression) {
+    return false;
   }
+  
+  @Override @Deprecated
+  public TypeExpression deepClone() {
+    return new TypeVoid();
+  }
+  
+}

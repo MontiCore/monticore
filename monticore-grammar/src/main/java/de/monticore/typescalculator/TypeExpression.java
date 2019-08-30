@@ -15,7 +15,7 @@ import java.util.Optional;
  * (such as comparison, printing)
  * TODO: later
  */
-public abstract class TypeExpression {
+public abstract class SymTypeExpression {
 
   /**
    * print: Umwandlung in einen kompakten String
@@ -49,7 +49,7 @@ public abstract class TypeExpression {
     // und das ist ja im Symbol gespeichert.
     // Konsequenz: muss man entfernen
     @Deprecated
-  protected List<TypeExpression> superTypes = new ArrayList<>();
+  protected List<SymTypeExpression> superTypes = new ArrayList<>();
     
     @Deprecated
   private void lazyLoadTypeSymbol() {
@@ -84,17 +84,17 @@ public abstract class TypeExpression {
 
 
 @Deprecated
-  public List<TypeExpression> getSuperTypes() {
+  public List<SymTypeExpression> getSuperTypes() {
     return superTypes;
   }
 
 @Deprecated
-  public void setSuperTypes(List<TypeExpression> superTypes) {
+  public void setSuperTypes(List<SymTypeExpression> superTypes) {
     this.superTypes = superTypes;
   }
 
   @Deprecated
-  public void addSuperType(TypeExpression superType){
+  public void addSuperType(SymTypeExpression superType){
     this.superTypes.add(superType);
   }
   
@@ -106,8 +106,8 @@ public abstract class TypeExpression {
   }
   
   @Deprecated
-  abstract public boolean deepEquals(TypeExpression typeExpression);
+  abstract public boolean deepEquals(SymTypeExpression typeExpression);
   
   @Deprecated
-  abstract public TypeExpression deepClone();
+  abstract public SymTypeExpression deepClone();
 }

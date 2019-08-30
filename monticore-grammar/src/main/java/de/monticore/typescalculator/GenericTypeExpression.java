@@ -8,6 +8,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * GenericTypeExpression stores any kind of TypeConstructor applied
+ * to Arguments, such as Map< int,Person >
+ * List<Person>, List< Set< List< a >>>.
+ * This subsumes all kinds of generic Types from several of the
+ * MC-Type grammars.
+ */
 public class GenericTypeExpression extends TypeExpression {
   
   /**
@@ -54,8 +61,11 @@ public class GenericTypeExpression extends TypeExpression {
    * print: Umwandlung in einen kompakten String
    */
   public String print() {
-    String r = getTypeConstructorName() + "<";
-    arguments.forEach((a) -> r += a);
+    StringBuffer r = new StringBuffer(getTypeConstructorName()).append('<');
+    for(int i = 0; i<arguments.size();i++){
+      r.append(arguments.get(i).print());
+      if(i<arguments.size()-1) { r.append(','); }
+    }
     return r +">";
   }
   
