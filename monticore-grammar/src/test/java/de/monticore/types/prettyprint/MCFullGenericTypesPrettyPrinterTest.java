@@ -93,34 +93,4 @@ public class MCFullGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertTrue(type.deepEquals(ast.get()));
   }
-
-//  @Test
-//  public void testMCTypeParameters() throws IOException {
-//    MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
-//    Optional<ASTMCTypeParameters> ast = parser.parse_StringMCTypeParameters("<A, B extends List<A>.A<Name>, C extends Set<F>.Opt<H> &  Map<G>.List<T>>");
-//    assertTrue(ast.isPresent());
-//    assertFalse(parser.hasErrors());
-//    ASTMCTypeParameters typeParameters = ast.get();
-//    MCFullGenericTypesPrettyPrinter printer = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
-//    String output = printer.prettyprint(ast.get());
-//    ast = parser.parse_StringMCTypeParameters(output);
-//    assertFalse(parser.hasErrors());
-//    assertTrue(ast.isPresent());
-//    assertTrue(typeParameters.deepEquals(ast.get()));
-//  }
-
-//  @Test
-//  public void testMCTypeVariableDeclaration() throws IOException {
-//    MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
-//    Optional<ASTMCTypeVariableDeclaration> ast = parser.parse_StringMCTypeVariableDeclaration(" C extends Set<F>.Opt<H> &  Map<G>.List<T> & Foo<Bar>.A<B>");
-//    assertTrue(ast.isPresent());
-//    assertFalse(parser.hasErrors());
-//    ASTMCTypeVariableDeclaration typeVariableDeclaration = ast.get();
-//    MCFullGenericTypesPrettyPrinter printer = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
-//    String output = printer.prettyprint(ast.get());
-//    ast = parser.parse_StringMCTypeVariableDeclaration(output);
-//    assertFalse(parser.hasErrors());
-//    assertTrue(ast.isPresent());
-//    assertTrue(typeVariableDeclaration.deepEquals(ast.get()));
-//  }
 }
