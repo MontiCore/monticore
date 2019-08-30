@@ -37,11 +37,16 @@ while true; do
 !) #:shell escape
     $args ;;
 
-a) #:= m + e: monticore bauen + experiments (8:30 min)
+a) #:= m + e: monticore bauen + experiments (2 min)
     cd ~/monticore/monticore-generator;
     mvn install -Dmaven.test.skip=true || bell || exit
-    # cd ~/monticore/monticore-generator/it/experiments;
-    # gradlew --refresh-dependencies build 
+    ### cd ~/monticore/monticore-generator/it/experiments;
+    ### gradlew --refresh-dependencies build 
+    duration ; bell ;;
+
+at) #:= m + e: monticore bauen + experiments (XXXX min)
+    cd ~/monticore/monticore-generator;
+    mvn install || bell || exit
     duration ; bell ;;
 
 mc) #:bauen +Unit -Int.Tests (mvn install; 7:30 min)

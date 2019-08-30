@@ -1,25 +1,52 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typescalculator;
 
-
 import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 
 import java.util.Optional;
 
 public class TypeVariable extends TypeExpression {
 
-    // TODO BR beisst sich mit geerbtem typeSymbol
-  protected Optional<TypeVarSymbol> typeVarSymbol;
+  /**
+   * A typeVariable has a name
+   */
+  protected String varName;
 
-  @Override
+  public TypeVariable(String varName) {
+    this.varName = varName;
+  }
+
+  /**
+   * We could connect the Variable to a symbol carrying that variable
+   * (clarify if that is really needed)
+   */
+  // protected TypeVarSymbol typeVarSymbol;
+
+  public String getVarName() {
+    return varName;
+  }
+  
+  public void setVarName(String name) {
+    this.varName = name;
+  }
+
+  /**
+   * print: Umwandlung in einen kompakten String
+   */
+  public String print() {
+    return getVarName();
+  }
+
+
+  // --------------------------------------------------------------------------
+
+
+  @Override @Deprecated
   public boolean deepEquals(TypeExpression typeExpression) {
     if(!(typeExpression instanceof TypeVariable)){
       return false;
     }
     if(!this.name.equals(typeExpression.name)){
-      return false;
-    }
-    if(!this.typeVarSymbol.equals(((TypeVariable) typeExpression).typeVarSymbol)){
       return false;
     }
     for(int i = 0; i<this.superTypes.size();i++){
@@ -30,7 +57,7 @@ public class TypeVariable extends TypeExpression {
     return true;
   }
 
-  @Override
+  @Override @Deprecated
   public TypeExpression deepClone() {
     TypeVariable clone = new TypeVariable();
     clone.setName(this.name);
@@ -38,7 +65,6 @@ public class TypeVariable extends TypeExpression {
     for(TypeExpression expr: superTypes){
       clone.addSuperType(expr.deepClone());
     }
-    clone.typeVarSymbol = this.typeVarSymbol;
     return clone;
   }
 }

@@ -6,7 +6,46 @@ import java.util.List;
 
 public class TypeConstant extends TypeExpression {
 
-  @Override
+  /**
+   * List of potential constants
+   * (on purpose not implemented as enum)
+   */
+   public static List<String> primitiveTypes = Arrays
+            .asList("boolean", "byte", "char", "short", "int", "long", "float", "double","void");
+
+  /**
+   * A typeConstant has a name
+   */
+  protected String constName;
+
+  public TypeConstant(String constName) {
+    this.constName = constName;
+  }
+  
+  public String getConstName() {
+    return constName;
+  }
+
+  public void setConstName(String constName) {
+    if (primitiveTypes.contains(name)) {
+      this.constName = constName;
+    } else {
+      throw new IllegalArgumentException("0xD3482 Only primitive types allowed (" + primitiveTypes.toString() + "), but was:" + name);
+    }
+  }
+  
+  /**
+   * print: Umwandlung in einen kompakten String
+   */
+  public String print() {
+    return getConstName();
+  }
+
+
+  // --------------------------------------------------------------------------
+
+
+    @Override @Deprecated
   public boolean deepEquals(TypeExpression typeExpression) {
     if(!(typeExpression instanceof TypeConstant)){
       return false;
@@ -25,7 +64,7 @@ public class TypeConstant extends TypeExpression {
     return true;
   }
 
-  @Override
+  @Override @Deprecated
   public TypeExpression deepClone() {
     TypeConstant clone = new TypeConstant();
     clone.setName(this.name);
@@ -37,16 +76,5 @@ public class TypeConstant extends TypeExpression {
     return clone;
   }
   //hier enum attr für primitive types
-
-  @Override
-  public void setName(String name) {
-    List<String> primitiveTypes = Arrays
-            .asList("boolean", "byte", "char", "short", "int", "long", "float", "double","void");
-    if(primitiveTypes.contains(name)) {
-      this.name = name;
-    } else {
-      throw new IllegalArgumentException("0xD3482 Only primitive types allowed ("+primitiveTypes.toString()+"), but was:"+ name);
-    }
-  }
 
 }

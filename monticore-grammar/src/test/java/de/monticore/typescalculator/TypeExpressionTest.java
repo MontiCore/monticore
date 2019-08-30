@@ -35,7 +35,7 @@ public class TypeExpressionTest {
 
   @Test
   public void deepCloneObjectTypeTest() {
-    TypeExpression e = buildObjectType("String", Lists.newArrayList());
+    TypeExpression e = buildObjectType("String");
     TypeSymbol s = new TypeSymbol("String");
     e.typeSymbol = java.util.Optional.of(s);
     TypeExpression eClone = e.deepClone();
@@ -43,11 +43,11 @@ public class TypeExpressionTest {
     assertDeepEquals(e,eClone);
 
     //example with super-/subclasses
-    TypeExpression exp = buildObjectType("List", Lists.newArrayList());
+    TypeExpression exp = buildObjectType("List");
     TypeSymbol b = new TypeSymbol("List");
     exp.typeSymbol = Optional.of(b);
 
-    TypeExpression ex = buildObjectType("ArrayList", Lists.newArrayList(exp));
+    TypeExpression ex = buildObjectType("ArrayList");
     TypeSymbol a = new TypeSymbol("ArrayList");
     ex.typeSymbol = Optional.of(a);
 
@@ -59,7 +59,7 @@ public class TypeExpressionTest {
 
   @Test
   public void deepCloneGenericTypeTest() {
-    TypeExpression expre = buildObjectType("Bar", Lists.newArrayList());
+    TypeExpression expre = buildObjectType("Bar");
     TypeSymbol d = new TypeSymbol("Bar");
     expre.typeSymbol = Optional.of(d);
 
@@ -68,7 +68,7 @@ public class TypeExpressionTest {
     TypeSymbol c = new TypeSymbol("SuperFoo");
     expr.typeSymbol = Optional.of(c);
 
-    TypeExpression exp = buildObjectType("Bar",Lists.newArrayList());
+    TypeExpression exp = buildObjectType("Bar");
     TypeSymbol b = new TypeSymbol("Bar");
     exp.typeSymbol = Optional.of(b);
 

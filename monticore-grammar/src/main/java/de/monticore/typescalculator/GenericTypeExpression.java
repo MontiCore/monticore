@@ -9,24 +9,89 @@ import java.util.List;
 import java.util.Optional;
 
 public class GenericTypeExpression extends TypeExpression {
+  
+  /**
+   * An ObjectType has a name.
+   * This is always the full qualified name (i.e. including package)
+   */
+  protected String objname;
+  
+  /**
+   * Symbol corresponding to the type's name (if loaded)
+   */
+  // XXX BR: unklar, ob das optional sein muss, wenn schon der Name
+  // immer gesetzt ist; man könnte das Symbol gleich beim initialisieren mit setzen lassen
+  protected TypeSymbol objTypeSymbol;
+  
+  public ObjectType(String objname) {
+    this.objname = objname;
+  }
+  
+  public String getObjName() {
+    return objname;
+  }
+  
+  public void setObjName(String objname) {
+    this.objname = objname;
+  }
+  
+  public TypeSymbol getObjTypeSymbol() {
+    return objTypeSymbol;
+  }
+  
+  public void setObjTypeSymbol(TypeSymbol objTypeSymbol) {
+    this.objTypeSymbol = objTypeSymbol;
+  }
+  
+  /**
+   * print: Umwandlung in einen kompakten String
+   */
+  public String print() {
+    return getObjName();
+  }
+  
+  /**
+   * getFullName: get the Qualified Name including Package
+   */
+  public String getFullName() {
+    return getObjName();
+  }
+  
+  /**
+   * getBaseName: get the unqualified Name (no ., no Package)
+   */
+  public String getBaseName() {
+    String[] parts = getObjName().split("\\.");
+    return parts[parts.length - 1];
+  }
+  
+  // --------------------------------------------------------------------------
+  
+  
+  
+  
   //String name;
+  @Deprecated
   public Optional<TypeSymbol> getWhoAmI() {
     return whoAmI;
   }
 
+  @Deprecated
   public void setWhoAmI(Optional<TypeSymbol> whoAmI) {
     this.whoAmI = whoAmI;
   }
 
+  @Deprecated
   public List<TypeExpression> getArguments() {
     return arguments;
   }
 
+  @Deprecated
   public void setArguments(List<TypeExpression> arguments) {
     this.arguments = arguments;
     Lists.newArrayList();
   }
-
+  
   public void addArgument(TypeExpression argument){
     this.arguments.add(argument);
   }

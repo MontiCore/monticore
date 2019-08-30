@@ -17,16 +17,22 @@ import java.util.Optional;
  */
 public abstract class TypeExpression {
 
+  /**
+   * print: Umwandlung in einen kompakten String
+   */
+  public abstract String print();
 
-
+  
+  // --------------------------------------------------------------------------
 
   /**
    * A type has a name (XXX BR Exceptions may apply?)
    */
+  @Deprecated
   protected String name;
 
   /// XXX BR: das hat hier nichts zu suchen
-    @Deprecated
+  @Deprecated
   protected TypeSymbolsScope enclosingScope;
 
   /**
@@ -35,6 +41,7 @@ public abstract class TypeExpression {
    */
   // XXX BR: unklar, ob das optional sein muss, wenn schon der Name
           // immer gesetzt ist und das hier auch immer geladen werden muss
+  @Deprecated
   protected Optional<TypeSymbol> typeSymbol = Optional.empty();
 
   // XXX BR: this list ist gefährlich, denn es ist nicht der Typ
@@ -43,21 +50,24 @@ public abstract class TypeExpression {
     // Konsequenz: muss man entfernen
     @Deprecated
   protected List<TypeExpression> superTypes = new ArrayList<>();
-
+    
     @Deprecated
   private void lazyLoadTypeSymbol() {
     if(typeSymbol==null || !typeSymbol.isPresent())
       typeSymbol = enclosingScope.resolveType(this.name);
   }
 
+  @Deprecated
   public TypeSymbol getTypeSymbol() {
     return typeSymbol.get();
   }
 
+  @Deprecated
   public String getName() {
     return name;
   }
 
+  @Deprecated
   public void setName(String name) {
     this.name = name;
   }
@@ -87,14 +97,17 @@ public abstract class TypeExpression {
   public void addSuperType(TypeExpression superType){
     this.superTypes.add(superType);
   }
-
-
+  
+  
+  @Deprecated
   public String getBaseName() {
     String[] parts = this.name.split("\\.");
     return parts[parts.length - 1];
   }
-
+  
+  @Deprecated
   abstract public boolean deepEquals(TypeExpression typeExpression);
-
+  
+  @Deprecated
   abstract public TypeExpression deepClone();
 }
