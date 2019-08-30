@@ -16,6 +16,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -41,7 +43,7 @@ public class AlwaysTheSameASTTest {
     this.customGenericTypesTestParser = new MCSimpleGenericTypesTestParser();
     this.genericTypesTestParser = new MCFullGenericTypesTestParser();
   }
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE Wait for #2378
   @Ignore
   @Test
   public void testMCListType() throws IOException {
@@ -82,7 +84,9 @@ public class AlwaysTheSameASTTest {
     assertTrue(argument2.isPresent());
     assertTrue(argument.deepEquals(argument2.get()));
   }
-  //TODO RE Fix Types Grammar/AST
+
+
+  //TODO RE Wait for #2378
   @Ignore
   @Test
   public void testMCListTypeWithCollectionTypeParser() throws IOException {
@@ -115,7 +119,7 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().getNameList().get(0), "List");
   }
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE Wait for #2378
   @Ignore
   @Test
   public void testMCListTypeWithTypeParser() throws IOException {
@@ -232,7 +236,7 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().getNameList().get(0), "Map");
   }
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE Wait for #2378
   @Ignore
   @Test
   public void testMCOptionalType() throws IOException {
@@ -270,7 +274,7 @@ public class AlwaysTheSameASTTest {
     assertTrue(argument2.isPresent());
     assertTrue(argument.deepEquals(argument2.get()));
   }
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE Wait for #2378
   @Ignore
   @Test
   public void testMCOptionalTypeWithTypeParser() throws IOException {
@@ -296,7 +300,7 @@ public class AlwaysTheSameASTTest {
     assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
     assertTrue(genericAST.get().deepEquals(customAst.get()));
   }
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE Wait for #2378
   @Ignore
   @Test
   public void testMCOptionalTypeWithCollectionTypeParser() throws IOException {
@@ -326,7 +330,7 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().getNameList().get(0), "Optional");
   }
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE Wait for #2378
   @Ignore
   @Test
   public void testMCSetTypeWithGenericCollectionTypeParser() throws IOException {
@@ -365,7 +369,7 @@ public class AlwaysTheSameASTTest {
     assertTrue(argument.deepEquals(argument2.get()));
   }
 
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE Wait for #2378
   @Ignore
   @Test
   public void testMCSetTypeWithTypeParser() throws IOException {
@@ -392,7 +396,7 @@ public class AlwaysTheSameASTTest {
     assertTrue(genericAST.get().deepEquals(customAst.get()));
   }
 
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE Wait for #2378
   @Ignore
   @Test
   public void testMCSetTypeWithCollectionTypeParser() throws IOException {
@@ -447,7 +451,7 @@ public class AlwaysTheSameASTTest {
     assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
     assertTrue(genericAST.get().deepEquals(customAst.get()));
   }
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE Wait for #2378
   @Ignore
   @Test
   public void testMCCustomTypeArgument() throws IOException {
