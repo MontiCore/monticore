@@ -26,18 +26,18 @@ function duration() {
 while true; do
   read -p "==> " command args
   echo
+  start=`date +%s`
 
 #  echo commando: $command
 #  echo args: $args
 
-start=`date +%s`
   case $command in
 #--------------------------------------------------
 
 !) #:shell escape
     $args ;;
 
-a) #:= m + e: monticore bauen + experiments (XXX min)
+a) #:= m + e: monticore bauen + experiments (8:30 min)
     cd ~/monticore/;
     mvn install -Dmaven.test.skip=true || exit
     cd ~/monticore/monticore-generator/it/experiments;
