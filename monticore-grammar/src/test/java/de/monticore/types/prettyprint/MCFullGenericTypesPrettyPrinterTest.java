@@ -61,7 +61,7 @@ public class MCFullGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertTrue(wildcardType.deepEquals(ast.get()));
   }
-  //TODO RE Fix Types Grammar/AST
+  //TODO RE wait for #2378
   @Ignore
   @Test
   public void testMCMultipleGenericType() throws IOException {
