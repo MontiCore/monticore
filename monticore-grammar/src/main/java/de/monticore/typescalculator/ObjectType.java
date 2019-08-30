@@ -13,6 +13,7 @@ public class ObjectType extends TypeExpression {
     if(!this.typeSymbol.equals(typeExpression.typeSymbol)){
       return false;
     }
+    // TODO RE: supertypen muss man doch nicht klonen?
     for(int i = 0; i<this.superTypes.size();i++){
       if(!this.superTypes.get(i).deepEquals(typeExpression.superTypes.get(i))){
         return false;

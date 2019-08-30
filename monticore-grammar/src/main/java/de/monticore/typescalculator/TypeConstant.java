@@ -45,7 +45,7 @@ public class TypeConstant extends TypeExpression {
     if(primitiveTypes.contains(name)) {
       this.name = name;
     } else {
-      throw new IllegalArgumentException("Only primitive types allowed ("+primitiveTypes.toString()+") but was:"+ name);
+      throw new IllegalArgumentException("0xD3482 Only primitive types allowed ("+primitiveTypes.toString()+"), but was:"+ name);
     }
   }
 

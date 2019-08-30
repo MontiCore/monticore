@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public class TypeVariable extends TypeExpression {
 
+    // TODO BR beisst sich mit geerbtem typeSymbol
   protected Optional<TypeVarSymbol> typeVarSymbol;
 
   @Override

@@ -38,43 +38,43 @@ while true; do
     $args ;;
 
 a) #:= m + e: monticore bauen + experiments (8:30 min)
-    cd ~/monticore/;
-    mvn install -Dmaven.test.skip=true || exit
-    cd ~/monticore/monticore-generator/it/experiments;
-    gradlew --refresh-dependencies build 
+    cd ~/monticore/monticore-generator;
+    mvn install -Dmaven.test.skip=true || bell || exit
+    # cd ~/monticore/monticore-generator/it/experiments;
+    # gradlew --refresh-dependencies build 
     duration ; bell ;;
 
-m) #:bauen +Unit -Int.Tests (mvn install; 7:30 min)
+mc) #:bauen +Unit -Int.Tests (mvn install; 7:30 min)
     cd ~/monticore/; mvn install 
     duration ; bell ;;
 
 b) #:schnell bauen; ohne Tests (5:30 min)
     cd ~/monticore/;
-    mvn install -Dmaven.test.skip=true || exit
+    mvn install -Dmaven.test.skip=true || bell || exit
     duration ; bell ;;
 
 it) #:IntegrationTests (gradle's, 30 min)
     #   * Integration tests of the generator:
     cd ~/monticore/monticore-generator/it;
-    gradlew build || exit
+    gradlew build || bell || exit
     #   * EMF Integration tests of the generator:
     cd ~/monticore/monticore-generator/it/;
-    gradlew build -PbuildProfile=emf || exit
+    gradlew build -PbuildProfile=emf || bell || exit
     #   * Experiments integration tests:
     cd ~/monticore/monticore-generator/it/experiments/;
-    gradlew build || exit
+    gradlew build || bell || exit
     #   * Grammar integration tests:
     cd ~/monticore/monticore-grammar/monticore-grammar-it;
-    gradlew build || exit
+    gradlew build || bell || exit
     #   * TemplateClassGenerator integration tests:
     cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it;
-    gradlew build || exit
+    gradlew build || bell || exit
     duration ; bell ;;
 
 e) #:Tests aus den Experimenten (gradle's; 2:40 min -- 12 sek)
     #   * Experiments integration tests:
     cd ~/monticore/monticore-generator/it/experiments;
-    gradlew --refresh-dependencies build || exit 
+    gradlew --refresh-dependencies build || bell || exit 
     duration ;;
 
 cl) #:     clean main (via mvn)
@@ -82,17 +82,17 @@ cl) #:     clean main (via mvn)
 
 cla) #:    clean all
     cd ~/monticore/monticore-generator/it; gradlew --stop;
-    cd ~/monticore/; mvn clean || exit
+    cd ~/monticore/; mvn clean || bell || exit
     cd ~/monticore/monticore-generator/it;
-    gradlew clean || exit
+    gradlew clean || bell || exit
     # cd ~/monticore/monticore-generator/it/;
-    # gradlew clean -PbuildProfile=emf || exit
+    # gradlew clean -PbuildProfile=emf || bell || exit
     cd ~/monticore/monticore-generator/it/experiments/;
-    gradlew clean || exit
+    gradlew clean || bell || exit
     cd ~/monticore/monticore-grammar/monticore-grammar-it;
-    gradlew clean || exit
+    gradlew clean || bell || exit
     cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it;
-    gradlew clean || exit
+    gradlew clean || bell || exit
     duration ;;
 
 cle) #:    clean experiments

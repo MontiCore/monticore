@@ -31,8 +31,12 @@ public class GenericTypeExpression extends TypeExpression {
     this.arguments.add(argument);
   }
 
+  // TODO: entfernen?!?
   Optional<TypeSymbol> whoAmI = Optional.empty();
 
+    /**
+     * Liste der Argumente eines TypKonstruktors
+     */
   List<TypeExpression> arguments = new LinkedList<>();
 
 
