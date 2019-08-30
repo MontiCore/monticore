@@ -1,0 +1,130 @@
+#!/bin/bash
+#
+# Programmauswahlunterstuetzung:
+# eine Liste von Kommandos sind durch Auswahl ausfuerhbar
+# Interaktive Eingabe erolgt mit
+#  Auswahlkuerzel weitere Argumente <Return>
+#  Ende mit <return>
+# Vor der Abfrage werden die Zeilen ausgegeben, die
+# die Zeichen "#" und ":" direkt aufenanderfolgend enthalten
+
+file=$0
+grep "#\:" $file | sed "s/#\://g"
+
+#--------------------------------------------------
+# berechnet die Dauer einer Action (aus $start und $command)
+function duration() {
+    end=`date +%s`;
+    sec=`echo $end - $start | bc` 
+    echo "Command" $command $args "dauerte" `date -u -d @$sec +%X` "sek.  um" `date +%R` "Uhr"
+}
+
+#:------------------------------------------
+#:Shortcuts fuer wichtige Kommandos:
+#: 
+
+while true; do
+  read -p "==> " command args
+  echo
+  start=`date +%s`
+
+#  echo commando: $command
+#  echo args: $args
+
+  case $command in
+#--------------------------------------------------
+
+!) #:shell escape
+    $args ;;
+
+a) #:= m + e: monticore bauen + experiments (8:30 min)
+    cd ~/monticore/;
+    mvn install -Dmaven.test.skip=true || exit
+    cd ~/monticore/monticore-generator/it/experiments;
+    gradle --refresh-dependencies build 
+    duration ; bell ;;
+
+m) #:bauen +Unit -Int.Tests (mvn install; 7:30 min)
+    cd ~/monticore/; mvn install 
+    duration ; bell ;;
+
+b) #:schnell bauen; ohne Tests (5:30 min)
+    cd ~/monticore/;
+    mvn install -Dmaven.test.skip=true || exit
+    duration ; bell ;;
+
+it) #:IntegrationTests (gradle's, 30 min)
+    #   * Integration tests of the generator:
+    cd ~/monticore/monticore-generator/it;
+    gradle build || exit
+    #   * EMF Integration tests of the generator:
+    cd ~/monticore/monticore-generator/it/;
+    gradle build -PbuildProfile=emf || exit
+    #   * Experiments integration tests:
+    cd ~/monticore/monticore-generator/it/experiments/;
+    gradle build || exit
+    #   * Grammar integration tests:
+    cd ~/monticore/monticore-grammar/monticore-grammar-it;
+    gradle build || exit
+    #   * TemplateClassGenerator integration tests:
+    cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it;
+    gradle build || exit
+    duration ; bell ;;
+
+e) #:Tests aus den Experimenten (gradle's; 2:40 min -- 12 sek)
+    #   * Experiments integration tests:
+    # cd ~/monticore/monticore-generator/it/experiments;
+    gradle build || exit
+    cd ~/monticore/monticore-generator/it/experiments;
+    gradle --refresh-dependencies build || exit 
+    duration ;;
+
+cl) #:     clean main (via mvn)
+    cd ~/monticore/; mvn clean ;;
+
+cla) #:    clean all
+    cd ~/monticore/; mvn clean || exit
+    cd ~/monticore/monticore-generator/it;
+    gradle clean || exit
+    # cd ~/monticore/monticore-generator/it/;
+    # gradle clean -PbuildProfile=emf || exit
+    cd ~/monticore/monticore-generator/it/experiments/;
+    gradle clean || exit
+    cd ~/monticore/monticore-grammar/monticore-grammar-it;
+    gradle clean || exit
+    cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it;
+    gradle clean || exit
+    duration ;;
+
+cle) #:    clean experiments
+    cd ~/monticore/monticore-generator/it/experiments/;
+    gradle clean 
+    ;;
+
+u)  #: update: (git fetch && git pull)
+    cd ~/monticore/; git fetch && git pull
+    duration ;;
+
+c)  #: commit: (git commit -am "BR from q" && git push)
+    cd ~/monticore/; git commit -am "BR from q" && git push
+    duration ;;
+
+
+
+#--------------------------------------------------
+
+#:x) oder "")    Ende der Bearbeitung
+x|"") echo thanks
+    exit ;;
+
+# Hilfe nochmal ausgeben
+*)  echo "Kommando nicht erkannt."
+    grep "#\:" $file | sed "s/#\://g" ;;
+
+#--------------------------------------------------
+  esac
+done
+
+#--------------------------------------------------
+
+#:

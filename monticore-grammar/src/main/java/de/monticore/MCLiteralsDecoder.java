@@ -9,7 +9,7 @@ import de.se_rwth.commons.logging.Log;
  * 
  */
 public class MCLiteralsDecoder {
-  
+
   /**
    * Decodes a char literal into a char
    * 
