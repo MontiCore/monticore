@@ -168,7 +168,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected ASTCDMethod createCacheMethod(String definitionName) {
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "calculatedModelName");
     ASTCDMethod cacheMethod = getCDMethodFacade().createMethod(PUBLIC, "cache", parameter);
-    this.replaceTemplate(EMPTY_BODY, cacheMethod, new TemplateHookPoint("_symboltable.scope.globalscope.CacheMethod", definitionName));
+    this.replaceTemplate(EMPTY_BODY, cacheMethod, new TemplateHookPoint("_symboltable.globalscope.CacheMethod", definitionName));
     return cacheMethod;
   }
 

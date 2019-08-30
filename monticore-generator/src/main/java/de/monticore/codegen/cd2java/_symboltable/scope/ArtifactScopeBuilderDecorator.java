@@ -59,7 +59,7 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint("_symboltable.scope.artifact.Build", scopeClass.getName())));
+        new TemplateHookPoint("_symboltable.artifactscope.Build", scopeClass.getName())));
 
     BuilderMutatorMethodDecorator builderMutatorMethodDecorator = new BuilderMutatorMethodDecorator(glex,
         getCDTypeFacade().createQualifiedType(scopeBuilderName));

@@ -40,7 +40,7 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
     ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, "name");
     ASTCDParameter enclosingScopeParameter = getCDParameterFacade().createParameter(scopeInterfaceType, "enclosingScope");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symbolReferenceClass, nameParameter, enclosingScopeParameter);
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("_symboltable.symbolRefereceClass.Constructor"));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("_symboltable.symbolreferece.Constructor"));
     return constructor;
   }
 }

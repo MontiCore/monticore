@@ -175,7 +175,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
       ASTCDParameter SuperVisitorParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(superScopeVisitor), VISITOR_PREFIX);
       ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, SuperVisitorParameter);
       String errorCode = DecorationHelper.getGeneratedErrorCode(acceptMethod);
-      this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_symboltable.scope.clazz.Accept", ownScopeVisitor, scopeClassName, superScopeVisitor, errorCode));
+      this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_symboltable.scope.Accept", ownScopeVisitor, scopeClassName, superScopeVisitor, errorCode));
       acceptMethods.add(acceptMethod);
     }
 
@@ -187,7 +187,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     if (symbolAttributeNames.isEmpty()) {
       this.replaceTemplate(EMPTY_BODY, getSymbolSize, new StringHookPoint("return 0;"));
     } else {
-      this.replaceTemplate(EMPTY_BODY, getSymbolSize, new TemplateHookPoint("_symboltable.scope.clazz.GetSymbolSize", symbolAttributeNames));
+      this.replaceTemplate(EMPTY_BODY, getSymbolSize, new TemplateHookPoint("_symboltable.scope.GetSymbolSize", symbolAttributeNames));
     }
     return getSymbolSize;
   }
@@ -293,7 +293,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
       if (mutatorMethod.getName().equals("setEnclosingScope")) {
         this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("methods.opt.Set", enclosingScopeAttribute));
       } else if (mutatorMethod.getName().equals("setEnclosingScopeOpt")) {
-        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.clazz.SetEnclosingScopeOpt"));
+        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.SetEnclosingScopeOpt"));
       } else if (mutatorMethod.getName().equals("setEnclosingScopeAbsent")) {
         this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("methods.opt.SetAbsent", enclosingScopeAttribute));
       }
@@ -317,11 +317,11 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     mutatorDecorator.enableTemplates();
     for (ASTCDMethod mutatorMethod : mutatorMethods) {
       if (mutatorMethod.getName().equals("setSpanningSymbol")) {
-        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.clazz.SetSpanningSymbol", spanningSymbolAttr));
+        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.SetSpanningSymbol", spanningSymbolAttr));
       } else if (mutatorMethod.getName().equals("setSpanningSymbolOpt")) {
-        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.clazz.SetSpanningSymbolOpt", spanningSymbolAttr));
+        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.SetSpanningSymbolOpt", spanningSymbolAttr));
       } else if (mutatorMethod.getName().equals("setSpanningSymbolAbsent")) {
-        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.clazz.SetSpanningSymbolAbsent", spanningSymbolAttr));
+        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.SetSpanningSymbolAbsent", spanningSymbolAttr));
       }
     }
     methodList.addAll(mutatorMethods);
@@ -358,13 +358,13 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
   protected List<ASTCDMethod> createSubScopeMethods(ASTMCType scopeInterface) {
     ASTCDMethod addSubScopeMethod = createAddSubScopeMethod(scopeInterface);
-    this.replaceTemplate(EMPTY_BODY, addSubScopeMethod, new TemplateHookPoint("_symboltable.scope.clazz.AddSubScope"));
+    this.replaceTemplate(EMPTY_BODY, addSubScopeMethod, new TemplateHookPoint("_symboltable.scope.AddSubScope"));
     ASTCDMethod removeSubScopeMethod = createRemoveSubScopeMethod(scopeInterface);
-    this.replaceTemplate(EMPTY_BODY, removeSubScopeMethod, new TemplateHookPoint("_symboltable.scope.clazz.RemoveSubScope"));
+    this.replaceTemplate(EMPTY_BODY, removeSubScopeMethod, new TemplateHookPoint("_symboltable.scope.RemoveSubScope"));
     ASTCDMethod getSubScopesMethod = createGetSubScopesMethod(scopeInterface);
-    this.replaceTemplate(EMPTY_BODY, getSubScopesMethod, new TemplateHookPoint("_symboltable.scope.clazz.GetSubScopes"));
+    this.replaceTemplate(EMPTY_BODY, getSubScopesMethod, new TemplateHookPoint("_symboltable.scope.GetSubScopes"));
     ASTCDMethod setSubScopesMethod = createSetSubScopesMethod(scopeInterface);
-    this.replaceTemplate(EMPTY_BODY, setSubScopesMethod, new TemplateHookPoint("_symboltable.scope.clazz.SetSubScopes"));
+    this.replaceTemplate(EMPTY_BODY, setSubScopesMethod, new TemplateHookPoint("_symboltable.scope.SetSubScopes"));
     return new ArrayList<>(Arrays.asList(addSubScopeMethod, removeSubScopeMethod, getSubScopesMethod, setSubScopesMethod));
   }
 
