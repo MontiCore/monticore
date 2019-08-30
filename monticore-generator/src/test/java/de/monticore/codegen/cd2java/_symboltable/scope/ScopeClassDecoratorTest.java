@@ -129,7 +129,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, cdConstructor.sizeCDParameters());
     assertBoolean(cdConstructor.getCDParameter(0).getMCType());
-    assertEquals("shadowingScope", cdConstructor.getCDParameter(0).getName());
+    assertEquals("shadowing", cdConstructor.getCDParameter(0).getName());
 
     assertTrue(cdConstructor.isEmptyExceptions());
   }
@@ -158,7 +158,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("enclosingScope", cdConstructor.getCDParameter(0).getName());
 
     assertBoolean(cdConstructor.getCDParameter(1).getMCType());
-    assertEquals("shadowingScope", cdConstructor.getCDParameter(1).getName());
+    assertEquals("shadowing", cdConstructor.getCDParameter(1).getName());
 
     assertTrue(cdConstructor.isEmptyExceptions());
   }
@@ -234,14 +234,14 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testShadowingAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("shadowingScope", scopeClass);
+    ASTCDAttribute astcdAttribute = getAttributeBy("shadowing", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertBoolean(astcdAttribute.getMCType());
   }
 
   @Test
   public void testExportsSymbolsAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("exportsSymbols", scopeClass);
+    ASTCDAttribute astcdAttribute = getAttributeBy("exportingSymbols", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertBoolean(astcdAttribute.getMCType());
   }

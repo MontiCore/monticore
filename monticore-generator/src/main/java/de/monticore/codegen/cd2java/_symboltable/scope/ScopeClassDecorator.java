@@ -85,14 +85,10 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     List<ASTCDMethod> exportSymbolsSymbolMethods = methodDecorator.decorate(exportSymbolsAttribute);
 
     ASTCDAttribute nameAttribute = createNameAttribute();
-    //todo deprecated replace with methodDecorator implementation
-    List<ASTCDMethod> nameMethods = createNameMethods(nameAttribute);
-//    List<ASTCDMethod> nameMethods = methodDecorator.decorate(nameAttribute);
+    List<ASTCDMethod> nameMethods = methodDecorator.decorate(nameAttribute);
 
     ASTCDAttribute astNodeAttribute = createASTNodeAttribute();
-    //todo deprecated replace with methodDecorator implementation
-    List<ASTCDMethod> astNodeMethods = createAstNodeMethods(astNodeAttribute);
-//    List<ASTCDMethod> astNodeMethods = methodDecorator.decorate(astNodeAttribute);
+    List<ASTCDMethod> astNodeMethods = methodDecorator.decorate(astNodeAttribute);
 
 
     return CD4AnalysisMill.cDClassBuilder()
@@ -121,10 +117,6 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         .addAllCDMethods(createSubScopeMethods(scopeInterfaceType))
         .addAllCDMethods(createAcceptMethods(scopeClassName))
         .addAllCDMethods(createSuperScopeMethods(symbolTableService.getScopeInterfaceFullName()))
-        //deprecated
-        .addCDMethod(createIsSpannedBySymbolMethod())
-        .addCDMethod(createExportsSymbolsMethod())
-        .addCDMethod(createSetShadowingMethod())
         .build();
   }
 
@@ -293,10 +285,8 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected List<ASTCDMethod> createEnclosingScopeMethods(ASTCDAttribute enclosingScopeAttribute) {
-    //todo when runtime is changed comment in first line instead of second one
-//    List<ASTCDMethod> enclosingScopeMethods = accessorDecorator.decorate(enclosingScopeAttribute);
-    List<ASTCDMethod> enclosingScopeMethods = new ArrayList<>();
-        mutatorDecorator.disableTemplates();
+    List<ASTCDMethod> enclosingScopeMethods = accessorDecorator.decorate(enclosingScopeAttribute);
+    mutatorDecorator.disableTemplates();
     List<ASTCDMethod> mutatorMethods = mutatorDecorator.decorate(enclosingScopeAttribute);
     mutatorDecorator.enableTemplates();
     for (ASTCDMethod mutatorMethod : mutatorMethods) {
@@ -310,21 +300,6 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     }
     enclosingScopeMethods.addAll(mutatorMethods);
 
-
-    // todo deprecated remove this part
-    // template for getter mus be changed
-    List<ASTCDMethod> getEnclosingScopeMethods = accessorDecorator.decorate(enclosingScopeAttribute);
-    // remove getEnclosingScope because of wrong return type
-    enclosingScopeMethods.addAll(getEnclosingScopeMethods
-        .stream()
-        .filter(m -> !m.getName().equals("getEnclosingScope"))
-        .collect(Collectors.toList()));
-
-    // create getEnclosingScope with Optional return Type
-    ASTCDMethod getEnclosingScopeMethod = getCDMethodFacade().createMethod(PUBLIC, enclosingScopeAttribute.getMCType(), "getEnclosingScope");
-    this.replaceTemplate(EMPTY_BODY, getEnclosingScopeMethod, new StringHookPoint("return this.enclosingScope;"));
-    enclosingScopeMethods.add(getEnclosingScopeMethod);
-
     return enclosingScopeMethods;
   }
 
@@ -335,9 +310,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected List<ASTCDMethod> createSpanningSymbolMethods(ASTCDAttribute spanningSymbolAttr) {
-    //todo when runtime is changed comment in first line instead of second one
-//    List<ASTCDMethod> methodList = accessorDecorator.decorate(spanningSymbolAttr);
-    List<ASTCDMethod> methodList = new ArrayList<>();
+    List<ASTCDMethod> methodList = accessorDecorator.decorate(spanningSymbolAttr);
 
     mutatorDecorator.disableTemplates();
     List<ASTCDMethod> mutatorMethods = mutatorDecorator.decorate(spanningSymbolAttr);
@@ -352,21 +325,6 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
       }
     }
     methodList.addAll(mutatorMethods);
-
-    // todo deprecated remove this part
-    // template for getter mus be changed
-    List<ASTCDMethod> getSpannedScopeMethods = accessorDecorator.decorate(spanningSymbolAttr);
-    // remove getEnclosingScope because of wrong return type
-    methodList.addAll(getSpannedScopeMethods
-        .stream()
-        .filter(m -> !m.getName().equals("getSpanningSymbol"))
-        .collect(Collectors.toList()));
-
-    // create getEnclosingScope with Optional return Type
-    ASTCDMethod getSpanningSymbolMethod = getCDMethodFacade().createMethod(PUBLIC, spanningSymbolAttr.getMCType(), "getSpanningSymbol");
-    this.replaceTemplate(EMPTY_BODY, getSpanningSymbolMethod, new StringHookPoint("return this.spanningSymbol;"));
-    methodList.add(getSpanningSymbolMethod);
-
     return methodList;
   }
 
@@ -375,7 +333,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDAttribute createExportSymbolsAttribute() {
-    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createBooleanType(), "exportsSymbols");
+    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createBooleanType(), "exportingSymbols");
     this.replaceTemplate(VALUE, attribute, new StringHookPoint("= true;"));
     return attribute;
   }
@@ -452,91 +410,5 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   protected ASTCDMethod createSetEnclosingScopeMethod(ASTMCType scopeType) {
     ASTCDParameter subScopeParameter = getCDParameterFacade().createParameter(scopeType, "newEnclosingScope");
     return getCDMethodFacade().createMethod(PUBLIC, "setEnclosingScope", subScopeParameter);
-  }
-
-  /**
-   * @deprecated remove and use isPresentSpanningSymbol instead
-   */
-  @Deprecated
-  protected ASTCDMethod createIsSpannedBySymbolMethod() {
-    ASTCDMethod isSpannedBySymbol = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), "isSpannedBySymbol");
-    this.replaceTemplate(EMPTY_BODY, isSpannedBySymbol, new StringHookPoint("return isPresentSpanningSymbol();"));
-    return isSpannedBySymbol;
-  }
-
-  /**
-   * @deprecated remove and use setShadowingScope instead
-   */
-  @Deprecated
-  protected ASTCDMethod createExportsSymbolsMethod() {
-    ASTCDMethod exportSymbols = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), "exportsSymbols");
-    this.replaceTemplate(EMPTY_BODY, exportSymbols, new StringHookPoint("return isExportsSymbols();"));
-    return exportSymbols;
-  }
-
-  /**
-   * @deprecated remove and use isPresentSpanningSymbol instead
-   */
-  @Deprecated
-  protected ASTCDMethod createSetShadowingMethod() {
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), SHADOWING);
-
-    ASTCDMethod exportSymbols = getCDMethodFacade().createMethod(PUBLIC, "setShadowing", parameter);
-    this.replaceTemplate(EMPTY_BODY, exportSymbols, new StringHookPoint("setShadowingScope(" + SHADOWING + ");"));
-    return exportSymbols;
-  }
-
-  /**
-   * @deprecated remove when runtime method 'public Optional<? extends ASTNode> getAstNode();' is changed
-   * to ' public ASTNode getAstNode();'
-   * because interface ISymbol from runtime must be implemented correctly for now, the get method return type must be changed manually
-   */
-  @Deprecated
-  protected List<ASTCDMethod> createAstNodeMethods(ASTCDAttribute astNodeAttribute) {
-    // create getter and setter separately
-    // setter is not changed
-    List<ASTCDMethod> symbolMethods = new ArrayList<>(mutatorDecorator.decorate(astNodeAttribute));
-
-    // template for getter mus be changed
-    List<ASTCDMethod> astNodeMethods = accessorDecorator.decorate(astNodeAttribute);
-    // remove getAstNode because of wrong return type
-    symbolMethods.addAll(astNodeMethods
-        .stream()
-        .filter(m -> !m.getName().equals("getAstNode"))
-        .collect(Collectors.toList()));
-
-    // create getAstNode with Optional return Type
-    ASTCDMethod getAstNodeMethod = getCDMethodFacade().createMethod(PUBLIC, astNodeAttribute.getMCType(), "getAstNode");
-    this.replaceTemplate(EMPTY_BODY, getAstNodeMethod, new StringHookPoint("return this.astNode;"));
-    symbolMethods.add(getAstNodeMethod);
-
-    return symbolMethods;
-  }
-
-  /**
-   * @deprecated remove when runtime method 'public Optional<String> getName();' is changed
-   * to ' public Name getName();'
-   * because interface ISymbol from runtime must be implemented correctly for now, the get method return type must be changed manually
-   */
-  @Deprecated
-  protected List<ASTCDMethod> createNameMethods(ASTCDAttribute astNodeAttribute) {
-    // create getter and setter separately
-    // setter is not changed
-    List<ASTCDMethod> symbolMethods = new ArrayList<>(mutatorDecorator.decorate(astNodeAttribute));
-
-    // template for getter mus be changed
-    List<ASTCDMethod> nameMethods = accessorDecorator.decorate(astNodeAttribute);
-    // remove getAstNode because of wrong return type
-    symbolMethods.addAll(nameMethods
-        .stream()
-        .filter(m -> !m.getName().equals("getName"))
-        .collect(Collectors.toList()));
-
-    // create getAstNode with Optional return Type
-    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, astNodeAttribute.getMCType(), "getName");
-    this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint("return this.name;"));
-    symbolMethods.add(getNameMethod);
-
-    return symbolMethods;
   }
 }

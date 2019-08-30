@@ -3,7 +3,7 @@
   if (enclosingScope.isPresent()) {
     setEnclosingScope(enclosingScope.get());
   }
-  setExportsSymbols(true);
+  setExportingSymbols(true);
   Log.errorIfNull(packageName);
   Log.errorIfNull(imports);
 

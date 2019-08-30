@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  if (this.exportsSymbols()) {
+  if (this.isExportingSymbols()) {
     final String symbolQualifier = de.se_rwth.commons.Names.getQualifier(symbolName);
 
     final List<String> symbolQualifierParts = de.se_rwth.commons.Splitters.DOT.splitToList(symbolQualifier);

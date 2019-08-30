@@ -106,8 +106,8 @@ public class SymbolTableReporter2 extends AReporter {
     // printer.println("packageName = \"" + artifactScope.getPackageName() + "\";");
     // }
     
-    printer.println("isShadowingScope = " + scope.isShadowingScope() + ";");
-    printer.println("exportsSymbols = " + scope.exportsSymbols() + ";");
+    printer.println("isShadowingScope = " + scope.isShadowing() + ";");
+    printer.println("exportsSymbols = " + scope.isExportingSymbols() + ";");
     
     if (scope.getAstNodeOpt().isPresent()) {
       printer.print("astNode = ");

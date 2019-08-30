@@ -175,6 +175,22 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public String getLanguageClassSimpleName() {
     return getLanguageClassSimpleName(getCDSymbol());
   }
+   /*
+    language class names e.g. AutomataLanguage
+   */
+
+  public String getSymbolReferenceClassFullName(ASTCDType astcdType, CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getSymbolReferenceClassSimpleName(astcdType);
+  }
+
+  public String getSymbolReferenceClassFullName(ASTCDType astcdType) {
+    return getSymbolReferenceClassFullName(astcdType, getCDSymbol());
+  }
+
+  public String getSymbolReferenceClassSimpleName(ASTCDType astcdType) {
+    return getSymbolSimpleName(astcdType) + REFERENCE_SUFFIX;
+  }
+
 
     /*
     resolving delegate symbol interface e.g. IAutomatonSymbolResolvingDelegate

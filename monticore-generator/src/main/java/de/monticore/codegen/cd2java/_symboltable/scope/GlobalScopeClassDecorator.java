@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolTOP;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -85,6 +86,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMethods(resolvingDelegateMethods)
         .addAllCDMethods(createAddResolvingSymbolDelegateMethods(resolvingDelegateAttributes.values()))
         .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
+        .addAllCDMethods(createAlreadyResolvedSuperMethods())
         .build();
   }
 
@@ -183,15 +185,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   protected List<ASTCDMethod> createAlreadyResolvedMethods(List<? extends ASTCDType> cdTypeList) {
-    List<String> symbolAttributeNameList = cdTypeList
-        .stream()
-        .map(symbolTableService::getDefiningSymbolSimpleName)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .map(s -> s + "s")
-        .map(StringTransformations::uncapitalize)
-        .collect(Collectors.toList());
-    List<ASTCDAttribute> symbolAlreadyResolvedAttributes = createSymbolAlreadyResolvedAttributes(symbolAttributeNameList);
+    List<ASTCDAttribute> symbolAlreadyResolvedAttributes = createSymbolAlreadyResolvedAttributes(cdTypeList);
     return symbolAlreadyResolvedAttributes
         .stream()
         .map(methodDecorator::decorate)
@@ -199,7 +193,36 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .collect(Collectors.toList());
   }
 
-  protected List<ASTCDAttribute> createSymbolAlreadyResolvedAttributes(Collection<String> symbolAttributeNameList) {
+
+  protected List<ASTCDMethod> createAlreadyResolvedSuperMethods() {
+    List<ASTCDAttribute> symbolAlreadyResolvedAttributes = new ArrayList<>();
+    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes().stream().filter(t -> t.getAstNode().isPresent())
+          .filter(t -> t.getAstNode().get().getModifierOpt().isPresent())
+          .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().get().getModifierOpt().get()))
+          .map(CDTypeSymbolTOP::getAstNode)
+          .map(Optional::get)
+          .collect(Collectors.toList());
+      symbolAlreadyResolvedAttributes.addAll(createSymbolAlreadyResolvedAttributes(symbolProds));
+    }
+    return symbolAlreadyResolvedAttributes
+        .stream()
+        .map(methodDecorator::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+  }
+
+  protected List<ASTCDAttribute> createSymbolAlreadyResolvedAttributes(List<? extends ASTCDType> astcdTypeList) {
+
+    List<String> symbolAttributeNameList = astcdTypeList
+        .stream()
+        .map(symbolTableService::getDefiningSymbolSimpleName)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(s -> s + "s")
+        .map(StringTransformations::uncapitalize)
+        .collect(Collectors.toList());
+
     List<ASTCDAttribute> symbolAttributeList = new ArrayList<>();
     for (String attributeName : symbolAttributeNameList) {
       String attrName = attributeName + ALREADY_RESOLVED;

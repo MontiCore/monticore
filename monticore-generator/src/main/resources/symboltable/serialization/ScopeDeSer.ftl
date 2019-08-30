@@ -97,7 +97,7 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
     
     ${languageName}Scope scope = new ${languageName}Scope(isShadowingScope.orElse(false));
     name.ifPresent(scope::setName);
-    scope.setExportsSymbols(exportsSymbols.orElse(true));
+    scope.setExportingSymbols(exportsSymbols.orElse(true));
     
 <#if scopeRule.isPresent()>
 <#list scopeRule.get().getAdditionalAttributeList() as attr>

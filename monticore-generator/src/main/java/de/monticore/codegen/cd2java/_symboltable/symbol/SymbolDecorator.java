@@ -15,7 +15,6 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
@@ -115,10 +114,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
         symbolMethods.addAll(createNameMethods(symbolAttribute));
       } else if (symbolAttribute.getName().equals(FULL_NAME)) {
         symbolMethods.addAll(createNameMethods(symbolAttribute));
-      } else if (symbolAttribute.getName().equals(AST_NODE_VARIABLE)) {
-        // todo: remove this if statement when runtime is changed
-        symbolMethods.addAll(createAstNodeMethods(symbolAttribute));
-      } else {
+      }else {
         symbolMethods.addAll(methodDecorator.decorate(symbolAttribute));
       }
     }
@@ -140,33 +136,6 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
     return symbolMethods;
   }
 
-
-  /**
-   * @deprecated remove when runtime method 'public Optional<? extends ASTNode> getAstNode();' is changed
-   * to ' public ASTNode getAstNode();'
-   * because interface ISymbol from runtime must be implemented correctly for now, the get method return type must be changed manually
-   */
-  @Deprecated
-  protected List<ASTCDMethod> createAstNodeMethods(ASTCDAttribute symbolAttribute) {
-    // create getter and setter separately
-    // setter is not changed
-    List<ASTCDMethod> symbolMethods = new ArrayList<>(mutatorDecorator.decorate(symbolAttribute));
-
-    // template for getter mus be changed
-    List<ASTCDMethod> astNodeMethods = accessorDecorator.decorate(symbolAttribute);
-    // remove getAstNode because of wrong return type
-    symbolMethods.addAll(astNodeMethods
-        .stream()
-        .filter(m -> !m.getName().equals("getAstNode"))
-        .collect(Collectors.toList()));
-
-    // create getAstNode with Optional return Type
-    ASTCDMethod getAstNodeMethod = getCDMethodFacade().createMethod(PUBLIC, symbolAttribute.getMCType(), "getAstNode");
-    this.replaceTemplate(EMPTY_BODY, getAstNodeMethod, new StringHookPoint("return this.astNode;"));
-    symbolMethods.add(getAstNodeMethod);
-
-    return symbolMethods;
-  }
 
   protected ASTCDAttribute createSpannedScopeAttribute() {
     return getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getScopeInterfaceType(), String.format(SPANNED_SCOPE, ""));

@@ -14,12 +14,12 @@ ${tc.signature("scopeInterface", "artifactScope", "globalScope")}
 
     while (optCurrentScope.isPresent()) {
       final ${scopeInterface} currentScope = optCurrentScope.get();
-      if (currentScope.isSpannedBySymbol()) {
+      if (currentScope.isPresentSpanningSymbol()) {
         // If one of the enclosing scope(s) is spanned by a symbol, the full name
         // of that symbol is the missing prefix, and hence, the calculation
         // ends here. This check is important, since the full name of the enclosing
         // symbol might be set manually.
-        nameParts.addFirst(currentScope.getSpanningSymbol().get().getFullName());
+        nameParts.addFirst(currentScope.getSpanningSymbol().getFullName());
         break;
       }
 
@@ -31,14 +31,14 @@ ${tc.signature("scopeInterface", "artifactScope", "globalScope")}
             nameParts.addFirst(getPackageName());
           }
         } else {
-          if (currentScope.getName().isPresent()) {
-            nameParts.addFirst(currentScope.getName().get());
+          if (currentScope.isPresentName()) {
+            nameParts.addFirst(currentScope.getName());
           }
           // ...else stop? If one of the enclosing scopes is unnamed,
           //         the full name is same as the simple name.
         }
       }
-      optCurrentScope = currentScope.getEnclosingScope();
+      optCurrentScope = currentScope.getEnclosingScopeOpt();
     }
 
     return de.se_rwth.commons.Names.getQualifiedName(nameParts);

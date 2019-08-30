@@ -17,6 +17,8 @@ public class SymbolTableConstants {
 
   public static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
 
+  public static final String I_SYMBOL_REFERENCE = "de.monticore.symboltable.references.ISymbolReference";
+
   public static final String QUALIFIED_NAMES_CALCULATOR = "de.monticore.symboltable.names.QualifiedNamesCalculator";
 
   public static final String PATH = "java.nio.file.Path";
@@ -53,7 +55,7 @@ public class SymbolTableConstants {
 
   public static final String ALREADY_RESOLVED = "AlreadyResolved";
 
-  public static final String SHADOWING = "shadowingScope";
+  public static final String SHADOWING = "shadowing";
 
   public static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
 
@@ -88,6 +90,8 @@ public class SymbolTableConstants {
   public static final String SYMBOLS_MULTI_MAP = "com.google.common.collect.LinkedListMultimap<String, %s>";
 
   public static final String LANGUAGE_SUFFIX = "Language";
+
+  public static final String REFERENCE_SUFFIX = "Reference";
 
   public static final String MODEL_LOADER_SUFFIX = "ModelLoader";
 

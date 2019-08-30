@@ -70,11 +70,11 @@ public class ${className} implements ${grammarName}Visitor {
   public void putOnStack(${scopeName} scope) {
     Log.errorIfNull(scope);
 
-    if (!scope.getEnclosingScope().isPresent() && getCurrentScope().isPresent()) {
+    if (!scope.isPresentEnclosingScope() && getCurrentScope().isPresent()) {
       scope.setEnclosingScope(getCurrentScope().get());
       getCurrentScope().get().addSubScope(scope);
-    } else if (scope.getEnclosingScope().isPresent() && getCurrentScope().isPresent()) {
-      if (scope.getEnclosingScope().get() != getCurrentScope().get()) {
+    } else if (scope.isPresentEnclosingScope() && getCurrentScope().isPresent()) {
+      if (scope.getEnclosingScope() != getCurrentScope().get()) {
         Log.warn("0xA1043 The enclosing scope is not the same as the current scope on the stack.");
       }
     }

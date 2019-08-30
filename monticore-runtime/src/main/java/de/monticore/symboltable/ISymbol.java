@@ -67,13 +67,7 @@ public interface ISymbol {
 
   public boolean isPresentAstNode();
 
-  /**
-   * @deprecated return type will change from optional to mandatory with next release
-   * use getAstNodeOpt() instead, for Optional return type
-   * new method signature: public ASTNode getAstNode();
-   */
-  @Deprecated
-  public Optional<? extends ASTNode> getAstNode();
+  public ASTNode getAstNode();
 
   /**
    * @return the position of this symbol in the source model. By default, it is the source position

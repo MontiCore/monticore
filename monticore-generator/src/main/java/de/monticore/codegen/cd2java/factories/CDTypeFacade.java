@@ -8,9 +8,11 @@ import de.monticore.cd.cd4code._parser.CD4CodeParser;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
 import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.MCFullGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardType;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
@@ -87,7 +89,11 @@ public class CDTypeFacade {
   }
 
   public ASTMCOptionalType createOptionalTypeOf(final ASTMCType type) {
-    return createOptionalTypeOf(MCCollectionTypesHelper.printType(type));
+    return createOptionalTypeOf(MCFullGenericTypesHelper.printType(type));
+  }
+
+  public ASTMCOptionalType createOptionalTypeOf(final ASTMCTypeArgument type) {
+    return createOptionalTypeOf(MCFullGenericTypesHelper.printType(type));
   }
 
   public ASTMCListType createListTypeOf(final Class<?> clazz) {
@@ -160,12 +166,27 @@ public class CDTypeFacade {
     return createArrayType(this.createQualifiedType(name), dimension);
   }
 
-  private ASTMCArrayType createArrayType(final ASTMCType type, int dimension) {
+  public ASTMCArrayType createArrayType(final ASTMCType type, int dimension) {
     return MCFullGenericTypesMill.mCArrayTypeBuilder()
             .setMCType(type)
             .setDimensions(dimension)
             .build();
   }
+
+  public ASTMCWildcardType createWildCardWithUpperBoundType(final Class<?> upperBound) {
+    return createWildCardWithUpperBoundType(this.createQualifiedType(upperBound));
+  }
+
+  public ASTMCWildcardType createWildCardWithUpperBoundType(final String upperBound) {
+    return createWildCardWithUpperBoundType(this.createQualifiedType(upperBound));
+  }
+
+  public ASTMCWildcardType createWildCardWithUpperBoundType(final ASTMCType upperBound) {
+    return MCFullGenericTypesMill.mCWildcardTypeBuilder()
+        .setUpperBound(upperBound)
+        .build();
+  }
+
 
   public ASTMCVoidType createVoidType() {
     return MCBasicTypesMill.mCVoidTypeBuilder()

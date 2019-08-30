@@ -35,11 +35,11 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     //todo find better util than the DecorationHelper
-    List<ASTCDMethod> methodList= new ArrayList<>();
+    List<ASTCDMethod> methodList = new ArrayList<>();
     naiveAttributeName = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
     methodList.add(createSetMethod(ast));
     methodList.add(createSetOptMethod(ast));
-    methodList.add( createSetAbsentMethod(ast));
+    methodList.add(createSetAbsentMethod(ast));
     return methodList;
   }
 

@@ -5,11 +5,14 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -25,8 +28,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_ME
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 import static de.monticore.codegen.cd2java.data.ListSuffixDecorator.LIST_SUFFIX_S;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
@@ -34,12 +36,16 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
 
   protected final VisitorService visitorService;
 
+  protected final MethodDecorator methodDecorator;
+
   public ScopeInterfaceDecorator(final GlobalExtensionManagement glex,
                                  final SymbolTableService symbolTableService,
-                                 final VisitorService visitorService) {
+                                 final VisitorService visitorService,
+                                 final MethodDecorator methodDecorator) {
     super(glex);
     this.symbolTableService = symbolTableService;
     this.visitorService = visitorService;
+    this.methodDecorator = methodDecorator;
   }
 
   @Override
@@ -436,17 +442,37 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
     return new ArrayList<>(Arrays.asList(getSubScopes, addSubScope, removeSubScope));
   }
 
+  //  protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {
+//    ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED,
+//        getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType()), "enclosingScope");
+//    methodDecorator.disableTemplates();
+//    List<ASTCDMethod> enclosingScopeMethods = methodDecorator.decorate(enclosingScope);
+//    methodDecorator.enableTemplates();
+//    enclosingScopeMethods.forEach(m -> m.getModifier().setAbstract(true));
+//    return enclosingScopeMethods;
+//  }
+  //todo think about setter with optional, is it possible to have them
   protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {
-    ASTMCType optType = getCDTypeFacade().createOptionalTypeOf("? extends " + scopeInterface);
-    ASTCDMethod getEnclosingScope = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, optType, "getEnclosingScope");
-
-    ASTCDParameter enclosingScopeParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), "enclosingScope");
-    ASTCDMethod setEnclosingScope = getCDMethodFacade().createMethod(PUBLIC, "setEnclosingScope", enclosingScopeParameter);
-    this.replaceTemplate(EMPTY_BODY, setEnclosingScope,
-        new StringHookPoint("Log.error(\"0xA7012x558 The method \\\"setEnclosingScope\\\" of interface \\\"IAutomataScope\\\" is not implemented.\");"));
-
-    return new ArrayList<>(Arrays.asList(getEnclosingScope, setEnclosingScope));
+    ASTCDAttribute enclosingScopeOpt = this.getCDAttributeFacade().createAttribute(PROTECTED,
+        getCDTypeFacade().createOptionalTypeOf(scopeInterface), "enclosingScope");
+    ASTCDAttribute enclosingScopeMand = this.getCDAttributeFacade().createAttribute(PROTECTED,
+        scopeInterface, "enclosingScope");
+    methodDecorator.disableTemplates();
+    List<ASTCDMethod> enclosingScopeMethods = methodDecorator.getAccessorDecorator().decorate(enclosingScopeOpt);
+    Optional<ASTCDMethod> getEnclosingScopeOpt = enclosingScopeMethods.stream().filter(m -> m.getName().equals("getEnclosingScopeOpt")).findFirst();
+    if(getEnclosingScopeOpt.isPresent()){
+      // make wildcard type
+      ASTMCOptionalType wildCardType = getCDTypeFacade().createOptionalTypeOf(getCDTypeFacade().createWildCardWithUpperBoundType(scopeInterface));
+      ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(wildCardType).build();
+      getEnclosingScopeOpt.get().setMCReturnType(returnType);
+    }
+    enclosingScopeMethods.addAll(methodDecorator.getMutatorDecorator().decorate(enclosingScopeMand));
+    methodDecorator.enableTemplates();
+    enclosingScopeMethods.stream();
+    enclosingScopeMethods.forEach(m -> m.getModifier().setAbstract(true));
+    return enclosingScopeMethods;
   }
+
 
   protected ASTCDMethod createAcceptMethod() {
     String ownScopeVisitor = visitorService.getScopeVisitorFullName();

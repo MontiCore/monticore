@@ -36,11 +36,11 @@ public class ${symTabPrinterName}
     printer.member(JsonConstants.KIND, "${symbolTablePackage}.${languageName}ArtifactScope");
     printer.member(JsonConstants.NAME, as.getName());
     printer.member(JsonConstants.PACKAGE, as.getPackageName());
-    printer.member(JsonConstants.EXPORTS_SYMBOLS, as.exportsSymbols());
+    printer.member(JsonConstants.EXPORTS_SYMBOLS, as.isExportingSymbols());
     printer.beginArray(JsonConstants.IMPORTS);
     as.getImportList().forEach(x -> printer.value(x.toString()));
     printer.endArray();
-    printer.member(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(as.getSpanningSymbol()));
+    printer.member(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(as.getSpanningSymbolOpt()));
   }
 
   /**
@@ -51,9 +51,9 @@ public class ${symTabPrinterName}
     printer.beginObject();
     printer.member(JsonConstants.KIND, "${symbolTablePackage}.${languageName}Scope");
     printer.member(JsonConstants.NAME, scope.getName());
-    printer.member(JsonConstants.IS_SHADOWING_SCOPE, scope.isShadowingScope());
-    printer.member(JsonConstants.EXPORTS_SYMBOLS, scope.exportsSymbols());
-    printer.member(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(scope.getSpanningSymbol()));
+    printer.member(JsonConstants.IS_SHADOWING_SCOPE, scope.isShadowing());
+    printer.member(JsonConstants.EXPORTS_SYMBOLS, scope.isExportingSymbols());
+    printer.member(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(scope.getSpanningSymbolOpt()));
     
 <#if scopeRule.isPresent()>
 <#list scopeRule.get().getAdditionalAttributeList() as attr>

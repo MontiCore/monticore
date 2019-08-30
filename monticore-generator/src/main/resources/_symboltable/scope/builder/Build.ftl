@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("scopeClassName")}
-  ${scopeClassName} scope = new ${scopeClassName}(shadowingScope);
+  ${scopeClassName} scope = new ${scopeClassName}(shadowing);
   this.spanningSymbol.ifPresent(scope::setSpanningSymbol);
-  scope.setExportsSymbols(this.exportsSymbols);
+  scope.setExportingSymbols(this.exportingSymbols);
   scope.setEnclosingScopeOpt(this.enclosingScope);
   scope.setSubScopes(this.subScopes);
   scope.setAstNodeOpt(this.astNode);

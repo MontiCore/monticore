@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -65,7 +66,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     ScopeInterfaceDecorator decorator = new ScopeInterfaceDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
-        new VisitorService(decoratedCompilationUnit));
+        new VisitorService(decoratedCompilationUnit), new MethodDecorator(glex));
 
     //creates normal Symbol
     this.scopeInterface = decorator.decorate(decoratedCompilationUnit);
@@ -99,7 +100,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(66, scopeInterface.getCDMethodList().size());
+    assertEquals(68, scopeInterface.getCDMethodList().size());
   }
 
   @Test
@@ -593,7 +594,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
   public void testSetEnclosingScopeMethod() {
     ASTCDMethod method = getMethodBy("setEnclosingScope", scopeInterface);
 
-    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("IAutomatonScope", method.getCDParameter(0).getMCType());
@@ -605,7 +606,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("getEnclosingScope", scopeInterface);
 
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertDeepEquals("Optional<? extends IAutomatonScope>", method.getMCReturnType().getMCType());
+    assertDeepEquals("IAutomatonScope", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 

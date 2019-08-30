@@ -262,9 +262,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
   public void testGetASTNodeMethod() {
     ASTCDMethod method = getMethodBy("getAstNode", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
-    // todo: chnage type to mandatory when runtime is changed
-    assertDeepEquals(cdTypeFacade.createQualifiedType(A_NODE_TYPE_OPT)
-        , method.getMCReturnType().getMCType());
+    assertDeepEquals(A_NODE_TYPE, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }

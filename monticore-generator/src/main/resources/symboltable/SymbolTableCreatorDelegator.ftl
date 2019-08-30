@@ -47,11 +47,11 @@ public class ${className} extends ${grammarName}DelegatorVisitor {
 
   public ${grammarName}ArtifactScope createFromAST(${genHelper.getQualifiedASTName(rootNode)} rootNode) {
     ${grammarName}ArtifactScope as =  ${grammarName?uncap_first}STC.createFromAST(rootNode);
-    if (as.getName().isPresent()){
+    if (as.isPresentName()){
       if (!as.getPackageName().isEmpty()){
-        globalScope.cache(as.getPackageName() + "." + as.getName().get());
+        globalScope.cache(as.getPackageName() + "." + as.getName());
       } else {
-        globalScope.cache(as.getName().get());
+        globalScope.cache(as.getName());
       }
     }
     return as;
