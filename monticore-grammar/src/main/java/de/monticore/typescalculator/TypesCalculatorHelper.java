@@ -183,7 +183,7 @@ public class TypesCalculatorHelper {
             .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
     if (type != null ) {
       if (primitiveTypes.contains(type.getName())) {
-        return TypeExpressionBuilder.buildTypeConstant(type.getName());
+        return SymTypeExpressionFactory.createTypeConstant(type.getName());
       } else {
         SymObjectType o = new SymObjectType();
         o.setName(type.getName());
@@ -198,7 +198,7 @@ public class TypesCalculatorHelper {
             .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
     if (type != null ) {
       if (primitiveTypes.contains(type.getName())) {
-        return TypeExpressionBuilder.buildTypeConstant(type.getName());
+        return SymTypeExpressionFactory.createTypeConstant(type.getName());
       } else {
         SymObjectType o = new SymObjectType();
         o.setName(type.getName());
@@ -213,7 +213,7 @@ public class TypesCalculatorHelper {
             .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
     if (type != null ) {
       if (primitiveTypes.contains(type.getName())) {
-        return TypeExpressionBuilder.buildTypeConstant(type.getName());
+        return SymTypeExpressionFactory.createTypeConstant(type.getName());
       } else {
         SymObjectType o = new SymObjectType();
         o.setName(type.getName());

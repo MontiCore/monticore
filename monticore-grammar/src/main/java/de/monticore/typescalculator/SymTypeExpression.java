@@ -13,7 +13,6 @@ import java.util.Optional;
  * TypeConstants, TypeVariables and applications of Type-Constructors.
  * It shares common functionality
  * (such as comparison, printing)
- * TODO: later
  */
 public abstract class SymTypeExpression {
 
@@ -99,7 +98,7 @@ public abstract class SymTypeExpression {
   }
   
   
-  @Deprecated
+  @Deprecated // aber nur in der Basisklasse (manche Subklassen behalten dies)
   public String getBaseName() {
     String[] parts = this.name.split("\\.");
     return parts[parts.length - 1];
