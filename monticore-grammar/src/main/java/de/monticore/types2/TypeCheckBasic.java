@@ -19,11 +19,31 @@ import java.util.Optional;
 public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
   
   /**
-   * Empty: it has no state.
-   * TODO: Kann sein, dass wir einzelne Teile auslagern und ihn so
-   * konfigurierbar machen (jeweils zu einer der Expr,Lits,Types ...
+   * Configuration: Visitor for Function 1:
+   * extracting the SymTypeExpression from an AST Type.
+   * May be SynthesizeSymTypeFromMCBasicTypes or any subclass;
    */
-  public TypeCheckBasic() { }
+  protected SynthesizeSymTypeFromMCBasicTypes synthesizeSymType;
+  
+  /**
+   * Configuration as state:
+   * synthesizeSymType definee, which AST Types are mapped (and how)
+   * TODO BR: Weitere Konfigutionen folgen: jeweils zu einer der Expr,Lits,Types ...
+   * TODO: Kann sein, dass alles ausgelagert wird: dann ist
+   * keine Subklasse "Basic" Mehr notwendig --> Zusammenlegen mit TypCheck??
+   */
+  public TypeCheckBasic(SynthesizeSymTypeFromMCBasicTypes synthesizeSymType) {
+    this.synthesizeSymType = synthesizeSymType;
+  }
+  
+  /**
+   * Predefined minimal Configuration as default:
+   * (cannot handle mire than only the top elements)
+   */
+  public TypeCheckBasic() {
+    synthesizeSymType = new SynthesizeSymTypeFromMCBasicTypes();
+  }
+  
   
   /*************************************************************************/
   
@@ -33,9 +53,9 @@ public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
    */
   @Override
   public SymTypeExpression symTypeFromAST(ASTMCType astMCType) {
-    SynthesizeSymTypeFromMCBasicTypes visitor = new SynthesizeSymTypeFromMCBasicTypes();
-    astMCType.accept(visitor);
-    Optional<SymTypeExpression> result = visitor.getResult();
+    synthesizeSymType.init();
+    astMCType.accept(synthesizeSymType);
+    Optional<SymTypeExpression> result = synthesizeSymType.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD4 Internal Error: No SymType for: "
               + astMCType.printType() + ". Probably TypeCheck mis-configured.");
@@ -49,11 +69,11 @@ public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
    */
   @Override
   public SymTypeExpression symTypeFromAST(ASTMCReturnType astMCReturnType) {
-    SynthesizeSymTypeFromMCBasicTypes visitor = new SynthesizeSymTypeFromMCBasicTypes();
-    astMCReturnType.accept(visitor);
-    Optional<SymTypeExpression> result = visitor.getResult();
+    synthesizeSymType.init();
+    astMCReturnType.accept(synthesizeSymType);
+    Optional<SymTypeExpression> result = synthesizeSymType.getResult();
     if(!result.isPresent()) {
-      Log.error("0xE9FD5 Internal Error: No SymType for: "
+      Log.error("0xE9FD5 Internal Error: No SymType for return type: "
               + astMCReturnType.printType() + ". Probably TypeCheck mis-configured.");
     }
     return result.get();

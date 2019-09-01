@@ -49,6 +49,9 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
     return result;
   }
   
+  public void init() {
+    result = Optional.empty();
+  }
   
   /**
    * We use mainly endVisit, because the result is synthesized along the
