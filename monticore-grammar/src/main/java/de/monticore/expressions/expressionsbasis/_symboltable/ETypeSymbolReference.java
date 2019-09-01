@@ -6,6 +6,7 @@ import de.monticore.typescalculator.SymTypeExpression;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class ETypeSymbolReference extends ETypeSymbolReferenceTOP {
 
   protected List<SymTypeExpression> genericArguments = new ArrayList<>();

@@ -1,5 +1,7 @@
 package de.monticore.typescalculator;
 
+import de.monticore.typescalculator.SymTypeExpression;
+
 /**
  * Arrays of a certain dimension (>= 1)
  */
