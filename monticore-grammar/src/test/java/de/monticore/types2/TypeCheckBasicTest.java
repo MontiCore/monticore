@@ -22,6 +22,15 @@ import static org.junit.Assert.assertTrue;
 
 public class TypeCheckBasicTest {
   
+  /**
+   * Focus: Interplay between TypeCheck and the assisting visitors on the
+   * Basic configuration, i.e.
+   * i.e. for
+   *    expressions/ExpressionsBasis.mc4
+   *    literals/MCLiteralsBasis.mc4
+   *    types/MCBasicTypes.mc4
+   */
+  
   @BeforeClass
   public static void setup() {
     Log.init();
@@ -105,7 +114,7 @@ public class TypeCheckBasicTest {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
     // im Prinzip dassselbe via Parser:
     ASTMCReturnType r = parser.parse_StringMCReturnType("void").get();
-    assertEquals("void", tc.symTypeFromAST(v).print());
+    assertEquals("void", tc.symTypeFromAST(r).print());
   }
   
   @Test

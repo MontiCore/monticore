@@ -41,7 +41,7 @@ public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
    * (cannot handle mire than only the top elements)
    */
   public TypeCheckBasic() {
-    synthesizeSymType = new SynthesizeSymTypeFromMCBasicTypes();
+      synthesizeSymType = new SynthesizeSymTypeFromMCBasicTypes();
   }
   
   
