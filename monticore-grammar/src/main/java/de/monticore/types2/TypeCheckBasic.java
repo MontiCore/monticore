@@ -33,8 +33,9 @@ public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
    */
   @Override
   public SymTypeExpression symTypeFromAST(ASTMCType astMCType) {
-    result = Optional.empty();
-    astMCType.accept(getRealThis());
+    SynthesizeSymTypeFromMCBasicTypes visitor = new SynthesizeSymTypeFromMCBasicTypes();
+    astMCType.accept(visitor);
+    Optional<SymTypeExpression> result = visitor.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD4 Internal Error: No SymType for: "
               + astMCType.printType() + ". Probably TypeCheck mis-configured.");
@@ -46,9 +47,11 @@ public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
    * Function 1c: extracting the SymTypeExpression from the AST MCReturnType
    * (MCReturnType is not in the ASTMCType hierarchy, while it is included in the SymTypeExpressions)
    */
+  @Override
   public SymTypeExpression symTypeFromAST(ASTMCReturnType astMCReturnType) {
-    result = Optional.empty();
-    astMCReturnType.accept(getRealThis());
+    SynthesizeSymTypeFromMCBasicTypes visitor = new SynthesizeSymTypeFromMCBasicTypes();
+    astMCReturnType.accept(visitor);
+    Optional<SymTypeExpression> result = visitor.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD5 Internal Error: No SymType for: "
               + astMCReturnType.printType() + ". Probably TypeCheck mis-configured.");
@@ -56,57 +59,6 @@ public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
     return result.get();
   }
 
-  /**
-   * Using the visitor functionality to calculate the SymType Expression
-   */
-
-  // ----------------------------------------------------------  realThis start
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  MCBasicTypesVisitor realThis = this;
-  
-  @Override
-  public void setRealThis(MCBasicTypesVisitor realThis) {
-    this.realThis = realThis;
-  }
-  
-  @Override
-  public MCBasicTypesVisitor getRealThis() {
-    return realThis;
-  }
-  // ---------------------------------------------------------- realThis end
-  
-  /**
-   * Storage in the Visitor: result of the last endVisit
-   */
-  public Optional<SymTypeExpression> result;
-  
-  /**
-   * We use mainly endVisit, because the result is synthesized along the
-   * tree, when walking upwards
-   */
-
-  public void endVisit(ASTMCPrimitiveType primitiveType) {
-    SymTypeConstant typeConstant =
-            SymTypeExpressionFactory.createTypeConstant(primitiveType.getName());
-    result = Optional.of(typeConstant);
-  }
-  
-  public void endVisit(ASTMCVoidType voidType) {
-    result = Optional.of(SymTypeExpressionFactory.createTypeVoid());
-  }
-  
-  public void endVisit(ASTMCQualifiedType qType) {
-    result = Optional.of(SymTypeExpressionFactory.createTypeConstant(qType.getName()));
-  }
-  
-  public void endVisit(ASTMCReturnType rType) {
-    // result is pushed upward (no change)
-  }
-  
-  // -------------------------------------------------------------------- visitor end
   
   /*************************************************************************/
   
