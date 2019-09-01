@@ -37,7 +37,15 @@ public class SymTypeVariable extends SymTypeExpression {
   public String print() {
     return getVarName();
   }
-
+  
+  /**
+   * Am I primitive? (such as "int")
+   */
+  public boolean isPrimitiveType() {
+    return false;
+    // TODO: ?sometimes the var is, sometimes not ...
+    // Unless we always assume boxed implementations then return false is correct
+  }
 
   // --------------------------------------------------------------------------
 

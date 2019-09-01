@@ -20,7 +20,13 @@ public abstract class SymTypeExpression {
    * print: Umwandlung in einen kompakten String
    */
   public abstract String print();
-
+  
+  /**
+   * Am I primitive? (such as "int")
+   */
+  public boolean isPrimitiveType() {
+    return false;
+  }
   
   // --------------------------------------------------------------------------
 
@@ -49,23 +55,23 @@ public abstract class SymTypeExpression {
     // Konsequenz: muss man entfernen
     @Deprecated
   protected List<SymTypeExpression> superTypes = new ArrayList<>();
-    
-    @Deprecated
+  
+  @Deprecated
   private void lazyLoadTypeSymbol() {
     if(typeSymbol==null || !typeSymbol.isPresent())
       typeSymbol = enclosingScope.resolveType(this.name);
   }
-
+  
   @Deprecated
   public TypeSymbol getTypeSymbol() {
     return typeSymbol.get();
   }
-
+  
   @Deprecated
   public String getName() {
     return name;
   }
-
+  
   @Deprecated
   public void setName(String name) {
     this.name = name;

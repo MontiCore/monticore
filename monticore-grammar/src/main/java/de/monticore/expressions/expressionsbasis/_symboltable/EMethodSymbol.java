@@ -10,11 +10,19 @@ import java.util.List;
     Symbol Facade to be adapted by aggregated languages
  */
 public class EMethodSymbol extends EMethodSymbolTOP {
-
+  
+  /**
+   * Liste der Argumente mit deren Typen
+   * TODO: Umgang mit "..." Parameter
+   */
   protected List<EVariableSymbol> parameters = new ArrayList<>();
-
+  
+  /**
+   * ErgebnisTyp (incl. void)
+   */
   protected SymTypeExpression returnType;
 
+  
   public EMethodSymbol(String name) {
     super(name);
   }

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class CommonExpressionsTest {
 
@@ -56,21 +57,21 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("double");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(q.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(q.get())));
+    assertEquals(exp.print(), calc.calculateType(q.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     exp.setName("int");
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
 
     exp.setName("float");
     assertTrue(t.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(t.get())));
+    assertEquals(exp.print(), calc.calculateType(t.get()).print());
 
     exp.setName("double");
     assertTrue(u.isPresent());
@@ -104,21 +105,21 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("double");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(q.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(q.get())));
+    assertEquals(exp.print(), calc.calculateType(q.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     exp.setName("int");
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
 
     exp.setName("float");
     assertTrue(t.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(t.get())));
+    assertEquals(exp.print(), calc.calculateType(t.get()).print());
 
     exp.setName("double");
     assertTrue(u.isPresent());
@@ -144,21 +145,21 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("double");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(q.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(q.get())));
+    assertEquals(exp.print(), calc.calculateType(q.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     exp.setName("int");
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
 
     exp.setName("float");
     assertTrue(t.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(t.get())));
+    assertEquals(exp.print(), calc.calculateType(t.get()).print());
 
     exp.setName("double");
     assertTrue(u.isPresent());
@@ -184,21 +185,21 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("double");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(q.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(q.get())));
+    assertEquals(exp.print(), calc.calculateType(q.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     exp.setName("int");
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
 
     exp.setName("float");
     assertTrue(t.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(t.get())));
+    assertEquals(exp.print(), calc.calculateType(t.get()).print());
 
     exp.setName("double");
     assertTrue(u.isPresent());
@@ -224,21 +225,21 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("double");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(q.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(q.get())));
+    assertEquals(exp.print(), calc.calculateType(q.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     exp.setName("int");
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
 
     exp.setName("float");
     assertTrue(t.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(t.get())));
+    assertEquals(exp.print(), calc.calculateType(t.get()).print());
 
     exp.setName("double");
     assertTrue(u.isPresent());
@@ -260,13 +261,13 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
   }
 
   @Test
@@ -280,13 +281,13 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
   }
 
   @Test
@@ -300,13 +301,13 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
   }
 
   @Test
@@ -320,13 +321,13 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
   }
 
   @Test
@@ -339,10 +340,10 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
   }
 
   @Test
@@ -355,10 +356,10 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
   }
 
   @Test
@@ -371,10 +372,10 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
   }
 
   @Test
@@ -389,16 +390,16 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     assertTrue(q.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(q.get())));
+    assertEquals(exp.print(), calc.calculateType(q.get()).print());
 
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
   }
 
   @Test
@@ -413,16 +414,16 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("boolean");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     assertTrue(q.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(q.get())));
+    assertEquals(exp.print(), calc.calculateType(q.get()).print());
 
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
   }
 
   @Test
@@ -437,19 +438,19 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     exp.setName("double");
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     exp.setName("boolean");
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
 
     exp.setName("float");
     assertTrue(t.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(t.get())));
+    assertEquals(exp.print(), calc.calculateType(t.get()).print());
   }
 
   @Test
@@ -464,15 +465,15 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     exp.setName("double");
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     exp.setName("float");
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
     SymTypeExpression exp2 = new SymObjectType();
     exp2.setName("String");
     assertTrue(t.isPresent());
@@ -490,15 +491,15 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     exp.setName("long");
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     exp.setName("int");
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
   }
 
   @Test
@@ -516,22 +517,22 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("double");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     exp.setName("long");
     assertTrue(q.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(q.get())));
+    assertEquals(exp.print(), calc.calculateType(q.get()).print());
 
     exp.setName("boolean");
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
     assertTrue(s.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(s.get())));
+    assertEquals(exp.print(), calc.calculateType(s.get()).print());
 
     exp.setName("int");
     assertTrue(t.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(t.get())));
+    assertEquals(exp.print(), calc.calculateType(t.get()).print());
 
     exp.setName("double");
     assertTrue(u.isPresent());
@@ -552,10 +553,10 @@ public class CommonExpressionsTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     assertTrue(q.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(q.get())));
+    assertEquals(exp.print(), calc.calculateType(q.get()).print());
   }
 
   @Ignore

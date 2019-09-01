@@ -23,7 +23,7 @@ public class SymGenericTypeExpression extends SymTypeExpression {
    *    a list of Type Expressions
    * This is always the full qualified name (i.e. including package)
    */
-  protected String typeConstructorName;
+  protected String typeConstructorFullName;
   
   /**
    * List of arguments of a type constructor
@@ -38,17 +38,17 @@ public class SymGenericTypeExpression extends SymTypeExpression {
   protected TypeSymbol objTypeConstructorSymbol;
   
   
-  public SymGenericTypeExpression(String typeConstructorName, List<SymTypeExpression> arguments) {
-    this.typeConstructorName = typeConstructorName;
+  public SymGenericTypeExpression(String typeConstructorFullName, List<SymTypeExpression> arguments) {
+    this.typeConstructorFullName = typeConstructorFullName;
     this.arguments = arguments;
   }
   
-  public String getTypeConstructorName() {
-    return typeConstructorName;
+  public String getTypeConstructorFullName() {
+    return typeConstructorFullName;
   }
   
-  public void setTypeConstructorName(String typeConstructorName) {
-    this.typeConstructorName = typeConstructorName;
+  public void setTypeConstructorFullName(String typeConstructorFullName) {
+    this.typeConstructorFullName = typeConstructorFullName;
   }
   
   public TypeSymbol getObjTypeConstructorSymbol() {
@@ -63,7 +63,7 @@ public class SymGenericTypeExpression extends SymTypeExpression {
    * print: Umwandlung in einen kompakten String
    */
   public String print() {
-    StringBuffer r = new StringBuffer(getTypeConstructorName()).append('<');
+    StringBuffer r = new StringBuffer(getTypeConstructorFullName()).append('<');
     for(int i = 0; i<arguments.size();i++){
       r.append(arguments.get(i).print());
       if(i<arguments.size()-1) { r.append(','); }
@@ -75,14 +75,14 @@ public class SymGenericTypeExpression extends SymTypeExpression {
    * getFullName: get the Qualified Name including Package
    */
   public String getFullName() {
-    return getTypeConstructorName();
+    return getTypeConstructorFullName();
   }
   
   /**
    * getBaseName: get the unqualified Name (no ., no Package)
    */
   public String getBaseName() {
-    String[] parts = getTypeConstructorName().split("\\.");
+    String[] parts = getTypeConstructorFullName().split("\\.");
     return parts[parts.length - 1];
   }
   

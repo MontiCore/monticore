@@ -49,11 +49,11 @@ public class ExpressionsBasisTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     exp.setName("double");
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
   }
 
   @Test
@@ -65,7 +65,7 @@ public class ExpressionsBasisTest {
     SymTypeExpression exp = new SymObjectType();
     exp.setName("A.B.C.QName");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
     assertEquals("A.B.C.QName", calc.calculateType(o.get()).getName());
   }
 
@@ -84,15 +84,15 @@ public class ExpressionsBasisTest {
     SymTypeExpression exp = new SymTypeConstant();
     exp.setName("int");
     assertTrue(o.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(o.get())));
+    assertEquals(exp.print(), calc.calculateType(o.get()).print());
 
     exp.setName("boolean");
     assertTrue(q.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(q.get())));
+    assertEquals(exp.print(), calc.calculateType(q.get()).print());
 
     exp.setName("double");
     assertTrue(r.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(r.get())));
+    assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
 
     SymTypeExpression exp2 = new SymObjectType();
@@ -102,7 +102,7 @@ public class ExpressionsBasisTest {
 
     exp.setName("char");
     assertTrue(t.isPresent());
-    assertTrue(exp.deepEquals(calc.calculateType(t.get())));
+    assertEquals(exp.print(), calc.calculateType(t.get()).print());
 
     exp.setName("float");
     assertTrue(u.isPresent());

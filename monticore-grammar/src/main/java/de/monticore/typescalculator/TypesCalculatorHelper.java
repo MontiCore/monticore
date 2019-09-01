@@ -10,7 +10,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TypesCalculatorHelper {
-
+  
+  public static boolean isPrimitiveType(SymTypeExpression type) {
+    return type.isPrimitiveType();
+  }
+  
+  
+  // --------------------------------------------------------------------------
+  
   public static SymTypeExpression getUnaryNumericPromotionType(SymTypeExpression type){
     if("byte".equals(unbox(type).getName())||
         "short".equals(unbox(type).getName())||
@@ -29,7 +36,9 @@ public class TypesCalculatorHelper {
     }
     return type;
   }
-
+  
+  // TODO: es existiert Ersatz: SymTypeConstant.unbox
+  @Deprecated
   public static SymTypeExpression unbox(SymTypeExpression type){
     if("java.lang.Boolean".equals(type.getName())){
       type = new SymTypeConstant();
@@ -88,7 +97,9 @@ public class TypesCalculatorHelper {
     }
     return type;
   }
-
+  
+  // TODO: es existiert Ersatz: SymTypeConstant.box
+  @Deprecated
   public static SymTypeExpression box(SymTypeExpression type) {
     if ("boolean".equals(type.getName())) {
       type = new SymObjectType();
@@ -129,25 +140,15 @@ public class TypesCalculatorHelper {
    * @param type
    * @return true if the given type is an integral type
    */
+  // TODO: es existiert Ersatz: SymTypeConstant.isIntegralType
+  @Deprecated
   public static boolean isIntegralType(SymTypeExpression type) {
-    if ("int".equals(unbox(type).getName())) {
-      return true;
-    }
-    if ("byte".equals(unbox(type).getName())) {
-      return true;
-    }
-    if ("short".equals(unbox(type).getName())) {
-      return true;
-    }
-    if ("long".equals(unbox(type).getName())) {
-      return true;
-    }
-    if ("char".equals(unbox(type).getName())) {
-      return true;
-    }
-    return false;
+    return type instanceof SymTypeConstant && ((SymTypeConstant)type).isIntegralType();
   }
-
+  
+  
+  // TODO: es existiert Ersatz: SymTypeConstant.isIntegralType
+  @Deprecated
   public static boolean isNumericType(SymTypeExpression type) {
     if (isIntegralType(type)) {
       return true;
@@ -161,16 +162,8 @@ public class TypesCalculatorHelper {
     return false;
   }
 
-  public static boolean isPrimitiveType(SymTypeExpression type) {
-    List<String> primitiveTypes = Arrays
-        .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
-    if (type != null ) {
-      return primitiveTypes.contains(unbox(type).getName());
-    }
-    return false;
-  }
-
-
+  
+  
   public static SymTypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type){
     MCTypeVisitor visitor = new MCTypeVisitor();
     type.accept(visitor);
