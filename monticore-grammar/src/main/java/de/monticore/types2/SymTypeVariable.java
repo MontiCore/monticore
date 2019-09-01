@@ -1,7 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.typescalculator;
-
-import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
+package de.monticore.types2;
 
 public class SymTypeVariable extends SymTypeExpression {
 

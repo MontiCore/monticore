@@ -3,6 +3,8 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeExpression;
 
 import java.util.ArrayList;
 import java.util.Collection;

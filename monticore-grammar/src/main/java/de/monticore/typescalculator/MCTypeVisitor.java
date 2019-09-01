@@ -7,6 +7,10 @@ import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
+import de.monticore.types2.SymGenericTypeExpression;
+import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 
 import java.util.HashMap;
 import java.util.LinkedList;

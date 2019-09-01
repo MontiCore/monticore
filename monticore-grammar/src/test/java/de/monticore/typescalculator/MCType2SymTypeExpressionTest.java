@@ -5,6 +5,10 @@ import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
+import de.monticore.types2.SymGenericTypeExpression;
+import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 import org.junit.Ignore;
 import org.junit.Test;
 

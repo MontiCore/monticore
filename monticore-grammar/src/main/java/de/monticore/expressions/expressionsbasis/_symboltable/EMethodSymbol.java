@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.expressionsbasis._symboltable;
 
-import de.monticore.typescalculator.SymTypeExpression;
+import de.monticore.types2.SymTypeExpression;
 
 import java.util.ArrayList;
 import java.util.List;

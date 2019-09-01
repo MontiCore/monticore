@@ -9,6 +9,9 @@ import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;

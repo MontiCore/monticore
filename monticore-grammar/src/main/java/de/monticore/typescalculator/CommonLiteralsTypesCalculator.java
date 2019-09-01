@@ -6,6 +6,9 @@ import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisS
 import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 
 import java.util.Map;
 

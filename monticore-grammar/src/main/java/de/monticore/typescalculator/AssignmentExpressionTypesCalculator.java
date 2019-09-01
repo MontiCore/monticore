@@ -8,6 +8,9 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Map;

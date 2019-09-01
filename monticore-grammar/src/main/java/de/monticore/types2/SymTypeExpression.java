@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.typescalculator;
+package de.monticore.types2;
 
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
@@ -65,6 +65,11 @@ public abstract class SymTypeExpression {
   @Deprecated
   public TypeSymbol getTypeSymbol() {
     return typeSymbol.get();
+  }
+  
+  @Deprecated
+  public void setTypeSymbol(Optional<TypeSymbol> x) {
+    typeSymbol=x;
   }
   
   @Deprecated

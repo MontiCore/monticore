@@ -3,6 +3,8 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.testcommonexpressions._parser.TestCommonExpressionsParser;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 import org.junit.Before;
 import org.junit.Test;
 

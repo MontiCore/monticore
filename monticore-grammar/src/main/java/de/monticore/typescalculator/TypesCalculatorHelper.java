@@ -5,6 +5,10 @@ import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
+import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
+import de.monticore.types2.SymTypeExpressionFactory;
 
 import java.util.Arrays;
 import java.util.List;

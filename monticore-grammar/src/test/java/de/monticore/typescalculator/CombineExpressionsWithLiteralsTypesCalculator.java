@@ -4,6 +4,7 @@ package de.monticore.typescalculator;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.types2.SymTypeExpression;
 import de.monticore.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 
 import java.util.HashMap;

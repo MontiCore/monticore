@@ -1,5 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.typescalculator;
+package de.monticore.types2;
+
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,7 +37,7 @@ public class SymTypeConstant extends SymTypeExpression {
     if (primitiveTypes.contains(name)) {
       this.constName = constName;
     } else {
-      throw new IllegalArgumentException("0xD3482 Only primitive types allowed (" + primitiveTypes.toString() + "), but was:" + constName);
+      Log.error("0xD34B2 Only primitive types allowed (" + primitiveTypes.toString() + "), but was:" + constName);
     }
   }
   

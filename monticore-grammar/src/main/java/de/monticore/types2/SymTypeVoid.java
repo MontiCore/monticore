@@ -1,4 +1,4 @@
-package de.monticore.typescalculator;
+package de.monticore.types2;
 
 public class SymTypeVoid extends SymTypeExpression {
     

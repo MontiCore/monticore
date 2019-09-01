@@ -8,6 +8,9 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;

@@ -3,6 +3,7 @@ package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.types2.SymTypeExpression;
 import de.monticore.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsVisitor;
 
 import java.util.Map;

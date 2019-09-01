@@ -3,6 +3,9 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 
 import static de.monticore.typescalculator.TypesCalculatorHelper.isIntegralType;
 import static de.monticore.typescalculator.TypesCalculatorHelper.unbox;

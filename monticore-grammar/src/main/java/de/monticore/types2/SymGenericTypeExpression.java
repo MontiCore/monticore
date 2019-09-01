@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.typescalculator;
+package de.monticore.types2;
 
 import com.google.common.collect.Lists;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;

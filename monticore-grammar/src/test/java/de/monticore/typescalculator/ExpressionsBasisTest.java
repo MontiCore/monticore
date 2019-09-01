@@ -1,9 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typescalculator;
 
-import de.monticore.aggregation.foo._ast.ASTBarBuilder;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 import de.monticore.typescalculator.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.typescalculator.combineexpressionswithliterals._ast.CombineExpressionsWithLiteralsMill;
 import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
