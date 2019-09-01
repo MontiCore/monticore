@@ -26,7 +26,6 @@ public class TypeCheckBasicTest {
   public static void setup() {
     Log.init();
     Log.enableFailQuick(false);
-    TypeCheckBasic.initTypeCheckerByMe();  // sets the Type Checker to be tested
   }
   
   // setup of objects (unchanged during tests)
@@ -46,8 +45,10 @@ public class TypeCheckBasicTest {
   SymTypeExpression teDeep1 = createGenericTypeExpression("java.util.Set", Lists.newArrayList(teMap));
   SymTypeExpression teDeep2 = createGenericTypeExpression("java.util.Map2", Lists.newArrayList(teInt,teDeep1));
   
-  // Pasrer used for convenience:
+  // Parer used for convenience:
   MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
+  // This is the TypeChecker under Test:
+  TypeCheck tc = new TypeCheckBasic();
   
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
   
@@ -55,48 +56,48 @@ public class TypeCheckBasicTest {
   public void symTypeFromAST_Test1() throws IOException {
     String s = "double";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
-    assertEquals(s, TypeCheck.symTypeFromAST(asttype).print());
+    assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
   @Test
   public void symTypeFromAST_Test2() throws IOException {
     String s = "int";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
-    assertEquals(s, TypeCheck.symTypeFromAST(asttype).print());
+    assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
   @Test
   public void symTypeFromAST_Test3() throws IOException {
     String s = "A";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
-    assertEquals(s, TypeCheck.symTypeFromAST(asttype).print());
+    assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
   @Test
   public void symTypeFromAST_Test4() throws IOException {
     String s = "Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
-    assertEquals(s, TypeCheck.symTypeFromAST(asttype).print());
+    assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
   @Test
   public void symTypeFromAST_Test5() throws IOException {
     String s = "de.x.Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
-    assertEquals(s, TypeCheck.symTypeFromAST(asttype).print());
+    assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
   @Test
   public void symTypeFromAST_VoidTest() throws IOException {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
-    assertEquals("void", TypeCheck.symTypeFromAST(v).print());
+    assertEquals("void", tc.symTypeFromAST(v).print());
   }
   
   @Test
   public void symTypeFromAST_ReturnTest() throws IOException {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
     ASTMCReturnType r = MCBasicTypesMill.mCReturnTypeBuilder().setMCVoidType(v).build();
-    assertEquals("void", TypeCheck.symTypeFromAST(r).print());
+    assertEquals("void", tc.symTypeFromAST(r).print());
   }
 
   @Test
@@ -104,7 +105,7 @@ public class TypeCheckBasicTest {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
     // im Prinzip dassselbe via Parser:
     ASTMCReturnType r = parser.parse_StringMCReturnType("void").get();
-    assertEquals("void", TypeCheck.symTypeFromAST(v).print());
+    assertEquals("void", tc.symTypeFromAST(v).print());
   }
   
   @Test
@@ -112,7 +113,7 @@ public class TypeCheckBasicTest {
     // und nochmal einen normalen Typ:
     String s = "Person";
     ASTMCReturnType r = parser.parse_StringMCReturnType(s).get();
-    assertEquals(s, TypeCheck.symTypeFromAST(r).print());
+    assertEquals(s, tc.symTypeFromAST(r).print());
   }
   
   // ------------------------------------------------------  Tests for Function 2

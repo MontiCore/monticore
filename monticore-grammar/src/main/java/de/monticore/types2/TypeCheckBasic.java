@@ -14,7 +14,7 @@ import java.util.Optional;
  *    expressions/ExpressionsBasis.mc4
  *    literals/MCLiteralsBasis.mc4
  *    types/MCBasicTypes.mc4
- * This implementation will rarely be used, but serves as starter for extensions
+ * This implementation will rarely be used, but serves as starter for extensions.
  */
 public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
   
@@ -25,22 +25,14 @@ public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
    */
   public TypeCheckBasic() { }
   
-  /**
-   * Used for initialization with a concrete TypeChecker of this type
-   */
-  public static void initTypeCheckerByMe() {
-    TypeCheck.initMe(new TypeCheckBasic());
-  }
-  
   /*************************************************************************/
-  
   
   /**
    * Function 1: extracting the SymTypeExpression from an AST Type
    * The SymTypeExpression is independent of the AST and can be stored in the SymTab etc.
    */
   @Override
-  protected SymTypeExpression _symTypeFromAST(ASTMCType astMCType) {
+  public SymTypeExpression symTypeFromAST(ASTMCType astMCType) {
     result = Optional.empty();
     astMCType.accept(getRealThis());
     if(!result.isPresent()) {
@@ -54,7 +46,7 @@ public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
    * Function 1c: extracting the SymTypeExpression from the AST MCReturnType
    * (MCReturnType is not in the ASTMCType hierarchy, while it is included in the SymTypeExpressions)
    */
-  protected SymTypeExpression _symTypeFromAST(ASTMCReturnType astMCReturnType) {
+  public SymTypeExpression symTypeFromAST(ASTMCReturnType astMCReturnType) {
     result = Optional.empty();
     astMCReturnType.accept(getRealThis());
     if(!result.isPresent()) {
@@ -89,7 +81,7 @@ public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
   /**
    * Storage in the Visitor: result of the last endVisit
    */
-  protected Optional<SymTypeExpression> result;
+  public Optional<SymTypeExpression> result;
   
   /**
    * We use mainly endVisit, because the result is synthesized along the
@@ -126,7 +118,7 @@ public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
    * needs to be in place; same for method calls etc.
    */
   @Override
-  protected  SymTypeExpression _typeOf(ASTExpression expr) {
+  public SymTypeExpression typeOf(ASTExpression expr) {
     // TODO
     return null;
   }
@@ -153,7 +145,7 @@ public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
    * @param sub  Sub-Type (assignment-compatible to supertype?)
    */
   @Override
-  protected boolean _compatible(SymTypeExpression sup, SymTypeExpression sub) {
+  public boolean compatible(SymTypeExpression sup, SymTypeExpression sub) {
     // TODO
      return false;
   }

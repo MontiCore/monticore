@@ -19,11 +19,14 @@ function duration() {
     echo "Command" $command $args "dauerte" `date -u -d @$sec +%X` "sek.  um" `date +%R` "Uhr"
 }
 
+start=`date +%s`
+
 #:------------------------------------------
 #:Shortcuts fuer wichtige Kommandos:
 #: 
 
 while true; do
+  duration 
   read -p "==> " command args
   echo
   start=`date +%s`
@@ -134,7 +137,6 @@ x|"") echo thanks
 
 #--------------------------------------------------
   esac
-  duration 
 done
 
 #--------------------------------------------------
