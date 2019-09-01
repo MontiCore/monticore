@@ -2,7 +2,9 @@ package de.monticore.types2;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.typesymbols._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
@@ -17,7 +19,9 @@ import de.se_rwth.commons.logging.Log;
  *    Literals
  *    Expressions
  *    Types)
- *
+ * This interface only knows about the two top Level grammars, such as
+ * MCBasicTypes, ExpressionsBasis (it includes their main Nonterminals
+ * in the signature)
  */
 public abstract class TypeCheck {
   
@@ -65,7 +69,29 @@ public abstract class TypeCheck {
   }
   
   abstract protected  SymTypeExpression _symTypeFromAST(ASTMCType astMCType);
+  
+  
+  /**
+   * Function 1b: extracting the SymTypeExpression from the AST Type "void"
+   * ("void" is not in the ASTMCType hierarchy, while it is included in the SymTypeExpressions)
+   */
+  public static SymTypeExpression symTypeFromAST(ASTMCVoidType astMCVoidType)  {
+    return getTypeCheck()._symTypeFromAST(astMCVoidType);
+  }
 
+  protected SymTypeExpression _symTypeFromAST(ASTMCVoidType astMCVoidType) {
+    return SymTypeExpressionFactory.createTypeVoid();
+  }
+  
+  /**
+   * Function 1c: extracting the SymTypeExpression from the AST MCReturnType
+   * (MCReturnType is not in the ASTMCType hierarchy, while it is included in the SymTypeExpressions)
+   */
+  public static SymTypeExpression symTypeFromAST(ASTMCReturnType astMCReturnType)  {
+    return getTypeCheck()._symTypeFromAST(astMCReturnType);
+  }
+  
+  abstract protected SymTypeExpression _symTypeFromAST(ASTMCReturnType astMCReturnType);
   
   /**
    * Function 2: Get the SymTypeExpression from an Expression AST
