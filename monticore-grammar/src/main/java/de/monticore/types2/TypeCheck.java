@@ -1,12 +1,10 @@
 package de.monticore.types2;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
-import de.monticore.types.typesymbols._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -21,26 +19,37 @@ import java.util.Optional;
  *    Literals
  *    Expressions
  *    Types)
- * This class only knows about the two top Level grammars:
- * MCBasicTypes and ExpressionsBasis, because it includes their
+ * This class only knows about the thre top Level grammars:
+ * MCBasicTypes, ExpressionsBasis and MCLiteralsBasis, because it includes their
  * main NonTerminals in the signature.
  */
 public class TypeCheck {
   
   /**
    * Configuration: Visitor for Function 1:
-   * extracting the SymTypeExpression from an AST Type.
-   * May be SynthesizeSymTypeFromMCBasicTypes or any subclass;
+   * Synthesizing the SymTypeExpression from an AST Type.
+   * May also be of a subclass;
    */
   protected SynthesizeSymTypeFromMCBasicTypes synthesizeSymType;
   
   /**
-   * Configuration as state:
-   * synthesizeSymType definee, which AST Types are mapped (and how)
-   * TODO BR: Weitere Konfigutionen folgen: jeweils zu einer der Expr,Lits,Types ...
-   * TODO: Kann sein, dass alles ausgelagert wird: dann ist
-   * keine Subklasse "Basic" Mehr notwendig --> Zusammenlegen mit TypCheck??
+   * Configuration: Visitor for Function 2:
+   * Deriving the SymTypeExpression from an AST Value - Expression.
+   * May also be of a subclass;
    */
+  protected DeriveSymTypeOfLiterals deriveSymTypeOfLiteral;
+  
+  /**
+   * Configuration as state:
+   * @param synthesizeSymType defines, which AST Types are mapped (and how)
+   * @param deriveSymTypeOfLiteral defines, which AST Literals are handled
+   *                               through the Expression recognition
+   */
+  public TypeCheck(SynthesizeSymTypeFromMCBasicTypes synthesizeSymType, DeriveSymTypeOfLiterals deriveSymTypeOfLiteral) {
+    this.synthesizeSymType = synthesizeSymType;
+    this.deriveSymTypeOfLiteral = deriveSymTypeOfLiteral;
+  }
+  
   public TypeCheck(SynthesizeSymTypeFromMCBasicTypes synthesizeSymType) {
     this.synthesizeSymType = synthesizeSymType;
   }
@@ -51,6 +60,7 @@ public class TypeCheck {
    */
   public TypeCheck() {
     synthesizeSymType = new SynthesizeSymTypeFromMCBasicTypes();
+    deriveSymTypeOfLiteral = new DeriveSymTypeOfLiterals();
   }
   
   /*************************************************************************/
@@ -96,7 +106,7 @@ public class TypeCheck {
   /*************************************************************************/
   
   /**
-   * Function 2: Get the SymTypeExpression from an Expression AST
+   * Function 2: Derive the SymTypeExpression from an Expression AST
    * This defines the Type that an Expression has.
    * Precondition:
    * Free Variables in the AST are being looked u through the Symbol Table that
@@ -105,6 +115,25 @@ public class TypeCheck {
   public SymTypeExpression typeOf(ASTExpression expr) {
     // TODO
     return null;
+  }
+  
+  /**
+   * Function 2b: Derive the SymTypeExpression of a Literal
+   * This defines the Type that a Literal has and will be used to
+   * determine the Type of Expressions.
+   */
+  public SymTypeExpression typeOf(ASTLiteral lit) {
+    deriveSymTypeOfLiteral.init();
+    Optional<SymTypeExpression> result = deriveSymTypeOfLiteral.calculateType(lit);
+    if(!result.isPresent()) {
+      Log.error("0xED670 Internal Error: No Type for Literal " + lit
+              + " Probably TypeCheck mis-configured.");
+    }
+    if (!result.isPresent()) {
+      Log.error("0xE11E0 Internal Error: No-Type for literal " +
+              lit.toString() + ". TypeCheck mis-configured?");
+    }
+    return result.get();
   }
   
   /*************************************************************************/

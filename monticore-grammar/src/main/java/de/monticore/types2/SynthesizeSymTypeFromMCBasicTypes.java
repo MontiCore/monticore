@@ -14,9 +14,6 @@ import java.util.Optional;
  */
 public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
   
-  public SynthesizeSymTypeFromMCBasicTypes() { }
-  
-  
   /**
    * Using the visitor functionality to calculate the SymType Expression
    */
@@ -37,7 +34,8 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
   public MCBasicTypesVisitor getRealThis() {
     return realThis;
   }
-  // ---------------------------------------------------------- realThis end
+  
+  // ---------------------------------------------------------- Storage result
   
   /**
    * Storage in the Visitor: result of the last endVisit.
@@ -53,6 +51,8 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
     result = Optional.empty();
   }
   
+  // ---------------------------------------------------------- Visting Methods
+
   /**
    * We use mainly endVisit, because the result is synthesized along the
    * tree, when walking upwards

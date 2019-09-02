@@ -39,8 +39,10 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   // This is Visitor for Collection types under test:
   SynthesizeSymTypeFromMCCollectionTypes synt = new SynthesizeSymTypeFromMCCollectionTypes();
   
+  // other arguments not used (and therefore deliberately null)
+  
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(synt);
+  TypeCheck tc = new TypeCheck(synt,null);
   
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
 

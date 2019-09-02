@@ -28,7 +28,7 @@ public class CombineExpressionsWithLiteralsLiteralTypesCalculator implements Com
   @Override
   public void endVisit(ASTLiteral lit){
     if(!types.containsKey(lit)) {
-      SymTypeExpression type = literalsVisitor.calculateType(lit);
+      SymTypeExpression type = literalsVisitor.calculateType(lit).get();
       types.put(lit, type);
     }
   }

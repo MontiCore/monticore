@@ -4,6 +4,7 @@ package de.monticore.typescalculator;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.types2.DeriveSymTypeOfLiterals;
 import de.monticore.types2.SymTypeExpression;
 import de.monticore.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 
@@ -24,7 +25,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
   private CombineExpressionsWithLiteralsLiteralTypesCalculator literalsLiteralTypesCalculator;
 
-  private LiteralsBasisTypesCalculator literalsBasisTypesCalculator;
+  private DeriveSymTypeOfLiterals deriveSymTypeOfLiterals;
 
   private CommonLiteralsTypesCalculator commonLiteralsTypesCalculator;
 
@@ -53,9 +54,9 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     setCombineExpressionsWithLiteralsVisitor(literalsLiteralTypesCalculator);
     this.literalsLiteralTypesCalculator=literalsLiteralTypesCalculator;
 
-    LiteralsBasisTypesCalculator literalsBasisTypesCalculator = new LiteralsBasisTypesCalculator();
-    setMCLiteralsBasisVisitor(literalsBasisTypesCalculator);
-    this.literalsBasisTypesCalculator=literalsBasisTypesCalculator;
+    DeriveSymTypeOfLiterals deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
+    setMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
+    this.deriveSymTypeOfLiterals = deriveSymTypeOfLiterals;
 
     CommonLiteralsTypesCalculator commonLiteralsTypesCalculator = new CommonLiteralsTypesCalculator();
     commonLiteralsTypesCalculator.setTypes(types);
