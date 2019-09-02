@@ -13,7 +13,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.*;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_FULL_NAME;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
@@ -51,17 +51,17 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   }
 
   protected ASTCDMethod addVisitISymbolMethod() {
-    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(SYMBOL_FULL_NAME);
+    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(I_SYMBOL);
     return visitorService.getVisitorMethod(VISIT, astNodeType);
   }
 
   protected ASTCDMethod addEndVisitISymbolMethod() {
-    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(SYMBOL_FULL_NAME);
+    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(I_SYMBOL);
     return visitorService.getVisitorMethod(END_VISIT, astNodeType);
   }
 
   protected ASTCDMethod addHandleISymbolMethod() {
-    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(SYMBOL_FULL_NAME);
+    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(I_SYMBOL);
     return visitorService.getVisitorMethod(HANDLE, astNodeType);
   }
 

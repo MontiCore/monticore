@@ -17,8 +17,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_FULL_NAME;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_FULL_NAME;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
@@ -80,7 +80,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
   protected List<ASTCDMethod> createIScopeVisitorMethods() {
     List<ASTCDMethod> methodList = new ArrayList<>();
-    ASTMCQualifiedType iScopeType = getCDTypeFacade().createQualifiedType(SCOPE_FULL_NAME);
+    ASTMCQualifiedType iScopeType = getCDTypeFacade().createQualifiedType(I_SCOPE);
     methodList.add(visitorService.getVisitorMethod(VISIT, iScopeType));
     methodList.add(visitorService.getVisitorMethod(END_VISIT, iScopeType));
     return methodList;
@@ -88,7 +88,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
   protected List<ASTCDMethod> createISymbolVisitorMethods(String scopeVisitorName) {
     List<ASTCDMethod> methodList = new ArrayList<>();
-    ASTMCQualifiedType iScopeType = getCDTypeFacade().createQualifiedType(SYMBOL_FULL_NAME);
+    ASTMCQualifiedType iScopeType = getCDTypeFacade().createQualifiedType(I_SYMBOL);
     methodList.add(visitorService.getVisitorMethod(VISIT, iScopeType));
     methodList.add(visitorService.getVisitorMethod(END_VISIT, iScopeType));
     methodList.add(visitorService.getVisitorMethod(HANDLE, iScopeType));

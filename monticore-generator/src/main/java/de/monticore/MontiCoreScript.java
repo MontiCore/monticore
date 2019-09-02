@@ -38,10 +38,7 @@ import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolReferenceBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolReferenceDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._visitor.*;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
@@ -442,11 +439,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator = new ArtifactScopeBuilderDecorator(glex, symbolTableService, builderDecorator, accessorDecorator);
     SymbolReferenceDecorator symbolReferenceDecorator = new SymbolReferenceDecorator(glex, symbolTableService, methodDecorator);
     SymbolReferenceBuilderDecorator symbolReferenceBuilderDecorator= new SymbolReferenceBuilderDecorator(glex, symbolTableService, accessorDecorator);
+    CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator= new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, symbolTableService, symbolDecorator,
         symbolBuilderDecorator, symbolReferenceDecorator,symbolReferenceBuilderDecorator,
         scopeClassDecorator, scopeClassBuilderDecorator, scopeInterfaceDecorator, globalScopeInterfaceDecorator,
-        globalScopeClassDecorator, globalScopeClassBuilderDecorator, artifactScopeDecorator, artifactScopeBuilderDecorator);
+        globalScopeClassDecorator, globalScopeClassBuilderDecorator, artifactScopeDecorator, artifactScopeBuilderDecorator
+        , commonSymbolInterfaceDecorator);
 
     ASTCDCompilationUnit visitorCompilationUnit = symbolTableCDDecorator.decorate(cd);
 

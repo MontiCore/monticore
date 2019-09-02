@@ -4,10 +4,7 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolReferenceBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolReferenceDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.ArrayList;
@@ -47,6 +44,8 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected final ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator;
 
+  protected final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator;
+
   public SymbolTableCDDecorator(final GlobalExtensionManagement glex,
                                 final SymbolTableService symbolTableService,
                                 final SymbolDecorator symbolDecorator,
@@ -60,7 +59,8 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
                                 final GlobalScopeClassDecorator globalScopeClassDecorator,
                                 final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator,
                                 final ArtifactScopeDecorator artifactScopeDecorator,
-                                final ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator) {
+                                final ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator,
+                                final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator) {
     super(glex);
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
@@ -75,6 +75,7 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     this.artifactScopeDecorator = artifactScopeDecorator;
     this.artifactScopeBuilderDecorator = artifactScopeBuilderDecorator;
     this.symbolReferenceBuilderDecorator = symbolReferenceBuilderDecorator;
+    this.commonSymbolInterfaceDecorator = commonSymbolInterfaceDecorator;
   }
 
   @Override
@@ -96,6 +97,7 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
         .addCDInterface(createScopeInterface(ast))
         .addAllCDClasss(createSymbolReferenceClasses(symbolProds))
         .addAllCDClasss(createSymbolReferenceBuilderClasses(symbolProds))
+        .addCDInterface(createICommonSymbol(ast))
         .build();
     if (symbolTableService.hasProd(ast.getCDDefinition())) {
       astCD.addCDInterface(createGlobalScopeInterface(ast));
@@ -183,5 +185,10 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected ASTCDClass createArtifactBuilderScope(ASTCDClass artifactScopeClass) {
     return artifactScopeBuilderDecorator.decorate(artifactScopeClass);
+  }
+
+
+  protected ASTCDInterface createICommonSymbol(ASTCDCompilationUnit compilationUnit) {
+    return commonSymbolInterfaceDecorator.decorate(compilationUnit);
   }
 }

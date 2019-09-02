@@ -11,9 +11,9 @@ public class SymbolTableConstants {
 
   public static final String SPANNED_SCOPE = "spanned%sScope";
 
-  public static final String SYMBOL_FULL_NAME = "de.monticore.symboltable.ISymbol";
+  public static final String I_SYMBOL = "de.monticore.symboltable.ISymbol";
 
-  public static final String SCOPE_FULL_NAME = "de.monticore.symboltable.IScope";
+  public static final String I_SCOPE = "de.monticore.symboltable.IScope";
 
   public static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
 

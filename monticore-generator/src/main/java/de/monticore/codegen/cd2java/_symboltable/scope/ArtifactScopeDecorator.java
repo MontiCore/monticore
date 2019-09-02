@@ -102,7 +102,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
   }
 
   protected ASTCDMethod createGetTopLevelSymbolMethod() {
-    ASTCDMethod getTopLevelSymbol = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createOptionalTypeOf(SYMBOL_FULL_NAME), "getTopLevelSymbol");
+    ASTCDMethod getTopLevelSymbol = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createOptionalTypeOf(I_SYMBOL), "getTopLevelSymbol");
     this.replaceTemplate(EMPTY_BODY, getTopLevelSymbol, new TemplateHookPoint("_symboltable.artifactscope.GetTopLevelSymbol"));
     return getTopLevelSymbol;
   }
