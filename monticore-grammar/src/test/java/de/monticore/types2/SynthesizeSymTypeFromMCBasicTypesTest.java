@@ -40,7 +40,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   // Parer used for convenience:
   MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheckBasic();
+  TypeCheck tc = new TypeCheck();
   
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
   

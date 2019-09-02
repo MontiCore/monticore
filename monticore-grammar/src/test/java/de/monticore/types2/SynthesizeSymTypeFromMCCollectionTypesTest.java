@@ -40,7 +40,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   SynthesizeSymTypeFromMCCollectionTypes synt = new SynthesizeSymTypeFromMCCollectionTypes();
   
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheckBasic(synt);
+  TypeCheck tc = new TypeCheck(synt);
   
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
 
