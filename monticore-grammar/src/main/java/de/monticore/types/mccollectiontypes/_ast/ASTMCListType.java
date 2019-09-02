@@ -23,7 +23,7 @@ public class ASTMCListType extends ASTMCListTypeTOP {
     }
 
     public void setName(String name) {
-        // Name is fixed to "List"
+        // Name is fixed to "List"   :  TODO: Internal Error, Error Msg
     }
 
     @Override

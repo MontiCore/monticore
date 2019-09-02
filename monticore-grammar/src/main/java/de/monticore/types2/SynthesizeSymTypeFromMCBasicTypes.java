@@ -59,9 +59,11 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
    */
 
   public void endVisit(ASTMCPrimitiveType primitiveType) {
+    System.out.println("\nSynB XXX ev Primitive 1:" +result);
     SymTypeConstant typeConstant =
             SymTypeExpressionFactory.createTypeConstant(primitiveType.getName());
     result = Optional.of(typeConstant);
+    System.out.println("\nSynB XXX ev Primitive End:" +typeConstant.print());
   }
   
   public void endVisit(ASTMCVoidType voidType)

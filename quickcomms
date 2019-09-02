@@ -47,7 +47,7 @@ ant) #:= m + e: monticore-grammar bauen (2 min)
     ### gradlew --refresh-dependencies build 
     bell ;;
 
-a) #:= m + e: monticore-grammar bauen + tests (3 min)
+a) #:= monticore-grammar bauen + tests (3 min)
     cd ~/monticore/monticore-grammar;
     mvn install || bell || continue
     bell ;;

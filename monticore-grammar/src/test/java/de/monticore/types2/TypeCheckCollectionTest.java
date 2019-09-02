@@ -2,11 +2,10 @@
 package de.monticore.types2;
 
 import com.google.common.collect.Lists;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -47,15 +46,15 @@ public class TypeCheckCollectionTest {
 
   // reuse some of the tests from MCBasicTypes (to check conformity)
   
+/*
   @Test
   public void symTypeFromAST_Test1() throws IOException {
     String s = "double";
     parser = new MCCollectionTypesTestParser();
     ASTMCType asttype = parser.parse_StringMCType(s).get();
-    // assertEquals(s, tc.symTypeFromAST(asttype).print());
+    assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
-/*
   @Test
   public void symTypeFromAST_Test4() throws IOException {
     String s = "Person";
@@ -85,19 +84,34 @@ public class TypeCheckCollectionTest {
     ASTMCReturnType r = parser.parse_StringMCReturnType(s).get();
     assertEquals(s, tc.symTypeFromAST(r).print());
   }
+*/
 
   // new forms of Types coming from MCCollectionType
   
   @Test
   public void symTypeFromAST_TestList() throws IOException {
-    String s = "List<de.x.Person>";
+    String s = "List<ka.x.Auto>";
     parser = new MCCollectionTypesTestParser();
-    // XXX Optional<ASTMCType> x = parser.parse_StringMCType(s);
-    // XXX System.out.printf("Log.findings are:::\n " + Log.getFindings() + "\n\n"); // XXX
+    System.out.println("\nT XXX1 " + s);
+    Optional<ASTMCType> x = parser.parse_StringMCType(s);
+    System.out.println("\nT XXX1b " + x.isPresent() + x);
+    System.out.println("\nT XXX1bc " + x.get().getClass());
+    ASTMCListType y = (ASTMCListType)x.get();
+    
+    ASTMCTypeArgument z = y.getMCTypeArgument();
+    
+    System.out.println("\nT XXX1z1 " + z.toString());
+    Optional<ASTMCType> r = z.getMCTypeOpt();
+    Optional<ASTMCType> t = z.getMCTypeOpt();
+    System.out.println("\nT XXX Log.findings are:::\n " + Log.getFindings() + "\n\n"); // XXX
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    System.out.println("\nT XXX1c " + asttype);
+    System.out.println("\nT XXX1cPrint " + asttype.printType());
+    System.out.println("\nT XXX1cName " + asttype.getName());
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
+/*
   @Test
   public void symTypeFromAST_TestListQual() throws IOException {
     String s = "List<a.z.Person>";
@@ -138,11 +152,11 @@ public class TypeCheckCollectionTest {
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
+*/
   
   
   // ------------------------------------------------------  Tests for Function 2
   
-*/
 
   
 }
