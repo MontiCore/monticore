@@ -37,23 +37,7 @@ public class TypeCheckBasicTest {
     Log.enableFailQuick(false);
   }
   
-  // setup of objects (unchanged during tests)
-  SymTypeExpression teDouble = createTypeConstant("double");
-  SymTypeExpression teInt = createTypeConstant("int");
-  SymTypeExpression teVarA = createTypeVariable("A");
-  SymTypeExpression teVarB = createTypeVariable("B");
-  SymTypeExpression teP = createObjectType("de.x.Person");
-  SymTypeExpression teH = createObjectType("Human");  // on purpose: package missing
-  SymTypeExpression teVoid = createTypeVoid();
-  SymTypeExpression teArr1 = createArrayType(1, teH);
-  SymTypeExpression teArr3 = createArrayType(3, teInt);
-  SymTypeExpression teSet = createGenericTypeExpression("java.util.Set", Lists.newArrayList(teP));
-  SymTypeExpression teSetA = createGenericTypeExpression("java.util.Set", Lists.newArrayList(teVarA));
-  SymTypeExpression teMap = createGenericTypeExpression("Map", Lists.newArrayList(teInt,teP)); // no package!
-  SymTypeExpression teFoo = createGenericTypeExpression("x.Foo", Lists.newArrayList(teP,teDouble,teInt,teH));
-  SymTypeExpression teDeep1 = createGenericTypeExpression("java.util.Set", Lists.newArrayList(teMap));
-  SymTypeExpression teDeep2 = createGenericTypeExpression("java.util.Map2", Lists.newArrayList(teInt,teDeep1));
-  
+
   // Parer used for convenience:
   MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
   // This is the TypeChecker under Test:
