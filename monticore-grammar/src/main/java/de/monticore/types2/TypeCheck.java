@@ -91,8 +91,8 @@ public abstract class TypeCheck {
    * @param type the Type it needs to have (e.g. the Type of a variable used for assignement, or the
    *             type of a channel where to send a value)
    */
-  public boolean isOfTypeForAssign(ASTExpression exp, SymTypeExpression type) {
-    return compatible( typeOf(exp), type);
+  public boolean isOfTypeForAssign(SymTypeExpression type, ASTExpression exp) {
+    return compatible(  type, typeOf(exp));
   }
   
   
