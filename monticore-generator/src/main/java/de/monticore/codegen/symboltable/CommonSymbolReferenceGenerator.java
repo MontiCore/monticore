@@ -52,8 +52,6 @@ public class CommonSymbolReferenceGenerator implements SymbolReferenceGenerator 
           genHelper.getTargetPackage(), handCodedPath);
       filePath = get(getPathFromPackage(genHelper.getTargetPackage()),className+".java");
 
-      genEngine.generate("symboltable.SymbolReferenceBuilder", filePath, prodSymbol.getAstNode().get(),
-          className,languageName,symbolReferenceName);
     }
   }
 }

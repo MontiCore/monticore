@@ -28,8 +28,6 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass symbolClassAutomaton;
 
-  private ASTCDClass symbolClassState;
-
   private GlobalExtensionManagement glex;
 
   private CDTypeFacade cdTypeFacade;
@@ -38,7 +36,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  private static final String I_AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
+  private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
 
   private static final String AST_AUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
 
@@ -46,12 +44,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
 
-  private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
-
-  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.ast.automaton._visitor.AutomatonSymbolVisitor";
-
   public static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
-
 
   @Before
   public void setUp() {
@@ -74,7 +67,6 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
     //creates normal Symbol
     ASTCDClass stateClass = getClassBy("ASTState", decoratedCompilationUnit);
-    this.symbolClassState = decorator.decorate(stateClass);
   }
 
   @Test
@@ -136,7 +128,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testNameAttribute() {
+  public void testAccessModifierAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("accessModifier", symbolClassAutomaton);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(ACCESS_MODIFIER_TYPE, astcdAttribute.getMCType());
@@ -262,7 +254,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   public void testGetEnclosingScopeNameMethod() {
     ASTCDMethod method = getMethodBy("getEnclosingScope", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createQualifiedType(I_AUTOMATON_SYMBOL)
+    assertDeepEquals(cdTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
@@ -328,17 +320,17 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(cdTypeFacade.createQualifiedType(I_AUTOMATON_SYMBOL),
+    assertDeepEquals(cdTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE),
         method.getCDParameter(0).getMCType());
     assertEquals("scope", method.getCDParameter(0).getName());
   }
 
   @Test
-  public void testGeneratedCodeState() {
+  public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolClassState, symbolClassState);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolClassAutomaton, symbolClassAutomaton);
     StaticJavaParser.parse(sb.toString());
   }
 }

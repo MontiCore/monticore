@@ -40,6 +40,7 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolReferenceBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.SymbolReferenceDecorator;
 import de.monticore.codegen.cd2java._visitor.*;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
@@ -440,9 +441,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ArtifactScopeDecorator artifactScopeDecorator = new ArtifactScopeDecorator(glex, symbolTableService, methodDecorator);
     ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator = new ArtifactScopeBuilderDecorator(glex, symbolTableService, builderDecorator, accessorDecorator);
     SymbolReferenceDecorator symbolReferenceDecorator = new SymbolReferenceDecorator(glex, symbolTableService, methodDecorator);
+    SymbolReferenceBuilderDecorator symbolReferenceBuilderDecorator= new SymbolReferenceBuilderDecorator(glex, symbolTableService, accessorDecorator);
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, symbolTableService, symbolDecorator,
-        symbolBuilderDecorator, symbolReferenceDecorator, scopeClassDecorator, scopeClassBuilderDecorator, scopeInterfaceDecorator, globalScopeInterfaceDecorator,
+        symbolBuilderDecorator, symbolReferenceDecorator,symbolReferenceBuilderDecorator,
+        scopeClassDecorator, scopeClassBuilderDecorator, scopeInterfaceDecorator, globalScopeInterfaceDecorator,
         globalScopeClassDecorator, globalScopeClassBuilderDecorator, artifactScopeDecorator, artifactScopeBuilderDecorator);
 
     ASTCDCompilationUnit visitorCompilationUnit = symbolTableCDDecorator.decorate(cd);
