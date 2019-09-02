@@ -36,7 +36,7 @@ public class DeriveSymTypeOfLiteralsTest {
   // other arguments not used (and therefore deliberately null)
   
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(null,derLit);
+  TypeCheck tc = new TypeCheck(null,null,derLit);
   
   // ------------------------------------------------------  Tests for Function 2b
   

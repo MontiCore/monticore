@@ -42,7 +42,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   // other arguments not used (and therefore deliberately null)
   
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(synt,null);
+  TypeCheck tc = new TypeCheck(synt,null,null);
   
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
 

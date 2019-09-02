@@ -33,8 +33,15 @@ public class TypeCheck {
   protected SynthesizeSymTypeFromMCBasicTypes synthesizeSymType;
   
   /**
-   * Configuration: Visitor for Function 2:
+   * Configuration: Visitor for Function 3:
    * Deriving the SymTypeExpression from an AST Value - Expression.
+   * May also be of a subclass;
+   */
+  protected DeriveSymTypeOfExpression deriveSymTypeOfExpression;
+  
+  /**
+   * Configuration: Visitor for Function 2b:
+   * Deriving the SymTypeExpression from an AST Value - Literal.
    * May also be of a subclass;
    */
   protected DeriveSymTypeOfLiterals deriveSymTypeOfLiteral;
@@ -42,16 +49,17 @@ public class TypeCheck {
   /**
    * Configuration as state:
    * @param synthesizeSymType defines, which AST Types are mapped (and how)
+   * @param deriveSymTypeOfExpression defines, which AST Expressions are handled
+   *                               through the Expression type recognition
    * @param deriveSymTypeOfLiteral defines, which AST Literals are handled
-   *                               through the Expression recognition
+   *                               through the Expression type recognition
    */
-  public TypeCheck(SynthesizeSymTypeFromMCBasicTypes synthesizeSymType, DeriveSymTypeOfLiterals deriveSymTypeOfLiteral) {
+  public TypeCheck(SynthesizeSymTypeFromMCBasicTypes synthesizeSymType,
+                   DeriveSymTypeOfExpression deriveSymTypeOfExpression,
+                   DeriveSymTypeOfLiterals deriveSymTypeOfLiteral) {
     this.synthesizeSymType = synthesizeSymType;
+    this.deriveSymTypeOfExpression = deriveSymTypeOfExpression;
     this.deriveSymTypeOfLiteral = deriveSymTypeOfLiteral;
-  }
-  
-  public TypeCheck(SynthesizeSymTypeFromMCBasicTypes synthesizeSymType) {
-    this.synthesizeSymType = synthesizeSymType;
   }
   
   /**
@@ -60,6 +68,7 @@ public class TypeCheck {
    */
   public TypeCheck() {
     synthesizeSymType = new SynthesizeSymTypeFromMCBasicTypes();
+    deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
     deriveSymTypeOfLiteral = new DeriveSymTypeOfLiterals();
   }
   
