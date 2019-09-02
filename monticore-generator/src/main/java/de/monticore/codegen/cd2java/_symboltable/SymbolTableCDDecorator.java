@@ -6,6 +6,7 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolReferenceDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
   protected final SymbolDecorator symbolDecorator;
 
   protected final SymbolBuilderDecorator symbolBuilderDecorator;
+
+  protected final SymbolReferenceDecorator symbolReferenceDecorator;
 
   protected final SymbolTableService symbolTableService;
 
@@ -45,6 +48,7 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
                                 final SymbolTableService symbolTableService,
                                 final SymbolDecorator symbolDecorator,
                                 final SymbolBuilderDecorator symbolBuilderDecorator,
+                                final SymbolReferenceDecorator symbolReferenceDecorator,
                                 final ScopeClassDecorator scopeClassDecorator,
                                 final ScopeClassBuilderDecorator scopeClassBuilderDecorator,
                                 final ScopeInterfaceDecorator scopeInterfaceDecorator,
@@ -56,6 +60,7 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     super(glex);
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
+    this.symbolReferenceDecorator = symbolReferenceDecorator;
     this.symbolTableService = symbolTableService;
     this.scopeClassDecorator = scopeClassDecorator;
     this.scopeClassBuilderDecorator = scopeClassBuilderDecorator;
@@ -84,6 +89,7 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
         .addCDClass(scopeClass)
         .addCDClass(createScopeClassBuilder(scopeClass))
         .addCDInterface(createScopeInterface(ast))
+        .addAllCDClasss(createSymbolReferenceClasses(symbolProds))
         .build();
     if (symbolTableService.hasProd(ast.getCDDefinition())) {
       astCD.addCDInterface(createGlobalScopeInterface(ast));
@@ -124,6 +130,13 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     return symbolASTClasses
         .stream()
         .map(symbolBuilderDecorator::decorate)
+        .collect(Collectors.toList());
+  }
+
+  protected List<ASTCDClass> createSymbolReferenceClasses(List<? extends ASTCDType> astcdTypeList) {
+    return astcdTypeList
+        .stream()
+        .map(symbolReferenceDecorator::decorate)
         .collect(Collectors.toList());
   }
 
