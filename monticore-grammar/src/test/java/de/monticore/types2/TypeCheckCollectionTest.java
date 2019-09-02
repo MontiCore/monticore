@@ -46,7 +46,6 @@ public class TypeCheckCollectionTest {
 
   // reuse some of the tests from MCBasicTypes (to check conformity)
   
-/*
   @Test
   public void symTypeFromAST_Test1() throws IOException {
     String s = "double";
@@ -84,34 +83,9 @@ public class TypeCheckCollectionTest {
     ASTMCReturnType r = parser.parse_StringMCReturnType(s).get();
     assertEquals(s, tc.symTypeFromAST(r).print());
   }
-*/
 
   // new forms of Types coming from MCCollectionType
   
-  @Test
-  public void symTypeFromAST_TestList() throws IOException {
-    String s = "List<ka.x.Auto>";
-    parser = new MCCollectionTypesTestParser();
-    System.out.println("\nT XXX1 " + s);
-    Optional<ASTMCType> x = parser.parse_StringMCType(s);
-    System.out.println("\nT XXX1b " + x.isPresent() + x);
-    System.out.println("\nT XXX1bc " + x.get().getClass());
-    ASTMCListType y = (ASTMCListType)x.get();
-    
-    ASTMCTypeArgument z = y.getMCTypeArgument();
-    
-    System.out.println("\nT XXX1z1 " + z.toString());
-    Optional<ASTMCType> r = z.getMCTypeOpt();
-    Optional<ASTMCType> t = z.getMCTypeOpt();
-    System.out.println("\nT XXX Log.findings are:::\n " + Log.getFindings() + "\n\n"); // XXX
-    ASTMCType asttype = parser.parse_StringMCType(s).get();
-    System.out.println("\nT XXX1c " + asttype);
-    System.out.println("\nT XXX1cPrint " + asttype.printType());
-    System.out.println("\nT XXX1cName " + asttype.getName());
-    assertEquals(s, tc.symTypeFromAST(asttype).print());
-  }
-  
-/*
   @Test
   public void symTypeFromAST_TestListQual() throws IOException {
     String s = "List<a.z.Person>";
@@ -119,13 +93,16 @@ public class TypeCheckCollectionTest {
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
+/*
   @Test
   public void symTypeFromAST_TestList2() throws IOException {
-    String s = "List < List < Person>>";
+    String s = "List<List<Person>>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
-  
+*/
+
+/*
   @Test
   public void symTypeFromAST_TestMapList() throws IOException {
     String s = "Map<List<Person>,int>";
@@ -141,14 +118,14 @@ public class TypeCheckCollectionTest {
   }
   @Test
   public void symTypeFromAST_TestOptional() throws IOException {
-    String s = "Optional < List < Person>>";
+    String s = "Optional<List<Person>>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
   @Test
   public void symTypeFromAST_TestSet() throws IOException {
-    String s = "Set < Set < int>>";
+    String s = "Set<Set<int>>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }

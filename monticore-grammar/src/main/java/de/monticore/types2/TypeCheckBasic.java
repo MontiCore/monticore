@@ -53,12 +53,9 @@ public class TypeCheckBasic extends TypeCheck implements MCBasicTypesVisitor {
    */
   @Override
   public SymTypeExpression symTypeFromAST(ASTMCType astMCType) {
-    System.out.println("\nTC XXX2 " +astMCType.printType());
     synthesizeSymType.init();
     astMCType.accept(synthesizeSymType);
-    System.out.println("\nTC XXX3 " +astMCType.printType());
     Optional<SymTypeExpression> result = synthesizeSymType.getResult();
-    System.out.println("\nTC XXX4 " +result);
     if(!result.isPresent()) {
       Log.error("0xE9FD4 Internal Error: No SymType for: "
               + astMCType.printType() + ". Probably TypeCheck mis-configured.");
