@@ -43,11 +43,7 @@ public class CommonSymbolReferenceGenerator implements SymbolReferenceGenerator 
         }
       }
     }
-
     if (prodSymbol.getAstNode().isPresent()) {
-      genEngine.generate("symboltable.SymbolReference", filePath, prodSymbol.getAstNode().get(),
-          className, ruleName, prodSymbol, symbolRule);
-
       String symbolReferenceName = className.endsWith("TOP")? className.replace("TOP","") : className;
 
       String languageName = genHelper.getGrammarSymbol().getName();
@@ -59,6 +55,5 @@ public class CommonSymbolReferenceGenerator implements SymbolReferenceGenerator 
       genEngine.generate("symboltable.SymbolReferenceBuilder", filePath, prodSymbol.getAstNode().get(),
           className,languageName,symbolReferenceName);
     }
-
   }
 }
