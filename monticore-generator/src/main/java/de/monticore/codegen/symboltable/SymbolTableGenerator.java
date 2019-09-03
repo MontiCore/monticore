@@ -82,7 +82,7 @@ public class SymbolTableGenerator {
     Collection<String> ruleNames = newArrayList();
     Collection<String> ruleNamesWithSuperGrammar = newArrayList();
     for (ProdSymbol prod : allSymbolDefiningRules) {
-      ruleNames.add(prod.getSymbolDefinitionKind().isPresent() ? prod.getSymbolDefinitionKind().get() : prod.getName());
+      ruleNames.add(prod.getName());
     }
 
     for (ProdSymbol prod : genHelper.getAllSymbolDefiningRulesInSuperGrammar()) {
