@@ -9,7 +9,7 @@ import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
@@ -403,16 +403,16 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
                                                                ASTExpression rightType) {
     SymTypeExpression result = null;
     if(types.containsKey(leftType)&&types.containsKey(rightType)){
-      SymTypeExpression exp = new SymObjectType();
+      SymTypeExpression exp = new SymTypeOfObject();
       exp.setName("java.lang.String");
       if(exp.deepEquals(types.get(leftType))||exp.deepEquals(types.get(rightType))){
-        result = new SymObjectType();
+        result = new SymTypeOfObject();
         result.setName("String");
         return result;
       }
       exp.setName("String");
       if(exp.deepEquals(types.get(leftType))||exp.deepEquals(types.get(rightType))){
-        result = new SymObjectType();
+        result = new SymTypeOfObject();
         result.setName("String");
         return result;
       }

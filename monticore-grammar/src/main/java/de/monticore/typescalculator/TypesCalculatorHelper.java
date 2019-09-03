@@ -5,7 +5,7 @@ import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
-import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
 import de.monticore.types2.SymTypeExpressionFactory;
@@ -69,7 +69,7 @@ public class TypesCalculatorHelper {
       type = new SymTypeConstant();
       type.setName("double");
     }else if("java.lang.String".equals(type.getName())){
-      type = new SymObjectType();
+      type = new SymTypeOfObject();
       type.setName("String");
     }else if("Boolean".equals(type.getName())){
       type = new SymTypeConstant();
@@ -96,7 +96,7 @@ public class TypesCalculatorHelper {
       type = new SymTypeConstant();
       type.setName("double");
     }else if("String".equals(type.getName())){
-      type = new SymObjectType();
+      type = new SymTypeOfObject();
       type.setName("String");
     }
     return type;
@@ -106,35 +106,35 @@ public class TypesCalculatorHelper {
   @Deprecated
   public static SymTypeExpression box(SymTypeExpression type) {
     if ("boolean".equals(type.getName())) {
-      type = new SymObjectType();
+      type = new SymTypeOfObject();
       type.setName("java.lang.Boolean");
     }
     if ("byte".equals(type.getName())) {
-      type = new SymObjectType();
+      type = new SymTypeOfObject();
       type.setName("java.lang.Byte");
     }
     if ("char".equals(type.getName())) {
-      type = new SymObjectType();
+      type = new SymTypeOfObject();
       type.setName("java.lang.Character");
     }
     if ("short".equals(type.getName())) {
-      type = new SymObjectType();
+      type = new SymTypeOfObject();
       type.setName("java.lang.Short");
     }
     if ("int".equals(type.getName())) {
-      type = new SymObjectType();
+      type = new SymTypeOfObject();
       type.setName("java.lang.Integer");
     }
     if ("long".equals(type.getName())) {
-      type = new SymObjectType();
+      type = new SymTypeOfObject();
       type.setName("java.lang.Long");
     }
     if ("float".equals(type.getName())) {
-      type = new SymObjectType();
+      type = new SymTypeOfObject();
       type.setName("java.lang.Float");
     }
     if ("double".equals(type.getName())) {
-      type = new SymObjectType();
+      type = new SymTypeOfObject();
       type.setName("java.lang.Double");
     }
     return type;
@@ -182,7 +182,7 @@ public class TypesCalculatorHelper {
       if (primitiveTypes.contains(type.getName())) {
         return SymTypeExpressionFactory.createTypeConstant(type.getName());
       } else {
-        SymObjectType o = new SymObjectType();
+        SymTypeOfObject o = new SymTypeOfObject();
         o.setName(type.getName());
         return o;
       }
@@ -197,7 +197,7 @@ public class TypesCalculatorHelper {
       if (primitiveTypes.contains(type.getName())) {
         return SymTypeExpressionFactory.createTypeConstant(type.getName());
       } else {
-        SymObjectType o = new SymObjectType();
+        SymTypeOfObject o = new SymTypeOfObject();
         o.setName(type.getName());
         return o;
       }
@@ -212,7 +212,7 @@ public class TypesCalculatorHelper {
       if (primitiveTypes.contains(type.getName())) {
         return SymTypeExpressionFactory.createTypeConstant(type.getName());
       } else {
-        SymObjectType o = new SymObjectType();
+        SymTypeOfObject o = new SymTypeOfObject();
         o.setName(type.getName());
         return o;
       }

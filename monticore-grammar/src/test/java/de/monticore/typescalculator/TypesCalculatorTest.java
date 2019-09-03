@@ -3,7 +3,7 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
 import de.monticore.typescalculator.combineexpressionswithliterals._ast.ASTFoo;
@@ -218,7 +218,7 @@ public class TypesCalculatorTest {
     assertTrue(a.isPresent());
     assertTrue(exp.deepEquals(getType(a.get())));
 
-    SymTypeExpression exp2 = new SymObjectType();
+    SymTypeExpression exp2 = new SymTypeOfObject();
     exp2.setName("Test");
     assertTrue(b.isPresent());
     assertTrue(exp2.deepEquals(getType(b.get())));

@@ -77,6 +77,9 @@ public class TypeCheck {
   /**
    * Function 1: extracting the SymTypeExpression from an AST Type
    * The SymTypeExpression is independent of the AST and can be stored in the SymTab etc.
+   *
+   * Tests for this Function are combined in the Visitor tests
+   * (SynthesizeSymType.*Types.*Test)
    */
   public SymTypeExpression symTypeFromAST(ASTMCType astMCType) {
     synthesizeSymType.init();
@@ -100,6 +103,9 @@ public class TypeCheck {
   /**
    * Function 1c: extracting the SymTypeExpression from the AST MCReturnType
    * (MCReturnType is not in the ASTMCType hierarchy, while it is included in the SymTypeExpressions)
+   *
+   * Tests for this Function are combined in the Visitor tests
+   * (SynthesizeSymType.*Types.*Test)
    */
   public SymTypeExpression symTypeFromAST(ASTMCReturnType astMCReturnType) {
     synthesizeSymType.init();
@@ -122,14 +128,25 @@ public class TypeCheck {
    * needs to be in place; same for method calls etc.
    */
   public SymTypeExpression typeOf(ASTExpression expr) {
-    // TODO
-    return null;
+    deriveSymTypeOfExpression.init();
+    Optional<SymTypeExpression> result =
+            deriveSymTypeOfExpression.calculateType(expr,deriveSymTypeOfLiteral);
+    if(!result.isPresent()) {
+      Log.error("0xED680 Internal Error: No Type for Expression " + expr
+              + " Probably TypeCheck mis-configured.");
+    }
+    return result.get();
   }
+  // TODO EK: Die Funktion muss noch getestet werden (und sein Expression-Visitor insbesondere auch)
+  // könnte man in    DeriveSymType.*Expression.*Test ablegen
   
   /**
    * Function 2b: Derive the SymTypeExpression of a Literal
    * This defines the Type that a Literal has and will be used to
    * determine the Type of Expressions.
+   *
+   * Tests for this Function are combined in the Visitor tests
+   * (DeriveSymType.*Literals.*Test)
    */
   public SymTypeExpression typeOf(ASTLiteral lit) {
     deriveSymTypeOfLiteral.init();
@@ -137,10 +154,6 @@ public class TypeCheck {
     if(!result.isPresent()) {
       Log.error("0xED670 Internal Error: No Type for Literal " + lit
               + " Probably TypeCheck mis-configured.");
-    }
-    if (!result.isPresent()) {
-      Log.error("0xE11E0 Internal Error: No-Type for literal " +
-              lit.toString() + ". TypeCheck mis-configured?");
     }
     return result.get();
   }

@@ -3,7 +3,7 @@ package de.monticore.types2;
 /**
  * Arrays of a certain dimension (>= 1)
  */
-public class SymArrayType extends SymTypeExpression {
+public class SymTypeArray extends SymTypeExpression {
   
   /**
    * An arrayType has a dimension
@@ -15,7 +15,7 @@ public class SymArrayType extends SymTypeExpression {
    */
   protected SymTypeExpression argument;
   
-  public SymArrayType(int dim, SymTypeExpression argument) {
+  public SymTypeArray(int dim, SymTypeExpression argument) {
     this.dim = dim;
     this.argument = argument;
   }

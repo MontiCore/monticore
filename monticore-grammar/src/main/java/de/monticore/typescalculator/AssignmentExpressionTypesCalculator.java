@@ -8,7 +8,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
@@ -123,16 +123,16 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     SymTypeExpression result = calculateTypeArithmeticWithString(expr.getLeft(),expr.getRight());
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
       if("String".equals(types.get(expr.getLeft()).getName())&&"String".equals(types.get(expr.getRight()).getName())){
-        result = new SymObjectType();
+        result = new SymTypeOfObject();
         result.setName("String");
       }
       if("java.lang.String".equals(types.get(expr.getLeft()).getName())&&"java.lang.String".equals(types.get(expr.getRight()).getName())){
-        result = new SymObjectType();
+        result = new SymTypeOfObject();
         result.setName("String");
       }
       if(("String".equals(types.get(expr.getLeft()).getName())&&"java.lang.String".equals(types.get(expr.getRight()).getName()))
           ||("java.lang.String".equals(types.get(expr.getLeft()).getName())&&"String".equals(types.get(expr.getRight()).getName()))){
-        result = new SymObjectType();
+        result = new SymTypeOfObject();
         result.setName("String");
       }
     }
@@ -371,7 +371,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     SymTypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)){
       if("String".equals(unbox(types.get(left)).getName())){
-        result= new SymObjectType();
+        result= new SymTypeOfObject();
         result.setName("String");
       }else{
         result=calculateTypeArithmetic(left,right);

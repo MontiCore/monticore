@@ -3,7 +3,7 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
 import de.monticore.typescalculator.combineexpressionswithliterals._ast.ASTFoo;
@@ -64,7 +64,7 @@ public class ExpressionsBasisTest {
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("A.B.C.QName");
 
-    SymTypeExpression exp = new SymObjectType();
+    SymTypeExpression exp = new SymTypeOfObject();
     exp.setName("A.B.C.QName");
     assertTrue(o.isPresent());
     assertEquals(exp.print(), calc.calculateType(o.get()).print());
@@ -97,7 +97,7 @@ public class ExpressionsBasisTest {
     assertEquals(exp.print(), calc.calculateType(r.get()).print());
 
 
-    SymTypeExpression exp2 = new SymObjectType();
+    SymTypeExpression exp2 = new SymTypeOfObject();
     exp2.setName("String");
     assertTrue(s.isPresent());
     assertTrue(exp2.deepEquals(calc.calculateType(s.get())));

@@ -3,7 +3,7 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
-import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
 
@@ -23,7 +23,7 @@ public class TypesCalculator {
   }
 
   public static boolean isString(ASTExpression expr){
-    SymTypeExpression exp = new SymObjectType();
+    SymTypeExpression exp = new SymTypeOfObject();
     exp.setName("String");
     if(exp.deepEquals(unbox(calc.calculateType(expr)))){
       return true;

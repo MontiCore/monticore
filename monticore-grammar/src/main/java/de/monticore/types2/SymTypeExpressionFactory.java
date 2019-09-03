@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
-import de.monticore.symboltable.IScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 
@@ -21,8 +20,8 @@ public class SymTypeExpressionFactory {
     return o;
   }
   
-  public static SymObjectType createObjectType(String name, TypeSymbol objTypeSymbol) {
-    SymObjectType o = new SymObjectType(name,objTypeSymbol);
+  public static SymTypeOfObject createObjectType(String name, TypeSymbol objTypeSymbol) {
+    SymTypeOfObject o = new SymTypeOfObject(name,objTypeSymbol);
     return o;
   }
   
@@ -36,17 +35,17 @@ public class SymTypeExpressionFactory {
     return o;
   }
   
-  public static SymArrayType createArrayType(int dim, SymTypeExpression argument) {
-    SymArrayType o = new SymArrayType(dim, argument);
+  public static SymTypeArray createArrayType(int dim, SymTypeExpression argument) {
+    SymTypeArray o = new SymTypeArray(dim, argument);
     return o;
   }
   
   
   // -------------------------------------------------------- GenericTypeExpression
   
-  public static SymGenericTypeExpression createGenericTypeExpression(String name, List<SymTypeExpression> arguments,
-                                                                     TypeSymbol objTypeConstructorSymbol){
-    SymGenericTypeExpression o = new SymGenericTypeExpression(name, arguments, objTypeConstructorSymbol);
+  public static SymTypeOfGenerics createGenericTypeExpression(String name, List<SymTypeExpression> arguments,
+                                                              TypeSymbol objTypeConstructorSymbol){
+    SymTypeOfGenerics o = new SymTypeOfGenerics(name, arguments, objTypeConstructorSymbol);
     return o;
   }
   
@@ -56,17 +55,17 @@ public class SymTypeExpressionFactory {
    * @param arguments
    * @param enclosingScope  used to derive the Symbol
    */
-  public static SymGenericTypeExpression createGenericTypeExpression(String name, List<SymTypeExpression> arguments,
-                                                                     TypeSymbolsScope enclosingScope){
+  public static SymTypeOfGenerics createGenericTypeExpression(String name, List<SymTypeExpression> arguments,
+                                                              TypeSymbolsScope enclosingScope){
     Optional<TypeSymbol> objTypeConstructorSymbol = enclosingScope.resolveType(name);
     // No check, whether the symbol actually exists!
-    SymGenericTypeExpression o = new SymGenericTypeExpression(name, arguments, objTypeConstructorSymbol.get());
+    SymTypeOfGenerics o = new SymTypeOfGenerics(name, arguments, objTypeConstructorSymbol.get());
     return o;
   }
   
   @Deprecated // TODO: delete, because TypeSymbol is not set
-  public static SymGenericTypeExpression createGenericTypeExpression(String name, List<SymTypeExpression> arguments){
-    SymGenericTypeExpression o = new SymGenericTypeExpression(name, arguments);
+  public static SymTypeOfGenerics createGenericTypeExpression(String name, List<SymTypeExpression> arguments){
+    SymTypeOfGenerics o = new SymTypeOfGenerics(name, arguments);
     // XXX BR: here we also have to add the Symbol
     // being retrieved from somewhere ...
     return o;

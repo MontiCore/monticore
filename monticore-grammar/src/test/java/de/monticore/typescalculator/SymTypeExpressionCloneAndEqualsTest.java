@@ -3,7 +3,7 @@ package de.monticore.typescalculator;
 
 import com.google.common.collect.Lists;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types2.SymGenericTypeExpression;
+import de.monticore.types2.SymTypeOfGenerics;
 import de.monticore.types2.SymTypeExpression;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -75,16 +75,16 @@ public class SymTypeExpressionCloneAndEqualsTest {
     SymTypeExpression exp = createObjectType("Bar", b);
     exp.setTypeSymbol(Optional.of(b));
 
-    SymGenericTypeExpression ex = createGenericTypeExpression("Foo",Lists.newArrayList(exp));
+    SymTypeOfGenerics ex = createGenericTypeExpression("Foo",Lists.newArrayList(exp));
     TypeSymbol a = new TypeSymbol("Foo");
     ex.setTypeSymbol(Optional.of(a));
 
-    SymGenericTypeExpression exClone = (SymGenericTypeExpression) ex.deepClone();
+    SymTypeOfGenerics exClone = (SymTypeOfGenerics) ex.deepClone();
     assertSame(ex,exClone);
     assertDeepEquals(ex,exClone);
     assertSame(ex.getArguments().get(0),exClone.getArguments().get(0));
     
-    SymTypeExpression e = new SymGenericTypeExpression();
+    SymTypeExpression e = new SymTypeOfGenerics();
     e.setName("List");
     TypeSymbol s = new TypeSymbol("List");
     e.setTypeSymbol(java.util.Optional.of(s));

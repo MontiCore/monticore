@@ -8,7 +8,7 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
@@ -180,7 +180,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     String[] parts = fullName.split("\\.");
     ArrayList<String> nameList = new ArrayList<>();
     Collections.addAll(nameList,parts);
-    SymTypeExpression res = new SymObjectType();
+    SymTypeExpression res = new SymTypeOfObject();
     res.setName(fullName);
     res.setSuperTypes(superTypes);
     this.result=res;

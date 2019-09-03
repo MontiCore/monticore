@@ -3,7 +3,7 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeExpression;
 
 import java.util.ArrayList;
@@ -55,9 +55,9 @@ public class DummyAdapter implements IETypeSymbolResolvingDelegate, IEMethodSymb
     SymTypeExpression type = TypesCalculatorHelper.fromEVariableSymbol(sym);
     type.setName(symbolName);
     if(symbolName.equals("A")){
-      a = new SymObjectType();
+      a = new SymTypeOfObject();
       a.setName("A");
-      b = new SymObjectType();
+      b = new SymTypeOfObject();
       b.setName("B");
 
       List<SymTypeExpression> superTypes = new ArrayList<>();

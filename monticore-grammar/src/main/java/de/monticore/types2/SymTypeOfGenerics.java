@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * SymGenericTypeExpression stores any kind of TypeConstructor applied
+ * SymTypeOfGenerics stores any kind of TypeConstructor applied
  * to Arguments, such as Map< int,Person >
  * List<Person>, List< Set< List< a >>>.
  * This subsumes all kinds of generic Types from several of the
  * MC-Type grammars.
  */
-public class SymGenericTypeExpression extends SymTypeExpression {
+public class SymTypeOfGenerics extends SymTypeExpression {
   
   /**
    * A SymTypeExpression has
@@ -36,13 +36,13 @@ public class SymGenericTypeExpression extends SymTypeExpression {
   protected TypeSymbol objTypeConstructorSymbol;
   
   @Deprecated // XXX: remove funct. (because TypeSymbol missing)
-  public SymGenericTypeExpression(String typeConstructorFullName, List<SymTypeExpression> arguments) {
+  public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments) {
     this.typeConstructorFullName = typeConstructorFullName;
     this.arguments = arguments;
   }
   
-  public SymGenericTypeExpression(String typeConstructorFullName, List<SymTypeExpression> arguments,
-                                  TypeSymbol objTypeConstructorSymbol) {
+  public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments,
+                           TypeSymbol objTypeConstructorSymbol) {
     this.typeConstructorFullName = typeConstructorFullName;
     this.arguments = arguments;
     this.objTypeConstructorSymbol = objTypeConstructorSymbol;
@@ -127,7 +127,7 @@ public class SymGenericTypeExpression extends SymTypeExpression {
 
   @Override @Deprecated
   public boolean deepEquals(SymTypeExpression symTypeExpression) {
-    if(!(symTypeExpression instanceof SymGenericTypeExpression)){
+    if(!(symTypeExpression instanceof SymTypeOfGenerics)){
       return false;
     }
     if(!this.name.equals(symTypeExpression.name)){
@@ -143,11 +143,11 @@ public class SymGenericTypeExpression extends SymTypeExpression {
       }
     }
     for(int i = 0; i<this.arguments.size();i++){
-      if(!this.arguments.get(i).deepEquals(((SymGenericTypeExpression) symTypeExpression).arguments.get(i))){
+      if(!this.arguments.get(i).deepEquals(((SymTypeOfGenerics) symTypeExpression).arguments.get(i))){
         return false;
       }
     }
-    if(!this.whoAmI.equals(((SymGenericTypeExpression) symTypeExpression).whoAmI)){
+    if(!this.whoAmI.equals(((SymTypeOfGenerics) symTypeExpression).whoAmI)){
       return false;
     }
     return true;
@@ -155,7 +155,7 @@ public class SymGenericTypeExpression extends SymTypeExpression {
 
   @Override @Deprecated
   public SymTypeExpression deepClone() {
-    SymGenericTypeExpression clone = new SymGenericTypeExpression();
+    SymTypeOfGenerics clone = new SymTypeOfGenerics();
     clone.setName(this.name);
     clone.setEnclosingScope(this.enclosingScope);
 
@@ -171,7 +171,7 @@ public class SymGenericTypeExpression extends SymTypeExpression {
   }
   
   @Deprecated
-  public SymGenericTypeExpression() {
+  public SymTypeOfGenerics() {
   }
   
 }

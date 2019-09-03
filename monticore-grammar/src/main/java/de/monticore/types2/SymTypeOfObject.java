@@ -8,10 +8,10 @@ import de.monticore.types.typesymbols._symboltable.TypeSymbol;
  * Therefore, we have the fullName, the baseName and the
  * Symbol behind that full qualified class name to retrieve
  */
-public class SymObjectType extends SymTypeExpression {
+public class SymTypeOfObject extends SymTypeExpression {
   
   /**
-   * An SymObjectType has a name.
+   * An SymTypeOfObject has a name.
    * This is always the full qualified name (i.e. including package)
    */
   protected String objFullName;
@@ -21,7 +21,7 @@ public class SymObjectType extends SymTypeExpression {
    */
   protected TypeSymbol objTypeSymbol;
   
-  public SymObjectType(String objFullName, TypeSymbol objTypeSymbol)
+  public SymTypeOfObject(String objFullName, TypeSymbol objTypeSymbol)
   {
     this.objFullName = objFullName;
     // this.objTypeSymbol = objTypeSymbol;
@@ -69,7 +69,7 @@ public class SymObjectType extends SymTypeExpression {
   
   @Override @Deprecated
   public boolean deepEquals(SymTypeExpression symTypeExpression) {
-    if(!(symTypeExpression instanceof SymObjectType)){
+    if(!(symTypeExpression instanceof SymTypeOfObject)){
       return false;
     }
     if(!this.name.equals(symTypeExpression.name)){
@@ -89,7 +89,7 @@ public class SymObjectType extends SymTypeExpression {
 
   @Override @Deprecated
   public SymTypeExpression deepClone() {
-    SymObjectType clone = new SymObjectType(objFullName,null);
+    SymTypeOfObject clone = new SymTypeOfObject(objFullName,null);
     clone.setName(this.name);
     clone.setEnclosingScope(this.enclosingScope);
 
@@ -101,7 +101,7 @@ public class SymObjectType extends SymTypeExpression {
   }
   
   @Deprecated
-  public SymObjectType() {
+  public SymTypeOfObject() {
   }
   
   

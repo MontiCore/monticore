@@ -7,7 +7,7 @@ import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types2.DeriveSymTypeOfLiterals;
-import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
 
@@ -115,7 +115,7 @@ public class CommonLiteralsTypesCalculator extends DeriveSymTypeOfLiterals imple
 
   @Override
   public void visit(ASTStringLiteral lit){
-    SymTypeExpression res = new SymObjectType();
+    SymTypeExpression res = new SymTypeOfObject();
     res.setName("String");
     this.result=res;
     types.put(lit,res);
