@@ -6,11 +6,8 @@ fileTree(grammarDir).each {
   task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
     grammar = file g
     outputDir = file outDir
-    handcodedPath file("$projectDir/src/main/java")
-    modelPath file("$projectDir/$grammarDir")
-    def incCheckDir = file(grammarDir).toURI().relativize(g.toURI()).toString()
-    incCheckDir = incCheckDir.substring(0,incCheckDir.lastIndexOf('.')).toLowerCase()
-    def uptoDate = incCheck(outputDir.get().asFile.toString() +"/$incCheckDir/IncGenGradleCheck.txt")
+    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
+    def uptoDate = incCheck(grammarIncludingPackage)
     outputs.upToDateWhen { uptoDate }
   }
 }

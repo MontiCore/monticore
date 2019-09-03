@@ -4,7 +4,6 @@ description = 'Experiments: scannerless'
 task generate (type: MCTask) {
   grammar = file "$projectDir/$grammarDir/de/monticore/Scannerless.mc4"
   outputDir = file outDir
-  handcodedPath file("$projectDir/src/main/java")
-  def uptoDate = incCheck(outputDir.get().asFile.toString() + "/de/monticore/scannerless/IncGenGradleCheck.txt")
+  def uptoDate = incCheck("de/monticore/Scannerless.mc4")
   outputs.upToDateWhen { uptoDate }
 }

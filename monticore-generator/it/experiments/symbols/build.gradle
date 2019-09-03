@@ -4,7 +4,6 @@ description = 'Experiments: symbols'
 task generate (type: MCTask) {
   grammar = file "$projectDir/$grammarDir/Automaton.mc4"
   outputDir = file outDir
-  handcodedPath file("$projectDir/src/main/java")
-  def uptoDate = incCheck(outputDir.get().asFile.toString() + "/automaton/IncGenGradleCheck.txt")
+  def uptoDate = incCheck("Automaton.mc4")
   outputs.upToDateWhen { uptoDate }
 }

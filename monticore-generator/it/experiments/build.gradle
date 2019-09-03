@@ -10,6 +10,7 @@ allprojects {
 
 subprojects {
   apply plugin: 'java'
+  apply plugin: 'monticore'
   
   buildDir = file("$projectDir/target")
   
@@ -28,13 +29,12 @@ subprojects {
   ext.junit_version = '4.12'
   ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
   
-  configurations {grammar}
-  
   dependencies {
-    implementation group:'de.monticore', name:'monticore-runtime', version:grammar_version, force:true
-    implementation group:'de.monticore', name:'monticore-grammar', version:grammar_version, force:true
+    implementation group:'de.monticore', name:'monticore-runtime', version:grammar_version
+    implementation group:'de.monticore', name:'monticore-grammar', version:grammar_version
     testImplementation group:'junit', name:'junit', version:junit_version
     grammar group:'de.monticore', name:'monticore-grammar', version:grammar_version, classifier:"grammars"
+    grammar group:'de.monticore', name:'monticore-runtime', version:grammar_version
   }
   
   sourceSets {
