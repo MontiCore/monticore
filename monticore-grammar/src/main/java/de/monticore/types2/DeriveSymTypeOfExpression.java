@@ -13,6 +13,7 @@ import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.Symbol;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -115,13 +116,32 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
    * is returned (a copy is not necessary)
    */
   @Override
-  public void traverse(ASTQualifiedNameExpression ex){
-    ASTExpression expr0 = ex.getExpression();
-    // SymTypeExpression type1 = expr0;
-    // String symname = ex.getName();
-    // ISymbol symbol;  // = scope. (symname) ... get the Symbol
-    // symbol. --> SymType des Symbols rausfinden (für passende SymbolArt)
-    // result = ...
+  public void traverse(ASTQualifiedNameExpression node){
+    // Argument 1:
+    if (null != node.getExpression()) {
+      node.getExpression().accept(getRealThis());
+    }
+    if(!result.isPresent()) {
+      Log.error("0xEE673 Internal Error: No SymType for argument 1 if QualifiedNameExpression."
+              + " Probably TypeCheck mis-configured.");
+    }
+    SymTypeExpression type1 = result.get();
+  
+    // Argument 2:
+    String name = node.getName();
+    
+    // name is now only valid in the context of type1
+    // so we look at the Fields available in type1
+    // (and e.g. ignore other alternatives, such as ClassName.Functionname without arguments)
+    
+    // TODO: XXX continue
+    
+  //  SymTypeExpression argument2 = result.get();
+    // Construct new TypeExpression:
+  //  SymTypeExpression tex =
+  //          SymTypeExpressionFactory.createGenericTypeExpression(
+  //                  "Map", Arrays.asList(type1,argument2));
+  //   result = Optional.of(tex);
   }
   
   /**
@@ -136,18 +156,11 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   // TODO BR: to complete
   
-  
+  // Not all nonterminals are handled here.
+  // The following are only used to create Symbols and will not appear
+  // in AST's:
   //  symbol EMethod = Name;
   //  symbol EVariable = Name;
   //  symbol EType = Name;
-  //
-  //  NameExpression implements Expression<350>
-  //    = Name;
-  //
-  //  LiteralExpression implements Expression<340>
-  //    = Literal;
-  //
-  //  QualifiedNameExpression implements Expression <290> =
-  //  	Expression "." Name;
 
 }
