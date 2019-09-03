@@ -23,9 +23,31 @@ public abstract class SymTypeExpression {
   
   /**
    * Am I primitive? (such as "int")
+   * (is this needed?)
    */
   public boolean isPrimitiveType() {
     return false;
+  }
+  
+  /**
+   * Assumption:
+   * We assume that each(!) and really each SymTypeExpression has
+   * an associated TypeSymbol, where all Fields, Methods, etc. are stored.
+   *
+   * These Lists may, however, be empty e.g. for primitive Types.
+   *
+   * Furthermore, each SymType knows this TypeSymbol (i.e. the
+   * TypeSymbols are loaded (or created) upon creation of the SymType.
+   */
+  protected TypeSymbol typeInfo;
+  
+  public TypeSymbol getTypeInfo() {
+    return typeInfo;
+  }
+  
+  public void setTypeInfo(TypeSymbol typeInfo) {
+    this.typeInfo = typeInfo;
+    typeSymbol = Optional.of(typeInfo); // TODO: for Compatibility; this can be deleted
   }
   
   // --------------------------------------------------------------------------
@@ -44,8 +66,6 @@ public abstract class SymTypeExpression {
    * If the Symbol corresponding to the type's name is loaded:
    * It is stored here.
    */
-  // XXX BR: unklar, ob das optional sein muss, wenn schon der Name
-          // immer gesetzt ist und das hier auch immer geladen werden muss
   @Deprecated
   protected Optional<TypeSymbol> typeSymbol = Optional.empty();
 
@@ -64,12 +84,12 @@ public abstract class SymTypeExpression {
   
   @Deprecated
   public TypeSymbol getTypeSymbol() {
-    return typeSymbol.get();
+    return typeInfo;
   }
   
   @Deprecated
   public void setTypeSymbol(Optional<TypeSymbol> x) {
-    typeSymbol=x;
+    typeSymbol=x;setTypeInfo(x.get());
   }
   
   @Deprecated

@@ -51,11 +51,6 @@ public class SymTypeVariable extends SymTypeExpression {
     // Unless we always assume boxed implementations then return false would be correct
   }
   
- /* TODO
-  public TypeVarSymbol getTypeVarSymbol() {
-    return typeVarSymbol;
-  }
- */
 
   // --------------------------------------------------------------------------
 

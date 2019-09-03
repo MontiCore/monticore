@@ -15,8 +15,8 @@ public class SymTypeExpressionTest {
   SymTypeExpression teInt = createTypeConstant("int");
   SymTypeExpression teVarA = createTypeVariable("A");
   SymTypeExpression teVarB = createTypeVariable("B");
-  SymTypeExpression teP = createObjectType("de.x.Person", null);
-  SymTypeExpression teH = createObjectType("Human", null);  // on purpose: package missing
+  SymTypeExpression teP = createObjectType("de.x.Person", new TypeSymbol("long"));
+  SymTypeExpression teH = createObjectType("Human", new TypeSymbol("long"));  // on purpose: package missing
   SymTypeExpression teVoid = createTypeVoid();
   SymTypeExpression teNull = createTypeOfNull();
   SymTypeExpression teArr1 = createArrayType(1, teH);

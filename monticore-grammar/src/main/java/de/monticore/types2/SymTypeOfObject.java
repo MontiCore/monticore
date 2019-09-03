@@ -16,15 +16,10 @@ public class SymTypeOfObject extends SymTypeExpression {
    */
   protected String objFullName;
   
-  /**
-   * Symbol corresponding to the type's name
-   */
-  protected TypeSymbol objTypeSymbol;
-  
-  public SymTypeOfObject(String objFullName, TypeSymbol objTypeSymbol)
+  public SymTypeOfObject(String objFullName, TypeSymbol typeInfo)
   {
     this.objFullName = objFullName;
-    // this.objTypeSymbol = objTypeSymbol;
+    this.typeInfo = typeInfo;
   }
   
   public String getObjName() {
@@ -33,14 +28,6 @@ public class SymTypeOfObject extends SymTypeExpression {
   
   public void setObjName(String objname) {
     this.objFullName = objname;
-  }
-  
-  public TypeSymbol getObjTypeSymbol() {
-    return objTypeSymbol;
-  }
-  
-  public void setObjTypeSymbol(TypeSymbol objTypeSymbol) {
-    this.objTypeSymbol = objTypeSymbol;
   }
   
   /**

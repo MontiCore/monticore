@@ -1,5 +1,13 @@
 package de.monticore.types2;
 
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolBuilder;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class SymTypeOfNull extends SymTypeExpression {
   
   /**
@@ -13,12 +21,30 @@ public class SymTypeOfNull extends SymTypeExpression {
    *       int i = null;          illegal
    */
   public SymTypeOfNull() {
-    }
-    
-    /**
-     * print: Umwandlung in einen kompakten String
-     */
-    public String print() {
+    setTypeInfo(nullTypeSymbol);
+  }
+  
+  /**
+   * This is a predefined Dummy Symbol mimicking the
+   * pseudoType "null" with no Fields, no Methods, etc.
+   */
+  public static final TypeSymbol nullTypeSymbol;
+  
+  static {
+    nullTypeSymbol = TypeSymbolsSymTabMill.typeSymbolBuilder()
+            .setName("nullType")           // should be unused
+            .setFullName("nullType")
+            .setAccessModifier(AccessModifier.ALL_INCLUSION)
+            .setTypeParameter(Collections.emptyList())
+            .setFields(new ArrayList<>())
+            .setMethods(new ArrayList<>())
+            .build();
+  }
+  
+  /**
+   * print: Umwandlung in einen kompakten String
+   */
+  public String print() {
       return "nullType";
     }
 

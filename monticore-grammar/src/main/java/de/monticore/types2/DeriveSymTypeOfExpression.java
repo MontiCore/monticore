@@ -130,18 +130,17 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       Log.error("0xEE673 Internal Error: No SymType for argument 1 if QualifiedNameExpression."
               + " Probably TypeCheck mis-configured.");
     }
-    SymTypeExpression type1 = result.get();
+    SymTypeExpression type2 = result.get();
   
     // Argument 2:
     String name = node.getName();
     
-    // name is now only valid in the context of type1
-    // so we look at the Fields available in type1
+    // name is now only valid in the context of type2
+    // so we look at the Fields available in type2
     // (and e.g. ignore other alternatives, such as ClassName.Functionname without arguments)
   
-    // TypSymbol of type1:
-    TypeSymbol symb12 = type1.getTypeSymbol();
-    // TODO: probably a downcast of type 1 necessary if that would be correct.
+    // TypSymbol of type2:
+    TypeSymbol symb12 = type2.getTypeInfo();
     
     // Liste der Fields durchsuchen
     result = Optional.empty();
@@ -152,6 +151,9 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       }
     }
     // result becomes empty(), if the field isn't found.
+    // This is probably not an Internal Error! --> to be handled.
+    // Maybe, we also create an SymTypeError for error situations
+    // and store that in the result (upwards)
   }
   
   /**
