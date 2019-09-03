@@ -141,7 +141,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
 
       if (definingSymbolFullName.isPresent()) {
         ASTCDParameter parameterPredicate = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(
-            PREDICATE + "<" + definingSymbolFullName.get() + ">"), "predicate");
+            String.format(PREDICATE, definingSymbolFullName.get() )), "predicate");
         String methodName = String.format(CONTINUE_WITH_ENCLOSING_SCOPE, className);
 
         ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createCollectionTypeOf(definingSymbolFullName.get()),

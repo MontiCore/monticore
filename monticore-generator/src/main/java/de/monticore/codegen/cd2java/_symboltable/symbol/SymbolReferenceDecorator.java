@@ -91,7 +91,7 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
   }
 
   protected ASTCDAttribute createPredicateAttribute(String symbolType) {
-    ASTCDAttribute predicateAttribute = getCDAttributeFacade().createAttribute(PROTECTED, PREDICATE + "<" + symbolType + ">", "predicate");
+    ASTCDAttribute predicateAttribute = getCDAttributeFacade().createAttribute(PROTECTED, String.format(PREDICATE, symbolType ), "predicate");
     this.replaceTemplate(VALUE, predicateAttribute, new StringHookPoint("= x -> true"));
     return predicateAttribute;
   }

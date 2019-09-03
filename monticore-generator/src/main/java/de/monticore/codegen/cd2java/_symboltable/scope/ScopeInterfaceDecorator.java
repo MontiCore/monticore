@@ -105,7 +105,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
       ASTMCType setSymbol = getCDTypeFacade().createSetTypeOf(symbolFullTypeName);
 
       ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
-          .createTypeByDefinition(PREDICATE + "<" + symbolFullTypeName + ">"), "predicate");
+          .createTypeByDefinition(String.format(PREDICATE, symbolFullTypeName )), "predicate");
 
       String resolveMethodName = String.format(RESOLVE, className);
       resolveMethods.add(createResolveNameMethod(resolveMethodName, optSymbol, nameParameter));

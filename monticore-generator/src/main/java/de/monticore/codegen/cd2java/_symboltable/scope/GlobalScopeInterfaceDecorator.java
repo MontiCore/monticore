@@ -99,7 +99,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
       ASTMCType listSymbol = getCDTypeFacade().createCollectionTypeOf(symbolFullTypeName);
 
       ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
-          .createTypeByDefinition(PREDICATE + "<" + symbolFullTypeName + ">"), "predicate");
+          .createTypeByDefinition(String.format(PREDICATE, symbolFullTypeName )), "predicate");
 
 
       resolveMethods.add(createResolveManyMethod(className, symbolFullTypeName, listSymbol, foundSymbolsParameter,

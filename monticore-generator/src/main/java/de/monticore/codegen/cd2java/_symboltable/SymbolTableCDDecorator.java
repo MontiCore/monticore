@@ -64,6 +64,8 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected final ModelLoaderBuilderDecorator modelLoaderBuilderDecorator;
 
+  protected final SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator;
+
   public SymbolTableCDDecorator(final GlobalExtensionManagement glex,
                                 final IterablePath handCodedPath,
                                 final SymbolTableService symbolTableService,
@@ -83,7 +85,8 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
                                 final LanguageDecorator languageDecorator,
                                 final LanguageBuilderDecorator languageBuilderDecorator,
                                 final ModelLoaderDecorator modelLoaderDecorator,
-                                final ModelLoaderBuilderDecorator modelLoaderBuilderDecorator) {
+                                final ModelLoaderBuilderDecorator modelLoaderBuilderDecorator,
+                                final SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator) {
     super(glex);
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
@@ -104,6 +107,7 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     this.languageBuilderDecorator = languageBuilderDecorator;
     this.modelLoaderDecorator= modelLoaderDecorator;
     this.modelLoaderBuilderDecorator = modelLoaderBuilderDecorator;
+    this.symbolResolvingDelegateInterfaceDecorator = symbolResolvingDelegateInterfaceDecorator;
   }
 
   @Override
@@ -126,6 +130,7 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
         .addAllCDClasss(createSymbolReferenceClasses(symbolProds))
         .addAllCDClasss(createSymbolReferenceBuilderClasses(symbolProds))
         .addCDInterface(createICommonSymbol(ast))
+        .addAllCDInterfaces(createSymbolResolvingDelegateInterfaces(symbolProds))
         .build();
     if (symbolTableService.hasProd(ast.getCDDefinition())) {
       astCD.addCDInterface(createGlobalScopeInterface(ast));
@@ -190,6 +195,13 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     return astcdTypeList
         .stream()
         .map(symbolReferenceBuilderDecorator::decorate)
+        .collect(Collectors.toList());
+  }
+
+  protected List<ASTCDInterface> createSymbolResolvingDelegateInterfaces(List<? extends ASTCDType> astcdTypeList) {
+    return astcdTypeList
+        .stream()
+        .map(symbolResolvingDelegateInterfaceDecorator::decorate)
         .collect(Collectors.toList());
   }
 
