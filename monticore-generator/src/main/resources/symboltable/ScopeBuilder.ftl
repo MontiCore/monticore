@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "scopeName", "scopeRule")}
+${signature("className", "scopeName", "scopeRules")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -38,13 +38,13 @@ public class ${className} {
 
   protected ASTNode astNode;
 
-<#if scopeRule.isPresent()>
-  <#list scopeRule.get().getAdditionalAttributeList() as attr>
+<#list scopeRules as scopeRule>
+  <#list scopeRule.getAdditionalAttributeList() as attr>
     <#assign attrName="_" + attr.getName()>
     <#assign attrType=stHelper.deriveAdditionalAttributeTypeWithMult(attr)>
   protected ${attrType} ${attrName};
   </#list>
-</#if>
+</#list>
 
   protected ${className}() {}
 
@@ -57,11 +57,11 @@ public class ${className} {
     scope.setAstNode(this.astNode);
     this.name.ifPresent(scope::setName);
     this.subScopes.forEach(s -> s.setEnclosingScope(scope));
-  <#if scopeRule.isPresent()>
-    <#list scopeRule.get().getAdditionalAttributeList() as attr>
+  <#list scopeRules as scopeRule>
+    <#list scopeRule.getAdditionalAttributeList() as attr>
       scope.set${attr.getName()?cap_first}(_${attr.getName()});
     </#list>
-  </#if>
+  </#list>
     return scope;
   }
 
@@ -140,8 +140,8 @@ public class ${className} {
     return this.name;
   }
 
-  <#if scopeRule.isPresent()>
-    <#list scopeRule.get().getAdditionalAttributeList() as attr>
+  <#list scopeRules as scopeRule>
+    <#list scopeRule.getAdditionalAttributeList() as attr>
       <#assign attrName=attr.getName()>
       <#assign attrType=stHelper.deriveAdditionalAttributeTypeWithMult(attr)>
       <#if attrType == "boolean" || attrType == "Boolean">
@@ -163,5 +163,5 @@ public class ${className} {
   }
 
     </#list>
-  </#if>
+  </#list>
 }

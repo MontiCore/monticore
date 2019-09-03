@@ -7,6 +7,7 @@ import de.monticore.codegen.GeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTScopeRule;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
@@ -172,13 +173,17 @@ public class CommonScopeGenerator implements ScopeGenerator {
 
 
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
-    Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
-    genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, baseNameInterface, scopeRule, symbolNamesWithSuperGrammar, allSuperScopes, superScopeVisitors,existsHWCScopeImpl);
-    genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, allSuperScopes, languageName, scopeRule);
-    genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName, scopeRule);
+    List<ASTScopeRule> scopeRules = Lists.newArrayList();
+    grammar.getScopeRulesOpt().ifPresent(s -> scopeRules.add(s));
+    for (MCGrammarSymbol grammarSymbol: genHelper.getGrammarSymbol().getAllSuperGrammars()) {
+      grammarSymbol.getAstGrammar().get().getScopeRulesOpt().ifPresent(s -> scopeRules.add(s));
+    }
+    genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, baseNameInterface, scopeRules, symbolNamesWithSuperGrammar, allSuperScopes, superScopeVisitors,existsHWCScopeImpl);
+    genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, allSuperScopes, languageName,  grammar.getScopeRulesOpt());
+    genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName, scopeRules);
 
     if(genHelper.getGrammarSymbol().getStartProd().isPresent()) {
-      genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, allSymbols,allSpanningSymbolNames, superGrammarPackages);
+      genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRules, allSymbols,allSpanningSymbolNames, superGrammarPackages);
 
       genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, baseNameClass, languageName, symbolNames,existsHWCArtifactScopeImpl);
 
