@@ -1,25 +1,31 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 public class SymTypeVariable extends SymTypeExpression {
 
   /**
    * A typeVariable has a name
    */
   protected String varName;
-
-  // TODO BR: The type variable may be bounded; then it probably helps to connect to
-  // the Var-Symbol that contains the bound
   
-  public SymTypeVariable(String varName) {
+  /**
+   * The Variable is connected to a symbol carrying that variable
+   * (TODO: clarify if that is really needed)
+   */
+  // TODO protected TypeVarSymbol typeVarSymbol;
+  
+  public SymTypeVariable(String varName)
+  {
     this.varName = varName;
   }
 
-  /**
-   * We could connect the Variable to a symbol carrying that variable
-   * (clarify if that is really needed)
-   */
-  // protected TypeVarSymbol typeVarSymbol;
 
   public String getVarName() {
     return varName;
@@ -42,8 +48,14 @@ public class SymTypeVariable extends SymTypeExpression {
   public boolean isPrimitiveType() {
     return false;
     // TODO: ?sometimes the var is, sometimes not ...
-    // Unless we always assume boxed implementations then return false is correct
+    // Unless we always assume boxed implementations then return false would be correct
   }
+  
+ /* TODO
+  public TypeVarSymbol getTypeVarSymbol() {
+    return typeVarSymbol;
+  }
+ */
 
   // --------------------------------------------------------------------------
 

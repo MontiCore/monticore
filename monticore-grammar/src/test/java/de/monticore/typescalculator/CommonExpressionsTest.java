@@ -478,6 +478,7 @@ public class CommonExpressionsTest {
     assertTrue(s.isPresent());
     assertEquals(exp.print(), calc.calculateType(s.get()).print());
     SymTypeExpression exp2 = new SymObjectType();
+  
     exp2.setName("String");
     assertTrue(t.isPresent());
     assertTrue(exp2.deepEquals(calc.calculateType(t.get())));

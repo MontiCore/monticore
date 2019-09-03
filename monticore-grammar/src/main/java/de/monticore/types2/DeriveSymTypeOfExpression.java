@@ -5,15 +5,19 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTQualifiedNameExpression;
+import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
 import de.monticore.symboltable.ISymbol;
+import de.monticore.types.typesymbols._symboltable.FieldSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.Symbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -134,12 +138,20 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     // name is now only valid in the context of type1
     // so we look at the Fields available in type1
     // (and e.g. ignore other alternatives, such as ClassName.Functionname without arguments)
+  
+    // TypSymbol of type1:
+    TypeSymbol symb12 = type1.getTypeSymbol();
+    // TODO: probably a downcast of type 1 necessary if that would be correct.
     
-    // TODO: continue with:
-    // type1 .. get ClassSymbol (type1)
-    // ... get FieldSymbol (Name)
-    // ... get SymType of Field
-    // return;
+    // Liste der Fields durchsuchen
+    result = Optional.empty();
+    for(FieldSymbol field : symb12.getFields()) {
+      if(field.getName().equals(name)) {
+        result = Optional.of(field.getType());
+        return;
+      }
+    }
+    // result becomes empty(), if the field isn't found.
   }
   
   /**

@@ -1,7 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
+import de.monticore.symboltable.IScope;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
+
 import java.util.List;
+import java.util.Optional;
 
 public class SymTypeExpressionFactory {
   
@@ -16,10 +21,8 @@ public class SymTypeExpressionFactory {
     return o;
   }
   
-  public static SymObjectType createObjectType(String name) {
-    SymObjectType o = new SymObjectType(name);
-    // XXX BR: here we also have to add the Symbol
-    // being retrieved from somewhere ...
+  public static SymObjectType createObjectType(String name, TypeSymbol objTypeSymbol) {
+    SymObjectType o = new SymObjectType(name,objTypeSymbol);
     return o;
   }
   
@@ -38,6 +41,30 @@ public class SymTypeExpressionFactory {
     return o;
   }
   
+  
+  // -------------------------------------------------------- GenericTypeExpression
+  
+  public static SymGenericTypeExpression createGenericTypeExpression(String name, List<SymTypeExpression> arguments,
+                                                                     TypeSymbol objTypeConstructorSymbol){
+    SymGenericTypeExpression o = new SymGenericTypeExpression(name, arguments, objTypeConstructorSymbol);
+    return o;
+  }
+  
+  /**
+   * createGenericTypeExpression: is created using the enclosing Scope to ask for the appropriate symbol.
+   * @param name
+   * @param arguments
+   * @param enclosingScope  used to derive the Symbol
+   */
+  public static SymGenericTypeExpression createGenericTypeExpression(String name, List<SymTypeExpression> arguments,
+                                                                     TypeSymbolsScope enclosingScope){
+    Optional<TypeSymbol> objTypeConstructorSymbol = enclosingScope.resolveType(name);
+    // No check, whether the symbol actually exists!
+    SymGenericTypeExpression o = new SymGenericTypeExpression(name, arguments, objTypeConstructorSymbol.get());
+    return o;
+  }
+  
+  @Deprecated // TODO: delete, because TypeSymbol is not set
   public static SymGenericTypeExpression createGenericTypeExpression(String name, List<SymTypeExpression> arguments){
     SymGenericTypeExpression o = new SymGenericTypeExpression(name, arguments);
     // XXX BR: here we also have to add the Symbol

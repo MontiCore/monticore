@@ -33,14 +33,19 @@ public class SymGenericTypeExpression extends SymTypeExpression {
   /**
    * Symbol corresponding to the type constructors's name (if loaded???)
    */
-  // XXX BR: unklar, ob das optional sein muss, wenn schon der Name
-  // immer gesetzt ist; man könnte das Symbol gleich beim initialisieren mit setzen lassen
   protected TypeSymbol objTypeConstructorSymbol;
   
-  
+  @Deprecated // XXX: remove funct. (because TypeSymbol missing)
   public SymGenericTypeExpression(String typeConstructorFullName, List<SymTypeExpression> arguments) {
     this.typeConstructorFullName = typeConstructorFullName;
     this.arguments = arguments;
+  }
+  
+  public SymGenericTypeExpression(String typeConstructorFullName, List<SymTypeExpression> arguments,
+                                  TypeSymbol objTypeConstructorSymbol) {
+    this.typeConstructorFullName = typeConstructorFullName;
+    this.arguments = arguments;
+    this.objTypeConstructorSymbol = objTypeConstructorSymbol;
   }
   
   public String getTypeConstructorFullName() {

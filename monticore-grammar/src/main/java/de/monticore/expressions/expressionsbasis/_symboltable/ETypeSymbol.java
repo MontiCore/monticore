@@ -8,6 +8,8 @@ import java.util.List;
 
 public class ETypeSymbol extends ETypeSymbolTOP {
   
+  // TODO RE: Diese Klasse ist Redundant zu TypeSymbol (aus der BasicType's grammar)
+  
   /**
    * Liste der in diesem(!) Typ definierten Methoden.
    * TODO RE: sind da die reingeerbten Methoden mit dabei, oder sind die extra aus Superklassen zu holen

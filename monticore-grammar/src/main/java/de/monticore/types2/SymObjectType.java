@@ -17,14 +17,14 @@ public class SymObjectType extends SymTypeExpression {
   protected String objFullName;
   
   /**
-   * Symbol corresponding to the type's name (if loaded)
+   * Symbol corresponding to the type's name
    */
-  // XXX BR: unklar, ob das optional sein muss, wenn schon der Name
-  // immer gesetzt ist; man könnte das Symbol gleich beim initialisieren mit setzen lassen
   protected TypeSymbol objTypeSymbol;
   
-  public SymObjectType(String objFullName) {
+  public SymObjectType(String objFullName, TypeSymbol objTypeSymbol)
+  {
     this.objFullName = objFullName;
+    // this.objTypeSymbol = objTypeSymbol;
   }
   
   public String getObjName() {
@@ -89,7 +89,7 @@ public class SymObjectType extends SymTypeExpression {
 
   @Override @Deprecated
   public SymTypeExpression deepClone() {
-    SymObjectType clone = new SymObjectType(objFullName);
+    SymObjectType clone = new SymObjectType(objFullName,null);
     clone.setName(this.name);
     clone.setEnclosingScope(this.enclosingScope);
 

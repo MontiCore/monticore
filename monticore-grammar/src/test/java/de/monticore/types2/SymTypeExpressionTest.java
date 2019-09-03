@@ -2,6 +2,7 @@
 package de.monticore.types2;
 
 import com.google.common.collect.Lists;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import org.junit.Test;
 
 import static de.monticore.types2.SymTypeExpressionFactory.*;
@@ -14,18 +15,18 @@ public class SymTypeExpressionTest {
   SymTypeExpression teInt = createTypeConstant("int");
   SymTypeExpression teVarA = createTypeVariable("A");
   SymTypeExpression teVarB = createTypeVariable("B");
-  SymTypeExpression teP = createObjectType("de.x.Person");
-  SymTypeExpression teH = createObjectType("Human");  // on purpose: package missing
+  SymTypeExpression teP = createObjectType("de.x.Person", null);
+  SymTypeExpression teH = createObjectType("Human", null);  // on purpose: package missing
   SymTypeExpression teVoid = createTypeVoid();
   SymTypeExpression teNull = createTypeOfNull();
   SymTypeExpression teArr1 = createArrayType(1, teH);
   SymTypeExpression teArr3 = createArrayType(3, teInt);
-  SymTypeExpression teSet = createGenericTypeExpression("java.util.Set", Lists.newArrayList(teP));
-  SymTypeExpression teSetA = createGenericTypeExpression("java.util.Set", Lists.newArrayList(teVarA));
-  SymTypeExpression teMap = createGenericTypeExpression("Map", Lists.newArrayList(teInt,teP)); // no package!
-  SymTypeExpression teFoo = createGenericTypeExpression("x.Foo", Lists.newArrayList(teP,teDouble,teInt,teH));
-  SymTypeExpression teDeep1 = createGenericTypeExpression("java.util.Set", Lists.newArrayList(teMap));
-  SymTypeExpression teDeep2 = createGenericTypeExpression("java.util.Map2", Lists.newArrayList(teInt,teDeep1));
+  SymTypeExpression teSet = createGenericTypeExpression("java.util.Set", Lists.newArrayList(teP), (TypeSymbol) null);
+  SymTypeExpression teSetA = createGenericTypeExpression("java.util.Set", Lists.newArrayList(teVarA), (TypeSymbol) null);
+  SymTypeExpression teMap = createGenericTypeExpression("Map", Lists.newArrayList(teInt,teP), (TypeSymbol) null); // no package!
+  SymTypeExpression teFoo = createGenericTypeExpression("x.Foo", Lists.newArrayList(teP,teDouble,teInt,teH), (TypeSymbol) null);
+  SymTypeExpression teDeep1 = createGenericTypeExpression("java.util.Set", Lists.newArrayList(teMap), (TypeSymbol) null);
+  SymTypeExpression teDeep2 = createGenericTypeExpression("java.util.Map2", Lists.newArrayList(teInt,teDeep1), (TypeSymbol) null);
   
   
   @Test
