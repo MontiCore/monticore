@@ -3,8 +3,8 @@ package mc.typescalculator;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.types2.SymTypeExpression;
 import de.monticore.typescalculator.CommonLiteralsTypesCalculator;
-import de.monticore.typescalculator.TypeExpression;
 import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsVisitor;
 
 import java.util.Map;
@@ -13,7 +13,7 @@ public class CombineExpressionsWithLiteralsLiteralTypesCalculator implements Com
 
   private CommonLiteralsTypesCalculator literalsVisitor;
 
-  private Map<ASTNode, TypeExpression> types;
+  private Map<ASTNode, SymTypeExpression> types;
 
   private CombineExpressionsWithLiteralsVisitor realThis;
 
@@ -29,12 +29,12 @@ public class CombineExpressionsWithLiteralsLiteralTypesCalculator implements Com
   @Override
   public void endVisit(ASTLiteral lit){
     if(!types.containsKey(lit)) {
-      TypeExpression type = literalsVisitor.calculateType(lit);
+      SymTypeExpression type = literalsVisitor.calculateType(lit).get();
       types.put(lit, type);
     }
   }
 
-  public void setTypes(Map<ASTNode, TypeExpression> types) {
+  public void setTypes(Map<ASTNode, SymTypeExpression> types) {
     this.types = types;
   }
 
