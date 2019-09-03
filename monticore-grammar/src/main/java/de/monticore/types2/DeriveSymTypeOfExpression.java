@@ -104,6 +104,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       Log.error("0xEE672 Internal Error: No Scope for expression " + ex.toString());
     }
     String symname = ex.getName();
+    // TODO: continue with:
     // ISymbol symbol;  // = scope. (symname) ... get the Symbol
     // symbol. --> SymType des Symbols rausfinden (für passende SymbolArt)
     // result = ...
@@ -134,19 +135,16 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     // so we look at the Fields available in type1
     // (and e.g. ignore other alternatives, such as ClassName.Functionname without arguments)
     
-    // TODO: XXX continue
-    
-  //  SymTypeExpression argument2 = result.get();
-    // Construct new TypeExpression:
-  //  SymTypeExpression tex =
-  //          SymTypeExpressionFactory.createGenericTypeExpression(
-  //                  "Map", Arrays.asList(type1,argument2));
-  //   result = Optional.of(tex);
+    // TODO: continue with:
+    // type1 .. get ClassSymbol (type1)
+    // ... get FieldSymbol (Name)
+    // ... get SymType of Field
+    // return;
   }
   
   /**
-   * Literals have their own visitor: we switch to the DeriveSymTypeOfLiterals
-   * visitor
+   * Literals have their own visitor:
+   * we switch to the DeriveSymTypeOfLiterals visitor
    */
   @Override
   public void visit(ASTLiteralExpression ex){
@@ -154,8 +152,6 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     result = deriveLit.calculateType(lit);
   }
 
-  // TODO BR: to complete
-  
   // Not all nonterminals are handled here.
   // The following are only used to create Symbols and will not appear
   // in AST's:
