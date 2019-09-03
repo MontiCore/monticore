@@ -25,7 +25,7 @@ public class CommonSymbolReferenceGenerator implements SymbolReferenceGenerator 
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
                        IterablePath handCodedPath, ProdSymbol prodSymbol, boolean isScopeSpanningSymbol) {
-    final String ruleName = prodSymbol.getSymbolDefinitionKind().isPresent() ? prodSymbol.getSymbolDefinitionKind().get() : prodSymbol.getName();
+    final String ruleName =  prodSymbol.getName();
     String className = getSimpleTypeNameToGenerate(getSimpleName(ruleName + "SymbolReference"),
         genHelper.getTargetPackage(), handCodedPath);
     Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
@@ -35,9 +35,9 @@ public class CommonSymbolReferenceGenerator implements SymbolReferenceGenerator 
     List<String> imports = newArrayList();
     genHelper.getAllCds(genHelper.getCd()).stream()
         .forEach(s -> imports.add(s.getFullName().toLowerCase()));
-    if (prodSymbol.getAstNode().isPresent() && prodSymbol.getSymbolDefinitionKind().isPresent()) {
+    if (prodSymbol.getAstNode().isPresent() && prodSymbol.isSymbolDefinition()) {
       for (ASTSymbolRule sr : grammar.getSymbolRuleList()) {
-        if (sr.getType().equals(prodSymbol.getSymbolDefinitionKind().get())) {
+        if (sr.getType().equals(prodSymbol.getName())) {
           symbolRule = of(sr);
           break;
         }

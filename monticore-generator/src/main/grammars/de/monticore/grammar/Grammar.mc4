@@ -140,7 +140,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     isEnum:boolean 
     isLexerProd:boolean 
     isScopeSpanning:boolean
-    //prodDefiningSymbolKind:String // Waits for next release of MontiCore generator 
+    isSymbolDefinition:boolean
     ;
 
   /** ParserProduction are handled by the parser

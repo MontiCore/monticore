@@ -145,7 +145,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     final Set<ProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
 
     for (final ProdSymbol superRule : grammarSymbol.getProdsWithInherited().values()) {
-      if (superRule.isSymbolDefinition() && superRule.getName().equals(superRule.getSymbolDefinitionKind().get())) {
+      if (superRule.isSymbolDefinition()) {
         ruleSymbolsWithName.add(superRule);
       }
     }
@@ -478,16 +478,8 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return "";
   }
 
-  public boolean spansScope(final ProdSymbol rule) {
-    return rule.isScopeSpanning();
-  }
-
-  public boolean isSymbol(final ProdSymbol rule) {
-    return rule.isSymbolDefinition();
-  }
-
   public boolean isScopeSpanningSymbol(final ProdSymbol rule) {
-    return isSymbol(rule) && spansScope(rule);
+    return rule.isSymbolDefinition() && rule.isScopeSpanning();
   }
 
   public boolean isNamed(final ProdSymbol rule) {
@@ -666,7 +658,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     final Set<ProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
     
     for (final ProdSymbol rule : grammarSymbol.getProds()) {
-      if (rule.isSymbolDefinition() && rule.getName().equals(rule.getSymbolDefinitionKind().get())) {
+      if (rule.isSymbolDefinition()) {
         ruleSymbolsWithName.add(rule);
       }
     }
@@ -817,4 +809,35 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     }
     return defaultType;
   }
+
+  public Optional<String> getTypeWithSymbolInfo(ProdSymbol type) {
+    if (type.isSymbolDefinition()) {
+      return Optional.of(type.getName());
+    }
+    for (ProdSymbol superType : MCGrammarSymbolTableHelper.getAllSuperInterfaces(type)) {
+      if (superType.isSymbolDefinition()) {
+        return Optional.of(superType.getName());
+      }
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * returns true if the type spans or an interface of type spans a scope
+   *
+   * @param type
+   * @return
+   */
+  public boolean spansScope(ProdSymbol type) {
+    if (type.isScopeSpanning()) {
+      return true;
+    }
+    for (ProdSymbol superType : MCGrammarSymbolTableHelper.getAllSuperInterfaces(type)) {
+      if (superType.isScopeSpanning()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

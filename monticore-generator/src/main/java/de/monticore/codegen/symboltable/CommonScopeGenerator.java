@@ -82,8 +82,8 @@ public class CommonScopeGenerator implements ScopeGenerator {
     for (ProdSymbol sym : allSymbolDefiningRules) {
       String name = getSimpleName(sym.getName());
       String kind;
-      if (sym.getSymbolDefinitionKind().isPresent()) {
-        kind = getSimpleName(sym.getSymbolDefinitionKind().get() + GeneratorHelper.SYMBOL);
+      if (sym.isSymbolDefinition()) {
+        kind = getSimpleName(sym.getName() + GeneratorHelper.SYMBOL);
       } else {
         kind = name + GeneratorHelper.SYMBOL;
       }
@@ -107,12 +107,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     // Maps Symbol Name to Symbol Kind Name
     Map<String, String> symbolNamesWithSuperGrammar = new HashMap<>();
     for (ProdSymbol sym : allSymbolDefiningRulesWithSuperGrammar) {
-      String name;
-      if (sym.getSymbolDefinitionKind().isPresent()) {
-        name = getSimpleName(sym.getSymbolDefinitionKind().get() + GeneratorHelper.SYMBOL);
-      } else {
-        name =  getSimpleName(sym.getName()) + GeneratorHelper.SYMBOL;
-      }
+      String name =  getSimpleName(sym.getName()) + GeneratorHelper.SYMBOL;
       String qualifiedName = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
       symbolNamesWithSuperGrammar.put(name, qualifiedName);
     }
@@ -121,12 +116,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     // needed so the scope does implement all methods from the interface
     // discuss if this is even allowed to do
     for (ProdSymbol sym : genHelper.getAllOverwrittenSymbolProductions()) {
-      String name;
-      if (sym.getSymbolDefinitionKind().isPresent()) {
-        name = getSimpleName(sym.getSymbolDefinitionKind().get() + GeneratorHelper.SYMBOL);
-      } else {
-        name =  getSimpleName(sym.getName()) + GeneratorHelper.SYMBOL;
-      }
+      String name =  getSimpleName(sym.getName()) + GeneratorHelper.SYMBOL;
       String qualifiedName = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
       symbolNamesWithSuperGrammar.put(name, qualifiedName);
     }

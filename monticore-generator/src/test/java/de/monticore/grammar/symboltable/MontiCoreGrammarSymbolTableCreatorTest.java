@@ -379,17 +379,17 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     ProdSymbol s = grammar.getProd("S").orElse(null);
     assertNotNull(s);
     assertTrue(s.isSymbolDefinition());
-    assertEquals("S", s.getSymbolDefinitionKind().get());
+    assertEquals("S", s.getName());
     
     ProdSymbol t = grammar.getProd("T").orElse(null);
     assertTrue(t.isSymbolDefinition());
-    assertEquals("S", t.getSymbolDefinitionKind().get());
+    assertEquals("S", t.getName());
     
     // The symbol kinds are determined transitively, i.e., A -> T -> S, hence, the symbol kind of
     // prod A is S.
     ProdSymbol a = grammar.getProd("A").orElse(null);
     assertTrue(a.isSymbolDefinition());
-    assertEquals("S", a.getSymbolDefinitionKind().get());
+    assertEquals("S", a.getName());
     
     ProdSymbol b = grammar.getProd("B").orElse(null);
     assertFalse(b.isSymbolDefinition());
