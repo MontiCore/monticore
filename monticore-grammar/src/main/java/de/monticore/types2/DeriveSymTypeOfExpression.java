@@ -2,7 +2,9 @@
 package de.monticore.types2;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTQualifiedNameExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
@@ -83,14 +85,19 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   // ---------------------------------------------------------- Visting Methods
   
   @Override
-  public void visit(ASTExpression ex){
+  public void endVisit(ASTExpression ex){
     // This general method is only called, if no specific exists,:
     // Should not happen.
     Log.error("0xEE671 Internal Error: No Type for expression " + ex.toString()
             + ". Probably TypeCheck mis-configured.");
   }
   
-  public void visit(ASTNameExpression ex){
+  /**
+   * Names are looked up in the Symboltable and their stored SymExpression
+   * is returned (a copy is not necessary)
+   */
+  @Override
+  public void endVisit(ASTNameExpression ex){
     IExpressionsBasisScope scope = ex.getEnclosingScope();
     if(scope == null) {
       Log.error("0xEE672 Internal Error: No Scope for expression " + ex.toString());
@@ -101,8 +108,34 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     // result = ...
   }
   
+  /**
+   * Field-access:
+   * (we use traverse, because there are two arguments)
+   * Names are looked up in the Symboltable and their stored SymExpression
+   * is returned (a copy is not necessary)
+   */
+  @Override
+  public void traverse(ASTQualifiedNameExpression ex){
+    ASTExpression expr0 = ex.getExpression();
+    // SymTypeExpression type1 = expr0;
+    // String symname = ex.getName();
+    // ISymbol symbol;  // = scope. (symname) ... get the Symbol
+    // symbol. --> SymType des Symbols rausfinden (für passende SymbolArt)
+    // result = ...
+  }
   
+  /**
+   * Literals have their own visitor: we switch to the DeriveSymTypeOfLiterals
+   * visitor
+   */
+  @Override
+  public void visit(ASTLiteralExpression ex){
+    ASTLiteral lit = ex.getLiteral();
+    result = deriveLit.calculateType(lit);
+  }
+
   // TODO BR: to complete
+  
   
   //  symbol EMethod = Name;
   //  symbol EVariable = Name;
