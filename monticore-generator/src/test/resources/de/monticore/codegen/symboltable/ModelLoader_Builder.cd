@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.symboltable;
+
+classdiagram ModelLoader_Builder {
+
+    class AModelLoader{
+      protected ALanguage modelingLanguage;
+    }
+}

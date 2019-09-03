@@ -188,6 +188,15 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testBuildMethod() {
+    ASTCDMethod method = getMethodBy("build", scopeClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals("AArtifactScope", method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
