@@ -98,6 +98,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     String symname = ex.getName();
     // ISymbol symbol;  // = scope. (symname) ... get the Symbol
     // symbol. --> SymType des Symbols rausfinden (für passende SymbolArt)
+    // result = ...
   }
   
   
