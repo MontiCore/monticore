@@ -39,7 +39,11 @@ public enum MC2CDStereotypes {
   /**
    * To add bodies to methods
    */
-  AST_TYPE("astType");
+  AST_TYPE("astType"),
+  /**
+   * shows if a prod is the start prod in a grammar
+   */
+  START_PROD("startProd");
 
   private final String stereotype;
 

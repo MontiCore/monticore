@@ -26,8 +26,6 @@ public class CommonModelLoaderGenerator implements ModelLoaderGenerator {
     Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
 
     if(grammarSymbol.getStartProd().isPresent()) {
-      genEngine.generate("symboltable.ModelLoader", filePath, grammarSymbol.getAstNode().get(),
-          className);
 
       if(!grammarSymbol.isComponent()){
         className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName())+"ModelLoaderBuilder",

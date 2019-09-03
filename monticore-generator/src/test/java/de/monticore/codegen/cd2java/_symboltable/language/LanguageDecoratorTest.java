@@ -37,7 +37,6 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
   public void setUp() {
     Log.init();
     this.glex = new GlobalExtensionManagement();
-
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");

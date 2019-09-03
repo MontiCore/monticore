@@ -5,6 +5,8 @@ public class SymbolTableConstants {
 
   public static final String SYMBOL_TABLE_PACKAGE = "_symboltable";
 
+  public static final String SERIALIZATION_PACKAGE = "serialization";
+
   public static final String SYMBOL_SUFFIX = "Symbol";
 
   public static final String SYMBOL_TABLE_CREATOR_SUFFIX = "SymbolTableCreator";
@@ -25,6 +27,12 @@ public class SymbolTableConstants {
 
   public static final String I_MODELING_LANGUAGE = "de.monticore.IModelingLanguage";
 
+  public static final String I_MODEL_LOADER = "de.monticore.modelloader.IModelLoader<%s, %s>";
+
+  public static final String AST_PROVIDER = "de.monticore.modelloader.AstProvider<%s>";
+
+  public static final String MODEL_COORDINATE = "de.monticore.io.paths.ModelCoordinate";
+
   public static final String PATH = "java.nio.file.Path";
 
   public static final String ENCLOSING_SCOPE = "enclosingScope";
@@ -40,6 +48,8 @@ public class SymbolTableConstants {
   public static final String RESOLVING_DELEGATE_SUFFIX = "ResolvingDelegate";
 
   public static final String DELEGATOR_SUFFIX = "Delegator";
+
+  public static final String DESER_SUFFIX = "DeSer";
 
   public static final String SCOPE_INTERFACE_FULL_NAME = "de.monticore.symboltable.IScope";
 

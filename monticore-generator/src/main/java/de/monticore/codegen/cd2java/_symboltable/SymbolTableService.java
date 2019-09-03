@@ -289,6 +289,26 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /*
+    symbol table symbol interface names e.g. AutomataSymbolTable
+   */
+
+  public String getScopeDeSerSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SCOPE_SUFFIX + DESER_SUFFIX;
+  }
+
+  public String getScopeDeSerSimpleName() {
+    return getScopeDeSerSimpleName(getCDSymbol());
+  }
+
+  public String getScopeDeSerFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + SERIALIZATION_PACKAGE + "." + getScopeDeSerSimpleName(cdSymbol);
+  }
+
+  public String getScopeDeSerFullName() {
+    return getScopeDeSerFullName(getCDSymbol());
+  }
+
+  /*
     symbol class names e.g. AutomatonSymbol
    */
 
@@ -479,5 +499,19 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     } else {
       return clazz.getName();
     }
+  }
+
+  public Optional<ASTCDType> getStartProd(ASTCDDefinition astcdDefinition) {
+    for (ASTCDClass prod : astcdDefinition.getCDClassList()) {
+      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
+        return Optional.ofNullable(prod);
+      }
+    }
+    for (ASTCDInterface prod : astcdDefinition.getCDInterfaceList()) {
+      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
+        return Optional.ofNullable(prod);
+      }
+    }
+    return Optional.empty();
   }
 }
