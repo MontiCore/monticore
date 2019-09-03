@@ -4,7 +4,6 @@ description = 'Experiments: automaton'
 task generate (type: MCTask) {
   grammar = file "$projectDir/$grammarDir/Automaton.mc4"
   outputDir = file outDir
-  handcodedPath file("$projectDir/src/main/java")
   def uptoDate = incCheck(outputDir.toString() + "/automaton/IncGenGradleCheck.txt")
   outputs.upToDateWhen { uptoDate }
 }

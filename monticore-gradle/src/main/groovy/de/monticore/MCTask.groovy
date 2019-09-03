@@ -1,19 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore
 
+
 import de.monticore.cli.MontiCoreCLI
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import org.gradle.api.tasks.incremental.InputFileDetails
 
 public class MCTask extends DefaultTask {
   @InputFile
-  File grammar
+  RegularFileProperty grammar = project.objects.fileProperty()
   
   @OutputDirectory
-  File outputDir
+  DirectoryProperty outputDir = project.objects.directoryProperty()
+  
   
   @Input
   private Configuration grammarConfig = project.configurations.getByName("grammar")
@@ -72,6 +76,15 @@ public class MCTask extends DefaultTask {
   @TaskAction
   void execute(IncrementalTaskInputs inputs) {
     def List<String> mp = new ArrayList()
+    if(handcodedPath.isEmpty()){
+      handcodedPath.add(project.layout.projectDirectory.file("src/main/java"))
+    }
+    if(modelPath.isEmpty()){
+      modelPath.add(project.layout.projectDirectory.file("src/main/grammars"))
+    }
+    if(templatePath.isEmpty()){
+      templatePath.add(project.layout.projectDirectory.file("src/main/resources"))
+    }
     if(addGrammarConfig) {
       grammarConfig.each { mp.add it }
     }
@@ -83,7 +96,7 @@ public class MCTask extends DefaultTask {
             : "ALL inputs considered out of date");
     inputs.outOfDate({ InputFileDetails change ->
       logger.info("out of date: "+change.file.name)
-      List<String> params = [grammar.toString(), "-o", outputDir.toString(), "-f", "-mp"]
+      List<String> params = [grammar.get().asFile.toString(), "-o", outputDir.get().asFile.toString(), "-f", "-mp"]
       params.addAll(mp)
       params.add("-hcp")
       params.addAll(handcodedPath)
@@ -136,4 +149,5 @@ public class MCTask extends DefaultTask {
     }
     return true
   }
+  
 }
