@@ -1,23 +1,45 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.expressionsbasis._symboltable;
 
-import de.monticore.typescalculator.TypeExpression;
+import de.monticore.types2.SymTypeExpression;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ETypeSymbol extends ETypeSymbolTOP {
-
+  
+  /**
+   * Liste der in diesem(!) Typ definierten Methoden.
+   * TODO RE: sind da die reingeerbten Methoden mit dabei, oder sind die extra aus Superklassen zu holen
+   */
   protected List<EMethodSymbol> methodSymbols = new ArrayList<>();
-
+  
+  /**
+   * Liste der Attribute
+   */
   protected List<EVariableSymbol> variableSymbols = new ArrayList<>();
+  
+  /**
+   * Liste der TypVariablennamen (bei generischen Typkonstruktoren)
+   * TODO: das sind keine Expressions sondern immer TypeVars
+   */
+  protected List<SymTypeExpression> genericParameters = new ArrayList<>();
+  
+  /**
+   * Ernsthaft? Subklassen? Das interessiert hier doch nicht?
+   */
+  @Deprecated
+  protected List<SymTypeExpression> subTypes = new ArrayList<>();
+  
+  /**
+   * Liste der zu dieser Klasse gehörenden Supertypen
+   * TODO RE: Klären 1) sind da Interfaces mit drin (wahrscheinlich ja?)
+   *    2) ist die transitive Hülle angegeben (oder nur direkte Supertypen)
+   */
+  protected List<SymTypeExpression> superTypes = new ArrayList<>();
 
-  protected List<TypeExpression> genericParameters = new ArrayList<>();
-
-  protected List<TypeExpression> subTypes = new ArrayList<>();
-
-  protected List<TypeExpression> superTypes = new ArrayList<>();
-
+  
+  
   public ETypeSymbol(String name) {
     super(name);
   }
@@ -30,15 +52,15 @@ public class ETypeSymbol extends ETypeSymbolTOP {
     return variableSymbols;
   }
 
-  public List<TypeExpression> getGenericParameters(){
+  public List<SymTypeExpression> getGenericParameters(){
     return genericParameters;
   }
 
-  public List<TypeExpression> getSubTypes(){
+  public List<SymTypeExpression> getSubTypes(){
     return subTypes;
   }
 
-  public List<TypeExpression> getSuperTypes(){
+  public List<SymTypeExpression> getSuperTypes(){
     return superTypes;
   }
 
@@ -46,15 +68,15 @@ public class ETypeSymbol extends ETypeSymbolTOP {
     this.methodSymbols=methodSymbols;
   }
 
-  public void setGenericParameters(List<TypeExpression> genericParameters) {
+  public void setGenericParameters(List<SymTypeExpression> genericParameters) {
     this.genericParameters = genericParameters;
   }
 
-  public void setSuperTypes(List<TypeExpression> superTypes) {
+  public void setSuperTypes(List<SymTypeExpression> superTypes) {
     this.superTypes = superTypes;
   }
 
-  public void setSubTypes(List<TypeExpression> subTypes) {
+  public void setSubTypes(List<SymTypeExpression> subTypes) {
     this.subTypes = subTypes;
   }
 

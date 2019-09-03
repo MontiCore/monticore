@@ -14,12 +14,12 @@ subprojects {
   buildDir = file("$projectDir/target")
   
   repositories {
+    mavenLocal()
     maven {
       credentials.username mavenUser
       credentials.password mavenPassword
       url repo
     }
-    mavenLocal()
   }
   
   ext.grammarDir = 'src/main/grammars'
@@ -52,4 +52,5 @@ subprojects {
   compileJava {
     dependsOn project.collect { it.tasks.withType(MCTask) }
   }
+
 }

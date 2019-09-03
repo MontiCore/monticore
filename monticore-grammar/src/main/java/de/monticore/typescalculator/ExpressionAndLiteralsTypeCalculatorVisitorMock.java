@@ -4,16 +4,17 @@ package de.monticore.typescalculator;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.types2.SymTypeExpression;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ExpressionAndLiteralsTypeCalculatorVisitorMock implements IExpressionAndLiteralsTypeCalculatorVisitor {
 
-  Map<ASTExpression,TypeExpression> lookUp = new HashMap<>();
+  Map<ASTExpression, SymTypeExpression> lookUp = new HashMap<>();
 
   @Override
-  public TypeExpression calculateType(ASTExpression e) {
+  public SymTypeExpression calculateType(ASTExpression e) {
 
     if(lookUp.containsKey(e)) {
       return lookUp.get(e);
@@ -22,7 +23,7 @@ public class ExpressionAndLiteralsTypeCalculatorVisitorMock implements IExpressi
   }
 
   @Override
-  public Map<ASTNode, TypeExpression> getTypes() {
+  public Map<ASTNode, SymTypeExpression> getTypes() {
     return null;
   }
 
@@ -31,7 +32,7 @@ public class ExpressionAndLiteralsTypeCalculatorVisitorMock implements IExpressi
 
   }
 
-  public void addLookUp(ASTExpression e, TypeExpression type) {
+  public void addLookUp(ASTExpression e, SymTypeExpression type) {
     lookUp.put(e,type);
   }
 

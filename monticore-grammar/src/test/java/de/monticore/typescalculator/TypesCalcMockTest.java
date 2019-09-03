@@ -3,6 +3,8 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.testcommonexpressions._parser.TestCommonExpressionsParser;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +29,7 @@ public class TypesCalcMockTest {
 
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> expr = p.parse_StringExpression("9 + 8");
-    TypeExpression type = new TypeConstant();
+    SymTypeExpression type = new SymTypeConstant();
     type.setName("boolean");
 
     mock.addLookUp(expr.get(), type);

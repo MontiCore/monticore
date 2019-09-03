@@ -3,6 +3,8 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeExpression;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,8 +15,8 @@ public class DummyAdapter implements IETypeSymbolResolvingDelegate, IEMethodSymb
 
   private IExpressionsBasisScope scope;
 
-  private TypeExpression a;
-  private TypeExpression b;
+  private SymTypeExpression a;
+  private SymTypeExpression b;
 
   public DummyAdapter(IExpressionsBasisScope scope){
     this.scope = scope;
@@ -27,7 +29,7 @@ public class DummyAdapter implements IETypeSymbolResolvingDelegate, IEMethodSymb
       symbolName = "int";
     }
     EMethodSymbol sym = ExpressionsBasisSymTabMill.eMethodSymbolBuilder().setAccessModifier(modifier).setName(symbolName).setEnclosingScope(scope).build();
-    TypeExpression returnType =TypesCalculatorHelper.fromEMethodSymbol(sym);
+    SymTypeExpression returnType =TypesCalculatorHelper.fromEMethodSymbol(sym);
     returnType.setName(symbolName);
     sym.setReturnType(returnType);
     list.add(sym);
@@ -50,22 +52,22 @@ public class DummyAdapter implements IETypeSymbolResolvingDelegate, IEMethodSymb
     }
     EVariableSymbol sym = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setAccessModifier(modifier).setName(symbolName).setEnclosingScope(scope).build();
 
-    TypeExpression type = TypesCalculatorHelper.fromEVariableSymbol(sym);
+    SymTypeExpression type = TypesCalculatorHelper.fromEVariableSymbol(sym);
     type.setName(symbolName);
     if(symbolName.equals("A")){
-      a = new ObjectType();
+      a = new SymObjectType();
       a.setName("A");
-      b = new ObjectType();
+      b = new SymObjectType();
       b.setName("B");
 
-      List<TypeExpression> superTypes = new ArrayList<>();
+      List<SymTypeExpression> superTypes = new ArrayList<>();
       superTypes.add(a);
 
       b.setSuperTypes(superTypes);
 
     }
     if(symbolName.equals("B")){
-      ArrayList<TypeExpression> superTypes = new ArrayList<>();
+      ArrayList<SymTypeExpression> superTypes = new ArrayList<>();
       superTypes.add(a);
       type.setSuperTypes(superTypes);
     }

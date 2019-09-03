@@ -7,8 +7,6 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeParameters;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeVariableDeclaration;
 import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 
 /**
@@ -70,27 +68,27 @@ public class FullGenericTypesPrinter {
     return vi.prettyprint(type);
   }
 
-  public static String printType(ASTMCTypeParameters type){
-    return getInstance().doPrintType(type);
-  }
+//  public static String printType(ASTMCTypeParameters type){
+//    return getInstance().doPrintType(type);
+//  }
+//
+//  protected String doPrintType(ASTMCTypeParameters type){
+//    IndentPrinter printer = new IndentPrinter();
+//
+//    MCFullGenericTypesPrettyPrinter vi = new MCFullGenericTypesPrettyPrinter(printer);
+//    return vi.prettyprint(type);
+//  }
 
-  protected String doPrintType(ASTMCTypeParameters type){
-    IndentPrinter printer = new IndentPrinter();
+//  public static String printType(ASTMCTypeVariableDeclaration type){
+//    return getInstance().doPrintType(type);
+//  }
 
-    MCFullGenericTypesPrettyPrinter vi = new MCFullGenericTypesPrettyPrinter(printer);
-    return vi.prettyprint(type);
-  }
-
-  public static String printType(ASTMCTypeVariableDeclaration type){
-    return getInstance().doPrintType(type);
-  }
-
-  protected String doPrintType(ASTMCTypeVariableDeclaration type){
-    IndentPrinter printer = new IndentPrinter();
-
-    MCFullGenericTypesPrettyPrinter vi = new MCFullGenericTypesPrettyPrinter(printer);
-    return vi.prettyprint(type);
-  }
+//  protected String doPrintType(ASTMCTypeVariableDeclaration type){
+//    IndentPrinter printer = new IndentPrinter();
+//
+//    MCFullGenericTypesPrettyPrinter vi = new MCFullGenericTypesPrettyPrinter(printer);
+//    return vi.prettyprint(type);
+//  }
 
   public static String printReturnType(ASTMCReturnType type){
     return getInstance().doPrintReturnType(type);

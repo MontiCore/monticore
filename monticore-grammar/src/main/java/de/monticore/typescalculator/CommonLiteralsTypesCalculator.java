@@ -6,31 +6,42 @@ import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisS
 import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.types2.DeriveSymTypeOfLiterals;
+import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 
 import java.util.Map;
+import java.util.Optional;
 
-public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator implements MCCommonLiteralsVisitor {
+/**
+ * Visitor for Derivation of SymType from Literals
+ * (Function 2b)
+ * i.e. for
+ *    literals/MCLiteralsBasis.mc4
+ */
+public class CommonLiteralsTypesCalculator extends DeriveSymTypeOfLiterals implements MCCommonLiteralsVisitor {
 
-  private TypeExpression result;
+  private SymTypeExpression result;
 
   private MCCommonLiteralsVisitor realThis = this;
 
-  private Map<ASTNode, TypeExpression> types;
+  private Map<ASTNode, SymTypeExpression> types;
 
   private IExpressionsBasisScope scope;
 
 
   @Override
-  public TypeExpression calculateType(ASTLiteral lit) {
+  public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
     lit.accept(this);
-    return result;
+    return Optional.of(result);
   }
 
-  public void setTypes(Map<ASTNode, TypeExpression> types) {
+  public void setTypes(Map<ASTNode, SymTypeExpression> types) {
     this.types = types;
   }
 
-  public Map<ASTNode,TypeExpression> getTypes() {
+  public Map<ASTNode, SymTypeExpression> getTypes() {
     return types;
   }
 
@@ -56,7 +67,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTCharLiteral lit){
-    TypeExpression res = new TypeConstant();
+    SymTypeExpression res = new SymTypeConstant();
     res.setName("char");
     this.result=res;
     types.put(lit,res);
@@ -64,7 +75,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTBooleanLiteral lit){
-    TypeExpression res = new TypeConstant();
+    SymTypeExpression res = new SymTypeConstant();
     res.setName("boolean");
     this.result=res;
     types.put(lit,res);
@@ -72,7 +83,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTNatLiteral lit){
-    TypeExpression res = new TypeConstant();
+    SymTypeExpression res = new SymTypeConstant();
     res.setName("int");
     this.result=res;
     types.put(lit,res);
@@ -80,7 +91,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTBasicDoubleLiteral lit){
-    TypeExpression res = new TypeConstant();
+    SymTypeExpression res = new SymTypeConstant();
     res.setName("double");
     this.result=res;
     types.put(lit,res);
@@ -88,7 +99,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTBasicFloatLiteral lit){
-    TypeExpression res = new TypeConstant();
+    SymTypeExpression res = new SymTypeConstant();
     res.setName("float");
     this.result=res;
     types.put(lit,res);
@@ -96,7 +107,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTBasicLongLiteral lit){
-    TypeExpression res = new TypeConstant();
+    SymTypeExpression res = new SymTypeConstant();
     res.setName("long");
     this.result=res;
     types.put(lit,res);
@@ -104,7 +115,7 @@ public class CommonLiteralsTypesCalculator extends LiteralsBasisTypesCalculator 
 
   @Override
   public void visit(ASTStringLiteral lit){
-    TypeExpression res = new ObjectType();
+    SymTypeExpression res = new SymObjectType();
     res.setName("String");
     this.result=res;
     types.put(lit,res);

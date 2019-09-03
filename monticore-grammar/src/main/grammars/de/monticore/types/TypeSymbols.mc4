@@ -8,8 +8,9 @@ package de.monticore.types;
  *
  * The grammar introduces the symbols for
  * Types, Methods, Fields and TypeVariables
- * 
- * TODO ...
+ *
+ * These symbols can be used elsewhere, when actual implementations
+ * of these symbols become available.
  *
 */
 
@@ -17,121 +18,65 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
 
   /*=================================================================*/
 
+  /**
+   * A type (in an OO sense) has a name,
+   * methods, fields, supertypes.
+   * TODO BR: I added supertypes
+   * TODO BR: What to do with: typeParameters (then it should not be a type, but a typeconstructor)
+   */
   interface scope symbol Type = Name ;
-
   symbolrule Type =
     methods: de.monticore.types.typesymbols._symboltable.MethodSymbol*
     fields: de.monticore.types.typesymbols._symboltable.FieldSymbol*
     typeParameter: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
   ;
-  TypeImpl implements Type = Name;
 
   /*=================================================================*/
 
+  /**
+   * A typeVar may be bounded (see Java)
+   */
   interface symbol TypeVar = Name;
   symbolrule TypeVar =
-    upperBound: de.monticore.typescalculator.TypeExpression*
+    upperBound: de.monticore.types2.SymTypeExpression*
   ;
-  TypeVarImpl implements TypeVar = Name;
 
   /*=================================================================*/
 
+  /**
+   * A Field (Java Attribute) has a type
+   * TODO BR: and visibility, but the visibility isn't stored here; should it?
+   */
   interface symbol Field = Name ;
   symbolrule  Field =
-    type: de.monticore.typescalculator.TypeExpression
+    type: de.monticore.types2.SymTypeExpression
   ;
-  FieldImpl implements Field = Name;
 
   /*=================================================================*/
 
+  /**
+   * A Method has a return type, and a list of parameters, which
+   * are stored as field symbols.
+   * TODO: what about "..." extension?
+   * TODO BR: and visibility, but the visibility isn't stored here; should it?
+   */
   interface scope symbol Method = Name;
   symbolrule Method =
     parameter: de.monticore.types.typesymbols._symboltable.FieldSymbol*
-    returnType: de.monticore.typescalculator.TypeExpression
+    returnType: de.monticore.types2.SymTypeExpression
   ;
-  MethodImpl implements Method = Name;
 
-
-  /*=================================================================*/
-  /*=================================================================*/
-  /*=================================================================*/
-  /*=================================================================*/
-
-  /** Anbei eine kondensierung der Typ-Ausdrücke:
-   * Annahme: diese Grammatik wurd benutzt um AST-Klassen zu erzeugen
-   * und dort landen nur korrekte Typausdrücke.
-   * (Es gibt keinen Parser dafür, keine CoCo's)
-   * Dennoch sind nicht alle Konstellationen erlaubt.
+  /**
+   * TODO:
+   * The following nonterminals are only there to prevent MontiCore
+   * from issuing a warning, if no alternative implementation
+   * for the respective interface nonterminal exists.
+   * These nonterminals are not meant to be used.
    */
-  
-  /*
-  interface SymTType;
-  SymTVoidType implements SymTType = "void";
 
-  SymTTypeVar implements SymTType = Name;
-
-  SymTPrimitiveType implements SymTType = Name;
-
-  SymTObjectType implements SymTType = Name;   // könnte auch MCQualifiedName sein ...
-
-  SymTArrayType implements SymTType = dimensions:int SymTType;
-
-  SymTBasicGenericType implements SymTType = SymTTypeConstructorAppl;
-
-  SymTMultipleGenericType implements SymTType = SymTTypeConstructorAppl+; 
-
-
-  // Das ist kein bzw. nicht nur ein voller Type
-  SymTTypeConstructorAppl = constructor:Name SymTTypeArgument+; // Name kann wieder Qualified sein
-
-  SymTTypeArgument = SymTType ["extends"]? ["super"]?
-
-
-//--------------------------------------------------------------------------
-//--------------------------------------------------------------------------
-//--------------------------------------------------------------------------
-
-  // Das kann man benutzen, um die ungebundenen TypVariablen ganz oben
-  // zu fixieren (ist mir unklar, ob man das braucht, die funktionalen
-  // Typchecker nutzen das alle: die halten halt nichts von freien variablen
-  SymTParameterizedType implements SymTType = vars:Name SymTType
-
-
-  // Und hier noch was für Typkonstruktoren (die ja KEINE Typen sind):
-  // aber auch als Symbole abgelegt werden wollen:
-
-  SymTSimpleTypeConstructor = Name arguments:int;
-
-  SymTWildTypeConstructor = Name SymTTypeVariableDeclaration*;
-
-  interface SymTTypeVariableDeclaration = Name;
-  SymTTypeVariableDeclarationVar = Name;
-  SymTTypeVariableDeclarationUpperBound = Name SymTType;
-  SymTTypeVariableDeclarationAnd = Name;
-  // oder kurz: SymTTypeVariableDeclaration = Name upperBound:SymTType? ["andUpperBound"]?
-
-  // Alternativer Ansatz zu oben:
-  interface SymTTypeArgument = SymTType ;	// auch eine Art "? extends ..."
-  SymTTypeArgumentType = SymTType 		// darzustellen; Vorzug:
-  SymTTypeArgumentExtends = SymTType 	// wenn man weiss "? ext." wird nicht benutzt
-  SymTTypeArgumentSuper = SymTType 	// lassen sich manche Klassen ignorieren
-
-
-
-//--------------------------------------------------------------------------
-//--------------------------------------------------------------------------
-//--------------------------------------------------------------------------
-
-// Die Signatur einer Klasse:
-// Fields, Methoden, 
-
-  SymTClass = Name SymTField* SymTMethod* SymTTypeVariableDeclaration* inner:SymTClass* ["interface"]? ...
-
-  SymTField = Name SymTType ["static"]? ["public"]? .....
-
-  SymTMethod = Name returnType:SymTType parameter:SymTField* ["isDotted"]? ["public"]? ...
-*/
-
-
+   TypeXXDoNotUse implements Type = "XX-DO-NOT-USE-ME" Name;
+   TypeVarXXDoNotUse implements TypeVar = "XX-DO-NOT-USE-ME" Name;
+   FieldXXDoNotUsel implements Field = "XX-DO-NOT-USE-ME" Name;
+   MethodXXDoNotUse implements Method = "XX-DO-NOT-USE-ME" Name;
 
 }
