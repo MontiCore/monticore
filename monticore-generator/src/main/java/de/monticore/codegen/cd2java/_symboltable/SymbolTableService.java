@@ -175,8 +175,28 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public String getLanguageClassSimpleName() {
     return getLanguageClassSimpleName(getCDSymbol());
   }
+     /*
+    model loader class names e.g. AutomataModelLoader
+   */
+
+  public String getModelLoaderClassFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getModelLoaderClassSimpleName(cdSymbol);
+  }
+
+  public String getModelLoaderClassFullName() {
+    return getModelLoaderClassFullName(getCDSymbol());
+  }
+
+  public String getModelLoaderClassSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + MODEL_LOADER_SUFFIX;
+  }
+
+  public String getModelLoaderClassSimpleName() {
+    return getModelLoaderClassSimpleName(getCDSymbol());
+  }
+
    /*
-    language class names e.g. AutomataLanguage
+    symbol reference class names e.g. AutomatonSymbolReference
    */
 
   public String getSymbolReferenceClassFullName(ASTCDType astcdType, CDDefinitionSymbol cdSymbol) {
@@ -226,6 +246,46 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getCommonSymbolInterfaceFullName() {
     return getCommonSymbolInterfaceFullName(getCDSymbol());
+  }
+
+      /*
+    symbol table symbol interface names e.g. AutomataSymbolTable
+   */
+
+  public String getSymbolTableCreatorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SYMBOL_TABLE_CREATOR_SUFFIX;
+  }
+
+  public String getSymbolTableCreatorSimpleName() {
+    return getSymbolTableCreatorSimpleName(getCDSymbol());
+  }
+
+  public String getSymbolTableCreatorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getSymbolTableCreatorSimpleName(cdSymbol);
+  }
+
+  public String getSymbolTableCreatorFullName() {
+    return getSymbolTableCreatorFullName(getCDSymbol());
+  }
+
+      /*
+    symbol table symbol interface names e.g. AutomataSymbolTable
+   */
+
+  public String getSymbolTableCreatorDelegatorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX;
+  }
+
+  public String getSymbolTableCreatorDelegatorSimpleName() {
+    return getSymbolTableCreatorDelegatorSimpleName(getCDSymbol());
+  }
+
+  public String getSymbolTableCreatorDelegatorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getSymbolTableCreatorDelegatorSimpleName(cdSymbol);
+  }
+
+  public String getSymbolTableCreatorDelegatorFullName() {
+    return getSymbolTableCreatorDelegatorFullName(getCDSymbol());
   }
 
   /*

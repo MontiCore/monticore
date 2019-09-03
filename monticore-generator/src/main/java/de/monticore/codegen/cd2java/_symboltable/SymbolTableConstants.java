@@ -7,6 +7,8 @@ public class SymbolTableConstants {
 
   public static final String SYMBOL_SUFFIX = "Symbol";
 
+  public static final String SYMBOL_TABLE_CREATOR_SUFFIX = "SymbolTableCreator";
+
   public static final String SCOPE_SUFFIX = "Scope";
 
   public static final String SPANNED_SCOPE = "spanned%sScope";
@@ -21,6 +23,8 @@ public class SymbolTableConstants {
 
   public static final String QUALIFIED_NAMES_CALCULATOR = "de.monticore.symboltable.names.QualifiedNamesCalculator";
 
+  public static final String I_MODELING_LANGUAGE = "de.monticore.IModelingLanguage";
+
   public static final String PATH = "java.nio.file.Path";
 
   public static final String ENCLOSING_SCOPE = "enclosingScope";
@@ -34,6 +38,8 @@ public class SymbolTableConstants {
   public static final String COMMON_PREFIX = "Common";
 
   public static final String RESOLVING_DELEGATE_SUFFIX = "ResolvingDelegate";
+
+  public static final String DELEGATOR_SUFFIX = "Delegator";
 
   public static final String SCOPE_INTERFACE_FULL_NAME = "de.monticore.symboltable.IScope";
 
@@ -84,6 +90,8 @@ public class SymbolTableConstants {
   public static final String CONTINUE_AS_SUB_SCOPE = "continueAs%sSubScope";
 
   public static final String LOAD_MODELS_FOR = "loadModelsFor%s";
+
+  public static final String CALCULATE_MODEL_NAMES_FOR = "calculateModelNamesFor%s";
 
   public static final String PREDICATE = "java.util.function.Predicate";
 

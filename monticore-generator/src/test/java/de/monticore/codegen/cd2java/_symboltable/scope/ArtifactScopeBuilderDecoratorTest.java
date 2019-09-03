@@ -36,19 +36,9 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
 
   private CDTypeFacade cdTypeFacade;
 
-  private static final String AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.AutomatonScope";
-
   private static final String ENCLOSING_SCOPE = "de.monticore.codegen.symboltable.artifactscope_builder._symboltable.IArtifactScope_BuilderScope";
 
   public static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
-
-  public static final String QUALIFIED_NAMES_CALCULATOR = "de.monticore.symboltable.names.QualifiedNamesCalculator";
-
-  private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
-
-  public static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
-
-  public static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
 
   public static final String ARTIFACT_SCOPE_BUILDER = "AArtifactScopeBuilder";
 

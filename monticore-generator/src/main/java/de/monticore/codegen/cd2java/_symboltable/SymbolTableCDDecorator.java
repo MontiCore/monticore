@@ -3,9 +3,12 @@ package de.monticore.codegen.cd2java._symboltable;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java._symboltable.language.LanguageBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.language.LanguageDecorator;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.IterablePath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +18,8 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CoreTemplates.PACKAGE;
 import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
+import static de.monticore.codegen.mc2cd.TransformationHelper.existsHandwrittenClass;
+import static de.monticore.utils.Names.constructQualifiedName;
 
 public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
@@ -46,7 +51,14 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator;
 
+  protected final LanguageDecorator languageDecorator;
+
+  protected final LanguageBuilderDecorator languageBuilderDecorator;
+
+  protected final IterablePath handCodedPath;
+
   public SymbolTableCDDecorator(final GlobalExtensionManagement glex,
+                                final IterablePath handCodedPath,
                                 final SymbolTableService symbolTableService,
                                 final SymbolDecorator symbolDecorator,
                                 final SymbolBuilderDecorator symbolBuilderDecorator,
@@ -60,7 +72,9 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
                                 final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator,
                                 final ArtifactScopeDecorator artifactScopeDecorator,
                                 final ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator,
-                                final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator) {
+                                final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator,
+                                final LanguageDecorator languageDecorator,
+                                final LanguageBuilderDecorator languageBuilderDecorator) {
     super(glex);
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
@@ -76,6 +90,9 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     this.artifactScopeBuilderDecorator = artifactScopeBuilderDecorator;
     this.symbolReferenceBuilderDecorator = symbolReferenceBuilderDecorator;
     this.commonSymbolInterfaceDecorator = commonSymbolInterfaceDecorator;
+    this.languageDecorator = languageDecorator;
+    this.handCodedPath = handCodedPath;
+    this.languageBuilderDecorator = languageBuilderDecorator;
   }
 
   @Override
@@ -107,6 +124,11 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
       ASTCDClass artifactScope = createArtifactScope(ast);
       astCD.addCDClass(artifactScope);
       astCD.addCDClass(createArtifactBuilderScope(artifactScope));
+      ASTCDClass languageClass = createLanguage(ast);
+      astCD.addCDClass(languageClass);
+      if (existsHandwrittenClass(handCodedPath, constructQualifiedName(symbolTablePackage, languageClass.getName()))) {
+        astCD.addCDClass(createLanguageBuilder(languageClass));
+      }
     }
 
     for (ASTCDClass cdClass : astCD.getCDClassList()) {
@@ -187,8 +209,15 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     return artifactScopeBuilderDecorator.decorate(artifactScopeClass);
   }
 
-
   protected ASTCDInterface createICommonSymbol(ASTCDCompilationUnit compilationUnit) {
     return commonSymbolInterfaceDecorator.decorate(compilationUnit);
+  }
+
+  protected ASTCDClass createLanguage(ASTCDCompilationUnit compilationUnit) {
+    return languageDecorator.decorate(compilationUnit);
+  }
+
+  protected ASTCDClass createLanguageBuilder(ASTCDClass astcdClass) {
+    return languageBuilderDecorator.decorate(astcdClass);
   }
 }

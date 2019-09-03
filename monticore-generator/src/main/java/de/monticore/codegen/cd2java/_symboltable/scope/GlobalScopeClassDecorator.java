@@ -50,6 +50,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTMCQualifiedType scopeType = symbolTableService.getScopeType();
     ASTMCQualifiedType globalScopeInterfaceType = getCDTypeFacade().createQualifiedType(symbolTableService.getGlobalScopeInterfaceFullName());
     String definitionName = input.getCDDefinition().getName();
+    String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
 
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
@@ -78,11 +79,11 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMethods(modelPathMethods)
         .addCDAttribute(languageAttribute)
         .addAllCDMethods(languageMethods)
-        .addCDAttribute(createModelName2ModelLoaderCacheAttribute(definitionName))
+        .addCDAttribute(createModelName2ModelLoaderCacheAttribute(modelLoaderClassName))
         .addAllCDAttributes(resolvingDelegateAttributes.values())
         .addCDMethod(createGetNameMethod())
         .addCDMethod(createCacheMethod(definitionName))
-        .addCDMethod(createContinueWithModelLoaderMethod(definitionName))
+        .addCDMethod(createContinueWithModelLoaderMethod(modelLoaderClassName))
         .addAllCDMethods(resolvingDelegateMethods)
         .addAllCDMethods(createAddResolvingSymbolDelegateMethods(resolvingDelegateAttributes.values()))
         .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
@@ -113,8 +114,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return getCDAttributeFacade().createAttribute(PROTECTED, languageName, StringTransformations.uncapitalize(languageName));
   }
 
-  protected ASTCDAttribute createModelName2ModelLoaderCacheAttribute(String definitionName) {
-    ASTMCMapType mapType = getCDTypeFacade().createMapTypeOf("String", "Set<" + definitionName + MODEL_LOADER_SUFFIX + ">");
+  protected ASTCDAttribute createModelName2ModelLoaderCacheAttribute(String modelLoaderClassName) {
+    ASTMCMapType mapType = getCDTypeFacade().createMapTypeOf("String", "Set<" + modelLoaderClassName + ">");
     ASTCDAttribute modelName2ModelLoaderCache = getCDAttributeFacade().createAttribute(PROTECTED_FINAL, mapType, "modelName2ModelLoaderCache");
     this.replaceTemplate(VALUE, modelName2ModelLoaderCache, new StringHookPoint(" = new HashMap<>()"));
     return modelName2ModelLoaderCache;
@@ -172,9 +173,9 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return cacheMethod;
   }
 
-  protected ASTCDMethod createContinueWithModelLoaderMethod(String definitionName) {
+  protected ASTCDMethod createContinueWithModelLoaderMethod(String modelLoaderClassName) {
     ASTCDParameter modelNameParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "calculatedModelName");
-    ASTMCQualifiedType modelLoaderType = getCDTypeFacade().createQualifiedType(definitionName + MODEL_LOADER_SUFFIX);
+    ASTMCQualifiedType modelLoaderType = getCDTypeFacade().createQualifiedType(modelLoaderClassName);
     ASTCDParameter modelLoaderParameter = getCDParameterFacade().createParameter(modelLoaderType, "modelLoader");
 
     ASTCDMethod continueWithModelLoaderMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), "continueWithModelLoader", modelNameParameter, modelLoaderParameter);

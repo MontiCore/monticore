@@ -38,7 +38,6 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   private static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
 
-
   @Before
   public void setUp() {
     Log.init();

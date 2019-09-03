@@ -168,7 +168,7 @@ public class AbstractService<T extends AbstractService> {
     // if not generic returns simple Type like 'int'
     String nativeType = nativeAttributeType;
     if (nativeAttributeType.contains(".")) {
-      nativeAttributeType = nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".")+1);
+      nativeAttributeType = nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".") + 1);
     }
     if (nativeAttributeType.contains(">")) {
       nativeAttributeType = nativeAttributeType.replaceAll(">", "");
@@ -332,4 +332,6 @@ public class AbstractService<T extends AbstractService> {
     String astName = simpleName.substring(simpleName.lastIndexOf(".") + 1);
     return packageName + "." + AST_PACKAGE + "." + astName;
   }
+
+
 }

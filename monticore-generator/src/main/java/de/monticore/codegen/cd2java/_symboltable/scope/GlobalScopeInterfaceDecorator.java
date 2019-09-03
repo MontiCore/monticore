@@ -67,7 +67,8 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
 
   protected ASTCDMethod createContinueWithModelLoaderMethod(String definitionName) {
     ASTCDParameter modelNameParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "calculatedModelName");
-    ASTMCQualifiedType modelLoaderType = getCDTypeFacade().createQualifiedType(definitionName + MODEL_LOADER_SUFFIX);
+    String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
+    ASTMCQualifiedType modelLoaderType = getCDTypeFacade().createQualifiedType(modelLoaderClassName);
     ASTCDParameter modelLoaderParameter = getCDParameterFacade().createParameter(modelLoaderType, "modelLoader");
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getCDTypeFacade().createBooleanType(), "continueWithModelLoader", modelNameParameter, modelLoaderParameter);
   }

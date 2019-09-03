@@ -35,8 +35,11 @@ import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
 import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
+import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._symboltable.language.LanguageBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.language.LanguageDecorator;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._visitor.*;
@@ -423,6 +426,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                                        IterablePath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
+    ParserService parserService = new ParserService(cd);
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     AccessorDecorator accessorDecorator = new AccessorDecorator(glex);
 
@@ -438,14 +442,15 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ArtifactScopeDecorator artifactScopeDecorator = new ArtifactScopeDecorator(glex, symbolTableService, methodDecorator);
     ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator = new ArtifactScopeBuilderDecorator(glex, symbolTableService, builderDecorator, accessorDecorator);
     SymbolReferenceDecorator symbolReferenceDecorator = new SymbolReferenceDecorator(glex, symbolTableService, methodDecorator);
-    SymbolReferenceBuilderDecorator symbolReferenceBuilderDecorator= new SymbolReferenceBuilderDecorator(glex, symbolTableService, accessorDecorator);
-    CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator= new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
-
-    SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, symbolTableService, symbolDecorator,
-        symbolBuilderDecorator, symbolReferenceDecorator,symbolReferenceBuilderDecorator,
+    SymbolReferenceBuilderDecorator symbolReferenceBuilderDecorator = new SymbolReferenceBuilderDecorator(glex, symbolTableService, accessorDecorator);
+    CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
+    LanguageDecorator languageDecorator = new LanguageDecorator(glex, symbolTableService, parserService, accessorDecorator);
+    LanguageBuilderDecorator languageBuilderDecorator = new LanguageBuilderDecorator(glex, new BuilderDecorator(glex, accessorDecorator, symbolTableService));
+    SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, handCodedPath, symbolTableService, symbolDecorator,
+        symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
         scopeClassDecorator, scopeClassBuilderDecorator, scopeInterfaceDecorator, globalScopeInterfaceDecorator,
         globalScopeClassDecorator, globalScopeClassBuilderDecorator, artifactScopeDecorator, artifactScopeBuilderDecorator
-        , commonSymbolInterfaceDecorator);
+        , commonSymbolInterfaceDecorator, languageDecorator, languageBuilderDecorator);
 
     ASTCDCompilationUnit visitorCompilationUnit = symbolTableCDDecorator.decorate(cd);
 
