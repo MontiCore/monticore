@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
-import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
+import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
@@ -42,6 +42,39 @@ public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals
   public void visit(ASTNatLiteral lit){
     result = Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
   }
-  
-  // TOD RE: restliche Literals implementieren + entsprechend testen
+
+  @Override
+  public void visit(ASTCharLiteral lit){
+    result = Optional.of(SymTypeExpressionFactory.createTypeConstant("char"));
+  }
+
+  @Override
+  public void visit(ASTBooleanLiteral lit){
+    result = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+  }
+
+  @Override
+  public void visit(ASTBasicDoubleLiteral lit){
+    result = Optional.of(SymTypeExpressionFactory.createTypeConstant("double"));
+  }
+
+  @Override
+  public void visit(ASTBasicFloatLiteral lit){
+    result = Optional.of(SymTypeExpressionFactory.createTypeConstant("float"));
+  }
+
+  @Override
+  public void visit(ASTBasicLongLiteral lit){
+    result = Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
+  }
+
+  @Override
+  public void visit(ASTStringLiteral lit){
+    result = Optional.of(SymTypeExpressionFactory.createTypeConstant("String"));
+  }
+
+  @Override
+  public void visit(ASTNullLiteral lit){
+    result = Optional.empty();
+  }
 }
