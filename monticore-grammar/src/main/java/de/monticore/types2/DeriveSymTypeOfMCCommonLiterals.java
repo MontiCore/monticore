@@ -73,8 +73,12 @@ public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals
     result = Optional.of(SymTypeExpressionFactory.createTypeConstant("String"));
   }
 
+  // TODO RE: "null" hat nicht keinen Typ. Entweder es ist eine TypeConstant oder
+  // wir führen einen expliziten Wert ein zB "SymTypeForNull", damit da ein sauberer
+  // Rückgabewert entsteht.
   @Override
   public void visit(ASTNullLiteral lit){
     result = Optional.empty();
   }
+  
 }

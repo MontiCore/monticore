@@ -28,6 +28,11 @@ public class SymTypeExpressionFactory {
     return o;
   }
   
+  public static SymTypeOfNull createTypeOfNull() {
+    SymTypeOfNull o = new SymTypeOfNull();
+    return o;
+  }
+  
   public static SymArrayType createArrayType(int dim, SymTypeExpression argument) {
     SymArrayType o = new SymArrayType(dim, argument);
     return o;

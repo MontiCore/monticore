@@ -17,6 +17,7 @@ public class SymTypeExpressionTest {
   SymTypeExpression teP = createObjectType("de.x.Person");
   SymTypeExpression teH = createObjectType("Human");  // on purpose: package missing
   SymTypeExpression teVoid = createTypeVoid();
+  SymTypeExpression teNull = createTypeOfNull();
   SymTypeExpression teArr1 = createArrayType(1, teH);
   SymTypeExpression teArr3 = createArrayType(3, teInt);
   SymTypeExpression teSet = createGenericTypeExpression("java.util.Set", Lists.newArrayList(teP));
@@ -34,6 +35,7 @@ public class SymTypeExpressionTest {
     assertEquals("A", teVarA.print());
     assertEquals("de.x.Person", teP.print());
     assertEquals("void", teVoid.print());
+    assertEquals("nullType", teNull.print());
     assertEquals("Human[]", teArr1.print());
     assertEquals("int[][][]", teArr3.print());
     assertEquals("java.util.Set<de.x.Person>", teSet.print());

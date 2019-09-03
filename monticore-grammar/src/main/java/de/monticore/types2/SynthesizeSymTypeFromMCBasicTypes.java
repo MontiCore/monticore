@@ -64,8 +64,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
     result = Optional.of(typeConstant);
   }
   
-  public void endVisit(ASTMCVoidType voidType)
-  {
+  public void endVisit(ASTMCVoidType voidType) {
     result = Optional.of(SymTypeExpressionFactory.createTypeVoid());
   }
   
