@@ -31,7 +31,6 @@ public class CommonModelLoaderGenerator implements ModelLoaderGenerator {
         className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName())+"ModelLoaderBuilder",
             genHelper.getTargetPackage(),handCodedPath);
         filePath = get(getPathFromPackage(genHelper.getTargetPackage()),className+".java");
-        genEngine.generate("symboltable.ModelLoaderBuilder", filePath, grammarSymbol.getAstNode().get(),className, languageName);
 
       }
     }

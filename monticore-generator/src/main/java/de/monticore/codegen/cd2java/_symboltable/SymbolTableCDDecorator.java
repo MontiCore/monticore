@@ -5,6 +5,7 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._symboltable.language.LanguageBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.language.LanguageDecorator;
+import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderDecorator;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
@@ -61,6 +62,8 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected final ModelLoaderDecorator modelLoaderDecorator;
 
+  protected final ModelLoaderBuilderDecorator modelLoaderBuilderDecorator;
+
   public SymbolTableCDDecorator(final GlobalExtensionManagement glex,
                                 final IterablePath handCodedPath,
                                 final SymbolTableService symbolTableService,
@@ -79,7 +82,8 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
                                 final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator,
                                 final LanguageDecorator languageDecorator,
                                 final LanguageBuilderDecorator languageBuilderDecorator,
-                                final ModelLoaderDecorator modelLoaderDecorator) {
+                                final ModelLoaderDecorator modelLoaderDecorator,
+                                final ModelLoaderBuilderDecorator modelLoaderBuilderDecorator) {
     super(glex);
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
@@ -99,6 +103,7 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
     this.handCodedPath = handCodedPath;
     this.languageBuilderDecorator = languageBuilderDecorator;
     this.modelLoaderDecorator= modelLoaderDecorator;
+    this.modelLoaderBuilderDecorator = modelLoaderBuilderDecorator;
   }
 
   @Override
@@ -136,7 +141,10 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
         astCD.addCDClass(createLanguageBuilder(languageClass));
       }
       Optional<ASTCDClass> modelLoader = createModelLoader(ast);
-      modelLoader.ifPresent(astCD::addCDClass);
+      if (modelLoader.isPresent()) {
+        astCD.addCDClass(modelLoader.get());
+        astCD.addCDClass(createModelLoaderBuilder(modelLoader.get()));
+      }
     }
 
     for (ASTCDClass cdClass : astCD.getCDClassList()) {
@@ -231,5 +239,9 @@ public class SymbolTableCDDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected Optional<ASTCDClass> createModelLoader(ASTCDCompilationUnit compilationUnit) {
     return modelLoaderDecorator.decorate(compilationUnit);
+  }
+
+  protected ASTCDClass createModelLoaderBuilder(ASTCDClass modelLoaderClass) {
+    return modelLoaderBuilderDecorator.decorate(modelLoaderClass);
   }
 }
