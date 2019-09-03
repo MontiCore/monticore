@@ -5,6 +5,6 @@ task generate (type: MCTask) {
   grammar = file "$projectDir/$grammarDir/HierAutomaton.mc4"
   outputDir = file outDir
   handcodedPath file("$projectDir/src/main/java")
-  def uptoDate = incCheck(outputDir.toString() + "/hierautomaton/IncGenGradleCheck.txt")
+  def uptoDate = incCheck(outputDir.get().asFile.toString() + "/hierautomaton/IncGenGradleCheck.txt")
   outputs.upToDateWhen { uptoDate }
 }
