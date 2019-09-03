@@ -289,7 +289,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /*
-    symbol table symbol interface names e.g. AutomataSymbolTable
+    deser class names e.g. AutomataDeSer
    */
 
   public String getScopeDeSerSimpleName(CDDefinitionSymbol cdSymbol) {
@@ -306,6 +306,27 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getScopeDeSerFullName() {
     return getScopeDeSerFullName(getCDSymbol());
+  }
+
+
+    /*
+    symTabMill interface names e.g. AutomataSymTabMill
+   */
+
+  public String getSymTabMillSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SYMTAB_MILL_SUFFIX;
+  }
+
+  public String getSymTabMillSimpleName() {
+    return getSymTabMillSimpleName(getCDSymbol());
+  }
+
+  public String getSymTabMillFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol)  + "." + getSymTabMillSimpleName(cdSymbol);
+  }
+
+  public String getSymTabMillFullName() {
+    return getSymTabMillFullName(getCDSymbol());
   }
 
   /*

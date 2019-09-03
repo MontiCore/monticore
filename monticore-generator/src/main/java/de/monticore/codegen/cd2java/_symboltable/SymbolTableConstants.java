@@ -13,6 +13,8 @@ public class SymbolTableConstants {
 
   public static final String SCOPE_SUFFIX = "Scope";
 
+  public static final String SYMTAB_MILL_SUFFIX = "SymTabMill";
+
   public static final String SPANNED_SCOPE = "spanned%sScope";
 
   public static final String I_SYMBOL = "de.monticore.symboltable.ISymbol";
