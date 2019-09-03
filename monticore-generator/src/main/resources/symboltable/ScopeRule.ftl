@@ -6,7 +6,14 @@ ${tc.signature("scopeRule")}
 <#list scopeRule.getAdditionalAttributeList() as attr>
   <#assign attrName=attr.getName()>
   <#assign attrType=stHelper.deriveAdditionalAttributeTypeWithMult(attr)>
-  private ${genHelper.getQualifiedASTName(attrType)} _${attrName};
+  <#assign attrValue = "">
+  <#if genHelper.isAdditionalAttributeTypeList(attr)>
+    <#assign attrValue = " = new java.util.ArrayList<>()">
+  </#if>
+  <#if genHelper.isAdditionalAttributeTypeOptional(attr)>
+    <#assign attrValue = " = Optional.empty()">
+  </#if>
+  private ${genHelper.getQualifiedASTName(attrType)} _${attrName} ${attrValue};
   
 </#list>
 

@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("languageName","className","scopeRule", "symbolNames", "spanningSymbols", "superGrammarPackages")}
+${signature("languageName","className","scopeRules", "symbolNames", "spanningSymbols", "superGrammarPackages")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign superClass = " extends de.monticore.symboltable.CommonScope ">
@@ -99,11 +99,11 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
     name.ifPresent(scope::setName);
     scope.setExportsSymbols(exportsSymbols.orElse(true));
     
-<#if scopeRule.isPresent()>
-<#list scopeRule.get().getAdditionalAttributeList() as attr>
+<#list scopeRules as scopeRule>
+<#list scopeRule.getAdditionalAttributeList() as attr>
     scope.set${attr.getName()?cap_first}(deserialize${attr.getName()?cap_first}(scopeJson));
 </#list>   
-</#if> 
+</#list>
     
     addSymbols(scopeJson, scope);
     addAndLinkSubScopes(scopeJson, scope);
@@ -123,11 +123,11 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
     scope.setName(name);
     scope.setExportsSymbols(exportsSymbols);
     
-<#if scopeRule.isPresent()>
-<#list scopeRule.get().getAdditionalAttributeList() as attr>
+<#list scopeRules as scopeRule>
+<#list scopeRule.getAdditionalAttributeList() as attr>
     scope.set${attr.getName()?cap_first}(deserialize${attr.getName()?cap_first}(scopeJson));
 </#list>   
-</#if> 
+</#list>
 
     addSymbols(scopeJson, scope);
     addAndLinkSubScopes(scopeJson, scope);
@@ -207,8 +207,8 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
   
 </#list> 
 
-<#if scopeRule.isPresent()>
-<#list scopeRule.get().getAdditionalAttributeList() as attr>
+<#list scopeRules as scopeRule>
+<#list scopeRule.getAdditionalAttributeList() as attr>
   <#assign attrType=stHelper.deriveAdditionalAttributeTypeWithMult(attr)>
   protected ${attrType} deserialize${attr.getName()?cap_first}(JsonObject scopeJson){
 <#switch attrType>
@@ -237,7 +237,7 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
   }
 
 </#list>   
-</#if>
+</#list>
 
   /**
    * Override this method to deserialize additional attributes
