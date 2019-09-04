@@ -1,18 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
-import de.monticore.antlr4.MCConcreteParser;
-import de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisMill;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScopeBuilder;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types.mcbasictypes._symboltable.MCBasicTypesGlobalScope;
-import de.monticore.types.mcbasictypes._symboltable.MCBasicTypesLanguage;
 import de.monticore.types.typesymbols._symboltable.*;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static de.monticore.types2.SymTypeExpressionFactory.createTypeObject;
@@ -44,8 +35,7 @@ public class DefsTypeBasic {
     // Phase A ----- create objects
     set_Void();  // only A
     set_Null();  // only A
-    set_int();   // only A
-    set_boolean();   // only A
+    set_thePrimitives();   // only A
     set_array();
     set_String();
     set_Object();
@@ -54,34 +44,8 @@ public class DefsTypeBasic {
     link_String();
     link_Object();
     
-    
-    // Phase 3: setting Scopes and attaching all Symbols to Scopes
-    
-    
-    // TODO: Ab hier: Dies ist ein experimentelles Setting, das muss noch
-    // rausfaktorisiert werden (damit es auch andere Arten von Glocal Scopes geben kann
-    // die mit diesen Symbolen gefüttert werden können
-    // Oder man verschiebt das in die tests, denn die folgenden zeilen sind evtl. nicht
-    // nicht ganz allgemeingültig?
-    
-    // Setting up a Scope Infrastructure (without a global Scope)
-  
-    ExpressionsBasisScope scope =
-            ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
-            .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-            .setExportsSymbols(true)
-            .setAstNode(null)
-            .setName("Phantasy2").build();     // hopefully unused
-    // we add a variety of Symbols to the same scope (which in reality doesn't happen)
-    scope.add(_int);
-    scope.add(_array);
-    scope.add(_boolean);
-    scope.add(_Object);
-    scope.add(_String);
-    // _null and _void are not real Symbols and thus not added here
-    
-    // YYY weiter
-    
+    // TODO: A SymbolTable Structure that correctly reflects
+    // the above objects could be helpful?
   }
   
   
@@ -95,6 +59,8 @@ public class DefsTypeBasic {
     return type(name,name);
   }
   
+  /** create TypeSymbols (some defaults apply)
+   */
   public static TypeSymbol type(String name, String fullName) {
     return TypeSymbolsSymTabMill.typeSymbolBuilder()
             .setName(name)
@@ -116,6 +82,8 @@ public class DefsTypeBasic {
     return t;
   }
   
+  /** create MethodSymbols (some defaults apply)
+   */
   public static MethodSymbol method(String name, SymTypeExpression returnType) {
     return TypeSymbolsSymTabMill.methodSymbolBuilder()
             .setName(name)
@@ -131,6 +99,8 @@ public class DefsTypeBasic {
     return m;
   }
   
+  /** create FieldSymbols (some defaults apply)
+   */
   public static FieldSymbol field(String name, SymTypeExpression type) {
     return TypeSymbolsSymTabMill.fieldSymbolBuilder()
             .setName(name)
@@ -140,22 +110,41 @@ public class DefsTypeBasic {
             .build();
   }
   
-  public static void checkFullnames(TypeSymbol s) {
+  /** add a Type to a Scope (bidirectional)
+   */
+  public static void add2scope(ITypeSymbolsScope p, TypeSymbol s) {
+    s.setEnclosingScope(p);
+    p.add(s);
+  }
+  
+  /** add a Filed (e.g. a Variable) to a Scope (bidirectional)
+   */
+  public static void add2scope(ITypeSymbolsScope p, FieldSymbol s) {
+    s.setEnclosingScope(p);
+    p.add(s);
+  }
+  
+  /**
+   * It is tedious to allways add name and fullNamee individually:
+   * So this functions does that for Types,Methods,Fields afterwards
+   * (only the Type needs a full name, the rest is added)
+   */
+  public static void completeFullnames(TypeSymbol s) {
     // in the class Fullname must already set
     String prefix = s.getPackageName();
     for (MethodSymbol m : s.getMethods()) {
-      checkFullnames(m, prefix);
+      completeFullnames(m, prefix);
     }
     for (FieldSymbol f : s.getFields()) {
-      checkFullnames(f, prefix);
+      completeFullnames(f, prefix);
     }
   }
-  public static void checkFullnames(MethodSymbol s, String prefix) {
+  public static void completeFullnames(MethodSymbol s, String prefix) {
     if(s.getFullName() == null || !s.getFullName().contains(".")) {
       s.setFullName(prefix + "." + s.getName());
     }
   }
-  public static void checkFullnames(FieldSymbol s, String prefix) {
+  public static void completeFullnames(FieldSymbol s, String prefix) {
     if(s.getFullName() == null || !s.getFullName().contains(".")) {
       s.setFullName(prefix + "." + s.getName());
     }
@@ -215,7 +204,7 @@ public class DefsTypeBasic {
   
     // TODO RE: this function is very incomplete; ersetzen oder komplettieren
   
-    checkFullnames(_array);
+    completeFullnames(_array);
     
   }
   
@@ -256,7 +245,7 @@ public class DefsTypeBasic {
     
     // TODO RE: this function is very incomplete; ersetzen oder komplettieren
     
-    checkFullnames(_String);
+    completeFullnames(_String);
   }
   
   /*********************************************************************/
@@ -286,7 +275,7 @@ public class DefsTypeBasic {
     
     // TODO RE: this function is very incomplete; ersetzen oder komplettieren
     
-    checkFullnames(_Object);
+    completeFullnames(_Object);
     _ObjectSymType = createTypeObject("Object", _Object);
   }
   
@@ -294,33 +283,36 @@ public class DefsTypeBasic {
   /*********************************************************************/
   
   /**
-   * This is the predefined Symbol for "boolean"
-   * which has empty Fields and Methods
-   */
-  public static TypeSymbol _boolean;
-  public static SymTypeExpression _booleanSymType;
-  
-  
-  public static void set_boolean() {
-    _boolean = type("boolean");
-    _booleanSymType = SymTypeExpressionFactory.createTypeConstant("boolean");
-  }
-
-  // TODO RE: hier fehlen die anderen primitive Types noch-- nach selbem Muster
-  
-  /*********************************************************************/
-  
-  /**
-   * This is the predefined Symbol for "int"
+   * This is the predefined Symbol for al Primitives, such as "int"
    * which has empty Fields and Methods
    */
   public static TypeSymbol _int;
   public static SymTypeExpression _intSymType;
+  public static TypeSymbol _char;
+  public static SymTypeExpression _charSymType;
+  public static TypeSymbol _boolean;
+  public static SymTypeExpression _booleanSymType;
+  public static TypeSymbol _double;
+  public static SymTypeExpression _doubleSymType;
+  public static TypeSymbol _float;
+  public static SymTypeExpression _floatSymType;
+  public static TypeSymbol _long;
+  public static SymTypeExpression _longSymType;
   
   
-  public static void set_int() {
+  public static void set_thePrimitives() {
     _int = type("int");
     _intSymType = SymTypeExpressionFactory.createTypeConstant("int");
+    _boolean = type("boolean");
+    _booleanSymType = SymTypeExpressionFactory.createTypeConstant("boolean");
+    _char = type("char");
+    _charSymType = SymTypeExpressionFactory.createTypeConstant("char");
+    _double = type("double");
+    _doubleSymType = SymTypeExpressionFactory.createTypeConstant("double");
+    _float = type("float");
+    _floatSymType = SymTypeExpressionFactory.createTypeConstant("float");
+    _long = type("long");
+    _longSymType = SymTypeExpressionFactory.createTypeConstant("long");
   }
   
   /*********************************************************************/

@@ -42,45 +42,45 @@ public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals
   
   @Override
   public void visit(ASTNatLiteral lit){
-    result = Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
+    result = Optional.of(DefsTypeBasic._intSymType);
   }
 
   @Override
   public void visit(ASTCharLiteral lit){
-    result = Optional.of(SymTypeExpressionFactory.createTypeConstant("char"));
+    result = Optional.of(DefsTypeBasic._charSymType);
   }
 
   @Override
   public void visit(ASTBooleanLiteral lit){
-    result = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+    result = Optional.of(DefsTypeBasic._booleanSymType);
   }
 
   @Override
   public void visit(ASTBasicDoubleLiteral lit){
-    result = Optional.of(SymTypeExpressionFactory.createTypeConstant("double"));
+    result = Optional.of(DefsTypeBasic._doubleSymType);
   }
 
   @Override
   public void visit(ASTBasicFloatLiteral lit){
-    result = Optional.of(SymTypeExpressionFactory.createTypeConstant("float"));
+    result = Optional.of(DefsTypeBasic._floatSymType);
   }
 
   @Override
   public void visit(ASTBasicLongLiteral lit){
-    result = Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
+    result = Optional.of(DefsTypeBasic._longSymType);
   }
 
   @Override
   public void visit(ASTStringLiteral lit){
-    result = Optional.of(SymTypeExpressionFactory.createTypeConstant("String"));
+    result = Optional.of(DefsTypeBasic._StringSymType);
   }
 
-  // TODO RE: "null" hat nicht keinen Typ. Entweder es ist eine TypeConstant oder
-  // wir führen einen expliziten Wert ein zB "SymTypeForNull", damit da ein sauberer
-  // Rückgabewert entsteht.
+  /**
+   * Literal "null" gets marked with implicit SymType _null
+   */
   @Override
   public void visit(ASTNullLiteral lit){
-    result = Optional.empty();
+    result = Optional.of(DefsTypeBasic._nullSymType);
   }
   
 }
