@@ -115,21 +115,38 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       Log.error("0xEE672 Internal Error: No Scope for expression " + ex.toString());
     }
     String symname = ex.getName();
-
+  
+    // case 1: Variable
+    // The name can be a variable, we check this first:
     Optional<EVariableSymbol> optVar = scope.resolveEVariable(ex.getName());
-    Optional<ETypeSymbol> optType = scope.resolveEType(ex.getName());
-    Optional<EMethodSymbol> optMethod = scope.resolveEMethod(ex.getName());
-
-
+    // If the variable is found, its type is the result:
     if(optVar.isPresent()){ // try variable first
       EVariableSymbol var = optVar.get();
       this.result=Optional.of(var.getType());
-    }else if(optType.isPresent()) { // it's not a variable -> check type
+      return;
+    }
+  
+    // case 2: Type
+    // The name can be a Type (i.e. person, int or the like)
+    Optional<ETypeSymbol> optType = scope.resolveEType(ex.getName());
+    if(optType.isPresent()) {   // it's not a variable -> check type
       ETypeSymbol type = optType.get();
-      SymTypeExpression res = TypesCalculatorHelper.fromETypeSymbol(type);
+      // Please note the type is used as Expression, so we ask for the "type" of a Type
+      SymTypeExpression res = TypesCalculatorHelper.fromETypeSymbol(type);  // XXX YYY TODO
       this.result = Optional.of(res);
-    }else if(optMethod.isPresent()) { // no type, no var -> check method
+      return;
+    }
+  
+    // case 3: Method
+    // The name can be a Method (without any arguments given)
+    Optional<EMethodSymbol> optMethod = scope.resolveEMethod(ex.getName());
+    if(optMethod.isPresent()) { // no type, no var -> check method
       EMethodSymbol method = optMethod.get();
+      
+      // TODO RE:
+      // "toString" ist eine Methode. Wenn die aus so alleine stehen kann hat die natürlich einen
+      // Typ, aber das ist NICHT der Returntyp der Methode --> sondern was viel komplexeres aus
+      // der Metaebene. ggf. Rücksprache
       if(!"void".equals(method.getReturnType().getName())){
         SymTypeExpression type=method.getReturnType();
         this.result=Optional.of(type);
@@ -137,10 +154,17 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
         SymTypeExpression res =new SymTypeVoid();
         this.result=Optional.of(res);
       }
-    }else{ //no var, type, method found, could be a package or nothing at all
-      Log.debug("package suspected","ExpressionBasisTypesCalculator");
-      this.result = Optional.of(new SymTypePackage());
+      return;
     }
+    
+    // case 4: Nothing
+    //no var, type, method found, could be a package or nothing at all
+    
+    // TODO: man könnte in das SymTypePackage auch den Namen gleich mit speichern?
+    Log.debug("package suspected","ExpressionBasisTypesCalculator");
+    this.result = Optional.of(new SymTypePackage());
+    
+    
   }
 
   /* Example first search for variable with name, than class with name,
@@ -171,7 +195,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
    * Names are looked up in the Symboltable and their stored SymExpression
    * is returned (a copy is not necessary)
    */
-  // TODO: kann package sein YYY BR
+  // TODO RE: kann package sein YYY (und muss dann auch behandelt werden ...)
   @Override
   public void traverse(ASTQualifiedNameExpression node){
     // Argument 1:
