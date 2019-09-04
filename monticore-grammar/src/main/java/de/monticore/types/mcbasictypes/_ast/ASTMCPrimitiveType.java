@@ -16,32 +16,16 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
     super(primitive);
   }
 
+
+
+  // Es gibt eine Regel, die besagt "toString" sollte nicht überschrieben werden?
+
+  //TODO BR: ist das eine MontiCore Best Practice? allg. Java Best Practice
+  // toString nicht zu überschreiben konnte ich nicht direkt etwas zu finden
+  // Das schöne an aussagekräftigen toString methoden ist die verbesserte
+  // Hilfe beim Debuggen dieser Klassen
   public String toString(){
-    if (isBoolean()){
-      return "boolean";
-    }
-    if (isByte()){
-      return "byte";
-    }
-    if (isChar()){
-      return "char";
-    }
-    if (isShort()){
-      return "short";
-    }
-    if (isInt()){
-      return "int";
-    }
-    if (isFloat()){
-      return "float";
-    }
-    if (isLong()){
-      return "long";
-    }
-    if (isDouble()){
-      return "double";
-    }
-    return "";
+    return getBaseName();
   }
   public boolean isBoolean(){
     return this.getPrimitive()==ASTConstantsMCBasicTypes.BOOLEAN;
@@ -69,11 +53,35 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
   }
 
   public String getBaseName() {
-    return toString();
+    if (isBoolean()){
+      return "boolean";
+    }
+    if (isByte()){
+      return "byte";
+    }
+    if (isChar()){
+      return "char";
+    }
+    if (isShort()){
+      return "short";
+    }
+    if (isInt()){
+      return "int";
+    }
+    if (isFloat()){
+      return "float";
+    }
+    if (isLong()){
+      return "long";
+    }
+    if (isDouble()){
+      return "double";
+    }
+    return "";
   }
 
   public List<String> getNameList() {
-    return Lists.newArrayList(toString());
+    return Lists.newArrayList(getBaseName());
   }
 
 }

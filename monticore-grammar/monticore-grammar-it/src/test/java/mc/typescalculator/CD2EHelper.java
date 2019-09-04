@@ -1,8 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
 import de.monticore.cd.cd4analysis._symboltable.*;
-import de.monticore.expressions.expressionsbasis._symboltable.*;
-import de.monticore.typescalculator.TypeExpression;
+import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
+import de.monticore.types2.SymObjectType;
+import de.monticore.types2.SymTypeExpression;
 
 import java.util.List;
 
@@ -26,13 +31,13 @@ public class CD2EHelper {
 
   public static EVariableSymbol transformCDField2EVariableSymbol(CDFieldSymbol fieldSymbol){
     EVariableSymbol res = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName(fieldSymbol.getName()).setFullName(fieldSymbol.getFullName()).setAccessModifier(fieldSymbol.getAccessModifier()).build();
-    res.setType(transformCDType2TypeExpression(fieldSymbol.getType()));
+    res.setType(transformCDType2SymTypeExpression(fieldSymbol.getType()));
     return res;
   }
 
   public static EMethodSymbol transformCDMethOrConstr2EMethodSymbol(CDMethOrConstrSymbol methOrConstrSymbol){
     EMethodSymbol res = ExpressionsBasisSymTabMill.eMethodSymbolBuilder().setName(methOrConstrSymbol.getName()).setFullName(methOrConstrSymbol.getFullName()).setAccessModifier(methOrConstrSymbol.getAccessModifier()).build();
-    res.setReturnType(transformCDType2TypeExpression(methOrConstrSymbol.getReturnType()));
+    res.setReturnType(transformCDType2SymTypeExpression(methOrConstrSymbol.getReturnType()));
     for(CDFieldSymbol param: methOrConstrSymbol.getParameters()){
       List<EVariableSymbol> params = res.getParameterList();
       params.add(transformCDField2EVariableSymbol(param));
@@ -41,12 +46,12 @@ public class CD2EHelper {
     return res;
   }
 
-  public static TypeExpression transformCDType2TypeExpression(CDTypeSymbol typeSymbol) {
-    TypeExpression res = new TypeExpression();
+  public static SymTypeExpression transformCDType2SymTypeExpression(CDTypeSymbol typeSymbol) {
+    SymTypeExpression res = new SymObjectType();
     boolean success = false;
       List<CDTypeSymbolReference> superTypes = typeSymbol.getSuperTypes();
       for (CDTypeSymbolReference ref : superTypes) {
-        res.addSuperType(transformCDType2TypeExpression(ref));
+        res.addSuperType(transformCDType2SymTypeExpression(ref));
       }
       res.setName(typeSymbol.getFullName());
       success = true;

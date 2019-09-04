@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 @if "%DEBUG%" == "" @echo off
 @rem ##########################################################################
 @rem

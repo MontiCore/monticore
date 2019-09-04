@@ -16,9 +16,8 @@ symbol Automaton =
     @attribute states List of sub states
     @attribute transitions List of transitions
 */
-  //todo rename to state, coco ProdAndExtendedProdUseSameAttrNameForDiffNTs is fixed
 symbol scope State =
-  "autstate" Name
+  "state" Name
   
   (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))* ;
   

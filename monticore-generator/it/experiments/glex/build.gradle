@@ -4,7 +4,6 @@ description = 'Experiments: glex'
 task generate (type: MCTask) {
   grammar = file "$projectDir/$grammarDir/HierAutomaton.mc4"
   outputDir = file outDir
-  handcodedPath file("$projectDir/src/main/java")
-  def uptoDate = incCheck(outputDir.toString() + "/hierautomaton/IncGenGradleCheck.txt")
+  def uptoDate = incCheck("HierAutomaton.mc4")
   outputs.upToDateWhen { uptoDate }
 }

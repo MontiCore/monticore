@@ -22,7 +22,7 @@ public class AutomatonParseTest {
    */
   @Test
   public void testParseMethods() throws IOException {
-    
+
     String filename = "src/test/resources/example/PingPong.aut";
     AutomatonParser p = new AutomatonParser();
     

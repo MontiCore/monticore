@@ -1,5 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
+import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import sautomaton._ast.ASTAutomaton;
 import sautomaton._parser.SAutomatonParser;
@@ -11,6 +13,11 @@ import static org.junit.Assert.assertTrue;
 
 public class SAutomatonTest {
 
+  @BeforeClass
+  public static void setup() {
+    Log.init();
+    Log.enableFailQuick(false);
+  }
 
   @Test
   public void testPingPong() throws IOException {

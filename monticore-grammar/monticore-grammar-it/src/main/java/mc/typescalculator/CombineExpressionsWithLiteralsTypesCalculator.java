@@ -1,8 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.types2.DeriveSymTypeOfLiterals;
+import de.monticore.types2.SymTypeExpression;
 import de.monticore.typescalculator.*;
 import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 
@@ -13,7 +16,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
   private CombineExpressionsWithLiteralsDelegatorVisitor realThis;
 
-  private Map<ASTNode, TypeExpression> types;
+  private Map<ASTNode, SymTypeExpression> types;
 
   private AssignmentExpressionTypesCalculator assignmentExpressionTypesCalculator;
 
@@ -23,7 +26,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
   private CombineExpressionsWithLiteralsLiteralTypesCalculator literalsLiteralTypesCalculator;
 
-  private LiteralsBasisTypesCalculator literalsBasisTypesCalculator;
+  private DeriveSymTypeOfLiterals deriveSymTypeOfLiterals;
 
   private CommonLiteralsTypesCalculator commonLiteralsTypesCalculator;
 
@@ -51,10 +54,10 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     literalsLiteralTypesCalculator.setTypes(types);
     setCombineExpressionsWithLiteralsVisitor(literalsLiteralTypesCalculator);
     this.literalsLiteralTypesCalculator=literalsLiteralTypesCalculator;
-
-    LiteralsBasisTypesCalculator literalsBasisTypesCalculator = new LiteralsBasisTypesCalculator();
-    setMCLiteralsBasisVisitor(literalsBasisTypesCalculator);
-    this.literalsBasisTypesCalculator=literalsBasisTypesCalculator;
+  
+    DeriveSymTypeOfLiterals deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
+    setMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
+    this.deriveSymTypeOfLiterals = deriveSymTypeOfLiterals;
 
     CommonLiteralsTypesCalculator commonLiteralsTypesCalculator = new CommonLiteralsTypesCalculator();
     commonLiteralsTypesCalculator.setTypes(types);
@@ -63,7 +66,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     this.commonLiteralsTypesCalculator=commonLiteralsTypesCalculator;
   }
 
-  public TypeExpression calculateType(ASTExpression e){
+  public SymTypeExpression calculateType(ASTExpression e){
     e.accept(realThis);
     if(types.get(e)!=null){
       return types.get(e);
@@ -76,7 +79,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     return realThis;
   }
 
-  public Map<ASTNode,TypeExpression> getTypes(){
+  public Map<ASTNode,SymTypeExpression> getTypes(){
     return types;
   }
 

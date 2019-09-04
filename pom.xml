@@ -20,7 +20,7 @@
     <module>monticore-runtime</module>
     <module>monticore-emf-runtime</module>
     <module>monticore-templateclassgenerator</module>
-    <module>monticore-emf-grammar</module>
+<!--    <module>monticore-emf-grammar</module>-->
   </modules>
 
   <!-- == PROJECT PROPERTIES ============================================== -->
@@ -29,7 +29,7 @@
 
     <!-- .. Libraries ..................................................... -->
 
-    <cd4analysis.version>1.3.20</cd4analysis.version>
+    <cd4analysis.version>1.3.20.1</cd4analysis.version>
     <last.mc.release>5.2.0</last.mc.release>
 
     <se-commons.version>1.7.9</se-commons.version>

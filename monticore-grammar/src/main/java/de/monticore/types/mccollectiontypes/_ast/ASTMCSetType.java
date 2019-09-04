@@ -2,44 +2,39 @@
 package de.monticore.types.mccollectiontypes._ast;
 
 import com.google.common.collect.Lists;
-import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 
 import java.util.List;
-import java.util.Optional;
-
 public class ASTMCSetType extends ASTMCSetTypeTOP {
 
     public ASTMCSetType() {
+        setNameList(Lists.newArrayList("Set"));
     }
 
-    public ASTMCSetType(String name, ASTMCTypeArgument typeArgument) {
-        super("Set", typeArgument);
+    public ASTMCSetType(List<ASTMCTypeArgument> typeArgument, List<String> name ) {
+        super(typeArgument ,Lists.newArrayList("Set"));
     }
 
-    public ASTMCSetType(ASTMCTypeArgument typeArgument) {
-        super("Set", typeArgument);
+    public ASTMCSetType(List<ASTMCTypeArgument> typeArgument) {
+        super(typeArgument,Lists.newArrayList("Set"));
     }
 
-    @Override
-    public List<String> getNameList() {
-        return Lists.newArrayList(getName());
+    // TODO BR/RE: Methoden überarbeiten, sobald geklärt wie
+    // selbiges bei List, Map, Optional
+    // TODO BR: die damaligen astrules konnten noch nicht so viel wie heute
+    // durch geschicktes hinzufügen von attributen/methoden per astrule sind
+    // viele methoden der Topklassen überflüssig geworden
+
+    public ASTMCTypeArgument getMCTypeArgument() {
+        return this.getMCTypeArgument(0);
     }
+
     @Override
     public String getBaseName() {
         return getName();
     }
 
-    public void setNameList(List<String> names) {
-        setName(names.get(0));
-    }
-
-    @Override
-    public List<ASTMCTypeArgument> getMCTypeArgumentList() {
-        return Lists.newArrayList(getMCTypeArgument());
-    }
-
-    public void setMCTypeArgumentList(List<ASTMCTypeArgument> arguments) {
-        setMCTypeArgument(arguments.get(0));
+    public void setName(String name) {
+        // Name is fixed to "Set"
     }
 
 }

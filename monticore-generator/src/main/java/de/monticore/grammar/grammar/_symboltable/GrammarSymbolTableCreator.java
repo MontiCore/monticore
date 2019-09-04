@@ -405,16 +405,10 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
                                    List<ASTSymbolDefinition> listOfDefs) {
     for (ASTSymbolDefinition symbolDefinition : listOfDefs) {
       if (symbolDefinition.isGenSymbol()) {
-        String symbolKindName = prodSymbol.getName();
-
-        if (symbolDefinition.isPresentSymbolName()
-            && !symbolDefinition.getSymbolName().isEmpty()) {
-          symbolKindName = symbolDefinition.getSymbolName();
-        }
-        prodSymbol.setProdDefiningSymbolKind(symbolKindName);
+        prodSymbol.setIsSymbolDefinition(true);
       }
       if (symbolDefinition.isGenScope()) {
-        prodSymbol.setIsScopeSpanning(symbolDefinition.isGenScope());
+        prodSymbol.setIsScopeSpanning(true);
       }
     }
   }

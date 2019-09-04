@@ -48,7 +48,7 @@ public class ReferenceTypeTranslation implements
         ASTCDAttribute.class)) {
       ASTMCType type = determineTypeToSetForAttributeInAST(link.source().getMCType(), rootLink.source());
       link.target().setMCType(type);
-      addStereotypeForASTTypes(link.source(), link.target(), rootLink.source());
+      addStereotypeForASTTypes(type, link.target(), rootLink.source());
     }
 
     return rootLink;
@@ -141,16 +141,16 @@ public class ReferenceTypeTranslation implements
     }
   }
 
-  private void addStereotypeForASTTypes(ASTAdditionalAttribute astAdditionalAttributes,
-                                        ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
+  private void addStereotypeForASTTypes(ASTMCType type, ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
     //if in astrule is Prod given without AST prefix e.g. foo:Foo
-    String simpleName = astAdditionalAttributes.getMCType().getNameList().stream().reduce((a, b) -> a + "." + b).get();
+    String simpleName = type.getNameList().stream().reduce((a, b) -> a + "." + b).get();
     Optional<ProdSymbol> mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, simpleName);
     if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
       TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
-    } else if (simpleName.startsWith("AST")) {
-      //if in astrule is Prod given with AST prefix e.g. foo:ASTFoo
-      simpleName = simpleName.replaceFirst("AST", "");
+    } else if (type.getNameList().get(type.getNameList().size() - 1).startsWith("AST")) {
+      //case if the type name constist e.g. of bla.ASTFoo -> have to remove AST prefix to find in symboltable -> bla.Foo
+      String noASTPrefix = type.getNameList().get(type.getNameList().size() - 1).replaceFirst("AST", "");
+      simpleName = simpleName.contains(".") ? simpleName.substring(0, simpleName.lastIndexOf(".") + 1) + noASTPrefix : noASTPrefix;
       mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, simpleName);
       if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
         TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");

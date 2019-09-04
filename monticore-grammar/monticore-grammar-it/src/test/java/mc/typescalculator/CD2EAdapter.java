@@ -1,10 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.typescalculator.TypeExpression;
+import de.monticore.types2.SymTypeExpression;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,13 +49,13 @@ public class CD2EAdapter implements IETypeSymbolResolvingDelegate, IEMethodSymbo
       for(CDFieldSymbol fieldSymbol: typeSymbol.getFields()){
         List<EVariableSymbol> variableSymbols = res.getVariableSymbols();
         EVariableSymbol varsym = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName(fieldSymbol.getName()).setFullName(fieldSymbol.getFullName()).setAccessModifier(fieldSymbol.getAccessModifier()).build();
-        varsym.setType(transformCDType2TypeExpression(fieldSymbol.getType()));
+        varsym.setType(transformCDType2SymTypeExpression(fieldSymbol.getType()));
         variableSymbols.add(varsym);
         res.setVariableSymbols(variableSymbols);
       }
       for(CDTypeSymbolReference ref : typeSymbol.getSuperTypes()){
-        List<TypeExpression> superTypes = res.getSuperTypes();
-        superTypes.add(transformCDType2TypeExpression(ref));
+        List<SymTypeExpression> superTypes = res.getSuperTypes();
+        superTypes.add(transformCDType2SymTypeExpression(ref));
         res.setSuperTypes(superTypes);
       }
       result.add(res);

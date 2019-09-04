@@ -1,7 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 import de.monticore.typescalculator.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.typescalculator.combineexpressionswithliterals._ast.CombineExpressionsWithLiteralsMill;
 import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
@@ -47,7 +50,7 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
     assertTrue(p.isPresent());
 
-    TypeExpression exp = new TypeExpression();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("int");
     assertTrue(exp.deepEquals(calc.calculateType(p.get())));
 
@@ -61,7 +64,7 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
     assertTrue(p.isPresent());
 
-    TypeExpression exp = new TypeExpression();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("int");
     assertTrue(exp.deepEquals(calc.calculateType(p.get())));
   }
@@ -74,7 +77,7 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(artifactScope);
     assertTrue(p.isPresent());
 
-    TypeExpression exp = new TypeExpression();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("double");
     assertTrue(exp.deepEquals(calc.calculateType(p.get())));
   }

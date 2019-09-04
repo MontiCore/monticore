@@ -4,14 +4,13 @@ package de.monticore.types.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeParameters;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeVariableDeclaration;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -34,35 +33,36 @@ public class MCFullGenericTypesPrettyPrinterTest {
   }
 
   @Test
-  public void testMCWildcardTypeExtends() throws IOException {
+  public void testMCWildcardTypeArgumentExtends() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
-    Optional<ASTMCWildcardType> ast = parser.parse_StringMCWildcardType("? extends java.util.List");
+    Optional<ASTMCWildcardTypeArgument> ast = parser.parse_StringMCWildcardTypeArgument("? extends java.util.List");
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
-    ASTMCWildcardType wildcardType = ast.get();
+    ASTMCWildcardTypeArgument wildcardType = ast.get();
     MCFullGenericTypesPrettyPrinter printer = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
-    ast = parser.parse_StringMCWildcardType(output);
+    ast = parser.parse_StringMCWildcardTypeArgument(output);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(wildcardType.deepEquals(ast.get()));
   }
 
   @Test
-  public void testMCWildcardTypeSuper() throws IOException {
+  public void testMCWildcardTypeArgumentSuper() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
-    Optional<ASTMCWildcardType> ast = parser.parse_StringMCWildcardType("? super de.monticore.ASTNode");
+    Optional<ASTMCWildcardTypeArgument> ast = parser.parse_StringMCWildcardTypeArgument("? super de.monticore.ASTNode");
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
-    ASTMCWildcardType wildcardType = ast.get();
+    ASTMCWildcardTypeArgument wildcardType = ast.get();
     MCFullGenericTypesPrettyPrinter printer = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
-    ast = parser.parse_StringMCWildcardType(output);
+    ast = parser.parse_StringMCWildcardTypeArgument(output);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(wildcardType.deepEquals(ast.get()));
   }
-
+  //TODO RE wait for #2378
+  @Ignore
   @Test
   public void testMCMultipleGenericType() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
@@ -92,35 +92,5 @@ public class MCFullGenericTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(type.deepEquals(ast.get()));
-  }
-
-  @Test
-  public void testMCTypeParameters() throws IOException {
-    MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
-    Optional<ASTMCTypeParameters> ast = parser.parse_StringMCTypeParameters("<A, B extends List<A>.A<Name>, C extends Set<F>.Opt<H> &  Map<G>.List<T>>");
-    assertTrue(ast.isPresent());
-    assertFalse(parser.hasErrors());
-    ASTMCTypeParameters typeParameters = ast.get();
-    MCFullGenericTypesPrettyPrinter printer = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
-    String output = printer.prettyprint(ast.get());
-    ast = parser.parse_StringMCTypeParameters(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(ast.isPresent());
-    assertTrue(typeParameters.deepEquals(ast.get()));
-  }
-
-  @Test
-  public void testMCTypeVariableDeclaration() throws IOException {
-    MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
-    Optional<ASTMCTypeVariableDeclaration> ast = parser.parse_StringMCTypeVariableDeclaration(" C extends Set<F>.Opt<H> &  Map<G>.List<T> & Foo<Bar>.A<B>");
-    assertTrue(ast.isPresent());
-    assertFalse(parser.hasErrors());
-    ASTMCTypeVariableDeclaration typeVariableDeclaration = ast.get();
-    MCFullGenericTypesPrettyPrinter printer = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
-    String output = printer.prettyprint(ast.get());
-    ast = parser.parse_StringMCTypeVariableDeclaration(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(ast.isPresent());
-    assertTrue(typeVariableDeclaration.deepEquals(ast.get()));
   }
 }

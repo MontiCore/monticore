@@ -10,7 +10,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.Arrays;
 import java.util.List;
 
-// TODO: improve implementations
 public class MCBasicTypesHelper {
 
 

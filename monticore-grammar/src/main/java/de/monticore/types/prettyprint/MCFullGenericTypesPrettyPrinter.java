@@ -2,11 +2,12 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mcfullgenerictypes._ast.*;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCInnerType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyPrinter implements MCFullGenericTypesVisitor {
   private MCFullGenericTypesVisitor realThis = this;
@@ -31,7 +32,7 @@ public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyP
   }
 
   @Override
-  public void handle(ASTMCWildcardType node) {
+  public void handle(ASTMCWildcardTypeArgument node) {
     getPrinter().print("?");
     if (node.isPresentUpperBound()) {
       getPrinter().print(" extends ");
@@ -101,55 +102,23 @@ public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyP
     }
   }
 
-  @Override
-  public void handle(ASTMCTypeVariableDeclaration node) {
-    getPrinter().print(node.getName() + " ");
-    if (!node.isEmptyUpperBounds()) {
-      getPrinter().print("extends ");
-      boolean first = true;
-      for (ASTMCType type : node.getUpperBoundList()) {
-        if (first) {
-          first = false;
-        } else {
-          getPrinter().print(" &" );
-        }
-        type.accept(getRealThis());
-      }
-    }
-  }
-
-  @Override
-  public void handle(ASTMCTypeParameters node) {
-    getPrinter().print("<");
-    boolean first = true;
-    for (ASTMCTypeVariableDeclaration var : node.getMCTypeVariableDeclarationList()) {
-      if (first) {
-        first = false;
-      } else {
-        getPrinter().print(", ");
-      }
-      var.accept(getRealThis());
-    }
-    getPrinter().print(">");
-  }
-
-  public String prettyprint(ASTMCWildcardType a) {
+  public String prettyprint(ASTMCWildcardTypeArgument a) {
     getPrinter().clearBuffer();
     a.accept(getRealThis());
     return getPrinter().getContent();
   }
 
-  public String prettyprint(ASTMCTypeParameters a) {
-    getPrinter().clearBuffer();
-    a.accept(getRealThis());
-    return getPrinter().getContent();
-  }
+//  public String prettyprint(ASTMCTypeParameters a) {
+//    getPrinter().clearBuffer();
+//    a.accept(getRealThis());
+//    return getPrinter().getContent();
+//  }
 
-  public String prettyprint(ASTMCTypeVariableDeclaration a) {
-    getPrinter().clearBuffer();
-    a.accept(getRealThis());
-    return getPrinter().getContent();
-  }
+//  public String prettyprint(ASTMCTypeVariableDeclaration a) {
+//    getPrinter().clearBuffer();
+//    a.accept(getRealThis());
+//    return getPrinter().getContent();
+//  }
 
 
 }

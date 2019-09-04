@@ -5,8 +5,7 @@ symbol scope Automaton =
   "automaton" Name "{" (State | Transition)* "}" ;
 
 symbol scope State =
-//todo rename to state, coco ProdAndExtendedProdUseSameAttrNameForDiffNTs is fixed
-  "actstate" Name
+  "state" Name
   (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
   ( ("{" (State | Transition)* "}") | ";") ;
 
@@ -17,8 +16,7 @@ ActTransition extends Transition =
   from:Name "-" input:Name "/" action:Name ">" to:Name ";" ;
 
 ActState extends State =
-//todo rename to state, coco ProdAndExtendedProdUseSameAttrNameForDiffNTs is fixed
-   "actstate" Name
+   "state" Name
   ("entry:" entry:Name)?
   ("exit:" exit:Name)?
   (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*

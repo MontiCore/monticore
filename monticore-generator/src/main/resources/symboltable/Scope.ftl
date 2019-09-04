@@ -1,17 +1,17 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "interfaceName","scopeRule", "symbolNames", "superScopes", "superScopeVisitors", "hasHWC")}
+${signature("className", "interfaceName","scopeRules", "symbolNames", "superScopes", "superScopeVisitors", "hasHWC")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign names = glex.getGlobalVar("nameHelper")>
 <#assign languageName = genHelper.getGrammarSymbol().getName()>
 <#assign superInterfaces = "implements "+ interfaceName>
 <#assign superClass = "">
-<#if scopeRule.isPresent()>
-  <#list scopeRule.get().getSuperInterfaceList() as s>
+<#if (scopeRules?size >0) >
+  <#list scopeRules[0].getSuperInterfaceList() as s>
     <#assign superInterfaces = superInterfaces + ", "+ s.printType()>
   </#list>
-  <#if !scopeRule.get().isEmptySuperClasss()>
-    <#assign superClass = " extends " + scopeRule.get().getSuperClass(0).printType()>
+  <#if !scopeRules[0].isEmptySuperClasss()>
+    <#assign superClass = " extends " + scopeRules[0].getSuperClass(0).printType()>
   </#if>
 </#if>
 
@@ -214,9 +214,9 @@ public <#if hasHWC>abstract</#if> class ${className} ${superClass} ${superInterf
   }
 
 </#list>
-  <#if scopeRule.isPresent()>
-    ${includeArgs("symboltable.ScopeRule", scopeRule.get())}
-  </#if>
+  <#list scopeRules as scopeRule>
+    ${includeArgs("symboltable.ScopeRule", scopeRule)}
+  </#list>
 
   <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "ScopeVisitor")>
     public void accept(${langVisitorType} visitor) {

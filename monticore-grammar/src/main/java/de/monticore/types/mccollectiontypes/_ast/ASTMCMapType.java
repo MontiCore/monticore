@@ -4,35 +4,28 @@ package de.monticore.types.mccollectiontypes._ast;
 
 
 import com.google.common.collect.Lists;
-import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ASTMCMapType extends ASTMCMapTypeTOP {
 
     public ASTMCMapType() {
+        setNameList(Lists.newArrayList("Map"));
     }
 
-    public ASTMCMapType(String name, ASTMCTypeArgument key, ASTMCTypeArgument value) {
-        super("Map", key, value);
+    public ASTMCMapType(ASTMCTypeArgument key, ASTMCTypeArgument value, List<ASTMCTypeArgument> astmcTypeArguments, List<String> name) {
+        super(key, value,Lists.newArrayList(),Lists.newArrayList("Map"));
     }
     public ASTMCMapType( ASTMCTypeArgument key, ASTMCTypeArgument value) {
-        super("Map", key, value);
+        super(key, value,Lists.newArrayList(),Lists.newArrayList("Map"));
+    }
+    public void setName(String name) {
+        // Name is fixed to "Map"
     }
 
-
-    @Override
-    public List<String> getNameList() {
-        return Lists.newArrayList(getName());
-    }
     @Override
     public String getBaseName() {
         return getName();
-    }
-
-    public void setNameList(List<String> names) {
-        setName(names.get(0));
     }
 
     @Override
@@ -40,10 +33,9 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
         return Lists.newArrayList(getKey(),getValue());
     }
 
-
+    @Override
     public void setMCTypeArgumentList(List<ASTMCTypeArgument> arguments) {
         setKey(arguments.get(0));
         setValue(arguments.get(1));
     }
-
 }

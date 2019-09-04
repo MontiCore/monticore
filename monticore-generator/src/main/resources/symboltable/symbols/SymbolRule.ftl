@@ -6,8 +6,14 @@ ${tc.signature("ruleSymbol")}
 <#list ruleSymbol.getAdditionalAttributeList() as attr>
   <#assign attrName = "_" + attr.getName()>
   <#assign attrType=genHelper.deriveAdditionalAttributeTypeWithMult(attr)>
-
-  private ${attrType} ${attrName};
+  <#assign attrValue = "">
+  <#if genHelper.isAdditionalAttributeTypeList(attr)>
+    <#assign attrValue = " = new java.util.ArrayList<>()">
+  </#if>
+  <#if genHelper.isAdditionalAttributeTypeOptional(attr)>
+    <#assign attrValue = " = Optional.empty()">
+  </#if>
+ private ${attrType} ${attrName} ${attrValue};
 
   <#if attrType == "boolean" || attrType == "Boolean">
     <#if attr.getName()?starts_with("is")>

@@ -1,9 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.types;
+
+/**
+ * This grammar is used to generate an abstract Syntax only.
+ * These AST-classes are then used to store typing information
+ * in the SymbolTable.
+ *
+ * The grammar introduces the symbols for
+ * Types, Methods, Fields and TypeVariables
+ *
+ * These symbols can be used elsewhere, when actual implementations
+ * of these symbols become available.
+ *
+*/
 
 component grammar TypeSymbols extends de.monticore.MCBasics {
 
+  /*=================================================================*/
+
+  /**
+   * A type (in an OO sense) has a name,
+   * methods, fields, supertypes.
+   * TODO BR: I added supertypes
+   * TODO BR: What to do with: typeParameters (then it should not be a type, but a typeconstructor)
+   */
   interface scope symbol Type = Name ;
   symbolrule Type =
     methods: de.monticore.types.typesymbols._symboltable.MethodSymbol*
@@ -11,19 +31,52 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
     typeParameter: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
   ;
 
+  /*=================================================================*/
+
+  /**
+   * A typeVar may be bounded (see Java)
+   */
   interface symbol TypeVar = Name;
   symbolrule TypeVar =
-    upperBound: de.monticore.typescalculator.TypeExpression*
+    upperBound: de.monticore.types2.SymTypeExpression*
   ;
 
+  /*=================================================================*/
+
+  /**
+   * A Field (Java Attribute) has a type
+   * TODO BR: and visibility, but the visibility isn't stored here; should it?
+   */
   interface symbol Field = Name ;
   symbolrule  Field =
-    type: de.monticore.typescalculator.TypeExpression
+    type: de.monticore.types2.SymTypeExpression
   ;
 
-  interface scope symbol  Method = Name;
+  /*=================================================================*/
+
+  /**
+   * A Method has a return type, and a list of parameters, which
+   * are stored as field symbols.
+   * TODO: what about "..." extension?
+   * TODO BR: and visibility, but the visibility isn't stored here; should it?
+   */
+  interface scope symbol Method = Name;
   symbolrule Method =
     parameter: de.monticore.types.typesymbols._symboltable.FieldSymbol*
-    type: de.monticore.typescalculator.TypeExpression
+    returnType: de.monticore.types2.SymTypeExpression
   ;
+
+  /**
+   * TODO:
+   * The following nonterminals are only there to prevent MontiCore
+   * from issuing a warning, if no alternative implementation
+   * for the respective interface nonterminal exists.
+   * These nonterminals are not meant to be used.
+   */
+
+   TypeXXDoNotUse implements Type = "XX-DO-NOT-USE-ME" Name;
+   TypeVarXXDoNotUse implements TypeVar = "XX-DO-NOT-USE-ME" Name;
+   FieldXXDoNotUsel implements Field = "XX-DO-NOT-USE-ME" Name;
+   MethodXXDoNotUse implements Method = "XX-DO-NOT-USE-ME" Name;
+
 }

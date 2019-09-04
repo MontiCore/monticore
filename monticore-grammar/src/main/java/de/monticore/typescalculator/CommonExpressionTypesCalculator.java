@@ -9,6 +9,9 @@ import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types2.SymTypeOfObject;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -39,10 +42,9 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTPlusExpression expr){
-    TypeExpression result = getBinaryNumericPromotionWithString(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = getBinaryNumericPromotionWithString(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
-      sym.setName(result.getName());
+      SymTypeExpression sym = result.deepClone();
       types.put(expr, sym);
       this.result = sym;
     }else{
@@ -52,9 +54,9 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTMultExpression expr){
-    TypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -65,9 +67,9 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTDivideExpression expr){
-    TypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -78,9 +80,9 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTMinusExpression expr){
-    TypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -91,9 +93,9 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTModuloExpression expr){
-    TypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -104,9 +106,9 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTLessEqualExpression expr){
-    TypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -117,9 +119,9 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTGreaterEqualExpression expr){
-    TypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -130,9 +132,9 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTLessThanExpression expr){
-    TypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -143,9 +145,9 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTGreaterThanExpression expr){
-    TypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -156,9 +158,9 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTEqualsExpression expr){
-    TypeExpression result = calculateTypeLogical(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeLogical(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -169,9 +171,9 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTNotEqualsExpression expr){
-    TypeExpression result = calculateTypeLogical(expr.getLeft(),expr.getRight());
+    SymTypeExpression result = calculateTypeLogical(expr.getLeft(),expr.getRight());
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -182,17 +184,17 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTBooleanAndOpExpression expr){
-    TypeExpression result = null;
+    SymTypeExpression result = null;
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
-      TypeExpression exp = new TypeExpression();
+      SymTypeExpression exp = new SymTypeConstant();
       exp.setName("boolean");
       if (types.get(expr.getLeft()).deepEquals(exp) && types.get(expr.getRight()).deepEquals(exp)) {
-        result = new TypeExpression();
+        result = new SymTypeConstant();
         result.setName("boolean");
       }
     }
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = new SymTypeConstant();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -203,17 +205,17 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTBooleanOrOpExpression expr){
-    TypeExpression result = null;
+    SymTypeExpression result = null;
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
-      TypeExpression exp = new TypeExpression();
+      SymTypeExpression exp = new SymTypeConstant();
       exp.setName("boolean");
       if (types.get(expr.getLeft()).deepEquals(exp) && types.get(expr.getRight()).deepEquals(exp)) {
-        result = new TypeExpression();
+        result = new SymTypeConstant();
         result.setName("boolean");
       }
     }
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -224,17 +226,17 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTLogicalNotExpression expr) {
-    TypeExpression result = null;
+    SymTypeExpression result = null;
     if(types.containsKey(expr.getExpression())){
-      TypeExpression exp = new TypeExpression();
+      SymTypeExpression exp = new SymTypeConstant();
       exp.setName("boolean");
       if (types.get(expr.getExpression()).deepEquals(exp)) {
-        result = new TypeExpression();
+        result = new SymTypeConstant();
         result.setName("boolean");
       }
     }
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -245,12 +247,12 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTBracketExpression expr){
-    TypeExpression result = null;
+    SymTypeExpression result = null;
     if(types.containsKey(expr.getExpression())){
-      result=types.get(expr.getExpression()).clone();
+      result=types.get(expr.getExpression()).deepClone();
     }
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -261,20 +263,20 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTConditionalExpression expr){
-    TypeExpression result = null;
+    SymTypeExpression result = null;
     if(types.containsKey(expr.getTrueExpression())&&types.containsKey(expr.getFalseExpression())){
-      TypeExpression exp = new TypeExpression();
+      SymTypeExpression exp = new SymTypeConstant();
       exp.setName("boolean");
       if(types.containsKey(expr.getCondition())&&types.get(expr.getCondition()).deepEquals(exp)){
         if(types.get(expr.getTrueExpression()).deepEquals(types.get(expr.getFalseExpression()))){
-          result=types.get(expr.getFalseExpression()).clone();
+          result=types.get(expr.getFalseExpression()).deepClone();
         }else{
           result=getBinaryNumericPromotion(expr.getTrueExpression(),expr.getFalseExpression());
         }
       }
     }
     if(result!=null) {
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -285,14 +287,14 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 
   @Override
   public void endVisit(ASTBooleanNotExpression expr){
-    TypeExpression result = null;
+    SymTypeExpression result = null;
     if(types.containsKey(expr.getExpression())){
       if(isIntegralType(types.get(expr.getExpression()))){
         result = getUnaryNumericPromotionType(types.get(expr.getExpression()));
       }
     }
     if(result!=null){
-      TypeExpression sym = new TypeExpression();
+      SymTypeExpression sym = result.deepClone();
       sym.setName(result.getName());
       types.put(expr, sym);
       this.result = sym;
@@ -305,7 +307,6 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
   public void endVisit(ASTCallExpression expr){
     if(types.containsKey(expr.getExpression())) {
       CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
-      String exprString = printer.prettyprint(expr);
       ExpressionsBasisPrettyPrinter prettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
       String exp = prettyPrinter.prettyprint(expr.getExpression());
       Collection<EMethodSymbol> methodcollection = scope.resolveEMethodMany(exp);
@@ -319,13 +320,12 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
             }
           }
           if(success){
-            String nameString = printer.prettyprint(expr.getExpression());
-            if(!method.getReturnType().getName().equals("void")){
-              TypeExpression result=method.getReturnType();
+            if(!"void".equals(method.getReturnType().getName())){
+              SymTypeExpression result=method.getReturnType();
               this.result=result;
               types.put(expr,result);
-            }else if(method.getReturnType().getName().equals("void")){
-              TypeExpression result = new TypeExpression();
+            }else if("void".equals(method.getReturnType().getName())){
+              SymTypeExpression result = new SymTypeConstant();
               result.setName("void");
               types.put(expr, result);
               this.result = result;
@@ -342,27 +342,31 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
     }
   }
 
-  private TypeExpression calculateTypeCompare(ASTExpression left, ASTExpression right){
-    TypeExpression result = null;
+  private SymTypeExpression calculateTypeCompare(ASTExpression left, ASTExpression right){
+    SymTypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)) {
       if(isNumericType(types.get(left))&&isNumericType(types.get(right))){
-        result = new TypeExpression();
+        result = new SymTypeConstant();
         result.setName("boolean");
       }
     }
     return result;
   }
 
-  private TypeExpression calculateTypeLogical(ASTExpression left, ASTExpression right) {
-    TypeExpression result = null;
+  private SymTypeExpression calculateTypeLogical(ASTExpression left, ASTExpression right) {
+    SymTypeExpression result = null;
     if(types.containsKey(left)&&types.containsKey(right)) {
       if(isPrimitiveType(types.get(left))&&isPrimitiveType(types.get(right))){
-        result = new TypeExpression();
+        result = new SymTypeConstant();
         result.setName("boolean");
         return result;
       }
-      if(!isPrimitiveType(types.get(left))&&!isPrimitiveType(types.get(right))&&(types.get(left).deepEquals(types.get(right))||types.get(left).getSubTypes().contains(types.get(right))||types.get(left).getSuperTypes().contains(types.get(right)))){
-        result = new TypeExpression();
+      if(!isPrimitiveType(types.get(left)) && !isPrimitiveType(types.get(right)) &&
+              (          types.get(left).deepEquals(types.get(right))
+                      || types.get(right).getSuperTypes().contains(types.get(left))
+                      || types.get(left).getSuperTypes().contains(types.get(right))
+              )){
+        result = new SymTypeConstant();
         result.setName("boolean");
         return result;
       }
@@ -370,45 +374,45 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
     return result;
   }
 
-  public TypeExpression getBinaryNumericPromotion(ASTExpression leftType,
-                                                  ASTExpression rightType) {
-    TypeExpression result = null;
+  public SymTypeExpression getBinaryNumericPromotion(ASTExpression leftType,
+                                                     ASTExpression rightType) {
+    SymTypeExpression result = null;
     if(types.containsKey(leftType)&&types.containsKey(rightType)){
       if("double".equals(unbox(types.get(leftType)).getName())||"double".equals(unbox(types.get(rightType)).getName())){
-        result = new TypeExpression();
+        result = new SymTypeConstant();
         result.setName("double");
         return result;
       }
       if("float".equals(unbox(types.get(leftType)).getName())||"float".equals(unbox(types.get(rightType)).getName())){
-        result = new TypeExpression();
+        result = new SymTypeConstant();
         result.setName("float");
         return result;
       }
       if("long".equals(unbox(types.get(leftType)).getName())||"long".equals(unbox(types.get(rightType)).getName())){
-        result = new TypeExpression();
+        result = new SymTypeConstant();
         result.setName("long");
         return result;
       }
-      result = new TypeExpression();
+      result = new SymTypeConstant();
       result.setName("int");
     }
     return result;
   }
 
-  public TypeExpression getBinaryNumericPromotionWithString(ASTExpression leftType,
-                                                            ASTExpression rightType) {
-    TypeExpression result = null;
+  public SymTypeExpression getBinaryNumericPromotionWithString(ASTExpression leftType,
+                                                               ASTExpression rightType) {
+    SymTypeExpression result = null;
     if(types.containsKey(leftType)&&types.containsKey(rightType)){
-      TypeExpression exp = new TypeExpression();
+      SymTypeExpression exp = new SymTypeOfObject();
       exp.setName("java.lang.String");
       if(exp.deepEquals(types.get(leftType))||exp.deepEquals(types.get(rightType))){
-        result = new TypeExpression();
+        result = new SymTypeOfObject();
         result.setName("String");
         return result;
       }
       exp.setName("String");
       if(exp.deepEquals(types.get(leftType))||exp.deepEquals(types.get(rightType))){
-        result = new TypeExpression();
+        result = new SymTypeOfObject();
         result.setName("String");
         return result;
       }
@@ -417,12 +421,12 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
     return result;
   }
 
-  public TypeExpression calculateType(ASTExpression expr){
+  public SymTypeExpression calculateType(ASTExpression expr){
     expr.accept(realThis);
     return types.get(expr);
   }
 
-  public void setTypes(Map<ASTNode,TypeExpression> types){
+  public void setTypes(Map<ASTNode, SymTypeExpression> types){
     this.types=types;
   }
 }

@@ -1,7 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.types2.SymTypeOfObject;
+import de.monticore.types2.SymTypeConstant;
+import de.monticore.types2.SymTypeExpression;
 import de.monticore.typescalculator.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.typescalculator.combineexpressionswithliterals._ast.CombineExpressionsWithLiteralsMill;
 import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
@@ -209,14 +213,15 @@ public class TypesCalculatorTest {
     Optional<ASTExpression> a = p.parse_StringExpression("13+12.5-9");
     Optional<ASTExpression> b = p.parse_StringExpression("varTest");
 
-    TypeExpression exp = new TypeExpression();
+    SymTypeExpression exp = new SymTypeConstant();
     exp.setName("double");
     assertTrue(a.isPresent());
     assertTrue(exp.deepEquals(getType(a.get())));
 
-    exp.setName("Test");
+    SymTypeExpression exp2 = new SymTypeOfObject();
+    exp2.setName("Test");
     assertTrue(b.isPresent());
-    assertTrue(exp.deepEquals(getType(b.get())));
+    assertTrue(exp2.deepEquals(getType(b.get())));
   }
 
   @Test
