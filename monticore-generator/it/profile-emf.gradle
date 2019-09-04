@@ -1,4 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
+
+buildDir = file("$projectDir/target-emf")
+ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
+sourceSets.main.java.srcDirs += [ outDir ]
+
 fileTree(dir: grammarDir, include: '**/*.mc4').each {
   def g = it
   def taskname = file(grammarDir).toURI().relativize(g.toURI()).toString()
