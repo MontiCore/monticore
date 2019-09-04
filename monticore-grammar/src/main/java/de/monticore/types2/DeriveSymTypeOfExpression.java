@@ -137,7 +137,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       return;
     }
   
-    // case 3: Method
+    // case 3: Method  //raus!!!
     // The name can be a Method (without any arguments given)
     Optional<EMethodSymbol> optMethod = scope.resolveEMethod(ex.getName());
     if(optMethod.isPresent()) { // no type, no var -> check method
@@ -206,32 +206,77 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       Log.error("0xEE673 Internal Error: No SymType for argument 1 if QualifiedNameExpression."
               + " Probably TypeCheck mis-configured.");
     }
-    SymTypeExpression type2 = result.get();
-  
-    // Argument 2:
-    String name = node.getName();
-    
-    // name is now only valid in the context of type2
-    // so we look at the Fields available in type2
-    // (and e.g. ignore other alternatives, such as ClassName.Functionname without arguments)
-  
-    // TypSymbol of type2:
-    TypeSymbol symb12 = type2.getTypeInfo();
-    
+    SymTypeExpression leftType = result.get();
+//
+//    // Argument 2:
+//    String name = node.getName();
+//
+//    // name is now only valid in the context of type2
+//    // so we look at the Fields available in type2
+//    // (and e.g. ignore other alternatives, such as ClassName.Functionname without arguments)
+//
+//    // TypSymbol of type2:
+//    TypeSymbol symb12 = type2.getTypeInfo();
+//
+//
+//    // result becomes empty(), if the field isn't found.
+//    // This is probably not an Internal Error! --> to be handled.
+//    // Maybe, we also create an SymTypeError for error situations
+//    // and store that in the result (upwards)
+
+    //leftType can be package, Type, Method, variable
+    // left could also be (3+5), handled like variable?!
+
+    //leftType is package
+    // ...
+
+
+    //leftType is variable
+    // (ggf. fallen alle drei Fälle zusammen, wo LeftType irgendwie einen Typ hat)
+    //...
+
+
+    //leftType is Type (same case as "is Variable"?)
+
+
+    //leftType is method (same case as "is Type"?)
+
+    //leftType nun bekannt -> Name finden
+
+    //Name kann Variable sein
+    // typ der variable herausfinden
+
     // Liste der Fields durchsuchen
-    result = Optional.empty();
-    for(FieldSymbol field : symb12.getFields()) {
-      if(field.getName().equals(name)) {
-        result = Optional.of(field.getType());
-        return;
-      }
-    }
-    // result becomes empty(), if the field isn't found.
-    // This is probably not an Internal Error! --> to be handled.
-    // Maybe, we also create an SymTypeError for error situations
-    // and store that in the result (upwards)
+//    result = Optional.empty();
+//    for(FieldSymbol field : symb12.getFields()) {
+//      if(field.getName().equals(name)) {
+//        result = Optional.of(field.getType());
+//        return;
+//      }
+//    }
+
+
+    //Name kann innere Klasse sein
+    //
+
+    //Name kann methode sein
+    // -> dann mein typ ist der returntype
+
   }
-  
+  // Variables take precedence over static inner classes
+//  public static class B {
+//    public static class C {
+//      public static String D;
+//    }
+//
+//    static String C;
+//
+//  }
+//  public void g() {
+//    String j = B.C.D;
+//
+//  }
+
   /**
    * Literals have their own visitor:
    * we switch to the DeriveSymTypeOfLiterals visitor
