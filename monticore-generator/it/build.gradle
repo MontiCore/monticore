@@ -27,9 +27,6 @@ dependencies {
   grammar group:'de.monticore', name:'monticore-grammar', version:grammar_version, classifier:"grammars"
 }
 
-buildDir = file("$projectDir/target")
-ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
-sourceSets.main.java.srcDirs += [ outDir ]
 
 if (!hasProperty('buildProfile')) ext.buildProfile = 'default'  // chooses the profile
 

@@ -35,13 +35,11 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
   public List<ASTCDAttribute> decorate(final ASTCDType clazz) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     ASTMCType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
-    Optional<ASTCDType> superScope = symbolTableService.getTypeWithScopeInfo(clazz);
-    if (superScope.isPresent()) {
-      //create attributes
-      attributeList.add(createSpannedScopeAttribute());
-
-      ASTMCType optScopeInterfaceType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType());
-      attributeList.add(createSpannedScopeAttribute(optScopeInterfaceType));
+    Optional<ASTCDType> scopeInfo = symbolTableService.getTypeWithScopeInfo(clazz);
+    boolean hasSuperScope = false;
+    if (scopeInfo.isPresent()) {
+      attributeList.add(createSpannedScopeAttribute(scopeInterfaceType));
+      hasSuperScope = !scopeInfo.get().equals(clazz);
     }
     //always add enclosingScope for attribute that has a scope
     attributeList.add(createEnclosingScopeAttribute(scopeInterfaceType));
@@ -54,24 +52,19 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
       ASTCDAttribute enclosingScopeAttribute = createEnclosingScopeAttribute(superScopeInterfaceType);
       TransformationHelper.addStereotypeValue(enclosingScopeAttribute.getModifier(), MC2CDStereotypes.INHERITED.toString());
       attributeList.add(enclosingScopeAttribute);
+      if (hasSuperScope && superCD.getType(scopeInfo.get().getName()).isPresent()) {
+        ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute(superScopeInterfaceType);
+        TransformationHelper.addStereotypeValue(spannedScopeAttribute.getModifier(), MC2CDStereotypes.INHERITED.toString());
+        attributeList.add(spannedScopeAttribute);
+      }
     }
     return attributeList;
-  }
-
-  protected ASTCDAttribute createSpannedScopeAttribute() {
-    //todo replace with spannedScope2 some day
-    ASTMCType scopeType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeType());
-    String attributeName = String.format(SPANNED_SCOPE, symbolTableService.getCDName());
-    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
-    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
-    return attribute;
   }
 
   protected ASTCDAttribute createSpannedScopeAttribute(ASTMCType scopeType) {
     //todo better name with the grammar name in the attributeName, like it was before
     String attributeName = String.format(SPANNED_SCOPE, "");
     ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
-    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     return attribute;
   }
 

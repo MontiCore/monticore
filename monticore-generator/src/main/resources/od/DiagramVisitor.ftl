@@ -56,12 +56,8 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
           String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getEnclosingScope()));
           pp.println("enclosingScope = " + scopeName + ";");
       <#if genHelper.isScopeClass(astName, genHelper)>
-        if (node.isPresentSpanned${genHelper.getCdName()}Scope()) {
           String spannedScopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpannedScope()));
           pp.println("spanningScope = " + spannedScopeName + ";");
-        } else if (printEmptyOptional) {
-          pp.println("spannedScope = absent;");
-        }
       </#if>
        <#list type.getAllVisibleFields() as field>
           <#if genHelper.isAstNode(field) || genHelper.isOptionalAstNode(field) >

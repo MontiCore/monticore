@@ -6,8 +6,8 @@ import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
-import de.monticore.types2.SymObjectType;
 import de.monticore.types2.SymTypeExpression;
+import de.monticore.types2.SymTypeOfObject;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class CD2EHelper {
   }
 
   public static SymTypeExpression transformCDType2SymTypeExpression(CDTypeSymbol typeSymbol) {
-    SymTypeExpression res = new SymObjectType();
+    SymTypeExpression res = new SymTypeOfObject();
     boolean success = false;
       List<CDTypeSymbolReference> superTypes = typeSymbol.getSuperTypes();
       for (CDTypeSymbolReference ref : superTypes) {

@@ -6,9 +6,9 @@ import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.types2.SymObjectType;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
+import de.monticore.types2.SymTypeOfObject;
 import de.se_rwth.commons.logging.LogStub;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsGlobalScope;
@@ -57,7 +57,7 @@ public class CombineExpressionsWithLiteralsTest {
     // TODO: j isnull
     //assertTrue(exp.deepEquals(j));
 
-    SymTypeExpression exp2 = new SymObjectType();
+    SymTypeExpression exp2 = new SymTypeOfObject();
     Optional<ASTExpression> exprC = p.parse_StringExpression("mc.typescalculator.TestCD.D.f = mc.typescalculator.TestCD.C.f");
     exp2.setName("String");
     assertTrue(exprC.isPresent());
