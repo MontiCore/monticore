@@ -28,7 +28,7 @@ package de.monticore.expressions;
 */
 
 component grammar ExpressionsBasis extends de.monticore.MCBasics,
-                                   // TODO: to add: de.monticore.types.MCBasicTypes,
+                                   de.monticore.types.TypeSymbols,
                                    de.monticore.literals.MCLiteralsBasis {
 
   /*=================================================================*/
@@ -68,17 +68,7 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics,
   LiteralExpression implements Expression<340>
     = Literal;
 
-  /** Field access: e.g. obj.attr or also (b ? getobject() : obj).attribute
-   *  This is similar to package names:
-   *  So when the language shall also allow QualifiedNames as Expressions,
-   *  they might be parsed here. E.g. in "x.y.Person", "x" might be
-   *  parsed as NameExpression, even though it is a package name.
-   *  This is to be resolved via SymbolTable
-   */
-  FieldAccessExpression implements Expression <290> =
-  	Expression "." Name;
-
-  @Deprecated    // will be replaced by FieldAccessExpression
+  @Deprecated    // will be replaced by FieldAccessExpression (which is in CommonExpressions)
   QualifiedNameExpression implements Expression <291> =
   	Expression "." Name;
 

@@ -1,10 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTQualifiedNameExpression;
+import de.monticore.expressions.expressionsbasis._ast.*;
 import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
@@ -106,7 +103,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
    * Names are looked up in the Symboltable and their stored SymExpression
    * is returned (a copy is not necessary)
    *
-   * Name can be one of: variablename, classname, methodname, package-part
+   * Name can be only a variablename (actually a fieldname)
    */
   @Override
   public void endVisit(ASTNameExpression ex){
@@ -116,57 +113,25 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     }
     String symname = ex.getName();
   
-    // case 1: Field Access
     // The name can be a variable, we check this first:
     Optional<EVariableSymbol> optVar = scope.resolveEVariable(ex.getName());
     // If the variable is found, its type is the result:
     if(optVar.isPresent()){ // try variable first
       EVariableSymbol var = optVar.get();
       this.result=Optional.of(var.getType());
-      return;
+    }else {
+      //no var found: we cannot derive a type
+      // we do not issue an error, because there should be a CoCo
+      // to detect that the field didn't exist in that particular scope.
+      // we return a pseudo type:
+      this.result=Optional.of(SymTypeExpressionFactory.createTypeVoid());
     }
-  
-    // case 2: Type
-    // The name can be a Type (i.e. person, int or the like)
-    Optional<ETypeSymbol> optType = scope.resolveEType(ex.getName());
-    if(optType.isPresent()) {   // it's not a variable -> check type
-      ETypeSymbol type = optType.get();
-      // Please note the type is used as Expression, so we ask for the "type" of a Type
-      SymTypeExpression res = TypesCalculatorHelper.fromETypeSymbol(type);  // XXX YYY TODO
-      this.result = Optional.of(res);
-      return;
-    }
-  
-    // case 3: Method  //raus!!!
-    // The name can be a Method (without any arguments given)
-    Optional<EMethodSymbol> optMethod = scope.resolveEMethod(ex.getName());
-    if(optMethod.isPresent()) { // no type, no var -> check method
-      EMethodSymbol method = optMethod.get();
-      
-      // TODO RE:
-      // "toString" ist eine Methode. Wenn die aus so alleine stehen kann hat die natürlich einen
-      // Typ, aber das ist NICHT der Returntyp der Methode --> sondern was viel komplexeres aus
-      // der Metaebene. ggf. Rücksprache
-      if(!"void".equals(method.getReturnType().getName())){
-        SymTypeExpression type=method.getReturnType();
-        this.result=Optional.of(type);
-      }else{
-        SymTypeExpression res =new SymTypeVoid();
-        this.result=Optional.of(res);
-      }
-      return;
-    }
-    
-    // case 4: Nothing
-    //no var, type, method found, could be a package or nothing at all
-    
-    // TODO: man könnte in das SymTypePackage auch den Namen gleich mit speichern?
-    Log.debug("package suspected","ExpressionBasisTypesCalculator");
-    this.result = Optional.of(new SymTypePackage());
-    
     
   }
 
+  // TODO: bitte auf die neue TypeSymbols umbauen
+  // TODO RE: und dann bitte testen, DefTypeBasic kann da helfen ...
+  
   /* Example first search for variable with name, than class with name,
      last method with name
    */
@@ -186,17 +151,22 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     g.g(); // this is g() of g2
   }
   */
-
-
-
+  
+  /**********************************************************************************/
+  
+  
   /**
    * Field-access:
    * (we use traverse, because there are two arguments)
    * Names are looked up in the Symboltable and their stored SymExpression
    * is returned (a copy is not necessary)
    */
-  // TODO RE: kann package sein YYY (und muss dann auch behandelt werden ...)
+  // TODO RE: WEGWERFEN, sobald das geht!
+  // TODO RE: WEGWERFEN, sobald das geht!
+  // Dieneu FieldAccessExpression ist nicht in diesem Visitor, sondern in dem
+  // der Subsprache: ich habe es schon entsprechend dort reinkopiert
   @Override
+  @Deprecated
   public void traverse(ASTQualifiedNameExpression node){
     // Argument 1:
     if (null != node.getExpression()) {
@@ -254,29 +224,12 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 //        return;
 //      }
 //    }
-
-
-    //Name kann innere Klasse sein
-    //
-
-    //Name kann methode sein
-    // -> dann mein typ ist der returntype
-
+  
   }
-  // Variables take precedence over static inner classes
-//  public static class B {
-//    public static class C {
-//      public static String D;
-//    }
-//
-//    static String C;
-//
-//  }
-//  public void g() {
-//    String j = B.C.D;
-//
-//  }
 
+
+  /**********************************************************************************/
+  
   /**
    * Literals have their own visitor:
    * we switch to the DeriveSymTypeOfLiterals visitor

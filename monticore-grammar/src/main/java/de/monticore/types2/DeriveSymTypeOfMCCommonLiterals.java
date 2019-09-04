@@ -6,6 +6,7 @@ import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
 import de.monticore.mccommon._ast.MCCommonLiterals;
+import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -29,6 +30,7 @@ public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals
   @Override
   public void setRealThis(MCCommonLiteralsVisitor realThis) {
     this.realThis = realThis;
+    super.realThis = realThis;  // not necessarily needed, but to be safe ...
   }
   
   @Override

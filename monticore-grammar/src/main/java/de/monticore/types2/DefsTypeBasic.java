@@ -72,11 +72,15 @@ public class DefsTypeBasic {
             .setExportsSymbols(true)
             .setAstNode(null)
             .setName("Phantasy2").build();     // hopefully unused
+    // we add a variety of Symbols to the same scope (which in reality doesn't happen)
+    scope.add(_int);
+    scope.add(_array);
+    scope.add(_boolean);
+    scope.add(_Object);
+    scope.add(_String);
+    // _null and _void are not real Symbols and thus not added here
     
-     // scope.add(ETypeSymbol ...);
-   
     // YYY weiter
-    
     
   }
   

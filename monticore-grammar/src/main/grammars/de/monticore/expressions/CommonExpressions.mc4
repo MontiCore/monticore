@@ -49,6 +49,18 @@ component grammar CommonExpressions
 
   /*=================================================================*/
 
+  /** Field access: e.g. obj.attr or also (b ? getobject() : obj).attribute
+   *  This is similar to package names:
+   *  So when the language shall also allow QualifiedNames as Expressions,
+   *  they might be parsed here. E.g. in "x.y.Person", "x" might be
+   *  parsed as NameExpression, even though it is a package name.
+   *  This is to be resolved via SymbolTable
+   */
+  FieldAccessExpression implements Expression <290> =
+  	Expression "." Name;
+
+  /*=================================================================*/
+
   BooleanNotExpression implements Expression <200> =
 	"~"  Expression;
 

@@ -57,6 +57,11 @@ au) #:= monticore-grammar bauen + tests mit neuestem Snapshot (3 min)
     mvn install -U || bell || continue
     bell ;;
 
+gu) #:= monticore-generator bauen + tests mit neuestem Snapshot (3 min)
+    cd ~/monticore/monticore-generator;
+    mvn install -U || bell || continue
+    bell ;;
+
 mc) #:bauen +Unit -Int.Tests (mvn install; 7:30 min)
     cd ~/monticore/; mvn install -U
     bell ;;
