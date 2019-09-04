@@ -168,8 +168,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
       String fullName= variableSymbolopt.get().getType().getName();
       addToTypesMapQName(expr,fullName,variableSymbolopt.get().getType().getSuperTypes());
     }else if(methodSymbolopt.isPresent()) {
-      String fullName = methodSymbolopt.get().getReturnType().getName()
-          ;
+      String fullName = methodSymbolopt.get().getReturnType().getName();
       addToTypesMapQName(expr,fullName,methodSymbolopt.get().getReturnType().getSuperTypes());
     }else{
       Log.info("package suspected","ExpressionsBasisTypesCalculator");
