@@ -105,7 +105,8 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
   protected List<ASTCDClass> createASTClasses(final ASTCDCompilationUnit ast) {
     List<ASTCDClass> astcdClassList = new ArrayList<>();
     for (ASTCDClass astcdClass : ast.getCDDefinition().getCDClassList()) {
-      ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(astcdClass.getName())
+      ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder()
+          .setName(astcdClass.getName())
           .setModifier(astcdClass.getModifier().deepClone())
           .build();
       astFullDecorator.decorate(astcdClass, changedClass);
