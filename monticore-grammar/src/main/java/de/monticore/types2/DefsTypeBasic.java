@@ -2,6 +2,10 @@
 package de.monticore.types2;
 
 import de.monticore.antlr4.MCConcreteParser;
+import de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisMill;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScopeBuilder;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.mcbasictypes._symboltable.MCBasicTypesGlobalScope;
@@ -51,26 +55,29 @@ public class DefsTypeBasic {
     link_Object();
     
     
-    /*
     // Phase 3: setting Scopes and attaching all Symbols to Scopes
     
     
     // TODO: Ab hier: Dies ist ein experimentelles Setting, das muss noch
     // rausfaktorisiert werden (damit es auch andere Arten von Glocal Scopes geben kann
     // die mit diesen Symbolen gefüttert werden können
+    // Oder man verschiebt das in die tests, denn die folgenden zeilen sind evtl. nicht
+    // nicht ganz allgemeingültig?
     
-    // Setting up a Scope Infrastructure
-    String MODEL_PATH = "x/y/Phantasy:src/test/resources";
-    ModelPath modelPath = new ModelPath(Paths.get(MODEL_PATH));
+    // Setting up a Scope Infrastructure (without a global Scope)
+  
+    ExpressionsBasisScope scope =
+            ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+            .setEnclosingScope(null)       // No enclosing Scope: Search ending here
+            .setExportsSymbols(true)
+            .setAstNode(null)
+            .setName("Phantasy2").build();     // hopefully unused
     
-    MCBasicTypesLanguage lang = null ;  // XXX geht nicht, weil abstract = new MCBasicTypesLanguage()
-    MCBasicTypesGlobalScope gloscope =
-            new MCBasicTypesGlobalScope(modelPath, lang);
+     // scope.add(ETypeSymbol ...);
    
     // YYY weiter
     
-    */
-            
+    
   }
   
   
@@ -222,6 +229,7 @@ public class DefsTypeBasic {
   
   public static void set_String() {
     _String = type("StringType");
+    _StringSymType = createTypeObject("String", _String);
   }
   
   public static void link_String() {
@@ -245,7 +253,6 @@ public class DefsTypeBasic {
     // TODO RE: this function is very incomplete; ersetzen oder komplettieren
     
     checkFullnames(_String);
-    _StringSymType = createTypeObject("String", _String);
   }
   
   /*********************************************************************/

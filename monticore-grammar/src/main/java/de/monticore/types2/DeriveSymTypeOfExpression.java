@@ -116,7 +116,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     }
     String symname = ex.getName();
   
-    // case 1: Variable
+    // case 1: Field Access
     // The name can be a variable, we check this first:
     Optional<EVariableSymbol> optVar = scope.resolveEVariable(ex.getName());
     // If the variable is found, its type is the result:

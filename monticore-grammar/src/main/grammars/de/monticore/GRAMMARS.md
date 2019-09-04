@@ -117,9 +117,10 @@ This modularity of expressions and associated types greatly eases
 the reuse of type structures in languages similar to Java.
 
 
-### [ExpressionsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/expressions/ExpressionsBasis.mc4) (stable)
-* This grammar defines core interfaces for expressions and the 
+### [ExpressionsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/expressions/ExpressionsBasis.mc4) (Beta: In Stabilization)
+* This grammar defines core interfaces for expressions and imports the 
 kinds of symbols necessary.
+* The symbols are taken over from the TypeSymbols grammar (see below).
 * A hierarchy of conservative extensions to this grammar realize
 these interfaces in various forms.
 

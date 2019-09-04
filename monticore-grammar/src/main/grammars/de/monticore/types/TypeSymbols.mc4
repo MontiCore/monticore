@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
 /**
  * This grammar is used to generate an abstract Syntax only.
  * These AST-classes are then used to store typing information

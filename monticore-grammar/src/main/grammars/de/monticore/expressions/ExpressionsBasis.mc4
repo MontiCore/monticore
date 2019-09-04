@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions;
 
-/* This is a MontiCore stable grammar.
- * Adaptations -- if any -- are conservative. */
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
 
 /**
  * This grammar defines core interfaces for expressions and the
@@ -47,15 +46,18 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics, de.monticore.l
   /** EMethod describes methods that can be called in expressions.
    * Methods have signatures (not described here).
   */
+  // XXX YYY Umbenennen ZZZ TODO
   symbol EMethod = Name;
 
   /** EVariable describes variables that can be used in expressions.
    * EVariables have types (not described here).
   */
+  // XXX YYY Umbenennen ZZZ TODO
   symbol EVariable = Name;
 
   /** ETypes describes types that can expressions can have.
   */
+  // XXX YYY Umbenennen ZZZ TODO
   symbol EType = Name;
 
   NameExpression implements Expression<350>
@@ -64,6 +66,7 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics, de.monticore.l
   LiteralExpression implements Expression<340>
     = Literal;
 
+  // XXX YYY Umbenennen ZZZ TODO
   QualifiedNameExpression implements Expression <290> =
   	Expression "." Name;
 
