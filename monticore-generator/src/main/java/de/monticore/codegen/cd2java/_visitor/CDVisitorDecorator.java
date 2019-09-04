@@ -1,7 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -48,7 +52,7 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
     List<String> astPackage = new ArrayList<>(input.getPackageList());
     astPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), VISITOR_PACKAGE));
 
-    ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
+    ASTCDDefinition astCD = CD4CodeMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
         .addCDInterface(astVisitorDecorator.decorate(input))
         .addCDInterface(symbolVisitorDecorator.decorate(input))
@@ -66,7 +70,7 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
       this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(astPackage));
     }
 
-    return CD4AnalysisMill.cDCompilationUnitBuilder()
+    return CD4CodeMill.cDCompilationUnitBuilder()
         .setPackageList(astPackage)
         .setCDDefinition(astCD)
         .build();

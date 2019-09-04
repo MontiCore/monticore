@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTModifier;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.cd.cd4code._parser.CD4CodeParser;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
@@ -46,7 +46,7 @@ public class CDAttributeFacade {
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final ASTMCType type, final String name) {
-    return CD4AnalysisMill.cDAttributeBuilder()
+    return CD4CodeMill.cDAttributeBuilder()
         .setModifier(modifier)
         .setMCType(type.deepClone())
         .setName(name)

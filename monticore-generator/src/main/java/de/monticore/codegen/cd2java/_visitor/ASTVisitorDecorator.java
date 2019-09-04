@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -32,7 +33,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithPackage(ast);
     ASTMCType visitorType = this.visitorService.getVisitorType();
 
-    ASTCDInterface symbolVisitorInterface = CD4AnalysisMill.cDInterfaceBuilder()
+    ASTCDInterface symbolVisitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitorSimpleName())
         .addAllInterfaces(this.visitorService.getAllVisitorTypesInHierarchy())
         .setModifier(PUBLIC.build())

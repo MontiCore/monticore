@@ -40,29 +40,19 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   private CDTypeFacade cdTypeFacade;
 
-  private static final String AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.AutomatonScope";
-
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
-
-  public static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
-
-  public static final String QUALIFIED_NAMES_CALCULATOR = "de.monticore.symboltable.names.QualifiedNamesCalculator";
 
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
 
   private static final String STATE_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.StateSymbol";
 
-  public static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
+  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor";
 
-  public static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
+  private static final String AST_AUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
 
-  public static final String AUTOMATON_VISITOR = "de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor";
+  private static final String AST_STATE = "de.monticore.codegen.ast.automaton._ast.ASTState";
 
-  public static final String AST_AUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
-
-  public static final String AST_STATE = "de.monticore.codegen.ast.automaton._ast.ASTState";
-
-  public static final String AST_TRANSITION = "de.monticore.codegen.ast.automaton._ast.ASTTransition";
+  private static final String AST_TRANSITION = "de.monticore.codegen.ast.automaton._ast.ASTTransition";
 
   @Before
   public void setUp() {
@@ -112,8 +102,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(1, symTabCreatorClass.sizeCDConstructors());
-//    assertEquals(2, symTabCreatorClass.sizeCDConstructors());
+    assertEquals(2, symTabCreatorClass.sizeCDConstructors());
   }
 
   @Test
@@ -130,35 +119,33 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
     assertTrue(cdConstructor.isEmptyExceptions());
   }
 
-//
-//  @Test
-//  public void testConstructorWithEnclosingScope() {
-//    ASTCDConstructor cdConstructor = symTabCreatorClass.getCDConstructor(0);
-//    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-//    assertEquals("AutomatonSymbolTableCreator", cdConstructor.getName());
-//
-//    assertEquals(1, cdConstructor.sizeCDParameters());
-//
-//    assertDeepEquals("Deque<? extends " + I_AUTOMATON_SCOPE + ">", cdConstructor.getCDParameter(0).getMCType());
-//    assertEquals("scopeStack", cdConstructor.getCDParameter(0).getName());
-//
-//    assertTrue(cdConstructor.isEmptyExceptions());
-//  }
+
+  @Test
+  public void testConstructorWithEnclosingScope() {
+    ASTCDConstructor cdConstructor = symTabCreatorClass.getCDConstructor(1);
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
+    assertEquals("AutomatonSymbolTableCreator", cdConstructor.getName());
+
+    assertEquals(1, cdConstructor.sizeCDParameters());
+
+    assertDeepEquals("Deque<? extends " + I_AUTOMATON_SCOPE + ">", cdConstructor.getCDParameter(0).getMCType());
+    assertEquals("scopeStack", cdConstructor.getCDParameter(0).getName());
+
+    assertTrue(cdConstructor.isEmptyExceptions());
+  }
 
 
   @Test
   public void testAttributeSize() {
-    assertEquals(2, symTabCreatorClass.sizeCDAttributes());
-
-//    assertEquals(3, symTabCreatorClass.sizeCDAttributes());
+    assertEquals(3, symTabCreatorClass.sizeCDAttributes());
   }
 
-//  @Test
-//  public void testScopeStackAttribute() {
-//    ASTCDAttribute astcdAttribute = getAttributeBy("scopeStack", symTabCreatorClass);
-//    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-//    assertDeepEquals("Deque<? extends de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope>", astcdAttribute.getMCType());
-//  }
+  @Test
+  public void testScopeStackAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("scopeStack", symTabCreatorClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals("Deque<? extends de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope>", astcdAttribute.getMCType());
+  }
 
   @Test
   public void testRealThisAttribute() {
@@ -176,7 +163,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(25, symTabCreatorClass.getCDMethodList().size());
+    assertEquals(26, symTabCreatorClass.getCDMethodList().size());
   }
 
   @Test
@@ -231,6 +218,18 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("realThis", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testSetAutomatonScopeStack() {
+    ASTCDMethod method = getMethodBy("setAutomatonScopeStack", symTabCreatorClass);
+    assertDeepEquals(PROTECTED, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition("Deque<? extends " + I_AUTOMATON_SCOPE + ">");
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(astType, method.getCDParameter(0).getMCType());
+    assertEquals("scopeStack", method.getCDParameter(0).getName());
   }
 
   @Test

@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.types.MCCollectionTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +27,7 @@ public class CDParameterFacade {
   }
 
   public ASTCDParameter createParameter(final ASTMCType type, final String name) {
-    return CD4AnalysisMill.cDParameterBuilder()
+    return CD4CodeMill.cDParameterBuilder()
         .setMCType(type)
         .setName(name)
         .build();

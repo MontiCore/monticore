@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -38,7 +39,7 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     ASTMCQualifiedType symbolVisitorType = getCDTypeFacade().createQualifiedType(visitorService.getSymbolVisitorSimpleName());
     Set<String> symbolNames = getSymbolNames(compilationUnit.getCDDefinition());
 
-    return CD4AnalysisMill.cDInterfaceBuilder()
+    return CD4CodeMill.cDInterfaceBuilder()
         .setName(visitorService.getSymbolVisitorSimpleName())
         .setModifier(PUBLIC.build())
         .addCDMethod(addEndVisitISymbolMethod())

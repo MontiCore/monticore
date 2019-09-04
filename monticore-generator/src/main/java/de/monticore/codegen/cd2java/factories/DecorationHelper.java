@@ -19,8 +19,6 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFI
 
 public class DecorationHelper extends MCCollectionTypesHelper {
 
-  public static final String OPTIONAL = "Optional";
-
   public static final String GET_PREFIX_BOOLEAN = "is";
 
   public static final String GET_SUFFIX_OPTINAL = "Opt";

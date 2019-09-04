@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -67,7 +68,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
         .map(visitorService::calculateCDTypeNamesWithPackage)
         .collect(Collectors.toList()));
 
-    return CD4AnalysisMill.cDClassBuilder()
+    return CD4CodeMill.cDClassBuilder()
         .setName(delegatorVisitorSimpleName)
         .setModifier(PUBLIC.build())
         .addInterface(getCDTypeFacade().createQualifiedType(visitorService.getInheritanceVisitorSimpleName()))

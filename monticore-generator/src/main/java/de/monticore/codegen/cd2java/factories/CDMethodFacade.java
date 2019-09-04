@@ -4,7 +4,7 @@ package de.monticore.codegen.cd2java.factories;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.cd.cd4analysis._ast.ASTModifier;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.cd.cd4code._parser.CD4CodeParser;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
@@ -92,7 +92,7 @@ public class CDMethodFacade {
   }
 
   public ASTCDMethod createMethod(final ASTModifier modifier, final ASTMCReturnType returnType, final String name, final List<ASTCDParameter> parameters) {
-    return CD4AnalysisMill.cDMethodBuilder()
+    return CD4CodeMill.cDMethodBuilder()
         .setModifier(modifier)
         .setMCReturnType(returnType)
         .setName(name)

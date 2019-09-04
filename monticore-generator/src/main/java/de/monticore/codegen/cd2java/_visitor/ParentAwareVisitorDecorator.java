@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -32,7 +33,7 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithPackage(input);
     String languageInterfaceName = visitorService.getLanguageInterfaceName();
 
-    return CD4AnalysisMill.cDClassBuilder()
+    return CD4CodeMill.cDClassBuilder()
         .setName(visitorService.getParentAwareVisitorSimpleName())
         .setModifier(PUBLIC_ABSTRACT.build())
         .addInterface(visitorService.getVisitorType())

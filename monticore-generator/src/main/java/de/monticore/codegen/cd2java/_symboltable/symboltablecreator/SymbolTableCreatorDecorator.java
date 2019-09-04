@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java._symboltable.symboltablecreator;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -60,13 +61,13 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       List<ASTCDMethod> firstCreatedScopeMethod = methodDecorator.getAccessorDecorator().decorate(firstCreatedScopeAttribute);
 
 
-      ASTCDClass symTabCreator = CD4AnalysisMill.cDClassBuilder()
+      ASTCDClass symTabCreator = CD4CodeMill.cDClassBuilder()
           .setName(symbolTableCreator)
           .setModifier(PUBLIC.build())
           .addInterface(getCDTypeFacade().createQualifiedType(visitorSimpleName))
           .addCDConstructor(createSimpleConstructor(symbolTableCreator, scopeInterface))
-//          .addCDConstructor(createDequeConstructor(symbolTableCreator, dequeType))
-//          .addCDAttribute(createScopeStackAttribute(dequeType))
+          .addCDConstructor(createDequeConstructor(symbolTableCreator, dequeType))
+          .addCDAttribute(createScopeStackAttribute(dequeType))
           .addCDAttribute(realThisAttribute)
           .addAllCDMethods(realThisMethods)
           .addCDAttribute(firstCreatedScopeAttribute)
@@ -74,7 +75,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
           .addCDMethod(createCreateFromASTMethod(astFullName, symbolTableCreator))
           .addCDMethod(createPutOnStackMethod(scopeInterface))
           .addAllCDMethods(createCurrentScopeMethods(scopeInterface))
-//          .addCDMethod(createSetScopeStackMethod(dequeType, simpleName))
+          .addCDMethod(createSetScopeStackMethod(dequeType, simpleName))
           .addCDMethod(createCreateScopeMethod(scopeInterface, simpleName))
           .addAllCDMethods(createSymbolClassMethods(symbolDefiningClasses, scopeInterface))
           .addAllCDMethods(createVisitForNoSymbolMethods(noSymbolDefiningClasses))

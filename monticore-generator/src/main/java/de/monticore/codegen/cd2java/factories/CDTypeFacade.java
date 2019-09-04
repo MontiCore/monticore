@@ -2,7 +2,6 @@
 package de.monticore.codegen.cd2java.factories;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.cd.cd4code._parser.CD4CodeParser;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
@@ -84,8 +83,8 @@ public class CDTypeFacade {
   }
 
   public ASTMCOptionalType createOptionalTypeOf(final String name) {
-    ASTMCTypeArgument arg = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
-    return CD4AnalysisMill.mCOptionalTypeBuilder().setName("Optional").setMCTypeArgument(arg).build();
+    ASTMCTypeArgument arg = CD4CodeMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
+    return CD4CodeMill.mCOptionalTypeBuilder().setName("Optional").setMCTypeArgument(arg).build();
   }
 
   public ASTMCOptionalType createOptionalTypeOf(final ASTMCType type) {
@@ -143,7 +142,7 @@ public class CDTypeFacade {
   }
 
   public ASTMCType createCollectionTypeOf(final String name) {
-    ASTMCTypeArgument arg = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
+    ASTMCTypeArgument arg = CD4CodeMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
     // TODO Ersetze CD4Code durch was besseres
     return CD4CodeMill.mCBasicGenericTypeBuilder().setNameList(Lists.newArrayList("Collection")).setMCTypeArgumentList(Lists.newArrayList(arg)).build();
   }
@@ -153,9 +152,9 @@ public class CDTypeFacade {
   }
 
   public ASTMCMapType createMapTypeOf(final String firstType, final String secondType) {
-    ASTMCTypeArgument first = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(firstType)).build();
-    ASTMCTypeArgument second = CD4AnalysisMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(secondType)).build();
-    return CD4AnalysisMill.mCMapTypeBuilder().setName("Map").setKey(first).setValue(second).build();
+    ASTMCTypeArgument first = CD4CodeMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(firstType)).build();
+    ASTMCTypeArgument second = CD4CodeMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(secondType)).build();
+    return CD4CodeMill.mCMapTypeBuilder().setName("Map").setKey(first).setValue(second).build();
   }
 
   public ASTMCArrayType createArrayType(final Class<?> clazz, int dimension) {
