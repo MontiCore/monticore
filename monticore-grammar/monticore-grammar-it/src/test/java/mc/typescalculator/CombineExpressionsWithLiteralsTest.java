@@ -31,7 +31,8 @@ public class CombineExpressionsWithLiteralsTest {
     LogStub.init();
     CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
     ModelPath modelPath = new ModelPath(Paths.get(MODEL_PATH));
-    CD4AnalysisGlobalScope globalScope = new CD4AnalysisGlobalScope(modelPath, cd4AnalysisLanguage);
+    CD4AnalysisGlobalScope globalScope =
+            new CD4AnalysisGlobalScope(modelPath, cd4AnalysisLanguage);
 
 
     CD2EAdapter adapter = new CD2EAdapter(globalScope);

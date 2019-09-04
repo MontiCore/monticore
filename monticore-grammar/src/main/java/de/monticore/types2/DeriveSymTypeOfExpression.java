@@ -5,7 +5,9 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTQualifiedNameExpression;
+import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
@@ -13,6 +15,7 @@ import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.typescalculator.TypesCalculatorHelper;
 import de.se_rwth.commons.Symbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -102,6 +105,8 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   /**
    * Names are looked up in the Symboltable and their stored SymExpression
    * is returned (a copy is not necessary)
+   *
+   * Name can be one of: variablename, classname, methodname, package-part
    */
   @Override
   public void endVisit(ASTNameExpression ex){
@@ -110,12 +115,56 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       Log.error("0xEE672 Internal Error: No Scope for expression " + ex.toString());
     }
     String symname = ex.getName();
-    // TODO: continue with: YYY BR
-    // ISymbol symbol;  // = scope. (symname) ... get the Symbol
-    // symbol. --> SymType des Symbols rausfinden (für passende SymbolArt)
-    // result = ...
+
+    Optional<EVariableSymbol> optVar = scope.resolveEVariable(ex.getName());
+    Optional<ETypeSymbol> optType = scope.resolveEType(ex.getName());
+    Optional<EMethodSymbol> optMethod = scope.resolveEMethod(ex.getName());
+
+
+    if(optVar.isPresent()){ // try variable first
+      EVariableSymbol var = optVar.get();
+      this.result=Optional.of(var.getType());
+    }else if(optType.isPresent()) { // it's not a variable -> check type
+      ETypeSymbol type = optType.get();
+      SymTypeExpression res = TypesCalculatorHelper.fromETypeSymbol(type);
+      this.result = Optional.of(res);
+    }else if(optMethod.isPresent()) { // no type, no var -> check method
+      EMethodSymbol method = optMethod.get();
+      if(!"void".equals(method.getReturnType().getName())){
+        SymTypeExpression type=method.getReturnType();
+        this.result=Optional.of(type);
+      }else{
+        SymTypeExpression res =new SymTypeVoid();
+        this.result=Optional.of(res);
+      }
+    }else{ //no var, type, method found, could be a package or nothing at all
+      Log.debug("package suspected","ExpressionBasisTypesCalculator");
+      this.result = Optional.of(new SymTypePackage());
+    }
   }
-  
+
+  /* Example first search for variable with name, than class with name,
+     last method with name
+   */
+  /*
+  static class g {
+    static public  void g() {}
+  }
+
+  static class g2 {
+    static public  void g() {}
+  }
+
+  public void g() {
+
+    g2 g = new g2();
+
+    g.g(); // this is g() of g2
+  }
+  */
+
+
+
   /**
    * Field-access:
    * (we use traverse, because there are two arguments)

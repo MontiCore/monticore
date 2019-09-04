@@ -1,9 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
+import de.monticore.antlr4.MCConcreteParser;
+import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types.mcbasictypes._symboltable.MCBasicTypesGlobalScope;
+import de.monticore.types.mcbasictypes._symboltable.MCBasicTypesLanguage;
 import de.monticore.types.typesymbols._symboltable.*;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static de.monticore.types2.SymTypeExpressionFactory.createTypeObject;
@@ -45,11 +50,29 @@ public class DefsTypeBasic {
     link_String();
     link_Object();
     
-    // Setting up a Scope Infrastructure
-    TypeSymbolsGlobalScope gloscope =
-            new TypeSymbolsGlobalScope()
     
+    /*
+    // Phase 3: setting Scopes and attaching all Symbols to Scopes
+    
+    
+    // TODO: Ab hier: Dies ist ein experimentelles Setting, das muss noch
+    // rausfaktorisiert werden (damit es auch andere Arten von Glocal Scopes geben kann
+    // die mit diesen Symbolen gefüttert werden können
+    
+    // Setting up a Scope Infrastructure
+    String MODEL_PATH = "x/y/Phantasy:src/test/resources";
+    ModelPath modelPath = new ModelPath(Paths.get(MODEL_PATH));
+    
+    MCBasicTypesLanguage lang = null ;  // XXX geht nicht, weil abstract = new MCBasicTypesLanguage()
+    MCBasicTypesGlobalScope gloscope =
+            new MCBasicTypesGlobalScope(modelPath, lang);
+   
+    // YYY weiter
+    
+    */
+            
   }
+  
   
   /*********************************************************************/
   
