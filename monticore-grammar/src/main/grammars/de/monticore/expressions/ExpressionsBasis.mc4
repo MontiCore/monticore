@@ -27,7 +27,9 @@ package de.monticore.expressions;
  *
 */
 
-component grammar ExpressionsBasis extends de.monticore.MCBasics, de.monticore.literals.MCLiteralsBasis {
+component grammar ExpressionsBasis extends de.monticore.MCBasics,
+                                   // TODO: to add: de.monticore.types.MCBasicTypes,
+                                   de.monticore.literals.MCLiteralsBasis {
 
   /*=================================================================*/
 
@@ -46,18 +48,18 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics, de.monticore.l
   /** EMethod describes methods that can be called in expressions.
    * Methods have signatures (not described here).
   */
-  // XXX YYY Umbenennen ZZZ TODO
+  @Deprecated
   symbol EMethod = Name;
 
   /** EVariable describes variables that can be used in expressions.
    * EVariables have types (not described here).
   */
-  // XXX YYY Umbenennen ZZZ TODO
+  @Deprecated
   symbol EVariable = Name;
 
   /** ETypes describes types that can expressions can have.
   */
-  // XXX YYY Umbenennen ZZZ TODO
+  @Deprecated
   symbol EType = Name;
 
   NameExpression implements Expression<350>
@@ -66,8 +68,18 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics, de.monticore.l
   LiteralExpression implements Expression<340>
     = Literal;
 
-  // XXX YYY Umbenennen ZZZ TODO
-  QualifiedNameExpression implements Expression <290> =
+  /** Field access: e.g. obj.attr or also (b ? getobject() : obj).attribute
+   *  This is similar to package names:
+   *  So when the language shall also allow QualifiedNames as Expressions,
+   *  they might be parsed here. E.g. in "x.y.Person", "x" might be
+   *  parsed as NameExpression, even though it is a package name.
+   *  This is to be resolved via SymbolTable
+   */
+  FieldAccessExpression implements Expression <290> =
+  	Expression "." Name;
+
+  @Deprecated    // will be replaced by FieldAccessExpression
+  QualifiedNameExpression implements Expression <291> =
   	Expression "." Name;
 
 }
