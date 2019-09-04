@@ -53,6 +53,8 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   /**
    * Storage in the Visitor: result of the last endVisit.
    * This attribute is synthesized upward.
+   * empty means = no calculation happened (i.e. the visitor was not applicable)
+   * If it is not a type, then an explicit NoType- info is stored.
    */
   public Optional<SymTypeExpression> result = Optional.empty();
   
@@ -108,7 +110,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       Log.error("0xEE672 Internal Error: No Scope for expression " + ex.toString());
     }
     String symname = ex.getName();
-    // TODO: continue with:
+    // TODO: continue with: YYY BR
     // ISymbol symbol;  // = scope. (symname) ... get the Symbol
     // symbol. --> SymType des Symbols rausfinden (für passende SymbolArt)
     // result = ...
@@ -120,6 +122,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
    * Names are looked up in the Symboltable and their stored SymExpression
    * is returned (a copy is not necessary)
    */
+  // TODO: kann package sein YYY BR
   @Override
   public void traverse(ASTQualifiedNameExpression node){
     // Argument 1:

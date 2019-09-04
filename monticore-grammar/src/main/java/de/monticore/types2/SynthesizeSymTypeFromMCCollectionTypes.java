@@ -1,10 +1,5 @@
 package de.monticore.types2;
 
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
-import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
-import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
 import de.se_rwth.commons.logging.Log;
@@ -93,7 +88,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends  SynthesizeSymTypeFr
   public void endVisit(ASTMCListType t) {
     // argument Type has been processed and stored in result:
     SymTypeExpression tex =
-            SymTypeExpressionFactory.createGenericTypeExpression(
+            SymTypeExpressionFactory.createGenerics(
                       "List", Arrays.asList(result.get()));
     if(!result.isPresent()) {
       Log.error("0xE9FD6 Internal Error: No SymType argument for List type. "
@@ -105,7 +100,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends  SynthesizeSymTypeFr
   public void endVisit(ASTMCSetType t) {
     // argument Type has been processed and stored in result:
     SymTypeExpression tex =
-            SymTypeExpressionFactory.createGenericTypeExpression(
+            SymTypeExpressionFactory.createGenerics(
                     "Set", Arrays.asList(result.get()));
     if(!result.isPresent()) {
       Log.error("0xE9FD7 Internal Error: No SymType argument for Set type. "
@@ -117,7 +112,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends  SynthesizeSymTypeFr
   public void endVisit(ASTMCOptionalType t) {
     // argument Type has been processed and stored in result:
     SymTypeExpression tex =
-            SymTypeExpressionFactory.createGenericTypeExpression(
+            SymTypeExpressionFactory.createGenerics(
                     "Optional", Arrays.asList(result.get()));
     if(!result.isPresent()) {
       Log.error("0xE9FD8 Internal Error: No SymType argument for Optional type. "
@@ -153,7 +148,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends  SynthesizeSymTypeFr
     SymTypeExpression argument2 = result.get();
     // Construct new TypeExpression:
     SymTypeExpression tex =
-            SymTypeExpressionFactory.createGenericTypeExpression(
+            SymTypeExpressionFactory.createGenerics(
                     "Map", Arrays.asList(argument1,argument2));
     result = Optional.of(tex);
   }
