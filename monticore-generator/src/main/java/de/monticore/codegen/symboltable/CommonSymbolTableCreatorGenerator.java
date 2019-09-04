@@ -5,7 +5,6 @@ package de.monticore.codegen.symboltable;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
@@ -45,12 +44,10 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
 
     Collection<String> kinds = Sets.newHashSet();
     for(ProdSymbol rule: grammarSymbol.getProds()) {
-      if (rule.isSymbolDefinition()) {
-        kinds.add(rule.getName());
-      }
-      Optional<String> kind = genHelper.getTypeWithSymbolInfo(rule);
+      Optional<ProdSymbol> kind = genHelper.getTypeWithSymbolInfo(rule);
       if (kind.isPresent()) {
-        symbolDefiningRules.put(rule, kind.get());
+        symbolDefiningRules.put(rule, kind.get().getName());
+        kinds.add(genHelper.getQualifiedSymbolType(kind.get()));
       } else {
         if(rule.isParserProd()) {
           nonSymbolDefiningRules.add(rule);

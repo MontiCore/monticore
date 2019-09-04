@@ -145,12 +145,12 @@ public class ${className} implements ${grammarName}Visitor {
 
   public void addToScopeAndLinkWithNode(${qualifiedSymbolName} symbol, ${astName} astNode) {
     addToScope(symbol);
-    setLinkBetweenSymbolAndNode(symbol, astNode);
 <#if isScopeSpanning>
   ${scopeName} scope = createScope(false);
     putOnStack(scope);
     symbol.setSpannedScope(scope);
 </#if>
+    setLinkBetweenSymbolAndNode(symbol, astNode);
   }
 
   public void setLinkBetweenSymbolAndNode(${qualifiedSymbolName} symbol, ${astName} astNode) {
@@ -230,7 +230,7 @@ public class ${className} implements ${grammarName}Visitor {
 </#list>
 
 <#list kinds as kind>
-  public void addToScope(${kind}Symbol symbol) {
+  public void addToScope(${kind} symbol) {
     if (!(symbol instanceof ISymbolReference)) {
       if (getCurrentScope().isPresent()) {
         getCurrentScope().get().add(symbol);

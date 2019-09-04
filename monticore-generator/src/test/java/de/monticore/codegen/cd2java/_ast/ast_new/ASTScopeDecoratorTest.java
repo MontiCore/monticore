@@ -57,15 +57,15 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAttributes() {
     assertFalse(attributes.isEmpty());
-    assertEquals(4, attributes.size());
+    assertEquals(3, attributes.size());
   }
 
   @Test
   public void testSpannedScopeAttribute() {
-    Optional<ASTCDAttribute> symbolAttribute = attributes.stream().filter(x -> x.getName().equals("spannedASTScope")).findFirst();
+    Optional<ASTCDAttribute> symbolAttribute = attributes.stream().filter(x -> x.getName().equals("spannedScope")).findFirst();
     assertTrue(symbolAttribute.isPresent());
     assertDeepEquals(PROTECTED, symbolAttribute.get().getModifier());
-    assertOptionalOf(AST_SCOPE, symbolAttribute.get().getMCType());
+    assertDeepEquals(AST_I_SCOPE, symbolAttribute.get().getMCType());
   }
 
   @Test
@@ -73,7 +73,7 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
     Optional<ASTCDAttribute> symbolAttribute = attributes.stream().filter(x -> x.getName().equals("spannedScope")).findFirst();
     assertTrue(symbolAttribute.isPresent());
     assertDeepEquals(PROTECTED, symbolAttribute.get().getModifier());
-    assertOptionalOf(AST_I_SCOPE, symbolAttribute.get().getMCType());
+    assertDeepEquals(AST_I_SCOPE, symbolAttribute.get().getMCType());
   }
 
   @Test

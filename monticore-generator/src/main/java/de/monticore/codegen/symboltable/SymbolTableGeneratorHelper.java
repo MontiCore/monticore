@@ -810,13 +810,13 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return defaultType;
   }
 
-  public Optional<String> getTypeWithSymbolInfo(ProdSymbol type) {
+  public Optional<ProdSymbol> getTypeWithSymbolInfo(ProdSymbol type) {
     if (type.isSymbolDefinition()) {
-      return Optional.of(type.getName());
+      return Optional.of(type);
     }
     for (ProdSymbol superType : MCGrammarSymbolTableHelper.getAllSuperInterfaces(type)) {
       if (superType.isSymbolDefinition()) {
-        return Optional.of(superType.getName());
+        return Optional.of(superType);
       }
     }
     return Optional.empty();

@@ -7,6 +7,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
@@ -14,6 +15,7 @@ import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.types.MCSimpleGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 
 import java.util.List;
@@ -97,10 +99,12 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     }
   }
 
-
   public String getSymbolTypeName(ASTCDType clazz) {
-    //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
-    return getSymbolTypeName(clazz, getCDSymbol());
+    if (!clazz.isPresentCDTypeSymbol()) {
+      return getSymbolTypeName(clazz, getCDSymbol());
+    }
+    CDTypeSymbol symbol = clazz.getCDTypeSymbol();
+    return Joiners.DOT.join(symbol.getModelName().toLowerCase(), getSubPackage(), getSymbolName(clazz));
   }
 
   public String getSymbolTypeName(ASTCDType clazz, CDDefinitionSymbol cdDefinitionSymbol) {
