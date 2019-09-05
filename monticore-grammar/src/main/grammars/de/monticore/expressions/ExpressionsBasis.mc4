@@ -40,27 +40,6 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics,
 
   /*=================================================================*/
 
-  /* Three forms of symbols that are used and applied in
-   * expressions. They are typically defined outside of expressions
-   * (although there are exceptions).
-  */
-
-  /** EMethod describes methods that can be called in expressions.
-   * Methods have signatures (not described here).
-  */
-  @Deprecated
-  symbol EMethod = Name;
-
-  /** EVariable describes variables that can be used in expressions.
-   * EVariables have types (not described here).
-  */
-  @Deprecated
-  symbol EVariable = Name;
-
-  /** ETypes describes types that can expressions can have.
-  */
-  @Deprecated
-  symbol EType = Name;
 
   NameExpression implements Expression<350>
     = Name;
