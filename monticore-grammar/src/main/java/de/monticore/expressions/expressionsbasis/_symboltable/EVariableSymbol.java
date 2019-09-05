@@ -3,6 +3,7 @@ package de.monticore.expressions.expressionsbasis._symboltable;
 
 import de.monticore.types2.SymTypeExpression;
 
+@Deprecated
 public class EVariableSymbol extends EVariableSymbolTOP {
 
   protected SymTypeExpression type;

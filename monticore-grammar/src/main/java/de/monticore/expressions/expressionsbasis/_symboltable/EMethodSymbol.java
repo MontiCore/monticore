@@ -9,6 +9,7 @@ import java.util.List;
 /*
     Symbol Facade to be adapted by aggregated languages
  */
+@Deprecated
 public class EMethodSymbol extends EMethodSymbolTOP {
   
   /**

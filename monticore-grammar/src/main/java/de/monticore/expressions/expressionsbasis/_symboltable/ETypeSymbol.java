@@ -6,6 +6,7 @@ import de.monticore.types2.SymTypeExpression;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class ETypeSymbol extends ETypeSymbolTOP {
   
   // TODO RE: Diese Klasse ist Redundant zu TypeSymbol (aus der BasicType's grammar)

@@ -5,13 +5,13 @@ import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types2.SymTypeOfObject;
+import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
+import de.monticore.types2.SymTypeOfObject;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -309,13 +309,13 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
       ExpressionsBasisPrettyPrinter prettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
       String exp = prettyPrinter.prettyprint(expr.getExpression());
-      Collection<EMethodSymbol> methodcollection = scope.resolveEMethodMany(exp);
-      List<EMethodSymbol> methodlist = new ArrayList<>(methodcollection);
-      for (EMethodSymbol method : methodlist) {
-        if (expr.getArguments().getExpressionList().size()==method.getParameterList().size()){
+      Collection<MethodSymbol> methodcollection = scope.resolveMethodMany(exp);
+      List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
+      for (MethodSymbol method : methodlist) {
+        if (expr.getArguments().getExpressionList().size()==method.getParameter().size()){
           boolean success = true;
-          for(int i=0;i<method.getParameterList().size();i++){
-            if(!method.getParameterList().get(i).getType().deepEquals(types.get(expr.getArguments().getExpressionList().get(i)))&&!isSubtypeOf(types.get(expr.getArguments().getExpressionList().get(i)),method.getParameterList().get(i).getType())){
+          for(int i=0;i<method.getParameter().size();i++){
+            if(!method.getParameter().get(i).getType().deepEquals(types.get(expr.getArguments().getExpressionList().get(i)))&&!isSubtypeOf(types.get(expr.getArguments().getExpressionList().get(i)),method.getParameter().get(i).getType())){
               success = false;
             }
           }
