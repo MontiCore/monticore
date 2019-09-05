@@ -66,7 +66,7 @@ public class DefsTypeBasic {
             .setName(name)
             .setFullName(fullName)
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setTypeParameter(new ArrayList<>())
+            .setTypeParameters(new ArrayList<>())
             .setFields(new ArrayList<>())
             .setMethods(new ArrayList<>())
             .build();
