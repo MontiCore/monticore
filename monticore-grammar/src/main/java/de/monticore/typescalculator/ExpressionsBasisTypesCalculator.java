@@ -8,6 +8,9 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.typesymbols._symboltable.FieldSymbol;
+import de.monticore.types.typesymbols._symboltable.MethodSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
@@ -69,20 +72,20 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
 
   @Override
   public void endVisit(ASTNameExpression expr){
-    Optional<EVariableSymbol> optVar = scope.resolveEVariable(expr.getName());
-    Optional<ETypeSymbol> optType = scope.resolveEType(expr.getName());
-    Optional<EMethodSymbol> optMethod = scope.resolveEMethod(expr.getName());
+    Optional<FieldSymbol> optVar = scope.resolveField(expr.getName());
+    Optional<TypeSymbol> optType = scope.resolveType(expr.getName());
+    Optional<MethodSymbol> optMethod = scope.resolveMethod(expr.getName());
     if(optVar.isPresent()){
-      EVariableSymbol var = optVar.get();
+      FieldSymbol var = optVar.get();
       this.result=var.getType();
       types.put(expr,var.getType());
     }else if(optType.isPresent()) {
-      ETypeSymbol type = optType.get();
-      SymTypeExpression res = TypesCalculatorHelper.fromETypeSymbol(type);
+      TypeSymbol type = optType.get();
+      SymTypeExpression res = TypesCalculatorHelper.fromTypeSymbol(type);
       this.result = res;
       types.put(expr,res);
     }else if(optMethod.isPresent()) {
-      EMethodSymbol method = optMethod.get();
+      MethodSymbol method = optMethod.get();
       if(!"void".equals(method.getReturnType().getName())){
         SymTypeExpression type=method.getReturnType();
         this.result=type;
@@ -108,9 +111,9 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
       ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
       toResolve = printer.prettyprint(expr);
     }
-    Optional<ETypeSymbol> typeSymbolopt = scope.resolveEType(toResolve);
-    Optional<EVariableSymbol> variableSymbolopt = scope.resolveEVariable(toResolve);
-    Optional<EMethodSymbol> methodSymbolopt = scope.resolveEMethod(toResolve);
+    Optional<TypeSymbol> typeSymbolopt = scope.resolveType(toResolve);
+    Optional<FieldSymbol> variableSymbolopt = scope.resolveField(toResolve);
+    Optional<MethodSymbol> methodSymbolopt = scope.resolveMethod(toResolve);
     if(typeSymbolopt.isPresent()){
       String fullName= typeSymbolopt.get().getFullName();
       addToTypesMapQName(expr,fullName,typeSymbolopt.get().getSuperTypes());

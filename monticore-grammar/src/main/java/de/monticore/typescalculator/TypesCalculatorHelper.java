@@ -5,6 +5,9 @@ import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
+import de.monticore.types.typesymbols._symboltable.FieldSymbol;
+import de.monticore.types.typesymbols._symboltable.MethodSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
@@ -175,6 +178,7 @@ public class TypesCalculatorHelper {
   }
 
   //TODO check correctnes in all situations, in testHelper wenn nur für Dummy benutzt
+  @Deprecated
   public static SymTypeExpression fromETypeSymbol(ETypeSymbol type) {
     List<String> primitiveTypes = Arrays
             .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
@@ -190,6 +194,7 @@ public class TypesCalculatorHelper {
     return null;
   }
   //TODO check correctness in all situations, in testHelper wenn nur für Dummy benutzt
+  @Deprecated
   public static SymTypeExpression fromEVariableSymbol(EVariableSymbol type) {
     List<String> primitiveTypes = Arrays
             .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
@@ -205,6 +210,8 @@ public class TypesCalculatorHelper {
     return null;
   }
   //TODO check correctnes in all situations, in testHelper wenn nur für Dummy benutzt
+
+  @Deprecated
   public static SymTypeExpression fromEMethodSymbol(EMethodSymbol type) {
     List<String> primitiveTypes = Arrays
             .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
@@ -219,4 +226,51 @@ public class TypesCalculatorHelper {
     }
     return null;
   }
+
+  //TODO check correctnes in all situations, in testHelper wenn nur für Dummy benutzt
+  public static SymTypeExpression fromMethodSymbol(MethodSymbol type) {
+    List<String> primitiveTypes = Arrays
+            .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
+    if (type != null ) {
+      if (primitiveTypes.contains(type.getName())) {
+        return SymTypeExpressionFactory.createTypeConstant(type.getName());
+      } else {
+        SymTypeOfObject o = new SymTypeOfObject();
+        o.setName(type.getName());
+        return o;
+      }
+    }
+    return null;
+  }
+
+  public static SymTypeExpression fromFieldSymbol(FieldSymbol type) {
+    List<String> primitiveTypes = Arrays
+            .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
+    if (type != null ) {
+      if (primitiveTypes.contains(type.getName())) {
+        return SymTypeExpressionFactory.createTypeConstant(type.getName());
+      } else {
+        SymTypeOfObject o = new SymTypeOfObject();
+        o.setName(type.getName());
+        return o;
+      }
+    }
+    return null;
+  }
+
+  public static SymTypeExpression fromTypeSymbol(TypeSymbol type) {
+    List<String> primitiveTypes = Arrays
+            .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
+    if (type != null ) {
+      if (primitiveTypes.contains(type.getName())) {
+        return SymTypeExpressionFactory.createTypeConstant(type.getName());
+      } else {
+        SymTypeOfObject o = new SymTypeOfObject();
+        o.setName(type.getName());
+        return o;
+      }
+    }
+    return null;
+  }
+
 }
