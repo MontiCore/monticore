@@ -79,11 +79,9 @@ public class JsonPrinter {
    */
   public void beginObject() {
     printCommaIfNecessary();
-//    println("{");
     print("{");
     isFirstAttribute = true;
     nestedObjectDepth++;
-//    indent();
     indentBeforeNewLine = true;
   }
   
@@ -92,7 +90,6 @@ public class JsonPrinter {
    */
   public void endObject() {
     println("");
-//    println("}");
     print("}");
     if (0 == nestedListDepth) {
       isFirstAttribute = true;
@@ -109,7 +106,6 @@ public class JsonPrinter {
     printCommaIfNecessary();
     print("\"");
     print(kind);
-//    println("\":[");
     if(isIndentationEnabled()) {
       print("\": [");
     }
@@ -118,7 +114,6 @@ public class JsonPrinter {
     }
     isFirstAttribute = true;
     nestedListDepth++;
-//    indent();
     indentBeforeNewLine = true;
   }
   
@@ -128,11 +123,9 @@ public class JsonPrinter {
    */
   public void beginArray() {
     printCommaIfNecessary();
-//    println("[");
     print("[");
     isFirstAttribute = true;
     nestedListDepth++;
-//    indent();
     indentBeforeNewLine = true;
   }
   
@@ -141,7 +134,6 @@ public class JsonPrinter {
    */
   public void endArray() {
     println("");
-//    println("]");
     print("]");
     nestedListDepth--;
     isFirstAttribute = false; // This is to handle empty lists
@@ -408,13 +400,13 @@ public class JsonPrinter {
    */
   public String getContent() {
     if (0 != nestedListDepth) {
-      Log.error("0xA0600 Invalid nesting of Json lists in " + printer.getContent());
+      Log.error("0xA0600 Invalid nesting of Json lists in " + toString());
     }
     if (0 != nestedObjectDepth) {
-      Log.error("0xA0601 Invalid nesting of Json objects in " + printer.getContent());
+      Log.error("0xA0601 Invalid nesting of Json objects in " + toString());
     }
     //return content of printer without first character, which is a newline
-    return printer.getContent().substring(1);
+    return toString();
   }
   
   /**
@@ -425,7 +417,11 @@ public class JsonPrinter {
   @Override
   public String toString() {
     //return content of printer without first character, which is a newline
-    return printer.getContent().substring(1); 
+    String content = printer.getContent();
+    if(content.startsWith("\n")) {
+      content = content.substring(1);
+    }
+    return content; 
   }
   
   /////////////////////////// methods to handle optional pretty printing with line breaks and indentation ////////////////////////////
