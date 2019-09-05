@@ -108,13 +108,21 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
       ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
       toResolve = printer.prettyprint(expr);
     }
+
+    // (statische innere) Klasse
     Optional<ETypeSymbol> typeSymbolopt = scope.resolveEType(toResolve);
+
+    // statische variable
     Optional<EVariableSymbol> variableSymbolopt = scope.resolveEVariable(toResolve);
+
+    // statische methode
     Optional<EMethodSymbol> methodSymbolopt = scope.resolveEMethod(toResolve);
+
+    //TODO RE Reihenfolge beachten var vor? Klasse
     if(typeSymbolopt.isPresent()){
       String fullName= typeSymbolopt.get().getFullName();
       addToTypesMapQName(expr,fullName,typeSymbolopt.get().getSuperTypes());
-    }else if(variableSymbolopt.isPresent()){
+    }else if(variableSymbolopt.isPresent()) {
       ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
       String exprString = printer.prettyprint(expr);
       String[] stringParts = exprString.split("\\.");
