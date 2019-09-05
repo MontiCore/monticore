@@ -38,9 +38,9 @@ public class CombineExpressionsWithLiteralsTest {
     CD2EAdapter adapter = new CD2EAdapter(globalScope);
     CombineExpressionsWithLiteralsLanguage language = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsLanguageBuilder().build();
     CombineExpressionsWithLiteralsGlobalScope globalScope1 = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsGlobalScopeBuilder().setLanguage(language).setModelPath(new ModelPath()).build();
-    globalScope1.addAdaptedEVariableSymbolResolvingDelegate(adapter);
-    globalScope1.addAdaptedETypeSymbolResolvingDelegate(adapter);
-    globalScope1.addAdaptedEMethodSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedFieldSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedTypeSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedMethodSymbolResolvingDelegate(adapter);
 
 
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(globalScope1);

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class CD2EHelper {
 
-  public static TypeSymbol transformCDType2ETypeSymbol(CDTypeSymbol typeSymbol){
+  public static TypeSymbol transformCDType2TypeSymbol(CDTypeSymbol typeSymbol){
     TypeSymbol res = ExpressionsBasisSymTabMill.typeSymbolBuilder().setAccessModifier(typeSymbol.getAccessModifier()).setName(typeSymbol.getName()).setFullName(typeSymbol.getFullName()).build();
     for(CDAssociationSymbol assoc : typeSymbol.getAllAssociations()){
       CDTypeSymbol targetType = assoc.getTargetType().getReferencedSymbol();
