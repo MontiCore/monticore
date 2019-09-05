@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -24,6 +25,11 @@ import de.se_rwth.commons.logging.LogStub;
  * @since TODO: add version number
  */
 public class JsonPrinterTest {
+  
+  @Before
+  public void disableIndentation() {
+    JsonPrinter.disableIndentation();
+  }
   
   @Test
   public void testEscapeSequences() {
