@@ -135,14 +135,14 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
           beforeName+=stringParts[i]+".";
         }
         beforeName=beforeName.substring(0,beforeName.length()-1);
-        if(!scope.resolveEType(beforeName).isPresent()&&scope.resolveEMethodMany(beforeName).isEmpty()){
+        if(!scope.resolveType(beforeName).isPresent()&&scope.resolveMethodMany(beforeName).isEmpty()){
           Log.info("package suspected","ExpressionsBasisTypesCalculator");
         }else{
-          if(scope.resolveEType(beforeName).isPresent()) {
-            Optional<ETypeSymbol> typeSymbol = scope.resolveEType(beforeName);
+          if(scope.resolveType(beforeName).isPresent()) {
+            Optional<TypeSymbol> typeSymbol = scope.resolveType(beforeName);
             boolean test = false;
-            for(int i=0;i<typeSymbol.get().getVariableSymbols().size();i++){
-              if(!test&&typeSymbol.get().getVariableSymbols().get(i).getFullName().equals(variableSymbolopt.get().getFullName())){
+            for(int i=0;i<typeSymbol.get().getFields().size();i++){
+              if(!test&&typeSymbol.get().getFields().get(i).getFullName().equals(variableSymbolopt.get().getFullName())){
                 test = true;
               }
             }
@@ -151,8 +151,8 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
             }
           }else{
             boolean success = true;
-            Collection<EMethodSymbol> methodSymbols = scope.resolveEMethodMany(beforeName);
-            for(EMethodSymbol methodSymbol:methodSymbols){
+            Collection<MethodSymbol> methodSymbols = scope.resolveMethodMany(beforeName);
+            for(MethodSymbol methodSymbol:methodSymbols){
               if(methodSymbol.getReturnType().getName().equals("void")){
                 success = false;
               }else{
@@ -163,7 +163,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
                     success=false;
                   }
                   if(success) {
-                    if (!methodSymbol.getParameterList().contains(variableSymbolopt.get())) {
+                    if (!methodSymbol.getParameter().contains(variableSymbolopt.get())) {
                       success = false;
                     }
                   }
