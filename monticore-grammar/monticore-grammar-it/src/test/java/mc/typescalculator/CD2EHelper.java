@@ -3,9 +3,11 @@ package mc.typescalculator;
 
 import de.monticore.cd.cd4analysis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
+import de.monticore.types.typesymbols._symboltable.FieldSymbol;
+import de.monticore.types.typesymbols._symboltable.MethodSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types2.SymTypeExpression;
 import de.monticore.types2.SymTypeOfObject;
 
@@ -13,35 +15,35 @@ import java.util.List;
 
 public class CD2EHelper {
 
-  public static ETypeSymbol transformCDType2ETypeSymbol(CDTypeSymbol typeSymbol){
-    ETypeSymbol res = ExpressionsBasisSymTabMill.eTypeSymbolBuilder().setAccessModifier(typeSymbol.getAccessModifier()).setName(typeSymbol.getName()).setFullName(typeSymbol.getFullName()).build();
+  public static TypeSymbol transformCDType2ETypeSymbol(CDTypeSymbol typeSymbol){
+    TypeSymbol res = ExpressionsBasisSymTabMill.typeSymbolBuilder().setAccessModifier(typeSymbol.getAccessModifier()).setName(typeSymbol.getName()).setFullName(typeSymbol.getFullName()).build();
     for(CDAssociationSymbol assoc : typeSymbol.getAllAssociations()){
       CDTypeSymbol targetType = assoc.getTargetType().getReferencedSymbol();
-      List<EVariableSymbol> variableSymbols = res.getVariableSymbols();
-      variableSymbols.add(ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName(targetType.getName()).setFullName(targetType.getFullName()).setAccessModifier(targetType.getAccessModifier()).build());
-      res.setVariableSymbols(variableSymbols);
+      List<FieldSymbol> variableSymbols = res.getFields();
+      variableSymbols.add(ExpressionsBasisSymTabMill.fieldSymbolBuilder().setName(targetType.getName()).setFullName(targetType.getFullName()).setAccessModifier(targetType.getAccessModifier()).build());
+      res.setFields(variableSymbols);
     }
     for(CDFieldSymbol fieldSymbol: typeSymbol.getFields()){
-      List<EVariableSymbol> variableSymbols = res.getVariableSymbols();
-      variableSymbols.add(transformCDField2EVariableSymbol(fieldSymbol));
-      res.setVariableSymbols(variableSymbols);
+      List<FieldSymbol> variableSymbols = res.getFields();
+      variableSymbols.add(transformCDField2FieldSymbol(fieldSymbol));
+      res.setFields(variableSymbols);
     }
     return res;
   }
 
-  public static EVariableSymbol transformCDField2EVariableSymbol(CDFieldSymbol fieldSymbol){
-    EVariableSymbol res = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setName(fieldSymbol.getName()).setFullName(fieldSymbol.getFullName()).setAccessModifier(fieldSymbol.getAccessModifier()).build();
+  public static FieldSymbol transformCDField2FieldSymbol(CDFieldSymbol fieldSymbol){
+    FieldSymbol res = ExpressionsBasisSymTabMill.fieldSymbolBuilder().setName(fieldSymbol.getName()).setFullName(fieldSymbol.getFullName()).setAccessModifier(fieldSymbol.getAccessModifier()).build();
     res.setType(transformCDType2SymTypeExpression(fieldSymbol.getType()));
     return res;
   }
 
-  public static EMethodSymbol transformCDMethOrConstr2EMethodSymbol(CDMethOrConstrSymbol methOrConstrSymbol){
-    EMethodSymbol res = ExpressionsBasisSymTabMill.eMethodSymbolBuilder().setName(methOrConstrSymbol.getName()).setFullName(methOrConstrSymbol.getFullName()).setAccessModifier(methOrConstrSymbol.getAccessModifier()).build();
+  public static MethodSymbol transformCDMethOrConstr2EMethodSymbol(CDMethOrConstrSymbol methOrConstrSymbol){
+    MethodSymbol res = ExpressionsBasisSymTabMill.methodSymbolBuilder().setName(methOrConstrSymbol.getName()).setFullName(methOrConstrSymbol.getFullName()).setAccessModifier(methOrConstrSymbol.getAccessModifier()).build();
     res.setReturnType(transformCDType2SymTypeExpression(methOrConstrSymbol.getReturnType()));
     for(CDFieldSymbol param: methOrConstrSymbol.getParameters()){
-      List<EVariableSymbol> params = res.getParameterList();
-      params.add(transformCDField2EVariableSymbol(param));
-      res.setParameterList(params);
+      List<FieldSymbol> params = res.getParameter();
+      params.add(transformCDField2FieldSymbol(param));
+      res.setParameter(params);
     }
     return res;
   }
