@@ -11,6 +11,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types2.SymTypeOfGenerics;
 import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
@@ -186,16 +187,27 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     }
   }
 
-  private void addToTypesMapQName (ASTExpression expr, String fullName, List<SymTypeExpression> superTypes){
+  private void addToTypesMapQName (ASTExpression expr, String fullName, List<TypeSymbol> superTypes){
     String[] parts = fullName.split("\\.");
     ArrayList<String> nameList = new ArrayList<>();
     Collections.addAll(nameList,parts);
     SymTypeExpression res = new SymTypeOfObject();
     res.setName(fullName);
-    res.setSuperTypes(superTypes);
+
+    List<SymTypeExpression> superTypesAsSymTypes = new ArrayList<>();
+    for(TypeSymbol ts : superTypes) {
+      SymTypeExpression s = new SymTypeOfGenerics();
+      s.setName(ts.getName());
+
+    }
+
+
+    res.setSuperTypes(superTypesAsSymTypes);
     this.result=res;
     types.put(expr,unbox(res));
   }
+
+
 
   public SymTypeExpression getResult() {
     return result;
