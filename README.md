@@ -140,7 +140,7 @@ by executing the following configuration:
 
 ## Further Information
 
-* [**List of grammars**](monticore-grammar/src/main/grammars/de/monticore/GRAMMARS.md)
+* [**List of grammars**](monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
    allowing to define your own language efficiently
 
 * [**MontiCore Reference Manual**](http://www.monticore.de/)
