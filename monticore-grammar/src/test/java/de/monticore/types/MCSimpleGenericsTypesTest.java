@@ -16,7 +16,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class MCCustomGenericsTypesTest {
+public class MCSimpleGenericsTypesTest {
 
   @BeforeClass
   public static void disableFailQuick() {
@@ -83,6 +83,15 @@ public class MCCustomGenericsTypesTest {
     assertTrue(type.get() instanceof ASTMCBasicGenericType);
   }
 
+  @Test
+  public void testMCMapTypeValid3() throws IOException {
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
+    Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.HashMap<String,java.util.List<String>>");
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertTrue(type.get() instanceof ASTMCBasicGenericType);
+  }
 
   @Test
   public void testMCOptionalTypeValid() throws IOException {
