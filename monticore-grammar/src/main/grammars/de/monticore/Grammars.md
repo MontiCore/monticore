@@ -14,50 +14,7 @@ leads to optimal forms of **reuse**.
 
 Here comes a list of language components, mainly defined through a 
 primary grammar, available in the MontiCore core project 
-together with short descriptions and their status:
-
-## Status of Grammars 
-
-The typical status of a grammar is:
-
-1. **MontiCore stable**:
-Such a grammar is meant to be stable in the further development of 
-MontiCore. The grammar is tested and assumed to be of high quality.
-It may rarely happen that smaller extensions are made in a conservative 
-form, which means that (1) composition with any other grammars,
-(2) extensions and adaptations and (3) handwritten extensions will 
-still work.
-
-1. **Beta: In Stabilization**:
-Such a grammar is in the process of becoming stable. One might already 
-include the grammar, but some changes may still appear.
-(See task list for potential changes.)
-
-1. **Alpha: Intention to become stable**:
-Such a grammar is relatively fresh, but intended to become stable 
-and useful. Changes may occur, e.g. when restructuring or bug fixing.
-
-1. **Deprecated**:
-The grammar should not be used anymore, it is deprecated and a newer
-version of the content exists in another grammar.
-
-1. **Unclarified**:
-Some of the grammars are just there to be used for example as
-tests or as inspirations for your own definitions. It may be that 
-such a grammar becomes stable, if enough interest exists.
-
-The deprecated grammars are typically not listed in this overview.
-There may also be further unclarfied grammars around.
-
-### Marking the Status of Grammars
-
-A comment of the following form within the grammar also helps:
-
-1. `/* This is a MontiCore stable grammar.`
-    ` * Adaptations -- if any -- are conservative. */`
-2. `/* Beta-version: This is intended to become a MontiCore stable grammar. */`
-2. `/* Alpha-version: This is intended to become a MontiCore stable grammar. */`
-   (but sometimes also omitted)
+together with short descriptions and their status ([Status of Grammars](00.org/Explanations/StatusOfGrammars.md)):
 
 ## General: List of Grammars in package de.monticore
 
