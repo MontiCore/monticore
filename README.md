@@ -17,6 +17,24 @@ components, conservative extension and composition mechanisms and an
 optimal integration of hand-written code into the generated tools. Its 
 grammar languages is rather comfortable. 
 
+## Information about MontiCore
+
+* [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf)
+   The reference Manual describes how to use MontiCore as a out-of-the-box 
+   *language workbench*), but also as grey box *tooling framework*.
+   It thus also gives an overview over a number of core mechanisms of MontiCore.
+
+* [**List of core grammars**](monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+   MontiCore concentrates on reuse. It therefore offers a set of
+   predefined *language components*, usually identified through an appropriate 
+   *component grammar* allowing to define your own language as a
+   composition of reusable assets efficiently. reusable assets are among others: 
+   several sets of literals, expressions and types, which are relatively 
+   freely composable.
+
+* [**List of languages**](Languages.md)
+
+
 ## License overview (informal description) 
 
 Summary: This project is freely available software; you can redistribute 
@@ -133,10 +151,7 @@ lasting tasks.
   
 ## Further Information
 
-* [**List of grammars**](monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-   allowing to define your own language efficiently
-
-* [**MontiCore Reference Manual**](http://www.monticore.de/)
+* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 
 * [Changelog](CHANGELOG.md) - Release Notes
 
