@@ -14,9 +14,19 @@ leads to optimal forms of **reuse**.
 
 Here comes a list of language components, mainly defined through a 
 primary grammar, available in the MontiCore core project 
-together with short descriptions and their status ([Status of Grammars](00.org/Explanations/StatusOfGrammars.md)):
+together with short descriptions and their status ([Status of Grammars](00.org/Explanations/StatusOfGrammars.md)).
 
-## General: List of Grammars in package de.monticore
+The list covers the core grammars to be found in the `MontiCore/monticore` 
+project under `monticore-grammar/src/main/grammars/` in packages 
+
+* `de.monticore`
+* `de.monticore.expressions`
+* `de.monticore.literals`
+* `de.monticore.statements`
+* `de.monticore.types`
+
+
+## General: List of Grammars in package `de.monticore`
 
 ### [MCBasics.mc4](monticore-grammar/src/main/grammars/de/monticore/MCBasics.mc4)  (stable)
 * This grammar defines absolute basics, such as spaces, 
@@ -24,7 +34,7 @@ Java-like comments and Names.
 It should be useful in many languages.
   
   
-## Types: List of Grammars in package de.monticore.types
+## Types: List of Grammars in package `de.monticore.types`
 
 These grammars generally deal with type definitions and build on each 
 other:
@@ -63,7 +73,7 @@ types, then use a simpler version from above. Type checking ist tricky.
 
 
 
-## Expressions: List of Grammars in package de.monticore.expressions
+## Expressions: List of Grammars in package `de.monticore.expressions`
 
 Expressions are defined in several grammars forming a (nonlinear) hierarchy,
 so that developers can choose the optimal grammar they want to build on 
@@ -121,7 +131,7 @@ UML's OCL.
 * This grammar defines a expressions typical to UMLs OCL .
 * This grammar will be restructured especially for the non expression part.
 
-## Literals: List of Grammars in package de.monticore.literals
+## Literals: List of Grammars in package `de.monticore.literals`
 
 ### [MCLiteralsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCLiteralsBasis.mc4) (stable)
 * This grammar defines core interface for literals.
@@ -140,7 +150,7 @@ various forms of literals.
 * [UMLStereotype.mc4](monticore-grammar/src/main/grammars/de/monticore/UMLStereotype.mc4) (Beta: In Stabilization)
 * [JavaLight.mc4](monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) 
 
-#### Statements: List of Grammars in package de.monticore.statements
+#### Statements: List of Grammars in package `de.monticore.statements`
 * [MCAssertStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCAssertStatements.mc4)
 * [MCCommonStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCCommonStatements.mc4)
 * [MCExceptionStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCExceptionStatements.mc4)
