@@ -109,7 +109,6 @@ lasting tasks.
 * build the productive code (including the unit tests, ~8 min)
 `mvn install`
   * skipping the unit tests: `mvn install -Dmaven.test.skip=true`
-
 * run integration tests (which are not included in the unit tests, ~30 min)   
   * Integration tests of the generator: 
     * maven (deprecated): `mvn install -f monticore-generator/it/pom.xml` or 
@@ -125,7 +124,6 @@ lasting tasks.
   * TemplateClassGenerator integration tests 
     * maven (deprecated): `mvn install -f /monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/pom.xml` or 
     * gradle: in `/monticore-templateclassgenerator/it/monticore-templateclassgenerator-it` call `gradlew build`
-
 * clean:
   * call `mvn clean`
   * cleaning integration tests:
