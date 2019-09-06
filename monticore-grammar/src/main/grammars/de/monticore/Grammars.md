@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-# MontiCore Grammars - an Overview
+# MontiCore Core Grammars - an Overview
 
 [MontiCore](http://www.monticore.de) is a language workbench. It uses 
 grammars as primary mechanism to describe DSLs. The extended 
