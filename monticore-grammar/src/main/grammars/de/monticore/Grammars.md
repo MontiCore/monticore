@@ -33,7 +33,7 @@ project under `monticore-grammar/src/main/grammars/` in packages
 Java-like comments and Names. 
 It should be useful in many languages.
   
-  
+
 ## Types: List of Grammars in package `de.monticore.types`
 
 These grammars generally deal with type definitions and build on each 
@@ -131,6 +131,8 @@ UML's OCL.
 * This grammar defines a expressions typical to UMLs OCL .
 * This grammar will be restructured especially for the non expression part.
 
+
+
 ## Literals: List of Grammars in package `de.monticore.literals`
 
 ### [MCLiteralsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCLiteralsBasis.mc4) (stable)
@@ -142,7 +144,10 @@ various forms of literals.
 
 ### [MCJavaLiterals.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCJavaLiterals.mc4) (Beta: In Stabilization)
 
+
+
 ## Further grammars (status: to be handled):
+
 
 ### Beta: to become stable in the next iteration
 
@@ -150,7 +155,8 @@ various forms of literals.
 * [UMLStereotype.mc4](monticore-grammar/src/main/grammars/de/monticore/UMLStereotype.mc4) (Beta: In Stabilization)
 * [JavaLight.mc4](monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) 
 
-#### Statements: List of Grammars in package `de.monticore.statements`
+### Statements: List of Grammars in package `de.monticore.statements`
+
 * [MCAssertStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCAssertStatements.mc4)
 * [MCCommonStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCCommonStatements.mc4)
 * [MCExceptionStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCExceptionStatements.mc4)
@@ -167,7 +173,7 @@ various forms of literals.
 * [Completeness.mc4](monticore-grammar/src/main/grammars/de/monticore/Completeness.mc4)
 * [MCCommon.mc4](monticore-grammar/src/main/grammars/de/monticore/MCCommon.mc4)
 
-### Examples for Grammars:
+### Examples for Grammars under `monticore-grammar/src/main/examples`
 
 These can also be used if someone is interested:
 
