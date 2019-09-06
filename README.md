@@ -19,12 +19,12 @@ grammar languages is rather comfortable.
 
 ## Information about MontiCore
 
-* [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf)
+* [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
    The reference Manual describes how to use MontiCore as a out-of-the-box 
    *language workbench*), but also as grey box *tooling framework*.
    It thus also gives an overview over a number of core mechanisms of MontiCore.
 
-* [**List of core grammars**](monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [**List of core grammars**](monticore-grammar/src/main/grammars/de/monticore/Grammars.md).
    MontiCore concentrates on reuse. It therefore offers a set of
    predefined *language components*, usually identified through an appropriate 
    *component grammar* allowing to define your own language as a
@@ -32,7 +32,12 @@ grammar languages is rather comfortable.
    several sets of literals, expressions and types, which are relatively 
    freely composable.
 
-* [**List of languages**](Languages.md)
+* [**List of languages**](Languages.md).
+   This is a list of languages that can be used out of the box. Some of them
+   are in development, others rather stable.
+   These complete languages are usually composed of a number of language
+   components.
+
 
 
 ## License overview (informal description) 
