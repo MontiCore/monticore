@@ -57,9 +57,6 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
 
     List<CDDefinitionSymbol> directSuperCds = genHelper.getDirectSuperCds(genHelper.getCd());
     if(grammarSymbol.getStartProd().isPresent()) {
-      genEngine
-          .generate("symboltable.SymbolTableCreator", filePath, grammarSymbol.getAstNode().get(),
-              className, directSuperCds, symbolDefiningRules, nonSymbolDefiningRules, kinds, handCodedPath);
       String stcName;
       if(className.endsWith("TOP")){
         stcName = className.replaceAll("TOP","");
@@ -71,9 +68,6 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
           genHelper.getTargetPackage(), handCodedPath);
 
       filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
-
-      genEngine.generate("symboltable.SymbolTableCreatorBuilder",filePath,grammarSymbol.getAstNode().get(),className, stcName);
-
 
       className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "SymbolTableCreatorDelegator"),
           genHelper.getTargetPackage(), handCodedPath);

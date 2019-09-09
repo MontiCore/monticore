@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("scopeClass")}
   // scope -> ast
-  scope.setAstNode(astNode);
+  scope.setAstNode(ast);
 
   // ast -> scope
-  astNode.setSpannedScope((${scopeClass}) scope);
+  ast.setSpannedScope((${scopeClass}) scope);

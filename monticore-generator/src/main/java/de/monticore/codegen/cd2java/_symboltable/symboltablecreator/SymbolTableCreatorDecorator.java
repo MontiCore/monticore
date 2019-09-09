@@ -48,7 +48,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       String symbolTableCreator = symbolTableService.getSymbolTableCreatorSimpleName();
       String visitorSimpleName = visitorService.getVisitorFullName();
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();
-      String dequeType = "Deque<? extends " + scopeInterface + ">";
+      String dequeType = "Deque<" + scopeInterface + ">";
       String simpleName = symbolTableService.removeASTPrefix(startProd.get());
       List<ASTCDType> symbolDefiningClasses = symbolTableService.getSymbolDefiningClasses(input.getCDDefinition().getCDClassList());
       List<ASTCDType> noSymbolDefiningClasses = symbolTableService.getNoSymbolDefiningClasses(input.getCDDefinition().getCDClassList());
@@ -76,7 +76,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
           .addCDMethod(createPutOnStackMethod(scopeInterface))
           .addAllCDMethods(createCurrentScopeMethods(scopeInterface))
           .addCDMethod(createSetScopeStackMethod(dequeType, simpleName))
-          .addCDMethod(createCreateScopeMethod(scopeInterface, simpleName))
+          .addCDMethod(createCreateScopeMethod(scopeInterface, input.getCDDefinition().getName()))
           .addAllCDMethods(createSymbolClassMethods(symbolDefiningClasses, scopeInterface))
           .addAllCDMethods(createVisitForNoSymbolMethods(noSymbolDefiningClasses))
           .addAllCDMethods(createAddToScopeMethods(symbolDefiningProds))
@@ -157,13 +157,13 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     return createFromAST;
   }
 
-  protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName, String simpleName) {
+  protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName, String definitionName) {
     String symTabMill = symbolTableService.getSymTabMillFullName();
     ASTCDParameter boolParam = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "shadowing");
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(scopeInterfaceName),
         "createScope", boolParam);
     this.replaceTemplate(EMPTY_BODY, createFromAST, new TemplateHookPoint(
-        "_symboltable.symboltablecreator.CreateScope", scopeInterfaceName, symTabMill, simpleName));
+        "_symboltable.symboltablecreator.CreateScope", scopeInterfaceName, symTabMill, definitionName));
     return createFromAST;
   }
 

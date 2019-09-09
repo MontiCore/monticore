@@ -128,7 +128,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, cdConstructor.sizeCDParameters());
 
-    assertDeepEquals("Deque<? extends " + I_AUTOMATON_SCOPE + ">", cdConstructor.getCDParameter(0).getMCType());
+    assertDeepEquals("Deque<" + I_AUTOMATON_SCOPE + ">", cdConstructor.getCDParameter(0).getMCType());
     assertEquals("scopeStack", cdConstructor.getCDParameter(0).getName());
 
     assertTrue(cdConstructor.isEmptyExceptions());
@@ -144,7 +144,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   public void testScopeStackAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("scopeStack", symTabCreatorClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("Deque<? extends de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope>", astcdAttribute.getMCType());
+    assertDeepEquals("Deque<de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope>", astcdAttribute.getMCType());
   }
 
   @Test
@@ -226,7 +226,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PROTECTED, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition("Deque<? extends " + I_AUTOMATON_SCOPE + ">");
+    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition("Deque<" + I_AUTOMATON_SCOPE + ">");
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("scopeStack", method.getCDParameter(0).getName());
