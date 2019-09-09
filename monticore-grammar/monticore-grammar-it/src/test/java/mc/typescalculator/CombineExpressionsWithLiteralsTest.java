@@ -75,7 +75,8 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<ASTExpression> exprB = p.parse_StringExpression("mc.typescalculator.TestCD.B.x = mc.typescalculator.TestCD.B.z");
     exp2.setName("mc.typescalculator.TestCD.C");
     assertTrue(exprB.isPresent());
-    assertTrue(exp2.deepEquals(calc.calculateType(exprB.get())));
+    SymTypeExpression k = calc.calculateType(exprB.get());
+    assertTrue(exp2.deepEquals(k));
 
   }
 }
