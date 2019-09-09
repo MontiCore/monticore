@@ -8,7 +8,7 @@ grammar format allows to compose grammars, to inherit, extend, embed
 and aggregate grammars (see the reference manual for details).
 
 A list of grammars available in the MontiCore core project can be found 
-[**here**](monticore-grammar/src/main/grammars/de/monticore/GRAMMARS.md).
+[**here**](monticore-grammar/src/main/grammars/de/monticore/Grammars.md).
 
 The following presents a list of links to the development projects 
 of various languages (including grammars and tools) developed with 
