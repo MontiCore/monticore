@@ -420,7 +420,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                              Grammar_WithConceptsGlobalScope mcScope) {
     // transformation
     // transformation
-    ASTCDCompilationUnit astCD = transformAndCreateSymbolTableForSymbolCD(astGrammar, glex, cdScope);
+    Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar);
+    ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTableForSymbolCD(astGrammar, glex, cdScope));
     createCDSymbolsForSuperGrammarsForSymbolCD(glex, astGrammar, cdScope);
     storeSymbolCDForGrammar(astGrammar, astCD);
     return astCD;
