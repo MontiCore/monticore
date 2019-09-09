@@ -22,9 +22,6 @@ The different development statuses of grammars are explained
 
 ### [Activity Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
 * INSERT DESCRIPTION HERE
-  
-### [Activity Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
-* INSERT DESCRIPTION HERE
 
 ### [Class Diagram 4 Analysis](INSERT LINK HERE) (INSERT STATUS HERE)
 * INSERT DESCRIPTION HERE
