@@ -53,7 +53,7 @@ public class CD2EHelper {
       for (CDTypeSymbolReference ref : superTypes) {
         res.addSuperType(transformCDType2SymTypeExpression(ref));
       }
-      res.setName(typeSymbol.getFullName());
+      res.setName(typeSymbol.getName());
       success = true;
     if (!success){
       res.setName(typeSymbol.getName());

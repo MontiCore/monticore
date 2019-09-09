@@ -66,9 +66,9 @@ public class CD2EAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolR
   @Override
   public Collection<FieldSymbol> resolveAdaptedFieldSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<FieldSymbol> predicate) {
     Collection<FieldSymbol> result = Lists.newArrayList();
-    Optional<CDFieldSymbol> fieldSymbolopt = cd4ascope.resolveCDField(symbolName,modifier);
-    if(fieldSymbolopt.isPresent()){
-      CDFieldSymbol fieldSymbol = fieldSymbolopt.get();
+    Optional<CDFieldSymbol> cdFieldSymbolopt = cd4ascope.resolveCDField(symbolName,modifier);
+    if(cdFieldSymbolopt.isPresent()){
+      CDFieldSymbol fieldSymbol = cdFieldSymbolopt.get();
       result.add(CD2EHelper.transformCDField2FieldSymbol(fieldSymbol));
     }
     return result;
