@@ -490,14 +490,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     SymbolTableCreatorDecorator symbolTableCreatorDecorator = new SymbolTableCreatorDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolTableCreatorBuilderDecorator symbolTableCreatorBuilderDecorator = new SymbolTableCreatorBuilderDecorator(glex, symbolTableService);
 
-    SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, handCodedPath, symbolTableService, symbolDecorator,
-        symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
+    SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, handCodedPath, symbolTableService, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
         scopeClassDecorator, scopeClassBuilderDecorator, scopeInterfaceDecorator, globalScopeInterfaceDecorator,
         globalScopeClassDecorator, globalScopeClassBuilderDecorator, artifactScopeDecorator, artifactScopeBuilderDecorator
         , commonSymbolInterfaceDecorator, languageDecorator, languageBuilderDecorator, modelLoaderDecorator, modelLoaderBuilderDecorator,
         symbolResolvingDelegateInterfaceDecorator, symbolTableCreatorDecorator, symbolTableCreatorBuilderDecorator);
 
-    SymbolCDDecorator symbolCDDecorator= new SymbolCDDecorator(glex, handCodedPath, symbolTableService, symbolDecorator);
+    SymbolCDDecorator symbolCDDecorator= new SymbolCDDecorator(glex, handCodedPath, symbolTableService, symbolDecorator, symbolBuilderDecorator);
     ASTCDCompilationUnit symbolDecoratorCD = symbolCDDecorator.decorate(symbolCD);
 
 
