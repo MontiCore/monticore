@@ -35,9 +35,9 @@ public class AssignmentExpressionsTest {
     globalScope = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsGlobalScopeBuilder().setLanguage(language).setModelPath(new ModelPath()).build();
     CombineExpressionsWithLiteralsSymbolTableCreatorDelegator stc = language.getSymbolTableCreator(globalScope);
     artifactScope = stc.createFromAST(ast);
-    globalScope.addAdaptedEMethodSymbolResolvingDelegate(new DummyAdapter(artifactScope));
-    globalScope.addAdaptedETypeSymbolResolvingDelegate(new DummyAdapter(artifactScope));
-    globalScope.addAdaptedEVariableSymbolResolvingDelegate(new DummyAdapter(artifactScope));
+    globalScope.addAdaptedMethodSymbolResolvingDelegate(new DummyAdapter(artifactScope));
+    globalScope.addAdaptedTypeSymbolResolvingDelegate(new DummyAdapter(artifactScope));
+    globalScope.addAdaptedFieldSymbolResolvingDelegate(new DummyAdapter(artifactScope));
   }
 
   @Test

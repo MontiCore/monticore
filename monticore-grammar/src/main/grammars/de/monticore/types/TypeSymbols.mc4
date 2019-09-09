@@ -30,8 +30,8 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   symbolrule Type =
     methods: de.monticore.types.typesymbols._symboltable.MethodSymbol*
     fields: de.monticore.types.typesymbols._symboltable.FieldSymbol*
-    typeParameter: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
-    superType: de.monticore.types.typesymbols._symboltable.TypeSymbol*
+    typeParameters: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
+    superTypes: de.monticore.types.typesymbols._symboltable.TypeSymbol*
   ;
 
   /*=================================================================*/

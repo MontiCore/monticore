@@ -1,23 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
-import de.monticore.expressions.expressionsbasis._ast.*;
-import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTQualifiedNameExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
-import de.monticore.symboltable.ISymbol;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.typescalculator.TypesCalculatorHelper;
-import de.se_rwth.commons.Symbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -116,10 +109,10 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     // TODO RE: Umbau von EVariables to FieldS.
     
     // The name can be a variable, we check this first:
-    Optional<EVariableSymbol> optVar = scope.resolveEVariable(ex.getName());
+    Optional<FieldSymbol> optVar = scope.resolveField(ex.getName());
     // If the variable is found, its type is the result:
     if(optVar.isPresent()){ // try variable first
-      EVariableSymbol var = optVar.get();
+      FieldSymbol var = optVar.get();
       this.result=Optional.of(var.getType());
     }else {
       //no var found: we cannot derive a type

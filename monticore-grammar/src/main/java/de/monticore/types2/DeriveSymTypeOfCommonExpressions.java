@@ -1,16 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
-import de.monticore.expressions.commonexpressions._ast.ASTBracketExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTLogicalNotExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
-import de.monticore.expressions.expressionsbasis._ast.*;
-import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
