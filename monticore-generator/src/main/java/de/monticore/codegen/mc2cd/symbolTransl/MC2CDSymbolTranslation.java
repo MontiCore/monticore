@@ -21,7 +21,7 @@ public class MC2CDSymbolTranslation implements Function<ASTMCGrammar, ASTCDCompi
     Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink = new Link<>(grammar,
         CD4AnalysisNodeFactory.createASTCDCompilationUnit(), null);
 
-    return new CDSymbolCreator(glex)
+    return new CDSymbolTranslation(glex)
         .andThen(Link::target)
         .apply(rootLink);
   }

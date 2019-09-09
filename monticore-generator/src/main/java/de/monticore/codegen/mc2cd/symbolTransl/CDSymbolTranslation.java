@@ -9,11 +9,11 @@ import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
 
-public class CDSymbolCreator implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
+public class CDSymbolTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
 
   private GlobalExtensionManagement glex;
 
-  public CDSymbolCreator(GlobalExtensionManagement glex) {
+  public CDSymbolTranslation(GlobalExtensionManagement glex) {
     this.glex = glex;
   }
 
@@ -24,7 +24,7 @@ public class CDSymbolCreator implements UnaryOperator<Link<ASTMCGrammar, ASTCDCo
     return new GrammarToCDDefinition()
         .andThen(new CDDefinitionNameTranslation())
         .andThen(new CreateSymbolProds())
-        .andThen(new HandleSymbolRules())
+        .andThen(new SymbolRulesToCDClassAndCDInterface())
         .andThen(new AttributeInSymbolRuleToCDAttribute())
         .andThen(new PackageTranslation())
         .andThen(new SymbolRuleInheritanceTranslation())

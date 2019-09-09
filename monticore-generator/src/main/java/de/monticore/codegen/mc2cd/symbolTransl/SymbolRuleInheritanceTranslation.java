@@ -30,7 +30,6 @@ public class SymbolRuleInheritanceTranslation implements UnaryOperator<Link<ASTM
 
   private void translateInterfaceProd(ASTSymbolRule rule, ASTCDInterface cdInterface,
                                       ASTMCGrammar astGrammar) {
-    // translates "astextends"
     for (ASTMCType superInterface : rule.getSuperClassList()) {
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdInterface);
@@ -41,14 +40,12 @@ public class SymbolRuleInheritanceTranslation implements UnaryOperator<Link<ASTM
   }
 
   private void translateClassProd(ASTSymbolRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
-    // translates "astextends"
     for (ASTMCType superClass : rule.getSuperClassList()) {
       String qualifiedSuperClass = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superClass, astGrammar, cdClass);
       cdClass.setSuperclass(TransformationHelper.createObjectType(qualifiedSuperClass));
     }
 
-    // translates "astimplements"
     for (ASTMCType superInterface : rule.getSuperClassList()) {
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdClass);

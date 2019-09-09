@@ -16,7 +16,7 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
 import static org.junit.Assert.*;
 
-public class CDSymbolCreatorTest {
+public class CDSymbolTranslationTest {
 
   private ASTCDCompilationUnit compilationUnit;
 
