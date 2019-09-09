@@ -2,14 +2,11 @@
 
 package de.monticore.codegen.mc2cd;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-
 import de.monticore.MontiCoreScript;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.codegen.mc2cd.symbolTransl.MC2CDSymbolTranslation;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
@@ -19,6 +16,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import parser.MCGrammarParser;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+
 public class TestHelper {
 
   /**
@@ -27,6 +28,20 @@ public class TestHelper {
    * @param model the .mc4 file that is to be parsed and transformed
    * @return the root node of the resulting CD AST
    */
+
+  public static Optional<ASTCDCompilationUnit> parseAndTransformForSymbol(Path model) {
+    Optional<ASTMCGrammar> grammar = MCGrammarParser.parse(model);
+    if (!grammar.isPresent()) {
+      return Optional.empty();
+    }
+    MontiCoreScript mc = new MontiCoreScript();
+    Grammar_WithConceptsGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
+    mc.createSymbolsFromAST(symbolTable, grammar.get());
+    ASTCDCompilationUnit cdCompilationUnit = new MC2CDSymbolTranslation(
+        new GlobalExtensionManagement()).apply(grammar.get());
+    return Optional.of(cdCompilationUnit);
+  }
+
   public static Optional<ASTCDCompilationUnit> parseAndTransform(Path model) {
     Optional<ASTMCGrammar> grammar = MCGrammarParser.parse(model);
     if (!grammar.isPresent()) {

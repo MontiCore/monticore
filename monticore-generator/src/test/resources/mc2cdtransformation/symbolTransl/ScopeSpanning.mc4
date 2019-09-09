@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc2cdtransformation.symbolTransl;
+
+component grammar ScopeSpanning {
+
+// symbol prods should be shown
+ symbol OnlySymbol = Name;
+
+ symbol scope ScopeSpanning = Name;
+
+ // should not appear
+ NoSymbol = Name;
+
+}
