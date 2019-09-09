@@ -125,7 +125,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     //TODO RE Reihenfolge beachten var vor? Klasse
     if(typeSymbolopt.isPresent()){
       String fullName= typeSymbolopt.get().getFullName();
-      addToTypesMapQName(expr,fullName,typeSymbolopt.get().getSuperTypes());
+      addToTypesMapQName(expr,typeSymbolopt.get().getSuperTypes(),fullName);
     }else if(variableSymbolopt.isPresent()) {
       ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
       String exprString = printer.prettyprint(expr);
@@ -187,7 +187,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     }
   }
 
-  private void addToTypesMapQName (ASTExpression expr, String fullName, List<TypeSymbol> superTypes){
+  private void addToTypesMapQName (ASTExpression expr, List<TypeSymbol> superTypes, String fullName){
     String[] parts = fullName.split("\\.");
     ArrayList<String> nameList = new ArrayList<>();
     Collections.addAll(nameList,parts);
@@ -207,6 +207,25 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     types.put(expr,unbox(res));
   }
 
+  private void addToTypesMapQName (ASTExpression expr, String fullName, List<SymTypeExpression> superTypes){
+    String[] parts = fullName.split("\\.");
+    ArrayList<String> nameList = new ArrayList<>();
+    Collections.addAll(nameList,parts);
+    SymTypeExpression res = new SymTypeOfObject();
+    res.setName(fullName);
+
+    List<SymTypeExpression> superTypesAsSymTypes = new ArrayList<>();
+    for(SymTypeExpression ts : superTypes) {
+      SymTypeExpression s = new SymTypeOfGenerics();
+      s.setName(ts.getName());
+
+    }
+
+
+    res.setSuperTypes(superTypesAsSymTypes);
+    this.result=res;
+    types.put(expr,unbox(res));
+  }
 
 
   public SymTypeExpression getResult() {
