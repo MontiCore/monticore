@@ -45,7 +45,7 @@ public class CDSymbolTranslationTest {
 
   @Test
   public void testClassSymbol() {
-    ASTCDClass symbolClassSymbol = getClassBy("SymbolClassSymbol", compilationUnit);
+    ASTCDClass symbolClassSymbol = getClassBy("SymbolClass", compilationUnit);
     assertEquals(1, symbolClassSymbol.sizeCDAttributes());
     assertTrue(symbolClassSymbol.isEmptyInterfaces());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());
@@ -61,7 +61,7 @@ public class CDSymbolTranslationTest {
 
   @Test
   public void testAbstractClassSymbol() {
-    ASTCDClass symbolClassSymbol = getClassBy("SymbolAbstractClassSymbol", compilationUnit);
+    ASTCDClass symbolClassSymbol = getClassBy("SymbolAbstractClass", compilationUnit);
     assertEquals(1, symbolClassSymbol.sizeCDAttributes());
     assertTrue(symbolClassSymbol.isEmptyInterfaces());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());
@@ -83,7 +83,7 @@ public class CDSymbolTranslationTest {
 
   @Test
   public void testInterfaceSymbol() {
-    ASTCDInterface symbolClassSymbol = getInterfaceBy("SymbolInterfaceSymbol", compilationUnit);
+    ASTCDInterface symbolClassSymbol = getInterfaceBy("SymbolInterface", compilationUnit);
     assertEquals(1, symbolClassSymbol.sizeCDAttributes());
     assertTrue(symbolClassSymbol.isEmptyInterfaces());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());
@@ -97,7 +97,7 @@ public class CDSymbolTranslationTest {
 
   @Test
   public void testExternalSymbol() {
-    ASTCDInterface symbolClassSymbol = getInterfaceBy("SymbolExternalSymbol", compilationUnit);
+    ASTCDInterface symbolClassSymbol = getInterfaceBy("SymbolExternal", compilationUnit);
     assertEquals(1, symbolClassSymbol.sizeCDAttributes());
     assertTrue(symbolClassSymbol.isEmptyInterfaces());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());

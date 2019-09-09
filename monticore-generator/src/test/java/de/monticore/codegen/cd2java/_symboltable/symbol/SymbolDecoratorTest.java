@@ -39,17 +39,17 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  private static final String ENCLOSING_SCOPE_TYPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
+  private static final String ENCLOSING_SCOPE_TYPE = "de.monticore.codegen.symboltable.symbolcd.automaton._symboltable.IAutomatonScope";
 
-  private static final String A_NODE_TYPE_OPT = "Optional<de.monticore.codegen.ast.automaton._ast.ASTAutomaton>";
+  private static final String A_NODE_TYPE_OPT = "Optional<de.monticore.codegen.symboltable.symbolcd.automaton._ast.ASTAutomaton>";
 
-  private static final String A_NODE_TYPE = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
+  private static final String A_NODE_TYPE = "de.monticore.codegen.symboltable.symbolcd.automaton._ast.ASTAutomaton";
 
   private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
 
-  private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
+  private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.symbolcd.automaton._symboltable.IAutomatonScope";
 
-  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.ast.automaton._visitor.AutomatonSymbolVisitor";
+  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.symboltable.symbolcd.automaton._visitor.AutomatonSymbolVisitor";
 
   @Before
   public void setUp() {
@@ -59,7 +59,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
-    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "symbolCD","Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
@@ -67,11 +67,11 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     SymbolDecorator decorator = new SymbolDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit), new VisitorService(decoratedCompilationUnit),
         new MethodDecorator(glex));
     //creates ScopeSpanningSymbol
-    ASTCDClass automatonClass = getClassBy("ASTAutomaton", decoratedCompilationUnit);
+    ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
 
     //creates normal Symbol
-    ASTCDClass stateClass = getClassBy("ASTState", decoratedCompilationUnit);
+    ASTCDClass stateClass = getClassBy("State", decoratedCompilationUnit);
     this.symbolClassState = decorator.decorate(stateClass);
   }
 
@@ -94,7 +94,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.ICommonAutomatonSymbol", symbolClassAutomaton.getInterface(0));
+    assertDeepEquals("de.monticore.codegen.symboltable.symbolcd.automaton._symboltable.ICommonAutomatonSymbol", symbolClassAutomaton.getInterface(0));
     assertDeepEquals("de.monticore.symboltable.IScopeSpanningSymbol", symbolClassAutomaton.getInterface(1));
   }
 
@@ -422,7 +422,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesStateSymbol() {
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.ICommonAutomatonSymbol", symbolClassState.getInterface(0));
+    assertDeepEquals("de.monticore.codegen.symboltable.symbolcd.automaton._symboltable.ICommonAutomatonSymbol", symbolClassState.getInterface(0));
   }
 
   @Test

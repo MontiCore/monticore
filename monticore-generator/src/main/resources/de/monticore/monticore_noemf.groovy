@@ -22,6 +22,7 @@ IncrementalChecker.initialize(out, report)
 InputOutputFilesReporter.resetModelToArtifactMap()
 mcScope = createMCGlobalScope(modelPath)
 cdScope = createCD4AGlobalScope(modelPath)
+symbolCdScope = createCD4AGlobalScope(modelPath)
 Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
 // ############################################################
 
@@ -57,7 +58,7 @@ while (grammarIterator.hasNext()) {
       // M6: generate parser and wrapper
       generateParser(glex, astGrammar, mcScope, handcodedPath, out)
 
-      symbolClassDiagrammWithST = deriveSymbolCD(astGrammar, glex, cdScope, mcScope)
+      symbolClassDiagrammWithST = deriveSymbolCD(astGrammar, glex, symbolCdScope, mcScope)
     }
   }
 }

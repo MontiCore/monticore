@@ -58,11 +58,9 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
     List<ASTCDAttribute> symbolAttributes = createSymbolAttributes(input.getName(), scopeInterface);
     List<ASTCDMethod> symbolMethods = createSymbolMethods(symbolAttributes);
 
-
     ASTCDParameter constructorParam = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "name");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symbolName, constructorParam);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this.name = name;"));
-
 
     ASTCDClass symbolClass = CD4AnalysisMill.cDClassBuilder()
         .setName(symbolName)
@@ -95,7 +93,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
     ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, "enclosingScope");
 
-    ASTMCOptionalType optionalTypeOfASTNode = getCDTypeFacade().createOptionalTypeOf(symbolTableService.getASTPackage() + "." + astClassName);
+    ASTMCOptionalType optionalTypeOfASTNode = getCDTypeFacade().createOptionalTypeOf(symbolTableService.getASTPackage() + ".AST" + astClassName);
     ASTCDAttribute node = this.getCDAttributeFacade().createAttribute(PROTECTED, optionalTypeOfASTNode, AST_NODE_VARIABLE);
 
     ASTCDAttribute packageName = this.getCDAttributeFacade().createAttribute(PROTECTED, String.class, PACKAGE_NAME);

@@ -45,7 +45,7 @@ public class SpanningScopeTest {
 
   @Test
   public void testScopeSpanningSymbol() {
-    ASTCDClass symbolClassSymbol = getClassBy("ScopeSpanningSymbol", compilationUnit);
+    ASTCDClass symbolClassSymbol = getClassBy("ScopeSpanning", compilationUnit);
     assertTrue(symbolClassSymbol.isEmptyInterfaces());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());
     assertTrue(symbolClassSymbol.isEmptyCDConstructors());
@@ -65,7 +65,7 @@ public class SpanningScopeTest {
 
   @Test
   public void testOnlySymbol() {
-    ASTCDClass symbolClassSymbol = getClassBy("OnlySymbolSymbol", compilationUnit);
+    ASTCDClass symbolClassSymbol = getClassBy("OnlySymbol", compilationUnit);
     assertTrue(symbolClassSymbol.isEmptyInterfaces());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());
     assertTrue(symbolClassSymbol.isEmptyCDConstructors());

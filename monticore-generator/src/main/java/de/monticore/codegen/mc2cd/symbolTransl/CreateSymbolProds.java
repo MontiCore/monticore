@@ -39,7 +39,7 @@ public class CreateSymbolProds implements UnaryOperator<Link<ASTMCGrammar, ASTCD
   private void createCDClass(ASTProd astProd, Link<ASTMCGrammar, ASTCDDefinition> link) {
     ASTCDClass cdClass = CD4AnalysisNodeFactory.createASTCDClass();
     cdClass.setModifier(CD4AnalysisNodeFactory.createASTModifier());
-    cdClass.setName(calculateSymbolName(astProd));
+    cdClass.setName(astProd.getName());
     link.target().getCDClassList().add(cdClass);
     new Link<>(astProd, cdClass, link);
   }
@@ -64,7 +64,7 @@ public class CreateSymbolProds implements UnaryOperator<Link<ASTMCGrammar, ASTCD
   private void createCDInterface(ASTProd astProd, Link<ASTMCGrammar, ASTCDDefinition> link) {
     ASTCDInterface cdInterface = CD4AnalysisNodeFactory.createASTCDInterface();
     cdInterface.setModifier(CD4AnalysisNodeFactory.createASTModifier());
-    cdInterface.setName(calculateSymbolName(astProd));
+    cdInterface.setName(astProd.getName());
     link.target().getCDInterfaceList().add(cdInterface);
     new Link<>(astProd, cdInterface, link);
   }
@@ -79,7 +79,4 @@ public class CreateSymbolProds implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     return false;
   }
 
-  private String calculateSymbolName(ASTProd grammarProd) {
-    return grammarProd.getName() + "Symbol";
-  }
 }
