@@ -121,4 +121,8 @@ public class SymbolTableConstants {
 
   public static final String ADAPTED_RESOLVING_DELEGATE = "adapted%sResolvingDelegateList";
 
+  public static final String DEQUE_TYPE = "Deque<%s>";
+
+  public static final String DEQUE_WILDCARD_TYPE = "Deque<? extends %s>";
+
 }

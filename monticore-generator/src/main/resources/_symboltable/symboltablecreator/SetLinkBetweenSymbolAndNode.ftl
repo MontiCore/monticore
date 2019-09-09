@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "simpleName")}
+${tc.signature( "simpleName", "isScopeSpanningSymbol")}
   // symbol -> ast
   symbol.setAstNode(ast);
 
@@ -8,5 +8,7 @@ ${tc.signature( "simpleName")}
   ast.set${simpleName}Symbol(symbol);
   ast.setEnclosingScope(symbol.getEnclosingScope());
 
+<#if isScopeSpanningSymbol>
   // ast -> spannedScope
   ast.setSpannedScope(symbol.getSpannedScope());
+</#if>

@@ -12,6 +12,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.DEQUE_TYPE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
@@ -30,7 +31,7 @@ public class SymbolTableCreatorBuilderDecorator extends AbstractCreator<ASTCDCom
     String symbolTableCreator = symbolTableService.getSymbolTableCreatorSimpleName();
     String symbolTableCreatorBuilder = symbolTableCreator + BUILDER_SUFFIX;
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
-    String dequeType = "Deque<" + scopeInterface + ">";
+    String dequeType = String.format(DEQUE_TYPE, scopeInterface);
     ASTMCQualifiedType builderType = getCDTypeFacade().createQualifiedType(symbolTableCreatorBuilder);
 
 

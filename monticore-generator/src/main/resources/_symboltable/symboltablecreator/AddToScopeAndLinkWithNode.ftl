@@ -1,7 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("scopeInterface")}
+${tc.signature("scopeInterface", "isScopeSpanningSymbol")}
   addToScope(symbol);
-  setLinkBetweenSymbolAndNode(symbol, ast);
+<#if isScopeSpanningSymbol>
   ${scopeInterface} scope = createScope(false);
   putOnStack(scope);
   symbol.setSpannedScope(scope);
+</#if>
+  setLinkBetweenSymbolAndNode(symbol, ast);
