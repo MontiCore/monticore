@@ -69,7 +69,8 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
     builder.setName(symbolJson.get(JsonConstants.NAME).getAsJsonString().getValue());
 <#if symbolRule.isPresent()>
 <#list symbolRule.get().getAdditionalAttributeList() as attr>
-    builder.set${attr.getName()?cap_first}(deserialize${attr.getName()?cap_first}(symbolJson));
+    <#assign setterName = genHelper.getPlainSetter(attr)>
+    builder.${setterName}(deserialize${attr.getName()?cap_first}(symbolJson));
 </#list>   
 </#if> 
     ${symbolName}Symbol symbol = builder.build();

@@ -5,19 +5,13 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTQualifiedNameExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
-import de.monticore.symboltable.ISymbol;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.se_rwth.commons.Symbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -144,7 +138,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     
     // Liste der Fields durchsuchen
     result = Optional.empty();
-    for(FieldSymbol field : symb12.getFields()) {
+    for(FieldSymbol field : symb12.getFieldList()) {
       if(field.getName().equals(name)) {
         result = Optional.of(field.getType());
         return;

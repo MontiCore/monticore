@@ -121,7 +121,7 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
     
     ${languageName}ArtifactScope scope = new ${languageName}ArtifactScope(packageName, imports);
     scope.setName(name);
-    scope.setExportsSymbols(exportsSymbols);
+    scope.setExportingSymbols(exportsSymbols);
     
 <#list scopeRules as scopeRule>
 <#list scopeRule.getAdditionalAttributeList() as attr>

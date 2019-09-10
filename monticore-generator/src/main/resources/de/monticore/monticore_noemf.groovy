@@ -58,7 +58,9 @@ while (grammarIterator.hasNext()) {
       // M6: generate parser and wrapper
       generateParser(glex, astGrammar, mcScope, handcodedPath, out)
 
-      symbolClassDiagrammWithST = deriveSymbolCD(astGrammar, glex, symbolCdScope, mcScope)
+      deriveSymbolCD(astGrammar, glex, symbolCdScope, mcScope)
+
+      deriveScopeCD(astGrammar, glex, symbolCdScope, mcScope)
     }
   }
 }
@@ -78,9 +80,11 @@ for (astGrammar in getParsedGrammars()) {
 
   symbolClassDiagramm = getSymbolCDOfParsedGrammar(astGrammar)
 
+  scopeClassDiagramm = getScopeCDOfParsedGrammar(astGrammar)
+
   astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
 
-  decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram,symbolClassDiagramm,  handcodedPath)
+  decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram ,symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
 
   // M8: generate symbol table

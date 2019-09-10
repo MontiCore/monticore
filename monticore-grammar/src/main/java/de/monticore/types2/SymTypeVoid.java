@@ -5,8 +5,6 @@ import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 
 public class SymTypeVoid extends SymTypeExpression {
@@ -23,9 +21,9 @@ public class SymTypeVoid extends SymTypeExpression {
             .setName("voidType")           // should be unused
             .setFullName("voidType")
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setTypeParameter(Collections.emptyList())
-            .setFields(Collections.emptyList())
-            .setMethods(Collections.emptyList())
+            .setTypeParameterList(Collections.emptyList())
+            .setFieldList(Collections.emptyList())
+            .setMethodList(Collections.emptyList())
             .build();
      }
      return _voidTypeSymbol;

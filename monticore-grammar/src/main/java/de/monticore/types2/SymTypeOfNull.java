@@ -2,7 +2,6 @@ package de.monticore.types2;
 
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolBuilder;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 
 import java.util.ArrayList;
@@ -35,9 +34,9 @@ public class SymTypeOfNull extends SymTypeExpression {
             .setName("nullType")           // should be unused
             .setFullName("nullType")
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setTypeParameter(Collections.emptyList())
-            .setFields(new ArrayList<>())
-            .setMethods(new ArrayList<>())
+            .setTypeParameterList(Collections.emptyList())
+            .setFieldList(new ArrayList<>())
+            .setMethodList(new ArrayList<>())
             .build();
   }
   

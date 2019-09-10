@@ -65,16 +65,8 @@ public class ${symTabPrinterName}
 <#if scopeRule.isPresent()>
 <#list scopeRule.get().getAdditionalAttributeList() as attr>
   <#assign attrType=attr.getMCType().getBaseName()>
-  <#if attrType == "boolean" || attrType == "Boolean">
-    <#if attr.getName()?starts_with("is")>
-      <#assign methodName=attr.getName()>
-    <#else>
-      <#assign methodName="is" + attr.getName()?cap_first>
-    </#if>
-  <#else>
-    <#assign methodName="get" + attr.getName()?cap_first>
-  </#if>
-<#if attrType == "boolean" || 
+  <#assign methodName = genHelper.getPlainGetter(attr)>
+    <#if attrType == "boolean" ||
      attrType == "int" || 
      attrType == "float" || 
      attrType == "double" || 
@@ -160,15 +152,7 @@ public class ${symTabPrinterName}
 <#if symbolRules[symbol.name]??>
 <#list symbolRules[symbol.name].getAdditionalAttributeList() as attr>
   <#assign attrType=genHelper.deriveAdditionalAttributeTypeWithMult(attr)>
-  <#if attrType == "boolean" || attrType == "Boolean">
-    <#if attr.getName()?starts_with("is")>
-      <#assign methodName=attr.getName()>
-    <#else>
-      <#assign methodName="is" + attr.getName()?cap_first>
-    </#if>
-  <#else>
-    <#assign methodName="get" + attr.getName()?cap_first>
-  </#if>
+  <#assign methodName = genHelper.getPlainGetter(attr)>
 <#if attrType == "boolean" || 
      attrType == "int" || 
      attrType == "float" || 

@@ -15,6 +15,7 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
@@ -56,6 +57,14 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
     String globalScopeInterface = symbolTableService.getGlobalScopeInterfaceFullName();
     String symbolName = symbolTableService.getNameWithSymbolSuffix(input);
 
+    List<ASTCDAttribute> symbolRuleAttributes = input.deepClone().getCDAttributeList();
+    List<ASTCDMethod> symbolRuleAttributeMethods = symbolRuleAttributes
+        .stream()
+        .map(methodDecorator::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+    List<ASTCDMethod> symbolRuleMethods = input.deepClone().getCDMethodList();
+
     List<ASTCDAttribute> symbolAttributes = createSymbolAttributes(input.getName(), scopeInterface);
     List<ASTCDMethod> symbolMethods = createSymbolMethods(symbolAttributes);
 
@@ -69,6 +78,9 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
         .addInterface(getCDTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName()))
         .addCDConstructor(constructor)
         .addAllCDAttributes(symbolAttributes)
+        .addAllCDAttributes(symbolRuleAttributes)
+        .addAllCDMethods(symbolRuleAttributeMethods)
+        .addAllCDMethods(symbolRuleMethods)
         .addAllCDMethods(symbolMethods)
         .addCDMethod(createAcceptMethod())
         .addCDMethod(createDeterminePackageName(scopeInterface, artifactScope))

@@ -4,7 +4,6 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.typesymbols._symboltable.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -56,7 +55,7 @@ public class SymTypeArray extends SymTypeExpression {
             .setFullName("ArrayType")
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
             // ?Array ist eigentlich generisch?
-            .setTypeParameter(new ArrayList<>());
+            .setTypeParameterList(new ArrayList<>());
 
     // toString()
     List<MethodSymbol> methods = new ArrayList<>();
@@ -64,7 +63,7 @@ public class SymTypeArray extends SymTypeExpression {
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
             .setName("toString")
             .setFullName("Object.toString")
-            .setParameter(new ArrayList<>())
+            .setParameterList(new ArrayList<>())
             .setReturnType(SymTypeExpressionFactory.createTypeConstant("int")) // "XXX:EigentlichObjectTypeString"))
             .build());
 
@@ -80,10 +79,10 @@ public class SymTypeArray extends SymTypeExpression {
             .setName("equals")
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
             .setFullName("java.lang.Object.equals")
-            .setParameter(fieldsE)
+            .setParameterList(fieldsE)
             .setReturnType(SymTypeExpressionFactory.createTypeConstant("boolean"))
             .build());
-    tb.setMethods(methods);
+    tb.setMethodList(methods);
   
     List<FieldSymbol> fieldsAttr = new ArrayList<>();
     fieldsAttr.add(TypeSymbolsSymTabMill.fieldSymbolBuilder()
@@ -93,7 +92,7 @@ public class SymTypeArray extends SymTypeExpression {
             .setType(SymTypeExpressionFactory.createTypeConstant("int"))
             .build());
 
-    tb.setFields(fieldsAttr);
+    tb.setFieldList(fieldsAttr);
     
     arrayTypeSymbol = tb.build();
   }
