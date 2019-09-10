@@ -5,6 +5,8 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolReferenceBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolReferenceDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
 
@@ -23,9 +25,9 @@ public class SymbolCDDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
 
   protected final SymbolBuilderDecorator symbolBuilderDecorator;
 //
-//  protected final SymbolReferenceDecorator symbolReferenceDecorator;
+  protected final SymbolReferenceDecorator symbolReferenceDecorator;
 //
-//  protected final SymbolReferenceBuilderDecorator symbolReferenceBuilderDecorator;
+  protected final SymbolReferenceBuilderDecorator symbolReferenceBuilderDecorator;
 
   protected final SymbolTableService symbolTableService;
 
@@ -67,9 +69,9 @@ public class SymbolCDDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
                                 final IterablePath handCodedPath,
                                 final SymbolTableService symbolTableService,
                                 final SymbolDecorator symbolDecorator,
-                                final SymbolBuilderDecorator symbolBuilderDecorator
-//                                final SymbolReferenceDecorator symbolReferenceDecorator,
-//                                final SymbolReferenceBuilderDecorator symbolReferenceBuilderDecorator,
+                                final SymbolBuilderDecorator symbolBuilderDecorator,
+                                final SymbolReferenceDecorator symbolReferenceDecorator,
+                                final SymbolReferenceBuilderDecorator symbolReferenceBuilderDecorator
 //                                final ScopeClassDecorator scopeClassDecorator,
 //                                final ScopeClassBuilderDecorator scopeClassBuilderDecorator,
 //                                final ScopeInterfaceDecorator scopeInterfaceDecorator,
@@ -90,7 +92,7 @@ public class SymbolCDDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     super(glex);
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
-//    this.symbolReferenceDecorator = symbolReferenceDecorator;
+    this.symbolReferenceDecorator = symbolReferenceDecorator;
     this.symbolTableService = symbolTableService;
 //    this.scopeClassDecorator = scopeClassDecorator;
 //    this.scopeClassBuilderDecorator = scopeClassBuilderDecorator;
@@ -100,7 +102,7 @@ public class SymbolCDDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
 //    this.globalScopeClassBuilderDecorator = globalScopeClassBuilderDecorator;
 //    this.artifactScopeDecorator = artifactScopeDecorator;
 //    this.artifactScopeBuilderDecorator = artifactScopeBuilderDecorator;
-//    this.symbolReferenceBuilderDecorator = symbolReferenceBuilderDecorator;
+    this.symbolReferenceBuilderDecorator = symbolReferenceBuilderDecorator;
 //    this.commonSymbolInterfaceDecorator = commonSymbolInterfaceDecorator;
 //    this.languageDecorator = languageDecorator;
     this.handCodedPath = handCodedPath;
@@ -129,8 +131,8 @@ public class SymbolCDDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
 //        .addCDClass(scopeClass)
 //        .addCDClass(createScopeClassBuilder(scopeClass))
 //        .addCDInterface(createScopeInterface(ast))
-//        .addAllCDClasss(createSymbolReferenceClasses(symbolProds))
-//        .addAllCDClasss(createSymbolReferenceBuilderClasses(symbolProds))
+        .addAllCDClasss(createSymbolReferenceClasses(symbolProds))
+        .addAllCDClasss(createSymbolReferenceBuilderClasses(symbolProds))
 //        .addCDInterface(createICommonSymbol(ast))
 //        .addAllCDInterfaces(createSymbolResolvingDelegateInterfaces(symbolProds))
         .build();
@@ -191,20 +193,20 @@ public class SymbolCDDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
         .collect(Collectors.toList());
   }
 
-//  protected List<ASTCDClass> createSymbolReferenceClasses(List<? extends ASTCDType> astcdTypeList) {
-//    return astcdTypeList
-//        .stream()
-//        .map(symbolReferenceDecorator::decorate)
-//        .collect(Collectors.toList());
-//  }
-//
-//  protected List<ASTCDClass> createSymbolReferenceBuilderClasses(List<? extends ASTCDType> astcdTypeList) {
-//    return astcdTypeList
-//        .stream()
-//        .map(symbolReferenceBuilderDecorator::decorate)
-//        .collect(Collectors.toList());
-//  }
-//
+  protected List<ASTCDClass> createSymbolReferenceClasses(List<? extends ASTCDType> astcdTypeList) {
+    return astcdTypeList
+        .stream()
+        .map(symbolReferenceDecorator::decorate)
+        .collect(Collectors.toList());
+  }
+
+  protected List<ASTCDClass> createSymbolReferenceBuilderClasses(List<? extends ASTCDType> astcdTypeList) {
+    return astcdTypeList
+        .stream()
+        .map(symbolReferenceBuilderDecorator::decorate)
+        .collect(Collectors.toList());
+  }
+
 //  protected List<ASTCDInterface> createSymbolResolvingDelegateInterfaces(List<? extends ASTCDType> astcdTypeList) {
 //    return astcdTypeList
 //        .stream()

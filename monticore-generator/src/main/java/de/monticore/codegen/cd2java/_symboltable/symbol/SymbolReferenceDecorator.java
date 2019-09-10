@@ -15,6 +15,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
@@ -38,8 +39,8 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
     String symbolReferenceClassSimpleName = symbolTableService.getSymbolReferenceClassSimpleName(input);
     String symbolFullName = symbolTableService.getSymbolFullName(input);
     String scopeInterfaceType = symbolTableService.getScopeInterfaceFullName();
-    String astNodeName = symbolTableService.getASTPackage() + "." + input.getName();
-    String simpleName = symbolTableService.removeASTPrefix(input);
+    String astNodeName = symbolTableService.getASTPackage() + "." + AST_PREFIX + input.getName();
+    String simpleName = input.getName();
 
     ASTCDAttribute accessModifierAttribute = createAccessModifierAttribute();
     List<ASTCDMethod> accessModifierMethods = methodDecorator.decorate(accessModifierAttribute);
@@ -91,7 +92,7 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
   }
 
   protected ASTCDAttribute createPredicateAttribute(String symbolType) {
-    ASTCDAttribute predicateAttribute = getCDAttributeFacade().createAttribute(PROTECTED, String.format(PREDICATE, symbolType ), "predicate");
+    ASTCDAttribute predicateAttribute = getCDAttributeFacade().createAttribute(PROTECTED, String.format(PREDICATE, symbolType), "predicate");
     this.replaceTemplate(VALUE, predicateAttribute, new StringHookPoint("= x -> true"));
     return predicateAttribute;
   }

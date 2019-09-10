@@ -496,7 +496,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         , commonSymbolInterfaceDecorator, languageDecorator, languageBuilderDecorator, modelLoaderDecorator, modelLoaderBuilderDecorator,
         symbolResolvingDelegateInterfaceDecorator, symbolTableCreatorDecorator, symbolTableCreatorBuilderDecorator);
 
-    SymbolCDDecorator symbolCDDecorator= new SymbolCDDecorator(glex, handCodedPath, symbolTableService, symbolDecorator, symbolBuilderDecorator);
+    SymbolCDDecorator symbolCDDecorator= new SymbolCDDecorator(glex, handCodedPath, symbolTableService, symbolDecorator, symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator);
     ASTCDCompilationUnit symbolDecoratorCD = symbolCDDecorator.decorate(symbolCD);
 
 

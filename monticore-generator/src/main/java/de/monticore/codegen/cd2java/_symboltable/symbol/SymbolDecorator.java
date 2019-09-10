@@ -19,6 +19,7 @@ import java.util.List;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
@@ -93,7 +94,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
     ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, "enclosingScope");
 
-    ASTMCOptionalType optionalTypeOfASTNode = getCDTypeFacade().createOptionalTypeOf(symbolTableService.getASTPackage() + ".AST" + astClassName);
+    ASTMCOptionalType optionalTypeOfASTNode = getCDTypeFacade().createOptionalTypeOf(symbolTableService.getASTPackage() + "." + AST_PREFIX + astClassName);
     ASTCDAttribute node = this.getCDAttributeFacade().createAttribute(PROTECTED, optionalTypeOfASTNode, AST_NODE_VARIABLE);
 
     ASTCDAttribute packageName = this.getCDAttributeFacade().createAttribute(PROTECTED, String.class, PACKAGE_NAME);
@@ -112,7 +113,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
         symbolMethods.addAll(createNameMethods(symbolAttribute));
       } else if (symbolAttribute.getName().equals(FULL_NAME)) {
         symbolMethods.addAll(createNameMethods(symbolAttribute));
-      }else {
+      } else {
         symbolMethods.addAll(methodDecorator.decorate(symbolAttribute));
       }
     }

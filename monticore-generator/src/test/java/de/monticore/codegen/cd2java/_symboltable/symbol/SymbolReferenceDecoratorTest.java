@@ -36,15 +36,15 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
+  private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.symbolcd.automaton._symboltable.IAutomatonScope";
 
-  private static final String AST_AUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
+  private static final String AST_AUTOMATON = "de.monticore.codegen.symboltable.symbolcd.automaton._ast.ASTAutomaton";
 
-  private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
+  private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.symboltable.symbolcd.automaton._symboltable.AutomatonSymbol";
 
   private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
 
-  public static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
+  public static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.symboltable.symbolcd.automaton._symboltable.AutomatonSymbol>";
 
   @Before
   public void setUp() {
@@ -54,7 +54,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
-    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "symbolCD", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
@@ -62,11 +62,8 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
     SymbolReferenceDecorator decorator = new SymbolReferenceDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
         new MethodDecorator(glex));
     //creates ScopeSpanningSymbol
-    ASTCDClass automatonClass = getClassBy("ASTAutomaton", decoratedCompilationUnit);
+    ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
-
-    //creates normal Symbol
-    ASTCDClass stateClass = getClassBy("ASTState", decoratedCompilationUnit);
   }
 
   @Test
@@ -98,7 +95,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperClass() {
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol", symbolClassAutomaton.getSuperclass());
+    assertDeepEquals("de.monticore.codegen.symboltable.symbolcd.automaton._symboltable.AutomatonSymbol", symbolClassAutomaton.getSuperclass());
   }
 
   @Test
@@ -116,7 +113,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, cdConstructor.getCDParameter(0).getMCType());
     assertEquals("name", cdConstructor.getCDParameter(0).getName());
 
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope", cdConstructor.getCDParameter(1).getMCType());
+    assertDeepEquals("de.monticore.codegen.symboltable.symbolcd.automaton._symboltable.IAutomatonScope", cdConstructor.getCDParameter(1).getMCType());
     assertEquals("enclosingScope", cdConstructor.getCDParameter(1).getName());
 
     assertTrue(cdConstructor.isEmptyExceptions());
@@ -227,7 +224,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   public void testExistsReferencedSymbolMethod() {
     ASTCDMethod method = getMethodBy("existsReferencedSymbol", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean( method.getMCReturnType().getMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
@@ -245,7 +242,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   public void testIsReferencedSymbolLoadedMethod() {
     ASTCDMethod method = getMethodBy("isReferencedSymbolLoaded", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean( method.getMCReturnType().getMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
