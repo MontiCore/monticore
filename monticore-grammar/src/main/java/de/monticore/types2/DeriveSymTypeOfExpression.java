@@ -230,7 +230,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
    * we switch to the DeriveSymTypeOfLiterals visitor
    */
   @Override
-  public void visit(ASTLiteralExpression ex){
+  public void traverse(ASTLiteralExpression ex){
     ASTLiteral lit = ex.getLiteral();
     result = deriveLit.calculateType(lit);
   }

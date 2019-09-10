@@ -1,13 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
-import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
-import de.monticore.expressions.commonexpressions._ast.ASTLogicalNotExpression;
+import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
+
+import static de.monticore.types2.SymTypeConstant.unbox;
 
 /**
  * Visitor for Derivation of SymType from Expressions
@@ -175,5 +176,102 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression
   
   
   /**********************************************************************************/
-  
+
+  @Override
+  public void traverse(ASTPlusExpression node){
+    if(null != node.getLeft()){
+      node.getLeft().accept(getRealThis());
+    }
+    SymTypeExpression leftResult = result.get();
+    if(null != node.getRight()){
+      node.getRight().accept(getRealThis());
+    }
+    SymTypeExpression rightResult = result.get();
+    result = Optional.of(calculateTypeOfNumericOperationWithString(leftResult,rightResult));
+  }
+
+  @Override
+  public void traverse(ASTMinusExpression node){
+    if(null != node.getLeft()){
+      node.getLeft().accept(getRealThis());
+    }
+    SymTypeExpression exp = result.get();
+    if(null != node.getRight()){
+      node.getRight().accept(getRealThis());
+    }
+    result = Optional.of(calculateTypeOfNumericOperation(exp,result.get()));
+  }
+
+  @Override
+  public void traverse(ASTMultExpression node){
+    if(null != node.getLeft()){
+      node.getLeft().accept(getRealThis());
+    }
+    SymTypeExpression exp = result.get();
+    if(null != node.getRight()){
+      node.getRight().accept(getRealThis());
+    }
+    result = Optional.of(calculateTypeOfNumericOperation(exp,result.get()));
+  }
+
+  @Override
+  public void traverse(ASTDivideExpression node){
+    if(null != node.getLeft()){
+      node.getLeft().accept(getRealThis());
+    }
+    SymTypeExpression exp = result.get();
+    if(null != node.getRight()){
+      node.getRight().accept(getRealThis());
+    }
+    result = Optional.of(calculateTypeOfNumericOperation(exp,result.get()));
+  }
+
+  @Override
+  public void traverse(ASTModuloExpression node){
+    if(null != node.getLeft()){
+      node.getLeft().accept(getRealThis());
+    }
+    SymTypeExpression exp = result.get();
+    if(null != node.getRight()){
+      node.getRight().accept(getRealThis());
+    }
+    result = Optional.of(calculateTypeOfNumericOperation(exp,result.get()));
+  }
+
+
+
+  public SymTypeExpression calculateTypeOfNumericOperation(SymTypeExpression leftType,
+                                                           SymTypeExpression rightType) {
+    SymTypeExpression result = null;
+    if(leftType!=null && rightType!=null){
+      String left = leftType.print();
+      String right = rightType.print();
+      if("double".equals(unbox(left))||"double".equals(unbox(right))){
+        result = SymTypeExpressionFactory.createTypeConstant("double");
+        return result;
+      }
+      if("float".equals(unbox(left))||"float".equals(unbox(right))){
+        result = SymTypeExpressionFactory.createTypeConstant("float");
+        return result;
+      }
+      if("long".equals(unbox(left))||"long".equals(unbox(right))){
+        result = SymTypeExpressionFactory.createTypeConstant("long");
+        return result;
+      }
+      result = SymTypeExpressionFactory.createTypeConstant("int");
+    }
+    return result;
+  }
+
+  public SymTypeExpression calculateTypeOfNumericOperationWithString(SymTypeExpression leftType, SymTypeExpression rightType){
+    SymTypeExpression result = null;
+    if(leftType!=null && rightType != null ){
+      if("String".equals(unbox(leftType.print()))||"String".equals(unbox(rightType.print()))){
+        result = SymTypeExpressionFactory.createTypeConstant("String");
+        return result;
+      }
+    }
+    return calculateTypeOfNumericOperation(leftType,rightType);
+  }
+
 }
