@@ -23,8 +23,11 @@ The different development statuses of grammars are explained
 ### [Activity Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
 * INSERT DESCRIPTION HERE
 
-### [Class Diagram 4 Analysis](INSERT LINK HERE) (INSERT STATUS HERE)
-* INSERT DESCRIPTION HERE
+### [Class Diagram 4 Analysis](INSERT LINK HERE) (95%)
+[CD4A](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) is the textual (UML/P) representation of a UML class diagram.
+Its primary feature are the description and analysis of a class diagram.
+
+CD4Code is an extension which allows for function signatures and implementations with the [JavaDSL](https://git.rwth-aachen.de/monticore/javaDSL).
 
 ### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (alpha)
 * Language for textual feature models and feature configurations
