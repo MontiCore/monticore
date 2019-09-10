@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 
 public class SymbolRulesToCDClassAndCDInterface implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
+
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     Set<ASTSymbolRule> matchedRules = createLinksForMatchedASTRules(rootLink);

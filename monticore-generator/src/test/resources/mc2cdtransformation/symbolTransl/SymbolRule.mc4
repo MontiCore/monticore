@@ -7,8 +7,11 @@ component grammar SymbolRule {
 // symbol prods should be shown
  symbol SymbolClass = Name;
 
- symbolrule SymbolClass =
-    extraString:String;
+ symbolrule SymbolClass implements de.monticore.symboltable.ISymbol extends de.monticore.symboltable.Symbol=
+   extraString:String
+   method public String toString(){
+     return "foo";
+   };
 
  abstract symbol SymbolAbstractClass = Name;
 

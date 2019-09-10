@@ -1,11 +1,9 @@
 package de.monticore.codegen.mc2cd.symbolTransl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.factories.CDModifier;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,16 +45,31 @@ public class CDSymbolTranslationTest {
   public void testClassSymbol() {
     ASTCDClass symbolClassSymbol = getClassBy("SymbolClass", compilationUnit);
     assertEquals(1, symbolClassSymbol.sizeCDAttributes());
-    assertTrue(symbolClassSymbol.isEmptyInterfaces());
-    assertTrue(symbolClassSymbol.isEmptyCDMethods());
+    assertEquals(1, symbolClassSymbol.sizeInterfaces());
+    assertEquals(1, symbolClassSymbol.sizeCDMethods());
     assertTrue(symbolClassSymbol.isEmptyCDConstructors());
-    assertFalse(symbolClassSymbol.isPresentSuperclass());
+    assertTrue(symbolClassSymbol.isPresentSuperclass());
 
     ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttribute(0);
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
     assertTrue(cdAttribute.isPresentModifier());
     assertDeepEquals(CDModifier.PROTECTED, cdAttribute.getModifier());
+
+    ASTCDMethod cdMethod = symbolClassSymbol.getCDMethod(0);
+    assertEquals("toString", cdMethod.getName());
+    assertTrue(cdMethod.getMCReturnType().isPresentMCType());
+    assertDeepEquals(String.class, cdMethod.getMCReturnType().getMCType());
+    assertTrue(cdMethod.getModifier().isPublic());
+    assertTrue(cdMethod.getModifier().isPresentStereotype());
+    assertEquals(1, cdMethod.getModifier().getStereotype().sizeValues());
+    assertEquals("methodBody", cdMethod.getModifier().getStereotype().getValue(0).getName());
+
+    ASTMCObjectType cdInterface = symbolClassSymbol.getInterface(0);
+    assertDeepEquals("de.monticore.symboltable.ISymbol", cdInterface);
+
+    ASTMCObjectType superclass = symbolClassSymbol.getSuperclass();
+    assertDeepEquals("de.monticore.symboltable.Symbol", superclass);
   }
 
   @Test

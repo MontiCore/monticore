@@ -6,6 +6,7 @@ import de.monticore.MontiCoreScript;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
 import de.monticore.codegen.mc2cd.symbolTransl.MC2CDSymbolTranslation;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -38,6 +39,19 @@ public class TestHelper {
     Grammar_WithConceptsGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
     mc.createSymbolsFromAST(symbolTable, grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDSymbolTranslation(
+        new GlobalExtensionManagement()).apply(grammar.get());
+    return Optional.of(cdCompilationUnit);
+  }
+
+  public static Optional<ASTCDCompilationUnit> parseAndTransformForScope(Path model) {
+    Optional<ASTMCGrammar> grammar = MCGrammarParser.parse(model);
+    if (!grammar.isPresent()) {
+      return Optional.empty();
+    }
+    MontiCoreScript mc = new MontiCoreScript();
+    Grammar_WithConceptsGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
+    mc.createSymbolsFromAST(symbolTable, grammar.get());
+    ASTCDCompilationUnit cdCompilationUnit = new MC2CDScopeTranslation(
         new GlobalExtensionManagement()).apply(grammar.get());
     return Optional.of(cdCompilationUnit);
   }
