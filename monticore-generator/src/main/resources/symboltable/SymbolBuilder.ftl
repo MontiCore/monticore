@@ -36,10 +36,7 @@ public class ${className} {
   protected AccessModifier accessModifier = ALL_INCLUSION;
 
   <#if symbolRule.isPresent()>
-    <#list symbolRule.get().getAdditionalAttributeList() as attr>
-      <#assign attrType=genHelper.deriveAdditionalAttributeTypeWithMult(attr)>
-  protected ${attrType} ${attr.getName()};
-    </#list>
+    ${includeArgs("symboltable.symbols.SymbolRuleForBuilder", symbolRule.get())}
   </#if>
 
   protected ${className}() {}

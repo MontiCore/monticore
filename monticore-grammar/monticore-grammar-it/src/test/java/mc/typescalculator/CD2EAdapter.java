@@ -13,14 +13,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static mc.typescalculator.CD2EHelper.*;
-
 public class CD2EAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolResolvingDelegate, IFieldSymbolResolvingDelegate {
 
   private CD4AnalysisGlobalScope cd4ascope;
 
   public CD2EAdapter(CD4AnalysisGlobalScope cd4ascope){
     this.cd4ascope=cd4ascope;
+
   }
 
   @Override
@@ -29,7 +28,7 @@ public class CD2EAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolR
     Optional<CDMethOrConstrSymbol> methOrConstrSymbolOpt = cd4ascope.resolveCDMethOrConstr(symbolName,modifier);
     if(methOrConstrSymbolOpt.isPresent()){
       CDMethOrConstrSymbol methOrConstrSymbol = methOrConstrSymbolOpt.get();
-      result.add(transformCDMethOrConstr2EMethodSymbol(methOrConstrSymbol));
+      result.add(CD2EHelper.transformCDMethOrConstr2EMethodSymbol(methOrConstrSymbol));
     }
     return result;
   }
@@ -50,13 +49,13 @@ public class CD2EAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolR
       for(CDFieldSymbol fieldSymbol: typeSymbol.getFields()){
         List<FieldSymbol> variableSymbols = res.getFields();
         FieldSymbol varsym = ExpressionsBasisSymTabMill.fieldSymbolBuilder().setName(fieldSymbol.getName()).setFullName(fieldSymbol.getFullName()).setAccessModifier(fieldSymbol.getAccessModifier()).build();
-        varsym.setType(transformCDType2SymTypeExpression(fieldSymbol.getType()));
+        varsym.setType(CD2EHelper.transformCDType2SymTypeExpression(fieldSymbol.getType()));
         variableSymbols.add(varsym);
         res.setFields(variableSymbols);
       }
       for(CDTypeSymbolReference ref : typeSymbol.getSuperTypes()){
-        List<SymTypeExpression> superTypes = res.getSuperTypes();
-        superTypes.add(transformCDType2SymTypeExpression(ref));
+        List<TypeSymbol> superTypes = res.getSuperTypes();
+        superTypes.add(CD2EHelper.transformCDType2TypeSymbol(ref));
         res.setSuperTypes(superTypes);
       }
       result.add(res);
@@ -67,10 +66,10 @@ public class CD2EAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolR
   @Override
   public Collection<FieldSymbol> resolveAdaptedFieldSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<FieldSymbol> predicate) {
     Collection<FieldSymbol> result = Lists.newArrayList();
-    Optional<CDFieldSymbol> fieldSymbolopt = cd4ascope.resolveCDField(symbolName,modifier);
-    if(fieldSymbolopt.isPresent()){
-      CDFieldSymbol fieldSymbol = fieldSymbolopt.get();
-      result.add(transformCDField2FieldSymbol(fieldSymbol));
+    Optional<CDFieldSymbol> cdFieldSymbolopt = cd4ascope.resolveCDField(symbolName,modifier);
+    if(cdFieldSymbolopt.isPresent()){
+      CDFieldSymbol fieldSymbol = cdFieldSymbolopt.get();
+      result.add(CD2EHelper.transformCDField2FieldSymbol(fieldSymbol));
     }
     return result;
   }

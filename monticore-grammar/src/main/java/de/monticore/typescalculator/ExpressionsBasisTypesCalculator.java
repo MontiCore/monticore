@@ -218,7 +218,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     for(SymTypeExpression ts : superTypes) {
       SymTypeExpression s = new SymTypeOfGenerics();
       s.setName(ts.getName());
-
+      superTypesAsSymTypes.add(s);
     }
 
 
