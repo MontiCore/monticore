@@ -23,8 +23,8 @@ The different development statuses of grammars are explained
 ### [Activity Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
 * INSERT DESCRIPTION HERE
 
-### [Class Diagram 4 Analysis](INSERT LINK HERE) (95%)
-[CD4A](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) is the textual (UML/P) representation of a UML class diagram.
+### [Class Diagram 4 Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (95% to MC6)
+CD4A is the textual (UML/P) representation of a UML class diagram.
 Its primary feature are the description and analysis of a class diagram.
 
 CD4Code is an extension which allows for function signatures and implementations with the [JavaDSL](https://git.rwth-aachen.de/monticore/javaDSL).
@@ -43,8 +43,11 @@ CD4Code is an extension which allows for function signatures and implementations
 ### [MontiArc](INSERT LINK HERE) (INSERT STATUS HERE)
 * INSERT DESCRIPTION HERE
 
-### [OCL/P](INSERT LINK HERE) (INSERT STATUS HERE)
-* INSERT DESCRIPTION HERE
+### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Not started with MC6 changes)
+OCL/P is the textual representation of the UML OCL standard, adapted with Java-like syntax.
+
+A Java generator can be found [**here**](https://git.rwth-aachen.de/monticore/languages/OCL2Java).
+A generator for Embedded MontiArc in combination with OCL can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
 
 ### [Object Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
 * INSERT DESCRIPTION HERE
@@ -64,8 +67,12 @@ CD4Code is an extension which allows for function signatures and implementations
 ### [SysML/P](INSERT LINK HERE) (INSERT STATUS HERE)
 * INSERT DESCRIPTION HERE
 
-### [Tagging](INSERT LINK HERE) (INSERT STATUS HERE)
-* INSERT DESCRIPTION HERE
+### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Not started with MC6 changes)
+The Tagging language offers the possibility to enrich existing models of any DSLs.
+
+The Tagging models can then be used as configuration, e.g. in a code generator.
+
+Examples can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging-Examples)
 
 ### [XML](INSERT LINK HERE) (INSERT STATUS HERE)
 * INSERT DESCRIPTION HERE
