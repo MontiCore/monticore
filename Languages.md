@@ -26,8 +26,10 @@ The different development statuses of grammars are explained
 ### [Class Diagram 4 Analysis](INSERT LINK HERE) (INSERT STATUS HERE)
 * INSERT DESCRIPTION HERE
 
-### [Feature Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
-* INSERT DESCRIPTION HERE
+### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (alpha)
+* Language for textual feature models and feature configurations
+* Feature diagrams are used to model (software) product lines
+* Feature configurations select a subset of features of a feature model to describe a product of the product line
 
 ### [GUI DSL](INSERT LINK HERE) (INSERT STATUS HERE)
 * INSERT DESCRIPTION HERE
