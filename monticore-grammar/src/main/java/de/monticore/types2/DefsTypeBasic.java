@@ -66,19 +66,19 @@ public class DefsTypeBasic {
             .setName(name)
             .setFullName(fullName)
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setTypeParameters(new ArrayList<>())
-            .setFields(new ArrayList<>())
-            .setMethods(new ArrayList<>())
+            .setTypeParameterList(new ArrayList<>())
+            .setFieldList(new ArrayList<>())
+            .setMethodList(new ArrayList<>())
             .build();
   }
   
   public static TypeSymbol add(TypeSymbol t, FieldSymbol f) {
-    t.getFields().add(f);
+    t.getFieldList().add(f);
     return t;
   }
   
   public static TypeSymbol add(TypeSymbol t, MethodSymbol m) {
-    t.getMethods().add(m);
+    t.getMethodList().add(m);
     return t;
   }
   
@@ -89,13 +89,13 @@ public class DefsTypeBasic {
             .setName(name)
             .setFullName(name)  // can later be adapted, when fullname of Type is known
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setParameter(new ArrayList<>())
+            .setParameterList(new ArrayList<>())
             .setReturnType(returnType)
             .build();
   }
   
   public static MethodSymbol add(MethodSymbol m, FieldSymbol f) {
-    m.getParameter().add(f);
+    m.getParameterList().add(f);
     return m;
   }
   
@@ -132,10 +132,10 @@ public class DefsTypeBasic {
   public static void completeFullnames(TypeSymbol s) {
     // in the class Fullname must already set
     String prefix = s.getPackageName();
-    for (MethodSymbol m : s.getMethods()) {
+    for (MethodSymbol m : s.getMethodList()) {
       completeFullnames(m, prefix);
     }
-    for (FieldSymbol f : s.getFields()) {
+    for (FieldSymbol f : s.getFieldList()) {
       completeFullnames(f, prefix);
     }
   }

@@ -12,7 +12,6 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static de.monticore.types2.DefsTypeBasic.*;
-import static de.monticore.types2.DefsTypeBasic._booleanSymType;
 import static org.junit.Assert.assertEquals;
 
 public class DeriveSymTypeOfCommonExpressionTest {
@@ -35,7 +34,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     ExpressionsBasisScope scope =
         ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
             .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-            .setExportsSymbols(true)
+            .setExportingSymbols(true)
             .setAstNode(null)
             .setName("Phantasy2").build();     // hopefully unused
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)

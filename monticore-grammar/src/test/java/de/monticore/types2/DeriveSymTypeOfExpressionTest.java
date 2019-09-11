@@ -1,30 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
-import de.monticore.literals.mccommonliterals._ast.MCCommonLiteralsMill;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
-import de.monticore.types.typesymbols._ast.TypeSymbolsMill;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.io.IOException;
 
 import static de.monticore.types2.DefsTypeBasic.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfExpressionTest {
   
@@ -45,7 +29,7 @@ public class DeriveSymTypeOfExpressionTest {
     ExpressionsBasisScope scope =
             ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
                     .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-                    .setExportsSymbols(true)
+                    .setExportingSymbols(true)
                     .setAstNode(null)
                     .setName("Phantasy2").build();     // hopefully unused
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)

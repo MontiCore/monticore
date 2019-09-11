@@ -147,15 +147,18 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .addCDInterface(createICommonSymbol(astCD))
         .addAllCDInterfaces(createSymbolResolvingDelegateInterfaces(symbolProds))
         .build();
-    if (symbolTableService.hasProd(astCD.getCDDefinition())) {
+    if(symbolTableService.getStartProd(astCD.getCDDefinition()).isPresent()){
+      // global scope
       symTabCD.addCDInterface(createGlobalScopeInterface(astCD));
       ASTCDClass globalScopeClass = createGlobalScopeClass(astCD);
       symTabCD.addCDClass(globalScopeClass);
       symTabCD.addCDClass(createGlobalScopeClassBuilder(globalScopeClass));
+      // artifact scope
       ASTCDClass artifactScope = createArtifactScope(astCD);
       symTabCD.addCDClass(artifactScope);
       symTabCD.addCDClass(createArtifactBuilderScope(artifactScope));
-      // language needs to know if it is overwritten to generate method differently
+      // language
+      // needs to know if it is overwritten to generate method differently
       boolean isLanguageHandCoded = existsHandwrittenClass(handCodedPath,
           constructQualifiedName(symbolTablePackage, symbolTableService.getLanguageClassSimpleName()));
       // set boolean if language is TOPed or not
@@ -165,11 +168,15 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       if (isLanguageHandCoded) {
         symTabCD.addCDClass(createLanguageBuilder(languageClass));
       }
+      // model loader
       Optional<ASTCDClass> modelLoader = createModelLoader(astCD);
       if (modelLoader.isPresent()) {
         symTabCD.addCDClass(modelLoader.get());
-        symTabCD.addCDClass(createModelLoaderBuilder(modelLoader.get()));
+        if(!symbolTableService.isComponent()){
+          symTabCD.addCDClass(createModelLoaderBuilder(modelLoader.get()));
+        }
       }
+      // symboltable creator
       Optional<ASTCDClass> symbolTableCreator = createSymbolTableCreator(astCD);
       if (symbolTableCreator.isPresent()) {
         symTabCD.addCDClass(symbolTableCreator.get());
