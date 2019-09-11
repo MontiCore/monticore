@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._symboltable;
 import de.monticore.cd.CD4AnalysisHelper;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
@@ -15,6 +16,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Names;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -502,6 +504,19 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public List<ASTCDType> getSymbolDefiningProds(ASTCDDefinition astcdDefinition) {
     List<ASTCDType> symbolProds = getSymbolDefiningClasses(astcdDefinition.getCDClassList());
     symbolProds.addAll(getSymbolDefiningInterfaces(astcdDefinition.getCDInterfaceList()));
+    return symbolProds;
+  }
+
+  public List<ASTCDType> getSymbolDefiningSuperProds() {
+    List<ASTCDType> symbolProds = new ArrayList<>();
+    for (CDDefinitionSymbol cdDefinitionSymbol : getSuperCDsTransitive()) {
+      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+        if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
+            && hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())){
+          symbolProds.add(type.getAstNode().get());
+        }
+      }
+    }
     return symbolProds;
   }
 

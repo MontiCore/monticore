@@ -133,7 +133,7 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(8, languageClass.getCDMethodList().size());
+    assertEquals(9, languageClass.getCDMethodList().size());
   }
 
   @Test
@@ -222,6 +222,18 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCalculateModelNamesForAutomatonMethod() {
     ASTCDMethod method = getMethodBy("calculateModelNamesForAutomaton", languageClass);
+
+    assertDeepEquals(PROTECTED, method.getModifier());
+    assertDeepEquals("Set<String>", method.getMCReturnType().getMCType());
+
+    assertEquals(1,method.sizeCDParameters());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("name", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testCalculateModelNamesForQualifiedNameMethod() {
+    ASTCDMethod method = getMethodBy("calculateModelNamesForQualifiedName", languageClass);
 
     assertDeepEquals(PROTECTED, method.getModifier());
     assertDeepEquals("Set<String>", method.getMCReturnType().getMCType());

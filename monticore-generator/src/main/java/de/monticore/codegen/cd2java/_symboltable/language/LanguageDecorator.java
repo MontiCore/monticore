@@ -48,6 +48,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
         I_MODELING_LANGUAGE + "<" + modelLoaderClassName + ">");
 
     List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
+    symbolDefiningProds.addAll(symbolTableService.getSymbolDefiningSuperProds());
 
     ASTCDAttribute modelLoaderAttribute = createModelLoaderAttribute(modelLoaderClassName);
     List<ASTCDMethod> modelLoaderMethods = accessorDecorator.decorate(modelLoaderAttribute);

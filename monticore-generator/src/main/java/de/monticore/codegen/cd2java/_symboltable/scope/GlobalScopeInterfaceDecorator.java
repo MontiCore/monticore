@@ -1,6 +1,8 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -47,6 +49,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
         .addCDMethod(createContinueWithModelLoaderMethod(definitionName))
         .addCDMethod(createGetRealThisMethod(globalScopeInterfaceName))
         .addAllCDMethods(createResolveMethods(symbolClasses, definitionName))
+        .addAllCDMethods(createSuperProdResolveMethods(definitionName))
         .build();
   }
 
@@ -83,7 +86,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
   protected ASTCDMethod createGetRealThisMethod(String globalScopeName) {
     ASTMCType globalScopeInterfaceType = getCDTypeFacade().createQualifiedType(globalScopeName);
     ASTCDMethod getRealThis = getCDMethodFacade().createMethod(PUBLIC, globalScopeInterfaceType, "getRealThis");
-    this.replaceTemplate(EMPTY_BODY,getRealThis, new StringHookPoint("return this;"));
+    this.replaceTemplate(EMPTY_BODY, getRealThis, new StringHookPoint("return this;"));
     return getRealThis;
   }
 
@@ -94,24 +97,50 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "foundSymbols");
 
     for (ASTCDType symbolProd : symbolProds) {
-      String className = symbolTableService.removeASTPrefix(symbolProd);
-      String symbolFullTypeName = symbolTableService.getSymbolFullName(symbolProd);
-      ASTMCType listSymbol = getCDTypeFacade().createCollectionTypeOf(symbolFullTypeName);
-
-      ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
-          .createTypeByDefinition(String.format(PREDICATE, symbolFullTypeName )), "predicate");
-
-
-      resolveMethods.add(createResolveManyMethod(className, symbolFullTypeName, listSymbol, foundSymbolsParameter,
-          nameParameter, accessModifierParameter, predicateParameter));
-
-      resolveMethods.add(createResolveAdaptedMethod(className, listSymbol, foundSymbolsParameter,
-          nameParameter, accessModifierParameter, predicateParameter));
-
-
-      resolveMethods.add(createLoadModelsForMethod(className, definitionName, nameParameter));
+      resolveMethods.addAll(createResolveMethod(symbolProd, nameParameter, foundSymbolsParameter, accessModifierParameter,
+          symbolTableService.getCDSymbol(), definitionName));
     }
 
+    return resolveMethods;
+  }
+
+  protected List<ASTCDMethod> createResolveMethod(ASTCDType symbolProd, ASTCDParameter nameParameter, ASTCDParameter foundSymbolsParameter,
+                                                  ASTCDParameter accessModifierParameter, CDDefinitionSymbol cdDefinitionSymbol, String definitionName) {
+    List<ASTCDMethod> resolveMethods = new ArrayList<>();
+    String className = symbolTableService.removeASTPrefix(symbolProd);
+    String symbolFullTypeName = symbolTableService.getSymbolFullName(symbolProd, cdDefinitionSymbol);
+    ASTMCType listSymbol = getCDTypeFacade().createCollectionTypeOf(symbolFullTypeName);
+
+    ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
+        .createTypeByDefinition(String.format(PREDICATE, symbolFullTypeName)), "predicate");
+
+
+    resolveMethods.add(createResolveManyMethod(className, symbolFullTypeName, listSymbol, foundSymbolsParameter,
+        nameParameter, accessModifierParameter, predicateParameter));
+
+    resolveMethods.add(createResolveAdaptedMethod(className, listSymbol, foundSymbolsParameter,
+        nameParameter, accessModifierParameter, predicateParameter));
+
+
+    resolveMethods.add(createLoadModelsForMethod(className, definitionName, nameParameter));
+    return resolveMethods;
+  }
+
+  protected List<ASTCDMethod> createSuperProdResolveMethods(String definitionName) {
+    List<ASTCDMethod> resolveMethods = new ArrayList<>();
+    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, "name");
+    ASTCDParameter accessModifierParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ACCESS_MODIFIER), "modifier");
+    ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "foundSymbols");
+
+    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+        if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
+          resolveMethods.addAll(createResolveMethod(type.getAstNode().get(), nameParameter, foundSymbolsParameter,
+              accessModifierParameter, cdDefinitionSymbol, definitionName));
+        }
+      }
+    }
     return resolveMethods;
   }
 
