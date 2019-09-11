@@ -19,6 +19,7 @@ import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import java.util.*;
 
 import static de.monticore.types2.SymTypeConstant.unbox;
+import static de.monticore.typescalculator.TypesCalculator.isSubtypeOf;
 
 
 public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalculator implements CommonExpressionsVisitor {
@@ -184,32 +185,32 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
     }
   }
 
-//  @Override
-//  public void endVisit(ASTEqualsExpression expr){
-//    SymTypeExpression result = calculateTypeLogical(expr.getLeft(),expr.getRight());
-//    if(result!=null) {
-//      SymTypeExpression sym = result.deepClone();
-//      sym.setName(result.getName());
-//      types.put(expr, sym);
-//      this.result = sym;
-//    }else{
-//      Log.error("0xA0197 The resulting type cannot be calculated");
-//    }
-//  }
-//
-//  @Override
-//  public void endVisit(ASTNotEqualsExpression expr){
-//    SymTypeExpression result = calculateTypeLogical(expr.getLeft(),expr.getRight());
-//    if(result!=null) {
-//      SymTypeExpression sym = result.deepClone();
-//      sym.setName(result.getName());
-//      types.put(expr, sym);
-//      this.result = sym;
-//    }else{
-//      Log.error("0xA0198 The resulting type cannot be calculated");
-//    }
-//  }
-//
+  @Override
+  public void endVisit(ASTEqualsExpression expr){
+    Optional<SymTypeExpression> wholeResult = calculateTypeLogical(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()) {
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0197 The resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void endVisit(ASTNotEqualsExpression expr){
+    Optional<SymTypeExpression> wholeResult = calculateTypeLogical(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()) {
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0198 The resulting type cannot be calculated");
+    }
+  }
+
 //  @Override
 //  public void endVisit(ASTBooleanAndOpExpression expr){
 //    SymTypeExpression result = null;
@@ -401,29 +402,49 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
     if(isNumericType(leftResult)&&isNumericType(rightResult)){
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
     }
+    //should never happen, no valid result, error will be handled in traverse
     return Optional.empty();
   }
 
-//  private SymTypeExpression calculateTypeLogical(ASTExpression left, ASTExpression right) {
-//    SymTypeExpression result = null;
-//    if(types.containsKey(left)&&types.containsKey(right)) {
-//      if(isPrimitiveType(types.get(left))&&isPrimitiveType(types.get(right))){
-//        result = new SymTypeConstant();
-//        result.setName("boolean");
-//        return result;
-//      }
-//      if(!isPrimitiveType(types.get(left)) && !isPrimitiveType(types.get(right)) &&
-//              (          types.get(left).deepEquals(types.get(right))
-//                      || types.get(right).getSuperTypes().contains(types.get(left))
-//                      || types.get(left).getSuperTypes().contains(types.get(right))
-//              )){
-//        result = new SymTypeConstant();
-//        result.setName("boolean");
-//        return result;
-//      }
-//    }
-//    return result;
-//  }
+  private Optional<SymTypeExpression> calculateTypeLogical(ASTExpression left, ASTExpression right) {
+    SymTypeExpression leftResult = null;
+    SymTypeExpression rightResult = null;
+    if(left!=null){
+      left.accept(getRealThis());
+    }
+    if(lastResult.isPresentLast()) {
+      //store result of the left part of the expression
+      leftResult = lastResult.getLast();
+    }else{
+      //TODO: logs
+      Log.error("");
+    }
+    if(right!=null){
+      right.accept(getRealThis());
+    }
+    if(lastResult.isPresentLast()){
+      //store result of the right part of the expression
+      rightResult = lastResult.getLast();
+    }else{
+      //TODO: logs
+      Log.error("");
+    }
+
+    SymTypeExpression result = null;
+    if(isNumericType(leftResult)&&isNumericType(rightResult)
+    ||leftResult.print().equals("boolean")&&rightResult.print().equals("boolean")){
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+    }
+    if(!isPrimitiveType(leftResult) && !isPrimitiveType(rightResult) &&
+        (         leftResult.print().equals(rightResult.print())
+            || isSubtypeOf(rightResult,leftResult)
+            || isSubtypeOf(leftResult,rightResult)
+        )){
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+    }
+    //should never happen, no valid result, error will be handled in traverse
+    return Optional.empty();
+  }
 
   /**
    * return the result for the five basic arithmetic operations (+,-,*,/,%)
@@ -511,6 +532,10 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
    */
   private boolean isNumericType(SymTypeExpression ex){
     return (ex.print().equals("double") || ex.print().equals("float") || ex.print().equals("long") || ex.print().equals("int") || ex.print().equals("char") || ex.print().equals("short") || ex.print().equals("byte"));
+  }
+
+  private boolean isPrimitiveType(SymTypeExpression ex){
+    return isNumericType(ex) || ex.print().equals("boolean");
   }
 
   public Optional<SymTypeExpression> calculateType(ASTExpression expr){

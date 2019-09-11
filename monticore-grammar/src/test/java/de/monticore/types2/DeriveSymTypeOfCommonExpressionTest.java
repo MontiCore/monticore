@@ -3,6 +3,7 @@ package de.monticore.types2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.typescalculator.CombineExpressionsWithLiteralsTypesCalculator;
 import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.se_rwth.commons.logging.LogStub;
@@ -55,8 +56,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     // some FieldSymbols (ie. Variables, Attributes)
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar", _booleanSymType));
-
-
+    TypeSymbol p = new TypeSymbol("Person");
+    add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("person1",p)));
+    add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObject("person2",p)));
   }
 
   // Parer used for convenience:
@@ -207,5 +209,27 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s = "2.5>\'d\'";
     astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromEqualsExpression() throws IOException{
+    //example with two primitives
+    String s = "7==9.5f";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
+
+    //TODO: example with two objects of the same class
+    //TODO: example with two objects in sub-supertype relation
+  }
+
+  @Test
+  public void deriveFromNotEqualsExpression() throws IOException{
+    //example with two primitives
+    String s = "true!=false";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
+
+    //TODO: example with two objects of the same class
+    //TODO: example with two objects in sub-supertype relation
   }
 }
