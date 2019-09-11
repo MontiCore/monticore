@@ -86,7 +86,7 @@ public class JsonPrinterSecurityTest {
     p.member("name", f.name);
     if (!f.children.isEmpty()) {
       p.beginArray("children");
-      f.children.stream().forEach(F -> p.value(printFoo(F)));
+      f.children.stream().forEach(F -> p.valueJson(printFoo(F)));
       p.endArray();
     }
     p.member("name2", f.name);
