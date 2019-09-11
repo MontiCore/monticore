@@ -54,8 +54,10 @@ A generator for Embedded MontiArc in combination with OCL can be found [**here**
 ### [Object Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
 * INSERT DESCRIPTION HERE
 
-### [Port Automata](INSERT LINK HERE) (INSERT STATUS HERE)
-* INSERT DESCRIPTION HERE
+### [Port Automata](https://git.rwth-aachen.de/monticore/montiarc/core) (Not started with MC6 changes)
+* Port automata are a certain type of state machines and utilized in component
+and connector architecture description languages (e.g. MontiArc) for behavior 
+modeling.
 
 ### [Sequence Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
 * INSERT DESCRIPTION HERE
