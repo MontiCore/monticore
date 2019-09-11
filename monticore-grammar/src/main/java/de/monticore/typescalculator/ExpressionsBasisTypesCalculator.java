@@ -125,7 +125,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     //TODO RE Reihenfolge beachten var vor? Klasse
     if(typeSymbolopt.isPresent()){
       String fullName= typeSymbolopt.get().getFullName();
-      addToTypesMapQName(expr,typeSymbolopt.get().getSuperTypes(),fullName);
+      addToTypesMapQName(expr,fullName,typeSymbolopt.get().getSuperTypes());
     }else if(variableSymbolopt.isPresent()) {
       ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
       String exprString = printer.prettyprint(expr);
