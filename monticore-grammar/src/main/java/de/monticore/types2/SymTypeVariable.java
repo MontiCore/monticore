@@ -3,12 +3,6 @@ package de.monticore.types2;
 
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 public class SymTypeVariable extends SymTypeExpression {
 

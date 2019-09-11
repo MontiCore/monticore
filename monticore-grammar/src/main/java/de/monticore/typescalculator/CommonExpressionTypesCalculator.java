@@ -11,16 +11,15 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
+import de.monticore.types2.SymTypeExpressionFactory;
 import de.monticore.types2.SymTypeOfObject;
 import de.se_rwth.commons.logging.Log;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static de.monticore.typescalculator.TypesCalculator.isSubtypeOf;
-import static de.monticore.typescalculator.TypesCalculatorHelper.*;
+import static de.monticore.types2.SymTypeConstant.unbox;
+
 
 public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalculator implements CommonExpressionsVisitor {
 
@@ -40,393 +39,487 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
     realThis=this;
   }
 
+  /**
+   * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
+   */
   @Override
-  public void endVisit(ASTPlusExpression expr){
-    SymTypeExpression result = getBinaryNumericPromotionWithString(expr.getLeft(),expr.getRight());
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      types.put(expr, sym);
-      this.result = sym;
+  public void traverse(ASTPlusExpression expr){
+    //the "+"-operator also allows String
+    Optional<SymTypeExpression> wholeResult = getBinaryNumericPromotionWithString(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()) {
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
     }else{
       Log.error("0xA0188 The resulting type cannot be calculated");
     }
   }
 
+  /**
+   * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
+   */
   @Override
-  public void endVisit(ASTMultExpression expr){
-    SymTypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
+  public void traverse(ASTMultExpression expr){
+    Optional<SymTypeExpression> wholeResult = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()) {
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
     }else{
       Log.error("0xA0189 The resulting type cannot be calculated");
     }
   }
 
+  /**
+   * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
+   */
   @Override
-  public void endVisit(ASTDivideExpression expr){
-    SymTypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
+  public void traverse(ASTDivideExpression expr){
+    Optional<SymTypeExpression> wholeResult = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()) {
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
     }else{
       Log.error("0xA0190 The resulting type cannot be calculated");
     }
   }
 
+  /**
+   * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
+   */
   @Override
   public void endVisit(ASTMinusExpression expr){
-    SymTypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
+    Optional<SymTypeExpression> wholeResult = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()) {
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
     }else{
       Log.error("0xA0191 The resulting type cannot be calculated");
     }
   }
 
+  /**
+   * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
+   */
   @Override
   public void endVisit(ASTModuloExpression expr){
-    SymTypeExpression result = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
+    Optional<SymTypeExpression> wholeResult = getBinaryNumericPromotion(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()) {
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
     }else{
       Log.error("0xA0192 The resulting type cannot be calculated");
     }
   }
 
+  /**
+   * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
+   */
   @Override
-  public void endVisit(ASTLessEqualExpression expr){
-    SymTypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
+  public void traverse(ASTLessEqualExpression expr){
+    Optional<SymTypeExpression> wholeResult = calculateTypeCompare(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()) {
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
     }else{
       Log.error("0xA0193 The resulting type cannot be calculated");
     }
   }
 
+  /**
+   * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
+   */
   @Override
   public void endVisit(ASTGreaterEqualExpression expr){
-    SymTypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
+    Optional<SymTypeExpression> wholeResult = calculateTypeCompare(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()) {
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
     }else{
       Log.error("0xA0194 The resulting type cannot be calculated");
     }
   }
 
+  /**
+   * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
+   */
   @Override
   public void endVisit(ASTLessThanExpression expr){
-    SymTypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
+    Optional<SymTypeExpression> wholeResult = calculateTypeCompare(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()) {
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
     }else{
       Log.error("0xA0195 The resulting type cannot be calculated");
     }
   }
 
+  /**
+   * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
+   */
   @Override
   public void endVisit(ASTGreaterThanExpression expr){
-    SymTypeExpression result = calculateTypeCompare(expr.getLeft(),expr.getRight());
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
+    Optional<SymTypeExpression> wholeResult = calculateTypeCompare(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()) {
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
     }else{
       Log.error("0xA0196 The resulting type cannot be calculated");
     }
   }
 
-  @Override
-  public void endVisit(ASTEqualsExpression expr){
-    SymTypeExpression result = calculateTypeLogical(expr.getLeft(),expr.getRight());
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
+//  @Override
+//  public void endVisit(ASTEqualsExpression expr){
+//    SymTypeExpression result = calculateTypeLogical(expr.getLeft(),expr.getRight());
+//    if(result!=null) {
+//      SymTypeExpression sym = result.deepClone();
+//      sym.setName(result.getName());
+//      types.put(expr, sym);
+//      this.result = sym;
+//    }else{
+//      Log.error("0xA0197 The resulting type cannot be calculated");
+//    }
+//  }
+//
+//  @Override
+//  public void endVisit(ASTNotEqualsExpression expr){
+//    SymTypeExpression result = calculateTypeLogical(expr.getLeft(),expr.getRight());
+//    if(result!=null) {
+//      SymTypeExpression sym = result.deepClone();
+//      sym.setName(result.getName());
+//      types.put(expr, sym);
+//      this.result = sym;
+//    }else{
+//      Log.error("0xA0198 The resulting type cannot be calculated");
+//    }
+//  }
+//
+//  @Override
+//  public void endVisit(ASTBooleanAndOpExpression expr){
+//    SymTypeExpression result = null;
+//    if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
+//      SymTypeExpression exp = new SymTypeConstant();
+//      exp.setName("boolean");
+//      if (types.get(expr.getLeft()).deepEquals(exp) && types.get(expr.getRight()).deepEquals(exp)) {
+//        result = new SymTypeConstant();
+//        result.setName("boolean");
+//      }
+//    }
+//    if(result!=null) {
+//      SymTypeExpression sym = new SymTypeConstant();
+//      sym.setName(result.getName());
+//      types.put(expr, sym);
+//      this.result = sym;
+//    }else{
+//      Log.error("0xA0199 The resulting type cannot be calculated");
+//    }
+//  }
+//
+//  @Override
+//  public void endVisit(ASTBooleanOrOpExpression expr){
+//    SymTypeExpression result = null;
+//    if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
+//      SymTypeExpression exp = new SymTypeConstant();
+//      exp.setName("boolean");
+//      if (types.get(expr.getLeft()).deepEquals(exp) && types.get(expr.getRight()).deepEquals(exp)) {
+//        result = new SymTypeConstant();
+//        result.setName("boolean");
+//      }
+//    }
+//    if(result!=null) {
+//      SymTypeExpression sym = result.deepClone();
+//      sym.setName(result.getName());
+//      types.put(expr, sym);
+//      this.result = sym;
+//    }else{
+//      Log.error("0xA0200 The resulting type cannot be calculated");
+//    }
+//  }
+//
+//  @Override
+//  public void endVisit(ASTLogicalNotExpression expr) {
+//    SymTypeExpression result = null;
+//    if(types.containsKey(expr.getExpression())){
+//      SymTypeExpression exp = new SymTypeConstant();
+//      exp.setName("boolean");
+//      if (types.get(expr.getExpression()).deepEquals(exp)) {
+//        result = new SymTypeConstant();
+//        result.setName("boolean");
+//      }
+//    }
+//    if(result!=null) {
+//      SymTypeExpression sym = result.deepClone();
+//      sym.setName(result.getName());
+//      types.put(expr, sym);
+//      this.result = sym;
+//    }else{
+//      Log.error("0xA0201 The resulting type cannot be calculated");
+//    }
+//  }
+//
+//  @Override
+//  public void endVisit(ASTBracketExpression expr){
+//    SymTypeExpression result = null;
+//    if(types.containsKey(expr.getExpression())){
+//      result=types.get(expr.getExpression()).deepClone();
+//    }
+//    if(result!=null) {
+//      SymTypeExpression sym = result.deepClone();
+//      sym.setName(result.getName());
+//      types.put(expr, sym);
+//      this.result = sym;
+//    }else{
+//      Log.error("0xA0202 The resulting type cannot be calculated");
+//    }
+//  }
+//
+//  @Override
+//  public void endVisit(ASTConditionalExpression expr){
+//    SymTypeExpression result = null;
+//    if(types.containsKey(expr.getTrueExpression())&&types.containsKey(expr.getFalseExpression())){
+//      SymTypeExpression exp = new SymTypeConstant();
+//      exp.setName("boolean");
+//      if(types.containsKey(expr.getCondition())&&types.get(expr.getCondition()).deepEquals(exp)){
+//        if(types.get(expr.getTrueExpression()).deepEquals(types.get(expr.getFalseExpression()))){
+//          result=types.get(expr.getFalseExpression()).deepClone();
+//        }else{
+//          result=getBinaryNumericPromotion(expr.getTrueExpression(),expr.getFalseExpression());
+//        }
+//      }
+//    }
+//    if(result!=null) {
+//      SymTypeExpression sym = result.deepClone();
+//      sym.setName(result.getName());
+//      types.put(expr, sym);
+//      this.result = sym;
+//    }else{
+//      Log.error("0xA0204 The resulting type cannot be calculated");
+//    }
+//  }
+//
+//  @Override
+//  public void endVisit(ASTBooleanNotExpression expr){
+//    SymTypeExpression result = null;
+//    if(types.containsKey(expr.getExpression())){
+//      if(isIntegralType(types.get(expr.getExpression()))){
+//        result = getUnaryNumericPromotionType(types.get(expr.getExpression()));
+//      }
+//    }
+//    if(result!=null){
+//      SymTypeExpression sym = result.deepClone();
+//      sym.setName(result.getName());
+//      types.put(expr, sym);
+//      this.result = sym;
+//    }else{
+//      Log.error("0xA0205 The resulting type cannot be calculated");
+//    }
+//  }
+//
+//  @Override
+//  public void endVisit(ASTCallExpression expr){
+//    if(types.containsKey(expr.getExpression())) {
+//      CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
+//      ExpressionsBasisPrettyPrinter prettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
+//      String exp = prettyPrinter.prettyprint(expr.getExpression());
+//      Collection<MethodSymbol> methodcollection = scope.resolveMethodMany(exp);
+//      List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
+//      for (MethodSymbol method : methodlist) {
+//        if (expr.getArguments().getExpressionList().size()==method.getParameter().size()){
+//          boolean success = true;
+//          for(int i=0;i<method.getParameter().size();i++){
+//            if(!method.getParameter().get(i).getType().deepEquals(types.get(expr.getArguments().getExpressionList().get(i)))&&!isSubtypeOf(types.get(expr.getArguments().getExpressionList().get(i)),method.getParameter().get(i).getType())){
+//              success = false;
+//            }
+//          }
+//          if(success){
+//            if(!"void".equals(method.getReturnType().getName())){
+//              SymTypeExpression result=method.getReturnType();
+//              this.result=result;
+//              types.put(expr,result);
+//            }else if("void".equals(method.getReturnType().getName())){
+//              SymTypeExpression result = new SymTypeConstant();
+//              result.setName("void");
+//              types.put(expr, result);
+//              this.result = result;
+//            }else{
+//              Log.error("0xA209 the resulting type cannot be resolved");
+//            }
+//          }else{
+//            Log.error("0xA209 the resulting type cannot be resolved");
+//          }
+//        }
+//      }
+//    }else{
+//      Log.info("package suspected","CommonExpressionTypesCalculator");
+//    }
+//  }
+
+  /**
+   * helper method for <=, >=, <, > -> calculate the result of these expressions
+   */
+  private Optional<SymTypeExpression> calculateTypeCompare(ASTExpression left, ASTExpression right){
+    SymTypeExpression leftResult = null;
+    SymTypeExpression rightResult = null;
+    if(left!=null){
+      left.accept(getRealThis());
+    }
+    if(lastResult.isPresentLast()) {
+      //store result of the left part of the expression
+      leftResult = lastResult.getLast();
     }else{
-      Log.error("0xA0197 The resulting type cannot be calculated");
+      //TODO: logs
+      Log.error("");
     }
-  }
-
-  @Override
-  public void endVisit(ASTNotEqualsExpression expr){
-    SymTypeExpression result = calculateTypeLogical(expr.getLeft(),expr.getRight());
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
+    if(right!=null){
+      right.accept(getRealThis());
+    }
+    if(lastResult.isPresentLast()){
+      //store result of the right part of the expression
+      rightResult = lastResult.getLast();
     }else{
-      Log.error("0xA0198 The resulting type cannot be calculated");
+      //TODO: logs
+      Log.error("");
     }
+
+    //if the left and the right part of the expression are numerics, then the whole expression is a boolean
+    if(isNumericType(leftResult)&&isNumericType(rightResult)){
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+    }
+    return Optional.empty();
   }
 
-  @Override
-  public void endVisit(ASTBooleanAndOpExpression expr){
-    SymTypeExpression result = null;
-    if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
-      SymTypeExpression exp = new SymTypeConstant();
-      exp.setName("boolean");
-      if (types.get(expr.getLeft()).deepEquals(exp) && types.get(expr.getRight()).deepEquals(exp)) {
-        result = new SymTypeConstant();
-        result.setName("boolean");
-      }
-    }
-    if(result!=null) {
-      SymTypeExpression sym = new SymTypeConstant();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
-    }else{
-      Log.error("0xA0199 The resulting type cannot be calculated");
-    }
-  }
+//  private SymTypeExpression calculateTypeLogical(ASTExpression left, ASTExpression right) {
+//    SymTypeExpression result = null;
+//    if(types.containsKey(left)&&types.containsKey(right)) {
+//      if(isPrimitiveType(types.get(left))&&isPrimitiveType(types.get(right))){
+//        result = new SymTypeConstant();
+//        result.setName("boolean");
+//        return result;
+//      }
+//      if(!isPrimitiveType(types.get(left)) && !isPrimitiveType(types.get(right)) &&
+//              (          types.get(left).deepEquals(types.get(right))
+//                      || types.get(right).getSuperTypes().contains(types.get(left))
+//                      || types.get(left).getSuperTypes().contains(types.get(right))
+//              )){
+//        result = new SymTypeConstant();
+//        result.setName("boolean");
+//        return result;
+//      }
+//    }
+//    return result;
+//  }
 
-  @Override
-  public void endVisit(ASTBooleanOrOpExpression expr){
-    SymTypeExpression result = null;
-    if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
-      SymTypeExpression exp = new SymTypeConstant();
-      exp.setName("boolean");
-      if (types.get(expr.getLeft()).deepEquals(exp) && types.get(expr.getRight()).deepEquals(exp)) {
-        result = new SymTypeConstant();
-        result.setName("boolean");
-      }
-    }
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
-    }else{
-      Log.error("0xA0200 The resulting type cannot be calculated");
-    }
-  }
-
-  @Override
-  public void endVisit(ASTLogicalNotExpression expr) {
-    SymTypeExpression result = null;
-    if(types.containsKey(expr.getExpression())){
-      SymTypeExpression exp = new SymTypeConstant();
-      exp.setName("boolean");
-      if (types.get(expr.getExpression()).deepEquals(exp)) {
-        result = new SymTypeConstant();
-        result.setName("boolean");
-      }
-    }
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
-    }else{
-      Log.error("0xA0201 The resulting type cannot be calculated");
-    }
-  }
-
-  @Override
-  public void endVisit(ASTBracketExpression expr){
-    SymTypeExpression result = null;
-    if(types.containsKey(expr.getExpression())){
-      result=types.get(expr.getExpression()).deepClone();
-    }
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
-    }else{
-      Log.error("0xA0202 The resulting type cannot be calculated");
-    }
-  }
-
-  @Override
-  public void endVisit(ASTConditionalExpression expr){
-    SymTypeExpression result = null;
-    if(types.containsKey(expr.getTrueExpression())&&types.containsKey(expr.getFalseExpression())){
-      SymTypeExpression exp = new SymTypeConstant();
-      exp.setName("boolean");
-      if(types.containsKey(expr.getCondition())&&types.get(expr.getCondition()).deepEquals(exp)){
-        if(types.get(expr.getTrueExpression()).deepEquals(types.get(expr.getFalseExpression()))){
-          result=types.get(expr.getFalseExpression()).deepClone();
-        }else{
-          result=getBinaryNumericPromotion(expr.getTrueExpression(),expr.getFalseExpression());
-        }
-      }
-    }
-    if(result!=null) {
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
-    }else{
-      Log.error("0xA0204 The resulting type cannot be calculated");
-    }
-  }
-
-  @Override
-  public void endVisit(ASTBooleanNotExpression expr){
-    SymTypeExpression result = null;
-    if(types.containsKey(expr.getExpression())){
-      if(isIntegralType(types.get(expr.getExpression()))){
-        result = getUnaryNumericPromotionType(types.get(expr.getExpression()));
-      }
-    }
-    if(result!=null){
-      SymTypeExpression sym = result.deepClone();
-      sym.setName(result.getName());
-      types.put(expr, sym);
-      this.result = sym;
-    }else{
-      Log.error("0xA0205 The resulting type cannot be calculated");
-    }
-  }
-
-  @Override
-  public void endVisit(ASTCallExpression expr){
-    if(types.containsKey(expr.getExpression())) {
-      CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
-      ExpressionsBasisPrettyPrinter prettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
-      String exp = prettyPrinter.prettyprint(expr.getExpression());
-      Collection<MethodSymbol> methodcollection = scope.resolveMethodMany(exp);
-      List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
-      for (MethodSymbol method : methodlist) {
-        if (expr.getArguments().getExpressionList().size()==method.getParameter().size()){
-          boolean success = true;
-          for(int i=0;i<method.getParameter().size();i++){
-            if(!method.getParameter().get(i).getType().deepEquals(types.get(expr.getArguments().getExpressionList().get(i)))&&!isSubtypeOf(types.get(expr.getArguments().getExpressionList().get(i)),method.getParameter().get(i).getType())){
-              success = false;
-            }
-          }
-          if(success){
-            if(!"void".equals(method.getReturnType().getName())){
-              SymTypeExpression result=method.getReturnType();
-              this.result=result;
-              types.put(expr,result);
-            }else if("void".equals(method.getReturnType().getName())){
-              SymTypeExpression result = new SymTypeConstant();
-              result.setName("void");
-              types.put(expr, result);
-              this.result = result;
-            }else{
-              Log.error("0xA209 the resulting type cannot be resolved");
-            }
-          }else{
-            Log.error("0xA209 the resulting type cannot be resolved");
-          }
-        }
-      }
-    }else{
-      Log.info("package suspected","CommonExpressionTypesCalculator");
-    }
-  }
-
-  private SymTypeExpression calculateTypeCompare(ASTExpression left, ASTExpression right){
-    SymTypeExpression result = null;
-    if(types.containsKey(left)&&types.containsKey(right)) {
-      if(isNumericType(types.get(left))&&isNumericType(types.get(right))){
-        result = new SymTypeConstant();
-        result.setName("boolean");
-      }
-    }
-    return result;
-  }
-
-  private SymTypeExpression calculateTypeLogical(ASTExpression left, ASTExpression right) {
-    SymTypeExpression result = null;
-    if(types.containsKey(left)&&types.containsKey(right)) {
-      if(isPrimitiveType(types.get(left))&&isPrimitiveType(types.get(right))){
-        result = new SymTypeConstant();
-        result.setName("boolean");
-        return result;
-      }
-      if(!isPrimitiveType(types.get(left)) && !isPrimitiveType(types.get(right)) &&
-              (          types.get(left).deepEquals(types.get(right))
-                      || types.get(right).getSuperTypes().contains(types.get(left))
-                      || types.get(left).getSuperTypes().contains(types.get(right))
-              )){
-        result = new SymTypeConstant();
-        result.setName("boolean");
-        return result;
-      }
-    }
-    return result;
-  }
-
-  public SymTypeExpression getBinaryNumericPromotion(ASTExpression leftType,
+  /**
+   * return the result for the five basic arithmetic operations (+,-,*,/,%)
+   */
+  protected Optional<SymTypeExpression> getBinaryNumericPromotion(ASTExpression leftType,
                                                      ASTExpression rightType) {
-    SymTypeExpression result = null;
-    if(types.containsKey(leftType)&&types.containsKey(rightType)){
-      if("double".equals(unbox(types.get(leftType)).getName())||"double".equals(unbox(types.get(rightType)).getName())){
-        result = new SymTypeConstant();
-        result.setName("double");
-        return result;
-      }
-      if("float".equals(unbox(types.get(leftType)).getName())||"float".equals(unbox(types.get(rightType)).getName())){
-        result = new SymTypeConstant();
-        result.setName("float");
-        return result;
-      }
-      if("long".equals(unbox(types.get(leftType)).getName())||"long".equals(unbox(types.get(rightType)).getName())){
-        result = new SymTypeConstant();
-        result.setName("long");
-        return result;
-      }
-      result = new SymTypeConstant();
-      result.setName("int");
+    SymTypeExpression leftResult = null;
+    SymTypeExpression rightResult = null;
+    if(leftType!=null){
+      leftType.accept(getRealThis());
     }
-    return result;
+    if(lastResult.isPresentLast()) {
+      //store result of the left part of the expression
+      leftResult = lastResult.getLast();
+    }else{
+      //TODO: logs
+      Log.error("");
+    }
+    if(rightType!=null){
+      rightType.accept(getRealThis());
+    }
+    if(lastResult.isPresentLast()){
+      //store result of the right part of the expression
+      rightResult = lastResult.getLast();
+    }else{
+      //TODO: logs
+      Log.error("");
+    }
+
+    //if one part of the expression is a double and the other is another numeric type then the result is a double
+    if(("double".equals(unbox(leftResult.print()))&&isNumericType(rightResult))||("double".equals(unbox(rightResult.print()))&&isNumericType(leftResult))){
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant("double"));
+    //no part of the expression is a double -> try again with float
+    }else if(("float".equals(unbox(leftResult.print()))&&isNumericType(rightResult))||("float".equals(unbox(rightResult.print()))&&isNumericType(leftResult))){
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant("float"));
+    //no part of the expression is a float -> try again with long
+    }else if(("long".equals(unbox(leftResult.print()))&&isNumericType(rightResult))||("long".equals(unbox(rightResult.print()))&&isNumericType(leftResult))) {
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
+    //no part of the expression is a long -> if both parts are numeric types then the result is a int
+    }else{
+      if (("int".equals(unbox(leftResult.print())) || "char".equals(unbox(leftResult.print())) || "short".equals(unbox(leftResult.print())) || "byte".equals(unbox(leftResult.print()))) && ("int".equals(unbox(rightResult.print())) || "char".equals(unbox(rightResult.print())) || "short".equals(unbox(rightResult.print())) || "byte".equals(unbox(rightResult.print())))) {
+        return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
+      }
+    }
+    //should never happen, no valid result, error will be handled in traverse
+    return Optional.empty();
   }
 
-  public SymTypeExpression getBinaryNumericPromotionWithString(ASTExpression leftType,
+  /**
+   * return the result for the "+"-operation if Strings
+   */
+  public Optional<SymTypeExpression> getBinaryNumericPromotionWithString(ASTExpression leftType,
                                                                ASTExpression rightType) {
-    SymTypeExpression result = null;
-    if(types.containsKey(leftType)&&types.containsKey(rightType)){
-      SymTypeExpression exp = new SymTypeOfObject();
-      exp.setName("java.lang.String");
-      if(exp.deepEquals(types.get(leftType))||exp.deepEquals(types.get(rightType))){
-        result = new SymTypeOfObject();
-        result.setName("String");
-        return result;
-      }
-      exp.setName("String");
-      if(exp.deepEquals(types.get(leftType))||exp.deepEquals(types.get(rightType))){
-        result = new SymTypeOfObject();
-        result.setName("String");
-        return result;
-      }
-      return getBinaryNumericPromotion(leftType,rightType);
+    SymTypeExpression leftResult = null;
+    SymTypeExpression rightResult = null;
+
+    if(leftType!=null){
+      leftType.accept(getRealThis());
     }
-    return result;
+    if(lastResult.isPresentLast()){
+      //store result of the left part of the expression
+      leftResult = lastResult.getLast();
+    }else{
+
+    }
+    if(rightType!=null){
+      rightType.accept(getRealThis());
+    }
+    if(lastResult.isPresentLast()){
+      //store result of the right part of the expression
+      rightResult = lastResult.getLast();
+    }else{
+
+    }
+    //if one part of the expression is a String then the whole expression is a String
+    if(unbox(leftResult.print()).equals("String")||unbox(rightResult.print()).equals("String")) {
+      return Optional.of(SymTypeExpressionFactory.createTypeObject("String",null));
+    }
+    //no String in the expression -> use the normal calculation for the basic arithmetic operators
+    return getBinaryNumericPromotion(leftType,rightType);
   }
 
-  public SymTypeExpression calculateType(ASTExpression expr){
+  /**
+   * test if the expression is of numeric type (double, float, long, int, char, short, byte)
+   */
+  private boolean isNumericType(SymTypeExpression ex){
+    return (ex.print().equals("double") || ex.print().equals("float") || ex.print().equals("long") || ex.print().equals("int") || ex.print().equals("char") || ex.print().equals("short") || ex.print().equals("byte"));
+  }
+
+  public Optional<SymTypeExpression> calculateType(ASTExpression expr){
     expr.accept(realThis);
-    return types.get(expr);
+    return lastResult.getLastOpt();
   }
 
-  public void setTypes(Map<ASTNode, SymTypeExpression> types){
-    this.types=types;
+  public void setLastResult(LastResult lastResult){
+    this.lastResult = lastResult;
   }
+
 }

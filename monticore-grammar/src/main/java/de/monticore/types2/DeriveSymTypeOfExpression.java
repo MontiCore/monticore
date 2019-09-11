@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
+import de.monticore.combineliteralandexpressionsbasis._visitor.CombineLiteralAndExpressionsBasisVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
@@ -68,14 +69,14 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
    * b) Access to the visible Symbols (i.e. the SymbolTable)
    * (via the enclosingScope in the AST)
    */
-  protected DeriveSymTypeOfLiterals deriveLit;
+  protected ITypesCalculator deriveLit;
   
   /**
    * Derive the Type (through calling the visitor)
    *
    * Assumption: ASTExpression hat its enclosingScope-Attributes set
    */
-  public Optional<SymTypeExpression> calculateType(ASTExpression ex, DeriveSymTypeOfLiterals deriveLit) {
+  public Optional<SymTypeExpression> calculateType(ASTExpression ex, ITypesCalculator deriveLit) {
     this.deriveLit = deriveLit;
     result = Optional.empty();
     ex.accept(realThis);
@@ -224,16 +225,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
 
   /**********************************************************************************/
-  
-  /**
-   * Literals have their own visitor:
-   * we switch to the DeriveSymTypeOfLiterals visitor
-   */
-  @Override
-  public void traverse(ASTLiteralExpression ex){
-    ASTLiteral lit = ex.getLiteral();
-    result = deriveLit.calculateType(lit);
-  }
+
 
   // Not all nonterminals are handled here.
   // The following are only used to create Symbols and will not appear

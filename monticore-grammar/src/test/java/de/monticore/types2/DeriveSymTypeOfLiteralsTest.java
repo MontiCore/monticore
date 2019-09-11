@@ -31,12 +31,12 @@ public class DeriveSymTypeOfLiteralsTest {
   }
   
   // This is the core Visitor under Test (but rather empty)
-  DeriveSymTypeOfLiterals derLit = new DeriveSymTypeOfLiterals();
+  DeriveSymTypeOfLiteralsAndExpressions derLit = new DeriveSymTypeOfLiteralsAndExpressions();
   
   // other arguments not used (and therefore deliberately null)
   
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(null,null,derLit);
+  TypeCheck tc = new TypeCheck(null,derLit);
   
   // ------------------------------------------------------  Tests for Function 2b
   
