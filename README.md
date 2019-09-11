@@ -17,6 +17,29 @@ components, conservative extension and composition mechanisms and an
 optimal integration of hand-written code into the generated tools. Its 
 grammar languages is rather comfortable. 
 
+## Information about MontiCore
+
+* [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+   The reference Manual describes how to use MontiCore as a out-of-the-box 
+   *language workbench*), but also as grey box *tooling framework*.
+   It thus also gives an overview over a number of core mechanisms of MontiCore.
+
+* [**List of core grammars**](monticore-grammar/src/main/grammars/de/monticore/Grammars.md).
+   MontiCore concentrates on reuse. It therefore offers a set of
+   predefined *language components*, usually identified through an appropriate 
+   *component grammar* allowing to define your own language as a
+   composition of reusable assets efficiently. reusable assets are among others: 
+   several sets of *literals*, *expressions* and *types*, which are relatively 
+   freely composable.
+
+* [**List of languages**](Languages.md).
+   This is a list of languages that can be used out of the box. Some of them
+   are in development, others rather stable. Several of these languages
+   are inspired by the UML/P (see [*[Rum16,Rum17]*](http://mbse.se-rwth.de/).
+   These complete languages are usually composed of a number of language
+   components.
+
+
 ## License overview (informal description) 
 
 Summary: This project is freely available software; you can redistribute 
@@ -89,8 +112,8 @@ This product includes the following software:
 
 ## Contribution 
 
-Please make sure that your complete workspace only uses UNIX line 
-endings (LF) and all files are UTF-8 without BOM. On Windows you should 
+When you want to contribute: Please make sure that your complete workspace only 
+uses UNIX line endings (LF) and all files are UTF-8 without BOM. On Windows you should 
 configure git to not automatically replace LF with CRLF during checkout 
 by executing the following configuration: 
 
@@ -98,52 +121,42 @@ by executing the following configuration:
     
 ## Build MontiCore
 
-* build the productive code  
+MontiCore is currently partially still built using maven, but partially 
+already migrated to gradle. It is recommended to use the MontiCore internal gradle
+wrapper (`gradlew`).
+
+Please note that from the top level build script, not everything is built and 
+all tests executed. It is a deliberate decision, to exclude some of the longer 
+lasting tasks.
+
+* build the productive code (including the unit tests, ~8 min)
 `mvn install`
-  * skipping tests: `mvn install -Dmaven.test.skip=true`
-* run integration tests    
+  * skipping the unit tests: `mvn install -Dmaven.test.skip=true`
+* run integration tests (which are not included in the unit tests, ~30 min)   
   * Integration tests of the generator: 
     * maven (deprecated): `mvn install -f monticore-generator/it/pom.xml` or 
-    * gradle:     
-      * using wrapper (recommended): in `monticore-generator/it/` call `gradlew build`
-      * local gradle installation: `gradle build -p /monticore-generator/it`   
+    * gradle: in `monticore-generator/it/` call `gradlew build`
   * EMF Integration tests of the generator: 
     * maven (deprecated): `mvn install -f monticore-generator/it/pom.xml -P emf-it-tests` or 
-    * gradle:     
-      * using wrapper (recommended): in `monticore-generator/it/` call `gradlew build -PbuildProfile=emf`
-      * local gradle installation: `gradle build -p /monticore-generator/it -PbuildProfile=emf`   
-  * Experiments integration tests:
+    * gradle: in `monticore-generator/it/` call `gradlew build -PbuildProfile=emf`
+  * Experiments (from the Reference Manual) as integration tests:
     * maven (deprecated): `mvn install -f monticore-generator/it/experiments/pom.xml` or
-    * gradle:     
-      * using wrapper (recommended): in `monticore-generator/it/experiments/` call `gradlew build`
-      * local gradle installation: `gradle build -p /monticore-generator/it/experiments`
+    * gradle: in `monticore-generator/it/experiments/` call `gradlew build`
   * Grammar integration tests:
-     * using wrapper (recommended): in `monticore-grammar/monticore-grammar-it` call `gradlew build`
-     * local gradle installation: `gradle build -p monticore-grammar/monticore-grammar-it`
+     * in `monticore-grammar/monticore-grammar-it` call `gradlew build`
   * TemplateClassGenerator integration tests 
     * maven (deprecated): `mvn install -f /monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/pom.xml` or 
-    * gradle:     
-      * using wrapper (recommended): in `/monticore-templateclassgenerator/it/monticore-templateclassgenerator-it` call `gradlew build`
-      * local gradle installation: `gradle build -p /monticore-templateclassgenerator/it/monticore-templateclassgenerator-it`  
+    * gradle: in `/monticore-templateclassgenerator/it/monticore-templateclassgenerator-it` call `gradlew build`
 * clean:
   * call `mvn clean`
   * cleaning integration tests:
     * using maven (deprecated): `mvn clean` (including the `-f` argument, see above) 
-    * using gradle
-      * using wrapper (recommended): `gradlew clean` within the corresponding directory (see above) or
-      * using local installation: `gradle clean` (including `-p` argument) 
-    
+    * using gradle `gradlew clean` within the corresponding directory (see above)
+
   
-## Build Status
- JavaDSL (dev)  [![JavaDSL (dev) pipeline status](https://git.rwth-aachen.de/monticore/javaDSL/badges/dev/pipeline.svg)](https://git.rwth-aachen.de/monticore/javaDSL/commits/dev)    
-
-
 ## Further Information
 
-* [**List of grammars**](monticore-grammar/src/main/grammars/de/monticore/GRAMMARS.md)
-   allowing to define your own language efficiently
-
-* [**MontiCore Reference Manual**](http://www.monticore.de/)
+* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 
 * [Changelog](CHANGELOG.md) - Release Notes
 

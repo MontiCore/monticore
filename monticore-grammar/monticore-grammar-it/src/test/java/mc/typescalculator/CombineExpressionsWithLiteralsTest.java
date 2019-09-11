@@ -4,8 +4,8 @@ package mc.typescalculator;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
 import de.monticore.types2.SymTypeOfObject;
@@ -31,20 +31,21 @@ public class CombineExpressionsWithLiteralsTest {
     LogStub.init();
     CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
     ModelPath modelPath = new ModelPath(Paths.get(MODEL_PATH));
-    CD4AnalysisGlobalScope globalScope = new CD4AnalysisGlobalScope(modelPath, cd4AnalysisLanguage);
+    CD4AnalysisGlobalScope globalScope =
+            new CD4AnalysisGlobalScope(modelPath, cd4AnalysisLanguage);
 
 
     CD2EAdapter adapter = new CD2EAdapter(globalScope);
     CombineExpressionsWithLiteralsLanguage language = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsLanguageBuilder().build();
     CombineExpressionsWithLiteralsGlobalScope globalScope1 = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsGlobalScopeBuilder().setLanguage(language).setModelPath(new ModelPath()).build();
-    globalScope1.addAdaptedEVariableSymbolResolvingDelegate(adapter);
-    globalScope1.addAdaptedETypeSymbolResolvingDelegate(adapter);
-    globalScope1.addAdaptedEMethodSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedFieldSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedTypeSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedMethodSymbolResolvingDelegate(adapter);
 
 
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(globalScope1);
 
-    Optional<ETypeSymbol> classB = globalScope1.resolveEType("mc.typescalculator.TestCD.B");
+    Optional<TypeSymbol> classB = globalScope1.resolveType("mc.typescalculator.TestCD.B");
     assertTrue(classB.isPresent());
 
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
@@ -72,9 +73,16 @@ public class CombineExpressionsWithLiteralsTest {
     //assertTrue(exp.deepEquals(calc.calculateType(exprD.get())));
 
     Optional<ASTExpression> exprB = p.parse_StringExpression("mc.typescalculator.TestCD.B.x = mc.typescalculator.TestCD.B.z");
+
     exp2.setName("mc.typescalculator.TestCD.C");
+
     assertTrue(exprB.isPresent());
-    assertTrue(exp2.deepEquals(calc.calculateType(exprB.get())));
+
+    ASTExpression b = exprB.get();
+
+    SymTypeExpression k = calc.calculateType(b);
+
+    assertTrue(exp2.deepEquals(k));
 
   }
 }

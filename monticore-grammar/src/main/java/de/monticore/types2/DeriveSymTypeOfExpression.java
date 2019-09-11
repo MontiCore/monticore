@@ -9,7 +9,6 @@ import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisS
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -47,6 +46,8 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   /**
    * Storage in the Visitor: result of the last endVisit.
    * This attribute is synthesized upward.
+   * empty means = no calculation happened (i.e. the visitor was not applicable)
+   * If it is not a type, then an explicit NoType- info is stored.
    */
   public Optional<SymTypeExpression> result = Optional.empty();
   
@@ -94,6 +95,8 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   /**
    * Names are looked up in the Symboltable and their stored SymExpression
    * is returned (a copy is not necessary)
+   *
+   * Name can be only a variablename (actually a fieldname)
    */
   @Override
   public void endVisit(ASTNameExpression ex){
@@ -102,11 +105,50 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       Log.error("0xEE672 Internal Error: No Scope for expression " + ex.toString());
     }
     String symname = ex.getName();
-    // TODO: continue with:
-    // ISymbol symbol;  // = scope. (symname) ... get the Symbol
-    // symbol. --> SymType des Symbols rausfinden (für passende SymbolArt)
-    // result = ...
+  
+    // TODO RE: Umbau von EVariables to FieldS.
+    
+    // The name can be a variable, we check this first:
+    Optional<FieldSymbol> optVar = scope.resolveField(ex.getName());
+    // If the variable is found, its type is the result:
+    if(optVar.isPresent()){ // try variable first
+      FieldSymbol var = optVar.get();
+      this.result=Optional.of(var.getType());
+    }else {
+      //no var found: we cannot derive a type
+      // we do not issue an error, because there should be a CoCo
+      // to detect that the field didn't exist in that particular scope.
+      // we return a pseudo type:
+      this.result=Optional.of(SymTypeExpressionFactory.createTypeVoid());
+    }
+    
   }
+
+  // TODO: bitte auf die neue TypeSymbols umbauen
+  // TODO RE: und dann bitte testen, DefTypeBasic kann da helfen ...
+  
+  /* Example first search for variable with name, than class with name,
+     last method with name
+   */
+  /*
+  static class g {
+    static public  void g() {}
+  }
+
+  static class g2 {
+    static public  void g() {}
+  }
+
+  public void g() {
+
+    g2 g = new g2();
+
+    g.g(); // this is g() of g2
+  }
+  */
+  
+  /**********************************************************************************/
+  
   
   /**
    * Field-access:
@@ -114,7 +156,12 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
    * Names are looked up in the Symboltable and their stored SymExpression
    * is returned (a copy is not necessary)
    */
+  // TODO RE: WEGWERFEN, sobald das geht!
+  // TODO RE: WEGWERFEN, sobald das geht!
+  // Dieneu FieldAccessExpression ist nicht in diesem Visitor, sondern in dem
+  // der Subsprache: ich habe es schon entsprechend dort reinkopiert
   @Override
+  @Deprecated
   public void traverse(ASTQualifiedNameExpression node){
     // Argument 1:
     if (null != node.getExpression()) {
@@ -124,38 +171,66 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       Log.error("0xEE673 Internal Error: No SymType for argument 1 if QualifiedNameExpression."
               + " Probably TypeCheck mis-configured.");
     }
-    SymTypeExpression type2 = result.get();
-  
-    // Argument 2:
-    String name = node.getName();
-    
-    // name is now only valid in the context of type2
-    // so we look at the Fields available in type2
-    // (and e.g. ignore other alternatives, such as ClassName.Functionname without arguments)
-  
-    // TypSymbol of type2:
-    TypeSymbol symb12 = type2.getTypeInfo();
-    
+    SymTypeExpression leftType = result.get();
+//
+//    // Argument 2:
+//    String name = node.getName();
+//
+//    // name is now only valid in the context of type2
+//    // so we look at the Fields available in type2
+//    // (and e.g. ignore other alternatives, such as ClassName.Functionname without arguments)
+//
+//    // TypSymbol of type2:
+//    TypeSymbol symb12 = type2.getTypeInfo();
+//
+//
+//    // result becomes empty(), if the field isn't found.
+//    // This is probably not an Internal Error! --> to be handled.
+//    // Maybe, we also create an SymTypeError for error situations
+//    // and store that in the result (upwards)
+
+    //leftType can be package, Type, Method, variable
+    // left could also be (3+5), handled like variable?!
+
+    //leftType is package
+    // ...
+
+
+    //leftType is variable
+    // (ggf. fallen alle drei Fälle zusammen, wo LeftType irgendwie einen Typ hat)
+    //...
+
+
+    //leftType is Type (same case as "is Variable"?)
+
+
+    //leftType is method (same case as "is Type"?)
+
+    //leftType nun bekannt -> Name finden
+
+    //Name kann Variable sein
+    // typ der variable herausfinden
+
     // Liste der Fields durchsuchen
-    result = Optional.empty();
-    for(FieldSymbol field : symb12.getFieldList()) {
-      if(field.getName().equals(name)) {
-        result = Optional.of(field.getType());
-        return;
-      }
-    }
-    // result becomes empty(), if the field isn't found.
-    // This is probably not an Internal Error! --> to be handled.
-    // Maybe, we also create an SymTypeError for error situations
-    // and store that in the result (upwards)
+//    result = Optional.empty();
+//    for(FieldSymbol field : symb12.getFields()) {
+//      if(field.getName().equals(name)) {
+//        result = Optional.of(field.getType());
+//        return;
+//      }
+//    }
+  
   }
+
+
+  /**********************************************************************************/
   
   /**
    * Literals have their own visitor:
    * we switch to the DeriveSymTypeOfLiterals visitor
    */
   @Override
-  public void visit(ASTLiteralExpression ex){
+  public void traverse(ASTLiteralExpression ex){
     ASTLiteral lit = ex.getLiteral();
     result = deriveLit.calculateType(lit);
   }

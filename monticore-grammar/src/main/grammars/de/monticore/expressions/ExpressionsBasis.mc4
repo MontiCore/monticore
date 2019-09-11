@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions;
 
-/* This is a MontiCore stable grammar.
- * Adaptations -- if any -- are conservative. */
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
 
 /**
  * This grammar defines core interfaces for expressions and the
@@ -28,7 +27,9 @@ package de.monticore.expressions;
  *
 */
 
-component grammar ExpressionsBasis extends de.monticore.MCBasics, de.monticore.literals.MCLiteralsBasis {
+component grammar ExpressionsBasis extends de.monticore.MCBasics,
+                                   de.monticore.types.TypeSymbols,
+                                   de.monticore.literals.MCLiteralsBasis {
 
   /*=================================================================*/
 
@@ -39,24 +40,6 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics, de.monticore.l
 
   /*=================================================================*/
 
-  /* Three forms of symbols that are used and applied in
-   * expressions. They are typically defined outside of expressions
-   * (although there are exceptions).
-  */
-
-  /** EMethod describes methods that can be called in expressions.
-   * Methods have signatures (not described here).
-  */
-  symbol EMethod = Name;
-
-  /** EVariable describes variables that can be used in expressions.
-   * EVariables have types (not described here).
-  */
-  symbol EVariable = Name;
-
-  /** ETypes describes types that can expressions can have.
-  */
-  symbol EType = Name;
 
   NameExpression implements Expression<350>
     = Name;
@@ -64,7 +47,8 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics, de.monticore.l
   LiteralExpression implements Expression<340>
     = Literal;
 
-  QualifiedNameExpression implements Expression <290> =
+  @Deprecated    // will be replaced by FieldAccessExpression (which is in CommonExpressions)
+  QualifiedNameExpression implements Expression <291> =
   	Expression "." Name;
 
 }

@@ -3,6 +3,7 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types.typesymbols._symboltable.*;
 import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeExpression;
 
@@ -11,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class DummyAdapter implements IETypeSymbolResolvingDelegate, IEMethodSymbolResolvingDelegate, IEVariableSymbolResolvingDelegate {
+public class DummyAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolResolvingDelegate, IFieldSymbolResolvingDelegate {
 
   private IExpressionsBasisScope scope;
 
@@ -23,13 +24,13 @@ public class DummyAdapter implements IETypeSymbolResolvingDelegate, IEMethodSymb
   }
 
   @Override
-  public Collection<EMethodSymbol> resolveAdaptedEMethodSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<EMethodSymbol> predicate) {
-    ArrayList<EMethodSymbol> list = new ArrayList<>();
+  public Collection<MethodSymbol> resolveAdaptedMethodSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<MethodSymbol> predicate) {
+    ArrayList<MethodSymbol> list = new ArrayList<>();
     if(symbolName.equals("call")||symbolName.equals("A.B.C.call")) {
       symbolName = "int";
     }
-    EMethodSymbol sym = ExpressionsBasisSymTabMill.eMethodSymbolBuilder().setAccessModifier(modifier).setName(symbolName).setEnclosingScope(scope).build();
-    SymTypeExpression returnType =TypesCalculatorHelper.fromEMethodSymbol(sym);
+    MethodSymbol sym = ExpressionsBasisSymTabMill.methodSymbolBuilder().setAccessModifier(modifier).setName(symbolName).setEnclosingScope(scope).build();
+    SymTypeExpression returnType = TypesCalculatorHelper.fromMethodSymbol(sym);
     returnType.setName(symbolName);
     sym.setReturnType(returnType);
     list.add(sym);
@@ -37,22 +38,22 @@ public class DummyAdapter implements IETypeSymbolResolvingDelegate, IEMethodSymb
   }
 
   @Override
-  public Collection<ETypeSymbol> resolveAdaptedETypeSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<ETypeSymbol> predicate) {
-    ArrayList<ETypeSymbol> list = new ArrayList<>();
-    ETypeSymbol sym = ExpressionsBasisSymTabMill.eTypeSymbolBuilder().setAccessModifier(modifier).setName(symbolName).setEnclosingScope(scope).build();
+  public Collection<TypeSymbol> resolveAdaptedTypeSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<TypeSymbol> predicate) {
+    ArrayList<TypeSymbol> list = new ArrayList<>();
+    TypeSymbol sym = ExpressionsBasisSymTabMill.typeSymbolBuilder().setAccessModifier(modifier).setName(symbolName).setEnclosingScope(scope).build();
     list.add(sym);
     return list;
   }
 
   @Override
-  public Collection<EVariableSymbol> resolveAdaptedEVariableSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<EVariableSymbol> predicate) {
-    ArrayList<EVariableSymbol> list = new ArrayList<>();
+  public Collection<FieldSymbol> resolveAdaptedFieldSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<FieldSymbol> predicate) {
+    ArrayList<FieldSymbol> list = new ArrayList<>();
     if(symbolName.contains("var")){
       symbolName=symbolName.substring(3);
     }
-    EVariableSymbol sym = ExpressionsBasisSymTabMill.eVariableSymbolBuilder().setAccessModifier(modifier).setName(symbolName).setEnclosingScope(scope).build();
+    FieldSymbol sym = ExpressionsBasisSymTabMill.fieldSymbolBuilder().setAccessModifier(modifier).setName(symbolName).setEnclosingScope(scope).build();
 
-    SymTypeExpression type = TypesCalculatorHelper.fromEVariableSymbol(sym);
+    SymTypeExpression type = TypesCalculatorHelper.fromFieldSymbol(sym);
     type.setName(symbolName);
     if(symbolName.equals("A")){
       a = new SymTypeOfObject();

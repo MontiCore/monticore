@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-# MontiCore Grammars - an Overview
+# MontiCore Core Grammars - an Overview
 
 [MontiCore](http://www.monticore.de) is a language workbench. It uses 
 grammars as primary mechanism to describe DSLs. The extended 
@@ -14,60 +14,27 @@ leads to optimal forms of **reuse**.
 
 Here comes a list of language components, mainly defined through a 
 primary grammar, available in the MontiCore core project 
-together with short descriptions and their status:
+together with short descriptions and their status ([Status of Grammars](00.org/Explanations/StatusOfGrammars.md)).
 
-## Status of Grammars 
+The list covers the core grammars to be found in the `MontiCore/monticore` 
+project under `monticore-grammar/src/main/grammars/` in packages 
 
-The typical status of a grammar is:
+* `de.monticore`
+* `de.monticore.expressions`
+* `de.monticore.literals`
+* `de.monticore.statements`
+* `de.monticore.types`
 
-1. **MontiCore stable**:
-Such a grammar is meant to be stable in the further development of 
-MontiCore. The grammar is tested and assumed to be of high quality.
-It may rarely happen that smaller extensions are made in a conservative 
-form, which means that (1) composition with any other grammars,
-(2) extensions and adaptations and (3) handwritten extensions will 
-still work.
 
-1. **Beta: In Stabilization**:
-Such a grammar is in the process of becoming stable. One might already 
-include the grammar, but some changes may still appear.
-(See task list for potential changes.)
-
-1. **Alpha: Intention to become stable**:
-Such a grammar is relatively fresh, but intended to become stable 
-and useful. Changes may occur, e.g. when restructuring or bug fixing.
-
-1. **Deprecated**:
-The grammar should not be used anymore, it is deprecated and a newer
-version of the content exists in another grammar.
-
-1. **Unclarified**:
-Some of the grammars are just there to be used for example as
-tests or as inspirations for your own definitions. It may be that 
-such a grammar becomes stable, if enough interest exists.
-
-The deprecated grammars are typically not listed in this overview.
-There may also be further unclarfied grammars around.
-
-### Marking the Status of Grammars
-
-A comment of the following form within the grammar also helps:
-
-1. `/* This is a MontiCore stable grammar.`
-    ` * Adaptations -- if any -- are conservative. */`
-2. `/* Beta-version: This is intended to become a MontiCore stable grammar. */`
-2. `/* Alpha-version: This is intended to become a MontiCore stable grammar. */`
-   (but sometimes also omitted)
-
-## General: List of Grammars in package de.monticore
+## General: List of Grammars in package `de.monticore`
 
 ### [MCBasics.mc4](monticore-grammar/src/main/grammars/de/monticore/MCBasics.mc4)  (stable)
 * This grammar defines absolute basics, such as spaces, 
 Java-like comments and Names. 
 It should be useful in many languages.
   
-  
-## Types: List of Grammars in package de.monticore.types
+
+## Types: List of Grammars in package `de.monticore.types`
 
 These grammars generally deal with type definitions and build on each 
 other:
@@ -106,7 +73,7 @@ types, then use a simpler version from above. Type checking ist tricky.
 
 
 
-## Expressions: List of Grammars in package de.monticore.expressions
+## Expressions: List of Grammars in package `de.monticore.expressions`
 
 Expressions are defined in several grammars forming a (nonlinear) hierarchy,
 so that developers can choose the optimal grammar they want to build on 
@@ -117,9 +84,10 @@ This modularity of expressions and associated types greatly eases
 the reuse of type structures in languages similar to Java.
 
 
-### [ExpressionsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/expressions/ExpressionsBasis.mc4) (stable)
-* This grammar defines core interfaces for expressions and the 
+### [ExpressionsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/expressions/ExpressionsBasis.mc4) (Beta: In Stabilization)
+* This grammar defines core interfaces for expressions and imports the 
 kinds of symbols necessary.
+* The symbols are taken over from the TypeSymbols grammar (see below).
 * A hierarchy of conservative extensions to this grammar realize
 these interfaces in various forms.
 
@@ -163,7 +131,9 @@ UML's OCL.
 * This grammar defines a expressions typical to UMLs OCL .
 * This grammar will be restructured especially for the non expression part.
 
-## Literals: List of Grammars in package de.monticore.literals
+
+
+## Literals: List of Grammars in package `de.monticore.literals`
 
 ### [MCLiteralsBasis.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCLiteralsBasis.mc4) (stable)
 * This grammar defines core interface for literals.
@@ -174,7 +144,10 @@ various forms of literals.
 
 ### [MCJavaLiterals.mc4](monticore-grammar/src/main/grammars/de/monticore/literals/MCJavaLiterals.mc4) (Beta: In Stabilization)
 
+
+
 ## Further grammars (status: to be handled):
+
 
 ### Beta: to become stable in the next iteration
 
@@ -182,7 +155,8 @@ various forms of literals.
 * [UMLStereotype.mc4](monticore-grammar/src/main/grammars/de/monticore/UMLStereotype.mc4) (Beta: In Stabilization)
 * [JavaLight.mc4](monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) 
 
-#### Statements: List of Grammars in package de.monticore.statements
+### Statements: List of Grammars in package `de.monticore.statements`
+
 * [MCAssertStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCAssertStatements.mc4)
 * [MCCommonStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCCommonStatements.mc4)
 * [MCExceptionStatements.mc4](monticore-grammar/src/main/grammars/de/monticore/statements/MCExceptionStatements.mc4)
@@ -199,7 +173,7 @@ various forms of literals.
 * [Completeness.mc4](monticore-grammar/src/main/grammars/de/monticore/Completeness.mc4)
 * [MCCommon.mc4](monticore-grammar/src/main/grammars/de/monticore/MCCommon.mc4)
 
-### Examples for Grammars:
+### Examples for Grammars under `monticore-grammar/src/main/examples`
 
 These can also be used if someone is interested:
 

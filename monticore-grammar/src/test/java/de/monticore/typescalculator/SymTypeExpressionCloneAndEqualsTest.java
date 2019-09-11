@@ -43,7 +43,7 @@ public class SymTypeExpressionCloneAndEqualsTest {
   @Test @Ignore @Deprecated
   public void deepCloneObjectTypeTest() {
     TypeSymbol s = new TypeSymbol("String");
-    SymTypeExpression e = createObjectType("String", s);
+    SymTypeExpression e = createTypeObject("String", s);
     e.setTypeSymbol(java.util.Optional.of(s));
     SymTypeExpression eClone = e.deepClone();
     assertSame(e,eClone);
@@ -51,11 +51,11 @@ public class SymTypeExpressionCloneAndEqualsTest {
 
     //example with super-/subclasses
     TypeSymbol b = new TypeSymbol("List");
-    SymTypeExpression exp = createObjectType("List", b);
+    SymTypeExpression exp = createTypeObject("List", b);
     exp.setTypeSymbol(Optional.of(b));
 
     TypeSymbol a = new TypeSymbol("ArrayList");
-    SymTypeExpression ex = createObjectType("ArrayList", a);
+    SymTypeExpression ex = createTypeObject("ArrayList", a);
     ex.setTypeSymbol(Optional.of(a));
 
     SymTypeExpression exClone = ex.deepClone();
@@ -67,15 +67,15 @@ public class SymTypeExpressionCloneAndEqualsTest {
   @Test @Ignore @Deprecated
   public void deepCloneGenericTypeTest() {
     TypeSymbol d = new TypeSymbol("Bar");
-    SymTypeExpression expre = createObjectType("Bar", d);
+    SymTypeExpression expre = createTypeObject("Bar", d);
     expre.setTypeSymbol(Optional.of(d));
   
   
     TypeSymbol b = new TypeSymbol("Bar");
-    SymTypeExpression exp = createObjectType("Bar", b);
+    SymTypeExpression exp = createTypeObject("Bar", b);
     exp.setTypeSymbol(Optional.of(b));
 
-    SymTypeOfGenerics ex = createGenericTypeExpression("Foo",Lists.newArrayList(exp));
+    SymTypeOfGenerics ex = createGenerics("Foo",Lists.newArrayList(exp));
     TypeSymbol a = new TypeSymbol("Foo");
     ex.setTypeSymbol(Optional.of(a));
 

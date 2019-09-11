@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
 /**
  * This grammar is used to generate an abstract Syntax only.
  * These AST-classes are then used to store typing information
@@ -21,14 +23,15 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   /**
    * A type (in an OO sense) has a name,
    * methods, fields, supertypes.
-   * TODO BR: I added supertypes
+   * All of them are represented as Symbols.
    * TODO BR: What to do with: typeParameters (then it should not be a type, but a typeconstructor)
    */
   interface scope symbol Type = Name ;
   symbolrule Type =
     methods: de.monticore.types.typesymbols._symboltable.MethodSymbol*
     fields: de.monticore.types.typesymbols._symboltable.FieldSymbol*
-    typeParameter: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
+    typeParameters: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
+    superTypes: de.monticore.types.typesymbols._symboltable.TypeSymbol*
   ;
 
   /*=================================================================*/

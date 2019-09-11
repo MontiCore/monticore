@@ -63,8 +63,11 @@ it:
     - "./gradlew build -PbuildProfile=emf $GRADLE_OPTS"
     - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
     - "./gradlew build $GRADLE_OPTS"
-  only:
-    - dev
+
+  #rules:
+  #  - if: '$CI_COMMIT_REF_SLUG == "dev"'
+  #    when: always
+  #  - when: manual
 
 it-experiments-grammar:
   stage: test1
@@ -74,8 +77,8 @@ it-experiments-grammar:
     - "./gradlew build $GRADLE_OPTS"
     - "cd ../../../monticore-grammar/monticore-grammar-it"
     - "./gradlew build $GRADLE_OPTS"
-  only:
-    - dev
+  #only:
+  #  - dev
 
 trigger-automata:
   stage: test1

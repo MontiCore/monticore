@@ -185,7 +185,8 @@ public class TypeCheck {
    * are compatible, by refining the assignments a-> long, b->List<c>
    */
   public boolean compatible(SymTypeExpression sup, SymTypeExpression sub) {
-    // TODO
+    // TODO:
+    Log.error("0xED670 Internal Error:Not yet implemented");
     return false;
   }
   
@@ -203,6 +204,7 @@ public class TypeCheck {
    */
   public boolean isOfTypeForAssign(SymTypeExpression type, ASTExpression exp) {
     return compatible(  type, typeOf(exp));
+    // DONE: that is all what is needed
   }
   
   
