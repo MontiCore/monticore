@@ -74,7 +74,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    */
 
   public String getScopeClassSimpleName() {
-    return getScopeClassFullName(getCDSymbol());
+    return getScopeClassSimpleName(getCDSymbol());
   }
 
   public String getScopeClassSimpleName(CDDefinitionSymbol cdSymbol) {

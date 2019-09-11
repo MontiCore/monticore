@@ -41,6 +41,8 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
   protected final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
 
+  protected boolean isScopeTop;
+
   public ScopeClassDecorator(final GlobalExtensionManagement glex,
                              final SymbolTableService symbolTableService,
                              final VisitorService visitorService,
@@ -167,7 +169,12 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     String ownScopeVisitor = visitorService.getScopeVisitorFullName();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
     ASTCDMethod ownAcceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
-    this.replaceTemplate(EMPTY_BODY, ownAcceptMethod, new StringHookPoint("visitor.handle(this);"));
+    if (isScopeTop()) {
+      String errorCode = DecorationHelper.getGeneratedErrorCode(ownAcceptMethod);
+      this.replaceTemplate(EMPTY_BODY, ownAcceptMethod, new TemplateHookPoint("_symboltable.scope.AcceptOwn", scopeClassName, errorCode));
+    } else {
+      this.replaceTemplate(EMPTY_BODY, ownAcceptMethod, new StringHookPoint("visitor.handle(this);"));
+    }
     acceptMethods.add(ownAcceptMethod);
 
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
@@ -410,5 +417,13 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   protected ASTCDMethod createSetEnclosingScopeMethod(ASTMCType scopeType) {
     ASTCDParameter subScopeParameter = getCDParameterFacade().createParameter(scopeType, "newEnclosingScope");
     return getCDMethodFacade().createMethod(PUBLIC, "setEnclosingScope", subScopeParameter);
+  }
+
+  public boolean isScopeTop() {
+    return isScopeTop;
+  }
+
+  public void setScopeTop(boolean scopeTop) {
+    isScopeTop = scopeTop;
   }
 }

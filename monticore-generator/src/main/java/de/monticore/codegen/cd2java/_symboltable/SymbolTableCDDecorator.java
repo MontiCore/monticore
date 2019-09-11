@@ -128,6 +128,9 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     List<ASTCDClass> decoratedSymbolClasses = createSymbolClasses(symbolCD.getCDDefinition().getCDClassList());
     decoratedSymbolClasses.addAll(createSymbolClasses(symbolCD.getCDDefinition().getCDInterfaceList()));
 
+    boolean isScopeTop = existsHandwrittenClass(handCodedPath,
+        constructQualifiedName(symbolTablePackage, symbolTableService.getScopeClassSimpleName()));
+    scopeClassDecorator.setScopeTop(isScopeTop);
     ASTCDClass scopeClass = createScopeClass(astCD);
 
     ASTCDDefinition symTabCD = CD4AnalysisMill.cDDefinitionBuilder()
@@ -152,9 +155,14 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       ASTCDClass artifactScope = createArtifactScope(astCD);
       symTabCD.addCDClass(artifactScope);
       symTabCD.addCDClass(createArtifactBuilderScope(artifactScope));
+      // language needs to know if it is overwritten to generate method differently
+      boolean isLanguageHandCoded = existsHandwrittenClass(handCodedPath,
+          constructQualifiedName(symbolTablePackage, symbolTableService.getLanguageClassSimpleName()));
+      // set boolean if language is TOPed or not
+      this.languageDecorator.setLanguageTop(isLanguageHandCoded);
       ASTCDClass languageClass = createLanguage(astCD);
       symTabCD.addCDClass(languageClass);
-      if (existsHandwrittenClass(handCodedPath, constructQualifiedName(symbolTablePackage, languageClass.getName()))) {
+      if (isLanguageHandCoded) {
         symTabCD.addCDClass(createLanguageBuilder(languageClass));
       }
       Optional<ASTCDClass> modelLoader = createModelLoader(astCD);

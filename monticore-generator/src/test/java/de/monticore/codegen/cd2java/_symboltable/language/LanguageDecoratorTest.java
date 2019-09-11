@@ -14,6 +14,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,11 +28,15 @@ import static org.junit.Assert.*;
 public class LanguageDecoratorTest extends DecoratorTestCase {
   private ASTCDClass languageClass;
 
+  private ASTCDClass languageClassTop;
+
   private GlobalExtensionManagement glex;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
   private ASTCDCompilationUnit originalCompilationUnit;
+
+  private IterablePath iterablePath;
 
   @Before
   public void setUp() {
@@ -47,7 +52,11 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
         new SymbolTableService(decoratedCompilationUnit), new ParserService(decoratedCompilationUnit), new AccessorDecorator(glex));
 
     //creates normal Symbol
+    decorator.setLanguageTop(false);
     this.languageClass = decorator.decorate(decoratedCompilationUnit);
+
+    decorator.setLanguageTop(true);
+    this.languageClassTop = decorator.decorate(decoratedCompilationUnit);
   }
 
   @Test
@@ -179,10 +188,20 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testProvideModelLoaderMethod() {
-    ASTCDMethod method = getMethodBy("provideModelLoader", languageClass);
+  public void testProvideModelLoaderWithHandCodedLanguageMethod() {
+    ASTCDMethod method = getMethodBy("provideModelLoader", languageClassTop);
 
     assertDeepEquals(PROTECTED_ABSTRACT, method.getModifier());
+    assertDeepEquals("AutomatonModelLoader", method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testProvideModelLoaderWithoutHandCodedLanguageMethod() {
+    ASTCDMethod method = getMethodBy("provideModelLoader", languageClass);
+
+    assertDeepEquals(PROTECTED, method.getModifier());
     assertDeepEquals("AutomatonModelLoader", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());

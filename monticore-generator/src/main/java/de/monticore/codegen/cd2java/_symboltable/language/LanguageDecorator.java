@@ -28,6 +28,8 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
 
   protected AccessorDecorator accessorDecorator;
 
+  protected boolean isLanguageTop = false;
+
   public LanguageDecorator(final GlobalExtensionManagement glex,
                            final SymbolTableService symbolTableService,
                            final ParserService parserService,
@@ -66,7 +68,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
         .addAllCDMethods(nameMethods)
         .addAllCDMethods(fileExtensionMethods)
         .addCDMethod(createGetSymbolTableCreatorMethod())
-        .addCDMethod(createProvideModelLoaderMethod(modelLoaderClassName))
+        .addCDMethod(createProvideModelLoaderMethod(modelLoaderClassName, input, languageClassName))
         .addAllCDMethods(createCalculateModelNameMethods(symbolDefiningProds))
         .build();
     Optional<ASTCDMethod> getParserMethod = createGetParserMethod();
@@ -116,8 +118,15 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     return getSymbolTableCreatorMethod;
   }
 
-  protected ASTCDMethod createProvideModelLoaderMethod(String modelLoaderName) {
-    return getCDMethodFacade().createMethod(PROTECTED_ABSTRACT, getCDTypeFacade().createQualifiedType(modelLoaderName), "provideModelLoader");
+  protected ASTCDMethod createProvideModelLoaderMethod(String modelLoaderName, ASTCDCompilationUnit astcdCompilationUnit, String languageName) {
+    ASTCDMethod provideModelLoaderMethod = getCDMethodFacade().createMethod(PROTECTED,
+        getCDTypeFacade().createQualifiedType(modelLoaderName), "provideModelLoader");
+    if (isLanguageTop) {
+      provideModelLoaderMethod.getModifier().setAbstract(true);
+    } else {
+      this.replaceTemplate(EMPTY_BODY, provideModelLoaderMethod, new StringHookPoint("return new " + modelLoaderName + "(this);"));
+    }
+    return provideModelLoaderMethod;
   }
 
   protected List<ASTCDMethod> createCalculateModelNameMethods(List<ASTCDType> symbolProds) {
@@ -132,5 +141,13 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
       methodList.add(method);
     }
     return methodList;
+  }
+
+  public boolean isLanguageTop() {
+    return isLanguageTop;
+  }
+
+  public void setLanguageTop(boolean languageTop) {
+    isLanguageTop = languageTop;
   }
 }
