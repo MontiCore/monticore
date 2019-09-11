@@ -27,8 +27,7 @@ The different development statuses of grammars are explained
 * Author: SV, AG
 * CD4A is the textual (UML/P) representation of a UML class diagram.
 * Its primary feature are the description and analysis of a class diagram.
-
-CD4Code is an extension which allows for function signatures and implementations with the [JavaDSL](https://git.rwth-aachen.de/monticore/javaDSL).
+* CD4Code is an extension which allows for function signatures and implementations with the [JavaDSL](https://git.rwth-aachen.de/monticore/javaDSL).
 
 ### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (alpha)
 * Author: AB, DS
