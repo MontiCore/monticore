@@ -7,7 +7,9 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.types.MCSimpleGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -24,6 +26,19 @@ import static de.monticore.utils.Names.getSimpleName;
 import static de.se_rwth.commons.Names.getQualifier;
 
 public class SymbolTableService extends AbstractService<SymbolTableService> {
+
+  private boolean isComponent = false;
+
+  private Optional<String> startProdName = Optional.empty();
+
+  public SymbolTableService(ASTCDCompilationUnit compilationUnit, ASTMCGrammar astmcGrammar) {
+    super(compilationUnit);
+    this.isComponent = astmcGrammar.isComponent();
+    if (astmcGrammar.isPresentStartRules()) {
+      this.startProdName = Optional.ofNullable(MCGrammarSymbolTableHelper
+          .getQualifiedName(astmcGrammar.getSymbol().getStartProd().get()));
+    }
+  }
 
   public SymbolTableService(ASTCDCompilationUnit compilationUnit) {
     super(compilationUnit);
@@ -45,6 +60,14 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public static SymbolTableService createSymbolTableService(CDDefinitionSymbol cdSymbol) {
     return new SymbolTableService(cdSymbol);
+  }
+
+  public boolean isComponent() {
+    return this.isComponent;
+  }
+
+  public Optional<String> getStartProdName() {
+    return startProdName;
   }
   /*
     scope class names e.g. AutomataScope
@@ -542,22 +565,30 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String removeASTPrefix(ASTCDType clazz) {
     // normal symbol name calculation from
-    if (clazz.getName().startsWith(AST_PREFIX)) {
-      return clazz.getName().substring(AST_PREFIX.length());
+    return removeASTPrefix(clazz.getName());
+  }
+
+  public String removeASTPrefix(String clazzName) {
+    // normal symbol name calculation from
+    if (clazzName.startsWith(AST_PREFIX)) {
+      return clazzName.substring(AST_PREFIX.length());
     } else {
-      return clazz.getName();
+      return clazzName;
     }
   }
 
-  public Optional<ASTCDType> getStartProd(ASTCDDefinition astcdDefinition) {
+  public Optional<String> getStartProd(ASTCDDefinition astcdDefinition) {
+    if (getStartProdName().isPresent()) {
+      return getStartProdName();
+    }
     for (ASTCDClass prod : astcdDefinition.getCDClassList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
-        return Optional.ofNullable(prod);
+        return Optional.ofNullable(prod.getName());
       }
     }
     for (ASTCDInterface prod : astcdDefinition.getCDInterfaceList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
-        return Optional.ofNullable(prod);
+        return Optional.ofNullable(prod.getName());
       }
     }
     return Optional.empty();

@@ -34,7 +34,7 @@ public class CombineExpressionsWithLiteralsTest {
     ASTExpression expression = new CombineExpressionsWithLiteralsParser().parse_StringExpression("A").get();
     ASTFoo ast = CombineExpressionsWithLiteralsMill.fooBuilder().setExpression(expression).build();
     CombineExpressionsWithLiteralsLanguage language = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsLanguageBuilder().build();
-    globalScope = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsGlobalScopeBuilder().setLanguage(language).setModelPath(new ModelPath()).build();
+    globalScope = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsGlobalScopeBuilder().setCombineExpressionsWithLiteralsLanguage(language).setModelPath(new ModelPath()).build();
     CombineExpressionsWithLiteralsSymbolTableCreatorDelegator stc = language.getSymbolTableCreator(globalScope);
     artifactScope = stc.createFromAST(ast);
     globalScope.addAdaptedEMethodSymbolResolvingDelegate(new DummyAdapter(artifactScope));

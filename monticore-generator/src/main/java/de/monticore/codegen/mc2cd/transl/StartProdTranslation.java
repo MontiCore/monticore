@@ -9,7 +9,6 @@ import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
@@ -18,7 +17,9 @@ public class StartProdTranslation  implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-    MCGrammarSymbol grammarSymbol = rootLink.source().getMCGrammarSymbol();
+    if (rootLink.source().isPresentStartRules()) {
+      rootLink.source().getStartRules().getName();
+    }
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class, ASTCDClass.class)) {
       if (link.source().getSymbol().isStartProd()) {
         TransformationHelper.addStereoType(link.target(), MC2CDStereotypes.START_PROD.toString());

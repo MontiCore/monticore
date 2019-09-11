@@ -3,9 +3,9 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
+import de.monticore.types2.SymTypeOfObject;
 import de.monticore.typescalculator.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.typescalculator.combineexpressionswithliterals._ast.CombineExpressionsWithLiteralsMill;
 import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
@@ -32,7 +32,7 @@ public class AssignmentExpressionsTest {
     ASTExpression expression = new CombineExpressionsWithLiteralsParser().parse_StringExpression("A").get();
     ASTFoo ast = CombineExpressionsWithLiteralsMill.fooBuilder().setExpression(expression).build();
     CombineExpressionsWithLiteralsLanguage language = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsLanguageBuilder().build();
-    globalScope = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsGlobalScopeBuilder().setLanguage(language).setModelPath(new ModelPath()).build();
+    globalScope = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsGlobalScopeBuilder().setCombineExpressionsWithLiteralsLanguage(language).setModelPath(new ModelPath()).build();
     CombineExpressionsWithLiteralsSymbolTableCreatorDelegator stc = language.getSymbolTableCreator(globalScope);
     artifactScope = stc.createFromAST(ast);
     globalScope.addAdaptedEMethodSymbolResolvingDelegate(new DummyAdapter(artifactScope));

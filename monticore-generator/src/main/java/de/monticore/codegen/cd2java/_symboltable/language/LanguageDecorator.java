@@ -13,6 +13,7 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.CALCULATE_MODEL_NAMES_FOR;
@@ -53,7 +54,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     ASTCDAttribute fileExtensionAttribute = createFileExtensionAttribute();
     List<ASTCDMethod> fileExtensionMethods = accessorDecorator.decorate(fileExtensionAttribute);
 
-    return CD4AnalysisMill.cDClassBuilder()
+    ASTCDClass languageClass = CD4AnalysisMill.cDClassBuilder()
         .setName(languageClassName)
         .setModifier(PUBLIC_ABSTRACT.build())
         .addInterface(iModelingLanguage)
@@ -64,11 +65,13 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
         .addAllCDMethods(modelLoaderMethods)
         .addAllCDMethods(nameMethods)
         .addAllCDMethods(fileExtensionMethods)
-        .addCDMethod(createGetParserMethod())
         .addCDMethod(createGetSymbolTableCreatorMethod())
         .addCDMethod(createProvideModelLoaderMethod(modelLoaderClassName))
         .addAllCDMethods(createCalculateModelNameMethods(symbolDefiningProds))
         .build();
+    Optional<ASTCDMethod> getParserMethod = createGetParserMethod();
+    getParserMethod.ifPresent(languageClass::addCDMethod);
+    return languageClass;
   }
 
   protected ASTCDConstructor createConstructor(String languageClassName) {
@@ -92,11 +95,14 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     return getCDAttributeFacade().createAttribute(PRIVATE, String.class, "fileExtension");
   }
 
-  protected ASTCDMethod createGetParserMethod() {
-    String parserClass = parserService.getParserClassFullName();
-    ASTCDMethod getParserMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(parserClass), "getParser");
-    this.replaceTemplate(EMPTY_BODY, getParserMethod, new StringHookPoint("return new " + parserClass + "();"));
-    return getParserMethod;
+  protected Optional<ASTCDMethod> createGetParserMethod() {
+    if (!symbolTableService.isComponent()) {
+      String parserClass = parserService.getParserClassFullName();
+      ASTCDMethod getParserMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(parserClass), "getParser");
+      this.replaceTemplate(EMPTY_BODY, getParserMethod, new StringHookPoint("return new " + parserClass + "();"));
+      return Optional.ofNullable(getParserMethod);
+    }
+    return Optional.empty();
   }
 
   protected ASTCDMethod createGetSymbolTableCreatorMethod() {

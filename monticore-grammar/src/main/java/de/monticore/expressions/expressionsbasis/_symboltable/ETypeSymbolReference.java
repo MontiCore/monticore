@@ -24,7 +24,7 @@ public class ETypeSymbolReference extends ETypeSymbolReferenceTOP {
   }
 
   public ETypeSymbolReference deepClone(){
-    ETypeSymbolReference clone = ExpressionsBasisSymTabMill.eTypeSymbolReferenceBuilder().setName(this.name).setEnclosingScopeOfReference(this.enclosingScope).build();
+    ETypeSymbolReference clone = ExpressionsBasisSymTabMill.eTypeSymbolReferenceBuilder().setName(this.name).setEnclosingScope(this.enclosingScope).build();
     clone.setFullName(getFullName());
     ArrayList<SymTypeExpression> supTypes = new ArrayList<>();
     supTypes.addAll(getSuperTypes());

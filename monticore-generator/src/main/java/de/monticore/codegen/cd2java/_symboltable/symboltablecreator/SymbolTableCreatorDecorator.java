@@ -9,6 +9,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -44,16 +45,21 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
 
   @Override
   public Optional<ASTCDClass> decorate(ASTCDCompilationUnit input) {
-    Optional<ASTCDType> startProd = symbolTableService.getStartProd(input.getCDDefinition());
+    Optional<String> startProd = symbolTableService.getStartProd(input.getCDDefinition());
     if (startProd.isPresent()) {
-      String astFullName = symbolTableService.getASTPackage() + "." + startProd.get().getName();
+      String astFullName;
+      if (startProd.get().contains(".")) {
+        astFullName = startProd.get();
+      } else {
+        astFullName = symbolTableService.getASTPackage() + "." + startProd.get();
+      }
       String symbolTableCreator = symbolTableService.getSymbolTableCreatorSimpleName();
       String visitorSimpleName = visitorService.getVisitorFullName();
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();
       String dequeType = String.format(DEQUE_TYPE, scopeInterface);
       String dequeWildcardType = String.format(DEQUE_WILDCARD_TYPE, scopeInterface);
 
-      String simpleName = symbolTableService.removeASTPrefix(startProd.get());
+      String simpleName = symbolTableService.removeASTPrefix(Names.getSimpleName(startProd.get()));
       List<ASTCDType> symbolDefiningClasses = symbolTableService.getSymbolDefiningClasses(input.getCDDefinition().getCDClassList());
       List<ASTCDType> noSymbolDefiningClasses = symbolTableService.getNoSymbolDefiningClasses(input.getCDDefinition().getCDClassList());
       List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
@@ -209,7 +215,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
             "_symboltable.symboltablecreator.SetLinkBetweenSymbolAndNode", simpleName, isScopeSpanningSymbol));
         methodList.add(setLinkBetweenSymbolAndNode);
 
-        if(isScopeSpanningSymbol){
+        if (isScopeSpanningSymbol) {
           ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), "scope");
           ASTCDMethod setLinkBetweenSpannedScopeAndNode = getCDMethodFacade().createMethod(PUBLIC, "setLinkBetweenSpannedScopeAndNode", scopeParam, astParam);
           this.replaceTemplate(EMPTY_BODY, setLinkBetweenSpannedScopeAndNode, new TemplateHookPoint(

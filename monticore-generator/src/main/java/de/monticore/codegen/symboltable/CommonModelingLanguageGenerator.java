@@ -31,7 +31,6 @@ public class CommonModelingLanguageGenerator implements ModelingLanguageGenerato
     
     if(grammarSymbol.getStartProd().isPresent()) {
       if(!grammarSymbol.isComponent()&&existsHW) {
-        className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName()) + "LanguageBuilder", genHelper.getTargetPackage(), handCodedPath);
         filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
       }
     }
