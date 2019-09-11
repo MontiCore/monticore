@@ -40,8 +40,10 @@ CD4Code is an extension which allows for function signatures and implementations
 ### [JSON](INSERT LINK HERE) (INSERT STATUS HERE)
 * INSERT DESCRIPTION HERE
 
-### [MontiArc](INSERT LINK HERE) (INSERT STATUS HERE)
-* INSERT DESCRIPTION HERE
+### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (5% to MC6)
+MontiArc is an architecture and behavior modeling language and framework that 
+provides an integrated, platform independent structure and behavior modeling 
+language with an extensible code generation framework.
 
 ### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Not started with MC6 changes)
 OCL/P is the textual representation of the UML OCL standard, adapted with Java-like syntax.
