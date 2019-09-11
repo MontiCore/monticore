@@ -24,60 +24,67 @@ The different development statuses of grammars are explained
 * INSERT DESCRIPTION HERE
 
 ### [Class Diagram 4 Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (95% to MC6)
-CD4A is the textual (UML/P) representation of a UML class diagram.
-Its primary feature are the description and analysis of a class diagram.
+* Author: SV, AG
+* CD4A is the textual (UML/P) representation of a UML class diagram.
+* Its primary feature are the description and analysis of a class diagram.
 
 CD4Code is an extension which allows for function signatures and implementations with the [JavaDSL](https://git.rwth-aachen.de/monticore/javaDSL).
 
 ### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (alpha)
+* Author: AB, DS
 * Language for textual feature models and feature configurations
 * Feature diagrams are used to model (software) product lines
 * Feature configurations select a subset of features of a feature model to describe a product of the product line
 
 ### [GUI DSL](INSERT LINK HERE) (INSERT STATUS HERE)
+* Author: LN 
 * INSERT DESCRIPTION HERE
 
 ### [JSON](INSERT LINK HERE) (INSERT STATUS HERE)
+* Author: NJ
 * INSERT DESCRIPTION HERE
 
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (5% to MC6)
-MontiArc is an architecture and behavior modeling language and framework that 
-provides an integrated, platform independent structure and behavior modeling 
-language with an extensible code generation framework.
+* Author: DS 
+* MontiArc is an architecture and behavior modeling language and framework that provides an integrated, platform independent structure and behavior modeling language with an extensible code generation framework.
 
 ### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Not started with MC6 changes)
-OCL/P is the textual representation of the UML OCL standard, adapted with Java-like syntax.
-
-A Java generator can be found [**here**](https://git.rwth-aachen.de/monticore/languages/OCL2Java).
-A generator for Embedded MontiArc in combination with OCL can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
+* Author: SV
+* OCL/P is the textual representation of the UML OCL standard, adapted with Java-like syntax.
+* A Java generator can be found [**here**](https://git.rwth-aachen.de/monticore/languages/OCL2Java).
+* A generator for Embedded MontiArc in combination with OCL can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
 
 ### [Object Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
+* Author: SH
 * INSERT DESCRIPTION HERE
 
 ### [Port Automata](https://git.rwth-aachen.de/monticore/montiarc/core) (Not started with MC6 changes)
-* Port automata are a certain type of state machines and utilized in component
-and connector architecture description languages (e.g. MontiArc) for behavior 
-modeling.
+* Author: DS
+* Port automata are a certain type of state machines and utilized in component and connector architecture description languages (e.g. MontiArc) for behavior modeling.
 
 ### [Sequence Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
+* Author: RE
 * INSERT DESCRIPTION HERE
 
 ### [SI Units](INSERT LINK HERE) (INSERT STATUS HERE)
+* Author: EK
 * INSERT DESCRIPTION HERE
 
 ### [Statecharts](INSERT LINK HERE) (INSERT STATUS HERE)
+* Author: RE
 * INSERT DESCRIPTION HERE
 
 ### [SysML/P](INSERT LINK HERE) (INSERT STATUS HERE)
+* Author: NJ
 * INSERT DESCRIPTION HERE
 
 ### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Not started with MC6 changes)
-The Tagging language offers the possibility to enrich existing models of any DSLs.
-
-The Tagging models can then be used as configuration, e.g. in a code generator.
-
-Examples can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging-Examples)
+* Author: SV
+* The Tagging language offers the possibility to enrich existing models of any DSLs.
+* The Tagging models can then be used as configuration, e.g. in a code generator.
+* Examples can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging-Examples)
 
 ### [XML](INSERT LINK HERE) (INSERT STATUS HERE)
+* Author: NJ
 * INSERT DESCRIPTION HERE
 
