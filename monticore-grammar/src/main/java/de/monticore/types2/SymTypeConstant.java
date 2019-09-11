@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
+import de.monticore.symboltable.serialization.JsonConstants;
+import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
@@ -46,6 +48,19 @@ public class SymTypeConstant extends SymTypeExpression {
    */
   public String print() {
     return getConstName();
+  }
+  
+  /**
+   * printAsJson: Umwandlung in einen kompakten Json String
+   */
+  protected String printAsJson() {
+    JsonPrinter jp = new JsonPrinter();
+    jp.beginObject();
+    //TODO: anpassen, nachdem package umbenannt ist
+    jp.member(JsonConstants.KIND, "de.monticore.types2.SymTypeConstant");
+    jp.member("constName", getConstName());
+    jp.endObject();
+    return jp.getContent();
   }
   
   

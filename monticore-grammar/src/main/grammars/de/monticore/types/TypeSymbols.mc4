@@ -31,7 +31,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
     methods: de.monticore.types.typesymbols._symboltable.MethodSymbol*
     fields: de.monticore.types.typesymbols._symboltable.FieldSymbol*
     typeParameters: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
-    superTypes: de.monticore.types.typesymbols._symboltable.TypeSymbol*
+    superTypes: de.monticore.types2.SymTypeExpression*
   ;
 
   /*=================================================================*/

@@ -18,6 +18,13 @@ public class SymTypePackage extends SymTypeExpression {
   public String print() {
     return "package";
   }
+  
+  /**
+   * printAsJson: Umwandlung in einen kompakten Json String
+   */
+  protected String printAsJson() {
+    return "\""+print()+"\"";
+  }
 
 
   // --------------------------------------------------------------------------
