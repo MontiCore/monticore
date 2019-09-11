@@ -54,8 +54,8 @@ public class CD2EAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolR
         res.setFields(variableSymbols);
       }
       for(CDTypeSymbolReference ref : typeSymbol.getSuperTypes()){
-        List<TypeSymbol> superTypes = res.getSuperTypes();
-        superTypes.add(CD2EHelper.transformCDType2TypeSymbol(ref));
+        List<SymTypeExpression> superTypes = res.getSuperTypes();
+        superTypes.add(CD2EHelper.transformCDType2SymTypeExpression(ref));
         res.setSuperTypes(superTypes);
       }
       result.add(res);
