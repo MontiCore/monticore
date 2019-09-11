@@ -14,6 +14,13 @@ public class SymTypeVoid extends SymTypeExpression {
     return "void";
   }
   
+  /**
+   * printAsJson: Umwandlung in einen kompakten Json String
+   */
+  protected String printAsJson() {
+    return "\""+print()+"\"";
+  }
+  
     
   // --------------------------------------------------------------------------
   

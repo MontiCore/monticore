@@ -21,8 +21,14 @@ public class SymTypeOfNull extends SymTypeExpression {
    */
   public String print() {
       return "nullType";
-    }
+  }
 
+  /**
+   * printAsJson: Umwandlung in einen kompakten Json String
+   */
+  protected String printAsJson() {
+    return "\""+print()+"\"";
+  }
     
   // --------------------------------------------------------------------------
   
