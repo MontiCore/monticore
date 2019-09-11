@@ -73,12 +73,12 @@ public class DeriveSymTypeOfExpressionTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  DeriveSymTypeOfLiterals derLit = new DeriveSymTypeOfLiterals();
+  DeriveSymTypeOfLiteralsAndExpressions derLit = new DeriveSymTypeOfLiteralsAndExpressions();
   
   // other arguments not used (and therefore deliberately null)
   
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(null,derEx,derLit);
+  TypeCheck tc = new TypeCheck(null,derLit);
   
   // ------------------------------------------------------  Tests for Function 2
 

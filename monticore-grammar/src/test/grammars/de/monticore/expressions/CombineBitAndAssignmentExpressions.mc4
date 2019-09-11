@@ -1,9 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-
-package de.monticore.expressions;
-
-grammar CombineBitAndAssignmentExpressions extends de.monticore.expressions.AssignmentExpressions, de.monticore.expressions.BitExpressions, de.monticore.literals.MCCommonLiterals {
-
-    start Expression;
-
-}

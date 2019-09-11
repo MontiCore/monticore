@@ -8,23 +8,19 @@ import de.monticore.types2.SymTypeExpression;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ExpressionAndLiteralsTypeCalculatorVisitorMock implements IExpressionAndLiteralsTypeCalculatorVisitor {
 
   Map<ASTExpression, SymTypeExpression> lookUp = new HashMap<>();
 
   @Override
-  public SymTypeExpression calculateType(ASTExpression e) {
+  public Optional<SymTypeExpression> calculateType(ASTExpression e) {
 
     if(lookUp.containsKey(e)) {
-      return lookUp.get(e);
+      return Optional.of(lookUp.get(e));
     }
-    return null;
-  }
-
-  @Override
-  public Map<ASTNode, SymTypeExpression> getTypes() {
-    return null;
+    return Optional.empty();
   }
 
   @Override

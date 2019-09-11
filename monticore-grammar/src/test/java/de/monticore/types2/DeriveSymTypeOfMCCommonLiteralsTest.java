@@ -1,11 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral;
 import de.monticore.literals.mccommonliterals._ast.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.monticore.mccommon._ast.MCCommonLiterals;
+import de.monticore.typescalculator.CombineExpressionsWithLiteralsTypesCalculator;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -30,12 +32,12 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
   }
   
   // This is the core Visitor under Test (but rather empty)
-  DeriveSymTypeOfLiterals derLit = new DeriveSymTypeOfMCCommonLiterals();
+  CombineExpressionsWithLiteralsTypesCalculator derLit = new CombineExpressionsWithLiteralsTypesCalculator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
   
   // other arguments not used (and therefore deliberately null)
   
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(null,null,derLit);
+  TypeCheck tc = new TypeCheck(null,derLit);
   
   // ------------------------------------------------------  Tests for Function 2b
 
