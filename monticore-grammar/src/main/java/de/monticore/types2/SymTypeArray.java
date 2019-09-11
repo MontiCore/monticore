@@ -1,5 +1,8 @@
 package de.monticore.types2;
 
+import de.monticore.symboltable.serialization.JsonConstants;
+import de.monticore.symboltable.serialization.JsonPrinter;
+
 /**
  * Arrays of a certain dimension (>= 1)
  */
@@ -49,6 +52,20 @@ public class SymTypeArray extends SymTypeExpression {
       r.append("[]");
     }
     return r.toString();
+  }
+  
+  /**
+   * printToJson: Umwandlung in einen kompakten Json String
+   */
+  protected String printAsJson() {
+    JsonPrinter jp = new JsonPrinter();
+    jp.beginObject();
+    //TODO: anpassen, nachdem package umbenannt ist
+    jp.member(JsonConstants.KIND, "de.monticore.types2.SymTypeArray");
+    jp.memberJson("argument", argument.printAsJson());
+    jp.member("dim", dim);
+    jp.endObject();
+    return jp.getContent();
   }
   
   

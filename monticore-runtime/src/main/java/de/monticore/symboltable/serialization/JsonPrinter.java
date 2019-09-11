@@ -32,8 +32,8 @@ public class JsonPrinter {
   protected boolean indentBeforeNewLine;
   
   /**
-   * 
    * Constructor for de.monticore.symboltable.serialization.JsonPrinter
+   * 
    * @param serializeEmptyLists
    */
   public JsonPrinter(boolean serializeEmptyLists) {
@@ -46,8 +46,8 @@ public class JsonPrinter {
   }
   
   /**
-   * 
-   * Constructor for de.monticore.symboltable.serialization.JsonPrinter that does not print empty lists
+   * Constructor for de.monticore.symboltable.serialization.JsonPrinter that does not print empty
+   * lists
    */
   public JsonPrinter() {
     this(false);
@@ -59,14 +59,14 @@ public class JsonPrinter {
   public static boolean isIndentationEnabled() {
     return enableIndentation;
   }
-
+  
   /**
    * @param enableIndentation the enableIndentation to set
    */
   public static void enableIndentation() {
     JsonPrinter.enableIndentation = true;
   }
-
+  
   /**
    * @param enableIndentation the enableIndentation to set
    */
@@ -80,6 +80,23 @@ public class JsonPrinter {
   public void beginObject() {
     printCommaIfNecessary();
     print("{");
+    isFirstAttribute = true;
+    nestedObjectDepth++;
+    indentBeforeNewLine = true;
+  }
+  /**
+   * Prints the begin of an object in Json notation as member or the current object.
+   */
+  public void beginObject(String kind) {
+    printCommaIfNecessary();
+    print("\"");
+    print(kind);
+    if (isIndentationEnabled()) {
+      print("\": {");
+    }
+    else {
+      print("\":{");
+    }
     isFirstAttribute = true;
     nestedObjectDepth++;
     indentBeforeNewLine = true;
@@ -99,14 +116,13 @@ public class JsonPrinter {
   }
   
   /**
-   * Prints the beginning of a collection in Json notation. If the optional parameter "kind" is
-   * present, it prints the collection as attribute of the given kind.
+   * Prints the beginning of a collection in Json notation as member or the current object.
    */
   public void beginArray(String kind) {
     printCommaIfNecessary();
     print("\"");
     print(kind);
-    if(isIndentationEnabled()) {
+    if (isIndentationEnabled()) {
       print("\": [");
     }
     else {
@@ -179,6 +195,7 @@ public class JsonPrinter {
       internalMember(kind, null);
     }
   }
+  
   /**
    * Prints a Json member with the given kind as key and the given double value, which is a basic
    * data type in Json.
@@ -243,7 +260,12 @@ public class JsonPrinter {
    * @param value The boolean value of the Json attribute
    */
   public void member(String kind, String value) {
-    internalMember(kind, preprocessString(value));
+    internalMember(kind, "\""+escapeSpecialChars(value)+"\"");
+  }
+  
+
+  public void memberJson(String kind, String value) {
+    internalMember(kind, value);
   }
   
   /**
@@ -315,7 +337,11 @@ public class JsonPrinter {
    * @param value The String value of the Json attribute
    */
   public void value(String value) {
-    internalValue(preprocessString(value));
+    internalValue("\""+escapeSpecialChars(value)+"\"");
+  }
+  
+  public void valueJson(String value) {
+    internalValue(value);
   }
   
   /**
@@ -328,18 +354,18 @@ public class JsonPrinter {
     internalValue(value.getContent());
   }
   
-  protected String preprocessString(String string) {
-    String s = string.trim();
-    boolean isFramedInQuotationMarks = s.length() > 0 && s.startsWith("\"") && s.endsWith("\"");
-    boolean isSerializedObject = s.length() > 0 && s.startsWith("{") && s.endsWith("}");
-    string = escapeSpecialChars(string);
-    if (!isFramedInQuotationMarks && !isSerializedObject) {
-      return "\"" + string + "\"";
-    }
-    else {
-      return s;
-    }
-  }
+//  protected String preprocessString(String string) {
+//    String s = string.trim();
+//    boolean isFramedInQuotationMarks = s.length() > 0 && s.startsWith("\"") && s.endsWith("\"");
+//    boolean isSerializedObject = s.length() > 0 && s.startsWith("{") && s.endsWith("}");
+//    string = escapeSpecialChars(string);
+//    if (!isFramedInQuotationMarks  && !isSerializedObject) {
+//      return "\"" + string + "\"";
+//    }
+//    else {
+//      return s;
+//    }
+//  }
   
   /**
    * Adds escape sequences for all characters that are escaped in Java Strings according to
@@ -347,14 +373,14 @@ public class JsonPrinter {
    */
   protected String escapeSpecialChars(String input) {
     return input
-    .replace("\\", "\\\\")  // Insert a backslash character in the text at this point.
-    .replace("\t", "\\t")   // Insert a tab in the text at this point.
-    .replace("\b", "\\b")   // Insert a backspace in the text at this point.
-    .replace("\n", "\\n")   // Insert a newline in the text at this point.
-    .replace("\r", "\\r")   // Insert a carriage return in the text at this point.
-    .replace("\f", "\\f")   // Insert a formfeed in the text at this point.
-    .replace("\'", "\\\'")  // Insert a single quote character in the text at this point.
-    .replace("\"", "\\\""); // Insert a double quote character in the text at this point.
+        .replace("\\", "\\\\") // Insert a backslash character in the text at this point.
+        .replace("\t", "\\t") // Insert a tab in the text at this point.
+        .replace("\b", "\\b") // Insert a backspace in the text at this point.
+        .replace("\n", "\\n") // Insert a newline in the text at this point.
+        .replace("\r", "\\r") // Insert a carriage return in the text at this point.
+        .replace("\f", "\\f") // Insert a formfeed in the text at this point.
+        .replace("\'", "\\\'") // Insert a single quote character in the text at this point.
+        .replace("\"", "\\\""); // Insert a double quote character in the text at this point.
   }
   
   /**
@@ -369,18 +395,18 @@ public class JsonPrinter {
       isFirstAttribute = false;
       println("");
     }
-    if(indentBeforeNewLine) {
+    if (indentBeforeNewLine) {
       indent();
       indentBeforeNewLine = false;
     }
-
+    
   }
   
   private void internalMember(String kind, Object value) {
     printCommaIfNecessary();
     print("\"");
     print(kind);
-    if(isIndentationEnabled()) {
+    if (isIndentationEnabled()) {
       print("\": ");
     }
     else {
@@ -395,8 +421,8 @@ public class JsonPrinter {
   }
   
   /**
-   * Returns the current value of the Json code produced so far And performs basic checks for correct nesting of composed data
-   * 
+   * Returns the current value of the Json code produced so far And performs basic checks for
+   * correct nesting of composed data
    */
   public String getContent() {
     if (0 != nestedListDepth) {
@@ -405,7 +431,7 @@ public class JsonPrinter {
     if (0 != nestedObjectDepth) {
       Log.error("0xA0601 Invalid nesting of Json objects in " + toString());
     }
-    //return content of printer without first character, which is a newline
+    // return content of printer without first character, which is a newline
     return toString();
   }
   
@@ -416,21 +442,22 @@ public class JsonPrinter {
    */
   @Override
   public String toString() {
-    //return content of printer without first character, which is a newline
+    // return content of printer without first character, which is a newline
     String content = printer.getContent();
-    if(content.startsWith("\n")) {
+    if (content.startsWith("\n")) {
       content = content.substring(1);
     }
-    return content; 
+    return content;
   }
   
-  /////////////////////////// methods to handle optional pretty printing with line breaks and indentation ////////////////////////////
+  /////////////////////////// methods to handle optional pretty printing with line breaks and
+  /////////////////////////// indentation ////////////////////////////
   private void print(Object o) {
     printer.print(o);
   }
   
   private void println(Object o) {
-    if(JsonPrinter.isIndentationEnabled()) {
+    if (JsonPrinter.isIndentationEnabled()) {
       printer.println(o);
     }
     else {
@@ -439,13 +466,13 @@ public class JsonPrinter {
   }
   
   private void indent() {
-    if(JsonPrinter.isIndentationEnabled()) {
+    if (JsonPrinter.isIndentationEnabled()) {
       printer.indent();
     }
   }
   
   private void unindent() {
-    if(JsonPrinter.isIndentationEnabled()) {
+    if (JsonPrinter.isIndentationEnabled()) {
       printer.unindent();
     }
   }

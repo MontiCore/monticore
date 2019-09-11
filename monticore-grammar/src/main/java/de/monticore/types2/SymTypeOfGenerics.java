@@ -2,7 +2,11 @@
 package de.monticore.types2;
 
 import com.google.common.collect.Lists;
+
+import de.monticore.symboltable.serialization.JsonConstants;
+import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.serialization.TypeSymbolDeSer;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -75,6 +79,27 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     }
     return r.append('>').toString();
   }
+  
+  /**
+   * printAsJson: Umwandlung in einen kompakten Json String
+   */
+  protected String printAsJson() {
+    JsonPrinter jp = new JsonPrinter();
+    jp.beginObject();
+    //TODO: anpassen, nachdem package umbenannt ist
+    jp.member(JsonConstants.KIND, "de.monticore.types2.SymTypeOfGenerics");
+    jp.member("typeConstructorFullName", getTypeConstructorFullName());
+    jp.beginArray("arguments");
+    for(SymTypeExpression exp : getArguments()) {
+      jp.valueJson(exp.printAsJson());
+    }
+    jp.endArray();
+    //TODO: TypeSymbolDeSer implementieren
+    jp.member("objTypeConstructorSymbol", "TODO");//new TypeSymbolDeSer().serialize(getObjTypeConstructorSymbol()));
+    jp.endObject();
+    return jp.getContent();
+  }
+  
   
   /**
    * getFullName: get the Qualified Name including Package

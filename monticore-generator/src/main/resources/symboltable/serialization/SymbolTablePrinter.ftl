@@ -125,11 +125,11 @@ public class ${symTabPrinterName}
     }
   }
 
-  /**
-   * @see ${languageName}ScopeVisitor#endVisit(${languageName}Scope)
-   */
-  @Override
   public void endVisit(${languageName}Scope scope) {
+    printer.endObject();
+  }
+  
+  public void endVisit(${languageName}ArtifactScope scope) {
     printer.endObject();
   }
 <#list symbols as symbol>
@@ -175,15 +175,17 @@ public class ${symTabPrinterName}
      attrType == "double" || 
      attrType == "long" || 
      attrType == "String">
-<#assign retType=attrType>
-<#assign retStatement="symbol."+methodName+"()">
-<#else>
-<#assign retType="String">
-<#assign retStatement="String.valueOf(symbol."+methodName+"())">
-</#if>
-  protected ${retType} serialize${attr.name}(${symbol.name}Symbol symbol) {
-    return ${retStatement};
+  protected ${attrType} serialize${attr.name}(${symbol.name}Symbol symbol) {
+    return symbol.${methodName}();
   }
+<#else>
+  protected JsonPrinter serialize${attr.name}(${symbol.name}Symbol symbol) {
+    JsonPrinter jp = new JsonPrinter();
+    jp.value(String.valueOf(symbol.${methodName}()));
+    return jp;
+  }
+</#if>
+
   
 </#list>
 </#if>
