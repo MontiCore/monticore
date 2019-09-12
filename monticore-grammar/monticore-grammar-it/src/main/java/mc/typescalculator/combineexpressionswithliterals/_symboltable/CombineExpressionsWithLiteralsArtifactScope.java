@@ -61,7 +61,7 @@ public class CombineExpressionsWithLiteralsArtifactScope extends CombineExpressi
 
 
   @Override
-  public Collection<FieldSymbol> continueFieldWithEnclosingScope(
+  public Collection<FieldSymbol> continueFieldWithEnclosingScope (
           boolean foundSymbols, String name,
           AccessModifier modifier, Predicate<FieldSymbol> predicate) {
     final Collection<FieldSymbol> result = new LinkedHashSet<>();
