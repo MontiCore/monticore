@@ -12,7 +12,7 @@ ${tc.signature("simpleName", "symbolFullName", "scopeInterface")}
   foundSymbols = foundSymbols | resolved.size() > 0;
 
   final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + "${simpleName}Symbol"
-    + "\") in scope \"" + getName() + "\"";
+    + "\") in scope \"" + getNameOpt() + "\"";
   Log.trace("START " + resolveCall + ". Found #" + resolved.size() + " (local)", "");
   // If no matching symbols have been found...
   if (resolved.isEmpty()) {
