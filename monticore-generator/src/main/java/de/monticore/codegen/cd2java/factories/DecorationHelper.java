@@ -95,6 +95,10 @@ public class DecorationHelper extends MCCollectionTypesHelper {
   }
 
 
+  public boolean isMandatory(ASTCDAttribute astcdAttribute){
+    return !isOptional(astcdAttribute.getMCType()) && ! isListType(astcdAttribute.printType()) && !CDTypes.isBoolean(astcdAttribute.printType());
+  }
+
   public static String getPlainGetter(ASTCDAttribute ast) {
     String astType = printType(ast.getMCType());
     StringBuilder sb = new StringBuilder();
@@ -121,7 +125,7 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     if (!attr.isPresentSymbol()) {
       return false;
     }
-    CDTypeSymbolReference attrType =  attr.getSymbol().getType();
+    CDTypeSymbolReference attrType = attr.getSymbol().getType();
 
     List<CDTypeSymbolReference> typeArgs = attrType.getActualTypeArguments();
     if (typeArgs.size() > 1) {
@@ -129,8 +133,8 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     }
 
     String typeName = typeArgs.isEmpty()
-            ? attrType.getName()
-            : typeArgs.get(0).getName();
+        ? attrType.getName()
+        : typeArgs.get(0).getName();
     if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
       return false;
     }
@@ -145,7 +149,7 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     }
 
     CDTypeSymbolReference typeArgument = (CDTypeSymbolReference) typeArgs
-            .get(0);
+        .get(0);
     return typeArgument.existsReferencedSymbol() && typeArgument.isEnum();
   }
 
@@ -154,13 +158,16 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     StringBuilder sb = new StringBuilder(SET_PREFIX).append(
         StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
     String astType = printType(ast.getMCType());
-    if (isListType(astType))
+    if (isListType(astType)) {
       if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
         sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
             sb.length(), GET_SUFFIX_LIST);
       } else {
         sb.append(GET_SUFFIX_LIST);
       }
+    } else if (isOptional(ast.getMCType())) {
+      sb.append(GET_SUFFIX_OPTINAL);
+    }
     return sb.toString();
   }
 

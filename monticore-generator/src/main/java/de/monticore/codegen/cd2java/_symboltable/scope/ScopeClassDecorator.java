@@ -242,7 +242,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
       String attrName = attributeName + ALREADY_RESOLVED;
       ASTMCType booleanType = getCDTypeFacade().createBooleanType();
       ASTCDAttribute symbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED, booleanType, attrName);
-      this.replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= false;"));
+      this.replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= false"));
       symbolAttributeList.add(symbolAttribute);
     }
     return symbolAttributeList;
@@ -287,7 +287,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   protected ASTCDAttribute createEnclosingScopeAttribute() {
     ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED,
         getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType()), "enclosingScope");
-    this.replaceTemplate(VALUE, enclosingScope, new StringHookPoint("= Optional.empty();"));
+    this.replaceTemplate(VALUE, enclosingScope, new StringHookPoint("= Optional.empty()"));
     return enclosingScope;
   }
 
@@ -312,7 +312,7 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
   protected ASTCDAttribute createSpanningSymbolAttribute() {
     ASTCDAttribute spanningSymbol = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(I_SCOPE_SPANNING_SYMBOL), "spanningSymbol");
-    this.replaceTemplate(VALUE, spanningSymbol, new StringHookPoint("= Optional.empty();"));
+    this.replaceTemplate(VALUE, spanningSymbol, new StringHookPoint("= Optional.empty()"));
     return spanningSymbol;
   }
 
@@ -341,25 +341,25 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
   protected ASTCDAttribute createExportSymbolsAttribute() {
     ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createBooleanType(), "exportingSymbols");
-    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= true;"));
+    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= true"));
     return attribute;
   }
 
   protected ASTCDAttribute createNameAttribute() {
     ASTCDAttribute name = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(String.class), "name");
-    this.replaceTemplate(VALUE, name, new StringHookPoint("= Optional.empty();"));
+    this.replaceTemplate(VALUE, name, new StringHookPoint("= Optional.empty()"));
     return name;
   }
 
   protected ASTCDAttribute createASTNodeAttribute() {
     ASTCDAttribute astNode = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(AST_INTERFACE), "astNode");
-    this.replaceTemplate(VALUE, astNode, new StringHookPoint("= Optional.empty();"));
+    this.replaceTemplate(VALUE, astNode, new StringHookPoint("= Optional.empty()"));
     return astNode;
   }
 
   protected ASTCDAttribute createSubScopesAttribute(ASTMCQualifiedType scopeInterfaceType) {
     ASTCDAttribute subScopes = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createListTypeOf(scopeInterfaceType), "subScopes");
-    this.replaceTemplate(VALUE, subScopes, new StringHookPoint("= new java.util.ArrayList<>();"));
+    this.replaceTemplate(VALUE, subScopes, new StringHookPoint("= new java.util.ArrayList<>()"));
     return subScopes;
   }
 
