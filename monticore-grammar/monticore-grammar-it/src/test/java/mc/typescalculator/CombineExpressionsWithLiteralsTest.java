@@ -60,7 +60,7 @@ public class CombineExpressionsWithLiteralsTest {
     art.setImports(Lists.newArrayList(new ImportStatement("mc.typescalculator.TestCD.D", true)));
 
     assertTrue(expr.isPresent());
-    SymTypeExpression j = calc.calculateType(expr.get());
+    Optional<SymTypeExpression> j = calc.calculateType(expr.get());
     // TODO: j isnull
     //assertTrue(exp.deepEquals(j));
 
@@ -70,7 +70,7 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsTypesCalculator calc2 = new CombineExpressionsWithLiteralsTypesCalculator(art);
     Optional<ASTExpression> expr2 = p.parse_StringExpression("s+=s");
     assertTrue(expr2.isPresent());
-    SymTypeExpression j2 = calc2.calculateType(expr2.get());
+    Optional<SymTypeExpression> j2 = calc2.calculateType(expr2.get());
     //TODO RE resolve local variable via import
     //assertTrue(exp.deepEquals(j2));
 
@@ -97,7 +97,7 @@ public class CombineExpressionsWithLiteralsTest {
 
     ASTExpression b = exprB.get();
 
-    SymTypeExpression k = calc.calculateType(b);
+    Optional<SymTypeExpression> k = calc.calculateType(b);
     //TODO RE
     //assertTrue(exp2.deepEquals(k));
   }
