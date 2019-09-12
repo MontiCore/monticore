@@ -22,6 +22,11 @@ public abstract class SymTypeExpression {
   public abstract String print();
   
   /**
+   * printAsJson: Umwandlung in einen kompakten Json String
+   */
+  protected abstract String printAsJson();
+  
+  /**
    * Am I primitive? (such as "int")
    * (is this needed?)
    */

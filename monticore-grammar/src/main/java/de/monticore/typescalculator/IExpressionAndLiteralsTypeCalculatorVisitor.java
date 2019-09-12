@@ -7,11 +7,10 @@ import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisS
 import de.monticore.types2.SymTypeExpression;
 
 import java.util.Map;
+import java.util.Optional;
 
 public interface IExpressionAndLiteralsTypeCalculatorVisitor {
-  public SymTypeExpression calculateType(ASTExpression e);
-
-  Map<ASTNode, SymTypeExpression> getTypes();
+  public Optional<SymTypeExpression> calculateType(ASTExpression e);
 
   void setScope(IExpressionsBasisScope scope);
 }

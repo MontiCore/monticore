@@ -45,7 +45,7 @@ public class CombineExpressionsWithLiteralsTest {
 
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(globalScope1);
 
-    Optional<TypeSymbol> classB = globalScope1.resolveType("mc.typescalculator.TestCD.B");
+    Optional<TypeSymbol> classB = globalScope1.resolveType("B");
     assertTrue(classB.isPresent());
 
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
@@ -72,9 +72,9 @@ public class CombineExpressionsWithLiteralsTest {
     //TODO
     //assertTrue(exp.deepEquals(calc.calculateType(exprD.get())));
 
-    Optional<ASTExpression> exprB = p.parse_StringExpression("mc.typescalculator.TestCD.B.x = mc.typescalculator.TestCD.B.z");
+    Optional<ASTExpression> exprB = p.parse_StringExpression("x = z");
 
-    exp2.setName("mc.typescalculator.TestCD.C");
+    exp2.setName("C");
 
     assertTrue(exprB.isPresent());
 
@@ -83,6 +83,5 @@ public class CombineExpressionsWithLiteralsTest {
     SymTypeExpression k = calc.calculateType(b);
 
     assertTrue(exp2.deepEquals(k));
-
   }
 }

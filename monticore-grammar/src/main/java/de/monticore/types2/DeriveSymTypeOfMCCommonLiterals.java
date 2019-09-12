@@ -7,6 +7,7 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
 import de.monticore.mccommon._ast.MCCommonLiterals;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
+import de.monticore.typescalculator.LastResult;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -42,37 +43,37 @@ public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals
   
   @Override
   public void visit(ASTNatLiteral lit){
-    result = Optional.of(DefsTypeBasic._intSymType);
+    result.setLast(DefsTypeBasic._intSymType);
   }
 
   @Override
   public void visit(ASTCharLiteral lit){
-    result = Optional.of(DefsTypeBasic._charSymType);
+    result.setLast(DefsTypeBasic._charSymType);
   }
 
   @Override
   public void visit(ASTBooleanLiteral lit){
-    result = Optional.of(DefsTypeBasic._booleanSymType);
+    result.setLast(DefsTypeBasic._booleanSymType);
   }
 
   @Override
   public void visit(ASTBasicDoubleLiteral lit){
-    result = Optional.of(DefsTypeBasic._doubleSymType);
+    result.setLast(DefsTypeBasic._doubleSymType);
   }
 
   @Override
   public void visit(ASTBasicFloatLiteral lit){
-    result = Optional.of(DefsTypeBasic._floatSymType);
+    result.setLast(DefsTypeBasic._floatSymType);
   }
 
   @Override
   public void visit(ASTBasicLongLiteral lit){
-    result = Optional.of(DefsTypeBasic._longSymType);
+    result.setLast(DefsTypeBasic._longSymType);
   }
 
   @Override
   public void visit(ASTStringLiteral lit){
-    result = Optional.of(DefsTypeBasic._StringSymType);
+    result.setLast(DefsTypeBasic._StringSymType);
   }
 
   /**
@@ -80,7 +81,7 @@ public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals
    */
   @Override
   public void visit(ASTNullLiteral lit){
-    result = Optional.of(DefsTypeBasic._nullSymType);
+    result.setLast(DefsTypeBasic._nullSymType);
   }
   
 }

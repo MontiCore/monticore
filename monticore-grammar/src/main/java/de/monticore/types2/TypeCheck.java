@@ -33,33 +33,22 @@ public class TypeCheck {
   protected SynthesizeSymTypeFromMCBasicTypes synthesizeSymType;
   
   /**
-   * Configuration: Visitor for Function 3:
-   * Deriving the SymTypeExpression from an AST Value - Expression.
-   * May also be of a subclass;
-   */
-  protected DeriveSymTypeOfExpression deriveSymTypeOfExpression;
-  
-  /**
    * Configuration: Visitor for Function 2b:
    * Deriving the SymTypeExpression from an AST Value - Literal.
    * May also be of a subclass;
    */
-  protected DeriveSymTypeOfLiterals deriveSymTypeOfLiteral;
+  protected ITypesCalculator iTypesCalculator;
   
   /**
    * Configuration as state:
    * @param synthesizeSymType defines, which AST Types are mapped (and how)
-   * @param deriveSymTypeOfExpression defines, which AST Expressions are handled
-   *                               through the Expression type recognition
-   * @param deriveSymTypeOfLiteral defines, which AST Literals are handled
+   * @param  iTypesCalculator defines, which AST Literals are handled
    *                               through the Expression type recognition
    */
   public TypeCheck(SynthesizeSymTypeFromMCBasicTypes synthesizeSymType,
-                   DeriveSymTypeOfExpression deriveSymTypeOfExpression,
-                   DeriveSymTypeOfLiterals deriveSymTypeOfLiteral) {
+                   ITypesCalculator iTypesCalculator) {
     this.synthesizeSymType = synthesizeSymType;
-    this.deriveSymTypeOfExpression = deriveSymTypeOfExpression;
-    this.deriveSymTypeOfLiteral = deriveSymTypeOfLiteral;
+    this.iTypesCalculator = iTypesCalculator;
   }
   
   /**
@@ -68,8 +57,7 @@ public class TypeCheck {
    */
   public TypeCheck() {
     synthesizeSymType = new SynthesizeSymTypeFromMCBasicTypes();
-    deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
-    deriveSymTypeOfLiteral = new DeriveSymTypeOfLiterals();
+    iTypesCalculator = new DeriveSymTypeOfLiteralsAndExpressions();
   }
   
   /*************************************************************************/
@@ -128,9 +116,9 @@ public class TypeCheck {
    * needs to be in place; same for method calls etc.
    */
   public SymTypeExpression typeOf(ASTExpression expr) {
-    deriveSymTypeOfExpression.init();
+    iTypesCalculator.init();
     Optional<SymTypeExpression> result =
-            deriveSymTypeOfExpression.calculateType(expr,deriveSymTypeOfLiteral);
+            iTypesCalculator.calculateType(expr);
     if(!result.isPresent()) {
       Log.error("0xED680 Internal Error: No Type for Expression " + expr
               + " Probably TypeCheck mis-configured.");
@@ -149,8 +137,8 @@ public class TypeCheck {
    * (DeriveSymType.*Literals.*Test)
    */
   public SymTypeExpression typeOf(ASTLiteral lit) {
-    deriveSymTypeOfLiteral.init();
-    Optional<SymTypeExpression> result = deriveSymTypeOfLiteral.calculateType(lit);
+    iTypesCalculator.init();
+    Optional<SymTypeExpression> result = iTypesCalculator.calculateType(lit);
     if(!result.isPresent()) {
       Log.error("0xED670 Internal Error: No Type for Literal " + lit
               + " Probably TypeCheck mis-configured.");

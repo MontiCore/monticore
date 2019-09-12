@@ -2,6 +2,8 @@
 package de.monticore.types2;
 
 import com.google.common.collect.Lists;
+
+import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import org.junit.Test;
 
@@ -53,6 +55,12 @@ public class SymTypeExpressionTest {
     assertEquals("Human", teH.getBaseName());
     assertEquals("Map", teMap.getBaseName());
     assertEquals("Set", teSetA.getBaseName());
+  }
+  
+  @Test
+  public void foo() {
+    JsonPrinter.enableIndentation();
+    System.out.println(teDeep2.printAsJson());
   }
   
 }

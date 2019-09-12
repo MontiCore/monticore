@@ -1,21 +1,24 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.google.common.base.Charsets;
 
 import de.monticore.io.FileReaderWriter;
 
 /**
- * Common interface for classes <b>De</b>serializing and <b>Ser</b>ializing objects of a generic class
- * parameter T. Further contains default implementations to load and store objects of this type
- * from/to the file system. Within MontiCore, classes implementing this interface typically set the
- * generic type parameter to a concrete symbol class or a concrete scope class.
+ * Common interface for classes <b>De</b>serializing and <b>Ser</b>ializing objects of a generic
+ * class parameter T. Further contains default implementations to load and store objects of this
+ * type from/to the file system. Within MontiCore, classes implementing this interface typically set
+ * the generic type parameter to a concrete symbol class or a concrete scope class.
  *
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
@@ -68,13 +71,13 @@ public interface IDeSer<T> {
    * @return
    */
   default public Optional<T> load(URL url) {
-    Path path;
     try {
-      path = Paths.get(new File(url.toURI()).getPath());
-      String deserialized = new FileReaderWriter().readFromFile(path);
-      return deserialize(deserialized);
+      Reader reader = new InputStreamReader(url.openStream(), Charsets.UTF_8.name());
+      BufferedReader buffer = new BufferedReader(reader);
+      String serialized = buffer.lines().collect(Collectors.joining());
+      return deserialize(serialized);
     }
-    catch (URISyntaxException e) {
+    catch (IOException e) {
       e.printStackTrace();
     }
     return Optional.empty();

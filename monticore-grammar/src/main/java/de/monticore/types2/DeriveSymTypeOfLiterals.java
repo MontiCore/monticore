@@ -7,6 +7,7 @@ import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
+import de.monticore.typescalculator.LastResult;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -42,14 +43,14 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
    * Storage in the Visitor: result of the last endVisit.
    * This attribute is synthesized upward.
    */
-  public Optional<SymTypeExpression> result = Optional.empty();
+  protected LastResult result;
   
-  public Optional<SymTypeExpression> getResult() {
+  public LastResult getResult() {
     return result;
   }
   
   public void init() {
-    result = Optional.empty();
+    result = new LastResult();
   }
   
   // ---------------------------------------------------------- Visting Methods
@@ -58,9 +59,8 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
    * Derive the Type (through calling the visitor)
    */
   public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
-    result = Optional.empty();
     lit.accept(realThis);
-    return result;
+    return result.getLastOpt();
   }
   
   // ---------------------------------------------------------- Visting Methods
@@ -75,5 +75,8 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
     Log.error("0xED671 Internal Error: No Type for Literal " + lit
             + " Probably TypeCheck mis-configured.");
   }
-  
+
+  public void setResult(LastResult result) {
+    this.result = result;
+  }
 }

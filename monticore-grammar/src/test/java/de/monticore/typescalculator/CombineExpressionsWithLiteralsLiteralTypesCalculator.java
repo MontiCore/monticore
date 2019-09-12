@@ -3,18 +3,20 @@ package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.types2.DeriveSymTypeOfMCCommonLiterals;
 import de.monticore.types2.SymTypeExpression;
 import de.monticore.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsVisitor;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class CombineExpressionsWithLiteralsLiteralTypesCalculator implements CombineExpressionsWithLiteralsVisitor {
 
-  private CommonLiteralsTypesCalculator literalsVisitor;
-
-  private Map<ASTNode, SymTypeExpression> types;
+  private DeriveSymTypeOfMCCommonLiterals literalsVisitor;
 
   private CombineExpressionsWithLiteralsVisitor realThis;
+
+  private LastResult lastResult;
 
   @Override
   public void setRealThis(CombineExpressionsWithLiteralsVisitor realThis) {
@@ -27,18 +29,16 @@ public class CombineExpressionsWithLiteralsLiteralTypesCalculator implements Com
 
   @Override
   public void endVisit(ASTLiteral lit){
-    if(!types.containsKey(lit)) {
-      SymTypeExpression type = literalsVisitor.calculateType(lit).get();
-      types.put(lit, type);
-    }
-  }
-
-  public void setTypes(Map<ASTNode, SymTypeExpression> types) {
-    this.types = types;
+    Optional<SymTypeExpression> type = literalsVisitor.calculateType(lit);
+    lastResult.setLastOpt(type);
   }
 
   public CombineExpressionsWithLiteralsLiteralTypesCalculator(){
     realThis=this;
-    literalsVisitor=new CommonLiteralsTypesCalculator();
+    literalsVisitor=new DeriveSymTypeOfMCCommonLiterals();
+  }
+
+  public void setLastResult(LastResult lastResult){
+    this.lastResult = lastResult;
   }
 }

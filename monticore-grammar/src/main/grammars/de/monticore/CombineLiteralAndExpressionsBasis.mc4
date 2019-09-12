@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+component grammar CombineLiteralAndExpressionsBasis extends
+	de.monticore.literals.MCLiteralsBasis, de.monticore.expressions.ExpressionsBasis
+{
+    start Expression;
+}

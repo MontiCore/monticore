@@ -7,8 +7,10 @@ import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
 
+import java.util.Optional;
+
+import static de.monticore.types2.SymTypeConstant.unbox;
 import static de.monticore.typescalculator.TypesCalculatorHelper.isIntegralType;
-import static de.monticore.typescalculator.TypesCalculatorHelper.unbox;
 
 public class TypesCalculator {
 
@@ -17,60 +19,39 @@ public class TypesCalculator {
   private static IExpressionsBasisScope scope;
 
   public static boolean isBoolean(ASTExpression expr){
-    SymTypeExpression exp = new SymTypeConstant();
-    exp.setName("boolean");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));
+    return "boolean".equals(unbox(calc.calculateType(expr).get().print()));
   }
 
   public static boolean isString(ASTExpression expr){
-    SymTypeExpression exp = new SymTypeOfObject();
-    exp.setName("String");
-    if(exp.deepEquals(unbox(calc.calculateType(expr)))){
-      return true;
-    }
-    return false;
+    return "String".equals(unbox(calc.calculateType(expr).get().print()));
   }
 
   public static boolean isInt(ASTExpression expr) {
-    SymTypeExpression exp = new SymTypeConstant();
-    exp.setName("int");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));
+    return "int".equals(unbox(calc.calculateType(expr).get().print()));
   }
 
   public static boolean isLong(ASTExpression expr){
-    SymTypeExpression exp = new SymTypeConstant();
-    exp.setName("long");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));
+    return "long".equals(unbox(calc.calculateType(expr).get().print()));
   }
 
   public static boolean isChar(ASTExpression expr){
-    SymTypeExpression exp = new SymTypeConstant();
-    exp.setName("char");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));
+    return "char".equals(unbox(calc.calculateType(expr).get().print()));
   }
 
   public static boolean isFloat(ASTExpression expr){
-    SymTypeExpression exp = new SymTypeConstant();
-    exp.setName("float");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));
+    return "float".equals(unbox(calc.calculateType(expr).get().print()));
   }
 
   public static boolean isDouble(ASTExpression expr){
-    SymTypeExpression exp = new SymTypeConstant();
-    exp.setName("double");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));
+    return "double".equals(unbox(calc.calculateType(expr).get().print()));
   }
 
   public static boolean isShort(ASTExpression expr){
-    SymTypeExpression exp = new SymTypeConstant();
-    exp.setName("short");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));
+    return "short".equals(unbox(calc.calculateType(expr).get().print()));
   }
 
   public static boolean isByte(ASTExpression expr){
-    SymTypeExpression exp = new SymTypeConstant();
-    exp.setName("byte");
-    return exp.deepEquals(unbox(calc.calculateType(expr)));
+    return "byte".equals(unbox(calc.calculateType(expr).get().print()));
   }
 
   public static boolean isPrimitive(ASTExpression expr){
@@ -78,80 +59,73 @@ public class TypesCalculator {
   }
 
   public static String getTypeString(ASTExpression expr){
-    calc.calculateType(expr);
-    String result = "";
-    if(calc.getTypes().get(expr)!=null) {
-      result = calc.getTypes().get(expr).getName();
-    }
-    return result;
+    return calc.calculateType(expr).get().print();
   }
 
   public static SymTypeExpression getType(ASTExpression expr){
-    return calc.calculateType(expr);
+    return calc.calculateType(expr).get();
   }
 
   public static boolean isAssignableFrom(ASTExpression left, ASTExpression right){
-    calc.calculateType(left);
-    calc.calculateType(right);
-    if(calc.getTypes().get(left)!=null){
-      if(isPrimitive(left)&&isPrimitive(right)){
-        if(isBoolean(left)&&isBoolean(right)){
-          return true;
-        }
-        if(isDouble(left)&&TypesCalculatorHelper.isNumericType(calc.getTypes().get(right))){
-          return true;
-        }
-        if(isFloat(left)&&(isIntegralType(calc.getTypes().get(right))||isFloat(right))){
-          return true;
-        }
-        if(isLong(left)&&isIntegralType(calc.getTypes().get(right))){
-          return true;
-        }
-        if(isInt(left)&&isIntegralType(calc.getTypes().get(right))&&!isLong(right)){
-          return true;
-        }
-        if(isChar(left)&&isChar(right)){
-          return true;
-        }
-        if(isShort(left)&&isShort(right)){
-          return true;
-        }
-        if(isByte(left)&&isByte(right)){
-          return true;
-        }
-        return false;
-      }else {
-        if(isSubtypeOf(right,left)||calc.getTypes().get(right).deepEquals(calc.getTypes().get(left))){
-          return true;
-        }
+    Optional<SymTypeExpression> leftType = calc.calculateType(left);
+    Optional<SymTypeExpression> rightType = calc.calculateType(right);
+    if(isPrimitive(left)&&isPrimitive(right)){
+      if(isBoolean(left)&&isBoolean(right)){
+        return true;
+      }
+      if(isDouble(left)&&TypesCalculatorHelper.isNumericType(rightType.get())){
+        return true;
+      }
+      if(isFloat(left)&&(isIntegralType(rightType.get())||isFloat(right))){
+        return true;
+      }
+      if(isLong(left)&&isIntegralType(rightType.get())){
+        return true;
+      }
+      if(isInt(left)&&isIntegralType(rightType.get())&&!isLong(right)){
+        return true;
+      }
+      if(isChar(left)&&isChar(right)){
+        return true;
+      }
+      if(isShort(left)&&isShort(right)){
+        return true;
+      }
+      if(isByte(left)&&isByte(right)){
+        return true;
+      }
+      return false;
+    }else {
+      if(isSubtypeOf(right,left)||rightType.get().print().equals(leftType.get().print())){
+        return true;
       }
     }
     return false;
   }
 
   public static boolean isSubtypeOf(ASTExpression subType, ASTExpression superType){
-    calc.calculateType(subType);
-    calc.calculateType(superType);
+    Optional<SymTypeExpression> sub = calc.calculateType(subType);
+    Optional<SymTypeExpression> supert = calc.calculateType(superType);
 
     if(isPrimitive(subType)&&isPrimitive(superType)) {
       if (isBoolean(superType) && isBoolean(subType)) {
         return true;
       }
-      if (isDouble(superType) && TypesCalculatorHelper.isNumericType(calc.getTypes().get(subType))&&!isDouble(subType)) {
+      if (isDouble(superType) && TypesCalculatorHelper.isNumericType(sub.get())&&!isDouble(subType)) {
         return true;
       }
-      if (isFloat(superType) && isIntegralType(calc.getTypes().get(subType))) {
+      if (isFloat(superType) && isIntegralType(sub.get())) {
         return true;
       }
-      if (isLong(superType) && isIntegralType(calc.getTypes().get(subType)) && !isLong(subType)) {
+      if (isLong(superType) && isIntegralType(sub.get()) && !isLong(subType)) {
         return true;
       }
-      if (isInt(superType) && isIntegralType(calc.getTypes().get(subType)) && !isLong(subType) && !isInt(subType)) {
+      if (isInt(superType) && isIntegralType(sub.get()) && !isLong(subType) && !isInt(subType)) {
         return true;
       }
       return false;
     }
-    return isSubtypeOf(calc.getTypes().get(subType),calc.getTypes().get(superType));
+    return isSubtypeOf(sub.get(),supert.get());
   }
 
   public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType){
@@ -173,39 +147,39 @@ public class TypesCalculator {
   }
 
   public static boolean isBoolean(SymTypeExpression type){
-    return "boolean".equals(unbox(type).getName());
+    return "boolean".equals(unbox(type.print()));
   }
 
   public static boolean isInt(SymTypeExpression type){
-    return "int".equals(unbox(type).getName());
+    return "int".equals(unbox(type.print()));
   }
 
   public static boolean isDouble(SymTypeExpression type){
-    return "double".equals(unbox(type).getName());
+    return "double".equals(unbox(type.print()));
   }
 
   public static boolean isFloat(SymTypeExpression type){
-    return "float".equals(unbox(type).getName());
+    return "float".equals(unbox(type.print()));
   }
 
   public static boolean isLong(SymTypeExpression type){
-    return "long".equals(unbox(type).getName());
+    return "long".equals(unbox(type.print()));
   }
 
   public static boolean isChar(SymTypeExpression type){
-    return "char".equals(unbox(type).getName());
+    return "char".equals(unbox(type.print()));
   }
 
   public static boolean isShort(SymTypeExpression type){
-    return "short".equals(unbox(type).getName());
+    return "short".equals(unbox(type.print()));
   }
 
   public static boolean isByte(SymTypeExpression type){
-    return "byte".equals(unbox(type).getName());
+    return "byte".equals(unbox(type.print()));
   }
 
   public static boolean isVoid(SymTypeExpression type){
-    return "void".equals(unbox(type).getName());
+    return "void".equals(unbox(type.print()));
   }
 
   public static void setScope(IExpressionsBasisScope ascope){
