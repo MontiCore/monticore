@@ -51,7 +51,7 @@ component grammar CommonExpressions
   *
   */
   CallExpression implements Expression <240> =
-	(Expression ".")? Name Arguments;
+	Expression Arguments;
 
   /*=================================================================*/
 
