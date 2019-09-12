@@ -162,7 +162,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDMethod createSymbolTableFromAST = getCDMethodFacade().createMethod(PROTECTED, modelCoordinate, "resolveSymbol",
         qualifiedModelNameParam, modelPathParam);
     this.replaceTemplate(EMPTY_BODY, createSymbolTableFromAST, new TemplateHookPoint(
-        "_symboltable.modelloader.Resolve"));
+        "_symboltable.modelloader.ResolveSymbol"));
     return createSymbolTableFromAST;
   }
 
