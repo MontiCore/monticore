@@ -21,6 +21,7 @@ The different development statuses of grammars are explained
 ## List of Languages
 
 ### [Activity Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
+* Author: Not available
 * INSERT DESCRIPTION HERE
 
 ### [Class Diagram 4 Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (95% to MC6)
