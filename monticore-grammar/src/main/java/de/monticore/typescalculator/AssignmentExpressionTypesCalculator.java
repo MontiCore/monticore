@@ -36,88 +36,114 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
   public AssignmentExpressionTypesCalculator(){
     realThis=this;
   }
-//
-//  @Override
-//  public void endVisit(ASTIncSuffixExpression expr){
-//    SymTypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
-//
-//    if(result!=null){
-//      SymTypeExpression sym = result.deepClone();
-//      sym.setName(result.getName());
-//      types.put(expr, sym);
-//      this.result = sym;
-//    }else{
-//      Log.error("0xA0170 The resulting type cannot be calculated");
-//    }
-//  }
-//
-//  @Override
-//  public void endVisit(ASTDecSuffixExpression expr){
-//    SymTypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
-//
-//    if(result!=null){
-//      SymTypeExpression sym = result.deepClone();
-//      sym.setName(result.getName());
-//      types.put(expr, sym);
-//      this.result = sym;
-//    }else{
-//      Log.error("0xA0171 The resulting type cannot be calculated");
-//    }
-//  }
-//
-//  @Override
-//  public void endVisit(ASTIncPrefixExpression expr){
-//    SymTypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
-//
-//    if(result!=null){
-//      SymTypeExpression sym = result.deepClone();
-//      sym.setName(result.getName());
-//      types.put(expr, sym);
-//      this.result = sym;
-//    }else{
-//      Log.error("0xA0172 The resulting type cannot be calculated");
-//    }
-//  }
-//
-//  @Override
-//  public void endVisit(ASTDecPrefixExpression expr){
-//    SymTypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
-//
-//    if(result!=null){
-//      SymTypeExpression sym = result.deepClone();
-//      sym.setName(result.getName());
-//      types.put(expr, sym);
-//      this.result = sym;
-//    }else{
-//      Log.error("0xA0173 The resulting type cannot be calculated");
-//    }
-//  }
-//
-//  @Override
-//  public void endVisit(ASTPlusPrefixExpression expr){
-//    SymTypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
-//    if(result!=null){
-//      SymTypeExpression sym = result.deepClone();
-//      sym.setName(result.getName());
-//      types.put(expr, sym);
-//      this.result = sym;
-//    }else{
-//      Log.error("0xA0174 The resulting type cannot be calculated");
-//    }
-//  }
-//
-//  @Override
-//  public void endVisit(ASTMinusPrefixExpression expr){
-//    SymTypeExpression result = getUnaryNumericPromotionType(expr.getExpression());
-//    if(result!=null){
-//      SymTypeExpression sym = result.deepClone();
-//      sym.setName(result.getName());
-//      types.put(expr, sym);
-//      this.result = sym;
-//    }else{
-//      Log.error("0xA0175 The resulting type cannot be calculated");
-//    }
-//  }
+
+  @Override
+  public void endVisit(ASTIncSuffixExpression expr){
+    SymTypeExpression innerResult = null;
+    expr.getExpression().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      innerResult = lastResult.getLast();
+    }
+    Optional<SymTypeExpression> wholeResult = getUnaryNumericPromotionType(innerResult);
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0170 The resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void endVisit(ASTDecSuffixExpression expr){
+    SymTypeExpression innerResult = null;
+    expr.getExpression().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      innerResult = lastResult.getLast();
+    }
+    Optional<SymTypeExpression> wholeResult = getUnaryNumericPromotionType(innerResult);
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0171 The resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void endVisit(ASTIncPrefixExpression expr){
+    SymTypeExpression innerResult = null;
+    expr.getExpression().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      innerResult = lastResult.getLast();
+    }
+    Optional<SymTypeExpression> wholeResult = getUnaryNumericPromotionType(innerResult);
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0172 The resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void endVisit(ASTDecPrefixExpression expr){
+    SymTypeExpression innerResult = null;
+    expr.getExpression().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      innerResult = lastResult.getLast();
+    }
+    Optional<SymTypeExpression> wholeResult = getUnaryNumericPromotionType(innerResult);
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0173 The resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void endVisit(ASTPlusPrefixExpression expr){
+    SymTypeExpression innerResult = null;
+    expr.getExpression().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      innerResult = lastResult.getLast();
+    }
+    Optional<SymTypeExpression> wholeResult = getUnaryNumericPromotionType(innerResult);
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0174 The resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void endVisit(ASTMinusPrefixExpression expr){
+    SymTypeExpression innerResult = null;
+    expr.getExpression().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      innerResult = lastResult.getLast();
+    }
+    Optional<SymTypeExpression> wholeResult = getUnaryNumericPromotionType(innerResult);
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0175 The resulting type cannot be calculated");
+    }
+  }
 //
 //  private void calculatePlusAssignment(ASTRegularAssignmentExpression expr){
 //    SymTypeExpression result = calculateTypeArithmeticWithString(expr.getLeft(),expr.getRight());
@@ -421,5 +447,5 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
   public void setLastResult(LastResult lastResult){
     this.lastResult = lastResult;
   }
-//
+
 }

@@ -1,21 +1,10 @@
-/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
 import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
-import de.monticore.literals.mccommonliterals._ast.MCCommonLiteralsMill;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
-import de.monticore.types.typesymbols._ast.TypeSymbolsMill;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 import de.monticore.typescalculator.CombineExpressionsWithLiteralsTypesCalculator;
 import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.se_rwth.commons.logging.LogStub;
@@ -26,32 +15,33 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static de.monticore.types2.DefsTypeBasic.*;
+import static de.monticore.types2.DefsTypeBasic.field;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-public class DeriveSymTypeOfExpressionTest {
-  
+public class DeriveSymTypeOfAssignmentExpressionTest {
+
+  private ExpressionsBasisScope scope;
+
   /**
    * Focus: Deriving Type of Literals, here:
    *    literals/MCLiteralsBasis.mc4
    */
-  private ExpressionsBasisScope scope;
-  
+
   @BeforeClass
   public static void setup() {
     LogStub.init();
     LogStub.enableFailQuick(false);
   }
-  
+
   @Before
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
     scope =
-            ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
-                    .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-                    .setExportsSymbols(true)
-                    .setAstNode(null)
-                    .setName("Phantasy2").build();     // hopefully unused
+        ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+            .setEnclosingScope(null)       // No enclosing Scope: Search ending here
+            .setExportsSymbols(true)
+            .setAstNode(null)
+            .setName("Phantasy2").build();     // hopefully unused
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
     add2scope(scope, DefsTypeBasic._int);
     add2scope(scope, DefsTypeBasic._char);
@@ -59,7 +49,7 @@ public class DeriveSymTypeOfExpressionTest {
     add2scope(scope, DefsTypeBasic._double);
     add2scope(scope, DefsTypeBasic._float);
     add2scope(scope, DefsTypeBasic._long);
-    
+
     add2scope(scope, DefsTypeBasic._array);
     add2scope(scope, DefsTypeBasic._Object);
     add2scope(scope, DefsTypeBasic._String);
@@ -79,87 +69,104 @@ public class DeriveSymTypeOfExpressionTest {
     add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",f)));
     derLit.setScope(scope);
   }
-  
+
   // Parer used for convenience:
   // (may be any other Parser that understands CommonExpressions)
   CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-  
+
   // This is the core Visitor under Test (but rather empty)
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
   CombineExpressionsWithLiteralsTypesCalculator derLit = new CombineExpressionsWithLiteralsTypesCalculator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
-  
+
   // other arguments not used (and therefore deliberately null)
-  
+
   // This is the TypeChecker under Test:
   TypeCheck tc = new TypeCheck(null,derLit);
-  
-  // ------------------------------------------------------  Tests for Function 2
 
-
-  @Test
-  public void deriveTFromASTNameExpression() throws IOException {
-    ASTExpression astex = p.parse_StringExpression("foo").get();
-    assertEquals("int", tc.typeOf(astex).print());
-  }
+  /*--------------------------------------------------- TESTS ---------------------------------------------------------*/
 
   @Test
-  public void deriveTFromASTNameExpression2() throws IOException {
-    String s = "bar";
+  public void deriveFromIncSuffixExpression() throws IOException{
+    //example with int
+    String s = "3++";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean", tc.typeOf(astex).print());
+    assertEquals("int",tc.typeOf(astex).print());
+
+    //example with float
+    s = "4.5f++";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("float",tc.typeOf(astex).print());
+
+    //example with char
+    s = "\'e\'++";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
   }
 
   @Test
-  public void deriveTFromASTNameExpression3() throws IOException{
-    String s = "person1";
+  public void deriveFromDecSuffixExpression() throws IOException{
+    //example with int
+    String s = "12--";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("Person", tc.typeOf(astex).print());
+    assertEquals("int",tc.typeOf(astex).print());
+
+    //example with double
+    s = "4.2--";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("double",tc.typeOf(astex).print());
   }
 
   @Test
-  public void deriveTFromASTNameExpression4() throws IOException{
-    String s = "student1";
+  public void deriveFromIncPrefixExpression() throws IOException{
+    //example with int
+    String s = "++3";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("Student",tc.typeOf(astex).print());
+    assertEquals("int",tc.typeOf(astex).print());
+
+    //example with long
+    s = "++6L";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("long",tc.typeOf(astex).print());
   }
 
   @Test
-  public void deriveTFromASTNameExpression5() throws IOException{
-    String s = "firstsemester";
+  public void deriveFromDecPrefixExpression() throws IOException{
+    //example with int
+    String s = "--1";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("FirstSemesterStudent",tc.typeOf(astex).print());
-  }
+    assertEquals("int",tc.typeOf(astex).print());
 
-   @Test
-  public void deriveTFromLiteral() throws IOException {
-    ASTExpression astex = p.parse_StringExpression("42").get();
-    assertEquals("int", tc.typeOf(astex).print());
-  }
-
-  @Test
-  public void deriveTFromLiteralString() throws IOException {
-    ASTExpression astex = p.parse_StringExpression("\"aStringi\"").get();
-    assertEquals("String", tc.typeOf(astex).print());
-  }
-
-
-/*
-  // This one is for the CommonExpressions (to be moved)
-  @Test
-  public void deriveTFromASTNameExpression2() throws IOException {
-    ASTExpression astex = p.parse_StringExpression("!bar").get();
-    assertEquals("boolean", tc.typeOf(astex).print());
+    //example with float
+    s = "--6.7f";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("float",tc.typeOf(astex).print());
   }
 
   @Test
-  public void deriveTFromNot() throws IOException {
-    String s = "!(3+aBoolean)";
+  public void deriveFromMinusPrefixExpression() throws IOException{
+    //example with int
+    String s = "-5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean", tc.typeOf(astex).print());
-    // does work, but should issue a CoCo violation (TODO later)
-  }
-*/
+    assertEquals("int",tc.typeOf(astex).print());
 
+    //example with double
+    s = "-15.7";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("double",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromPlusPrefixExpression() throws IOException{
+    //example with int
+    String s = "+34";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+
+    //example with long
+    s = "+4L";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("long",tc.typeOf(astex).print());
+  }
 }
