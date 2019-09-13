@@ -132,7 +132,7 @@ public class TypesCalculator {
   public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType){
     if(!subType.getTypeInfo().getSuperTypes().isEmpty()){
       for(SymTypeExpression type: subType.getTypeInfo().getSuperTypes()){
-        if(type.deepEquals(superType)){
+        if(type.print().equals(superType.print())){
           return true;
         }
       }

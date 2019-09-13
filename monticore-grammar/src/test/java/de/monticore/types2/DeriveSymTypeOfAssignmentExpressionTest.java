@@ -6,6 +6,7 @@ import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSc
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.typescalculator.CombineExpressionsWithLiteralsTypesCalculator;
+import de.monticore.typescalculator.TypesCalculator;
 import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -62,12 +63,19 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     f.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar", _booleanSymType));
+    add2scope(scope, field("vardouble", _doubleSymType));
+    add2scope(scope, field("varchar", _charSymType));
+    add2scope(scope, field("varfloat", _floatSymType));
+    add2scope(scope, field("varlong", _longSymType));
+    add2scope(scope, field("varint", _intSymType));
+    add2scope(scope, field("varString",SymTypeExpressionFactory.createTypeObject("String",_String)));
     add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",p)));
     add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObject("Person",p)));
     add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",f)));
     derLit.setScope(scope);
+    TypesCalculator.setExpressionAndLiteralsTypeCalculator(derLit);
   }
 
   // Parer used for convenience:
@@ -168,5 +176,165 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     s = "+4L";
     astex = p.parse_StringExpression(s).get();
     assertEquals("long",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromPlusAssignmentExpression() throws IOException{
+    //example with int - int
+    String s = "foo+=7";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+    //example with long - double
+    s = "varlong+=5.6";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("long",tc.typeOf(astex).print());
+    //example with String - Person
+    s = "varString+=person1";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("String",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromMinusAssignmentExpression() throws IOException{
+    //example with int - int
+    String s = "varint-=9";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+    //example with char - float
+    s = "varchar-=4.5f";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("char",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromMultAssignmentExpression() throws IOException{
+    //example with int - int
+    String s = "varint*=9";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+    //example with double - int
+    s = "vardouble*=5";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("double",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromDivideAssignmentExpression() throws IOException{
+    //example with int - int
+    String s = "varint/=9";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+    //example with float - long
+    s = "varfloat/=4L";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("float",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromModuloAssignmentExpression() throws IOException{
+    //example with int - int
+    String s = "varint%=9";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+    //example with int - float
+    s = "foo%=9.8f";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromAndAssignmentExpression() throws IOException{
+    //example with int - int
+    String s = "varint&=9";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+    //example with boolean - boolean
+    s = "bar2&=false";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
+    //example with char - int
+    s = "varchar&=4";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("char",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromOrAssignmentExpression() throws IOException{
+    //example with int - int
+    String s = "varint|=9";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+    //example with boolean - boolean
+    s = "bar2|=true";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromBinaryXorAssignmentExpression() throws IOException{
+    //example with int - int
+    String s = "varint^=9";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+    //example with boolean - boolean
+    s = "bar2^=false";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromDoubleLeftAssignmentExpression() throws IOException{
+    //example with int - int
+    String s = "varint<<=9";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+    //example with int - char
+    s = "foo<<=\'c\'";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromDoubleRightAssignmentExpression() throws IOException{
+    //example with int - int
+    String s = "varint>>=9";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+    //example with char - int
+    s = "varchar>>=12";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("char",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromLogicalRightAssignmentExpression() throws IOException{
+    //example with int - int
+    String s = "varint>>>=9";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+    //example with char - char
+    s = "varchar>>>=\'3\'";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("char",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveFromRegularAssignmentExpression() throws IOException{
+    //example with int - int
+    String s = "varint=9";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+    //example with double - int
+    s = "vardouble=12";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("double",tc.typeOf(astex).print());
+    //example with person - student
+    s = "person1 = student2";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("Person",tc.typeOf(astex).print());
+    //example with person - firstsemesterstudent
+    s = "person2 = firstsemester";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("Person",tc.typeOf(astex).print());
   }
 }

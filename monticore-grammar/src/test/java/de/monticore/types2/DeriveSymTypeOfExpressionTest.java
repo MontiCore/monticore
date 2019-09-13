@@ -71,7 +71,7 @@ public class DeriveSymTypeOfExpressionTest {
     TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
     f.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope, field("foo", _intSymType));
-    add2scope(scope, field("bar", _booleanSymType));
+    add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",p)));
     add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObject("Person",p)));
     add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",s)));
@@ -106,7 +106,7 @@ public class DeriveSymTypeOfExpressionTest {
 
   @Test
   public void deriveTFromASTNameExpression2() throws IOException {
-    String s = "bar";
+    String s = "bar2";
     ASTExpression astex = p.parse_StringExpression(s).get();
     assertEquals("boolean", tc.typeOf(astex).print());
   }

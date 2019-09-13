@@ -237,10 +237,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
     astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
 
-    //example with two objects in sub-supertype relation TODO: fix isSubTypeOf method in TypesCalculator
-//    s = "student1==person1";
-//    astex = p.parse_StringExpression(s).get();
-//    assertEquals("boolean",tc.typeOf(astex).print());
+    //example with two objects in sub-supertype relation
+    s = "student1==person1";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
   }
 
   @Test
@@ -250,8 +250,15 @@ public class DeriveSymTypeOfCommonExpressionTest {
     ASTExpression astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
 
-    //TODO: example with two objects of the same class
-    //TODO: example with two objects in sub-supertype relation
+    //example with two objects of the same class
+    s = "person1!=person2";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
+
+    //example with two objects in sub-supertype relation
+    s = "student2!=person2";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
   }
 
   @Test
@@ -302,7 +309,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
     astex = p.parse_StringExpression(s).get();
     assertEquals("double",tc.typeOf(astex).print());
 
-    //TODO: test without primitive types in inner expression
+    //test without primitive types in inner expression
+    s = "(person1)";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("Person",tc.typeOf(astex).print());
   }
 
   @Test
@@ -319,8 +329,15 @@ public class DeriveSymTypeOfCommonExpressionTest {
     astex = p.parse_StringExpression(s).get();
     assertEquals("float",tc.typeOf(astex).print());
 
-    //TODO: test without primitive types as true and false expression
-    //TODO: test with two objects in a sub-supertype relation
+    //test without primitive types as true and false expression
+    s = "3<9?person1:person2";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("Person",tc.typeOf(astex).print());
+
+    //test with two objects in a sub-supertype relation
+    s = "3<9?student1:person2";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("Person",tc.typeOf(astex).print());
   }
 
   @Test
