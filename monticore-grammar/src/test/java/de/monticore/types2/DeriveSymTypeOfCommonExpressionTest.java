@@ -4,7 +4,10 @@ import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
+import de.monticore.types.typesymbols._symboltable.FieldSymbol;
+import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 import de.monticore.typescalculator.CombineExpressionsWithLiteralsTypesCalculator;
 import de.monticore.typescalculator.TypesCalculator;
 import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
@@ -14,6 +17,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static de.monticore.types2.DefsTypeBasic.*;
 import static de.monticore.types2.DefsTypeBasic._booleanSymType;
@@ -68,6 +73,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",f)));
+    add2scope(scope,method("isInt",_booleanSymType));
+    List<FieldSymbol> parameterList = new ArrayList<>();
+    add2scope(scope,add(method("isInt",_booleanSymType),TypeSymbolsSymTabMill.fieldSymbolBuilder().setName("maxLength").setType(_intSymType).build()));
     derLit.setScope(scope);
   }
 
@@ -359,6 +367,17 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @Test
   public void deriveFromCallExpression() throws IOException{
+    //test for method with unqualified name without parameters
+    String s = "isInt()";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
 
+    //TODO:test for method with unqualified name with parameters
+    s = "isInt(4)";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
+
+    //TODO:test for method with qualified name without parameters
+    //TODO:test for method with qualified name with parameters
   }
 }

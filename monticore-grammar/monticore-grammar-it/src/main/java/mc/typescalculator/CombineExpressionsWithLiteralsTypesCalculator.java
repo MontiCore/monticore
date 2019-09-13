@@ -32,34 +32,33 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
   private DeriveSymTypeOfMCCommonLiterals commonLiteralsTypesCalculator;
 
+  private LastResult lastResult = new LastResult();
+
 
   public CombineExpressionsWithLiteralsTypesCalculator(IExpressionsBasisScope scope){
     this.realThis=this;
-    this.types = new HashMap<>();
-
     commonExpressionTypesCalculator = new CommonExpressionTypesCalculator();
     commonExpressionTypesCalculator.setScope(scope);
+    commonExpressionTypesCalculator.setLastResult(lastResult);
     setCommonExpressionsVisitor(commonExpressionTypesCalculator);
 
     assignmentExpressionTypesCalculator = new AssignmentExpressionTypesCalculator();
     assignmentExpressionTypesCalculator.setScope(scope);
+    assignmentExpressionTypesCalculator.setLastResult(lastResult);
     setAssignmentExpressionsVisitor(assignmentExpressionTypesCalculator);
 
     expressionsBasisTypesCalculator = new ExpressionsBasisTypesCalculator();
     expressionsBasisTypesCalculator.setScope(scope);
+    expressionsBasisTypesCalculator.setLastResult(lastResult);
     setExpressionsBasisVisitor(expressionsBasisTypesCalculator);
-
-    CombineExpressionsWithLiteralsLiteralTypesCalculator literalsLiteralTypesCalculator = new CombineExpressionsWithLiteralsLiteralTypesCalculator();
-    literalsLiteralTypesCalculator.setTypes(types);
-    setCombineExpressionsWithLiteralsVisitor(literalsLiteralTypesCalculator);
-    this.literalsLiteralTypesCalculator=literalsLiteralTypesCalculator;
   
     DeriveSymTypeOfLiterals deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
+    deriveSymTypeOfLiterals.setResult(lastResult);
     setMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
     this.deriveSymTypeOfLiterals = deriveSymTypeOfLiterals;
 
     commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
-
+    commonExpressionTypesCalculator.setLastResult(lastResult);
     setMCCommonLiteralsVisitor(commonLiteralsTypesCalculator);
     this.commonLiteralsTypesCalculator=commonLiteralsTypesCalculator;
   }

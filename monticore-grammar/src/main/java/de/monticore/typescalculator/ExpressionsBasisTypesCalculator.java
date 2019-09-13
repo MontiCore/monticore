@@ -71,18 +71,25 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
   public void traverse(ASTNameExpression expr){
     Optional<FieldSymbol> optVar = scope.resolveField(expr.getName());
     Optional<TypeSymbol> optType = scope.resolveType(expr.getName());
-    Optional<MethodSymbol> optMethod = scope.resolveMethod(expr.getName());
+    Collection<MethodSymbol> methods = scope.resolveMethodMany(expr.getName());
    if(lastResult.isMethodpreferred()) {
      //TODO: was ist, wenn mehrere Methodsymbols gefunden werden koennen? Und was ist mit Parametern?
      //last ast node was call expression
      //in this case only method is tested
      lastResult.setMethodpreferred(false);
-     if(optMethod.isPresent()){
-       MethodSymbol method = optMethod.get();
-       if (!"void".equals(method.getReturnType().print())) {
-         SymTypeExpression type = method.getReturnType();
+     if(!methods.isEmpty()){
+       ArrayList<MethodSymbol> methodList = new ArrayList<>(methods);
+       SymTypeExpression retType = methodList.get(0).getReturnType();
+       for(MethodSymbol method: methodList){
+         if(!method.getReturnType().print().equals(retType.print())){
+           //TODO logs
+           Log.error("");
+         }
+       }
+       if (!"void".equals(retType.print())) {
+         SymTypeExpression type = retType;
          this.result = type;
-         lastResult.setLast(method.getReturnType());
+         lastResult.setLast(retType);
        }else {
          SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeVoid();
          this.result = wholeResult;
