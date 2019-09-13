@@ -5,12 +5,14 @@ import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.types2.DeriveSymTypeOfLiterals;
+import de.monticore.types2.DeriveSymTypeOfMCCommonLiterals;
 import de.monticore.types2.SymTypeExpression;
 import de.monticore.typescalculator.*;
 import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpressionsWithLiteralsDelegatorVisitor implements IExpressionAndLiteralsTypeCalculatorVisitor {
 
@@ -28,7 +30,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
   private DeriveSymTypeOfLiterals deriveSymTypeOfLiterals;
 
-  private CommonLiteralsTypesCalculator commonLiteralsTypesCalculator;
+  private DeriveSymTypeOfMCCommonLiterals commonLiteralsTypesCalculator;
 
 
   public CombineExpressionsWithLiteralsTypesCalculator(IExpressionsBasisScope scope){
@@ -37,17 +39,14 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
     commonExpressionTypesCalculator = new CommonExpressionTypesCalculator();
     commonExpressionTypesCalculator.setScope(scope);
-    commonExpressionTypesCalculator.setTypes(types);
     setCommonExpressionsVisitor(commonExpressionTypesCalculator);
 
     assignmentExpressionTypesCalculator = new AssignmentExpressionTypesCalculator();
     assignmentExpressionTypesCalculator.setScope(scope);
-    assignmentExpressionTypesCalculator.setTypes(types);
     setAssignmentExpressionsVisitor(assignmentExpressionTypesCalculator);
 
     expressionsBasisTypesCalculator = new ExpressionsBasisTypesCalculator();
     expressionsBasisTypesCalculator.setScope(scope);
-    expressionsBasisTypesCalculator.setTypes(types);
     setExpressionsBasisVisitor(expressionsBasisTypesCalculator);
 
     CombineExpressionsWithLiteralsLiteralTypesCalculator literalsLiteralTypesCalculator = new CombineExpressionsWithLiteralsLiteralTypesCalculator();
@@ -59,17 +58,16 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     setMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
     this.deriveSymTypeOfLiterals = deriveSymTypeOfLiterals;
 
-    CommonLiteralsTypesCalculator commonLiteralsTypesCalculator = new CommonLiteralsTypesCalculator();
-    commonLiteralsTypesCalculator.setTypes(types);
-    commonLiteralsTypesCalculator.setScope(scope);
+    commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
+
     setMCCommonLiteralsVisitor(commonLiteralsTypesCalculator);
     this.commonLiteralsTypesCalculator=commonLiteralsTypesCalculator;
   }
 
-  public SymTypeExpression calculateType(ASTExpression e){
+  public Optional<SymTypeExpression> calculateType(ASTExpression e){
     e.accept(realThis);
     if(types.get(e)!=null){
-      return types.get(e);
+      return Optional.of(types.get(e));
     }
     return null;
   }
@@ -88,5 +86,4 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     expressionsBasisTypesCalculator.setScope(scope);
     commonExpressionTypesCalculator.setScope(scope);
   }
-
 }

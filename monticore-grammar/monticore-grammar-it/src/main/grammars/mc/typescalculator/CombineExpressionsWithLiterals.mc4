@@ -7,6 +7,6 @@ grammar CombineExpressionsWithLiterals extends
 	        de.monticore.expressions.CommonExpressions,
 		      de.monticore.literals.MCCommonLiterals {
 
-    Foo="bar" Expression;
+    start Expression;
 
 }

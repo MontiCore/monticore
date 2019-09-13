@@ -3,15 +3,15 @@ package mc.typescalculator;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.types2.DeriveSymTypeOfMCCommonLiterals;
 import de.monticore.types2.SymTypeExpression;
-import de.monticore.typescalculator.CommonLiteralsTypesCalculator;
 import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsVisitor;
 
 import java.util.Map;
 
 public class CombineExpressionsWithLiteralsLiteralTypesCalculator implements CombineExpressionsWithLiteralsVisitor {
 
-  private CommonLiteralsTypesCalculator literalsVisitor;
+  private DeriveSymTypeOfMCCommonLiterals literalsVisitor;
 
   private Map<ASTNode, SymTypeExpression> types;
 
@@ -40,6 +40,6 @@ public class CombineExpressionsWithLiteralsLiteralTypesCalculator implements Com
 
   public CombineExpressionsWithLiteralsLiteralTypesCalculator(){
     realThis=this;
-    literalsVisitor=new CommonLiteralsTypesCalculator();
+    literalsVisitor=new DeriveSymTypeOfMCCommonLiterals();
   }
 }

@@ -204,9 +204,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
 //
 //    List<SymTypeExpression> superTypesAsSymTypes = new ArrayList<>();
 //    for(TypeSymbol ts : superTypes) {
-//      SymTypeExpression s = new SymTypeOfGenerics();
-//      s.setName(ts.getName());
-//
+//      superTypesAsSymTypes.add(ts.deepClone());
 //    }
 //
 //
@@ -224,9 +222,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
 //
 //    List<SymTypeExpression> superTypesAsSymTypes = new ArrayList<>();
 //    for(SymTypeExpression ts : superTypes) {
-//      SymTypeExpression s = new SymTypeOfGenerics();
-//      s.setName(ts.getName());
-//      superTypesAsSymTypes.add(s);
+//      superTypesAsSymTypes.add(ts.deepClone());
 //    }
 //
 //
