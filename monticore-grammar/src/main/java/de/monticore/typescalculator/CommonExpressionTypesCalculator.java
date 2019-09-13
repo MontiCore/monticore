@@ -438,6 +438,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       Optional<FieldSymbol> fieldSymbolOpt = innerResultType.getSpannedScope().resolveField(expr.getName());
       Optional<TypeSymbol> typeSymbolOpt = innerResultType.getSpannedScope().resolveType(expr.getName());
       if (lastResult.isMethodpreferred()) {
+        lastResult.setMethodpreferred(false);
         //we were in callexpression, this nameexpression must be a method
         //TODO: was ist, wenn mehrere Methodsymbols gefunden werden koennen? Parameter?
         if (!methodSymbols.isEmpty()) {
@@ -539,44 +540,52 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
 //    }
   }
 
-//  @Override
-//  public void traverse(ASTCallExpression expr){
-//    if(types.containsKey(expr.getExpression())) {
-//      CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
-//      ExpressionsBasisPrettyPrinter prettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
-//      String exp = prettyPrinter.prettyprint(expr.getExpression());
-//      Collection<MethodSymbol> methodcollection = scope.resolveMethodMany(exp);
-//      List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
-//      for (MethodSymbol method : methodlist) {
-//        if (expr.getArguments().getExpressionList().size()==method.getParameter().size()){
-//          boolean success = true;
-//          for(int i=0;i<method.getParameter().size();i++){
-//            if(!method.getParameter().get(i).getType().deepEquals(types.get(expr.getArguments().getExpressionList().get(i)))&&!isSubtypeOf(types.get(expr.getArguments().getExpressionList().get(i)),method.getParameter().get(i).getType())){
-//              success = false;
-//            }
-//          }
-//          if(success){
-//            if(!"void".equals(method.getReturnType().getName())){
-//              SymTypeExpression result=method.getReturnType();
-//              this.result=result;
-//              types.put(expr,result);
-//            }else if("void".equals(method.getReturnType().getName())){
-//              SymTypeExpression result = new SymTypeConstant();
-//              result.setName("void");
-//              types.put(expr, result);
-//              this.result = result;
-//            }else{
-//              Log.error("0xA209 the resulting type cannot be resolved");
-//            }
-//          }else{
-//            Log.error("0xA209 the resulting type cannot be resolved");
-//          }
-//        }
-//      }
-//    }else{
-//      Log.info("package suspected","CommonExpressionTypesCalculator");
-//    }
-//  }
+  @Override
+  public void traverse(ASTCallExpression expr){
+    SymTypeExpression innerResult = null;
+    lastResult.setMethodpreferred(true);
+    expr.getExpression().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      innerResult = lastResult.getLast();
+    }else{
+      //TODO: logs
+      Log.error("");
+    }
+    CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
+    ExpressionsBasisPrettyPrinter prettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
+    String exp = prettyPrinter.prettyprint(expr.getExpression());
+    Collection<MethodSymbol> methodcollection = scope.resolveMethodMany(exp);
+    List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
+    for (MethodSymbol method : methodlist) {
+      if (expr.getArguments().getExpressionList().size() == method.getParameter().size()) {
+        boolean success = true;
+        for (int i = 0; i < method.getParameter().size(); i++) {
+          expr.getArguments().getExpression(i).accept(getRealThis());
+          if (!method.getParameter().get(i).getType().print().equals(lastResult.getLast()) && !method.getParameter().get(i).getType().isPrimitiveType() && !lastResult.getLast().isPrimitiveType() && !isSubtypeOf(lastResult.getLast(), method.getParameter().get(i).getType())) {
+            success = false;
+          }
+          if(!method.getReturnType().print().equals(innerResult.print())){
+            success = false;
+          }
+        }
+        if (success) {
+          if (!"void".equals(method.getReturnType().getName())) {
+            SymTypeExpression result = method.getReturnType();
+            this.result = result;
+            lastResult.setLast(result);
+          }
+          else if ("void".equals(method.getReturnType().getName())) {
+            Optional<SymTypeExpression> wholeResult = Optional.of(SymTypeExpressionFactory.createTypeVoid());
+            this.result = wholeResult.get();
+            lastResult.setLastOpt(wholeResult);
+          }
+          else {
+            Log.error("0xA209 the resulting type cannot be resolved");
+          }
+        }
+      }
+    }
+  }
 
   /**
    * helper method for <=, >=, <, > -> calculate the result of these expressions
