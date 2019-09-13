@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
+import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisMill;
@@ -13,7 +14,9 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.monticore.types.typesymbols._ast.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
+import de.monticore.typescalculator.CombineExpressionsWithLiteralsTypesCalculator;
 import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -32,6 +35,7 @@ public class DeriveSymTypeOfExpressionTest {
    * Focus: Deriving Type of Literals, here:
    *    literals/MCLiteralsBasis.mc4
    */
+  private ExpressionsBasisScope scope;
   
   @BeforeClass
   public static void setup() {
@@ -42,7 +46,7 @@ public class DeriveSymTypeOfExpressionTest {
   @Before
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
-    ExpressionsBasisScope scope =
+    scope =
             ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
                     .setEnclosingScope(null)       // No enclosing Scope: Search ending here
                     .setExportsSymbols(true)
@@ -61,8 +65,19 @@ public class DeriveSymTypeOfExpressionTest {
     add2scope(scope, DefsTypeBasic._String);
 
     // some FieldSymbols (ie. Variables, Attributes)
+    TypeSymbol p = new TypeSymbol("Person");
+    TypeSymbol s = new TypeSymbol("Student");
+    s.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",p)));
+    TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
+    f.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope, field("foo", _intSymType));
-    add2scope(scope, field("bar", _booleanSymType));
+    add2scope(scope, field("bar2", _booleanSymType));
+    add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",p)));
+    add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObject("Person",p)));
+    add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",s)));
+    add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObject("Student",s)));
+    add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",f)));
+    derLit.setScope(scope);
   }
   
   // Parer used for convenience:
@@ -73,7 +88,7 @@ public class DeriveSymTypeOfExpressionTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  DeriveSymTypeOfLiteralsAndExpressions derLit = new DeriveSymTypeOfLiteralsAndExpressions();
+  CombineExpressionsWithLiteralsTypesCalculator derLit = new CombineExpressionsWithLiteralsTypesCalculator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
   
   // other arguments not used (and therefore deliberately null)
   
@@ -82,32 +97,53 @@ public class DeriveSymTypeOfExpressionTest {
   
   // ------------------------------------------------------  Tests for Function 2
 
-/** TODO RE (from BR): Viel Spass beim Programmieren
+
   @Test
   public void deriveTFromASTNameExpression() throws IOException {
     ASTExpression astex = p.parse_StringExpression("foo").get();
     assertEquals("int", tc.typeOf(astex).print());
   }
-  
+
   @Test
-  public void deriveTFromASTNameExpression3() throws IOException {
-    String s = "bar";
+  public void deriveTFromASTNameExpression2() throws IOException {
+    String s = "bar2";
     ASTExpression astex = p.parse_StringExpression(s).get();
     assertEquals("boolean", tc.typeOf(astex).print());
   }
-  
+
   @Test
+  public void deriveTFromASTNameExpression3() throws IOException{
+    String s = "person1";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("Person", tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveTFromASTNameExpression4() throws IOException{
+    String s = "student1";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("Student",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void deriveTFromASTNameExpression5() throws IOException{
+    String s = "firstsemester";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("FirstSemesterStudent",tc.typeOf(astex).print());
+  }
+
+   @Test
   public void deriveTFromLiteral() throws IOException {
     ASTExpression astex = p.parse_StringExpression("42").get();
     assertEquals("int", tc.typeOf(astex).print());
   }
-  
+
   @Test
   public void deriveTFromLiteralString() throws IOException {
     ASTExpression astex = p.parse_StringExpression("\"aStringi\"").get();
     assertEquals("String", tc.typeOf(astex).print());
   }
-*/
+
 
 /*
   // This one is for the CommonExpressions (to be moved)

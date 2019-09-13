@@ -3,6 +3,7 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.types2.ITypesCalculator;
 import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
@@ -14,7 +15,7 @@ import static de.monticore.typescalculator.TypesCalculatorHelper.isIntegralType;
 
 public class TypesCalculator {
 
-  private static IExpressionAndLiteralsTypeCalculatorVisitor calc;
+  private static ITypesCalculator calc;
 
   private static IExpressionsBasisScope scope;
 
@@ -129,16 +130,16 @@ public class TypesCalculator {
   }
 
   public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType){
-    if(!subType.getSuperTypes().isEmpty()){
-      for(SymTypeExpression type: subType.getSuperTypes()){
-        if(type.deepEquals(superType)){
+    if(!subType.getTypeInfo().getSuperTypes().isEmpty()){
+      for(SymTypeExpression type: subType.getTypeInfo().getSuperTypes()){
+        if(type.print().equals(superType.print())){
           return true;
         }
       }
     }
     boolean subtype = false;
-    for(int i = 0;i<subType.getSuperTypes().size();i++){
-      if(isSubtypeOf(subType.getSuperTypes().get(i),superType)){
+    for(int i = 0;i<subType.getTypeInfo().getSuperTypes().size();i++){
+      if(isSubtypeOf(subType.getTypeInfo().getSuperTypes().get(i),superType)){
         subtype=true;
         break;
       }
@@ -182,12 +183,12 @@ public class TypesCalculator {
     return "void".equals(unbox(type.print()));
   }
 
-  public static void setScope(IExpressionsBasisScope ascope){
-    scope=ascope;
-    calc.setScope(ascope);
-  }
+//  public static void setScope(IExpressionsBasisScope ascope){
+//    scope=ascope;
+//    calc.setScope(ascope);
+//  }
 
-  public static void setExpressionAndLiteralsTypeCalculator(IExpressionAndLiteralsTypeCalculatorVisitor calc) {
+  public static void setExpressionAndLiteralsTypeCalculator(ITypesCalculator calc) {
     TypesCalculator.calc = calc;
   }
 
