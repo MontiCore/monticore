@@ -1,15 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-package hierautomaton;
-
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.util.Optional;
-
-import org.antlr.v4.runtime.RecognitionException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -17,8 +6,18 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import hierautomaton._ast.ASTStateMachine;
 import hierautomaton._parser.HierAutomatonParser;
+import org.antlr.v4.runtime.RecognitionException;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
+import java.io.IOException;
+import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
+
+@Ignore
 public class GlexTest {
     
   // setup the language infrastructure

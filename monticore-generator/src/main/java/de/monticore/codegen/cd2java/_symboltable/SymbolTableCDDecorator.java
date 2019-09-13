@@ -147,8 +147,11 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .addCDInterface(createICommonSymbol(astCD))
         .addAllCDInterfaces(createSymbolResolvingDelegateInterfaces(symbolProds))
         .build();
-    if(symbolTableService.getStartProd(astCD.getCDDefinition()).isPresent()){
+    if (symbolTableService.getStartProd(astCD.getCDDefinition()).isPresent()) {
       // global scope
+      boolean isGlobalScopeTop = existsHandwrittenClass(handCodedPath,
+          constructQualifiedName(symbolTablePackage, symbolTableService.getGlobalScopeInterfaceSimpleName()));
+      globalScopeInterfaceDecorator.setGlobalScopeTop(isGlobalScopeTop);
       symTabCD.addCDInterface(createGlobalScopeInterface(astCD));
       ASTCDClass globalScopeClass = createGlobalScopeClass(astCD);
       symTabCD.addCDClass(globalScopeClass);
@@ -172,7 +175,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       Optional<ASTCDClass> modelLoader = createModelLoader(astCD);
       if (modelLoader.isPresent()) {
         symTabCD.addCDClass(modelLoader.get());
-        if(!symbolTableService.isComponent()){
+        if (!symbolTableService.isComponent()) {
           symTabCD.addCDClass(createModelLoaderBuilder(modelLoader.get()));
         }
       }

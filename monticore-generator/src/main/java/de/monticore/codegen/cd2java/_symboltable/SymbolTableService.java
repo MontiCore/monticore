@@ -536,23 +536,25 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
         .collect(Collectors.toList());
   }
 
-  public List<ASTCDType> getNoSymbolDefiningProds(ASTCDDefinition astcdDefinition) {
-    List<ASTCDType> symbolProds = getNoSymbolDefiningClasses(astcdDefinition.getCDClassList());
-    symbolProds.addAll(getNoSymbolDefiningInterfaces(astcdDefinition.getCDInterfaceList()));
+  public List<ASTCDType> getNoSymbolAndScopeDefiningProds(ASTCDDefinition astcdDefinition) {
+    List<ASTCDType> symbolProds = getNoSymbolAndScopeDefiningClasses(astcdDefinition.getCDClassList());
+    symbolProds.addAll(getNoSymbolAndScopeDefiningInterfaces(astcdDefinition.getCDInterfaceList()));
     return symbolProds;
   }
 
-  public List<ASTCDType> getNoSymbolDefiningClasses(List<ASTCDClass> astcdClasses) {
+  public List<ASTCDType> getNoSymbolAndScopeDefiningClasses(List<ASTCDClass> astcdClasses) {
     return astcdClasses.stream()
         .filter(ASTCDClassTOP::isPresentModifier)
         .filter(c -> !hasSymbolStereotype(c.getModifier()))
+        .filter(c -> !hasScopeStereotype(c.getModifier()))
         .collect(Collectors.toList());
   }
 
-  public List<ASTCDType> getNoSymbolDefiningInterfaces(List<ASTCDInterface> astcdInterfaces) {
+  public List<ASTCDType> getNoSymbolAndScopeDefiningInterfaces(List<ASTCDInterface> astcdInterfaces) {
     return astcdInterfaces.stream()
         .filter(ASTCDInterface::isPresentModifier)
         .filter(c -> !hasSymbolStereotype(c.getModifier()))
+        .filter(c -> !hasScopeStereotype(c.getModifier()))
         .collect(Collectors.toList());
   }
 
@@ -565,6 +567,21 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     symbolProds.addAll(astcdDefinition.getCDInterfaceList().stream()
         .filter(ASTCDInterface::isPresentModifier)
         .filter(c -> hasScopeStereotype(c.getModifier()))
+        .collect(Collectors.toList()));
+    return symbolProds;
+  }
+
+  public List<ASTCDType> getOnlyScopeClasses(ASTCDDefinition astcdDefinition) {
+    List<ASTCDType> symbolProds = astcdDefinition.getCDClassList().stream()
+        .filter(ASTCDClassTOP::isPresentModifier)
+        .filter(c -> hasScopeStereotype(c.getModifier()))
+        .filter(c -> !hasSymbolStereotype(c.getModifier()))
+        .collect(Collectors.toList());
+
+    symbolProds.addAll(astcdDefinition.getCDInterfaceList().stream()
+        .filter(ASTCDInterface::isPresentModifier)
+        .filter(c -> hasScopeStereotype(c.getModifier()))
+        .filter(c -> !hasSymbolStereotype(c.getModifier()))
         .collect(Collectors.toList()));
     return symbolProds;
   }

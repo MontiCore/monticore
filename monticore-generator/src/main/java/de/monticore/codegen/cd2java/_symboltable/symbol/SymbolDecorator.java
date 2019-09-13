@@ -108,6 +108,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
     ASTMCOptionalType optionalTypeOfASTNode = getCDTypeFacade().createOptionalTypeOf(symbolTableService.getASTPackage() + "." + AST_PREFIX + astClassName);
     ASTCDAttribute node = this.getCDAttributeFacade().createAttribute(PROTECTED, optionalTypeOfASTNode, AST_NODE_VARIABLE);
+    this.replaceTemplate(VALUE, node, new StringHookPoint("= Optional.empty()"));
 
     ASTCDAttribute packageName = this.getCDAttributeFacade().createAttribute(PROTECTED, String.class, PACKAGE_NAME);
 

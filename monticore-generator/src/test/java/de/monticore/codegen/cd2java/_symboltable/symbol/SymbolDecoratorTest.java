@@ -456,6 +456,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolClassState, symbolClassState);
+    System.out.println(sb.toString());
     StaticJavaParser.parse(sb.toString());
   }
 }

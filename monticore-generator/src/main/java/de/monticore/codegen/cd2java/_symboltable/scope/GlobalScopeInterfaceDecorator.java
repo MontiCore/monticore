@@ -23,6 +23,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
 
   protected final SymbolTableService symbolTableService;
 
+  protected boolean isGlobalScopeTop = false;
 
   public GlobalScopeInterfaceDecorator(final GlobalExtensionManagement glex,
                                        final SymbolTableService symbolTableService) {
@@ -86,7 +87,11 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
   protected ASTCDMethod createGetRealThisMethod(String globalScopeName) {
     ASTMCType globalScopeInterfaceType = getCDTypeFacade().createQualifiedType(globalScopeName);
     ASTCDMethod getRealThis = getCDMethodFacade().createMethod(PUBLIC, globalScopeInterfaceType, "getRealThis");
-    this.replaceTemplate(EMPTY_BODY, getRealThis, new StringHookPoint("return this;"));
+    if(isGlobalScopeTop()){
+      getRealThis.getModifier().setAbstract(true);
+    }else {
+      this.replaceTemplate(EMPTY_BODY, getRealThis, new StringHookPoint("return this;"));
+    }
     return getRealThis;
   }
 
@@ -173,6 +178,14 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     this.replaceTemplate(EMPTY_BODY, method,
         new TemplateHookPoint("_symboltable.iglobalscope.LoadModelsFor", className, definitionName));
     return method;
+  }
+
+  public boolean isGlobalScopeTop() {
+    return isGlobalScopeTop;
+  }
+
+  public void setGlobalScopeTop(boolean globalScopeTop) {
+    isGlobalScopeTop = globalScopeTop;
   }
 }
 
