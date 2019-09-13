@@ -25,8 +25,6 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
   private ExpressionsBasisTypesCalculator expressionsBasisTypesCalculator;
 
-  private CombineExpressionsWithLiteralsLiteralTypesCalculator literalsLiteralTypesCalculator;
-
   private DeriveSymTypeOfLiterals deriveSymTypeOfLiterals;
 
   private DeriveSymTypeOfMCCommonLiterals commonLiteralsTypesCalculator;
@@ -51,11 +49,6 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     expressionsBasisTypesCalculator.setScope(scope);
     expressionsBasisTypesCalculator.setLastResult(lastResult);
     setExpressionsBasisVisitor(expressionsBasisTypesCalculator);
-
-    CombineExpressionsWithLiteralsLiteralTypesCalculator literalsLiteralTypesCalculator = new CombineExpressionsWithLiteralsLiteralTypesCalculator();
-    setCombineExpressionsWithLiteralsVisitor(literalsLiteralTypesCalculator);
-    this.literalsLiteralTypesCalculator=literalsLiteralTypesCalculator;
-    literalsLiteralTypesCalculator.setLastResult(lastResult);
 
     DeriveSymTypeOfLiterals deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
     setMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
@@ -83,7 +76,6 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     commonLiteralsTypesCalculator.setResult(lastResult);
     commonExpressionTypesCalculator.setLastResult(lastResult);
     expressionsBasisTypesCalculator.setLastResult(lastResult);
-    literalsLiteralTypesCalculator.setLastResult(lastResult);
     deriveSymTypeOfLiterals.setResult(lastResult);
   }
 
@@ -97,7 +89,6 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
   public void init() {
     commonExpressionTypesCalculator = new CommonExpressionTypesCalculator();
     assignmentExpressionTypesCalculator = new AssignmentExpressionTypesCalculator();
-    literalsLiteralTypesCalculator = new CombineExpressionsWithLiteralsLiteralTypesCalculator();
     commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
     expressionsBasisTypesCalculator = new ExpressionsBasisTypesCalculator();
     deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();

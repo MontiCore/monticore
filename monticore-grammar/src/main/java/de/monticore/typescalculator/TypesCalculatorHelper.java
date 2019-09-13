@@ -12,6 +12,7 @@ import de.monticore.types2.SymTypeOfObject;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class TypesCalculatorHelper {
 
@@ -22,23 +23,21 @@ public class TypesCalculatorHelper {
 
   // --------------------------------------------------------------------------
 
-  public static SymTypeExpression getUnaryNumericPromotionType(SymTypeExpression type) {
-    if ("byte".equals(unbox(type).getName()) ||
-            "short".equals(unbox(type).getName()) ||
-            "char".equals(unbox(type).getName()) ||
-            "int".equals(unbox(type).getName())
+  public static Optional<SymTypeExpression> getUnaryNumericPromotionType(SymTypeExpression type) {
+    if ("byte".equals(de.monticore.types2.SymTypeConstant.unbox(type.print())) ||
+        "short".equals(de.monticore.types2.SymTypeConstant.unbox(type.print())) ||
+        "char".equals(de.monticore.types2.SymTypeConstant.unbox(type.print()))||
+        "int".equals(de.monticore.types2.SymTypeConstant.unbox(type.print()))
     ) {
-      type = new SymTypeConstant();
-      type.setName("int");
-      return type;
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
     }
-    if ("long".equals(unbox(type).getName()) ||
-            "double".equals(unbox(type).getName()) ||
-            "float".equals(unbox(type).getName())
+    if ("long".equals(de.monticore.types2.SymTypeConstant.unbox(type.print())) ||
+        "double".equals(de.monticore.types2.SymTypeConstant.unbox(type.print())) ||
+        "float".equals(de.monticore.types2.SymTypeConstant.unbox(type.print()))
     ) {
-      return unbox(type);
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant(de.monticore.types2.SymTypeConstant.unbox(type.print())));
     }
-    return type;
+    return Optional.empty();
   }
 
   // TODO: es existiert Ersatz: SymTypeConstant.unbox

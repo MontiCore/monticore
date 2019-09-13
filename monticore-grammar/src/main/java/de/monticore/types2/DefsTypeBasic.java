@@ -123,7 +123,14 @@ public class DefsTypeBasic {
     s.setEnclosingScope(p);
     p.add(s);
   }
-  
+
+  /** add a Method to a Scope (bidirectional)
+   */
+  public static void add2scope(ITypeSymbolsScope p, MethodSymbol s){
+    s.setEnclosingScope(p);
+    p.add(s);
+  }
+
   /**
    * It is tedious to allways add name and fullNamee individually:
    * So this functions does that for Types,Methods,Fields afterwards

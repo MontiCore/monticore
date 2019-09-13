@@ -11,10 +11,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types2.SymTypeOfGenerics;
-import de.monticore.types2.SymTypeOfObject;
-import de.monticore.types2.SymTypeConstant;
-import de.monticore.types2.SymTypeExpression;
+import de.monticore.types2.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -70,37 +67,56 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     lastResult.setLastOpt(Optional.of(result));
   }
 
-//  @Override
-//  public void endVisit(ASTNameExpression expr){
-//    Optional<FieldSymbol> optVar = scope.resolveField(expr.getName());
-//    Optional<TypeSymbol> optType = scope.resolveType(expr.getName());
-//    Optional<MethodSymbol> optMethod = scope.resolveMethod(expr.getName());
-//    if(optVar.isPresent()){
-//      FieldSymbol var = optVar.get();
-//      this.result=var.getType();
-//      types.put(expr,var.getType());
-//    }else if(optType.isPresent()) {
-//      TypeSymbol type = optType.get();
-//      SymTypeExpression res = TypesCalculatorHelper.fromTypeSymbol(type);
-//      this.result = res;
-//      types.put(expr,res);
-//    }else if(optMethod.isPresent()) {
-//      MethodSymbol method = optMethod.get();
-//      if(!"void".equals(method.getReturnType().getName())){
-//        SymTypeExpression type=method.getReturnType();
-//        this.result=type;
-//        types.put(expr,type);
-//      }else{
-//        SymTypeExpression res =new SymTypeConstant();
-//        res.setName("void");
-//        this.result=res;
-//        types.put(expr,res);
-//      }
-//    }else{
-//      Log.info("package suspected","ExpressionBasisTypesCalculator");
-//    }
-//  }
-//
+  @Override
+  public void traverse(ASTNameExpression expr){
+    Optional<FieldSymbol> optVar = scope.resolveField(expr.getName());
+    Optional<TypeSymbol> optType = scope.resolveType(expr.getName());
+    Collection<MethodSymbol> methods = scope.resolveMethodMany(expr.getName());
+   if(lastResult.isMethodpreferred()) {
+     //TODO: was ist, wenn mehrere Methodsymbols gefunden werden koennen? Und was ist mit Parametern?
+     //last ast node was call expression
+     //in this case only method is tested
+     lastResult.setMethodpreferred(false);
+     if(!methods.isEmpty()){
+       ArrayList<MethodSymbol> methodList = new ArrayList<>(methods);
+       SymTypeExpression retType = methodList.get(0).getReturnType();
+       for(MethodSymbol method: methodList){
+         if(!method.getReturnType().print().equals(retType.print())){
+           //TODO logs
+           Log.error("");
+         }
+       }
+       if (!"void".equals(retType.print())) {
+         SymTypeExpression type = retType;
+         this.result = type;
+         lastResult.setLast(retType);
+       }else {
+         SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeVoid();
+         this.result = wholeResult;
+         lastResult.setLast(wholeResult);
+       }
+     }else{
+       //TODO: logs
+      Log.error("");
+     }
+   }else if(optVar.isPresent()){
+     //no method here, test variable first
+      FieldSymbol var = optVar.get();
+      this.result=var.getType();
+      lastResult.setLast(var.getType());
+    }else if(optType.isPresent()) {
+     //no variable found, test if name is type
+      TypeSymbol type = optType.get();
+      SymTypeExpression res = TypesCalculatorHelper.fromTypeSymbol(type);
+      this.result = res;
+      lastResult.setLast(res);
+
+    }else{
+     //name not found --> package or nothing
+      Log.info("package suspected","ExpressionBasisTypesCalculator");
+    }
+  }
+
 //  @Override
 //  public void endVisit(ASTQualifiedNameExpression expr) {
 //    String toResolve;
