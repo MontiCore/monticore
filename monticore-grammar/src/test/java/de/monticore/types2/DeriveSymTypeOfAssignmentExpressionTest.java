@@ -62,7 +62,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
     f.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope, field("foo", _intSymType));
-    add2scope(scope, field("bar", _booleanSymType));
+    add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("vardouble", _doubleSymType));
     add2scope(scope, field("varchar", _charSymType));
     add2scope(scope, field("varfloat", _floatSymType));
