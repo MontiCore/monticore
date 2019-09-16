@@ -60,10 +60,10 @@ public class ScopeClassDecorator extends AbstractDecorator {
    * uses a scopeCD for scopeRule attributes and methods
    * and a normalCD for Symbol Classes and Interfaces
    * @param scopeInput
-   * @param normalInput
+   * @param symbolInput
    * @return
    */
-  public ASTCDClass decorate(ASTCDCompilationUnit scopeInput, ASTCDCompilationUnit normalInput) {
+  public ASTCDClass decorate(ASTCDCompilationUnit scopeInput, ASTCDCompilationUnit symbolInput) {
     String scopeClassName = scopeInput.getCDDefinition().getName() + SCOPE_SUFFIX;
     ASTMCQualifiedType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
 
@@ -87,9 +87,8 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
-    List<ASTCDType> symbolClasses = symbolTableService.getSymbolDefiningProds(normalInput.getCDDefinition());
-
-    Map<String, ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolClasses, symbolTableService.getCDSymbol());
+    Map<String, ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolInput.getCDDefinition().getCDClassList(), symbolTableService.getCDSymbol());
+    symbolAttributes.putAll(createSymbolAttributes(symbolInput.getCDDefinition().getCDInterfaceList(), symbolTableService.getCDSymbol()));
     symbolAttributes.putAll(getSuperSymbolAttributes());
 
     List<ASTCDMethod> symbolMethods = createSymbolMethods(symbolAttributes.values());

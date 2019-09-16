@@ -2,7 +2,7 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -30,7 +30,7 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PRE
 import static de.monticore.codegen.cd2java.data.ListSuffixDecorator.LIST_SUFFIX_S;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
+public class ScopeInterfaceDecorator extends AbstractDecorator {
 
   protected final SymbolTableService symbolTableService;
 
@@ -48,11 +48,28 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
     this.methodDecorator = methodDecorator;
   }
 
-  @Override
-  public ASTCDInterface decorate(ASTCDCompilationUnit input) {
-    String scopeInterfaceName = INTERFACE_PREFIX + input.getCDDefinition().getName() + SCOPE_SUFFIX;
+  public ASTCDInterface decorate(ASTCDCompilationUnit scopeInput, ASTCDCompilationUnit symbolInput) {
+    String scopeInterfaceName = INTERFACE_PREFIX + symbolTableService.getCDName() + SCOPE_SUFFIX;
 
-    List<ASTCDType> symbolClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
+    List<ASTCDAttribute> scopeRuleAttributes = scopeInput.deepClone().getCDDefinition().getCDClassList()
+        .stream()
+        .map(ASTCDClassTOP::getCDAttributeList)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+
+    List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition().getCDClassList()
+        .stream()
+        .map(ASTCDClassTOP::getCDMethodList)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+    scopeRuleMethodList.forEach(m -> m.getModifier().setAbstract(true));
+
+    List<ASTCDMethod> scopeRuleAttributeMethods = scopeRuleAttributes
+        .stream()
+        .map(methodDecorator::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+    scopeRuleAttributeMethods.forEach(m -> m.getModifier().setAbstract(true));
 
     List<CDDefinitionSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
     List<ASTMCQualifiedType> superScopeInterfaces = superCDsTransitive
@@ -68,10 +85,14 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
         .setName(scopeInterfaceName)
         .setModifier(PUBLIC.build())
         .addAllInterfaces(superScopeInterfaces)
-        .addAllCDMethods(createAlreadyResolvedMethods(symbolClasses))
-        .addAllCDMethods(createResolveMethods(symbolClasses))
+        .addAllCDMethods(createAlreadyResolvedMethods(symbolInput.getCDDefinition().getCDClassList()))
+        .addAllCDMethods(createAlreadyResolvedMethods(symbolInput.getCDDefinition().getCDInterfaceList()))
+        .addAllCDMethods(createResolveMethods(symbolInput.getCDDefinition().getCDClassList()))
+        .addAllCDMethods(createResolveMethods(symbolInput.getCDDefinition().getCDInterfaceList()))
         .addAllCDMethods(createSubScopesMethods(scopeInterfaceName))
         .addAllCDMethods(createEnclosingScopeMethods(scopeInterfaceName))
+        .addAllCDMethods(scopeRuleMethodList)
+        .addAllCDMethods(scopeRuleAttributeMethods)
         .addCDMethod(createAcceptMethod())
         .build();
   }
@@ -105,7 +126,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
       ASTMCType setSymbol = getCDTypeFacade().createSetTypeOf(symbolFullTypeName);
 
       ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
-          .createTypeByDefinition(String.format(PREDICATE, symbolFullTypeName )), "predicate");
+          .createTypeByDefinition(String.format(PREDICATE, symbolFullTypeName)), "predicate");
 
       String resolveMethodName = String.format(RESOLVE, className);
       resolveMethods.add(createResolveNameMethod(resolveMethodName, optSymbol, nameParameter));
@@ -460,7 +481,7 @@ public class ScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUni
     methodDecorator.disableTemplates();
     List<ASTCDMethod> enclosingScopeMethods = methodDecorator.getAccessorDecorator().decorate(enclosingScopeOpt);
     Optional<ASTCDMethod> getEnclosingScopeOpt = enclosingScopeMethods.stream().filter(m -> m.getName().equals("getEnclosingScopeOpt")).findFirst();
-    if(getEnclosingScopeOpt.isPresent()){
+    if (getEnclosingScopeOpt.isPresent()) {
       // make wildcard type
       ASTMCOptionalType wildCardType = getCDTypeFacade().createOptionalTypeOf(getCDTypeFacade().createWildCardWithUpperBoundType(scopeInterface));
       ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(wildCardType).build();

@@ -131,7 +131,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     decoratedSymbolClasses.addAll(createSymbolClasses(symbolCD.getCDDefinition().getCDInterfaceList()));
 
     // create scope classes
-    ASTCDClass scopeClass = createScopeClass(scopeCD, astCD, symbolTablePackage);
+    ASTCDClass scopeClass = createScopeClass(scopeCD, symbolCD, symbolTablePackage);
 
     ASTCDDefinition symTabCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(astCD.getCDDefinition().getName())
@@ -139,7 +139,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .addAllCDClasss(createSymbolBuilderClasses(decoratedSymbolClasses))
         .addCDClass(scopeClass)
         .addCDClass(createScopeClassBuilder(scopeClass))
-        .addCDInterface(createScopeInterface(astCD))
+        .addCDInterface(createScopeInterface(scopeCD, symbolCD))
         .addAllCDClasss(createSymbolReferenceClasses(symbolCD.getCDDefinition().getCDClassList()))
         .addAllCDClasss(createSymbolReferenceBuilderClasses(symbolCD.getCDDefinition().getCDClassList()))
         .addAllCDClasss(createSymbolReferenceClasses(symbolCD.getCDDefinition().getCDInterfaceList()))
@@ -242,19 +242,19 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
   }
 
-  protected ASTCDClass createScopeClass(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit astCD, List<String> symbolTablePackage) {
+  protected ASTCDClass createScopeClass(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit symbolCd, List<String> symbolTablePackage) {
     boolean isScopeTop = existsHandwrittenClass(handCodedPath,
         constructQualifiedName(symbolTablePackage, symbolTableService.getScopeClassSimpleName()));
     scopeClassDecorator.setScopeTop(isScopeTop);
-    return scopeClassDecorator.decorate(scopeCD, astCD);
+    return scopeClassDecorator.decorate(scopeCD, symbolCd);
   }
 
   protected ASTCDClass createScopeClassBuilder(ASTCDClass scopeClass) {
     return scopeClassBuilderDecorator.decorate(scopeClass);
   }
 
-  protected ASTCDInterface createScopeInterface(ASTCDCompilationUnit compilationUnit) {
-    return scopeInterfaceDecorator.decorate(compilationUnit);
+  protected ASTCDInterface createScopeInterface(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit symbolCD) {
+    return scopeInterfaceDecorator.decorate(scopeCD, symbolCD);
   }
 
   protected ASTCDInterface createGlobalScopeInterface(ASTCDCompilationUnit compilationUnit, List<String> symbolTablePackage) {
