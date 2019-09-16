@@ -4,6 +4,7 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
@@ -29,7 +30,7 @@ import static de.monticore.codegen.cd2java.data.ListSuffixDecorator.LIST_SUFFIX_
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
+public class ScopeClassDecorator extends AbstractDecorator {
 
   protected final SymbolTableService symbolTableService;
 
@@ -55,12 +56,38 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     this.visitorService = visitorService;
   }
 
-  @Override
-  public ASTCDClass decorate(ASTCDCompilationUnit input) {
-    String scopeClassName = input.getCDDefinition().getName() + SCOPE_SUFFIX;
+  /**
+   * uses a scopeCD for scopeRule attributes and methods
+   * and a normalCD for Symbol Classes and Interfaces
+   * @param scopeInput
+   * @param normalInput
+   * @return
+   */
+  public ASTCDClass decorate(ASTCDCompilationUnit scopeInput, ASTCDCompilationUnit normalInput) {
+    String scopeClassName = scopeInput.getCDDefinition().getName() + SCOPE_SUFFIX;
     ASTMCQualifiedType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
 
-    List<ASTCDType> symbolClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
+    // attributes and methods from scope rule
+    List<ASTCDAttribute> scopeRuleAttributeList = scopeInput.deepClone().getCDDefinition().getCDClassList()
+        .stream()
+        .map(ASTCDClassTOP::getCDAttributeList)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+    scopeRuleAttributeList.forEach(a -> symbolTableService.addAttributeDefaultValues(a, this.glex));
+
+    List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition().getCDClassList()
+        .stream()
+        .map(ASTCDClassTOP::getCDMethodList)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+
+    List<ASTCDMethod> scopeRuleAttributeMethods = scopeRuleAttributeList
+        .stream()
+        .map(methodDecorator::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+
+    List<ASTCDType> symbolClasses = symbolTableService.getSymbolDefiningProds(normalInput.getCDDefinition());
 
     Map<String, ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolClasses, symbolTableService.getCDSymbol());
     symbolAttributes.putAll(getSuperSymbolAttributes());
@@ -98,6 +125,9 @@ public class ScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         .setModifier(PUBLIC.build())
         .addInterface(scopeInterfaceType)
         .addAllCDConstructors(createConstructors(scopeClassName))
+        .addAllCDAttributes(scopeRuleAttributeList)
+        .addAllCDMethods(scopeRuleMethodList)
+        .addAllCDMethods(scopeRuleAttributeMethods)
         .addAllCDAttributes(symbolAttributes.values())
         .addAllCDMethods(symbolMethods)
         .addAllCDAttributes(symbolAlreadyResolvedAttributes)

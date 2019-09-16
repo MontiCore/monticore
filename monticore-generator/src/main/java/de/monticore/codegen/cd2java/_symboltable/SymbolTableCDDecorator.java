@@ -125,13 +125,13 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     symbolTablePackage.addAll(Arrays.asList(astCD.getCDDefinition().getName().toLowerCase(), SYMBOL_TABLE_PACKAGE));
 
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(astCD.getCDDefinition());
+
+    // create symbol classes
     List<ASTCDClass> decoratedSymbolClasses = createSymbolClasses(symbolCD.getCDDefinition().getCDClassList());
     decoratedSymbolClasses.addAll(createSymbolClasses(symbolCD.getCDDefinition().getCDInterfaceList()));
 
-    boolean isScopeTop = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(symbolTablePackage, symbolTableService.getScopeClassSimpleName()));
-    scopeClassDecorator.setScopeTop(isScopeTop);
-    ASTCDClass scopeClass = createScopeClass(astCD);
+    // create scope classes
+    ASTCDClass scopeClass = createScopeClass(scopeCD, astCD, symbolTablePackage);
 
     ASTCDDefinition symTabCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(astCD.getCDDefinition().getName())
@@ -147,19 +147,19 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .addCDInterface(createICommonSymbol(astCD))
         .addAllCDInterfaces(createSymbolResolvingDelegateInterfaces(symbolProds))
         .build();
+
     if (symbolTableService.getStartProd(astCD.getCDDefinition()).isPresent()) {
       // global scope
-      boolean isGlobalScopeTop = existsHandwrittenClass(handCodedPath,
-          constructQualifiedName(symbolTablePackage, symbolTableService.getGlobalScopeInterfaceSimpleName()));
-      globalScopeInterfaceDecorator.setGlobalScopeTop(isGlobalScopeTop);
-      symTabCD.addCDInterface(createGlobalScopeInterface(astCD));
+      symTabCD.addCDInterface(createGlobalScopeInterface(astCD, symbolTablePackage));
       ASTCDClass globalScopeClass = createGlobalScopeClass(astCD);
       symTabCD.addCDClass(globalScopeClass);
       symTabCD.addCDClass(createGlobalScopeClassBuilder(globalScopeClass));
+
       // artifact scope
       ASTCDClass artifactScope = createArtifactScope(astCD);
       symTabCD.addCDClass(artifactScope);
       symTabCD.addCDClass(createArtifactBuilderScope(artifactScope));
+
       // language
       // needs to know if it is overwritten to generate method differently
       boolean isLanguageHandCoded = existsHandwrittenClass(handCodedPath,
@@ -171,6 +171,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       if (isLanguageHandCoded) {
         symTabCD.addCDClass(createLanguageBuilder(languageClass));
       }
+
       // model loader
       Optional<ASTCDClass> modelLoader = createModelLoader(astCD);
       if (modelLoader.isPresent()) {
@@ -179,7 +180,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
           symTabCD.addCDClass(createModelLoaderBuilder(modelLoader.get()));
         }
       }
-      // symboltable creator
+
+      // symbol table creator
       Optional<ASTCDClass> symbolTableCreator = createSymbolTableCreator(astCD);
       if (symbolTableCreator.isPresent()) {
         symTabCD.addCDClass(symbolTableCreator.get());
@@ -240,8 +242,11 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
   }
 
-  protected ASTCDClass createScopeClass(ASTCDCompilationUnit astcdCompilationUnit) {
-    return scopeClassDecorator.decorate(astcdCompilationUnit);
+  protected ASTCDClass createScopeClass(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit astCD, List<String> symbolTablePackage) {
+    boolean isScopeTop = existsHandwrittenClass(handCodedPath,
+        constructQualifiedName(symbolTablePackage, symbolTableService.getScopeClassSimpleName()));
+    scopeClassDecorator.setScopeTop(isScopeTop);
+    return scopeClassDecorator.decorate(scopeCD, astCD);
   }
 
   protected ASTCDClass createScopeClassBuilder(ASTCDClass scopeClass) {
@@ -252,7 +257,10 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     return scopeInterfaceDecorator.decorate(compilationUnit);
   }
 
-  protected ASTCDInterface createGlobalScopeInterface(ASTCDCompilationUnit compilationUnit) {
+  protected ASTCDInterface createGlobalScopeInterface(ASTCDCompilationUnit compilationUnit, List<String> symbolTablePackage) {
+    boolean isGlobalScopeTop = existsHandwrittenClass(handCodedPath,
+        constructQualifiedName(symbolTablePackage, symbolTableService.getGlobalScopeInterfaceSimpleName()));
+    globalScopeInterfaceDecorator.setGlobalScopeTop(isGlobalScopeTop);
     return globalScopeInterfaceDecorator.decorate(compilationUnit);
   }
 

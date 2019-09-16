@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.symboltable;
+package de.monticore.codegen.symboltable.cdForBuilder;
 
 classdiagram GlobalScope_Builder {
 

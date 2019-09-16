@@ -23,6 +23,7 @@ InputOutputFilesReporter.resetModelToArtifactMap()
 mcScope = createMCGlobalScope(modelPath)
 cdScope = createCD4AGlobalScope(modelPath)
 symbolCdScope = createCD4AGlobalScope(modelPath)
+scopeCdScope = createCD4AGlobalScope(modelPath)
 Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
 // ############################################################
 
@@ -53,14 +54,14 @@ while (grammarIterator.hasNext()) {
       runGrammarCoCos(astGrammar, mcScope)
 
       // M5: transform grammar AST into Class Diagram AST
-      astClassDiagramWithST = deriveCD(astGrammar, glex, cdScope, mcScope)
+      astClassDiagramWithST = deriveCD(astGrammar, glex, cdScope)
 
       // M6: generate parser and wrapper
       generateParser(glex, astGrammar, mcScope, handcodedPath, out)
 
-      deriveSymbolCD(astGrammar, glex, symbolCdScope, mcScope)
+      deriveSymbolCD(astGrammar, glex, symbolCdScope)
 
-      deriveScopeCD(astGrammar, glex, symbolCdScope, mcScope)
+      deriveScopeCD(astGrammar, glex, scopeCdScope)
     }
   }
 }

@@ -46,7 +46,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
-    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Scope_Builder");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable","cdForBuilder", "Scope_Builder");
     ASTCDClass cdClass = getClassBy("AScope", decoratedCompilationUnit);
 
     originalCompilationUnit = decoratedCompilationUnit.deepClone();

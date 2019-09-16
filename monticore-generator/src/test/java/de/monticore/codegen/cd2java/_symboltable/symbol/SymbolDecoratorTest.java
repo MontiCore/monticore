@@ -18,8 +18,7 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
@@ -31,6 +30,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass symbolClassState;
 
+  private ASTCDClass symbolClassFoo;
+
   private GlobalExtensionManagement glex;
 
   private CDTypeFacade cdTypeFacade;
@@ -39,17 +40,17 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  private static final String ENCLOSING_SCOPE_TYPE = "de.monticore.codegen.symboltable.symbolcd.automaton._symboltable.IAutomatonScope";
+  private static final String ENCLOSING_SCOPE_TYPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
 
-  private static final String A_NODE_TYPE_OPT = "Optional<de.monticore.codegen.symboltable.symbolcd.automaton._ast.ASTAutomaton>";
+  private static final String A_NODE_TYPE_OPT = "Optional<de.monticore.codegen.symboltable.automatonsymbolcd._ast.ASTAutomaton>";
 
-  private static final String A_NODE_TYPE = "de.monticore.codegen.symboltable.symbolcd.automaton._ast.ASTAutomaton";
+  private static final String A_NODE_TYPE = "de.monticore.codegen.symboltable.automatonsymbolcd._ast.ASTAutomaton";
 
   private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
 
-  private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.symbolcd.automaton._symboltable.IAutomatonScope";
+  private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
 
-  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.symboltable.symbolcd.automaton._visitor.AutomatonSymbolVisitor";
+  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.symboltable.automatonsymbolcd._visitor.AutomatonSymbolCDSymbolVisitor";
 
   @Before
   public void setUp() {
@@ -59,7 +60,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
-    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "symbolCD","Automaton");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable","AutomatonSymbolCD");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
@@ -73,6 +74,10 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     //creates normal Symbol
     ASTCDClass stateClass = getClassBy("State", decoratedCompilationUnit);
     this.symbolClassState = decorator.decorate(stateClass);
+
+    //creates normal Symbol
+    ASTCDInterface fooClass = getInterfaceBy("Foo", decoratedCompilationUnit);
+    this.symbolClassFoo = decorator.decorate(fooClass);
   }
 
   @Test
@@ -94,7 +99,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
-    assertDeepEquals("de.monticore.codegen.symboltable.symbolcd.automaton._symboltable.ICommonAutomatonSymbol", symbolClassAutomaton.getInterface(0));
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.ICommonAutomatonSymbolCDSymbol", symbolClassAutomaton.getInterface(0));
     assertDeepEquals("de.monticore.symboltable.IScopeSpanningSymbol", symbolClassAutomaton.getInterface(1));
   }
 
@@ -174,6 +179,21 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("spannedScope", symbolClassAutomaton);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(cdTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE), astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testSymbolRuleAttributes() {
+    ASTCDAttribute fooAttribute = getAttributeBy("foo", symbolClassFoo);
+    assertDeepEquals(PROTECTED, fooAttribute.getModifier());
+    assertListOf(String.class, fooAttribute.getMCType());
+
+    ASTCDAttribute blaAttribute = getAttributeBy("bla", symbolClassFoo);
+    assertDeepEquals(PROTECTED, blaAttribute.getModifier());
+    assertOptionalOf(Integer.class, blaAttribute.getMCType());
+
+    ASTCDAttribute extraAtt = getAttributeBy("extraAttribute", symbolClassFoo);
+    assertDeepEquals(PROTECTED, extraAtt.getModifier());
+    assertBoolean(extraAtt.getMCType());
   }
 
   @Test
@@ -422,7 +442,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesStateSymbol() {
-    assertDeepEquals("de.monticore.codegen.symboltable.symbolcd.automaton._symboltable.ICommonAutomatonSymbol", symbolClassState.getInterface(0));
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.ICommonAutomatonSymbolCDSymbol", symbolClassState.getInterface(0));
   }
 
   @Test
@@ -448,6 +468,79 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
   @Test(expected = AssertionError.class)
   public void testSetSpannedScopeMethodStateSymbol() {
     getMethodBy("setSpannedScope", symbolClassState);
+  }
+
+  @Test
+  public void testIsExtraAttributeMethod() {
+    ASTCDMethod method = getMethodBy("isExtraAttribute", symbolClassFoo);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertBoolean(method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetExtraAttributeMethod() {
+    ASTCDMethod method = getMethodBy("setExtraAttribute", symbolClassFoo);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertBoolean(method.getCDParameter(0).getMCType());
+    assertEquals("extraAttribute", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testGetFooListMethod() {
+    ASTCDMethod method = getMethodBy("getFooList", symbolClassFoo);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertListOf(String.class, method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetFooListMethod() {
+    ASTCDMethod method = getMethodBy("setFooList", symbolClassFoo);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertListOf(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("foo", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testGetBlaOptMethod() {
+    ASTCDMethod method = getMethodBy("getBlaOpt", symbolClassFoo);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+
+  @Test
+  public void testSetBlaOptMethod() {
+    ASTCDMethod method = getMethodBy("setBlaOpt", symbolClassFoo);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertOptionalOf(Integer.class, method.getCDParameter(0).getMCType());
+    assertEquals("bla", method.getCDParameter(0).getName());
+  }
+  @Test
+  public void testScopeRuleMethod() {
+    ASTCDMethod method = getMethodBy("toString", symbolClassFoo);
+
+    assertTrue(method.getModifier().isPublic());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
   }
 
   @Test

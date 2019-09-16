@@ -414,8 +414,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    */
   public ASTCDCompilationUnit deriveCD(ASTMCGrammar astGrammar,
                                        GlobalExtensionManagement glex,
-                                       CD4AnalysisGlobalScope cdScope,
-                                       Grammar_WithConceptsGlobalScope mcScope) {
+                                       CD4AnalysisGlobalScope cdScope) {
     // transformation
     Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar);
     ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTable(astGrammar, glex, cdScope));
@@ -426,8 +425,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   public ASTCDCompilationUnit deriveSymbolCD(ASTMCGrammar astGrammar,
                                              GlobalExtensionManagement glex,
-                                             CD4AnalysisGlobalScope cdScope,
-                                             Grammar_WithConceptsGlobalScope mcScope) {
+                                             CD4AnalysisGlobalScope cdScope) {
     // transformation
     // transformation
     Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar);
@@ -439,8 +437,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   public ASTCDCompilationUnit deriveScopeCD(ASTMCGrammar astGrammar,
                                             GlobalExtensionManagement glex,
-                                            CD4AnalysisGlobalScope cdScope,
-                                            Grammar_WithConceptsGlobalScope mcScope) {
+                                            CD4AnalysisGlobalScope cdScope) {
     // transformation
     // transformation
     Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar);
@@ -478,7 +475,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   public ASTCDCompilationUnit decorateForSymbolTablePackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                                             ASTCDCompilationUnit astClassDiagram, ASTCDCompilationUnit symbolClassDiagramm,
-                                                            ASTCDCompilationUnit scopeClassDiagramm,ASTMCGrammar astmcGrammar, IterablePath handCodedPath) {
+                                                            ASTCDCompilationUnit scopeClassDiagramm, ASTMCGrammar astmcGrammar, IterablePath handCodedPath) {
     ASTCDCompilationUnit preparedSymbolCD = prepareCD(cdScope, symbolClassDiagramm);
     ASTCDCompilationUnit preparedScopeCD = prepareCD(cdScope, scopeClassDiagramm);
     ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
@@ -486,7 +483,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   private ASTCDCompilationUnit decorateWithSymbolTable(ASTCDCompilationUnit cd, ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit scopeCD, GlobalExtensionManagement glex,
-                                                       IterablePath handCodedPath,ASTMCGrammar astmcGrammar) {
+                                                       IterablePath handCodedPath, ASTMCGrammar astmcGrammar) {
     SymbolTableService symbolTableService = new SymbolTableService(cd, astmcGrammar);
     VisitorService visitorService = new VisitorService(cd);
     ParserService parserService = new ParserService(cd);

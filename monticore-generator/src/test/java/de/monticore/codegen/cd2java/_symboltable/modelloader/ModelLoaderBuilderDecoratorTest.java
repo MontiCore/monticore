@@ -40,7 +40,7 @@ public class ModelLoaderBuilderDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
-    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "ModelLoader_Builder");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "cdForBuilder", "ModelLoader_Builder");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex), new SymbolTableService(decoratedCompilationUnit));
@@ -128,7 +128,7 @@ public class ModelLoaderBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setModelingLanguage", builderClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AModelLoaderBuilder",method.getMCReturnType().getMCType());
+    assertDeepEquals("AModelLoaderBuilder", method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("ALanguage", method.getCDParameter(0).getMCType());

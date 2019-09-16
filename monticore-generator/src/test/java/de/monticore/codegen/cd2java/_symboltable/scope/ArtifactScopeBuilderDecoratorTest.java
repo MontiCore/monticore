@@ -36,7 +36,7 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
 
   private CDTypeFacade cdTypeFacade;
 
-  private static final String ENCLOSING_SCOPE = "de.monticore.codegen.symboltable.artifactscope_builder._symboltable.IArtifactScope_BuilderScope";
+  private static final String ENCLOSING_SCOPE = "de.monticore.codegen.symboltable.cdforbuilder.artifactscope_builder._symboltable.IArtifactScope_BuilderScope";
 
   public static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
 
@@ -50,7 +50,7 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
-    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "ArtifactScope_Builder");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable","cdForBuilder", "ArtifactScope_Builder");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
     Log.init();
