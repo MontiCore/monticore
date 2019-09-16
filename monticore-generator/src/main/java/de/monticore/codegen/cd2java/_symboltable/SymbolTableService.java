@@ -354,6 +354,26 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getSymTabMillFullName(getCDSymbol());
   }
 
+      /*
+    symTabMill interface names e.g. AutomataSymTabMill
+   */
+
+  public String getSuperSTCForSubSTCSimpleName(CDDefinitionSymbol superCDSymbol, CDDefinitionSymbol subCDSymbol) {
+    return String.format(STC_FOR,superCDSymbol.getName(), subCDSymbol.getName());
+  }
+
+  public String getSuperSTCForSubSTCSimpleName(CDDefinitionSymbol superCDSymbol) {
+    return getSuperSTCForSubSTCSimpleName(superCDSymbol, getCDSymbol());
+  }
+
+  public String getSuperSTCForSubSTCFullName(CDDefinitionSymbol superCDSymbol, CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getSuperSTCForSubSTCSimpleName(superCDSymbol, cdSymbol);
+  }
+
+  public String getSuperSTCForSubSTCFullName(CDDefinitionSymbol superCDSymbol) {
+    return getSuperSTCForSubSTCFullName(superCDSymbol, getCDSymbol());
+  }
+
   /*
     symbol class names e.g. AutomatonSymbol
    */
@@ -512,7 +532,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     for (CDDefinitionSymbol cdDefinitionSymbol : getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
         if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
-            && hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())){
+            && hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
           symbolProds.add(type.getAstNode().get());
         }
       }
