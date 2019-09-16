@@ -9,10 +9,7 @@ import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderBuilderD
 import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderDecorator;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
-import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorDecorator;
-import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorDelegatorDecorator;
-import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorForSuperTypes;
+import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
 
@@ -78,6 +75,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes;
 
+  protected final SymbolTableCreatorDelegatorBuilderDecorator symbolTableCreatorDelegatorBuilderDecorator;
+
   public SymbolTableCDDecorator(final GlobalExtensionManagement glex,
                                 final IterablePath handCodedPath,
                                 final SymbolTableService symbolTableService,
@@ -102,7 +101,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final SymbolTableCreatorDecorator symbolTableCreatorDecorator,
                                 final SymbolTableCreatorBuilderDecorator symbolTableCreatorBuilderDecorator,
                                 final SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator,
-                                final SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes) {
+                                final SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes,
+                                final SymbolTableCreatorDelegatorBuilderDecorator symbolTableCreatorDelegatorBuilderDecorator) {
     super(glex);
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
@@ -127,7 +127,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     this.symbolTableCreatorDecorator = symbolTableCreatorDecorator;
     this.symbolTableCreatorBuilderDecorator = symbolTableCreatorBuilderDecorator;
     this.symbolTableCreatorDelegatorDecorator = symbolTableCreatorDelegatorDecorator;
-    this.symbolTableCreatorForSuperTypes =symbolTableCreatorForSuperTypes;
+    this.symbolTableCreatorForSuperTypes = symbolTableCreatorForSuperTypes;
+    this.symbolTableCreatorDelegatorBuilderDecorator = symbolTableCreatorDelegatorBuilderDecorator;
   }
 
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit astCD, ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit scopeCD) {
@@ -201,6 +202,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 //      Optional<ASTCDClass> symbolTableCreatorDelegator = createSymbolTableCreatorDelegator(astCD);
 //      if(symbolTableCreatorDelegator.isPresent()){
 //        symTabCD.addCDClass(symbolTableCreatorDelegator.get());
+//      symTabCD.addAllCDClasss(createSymbolTableCreatorDelegatorBuilder(symbolTableCreatorDelegator.get()));
+
 //      }
 //
 //      // SuperSTCForSub
@@ -342,5 +345,9 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected List<ASTCDClass> createSymbolTableCreatorForSuperTypes(ASTCDCompilationUnit compilationUnit) {
     return symbolTableCreatorForSuperTypes.decorate(compilationUnit);
+  }
+
+  protected ASTCDClass createSymbolTableCreatorDelegatorBuilder(ASTCDClass sTCDelegatorClass) {
+    return symbolTableCreatorDelegatorBuilderDecorator.decorate(sTCDelegatorClass);
   }
 }

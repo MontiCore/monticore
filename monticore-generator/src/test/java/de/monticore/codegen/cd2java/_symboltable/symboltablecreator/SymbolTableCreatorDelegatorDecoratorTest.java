@@ -138,8 +138,6 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
     assertEquals(1, symTabCreator.getCDMethodList().size());
   }
 
-
-
   @Test
   public void testCreateFromASTMethod() {
     ASTCDMethod method = getMethodBy("createFromAST", symTabCreator);
@@ -150,8 +148,6 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
     assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
     assertEquals("rootNode", method.getCDParameter(0).getName());
   }
-
-
 
   @Test
   public void testGeneratedCodeState() {
