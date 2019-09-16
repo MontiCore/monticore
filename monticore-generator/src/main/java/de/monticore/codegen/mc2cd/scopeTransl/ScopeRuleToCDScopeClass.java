@@ -22,9 +22,6 @@ public class ScopeRuleToCDScopeClass implements UnaryOperator<Link<ASTMCGrammar,
 
   private void createLinksForMatchedASTRules(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-
-
-
     // creates Links from the ScopeRule for the Scope class
     Set<Link<ASTMCGrammar, ASTCDClass>> linkList = rootLink.getLinks(ASTMCGrammar.class, ASTCDClass.class);
     List<ASTScopeRule> scopeRuleList = ASTNodes.getSuccessors(rootLink.source(), ASTScopeRule.class);
