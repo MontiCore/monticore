@@ -40,7 +40,7 @@ public class ${symTabPrinterName}
     printer.beginArray(JsonConstants.IMPORTS);
     as.getImports().forEach(x -> printer.value(x.toString()));
     printer.endArray();
-    printer.member(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(as.getSpanningSymbol()));
+    addScopeSpanningSymbol(as.getSpanningSymbol());
   }
 
   /**
@@ -53,7 +53,7 @@ public class ${symTabPrinterName}
     printer.member(JsonConstants.NAME, scope.getName());
     printer.member(JsonConstants.IS_SHADOWING_SCOPE, scope.isShadowingScope());
     printer.member(JsonConstants.EXPORTS_SYMBOLS, scope.exportsSymbols());
-    printer.member(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(scope.getSpanningSymbol()));
+    addScopeSpanningSymbol(scope.getSpanningSymbol());
     
 <#if scopeRule.isPresent()>
 <#list scopeRule.get().getAdditionalAttributeList() as attr>
@@ -92,18 +92,19 @@ public class ${symTabPrinterName}
 </#list>
 </#if>
 
-  protected Optional<String> serializeScopeSpanningSymbol(
-      Optional<IScopeSpanningSymbol> spanningSymbol) {
+  protected void addScopeSpanningSymbol(Optional<IScopeSpanningSymbol> spanningSymbol) {
     if (null != spanningSymbol && spanningSymbol.isPresent()) {
-      JsonPrinter spPrinter = new JsonPrinter();
-      spPrinter.beginObject();
-      spPrinter.member(JsonConstants.KIND, spanningSymbol.get().getClass().getName());
-      spPrinter.member(JsonConstants.NAME, spanningSymbol.get().getName());
-      spPrinter.endObject();
-      return Optional.ofNullable(spPrinter.getContent());
+      printer.beginObject(JsonConstants.SCOPE_SPANNING_SYMBOL);
+      printer.member(JsonConstants.KIND, spanningSymbol.get().getClass().getName());
+      printer.member(JsonConstants.NAME, spanningSymbol.get().getName());
+      printer.endObject();
     }
-    return Optional.empty();
   }
+  
+  public void traverse(${languageName}ArtifactScope scope) {
+    traverse((${languageName}Scope) scope);
+  }
+  
 
    /**
    * @see ${languageName}ScopeVisitor#traverse(${languageName}Scope)

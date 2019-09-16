@@ -77,7 +77,7 @@ public class JsonUtil {
     if (json.isJsonObject()) {
       if (json.getAsJsonObject().containsKey(key)) {
         JsonElement jsonMember = json.getAsJsonObject().get(key);
-        if (jsonMember.isJsonString()) {
+        if (jsonMember.isJsonNumber()) {
           return Optional.ofNullable(jsonMember.getAsJsonNumber().getNumberAsInt());
         }
       }

@@ -1,14 +1,25 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
-import com.google.common.collect.Lists;
+import static de.monticore.types2.SymTypeExpressionFactory.createGenerics;
+import static de.monticore.types2.SymTypeExpressionFactory.createTypeArray;
+import static de.monticore.types2.SymTypeExpressionFactory.createTypeConstant;
+import static de.monticore.types2.SymTypeExpressionFactory.createTypeObject;
+import static de.monticore.types2.SymTypeExpressionFactory.createTypeOfNull;
+import static de.monticore.types2.SymTypeExpressionFactory.createTypeVariable;
+import static de.monticore.types2.SymTypeExpressionFactory.createTypeVoid;
+import static org.junit.Assert.assertEquals;
 
-import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import java.util.List;
+
 import org.junit.Test;
 
-import static de.monticore.types2.SymTypeExpressionFactory.*;
-import static org.junit.Assert.*;
+import com.google.common.collect.Lists;
+
+import de.monticore.symboltable.serialization.JsonParser;
+import de.monticore.symboltable.serialization.JsonUtil;
+import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 
 public class SymTypeExpressionTest {
   
@@ -50,17 +61,134 @@ public class SymTypeExpressionTest {
   }
   
   @Test
+  public void jsonTest() {
+    JsonElement teDoubleJson = JsonParser.parseJson(teDouble.printAsJson());
+    assertEquals("de.monticore.types2.SymTypeConstant", JsonUtil.getOptStringMember(teDoubleJson, "kind").get());
+    assertEquals("double",                              JsonUtil.getOptStringMember(teDoubleJson, "constName").get());
+
+    JsonElement teIntJson = JsonParser.parseJson(teInt.printAsJson());
+    assertEquals("de.monticore.types2.SymTypeConstant", JsonUtil.getOptStringMember(teIntJson, "kind").get());
+    assertEquals("int",                                 JsonUtil.getOptStringMember(teIntJson, "constName").get());
+    
+    JsonElement teVarAJson = JsonParser.parseJson(teVarA.printAsJson());
+    assertEquals("de.monticore.types2.SymTypeVariable", JsonUtil.getOptStringMember(teVarAJson, "kind").get());
+    assertEquals("A",                                   JsonUtil.getOptStringMember(teVarAJson, "varName").get());
+    
+    JsonElement tePJson = JsonParser.parseJson(teP.printAsJson());
+    assertEquals("de.monticore.types2.SymTypeOfObject", JsonUtil.getOptStringMember(tePJson, "kind").get());
+    assertEquals("de.x.Person",                         JsonUtil.getOptStringMember(tePJson, "objName").get());
+    
+    JsonElement teVoidJson = JsonParser.parseJson(teVoid.printAsJson());
+    assertEquals("void", teVoidJson.getAsJsonString().getValue());
+    
+    JsonElement teNullJson = JsonParser.parseJson(teNull.printAsJson());
+    assertEquals("nullType", teNullJson.getAsJsonString().getValue());
+    
+    JsonElement teArr1Json = JsonParser.parseJson(teArr1.printAsJson());
+    assertEquals("de.monticore.types2.SymTypeArray",    JsonUtil.getOptStringMember(teArr1Json, "kind").get());
+    assertEquals(1,                                     JsonUtil.getOptIntMember(teArr1Json, "dim").get(), 0.01);
+    JsonElement teArr1ArgJson = teArr1Json.getAsJsonObject().get("argument");
+    assertEquals("de.monticore.types2.SymTypeOfObject", JsonUtil.getOptStringMember(teArr1ArgJson, "kind").get());
+    assertEquals("Human",                               JsonUtil.getOptStringMember(teArr1ArgJson, "objName").get());
+    
+    JsonElement teArr3Json = JsonParser.parseJson(teArr3.printAsJson());
+    assertEquals("de.monticore.types2.SymTypeArray",    JsonUtil.getOptStringMember(teArr3Json, "kind").get());
+    assertEquals(3,                                     JsonUtil.getOptIntMember(teArr3Json, "dim").get(), 0.01);
+    JsonElement teArr3ArgJson = teArr3Json.getAsJsonObject().get("argument");
+    assertEquals("de.monticore.types2.SymTypeConstant", JsonUtil.getOptStringMember(teArr3ArgJson, "kind").get());
+    assertEquals("int",                                 JsonUtil.getOptStringMember(teArr3ArgJson, "constName").get());
+    
+    JsonElement teSetJson = JsonParser.parseJson(teSet.printAsJson());
+    assertEquals("de.monticore.types2.SymTypeOfGenerics", JsonUtil.getOptStringMember(teSetJson, "kind").get());
+    assertEquals("java.util.Set",                         JsonUtil.getOptStringMember(teSetJson, "typeConstructorFullName").get());
+    assertEquals("TODO",                                  JsonUtil.getOptStringMember(teSetJson, "objTypeConstructorSymbol").get());
+    List<JsonElement> teSetArgsJson = teSetJson.getAsJsonObject().get("arguments").getAsJsonArray().getValues();
+    assertEquals(1, teSetArgsJson.size(), 0.01);
+    assertEquals("de.monticore.types2.SymTypeOfObject",   JsonUtil.getOptStringMember(teSetArgsJson.get(0), "kind").get());
+    assertEquals("de.x.Person",                           JsonUtil.getOptStringMember(teSetArgsJson.get(0), "objName").get());
+    
+    JsonElement teSetAJson = JsonParser.parseJson(teSetA.printAsJson());
+    assertEquals("de.monticore.types2.SymTypeOfGenerics", JsonUtil.getOptStringMember(teSetAJson, "kind").get());
+    assertEquals("java.util.Set",                         JsonUtil.getOptStringMember(teSetAJson, "typeConstructorFullName").get());
+    assertEquals("TODO",                                  JsonUtil.getOptStringMember(teSetAJson, "objTypeConstructorSymbol").get());
+    List<JsonElement> teSetAArgsJson = teSetAJson.getAsJsonObject().get("arguments").getAsJsonArray().getValues();
+    assertEquals(1, teSetAArgsJson.size(), 0.01);
+    assertEquals("de.monticore.types2.SymTypeVariable",   JsonUtil.getOptStringMember(teSetAArgsJson.get(0), "kind").get());
+    assertEquals("A", JsonUtil.getOptStringMember(teSetAArgsJson.get(0), "varName").get());
+    
+    
+    JsonElement teMapJson = JsonParser.parseJson(teMap.printAsJson());
+    assertEquals("de.monticore.types2.SymTypeOfGenerics", JsonUtil.getOptStringMember(teMapJson, "kind").get());
+    assertEquals("Map",                                   JsonUtil.getOptStringMember(teMapJson, "typeConstructorFullName").get());
+    assertEquals("TODO",                                  JsonUtil.getOptStringMember(teMapJson, "objTypeConstructorSymbol").get());
+    List<JsonElement> teMapArgsJson = teMapJson.getAsJsonObject().get("arguments").getAsJsonArray().getValues();
+    assertEquals(2, teMapArgsJson.size(), 0.01);
+    assertEquals("de.monticore.types2.SymTypeConstant",   JsonUtil.getOptStringMember(teMapArgsJson.get(0), "kind").get());
+    assertEquals("int", JsonUtil.getOptStringMember(teMapArgsJson.get(0), "constName").get());
+    assertEquals("de.monticore.types2.SymTypeOfObject",   JsonUtil.getOptStringMember(teMapArgsJson.get(1), "kind").get());
+    assertEquals("de.x.Person",                           JsonUtil.getOptStringMember(teMapArgsJson.get(1), "objName").get());
+    
+    JsonElement teFooJson = JsonParser.parseJson(teFoo.printAsJson());
+    assertEquals("de.monticore.types2.SymTypeOfGenerics", JsonUtil.getOptStringMember(teFooJson, "kind").get());
+    assertEquals("x.Foo",                                 JsonUtil.getOptStringMember(teFooJson, "typeConstructorFullName").get());
+    assertEquals("TODO",                                  JsonUtil.getOptStringMember(teFooJson, "objTypeConstructorSymbol").get());
+    List<JsonElement> teFooArgsJson = teFooJson.getAsJsonObject().get("arguments").getAsJsonArray().getValues();
+    assertEquals(4, teFooArgsJson.size(), 0.01);
+    assertEquals("de.monticore.types2.SymTypeOfObject",   JsonUtil.getOptStringMember(teFooArgsJson.get(0), "kind").get());
+    assertEquals("de.x.Person",                           JsonUtil.getOptStringMember(teFooArgsJson.get(0), "objName").get());
+    assertEquals("de.monticore.types2.SymTypeConstant",   JsonUtil.getOptStringMember(teFooArgsJson.get(1), "kind").get());
+    assertEquals("double",                                JsonUtil.getOptStringMember(teFooArgsJson.get(1), "constName").get());
+    assertEquals("de.monticore.types2.SymTypeConstant",   JsonUtil.getOptStringMember(teFooArgsJson.get(2), "kind").get());
+    assertEquals("int",                                   JsonUtil.getOptStringMember(teFooArgsJson.get(2), "constName").get());
+    assertEquals("de.monticore.types2.SymTypeOfObject",   JsonUtil.getOptStringMember(teFooArgsJson.get(3), "kind").get());
+    assertEquals("Human",                                 JsonUtil.getOptStringMember(teFooArgsJson.get(3), "objName").get());
+    
+    JsonElement teDeep1Json = JsonParser.parseJson(teDeep1.printAsJson());
+    assertEquals("de.monticore.types2.SymTypeOfGenerics", JsonUtil.getOptStringMember(teDeep1Json, "kind").get());
+    assertEquals("java.util.Set",                         JsonUtil.getOptStringMember(teDeep1Json, "typeConstructorFullName").get());
+    assertEquals("TODO",                                  JsonUtil.getOptStringMember(teDeep1Json, "objTypeConstructorSymbol").get());
+    List<JsonElement> teDeep1ArgsJson = teDeep1Json.getAsJsonObject().get("arguments").getAsJsonArray().getValues();
+    assertEquals(1, teDeep1ArgsJson.size(), 0.01);
+    assertEquals("de.monticore.types2.SymTypeOfGenerics", JsonUtil.getOptStringMember(teDeep1ArgsJson.get(0), "kind").get());
+    assertEquals("Map",                                   JsonUtil.getOptStringMember(teDeep1ArgsJson.get(0), "typeConstructorFullName").get());
+    assertEquals("TODO",                                  JsonUtil.getOptStringMember(teDeep1ArgsJson.get(0), "objTypeConstructorSymbol").get());
+    List<JsonElement> teDeep1teMapArgsJson = teDeep1ArgsJson.get(0).getAsJsonObject().get("arguments").getAsJsonArray().getValues();
+    assertEquals(2, teDeep1teMapArgsJson.size(), 0.01);
+    assertEquals("de.monticore.types2.SymTypeConstant",   JsonUtil.getOptStringMember(teDeep1teMapArgsJson.get(0), "kind").get());
+    assertEquals("int",                                   JsonUtil.getOptStringMember(teDeep1teMapArgsJson.get(0), "constName").get());
+    assertEquals("de.monticore.types2.SymTypeOfObject",   JsonUtil.getOptStringMember(teDeep1teMapArgsJson.get(1), "kind").get());
+    assertEquals("de.x.Person",                           JsonUtil.getOptStringMember(teDeep1teMapArgsJson.get(1), "objName").get());
+    
+    JsonElement teDeep2Json = JsonParser.parseJson(teDeep2.printAsJson());
+    assertEquals("de.monticore.types2.SymTypeOfGenerics", JsonUtil.getOptStringMember(teDeep2Json, "kind").get());
+    assertEquals("java.util.Map2",                        JsonUtil.getOptStringMember(teDeep2Json, "typeConstructorFullName").get());
+    assertEquals("TODO",                                  JsonUtil.getOptStringMember(teDeep2Json, "objTypeConstructorSymbol").get());
+    List<JsonElement> teDeep2ArgsJson = teDeep2Json.getAsJsonObject().get("arguments").getAsJsonArray().getValues();
+    assertEquals(2, teDeep2ArgsJson.size(), 0.01);
+    assertEquals("de.monticore.types2.SymTypeConstant",   JsonUtil.getOptStringMember(teDeep2ArgsJson.get(0), "kind").get());
+    assertEquals("int",                                   JsonUtil.getOptStringMember(teDeep2ArgsJson.get(0), "constName").get());
+    assertEquals("de.monticore.types2.SymTypeOfGenerics", JsonUtil.getOptStringMember(teDeep2ArgsJson.get(1), "kind").get());
+    assertEquals("java.util.Set",                         JsonUtil.getOptStringMember(teDeep2ArgsJson.get(1), "typeConstructorFullName").get());
+    assertEquals("TODO",                                  JsonUtil.getOptStringMember(teDeep2Json, "objTypeConstructorSymbol").get());
+    List<JsonElement> teDeep2SetArgsJson = teDeep2ArgsJson.get(1).getAsJsonObject().get("arguments").getAsJsonArray().getValues();
+    assertEquals(1, teDeep2SetArgsJson.size(), 0.01);
+    assertEquals("de.monticore.types2.SymTypeOfGenerics", JsonUtil.getOptStringMember(teDeep2SetArgsJson.get(0), "kind").get());
+    assertEquals("Map",                                   JsonUtil.getOptStringMember(teDeep2SetArgsJson.get(0), "typeConstructorFullName").get());
+    assertEquals("TODO",                                  JsonUtil.getOptStringMember(teDeep2SetArgsJson.get(0), "objTypeConstructorSymbol").get());
+    List<JsonElement> teDeep2SetMapArgsJson = teDeep2SetArgsJson.get(0).getAsJsonObject().get("arguments").getAsJsonArray().getValues();
+    assertEquals(2, teDeep2SetMapArgsJson.size(), 0.01);
+    assertEquals("de.monticore.types2.SymTypeConstant",   JsonUtil.getOptStringMember(teDeep2SetMapArgsJson.get(0), "kind").get());
+    assertEquals("int",                                   JsonUtil.getOptStringMember(teDeep2SetMapArgsJson.get(0), "constName").get());
+    assertEquals("de.monticore.types2.SymTypeOfObject",   JsonUtil.getOptStringMember(teDeep2SetMapArgsJson.get(1), "kind").get());
+    assertEquals("de.x.Person",                           JsonUtil.getOptStringMember(teDeep2SetMapArgsJson.get(1), "objName").get());
+  }
+  
+  @Test
   public void baseNameTest() {
     assertEquals("Person", teP.getBaseName());
     assertEquals("Human", teH.getBaseName());
     assertEquals("Map", teMap.getBaseName());
     assertEquals("Set", teSetA.getBaseName());
-  }
-  
-  @Test
-  public void foo() {
-    JsonPrinter.enableIndentation();
-    System.out.println(teDeep2.printAsJson());
   }
   
 }
