@@ -48,9 +48,13 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
 
+  private static final String QUALIFIED_NAME_SYMBOL = "de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol";
+
   public static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
 
   public static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
+
+  public static final String PREDICATE_QUALIFIED_NAME = "java.util.function.Predicate<de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol>";
 
   @Before
   public void setUp() {
@@ -168,7 +172,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(44, scopeClass.getCDMethodList().size());
+    assertEquals(45, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -298,6 +302,23 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
     assertEquals("modifier", method.getCDParameter(2).getName());
     assertDeepEquals(PREDICATE, method.getCDParameter(3).getMCType());
+    assertEquals("predicate", method.getCDParameter(3).getName());
+  }
+
+  @Test
+  public void testContinueWithEnclosingScopeSuperSymbolMethod() {
+    ASTCDMethod method = getMethodBy("continueQualifiedNameWithEnclosingScope", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
+    assertEquals(4, method.sizeCDParameters());
+    assertBoolean(method.getCDParameter(0).getMCType());
+    assertEquals("foundSymbols", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
+    assertEquals("name", method.getCDParameter(1).getName());
+    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
+    assertEquals("modifier", method.getCDParameter(2).getName());
+    assertDeepEquals(PREDICATE_QUALIFIED_NAME, method.getCDParameter(3).getMCType());
     assertEquals("predicate", method.getCDParameter(3).getName());
   }
 

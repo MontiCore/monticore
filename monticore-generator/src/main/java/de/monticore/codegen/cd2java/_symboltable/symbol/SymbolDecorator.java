@@ -58,6 +58,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
     String symbolName = symbolTableService.getNameWithSymbolSuffix(input);
 
     List<ASTCDAttribute> symbolRuleAttributes = input.deepClone().getCDAttributeList();
+    symbolRuleAttributes.forEach(a -> symbolTableService.addAttributeDefaultValues(a, this.glex));
     List<ASTCDMethod> symbolRuleAttributeMethods = symbolRuleAttributes
         .stream()
         .map(methodDecorator::decorate)

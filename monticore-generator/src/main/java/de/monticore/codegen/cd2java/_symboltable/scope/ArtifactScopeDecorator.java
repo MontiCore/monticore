@@ -1,6 +1,8 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolTOP;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
@@ -64,7 +67,8 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
         .addCDMethod(createCheckIfContinueAsSubScopeMethod())
         .addCDMethod(createGetFilePathMethod())
         .addCDMethod(createGetRemainingNameForResolveDownMethod())
-        .addAllCDMethods(createContinueWithEnclosingScopeMethods(symbolProds))
+        .addAllCDMethods(createContinueWithEnclosingScopeMethods(symbolProds, symbolTableService.getCDSymbol()))
+        .addAllCDMethods(createSuperContinueWithEnclosingScopeMethods())
         .build();
   }
 
@@ -128,7 +132,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
     return getFilePath;
   }
 
-  protected List<ASTCDMethod> createContinueWithEnclosingScopeMethods(List<ASTCDType> symbolProds) {
+  protected List<ASTCDMethod> createContinueWithEnclosingScopeMethods(List<ASTCDType> symbolProds, CDDefinitionSymbol definitionSymbol) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     ASTCDParameter parameterFoundSymbols = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "foundSymbols");
     ASTCDParameter parameterName = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "name");
@@ -136,12 +140,12 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
     String globalScopeInterface = symbolTableService.getGlobalScopeInterfaceFullName();
 
     for (ASTCDType type : symbolProds) {
-      Optional<String> definingSymbolFullName = symbolTableService.getDefiningSymbolFullName(type);
+      Optional<String> definingSymbolFullName = symbolTableService.getDefiningSymbolFullName(type, definitionSymbol);
       String className = symbolTableService.removeASTPrefix(type);
 
       if (definingSymbolFullName.isPresent()) {
         ASTCDParameter parameterPredicate = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(
-            String.format(PREDICATE, definingSymbolFullName.get() )), "predicate");
+            String.format(PREDICATE, definingSymbolFullName.get())), "predicate");
         String methodName = String.format(CONTINUE_WITH_ENCLOSING_SCOPE, className);
 
         ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createCollectionTypeOf(definingSymbolFullName.get()),
@@ -150,6 +154,22 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
             "_symboltable.artifactscope.ContinueWithEnclosingScope", definingSymbolFullName.get(), className, globalScopeInterface));
         methodList.add(method);
       }
+    }
+    return methodList;
+  }
+
+  protected List<ASTCDMethod> createSuperContinueWithEnclosingScopeMethods() {
+    List<ASTCDMethod> methodList = new ArrayList<>();
+    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes()
+          .stream()
+          .filter(t -> t.getAstNode().isPresent())
+          .filter(t -> t.getAstNode().get().getModifierOpt().isPresent())
+          .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().get().getModifierOpt().get()))
+          .map(CDTypeSymbolTOP::getAstNode)
+          .map(Optional::get)
+          .collect(Collectors.toList());
+      methodList.addAll(createContinueWithEnclosingScopeMethods(symbolProds, cdDefinitionSymbol));
     }
     return methodList;
   }

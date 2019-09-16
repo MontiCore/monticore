@@ -8,7 +8,10 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.se_rwth.commons.JavaNamesHelper;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 
@@ -333,5 +337,13 @@ public class AbstractService<T extends AbstractService> {
     return packageName + "." + AST_PACKAGE + "." + astName;
   }
 
+  public void addAttributeDefaultValues(ASTCDAttribute attribute, GlobalExtensionManagement glex) {
+    if (DecorationHelper.isListType(attribute.printType())) {
+      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
+
+    } else if (DecorationHelper.isOptional(attribute.getMCType())) {
+      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
+    }
+  }
 
 }

@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typescalculator;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -14,11 +13,12 @@ import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
 import de.monticore.types2.SymTypeExpressionFactory;
-import de.monticore.types2.SymTypeOfObject;
 import de.se_rwth.commons.logging.Log;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.types2.SymTypeConstant.unbox;
 import static de.monticore.typescalculator.TypesCalculator.isSubtypeOf;
@@ -462,7 +462,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       else if (fieldSymbolOpt.isPresent()) {
         //cannot be a method, test first variable
         FieldSymbol var = fieldSymbolOpt.get();
-        innerResult.getTypeInfo().getFields().contains(var);
+        innerResult.getTypeInfo().getFieldList().contains(var);
         SymTypeExpression type = var.getType();
         this.result = type;
         lastResult.setLast(type);
@@ -557,11 +557,11 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
     Collection<MethodSymbol> methodcollection = scope.resolveMethodMany(exp);
     List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
     for (MethodSymbol method : methodlist) {
-      if (expr.getArguments().getExpressionList().size() == method.getParameter().size()) {
+      if (expr.getArguments().getExpressionList().size() == method.getParameterList().size()) {
         boolean success = true;
-        for (int i = 0; i < method.getParameter().size(); i++) {
+        for (int i = 0; i < method.getParameterList().size(); i++) {
           expr.getArguments().getExpression(i).accept(getRealThis());
-          if (!method.getParameter().get(i).getType().print().equals(lastResult.getLast()) && !method.getParameter().get(i).getType().isPrimitiveType() && !lastResult.getLast().isPrimitiveType() && !isSubtypeOf(lastResult.getLast(), method.getParameter().get(i).getType())) {
+          if (!method.getParameterList().get(i).getType().print().equals(lastResult.getLast()) && !method.getParameterList().get(i).getType().isPrimitiveType() && !lastResult.getLast().isPrimitiveType() && !isSubtypeOf(lastResult.getLast(), method.getParameterList().get(i).getType())) {
             success = false;
           }
           if(!method.getReturnType().print().equals(innerResult.print())){

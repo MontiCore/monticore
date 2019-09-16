@@ -4,8 +4,6 @@ package de.monticore.typescalculator;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.types2.ITypesCalculator;
-import de.monticore.types2.SymTypeOfObject;
-import de.monticore.types2.SymTypeConstant;
 import de.monticore.types2.SymTypeExpression;
 
 import java.util.Optional;
@@ -130,16 +128,16 @@ public class TypesCalculator {
   }
 
   public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType){
-    if(!subType.getTypeInfo().getSuperTypes().isEmpty()){
-      for(SymTypeExpression type: subType.getTypeInfo().getSuperTypes()){
+    if(!subType.getTypeInfo().getSuperTypeList().isEmpty()){
+      for(SymTypeExpression type: subType.getTypeInfo().getSuperTypeList()){
         if(type.print().equals(superType.print())){
           return true;
         }
       }
     }
     boolean subtype = false;
-    for(int i = 0;i<subType.getTypeInfo().getSuperTypes().size();i++){
-      if(isSubtypeOf(subType.getTypeInfo().getSuperTypes().get(i),superType)){
+    for(int i = 0;i<subType.getTypeInfo().getSuperTypeList().size();i++){
+      if(isSubtypeOf(subType.getTypeInfo().getSuperTypeList().get(i),superType)){
         subtype=true;
         break;
       }

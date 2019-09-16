@@ -16,7 +16,6 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static de.monticore.types2.DefsTypeBasic.*;
-import static de.monticore.types2.DefsTypeBasic.field;
 import static org.junit.Assert.assertEquals;
 
 public class DeriveSymTypeOfAssignmentExpressionTest {
@@ -40,7 +39,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     scope =
         ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
             .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-            .setExportsSymbols(true)
+            .setExportingSymbols(true)
             .setAstNode(null)
             .setName("Phantasy2").build();     // hopefully unused
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
@@ -58,9 +57,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     // some FieldSymbols (ie. Variables, Attributes)
     TypeSymbol p = new TypeSymbol("Person");
     TypeSymbol s = new TypeSymbol("Student");
-    s.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",p)));
+    s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",p)));
     TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
-    f.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",s)));
+    f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar", _booleanSymType));
     add2scope(scope, field("vardouble", _doubleSymType));
