@@ -104,6 +104,43 @@ public class TypesCalculator {
     return false;
   }
 
+  public static boolean isAssignableFrom(SymTypeExpression left, SymTypeExpression right){
+    if(left.isPrimitiveType()&&right.isPrimitiveType()){
+      SymTypeConstant leftType = (SymTypeConstant) left;
+      SymTypeConstant rightType = (SymTypeConstant) right;
+      if(isBoolean(leftType)&&isBoolean(rightType)){
+        return true;
+      }
+      if(isDouble(leftType)&&rightType.isNumericType()){
+        return true;
+      }
+      if(isFloat(leftType)&&(rightType.isIntegralType())||isFloat(right)){
+        return true;
+      }
+      if(isLong(leftType)&&rightType.isIntegralType()){
+        return true;
+      }
+      if(isInt(leftType)&&rightType.isIntegralType()&&!isLong(right)){
+        return true;
+      }
+      if(isChar(leftType)&&isChar(right)){
+        return true;
+      }
+      if(isShort(leftType)&&isShort(right)){
+        return true;
+      }
+      if(isByte(leftType)&&isByte(right)){
+        return true;
+      }
+      return false;
+    }else {
+      if(isSubtypeOf(right,left)||right.print().equals(left.print())){
+        return true;
+      }
+    }
+    return false;
+  }
+
   public static boolean isSubtypeOf(ASTExpression subType, ASTExpression superType){
     Optional<SymTypeExpression> sub = calc.calculateType(subType);
     Optional<SymTypeExpression> supert = calc.calculateType(superType);

@@ -48,7 +48,7 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics,
     = Literal;
 
   @Deprecated    // will be replaced by FieldAccessExpression (which is in CommonExpressions)
-  QualifiedNameExpression implements Expression <291> =
+  QualifiedNameExpression implements Expression <289> =
   	Expression "." Name;
 
 }

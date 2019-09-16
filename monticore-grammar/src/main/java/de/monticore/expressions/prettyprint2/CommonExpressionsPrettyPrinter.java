@@ -21,6 +21,13 @@ public class CommonExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinte
   }
 
 
+  @Override
+  public void handle(ASTFieldAccessExpression node){
+    CommentPrettyPrinter.printPreComments(node,getPrinter());
+    node.getExpression().accept(getRealThis());
+    getPrinter().print("."+node.getName());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
 
   @Override
   public void handle(ASTMultExpression node) {
