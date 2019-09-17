@@ -2,11 +2,9 @@
 
 package de.monticore.grammar.cocos;
 
+import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.se_rwth.commons.logging.Log;
 
 import static de.monticore.grammar.cocos.InterfaceNTWithoutImplementationOnlyInComponentGrammar.ERROR_CODE;
 import static de.se_rwth.commons.logging.LogStub.enableFailQuick;
@@ -18,7 +16,7 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammarTest extends 
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A0278.A0278";
   private final String grammar2 = "cocos.invalid.A0278.A0278b";
-  private final String grammar3 = "cocos.invalid.A0278.A0278b";
+  private final String grammar3 = "cocos.invalid.A0278.A0278c";
 
   @BeforeClass
   public static void disableFailQuick() {

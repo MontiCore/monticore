@@ -2,8 +2,8 @@
 
 package cocos.invalid.A0276;
 
-grammar A0276b extends cocos.invalid.A0276a {
+grammar A0276b extends cocos.invalid.A0276.A0276a {
 
-  A = "int";
+  B = A;
 
 }

@@ -6,4 +6,6 @@ grammar A0276 {
 
   external A;
 
+  B = A;
+
 }
