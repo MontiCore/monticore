@@ -69,6 +69,4 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
     returnType: de.monticore.types2.SymTypeExpression
   ;
 
-  abstract TypeSymbol2 = "Bla";
-
 }
