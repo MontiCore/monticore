@@ -43,6 +43,7 @@ import de.monticore.codegen.cd2java._symboltable.language.LanguageDecorator;
 import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderDecorator;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
+import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SerializationCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
@@ -525,11 +526,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes, symbolTableCreatorDelegatorBuilderDecorator);
     ASTCDCompilationUnit symbolTableCompilationUnit = symbolTableCDDecorator.decorate(cd, symbolCD, scopeCD);
 
-
-    SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService);
-    SerializationCDDecorator serializationCDDecorator = new SerializationCDDecorator(glex, symbolDeSerDecorator);
-    ASTCDCompilationUnit serializeCD = serializationCDDecorator.decorate(symbolCD);
-
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(symbolTableCompilationUnit);
   }
@@ -548,7 +544,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     SymbolTableService symbolTableService = new SymbolTableService(cd, astmcGrammar);
 
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService);
-    SerializationCDDecorator serializationCDDecorator = new SerializationCDDecorator(glex, symbolDeSerDecorator);
+    ScopeDeSerDecorator scopeDeSerDecorator= new ScopeDeSerDecorator(glex, symbolTableService);
+
+    SerializationCDDecorator serializationCDDecorator = new SerializationCDDecorator(glex, symbolDeSerDecorator, scopeDeSerDecorator);
     ASTCDCompilationUnit serializeCD = serializationCDDecorator.decorate(symbolCD);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);

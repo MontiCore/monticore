@@ -31,7 +31,6 @@ import static org.junit.Assert.*;
 
 public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
-
   private ASTCDClass symbolDeSer;
 
   private GlobalExtensionManagement glex;
@@ -42,18 +41,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  private static final String ENCLOSING_SCOPE_TYPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
-
-  private static final String A_NODE_TYPE_OPT = "Optional<de.monticore.codegen.symboltable.automatonsymbolcd._ast.ASTAutomaton>";
-
-  private static final String A_NODE_TYPE = "de.monticore.codegen.symboltable.automatonsymbolcd._ast.ASTAutomaton";
-
-  private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
-
-  private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbol";
-
-  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.symboltable.automatonsymbolcd._visitor.AutomatonSymbolCDSymbolVisitor";
 
   @Before
   public void setUp() {

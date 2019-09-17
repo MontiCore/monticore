@@ -188,7 +188,6 @@ public class CommonScopeGenerator implements ScopeGenerator {
     }
     Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
     if(genHelper.getGrammarSymbol().getStartProd().isPresent()) {
-      genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRules, allSymbols,allSpanningSymbolNames, superGrammarPackages);
     }
 
   }

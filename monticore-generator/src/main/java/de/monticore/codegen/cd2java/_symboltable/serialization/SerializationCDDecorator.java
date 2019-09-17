@@ -20,10 +20,14 @@ public class SerializationCDDecorator extends AbstractCreator<ASTCDCompilationUn
 
   protected final SymbolDeSerDecorator symbolDeSerDecorator;
 
+  protected final ScopeDeSerDecorator scopeDeSerDecorator;
+
   public SerializationCDDecorator(final GlobalExtensionManagement glex,
-                                  final SymbolDeSerDecorator symbolDeSerDecorator) {
+                                  final SymbolDeSerDecorator symbolDeSerDecorator,
+                                  final ScopeDeSerDecorator scopeDeSerDecorator) {
     super(glex);
     this.symbolDeSerDecorator = symbolDeSerDecorator;
+    this.scopeDeSerDecorator = scopeDeSerDecorator;
   }
 
   @Override
@@ -35,6 +39,7 @@ public class SerializationCDDecorator extends AbstractCreator<ASTCDCompilationUn
     ASTCDDefinition serializeCD = CD4CodeMill.cDDefinitionBuilder()
         .setName(symbolInput.getCDDefinition().getName())
         .addAllCDClasss(createSymbolDeSerClasses(symbolInput.getCDDefinition()))
+        .addCDClass(createScopeDeSerClasses(symbolInput))
         .build();
 
     for (ASTCDClass cdClass : serializeCD.getCDClassList()) {
@@ -65,5 +70,9 @@ public class SerializationCDDecorator extends AbstractCreator<ASTCDCompilationUn
         .map(symbolDeSerDecorator::decorate)
         .collect(Collectors.toList()));
     return symbolDeSerList;
+  }
+
+  protected ASTCDClass createScopeDeSerClasses(ASTCDCompilationUnit symbolCd) {
+    return scopeDeSerDecorator.decorate(symbolCd);
   }
 }
