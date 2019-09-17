@@ -214,7 +214,7 @@ public class AbstractService<T extends AbstractService> {
   protected List<String> getStereotypeValues(ASTModifier modifier,
                                              MC2CDStereotypes stereotype) {
     List<String> values = Lists.newArrayList();
-    if(modifier.isPresentStereotype()){
+    if (modifier.isPresentStereotype()) {
       modifier.getStereotype().getValueList().stream()
           .filter(value -> value.getName().equals(stereotype.toString()))
           .filter(ASTCDStereoValue::isPresentValue)

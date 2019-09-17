@@ -71,6 +71,14 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public Optional<String> getStartProdName() {
     return startProdName;
   }
+
+  public String getSerializationPackage() {
+    return getSerializationPackage(getCDSymbol());
+  }
+
+  public String getSerializationPackage(CDDefinitionSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + SERIALIZATION_PACKAGE;
+  }
   /*
     scope class names e.g. AutomataScope
    */
@@ -326,7 +334,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getScopeDeSerFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + SERIALIZATION_PACKAGE + "." + getScopeDeSerSimpleName(cdSymbol);
+    return getSerializationPackage(cdSymbol) + "." + getScopeDeSerSimpleName(cdSymbol);
   }
 
   public String getScopeDeSerFullName() {
@@ -359,7 +367,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    */
 
   public String getSuperSTCForSubSTCSimpleName(CDDefinitionSymbol superCDSymbol, CDDefinitionSymbol subCDSymbol) {
-    return String.format(STC_FOR,superCDSymbol.getName(), subCDSymbol.getName());
+    return String.format(STC_FOR, superCDSymbol.getName(), subCDSymbol.getName());
   }
 
   public String getSuperSTCForSubSTCSimpleName(CDDefinitionSymbol superCDSymbol) {
@@ -373,6 +381,43 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public String getSuperSTCForSubSTCFullName(CDDefinitionSymbol superCDSymbol) {
     return getSuperSTCForSubSTCFullName(superCDSymbol, getCDSymbol());
   }
+
+        /*
+    symbolDeSer class names e.g. StateSymbolDeSer
+   */
+
+  public String getSymbolDeSerFullName(ASTCDType astcdType, CDDefinitionSymbol cdSymbol) {
+    return getSerializationPackage(cdSymbol) + "." + getSymbolDeSerSimpleName(astcdType);
+  }
+
+  public String getSymbolDeSerFullName(ASTCDType astcdType) {
+    return getSymbolDeSerFullName(astcdType, getCDSymbol());
+  }
+
+  public String getSymbolDeSerSimpleName(ASTCDType astcdType) {
+    return getSymbolSimpleName(astcdType) + DE_SER_SUFFIX;
+  }
+
+      /*
+    symTabMill interface names e.g. AutomataSymTabMill
+   */
+
+  public String getSymbolTablePrinterSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SYMBOL_TABLE_PRINTER_SUFFIX;
+  }
+
+  public String getSymbolTablePrinterSimpleName() {
+    return getSymbolTablePrinterSimpleName(getCDSymbol());
+  }
+
+  public String getSymbolTablePrinterFullName(CDDefinitionSymbol cdSymbol) {
+    return getSerializationPackage(cdSymbol) + "." + getSymbolTablePrinterSimpleName(cdSymbol);
+  }
+
+  public String getSymbolTablePrinterFullName() {
+    return getSymbolTablePrinterFullName(getCDSymbol());
+  }
+
 
   /*
     symbol class names e.g. AutomatonSymbol
@@ -452,8 +497,16 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   /*
     symbol builder class name e.g. AutomatonSymbolBuilder
    */
-  public String getSymbolBuilderName(ASTCDType astcdType) {
-    return getNameWithSymbolSuffix(astcdType) + BUILDER_SUFFIX;
+  public String getSymbolBuilderSimpleName(ASTCDType astcdType) {
+    return getSymbolSimpleName(astcdType) + BUILDER_SUFFIX;
+  }
+
+  public String getSymbolBuilderFullName(ASTCDType astcdType, CDDefinitionSymbol cdDefinitionSymbol) {
+    return getSymbolFullName(astcdType, cdDefinitionSymbol) + BUILDER_SUFFIX;
+  }
+
+  public String getSymbolBuilderFullName(ASTCDType astcdType) {
+    return getSymbolBuilderFullName(astcdType, getCDSymbol());
   }
 
 

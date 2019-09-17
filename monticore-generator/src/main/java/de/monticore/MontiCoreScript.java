@@ -43,6 +43,8 @@ import de.monticore.codegen.cd2java._symboltable.language.LanguageDecorator;
 import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderDecorator;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
+import de.monticore.codegen.cd2java._symboltable.serialization.SerializationCDDecorator;
+import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
 import de.monticore.codegen.cd2java._visitor.*;
@@ -510,7 +512,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator = new SymbolResolvingDelegateInterfaceDecorator(glex, symbolTableService);
     SymbolTableCreatorDecorator symbolTableCreatorDecorator = new SymbolTableCreatorDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolTableCreatorBuilderDecorator symbolTableCreatorBuilderDecorator = new SymbolTableCreatorBuilderDecorator(glex, symbolTableService);
-    SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator= new SymbolTableCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
+    SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator = new SymbolTableCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
     SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes = new SymbolTableCreatorForSuperTypes(glex, symbolTableService);
     SymbolTableCreatorDelegatorBuilderDecorator symbolTableCreatorDelegatorBuilderDecorator = new SymbolTableCreatorDelegatorBuilderDecorator(glex, builderDecorator);
 
@@ -521,11 +523,36 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         commonSymbolInterfaceDecorator, languageDecorator, languageBuilderDecorator, modelLoaderDecorator, modelLoaderBuilderDecorator,
         symbolResolvingDelegateInterfaceDecorator, symbolTableCreatorDecorator, symbolTableCreatorBuilderDecorator,
         symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes, symbolTableCreatorDelegatorBuilderDecorator);
-
     ASTCDCompilationUnit symbolTableCompilationUnit = symbolTableCDDecorator.decorate(cd, symbolCD, scopeCD);
+
+
+    SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService);
+    SerializationCDDecorator serializationCDDecorator = new SerializationCDDecorator(glex, symbolDeSerDecorator);
+    ASTCDCompilationUnit serializeCD = serializationCDDecorator.decorate(symbolCD);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(symbolTableCompilationUnit);
+  }
+
+  public ASTCDCompilationUnit decorateForSerializationPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+                                                              ASTCDCompilationUnit astClassDiagram, ASTCDCompilationUnit symbolClassDiagramm,
+                                                              ASTCDCompilationUnit scopeClassDiagramm, ASTMCGrammar astmcGrammar, IterablePath handCodedPath) {
+    ASTCDCompilationUnit preparedSymbolCD = prepareCD(cdScope, symbolClassDiagramm);
+    ASTCDCompilationUnit preparedScopeCD = prepareCD(cdScope, scopeClassDiagramm);
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
+    return decorateWithSerialization(preparedCD, preparedSymbolCD, preparedScopeCD, glex, handCodedPath, astmcGrammar);
+  }
+
+  private ASTCDCompilationUnit decorateWithSerialization(ASTCDCompilationUnit cd, ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit scopeCD, GlobalExtensionManagement glex,
+                                                       IterablePath handCodedPath, ASTMCGrammar astmcGrammar) {
+    SymbolTableService symbolTableService = new SymbolTableService(cd, astmcGrammar);
+
+    SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService);
+    SerializationCDDecorator serializationCDDecorator = new SerializationCDDecorator(glex, symbolDeSerDecorator);
+    ASTCDCompilationUnit serializeCD = serializationCDDecorator.decorate(symbolCD);
+
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(serializeCD);
   }
 
   public ASTCDCompilationUnit decorateForVisitorPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,

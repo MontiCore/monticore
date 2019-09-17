@@ -68,8 +68,6 @@ public class CommonSymbolGenerator implements SymbolGenerator {
           break;
         }
       }
-      genEngine.generate("symboltable.serialization.SymbolDeSer", serializationFilePath,
-          prodSymbol.getAstNode().get(), genHelper.getGrammarSymbol().getName(), deserName, className, symbolRule);
     }
 
   }

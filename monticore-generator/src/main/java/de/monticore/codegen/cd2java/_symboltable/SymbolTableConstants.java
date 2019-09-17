@@ -111,9 +111,15 @@ public class SymbolTableConstants {
 
   public static final String SYMBOLS_MULTI_MAP = "com.google.common.collect.LinkedListMultimap<String, %s>";
 
+  public static final String JSON_OBJECT = "de.monticore.symboltable.serialization.json.JsonObject";
+
   public static final String LANGUAGE_SUFFIX = "Language";
 
   public static final String REFERENCE_SUFFIX = "Reference";
+
+  public static final String DE_SER_SUFFIX = "DeSer";
+
+  public static final String SYMBOL_TABLE_PRINTER_SUFFIX = "SymbolTablePrinter";
 
   public static final String MODEL_LOADER_SUFFIX = "ModelLoader";
 
@@ -126,5 +132,7 @@ public class SymbolTableConstants {
   public static final String DEQUE_TYPE = "Deque<%s>";
 
   public static final String DEQUE_WILDCARD_TYPE = "Deque<? extends %s>";
+
+  public static final String I_DE_SER_TYPE = "de.monticore.symboltable.serialization.IDeSer<%s>";
 
 }
