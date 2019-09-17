@@ -5,6 +5,7 @@ grammar A0278c extends cocos.invalid.A0278.A0278a{
 
 
     interface C extends A;
-    D implements C = "foo";
+
+    X = A;
 
 }

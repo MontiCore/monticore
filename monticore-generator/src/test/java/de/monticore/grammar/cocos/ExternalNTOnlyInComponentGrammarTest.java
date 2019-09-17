@@ -13,7 +13,7 @@ public class ExternalNTOnlyInComponentGrammarTest extends CocoTest{
           "as a grammar component.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A0276.A0276";
-  private final String grammar2 = "cocos.invalid.A0276.A0276a";
+  private final String grammar2 = "cocos.invalid.A0276.A0276b";
 
   @BeforeClass
   public static void disableFailQuick() {

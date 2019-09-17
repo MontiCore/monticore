@@ -29,10 +29,6 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
     MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
 
     if (!a.isComponent()) {
-//      for (ASTProd p : a.getExternalProdList()) {
-//        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName()),
-//                a.get_SourcePositionStart());
-//      }
       List<ProdSymbol> externalProds = grammarSymbol.getProds().stream().
           filter(ProdSymbol::isExternal).collect(Collectors.toList());
       for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
@@ -66,10 +62,14 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
         }
       }
 
-      if(!externalProds.isEmpty()){
-        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, externalProds.get(0).getName()), a.get_SourcePositionStart());
+      for (ProdSymbol prodSymbol: externalProds) {
+        for (ProdSymbol prod : prods) {
+            if (prod.getProdComponent(prodSymbol.getName()).isPresent()) {
+              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodSymbol.getName()), a.get_SourcePositionStart());
+          }
+        }
       }
-    }
+     }
   }
 
 }

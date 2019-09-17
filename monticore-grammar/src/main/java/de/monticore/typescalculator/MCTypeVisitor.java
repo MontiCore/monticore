@@ -17,6 +17,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Visitor to converte from MCTypes (Typen Grammatiken, Basic, Collection,
+ * BasicGeneric,FullGeneric)
+ *
+ * TODO Umbauen von Types-Map auf Traverse und single result
+ */
 public class MCTypeVisitor implements MCFullGenericTypesVisitor {
 
   SymTypeExpression symTypeExpression = null;

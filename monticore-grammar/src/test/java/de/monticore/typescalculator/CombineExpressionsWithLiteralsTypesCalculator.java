@@ -63,7 +63,9 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
   public Optional<SymTypeExpression> calculateType(ASTExpression e){
     e.accept(realThis);
-    return lastResult.getLastOpt();
+    Optional<SymTypeExpression> result = lastResult.getLastOpt();
+    lastResult.setLastOpt(Optional.empty());
+    return result;
   }
 
   @Override

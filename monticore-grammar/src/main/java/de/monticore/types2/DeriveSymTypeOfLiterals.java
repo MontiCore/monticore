@@ -60,7 +60,9 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
    */
   public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
     lit.accept(realThis);
-    return result.getLastOpt();
+    Optional<SymTypeExpression> result = this.result.getLastOpt();
+    this.result.setLastOpt(Optional.empty());
+    return result;
   }
   
   // ---------------------------------------------------------- Visting Methods

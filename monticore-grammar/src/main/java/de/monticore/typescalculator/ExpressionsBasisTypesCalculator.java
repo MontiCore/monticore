@@ -45,8 +45,10 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
   }
 
   @Override
-  public void endVisit(ASTLiteralExpression expr){
+  public void traverse(ASTLiteralExpression expr){
     SymTypeExpression result = null;
+    //get the type of the literal
+    expr.getLiteral().accept(getRealThis());
     if(lastResult.isPresentLast()) {
       result = lastResult.getLast();
     }else{
@@ -56,15 +58,9 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
       this.result=result;
       lastResult.setLastOpt(Optional.of(result));
     }else{
+      //No type found --> error
       Log.error("0xA0207 The resulting type cannot be calculated");
     }
-  }
-
-  @Override
-  public void endVisit(ASTLiteral lit){
-    SymTypeExpression result = literalsVisitor.calculateType(lit);
-    this.result=result;
-    lastResult.setLastOpt(Optional.of(result));
   }
 
   @Override
@@ -73,7 +69,6 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
     Optional<TypeSymbol> optType = scope.resolveType(expr.getName());
     Collection<MethodSymbol> methods = scope.resolveMethodMany(expr.getName());
    if(lastResult.isMethodpreferred()) {
-     //TODO: was ist, wenn mehrere Methodsymbols gefunden werden koennen? Und was ist mit Parametern?
      //last ast node was call expression
      //in this case only method is tested
      lastResult.setMethodpreferred(false);
@@ -82,7 +77,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
        SymTypeExpression retType = methodList.get(0).getReturnType();
        for(MethodSymbol method: methodList){
          if(!method.getReturnType().print().equals(retType.print())){
-           //TODO logs
+           //TODO logs methods with the same name can only have the same return type
            Log.error("");
          }
        }
@@ -269,7 +264,9 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
 
   public Optional<SymTypeExpression> calculateType(ASTExpression expr){
     expr.accept(realThis);
-    return lastResult.getLastOpt();
+    Optional<SymTypeExpression> result = lastResult.getLastOpt();
+    lastResult.setLastOpt(Optional.empty());
+    return result;
   }
 
   public void setLastResult(LastResult lastResult){

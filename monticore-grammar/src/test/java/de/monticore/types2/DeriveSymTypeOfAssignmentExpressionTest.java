@@ -61,7 +61,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
     f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope, field("foo", _intSymType));
-    add2scope(scope, field("bar", _booleanSymType));
+    add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("vardouble", _doubleSymType));
     add2scope(scope, field("varchar", _charSymType));
     add2scope(scope, field("varfloat", _floatSymType));
@@ -94,6 +94,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   /*--------------------------------------------------- TESTS ---------------------------------------------------------*/
 
+  /**
+   * test IncSuffixExpression
+   */
   @Test
   public void deriveFromIncSuffixExpression() throws IOException{
     //example with int
@@ -112,6 +115,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
+  /**
+   * test DecSuffixExpression
+   */
   @Test
   public void deriveFromDecSuffixExpression() throws IOException{
     //example with int
@@ -125,6 +131,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("double",tc.typeOf(astex).print());
   }
 
+  /**
+   * test IncPrefixExpression
+   */
   @Test
   public void deriveFromIncPrefixExpression() throws IOException{
     //example with int
@@ -138,6 +147,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("long",tc.typeOf(astex).print());
   }
 
+  /**
+   * test DecPrefixExpression
+   */
   @Test
   public void deriveFromDecPrefixExpression() throws IOException{
     //example with int
@@ -151,6 +163,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("float",tc.typeOf(astex).print());
   }
 
+  /**
+   * test MinusPrefixExpression
+   */
   @Test
   public void deriveFromMinusPrefixExpression() throws IOException{
     //example with int
@@ -164,6 +179,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("double",tc.typeOf(astex).print());
   }
 
+  /**
+   * test PlusPrefixExpression
+   */
   @Test
   public void deriveFromPlusPrefixExpression() throws IOException{
     //example with int
@@ -177,6 +195,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("long",tc.typeOf(astex).print());
   }
 
+  /**
+   * test PlusAssignmentExpression
+   */
   @Test
   public void deriveFromPlusAssignmentExpression() throws IOException{
     //example with int - int
@@ -193,6 +214,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("String",tc.typeOf(astex).print());
   }
 
+  /**
+   * test MinusAssignmentExpression
+   */
   @Test
   public void deriveFromMinusAssignmentExpression() throws IOException{
     //example with int - int
@@ -205,6 +229,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("char",tc.typeOf(astex).print());
   }
 
+  /**
+   * test MultAssignmentExpression
+   */
   @Test
   public void deriveFromMultAssignmentExpression() throws IOException{
     //example with int - int
@@ -217,6 +244,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("double",tc.typeOf(astex).print());
   }
 
+  /**
+   * test DivideAssignmentExpression
+   */
   @Test
   public void deriveFromDivideAssignmentExpression() throws IOException{
     //example with int - int
@@ -229,6 +259,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("float",tc.typeOf(astex).print());
   }
 
+  /**
+   * test ModuloAssignmentExpression
+   */
   @Test
   public void deriveFromModuloAssignmentExpression() throws IOException{
     //example with int - int
@@ -241,6 +274,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
+  /**
+   * test AndAssignmentExpression
+   */
   @Test
   public void deriveFromAndAssignmentExpression() throws IOException{
     //example with int - int
@@ -257,6 +293,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("char",tc.typeOf(astex).print());
   }
 
+  /**
+   * test OrAssignmentExpression
+   */
   @Test
   public void deriveFromOrAssignmentExpression() throws IOException{
     //example with int - int
@@ -269,6 +308,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("boolean",tc.typeOf(astex).print());
   }
 
+  /**
+   * test BinaryXorAssignmentExpression
+   */
   @Test
   public void deriveFromBinaryXorAssignmentExpression() throws IOException{
     //example with int - int
@@ -281,6 +323,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("boolean",tc.typeOf(astex).print());
   }
 
+  /**
+   * test DoubleLeftAssignmentExpression
+   */
   @Test
   public void deriveFromDoubleLeftAssignmentExpression() throws IOException{
     //example with int - int
@@ -293,6 +338,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
+  /**
+   * test DoubleRightAssignmentExpression
+   */
   @Test
   public void deriveFromDoubleRightAssignmentExpression() throws IOException{
     //example with int - int
@@ -305,6 +353,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("char",tc.typeOf(astex).print());
   }
 
+  /**
+   * test LogicalRightAssignmentExpression
+   */
   @Test
   public void deriveFromLogicalRightAssignmentExpression() throws IOException{
     //example with int - int
@@ -317,6 +368,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("char",tc.typeOf(astex).print());
   }
 
+  /**
+   * test RegularAssignmentExpression
+   */
   @Test
   public void deriveFromRegularAssignmentExpression() throws IOException{
     //example with int - int
