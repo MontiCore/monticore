@@ -45,9 +45,12 @@ public class SymTypeOfObjectDeSer implements IDeSer<SymTypeOfObject> {
    */
   @Override
   public Optional<SymTypeOfObject> deserialize(String serialized) {
-    JsonElement json = JsonParser.parseJson(serialized);
-    if (JsonUtil.isCorrectDeSerForKind(this, json)) {
-      Optional<String> objName = JsonUtil.getOptStringMember(json, "objName");
+    return deserialize(JsonParser.parseJson(serialized));
+  }
+  
+  public Optional<SymTypeOfObject> deserialize(JsonElement serialized) {
+    if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
+      Optional<String> objName = JsonUtil.getOptStringMember(serialized, "objName");
       if (!objName.isPresent()) {
         Log.error("Could not find objName of SymTypeOfObject " + serialized);
       }

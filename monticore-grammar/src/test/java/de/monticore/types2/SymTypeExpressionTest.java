@@ -61,7 +61,7 @@ public class SymTypeExpressionTest {
   }
   
   @Test
-  public void jsonTest() {
+  public void printAsJsonTest() {
     JsonElement teDoubleJson = JsonParser.parseJson(teDouble.printAsJson());
     assertEquals("de.monticore.types2.SymTypeConstant", JsonUtil.getOptStringMember(teDoubleJson, "kind").get());
     assertEquals("double",                              JsonUtil.getOptStringMember(teDoubleJson, "constName").get());

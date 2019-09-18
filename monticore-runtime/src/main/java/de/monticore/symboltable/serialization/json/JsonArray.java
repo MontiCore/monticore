@@ -126,7 +126,7 @@ public class JsonArray implements JsonElement {
     JsonPrinter printer = new JsonPrinter();
     printer.beginArray();
     for (JsonElement e : values) {
-      printer.value(e.toString());
+      printer.valueJson(e.toString());
     }
     printer.endArray();
     return printer.getContent();

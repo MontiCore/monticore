@@ -167,7 +167,7 @@ public class JsonObject implements JsonElement {
     JsonPrinter printer = new JsonPrinter();
     printer.beginObject();
     for (String s : members.keySet()) {
-      printer.member(s, members.get(s).toString());
+      printer.memberJson(s, members.get(s).toString());
     }
     printer.endObject();
     return printer.getContent();
