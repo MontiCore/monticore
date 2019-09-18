@@ -1,237 +1,250 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
-import de.monticore.combineliteralandexpressionsbasis._visitor.CombineLiteralAndExpressionsBasisVisitor;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTQualifiedNameExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.expressions.expressionsbasis._ast.*;
+import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
+import de.monticore.types.typesymbols._symboltable.MethodSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.typescalculator.TypesCalculatorHelper;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Optional;
+import java.util.*;
 
-/**
- * Visitor for Derivation of SymType from Expressions
- * (Function 2)
- * i.e. for
- *    expressions/ExpressionsBasis.mc4
- *
- * Assumption: ASTExpression hat its enclosingScope-Attributes set
- */
 public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
-  
-  
-  // ----------------------------------------------------------  realThis start
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  ExpressionsBasisVisitor realThis = this;
-  
+
+  protected IExpressionsBasisScope scope;
+
+  protected SymTypeExpression result;
+
+  protected LastResult lastResult;
+
+  private ExpressionsBasisVisitor realThis;
+
   @Override
-  public void setRealThis(ExpressionsBasisVisitor realThis) {
-    this.realThis = realThis;
+  public void setRealThis(ExpressionsBasisVisitor realThis){
+    this.realThis=realThis;
   }
-  
+
   @Override
-  public ExpressionsBasisVisitor getRealThis() {
+  public ExpressionsBasisVisitor getRealThis(){
     return realThis;
   }
-  
-  // ---------------------------------------------------------- Storage result
-  
-  /**
-   * Storage in the Visitor: result of the last endVisit.
-   * This attribute is synthesized upward.
-   * empty means = no calculation happened (i.e. the visitor was not applicable)
-   * If it is not a type, then an explicit NoType- info is stored.
-   */
-  public Optional<SymTypeExpression> result = Optional.empty();
-  
-  public Optional<SymTypeExpression> getResult() {
-    return result;
+
+  public DeriveSymTypeOfExpression(){
+    realThis=this;
   }
-  
-  public void init() {
-    result = Optional.empty();
-  }
-  
-  // ----------------------------------------------------------
-  
-  /**
-   * Types of Expressions need to be derived using
-   * a) An appropriate Literals-Type-Derivation
-   * (argument upon call)
-   * b) Access to the visible Symbols (i.e. the SymbolTable)
-   * (via the enclosingScope in the AST)
-   */
-  protected ITypesCalculator deriveLit;
-  
-  /**
-   * Derive the Type (through calling the visitor)
-   *
-   * Assumption: ASTExpression hat its enclosingScope-Attributes set
-   */
-  public Optional<SymTypeExpression> calculateType(ASTExpression ex, ITypesCalculator deriveLit) {
-    this.deriveLit = deriveLit;
-    result = Optional.empty();
-    ex.accept(realThis);
-    return result;
-  }
-  
-  // ---------------------------------------------------------- Visting Methods
-  
+
   @Override
-  public void endVisit(ASTExpression ex){
-    // This general method is only called, if no specific exists,:
-    // Should not happen.
-    Log.error("0xEE671 Internal Error: No Type for expression " + ex.toString()
-            + ". Probably TypeCheck mis-configured.");
-  }
-  
-  /**
-   * Names are looked up in the Symboltable and their stored SymExpression
-   * is returned (a copy is not necessary)
-   *
-   * Name can be only a variablename (actually a fieldname)
-   */
-  @Override
-  public void endVisit(ASTNameExpression ex){
-    IExpressionsBasisScope scope = ex.getEnclosingScope();
-    if(scope == null) {
-      Log.error("0xEE672 Internal Error: No Scope for expression " + ex.toString());
+  public void traverse(ASTLiteralExpression expr){
+    SymTypeExpression result = null;
+    //get the type of the literal
+    expr.getLiteral().accept(getRealThis());
+    if(lastResult.isPresentLast()) {
+      result = lastResult.getLast();
+    }else{
+      result = null;
     }
-    String symname = ex.getName();
-  
-    // TODO RE: Umbau von EVariables to FieldS.
-    
-    // The name can be a variable, we check this first:
-    Optional<FieldSymbol> optVar = scope.resolveField(ex.getName());
-    // If the variable is found, its type is the result:
-    if(optVar.isPresent()){ // try variable first
+    if(result!=null) {
+      this.result=result;
+      lastResult.setLastOpt(Optional.of(result));
+    }else{
+      //No type found --> error
+      Log.error("0xA0207 The resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void traverse(ASTNameExpression expr){
+    Optional<FieldSymbol> optVar = scope.resolveField(expr.getName());
+    Optional<TypeSymbol> optType = scope.resolveType(expr.getName());
+    Collection<MethodSymbol> methods = scope.resolveMethodMany(expr.getName());
+   if(lastResult.isMethodpreferred()) {
+     //last ast node was call expression
+     //in this case only method is tested
+     lastResult.setMethodpreferred(false);
+     if(!methods.isEmpty()){
+       ArrayList<MethodSymbol> methodList = new ArrayList<>(methods);
+       SymTypeExpression retType = methodList.get(0).getReturnType();
+       for(MethodSymbol method: methodList){
+         if(!method.getReturnType().print().equals(retType.print())){
+           Log.error("More than one method with the same name and different return types found");
+         }
+       }
+       if (!"void".equals(retType.print())) {
+         SymTypeExpression type = retType;
+         this.result = type;
+         lastResult.setLast(retType);
+       }else {
+         SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeVoid();
+         this.result = wholeResult;
+         lastResult.setLast(wholeResult);
+       }
+     }else{
+      Log.error("No method with the name " +expr.getName()+" found");
+     }
+   }else if(optVar.isPresent()){
+     //no method here, test variable first
       FieldSymbol var = optVar.get();
-      this.result=Optional.of(var.getType());
-    }else {
-      //no var found: we cannot derive a type
-      // we do not issue an error, because there should be a CoCo
-      // to detect that the field didn't exist in that particular scope.
-      // we return a pseudo type:
-      this.result=Optional.of(SymTypeExpressionFactory.createTypeVoid());
+      this.result=var.getType();
+      lastResult.setLast(var.getType());
+    }else if(optType.isPresent()) {
+     //no variable found, test if name is type
+      TypeSymbol type = optType.get();
+      SymTypeExpression res = TypesCalculatorHelper.fromTypeSymbol(type);
+      this.result = res;
+      lastResult.setLast(res);
+
+    }else{
+     //name not found --> package or nothing
+      Log.info("package suspected","ExpressionBasisTypesCalculator");
     }
-    
   }
 
-  // TODO: bitte auf die neue TypeSymbols umbauen
-  // TODO RE: und dann bitte testen, DefTypeBasic kann da helfen ...
-  
-  /* Example first search for variable with name, than class with name,
-     last method with name
-   */
-  /*
-  static class g {
-    static public  void g() {}
-  }
-
-  static class g2 {
-    static public  void g() {}
-  }
-
-  public void g() {
-
-    g2 g = new g2();
-
-    g.g(); // this is g() of g2
-  }
-  */
-  
-  /**********************************************************************************/
-  
-  
-  /**
-   * Field-access:
-   * (we use traverse, because there are two arguments)
-   * Names are looked up in the Symboltable and their stored SymExpression
-   * is returned (a copy is not necessary)
-   */
-  // TODO RE: WEGWERFEN, sobald das geht!
-  // TODO RE: WEGWERFEN, sobald das geht!
-  // Dieneu FieldAccessExpression ist nicht in diesem Visitor, sondern in dem
-  // der Subsprache: ich habe es schon entsprechend dort reinkopiert
-  @Override
-  @Deprecated
-  public void traverse(ASTQualifiedNameExpression node){
-    // Argument 1:
-    if (null != node.getExpression()) {
-      node.getExpression().accept(getRealThis());
-    }
-    if(!result.isPresent()) {
-      Log.error("0xEE673 Internal Error: No SymType for argument 1 if QualifiedNameExpression."
-              + " Probably TypeCheck mis-configured.");
-    }
-    SymTypeExpression leftType = result.get();
-//
-//    // Argument 2:
-//    String name = node.getName();
-//
-//    // name is now only valid in the context of type2
-//    // so we look at the Fields available in type2
-//    // (and e.g. ignore other alternatives, such as ClassName.Functionname without arguments)
-//
-//    // TypSymbol of type2:
-//    TypeSymbol symb12 = type2.getTypeInfo();
-//
-//
-//    // result becomes empty(), if the field isn't found.
-//    // This is probably not an Internal Error! --> to be handled.
-//    // Maybe, we also create an SymTypeError for error situations
-//    // and store that in the result (upwards)
-
-    //leftType can be package, Type, Method, variable
-    // left could also be (3+5), handled like variable?!
-
-    //leftType is package
-    // ...
-
-
-    //leftType is variable
-    // (ggf. fallen alle drei Fälle zusammen, wo LeftType irgendwie einen Typ hat)
-    //...
-
-
-    //leftType is Type (same case as "is Variable"?)
-
-
-    //leftType is method (same case as "is Type"?)
-
-    //leftType nun bekannt -> Name finden
-
-    //Name kann Variable sein
-    // typ der variable herausfinden
-
-    // Liste der Fields durchsuchen
-//    result = Optional.empty();
-//    for(FieldSymbol field : symb12.getFields()) {
-//      if(field.getName().equals(name)) {
-//        result = Optional.of(field.getType());
-//        return;
-//      }
+//  @Override
+//  public void endVisit(ASTQualifiedNameExpression expr) {
+//    String toResolve;
+//    if(types.containsKey(expr)) {
+//      result=types.get(expr);
+//      return;
+//    }else{
+//      ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
+//      toResolve = printer.prettyprint(expr);
 //    }
-  
+//
+//    // (statische innere) Klasse
+//    Optional<TypeSymbol> typeSymbolopt = scope.resolveType(toResolve);
+//
+//    // statische variable
+//    Optional<FieldSymbol> variableSymbolopt = scope.resolveField(toResolve);
+//
+//    // statische methode
+//    Optional<MethodSymbol> methodSymbolopt = scope.resolveMethod(toResolve);
+//
+//    //TODO RE Reihenfolge beachten var vor? Klasse
+//    if(typeSymbolopt.isPresent()){
+//      String fullName= typeSymbolopt.get().getFullName();
+//      addToTypesMapQName(expr,fullName,typeSymbolopt.get().getSuperTypes());
+//    }else if(variableSymbolopt.isPresent()) {
+//      ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
+//      String exprString = printer.prettyprint(expr);
+//      String[] stringParts = exprString.split("\\.");
+//      String beforeName="";
+//      if(stringParts.length!=1){
+//        for(int i=0;i<stringParts.length-1;i++){
+//          beforeName+=stringParts[i]+".";
+//        }
+//        beforeName=beforeName.substring(0,beforeName.length()-1);
+//        if(!scope.resolveType(beforeName).isPresent()&&scope.resolveMethodMany(beforeName).isEmpty()){
+//          Log.info("package suspected","ExpressionsBasisTypesCalculator");
+//        }else{
+//          if(scope.resolveType(beforeName).isPresent()) {
+//            Optional<TypeSymbol> typeSymbol = scope.resolveType(beforeName);
+//            boolean test = false;
+//            for(int i=0;i<typeSymbol.get().getFields().size();i++){
+//              if(!test&&typeSymbol.get().getFields().get(i).getFullName().equals(variableSymbolopt.get().getFullName())){
+//                test = true;
+//              }
+//            }
+//            if(!test){
+//              Log.error("0xA208 the resulting type cannot be calculated");
+//            }
+//          }else{
+//            boolean success = true;
+//            Collection<MethodSymbol> methodSymbols = scope.resolveMethodMany(beforeName);
+//            for(MethodSymbol methodSymbol:methodSymbols){
+//              if(methodSymbol.getReturnType().getName().equals("void")){
+//                success = false;
+//              }else{
+//                SymTypeExpression returnType = methodSymbol.getReturnType();
+//                String[] primitives = new String[]{"int","double","char","float","long","short","byte","boolean"};
+//                for(String primitive: primitives){
+//                  if(primitive.equals(returnType.getName())){
+//                    success=false;
+//                  }
+//                  if(success) {
+//                    if (!methodSymbol.getParameter().contains(variableSymbolopt.get())) {
+//                      success = false;
+//                    }
+//                  }
+//                }
+//                if(!success){
+//                  Log.error("0xA0208 the resulting type cannot be calculated");
+//                }
+//              }
+//            }
+//          }
+//        }
+//      }
+//      String fullName= variableSymbolopt.get().getType().getName();
+//      addToTypesMapQName(expr,fullName,variableSymbolopt.get().getType().getSuperTypes());
+//    }else if(methodSymbolopt.isPresent()) {
+//      String fullName = methodSymbolopt.get().getReturnType().getName();
+//      addToTypesMapQName(expr,fullName,methodSymbolopt.get().getReturnType().getSuperTypes());
+//    }else{
+//      Log.info("package suspected","ExpressionsBasisTypesCalculator");
+//    }
+//  }
+//
+//  private void addToTypesMapQName (ASTExpression expr, List<TypeSymbol> superTypes, String fullName){
+//    String[] parts = fullName.split("\\.");
+//    ArrayList<String> nameList = new ArrayList<>();
+//    Collections.addAll(nameList,parts);
+//    SymTypeExpression res = new SymTypeOfObject();
+//    res.setName(fullName);
+//
+//    List<SymTypeExpression> superTypesAsSymTypes = new ArrayList<>();
+//    for(TypeSymbol ts : superTypes) {
+//      superTypesAsSymTypes.add(ts.deepClone());
+//    }
+//
+//
+//    res.setSuperTypes(superTypesAsSymTypes);
+//    this.result=res;
+//    types.put(expr,unbox(res));
+//  }
+//
+//  private void addToTypesMapQName (ASTExpression expr, String fullName, List<SymTypeExpression> superTypes){
+//    String[] parts = fullName.split("\\.");
+//    ArrayList<String> nameList = new ArrayList<>();
+//    Collections.addAll(nameList,parts);
+//    SymTypeExpression res = new SymTypeOfObject();
+//    res.setName(fullName);
+//
+//    List<SymTypeExpression> superTypesAsSymTypes = new ArrayList<>();
+//    for(SymTypeExpression ts : superTypes) {
+//      superTypesAsSymTypes.add(ts.deepClone());
+//    }
+//
+//
+//    res.setSuperTypes(superTypesAsSymTypes);
+//    this.result=res;
+//    types.put(expr,unbox(res));
+//  }
+//
+//
+  public SymTypeExpression getResult() {
+    return result;
   }
 
+  protected IExpressionsBasisScope getScope() {
+    return scope;
+  }
 
-  /**********************************************************************************/
+  public void setScope(IExpressionsBasisScope scope) {
+    this.scope = scope;
+  }
 
+  public Optional<SymTypeExpression> calculateType(ASTExpression expr){
+    expr.accept(realThis);
+    Optional<SymTypeExpression> result = lastResult.getLastOpt();
+    lastResult.setLastOpt(Optional.empty());
+    return result;
+  }
 
-  // Not all nonterminals are handled here.
-  // The following are only used to create Symbols and will not appear
-  // in AST's:
-  //  symbol EMethod = Name;
-  //  symbol EVariable = Name;
-  //  symbol EType = Name;
+  public void setLastResult(LastResult lastResult){
+    this.lastResult = lastResult;
+  }
 
 }

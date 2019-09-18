@@ -9,6 +9,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
+import static de.monticore.types2.SymTypeConstant.unbox;
+
 /**
  * This class is intended to provide typeChecking functionality.
  * It is designed as functional class (no state), allowing to
@@ -151,7 +153,7 @@ public class TypeCheck {
   /**
    * Function 3:
    * Given two SymTypeExpressions super, sub:
-   * This function answers, whether sub is a subtype of super.
+   * This function answers, whether the right type is a subtype of the left type in an assignment.
    * (This allows to store/use values of type "sub" at all positions of type "super".
    * Compatibility examples:
    *      compatible("int", "long")       (in all directions)
@@ -165,16 +167,47 @@ public class TypeCheck {
    * The concrete Typechecker has to decide on further issues, like
    *     !compatible("List<double>", "List<int>")  where e.g. Java and OCL/P differ
    *
-   * @param sup  Super-Type
-   * @param sub  Sub-Type (assignment-compatible to supertype?)
+   * @param left  Super-Type
+   * @param right  Sub-Type (assignment-compatible to supertype?)
    *
    * TODO: Probably needs to be extended for free type-variable assignments
    * (because it may be that they get unified over time: e.g. Map<a,List<c>> and Map<long,b>
    * are compatible, by refining the assignments a-> long, b->List<c>
    */
-  public boolean compatible(SymTypeExpression sup, SymTypeExpression sub) {
-    // TODO:
-    Log.error("0xED670 Internal Error:Not yet implemented");
+  public static boolean compatible(SymTypeExpression left, SymTypeExpression right) {
+    if(left.isPrimitiveType()&&right.isPrimitiveType()){
+      SymTypeConstant leftType = (SymTypeConstant) left;
+      SymTypeConstant rightType = (SymTypeConstant) right;
+      if(isBoolean(leftType)&&isBoolean(rightType)){
+        return true;
+      }
+      if(isDouble(leftType)&&rightType.isNumericType()){
+        return true;
+      }
+      if(isFloat(leftType)&&(rightType.isIntegralType())||isFloat(right)){
+        return true;
+      }
+      if(isLong(leftType)&&rightType.isIntegralType()){
+        return true;
+      }
+      if(isInt(leftType)&&rightType.isIntegralType()&&!isLong(right)){
+        return true;
+      }
+      if(isChar(leftType)&&isChar(right)){
+        return true;
+      }
+      if(isShort(leftType)&&isShort(right)){
+        return true;
+      }
+      if(isByte(leftType)&&isByte(right)){
+        return true;
+      }
+      return false;
+    }else {
+      if(isSubtypeOf(right,left)||right.print().equals(left.print())){
+        return true;
+      }
+    }
     return false;
   }
   
@@ -193,6 +226,95 @@ public class TypeCheck {
   public boolean isOfTypeForAssign(SymTypeExpression type, ASTExpression exp) {
     return compatible(  type, typeOf(exp));
     // DONE: that is all what is needed
+  }
+
+
+  /**
+   * determines if one SymTypeExpression is a subtype of another SymTypeExpression
+   * @param subType the SymTypeExpression that could be a subtype of the other SymTypeExpression
+   * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
+   */
+  public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType){
+    if(subType.isPrimitiveType()&&superType.isPrimitiveType()) {
+      SymTypeConstant sub = (SymTypeConstant) subType;
+      SymTypeConstant supert = (SymTypeConstant) superType;
+      if (isBoolean(supert) && isBoolean(sub)) {
+        return true;
+      }
+      if (isDouble(supert) && sub.isNumericType() &&!isDouble(sub)) {
+        return true;
+      }
+      if (isFloat(supert) && sub.isIntegralType()) {
+        return true;
+      }
+      if (isLong(supert) && sub.isIntegralType() && !isLong(subType)) {
+        return true;
+      }
+      if (isInt(supert) && sub.isIntegralType() && !isLong(subType) && !isInt(subType)) {
+        return true;
+      }
+      return false;
+    }
+    return isSubtypeOfRec(subType,superType);
+  }
+
+  /**
+   * private recursive helper method for the method isSubTypeOf
+   * @param subType the SymTypeExpression that could be a subtype of the other SymTypeExpression
+   * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
+   */
+  private static boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType){
+    if(!subType.getTypeInfo().getSuperTypes().isEmpty()){
+      for(SymTypeExpression type: subType.getTypeInfo().getSuperTypes()){
+        if(type.print().equals(superType.print())){
+          return true;
+        }
+      }
+    }
+    boolean subtype = false;
+    for(int i = 0;i<subType.getTypeInfo().getSuperTypes().size();i++){
+      if(isSubtypeOf(subType.getTypeInfo().getSuperTypes().get(i),superType)){
+        subtype=true;
+        break;
+      }
+    }
+    return subtype;
+  }
+
+  public static boolean isBoolean(SymTypeExpression type){
+    return "boolean".equals(unbox(type.print()));
+  }
+
+  public static boolean isInt(SymTypeExpression type){
+    return "int".equals(unbox(type.print()));
+  }
+
+  public static boolean isDouble(SymTypeExpression type){
+    return "double".equals(unbox(type.print()));
+  }
+
+  public static boolean isFloat(SymTypeExpression type){
+    return "float".equals(unbox(type.print()));
+  }
+
+  public static boolean isLong(SymTypeExpression type){
+    return "long".equals(unbox(type.print()));
+  }
+
+  public static boolean isChar(SymTypeExpression type){
+    return "char".equals(unbox(type.print()));
+  }
+
+  public static boolean isShort(SymTypeExpression type){
+    return "short".equals(unbox(type.print()));
+  }
+
+  public static boolean isByte(SymTypeExpression type){
+    return "byte".equals(unbox(type.print()));
+  }
+
+  public static boolean isVoid(SymTypeExpression type){
+    return "void".equals(unbox(type.print()));
   }
   
   

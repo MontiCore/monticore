@@ -3,14 +3,6 @@ package de.monticore.types2;
 
 import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
-import de.monticore.mccommon._ast.MCCommonLiterals;
-import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
-import de.monticore.typescalculator.LastResult;
-import de.se_rwth.commons.logging.Log;
-
-import java.util.Optional;
 
 /**
  * Visitor for Derivation of SymType from Literals

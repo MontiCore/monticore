@@ -1,4 +1,4 @@
-package de.monticore.typescalculator;
+package de.monticore.types2;
 
 import de.monticore.types2.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;

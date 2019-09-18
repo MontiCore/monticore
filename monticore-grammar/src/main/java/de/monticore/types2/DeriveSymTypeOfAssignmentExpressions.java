@@ -1,196 +1,491 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
 import de.monticore.expressions.assignmentexpressions._ast.*;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
+import static de.monticore.types2.SymTypeConstant.unbox;
+import static de.monticore.types2.TypeCheck.compatible;
+import static de.monticore.types2.TypeCheck.isSubtypeOf;
+import static de.monticore.types2.DeriveSymTypeOfCommonExpressions.getUnaryNumericPromotionType;
+
 public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpression implements AssignmentExpressionsVisitor {
-  // ----------------------------------------------------------  realThis start
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  AssignmentExpressionsVisitor realThis = this;
+
+  private AssignmentExpressionsVisitor realThis;
 
   @Override
   public void setRealThis(AssignmentExpressionsVisitor realThis){
-    this.realThis = realThis;
-    super.realThis = realThis;
+    this.realThis=realThis;
   }
 
   @Override
   public AssignmentExpressionsVisitor getRealThis(){
     return realThis;
   }
-  // ---------------------------------------------------------- realThis end
 
-  // inherited:
-  // public Optional<SymTypeExpression> result = Optional.empty();
-  // protected DeriveSymTypeOfLiterals deriveLit;
-
-  // ---------------------------------------------------------- Additional Visting Methods
-
-  /** Overriding the generall error message to see that the error comes from this visitor
-   */
-  @Override
-  public void endVisit(ASTExpression ex){
-    // This general method is only called, if no specific exists,:
-    // Should not happen.
-    Log.error("0xEE771 Internal Error: No Type for expression " + ex.toString()
-        + ". Probably TypeCheck mis-configured.");
-  }
-
-  /**********************************************************************************/
-
-  @Override
-  public void traverse(ASTRegularAssignmentExpression ex){
-    ex.getLeft().accept(getRealThis());
-    //cache result of left Expression
-    SymTypeExpression leftResult = getResult().get();
-    ex.getRight().accept(getRealThis());
-    //cache result of right Expression
-    SymTypeExpression rightResult = getResult().get();
-    //calculate the type of the whole expression with helper method
-    if(ex.getOperator()==ASTConstantsAssignmentExpressions.EQUALS) {
-      result = calculateTypeOfRegularAssignment(leftResult, rightResult);
-    }else if(ex.getOperator()==ASTConstantsAssignmentExpressions.ANDEQUALS){
-      result = calculateTypeOfBitwiseAssignment(leftResult,rightResult);
-    }else if(ex.getOperator()==ASTConstantsAssignmentExpressions.PIPEEQUALS){
-      result = calculateTypeOfBitwiseAssignment(leftResult,rightResult);
-    }else if(ex.getOperator()==ASTConstantsAssignmentExpressions.ROOFEQUALS){
-      result = calculateTypeOfBitwiseAssignment(leftResult,rightResult);
-    }else if(ex.getOperator()==ASTConstantsAssignmentExpressions.GTGTEQUALS){
-      result = calculateTypeOfBitshiftAssignment(leftResult,rightResult);
-    }else if(ex.getOperator()==ASTConstantsAssignmentExpressions.GTGTGTEQUALS){
-      result = calculateTypeOfBitshiftAssignment(leftResult,rightResult);
-    }else if(ex.getOperator()==ASTConstantsAssignmentExpressions.LTLTEQUALS){
-      result = calculateTypeOfBitshiftAssignment(leftResult,rightResult);
-    }else if(ex.getOperator()==ASTConstantsAssignmentExpressions.MINUSEQUALS){
-      result = calculateTypeOfArithmeticAssignment(leftResult, rightResult);
-    }else if(ex.getOperator()==ASTConstantsAssignmentExpressions.PLUSEQUALS){
-      result = calculateTypeOfArithmeticAssignmentWithString(leftResult, rightResult);
-    }else if(ex.getOperator()==ASTConstantsAssignmentExpressions.SLASHEQUALS){
-      result = calculateTypeOfArithmeticAssignment(leftResult, rightResult);
-    }else if(ex.getOperator()==ASTConstantsAssignmentExpressions.STAREQUALS){
-      result = calculateTypeOfArithmeticAssignment(leftResult, rightResult);
-    }else if(ex.getOperator()==ASTConstantsAssignmentExpressions.PERCENTEQUALS){
-      result = calculateTypeOfArithmeticAssignment(leftResult, rightResult);
-    }
-    if(!result.isPresent()){
-      //log error
-    }
-  }
-
-  /**
-   * helper method for traverse method
-   * calculates the type of the whole regular expression based on the types of the left and right expression
-   */
-  private Optional<SymTypeExpression> calculateTypeOfRegularAssignment(SymTypeExpression left, SymTypeExpression right){
-    // only basic int - int for testing, anything else will be added later
-    if(left.print().equals("int")&&right.print().equals("int")){
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
-    }
-    return Optional.empty();
+  public DeriveSymTypeOfAssignmentExpressions(){
+    realThis=this;
   }
 
   @Override
-  public void handle(ASTIncPrefixExpression ex){
-    ex.getExpression().accept(getRealThis());
-    SymTypeExpression expression = result.get();
-    result = calculateTypeOfUnaryAssignments(expression);
-    if(!result.isPresent()){
-      //log error
+  public void traverse(ASTIncSuffixExpression expr){
+    SymTypeExpression innerResult = null;
+    expr.getExpression().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //get the result of the inner expression
+      innerResult = lastResult.getLast();
     }
-  }
-
-  @Override
-  public void handle(ASTDecPrefixExpression ex){
-    ex.getExpression().accept(getRealThis());
-    SymTypeExpression expression = result.get();
-    result = calculateTypeOfUnaryAssignments(expression);
-    if(!result.isPresent()){
-      //log error
-    }
-  }
-
-  @Override
-  public void handle(ASTIncSuffixExpression ex){
-    ex.getExpression().accept(getRealThis());
-    SymTypeExpression expression = result.get();
-    result = calculateTypeOfUnaryAssignments(expression);
-    if(!result.isPresent()){
-      //log error
-    }
-  }
-
-  @Override
-  public void handle(ASTDecSuffixExpression ex){
-    ex.getExpression().accept(getRealThis());
-    SymTypeExpression expression = result.get();
-    result = calculateTypeOfUnaryAssignments(expression);
-    if(!result.isPresent()){
-      //log error
-    }
-  }
-
-  @Override
-  public void handle(ASTPlusPrefixExpression ex){
-    ex.getExpression().accept(getRealThis());
-    SymTypeExpression expression = result.get();
-    result = calculateTypeOfUnaryAssignments(expression);
-    if(!result.isPresent()){
-      //log error
-    }
-  }
-
-  @Override
-  public void handle(ASTMinusPrefixExpression ex){
-    ex.getExpression().accept(getRealThis());
-    SymTypeExpression expression = result.get();
-    result = calculateTypeOfUnaryAssignments(expression);
-    if(!result.isPresent()){
-      //log error
-    }
-  }
-
-  /**
-   * private helper method for the calculation of the unary assignment expressions
-   */
-  private Optional<SymTypeExpression> calculateTypeOfUnaryAssignments(SymTypeExpression ex){
-    if(ex.print().equals("int")){
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
-    }else if(ex.print().equals("double")){
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("double"));
-    }else if(ex.print().equals("long")){
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
-    }else if(ex.print().equals("float")){
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("float"));
-    }else if(ex.print().equals("short")){
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("short"));
+    Optional<SymTypeExpression> wholeResult = getUnaryNumericPromotionType(innerResult);
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
     }else{
-      return Optional.empty();
+      Log.error("0xA0170 The resulting type cannot be calculated");
     }
   }
 
-  private Optional<SymTypeExpression> calculateTypeOfBitwiseAssignment(SymTypeExpression left, SymTypeExpression right){
-    return Optional.empty();
-  }
-
-  private Optional<SymTypeExpression> calculateTypeOfBitshiftAssignment(SymTypeExpression left, SymTypeExpression right){
-    return Optional.empty();
-  }
-
-  private Optional<SymTypeExpression> calculateTypeOfArithmeticAssignment(SymTypeExpression left, SymTypeExpression right){
-    return Optional.empty();
-  }
-
-  private Optional<SymTypeExpression> calculateTypeOfArithmeticAssignmentWithString(SymTypeExpression left, SymTypeExpression right){
-    if(left.print().equals("String")){
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("String"));
+  @Override
+  public void traverse(ASTDecSuffixExpression expr){
+    SymTypeExpression innerResult = null;
+    expr.getExpression().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //get the result of the inner expression
+      innerResult = lastResult.getLast();
     }
-    return calculateTypeOfArithmeticAssignment(left,right);
+    Optional<SymTypeExpression> wholeResult = getUnaryNumericPromotionType(innerResult);
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0171 The resulting type cannot be calculated");
+    }
   }
+
+  @Override
+  public void traverse(ASTIncPrefixExpression expr){
+    SymTypeExpression innerResult = null;
+    expr.getExpression().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //get the result of the inner expression
+      innerResult = lastResult.getLast();
+    }
+    Optional<SymTypeExpression> wholeResult = getUnaryNumericPromotionType(innerResult);
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0172 The resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void traverse(ASTDecPrefixExpression expr){
+    SymTypeExpression innerResult = null;
+    expr.getExpression().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //get the result of the inner expression
+      innerResult = lastResult.getLast();
+    }
+    Optional<SymTypeExpression> wholeResult = getUnaryNumericPromotionType(innerResult);
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0173 The resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void traverse(ASTPlusPrefixExpression expr){
+    SymTypeExpression innerResult = null;
+    expr.getExpression().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //get the result of the inner expression
+      innerResult = lastResult.getLast();
+    }
+    Optional<SymTypeExpression> wholeResult = getUnaryNumericPromotionType(innerResult);
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0174 The resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void traverse(ASTMinusPrefixExpression expr){
+    SymTypeExpression innerResult = null;
+    expr.getExpression().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //get the result of the inner expression
+      innerResult = lastResult.getLast();
+    }
+    Optional<SymTypeExpression> wholeResult = getUnaryNumericPromotionType(innerResult);
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0175 The resulting type cannot be calculated");
+    }
+  }
+
+  private void calculatePlusAssignment(ASTRegularAssignmentExpression expr){
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmeticWithString(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0176 The resulting type cannot be calculated");
+    }
+  }
+
+  private void calculateMinusAssignment(ASTRegularAssignmentExpression expr){
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0177 The resulting type cannot be calculated");
+    }
+  }
+
+  private void calculateMultAssignment(ASTRegularAssignmentExpression expr){
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0178 The resulting type cannot be calculated");
+    }
+  }
+
+  private void calculateDivideAssignment(ASTRegularAssignmentExpression expr){
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0179 The resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void traverse(ASTRegularAssignmentExpression expr){
+    //there has to be a variable on the left side of an assignmentexpression
+    Optional<FieldSymbol> leftEx = scope.resolveField(new ExpressionsBasisPrettyPrinter(new IndentPrinter()).prettyprint(expr.getLeft()));
+    if(!leftEx.isPresent()){
+      Log.error("0xA0180 The resulting type cannot be calculated");
+    }
+    //the regular assignment expression covers all assignment expressions --> differentiate between these
+    if(expr.getOperator()==ASTConstantsAssignmentExpressions.PLUSEQUALS){
+      calculatePlusAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.MINUSEQUALS){
+      calculateMinusAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.STAREQUALS){
+      calculateMultAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.SLASHEQUALS){
+      calculateDivideAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.ANDEQUALS){
+      calculateAndAssigment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.PIPEEQUALS){
+      calculateOrAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.GTGTEQUALS){
+      calculateDoubleRightAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.LTLTEQUALS){
+      calculateDoubleLeftAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.GTGTGTEQUALS){
+      calculateLogicalRightAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.ROOFEQUALS){
+      calculateBinaryXorAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.PERCENTEQUALS){
+      calculateModuloAssignment(expr);
+    }else {
+      Optional<SymTypeExpression> wholeResult = calculateRegularAssignment(expr.getLeft(),expr.getRight());
+      if(wholeResult.isPresent()){
+        //store the result of the expression in the last result
+        Optional<SymTypeExpression> sym = wholeResult;
+        lastResult.setLastOpt(sym);
+        this.result = sym.get();
+      }
+      else {
+        Log.error("0xA0180 The resulting type cannot be calculated");
+      }
+    }
+  }
+
+  private void calculateAndAssigment(ASTRegularAssignmentExpression expr){
+    //definiert auf boolean - boolean und ganzzahl - ganzzahl
+    Optional<SymTypeExpression> wholeResult = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0181 The resulting type cannot be calculated");
+    }
+  }
+
+  private void calculateOrAssignment(ASTRegularAssignmentExpression expr){
+    //definiert auf boolean - boolean und ganzzahl - ganzzahl
+    Optional<SymTypeExpression> wholeResult = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0182 The resulting type cannot be calculated");
+    }
+  }
+
+  private void calculateBinaryXorAssignment(ASTRegularAssignmentExpression expr){
+    //definiert auf boolean - boolean und ganzzahl - ganzzahl
+    Optional<SymTypeExpression> wholeResult = calculateTypeBinaryOperations(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0183 The resulting type cannot be calculated");
+    }
+  }
+
+  private void calculateDoubleRightAssignment(ASTRegularAssignmentExpression expr){
+    //definiert auf Ganzzahl - Ganzzahl
+    Optional<SymTypeExpression> wholeResult = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0184 The resulting type cannot be calculated");
+    }
+  }
+
+  private void calculateDoubleLeftAssignment(ASTRegularAssignmentExpression expr){
+    //definiert auf Ganzzahl - Ganzzahl
+    Optional<SymTypeExpression> wholeResult = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0185 The resulting type cannot be calculated");
+    }
+  }
+
+  private void calculateLogicalRightAssignment(ASTRegularAssignmentExpression expr){
+    //definiert auf Ganzzahl - Ganzzahl
+    Optional<SymTypeExpression> wholeResult = calculateTypeBitOperation(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0186 The resulting type cannot be calculated");
+    }
+  }
+
+  private void calculateModuloAssignment(ASTRegularAssignmentExpression expr){
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    if(wholeResult.isPresent()){
+      //store the result of the expression in the last result
+      Optional<SymTypeExpression> sym = wholeResult;
+      lastResult.setLastOpt(sym);
+      this.result = sym.get();
+    }else{
+      Log.error("0xA0187 The resulting type cannot be calculated");
+    }
+  }
+
+  /**
+   * helper method for the five basic arithmetic assignment operations (+=,-=,*=,/=,%=)
+   */
+  private Optional<SymTypeExpression> calculateTypeArithmetic(ASTExpression left, ASTExpression right){
+    SymTypeExpression leftResult = null;
+    SymTypeExpression rightResult = null;
+    left.accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //store the result of the left inner expression in a variable
+      leftResult = lastResult.getLast();
+    }else{
+      Log.error("The type of the left expression could not be calculated");
+    }
+    right.accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //store the result of the right inner expression in a variable
+      rightResult = lastResult.getLast();
+    }else{
+      Log.error("The type of the right expression could not be calculated");
+    }
+    //if the left and the right result are a numeric type then the type of the whole expression is the type of the left expression
+    if(leftResult.isPrimitiveType()&&((SymTypeConstant)leftResult).isNumericType()&&rightResult.isPrimitiveType()&&((SymTypeConstant)rightResult).isNumericType()){
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
+    }
+    //should not happen, not valid, will be handled in traverse
+    return Optional.empty();
+  }
+
+  /**
+   * helper method for += because in this case you can use Strings too
+   */
+  private Optional<SymTypeExpression> calculateTypeArithmeticWithString(ASTExpression left, ASTExpression right){
+    SymTypeExpression leftResult = null;
+    SymTypeExpression rightResult = null;
+    left.accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //store the result of the left inner expression in a variable
+      leftResult = lastResult.getLast();
+    }else{
+      Log.error("The type of the left expression could not be calculated");
+    }
+    right.accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //store the result of the right inner expression in a variable
+      rightResult = lastResult.getLast();
+    }else{
+      Log.error("The type of the right expression could not be calculated");
+    }
+    //if the type of the left expression is a String then so is the type of the whole expression
+    if("String".equals(leftResult.print())){
+      return Optional.of(SymTypeExpressionFactory.createTypeObject("String",null));
+    }
+    //else continue with the normal calculation of +=,-=,*=,/= and %=
+    return calculateTypeArithmetic(left,right);
+  }
+
+  /**
+   * helper method for the calculation of the type of the bitshift operations (<<=, >>=, >>>=)
+   */
+  private Optional<SymTypeExpression> calculateTypeBitOperation(ASTExpression left, ASTExpression right){
+    SymTypeExpression leftResult = null;
+    SymTypeExpression rightResult = null;
+    left.accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //store the result of the left inner expression in a variable
+      leftResult = lastResult.getLast();
+    }else{
+      Log.error("The type of the left expression could not be calculated");
+    }
+    right.accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //store the result of the right inner expression in a variable
+      rightResult = lastResult.getLast();
+    }else{
+      Log.error("The type of the right expression could not be calculated");
+    }
+    //the bitshift operations are only defined for integers --> long, int, char, short, byte
+    if(leftResult.isPrimitiveType()&&((SymTypeConstant)leftResult).isIntegralType()&&rightResult.isPrimitiveType()&&((SymTypeConstant)rightResult).isIntegralType()){
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
+    }
+    //should not happen, not valid, will be handled in traverse
+    return Optional.empty();
+  }
+
+  /**
+   * helper method for the calculation of the type of the binary operations (&=,|=,^=)
+   */
+  private Optional<SymTypeExpression> calculateTypeBinaryOperations(ASTExpression left, ASTExpression right){
+    SymTypeExpression leftResult = null;
+    SymTypeExpression rightResult = null;
+    left.accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //store the result of the left inner expression in a variable
+      leftResult = lastResult.getLast();
+    }else{
+      Log.error("The type of the left expression could not be calculated");
+    }
+    right.accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //store the result of the right inner expression in a variable
+      rightResult = lastResult.getLast();
+    }else{
+      Log.error("The type of the right expression could not be calculated");
+    }
+    if(leftResult.isPrimitiveType()&&((SymTypeConstant)leftResult).isIntegralType()&&rightResult.isPrimitiveType()&&((SymTypeConstant)rightResult).isIntegralType()){
+      //option 1: both are of integral type
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
+    }else if("boolean".equals(unbox(leftResult.print()))&&"boolean".equals(unbox(rightResult.print()))) {
+      //option 2: both are booleans
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+    }
+    //should not happen, not valid, will be handled in traverse
+    return Optional.empty();
+  }
+
+  /**
+   * helper method for the calculation of a regular assignment (=)
+   */
+  public Optional<SymTypeExpression> calculateRegularAssignment(ASTExpression left,
+                                                      ASTExpression right) {
+    SymTypeExpression leftResult = null;
+    SymTypeExpression rightResult = null;
+    left.accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //store the result of the left inner expression in a variable
+      leftResult = lastResult.getLast();
+    }else{
+      Log.error("The type of the left expression could not be calculated");
+    }
+    right.accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      //store the result of the right inner expression in a variable
+      rightResult = lastResult.getLast();
+    }else{
+      Log.error("The type of the right expression could not be calculated");
+    }
+    //option one: both are numeric types and are assignable
+    if(leftResult.isPrimitiveType()&&((SymTypeConstant)leftResult).isNumericType()&&rightResult.isPrimitiveType()&&((SymTypeConstant)rightResult).isNumericType()&&compatible(leftResult,rightResult)){
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
+    }else if (rightResult.print().equals(leftResult.print())||isSubtypeOf(rightResult,leftResult)) {
+      //option two: none of them are primitive types and they are either from the same class or stand in a super/subtype relation with the supertype on the left side
+      return Optional.of(leftResult);
+    }
+    //should not happen, not valid, will be handled in traverse
+    return Optional.empty();
+  }
+
+  public Optional<SymTypeExpression> calculateType(ASTExpression expr){
+    expr.accept(realThis);
+    Optional<SymTypeExpression> result = lastResult.getLastOpt();
+    lastResult.setLastOpt(Optional.empty());
+    return result;
+  }
+
+  public void setLastResult(LastResult lastResult){
+    this.lastResult = lastResult;
+  }
+
 }

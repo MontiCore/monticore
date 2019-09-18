@@ -8,8 +8,6 @@ import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
-import de.monticore.typescalculator.CombineExpressionsWithLiteralsTypesCalculator;
-import de.monticore.typescalculator.TypesCalculator;
 import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -19,7 +17,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static de.monticore.types2.DefsTypeBasic.*;
 import static de.monticore.types2.DefsTypeBasic._booleanSymType;
@@ -111,7 +108,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  CombineExpressionsWithLiteralsTypesCalculator derLit = new CombineExpressionsWithLiteralsTypesCalculator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
+  DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
 
   // other arguments not used (and therefore deliberately null)
 
@@ -382,8 +379,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
    */
   @Test
   public void deriveFromConditionalExpression() throws IOException{
-    //TODO: delete the next line after completing TypeCheck
-    TypesCalculator.setExpressionAndLiteralsTypeCalculator(tc.iTypesCalculator);
     //test with two ints as true and false expression
     String s = "3<4?9:10";
     ASTExpression astex = p.parse_StringExpression(s).get();
@@ -461,14 +456,19 @@ public class DeriveSymTypeOfCommonExpressionTest {
     astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
 
-    //TODO:test for method with qualified name without parameters
+    //test for method with qualified name without parameters
     s = "types.Test.store()";
     astex = p.parse_StringExpression(s).get();
     assertEquals("double",tc.typeOf(astex).print());
 
-    //TODO:test for method with qualified name with parameters
+    //test for method with qualified name with parameters
     s = "types.Test.pay(4)";
     astex = p.parse_StringExpression(s).get();
     assertEquals("void",tc.typeOf(astex).print());
+
+    //TODO: test for String method --> type String has no spanned scope --> no methods can be found
+//    s = "\"test\".hashCode()";
+//    astex = p.parse_StringExpression(s).get();
+//    assertEquals("int",tc.typeOf(astex).print());
   }
 }

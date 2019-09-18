@@ -1,13 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types2;
 
-import de.monticore.literals.mccommonliterals._ast.ASTCharLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
-import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
-import de.monticore.types2.SymTypeConstant;
-import de.monticore.types2.SymTypeExpression;
-import de.monticore.typescalculator.LastResult;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;

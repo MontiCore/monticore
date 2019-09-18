@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated
 public class TypesCalculatorHelper {
 
   public static boolean isPrimitiveType(SymTypeExpression type) {

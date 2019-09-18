@@ -5,8 +5,6 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.typescalculator.CombineExpressionsWithLiteralsTypesCalculator;
-import de.monticore.typescalculator.TypesCalculator;
 import de.monticore.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -75,7 +73,6 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",f)));
     derLit.setScope(scope);
-    TypesCalculator.setExpressionAndLiteralsTypeCalculator(derLit);
   }
 
   // Parer used for convenience:
@@ -86,7 +83,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  CombineExpressionsWithLiteralsTypesCalculator derLit = new CombineExpressionsWithLiteralsTypesCalculator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
+  DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
 
   // other arguments not used (and therefore deliberately null)
 
