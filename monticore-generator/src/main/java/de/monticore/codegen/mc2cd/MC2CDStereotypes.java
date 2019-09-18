@@ -33,6 +33,14 @@ public enum MC2CDStereotypes {
    */
   SCOPE("scope"),
   /**
+   * To mark class as symbol
+   */
+  INHERITED_SYMBOL("inheritedSymbol"),
+  /**
+   * To mark class as symbol
+   */
+  INHERITED_SCOPE("inheritedScope"),
+  /**
    * To add bodies to methods
    */
   METHOD_BODY("methodBody"),

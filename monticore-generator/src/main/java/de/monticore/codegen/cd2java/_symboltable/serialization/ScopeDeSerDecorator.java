@@ -171,7 +171,8 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
     List<ASTCDType> scopeSpanningSymbolNames = symbolDefiningProds.stream()
         .filter(c -> c.getModifierOpt().isPresent())
-        .filter(c -> symbolTableService.hasScopeStereotype(c.getModifierOpt().get()))
+        .filter(c -> symbolTableService.hasScopeStereotype(c.getModifierOpt().get())
+        || symbolTableService.hasInheritedScopeStereotype(c.getModifierOpt().get()))
         .collect(Collectors.toList());
 
     Map<String, String> symbolMap = new HashMap<>();

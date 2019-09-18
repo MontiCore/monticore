@@ -82,7 +82,7 @@
     <resources.plugin>2.7</resources.plugin>
     <site.plugin>3.4</site.plugin>
     <source.plugin>2.4</source.plugin>
-    <surefire.plugin>2.18.1</surefire.plugin>
+    <surefire.plugin>2.19.1</surefire.plugin>
     <tycho.plugin>0.22.0</tycho.plugin>
     <wagon.plugin>1.0</wagon.plugin>
 

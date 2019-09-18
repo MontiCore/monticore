@@ -192,7 +192,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       resolveMethods.add(createGetSymbolsMethod(getSymbolsMethodName, symbolFullTypeName));
 
       String getLocalSymbolsMethodName = "getLocal" + className + "Symbols";
-      resolveMethods.add(createGetLocalSymbolsMethod(getLocalSymbolsMethodName, className, listSymbol));
+      resolveMethods.add(createGetLocalSymbolsMethod(getLocalSymbolsMethodName, className, getCDTypeFacade().createListTypeOf(symbolFullTypeName)));
 
       ASTCDParameter symbolParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(symbolFullTypeName), "symbol");
       resolveMethods.add(createAddMethod(symbolParameter));

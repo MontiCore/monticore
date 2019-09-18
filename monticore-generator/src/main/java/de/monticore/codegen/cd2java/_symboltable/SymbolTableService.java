@@ -16,9 +16,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Names;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
@@ -554,7 +552,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public Optional<ASTCDType> getTypeWithScopeInfo(ASTCDType type) {
-    if (type.getModifierOpt().isPresent() && hasScopeStereotype(type.getModifierOpt().get())) {
+    if (type.getModifierOpt().isPresent() && (hasScopeStereotype(type.getModifierOpt().get())
+        || hasInheritedScopeStereotype(type.getModifierOpt().get()))) {
       return Optional.of(type);
     }
     if (!type.getCDTypeSymbolOpt().isPresent()) {
@@ -609,6 +608,29 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
         .collect(Collectors.toList());
   }
 
+  /**
+   * returns classes that get their symbol property from a symbol interface
+   * e.g. interface symbol Foo = Name; Bla implements Foo = Name
+   * -> than Bla has inherited symbol property
+   *
+   * @param astcdClasses
+   * @return returns a Map of <the class that inherits the property, the symbol interface full name from which it inherits it>
+   */
+  public Map<ASTCDClass, String> getInheritedSymbolPropertyClasses(List<ASTCDClass> astcdClasses) {
+
+    Map<ASTCDClass, String> inheritedSymbolProds = new HashMap<>();
+    for (ASTCDClass astcdClass : astcdClasses) {
+      // classes with inherited symbol property
+      if (astcdClass.isPresentModifier() && hasInheritedSymbolStereotype(astcdClass.getModifier())) {
+        List<String> stereotypeValues = getStereotypeValues(astcdClass.getModifier(), MC2CDStereotypes.INHERITED_SYMBOL);
+        if (stereotypeValues.size() == 1) {
+          inheritedSymbolProds.put(astcdClass, stereotypeValues.get(0));
+        }
+      }
+    }
+    return inheritedSymbolProds;
+  }
+
   public List<ASTCDType> getNoSymbolAndScopeDefiningProds(ASTCDDefinition astcdDefinition) {
     List<ASTCDType> symbolProds = getNoSymbolAndScopeDefiningClasses(astcdDefinition.getCDClassList());
     symbolProds.addAll(getNoSymbolAndScopeDefiningInterfaces(astcdDefinition.getCDInterfaceList()));
@@ -620,6 +642,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
         .filter(ASTCDClassTOP::isPresentModifier)
         .filter(c -> !hasSymbolStereotype(c.getModifier()))
         .filter(c -> !hasScopeStereotype(c.getModifier()))
+        .filter(c -> !hasInheritedSymbolStereotype(c.getModifier()))
         .collect(Collectors.toList());
   }
 
@@ -649,12 +672,12 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
         .filter(ASTCDClassTOP::isPresentModifier)
         .filter(c -> hasScopeStereotype(c.getModifier()))
         .filter(c -> !hasSymbolStereotype(c.getModifier()))
+        .filter(c -> !hasInheritedSymbolStereotype(c.getModifier()))
         .collect(Collectors.toList());
 
     symbolProds.addAll(astcdDefinition.getCDInterfaceList().stream()
         .filter(ASTCDInterface::isPresentModifier)
         .filter(c -> hasScopeStereotype(c.getModifier()))
-        .filter(c -> !hasSymbolStereotype(c.getModifier()))
         .collect(Collectors.toList()));
     return symbolProds;
   }
@@ -697,5 +720,13 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       }
     }
     return Optional.empty();
+  }
+
+  public boolean hasInheritedSymbolStereotype(ASTModifier modifier) {
+    return hasStereotype(modifier, MC2CDStereotypes.INHERITED_SYMBOL);
+  }
+
+  public boolean hasInheritedScopeStereotype(ASTModifier modifier) {
+    return hasStereotype(modifier, MC2CDStereotypes.INHERITED_SCOPE);
   }
 }

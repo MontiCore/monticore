@@ -5,7 +5,7 @@ ${tc.signature( "simpleName", "isScopeSpanningSymbol")}
 
   // ast -> symbol
   ast.setSymbol(symbol);
-  ast.set${simpleName}Symbol(symbol);
+  ast.set${simpleName}(symbol);
   ast.setEnclosingScope(symbol.getEnclosingScope());
 
 <#if isScopeSpanningSymbol>
