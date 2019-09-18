@@ -327,7 +327,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
     mutatorDecorator.enableTemplates();
     for (ASTCDMethod mutatorMethod : mutatorMethods) {
       if (mutatorMethod.getName().equals("setEnclosingScope")) {
-        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("methods.opt.Set", enclosingScopeAttribute));
+        this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("methods.opt.Set", enclosingScopeAttribute, enclosingScopeAttribute.getName()));
       } else if (mutatorMethod.getName().equals("setEnclosingScopeOpt")) {
         this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("_symboltable.scope.SetEnclosingScopeOpt"));
       } else if (mutatorMethod.getName().equals("setEnclosingScopeAbsent")) {
