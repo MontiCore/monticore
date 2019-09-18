@@ -47,21 +47,24 @@ public class SymTypeOfGenericsDeSer implements IDeSer<SymTypeOfGenerics> {
    */
   @Override
   public Optional<SymTypeOfGenerics> deserialize(String serialized) {
-    JsonElement json = JsonParser.parseJson(serialized);
-    if (JsonUtil.isCorrectDeSerForKind(this, json)) {
-      Optional<String> typeConstructorFullName = JsonUtil.getOptStringMember(json,
+    return deserialize(JsonParser.parseJson(serialized));
+  }
+  
+  public Optional<SymTypeOfGenerics> deserialize(JsonElement serialized) {
+    if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
+      Optional<String> typeConstructorFullName = JsonUtil.getOptStringMember(serialized,
           "typeConstructorFullName");
       if (!typeConstructorFullName.isPresent()) {
         Log.error("Could not find typeConstructorFullName of SymTypeOfGenerics " + serialized);
       }
       
       List<SymTypeExpression> arguments = new ArrayList<>();
-      // delegate deserialization of individual arguments to the SymTypeExpressionDeSer
-      SymTypeExpressionDeSer symTypeExpressionDeSer = new SymTypeExpressionDeSer();
-      if (json.getAsJsonObject().containsKey("arguments")
-          && json.getAsJsonObject().get("arguments").isJsonArray()) {
-        for (JsonElement e : json.getAsJsonObject().get("arguments").getAsJsonArray().getValues()) {
-          Optional<SymTypeExpression> arg = symTypeExpressionDeSer.deserialize(e.toString());
+      if (serialized.getAsJsonObject().containsKey("arguments")
+          && serialized.getAsJsonObject().get("arguments").isJsonArray()) {
+        // delegate deserialization of individual arguments to the SymTypeExpressionDeSer
+        SymTypeExpressionDeSer symTypeExpressionDeSer = new SymTypeExpressionDeSer();
+        for (JsonElement e : serialized.getAsJsonObject().get("arguments").getAsJsonArray().getValues()) {
+          Optional<SymTypeExpression> arg = symTypeExpressionDeSer.deserialize(e);
           if (arg.isPresent()) {
             arguments.add(arg.get());
           }

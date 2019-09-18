@@ -36,7 +36,9 @@ import de.se_rwth.commons.logging.Log;
 public <#if hasHWC>abstract</#if> class ${className} ${superClass} ${superInterfaces} {
 
 <#list symbolNames?keys as symbol>
-  protected LinkedListMultimap<String, ${symbolNames[symbol]}> ${symbol?lower_case}s = LinkedListMultimap.create();
+  protected LinkedListMultimap<String,
+    ${symbolNames[symbol]}> ${symbol?lower_case}s
+    = LinkedListMultimap.create();
 
   protected boolean ${symbol?lower_case}AlreadyResolved = false;
 
@@ -182,7 +184,8 @@ public <#if hasHWC>abstract</#if> class ${className} ${superClass} ${superInterf
 
   @Override public int getSymbolsSize() {
     <#if (symbolNames?keys?size gt 0)>
-    return <#list symbolNames?keys as symbol>${symbol?lower_case}s.size()<#sep> + </#sep></#list>;
+    return <#list symbolNames?keys as symbol>${symbol?lower_case}s.size()<#sep> +
+      </#sep></#list>;
     <#else>
       return 0;
     </#if>

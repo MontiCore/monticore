@@ -8,7 +8,7 @@ grammar Attributes  {
 
   abstract B;
 
-  interface C;
+  interface scope C;
 
 
   D = a:A b:B c:C a:A b:B c:C;

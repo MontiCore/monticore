@@ -44,9 +44,12 @@ public class SymTypeConstantDeSer implements IDeSer<SymTypeConstant> {
    */
   @Override
   public Optional<SymTypeConstant> deserialize(String serialized) {
-    JsonElement json = JsonParser.parseJson(serialized);
-    if (JsonUtil.isCorrectDeSerForKind(this, json)) {
-      Optional<String> constName = JsonUtil.getOptStringMember(json, "constName");
+    return deserialize(JsonParser.parseJson(serialized));
+  }
+  
+  public Optional<SymTypeConstant> deserialize(JsonElement serialized) {
+    if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
+      Optional<String> constName = JsonUtil.getOptStringMember(serialized, "constName");
       if (!constName.isPresent()) {
         Log.error("Could not find constName of SymTypeConstant " + serialized);
       }
