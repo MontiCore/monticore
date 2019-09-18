@@ -2,8 +2,9 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
-import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.ArrayList;
@@ -16,22 +17,25 @@ import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SERIALIZATION_PACKAGE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
 
-public class SerializationCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
+public class SerializationCDDecorator extends AbstractDecorator {
+
+  protected final SymbolTableService symbolTableService;
 
   protected final SymbolDeSerDecorator symbolDeSerDecorator;
 
   protected final ScopeDeSerDecorator scopeDeSerDecorator;
 
   public SerializationCDDecorator(final GlobalExtensionManagement glex,
+                                  final SymbolTableService symbolTableService,
                                   final SymbolDeSerDecorator symbolDeSerDecorator,
                                   final ScopeDeSerDecorator scopeDeSerDecorator) {
     super(glex);
     this.symbolDeSerDecorator = symbolDeSerDecorator;
     this.scopeDeSerDecorator = scopeDeSerDecorator;
+    this.symbolTableService = symbolTableService;
   }
 
-  @Override
-  public ASTCDCompilationUnit decorate(ASTCDCompilationUnit symbolInput) {
+  public ASTCDCompilationUnit decorate(ASTCDCompilationUnit astCD, ASTCDCompilationUnit symbolInput) {
 
     List<String> symbolTablePackage = new ArrayList<>(symbolInput.getPackageList());
     symbolTablePackage.addAll(Arrays.asList(symbolInput.getCDDefinition().getName().toLowerCase(), SYMBOL_TABLE_PACKAGE, SERIALIZATION_PACKAGE));
@@ -39,8 +43,11 @@ public class SerializationCDDecorator extends AbstractCreator<ASTCDCompilationUn
     ASTCDDefinition serializeCD = CD4CodeMill.cDDefinitionBuilder()
         .setName(symbolInput.getCDDefinition().getName())
         .addAllCDClasss(createSymbolDeSerClasses(symbolInput.getCDDefinition()))
-        .addCDClass(createScopeDeSerClasses(symbolInput))
         .build();
+
+    if (symbolTableService.getStartProd(astCD.getCDDefinition()).isPresent()) {
+      serializeCD.addCDClass(createScopeDeSerClasses(symbolInput));
+    }
 
     for (ASTCDClass cdClass : serializeCD.getCDClassList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(symbolTablePackage));

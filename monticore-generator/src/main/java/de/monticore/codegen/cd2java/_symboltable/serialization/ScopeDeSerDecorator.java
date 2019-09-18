@@ -11,7 +11,9 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
@@ -40,13 +42,14 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     String symbolTablePrinterFullName = symbolTableService.getSymbolTablePrinterFullName();
     String simpleName = symbolTableService.getCDName();
 
+    List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
+    Map<String, String> symbolMap = new HashMap<>();
+    for (ASTCDType symbolDefiningProd : symbolDefiningProds) {
+      String symbolFullName = symbolTableService.getSymbolFullName(symbolDefiningProd);
+      String symbolSimpleName = symbolTableService.getSymbolSimpleName(symbolDefiningProd);
+      symbolMap.put(symbolSimpleName, symbolFullName);
+    }
     ASTCDDefinition astcdDefinition = input.getCDDefinition().deepClone();
-    List<String> symbolNames = astcdDefinition.getCDClassList().stream()
-        .map(ASTCDClassTOP::getName)
-        .collect(Collectors.toList());
-    symbolNames.addAll(astcdDefinition.getCDInterfaceList().stream()
-        .map(ASTCDInterface::getName)
-        .collect(Collectors.toList()));
 
     return CD4CodeMill.cDClassBuilder()
         .setName(scopeDeSerName)
@@ -61,10 +64,10 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         .addCDMethod(createDeserializeJsonObjectMethod(scopeInterfaceName, simpleName))
         .addCDMethod(createDeserializeScopeMethod(scopeClassFullName, simpleName))
         .addCDMethod(createDeserializeArtifactScopeMethod(artifactScopeFullName, simpleName))
-        .addCDMethod(createAddSymbolsMethod(scopeClassFullName, symbolNames))
-        .addCDMethod(createAddAndLinkSubScopesMethod(scopeClassFullName))
+        .addCDMethod(createAddSymbolsMethod(scopeClassFullName, symbolMap))
+        .addCDMethod(createAddAndLinkSubScopesMethod(scopeClassFullName, scopeInterfaceName))
         .addCDMethod(createAddAndLinkSpanningSymbolMethod(scopeClassFullName, scopeInterfaceName, astcdDefinition))
-        .addAllCDMethods(createDeserializeSymbolMethods(scopeClassFullName, symbolNames))
+        .addAllCDMethods(createDeserializeSymbolMethods(scopeClassFullName, symbolMap))
         .addCDMethod(createDeserializeAdditionalAttributesMethod(scopeInterfaceName))
         .build();
   }
@@ -144,52 +147,57 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     return deserializeMethod;
   }
 
-  protected ASTCDMethod createAddSymbolsMethod(String scopeName, List<String> symbolNames) {
+  protected ASTCDMethod createAddSymbolsMethod(String scopeName, Map<String, String> symbolMap) {
 
     ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), "scopeJson");
     ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeName), "scope");
 
     ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, "addSymbols", jsonParam, scopeParam);
-    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.AddScope", symbolNames));
+    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.AddSymbols", symbolMap));
     return deserializeMethod;
   }
 
-  protected ASTCDMethod createAddAndLinkSubScopesMethod(String scopeName) {
+  protected ASTCDMethod createAddAndLinkSubScopesMethod(String scopeClassName, String scopeInterfaceName) {
     ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), "scopeJson");
-    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeName), "scope");
+    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeClassName), "scope");
 
     ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, "addAndLinkSubScopes", jsonParam, scopeParam);
-    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.AddAndLinkSubScopes", scopeName));
+    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.AddAndLinkSubScopes", scopeInterfaceName));
     return deserializeMethod;
   }
 
   protected ASTCDMethod createAddAndLinkSpanningSymbolMethod(String scopeClassName, String scopeInterfaceName, ASTCDDefinition astcdDefinition) {
-    List<String> scopeSpanningSymbolNames = astcdDefinition.getCDClassList().stream()
-        .filter(c -> symbolTableService.hasScopeStereotype(c.getModifier()))
-        .map(ASTCDClassTOP::getName)
+    List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(astcdDefinition);
+
+    List<ASTCDType> scopeSpanningSymbolNames = symbolDefiningProds.stream()
+        .filter(c -> c.getModifierOpt().isPresent())
+        .filter(c -> symbolTableService.hasScopeStereotype(c.getModifierOpt().get()))
         .collect(Collectors.toList());
-    scopeSpanningSymbolNames.addAll(astcdDefinition.getCDInterfaceList().stream()
-        .filter(c -> symbolTableService.hasScopeStereotype(c.getModifier()))
-        .map(ASTCDInterface::getName)
-        .collect(Collectors.toList()));
+
+    Map<String, String> symbolMap = new HashMap<>();
+    for (ASTCDType symbolDefiningProd : scopeSpanningSymbolNames) {
+      String symbolFullName = symbolTableService.getSymbolFullName(symbolDefiningProd);
+      String symbolSimpleName = symbolTableService.getSymbolSimpleName(symbolDefiningProd);
+      symbolMap.put(symbolSimpleName, symbolFullName);
+    }
 
     ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), "subScopeJson");
     ASTCDParameter scopeInterfaceParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterfaceName), "subScope");
     ASTCDParameter scopeClassParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeClassName), "scope");
 
     ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, "addAndLinkSpanningSymbol", jsonParam, scopeInterfaceParam, scopeClassParam);
-    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.AddAndLinkSpanningSymbol", scopeSpanningSymbolNames));
+    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.AddAndLinkSpanningSymbol", symbolMap));
     return deserializeMethod;
   }
 
-  protected List<ASTCDMethod> createDeserializeSymbolMethods(String scopeName, List<String> symbolNames) {
+  protected List<ASTCDMethod> createDeserializeSymbolMethods(String scopeName, Map<String, String> symbolMap) {
     List<ASTCDMethod> deserializeMethodList = new ArrayList<>();
-    ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), "scopeJson");
+    ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), "symbolJson");
     ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeName), "scope");
 
-    for (String symbolName : symbolNames) {
-      ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, "deserialize" + symbolName + SYMBOL_SUFFIX, jsonParam, scopeParam);
-      this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.DeserializeSymbol", symbolName));
+    for (String symbolName : symbolMap.keySet()) {
+      ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, "deserialize" + symbolName, jsonParam, scopeParam);
+      this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.DeserializeSymbol", symbolName, symbolMap.get(symbolName)));
       deserializeMethodList.add(deserializeMethod);
     }
     return deserializeMethodList;

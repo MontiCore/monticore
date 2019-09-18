@@ -546,8 +546,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService);
     ScopeDeSerDecorator scopeDeSerDecorator= new ScopeDeSerDecorator(glex, symbolTableService);
 
-    SerializationCDDecorator serializationCDDecorator = new SerializationCDDecorator(glex, symbolDeSerDecorator, scopeDeSerDecorator);
-    ASTCDCompilationUnit serializeCD = serializationCDDecorator.decorate(symbolCD);
+    SerializationCDDecorator serializationCDDecorator = new SerializationCDDecorator(glex,symbolTableService, symbolDeSerDecorator, scopeDeSerDecorator);
+    ASTCDCompilationUnit serializeCD = serializationCDDecorator.decorate(cd,symbolCD);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(serializeCD);

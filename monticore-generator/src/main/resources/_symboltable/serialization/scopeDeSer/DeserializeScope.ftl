@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("scopeClass")}
-  Optional<String> name = scopeJson.getStringOpt(JsonConstants.NAME);
+  Optional<String> name = scopeJson.getStringOpt(de.monticore.symboltable.serialization.JsonConstants.NAME);
   Optional<Boolean> exportsSymbols = scopeJson.getBooleanOpt(de.monticore.symboltable.serialization.JsonConstants.EXPORTS_SYMBOLS);
   Optional<Boolean> isShadowingScope = scopeJson.getBooleanOpt(de.monticore.symboltable.serialization.JsonConstants.IS_SHADOWING_SCOPE);
 

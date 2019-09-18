@@ -40,7 +40,7 @@ public class ${symTabPrinterName}
     printer.beginArray(JsonConstants.IMPORTS);
     as.getImportList().forEach(x -> printer.value(x.toString()));
     printer.endArray();
-    addScopeSpanningSymbol(as.getSpanningSymbol());
+    addScopeSpanningSymbol(as.getSpanningSymbolOpt());
   }
 
   /**
@@ -51,9 +51,9 @@ public class ${symTabPrinterName}
     printer.beginObject();
     printer.member(JsonConstants.KIND, "${symbolTablePackage}.${languageName}Scope");
     printer.member(JsonConstants.NAME, scope.getName());
-    printer.member(JsonConstants.IS_SHADOWING_SCOPE, scope.isShadowingScope());
-    printer.member(JsonConstants.EXPORTS_SYMBOLS, scope.exportsSymbols());
-    addScopeSpanningSymbol(scope.getSpanningSymbol());
+    printer.member(JsonConstants.IS_SHADOWING_SCOPE, scope.isShadowing());
+    printer.member(JsonConstants.EXPORTS_SYMBOLS, scope.isExportingSymbols());
+    addScopeSpanningSymbol(scope.getSpanningSymbolOpt());
     
 <#if scopeRule.isPresent()>
 <#list scopeRule.get().getAdditionalAttributeList() as attr>

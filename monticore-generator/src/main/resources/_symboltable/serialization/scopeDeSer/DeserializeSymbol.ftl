@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symbolName")}
-  Optional<${symbolName}Symbol> symbol = ${symbolName?uncap_first}SymbolDeSer.deserialize(symbolJson);
+${tc.signature("symbolSimpleName","symbolfullName")}
+  Optional<${symbolfullName}> symbol = ${symbolSimpleName?uncap_first}DeSer.deserialize(symbolJson);
   if (symbol.isPresent()) {
     scope.add(symbol.get());
   } else {
