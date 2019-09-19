@@ -370,9 +370,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       //check if "then" and "else" are either from the same type or are in sub-supertype relation
       if(trueResult.print().equals(falseResult.print())){
         wholeResult = Optional.of(trueResult);
-      }else if(isSubtypeOf(falseResult,trueResult)){
+      }else if(isSubtypeOf(falseResult,trueResult,scope)){
         wholeResult = Optional.of(trueResult);
-      }else if(isSubtypeOf(trueResult,falseResult)){
+      }else if(isSubtypeOf(trueResult,falseResult,scope)){
         wholeResult = Optional.of(falseResult);
       }else{
         wholeResult = getBinaryNumericPromotion(expr.getTrueExpression(), expr.getFalseExpression());
@@ -515,7 +515,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         for (int i = 0; i < method.getParameter().size(); i++) {
           expr.getArguments().getExpression(i).accept(getRealThis());
           //test if every single argument is correct
-          if (!method.getParameter().get(i).getType().print().equals(lastResult.getLast()) && !compatible(lastResult.getLast(), method.getParameter().get(i).getType())) {
+          if (!method.getParameter().get(i).getType().print().equals(lastResult.getLast()) && !compatible(lastResult.getLast(), method.getParameter().get(i).getType(),scope)) {
             success = false;
           }
           if(!method.getReturnType().print().equals(innerResult.print())){
@@ -609,8 +609,8 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     //Option two: none of them is a primitive type and they are either the same type or in a super/sub type relation
     if(!isPrimitiveType(leftResult) && !isPrimitiveType(rightResult) &&
         (         leftResult.print().equals(rightResult.print())
-            || isSubtypeOf(rightResult,leftResult)
-            || isSubtypeOf(leftResult,rightResult)
+            || isSubtypeOf(rightResult,leftResult,scope)
+            || isSubtypeOf(leftResult,rightResult,scope)
         )){
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
     }
