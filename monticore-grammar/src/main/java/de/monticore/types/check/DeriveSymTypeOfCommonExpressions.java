@@ -427,7 +427,8 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if(lastResult.isPresentLast()) {
       //store the type of the inner expression in a variable
       innerResult = lastResult.getLast();
-      TypeSymbol innerResultType = innerResult.getTypeInfo();
+      //look for this type in our scope
+      TypeSymbol innerResultType = innerResult.getTypeInfo(scope);
       //search for a method, field or type in the scope of the type of the inner expression
       Collection<MethodSymbol> methods = innerResultType.getSpannedScope().resolveMethodMany(expr.getName());
       Optional<FieldSymbol> fieldSymbolOpt = innerResultType.getSpannedScope().resolveField(expr.getName());
