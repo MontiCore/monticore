@@ -154,7 +154,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(17, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(18, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -250,6 +250,16 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testGetEnclosingScopeNameMethod() {
     ASTCDMethod method = getMethodBy("getEnclosingScope", symbolClassAutomaton);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(cdTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
+        , method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGetSpannedScopeNameMethod() {
+    ASTCDMethod method = getMethodBy("getSpannedScope", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(cdTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
         , method.getMCReturnType().getMCType());
