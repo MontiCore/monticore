@@ -54,7 +54,7 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
     ASTCDAttribute referencedSymbolAttribute = createReferencedSymbolAttribute(symbolFullName);
     ASTCDMethod referencedSymbolMethod = createReferencedSymbolMethod(referencedSymbolAttribute, symbolReferenceClassSimpleName);
 
-    return CD4AnalysisMill.cDClassBuilder()
+    ASTCDClass symbolReferenceClass = CD4AnalysisMill.cDClassBuilder()
         .setName(symbolReferenceClassSimpleName)
         .setModifier(PUBLIC.build())
         .setSuperclass(getCDTypeFacade().createQualifiedType(symbolFullName))
@@ -75,6 +75,12 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
         .addCDMethod(createExistsReferencedSymbolMethod())
         .addCDMethod(createLoadReferencedSymbolMethod(symbolReferenceClassSimpleName, symbolFullName, simpleName))
         .build();
+    if(input.getModifierOpt().isPresent() && (symbolTableService.hasScopeStereotype(input.getModifierOpt().get())
+    || symbolTableService.hasInheritedScopeStereotype(input.getModifierOpt().get()))){
+      symbolReferenceClass.addCDMethod(createGetSpannedScopeMethod(scopeInterfaceType));
+    }
+
+    return symbolReferenceClass;
   }
 
   protected ASTCDConstructor createConstructor(String symbolReferenceClass, String scopeInterfaceType) {
@@ -160,4 +166,9 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
     return method;
   }
 
+  protected ASTCDMethod createGetSpannedScopeMethod(String scopeInterface) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(scopeInterface), "getSpannedScope");
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return getReferencedSymbol().getSpannedScope();"));
+    return method;
+  }
 }
