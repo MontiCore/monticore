@@ -503,7 +503,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator = new GlobalScopeInterfaceDecorator(glex, symbolTableService);
     GlobalScopeClassDecorator globalScopeClassDecorator = new GlobalScopeClassDecorator(glex, symbolTableService, methodDecorator);
     GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator = new GlobalScopeClassBuilderDecorator(glex, symbolTableService, builderDecorator);
-    ArtifactScopeDecorator artifactScopeDecorator = new ArtifactScopeDecorator(glex, symbolTableService, methodDecorator);
+    ArtifactScopeDecorator artifactScopeDecorator = new ArtifactScopeDecorator(glex, symbolTableService,visitorService, methodDecorator);
     ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator = new ArtifactScopeBuilderDecorator(glex, symbolTableService, builderDecorator, accessorDecorator);
     SymbolReferenceDecorator symbolReferenceDecorator = new SymbolReferenceDecorator(glex, symbolTableService, symbolReferenceMethodDecorator, methodDecorator);
     SymbolReferenceBuilderDecorator symbolReferenceBuilderDecorator = new SymbolReferenceBuilderDecorator(glex, symbolTableService, accessorDecorator);

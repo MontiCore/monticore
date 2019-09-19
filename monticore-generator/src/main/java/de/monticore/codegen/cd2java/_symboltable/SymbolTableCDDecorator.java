@@ -138,8 +138,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(astCD.getCDDefinition());
 
     // create symbol classes
-    List<ASTCDClass> decoratedSymbolClasses = createSymbolClasses(symbolCD.getCDDefinition().getCDClassList());
-    decoratedSymbolClasses.addAll(createSymbolClasses(symbolCD.getCDDefinition().getCDInterfaceList()));
+    List<ASTCDClass> decoratedSymbolClasses = createSymbolClasses(symbolCD.getCDDefinition().getCDClassList(), symbolTablePackage);
+    decoratedSymbolClasses.addAll(createSymbolClasses(symbolCD.getCDDefinition().getCDInterfaceList(), symbolTablePackage));
 
     // create scope classes
     ASTCDClass scopeClass = createScopeClass(scopeCD, symbolCD, symbolTablePackage);
@@ -165,6 +165,9 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       symTabCD.addCDClass(createGlobalScopeClassBuilder(globalScopeClass));
 
       // artifact scope
+      boolean isArtifactScopeHandCoded = existsHandwrittenClass(handCodedPath,
+          constructQualifiedName(symbolTablePackage, symbolTableService.getArtifactScopeSimpleName()));
+      this.artifactScopeDecorator.setArtifactScopeTop(isArtifactScopeHandCoded);
       ASTCDClass artifactScope = createArtifactScope(astCD);
       symTabCD.addCDClass(artifactScope);
       symTabCD.addCDClass(createArtifactBuilderScope(artifactScope));
@@ -228,11 +231,15 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .build();
   }
 
-  protected List<ASTCDClass> createSymbolClasses(List<? extends ASTCDType> astcdTypeList) {
-    return astcdTypeList
-        .stream()
-        .map(symbolDecorator::decorate)
-        .collect(Collectors.toList());
+  protected List<ASTCDClass> createSymbolClasses(List<? extends ASTCDType> astcdTypeList, List<String> symbolTablePackage) {
+    List<ASTCDClass> symbolClassList = new ArrayList<>();
+    for (ASTCDType astcdType : astcdTypeList) {
+      boolean isSymbolHandCoded = existsHandwrittenClass(handCodedPath,
+          constructQualifiedName(symbolTablePackage, symbolTableService.getSymbolSimpleName(astcdType)));
+      symbolDecorator.setSymbolTop(isSymbolHandCoded);
+      symbolClassList.add(symbolDecorator.decorate(astcdType));
+    }
+    return symbolClassList;
   }
 
   protected List<ASTCDClass> createSymbolBuilderClasses(List<ASTCDClass> symbolASTClasses) {

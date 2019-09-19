@@ -4,6 +4,7 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -37,6 +38,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
   protected final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
 
   protected final VisitorService visitorService;
+
+  protected boolean isSymbolTop = false;
 
   public SymbolDecorator(final GlobalExtensionManagement glex,
                          final SymbolTableService symbolTableService,
@@ -83,7 +86,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
         .addAllCDMethods(symbolRuleAttributeMethods)
         .addAllCDMethods(symbolRuleMethods)
         .addAllCDMethods(symbolMethods)
-        .addCDMethod(createAcceptMethod())
+        .addCDMethod(createAcceptMethod(symbolName))
         .addCDMethod(createDeterminePackageName(scopeInterface, artifactScope))
         .addCDMethod(createDetermineFullName(scopeInterface, artifactScope, globalScopeInterface))
         .build();
@@ -166,11 +169,17 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
     return methodList;
   }
 
-  protected ASTCDMethod createAcceptMethod() {
+  protected ASTCDMethod createAcceptMethod(String symbolName) {
     ASTMCQualifiedType symbolVisitorType = getCDTypeFacade().createQualifiedType(visitorService.getSymbolVisitorFullName());
     ASTCDParameter parameter = getCDParameterFacade().createParameter(symbolVisitorType, VISITOR_PREFIX);
     ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
-    this.replaceTemplate(EMPTY_BODY, acceptMethod, new StringHookPoint("visitor.handle(this);"));
+    if(!isSymbolTop()){
+      this.replaceTemplate(EMPTY_BODY, acceptMethod, new StringHookPoint("visitor.handle(this);"));
+    }else {
+      String errorCode = DecorationHelper.getGeneratedErrorCode(acceptMethod);
+      this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(
+          "_symboltable.AcceptTop", symbolName, errorCode));
+    }
     return acceptMethod;
   }
 
@@ -190,5 +199,13 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.symbol.DetermineFullName",
         scopeInterface, artifactScope, globalScope));
     return method;
+  }
+
+  public boolean isSymbolTop() {
+    return isSymbolTop;
+  }
+
+  public void setSymbolTop(boolean symbolTop) {
+    isSymbolTop = symbolTop;
   }
 }

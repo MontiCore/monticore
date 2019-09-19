@@ -5,6 +5,8 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolTOP;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -17,7 +19,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
@@ -27,11 +31,17 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected final MethodDecorator methodDecorator;
 
+  protected final VisitorService visitorService;
+
+  protected boolean isArtifactScopeTop;
+
   public ArtifactScopeDecorator(final GlobalExtensionManagement glex,
                                 final SymbolTableService symbolTableService,
+                                final VisitorService visitorService,
                                 final MethodDecorator methodDecorator) {
     super(glex);
     this.symbolTableService = symbolTableService;
+    this.visitorService = visitorService;
     this.methodDecorator = methodDecorator;
   }
 
@@ -69,6 +79,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
         .addCDMethod(createGetRemainingNameForResolveDownMethod())
         .addAllCDMethods(createContinueWithEnclosingScopeMethods(symbolProds, symbolTableService.getCDSymbol()))
         .addAllCDMethods(createSuperContinueWithEnclosingScopeMethods())
+        .addCDMethod(createAcceptMethod(artifactScopeSimpleName))
         .build();
   }
 
@@ -173,4 +184,28 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
     }
     return methodList;
   }
+
+  protected ASTCDMethod createAcceptMethod(String artifactScopeName) {
+    String ownScopeVisitor = visitorService.getScopeVisitorFullName();
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
+    ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
+    if (!isArtifactScopeTop()) {
+      this.replaceTemplate(EMPTY_BODY, acceptMethod, new StringHookPoint("visitor.handle(this);"));
+    } else {
+      String errorCode = DecorationHelper.getGeneratedErrorCode(acceptMethod);
+      this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(
+          "_symboltable.AcceptTop", artifactScopeName, errorCode));
+    }
+    return acceptMethod;
+  }
+
+
+  public boolean isArtifactScopeTop() {
+    return isArtifactScopeTop;
+  }
+
+  public void setArtifactScopeTop(boolean artifactScopeTop) {
+    isArtifactScopeTop = artifactScopeTop;
+  }
+
 }

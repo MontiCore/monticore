@@ -7,6 +7,7 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.CDModifier;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
@@ -69,7 +70,8 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     ArtifactScopeDecorator decorator = new ArtifactScopeDecorator(this.glex,
-        new SymbolTableService(decoratedCompilationUnit), new MethodDecorator(glex));
+        new SymbolTableService(decoratedCompilationUnit),new VisitorService(decoratedCompilationUnit),
+        new MethodDecorator(glex));
 
     //creates normal Symbol
     this.scopeClass = decorator.decorate(decoratedCompilationUnit);
@@ -172,7 +174,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(45, scopeClass.getCDMethodList().size());
+    assertEquals(46, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -320,6 +322,17 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     assertEquals("modifier", method.getCDParameter(2).getName());
     assertDeepEquals(PREDICATE_QUALIFIED_NAME, method.getCDParameter(3).getMCType());
     assertEquals("predicate", method.getCDParameter(3).getName());
+  }
+
+  @Test
+  public void testAcceptMethod() {
+    ASTCDMethod method = getMethodBy("accept", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonScopeVisitor", method.getCDParameter(0).getMCType());
+    assertEquals("visitor", method.getCDParameter(0).getName());
   }
 
   @Test
