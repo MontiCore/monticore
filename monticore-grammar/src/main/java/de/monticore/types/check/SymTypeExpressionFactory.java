@@ -24,7 +24,13 @@ public class SymTypeExpressionFactory {
     SymTypeOfObject o = new SymTypeOfObject(name,objTypeSymbol);
     return o;
   }
-  
+
+  public static SymTypeOfObject createTypeObject(String name) {
+    SymTypeOfObject o = new SymTypeOfObject();
+    o.setObjName(name);
+    return o;
+  }
+
   public static SymTypeVoid createTypeVoid() {
     SymTypeVoid o = new SymTypeVoid();
     return o;

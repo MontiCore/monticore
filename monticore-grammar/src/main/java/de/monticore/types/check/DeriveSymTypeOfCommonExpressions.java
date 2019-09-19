@@ -691,7 +691,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
     //if one part of the expression is a String then the whole expression is a String
     if(unbox(leftResult.print()).equals("String")||unbox(rightResult.print()).equals("String")) {
-      return Optional.of(SymTypeExpressionFactory.createTypeObject("String",null));
+      return Optional.of(SymTypeExpressionFactory.createTypeObject("String"));
     }
     //no String in the expression -> use the normal calculation for the basic arithmetic operators
     return getBinaryNumericPromotion(leftType,rightType);
