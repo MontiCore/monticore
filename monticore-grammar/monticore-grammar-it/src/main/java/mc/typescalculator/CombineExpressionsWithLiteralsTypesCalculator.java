@@ -5,8 +5,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.types2.*;
-import de.monticore.typescalculator.*;
+import de.monticore.types.check.*;
 import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 
 import java.util.HashMap;
@@ -26,8 +25,6 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
   private DeriveSymTypeOfExpression expressionsBasisTypesCalculator;
 
   private DeriveSymTypeOfBitExpressions deriveSymTypeOfBitExpressions;
-
-  private CombineExpressionsWithLiteralsLiteralTypesCalculator literalsLiteralTypesCalculator;
 
   private DeriveSymTypeOfLiterals deriveSymTypeOfLiterals;
 

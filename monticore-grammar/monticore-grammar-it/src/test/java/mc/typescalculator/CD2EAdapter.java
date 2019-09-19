@@ -2,12 +2,11 @@
 package mc.typescalculator;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.cd.cd4analysis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.typesymbols._symboltable.*;
-import de.monticore.types2.SymTypeExpression;
 
 import java.util.Collection;
 import java.util.List;

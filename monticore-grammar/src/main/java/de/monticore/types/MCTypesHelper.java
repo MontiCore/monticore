@@ -13,8 +13,7 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
-import de.monticore.types2.SymTypeExpression;
-import de.monticore.typescalculator.MCTypeVisitor;
+import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.Names;
 
 import java.util.Arrays;
@@ -200,7 +199,7 @@ public class MCTypesHelper {
   }
 
   public static SymTypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type) {
-    MCTypeVisitor visitor = new MCTypeVisitor();
+    DeriveSymTypeOfMCType visitor = new DeriveSymTypeOfMCType();
     type.accept(visitor);
     return visitor.mapping.get(type);
   }

@@ -7,10 +7,8 @@ import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.ImportStatement;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types2.SymTypeConstant;
-import de.monticore.types2.SymTypeExpression;
-import de.monticore.types2.SymTypeOfObject;
 import de.se_rwth.commons.logging.LogStub;
 import mc.typescalculator.combineexpressionswithliterals._ast.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
@@ -19,10 +17,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Iterator;
 import java.util.Optional;
 
-import static de.monticore.types2.SymTypeConstant.unbox;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
