@@ -196,13 +196,9 @@ public class SymTypeConstant extends SymTypeExpression {
     if(!this.name.equals(symTypeExpression.name)){
       return false;
     }
-    if(!this.typeSymbol.equals(symTypeExpression.typeSymbol)){
+    //TypeSymbols are unique use equals instead of deepequals
+    if(!this.typeInfo.equals(symTypeExpression.typeInfo)){
       return false;
-    }
-    for(int i = 0; i<this.superTypes.size();i++){
-      if(!this.superTypes.get(i).deepEquals(symTypeExpression.superTypes.get(i))){
-        return false;
-      }
     }
     return true;
   }
@@ -211,11 +207,8 @@ public class SymTypeConstant extends SymTypeExpression {
   public SymTypeExpression deepClone() {
     SymTypeConstant clone = new SymTypeConstant(getConstName());
     clone.setName(this.name);
-    clone.setEnclosingScope(this.enclosingScope);
-    for(SymTypeExpression expr: superTypes){
-      clone.addSuperType(expr.deepClone());
-    }
-    clone.typeSymbol = this.typeSymbol;
+
+    clone.typeInfo = this.typeInfo;
     return clone;
   }
   //hier enum attr für primitive types

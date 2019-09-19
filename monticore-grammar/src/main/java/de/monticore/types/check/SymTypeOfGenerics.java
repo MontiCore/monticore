@@ -158,14 +158,9 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     if(!this.name.equals(symTypeExpression.name)){
       return false;
     }
-    if(!this.typeSymbol.equals(symTypeExpression.typeSymbol)){
+    if(!this.typeInfo.equals(symTypeExpression.typeInfo)){
       return false;
-    }
 
-    for(int i = 0; i<this.superTypes.size();i++){
-      if(!this.superTypes.get(i).deepEquals(symTypeExpression.superTypes.get(i))){
-        return false;
-      }
     }
     for(int i = 0; i<this.arguments.size();i++){
       if(!this.arguments.get(i).deepEquals(((SymTypeOfGenerics) symTypeExpression).arguments.get(i))){
@@ -182,15 +177,10 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public SymTypeExpression deepClone() {
     SymTypeOfGenerics clone = new SymTypeOfGenerics();
     clone.setName(this.name);
-    clone.setEnclosingScope(this.enclosingScope);
-
-    for(SymTypeExpression expr: superTypes){
-      clone.addSuperType(expr.deepClone());
-    }
     for(SymTypeExpression expr: arguments){
       clone.addArgument(expr.deepClone());
     }
-    clone.typeSymbol = this.typeSymbol;
+    clone.typeInfo = this.typeInfo;
     clone.whoAmI = this.whoAmI;
     return clone;
   }
