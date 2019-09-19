@@ -64,11 +64,13 @@ public class SymTypeExpressionFactory {
   }
   
   @Deprecated // TODO: delete, because TypeSymbol is not set
-  public static SymTypeOfGenerics createGenerics(String name, List<SymTypeExpression> arguments){
-    SymTypeOfGenerics o = new SymTypeOfGenerics(name, arguments);
+  public static SymTypeOfGenerics createGenerics(String fullName, List<SymTypeExpression> arguments){
+    SymTypeOfGenerics o = new SymTypeOfGenerics(fullName, arguments);
     // XXX BR: here we also have to add the Symbol
     // being retrieved from somewhere ...
     return o;
   }
+
+
   
 }
