@@ -522,6 +522,8 @@
         <inherited>false</inherited>
         <configuration>
           <additionalparam>-Xdoclint:none</additionalparam>
+          <excludePackageNames>de.monticore.grammar.grammar_withconcepts._symboltable.*:
+            de.monticore.grammar.grammar_withconcepts._visitor:*</excludePackageNames>
         </configuration>
         <reportSets>
           <reportSet>

@@ -66,7 +66,7 @@ public abstract class APkg {
    * returns the APkg representing the path. If path is empty, the this, if no package for the given
    * path exists, create all required Pkgs.
    * 
-   * @param fqn
+   * @param path
    * @return
    */
   public APkg getPkg(String path) {

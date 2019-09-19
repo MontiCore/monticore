@@ -44,16 +44,19 @@ public class SymTypeArrayDeSer implements IDeSer<SymTypeArray> {
    */
   @Override
   public Optional<SymTypeArray> deserialize(String serialized) {
-    JsonElement json = JsonParser.parseJson(serialized);
-    if (JsonUtil.isCorrectDeSerForKind(this, json)) {
-      Optional<Integer> dim = JsonUtil.getOptIntMember(json, "dim");
+    return deserialize(JsonParser.parseJson(serialized));
+  }
+  
+  public Optional<SymTypeArray> deserialize(JsonElement serialized) {
+    if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
+      Optional<Integer> dim = JsonUtil.getOptIntMember(serialized, "dim");
       if (!dim.isPresent()) {
         Log.error("Could not find dim of SymTypeArray " + serialized);
       }
       Optional<SymTypeExpression> argument = Optional.empty();
-      if (json.getAsJsonObject().containsKey("argument")) {
+      if (serialized.getAsJsonObject().containsKey("argument")) {
         argument = new SymTypeExpressionDeSer()
-            .deserialize(json.getAsJsonObject().get("argument").toString());
+            .deserialize(serialized.getAsJsonObject().get("argument"));
       }
       if (!argument.isPresent()) {
         Log.error("Could not find argument of SymTypeArray " + serialized);
@@ -62,5 +65,4 @@ public class SymTypeArrayDeSer implements IDeSer<SymTypeArray> {
     }
     return Optional.empty();
   }
-  
 }

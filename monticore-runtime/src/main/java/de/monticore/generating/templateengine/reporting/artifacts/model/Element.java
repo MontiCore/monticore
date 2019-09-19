@@ -90,7 +90,7 @@ public class Element {
   }
   
   /**
-   * @param template
+   * @param elementType
    */
   public void setType(ElementType elementType) {
     this.type = elementType;

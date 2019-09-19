@@ -42,8 +42,11 @@ public class SymTypePackageDeSer implements IDeSer<SymTypePackage> {
    */
   @Override
   public Optional<SymTypePackage> deserialize(String serialized) {
-    JsonElement e = JsonParser.parseJson(serialized);
-    if (e.isJsonString() && e.getAsJsonString().getValue().equals("package")) {
+    return deserialize(JsonParser.parseJson(serialized));
+  }
+  
+  public Optional<SymTypePackage> deserialize(JsonElement serialized) {
+    if (serialized.isJsonString() && serialized.getAsJsonString().getValue().equals("package")) {
       // TODO: check if creating a new instance is feasible
       return Optional.of(new SymTypePackage());
     }

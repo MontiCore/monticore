@@ -354,19 +354,6 @@ public class JsonPrinter {
     internalValue(value.getContent());
   }
   
-//  protected String preprocessString(String string) {
-//    String s = string.trim();
-//    boolean isFramedInQuotationMarks = s.length() > 0 && s.startsWith("\"") && s.endsWith("\"");
-//    boolean isSerializedObject = s.length() > 0 && s.startsWith("{") && s.endsWith("}");
-//    string = escapeSpecialChars(string);
-//    if (!isFramedInQuotationMarks  && !isSerializedObject) {
-//      return "\"" + string + "\"";
-//    }
-//    else {
-//      return s;
-//    }
-//  }
-  
   /**
    * Adds escape sequences for all characters that are escaped in Java Strings according to
    * https://docs.oracle.com/javase/tutorial/java/data/characters.html

@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A0125;
+
+grammar A0125a {
+
+  interface symbol I1;
+
+  interface symbol I2;
+
+  interface I3 extends I2;
+
+  A implements I1, I3;
+
+}

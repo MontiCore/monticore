@@ -15,7 +15,7 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * This DeSer reailizes serialization and deserialization of 
+ * This DeSer reailizes serialization and deserialization of
  *
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
@@ -56,19 +56,40 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
     return toSerialize.printAsJson();
   }
   
-//  public Optional<SymTypeExpression> deserialize(JsonElement json) {
-//    
-//  }
-  
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
    */
   @Override
   public Optional<SymTypeExpression> deserialize(String serialized) {
+    return deserialize(JsonParser.parseJson(serialized));
+  }
+  
+  /**
+   * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
+   */
+  public Optional<SymTypeExpression> deserialize(JsonElement serialized) {
     SymTypeExpression result = null;
     
-    JsonElement json = JsonParser.parseJson(serialized);
-    String kind = JsonUtil.getOptStringMember(json, JsonConstants.KIND).orElse("");
+    // void, package, and null have special serializations (they are no json objects and do not have
+    // a "kind" member)
+    Optional<SymTypeVoid> deserializedVoid = symTypeVoidDeSer.deserialize(serialized);
+    if (deserializedVoid.isPresent()) {
+      // wrap type of optional and return
+      return Optional.of(deserializedVoid.get());
+    }
+    Optional<SymTypeOfNull> deserializedNull = symTypeOfNullDeSer.deserialize(serialized);
+    if (deserializedNull.isPresent()) {
+      // wrap type of optional and return
+      return Optional.of(deserializedNull.get());
+    }
+    Optional<SymTypePackage> deserializedPackage = symTypePackageDeSer.deserialize(serialized);
+    if (deserializedPackage.isPresent()) {
+      // wrap type of optional and return
+      return Optional.of(deserializedPackage.get());
+    }
+    
+    // all other serialized SymTypeExrpressions are json objects with a kind
+    String kind = JsonUtil.getOptStringMember(serialized, JsonConstants.KIND).orElse("");
     
     if (symTypeArrayDeSer.getSerializedKind().equals(kind)) {
       result = symTypeArrayDeSer.deserialize(serialized).orElse(null);
@@ -79,9 +100,6 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
     else if (symTypeOfGenericsDeSer.getSerializedKind().equals(kind)) {
       result = symTypeOfGenericsDeSer.deserialize(serialized).orElse(null);
     }
-    else if (symTypeOfNullDeSer.getSerializedKind().equals(kind)) {
-      result = symTypeOfNullDeSer.deserialize(serialized).orElse(null);
-    }
     else if (symTypeOfObjectDeSer.getSerializedKind().equals(kind)) {
       result = symTypeOfObjectDeSer.deserialize(serialized).orElse(null);
     }
@@ -91,11 +109,9 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
     else if (symTypeVariableDeSer.getSerializedKind().equals(kind)) {
       result = symTypeVariableDeSer.deserialize(serialized).orElse(null);
     }
-    else if (symTypeVoidDeSer.getSerializedKind().equals(kind)) {
-      result = symTypeVoidDeSer.deserialize(serialized).orElse(null);
-    }
     else {
-      Log.error("Something went wrong");
+      Log.error("Unknown kind of SymTypeExpression in SymTypeExpressionDeSer: " + kind + " in "
+          + serialized);
     }
     return Optional.ofNullable(result);
   }

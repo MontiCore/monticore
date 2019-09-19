@@ -53,6 +53,8 @@ public class GrammarCoCos {
     checker.addCoCo(new ReferencedSymbolExists());
     checker.addCoCo(new ConservativeExtensionCheck());
     checker.addCoCo(new NoTokenDefined());
+    checker.addCoCo(new InheritedSymbolProperty());
+    checker.addCoCo(new InheritedScopeProperty());
 
     // checker.addCoCo(new NoNTInheritanceCycle());
 

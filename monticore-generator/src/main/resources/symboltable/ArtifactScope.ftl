@@ -159,12 +159,6 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${scopeClass} {
 <#list symbolNames?keys as symbol>
   /**
    * Starts the bottom-up inter-model resolution process.
-   *
-   * @param <T>
-   * @param resolvingInfo
-   * @param name
-   * @param kind
-   * @return
    */
   @Override
   public Collection<${symbolNames[symbol]}> continue${symbol}WithEnclosingScope(

@@ -44,10 +44,13 @@ public class SymTypeVariableDeSer implements IDeSer<SymTypeVariable> {
    */
   @Override
   public Optional<SymTypeVariable> deserialize(String serialized) {
-    JsonElement json = JsonParser.parseJson(serialized);
-    if (JsonUtil.isCorrectDeSerForKind(this, json)) {
+    return deserialize(JsonParser.parseJson(serialized));
+  }
+  
+  public Optional<SymTypeVariable> deserialize(JsonElement serialized) {
+    if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
       SymTypeVariable result = new SymTypeVariable();
-      Optional<String> varName = JsonUtil.getOptStringMember(json, "varName");
+      Optional<String> varName = JsonUtil.getOptStringMember(serialized, "varName");
       if (varName.isPresent()) {
         result.setVarName(varName.get());
       }
