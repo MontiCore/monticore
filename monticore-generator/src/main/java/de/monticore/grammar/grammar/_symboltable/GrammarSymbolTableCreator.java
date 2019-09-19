@@ -149,6 +149,26 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   }
 
   @Override
+  protected RuleComponentSymbol create_KeyTerminal(ASTKeyTerminal ast) {
+    final String symbolName = ast.getUsageNameOpt().orElse(ast.getName());
+    return new RuleComponentSymbol(symbolName);
+  }
+
+  @Override
+  public void initialize_KeyTerminal(RuleComponentSymbol prodComponent, ASTKeyTerminal ast) {
+    final String usageName = ast.getUsageNameOpt().orElse(null);
+    Optional<ProdSymbol> currentSymbol = getProdSymbol();
+
+    if (currentSymbol.isPresent()) {
+      prodComponent.setUsageName(usageName);
+      prodComponent.setIsTerminal(true);
+      setComponentMultiplicity(prodComponent, ast);
+      prodComponent = currentSymbol.get().addProdComponent(prodComponent);
+
+    }
+  }
+
+  @Override
   public void addToScopeAndLinkWithNode(de.monticore.grammar.grammar._symboltable.RuleComponentSymbol symbol, de.monticore.grammar.grammar._ast.ASTTerminal astNode) {
     if (getCurrentScope().isPresent()) {
       symbol.setEnclosingScope(getCurrentScope().get());

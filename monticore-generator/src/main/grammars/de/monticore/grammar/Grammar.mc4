@@ -398,6 +398,11 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     name:String
     (iteration:["?"|"*"|"+"])*;
 
+  /** Use KeyTerminal instead of Terminal if you don't want this to be a keyword */
+  symbol (RuleComponent) KeyTerminal implements RuleComponent, ITerminal =
+    (usageName:Name&  ":")?
+    "key" "(" (String || "|")+ ")"
+    (iteration:["?"|"*"|"+"])*;
 
   /** Constants are constant string but lead to an attribute */
   Constant implements ITerminal =

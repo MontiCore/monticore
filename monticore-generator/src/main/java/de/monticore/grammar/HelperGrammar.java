@@ -18,28 +18,6 @@ import java.util.List;
  */
 public class HelperGrammar {
 
-  /**
-   * The result is true iff ASTTerminal is iterated
-   *
-   * @param a ASTConstantGroup to be evaluated
-   * @return true iff ASTConstantGroup is iterated
-   */
-  public static boolean isIterated(ASTTerminal a) {
-    return (a.getIteration() == ASTConstantsGrammar.PLUS)
-        || (a.getIteration() == ASTConstantsGrammar.STAR);
-
-  }
-
-  /**
-   * The result is true iff ASTOrGroup is iterated
-   *
-   * @param a ASTOrGroup to be evaluated
-   * @return true iff ASTOrGroup is iterated
-   */
-  public static boolean isIterated(ASTBlock a) {
-    return ((a.getIteration() == ASTConstantsGrammar.PLUS)
-        || (a.getIteration() == ASTConstantsGrammar.STAR));
-  }
 
   /**
    * Returns the name of a rule
@@ -82,11 +60,6 @@ public class HelperGrammar {
       name = a.getName();
     }
     return name + GeneratorHelper.GET_SUFFIX_LIST;
-  }
-
-  public static boolean isIterated(ASTNonTerminal a) {
-    return ((a.getIteration() == ASTConstantsGrammar.PLUS)
-        || (a.getIteration() == ASTConstantsGrammar.STAR));
   }
 
   public static String getTypeNameForEnum(String surroundtype, ASTConstantGroup a) {
