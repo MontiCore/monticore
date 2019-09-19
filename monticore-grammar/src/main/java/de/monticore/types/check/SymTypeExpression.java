@@ -44,14 +44,19 @@ public abstract class SymTypeExpression {
    * Furthermore, each SymType knows this TypeSymbol (i.e. the
    * TypeSymbols are loaded (or created) upon creation of the SymType.
    */
-  protected TypeSymbol typeInfo;
+  protected Optional<TypeSymbol> typeInfo;
   
-  public TypeSymbol getTypeInfo() {
-    return typeInfo;
+  public TypeSymbol getTypeInfo(TypeSymbolsScope symbolTable) {
+    if(typeInfo.isPresent()) {
+      return typeInfo.get();
+    }
+
+    typeInfo = symbolTable.resolveType(this.getName());
+    return typeInfo.get();
   }
   
   public void setTypeInfo(TypeSymbol typeInfo) {
-    this.typeInfo = typeInfo;
+    this.typeInfo = Optional.of(typeInfo);
     typeSymbol = Optional.of(typeInfo); // TODO: for Compatibility; this can be deleted
   }
   
