@@ -34,7 +34,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public SymbolTableService(ASTCDCompilationUnit compilationUnit, ASTMCGrammar astmcGrammar) {
     super(compilationUnit);
     this.isComponent = astmcGrammar.isComponent();
-    if (astmcGrammar.isPresentStartRules()) {
+    if (astmcGrammar.isPresentStartRule()) {
       this.startProdName = Optional.ofNullable(MCGrammarSymbolTableHelper
           .getQualifiedName(astmcGrammar.getSymbol().getStartProd().get()));
     }

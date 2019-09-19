@@ -11,7 +11,7 @@ import de.monticore.types.MCFullGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
@@ -84,7 +84,7 @@ public class CDTypeFacade {
 
   public ASTMCOptionalType createOptionalTypeOf(final String name) {
     ASTMCTypeArgument arg = CD4CodeMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
-    return CD4CodeMill.mCOptionalTypeBuilder().setName("Optional").setMCTypeArgument(arg).build();
+    return CD4CodeMill.mCOptionalTypeBuilder().addMCTypeArgument(arg).build();
   }
 
   public ASTMCOptionalType createOptionalTypeOf(final ASTMCType type) {
@@ -109,7 +109,7 @@ public class CDTypeFacade {
     if (!arg.isPresent()) {
       Log.error("0xA0116 Cannot generate TypeArgument for " + name);
     }
-    return CD4CodeMill.mCListTypeBuilder().setName("List").setMCTypeArgument(arg.get()).build();
+    return CD4CodeMill.mCListTypeBuilder().addMCTypeArgument(arg.get()).build();
   }
 
   public ASTMCListType createListTypeOf(final ASTMCType type) {
@@ -130,7 +130,7 @@ public class CDTypeFacade {
     if (!arg.isPresent()) {
       Log.error("0xA0116 Cannot generate TypeArgument for " + name);
     }
-    return CD4CodeMill.mCSetTypeBuilder().setName("Set").setMCTypeArgument(arg.get()).build();
+    return CD4CodeMill.mCSetTypeBuilder().addMCTypeArgument(arg.get()).build();
   }
 
   public ASTMCSetType createSetTypeOf(final ASTMCType type) {
@@ -154,7 +154,7 @@ public class CDTypeFacade {
   public ASTMCMapType createMapTypeOf(final String firstType, final String secondType) {
     ASTMCTypeArgument first = CD4CodeMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(firstType)).build();
     ASTMCTypeArgument second = CD4CodeMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(secondType)).build();
-    return CD4CodeMill.mCMapTypeBuilder().setName("Map").setKey(first).setValue(second).build();
+    return CD4CodeMill.mCMapTypeBuilder().setKey(first).setValue(second).build();
   }
 
   public ASTMCArrayType createArrayType(final Class<?> clazz, int dimension) {
@@ -167,21 +167,21 @@ public class CDTypeFacade {
 
   public ASTMCArrayType createArrayType(final ASTMCType type, int dimension) {
     return MCFullGenericTypesMill.mCArrayTypeBuilder()
-            .setMCType(type)
-            .setDimensions(dimension)
-            .build();
+        .setMCType(type)
+        .setDimensions(dimension)
+        .build();
   }
 
-  public ASTMCWildcardType createWildCardWithUpperBoundType(final Class<?> upperBound) {
+  public ASTMCWildcardTypeArgument createWildCardWithUpperBoundType(final Class<?> upperBound) {
     return createWildCardWithUpperBoundType(this.createQualifiedType(upperBound));
   }
 
-  public ASTMCWildcardType createWildCardWithUpperBoundType(final String upperBound) {
+  public ASTMCWildcardTypeArgument createWildCardWithUpperBoundType(final String upperBound) {
     return createWildCardWithUpperBoundType(this.createQualifiedType(upperBound));
   }
 
-  public ASTMCWildcardType createWildCardWithUpperBoundType(final ASTMCType upperBound) {
-    return MCFullGenericTypesMill.mCWildcardTypeBuilder()
+  public ASTMCWildcardTypeArgument createWildCardWithUpperBoundType(final ASTMCType upperBound) {
+    return MCFullGenericTypesMill.mCWildcardTypeArgumentBuilder()
         .setUpperBound(upperBound)
         .build();
   }

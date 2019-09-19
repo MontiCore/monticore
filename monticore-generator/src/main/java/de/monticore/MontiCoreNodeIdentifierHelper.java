@@ -6,20 +6,9 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral;
-import de.monticore.literals.mccommonliterals._ast.ASTCharLiteral;
-import de.monticore.literals.mccommonliterals._ast.ASTNullLiteral;
-import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
-import de.monticore.literals.mcjavaliterals._ast.ASTDoubleLiteral;
-import de.monticore.literals.mcjavaliterals._ast.ASTFloatLiteral;
-import de.monticore.literals.mcjavaliterals._ast.ASTIntLiteral;
-import de.monticore.literals.mcjavaliterals._ast.ASTLongLiteral;
-import de.monticore.types.MCBasicTypesNodeIdentHelper;
 import de.monticore.types.MCSimpleGenericTypesNodeIdentHelper;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeVariableDeclaration;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.Names;
 
@@ -100,7 +89,7 @@ public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdent
     return format(ast.getName(), nodeName(ast));
   }
   
-  public String getIdent(ASTMethod ast) {
+  public String getIdent(ASTAdditionalMethod ast) {
     return format(ast.getName(), nodeName(ast));
   }
   
@@ -166,8 +155,8 @@ public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdent
     else if (ast instanceof ASTMCGrammar) {
       return getIdent((ASTMCGrammar) ast);
     }
-    else if (ast instanceof ASTMethod) {
-      return getIdent((ASTMethod) ast);
+    else if (ast instanceof ASTAdditionalMethod) {
+      return getIdent((ASTAdditionalMethod) ast);
     }
     else if (ast instanceof ASTMethodParameter) {
       return getIdent((ASTMethodParameter) ast);

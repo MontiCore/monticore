@@ -182,11 +182,11 @@ public class CommonScopeGenerator implements ScopeGenerator {
 
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
     List<ASTScopeRule> scopeRules = Lists.newArrayList();
-    grammar.getScopeRulesOpt().ifPresent(s -> scopeRules.add(s));
+    grammar.getScopeRuleOpt().ifPresent(s -> scopeRules.add(s));
     for (MCGrammarSymbol grammarSymbol: genHelper.getGrammarSymbol().getAllSuperGrammars()) {
-      grammarSymbol.getAstGrammar().get().getScopeRulesOpt().ifPresent(s -> scopeRules.add(s));
+      grammarSymbol.getAstGrammar().get().getScopeRuleOpt().ifPresent(s -> scopeRules.add(s));
     }
-    Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
+    Optional<ASTScopeRule> scopeRule = grammar.getScopeRuleOpt();
     if(genHelper.getGrammarSymbol().getStartProd().isPresent()) {
     }
 

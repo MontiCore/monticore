@@ -17,8 +17,8 @@ public class StartProdTranslation  implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-    if (rootLink.source().isPresentStartRules()) {
-      rootLink.source().getStartRules().getName();
+    if (rootLink.source().isPresentStartRule()) {
+      rootLink.source().getStartRule().getName();
     }
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class, ASTCDClass.class)) {
       if (link.source().getSymbol().isStartProd()) {
