@@ -44,6 +44,11 @@ public class ReferenceTypeTranslation implements
       link.target().setMCType(createType("String"));
     }
 
+    for (Link<ASTKeyTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTKeyTerminal.class,
+            ASTCDAttribute.class)) {
+      link.target().setMCType(createType("String"));
+    }
+
     for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
         ASTCDAttribute.class)) {
       ASTMCType type = determineTypeToSetForAttributeInAST(link.source().getMCType(), rootLink.source());

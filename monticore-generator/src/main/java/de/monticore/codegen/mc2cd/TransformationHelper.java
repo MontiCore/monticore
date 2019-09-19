@@ -107,6 +107,9 @@ public final class TransformationHelper {
       if (ancestor instanceof ASTTerminal) {
         return ((ASTTerminal) ancestor).getUsageNameOpt();
       }
+      if (ancestor instanceof ASTKeyTerminal) {
+        return ((ASTKeyTerminal) ancestor).getUsageNameOpt();
+      }
       if (ancestor instanceof ASTAdditionalAttribute) {
         return ((ASTAdditionalAttribute) ancestor).getNameOpt();
       }

@@ -89,12 +89,12 @@ public class ASTConstructionActions {
   public String getActionForRuleBeforeRuleBody(ASTClassProd a) {
     StringBuilder b = new StringBuilder();
     String type = MCGrammarSymbolTableHelper
-        .getQualifiedName(symbolTable.getProdWithInherited(HelperGrammar.getRuleName(a)).get());
+        .getQualifiedName(symbolTable.getProdWithInherited(a.getName()).get());
     Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a.getEnclosingScope());
     String name = grammar.isPresent()
         ? grammar.get().getName()
-        : symbolTable.getProdWithInherited(HelperGrammar.getRuleName(a)).get().getName();
+        : symbolTable.getProdWithInherited(a.getName()).get().getName();
     
         // Setup return value
         b.append(
@@ -225,6 +225,21 @@ public class ASTConstructionActions {
 
   }
 
+  public String getActionForKeyTerminalNotIteratedAttribute(ASTKeyTerminal a) {
+
+    String tmp = "_aNode.set%u_usage%(%text%);";
+
+    if (!a.isPresentUsageName()) {
+      return "";
+    }
+    // Replace templates
+    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(a.getUsageName()));
+    tmp = tmp.replaceAll("%text%", "_input.LT(-1).getText()");
+
+    return tmp;
+
+  }
+
   public String getActionForTerminalIteratedAttribute(ASTTerminal a) {
 
     if (!a.isPresentUsageName()) {
@@ -240,5 +255,21 @@ public class ASTConstructionActions {
 
     return tmp;
   }
-  
+
+  public String getActionForKeyTerminalIteratedAttribute(ASTKeyTerminal a) {
+
+    if (!a.isPresentUsageName()) {
+      return "";
+    }
+
+    String tmp = "_aNode.get%u_usage%().add(%text%);";
+
+    // Replace templates
+    String usageName = StringTransformations.capitalize(a.getUsageName());
+    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName+ GeneratorHelper.GET_SUFFIX_LIST));
+    tmp = tmp.replaceAll("%text%", "_input.LT(-1).getText()");
+
+    return tmp;
+  }
+
 }

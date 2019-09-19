@@ -146,7 +146,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // Create eof and dummy rules
     String ruleName = HelperGrammar.getRuleNameForAntlr(ast);
     Optional<ProdSymbol> ruleByName = grammarEntry
-            .getProdWithInherited(HelperGrammar.getRuleName(ast));
+            .getProdWithInherited(ast.getName());
     String classnameFromRulenameorInterfacename = MCGrammarSymbolTableHelper
             .getQualifiedName(ruleByName.get());
 
@@ -173,7 +173,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // gibt.
     // Ist aber wahrscheinlich so korrekt,
     // erzeugt bestimmt Default für ret ...
-    addDummyRules(HelperGrammar.getRuleName(ast), ruleName,
+    addDummyRules(ast.getName(), ruleName,
             classnameFromRulenameorInterfacename);
 
     // Start code codeSection for rules
@@ -219,7 +219,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     addToCodeSection("\n : ");
 
     List<PredicatePair> subRules = grammarInfo
-            .getSubRulesForParsing(HelperGrammar.getRuleName(ast));
+            .getSubRulesForParsing(ast.getName());
     if (subRules != null && !subRules.isEmpty()) {
 
       addToCodeSection("// Adding subrules");
@@ -506,14 +506,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
 
     if (embeddedJavaCode) {
-      boolean iteratedItself = HelperGrammar.isIterated(ast);
       boolean isAttribute = ast.isPresentUsageName();
-
-      boolean isList = iteratedItself;
-      Optional<RuleComponentSymbol> ruleComponent = ast.getSymbolOpt();
-      if (ruleComponent.isPresent()) {
-        isList = ruleComponent.get().isList();
-      }
+      boolean isList = ast.getSymbolOpt().isPresent() && ast.getSymbol().isList();
       // Add Actions
       if (isAttribute) {
         if (isList) {
@@ -528,6 +522,45 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     addActionToCodeSection();
 
+    addToCodeSection(printIteration(ast.getIteration()));
+
+    endCodeSection(ast);
+
+  }
+
+  @Override
+  public void visit(ASTKeyTerminal ast) {
+
+    startCodeSection("ASTKeyTerminal " + ast.getName());
+
+    String rulename = "({next(";
+    String sep = "";
+    for (String key: ast.getStringList()) {
+      rulename += sep;
+      sep = ", ";
+      rulename += "\"" + key + "\"";
+    }
+    rulename += ")}? Name";
+
+    // No actions in predicates
+    // Template engine cannot be used for substition in rare cases
+    addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
+
+    if (embeddedJavaCode) {
+      boolean isAttribute = ast.isPresentUsageName();
+      boolean isList = ast.getSymbolOpt().isPresent() && ast.getSymbol().isList();
+      // Add Actions
+      if (isAttribute) {
+        if (isList) {
+          addToAction(astActions.getActionForKeyTerminalIteratedAttribute(ast));
+        } else {
+          addToAction(astActions.getActionForKeyTerminalNotIteratedAttribute(ast));
+        }
+       }
+    }
+
+    addActionToCodeSection();
+    addToCodeSection(")");
     addToCodeSection(printIteration(ast.getIteration()));
 
     endCodeSection(ast);

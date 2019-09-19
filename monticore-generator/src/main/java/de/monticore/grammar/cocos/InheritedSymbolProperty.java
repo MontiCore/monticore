@@ -3,16 +3,11 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.grammar._ast.ASTRuleReference;
-import de.monticore.grammar.grammar._cocos.GrammarASTAbstractProdCoCo;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**

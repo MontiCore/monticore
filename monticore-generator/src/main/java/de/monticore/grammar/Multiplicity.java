@@ -191,6 +191,15 @@ public enum Multiplicity {
     if (ancestor instanceof ASTNonTerminal) {
       iteration = ((ASTNonTerminal) ancestor).getIteration();
     }
+    if (ancestor instanceof ASTTerminal) {
+      iteration = ((ASTTerminal) ancestor).getIteration();
+    }
+    if (ancestor instanceof ASTKeyTerminal) {
+      iteration = ((ASTKeyTerminal) ancestor).getIteration();
+    }
+    if (ancestor instanceof ASTConstantGroup) {
+      iteration = ((ASTConstantGroup) ancestor).getIteration();
+    }
     return iteration;
   }
   
