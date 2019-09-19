@@ -146,7 +146,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // Create eof and dummy rules
     String ruleName = HelperGrammar.getRuleNameForAntlr(ast);
     Optional<ProdSymbol> ruleByName = grammarEntry
-            .getProdWithInherited(HelperGrammar.getRuleName(ast));
+            .getProdWithInherited(ast.getName());
     String classnameFromRulenameorInterfacename = MCGrammarSymbolTableHelper
             .getQualifiedName(ruleByName.get());
 
@@ -173,7 +173,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // gibt.
     // Ist aber wahrscheinlich so korrekt,
     // erzeugt bestimmt Default für ret ...
-    addDummyRules(HelperGrammar.getRuleName(ast), ruleName,
+    addDummyRules(ast.getName(), ruleName,
             classnameFromRulenameorInterfacename);
 
     // Start code codeSection for rules
@@ -219,7 +219,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     addToCodeSection("\n : ");
 
     List<PredicatePair> subRules = grammarInfo
-            .getSubRulesForParsing(HelperGrammar.getRuleName(ast));
+            .getSubRulesForParsing(ast.getName());
     if (subRules != null && !subRules.isEmpty()) {
 
       addToCodeSection("// Adding subrules");

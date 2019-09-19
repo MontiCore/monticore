@@ -11,7 +11,6 @@ import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTKeyTerminal;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.utils.ASTNodes;
 import de.monticore.utils.Link;
 

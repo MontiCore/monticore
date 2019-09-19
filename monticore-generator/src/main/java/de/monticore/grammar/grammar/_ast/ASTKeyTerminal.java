@@ -2,16 +2,8 @@
 
 package de.monticore.grammar.grammar._ast;
 
-import de.monticore.ast.ASTCNode;
-import de.monticore.ast.ASTNode;
-import de.monticore.ast.Comment;
-import de.se_rwth.commons.logging.Log;
-
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.Optional;
 
 public  class ASTKeyTerminal extends ASTKeyTerminalTOP {
 
