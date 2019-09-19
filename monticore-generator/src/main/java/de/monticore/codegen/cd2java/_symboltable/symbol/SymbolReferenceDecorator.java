@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.symbol;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._symboltable.symbol.symbolReferenceMethodDecorator.SymbolReferenceMethodDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -12,6 +13,7 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
@@ -24,12 +26,16 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
 
   protected SymbolTableService symbolTableService;
 
+  protected SymbolReferenceMethodDecorator symbolReferenceMethodDecorator;
+
   protected MethodDecorator methodDecorator;
 
   public SymbolReferenceDecorator(final GlobalExtensionManagement glex,
                                   final SymbolTableService symbolTableService,
+                                  final SymbolReferenceMethodDecorator symbolReferenceMethodDecorator,
                                   final MethodDecorator methodDecorator) {
     super(glex);
+    this.symbolReferenceMethodDecorator = symbolReferenceMethodDecorator;
     this.methodDecorator = methodDecorator;
     this.symbolTableService = symbolTableService;
   }
@@ -42,14 +48,22 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
     String astNodeName = symbolTableService.getASTPackage() + "." + AST_PREFIX + input.getName();
     String simpleName = input.getName();
 
+    // symbol rule methods and attributes
+    List<ASTCDMethod> symbolRuleAttributeMethods = input.deepClone().getCDAttributeList()
+        .stream()
+        .map(symbolReferenceMethodDecorator::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+    List<ASTCDMethod> symbolRuleMethods = input.deepClone().getCDMethodList();
+
     ASTCDAttribute accessModifierAttribute = createAccessModifierAttribute();
-    List<ASTCDMethod> accessModifierMethods = methodDecorator.decorate(accessModifierAttribute);
+    List<ASTCDMethod> accessModifierMethods = symbolReferenceMethodDecorator.decorate(accessModifierAttribute);
 
     ASTCDAttribute predicateAttribute = createPredicateAttribute(symbolFullName);
     List<ASTCDMethod> predicateMethods = methodDecorator.getMutatorDecorator().decorate(predicateAttribute);
 
     ASTCDAttribute astNodeAttribute = createAstNodeAttribute(astNodeName);
-    List<ASTCDMethod> astNodeMethods = methodDecorator.decorate(astNodeAttribute);
+    List<ASTCDMethod> astNodeMethods = symbolReferenceMethodDecorator.decorate(astNodeAttribute);
 
     ASTCDAttribute referencedSymbolAttribute = createReferencedSymbolAttribute(symbolFullName);
     ASTCDMethod referencedSymbolMethod = createReferencedSymbolMethod(referencedSymbolAttribute, symbolReferenceClassSimpleName);
@@ -74,9 +88,11 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
         .addCDMethod(createIsReferencedSymbolLoadedMethod())
         .addCDMethod(createExistsReferencedSymbolMethod())
         .addCDMethod(createLoadReferencedSymbolMethod(symbolReferenceClassSimpleName, symbolFullName, simpleName))
+        .addAllCDMethods(symbolRuleAttributeMethods)
+        .addAllCDMethods(symbolRuleMethods)
         .build();
-    if(input.getModifierOpt().isPresent() && (symbolTableService.hasScopeStereotype(input.getModifierOpt().get())
-    || symbolTableService.hasInheritedScopeStereotype(input.getModifierOpt().get()))){
+    if (input.getModifierOpt().isPresent() && (symbolTableService.hasScopeStereotype(input.getModifierOpt().get())
+        || symbolTableService.hasInheritedScopeStereotype(input.getModifierOpt().get()))) {
       symbolReferenceClass.addCDMethod(createGetSpannedScopeMethod(scopeInterfaceType));
     }
 
@@ -103,7 +119,6 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
     return predicateAttribute;
   }
 
-
   protected ASTCDAttribute createAstNodeAttribute(String astType) {
     return getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(astType), "astNode");
   }
@@ -111,7 +126,6 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
   protected ASTCDAttribute createReferencedSymbolAttribute(String symbolType) {
     return getCDAttributeFacade().createAttribute(PROTECTED, symbolType, "referencedSymbol");
   }
-
 
   protected ASTCDMethod createReferencedSymbolMethod(ASTCDAttribute referencedSymbolAttribute, String symbolReferenceName) {
     ASTCDMethod getReferencedSymbolMethod = getCDMethodFacade().createMethod(PUBLIC, referencedSymbolAttribute.getMCType(),

@@ -7,6 +7,7 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._symboltable.symbol.symbolReferenceMethodDecorator.SymbolReferenceMethodDecorator;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -27,6 +28,8 @@ import static org.junit.Assert.assertTrue;
 public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass symbolClassAutomaton;
+
+  private ASTCDClass symbolClassFoo;
 
   private GlobalExtensionManagement glex;
 
@@ -60,10 +63,13 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
 
     SymbolReferenceDecorator decorator = new SymbolReferenceDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
-        new MethodDecorator(glex));
+        new SymbolReferenceMethodDecorator(glex), new MethodDecorator(glex));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
+    //creates fooSymbolRef
+    ASTCDInterface fooClass = getInterfaceBy("Foo", decoratedCompilationUnit);
+    this.symbolClassFoo = decorator.decorate(fooClass);
   }
 
   @Test
@@ -338,6 +344,91 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolClassAutomaton, symbolClassAutomaton);
+    StaticJavaParser.parse(sb.toString());
+  }
+
+  // test symbol rule methods
+
+  @Test
+  public void testIsExtraAttributeMethod() {
+    ASTCDMethod method = getMethodBy("isExtraAttribute", symbolClassFoo);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertBoolean(method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetExtraAttributeMethod() {
+    ASTCDMethod method = getMethodBy("setExtraAttribute", symbolClassFoo);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertBoolean(method.getCDParameter(0).getMCType());
+    assertEquals("extraAttribute", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testGetFooListMethod() {
+    ASTCDMethod method = getMethodBy("getFooList", symbolClassFoo);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertListOf(String.class, method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetFooListMethod() {
+    ASTCDMethod method = getMethodBy("setFooList", symbolClassFoo);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertListOf(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("foo", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testGetBlaOptMethod() {
+    ASTCDMethod method = getMethodBy("getBlaOpt", symbolClassFoo);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+
+  @Test
+  public void testSetBlaOptMethod() {
+    ASTCDMethod method = getMethodBy("setBlaOpt", symbolClassFoo);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertOptionalOf(Integer.class, method.getCDParameter(0).getMCType());
+    assertEquals("bla", method.getCDParameter(0).getName());
+  }
+  @Test
+  public void testScopeRuleMethod() {
+    ASTCDMethod method = getMethodBy("toString", symbolClassFoo);
+
+    assertTrue(method.getModifier().isPublic());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGeneratedCodeFoo() {
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolClassFoo, symbolClassFoo);
+    System.out.println(sb.toString());
     StaticJavaParser.parse(sb.toString());
   }
 }

@@ -242,12 +242,12 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
   }
 
-  protected List<ASTCDClass> createSymbolReferenceClasses(ASTCDDefinition astcdDefinition) {
-    List<ASTCDClass> symbolReferences = astcdDefinition.getCDClassList()
+  protected List<ASTCDClass> createSymbolReferenceClasses(ASTCDDefinition symbolCD) {
+    List<ASTCDClass> symbolReferences = symbolCD.getCDClassList()
         .stream()
         .map(symbolReferenceDecorator::decorate)
         .collect(Collectors.toList());
-    symbolReferences.addAll(astcdDefinition.getCDInterfaceList()
+    symbolReferences.addAll(symbolCD.getCDInterfaceList()
         .stream()
         .map(symbolReferenceDecorator::decorate)
         .collect(Collectors.toList()));
