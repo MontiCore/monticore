@@ -8,6 +8,9 @@ import de.monticore.typescalculator.combineexpressionswithliterals._visitor.Comb
 
 import java.util.Optional;
 
+/**
+ * Delegator Visitor to test the combination of the grammars
+ */
 public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLiteralsDelegatorVisitor implements ITypesCalculator {
 
   private CombineExpressionsWithLiteralsDelegatorVisitor realThis;
@@ -61,6 +64,9 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
     commonLiteralsTypesCalculator.setResult(lastResult);
   }
 
+  /**
+   * main method to calculate the type of an expression
+   */
   public Optional<SymTypeExpression> calculateType(ASTExpression e){
     e.accept(realThis);
     Optional<SymTypeExpression> result = lastResult.getLastOpt();
@@ -73,6 +79,9 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
     return realThis;
   }
 
+  /**
+   * set the last result of all calculators to the same object
+   */
   public void setLastResult(LastResult lastResult){
     deriveSymTypeOfAssignmentExpressions.setLastResult(lastResult);
     deriveSymTypeOfMCCommonLiterals.setResult(lastResult);
@@ -82,6 +91,10 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
     deriveSymTypeOfBitExpressions.setLastResult(lastResult);
   }
 
+  /**
+   * set the scope of the typescalculator, important for resolving for e.g. NameExpression
+   * @param scope
+   */
   public void setScope(IExpressionsBasisScope scope){
     deriveSymTypeOfAssignmentExpressions.setScope(scope);
     deriveSymTypeOfExpression.setScope(scope);
@@ -89,6 +102,9 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
     deriveSymTypeOfBitExpressions.setScope(scope);
   }
 
+  /**
+   * initialize the typescalculator
+   */
   @Override
   public void init() {
     deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfCommonExpressions();
@@ -100,9 +116,14 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
     setLastResult(lastResult);
   }
 
+  /**
+   * main method to calculate the type of a literal
+   */
   @Override
   public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
     lit.accept(realThis);
-    return lastResult.getLastOpt();
+    Optional<SymTypeExpression> result = lastResult.getLastOpt();
+    lastResult.setLastOpt(Optional.empty());
+    return result;
   }
 }

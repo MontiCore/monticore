@@ -2,6 +2,7 @@
 package mc.typescalculator;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.cd.cd4analysis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -40,10 +41,13 @@ public class CD2EAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolR
     if(typeSymbolOpt.isPresent()){
       CDTypeSymbol typeSymbol = typeSymbolOpt.get();
       TypeSymbol res = ExpressionsBasisSymTabMill.typeSymbolBuilder().setName(typeSymbol.getName()).setFullName(typeSymbol.getFullName()).setAccessModifier(typeSymbol.getAccessModifier()).build();
+      res.setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
       for(CDAssociationSymbol assoc : typeSymbol.getAllAssociations()){
         CDTypeSymbol targetType = assoc.getTargetType().getReferencedSymbol();
         List<FieldSymbol> variableSymbols = res.getFields();
-        variableSymbols.add(ExpressionsBasisSymTabMill.fieldSymbolBuilder().setName(targetType.getName()).setFullName(targetType.getFullName()).setAccessModifier(targetType.getAccessModifier()).build());
+        FieldSymbol varsym = ExpressionsBasisSymTabMill.fieldSymbolBuilder().setName(targetType.getName()).setFullName(targetType.getFullName()).setAccessModifier(targetType.getAccessModifier()).build();
+        variableSymbols.add(varsym);
+        res.getSpannedScope().add(varsym);
         res.setFields(variableSymbols);
       }
       for(CDFieldSymbol fieldSymbol: typeSymbol.getFields()){
@@ -51,7 +55,21 @@ public class CD2EAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolR
         FieldSymbol varsym = ExpressionsBasisSymTabMill.fieldSymbolBuilder().setName(fieldSymbol.getName()).setFullName(fieldSymbol.getFullName()).setAccessModifier(fieldSymbol.getAccessModifier()).build();
         varsym.setType(CD2EHelper.transformCDType2SymTypeExpression(fieldSymbol.getType()));
         variableSymbols.add(varsym);
+        res.getSpannedScope().add(varsym);
         res.setFields(variableSymbols);
+      }
+      for(CDMethOrConstrSymbol method : typeSymbol.getAllVisibleMethods()){
+        List<MethodSymbol> methodSymbols = res.getMethods();
+        MethodSymbol metSym = ExpressionsBasisSymTabMill.methodSymbolBuilder().setName(method.getName()).setFullName(method.getFullName()).setAccessModifier(method.getAccessModifier()).build();
+        metSym.setReturnType(CD2EHelper.transformCDType2SymTypeExpression(method.getReturnType()));
+        for(CDFieldSymbol parameter: method.getParameters()){
+          List<FieldSymbol> fieldSymbols = metSym.getParameter();
+          fieldSymbols.add(CD2EHelper.transformCDField2FieldSymbol(parameter));
+          metSym.setParameter(fieldSymbols);
+        }
+        methodSymbols.add(metSym);
+        res.getSpannedScope().add(metSym);
+        res.setMethods(methodSymbols);
       }
       for(CDTypeSymbolReference ref : typeSymbol.getSuperTypes()){
         List<SymTypeExpression> superTypes = res.getSuperTypes();

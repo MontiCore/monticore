@@ -22,6 +22,8 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Optional;
 
+import static de.monticore.types2.SymTypeConstant.unbox;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class CombineExpressionsWithLiteralsTest {
@@ -51,8 +53,6 @@ public class CombineExpressionsWithLiteralsTest {
 
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
-    SymTypeExpression exp = new SymTypeConstant();
-    exp.setName("double");
     Optional<ASTExpression> expr = p.parse_StringExpression("mc.typescalculator.TestCD.D.s+=mc.typescalculator.TestCD.D.s");
     CombineExpressionsWithLiteralsSymbolTableCreatorDelegator del = new CombineExpressionsWithLiteralsSymbolTableCreatorDelegator(globalScope1);
 
@@ -60,9 +60,8 @@ public class CombineExpressionsWithLiteralsTest {
     art.setImports(Lists.newArrayList(new ImportStatement("mc.typescalculator.TestCD.D", true)));
 
     assertTrue(expr.isPresent());
-//    Optional<SymTypeExpression> j = calc.calculateType(expr.get());
-    // TODO: j isnull
-    //assertTrue(exp.deepEquals(j));
+    Optional<SymTypeExpression> j = calc.calculateType(expr.get());
+//    assertEquals("int", unbox(j.get().print()));
 
 
 
@@ -70,28 +69,23 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsTypesCalculator calc2 = new CombineExpressionsWithLiteralsTypesCalculator(art);
     Optional<ASTExpression> expr2 = p.parse_StringExpression("s+=s");
     assertTrue(expr2.isPresent());
-//    Optional<SymTypeExpression> j2 = calc2.calculateType(expr2.get());
+    Optional<SymTypeExpression> j2 = calc2.calculateType(expr2.get());
     //TODO RE resolve local variable via import
-    //assertTrue(exp.deepEquals(j2));
+//    assertEquals("int",j2.get().print());
 
 
-    SymTypeExpression exp2 = new SymTypeOfObject();
     Optional<ASTExpression> exprC = p.parse_StringExpression("mc.typescalculator.TestCD.D.f = mc.typescalculator.TestCD.C.f");
-    exp2.setName("String");
     assertTrue(exprC.isPresent());
 //    j = calc.calculateType(exprC.get());
     //TODO String vs mc.typescalculator.TestCD.String
-    //assertTrue(exp2.deepEquals(j));
+//    assertEquals("String",j.get().print());
 
     Optional<ASTExpression> exprD = p.parse_StringExpression("(mc.typescalculator.TestCD.B.a)++");
-    exp.setName("double");
     assertTrue(exprD.isPresent());
     //TODO
-    //assertTrue(exp.deepEquals(calc.calculateType(exprD.get())));
+//    assertEquals("double",calc.calculateType(exprD.get()).get().print());
 
     Optional<ASTExpression> exprB = p.parse_StringExpression("mc.typescalculator.TestCD.B.x = mc.typescalculator.TestCD.B.z");
-
-    exp2.setName("C");
 
     assertTrue(exprB.isPresent());
 
@@ -99,6 +93,6 @@ public class CombineExpressionsWithLiteralsTest {
 
 //    Optional<SymTypeExpression> k = calc.calculateType(b);
     //TODO RE
-    //assertTrue(exp2.deepEquals(k));
+//    assertEquals("C",k.get().print());
   }
 }

@@ -7,7 +7,6 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.typescalculator.TypesCalculatorHelper;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -92,12 +91,13 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     }else if(optType.isPresent()) {
      //no variable found, test if name is type
       TypeSymbol type = optType.get();
-      SymTypeExpression res = TypesCalculatorHelper.fromTypeSymbol(type);
+      SymTypeExpression res = fromTypeSymbol(type);
       this.result = res;
       lastResult.setLast(res);
 
     }else{
      //name not found --> package or nothing
+     lastResult.setLastOpt(Optional.empty());
       Log.info("package suspected","ExpressionBasisTypesCalculator");
     }
   }
@@ -245,6 +245,20 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   public void setLastResult(LastResult lastResult){
     this.lastResult = lastResult;
+  }
+
+  public static SymTypeExpression fromTypeSymbol(TypeSymbol type) {
+    List<String> primitiveTypes = Arrays
+        .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
+
+    if (primitiveTypes.contains(type.getName())) {
+      return SymTypeExpressionFactory.createTypeConstant(type.getName());
+    } else {
+      SymTypeOfObject o = new SymTypeOfObject();
+      o.setName(type.getName());
+      return o;
+    }
+
   }
 
 }

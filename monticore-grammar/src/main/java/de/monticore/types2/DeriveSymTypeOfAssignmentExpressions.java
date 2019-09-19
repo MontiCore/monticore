@@ -4,6 +4,7 @@ package de.monticore.types2;
 import de.monticore.expressions.assignmentexpressions._ast.*;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
@@ -199,7 +200,9 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
   @Override
   public void traverse(ASTRegularAssignmentExpression expr){
     //there has to be a variable on the left side of an assignmentexpression
-    Optional<FieldSymbol> leftEx = scope.resolveField(new ExpressionsBasisPrettyPrinter(new IndentPrinter()).prettyprint(expr.getLeft()));
+    ExpressionsBasisPrettyPrinter expressionsBasisPrettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
+    CommonExpressionsPrettyPrinter commonExpressionsPrettyPrinter = new CommonExpressionsPrettyPrinter(new IndentPrinter());
+    Optional<FieldSymbol> leftEx = scope.resolveField(expressionsBasisPrettyPrinter.prettyprint(expr.getLeft()).equals("")?commonExpressionsPrettyPrinter.prettyprint(expr.getLeft()):expressionsBasisPrettyPrinter.prettyprint(expr.getLeft()));
     if(!leftEx.isPresent()){
       Log.error("0xA0180 The resulting type cannot be calculated");
     }

@@ -470,5 +470,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
 //    s = "\"test\".hashCode()";
 //    astex = p.parse_StringExpression(s).get();
 //    assertEquals("int",tc.typeOf(astex).print());
+
+    //TODO: test for multiple CallExpressions in a row --> no spanned scope like test above
+//    s = "\"test\".toString().charAt(1)";
+//    astex = p.parse_StringExpression(s).get();
+//    assertEquals("char",tc.typeOf(astex).print());
   }
 }

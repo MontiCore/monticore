@@ -249,6 +249,15 @@ public class DefsTypeBasic {
     add(m, field("str", _StringSymType));
     add(m, field("fromIndex", _intSymType));
     add(_String, m);
+
+    // toString()
+    m = method("toString",_StringSymType);
+    add(_String, m);
+
+    // charAt(int index)
+    m = method("charAt",_charSymType);
+    add(m,field("index",_intSymType));
+    add(_String, m);
     
     // TODO RE: this function is very incomplete; ersetzen oder komplettieren
     

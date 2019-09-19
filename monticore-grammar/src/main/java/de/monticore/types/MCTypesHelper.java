@@ -5,6 +5,7 @@ package de.monticore.types;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
+import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
@@ -12,6 +13,8 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types2.SymTypeExpression;
+import de.monticore.typescalculator.MCTypeVisitor;
 import de.se_rwth.commons.Names;
 
 import java.util.Arrays;
@@ -195,5 +198,10 @@ public class MCTypesHelper {
         return -1;
     }
   }
-  
+
+  public static SymTypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type) {
+    MCTypeVisitor visitor = new MCTypeVisitor();
+    type.accept(visitor);
+    return visitor.mapping.get(type);
+  }
 }

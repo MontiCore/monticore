@@ -12,17 +12,17 @@ classdiagram TestCD{
   }
 
   interface C{
-    String f;
+    G f;
   }
 
   class D implements mc.typescalculator.TestCD.C{
     Integer s;
-    String f;
+    G f;
     B y;
   }
 
-  class String{
-
+  class G{
+    String toString();
   }
 
   class Integer{

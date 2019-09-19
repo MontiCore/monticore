@@ -92,6 +92,9 @@ public class DeriveSymTypeOfBitExpressionsTest {
 
   /*--------------------------------------------------- TESTS ---------------------------------------------------------*/
 
+  /**
+   * test LeftShiftExpression
+   */
   @Test
   public void deriveFromLeftShiftExpressionTest() throws IOException {
     //example with int - int
@@ -105,6 +108,9 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
+  /**
+   * test rightShiftExpression
+   */
   @Test
   public void deriveFromRightShiftExpression() throws IOException {
     //example with int - int
@@ -118,6 +124,9 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("long",tc.typeOf(astex).print());
   }
 
+  /**
+   * test LogicalRightExpression
+   */
   @Test
   public void deriveFromLogicalRightExpression() throws IOException {
     //example with int - int
@@ -131,6 +140,9 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
+  /**
+   * test BinaryOrOpExpression
+   */
   @Test
   public void deriveFromBinaryOrOpExpression() throws IOException {
     //example with int - int
@@ -144,6 +156,9 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("long",tc.typeOf(astex).print());
   }
 
+  /**
+   * test BinaryAndExpression
+   */
   @Test
   public void deriveFromBinaryAndExpression() throws IOException {
     //example with int - int
@@ -157,6 +172,9 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("long",tc.typeOf(astex).print());
   }
 
+  /**
+   * test BinaryXorExpression
+   */
   @Test
   public void deriveFromBinaryXorExpression() throws IOException {
     //example with int - int

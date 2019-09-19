@@ -481,6 +481,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         lastResult.setLast(type);
       }else {
         //the inner type has no result and there is no type found
+        lastResult.setLastOpt(Optional.empty());
         Log.info("package suspected", "CommonExpressionsTypesCalculator");
       }
     }
