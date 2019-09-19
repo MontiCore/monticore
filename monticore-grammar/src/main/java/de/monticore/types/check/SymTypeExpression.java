@@ -74,12 +74,6 @@ public abstract class SymTypeExpression {
   @Deprecated
   protected Optional<TypeSymbol> typeSymbol = Optional.empty();
 
-  // XXX BR: this list ist gefährlich, denn es ist nicht der Typ
-  // Ausdruck der einen supertyp hat, sondern nur das TypSymbol
-    // und das ist ja im Symbol gespeichert.
-    // Konsequenz: muss man entfernen
-    @Deprecated
-  protected List<SymTypeExpression> superTypes = new ArrayList<>();
 
   
   @Deprecated
@@ -102,32 +96,7 @@ public abstract class SymTypeExpression {
     this.name = name;
   }
 
-  @Deprecated
-  public TypeSymbolsScope getEnclosingScope() {
-    return enclosingScope;
-  }
 
-  @Deprecated
-  public void setEnclosingScope(TypeSymbolsScope enclosingScope) {
-    this.enclosingScope = enclosingScope;
-  }
-
-
-@Deprecated
-  public List<SymTypeExpression> getSuperTypes() {
-    return superTypes;
-  }
-
-@Deprecated
-  public void setSuperTypes(List<SymTypeExpression> superTypes) {
-    this.superTypes = superTypes;
-  }
-
-  @Deprecated
-  public void addSuperType(SymTypeExpression superType){
-    this.superTypes.add(superType);
-  }
-  
   
   @Deprecated // aber nur in der Basisklasse (manche Subklassen behalten dies)
   public String getBaseName() {
