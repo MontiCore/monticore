@@ -33,11 +33,11 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
     assertTrue(listSymTypeExpression instanceof SymTypeOfGenerics);
     assertTrue("de.util.Pair".equals(listSymTypeExpression.print()));
-    SymTypeExpression keyTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(0);
+    SymTypeExpression keyTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(0);
     assertTrue(keyTypeArgument instanceof SymTypeOfObject);
     assertTrue("de.mc.PairA".equals(keyTypeArgument.print()));
 
-    SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(1);
+    SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(1);
     assertTrue(valueTypeArgument instanceof SymTypeOfObject);
     assertTrue("de.mc.PairB".equals(valueTypeArgument.print()));
   }
@@ -50,21 +50,21 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
     assertTrue(listSymTypeExpression instanceof SymTypeOfGenerics);
     assertTrue("de.util.Pair".equals(listSymTypeExpression.print()));
-    SymTypeExpression keyTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(0);
+    SymTypeExpression keyTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(0);
     assertTrue(keyTypeArgument instanceof SymTypeOfObject);
     assertTrue("de.mc.PairA".equals(keyTypeArgument.print()));
 
-    SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(1);
+    SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(1);
     assertTrue(valueTypeArgument instanceof SymTypeOfGenerics);
     assertEquals("de.util.Pair2",valueTypeArgument.print());
 
     SymTypeOfGenerics valueTypeArg = (SymTypeOfGenerics) valueTypeArgument;
 
-    SymTypeExpression argument1 = valueTypeArg.getArguments().get(0);
+    SymTypeExpression argument1 = valueTypeArg.getArgumentList().get(0);
     assertTrue(keyTypeArgument instanceof SymTypeOfObject);
     assertEquals("de.mc.PairB",argument1.print());
 
-    SymTypeExpression argument2 = valueTypeArg.getArguments().get(1);
+    SymTypeExpression argument2 = valueTypeArg.getArgumentList().get(1);
     assertTrue(keyTypeArgument instanceof SymTypeOfObject);
     assertEquals("de.mc.PairC",argument2.print());
 
@@ -78,11 +78,11 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
     assertTrue(listSymTypeExpression instanceof SymTypeOfGenerics);
     assertTrue("Map<de.mc.PersonKey,de.mc.PersonValue>".equals(listSymTypeExpression.print()));
-    SymTypeExpression keyTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(0);
+    SymTypeExpression keyTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(0);
     assertTrue(keyTypeArgument instanceof SymTypeOfObject);
     assertTrue("de.mc.PersonKey".equals(keyTypeArgument.print()));
 
-    SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(1);
+    SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(1);
     assertTrue(valueTypeArgument instanceof SymTypeOfObject);
     assertTrue("de.mc.PersonValue".equals(valueTypeArgument.print()));
 
@@ -95,11 +95,11 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
     assertTrue(listSymTypeExpression instanceof SymTypeOfGenerics);
     assertTrue("Map<PersonKey,PersonValue>".equals(listSymTypeExpression.print()));
-    SymTypeExpression keyTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(0);
+    SymTypeExpression keyTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(0);
     assertTrue(keyTypeArgument instanceof SymTypeOfObject);
     assertTrue("PersonKey".equals(keyTypeArgument.print()));
 
-    SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(1);
+    SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(1);
     assertTrue(valueTypeArgument instanceof SymTypeOfObject);
     assertTrue("PersonValue".equals(valueTypeArgument.print()));
   }
@@ -114,11 +114,11 @@ public class MCType2SymTypeExpressionTest {
         assertTrue(listSymTypeExpression instanceof SymTypeOfGenerics);
         assertTrue(("Map<"+primitiveKey+","+primitiveValue+">").equals(listSymTypeExpression.print()));
 
-        SymTypeExpression keyTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(0);
+        SymTypeExpression keyTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(0);
         assertTrue(keyTypeArgument instanceof SymTypeConstant);
         assertTrue(primitiveKey.equals(keyTypeArgument.print()));
 
-        SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(1);
+        SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(1);
         assertTrue(valueTypeArgument instanceof SymTypeConstant);
         assertTrue(primitiveValue.equals(valueTypeArgument.print()));
       }
@@ -134,7 +134,7 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
     assertTrue(listSymTypeExpression instanceof SymTypeOfGenerics);
     assertTrue("Optional".equals(listSymTypeExpression.print()));
-    SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(0);
+    SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(0);
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertTrue("de.mc.Person".equals(listTypeArgument.print()));
   }
@@ -147,7 +147,7 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression setSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
     assertTrue(setSymTypeExpression instanceof SymTypeOfGenerics);
     assertTrue("Optional".equals(setSymTypeExpression.print()));
-    SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) setSymTypeExpression).getArguments().get(0);
+    SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) setSymTypeExpression).getArgumentList().get(0);
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertTrue("Person".equals(listTypeArgument.print()));
   }
@@ -161,7 +161,7 @@ public class MCType2SymTypeExpressionTest {
       SymTypeExpression setSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
       assertTrue(setSymTypeExpression instanceof SymTypeOfGenerics);
       assertTrue("Optional".equals(setSymTypeExpression.print()));
-      SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) setSymTypeExpression).getArguments().get(0);
+      SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) setSymTypeExpression).getArgumentList().get(0);
       assertTrue(listTypeArgument instanceof SymTypeConstant);
       assertTrue(primitive.equals(listTypeArgument.print()));
     }
@@ -177,7 +177,7 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
     assertTrue(listSymTypeExpression instanceof SymTypeOfGenerics);
     assertTrue("Set".equals(listSymTypeExpression.print()));
-    SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(0);
+    SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(0);
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertTrue("de.mc.Person".equals(listTypeArgument.print()));
   }
@@ -190,7 +190,7 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression setSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
     assertTrue(setSymTypeExpression instanceof SymTypeOfGenerics);
     assertTrue("Set".equals(setSymTypeExpression.print()));
-    SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) setSymTypeExpression).getArguments().get(0);
+    SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) setSymTypeExpression).getArgumentList().get(0);
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertTrue("Person".equals(listTypeArgument.print()));
   }
@@ -204,7 +204,7 @@ public class MCType2SymTypeExpressionTest {
       SymTypeExpression setSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
       assertTrue(setSymTypeExpression instanceof SymTypeOfGenerics);
       assertTrue("Set".equals(setSymTypeExpression.print()));
-      SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) setSymTypeExpression).getArguments().get(0);
+      SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) setSymTypeExpression).getArgumentList().get(0);
       assertTrue(listTypeArgument instanceof SymTypeConstant);
       assertTrue(primitive.equals(listTypeArgument.print()));
     }
@@ -218,7 +218,7 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
     assertTrue(listSymTypeExpression instanceof SymTypeOfGenerics);
     assertTrue("List".equals(listSymTypeExpression.print()));
-    SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(0);
+    SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(0);
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertTrue("de.mc.Person".equals(listTypeArgument.print()));
   }
@@ -231,7 +231,7 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
     assertTrue(listSymTypeExpression instanceof SymTypeOfGenerics);
     assertTrue("List".equals(listSymTypeExpression.print()));
-    SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(0);
+    SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(0);
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertTrue("Person".equals(listTypeArgument.print()));
   }
@@ -246,7 +246,7 @@ public class MCType2SymTypeExpressionTest {
       SymTypeExpression listSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
       assertTrue(listSymTypeExpression instanceof SymTypeOfGenerics);
       assertTrue("List".equals(listSymTypeExpression.print()));
-      SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArguments().get(0);
+      SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(0);
       assertTrue(listTypeArgument instanceof SymTypeConstant);
       assertTrue(primitive.equals(listTypeArgument.print()));
     }
