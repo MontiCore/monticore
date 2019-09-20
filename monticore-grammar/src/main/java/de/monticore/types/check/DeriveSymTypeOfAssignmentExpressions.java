@@ -17,6 +17,10 @@ import static de.monticore.types.check.TypeCheck.compatible;
 import static de.monticore.types.check.TypeCheck.isSubtypeOf;
 import static de.monticore.types.check.DeriveSymTypeOfCommonExpressions.getUnaryNumericPromotionType;
 
+/**
+ * Visitor for AssignmentExpressions
+ */
+
 public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpression implements AssignmentExpressionsVisitor {
 
   private AssignmentExpressionsVisitor realThis;

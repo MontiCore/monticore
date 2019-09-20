@@ -43,7 +43,8 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     this.typeConstructorFullName = typeConstructorFullName;
     this.arguments = arguments;
   }
-  
+
+
   public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments,
                            TypeSymbol objTypeConstructorSymbol) {
     this.typeConstructorFullName = typeConstructorFullName;

@@ -80,12 +80,7 @@ public abstract class SymTypeExpression {
     // Konsequenz: muss man entfernen
     @Deprecated
   protected List<SymTypeExpression> superTypes = new ArrayList<>();
-  
-  @Deprecated
-  private void lazyLoadTypeSymbol() {
-    if(typeSymbol==null || !typeSymbol.isPresent())
-      typeSymbol = enclosingScope.resolveType(this.name);
-  }
+
   
   @Deprecated
   public TypeSymbol getTypeSymbol() {
