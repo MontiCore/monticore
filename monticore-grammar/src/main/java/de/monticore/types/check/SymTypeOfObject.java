@@ -5,6 +5,8 @@ import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 
+import java.util.Optional;
+
 /**
  * An objectType is a full qualified class name.
  * Therefore, we have the fullName, the baseName and the
@@ -21,7 +23,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   public SymTypeOfObject(String objFullName, TypeSymbol typeInfo)
   {
     this.objFullName = objFullName;
-    this.typeInfo = typeInfo;
+    this.typeInfo = Optional.of(typeInfo);
   }
   
   public String getObjName() {
@@ -77,15 +79,10 @@ public class SymTypeOfObject extends SymTypeExpression {
     if(!this.name.equals(symTypeExpression.name)){
       return false;
     }
-    if(!this.typeSymbol.equals(symTypeExpression.typeSymbol)){
+    if(!this.typeInfo.equals(symTypeExpression.typeInfo)){
       return false;
     }
-    // TODO RE: supertypen muss man doch nicht klonen?
-    for(int i = 0; i<this.superTypes.size();i++){
-      if(!this.superTypes.get(i).deepEquals(symTypeExpression.superTypes.get(i))){
-        return false;
-      }
-    }
+
     return true;
   }
 
@@ -93,12 +90,8 @@ public class SymTypeOfObject extends SymTypeExpression {
   public SymTypeExpression deepClone() {
     SymTypeOfObject clone = new SymTypeOfObject(objFullName,null);
     clone.setName(this.name);
-    clone.setEnclosingScope(this.enclosingScope);
 
-    for(SymTypeExpression expr: superTypes){
-      clone.addSuperType(expr.deepClone());
-    }
-    clone.typeSymbol = this.typeSymbol;
+    clone.typeInfo = this.typeInfo;
     return clone;
   }
   

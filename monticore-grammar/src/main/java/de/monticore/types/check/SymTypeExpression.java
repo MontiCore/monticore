@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 
@@ -44,15 +45,19 @@ public abstract class SymTypeExpression {
    * Furthermore, each SymType knows this TypeSymbol (i.e. the
    * TypeSymbols are loaded (or created) upon creation of the SymType.
    */
-  protected TypeSymbol typeInfo;
+  protected Optional<TypeSymbol> typeInfo;
   
-  public TypeSymbol getTypeInfo() {
-    return typeInfo;
+  public TypeSymbol getTypeInfo(ITypeSymbolsScope symbolTable) {
+    if(typeInfo.isPresent()) {
+      return typeInfo.get();
+    }
+
+    typeInfo = symbolTable.resolveType(this.getName());
+    return typeInfo.get();
   }
   
   public void setTypeInfo(TypeSymbol typeInfo) {
-    this.typeInfo = typeInfo;
-    typeSymbol = Optional.of(typeInfo); // TODO: for Compatibility; this can be deleted
+    this.typeInfo = Optional.of(typeInfo);
   }
   
   // --------------------------------------------------------------------------
@@ -67,31 +72,9 @@ public abstract class SymTypeExpression {
   @Deprecated
   protected TypeSymbolsScope enclosingScope;
 
-  /**
-   * If the Symbol corresponding to the type's name is loaded:
-   * It is stored here.
-   */
-  @Deprecated
-  protected Optional<TypeSymbol> typeSymbol = Optional.empty();
 
-  // XXX BR: this list ist gefährlich, denn es ist nicht der Typ
-  // Ausdruck der einen supertyp hat, sondern nur das TypSymbol
-    // und das ist ja im Symbol gespeichert.
-    // Konsequenz: muss man entfernen
-    @Deprecated
-  protected List<SymTypeExpression> superTypes = new ArrayList<>();
 
-  
-  @Deprecated
-  public TypeSymbol getTypeSymbol() {
-    return typeInfo;
-  }
-  
-  @Deprecated
-  public void setTypeSymbol(Optional<TypeSymbol> x) {
-    typeSymbol=x;setTypeInfo(x.get());
-  }
-  
+
   @Deprecated
   public String getName() {
     return name;
@@ -102,33 +85,10 @@ public abstract class SymTypeExpression {
     this.name = name;
   }
 
-  @Deprecated
-  public TypeSymbolsScope getEnclosingScope() {
-    return enclosingScope;
-  }
-
-  @Deprecated
-  public void setEnclosingScope(TypeSymbolsScope enclosingScope) {
-    this.enclosingScope = enclosingScope;
-  }
 
 
-@Deprecated
-  public List<SymTypeExpression> getSuperTypes() {
-    return superTypes;
-  }
 
-@Deprecated
-  public void setSuperTypes(List<SymTypeExpression> superTypes) {
-    this.superTypes = superTypes;
-  }
 
-  @Deprecated
-  public void addSuperType(SymTypeExpression superType){
-    this.superTypes.add(superType);
-  }
-  
-  
   @Deprecated // aber nur in der Basisklasse (manche Subklassen behalten dies)
   public String getBaseName() {
     String[] parts = this.name.split("\\.");

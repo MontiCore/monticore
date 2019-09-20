@@ -72,11 +72,7 @@ public class SymTypeVariable extends SymTypeExpression {
     if(!this.name.equals(symTypeExpression.name)){
       return false;
     }
-    for(int i = 0; i<this.superTypes.size();i++){
-      if(!this.superTypes.get(i).deepEquals(symTypeExpression.superTypes.get(i))){
-        return false;
-      }
-    }
+
     return true;
   }
 
@@ -84,10 +80,7 @@ public class SymTypeVariable extends SymTypeExpression {
   public SymTypeExpression deepClone() {
     SymTypeVariable clone = new SymTypeVariable();
     clone.setName(this.name);
-    clone.setEnclosingScope(this.enclosingScope);
-    for(SymTypeExpression expr: superTypes){
-      clone.addSuperType(expr.deepClone());
-    }
+    
     return clone;
   }
   
