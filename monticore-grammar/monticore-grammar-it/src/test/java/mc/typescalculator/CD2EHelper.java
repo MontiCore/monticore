@@ -50,9 +50,7 @@ public class CD2EHelper {
     SymTypeExpression res = new SymTypeOfObject();
     boolean success = false;
       List<CDTypeSymbolReference> superTypes = typeSymbol.getSuperTypes();
-      for (CDTypeSymbolReference ref : superTypes) {
-        res.addSuperType(transformCDType2SymTypeExpression(ref));
-      }
+
       res.setName(typeSymbol.getName());
       success = true;
     if (!success){
