@@ -11,6 +11,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeExpression;
+
 public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   protected IExpressionsBasisScope scope;
@@ -91,7 +93,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     }else if(optType.isPresent()) {
      //no variable found, test if name is type
       TypeSymbol type = optType.get();
-      SymTypeExpression res = fromTypeSymbol(type);
+      SymTypeExpression res = createTypeExpression(type);
       this.result = res;
       lastResult.setLast(res);
 
@@ -123,20 +125,6 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   public void setLastResult(LastResult lastResult){
     this.lastResult = lastResult;
-  }
-
-  public static SymTypeExpression fromTypeSymbol(TypeSymbol type) {
-    List<String> primitiveTypes = Arrays
-        .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
-
-    if (primitiveTypes.contains(type.getName())) {
-      return SymTypeExpressionFactory.createTypeConstant(type.getName());
-    } else {
-      SymTypeOfObject o = new SymTypeOfObject();
-      o.setName(type.getName());
-      return o;
-    }
-
   }
 
 }

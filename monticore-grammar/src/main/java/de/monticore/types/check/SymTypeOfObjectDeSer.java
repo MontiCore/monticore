@@ -55,9 +55,7 @@ public class SymTypeOfObjectDeSer implements IDeSer<SymTypeOfObject> {
         Log.error("Could not find objName of SymTypeOfObject " + serialized);
       }
       // TODO: Deserialize TypeSymbol if it is present
-      TypeSymbol symbol = null;
-      SymTypeOfObject obj = new SymTypeOfObject();
-      obj.setObjName(objName.get());
+      SymTypeOfObject obj = new SymTypeOfObject(objName.get());
       return Optional.of(obj);
     }
     return Optional.empty();

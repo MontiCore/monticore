@@ -71,14 +71,4 @@ public class SymTypeArray extends SymTypeExpression {
   
   // --------------------------------------------------------------------------
   
-  @Override @Deprecated // and not implemented yet
-  public boolean deepEquals(SymTypeExpression symTypeExpression) {
-    return false;
-  }
-  
-  @Override @Deprecated // and not implemented yet
-  public SymTypeExpression deepClone() {
-    return null;
-  }
-  
 }

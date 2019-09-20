@@ -7,6 +7,8 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static de.monticore.types.check.DefsTypeBasic.*;
+
 /**
  * Visitor for Derivation of SymType from MCBasicTypes
  * i.e. for

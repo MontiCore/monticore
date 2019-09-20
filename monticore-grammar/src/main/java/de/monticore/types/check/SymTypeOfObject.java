@@ -70,34 +70,10 @@ public class SymTypeOfObject extends SymTypeExpression {
   }
   
   // --------------------------------------------------------------------------
-  
-  @Override @Deprecated
-  public boolean deepEquals(SymTypeExpression symTypeExpression) {
-    if(!(symTypeExpression instanceof SymTypeOfObject)){
-      return false;
-    }
-    if(!this.name.equals(symTypeExpression.name)){
-      return false;
-    }
-    if(!this.typeInfo.equals(symTypeExpression.typeInfo)){
-      return false;
-    }
 
-    return true;
-  }
-
-  @Override @Deprecated
-  public SymTypeExpression deepClone() {
-    SymTypeOfObject clone = new SymTypeOfObject(objFullName,null);
-    clone.setName(this.name);
-
-    clone.typeInfo = this.typeInfo;
-    return clone;
+  public SymTypeOfObject(String name){
+    this.objFullName = name;
   }
   
-  @Deprecated
-  public SymTypeOfObject() {
-  }
-  
-  
+
 }

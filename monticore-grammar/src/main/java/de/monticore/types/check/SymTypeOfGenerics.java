@@ -38,7 +38,6 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   protected TypeSymbol objTypeConstructorSymbol;
   
-  @Deprecated // XXX: remove funct. (because TypeSymbol missing)
   public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments) {
     this.typeConstructorFullName = typeConstructorFullName;
     this.arguments = arguments;
@@ -117,76 +116,18 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
   
   // --------------------------------------------------------------------------
-  
-  
-  @Deprecated
-  Optional<TypeSymbol> whoAmI;
-  
-  //String name;
-  @Deprecated
-  public Optional<TypeSymbol> getWhoAmI() {
-    return whoAmI;
-  }
 
-  @Deprecated
-  public void setWhoAmI(Optional<TypeSymbol> whoAmI) {
-    this.whoAmI = whoAmI;
-  }
-
-  @Deprecated
   public List<SymTypeExpression> getArguments() {
     return arguments;
   }
 
-  @Deprecated
   public void setArguments(List<SymTypeExpression> arguments) {
     this.arguments = arguments;
     Lists.newArrayList();
   }
   
-  @Deprecated
   public void addArgument(SymTypeExpression argument){
     this.arguments.add(argument);
-  }
-
-
-  @Override @Deprecated
-  public boolean deepEquals(SymTypeExpression symTypeExpression) {
-    if(!(symTypeExpression instanceof SymTypeOfGenerics)){
-      return false;
-    }
-    if(!this.name.equals(symTypeExpression.name)){
-      return false;
-    }
-    if(!this.typeInfo.equals(symTypeExpression.typeInfo)){
-      return false;
-
-    }
-    for(int i = 0; i<this.arguments.size();i++){
-      if(!this.arguments.get(i).deepEquals(((SymTypeOfGenerics) symTypeExpression).arguments.get(i))){
-        return false;
-      }
-    }
-    if(!this.whoAmI.equals(((SymTypeOfGenerics) symTypeExpression).whoAmI)){
-      return false;
-    }
-    return true;
-  }
-
-  @Override @Deprecated
-  public SymTypeExpression deepClone() {
-    SymTypeOfGenerics clone = new SymTypeOfGenerics();
-    clone.setName(this.name);
-    for(SymTypeExpression expr: arguments){
-      clone.addArgument(expr.deepClone());
-    }
-    clone.typeInfo = this.typeInfo;
-    clone.whoAmI = this.whoAmI;
-    return clone;
-  }
-  
-  @Deprecated
-  public SymTypeOfGenerics() {
   }
   
 }

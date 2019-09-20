@@ -371,6 +371,18 @@ public class DefsTypeBasic {
   }
   
   // TODO: diese Klasse etwas testen
-  
+
+
+  public static TypeSymbol _list;
+  public static SymTypeExpression _listSymType;
+
+  public static TypeSymbol _set;
+  public static SymTypeExpression _setTypeSymbol;
+
+  public static TypeSymbol _map;
+  public static SymTypeExpression _mapTypeSymbol;
+
+  public static TypeSymbol _optional;
+  public static SymTypeExpression _optionalTypeSymbol;
   
 }
