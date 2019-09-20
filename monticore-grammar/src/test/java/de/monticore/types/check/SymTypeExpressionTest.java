@@ -177,10 +177,10 @@ public class SymTypeExpressionTest {
   
   @Test
   public void baseNameTest() {
-    assertEquals("Person", teP.getBaseName());
-    assertEquals("Human", teH.getBaseName());
-    assertEquals("Map", teMap.getBaseName());
-    assertEquals("Set", teSetA.getBaseName());
+    assertEquals("Person", ((SymTypeOfObject)(teP)).getBaseName());
+    assertEquals("Human", ((SymTypeOfObject)(teH)).getBaseName());
+    assertEquals("Map", ((SymTypeOfGenerics)(teMap)).getBaseName());
+    assertEquals("Set", ((SymTypeOfGenerics)(teSet)).getBaseName());
   }
   
 }

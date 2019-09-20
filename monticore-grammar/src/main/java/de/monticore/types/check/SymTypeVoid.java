@@ -29,9 +29,4 @@ public class SymTypeVoid extends SymTypeExpression {
     return false;
   }
   
-  @Override @Deprecated
-  public SymTypeExpression deepClone() {
-    return new SymTypeVoid();
-  }
-  
 }

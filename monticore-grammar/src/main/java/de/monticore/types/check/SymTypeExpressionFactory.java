@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class SymTypeExpressionFactory {
   }
 
   public static SymTypeOfObject createTypeObject(String name) {
-    SymTypeOfObject o = new SymTypeOfObject();
+    SymTypeOfObject o = new SymTypeOfObject(name);
     o.setObjName(name);
     return o;
   }
@@ -43,6 +44,24 @@ public class SymTypeExpressionFactory {
   
   public static SymTypeArray createTypeArray(int dim, SymTypeExpression argument) {
     SymTypeArray o = new SymTypeArray(dim, argument);
+    return o;
+  }
+
+  public static SymTypeExpression createTypeExpression(TypeSymbol type){
+    List<String> primitiveTypes = Arrays
+        .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
+
+    SymTypeExpression o;
+
+    if (primitiveTypes.contains(type.getName())) {
+      o = createTypeConstant(type.getName());
+    } else if("void".equals(type.getName())){
+      o = createTypeVoid();
+    }else if("null".equals(type.getName())) {
+      o = createTypeOfNull();
+    }else {
+      o = createTypeObject(type.getName());
+    }
     return o;
   }
   
@@ -68,7 +87,7 @@ public class SymTypeExpressionFactory {
     SymTypeOfGenerics o = new SymTypeOfGenerics(name, arguments, objTypeConstructorSymbol.get());
     return o;
   }
-  
+
   @Deprecated // TODO: delete, because TypeSymbol is not set
   public static SymTypeOfGenerics createGenerics(String fullName, List<SymTypeExpression> arguments){
     SymTypeOfGenerics o = new SymTypeOfGenerics(fullName, arguments);
@@ -77,6 +96,4 @@ public class SymTypeExpressionFactory {
     return o;
   }
 
-
-  
 }

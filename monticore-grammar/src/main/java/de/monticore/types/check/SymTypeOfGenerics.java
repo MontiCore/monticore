@@ -117,21 +117,6 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
   
   // --------------------------------------------------------------------------
-  
-  
-  @Deprecated
-  Optional<TypeSymbol> whoAmI;
-  
-  //String name;
-  @Deprecated
-  public Optional<TypeSymbol> getWhoAmI() {
-    return whoAmI;
-  }
-
-  @Deprecated
-  public void setWhoAmI(Optional<TypeSymbol> whoAmI) {
-    this.whoAmI = whoAmI;
-  }
 
   @Deprecated
   public List<SymTypeExpression> getArguments() {
@@ -167,26 +152,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
         return false;
       }
     }
-    if(!this.whoAmI.equals(((SymTypeOfGenerics) symTypeExpression).whoAmI)){
-      return false;
-    }
     return true;
-  }
-
-  @Override @Deprecated
-  public SymTypeExpression deepClone() {
-    SymTypeOfGenerics clone = new SymTypeOfGenerics();
-    clone.setName(this.name);
-    for(SymTypeExpression expr: arguments){
-      clone.addArgument(expr.deepClone());
-    }
-    clone.typeInfo = this.typeInfo;
-    clone.whoAmI = this.whoAmI;
-    return clone;
-  }
-  
-  @Deprecated
-  public SymTypeOfGenerics() {
   }
   
 }

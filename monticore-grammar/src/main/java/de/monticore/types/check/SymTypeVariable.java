@@ -75,14 +75,6 @@ public class SymTypeVariable extends SymTypeExpression {
 
     return true;
   }
-
-  @Override @Deprecated
-  public SymTypeExpression deepClone() {
-    SymTypeVariable clone = new SymTypeVariable();
-    clone.setName(this.name);
-    
-    return clone;
-  }
   
   public SymTypeVariable() {
   }

@@ -86,18 +86,10 @@ public class SymTypeOfObject extends SymTypeExpression {
     return true;
   }
 
-  @Override @Deprecated
-  public SymTypeExpression deepClone() {
-    SymTypeOfObject clone = new SymTypeOfObject(objFullName,null);
-    clone.setName(this.name);
-
-    clone.typeInfo = this.typeInfo;
-    return clone;
-  }
-  
   @Deprecated
-  public SymTypeOfObject() {
+  public SymTypeOfObject(String name){
+    this.objFullName = name;
   }
   
-  
+
 }

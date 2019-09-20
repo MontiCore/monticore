@@ -188,7 +188,7 @@ public class SymTypeConstant extends SymTypeExpression {
     this.constName = name; // Nur ein Hack um die Tests am laufen zu halten, die setName nutzen
   }
   
-    @Override @Deprecated
+    @Override
   public boolean deepEquals(SymTypeExpression symTypeExpression) {
     if(!(symTypeExpression instanceof SymTypeConstant)){
       return false;
@@ -202,20 +202,6 @@ public class SymTypeConstant extends SymTypeExpression {
     }
     return true;
   }
-
-  @Override @Deprecated
-  public SymTypeExpression deepClone() {
-    SymTypeConstant clone = new SymTypeConstant(getConstName());
-    clone.setName(this.name);
-
-    clone.typeInfo = this.typeInfo;
-    return clone;
-  }
   //hier enum attr für primitive types
-  
-  @Deprecated
-  public SymTypeConstant() {
-  }
-  
   
 }

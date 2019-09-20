@@ -68,36 +68,16 @@ public abstract class SymTypeExpression {
   @Deprecated
   protected String name;
 
-  /// XXX BR: das hat hier nichts zu suchen
-  @Deprecated
-  protected TypeSymbolsScope enclosingScope;
-
-
-
-
   @Deprecated
   public String getName() {
     return name;
   }
-  
+
   @Deprecated
   public void setName(String name) {
     this.name = name;
   }
 
-
-
-
-
-  @Deprecated // aber nur in der Basisklasse (manche Subklassen behalten dies)
-  public String getBaseName() {
-    String[] parts = this.name.split("\\.");
-    return parts[parts.length - 1];
-  }
-  
-  @Deprecated
   abstract public boolean deepEquals(SymTypeExpression symTypeExpression);
   
-  @Deprecated
-  abstract public SymTypeExpression deepClone();
 }

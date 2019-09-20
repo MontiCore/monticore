@@ -37,9 +37,5 @@ public class SymTypeOfNull extends SymTypeExpression {
     return false;
   }
   
-  @Override @Deprecated
-  public SymTypeExpression deepClone() {
-    return new SymTypeOfNull();
-  }
-  
+
 }
