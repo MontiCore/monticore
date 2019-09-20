@@ -83,7 +83,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, field("student2",SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope, field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",f)));
     add2scope(scope, method("isInt",_booleanSymType));
-    List<FieldSymbol> parameterList = new ArrayList<>();
     add2scope(scope,add(method("isInt",_booleanSymType),TypeSymbolsSymTabMill.fieldSymbolBuilder().setName("maxLength").setType(_intSymType).build()));
     TypeSymbol ts = type("Test","Test");
     FieldSymbol fs = field("variable",_intSymType);
@@ -465,14 +464,14 @@ public class DeriveSymTypeOfCommonExpressionTest {
     astex = p.parse_StringExpression(s).get();
     assertEquals("void",tc.typeOf(astex).print());
 
-    //TODO: test for String method --> type String has no spanned scope --> no methods can be found
-//    s = "\"test\".hashCode()";
-//    astex = p.parse_StringExpression(s).get();
-//    assertEquals("int",tc.typeOf(astex).print());
+    //test for String method
+    s = "\"test\".hashCode()";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
 
-    //TODO: test for multiple CallExpressions in a row --> no spanned scope like test above
-//    s = "\"test\".toString().charAt(1)";
-//    astex = p.parse_StringExpression(s).get();
-//    assertEquals("char",tc.typeOf(astex).print());
+    //test for multiple CallExpressions in a row
+    s = "\"test\".toString().charAt(1)";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("char",tc.typeOf(astex).print());
   }
 }

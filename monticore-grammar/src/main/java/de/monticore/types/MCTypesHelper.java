@@ -150,7 +150,7 @@ public class MCTypesHelper {
       ASTMCTypeArgument ref = getReferenceTypeFromOptional(type);
       return printType(ref);
     }
-    return BasicGenericsTypesPrinter.printType(type);
+    return CollectionTypesPrinter.printType(type);
   }
   
   public static boolean isNullable(ASTMCType type) {
@@ -169,7 +169,7 @@ public class MCTypesHelper {
     if (isOptional(type)) {
       return printType(getSimpleReferenceTypeFromOptional(type));
     }
-    return BasicGenericsTypesPrinter.printType(type);
+    return CollectionTypesPrinter.printType(type);
   }
   
   public static int getPrimitiveType(String typeName) {
