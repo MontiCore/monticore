@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.printer;
 
-import de.monticore.types.BasicGenericsTypesPrinter;
+import de.monticore.types.CollectionTypesPrinter;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import org.junit.Test;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class BasicGenericsTypesPrinterTest {
+public class CollectionTypesPrinterTest {
   @Test
   public void testPrintType() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
@@ -30,11 +30,11 @@ public class BasicGenericsTypesPrinterTest {
     assertTrue(astmcOptionalType.isPresent());
     assertTrue(astmcMapType.isPresent());
 
-    assertEquals("java.util.List", BasicGenericsTypesPrinter.printType(astmcBasicTypeArgument.get()));
-    assertEquals("int", BasicGenericsTypesPrinter.printType(astmcPrimitiveTypeArgument.get()));
-    assertEquals("List<java.lang.String>",BasicGenericsTypesPrinter.printType(astmcListType.get())); // funktioniert nicht
-    assertEquals("Set<int>",BasicGenericsTypesPrinter.printType(astmcSetType.get()));
-    assertEquals("Optional<Character>", BasicGenericsTypesPrinter.printType(astmcOptionalType.get()));
-    assertEquals("Map<String,String>",BasicGenericsTypesPrinter.printType(astmcMapType.get()));
+    assertEquals("java.util.List", CollectionTypesPrinter.printType(astmcBasicTypeArgument.get()));
+    assertEquals("int", CollectionTypesPrinter.printType(astmcPrimitiveTypeArgument.get()));
+    assertEquals("List<java.lang.String>",CollectionTypesPrinter.printType(astmcListType.get())); // funktioniert nicht
+    assertEquals("Set<int>",CollectionTypesPrinter.printType(astmcSetType.get()));
+    assertEquals("Optional<Character>", CollectionTypesPrinter.printType(astmcOptionalType.get()));
+    assertEquals("Map<String,String>",CollectionTypesPrinter.printType(astmcMapType.get()));
   }
 }

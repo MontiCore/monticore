@@ -10,7 +10,6 @@ import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.LogStub;
-import mc.typescalculator.combineexpressionswithliterals._ast.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.*;
 import org.junit.Test;
