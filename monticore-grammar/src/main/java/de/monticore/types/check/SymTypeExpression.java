@@ -6,6 +6,7 @@ import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,20 +65,15 @@ public abstract class SymTypeExpression {
 
   /**
    * A type has a name (XXX BR Exceptions may apply?)
+   * anonymous types only in List<?> in FullGenericTypes.mc4, not yet supported
    */
-  @Deprecated
   protected String name;
 
-  @Deprecated
   public String getName() {
     return name;
   }
 
-  @Deprecated
   public void setName(String name) {
     this.name = name;
   }
-
-  abstract public boolean deepEquals(SymTypeExpression symTypeExpression);
-  
 }

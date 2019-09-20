@@ -62,19 +62,6 @@ public class SymTypeVariable extends SymTypeExpression {
   
 
   // --------------------------------------------------------------------------
-
-
-  @Override @Deprecated
-  public boolean deepEquals(SymTypeExpression symTypeExpression) {
-    if(!(symTypeExpression instanceof SymTypeVariable)){
-      return false;
-    }
-    if(!this.name.equals(symTypeExpression.name)){
-      return false;
-    }
-
-    return true;
-  }
   
   public SymTypeVariable() {
   }

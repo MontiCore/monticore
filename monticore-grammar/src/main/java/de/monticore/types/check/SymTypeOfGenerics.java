@@ -38,7 +38,6 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   protected TypeSymbol objTypeConstructorSymbol;
   
-  @Deprecated // XXX: remove funct. (because TypeSymbol missing)
   public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments) {
     this.typeConstructorFullName = typeConstructorFullName;
     this.arguments = arguments;
@@ -118,41 +117,17 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   
   // --------------------------------------------------------------------------
 
-  @Deprecated
   public List<SymTypeExpression> getArguments() {
     return arguments;
   }
 
-  @Deprecated
   public void setArguments(List<SymTypeExpression> arguments) {
     this.arguments = arguments;
     Lists.newArrayList();
   }
   
-  @Deprecated
   public void addArgument(SymTypeExpression argument){
     this.arguments.add(argument);
-  }
-
-
-  @Override @Deprecated
-  public boolean deepEquals(SymTypeExpression symTypeExpression) {
-    if(!(symTypeExpression instanceof SymTypeOfGenerics)){
-      return false;
-    }
-    if(!this.name.equals(symTypeExpression.name)){
-      return false;
-    }
-    if(!this.typeInfo.equals(symTypeExpression.typeInfo)){
-      return false;
-
-    }
-    for(int i = 0; i<this.arguments.size();i++){
-      if(!this.arguments.get(i).deepEquals(((SymTypeOfGenerics) symTypeExpression).arguments.get(i))){
-        return false;
-      }
-    }
-    return true;
   }
   
 }

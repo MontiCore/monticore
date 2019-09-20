@@ -70,23 +70,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   }
   
   // --------------------------------------------------------------------------
-  
-  @Override @Deprecated
-  public boolean deepEquals(SymTypeExpression symTypeExpression) {
-    if(!(symTypeExpression instanceof SymTypeOfObject)){
-      return false;
-    }
-    if(!this.name.equals(symTypeExpression.name)){
-      return false;
-    }
-    if(!this.typeInfo.equals(symTypeExpression.typeInfo)){
-      return false;
-    }
 
-    return true;
-  }
-
-  @Deprecated
   public SymTypeOfObject(String name){
     this.objFullName = name;
   }

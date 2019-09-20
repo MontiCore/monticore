@@ -23,11 +23,5 @@ public class SymTypePackage extends SymTypeExpression {
 
   // --------------------------------------------------------------------------
 
-  @Override
-  @Deprecated // and not implemented yet
-  public boolean deepEquals(SymTypeExpression symTypeExpression) {
-    return false;
-  }
-
 }
 
