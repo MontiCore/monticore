@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.typesymbols._symboltable.*;
 
@@ -234,33 +236,39 @@ public class DefsTypeBasic {
   
   public static void link_String() {
     MethodSymbol m; FieldSymbol f;
+    ExpressionsBasisScope scope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     
     // hashCode()
     add(_String, method("hashCode", _intSymType));
-    
+    scope.add(method("hashCode",_intSymType));
+
     // equals(Object)
     m = method("equals", _booleanSymType);
     m.setFullName("java.lang.Object.equals");
     add(m, field("o", _ObjectSymType));
     add(_String, m);
+    scope.add(m);
   
     // indexOf(String str, int fromIndex)
     m = method("indexOf", _intSymType);
     add(m, field("str", _StringSymType));
     add(m, field("fromIndex", _intSymType));
     add(_String, m);
+    scope.add(m);
 
     // toString()
     m = method("toString",_StringSymType);
     add(_String, m);
+    scope.add(m);
 
     // charAt(int index)
     m = method("charAt",_charSymType);
     add(m,field("index",_intSymType));
     add(_String, m);
+    scope.add(m);
     
     // TODO RE: this function is very incomplete; ersetzen oder komplettieren
-    
+    _String.setSpannedScope(scope);
     completeFullnames(_String);
   }
   
