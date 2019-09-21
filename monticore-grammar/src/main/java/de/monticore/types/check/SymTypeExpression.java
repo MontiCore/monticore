@@ -39,11 +39,11 @@ public abstract class SymTypeExpression {
   /**
    * Assumption:
    * We assume that each(!) and really each SymTypeExpression has
-   * an associated TypeSymbol, where all Fields, Methods, etc. are stored.
+   * an associated TypeSymbol, where all available Fields, Methods, etc. can be found.
    *
-   * These Lists may, however, be empty e.g. for primitive Types.
+   * These may, however, be empty, e.g. for primitive Types.
    *
-   * Furthermore, each SymType knows this TypeSymbol (i.e. the
+   * Furthermore, each SymTypeExpression knows this TypeSymbol (i.e. the
    * TypeSymbols are loaded (or created) upon creation of the SymType.
    */
   protected Optional<TypeSymbol> typeInfo;
@@ -53,7 +53,10 @@ public abstract class SymTypeExpression {
       return typeInfo.get();
     }
 
+    // TODO: in case of failure this is repeated each time ... may be inefficient
+    // (but the memorization of a repeated load may be stored before looking at symtab files)
     typeInfo = symbolTable.resolveType(this.getName());
+    // TODO: Error may occur? e.g. missing symbol. Was there already an error message?
     return typeInfo.get();
   }
   
