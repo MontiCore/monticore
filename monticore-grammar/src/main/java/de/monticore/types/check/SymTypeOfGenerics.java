@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.collect.Lists;
+
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
@@ -38,18 +40,22 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   protected TypeSymbol objTypeConstructorSymbol;
   
+  
+  @Deprecated // XXX bestezt nicht alle Attribute und kann wohl raus.
   public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments) {
     this.typeConstructorFullName = typeConstructorFullName;
     this.arguments = arguments;
   }
 
 
+  // TODO: besetzt nicht die geerbten Attribute
   public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments,
                            TypeSymbol objTypeConstructorSymbol) {
     this.typeConstructorFullName = typeConstructorFullName;
     this.arguments = arguments;
     this.objTypeConstructorSymbol = objTypeConstructorSymbol;
   }
+  
   
   public String getTypeConstructorFullName() {
     return typeConstructorFullName;
@@ -116,6 +122,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
   
   // --------------------------------------------------------------------------
+  // From here on: Standard functionality to access the list of arguments
+  // TODO: (was copied from a created class)
+  // (and demonstrates that we still can optimize our generators)
+  // --------------------------------------------------------------------------
+  
 
   public  boolean containsArgument (Object element)  {
     return this.getArgumentList().contains(element);
