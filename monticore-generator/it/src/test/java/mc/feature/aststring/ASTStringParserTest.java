@@ -13,7 +13,7 @@ import mc.GeneratorIntegrationsTest;
 import mc.feature.aststring.aststring._ast.ASTStart;
 import mc.feature.aststring.aststring._parser.AststringParser;
 
-public class TestASTStringParser extends GeneratorIntegrationsTest {
+public class ASTStringParserTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testParser() throws IOException {
