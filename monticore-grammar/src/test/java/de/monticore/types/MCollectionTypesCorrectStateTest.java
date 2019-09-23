@@ -269,6 +269,13 @@ public class MCollectionTypesCorrectStateTest {
         .setMCTypeArgumentList(Lists.newArrayList(typeArgumentInt, typeArgumentString)).build();
     assertEquals(1, mapBuildManyNames.getNameList().size());
     assertEquals("Map", mapBuildManyNames.getName(0));
+
+    ASTMCMapType mapBuildWithKeyValue = MCCollectionTypesMill.mCMapTypeBuilder()
+        .setKey(typeArgumentInt)
+        .setValue(typeArgumentString)
+        .build();
+    assertEquals(1, mapBuildWithKeyValue.getNameList().size());
+    assertEquals("Map", mapBuildWithKeyValue.getName(0));
   }
 
 

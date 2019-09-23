@@ -143,30 +143,30 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
   }
 
   /**
-   * overwrite setter for mcTypeArgument, because only one element is allowed
+   * overwrite setter for mcTypeArgument, because only two elements are allowed
    */
 
   public void clearMCTypeArguments() {
-    Log.error("0xA6013 Not allowed to clear MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have one element.");
+    Log.error("0xA6013 Not allowed to clear MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have two elements.");
   }
 
   public boolean addMCTypeArgument(de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument element) {
-    Log.error("0xA6014 Not allowed to add an element to MCTypeArgumentList of ASTMCMapType. A MCTypeArgumentList must always have one element.");
+    Log.error("0xA6014 Not allowed to add an element to MCTypeArgumentList of ASTMCMapType. A MCTypeArgumentList must always have two elements.");
     return false;
   }
 
   public boolean addAllMCTypeArguments(Collection<? extends de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> collection) {
-    Log.error("0xA6015 Not allowed to addAll elements to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have one element.");
+    Log.error("0xA6015 Not allowed to addAll elements to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have two elements.");
     return false;
   }
 
   public boolean removeMCTypeArgument(Object element) {
-    Log.error("0xA6016 Not allowed to remove an element to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have one element.");
+    Log.error("0xA6016 Not allowed to remove an element to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have two elements.");
     return false;
   }
 
   public boolean removeAllMCTypeArguments(Collection<?> collection) {
-    Log.error("0xA6017 Not allowed to removeAll elements to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have one element.");
+    Log.error("0xA6017 Not allowed to removeAll elements to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have two elements.");
     return false;
   }
 
@@ -174,7 +174,7 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
     if (collection.contains(getKey()) && collection.contains(getValue())) {
       return true;
     } else {
-      Log.error("0xA6018 Not allowed to retrainAll elements of MCTypeArgumentList of ASTMCMapType, without an match found.A MCTypeArgumentList must always have one element.");
+      Log.error("0xA6018 Not allowed to retrainAll elements of MCTypeArgumentList of ASTMCMapType, without an match found.A MCTypeArgumentList must always have two elements.");
       return false;
     }
   }
@@ -183,7 +183,7 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
     if (getMCTypeArgumentList().stream().noneMatch(filter)) {
       return getMCTypeArgumentList().removeIf(filter);
     } else {
-      Log.error("0xA6019 Not allowed to remove an element to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have one element.");
+      Log.error("0xA6019 Not allowed to remove an element to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have two elements.");
       return false;
     }
   }
@@ -193,16 +193,16 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
   }
 
   public void addMCTypeArgument(int index, de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument element) {
-    Log.error("0xA6020 Not allowed to add an element to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have one element.");
+    Log.error("0xA6020 Not allowed to add an element to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have two elements.");
   }
 
   public boolean addAllMCTypeArguments(int index, Collection<? extends de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> collection) {
-    Log.error("0xA6021 Not allowed to addAll elements to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have one element.");
+    Log.error("0xA6021 Not allowed to addAll elements to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have two elements.");
     return false;
   }
 
   public de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument removeMCTypeArgument(int index) {
-    Log.error("0xA6022 Not allowed to remove an element to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have one element.");
+    Log.error("0xA6022 Not allowed to remove an element to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have two elements.");
     return getKey();
   }
 
@@ -210,7 +210,7 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
     if (index == 0 || index == 1) {
       return this.getMCTypeArgumentList().set(index, element);
     } else {
-      Log.error("0xA6023 Not allowed to set an element of MCTypeArgumentList of ASTMCMapType to a other index than 0.A MCTypeArgumentList must always have one element.");
+      Log.error("0xA6023 Not allowed to set an element of MCTypeArgumentList of ASTMCMapType to a other index than 0.A MCTypeArgumentList must always have two elements.");
       return getKey();
     }
   }
@@ -227,7 +227,7 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
     if (mCTypeArguments.size() == 2) {
       this.mCTypeArguments = mCTypeArguments;
     } else {
-      Log.error("0xA6024 Not allowed to set a list with a size greater than 1 to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have one element.");
+      Log.error("0xA6024 Not allowed to set a list with a size other than 2 to MCTypeArgumentList of ASTMCMapType.A MCTypeArgumentList must always have two elements.");
     }
   }
 }
