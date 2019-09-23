@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
@@ -316,6 +317,21 @@ public class AbstractService<T extends AbstractService> {
       superSymbolList.add(createASTFullName(fullName));
       CDTypeSymbol superSymbol = resolveCDType(fullName);
       superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
+    }
+    return superSymbolList;
+  }
+
+  public List<String> getAllSuperInterfacesTransitive(ASTCDClass astcdClass) {
+    return getAllSuperInterfacesTransitive(astcdClass.getSymbol());
+  }
+
+  public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
+    List<String> superSymbolList = new ArrayList<>();
+    for (CDTypeSymbolReference cdInterface : cdTypeSymbol.getCdInterfaces()) {
+      String fullName = cdInterface.getFullName();
+      superSymbolList.add(createASTFullName(fullName));
+      CDTypeSymbol superSymbol = resolveCDType(fullName);
+      superSymbolList.addAll(getAllSuperInterfacesTransitive(superSymbol));
     }
     return superSymbolList;
   }
