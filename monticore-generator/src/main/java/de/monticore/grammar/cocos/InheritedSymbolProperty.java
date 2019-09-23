@@ -17,7 +17,7 @@ public class InheritedSymbolProperty implements GrammarASTProdCoCo {
 
   public static final String ERROR_CODE = "0xA0125";
 
-  public static final String ERROR_MSG_FORMAT = " The rule %s inherits symbols from more than super class.";
+  public static final String ERROR_MSG_FORMAT = " The rule %s inherits symbols from more than one class.";
 
   @Override
   public void check(ASTProd a) {
