@@ -2,19 +2,17 @@
 
 package mc.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
-import org.junit.Test;
-
 import com.google.common.collect.Lists;
-
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl._ast.ASTTransition;
 import mc.feature.featuredsl._ast.FeatureDSLMill;
 import mc.feature.featuredsl._ast.FeatureDSLNodeFactory;
+import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ASTBuilderTest extends GeneratorIntegrationsTest {
   
@@ -35,7 +33,10 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
     assertEquals(to, transition.getTo());
     
     // Create ASTTransition by NodeFactory
-    ASTTransition transition1 = FeatureDSLNodeFactory.createASTTransition(from, activate, to);
+    ASTTransition transition1 = FeatureDSLNodeFactory.createASTTransition();
+    transition1.setFrom(from);
+    transition1.setActivate(activate);
+    transition1.setTo(to);
     // Compare these instances
     assertTrue(transition.deepEquals(transition1));
   }

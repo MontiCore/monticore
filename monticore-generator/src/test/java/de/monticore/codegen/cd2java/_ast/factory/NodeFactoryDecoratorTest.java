@@ -135,66 +135,6 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testMethodCreateASTAutomatonWithParameter() {
-    ASTCDMethod method = factoryClass.getCDMethod(3);
-    //test name
-    assertEquals("createASTAutomaton", method.getName());
-    //test modifier
-    assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
-    //test returnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
-    //testParameter
-    assertFalse(method.isEmptyCDParameters());
-
-    ASTMCType nameType = cdTypeFacade.createTypeByDefinition("String");
-    ASTCDParameter nameParameter = cdParameterFacade.createParameter(nameType, "name");
-    assertDeepEquals(nameParameter.getMCType(), method.getCDParameter(0).getMCType());
-    assertEquals(nameParameter.getName(), method.getCDParameter(0).getName());
-
-    ASTMCType statesType = cdTypeFacade.createTypeByDefinition("java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState>");
-    ASTCDParameter statesParameter = cdParameterFacade.createParameter(statesType, "states");
-    assertDeepEquals(statesParameter.getMCType(), method.getCDParameter(1).getMCType());
-    assertEquals(statesParameter.getName(), method.getCDParameter(1).getName());
-
-    ASTMCType transitionsType = cdTypeFacade.createTypeByDefinition("java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition>");
-    ASTCDParameter transitionsParameter = cdParameterFacade.createParameter(transitionsType, "transitions");
-    assertDeepEquals(transitionsParameter.getMCType(), method.getCDParameter(2).getMCType());
-    assertEquals(transitionsParameter.getName(), method.getCDParameter(2).getName());
-  }
-
-  @Test
-  public void testMethodDoCreateASTAutomatonWithParameter() {
-    ASTCDMethod method = factoryClass.getCDMethod(4);
-    //test name
-    assertEquals("doCreateASTAutomaton", method.getName());
-    //test modifier
-    assertTrue(PROTECTED.build().deepEquals(method.getModifier()));
-    //test returnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
-    //testParameter
-    assertFalse(method.isEmptyCDParameters());
-
-    ASTMCType nameType = cdTypeFacade.createTypeByDefinition("String");
-    ASTCDParameter nameParameter = cdParameterFacade.createParameter(nameType, "name");
-    assertDeepEquals(nameParameter.getMCType(), method.getCDParameter(0).getMCType());
-    assertEquals(nameParameter.getName(), method.getCDParameter(0).getName());
-
-    ASTMCType statesType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTState>");
-    ASTCDParameter statesParameter = cdParameterFacade.createParameter(statesType, "states");
-    assertDeepEquals(statesParameter.getMCType(), statesType);
-    assertEquals(statesParameter.getName(), method.getCDParameter(1).getName());
-
-    ASTMCType transitionsType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTTransition>");
-    ASTCDParameter transitionsParameter = cdParameterFacade.createParameter(transitionsType, "transitions");
-    assertDeepEquals(transitionsParameter.getMCType(), transitionsType);
-    assertEquals(transitionsParameter.getName(), method.getCDParameter(2).getName());
-  }
-
-  @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
