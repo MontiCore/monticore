@@ -15,12 +15,10 @@ import java.util.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.*;
 import static de.monticore.grammar.HelperGrammar.findImplicitTypes;
 import static de.monticore.grammar.Multiplicity.*;
-import static de.monticore.grammar.grammar._ast.GrammarMill.symbolDefinitionBuilder;
 import static de.se_rwth.commons.Names.getQualifiedName;
 import static de.se_rwth.commons.StringTransformations.uncapitalize;
 import static de.se_rwth.commons.logging.Log.error;
@@ -62,22 +60,9 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     computeStartParserProd(astGrammar);
 
-    setSymbolRule();
-
     // remove grammar scope
     removeCurrentGrammarScope();
 
-  }
-
-
-  private void setSymbolRule() {
-    for (ASTSymbolRule symbolRule : astGrammar.getSymbolRuleList()) {
-      Optional<ProdSymbol> prod = grammarSymbol.getProd(symbolRule.getType());
-      if (prod.isPresent() && !prod.get().isSymbolDefinition()) {
-        ASTSymbolDefinition symbolDefinition = symbolDefinitionBuilder().setGenSymbol(true).build();
-        setSymbolDefinition(prod.get(), newArrayList(symbolDefinition));
-      }
-    }
   }
 
   @Override
