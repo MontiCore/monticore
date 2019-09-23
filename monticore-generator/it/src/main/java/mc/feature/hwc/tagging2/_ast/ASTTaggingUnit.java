@@ -14,11 +14,6 @@ public class ASTTaggingUnit extends ASTTaggingUnitTOP {
     super();
   }
 
-  public ASTTaggingUnit(List<String> r__package, List<ASTImportStatement> importStatements,
-      List<ASTQualifiedName> qualifiedNames, ASTTagBody tagBody) {
-    super(r__package, importStatements, qualifiedNames, tagBody);
-  }
-
   public void setName(String name) {
     this.name = name;
   }

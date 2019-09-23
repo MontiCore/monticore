@@ -8,15 +8,12 @@ import de.monticore.types.mccollectiontypeswithoutprimitivestest._parser.MCColle
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class MCollectionTypesCorrectStateTest {
 
@@ -278,99 +275,6 @@ public class MCollectionTypesCorrectStateTest {
     assertEquals("Map", mapBuildWithKeyValue.getName(0));
   }
 
-
-  @Test
-  public void mCListTypeNameListFinalFromNodeFactory() {
-    // test that MCListType only contains one element 'List'
-    ASTMCListType listType = MCCollectionTypesNodeFactory.createASTMCListType();
-    assertEquals(1, listType.getNameList().size());
-    assertEquals("List", listType.getName(0));
-
-    ASTMCListType noName = MCCollectionTypesNodeFactory.
-        createASTMCListType(Lists.newArrayList(typeArgumentInt), new ArrayList<>());
-    assertEquals(1, noName.getNameList().size());
-    assertEquals("List", noName.getName(0));
-
-    ASTMCListType wrongName = MCCollectionTypesNodeFactory.
-        createASTMCListType(Lists.newArrayList(typeArgumentInt), Lists.newArrayList("Foo"));
-    assertEquals(1, wrongName.getNameList().size());
-    assertEquals("List", wrongName.getName(0));
-
-    ASTMCListType moreNames = MCCollectionTypesNodeFactory.
-        createASTMCListType(Lists.newArrayList(typeArgumentInt), Lists.newArrayList("bla", "foo", "Bli"));
-    assertEquals(1, moreNames.getNameList().size());
-    assertEquals("List", moreNames.getName(0));
-  }
-
-
-  @Test
-  public void mCOptionalTypeNameListFinalFromNodeFactory() {
-    // test that MCListType only contains one element 'Optional'
-    ASTMCOptionalType optionalType = MCCollectionTypesNodeFactory.createASTMCOptionalType();
-    assertEquals(1, optionalType.getNameList().size());
-    assertEquals("Optional", optionalType.getName(0));
-
-    ASTMCOptionalType noName = MCCollectionTypesNodeFactory.
-        createASTMCOptionalType(Lists.newArrayList(typeArgumentInt), new ArrayList<>());
-    assertEquals(1, noName.getNameList().size());
-    assertEquals("Optional", noName.getName(0));
-
-    ASTMCOptionalType wrongName = MCCollectionTypesNodeFactory.
-        createASTMCOptionalType(Lists.newArrayList(typeArgumentInt), Lists.newArrayList("Foo"));
-    assertEquals(1, wrongName.getNameList().size());
-    assertEquals("Optional", wrongName.getName(0));
-
-    ASTMCOptionalType moreNames = MCCollectionTypesNodeFactory.
-        createASTMCOptionalType(Lists.newArrayList(typeArgumentInt), Lists.newArrayList("bla", "foo", "Bli"));
-    assertEquals(1, moreNames.getNameList().size());
-    assertEquals("Optional", moreNames.getName(0));
-  }
-
-  @Test
-  public void mCSetTypeNameListFinalFromNodeFactory() {
-    // test that MCListType only contains one element 'Set'
-    ASTMCSetType setType = MCCollectionTypesNodeFactory.createASTMCSetType();
-    assertEquals(1, setType.getNameList().size());
-    assertEquals("Set", setType.getName(0));
-
-    ASTMCSetType noName = MCCollectionTypesNodeFactory.
-        createASTMCSetType(Lists.newArrayList(typeArgumentInt), new ArrayList<>());
-    assertEquals(1, noName.getNameList().size());
-    assertEquals("Set", noName.getName(0));
-
-    ASTMCSetType wrongName = MCCollectionTypesNodeFactory.
-        createASTMCSetType(Lists.newArrayList(typeArgumentInt), Lists.newArrayList("Foo"));
-    assertEquals(1, wrongName.getNameList().size());
-    assertEquals("Set", wrongName.getName(0));
-
-    ASTMCSetType moreNames = MCCollectionTypesNodeFactory.
-        createASTMCSetType(Lists.newArrayList(typeArgumentInt), Lists.newArrayList("bla", "foo", "Bli"));
-    assertEquals(1, moreNames.getNameList().size());
-    assertEquals("Set", moreNames.getName(0));
-  }
-
-  @Test
-  public void mCMapTypeNameListFinalFromNodeFactory() {
-    // test that MCListType only contains one element 'Map'
-    ASTMCMapType astmcMapType = MCCollectionTypesNodeFactory.createASTMCMapType();
-    assertEquals(1, astmcMapType.getNameList().size());
-    assertEquals("Map", astmcMapType.getName(0));
-
-    ASTMCMapType noName = MCCollectionTypesNodeFactory.
-        createASTMCMapType(typeArgumentInt, typeArgumentString, new ArrayList<>(), new ArrayList<>());
-    assertEquals(1, noName.getNameList().size());
-    assertEquals("Map", noName.getName(0));
-
-    ASTMCMapType wrongName = MCCollectionTypesNodeFactory.
-        createASTMCMapType(typeArgumentInt, typeArgumentString, new ArrayList<>(), Lists.newArrayList("Foo"));
-    assertEquals(1, wrongName.getNameList().size());
-    assertEquals("Map", wrongName.getName(0));
-
-    ASTMCMapType moreNames = MCCollectionTypesNodeFactory.
-        createASTMCMapType(typeArgumentInt, typeArgumentString, new ArrayList<>(), Lists.newArrayList("bla", "foo", "Bli"));
-    assertEquals(1, moreNames.getNameList().size());
-    assertEquals("Map", moreNames.getName(0));
-  }
 
   @Test
   public void mCListTypeSetTypeArgument() {

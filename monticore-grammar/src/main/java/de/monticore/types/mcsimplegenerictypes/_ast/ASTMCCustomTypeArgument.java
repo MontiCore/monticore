@@ -11,10 +11,6 @@ public class ASTMCCustomTypeArgument extends ASTMCCustomTypeArgumentTOP {
     super();
   }
 
-  public ASTMCCustomTypeArgument(ASTMCType type){
-    super(type);
-  }
-
   // TODO RE: entfernbar
   public Optional<ASTMCType> getMCTypeOpt(){
     return Optional.ofNullable(getMCType());

@@ -12,12 +12,6 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
   public ASTMCPrimitiveType() {
   }
 
-  public ASTMCPrimitiveType(int primitive) {
-    super(primitive);
-  }
-
-
-
   // Es gibt eine Regel, die besagt "toString" sollte nicht überschrieben werden?
 
   //TODO BR: ist das eine MontiCore Best Practice? allg. Java Best Practice

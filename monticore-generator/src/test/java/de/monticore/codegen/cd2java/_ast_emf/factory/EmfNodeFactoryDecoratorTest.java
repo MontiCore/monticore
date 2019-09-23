@@ -60,7 +60,7 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethodSize() {
     assertFalse(emfClass.getCDMethodList().isEmpty());
-    assertEquals(19, emfClass.getCDMethodList().size());
+    assertEquals(11, emfClass.getCDMethodList().size());
   }
 
   @Test

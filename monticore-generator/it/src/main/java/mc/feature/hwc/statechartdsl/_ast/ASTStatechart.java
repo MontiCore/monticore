@@ -15,15 +15,6 @@ public class ASTStatechart extends mc.feature.hwc.statechartdsl._ast.ASTStatecha
     super();
   }
   
-  protected ASTStatechart(
-      List<ASTCode> userCode,
-      String name,
-      List<ASTState> states,
-      List<ASTTransition> transitions)
-  {
-    super(userCode, name, states, transitions);
-  }
-  
   public String toString() {
     return "My statechart is " + getName();
   }
