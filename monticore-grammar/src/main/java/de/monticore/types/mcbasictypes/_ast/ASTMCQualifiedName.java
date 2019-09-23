@@ -3,15 +3,9 @@ package de.monticore.types.mcbasictypes._ast;
 
 import de.monticore.utils.Names;
 
-import java.util.List;
-
 public class ASTMCQualifiedName extends ASTMCQualifiedNameTOP {
 
   public ASTMCQualifiedName() {
-  }
-
-  public ASTMCQualifiedName(List<String> parts) {
-    super(parts);
   }
 
   public Boolean isQualified() {

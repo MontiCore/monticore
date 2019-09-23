@@ -10,10 +10,6 @@ public class ASTMCWildcardTypeArgument extends ASTMCWildcardTypeArgumentTOP {
     super();
   }
 
-  public ASTMCWildcardTypeArgument(Optional<ASTMCType> upperBound, Optional<ASTMCType> lowerBound){
-    super(upperBound,lowerBound);
-  }
-
   // TODO RE: Mir ist nicht klar wozu diese Methode dient, aber auch hier
   // wäre eigentlich manchmal ein Type vorhanden.-
   // Warum da "empty" zurück kommt ist mir schleierhaft.
