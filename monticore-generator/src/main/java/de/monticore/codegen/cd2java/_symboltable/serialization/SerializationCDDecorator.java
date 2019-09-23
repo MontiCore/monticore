@@ -45,7 +45,7 @@ public class SerializationCDDecorator extends AbstractDecorator {
         .addAllCDClasss(createSymbolDeSerClasses(symbolInput.getCDDefinition()))
         .build();
 
-    if (symbolTableService.getStartProd(astCD.getCDDefinition()).isPresent()) {
+    if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
       serializeCD.addCDClass(createScopeDeSerClasses(symbolInput));
     }
 

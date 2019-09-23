@@ -62,9 +62,8 @@ public class SymbolTableCreatorForSuperTypesTest extends DecoratorTestCase {
 
     //creates normal Symbol
     List<ASTCDClass> listSuperSTCForSub = decorator.decorate(decoratedCompilationUnit);
-    assertEquals(2, listSuperSTCForSub.size());
-//todo is supposed to be one-> change when clear how to determine a component grammar
-//    assertEquals(1, listSuperSTCForSub.size());
+    assertEquals(1, listSuperSTCForSub.size());
+
     assertTrue(listSuperSTCForSub.stream().anyMatch(c -> "AutomatonSTCForSubAutomaton".equals(c.getName())));
     Optional<ASTCDClass> superClassOpt = listSuperSTCForSub.stream().filter(c -> "AutomatonSTCForSubAutomaton".equals(c.getName())).findFirst();
     assertTrue(superClassOpt.isPresent());

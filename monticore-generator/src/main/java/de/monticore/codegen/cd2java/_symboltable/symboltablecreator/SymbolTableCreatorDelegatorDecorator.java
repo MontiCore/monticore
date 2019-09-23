@@ -36,14 +36,9 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
 
   @Override
   public Optional<ASTCDClass> decorate(ASTCDCompilationUnit input) {
-    Optional<String> startProd = symbolTableService.getStartProd(input.getCDDefinition());
+    Optional<String> startProd = symbolTableService.getStartProdASTFullName(input.getCDDefinition());
     if (startProd.isPresent()) {
-      String astFullName;
-      if (startProd.get().contains(".")) {
-        astFullName = startProd.get();
-      } else {
-        astFullName = symbolTableService.getASTPackage() + "." + startProd.get();
-      }
+      String astFullName = startProd.get();
       String symbolTableCreatorDelegatorName = symbolTableService.getSymbolTableCreatorDelegatorSimpleName();
       String symbolTableCreatorName = symbolTableService.getSymbolTableCreatorSimpleName();
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();
@@ -73,7 +68,9 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
     List<CDDefinitionSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
     Map<String, String> superSymTabCreator = new HashMap<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : superCDsTransitive) {
-      superSymTabCreator.put(cdDefinitionSymbol.getName(), symbolTableService.getSymbolTableCreatorFullName(cdDefinitionSymbol));
+      if (cdDefinitionSymbol.getAstNode().isPresent() && symbolTableService.hasStartProd(cdDefinitionSymbol.getAstNode().get())) {
+        superSymTabCreator.put(cdDefinitionSymbol.getName(), symbolTableService.getSuperSTCForSubSTCSimpleName(cdDefinitionSymbol));
+      }
     }
     ASTCDParameter globalScopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(globalScope), "globalScope");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreatorDelegator, globalScopeParam);

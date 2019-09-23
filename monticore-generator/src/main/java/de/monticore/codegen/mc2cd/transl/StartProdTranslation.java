@@ -13,12 +13,13 @@ import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
 
-public class StartProdTranslation  implements
+public class StartProdTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     if (rootLink.source().isPresentStartRule()) {
-      rootLink.source().getStartRule().getName();
+      String startProdRuleFullName = rootLink.source().getSymbol().getStartProd().get().getFullName();
+      TransformationHelper.addStereoType(rootLink.target().getCDDefinition(), MC2CDStereotypes.START_PROD.toString(), startProdRuleFullName);
     }
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class, ASTCDClass.class)) {
       if (link.source().getSymbol().isStartProd()) {

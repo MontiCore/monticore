@@ -51,7 +51,11 @@ public enum MC2CDStereotypes {
   /**
    * shows if a prod is the start prod in a grammar
    */
-  START_PROD("startProd");
+  START_PROD("startProd"),
+  /**
+   * shows if a prod is the start prod in a grammar
+   */
+  COMPONENT("component");
 
   private final String stereotype;
 

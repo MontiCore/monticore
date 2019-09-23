@@ -42,14 +42,9 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
 
   @Override
   public Optional<ASTCDClass> decorate(ASTCDCompilationUnit input) {
-    Optional<String> startProd = symbolTableService.getStartProd(input.getCDDefinition());
+    Optional<String> startProd = symbolTableService.getStartProdASTFullName(input.getCDDefinition());
     if (startProd.isPresent()) {
-      String astFullName;
-      if (startProd.get().contains(".")) {
-        astFullName = startProd.get();
-      } else {
-        astFullName = symbolTableService.getASTPackage() + "." + startProd.get();
-      }
+      String astFullName = startProd.get();
       String symbolTableCreator = symbolTableService.getSymbolTableCreatorSimpleName();
       String visitorName = visitorService.getVisitorFullName();
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();

@@ -32,14 +32,9 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   @Override
   public Optional<ASTCDClass> decorate(ASTCDCompilationUnit input) {
-    Optional<String> startProd = symbolTableService.getStartProd(input.getCDDefinition());
-    if (startProd.isPresent()) {
-      String astFullName;
-      if (startProd.get().contains(".")) {
-        astFullName = startProd.get();
-      } else {
-        astFullName = symbolTableService.getASTPackage() + "." + startProd.get();
-      }
+    Optional<String> startProdAstFullName = symbolTableService.getStartProdASTFullName(input.getCDDefinition());
+    if (startProdAstFullName.isPresent()) {
+      String astFullName = startProdAstFullName.get();
       String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
       String globalScopeInterfaceName = symbolTableService.getGlobalScopeInterfaceFullName();
       String languageClassName = symbolTableService.getLanguageClassFullName();

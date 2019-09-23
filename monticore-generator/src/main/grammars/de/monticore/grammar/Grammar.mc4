@@ -164,7 +164,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute Type Type of the lexer tokens
   @attribute Block Block used if other than standard mapping shall be used
   */
-  scope LexProd implements Prod =
+  LexProd implements Prod =
     DeprecatedAnnotation? (["fragment"] | ["comment"]  )*
     ("token") Name
     (
@@ -186,7 +186,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute name Name of the production
   @attribute constant List of all constants
   */
-  scope EnumProd implements Prod =
+  EnumProd implements Prod =
     DeprecatedAnnotation? "enum" Name "=" (Constant || "|")+ ";";
 
 
@@ -195,7 +195,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute name Name of the hole
   @attribute MCType External type used for this hole rule
   */
-  scope ExternalProd implements Prod =
+  ExternalProd implements Prod =
     DeprecatedAnnotation? "external" SymbolDefinition* Name MCType? ";";
 
 
@@ -206,7 +206,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute superInterfaceRule Super interfaces
   @attribute aSTSuperInterface Super interfaces abstract syntax only
   */
-  scope InterfaceProd implements ParserProd =
+  InterfaceProd implements ParserProd =
     DeprecatedAnnotation? "interface" SymbolDefinition* Name
     (
       "extends" superInterfaceRule:(RuleReference || "," )+
@@ -223,7 +223,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute aSTSuperClass Super productions (abstract syntax only)
   @attribute aSTSuperInterface Super interfaces  (abstract syntax only)
   */
-  scope AbstractProd implements Prod =
+  AbstractProd implements Prod =
     DeprecatedAnnotation? "abstract" SymbolDefinition* Name
     (
       "extends" superRule:(RuleReference || ",")+
@@ -246,7 +246,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute action Action executed priot to the rule body
   @attribute alts List of alternatives representing the body of the rule
   */
- scope ClassProd implements ParserProd =
+ ClassProd implements ParserProd =
     DeprecatedAnnotation? SymbolDefinition* Name
     (
        "extends" superRule:(RuleReference || ",")+

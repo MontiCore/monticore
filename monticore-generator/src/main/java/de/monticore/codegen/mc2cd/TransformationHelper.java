@@ -450,6 +450,14 @@ public final class TransformationHelper {
             stereotypeName);
   }
 
+  public static void addStereoType(ASTCDDefinition type, String stereotypeName) {
+    if (!type.getModifierOpt().isPresent()) {
+      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+    }
+    addStereotypeValue(type.getModifierOpt().get(),
+        stereotypeName);
+  }
+
   public static void addStereoType(ASTCDAttribute attribute,
       String stereotypeName,
       String stereotypeValue) {
@@ -457,6 +465,15 @@ public final class TransformationHelper {
       attribute.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
     addStereotypeValue(attribute.getModifier(),
+        stereotypeName, stereotypeValue);
+  }
+
+  public static void addStereoType(ASTCDDefinition type, String stereotypeName,
+                                   String stereotypeValue) {
+    if (!type.getModifierOpt().isPresent()) {
+      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+    }
+    addStereotypeValue(type.getModifierOpt().get(),
         stereotypeName, stereotypeValue);
   }
 

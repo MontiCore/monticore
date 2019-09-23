@@ -85,10 +85,10 @@ for (astGrammar in getParsedGrammars()) {
 
   astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
 
-  decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram ,symbolClassDiagramm, scopeClassDiagramm,astGrammar, handcodedPath)
+  decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram ,symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
 
-  decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram ,symbolClassDiagramm, scopeClassDiagramm,astGrammar, handcodedPath)
+  decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram ,symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSerializationCd, out, handcodedPath)
 
   // M8: generate symbol table

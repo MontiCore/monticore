@@ -478,16 +478,16 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   public ASTCDCompilationUnit decorateForSymbolTablePackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                                             ASTCDCompilationUnit astClassDiagram, ASTCDCompilationUnit symbolClassDiagramm,
-                                                            ASTCDCompilationUnit scopeClassDiagramm, ASTMCGrammar astmcGrammar, IterablePath handCodedPath) {
+                                                            ASTCDCompilationUnit scopeClassDiagramm, IterablePath handCodedPath) {
     ASTCDCompilationUnit preparedSymbolCD = prepareCD(cdScope, symbolClassDiagramm);
     ASTCDCompilationUnit preparedScopeCD = prepareCD(cdScope, scopeClassDiagramm);
     ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
-    return decorateWithSymbolTable(preparedCD, preparedSymbolCD, preparedScopeCD, glex, handCodedPath, astmcGrammar);
+    return decorateWithSymbolTable(preparedCD, preparedSymbolCD, preparedScopeCD, glex, handCodedPath);
   }
 
   private ASTCDCompilationUnit decorateWithSymbolTable(ASTCDCompilationUnit cd, ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit scopeCD, GlobalExtensionManagement glex,
-                                                       IterablePath handCodedPath, ASTMCGrammar astmcGrammar) {
-    SymbolTableService symbolTableService = new SymbolTableService(cd, astmcGrammar);
+                                                       IterablePath handCodedPath) {
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
     ParserService parserService = new ParserService(cd);
     MethodDecorator methodDecorator = new MethodDecorator(glex);
@@ -534,16 +534,16 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   public ASTCDCompilationUnit decorateForSerializationPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                                               ASTCDCompilationUnit astClassDiagram, ASTCDCompilationUnit symbolClassDiagramm,
-                                                              ASTCDCompilationUnit scopeClassDiagramm, ASTMCGrammar astmcGrammar, IterablePath handCodedPath) {
+                                                              ASTCDCompilationUnit scopeClassDiagramm, IterablePath handCodedPath) {
     ASTCDCompilationUnit preparedSymbolCD = prepareCD(cdScope, symbolClassDiagramm);
     ASTCDCompilationUnit preparedScopeCD = prepareCD(cdScope, scopeClassDiagramm);
     ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
-    return decorateWithSerialization(preparedCD, preparedSymbolCD, preparedScopeCD, glex, handCodedPath, astmcGrammar);
+    return decorateWithSerialization(preparedCD, preparedSymbolCD, preparedScopeCD, glex, handCodedPath);
   }
 
   private ASTCDCompilationUnit decorateWithSerialization(ASTCDCompilationUnit cd, ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit scopeCD, GlobalExtensionManagement glex,
-                                                       IterablePath handCodedPath, ASTMCGrammar astmcGrammar) {
-    SymbolTableService symbolTableService = new SymbolTableService(cd, astmcGrammar);
+                                                       IterablePath handCodedPath) {
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
 
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService);
     ScopeDeSerDecorator scopeDeSerDecorator= new ScopeDeSerDecorator(glex, symbolTableService);

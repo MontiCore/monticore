@@ -72,7 +72,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
         .addCDMethod(createProvideModelLoaderMethod(modelLoaderClassName, input, languageClassName))
         .addAllCDMethods(createCalculateModelNameMethods(symbolDefiningProds))
         .build();
-    Optional<ASTCDMethod> getParserMethod = createGetParserMethod();
+    Optional<ASTCDMethod> getParserMethod = createGetParserMethod(input.getCDDefinition());
     getParserMethod.ifPresent(languageClass::addCDMethod);
     return languageClass;
   }
@@ -98,8 +98,8 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     return getCDAttributeFacade().createAttribute(PRIVATE, String.class, "fileExtension");
   }
 
-  protected Optional<ASTCDMethod> createGetParserMethod() {
-    if (!symbolTableService.isComponent()) {
+  protected Optional<ASTCDMethod> createGetParserMethod(ASTCDDefinition astcdDefinition) {
+    if (!(astcdDefinition.isPresentModifier() && symbolTableService.hasComponentStereotype(astcdDefinition.getModifier()))) {
       String parserClass = parserService.getParserClassFullName();
       ASTCDMethod getParserMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(parserClass), "getParser");
       this.replaceTemplate(EMPTY_BODY, getParserMethod, new StringHookPoint("return new " + parserClass + "();"));

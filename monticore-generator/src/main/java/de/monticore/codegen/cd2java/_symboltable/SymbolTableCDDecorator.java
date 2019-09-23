@@ -134,7 +134,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit astCD, ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit scopeCD) {
     List<String> symbolTablePackage = new ArrayList<>(astCD.getPackageList());
     symbolTablePackage.addAll(Arrays.asList(astCD.getCDDefinition().getName().toLowerCase(), SYMBOL_TABLE_PACKAGE));
-
+    boolean isComponent = astCD.getCDDefinition().isPresentModifier() && symbolTableService.hasComponentStereotype(astCD.getCDDefinition().getModifier());
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(astCD.getCDDefinition());
 
     // create symbol classes
@@ -157,7 +157,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .addAllCDInterfaces(createSymbolResolvingDelegateInterfaces(symbolProds))
         .build();
 
-    if (symbolTableService.getStartProd(astCD.getCDDefinition()).isPresent()) {
+    if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
       // global scope
       symTabCD.addCDInterface(createGlobalScopeInterface(astCD, symbolTablePackage));
       ASTCDClass globalScopeClass = createGlobalScopeClass(astCD);
@@ -180,7 +180,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       this.languageDecorator.setLanguageTop(isLanguageHandCoded);
       ASTCDClass languageClass = createLanguage(astCD);
       symTabCD.addCDClass(languageClass);
-      if (!symbolTableService.isComponent() && isLanguageHandCoded) {
+      if (!isComponent && isLanguageHandCoded) {
         symTabCD.addCDClass(createLanguageBuilder(languageClass));
       }
 
@@ -188,7 +188,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       Optional<ASTCDClass> modelLoader = createModelLoader(astCD);
       if (modelLoader.isPresent()) {
         symTabCD.addCDClass(modelLoader.get());
-        if (!symbolTableService.isComponent()) {
+        if (!isComponent) {
           symTabCD.addCDClass(createModelLoaderBuilder(modelLoader.get()));
         }
       }
@@ -200,17 +200,16 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         symTabCD.addCDClass(createSymbolTableCreatorBuilder(astCD));
       }
 
-      //todo activate when know what to do with component
-//      // symboltable creator delegator
-//      Optional<ASTCDClass> symbolTableCreatorDelegator = createSymbolTableCreatorDelegator(astCD);
-//      if(symbolTableCreatorDelegator.isPresent()){
-//        symTabCD.addCDClass(symbolTableCreatorDelegator.get());
-//      symTabCD.addAllCDClasss(createSymbolTableCreatorDelegatorBuilder(symbolTableCreatorDelegator.get()));
+      // symboltable creator delegator
+      Optional<ASTCDClass> symbolTableCreatorDelegator = createSymbolTableCreatorDelegator(astCD);
+      if (symbolTableCreatorDelegator.isPresent()) {
+        symTabCD.addCDClass(symbolTableCreatorDelegator.get());
+        symTabCD.addCDClass(createSymbolTableCreatorDelegatorBuilder(symbolTableCreatorDelegator.get()));
 
-//      }
-//
-//      // SuperSTCForSub
-//      symTabCD.addAllCDClasss(createSymbolTableCreatorForSuperTypes(astCD));
+      }
+
+      // SuperSTCForSub
+      symTabCD.addAllCDClasss(createSymbolTableCreatorForSuperTypes(astCD));
     }
 
     for (ASTCDClass cdClass : symTabCD.getCDClassList()) {

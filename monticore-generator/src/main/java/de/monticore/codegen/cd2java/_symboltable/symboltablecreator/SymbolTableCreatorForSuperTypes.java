@@ -23,7 +23,7 @@ public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompil
   public SymbolTableCreatorForSuperTypes(final GlobalExtensionManagement glex,
                                          final SymbolTableService symbolTableService) {
     super(glex);
-    this.symbolTableService= symbolTableService;
+    this.symbolTableService = symbolTableService;
   }
 
   @Override
@@ -31,20 +31,23 @@ public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompil
     List<ASTCDClass> superForSubSTC = new ArrayList<>();
     List<CDDefinitionSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
     for (CDDefinitionSymbol cdDefinitionSymbol : superCDsTransitive) {
-      String superSTCForSubSTCName = symbolTableService.getSuperSTCForSubSTCSimpleName(cdDefinitionSymbol);
-      String superSTC = symbolTableService.getSymbolTableCreatorFullName(cdDefinitionSymbol);
-      String superScopeInterface = symbolTableService.getScopeInterfaceFullName(cdDefinitionSymbol);
-      String ownScopeInterface = symbolTableService.getScopeInterfaceFullName();
-      String dequeWildcardType = String.format(DEQUE_WILDCARD_TYPE, superScopeInterface);
+      // only super classes that have a start prod
+      if (cdDefinitionSymbol.getAstNode().isPresent() && symbolTableService.hasStartProd(cdDefinitionSymbol.getAstNode().get())) {
+        String superSTCForSubSTCName = symbolTableService.getSuperSTCForSubSTCSimpleName(cdDefinitionSymbol);
+        String superSTC = symbolTableService.getSymbolTableCreatorFullName(cdDefinitionSymbol);
+        String superScopeInterface = symbolTableService.getScopeInterfaceFullName(cdDefinitionSymbol);
+        String ownScopeInterface = symbolTableService.getScopeInterfaceFullName();
+        String dequeWildcardType = String.format(DEQUE_WILDCARD_TYPE, superScopeInterface);
 
-      ASTCDClass superSTCForSubClass = CD4CodeMill.cDClassBuilder()
-          .setName(superSTCForSubSTCName)
-          .setModifier(PUBLIC.build())
-          .setSuperclass(getCDTypeFacade().createQualifiedType(superSTC))
-          .addCDConstructor(createConstructor(superSTCForSubSTCName, dequeWildcardType))
-          .addCDMethod(createCreateScopeMethod(ownScopeInterface, symbolTableService.getCDName()))
-          .build();
-      superForSubSTC.add(superSTCForSubClass);
+        ASTCDClass superSTCForSubClass = CD4CodeMill.cDClassBuilder()
+            .setName(superSTCForSubSTCName)
+            .setModifier(PUBLIC.build())
+            .setSuperclass(getCDTypeFacade().createQualifiedType(superSTC))
+            .addCDConstructor(createConstructor(superSTCForSubSTCName, dequeWildcardType))
+            .addCDMethod(createCreateScopeMethod(ownScopeInterface, symbolTableService.getCDName()))
+            .build();
+        superForSubSTC.add(superSTCForSubClass);
+      }
     }
     return superForSubSTC;
   }
