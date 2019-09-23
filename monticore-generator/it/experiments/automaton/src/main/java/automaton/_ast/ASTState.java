@@ -11,16 +11,7 @@ public class ASTState extends ASTStateTOP {
   protected ASTState() {
     super();
   }
-  
-  protected ASTState(
-      String name,
-      List<ASTState> states,
-      List<ASTTransition> transitions,
-      boolean r_final,
-      boolean initial) {
-    super(name, states, transitions, r_final, initial);
-  }
-  
+
   public boolean isReachable(ASTState s) {
     return reachableStates.contains(s);
   }
