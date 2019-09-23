@@ -37,6 +37,8 @@ grammar Attributes  {
 
     ( ("{" (State | Transition)* "}") | ";") ;
 
+  symbolrule State =
+    isFinal: boolean;
 
   /** A ASTTransition represents a transition
       @attribute From Name of the state from which the transitions starts
@@ -46,10 +48,10 @@ grammar Attributes  {
   Transition =
     from:Name "-" input:Name ">" to:Name ";" ;
 
-token Name =
+  token Name =
         ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
 
- Keywords = "step" step:Name;
+  Keywords = "step" step:Name;
 
 
 
