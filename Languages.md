@@ -56,9 +56,9 @@ The different development statuses of grammars are explained
 * A Java generator can be found [**here**](https://git.rwth-aachen.de/monticore/languages/OCL2Java).
 * A generator for Embedded MontiArc in combination with OCL can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
 
-### [Object Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
+### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Started updating to MC6, rearranging language to a basic version and several extensions)
 * Author: SH
-* INSERT DESCRIPTION HERE
+* Language for textual object diagrams.
 
 ### [Port Automata](https://git.rwth-aachen.de/monticore/montiarc/core) (Not started with MC6 changes)
 * Author: DS
