@@ -53,6 +53,8 @@ component grammar CommonExpressions
   CallExpression implements Expression <240> =
 	Expression Arguments;
 
+	astrule CallExpression = Name;
+
   /*=================================================================*/
 
   /** Field access: e.g. obj.attr or also (b ? getobject() : obj).attribute

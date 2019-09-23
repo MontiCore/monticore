@@ -417,10 +417,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
 
   @Override
   public void traverse(ASTFieldAccessExpression expr) {
-    boolean m = lastResult.isMethodpreferred();
-    if(m){
-      lastResult.setMethodpreferred(false);
-    }
+//    boolean m = lastResult.isMethodpreferred();
+//    if(m){
+//      lastResult.setMethodpreferred(false);
+//    }
     CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
     SymTypeExpression innerResult = null;
     expr.getExpression().accept(getRealThis());
@@ -433,31 +433,32 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       Collection<MethodSymbol> methods = innerResultType.getSpannedScope().resolveMethodMany(expr.getName());
       Optional<FieldSymbol> fieldSymbolOpt = innerResultType.getSpannedScope().resolveField(expr.getName());
       Optional<TypeSymbol> typeSymbolOpt = innerResultType.getSpannedScope().resolveType(expr.getName());
-      if(m) {
-        //last ast node was call expression
-        //in this case only method is tested
-        lastResult.setMethodpreferred(false);
-        if(!methods.isEmpty()){
-          ArrayList<MethodSymbol> methodList = new ArrayList<>(methods);
-          SymTypeExpression retType = methodList.get(0).getReturnType();
-          for(MethodSymbol method: methodList){
-            if(!method.getReturnType().print().equals(retType.print())){
-              Log.error("More than one method with the same name and different return types found");
-            }
-          }
-          if (!"void".equals(retType.print())) {
-            SymTypeExpression type = retType;
-            this.result = type;
-            lastResult.setLast(retType);
-          }else {
-            SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeVoid();
-            this.result = wholeResult;
-            lastResult.setLast(wholeResult);
-          }
-        }else{
-          Log.error("No method with the name " + expr.getName() +" found");
-        }
-      }else if (fieldSymbolOpt.isPresent()) {
+//      if(m) {
+//        //last ast node was call expression
+//        //in this case only method is tested
+//        lastResult.setMethodpreferred(false);
+//        if(!methods.isEmpty()){
+//          ArrayList<MethodSymbol> methodList = new ArrayList<>(methods);
+//          SymTypeExpression retType = methodList.get(0).getReturnType();
+//          for(MethodSymbol method: methodList){
+//            if(!method.getReturnType().print().equals(retType.print())){
+//              Log.error("More than one method with the same name and different return types found");
+//            }
+//          }
+//          if (!"void".equals(retType.print())) {
+//            SymTypeExpression type = retType;
+//            this.result = type;
+//            lastResult.setLast(retType);
+//          }else {
+//            SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeVoid();
+//            this.result = wholeResult;
+//            lastResult.setLast(wholeResult);
+//          }
+//        }else{
+//          Log.error("No method with the name " + expr.getName() +" found");
+//        }
+//      }else
+      if (fieldSymbolOpt.isPresent()) {
         //cannot be a method, test variable first
         FieldSymbol var = fieldSymbolOpt.get();
 //      TODO: muss innerResult.getTypeInfo().getFields().contains(var) true sein?
@@ -490,59 +491,144 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
 
   @Override
   public void traverse(ASTCallExpression expr){
-    //get the result of the inner expression
+    NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
+    expr.accept(visitor);
     SymTypeExpression innerResult = null;
-    lastResult.setMethodpreferred(true);
     expr.getExpression().accept(getRealThis());
     if(lastResult.isPresentLast()){
       innerResult = lastResult.getLast();
-    }else{
-      Log.error("The type of the inner expression could not be calculated");
-    }
-    //CommonExpressionsPrettyPrinter for FieldAccessExpression, ExpressionsBasisPrettyPrinter for NameExpression
-    CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
-    ExpressionsBasisPrettyPrinter prettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
-    String exp = !prettyPrinter.prettyprint(expr.getExpression()).equals("")?prettyPrinter.prettyprint(expr.getExpression()):printer.prettyprint(expr.getExpression());
-    //resolve methods with name of the inner expression
-    Collection<MethodSymbol> methodcollection = scope.resolveMethodMany(exp);
-    List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
-    //count how many methods can be found with the correct arguments and return type
-    List<MethodSymbol> fittingMethods = new ArrayList<>();
-    for (MethodSymbol method : methodlist) {
-      //for every method found check if the arguments are correct
-      if (expr.getArguments().getExpressionList().size() == method.getParameter().size()) {
-        boolean success = true;
-        for (int i = 0; i < method.getParameter().size(); i++) {
-          expr.getArguments().getExpression(i).accept(getRealThis());
-          //test if every single argument is correct
-          if (!method.getParameter().get(i).getType().print().equals(lastResult.getLast()) && !compatible(lastResult.getLast(), method.getParameter().get(i).getType(),scope)) {
-            success = false;
+      TypeSymbol innerResultType = innerResult.getTypeInfo(scope);
+      //resolve methods with name of the inner expression
+      Collection<MethodSymbol> methodcollection = innerResultType.getSpannedScope().resolveMethodMany(expr.getName());
+      List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
+      //count how many methods can be found with the correct arguments and return type
+      List<MethodSymbol> fittingMethods = new ArrayList<>();
+      for (MethodSymbol method : methodlist) {
+        //for every method found check if the arguments are correct
+        if (expr.getArguments().getExpressionList().size() == method.getParameter().size()) {
+          boolean success = true;
+          for (int i = 0; i < method.getParameter().size(); i++) {
+            expr.getArguments().getExpression(i).accept(getRealThis());
+            //test if every single argument is correct
+            if (!method.getParameter().get(i).getType().print().equals(lastResult.getLast().print()) && !compatible(lastResult.getLast(), method.getParameter().get(i).getType(),scope)) {
+              success = false;
+            }
           }
-          if(!method.getReturnType().print().equals(innerResult.print())){
-            success = false;
+          if (success) {
+            //method has the correct arguments and return type
+            fittingMethods.add(method);
           }
-        }
-        if (success) {
-          //method has the correct arguments and return type
-          fittingMethods.add(method);
         }
       }
-    }
-    //there can only be one method with the correct arguments and return type
-    if(fittingMethods.size()==1){
-      if (!"void".equals(fittingMethods.get(0).getReturnType().print())) {
-        SymTypeExpression result = fittingMethods.get(0).getReturnType();
-        this.result = result;
-        lastResult.setLast(result);
+      //there can only be one method with the correct arguments and return type
+      if(fittingMethods.size()==1){
+        if (!"void".equals(fittingMethods.get(0).getReturnType().print())) {
+          SymTypeExpression result = fittingMethods.get(0).getReturnType();
+          this.result = result;
+          lastResult.setLast(result);
+        }else {
+          Optional<SymTypeExpression> wholeResult = Optional.of(SymTypeExpressionFactory.createTypeVoid());
+          this.result = wholeResult.get();
+          lastResult.setLastOpt(wholeResult);
+        }
       }else {
-        Optional<SymTypeExpression> wholeResult = Optional.of(SymTypeExpressionFactory.createTypeVoid());
-        this.result = wholeResult.get();
-        lastResult.setLastOpt(wholeResult);
+        Log.error("0xA209 the resulting type cannot be resolved");
       }
-    }else {
-      Log.error("0xA209 the resulting type cannot be resolved");
+    }else{
+      Collection<MethodSymbol> methodcollection = scope.resolveMethodMany(expr.getName());
+      List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
+      //count how many methods can be found with the correct arguments and return type
+      List<MethodSymbol> fittingMethods = new ArrayList<>();
+      for (MethodSymbol method : methodlist) {
+        //for every method found check if the arguments are correct
+        if (expr.getArguments().getExpressionList().size() == method.getParameter().size()) {
+          boolean success = true;
+          for (int i = 0; i < method.getParameter().size(); i++) {
+            expr.getArguments().getExpression(i).accept(getRealThis());
+            //test if every single argument is correct
+            if (!method.getParameter().get(i).getType().print().equals(lastResult.getLast().print()) && !compatible(lastResult.getLast(), method.getParameter().get(i).getType(),scope)) {
+              success = false;
+            }
+          }
+          if (success) {
+            //method has the correct arguments and return type
+            fittingMethods.add(method);
+          }
+        }
+      }
+      //there can only be one method with the correct arguments and return type
+      if(fittingMethods.size()==1){
+        if (!"void".equals(fittingMethods.get(0).getReturnType().print())) {
+          SymTypeExpression result = fittingMethods.get(0).getReturnType();
+          this.result = result;
+          lastResult.setLast(result);
+        }else {
+          Optional<SymTypeExpression> wholeResult = Optional.of(SymTypeExpressionFactory.createTypeVoid());
+          this.result = wholeResult.get();
+          lastResult.setLastOpt(wholeResult);
+        }
+      }else {
+        Log.error("0xA209 the resulting type cannot be resolved");
+      }
     }
   }
+
+
+//  @Override
+//  public void traverse(ASTCallExpression expr){
+//    //get the result of the inner expression
+//    SymTypeExpression innerResult = null;
+//    lastResult.setMethodpreferred(true);
+//    expr.getExpression().accept(getRealThis());
+//    if(lastResult.isPresentLast()){
+//      innerResult = lastResult.getLast();
+//    }else{
+//      Log.error("The type of the inner expression could not be calculated");
+//    }
+//    //CommonExpressionsPrettyPrinter for FieldAccessExpression, ExpressionsBasisPrettyPrinter for NameExpression
+//    CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
+//    ExpressionsBasisPrettyPrinter prettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
+//    String exp = !prettyPrinter.prettyprint(expr.getExpression()).equals("")?prettyPrinter.prettyprint(expr.getExpression()):printer.prettyprint(expr.getExpression());
+//    //resolve methods with name of the inner expression
+//    Collection<MethodSymbol> methodcollection = scope.resolveMethodMany(exp);
+//    List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
+//    //count how many methods can be found with the correct arguments and return type
+//    List<MethodSymbol> fittingMethods = new ArrayList<>();
+//    for (MethodSymbol method : methodlist) {
+//      //for every method found check if the arguments are correct
+//      if (expr.getArguments().getExpressionList().size() == method.getParameter().size()) {
+//        boolean success = true;
+//        for (int i = 0; i < method.getParameter().size(); i++) {
+//          expr.getArguments().getExpression(i).accept(getRealThis());
+//          //test if every single argument is correct
+//          if (!method.getParameter().get(i).getType().print().equals(lastResult.getLast()) && !compatible(lastResult.getLast(), method.getParameter().get(i).getType(),scope)) {
+//            success = false;
+//          }
+//          if(!method.getReturnType().print().equals(innerResult.print())){
+//            success = false;
+//          }
+//        }
+//        if (success) {
+//          //method has the correct arguments and return type
+//          fittingMethods.add(method);
+//        }
+//      }
+//    }
+//    //there can only be one method with the correct arguments and return type
+//    if(fittingMethods.size()==1){
+//      if (!"void".equals(fittingMethods.get(0).getReturnType().print())) {
+//        SymTypeExpression result = fittingMethods.get(0).getReturnType();
+//        this.result = result;
+//        lastResult.setLast(result);
+//      }else {
+//        Optional<SymTypeExpression> wholeResult = Optional.of(SymTypeExpressionFactory.createTypeVoid());
+//        this.result = wholeResult.get();
+//        lastResult.setLastOpt(wholeResult);
+//      }
+//    }else {
+//      Log.error("0xA209 the resulting type cannot be resolved");
+//    }
+//  }
 
   /**
    * helper method for <=, >=, <, > -> calculates the result of these expressions
