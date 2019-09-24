@@ -113,6 +113,8 @@ public class SymbolTableConstants {
 
   public static final String JSON_OBJECT = "de.monticore.symboltable.serialization.json.JsonObject";
 
+  public static final String JSON_PRINTER = "de.monticore.symboltable.serialization.JsonPrinter";
+
   public static final String LANGUAGE_SUFFIX = "Language";
 
   public static final String REFERENCE_SUFFIX = "Reference";

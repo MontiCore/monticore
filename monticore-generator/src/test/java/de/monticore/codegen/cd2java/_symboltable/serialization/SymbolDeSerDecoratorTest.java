@@ -65,8 +65,6 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
   }
 
-  // ScopeSpanningSymbol
-
   @Test
   public void testClassNameAutomatonSymbol() {
     assertEquals("AutomatonSymbolDeSer", symbolDeSer.getName());
@@ -192,7 +190,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGeneratedCodeState() {
+  public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);

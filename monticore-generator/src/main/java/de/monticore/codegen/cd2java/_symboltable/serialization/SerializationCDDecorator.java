@@ -25,14 +25,18 @@ public class SerializationCDDecorator extends AbstractDecorator {
 
   protected final ScopeDeSerDecorator scopeDeSerDecorator;
 
+  protected final SymbolTablePrinterDecorator symbolTablePrinterDecorator;
+
   public SerializationCDDecorator(final GlobalExtensionManagement glex,
                                   final SymbolTableService symbolTableService,
                                   final SymbolDeSerDecorator symbolDeSerDecorator,
-                                  final ScopeDeSerDecorator scopeDeSerDecorator) {
+                                  final ScopeDeSerDecorator scopeDeSerDecorator,
+                                  final SymbolTablePrinterDecorator symbolTablePrinterDecorator) {
     super(glex);
     this.symbolDeSerDecorator = symbolDeSerDecorator;
     this.scopeDeSerDecorator = scopeDeSerDecorator;
     this.symbolTableService = symbolTableService;
+    this.symbolTablePrinterDecorator = symbolTablePrinterDecorator;
   }
 
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit astCD, ASTCDCompilationUnit symbolInput) {
@@ -43,10 +47,11 @@ public class SerializationCDDecorator extends AbstractDecorator {
     ASTCDDefinition serializeCD = CD4CodeMill.cDDefinitionBuilder()
         .setName(symbolInput.getCDDefinition().getName())
         .addAllCDClasss(createSymbolDeSerClasses(symbolInput.getCDDefinition()))
+        .addCDClass(createSymbolTablePrinterClass(astCD))
         .build();
 
     if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
-      serializeCD.addCDClass(createScopeDeSerClasses(symbolInput));
+      serializeCD.addCDClass(createScopeDeSerClass(symbolInput));
     }
 
     for (ASTCDClass cdClass : serializeCD.getCDClassList()) {
@@ -79,7 +84,11 @@ public class SerializationCDDecorator extends AbstractDecorator {
     return symbolDeSerList;
   }
 
-  protected ASTCDClass createScopeDeSerClasses(ASTCDCompilationUnit symbolCd) {
+  protected ASTCDClass createScopeDeSerClass(ASTCDCompilationUnit symbolCd) {
     return scopeDeSerDecorator.decorate(symbolCd);
+  }
+
+  protected ASTCDClass createSymbolTablePrinterClass(ASTCDCompilationUnit symbolCd) {
+    return symbolTablePrinterDecorator.decorate(symbolCd);
   }
 }

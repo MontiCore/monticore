@@ -40,9 +40,6 @@ public class CommonSymbolTablePrinterGenerator implements SymbolTablePrinterGene
     Optional<ASTScopeRule> scopeRule = grammar.getScopeRuleOpt();
     Map<String, ASTSymbolRule> symbolRules = getSymbolRules( grammar);
     
-    genEngine.generateNoA(TEMPLATE, filePath, languageName, className,
-        genHelper.getSymbolTablePackage(), genHelper.getVisitorPackage(),
-        genHelper.getAllSymbolDefiningRules(), scopeRule, symbolRules);
   }
   
   protected Map<String, ASTSymbolRule> getSymbolRules(ASTMCGrammar grammar) {

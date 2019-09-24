@@ -88,7 +88,7 @@ for (astGrammar in getParsedGrammars()) {
   decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram ,symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
 
-  decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram ,symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
+  decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram ,symbolClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSerializationCd, out, handcodedPath)
 
   // M8: generate symbol table
