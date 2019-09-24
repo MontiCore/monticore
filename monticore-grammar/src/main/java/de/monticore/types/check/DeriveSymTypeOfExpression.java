@@ -124,7 +124,6 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     lastResult.setLastOpt(Optional.empty());
     return result;
   }
-
   public void setLastResult(LastResult lastResult){
     this.lastResult = lastResult;
   }
