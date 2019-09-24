@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractDecorator;
@@ -14,6 +15,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
@@ -105,8 +107,8 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
         .addAllInterfaces(superScopeInterfaces)
         .addAllCDMethods(createAlreadyResolvedMethods(symbolInput.getCDDefinition().getCDClassList()))
         .addAllCDMethods(createAlreadyResolvedMethods(symbolInput.getCDDefinition().getCDInterfaceList()))
-        .addAllCDMethods(createResolveMethods(symbolInput.getCDDefinition().getCDClassList()))
-        .addAllCDMethods(createResolveMethods(symbolInput.getCDDefinition().getCDInterfaceList()))
+        .addAllCDMethods(createScopeInterfaceMethodsForSymbols(symbolInput.getCDDefinition().getCDClassList()))
+        .addAllCDMethods(createScopeInterfaceMethodsForSymbols(symbolInput.getCDDefinition().getCDInterfaceList()))
         .addAllCDMethods(createSubScopesMethods(scopeInterfaceName))
         .addAllCDMethods(createEnclosingScopeMethods(scopeInterfaceName))
         .addAllCDMethods(scopeRuleMethodList)
@@ -130,22 +132,23 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   }
 
 
-  protected List<ASTCDMethod> createResolveMethods(List<? extends ASTCDType> symbolProds) {
+  protected List<ASTCDMethod> createScopeInterfaceMethodsForSymbols(List<? extends ASTCDType> symbolProds) {
     List<ASTCDMethod> resolveMethods = new ArrayList<>();
     ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
     ASTCDParameter accessModifierParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ACCESS_MODIFIER), MODIFIER_VAR);
     ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
 
     for (ASTCDType symbolProd : symbolProds) {
+      // initialiaztions
       String className = symbolTableService.removeASTPrefix(symbolProd);
       String symbolFullTypeName = symbolTableService.getSymbolFullName(symbolProd);
       ASTMCOptionalType optSymbol = getCDTypeFacade().createOptionalTypeOf(symbolFullTypeName);
       ASTMCType listSymbol = getCDTypeFacade().createListTypeOf(symbolFullTypeName);
-      ASTMCType setSymbol = getCDTypeFacade().createSetTypeOf(symbolFullTypeName);
 
       ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
           .createTypeByDefinition(String.format(PREDICATE, symbolFullTypeName)), PREDICATE_VAR);
 
+      // resolve methods
       String resolveMethodName = String.format(RESOLVE, className);
       resolveMethods.add(createResolveNameMethod(resolveMethodName, optSymbol, nameParameter));
       resolveMethods.add(createResolveNameModifierMethod(resolveMethodName, optSymbol, nameParameter, accessModifierParameter));
@@ -154,12 +157,14 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       resolveMethods.add(createResolveFoundSymbolsNameModifierMethod(resolveMethodName, optSymbol, foundSymbolsParameter,
           nameParameter, accessModifierParameter));
 
+      // resolve down methods
       String resolveDownMethodName = String.format(RESOLVE_DOWN, className);
       resolveMethods.add(createResolveDownNameMethod(resolveDownMethodName, optSymbol, nameParameter));
       resolveMethods.add(createResolveDownNameModifierMethod(resolveDownMethodName, optSymbol, nameParameter, accessModifierParameter));
       resolveMethods.add(createResolveDownNameModifierPredicateMethod(resolveDownMethodName, optSymbol, nameParameter,
           accessModifierParameter, predicateParameter));
 
+      // resolve down many methods
       String resolveDownManyMethodName = String.format(RESOLVE_DOWN_MANY, className);
       resolveMethods.add(createResolveDownManyNameMethod(resolveDownManyMethodName, listSymbol, nameParameter));
       resolveMethods.add(createResolveDownManyNameModifierMethod(resolveDownManyMethodName, listSymbol, nameParameter, accessModifierParameter));
@@ -168,16 +173,18 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       resolveMethods.add(createResolveDownManyFoundSymbolsNameModifierPredicateMethod(resolveDownManyMethodName, className, symbolFullTypeName,
           listSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
+      // resolve locally methods
       String resolveLocallyMethodName = String.format(RESOLVE_LOCALLY, className);
       resolveMethods.add(createResolveLocallyNameMethod(resolveLocallyMethodName, optSymbol, nameParameter));
-
       String resolveLocallyManyMethodName = String.format(RESOLVE_LOCALLY_MANY, className);
       resolveMethods.add(createResolveLocallyManyMethod(resolveLocallyManyMethodName, className, symbolFullTypeName,
           listSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
+      // resolve imported method
       String resolveImportedMethodName = String.format(RESOLVE_IMPORTED, className);
       resolveMethods.add(createResolveImportedNameMethod(resolveImportedMethodName, className, optSymbol, nameParameter));
 
+      // resolve many methods
       String resolveManyMethodName = String.format(RESOLVE_MANY, className);
       resolveMethods.add(createResolveManyNameMethod(resolveManyMethodName, listSymbol, nameParameter));
       resolveMethods.add(createResolveManyNameModifierMethod(resolveManyMethodName, listSymbol, nameParameter, accessModifierParameter));
@@ -189,29 +196,34 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       resolveMethods.add(createResolveManyFoundSymbolsNameModifierPredicateMethod(resolveManyMethodName, className, symbolFullTypeName,
           listSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
+      //resolve adapted method
       String resolveAdaptedLocallyManyMethodName = String.format(RESOLVE_ADAPTED_LOCALLY_MANY, className);
       resolveMethods.add(createResolveAdaptedLocallyManyMethod(resolveAdaptedLocallyManyMethodName,
           listSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
-
+      //filter method
       String filterMethodName = String.format(FILTER, className);
       resolveMethods.add(createFilterMethod(filterMethodName, symbolFullTypeName, optSymbol, nameParameter));
 
+      //continueWithEnclosingScope method
       String continueWithEnclosingScopeMethodName = String.format(CONTINUE_WITH_ENCLOSING_SCOPE, className);
       resolveMethods.add(createContinueWithEnclosingScopeMethod(continueWithEnclosingScopeMethodName, className,
           listSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
+      //continueAsSubScope method
       String continueAsSubScopeMethodName = String.format(CONTINUE_AS_SUB_SCOPE, className);
       resolveMethods.add(createContinueAsSubScopeMethod(continueAsSubScopeMethodName, className,
           listSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
-
+      //getSymbols method
       String getSymbolsMethodName = "get" + className + "Symbols";
       resolveMethods.add(createGetSymbolsMethod(getSymbolsMethodName, symbolFullTypeName));
 
+      //getLocalSymbols method
       String getLocalSymbolsMethodName = "getLocal" + className + "Symbols";
       resolveMethods.add(createGetLocalSymbolsMethod(getLocalSymbolsMethodName, className, getCDTypeFacade().createListTypeOf(symbolFullTypeName)));
 
+      //add and remove methods
       ASTCDParameter symbolParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(symbolFullTypeName), SYMBOL_VAR);
       resolveMethods.add(createAddMethod(symbolParameter));
       resolveMethods.add(createRemoveMethod(symbolParameter));
@@ -285,9 +297,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createResolveDownManyNameMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter);
+    ArrayList<String> paramList = Lists.newArrayList("false", NAME_VAR, ACCESS_MODIFIER + ".ALL_INCLUSION", "x -> true");
+    String paramCall = Joiners.COMMA.join(paramList);
     this.replaceTemplate(EMPTY_BODY, method,
-        new StringHookPoint("return this." + methodName + "(false, " + NAME_VAR + ", de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION, x -> true);"));
-
+        new StringHookPoint("return this." + methodName + "(" + paramCall + ");"));
     return method;
   }
 
@@ -295,8 +308,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                                 ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter);
+    ArrayList<String> paramList = Lists.newArrayList("false", NAME_VAR, MODIFIER_VAR, "x -> true");
+    String paramCall = Joiners.COMMA.join(paramList);
     this.replaceTemplate(EMPTY_BODY, method,
-        new StringHookPoint("return this." + methodName + "(false, " + NAME_VAR + ", " + MODIFIER_VAR + ", x -> true);"));
+        new StringHookPoint("return this." + methodName + "(" + paramCall + ");"));
     return method;
   }
 
@@ -304,8 +319,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                                          ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter, predicateParameter);
+    ArrayList<String> paramList = Lists.newArrayList("false", NAME_VAR, MODIFIER_VAR, PREDICATE_VAR);
+    String paramCall = Joiners.COMMA.join(paramList);
     this.replaceTemplate(EMPTY_BODY, method,
-        new StringHookPoint("return this." + methodName + "(false, " + NAME_VAR + ", " + MODIFIER_VAR + ", " + PREDICATE_VAR + ");"));
+        new StringHookPoint("return this." + methodName + "(" + paramCall + ");"));
     return method;
   }
 
@@ -357,18 +374,21 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                                      ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter, predicateParameter);
+    ArrayList<String> paramList = Lists.newArrayList("false", NAME_VAR, MODIFIER_VAR, PREDICATE_VAR);
+    String paramCall = Joiners.COMMA.join(paramList);
     this.replaceTemplate(EMPTY_BODY, method,
-        new StringHookPoint("return " + methodName + "(false, " + NAME_VAR + ", " + MODIFIER_VAR + ", " + PREDICATE_VAR + ");"));
+        new StringHookPoint("return " + methodName + "(" + paramCall + ");"));
     return method;
   }
 
 
   protected ASTCDMethod createResolveManyNamePredicateMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter,
                                                              ASTCDParameter predicateParameter) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
-        nameParameter, predicateParameter);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter, predicateParameter);
+    ArrayList<String> paramList = Lists.newArrayList("false", NAME_VAR, ACCESS_MODIFIER + ".ALL_INCLUSION", PREDICATE_VAR);
+    String paramCall = Joiners.COMMA.join(paramList);
     this.replaceTemplate(EMPTY_BODY, method,
-        new StringHookPoint("return " + methodName + "(false, " + NAME_VAR + ", de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION, " + PREDICATE_VAR + ");"));
+        new StringHookPoint("return " + methodName + "(" + paramCall + ");"));
     return method;
   }
 
@@ -377,8 +397,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                                         ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter);
+    ArrayList<String> paramList = Lists.newArrayList(FOUND_SYMBOLS_VAR, NAME_VAR, MODIFIER_VAR, "x -> true");
+    String paramCall = Joiners.COMMA.join(paramList);
     this.replaceTemplate(EMPTY_BODY, method,
-        new StringHookPoint("return " + methodName + "(" + FOUND_SYMBOLS_VAR + ", " + NAME_VAR + ", " + MODIFIER_VAR + ", x -> true);"));
+        new StringHookPoint("return " + methodName + "(" + paramCall + ");"));
     return method;
   }
 

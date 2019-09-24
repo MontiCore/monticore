@@ -190,88 +190,142 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     List<ASTCDMethod> methodList = new ArrayList<>();
     String astFullName = symbolTableService.getASTPackage() + "." + symbolClass.getName();
     String simpleName = symbolTableService.removeASTPrefix(symbolClass);
-    String simpleSymbolName = symbolTableService.removeASTPrefix(Names.getSimpleName(symbolFullName));
-    String scopeClassFullName = symbolTableService.getScopeClassFullName();
 
-    ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getCDTypeFacade().createQualifiedType(astFullName));
-    this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(
-        "_symboltable.symboltablecreator.Visit", symbolFullName, simpleName));
-    methodList.add(visitMethod);
+    // visit method
+    methodList.add(createSymbolVisitMethod(astFullName, symbolFullName, simpleName));
 
-    ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getCDTypeFacade().createQualifiedType(astFullName));
-    if (symbolClass.getModifierOpt().isPresent() && (symbolTableService.hasScopeStereotype(symbolClass.getModifierOpt().get())
-        || symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifierOpt().get()))) {
-      this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint("removeCurrentScope();"));
-    }
-    methodList.add(endVisitMethod);
+    // endVisit method
+    methodList.add(createSymbolEndVisitMethod(astFullName, symbolClass));
 
     ASTCDParameter astParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(astFullName), "ast");
-    ASTCDMethod createSymbolMethod = getCDMethodFacade().createMethod(PROTECTED, getCDTypeFacade().createQualifiedType(symbolFullName),
-        "create_" + simpleName, astParam);
-    this.replaceTemplate(EMPTY_BODY, createSymbolMethod, new StringHookPoint("return new " + symbolFullName + "(ast.getName());"));
-    methodList.add(createSymbolMethod);
+    // create_$ symbol method
+    methodList.add(createSymbolCreate_Method(symbolFullName, simpleName, astParam));
 
     ASTCDParameter symbolParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(symbolFullName), SYMBOL_VAR);
-    methodList.add(getCDMethodFacade().createMethod(PROTECTED, "initialize_" + simpleName, symbolParam, astParam));
-
+    // initialize_$ method
+    methodList.add(createSymbolInitialize_Method(simpleName, astParam, symbolParam));
     if (symbolClass.getModifierOpt().isPresent()) {
+      String simpleSymbolName = symbolTableService.removeASTPrefix(Names.getSimpleName(symbolFullName));
       boolean isScopeSpanningSymbol = symbolTableService.hasScopeStereotype(symbolClass.getModifierOpt().get()) ||
           symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifierOpt().get());
-      ASTCDMethod addToScopeAnLinkWithNode = getCDMethodFacade().createMethod(PUBLIC, "addToScopeAndLinkWithNode", symbolParam, astParam);
-      this.replaceTemplate(EMPTY_BODY, addToScopeAnLinkWithNode, new TemplateHookPoint(
-          "_symboltable.symboltablecreator.AddToScopeAndLinkWithNode", scopeInterface, isScopeSpanningSymbol));
-      methodList.add(addToScopeAnLinkWithNode);
+      // addToScopeAndLinkWithNode method
+      methodList.add(createSymbolAddToScopeAndLinkWithNodeMethod(scopeInterface, astParam, symbolParam, isScopeSpanningSymbol));
 
-      ASTCDMethod setLinkBetweenSymbolAndNode = getCDMethodFacade().createMethod(PUBLIC, "setLinkBetweenSymbolAndNode", symbolParam, astParam);
-      this.replaceTemplate(EMPTY_BODY, setLinkBetweenSymbolAndNode, new TemplateHookPoint(
-          "_symboltable.symboltablecreator.SetLinkBetweenSymbolAndNode", simpleSymbolName, isScopeSpanningSymbol));
-      methodList.add(setLinkBetweenSymbolAndNode);
-
+      // setLinkBetweenSymbolAndNode method
+      methodList.add(createSymbolSetLinkBetweenSymbolAndNodeMethod(simpleSymbolName, astParam, symbolParam, isScopeSpanningSymbol));
       if (isScopeSpanningSymbol) {
-        ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), SCOPE_VAR);
-        ASTCDMethod setLinkBetweenSpannedScopeAndNode = getCDMethodFacade().createMethod(PUBLIC, "setLinkBetweenSpannedScopeAndNode", scopeParam, astParam);
-        this.replaceTemplate(EMPTY_BODY, setLinkBetweenSpannedScopeAndNode, new TemplateHookPoint(
-            "_symboltable.symboltablecreator.SetLinkBetweenSpannedScopeAndNode", scopeClassFullName));
-        methodList.add(setLinkBetweenSpannedScopeAndNode);
+        // setLinkBetweenSpannedScopeAndNode method
+        String scopeClassFullName = symbolTableService.getScopeClassFullName();
+        methodList.add(createSymbolSetLinkBetweenSpannedScopeAndNodeMethod(scopeInterface, scopeClassFullName, astParam));
       }
     }
     return methodList;
   }
 
 
+  protected ASTCDMethod createSymbolVisitMethod(String astFullName, String symbolFullName, String simpleName) {
+    ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getCDTypeFacade().createQualifiedType(astFullName));
+    this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(
+        "_symboltable.symboltablecreator.Visit", symbolFullName, simpleName));
+    return visitMethod;
+  }
+
+  protected ASTCDMethod createSymbolEndVisitMethod(String astFullName, ASTCDType symbolClass) {
+    ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getCDTypeFacade().createQualifiedType(astFullName));
+    if (symbolClass.getModifierOpt().isPresent() && (symbolTableService.hasScopeStereotype(symbolClass.getModifierOpt().get())
+        || symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifierOpt().get()))) {
+      this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint("removeCurrentScope();"));
+    }
+    return endVisitMethod;
+  }
+
+  protected ASTCDMethod createSymbolCreate_Method(String symbolFullName, String simpleName, ASTCDParameter astParam) {
+    ASTCDMethod createSymbolMethod = getCDMethodFacade().createMethod(PROTECTED, getCDTypeFacade().createQualifiedType(symbolFullName),
+        "create_" + simpleName, astParam);
+    this.replaceTemplate(EMPTY_BODY, createSymbolMethod, new StringHookPoint("return new " + symbolFullName + "(ast.getName());"));
+    return createSymbolMethod;
+  }
+
+  protected ASTCDMethod createSymbolSetLinkBetweenSpannedScopeAndNodeMethod(String scopeInterface, String scopeClassFullName, ASTCDParameter astParam) {
+    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), SCOPE_VAR);
+    // setLinkBetweenSpannedScopeAndNode method
+    ASTCDMethod setLinkBetweenSpannedScopeAndNode = getCDMethodFacade().createMethod(PUBLIC, "setLinkBetweenSpannedScopeAndNode", scopeParam, astParam);
+    this.replaceTemplate(EMPTY_BODY, setLinkBetweenSpannedScopeAndNode, new TemplateHookPoint(
+        "_symboltable.symboltablecreator.SetLinkBetweenSpannedScopeAndNode", scopeClassFullName));
+    return setLinkBetweenSpannedScopeAndNode;
+  }
+
+  protected ASTCDMethod createSymbolAddToScopeAndLinkWithNodeMethod(String scopeInterface, ASTCDParameter astParam, ASTCDParameter symbolParam, boolean isScopeSpanningSymbol) {
+    ASTCDMethod addToScopeAnLinkWithNode = getCDMethodFacade().createMethod(PUBLIC, "addToScopeAndLinkWithNode", symbolParam, astParam);
+    this.replaceTemplate(EMPTY_BODY, addToScopeAnLinkWithNode, new TemplateHookPoint(
+        "_symboltable.symboltablecreator.AddToScopeAndLinkWithNode", scopeInterface, isScopeSpanningSymbol));
+    return addToScopeAnLinkWithNode;
+  }
+
+  protected ASTCDMethod createSymbolSetLinkBetweenSymbolAndNodeMethod(String simpleSymbolName, ASTCDParameter astParam, ASTCDParameter symbolParam, boolean isScopeSpanningSymbol) {
+    ASTCDMethod setLinkBetweenSymbolAndNode = getCDMethodFacade().createMethod(PUBLIC, "setLinkBetweenSymbolAndNode", symbolParam, astParam);
+    this.replaceTemplate(EMPTY_BODY, setLinkBetweenSymbolAndNode, new TemplateHookPoint(
+        "_symboltable.symboltablecreator.SetLinkBetweenSymbolAndNode", simpleSymbolName, isScopeSpanningSymbol));
+    return setLinkBetweenSymbolAndNode;
+  }
+
+  protected ASTCDMethod createSymbolInitialize_Method(String simpleName, ASTCDParameter astParam, ASTCDParameter symbolParam) {
+    return getCDMethodFacade().createMethod(PROTECTED, "initialize_" + simpleName, symbolParam, astParam);
+  }
+
   protected List<ASTCDMethod> createScopeClassMethods(List<ASTCDType> scopeClasses, String scopeInterface) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDType scopeClass : scopeClasses) {
       String astFullName = symbolTableService.getASTPackage() + "." + scopeClass.getName();
       String simpleName = symbolTableService.removeASTPrefix(scopeClass);
-
-      ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getCDTypeFacade().createQualifiedType(astFullName));
-      this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(
-          "_symboltable.symboltablecreator.VisitScope", scopeInterface, simpleName));
-      methodList.add(visitMethod);
+      // visit method
+      methodList.add(createScopeVisitMethod(astFullName, scopeInterface, simpleName));
 
       ASTCDParameter astParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(astFullName), "ast");
-      ASTCDMethod createSymbolMethod = getCDMethodFacade().createMethod(PROTECTED, getCDTypeFacade().createQualifiedType(scopeInterface),
-          "create_" + simpleName, astParam);
-      this.replaceTemplate(EMPTY_BODY, createSymbolMethod, new StringHookPoint("return createScope(false);"));
-      methodList.add(createSymbolMethod);
+      // create_$ method
+      methodList.add(createScopeCreate_Method(scopeInterface, simpleName, astParam));
 
-      boolean hasNameAttribute = scopeClass.getCDAttributeList().stream().anyMatch(a -> a.getName().equals(NAME_VAR));
+      // initialize_$ method
       ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), SCOPE_VAR);
-      ASTCDMethod initializeMethod = getCDMethodFacade().createMethod(PROTECTED, "initialize_" + simpleName, scopeParam, astParam);
-      if (hasNameAttribute) {
-        this.replaceTemplate(EMPTY_BODY, initializeMethod, new StringHookPoint(SCOPE_VAR + ".setName(ast.getName());"));
-      }
-      methodList.add(initializeMethod);
+      methodList.add(createScopeInitialize_Method(simpleName, scopeClass, astParam, scopeParam));
 
-      ASTCDMethod setLinkBetweenSpannedScopeAndNode = getCDMethodFacade().createMethod(PUBLIC, "setLinkBetweenSpannedScopeAndNode", scopeParam, astParam);
-      this.replaceTemplate(EMPTY_BODY, setLinkBetweenSpannedScopeAndNode, new TemplateHookPoint(
-          "_symboltable.symboltablecreator.SetLinkBetweenSpannedScopeAndNodeScope", scopeInterface));
-      methodList.add(setLinkBetweenSpannedScopeAndNode);
-
-
+      // setLinkBetweenSpannedScopeAndNode method
+      methodList.add(createScopeSetLinkBetweenSpannedScopeAndNodeMethod(scopeInterface, astParam, scopeParam));
     }
     return methodList;
+  }
+
+  protected ASTCDMethod createScopeVisitMethod(String astFullName, String scopeInterface, String simpleName) {
+    ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getCDTypeFacade().createQualifiedType(astFullName));
+    this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(
+        "_symboltable.symboltablecreator.VisitScope", scopeInterface, simpleName));
+    return visitMethod;
+  }
+
+  protected ASTCDMethod createScopeCreate_Method(String scopeInterface, String simpleName, ASTCDParameter astParam) {
+    ASTCDMethod createSymbolMethod = getCDMethodFacade().createMethod(PROTECTED, getCDTypeFacade().createQualifiedType(scopeInterface),
+        "create_" + simpleName, astParam);
+    this.replaceTemplate(EMPTY_BODY, createSymbolMethod, new StringHookPoint("return createScope(false);"));
+    return createSymbolMethod;
+  }
+
+  protected ASTCDMethod createScopeInitialize_Method(String simpleName, ASTCDType scopeClass,
+                                                     ASTCDParameter astParam, ASTCDParameter scopeParam) {
+    boolean hasNameAttribute = scopeClass.getCDAttributeList().stream().anyMatch(a -> a.getName().equals(NAME_VAR));
+    ASTCDMethod initializeMethod = getCDMethodFacade().createMethod(PROTECTED, "initialize_" + simpleName, scopeParam, astParam);
+    if (hasNameAttribute) {
+      this.replaceTemplate(EMPTY_BODY, initializeMethod, new StringHookPoint(SCOPE_VAR + ".setName(ast.getName());"));
+    }
+    return initializeMethod;
+  }
+
+  protected ASTCDMethod createScopeSetLinkBetweenSpannedScopeAndNodeMethod(String scopeInterface, ASTCDParameter astParam,
+                                                                           ASTCDParameter scopeParam) {
+    ASTCDMethod setLinkBetweenSpannedScopeAndNode = getCDMethodFacade().createMethod(PUBLIC,
+        "setLinkBetweenSpannedScopeAndNode", scopeParam, astParam);
+    this.replaceTemplate(EMPTY_BODY, setLinkBetweenSpannedScopeAndNode, new TemplateHookPoint(
+        "_symboltable.symboltablecreator.SetLinkBetweenSpannedScopeAndNodeScope", scopeInterface));
+    return setLinkBetweenSpannedScopeAndNode;
   }
 
   protected List<ASTCDMethod> createVisitForNoSymbolMethods(List<ASTCDType> astcdClasses) {

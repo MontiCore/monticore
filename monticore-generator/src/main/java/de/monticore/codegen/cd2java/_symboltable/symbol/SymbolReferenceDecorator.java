@@ -128,11 +128,11 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
   }
 
   protected ASTCDMethod createReferencedSymbolMethod(ASTCDAttribute referencedSymbolAttribute, String symbolReferenceName) {
-    ASTCDMethod getReferencedSymbolMethod = getCDMethodFacade().createMethod(PUBLIC, referencedSymbolAttribute.getMCType(),
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, referencedSymbolAttribute.getMCType(),
         "get" + StringTransformations.capitalize(referencedSymbolAttribute.getName()));
-    this.replaceTemplate(EMPTY_BODY, getReferencedSymbolMethod, new TemplateHookPoint(
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
         "_symboltable.symbolreferece.GetReferencedSymbol", symbolReferenceName, referencedSymbolAttribute.printType()));
-    return getReferencedSymbolMethod;
+    return method;
   }
 
   protected ASTCDMethod createGetNameMethod() {
@@ -142,10 +142,10 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
   }
 
   protected ASTCDMethod createGetFullNameMethod() {
-    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(String.class), "getFullName");
-    this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint(
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(String.class), "getFullName");
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(
         "return getReferencedSymbol().getFullName();"));
-    return getNameMethod;
+    return method;
   }
 
   protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {

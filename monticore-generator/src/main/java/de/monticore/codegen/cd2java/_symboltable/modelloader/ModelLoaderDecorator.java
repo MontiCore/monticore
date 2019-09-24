@@ -94,7 +94,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     modelLoaderMethods.add(createLoadSymbolsIntoScopeMethod(qualifiedModelNameParam, modelPathParam, enclosingScopeParam));
     modelLoaderMethods.add(createResolveMethod(qualifiedModelNameParam, modelPathParam));
     modelLoaderMethods.add(createResolveSymbolMethod(qualifiedModelNameParam, modelPathParam));
-    modelLoaderMethods.add(createShowWarningIfParsedModelsMethod(astParam, modelNameParam));
+    modelLoaderMethods.add(createShowWarningIfParsedModelsMethod(modelNameParam));
     return modelLoaderMethods;
   }
 
@@ -163,9 +163,10 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return createSymbolTableFromAST;
   }
 
-  protected ASTCDMethod createShowWarningIfParsedModelsMethod(ASTCDParameter astsParam, ASTCDParameter modelNameParam) {
+  protected ASTCDMethod createShowWarningIfParsedModelsMethod(ASTCDParameter modelNameParam) {
+    ASTCDParameter listParam = getCDParameterFacade().createParameter(getCDTypeFacade().createTypeByDefinition("List<?>"), "asts");
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED,
-        "showWarningIfParsedModels", astsParam, modelNameParam);
+        "showWarningIfParsedModels", listParam, modelNameParam);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
         "_symboltable.modelloader.ShowWarningIfParsedModels"));
     return method;

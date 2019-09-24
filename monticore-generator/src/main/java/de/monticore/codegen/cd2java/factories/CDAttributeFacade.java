@@ -61,11 +61,16 @@ public class CDAttributeFacade {
                                         final GlobalExtensionManagement glex) {
     ASTCDAttribute attribute = createAttribute(modifier, type, name);
     if (DecorationHelper.isListType(attribute.printType())) {
-      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= ArrayList<>()"));
+      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= new ArrayList<>()"));
     } else if (DecorationHelper.isOptional(attribute.getMCType())) {
       glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     }
     return attribute;
+  }
+
+  public ASTCDAttribute createAttribute(final CDModifier modifier, final ASTMCType type, final String name,
+                                        final GlobalExtensionManagement glex) {
+    return createAttribute(modifier.build(), type, name, glex);
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final ASTMCType type) {

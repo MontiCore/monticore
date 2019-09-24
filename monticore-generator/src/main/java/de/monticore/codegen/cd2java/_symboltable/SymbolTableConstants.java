@@ -6,12 +6,13 @@ public class SymbolTableConstants {
   /**
    * packages
    */
+
   public static final String SYMBOL_TABLE_PACKAGE = "_symboltable";
 
   public static final String SERIALIZATION_PACKAGE = "serialization";
 
   /**
-   * suffix, prefix
+   * suffixes, prefixes
    */
 
   public static final String SYMBOL_SUFFIX = "Symbol";
@@ -47,7 +48,7 @@ public class SymbolTableConstants {
   public static final String MODEL_LOADER_SUFFIX = "ModelLoader";
 
   /**
-   * special runtime classes
+   * runtime classes
    */
 
   public static final String I_SYMBOL = "de.monticore.symboltable.ISymbol";

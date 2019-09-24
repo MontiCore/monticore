@@ -153,7 +153,6 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected List<ASTCDConstructor> createConstructors(String scopeClassName) {
-    List<ASTCDConstructor> constructors = new ArrayList<>();
     ASTCDConstructor defaultConstructor = createDefaultConstructor(scopeClassName);
     ASTCDConstructor isShadowingConstructor = createIsShadowingConstructor(scopeClassName);
     ASTCDConstructor enclosingScopeConstructor = createEnclosingScopeConstructor(scopeClassName);
@@ -315,10 +314,8 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute() {
-    ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED,
-        getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType()), ENCLOSING_SCOPE_VAR);
-    this.replaceTemplate(VALUE, enclosingScope, new StringHookPoint("= Optional.empty()"));
-    return enclosingScope;
+    return this.getCDAttributeFacade().createAttribute(PROTECTED,
+        getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType()), ENCLOSING_SCOPE_VAR, this.glex);
   }
 
   protected List<ASTCDMethod> createEnclosingScopeMethods(ASTCDAttribute enclosingScopeAttribute) {
@@ -341,9 +338,8 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDAttribute createSpanningSymbolAttribute() {
-    ASTCDAttribute spanningSymbol = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(I_SCOPE_SPANNING_SYMBOL), "spanningSymbol");
-    this.replaceTemplate(VALUE, spanningSymbol, new StringHookPoint("= Optional.empty()"));
-    return spanningSymbol;
+    return this.getCDAttributeFacade().createAttribute(PROTECTED,
+        getCDTypeFacade().createOptionalTypeOf(I_SCOPE_SPANNING_SYMBOL), "spanningSymbol", this.glex);
   }
 
   protected List<ASTCDMethod> createSpanningSymbolMethods(ASTCDAttribute spanningSymbolAttr) {
@@ -376,21 +372,18 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDAttribute createNameAttribute() {
-    ASTCDAttribute name = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(String.class), NAME_VAR);
-    this.replaceTemplate(VALUE, name, new StringHookPoint("= Optional.empty()"));
-    return name;
+    return this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(String.class),
+        NAME_VAR, this.glex);
   }
 
   protected ASTCDAttribute createASTNodeAttribute() {
-    ASTCDAttribute astNode = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(AST_INTERFACE), AST_NODE_VAR);
-    this.replaceTemplate(VALUE, astNode, new StringHookPoint("= Optional.empty()"));
-    return astNode;
+    return this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().
+        createOptionalTypeOf(AST_INTERFACE), AST_NODE_VAR, this.glex);
   }
 
   protected ASTCDAttribute createSubScopesAttribute(ASTMCQualifiedType scopeInterfaceType) {
-    ASTCDAttribute subScopes = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createListTypeOf(scopeInterfaceType), "subScopes");
-    this.replaceTemplate(VALUE, subScopes, new StringHookPoint("= new java.util.ArrayList<>()"));
-    return subScopes;
+   return this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createListTypeOf(scopeInterfaceType),
+       "subScopes", this.glex);
   }
 
   protected List<ASTCDMethod> createSubScopeMethods(ASTMCType scopeInterface) {
