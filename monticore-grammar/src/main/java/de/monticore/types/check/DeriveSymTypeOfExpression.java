@@ -88,6 +88,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 //   }else
     if(optVar.isPresent()){
      //no method here, test variable first
+      // durch AST-Umbau kann ASTNameExpression keine Methode sein
       FieldSymbol var = optVar.get();
       this.result=var.getType();
       lastResult.setLast(var.getType());
