@@ -75,17 +75,19 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
       millAttributeList.add(millSymbolReferenceAttribute);
     }
 
-    if (symbolTableService.hasStartProd(astcdDefinition) &&
-        !(astcdDefinition.isPresentModifier() && symbolTableService.hasComponentStereotype(astcdDefinition.getModifier()))) {
-      if (isLanguageTop()) {
-        String languageName = StringTransformations.uncapitalize(symbolTableService.getLanguageClassSimpleName());
-        ASTCDAttribute millLanguageAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, languageName);
-        millAttributeList.add(millLanguageAttribute);
-      }
+    if (symbolTableService.hasStartProd(astcdDefinition)) {
+      if (!(astcdDefinition.isPresentModifier() && symbolTableService.hasComponentStereotype(astcdDefinition.getModifier()))) {
+        if (isLanguageTop()) {
+          String languageName = StringTransformations.uncapitalize(symbolTableService.getLanguageClassSimpleName());
+          ASTCDAttribute millLanguageAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, languageName);
+          millAttributeList.add(millLanguageAttribute);
+        }
 
-      String modelLoaderName = StringTransformations.uncapitalize(symbolTableService.getModelLoaderClassSimpleName());
-      ASTCDAttribute millModelLoaderAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, modelLoaderName);
-      millAttributeList.add(millModelLoaderAttribute);
+        String modelLoaderName = StringTransformations.uncapitalize(symbolTableService.getModelLoaderClassSimpleName());
+        ASTCDAttribute millModelLoaderAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, modelLoaderName);
+        millAttributeList.add(millModelLoaderAttribute);
+
+      }
 
       String symTabCreatorName = StringTransformations.uncapitalize(symbolTableService.getSymbolTableCreatorSimpleName());
       ASTCDAttribute millSymTabCreatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, symTabCreatorName);
@@ -167,7 +169,7 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
           // for prod with symbol property create delegate builder method
-          String symbolBuilderFullName = symbolTableService.getSymbolBuilderFullName(type.getAstNode().get(),cdDefinitionSymbol);
+          String symbolBuilderFullName = symbolTableService.getSymbolBuilderFullName(type.getAstNode().get(), cdDefinitionSymbol);
           String symTabMillFullName = symbolTableService.getSymTabMillFullName(cdDefinitionSymbol);
           String symbolBuilderSimpleName = StringTransformations.uncapitalize(symbolTableService.getSymbolBuilderSimpleName(type.getAstNode().get()));
           ASTCDMethod builderMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC,
