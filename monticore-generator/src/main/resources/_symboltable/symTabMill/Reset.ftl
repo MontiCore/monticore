@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("millAttributeList", "superMillList")}
-  this.mill = null;
+  mill = null;
 <#list millAttributeList as attribute>
-  this.${attribute.getName()} = null;
+  ${attribute.getName()} = null;
 </#list>
 <#list superMillList as mill>
   ${mill}.reset();

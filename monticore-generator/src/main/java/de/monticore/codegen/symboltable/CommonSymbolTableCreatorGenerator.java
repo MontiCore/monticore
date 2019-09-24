@@ -145,8 +145,6 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
     }
     final boolean existsHW = existsHandwrittenClass(getSimpleName(grammarSymbol.getFullName() + "Language"),
         genHelper.getTargetPackage(), handCodedPath);
-    genEngine.generate("symboltable.SymTabMill", filePath, grammarSymbol.getAstNode().get(),
-        hasHWCImpl, className, name,localSymbolsAndScope,mills, superSymbols,symbolToMill, languageName, existsHW,symbols);
   }
 
 }

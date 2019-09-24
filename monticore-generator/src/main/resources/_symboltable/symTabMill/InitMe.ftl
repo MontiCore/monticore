@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("millAttributeList")}
-  this.mill = mill;
+  mill = a;
 <#list millAttributeList as attribute>
-  this.${attribute.getName()} = mill;
+  ${attribute.getName()} = mill;
 </#list>

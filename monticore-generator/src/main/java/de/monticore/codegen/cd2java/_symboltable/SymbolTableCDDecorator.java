@@ -160,8 +160,13 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .addAllCDClasss(createSymbolReferenceBuilderClasses(symbolCD.getCDDefinition()))
         .addCDInterface(createICommonSymbol(astCD))
         .addAllCDInterfaces(createSymbolResolvingDelegateInterfaces(symbolProds))
-        .addCDClass(createSymTabMill(astCD))
         .build();
+
+    // add symTabMill
+    boolean isLanguageHandCoded = existsHandwrittenClass(handCodedPath,
+        constructQualifiedName(symbolTablePackage, symbolTableService.getLanguageClassSimpleName()));
+    symTabMillDecorator.setLanguageTop(isLanguageHandCoded);
+    symTabCD.addCDClass(createSymTabMill(astCD));
 
     if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
       // global scope
@@ -180,8 +185,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
       // language
       // needs to know if it is overwritten to generate method differently
-      boolean isLanguageHandCoded = existsHandwrittenClass(handCodedPath,
-          constructQualifiedName(symbolTablePackage, symbolTableService.getLanguageClassSimpleName()));
       // set boolean if language is TOPed or not
       this.languageDecorator.setLanguageTop(isLanguageHandCoded);
       ASTCDClass languageClass = createLanguage(astCD);

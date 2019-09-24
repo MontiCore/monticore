@@ -2,6 +2,7 @@ package de.monticore.codegen.cd2java._symboltable.symbTabMill;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -24,6 +25,8 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
   protected final SymbolTableService symbolTableService;
 
+  protected boolean isLanguageTop;
+
   public SymTabMillDecorator(final GlobalExtensionManagement glex,
                              final SymbolTableService symbolTableService) {
     super(glex);
@@ -35,7 +38,7 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     String symTabMillName = symbolTableService.getSymTabMillSimpleName();
     List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
-    List<ASTCDAttribute> millAttributeList = createMillAttributeList(symTabMillName, symbolDefiningProds);
+    List<ASTCDAttribute> millAttributeList = createMillAttributeList(symTabMillName, symbolDefiningProds, input.getCDDefinition());
 
     return CD4CodeMill.cDClassBuilder()
         .setName(symTabMillName)
@@ -48,6 +51,7 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         .addCDMethod(createInitMethod(symTabMillName))
         .addCDMethod(createResetMeMethod(millAttributeList))
         .addAllCDMethods(createBuilderMethods(millAttributeList))
+        .addAllCDMethods(createSuperSymbolBuilderMethods())
         .build();
   }
 
@@ -59,49 +63,51 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     return getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, "mill");
   }
 
-  protected List<ASTCDAttribute> createMillAttributeList(String symTabMill, List<ASTCDType> symbolDefiningProds) {
+  protected List<ASTCDAttribute> createMillAttributeList(String symTabMill, List<ASTCDType> symbolDefiningProds, ASTCDDefinition astcdDefinition) {
     List<ASTCDAttribute> millAttributeList = new ArrayList<>();
     // mill attributes for symbols
     for (ASTCDType symbolDefiningProd : symbolDefiningProds) {
       String symbolSimpleName = StringTransformations.uncapitalize(symbolTableService.getSymbolSimpleName(symbolDefiningProd));
-      ASTCDAttribute millSymbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill,
-          symbolSimpleName);
+      ASTCDAttribute millSymbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, symbolSimpleName);
       millAttributeList.add(millSymbolAttribute);
 
-      ASTCDAttribute millSymbolReferenceAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill,
-          symbolSimpleName + REFERENCE_SUFFIX);
+      ASTCDAttribute millSymbolReferenceAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, symbolSimpleName + REFERENCE_SUFFIX);
       millAttributeList.add(millSymbolReferenceAttribute);
     }
 
-    String modelLoaderName = StringTransformations.uncapitalize(symbolTableService.getModelLoaderClassSimpleName());
-    ASTCDAttribute millModelLoaderAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill,
-        modelLoaderName);
-    millAttributeList.add(millModelLoaderAttribute);
+    if (symbolTableService.hasStartProd(astcdDefinition) &&
+        !(astcdDefinition.isPresentModifier() && symbolTableService.hasComponentStereotype(astcdDefinition.getModifier()))) {
+      if (isLanguageTop()) {
+        String languageName = StringTransformations.uncapitalize(symbolTableService.getLanguageClassSimpleName());
+        ASTCDAttribute millLanguageAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, languageName);
+        millAttributeList.add(millLanguageAttribute);
+      }
 
-    String languageName = StringTransformations.uncapitalize(symbolTableService.getLanguageClassSimpleName());
-    ASTCDAttribute millLanguageAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill,
-        languageName);
-    millAttributeList.add(millLanguageAttribute);
+      String modelLoaderName = StringTransformations.uncapitalize(symbolTableService.getModelLoaderClassSimpleName());
+      ASTCDAttribute millModelLoaderAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, modelLoaderName);
+      millAttributeList.add(millModelLoaderAttribute);
 
-    String symTabCreatorName = StringTransformations.uncapitalize(symbolTableService.getSymbolTableCreatorSimpleName());
-    ASTCDAttribute millSymTabCreatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill,
-        symTabCreatorName);
-    millAttributeList.add(millSymTabCreatorAttribute);
+      String symTabCreatorName = StringTransformations.uncapitalize(symbolTableService.getSymbolTableCreatorSimpleName());
+      ASTCDAttribute millSymTabCreatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, symTabCreatorName);
+      millAttributeList.add(millSymTabCreatorAttribute);
 
-    String symTabCreatorDelegatorName = StringTransformations.uncapitalize(symbolTableService.getSymbolTableCreatorDelegatorSimpleName());
-    ASTCDAttribute millSymTabCreatorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill,
-        symTabCreatorDelegatorName);
-    millAttributeList.add(millSymTabCreatorDelegatorAttribute);
+      String symTabCreatorDelegatorName = StringTransformations.uncapitalize(symbolTableService.getSymbolTableCreatorDelegatorSimpleName());
+      ASTCDAttribute millSymTabCreatorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, symTabCreatorDelegatorName);
+      millAttributeList.add(millSymTabCreatorDelegatorAttribute);
 
-    String globalScopeName = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
-    ASTCDAttribute millGlobalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill,
-        globalScopeName);
-    millAttributeList.add(millGlobalScopeAttribute);
+      String globalScopeName = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
+      ASTCDAttribute millGlobalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, globalScopeName);
+      millAttributeList.add(millGlobalScopeAttribute);
 
-    String artifactScopeName = StringTransformations.uncapitalize(symbolTableService.getArtifactScopeSimpleName());
-    ASTCDAttribute millArtifactScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill,
-        artifactScopeName);
-    millAttributeList.add(millArtifactScopeAttribute);
+      String artifactScopeName = StringTransformations.uncapitalize(symbolTableService.getArtifactScopeSimpleName());
+      ASTCDAttribute millArtifactScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, artifactScopeName);
+      millAttributeList.add(millArtifactScopeAttribute);
+
+    }
+
+    String scopeName = StringTransformations.uncapitalize(symbolTableService.getScopeClassSimpleName());
+    ASTCDAttribute millScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, scopeName);
+    millAttributeList.add(millScopeAttribute);
     return millAttributeList;
   }
 
@@ -112,7 +118,7 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDMethod createInitMeMethod(String symTabMill, List<ASTCDAttribute> attributeList) {
-    ASTCDParameter millParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(symTabMill), "mill");
+    ASTCDParameter millParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(symTabMill), "a");
     ASTCDMethod getMillMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, "initMe", millParam);
     this.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint("_symboltable.symTabMill.InitMe", attributeList));
     return getMillMethod;
@@ -151,5 +157,35 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
       builderMethodList.add(builderMethod);
     }
     return builderMethodList;
+  }
+
+
+  protected List<ASTCDMethod> createSuperSymbolBuilderMethods() {
+    List<ASTCDMethod> builderMethodList = new ArrayList<>();
+    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+        if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
+          // for prod with symbol property create delegate builder method
+          String symbolBuilderFullName = symbolTableService.getSymbolBuilderFullName(type.getAstNode().get(),cdDefinitionSymbol);
+          String symTabMillFullName = symbolTableService.getSymTabMillFullName(cdDefinitionSymbol);
+          String symbolBuilderSimpleName = StringTransformations.uncapitalize(symbolTableService.getSymbolBuilderSimpleName(type.getAstNode().get()));
+          ASTCDMethod builderMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC,
+              getCDTypeFacade().createQualifiedType(symbolBuilderFullName), symbolBuilderSimpleName);
+
+          this.replaceTemplate(EMPTY_BODY, builderMethod, new StringHookPoint("return " + symTabMillFullName + "." + symbolBuilderSimpleName + "();"));
+          builderMethodList.add(builderMethod);
+        }
+      }
+    }
+    return builderMethodList;
+  }
+
+  public boolean isLanguageTop() {
+    return isLanguageTop;
+  }
+
+  public void setLanguageTop(boolean languageTop) {
+    isLanguageTop = languageTop;
   }
 }

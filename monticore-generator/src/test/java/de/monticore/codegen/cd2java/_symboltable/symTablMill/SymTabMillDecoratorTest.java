@@ -8,7 +8,6 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.symbTabMill.SymTabMillDecorator;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -33,29 +32,10 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  private CDTypeFacade cdTypeFacade;
-
-  private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope";
-
-  private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonSymbol";
-
-  private static final String STATE_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.StateSymbol";
-
-  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor";
-
-  private static final String AST_AUTOMATON = "de.monticore.codegen.symboltable.automaton._ast.ASTAutomaton";
-
-  private static final String AST_STATE = "de.monticore.codegen.symboltable.automaton._ast.ASTState";
-
-  private static final String AST_TRANSITION = "de.monticore.codegen.symboltable.automaton._ast.ASTTransition";
-
-  private static final String AST_SCOPE = "de.monticore.codegen.symboltable.automaton._ast.ASTScope";
-
   @Before
   public void setUp() {
     Log.init();
     this.glex = new GlobalExtensionManagement();
-    this.cdTypeFacade = CDTypeFacade.getInstance();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
@@ -65,6 +45,7 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
 
     SymTabMillDecorator decorator = new SymTabMillDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit));
+    decorator.setLanguageTop(true);
 
     //creates normal Symbol
     this.symTabMill = decorator.decorate(decoratedCompilationUnit);
@@ -106,7 +87,7 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(11, symTabMill.sizeCDAttributes());
+    assertEquals(12, symTabMill.sizeCDAttributes());
   }
 
   @Test
@@ -188,8 +169,15 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testMillScopeAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("automatonScope", symTabMill);
+    assertDeepEquals(PROTECTED_STATIC, astcdAttribute.getModifier());
+    assertDeepEquals("AutomatonSymTabMill", astcdAttribute.getMCType());
+  }
+
+  @Test
   public void testMethods() {
-    assertEquals(24, symTabMill.getCDMethodList().size());
+    assertEquals(27, symTabMill.getCDMethodList().size());
   }
 
   @Test
@@ -212,7 +200,7 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("AutomatonSymTabMill", method.getCDParameter(0).getMCType());
-    assertEquals("mill", method.getCDParameter(0).getName());
+    assertEquals("a", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -302,7 +290,6 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
   }
 
-
   @Test
   public void test_SymbolTableCreatorBuilderMethod() {
     ASTCDMethod method = getMethodBy("_automatonSymbolTableCreatorBuilder", symTabMill);
@@ -313,7 +300,6 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
 
     assertTrue(method.isEmptyCDParameters());
   }
-
 
   @Test
   public void test_SymbolTableCreatorDelegatorBuilderMethod() {
@@ -326,7 +312,6 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
   }
 
-
   @Test
   public void test_GlobalScopeBuilderMethod() {
     ASTCDMethod method = getMethodBy("_automatonGlobalScopeBuilder", symTabMill);
@@ -338,7 +323,6 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
   }
 
-
   @Test
   public void test_ArtifactScopeBuilderMethod() {
     ASTCDMethod method = getMethodBy("_automatonArtifactScopeBuilder", symTabMill);
@@ -346,6 +330,17 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
 
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals("AutomatonArtifactScopeBuilder", method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void test_ScopeBuilderMethod() {
+    ASTCDMethod method = getMethodBy("_automatonScopeBuilder", symTabMill);
+    assertDeepEquals(PROTECTED, method.getModifier());
+
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals("AutomatonScopeBuilder", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
@@ -461,6 +456,29 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
 
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals("AutomatonArtifactScopeBuilder", method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testScopeBuilderMethod() {
+    ASTCDMethod method = getMethodBy("automatonScopeBuilder", symTabMill);
+    assertDeepEquals(PUBLIC_STATIC, method.getModifier());
+
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals("AutomatonScopeBuilder", method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+
+  @Test
+  public void testQualifiedNameSymbolBuilderMethod() {
+    ASTCDMethod method = getMethodBy("qualifiedNameSymbolBuilder", symTabMill);
+    assertDeepEquals(PUBLIC_STATIC, method.getModifier());
+
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals("de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbolBuilder", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
