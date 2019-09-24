@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_BUILD_TEMPLATE;
 
 public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
@@ -49,7 +48,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(SYMBOL_BUILD_TEMPLATE, symbolClass.getName(), buildAttributes)));
+        new TemplateHookPoint("_symboltable.symbol.Build", symbolClass.getName(), buildAttributes)));
 
     return symbolBuilder;
   }

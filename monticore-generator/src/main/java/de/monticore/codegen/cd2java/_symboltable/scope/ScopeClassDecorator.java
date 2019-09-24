@@ -59,6 +59,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
   /**
    * uses a scopeCD for scopeRule attributes and methods
    * and a normalCD for Symbol Classes and Interfaces
+   *
    * @param scopeInput
    * @param symbolInput
    * @return
@@ -163,32 +164,32 @@ public class ScopeClassDecorator extends AbstractDecorator {
   protected ASTCDConstructor createDefaultConstructor(String scopeClassName) {
     ASTCDConstructor defaultConstructor = getCDConstructorFacade().createConstructor(PUBLIC, scopeClassName);
     this.replaceTemplate(EMPTY_BODY, defaultConstructor, new StringHookPoint("super();\n" +
-        "    this.name = Optional.empty();"));
+        "    this." + NAME_VAR + " = Optional.empty();"));
     return defaultConstructor;
   }
 
   protected ASTCDConstructor createEnclosingScopeConstructor(String scopeClassName) {
-    ASTCDParameter scopeParameter = getCDParameterFacade().createParameter(symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE);
+    ASTCDParameter scopeParameter = getCDParameterFacade().createParameter(symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
     ASTCDConstructor defaultConstructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopeClassName, scopeParameter);
-    this.replaceTemplate(EMPTY_BODY, defaultConstructor, new StringHookPoint("this(enclosingScope, false);"));
+    this.replaceTemplate(EMPTY_BODY, defaultConstructor, new StringHookPoint("this(" + ENCLOSING_SCOPE_VAR + ", false);"));
     return defaultConstructor;
   }
 
   protected ASTCDConstructor createIsShadowingConstructor(String scopeClassName) {
-    ASTCDParameter shadowingParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), SHADOWING);
+    ASTCDParameter shadowingParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), SHADOWING_VAR);
     ASTCDConstructor defaultConstructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopeClassName, shadowingParameter);
-    this.replaceTemplate(EMPTY_BODY, defaultConstructor, new StringHookPoint("this." + SHADOWING + " = " + SHADOWING + ";\n" +
-        "    this.name = Optional.empty();"));
+    this.replaceTemplate(EMPTY_BODY, defaultConstructor, new StringHookPoint("this." + SHADOWING_VAR + " = " + SHADOWING_VAR + ";\n" +
+        "    this." + NAME_VAR + " = Optional.empty();"));
     return defaultConstructor;
   }
 
   protected ASTCDConstructor createIsShadowingAndEnclosingScopeConstructor(String scopeClassName) {
-    ASTCDParameter shadowingParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), SHADOWING);
-    ASTCDParameter scopeParameter = getCDParameterFacade().createParameter(symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE);
+    ASTCDParameter shadowingParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), SHADOWING_VAR);
+    ASTCDParameter scopeParameter = getCDParameterFacade().createParameter(symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
     ASTCDConstructor defaultConstructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopeClassName, scopeParameter, shadowingParameter);
-    this.replaceTemplate(EMPTY_BODY, defaultConstructor, new StringHookPoint("this.setEnclosingScope(enclosingScope);\n" +
-        "    this." + SHADOWING + " = " + SHADOWING + "; \n" +
-        "    this.name = Optional.empty();"));
+    this.replaceTemplate(EMPTY_BODY, defaultConstructor, new StringHookPoint("this.setEnclosingScope(" + ENCLOSING_SCOPE_VAR + ");\n" +
+        "    this." + SHADOWING_VAR + " = " + SHADOWING_VAR + "; \n" +
+        "    this." + NAME_VAR + " = Optional.empty();"));
     return defaultConstructor;
   }
 
@@ -256,7 +257,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
     Optional<String> symbolFullName = symbolTableService.getDefiningSymbolFullName(cdType, cdDefinitionSymbol);
     if (symbolFullName.isPresent() && symbolSimpleName.isPresent()) {
       String attrName = StringTransformations.uncapitalize(symbolSimpleName.get() + LIST_SUFFIX_S);
-      ASTMCType symbolMultiMap = getCDTypeFacade().createTypeByDefinition(String.format(SYMBOLS_MULTI_MAP, symbolFullName.get()));
+      ASTMCType symbolMultiMap = getCDTypeFacade().createTypeByDefinition(String.format(SYMBOL_MULTI_MAP, symbolFullName.get()));
       ASTCDAttribute symbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolMultiMap, attrName);
       this.replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= com.google.common.collect.LinkedListMultimap.create()"));
       return Optional.ofNullable(symbolAttribute);
@@ -293,17 +294,17 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createAddSymbolMethod(ASTMCType symbolType, String attributeName) {
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(symbolType, "symbol");
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(symbolType, SYMBOL_VAR);
     ASTCDMethod addMethod = getCDMethodFacade().createMethod(PUBLIC, "add", parameter);
-    this.replaceTemplate(EMPTY_BODY, addMethod, new StringHookPoint("this." + attributeName + ".put(symbol.getName(), symbol);\n" +
-        "    symbol.setEnclosingScope(this);"));
+    this.replaceTemplate(EMPTY_BODY, addMethod, new StringHookPoint("this." + attributeName + ".put(" + SYMBOL_VAR + ".getName(), "+SYMBOL_VAR+");\n" +
+        "    " + SYMBOL_VAR + ".setEnclosingScope(this);"));
     return addMethod;
   }
 
   protected ASTCDMethod createRemoveSymbolMethod(ASTMCType symbolType, String attributeName) {
     ASTCDParameter parameter = getCDParameterFacade().createParameter(symbolType, StringTransformations.uncapitalize(SYMBOL_SUFFIX));
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "remove", parameter);
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("this." + attributeName + ".remove(symbol.getName(), symbol);"));
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("this." + attributeName + ".remove(" + SYMBOL_VAR + ".getName(), " + SYMBOL_VAR + ");"));
     return method;
   }
 
@@ -315,7 +316,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
   protected ASTCDAttribute createEnclosingScopeAttribute() {
     ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED,
-        getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType()), "enclosingScope");
+        getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType()), ENCLOSING_SCOPE_VAR);
     this.replaceTemplate(VALUE, enclosingScope, new StringHookPoint("= Optional.empty()"));
     return enclosingScope;
   }
@@ -365,7 +366,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDAttribute createShadowingAttribute() {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createBooleanType(), SHADOWING);
+    return this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createBooleanType(), SHADOWING_VAR);
   }
 
   protected ASTCDAttribute createExportSymbolsAttribute() {
@@ -375,13 +376,13 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDAttribute createNameAttribute() {
-    ASTCDAttribute name = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(String.class), "name");
+    ASTCDAttribute name = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(String.class), NAME_VAR);
     this.replaceTemplate(VALUE, name, new StringHookPoint("= Optional.empty()"));
     return name;
   }
 
   protected ASTCDAttribute createASTNodeAttribute() {
-    ASTCDAttribute astNode = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(AST_INTERFACE), "astNode");
+    ASTCDAttribute astNode = this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(AST_INTERFACE), AST_NODE_VAR);
     this.replaceTemplate(VALUE, astNode, new StringHookPoint("= Optional.empty()"));
     return astNode;
   }

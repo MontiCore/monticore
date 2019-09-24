@@ -84,14 +84,14 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
   }
 
   protected List<ASTCDConstructor> createConstructors(String artifactScopeName) {
-    ASTCDParameter packageNameParam = getCDParameterFacade().createParameter(String.class, PACKAGE_NAME);
+    ASTCDParameter packageNameParam = getCDParameterFacade().createParameter(String.class, PACKAGE_NAME_VAR);
     ASTCDParameter importsParam = getCDParameterFacade().createParameter(getCDTypeFacade().createListTypeOf(IMPORT_STATEMENT), "imports");
 
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), artifactScopeName, packageNameParam, importsParam);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this(Optional.empty(), packageName, imports);"));
 
     ASTCDParameter enclosingScopeParam = getCDParameterFacade().createParameter(
-        getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceFullName()), "enclosingScope");
+        getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceFullName()), ENCLOSING_SCOPE_VAR);
     ASTCDConstructor constructorWithEnclosingScope = getCDConstructorFacade().createConstructor(PUBLIC.build(),
         artifactScopeName, enclosingScopeParam, packageNameParam, importsParam);
     this.replaceTemplate(EMPTY_BODY, constructorWithEnclosingScope, new TemplateHookPoint("_symboltable.artifactscope.Constructor"));
@@ -99,7 +99,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
   }
 
   protected ASTCDAttribute createPackageNameAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE, String.class, PACKAGE_NAME);
+    return getCDAttributeFacade().createAttribute(PRIVATE, String.class, PACKAGE_NAME_VAR);
   }
 
   protected ASTCDAttribute createImportsAttribute() {
@@ -145,9 +145,9 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected List<ASTCDMethod> createContinueWithEnclosingScopeMethods(List<ASTCDType> symbolProds, CDDefinitionSymbol definitionSymbol) {
     List<ASTCDMethod> methodList = new ArrayList<>();
-    ASTCDParameter parameterFoundSymbols = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "foundSymbols");
-    ASTCDParameter parameterName = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "name");
-    ASTCDParameter parameterModifier = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ACCESS_MODIFIER), "modifier");
+    ASTCDParameter parameterFoundSymbols = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
+    ASTCDParameter parameterName = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), NAME_VAR);
+    ASTCDParameter parameterModifier = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ACCESS_MODIFIER), MODIFIER_VAR);
     String globalScopeInterface = symbolTableService.getGlobalScopeInterfaceFullName();
 
     for (ASTCDType type : symbolProds) {
@@ -156,7 +156,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
 
       if (definingSymbolFullName.isPresent()) {
         ASTCDParameter parameterPredicate = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(
-            String.format(PREDICATE, definingSymbolFullName.get())), "predicate");
+            String.format(PREDICATE, definingSymbolFullName.get())), PREDICATE_VAR);
         String methodName = String.format(CONTINUE_WITH_ENCLOSING_SCOPE, className);
 
         ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createListTypeOf(definingSymbolFullName.get()),

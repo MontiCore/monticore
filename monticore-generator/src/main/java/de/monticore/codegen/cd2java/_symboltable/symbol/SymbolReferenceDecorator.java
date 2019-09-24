@@ -100,8 +100,8 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
   }
 
   protected ASTCDConstructor createConstructor(String symbolReferenceClass, String scopeInterfaceType) {
-    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, "name");
-    ASTCDParameter enclosingScopeParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterfaceType), "enclosingScope");
+    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
+    ASTCDParameter enclosingScopeParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterfaceType), ENCLOSING_SCOPE_VAR);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symbolReferenceClass, nameParameter, enclosingScopeParameter);
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("_symboltable.symbolreferece.Constructor"));
     return constructor;
@@ -114,13 +114,13 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
   }
 
   protected ASTCDAttribute createPredicateAttribute(String symbolType) {
-    ASTCDAttribute predicateAttribute = getCDAttributeFacade().createAttribute(PROTECTED, String.format(PREDICATE, symbolType), "predicate");
+    ASTCDAttribute predicateAttribute = getCDAttributeFacade().createAttribute(PROTECTED, String.format(PREDICATE, symbolType), PREDICATE_VAR);
     this.replaceTemplate(VALUE, predicateAttribute, new StringHookPoint("= x -> true"));
     return predicateAttribute;
   }
 
   protected ASTCDAttribute createAstNodeAttribute(String astType) {
-    return getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(astType), "astNode");
+    return getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(astType), AST_NODE_VAR);
   }
 
   protected ASTCDAttribute createReferencedSymbolAttribute(String symbolType) {
@@ -152,10 +152,10 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
     ASTCDMethod getEnclosingScope = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(scopeInterface), "getEnclosingScope");
     this.replaceTemplate(EMPTY_BODY, getEnclosingScope, new StringHookPoint("return getReferencedSymbol().getEnclosingScope();"));
 
-    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), "scope");
+    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), SCOPE_VAR);
 
     ASTCDMethod setEnclosingScope = getCDMethodFacade().createMethod(PUBLIC, "setEnclosingScope", scopeParam);
-    this.replaceTemplate(EMPTY_BODY, setEnclosingScope, new StringHookPoint("getReferencedSymbol().setEnclosingScope(scope);"));
+    this.replaceTemplate(EMPTY_BODY, setEnclosingScope, new StringHookPoint("getReferencedSymbol().setEnclosingScope("+SCOPE_VAR+");"));
 
     return new ArrayList<>(Arrays.asList(getEnclosingScope, setEnclosingScope));
   }

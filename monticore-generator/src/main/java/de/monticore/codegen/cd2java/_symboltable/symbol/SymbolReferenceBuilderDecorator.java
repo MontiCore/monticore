@@ -14,6 +14,8 @@ import java.util.List;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.REAL_BUILDER;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAME_VAR;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
@@ -67,11 +69,11 @@ public class SymbolReferenceBuilderDecorator extends AbstractCreator<ASTCDType, 
   }
 
   protected ASTCDAttribute createNameAttribute() {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, String.class, "name");
+    return this.getCDAttributeFacade().createAttribute(PROTECTED, String.class, NAME_VAR);
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute(String scopeInterface) {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, "enclosingScope");
+    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR);
   }
 
   protected ASTCDAttribute createRealThisAttribute(String symbolReferenceBuilderName){

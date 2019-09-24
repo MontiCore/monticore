@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.CALCULATE_MODEL_NAMES_FOR;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_MODELING_LANGUAGE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
@@ -87,11 +86,11 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
   }
 
   protected ASTCDAttribute createModelLoaderAttribute(String modelLoaderName) {
-    return getCDAttributeFacade().createAttribute(PRIVATE, modelLoaderName, "modelLoader");
+    return getCDAttributeFacade().createAttribute(PRIVATE, modelLoaderName, MODEL_LOADER_VAR);
   }
 
   protected ASTCDAttribute createNameAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE, String.class, "name");
+    return getCDAttributeFacade().createAttribute(PRIVATE, String.class, NAME_VAR);
   }
 
   protected ASTCDAttribute createFileExtensionAttribute() {
@@ -111,18 +110,18 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
   protected ASTCDMethod createGetSymbolTableCreatorMethod() {
     String symbolTableCreatorDelegatorFullName = symbolTableService.getSymbolTableCreatorDelegatorFullName();
     String globalScopeInterfaceFullName = symbolTableService.getGlobalScopeInterfaceFullName();
-    ASTCDParameter enclosingScope = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(globalScopeInterfaceFullName), "enclosingScope");
+    ASTCDParameter enclosingScope = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(globalScopeInterfaceFullName), ENCLOSING_SCOPE_VAR);
 
     ASTCDMethod getSymbolTableCreatorMethod = getCDMethodFacade().createMethod(PUBLIC,
         getCDTypeFacade().createQualifiedType(symbolTableCreatorDelegatorFullName), "getSymbolTableCreator", enclosingScope);
-    this.replaceTemplate(EMPTY_BODY, getSymbolTableCreatorMethod, new StringHookPoint(" return new " + symbolTableCreatorDelegatorFullName + "(enclosingScope);"));
+    this.replaceTemplate(EMPTY_BODY, getSymbolTableCreatorMethod, new StringHookPoint(" return new " + symbolTableCreatorDelegatorFullName + "("+ ENCLOSING_SCOPE_VAR +");"));
     return getSymbolTableCreatorMethod;
   }
 
   protected ASTCDMethod createProvideModelLoaderMethod(String modelLoaderName, ASTCDCompilationUnit astcdCompilationUnit, String languageName) {
     ASTCDMethod provideModelLoaderMethod = getCDMethodFacade().createMethod(PROTECTED,
         getCDTypeFacade().createQualifiedType(modelLoaderName), "provideModelLoader");
-    if (isLanguageTop) {
+    if (isLanguageTop()) {
       provideModelLoaderMethod.getModifier().setAbstract(true);
     } else {
       this.replaceTemplate(EMPTY_BODY, provideModelLoaderMethod, new StringHookPoint("return new " + modelLoaderName + "(this);"));
@@ -135,9 +134,9 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     for (ASTCDType symbolProd : symbolProds) {
       String simpleName = symbolTableService.removeASTPrefix(symbolProd);
       ASTMCSetType setTypeOfString = getCDTypeFacade().createSetTypeOf(String.class);
-      ASTCDParameter nameParam = getCDParameterFacade().createParameter(String.class, "name");
+      ASTCDParameter nameParam = getCDParameterFacade().createParameter(String.class, NAME_VAR);
       ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, setTypeOfString,
-          String.format(CALCULATE_MODEL_NAMES_FOR, simpleName), nameParam);
+          String.format("calculateModelNamesFor%s", simpleName), nameParam);
       this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.language.CalculateModelNamesFor"));
       methodList.add(method);
     }

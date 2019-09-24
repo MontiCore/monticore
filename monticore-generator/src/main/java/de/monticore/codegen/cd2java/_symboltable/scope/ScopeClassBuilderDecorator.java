@@ -15,7 +15,6 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_BUILD_TEMPLATE;
 
 public class ScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
@@ -47,7 +46,7 @@ public class ScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass, ASTC
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(SCOPE_BUILD_TEMPLATE, scopeClass.getName())));
+        new TemplateHookPoint("_symboltable.scope.Build", scopeClass.getName())));
 
     // add '= true' template to exportingSymbols attribute
     Optional<ASTCDAttribute> exportingSymbolsAttribute = scopeBuilder.getCDAttributeList()

@@ -11,6 +11,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
@@ -53,7 +54,7 @@ public class CommonSymbolInterfaceDecorator extends AbstractCreator<ASTCDCompila
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute(String scopeInterface) {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, "enclosingScope");
+    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR);
   }
 
   protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {

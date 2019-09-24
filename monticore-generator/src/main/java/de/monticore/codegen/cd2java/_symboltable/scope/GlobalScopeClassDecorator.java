@@ -34,6 +34,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
 
+  protected static final String ADAPTED_RESOLVING_DELEGATE = "adapted%sResolvingDelegate";
+
   public GlobalScopeClassDecorator(final GlobalExtensionManagement glex,
                                    final SymbolTableService symbolTableService,
                                    final MethodDecorator methodDecorator) {
@@ -92,20 +94,20 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDConstructor createConstructor(String globalScopeClassName, String definitionName) {
     ASTMCType modelPathType = getCDTypeFacade().createQualifiedType(MODEL_PATH_TYPE);
-    ASTCDParameter modelPathParameter = getCDParameterFacade().createParameter(modelPathType, MODEL_PATH_NAME);
+    ASTCDParameter modelPathParameter = getCDParameterFacade().createParameter(modelPathType, MODEL_PATH_VAR);
 
     ASTMCType languageType = getCDTypeFacade().createQualifiedType(definitionName + LANGUAGE_SUFFIX);
     ASTCDParameter languageParameter = getCDParameterFacade().createParameter(languageType, "language");
 
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, languageParameter);
 
-    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this.modelPath = Log.errorIfNull(modelPath);\n" +
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + MODEL_PATH_VAR + " = Log.errorIfNull(" + MODEL_PATH_VAR + ");\n" +
         "    this." + StringTransformations.uncapitalize(definitionName) + "Language = Log.errorIfNull(language);"));
     return constructor;
   }
 
   protected ASTCDAttribute createModelPathAttribute() {
-    return getCDAttributeFacade().createAttribute(PROTECTED, MODEL_PATH_TYPE, MODEL_PATH_NAME);
+    return getCDAttributeFacade().createAttribute(PROTECTED, MODEL_PATH_TYPE, MODEL_PATH_VAR);
   }
 
   protected ASTCDAttribute createLanguageAttribute(String definitionName) {
@@ -166,21 +168,21 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   protected ASTCDMethod createCacheMethod(String definitionName) {
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "calculatedModelName");
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), CALCULATED_MODEL_NAME);
     ASTCDMethod cacheMethod = getCDMethodFacade().createMethod(PUBLIC, "cache", parameter);
     this.replaceTemplate(EMPTY_BODY, cacheMethod, new TemplateHookPoint("_symboltable.globalscope.CacheMethod", definitionName));
     return cacheMethod;
   }
 
   protected ASTCDMethod createContinueWithModelLoaderMethod(String modelLoaderClassName) {
-    ASTCDParameter modelNameParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "calculatedModelName");
+    ASTCDParameter modelNameParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), CALCULATED_MODEL_NAME);
     ASTMCQualifiedType modelLoaderType = getCDTypeFacade().createQualifiedType(modelLoaderClassName);
-    ASTCDParameter modelLoaderParameter = getCDParameterFacade().createParameter(modelLoaderType, "modelLoader");
+    ASTCDParameter modelLoaderParameter = getCDParameterFacade().createParameter(modelLoaderType, MODEL_LOADER_VAR);
 
     ASTCDMethod continueWithModelLoaderMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), "continueWithModelLoader", modelNameParameter, modelLoaderParameter);
     this.replaceTemplate(EMPTY_BODY, continueWithModelLoaderMethod,
-        new StringHookPoint("    return !modelName2ModelLoaderCache.containsKey(calculatedModelName)\n" +
-            "      || !modelName2ModelLoaderCache.get(calculatedModelName).contains(modelLoader);"));
+        new StringHookPoint("    return !modelName2ModelLoaderCache.containsKey(" + CALCULATED_MODEL_NAME + ")\n" +
+            "      || !modelName2ModelLoaderCache.get(" + CALCULATED_MODEL_NAME + ").contains(" + MODEL_LOADER_VAR + ");"));
     return continueWithModelLoaderMethod;
   }
 

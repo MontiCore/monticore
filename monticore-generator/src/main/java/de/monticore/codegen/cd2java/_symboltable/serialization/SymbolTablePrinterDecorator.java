@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE_SPANNING_SYMBOL;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.JSON_PRINTER;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
@@ -89,7 +88,7 @@ public class SymbolTablePrinterDecorator extends AbstractCreator<ASTCDCompilatio
   }
 
   protected ASTCDMethod createHasSymbolsInSubScopesMethod(String scopeInterfaceName) {
-    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterfaceName), "scope");
+    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterfaceName), SCOPE_VAR);
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, getCDTypeFacade().createBooleanType(), "hasSymbolsInSubScopes", scopeParam);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.serialization.symbolTablePrinter.HasSymbolsInSubScopes", scopeInterfaceName));
     return method;

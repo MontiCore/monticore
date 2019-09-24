@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
+import static de.monticore.codegen.cd2java._ast.mill.MillConstants.*;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.REFERENCE_SUFFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
@@ -60,7 +61,7 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDAttribute createMillAttribute(String symTabMill) {
-    return getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, "mill");
+    return getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, MILL_INFIX);
   }
 
   protected List<ASTCDAttribute> createMillAttributeList(String symTabMill, List<ASTCDType> symbolDefiningProds, ASTCDDefinition astcdDefinition) {
@@ -114,21 +115,21 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDMethod createGetMillMethod(String symTabMill) {
-    ASTCDMethod getMillMethod = getCDMethodFacade().createMethod(PROTECTED_STATIC, getCDTypeFacade().createQualifiedType(symTabMill), "getMill");
+    ASTCDMethod getMillMethod = getCDMethodFacade().createMethod(PROTECTED_STATIC, getCDTypeFacade().createQualifiedType(symTabMill), GET_MILL);
     this.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint("_symboltable.symTabMill.GetMill", symTabMill));
     return getMillMethod;
   }
 
   protected ASTCDMethod createInitMeMethod(String symTabMill, List<ASTCDAttribute> attributeList) {
     ASTCDParameter millParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(symTabMill), "a");
-    ASTCDMethod getMillMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, "initMe", millParam);
+    ASTCDMethod getMillMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, INIT_ME, millParam);
     this.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint("_symboltable.symTabMill.InitMe", attributeList));
     return getMillMethod;
   }
 
   protected ASTCDMethod createInitMethod(String symTabMill) {
-    ASTCDMethod getMillMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, "init");
-    this.replaceTemplate(EMPTY_BODY, getMillMethod, new StringHookPoint("mill = new " + symTabMill + "();"));
+    ASTCDMethod getMillMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, INIT);
+    this.replaceTemplate(EMPTY_BODY, getMillMethod, new StringHookPoint(MILL_INFIX + " = new " + symTabMill + "();"));
     return getMillMethod;
   }
 
@@ -139,7 +140,7 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         .map(symbolTableService::getSymTabMillFullName)
         .collect(Collectors.toList());
 
-    ASTCDMethod getMillMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, "reset");
+    ASTCDMethod getMillMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, RESET);
     this.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint("_symboltable.symTabMill.Reset", attributeList, superMills));
     return getMillMethod;
   }

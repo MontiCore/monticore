@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.DEQUE_WILDCARD_TYPE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompilationUnit, List<ASTCDClass>> {
@@ -53,16 +53,15 @@ public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompil
   }
 
   protected ASTCDConstructor createConstructor(String className, String dequeWildcardType) {
-    ASTCDParameter enclosingScope = getCDParameterFacade().createParameter(getCDTypeFacade().createTypeByDefinition(dequeWildcardType),
-        "scopeStack");
+    ASTCDParameter enclosingScope = getCDParameterFacade().createParameter(getCDTypeFacade().createTypeByDefinition(dequeWildcardType), SCOPE_STACK_VAR);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), className, enclosingScope);
-    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("super(scopeStack);"));
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("super("+ SCOPE_STACK_VAR +");"));
     return constructor;
   }
 
   protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName, String definitionName) {
     String symTabMill = symbolTableService.getSymTabMillFullName();
-    ASTCDParameter boolParam = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "shadowing");
+    ASTCDParameter boolParam = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), SHADOWING_VAR);
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(scopeInterfaceName),
         "createScope", boolParam);
     this.replaceTemplate(EMPTY_BODY, createFromAST, new TemplateHookPoint(

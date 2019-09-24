@@ -37,11 +37,11 @@ public class SymbolResolvingDelegateInterfaceDecorator extends AbstractCreator<A
   protected ASTCDMethod createResolveAdaptedStateSymbol(String fullSymbolName, String simpleSymbolName) {
     ASTMCType listTypeOfSymbol = getCDTypeFacade().createListTypeOf(fullSymbolName);
 
-    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, "name");
-    ASTCDParameter accessModifierParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ACCESS_MODIFIER), "modifier");
-    ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "foundSymbols");
+    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
+    ASTCDParameter accessModifierParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ACCESS_MODIFIER), MODIFIER_VAR);
+    ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
     ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
-        .createTypeByDefinition(String.format(PREDICATE, fullSymbolName)), "predicate");
+        .createTypeByDefinition(String.format(PREDICATE, fullSymbolName)), PREDICATE_VAR);
 
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, listTypeOfSymbol, String.format(RESOLVE_ADAPTED, simpleSymbolName),
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);

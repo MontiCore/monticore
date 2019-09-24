@@ -19,6 +19,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
@@ -77,7 +78,7 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
 
   protected ASTCDAttribute createEnclosingScopeAttribute() {
     ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED,
-        getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType()), "enclosingScope");
+        getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType()), ENCLOSING_SCOPE_VAR);
     this.replaceTemplate(VALUE, enclosingScope, new StringHookPoint("= Optional.empty()"));
     return enclosingScope;
   }

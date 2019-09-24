@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +43,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
       ASTMCObjectType iModelLoader = (ASTMCObjectType) getCDTypeFacade().createTypeByDefinition(
           String.format(I_MODEL_LOADER, astFullName, globalScopeInterfaceName));
 
+
       ASTCDAttribute modelingLanguageAttribute = createModelingLanguageAttribute(languageClassName);
       List<ASTCDMethod> modelingLanguageMethods = accessorDecorator.decorate(modelingLanguageAttribute);
       ASTCDClass modelLoaderClass = CD4AnalysisMill.cDClassBuilder()
@@ -52,13 +54,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
           .addCDAttribute(modelingLanguageAttribute)
           .addAllCDMethods(modelingLanguageMethods)
           .addCDAttribute(createAStProviderAttribute(astFullName))
-          .addCDMethod(createCreateSymbolTableFromASTMethod(modelLoaderClassName, astFullName, globalScopeInterfaceName))
-          .addCDMethod(createLoadModelsIntoScopeMethod(astFullName, globalScopeInterfaceName))
-          .addCDMethod(createLoadModelsMethod(astFullName))
-          .addCDMethod(createLoadSymbolsIntoScopeMethod())
-          .addCDMethod(createResolveMethod())
-          .addCDMethod(createResolveSymbolMethod())
-          .addCDMethod(createShowWarningIfParsedModelsMethod())
+          .addAllCDMethods(createModelLoaderMethod(astFullName, globalScopeInterfaceName, modelLoaderClassName))
           .build();
       return Optional.ofNullable(modelLoaderClass);
     }
@@ -80,14 +76,34 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return getCDAttributeFacade().createAttribute(PROTECTED, String.format(AST_PROVIDER, astName), "astProvider");
   }
 
-  protected ASTCDMethod createCreateSymbolTableFromASTMethod(String modelLoader, String astName, String globalScopeInterface) {
+  protected List<ASTCDMethod> createModelLoaderMethod(String astFullName, String globalScopeInterfaceName,
+                                                      String modelLoaderClassName) {
+    // parameters that are often used in the methods
+    ASTCDParameter qualifiedModelNameParam = getCDParameterFacade().createParameter(String.class, "qualifiedModelName");
+    ASTCDParameter modelPathParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(MODEL_PATH_TYPE), MODEL_PATH_VAR);
+    ASTCDParameter astParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(astFullName), "ast");
+    ASTCDParameter modelNameParam = getCDParameterFacade().createParameter(String.class, "modelName");
+    ASTCDParameter enclosingScopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(globalScopeInterfaceName), ENCLOSING_SCOPE_VAR);
+
+    // list of all methods
+    List<ASTCDMethod> modelLoaderMethods = new ArrayList<>();
+    modelLoaderMethods.add(createCreateSymbolTableFromASTMethod(modelLoaderClassName, astParam, modelNameParam, enclosingScopeParam));
+    modelLoaderMethods.add(createLoadModelsIntoScopeMethod(astFullName, globalScopeInterfaceName, qualifiedModelNameParam,
+        modelPathParam, enclosingScopeParam));
+    modelLoaderMethods.add(createLoadModelsMethod(astFullName, qualifiedModelNameParam, modelPathParam));
+    modelLoaderMethods.add(createLoadSymbolsIntoScopeMethod(qualifiedModelNameParam, modelPathParam, enclosingScopeParam));
+    modelLoaderMethods.add(createResolveMethod(qualifiedModelNameParam, modelPathParam));
+    modelLoaderMethods.add(createResolveSymbolMethod(qualifiedModelNameParam, modelPathParam));
+    modelLoaderMethods.add(createShowWarningIfParsedModelsMethod(astParam, modelNameParam));
+    return modelLoaderMethods;
+  }
+
+
+  protected ASTCDMethod createCreateSymbolTableFromASTMethod(String modelLoader, ASTCDParameter astParam,
+                                                             ASTCDParameter modelNameParam, ASTCDParameter enclosingScopeParam) {
     String symbolTableCreatorDelegator = symbolTableService.getSymbolTableCreatorDelegatorFullName();
     String artifactScope = symbolTableService.getArtifactScopeFullName();
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
-
-    ASTCDParameter astParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(astName), "ast");
-    ASTCDParameter modelNameParam = getCDParameterFacade().createParameter(String.class, "modelName");
-    ASTCDParameter enclosingScopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(globalScopeInterface), "enclosingScope");
 
     ASTCDMethod createSymbolTableFromAST = getCDMethodFacade().createMethod(PUBLIC, "createSymbolTableFromAST",
         astParam, modelNameParam, enclosingScopeParam);
@@ -96,11 +112,9 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return createSymbolTableFromAST;
   }
 
-  protected ASTCDMethod createLoadModelsIntoScopeMethod(String astName, String globalScopeInterface) {
-    ASTCDParameter qualifiedModelNameParam = getCDParameterFacade().createParameter(String.class, "qualifiedModelName");
-    ASTCDParameter modelPathParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(MODEL_PATH_TYPE), "modelPath");
-    ASTCDParameter enclosingScopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(globalScopeInterface), "enclosingScope");
-
+  protected ASTCDMethod createLoadModelsIntoScopeMethod(String astName, String globalScopeInterface,
+                                                        ASTCDParameter qualifiedModelNameParam, ASTCDParameter modelPathParam,
+                                                        ASTCDParameter enclosingScopeParam) {
     ASTMCType listTypeOfAST = getCDTypeFacade().createListTypeOf(astName);
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, listTypeOfAST, "loadModelsIntoScope",
         qualifiedModelNameParam, modelPathParam, enclosingScopeParam);
@@ -109,10 +123,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return method;
   }
 
-  protected ASTCDMethod createLoadModelsMethod(String astName) {
-    ASTCDParameter qualifiedModelNameParam = getCDParameterFacade().createParameter(String.class, "qualifiedModelName");
-    ASTCDParameter modelPathParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(MODEL_PATH_TYPE), "modelPath");
-
+  protected ASTCDMethod createLoadModelsMethod(String astName, ASTCDParameter qualifiedModelNameParam, ASTCDParameter modelPathParam) {
     ASTMCType listTypeOfAST = getCDTypeFacade().createListTypeOf(astName);
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, listTypeOfAST, "loadModels",
         qualifiedModelNameParam, modelPathParam);
@@ -121,13 +132,10 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return method;
   }
 
-  protected ASTCDMethod createLoadSymbolsIntoScopeMethod() {
+  protected ASTCDMethod createLoadSymbolsIntoScopeMethod(ASTCDParameter qualifiedModelNameParam, ASTCDParameter modelPathParam,
+                                                         ASTCDParameter enclosingScopeParam) {
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
     String scopeDeSer = symbolTableService.getScopeDeSerFullName();
-
-    ASTCDParameter qualifiedModelNameParam = getCDParameterFacade().createParameter(String.class, "qualifiedModelName");
-    ASTCDParameter modelPathParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(MODEL_PATH_TYPE), "modelPath");
-    ASTCDParameter enclosingScopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), "enclosingScope");
 
     ASTMCType booleanType = getCDTypeFacade().createBooleanType();
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, booleanType, "loadSymbolsIntoScope",
@@ -137,10 +145,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return method;
   }
 
-  protected ASTCDMethod createResolveMethod() {
-    ASTCDParameter qualifiedModelNameParam = getCDParameterFacade().createParameter(String.class, "qualifiedModelName");
-    ASTCDParameter modelPathParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(MODEL_PATH_TYPE), "modelPath");
-
+  protected ASTCDMethod createResolveMethod(ASTCDParameter qualifiedModelNameParam, ASTCDParameter modelPathParam) {
     ASTMCType modelCoordinate = getCDTypeFacade().createQualifiedType(MODEL_COORDINATE);
     ASTCDMethod method = getCDMethodFacade().createMethod(PRIVATE, modelCoordinate, "resolve",
         qualifiedModelNameParam, modelPathParam);
@@ -149,10 +154,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return method;
   }
 
-  protected ASTCDMethod createResolveSymbolMethod() {
-    ASTCDParameter qualifiedModelNameParam = getCDParameterFacade().createParameter(String.class, "qualifiedModelName");
-    ASTCDParameter modelPathParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(MODEL_PATH_TYPE), "modelPath");
-
+  protected ASTCDMethod createResolveSymbolMethod(ASTCDParameter qualifiedModelNameParam, ASTCDParameter modelPathParam) {
     ASTMCType modelCoordinate = getCDTypeFacade().createQualifiedType(MODEL_COORDINATE);
     ASTCDMethod createSymbolTableFromAST = getCDMethodFacade().createMethod(PROTECTED, modelCoordinate, "resolveSymbol",
         qualifiedModelNameParam, modelPathParam);
@@ -161,10 +163,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return createSymbolTableFromAST;
   }
 
-  protected ASTCDMethod createShowWarningIfParsedModelsMethod() {
-    ASTCDParameter astsParam = getCDParameterFacade().createParameter(getCDTypeFacade().createTypeByDefinition("List<?>"), "asts");
-    ASTCDParameter modelNameParam = getCDParameterFacade().createParameter(String.class, "modelName");
-
+  protected ASTCDMethod createShowWarningIfParsedModelsMethod(ASTCDParameter astsParam, ASTCDParameter modelNameParam) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED,
         "showWarningIfParsedModels", astsParam, modelNameParam);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
