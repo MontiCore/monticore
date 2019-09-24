@@ -12,6 +12,7 @@ import de.monticore.expressions.combineexpressionswithliterals._parser.CombineEx
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
