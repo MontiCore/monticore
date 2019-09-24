@@ -11,11 +11,7 @@ grammar ProdAndOverriddenProdUseSameAttrNameForDiffNTs_super{
 
   Prod3 = "b";
 
-
-//todo activate when fixed
-// problem with same name in terminal "state" and State as NonTerminal
-// Terminal and NonTerminal are not allowed to be seen as the same type
-//  State =
-//  "state" Name
-//  ( ("{" (State)* "}") | ";") ;
+  State =
+  "state" Name
+  ( ("{" (State)* "}") | ";") ;
 }

@@ -272,7 +272,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
-   * TODO: Write me! TODO: doc that the grammar AST reference might change
    *
    * @param ast
    * @return
@@ -310,7 +309,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
-   * TODO: Write me! TODO: doc that the grammar AST reference might change
    *
    * @param ast
    * @return
@@ -444,7 +442,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   /**
    * Decorates class diagram AST by adding of new classes and methods using in
-   * ast files TODO: rephrase!
+   * ast files
    *
    * @param glex            - object for managing hook points, features and global
    *                        variables

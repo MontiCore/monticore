@@ -19,15 +19,12 @@ grammar ProdAndExtendedProdUseSameAttrNameForDiffNTs{
 
   Sub3 extends Super3 = c:A;
 
-//todo activate when fixed
-// problem with same name in terminal "state" and State as NonTerminal
-// Terminal and NonTerminal are not allowed to be seen as the same type
-//  State =
-//  "state" Name
-//  ( ("{" (State)* "}") | ";") ;
-//
-//  ActState extends State =
-//  "state" Name
-//  ("entry:" entry:Name)?
-//  ( ("{" (State)* "}") | ";") ;
+  State =
+  "state" Name
+  ( ("{" (State)* "}") | ";") ;
+
+  ActState extends State =
+  "state" Name
+  ("entry:" entry:Name)?
+  ( ("{" (State)* "}") | ";") ;
 }
