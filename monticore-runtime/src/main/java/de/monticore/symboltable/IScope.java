@@ -8,7 +8,10 @@ import de.monticore.symboltable.modifiers.IncludesAccessModifierSymbolPredicate;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.se_rwth.commons.Splitters;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.collect.FluentIterable.from;
 import static de.se_rwth.commons.Joiners.DOT;
@@ -137,8 +140,8 @@ public interface IScope {
     return Optional.empty();
   }
 
-  default <T extends ISymbol> Set<T> filterSymbolsByAccessModifier(AccessModifier modifier, Collection<T> resolvedUnfiltered) {
-    return new LinkedHashSet<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierSymbolPredicate(modifier)).collect(toSet()));
+  default <T extends ISymbol> List<T> filterSymbolsByAccessModifier(AccessModifier modifier, Collection<T> resolvedUnfiltered) {
+    return new ArrayList<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierSymbolPredicate(modifier)).collect(toSet()));
   }
 
 }

@@ -35,7 +35,7 @@ public class SymbolResolvingDelegateInterfaceDecorator extends AbstractCreator<A
   }
 
   protected ASTCDMethod createResolveAdaptedStateSymbol(String fullSymbolName, String simpleSymbolName) {
-    ASTMCType collectionTypeOfSymbol = getCDTypeFacade().createCollectionTypeOf(fullSymbolName);
+    ASTMCType listTypeOfSymbol = getCDTypeFacade().createListTypeOf(fullSymbolName);
 
     ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, "name");
     ASTCDParameter accessModifierParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ACCESS_MODIFIER), "modifier");
@@ -43,7 +43,7 @@ public class SymbolResolvingDelegateInterfaceDecorator extends AbstractCreator<A
     ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
         .createTypeByDefinition(String.format(PREDICATE, fullSymbolName)), "predicate");
 
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, collectionTypeOfSymbol, String.format(RESOLVE_ADAPTED, simpleSymbolName),
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, listTypeOfSymbol, String.format(RESOLVE_ADAPTED, simpleSymbolName),
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
   }
 }

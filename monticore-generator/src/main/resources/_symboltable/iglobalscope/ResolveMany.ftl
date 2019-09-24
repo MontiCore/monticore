@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("simpleName", "symbolFullName")}
   // First, try to resolve the symbol in the current scope and its sub scopes.
-  Collection<${symbolFullName}> resolvedSymbol = resolve${simpleName}DownMany(foundSymbols, name,  modifier, predicate);
+  List<${symbolFullName}> resolvedSymbol = resolve${simpleName}DownMany(foundSymbols, name,  modifier, predicate);
 
   if (!resolvedSymbol.isEmpty()) {
     return resolvedSymbol;

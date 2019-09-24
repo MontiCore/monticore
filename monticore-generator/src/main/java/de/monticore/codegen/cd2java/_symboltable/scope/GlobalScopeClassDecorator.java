@@ -85,7 +85,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMethod(createCacheMethod(definitionName))
         .addCDMethod(createContinueWithModelLoaderMethod(modelLoaderClassName))
         .addAllCDMethods(resolvingDelegateMethods)
-        .addAllCDMethods(createAddResolvingSymbolDelegateMethods(resolvingDelegateAttributes.values()))
         .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
         .addAllCDMethods(createAlreadyResolvedSuperMethods())
         .build();
@@ -150,10 +149,10 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     if (simpleName.isPresent()) {
       String attrName = String.format(ADAPTED_RESOLVING_DELEGATE, simpleName.get());
       String symbolResolvingDelegateInterfaceTypeName = symbolTableService.getSymbolResolvingDelegateInterfaceFullName(prod, cdSymbol);
-      ASTMCType listType = getCDTypeFacade().createCollectionTypeOf(symbolResolvingDelegateInterfaceTypeName);
+      ASTMCType listType = getCDTypeFacade().createListTypeOf(symbolResolvingDelegateInterfaceTypeName);
 
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED, listType, attrName);
-      this.replaceTemplate(VALUE, attribute, new StringHookPoint(" = new HashSet<" + symbolResolvingDelegateInterfaceTypeName + ">()"));
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint(" = new ArrayList<" + symbolResolvingDelegateInterfaceTypeName + ">()"));
       return Optional.ofNullable(attribute);
     }
     return Optional.empty();
@@ -233,19 +232,5 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
       symbolAttributeList.add(symbolAttribute);
     }
     return symbolAttributeList;
-  }
-
-  protected List<ASTCDMethod> createAddResolvingSymbolDelegateMethods(Collection<ASTCDAttribute> delegateAttributes) {
-    List<ASTCDMethod> astcdMethodList = new ArrayList<>();
-    for (ASTCDAttribute delegateAttribute : delegateAttributes) {
-      ASTMCQualifiedType qualifiedType = getCDTypeFacade().createQualifiedType(symbolTableService.getNativeTypeName(delegateAttribute.getMCType()));
-      ASTCDParameter parameter = getCDParameterFacade().createParameter(qualifiedType, delegateAttribute.getName());
-      String methodName = "add" + StringTransformations.capitalize(delegateAttribute.getName()).substring(0, delegateAttribute.getName().length() - 4);
-
-      ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, methodName, parameter);
-      this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("this." + delegateAttribute.getName() + ".add(" + delegateAttribute.getName() + ");"));
-      astcdMethodList.add(method);
-    }
-    return astcdMethodList;
   }
 }

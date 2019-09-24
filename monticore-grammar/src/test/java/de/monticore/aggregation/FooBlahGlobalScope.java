@@ -27,7 +27,7 @@ public class FooBlahGlobalScope extends FooGlobalScope {
   IBlahGlobalScope iBlahGS;
 
   @Override
-  public Collection<BarSymbol> resolveAdaptedBar(boolean foundSymbols,
+  public List<BarSymbol> resolveAdaptedBar(boolean foundSymbols,
                                                  String symbolName, AccessModifier modifier, Predicate<BarSymbol> predicate) {
     Collection<DummySymbol> vardefs = iBlahGS.resolveDummyMany(foundSymbols, symbolName, modifier);
     List<BarSymbol> list = new ArrayList<>();

@@ -157,7 +157,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("loadModelsIntoScope", modelLoaderClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf("de.monticore.codegen.ast.automaton._ast.ASTAutomaton"),
+    assertDeepEquals(cdTypeFacade.createListTypeOf("de.monticore.codegen.ast.automaton._ast.ASTAutomaton"),
         method.getMCReturnType().getMCType());
 
     assertEquals(3, method.sizeCDParameters());
@@ -211,7 +211,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals("Collection<?>", method.getCDParameter(0).getMCType());
+    assertDeepEquals("List<?>", method.getCDParameter(0).getMCType());
     assertEquals("asts", method.getCDParameter(0).getName());
 
     assertDeepEquals(String.class, method.getCDParameter(1).getMCType());

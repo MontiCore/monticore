@@ -129,7 +129,7 @@ public class SymbolTableConstants {
 
   public static final String MODEL_PATH_NAME = "modelPath";
 
-  public static final String ADAPTED_RESOLVING_DELEGATE = "adapted%sResolvingDelegateList";
+  public static final String ADAPTED_RESOLVING_DELEGATE = "adapted%sResolvingDelegate";
 
   public static final String DEQUE_TYPE = "Deque<%s>";
 

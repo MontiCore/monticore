@@ -159,7 +159,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
             String.format(PREDICATE, definingSymbolFullName.get())), "predicate");
         String methodName = String.format(CONTINUE_WITH_ENCLOSING_SCOPE, className);
 
-        ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createCollectionTypeOf(definingSymbolFullName.get()),
+        ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createListTypeOf(definingSymbolFullName.get()),
             methodName, parameterFoundSymbols, parameterName, parameterModifier, parameterPredicate);
         this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
             "_symboltable.artifactscope.ContinueWithEnclosingScope", definingSymbolFullName.get(), className, globalScopeInterface));

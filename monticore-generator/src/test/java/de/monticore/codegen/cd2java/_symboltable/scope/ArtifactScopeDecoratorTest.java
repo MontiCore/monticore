@@ -295,7 +295,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("continueAutomatonWithEnclosingScope", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());
@@ -312,7 +312,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("continueQualifiedNameWithEnclosingScope", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());

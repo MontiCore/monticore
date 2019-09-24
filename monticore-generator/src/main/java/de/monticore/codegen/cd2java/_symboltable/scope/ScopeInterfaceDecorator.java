@@ -122,7 +122,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       String className = symbolTableService.removeASTPrefix(symbolProd);
       String symbolFullTypeName = symbolTableService.getSymbolFullName(symbolProd);
       ASTMCOptionalType optSymbol = getCDTypeFacade().createOptionalTypeOf(symbolFullTypeName);
-      ASTMCType listSymbol = getCDTypeFacade().createCollectionTypeOf(symbolFullTypeName);
+      ASTMCType listSymbol = getCDTypeFacade().createListTypeOf(symbolFullTypeName);
       ASTMCType setSymbol = getCDTypeFacade().createSetTypeOf(symbolFullTypeName);
 
       ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
@@ -155,7 +155,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
       String resolveLocallyManyMethodName = String.format(RESOLVE_LOCALLY_MANY, className);
       resolveMethods.add(createResolveLocallyManyMethod(resolveLocallyManyMethodName, className, symbolFullTypeName,
-          setSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
+          listSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
       String resolveImportedMethodName = String.format(RESOLVE_IMPORTED, className);
       resolveMethods.add(createResolveImportedNameMethod(resolveImportedMethodName, className, optSymbol, nameParameter));
@@ -448,8 +448,8 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   }
 
   protected List<ASTCDMethod> createSubScopesMethods(String scopeInterface) {
-    ASTMCType collectionType = getCDTypeFacade().createCollectionTypeOf("? extends " + scopeInterface);
-    ASTCDMethod getSubScopes = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, collectionType, "getSubScopes");
+    ASTMCType listType = getCDTypeFacade().createListTypeOf("? extends " + scopeInterface);
+    ASTCDMethod getSubScopes = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, listType, "getSubScopes");
 
     ASTCDParameter subScopeParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), "subScope");
     ASTCDMethod addSubScope = getCDMethodFacade().createMethod(PUBLIC, "addSubScope", subScopeParameter);

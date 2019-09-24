@@ -1,14 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typescalculator;
 
-import de.monticore.expressions.expressionsbasis._symboltable.*;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
+import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.typesymbols._symboltable.*;
-import de.monticore.types2.SymTypeOfObject;
 import de.monticore.types2.SymTypeExpression;
+import de.monticore.types2.SymTypeOfObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -24,7 +24,7 @@ public class DummyAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbol
   }
 
   @Override
-  public Collection<MethodSymbol> resolveAdaptedMethodSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<MethodSymbol> predicate) {
+  public List<MethodSymbol> resolveAdaptedMethodSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<MethodSymbol> predicate) {
     ArrayList<MethodSymbol> list = new ArrayList<>();
     if(symbolName.equals("call")||symbolName.equals("A.B.C.call")) {
       symbolName = "int";
@@ -38,7 +38,7 @@ public class DummyAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbol
   }
 
   @Override
-  public Collection<TypeSymbol> resolveAdaptedTypeSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<TypeSymbol> predicate) {
+  public List<TypeSymbol> resolveAdaptedTypeSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<TypeSymbol> predicate) {
     ArrayList<TypeSymbol> list = new ArrayList<>();
     TypeSymbol sym = ExpressionsBasisSymTabMill.typeSymbolBuilder().setAccessModifier(modifier).setName(symbolName).setEnclosingScope(scope).build();
     list.add(sym);
@@ -46,7 +46,7 @@ public class DummyAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbol
   }
 
   @Override
-  public Collection<FieldSymbol> resolveAdaptedFieldSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<FieldSymbol> predicate) {
+  public List<FieldSymbol> resolveAdaptedFieldSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<FieldSymbol> predicate) {
     ArrayList<FieldSymbol> list = new ArrayList<>();
     if(symbolName.contains("var")){
       symbolName=symbolName.substring(3);

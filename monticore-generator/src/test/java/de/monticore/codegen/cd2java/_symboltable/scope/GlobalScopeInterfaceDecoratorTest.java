@@ -154,7 +154,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("resolveAutomatonMany", scopeInterface);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());
@@ -171,7 +171,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("resolveAdaptedAutomaton", scopeInterface);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());
@@ -199,7 +199,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("resolveQualifiedNameMany", scopeInterface);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());
@@ -216,7 +216,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("resolveAdaptedQualifiedName", scopeInterface);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());

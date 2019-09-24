@@ -262,7 +262,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDMethod resolveName = methodList.get(0);
     assertDeepEquals(PUBLIC, resolveName.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), resolveName.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), resolveName.getMCReturnType().getMCType());
     assertEquals(1, resolveName.sizeCDParameters());
     assertDeepEquals(String.class, resolveName.getCDParameter(0).getMCType());
     assertEquals("name", resolveName.getCDParameter(0).getName());
@@ -276,7 +276,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDMethod resolveNameModifier = methodList.get(0);
     assertDeepEquals(PUBLIC, resolveNameModifier.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), resolveNameModifier.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), resolveNameModifier.getMCReturnType().getMCType());
     assertEquals(2, resolveNameModifier.sizeCDParameters());
     assertDeepEquals(String.class, resolveNameModifier.getCDParameter(0).getMCType());
     assertEquals("name", resolveNameModifier.getCDParameter(0).getName());
@@ -292,7 +292,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDMethod resoleNameModifierPredicate = methodList.get(0);
     assertDeepEquals(PUBLIC, resoleNameModifierPredicate.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), resoleNameModifierPredicate.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), resoleNameModifierPredicate.getMCReturnType().getMCType());
     assertEquals(3, resoleNameModifierPredicate.sizeCDParameters());
     assertDeepEquals(String.class, resoleNameModifierPredicate.getCDParameter(0).getMCType());
     assertEquals("name", resoleNameModifierPredicate.getCDParameter(0).getName());
@@ -310,7 +310,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDMethod resoleFoundSymbolsNameModifier = methodList.get(0);
     assertDeepEquals(PUBLIC, resoleFoundSymbolsNameModifier.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), resoleFoundSymbolsNameModifier.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), resoleFoundSymbolsNameModifier.getMCReturnType().getMCType());
     assertEquals(4, resoleFoundSymbolsNameModifier.sizeCDParameters());
     assertBoolean(resoleFoundSymbolsNameModifier.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", resoleFoundSymbolsNameModifier.getCDParameter(0).getName());
@@ -330,7 +330,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDMethod resolveName = methodList.get(0);
     assertDeepEquals(PUBLIC, resolveName.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), resolveName.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), resolveName.getMCReturnType().getMCType());
     assertEquals(1, resolveName.sizeCDParameters());
     assertDeepEquals(String.class, resolveName.getCDParameter(0).getMCType());
     assertEquals("name", resolveName.getCDParameter(0).getName());
@@ -344,7 +344,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDMethod methodModifier = methodList.get(0);
     assertDeepEquals(PUBLIC, methodModifier.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), methodModifier.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), methodModifier.getMCReturnType().getMCType());
     assertEquals(2, methodModifier.sizeCDParameters());
     assertDeepEquals(String.class, methodModifier.getCDParameter(0).getMCType());
     assertEquals("name", methodModifier.getCDParameter(0).getName());
@@ -353,7 +353,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDMethod methodPredicate = methodList.get(1);
     assertDeepEquals(PUBLIC, methodPredicate.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), methodPredicate.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), methodPredicate.getMCReturnType().getMCType());
     assertEquals(2, methodPredicate.sizeCDParameters());
     assertDeepEquals(String.class, methodPredicate.getCDParameter(0).getMCType());
     assertEquals("name", methodPredicate.getCDParameter(0).getName());
@@ -369,7 +369,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDMethod resoleNameModifierPredicate = methodList.get(0);
     assertDeepEquals(PUBLIC, resoleNameModifierPredicate.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), resoleNameModifierPredicate.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), resoleNameModifierPredicate.getMCReturnType().getMCType());
     assertEquals(3, resoleNameModifierPredicate.sizeCDParameters());
     assertDeepEquals(String.class, resoleNameModifierPredicate.getCDParameter(0).getMCType());
     assertEquals("name", resoleNameModifierPredicate.getCDParameter(0).getName());
@@ -380,7 +380,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDMethod resoleFoundSymbolsNameModifier = methodList.get(1);
     assertDeepEquals(PUBLIC, resoleFoundSymbolsNameModifier.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), resoleFoundSymbolsNameModifier.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), resoleFoundSymbolsNameModifier.getMCReturnType().getMCType());
     assertEquals(3, resoleFoundSymbolsNameModifier.sizeCDParameters());
     assertBoolean(resoleFoundSymbolsNameModifier.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", resoleFoundSymbolsNameModifier.getCDParameter(0).getName());
@@ -398,7 +398,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDMethod method = methodList.get(0);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());
@@ -437,7 +437,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("resolveAutomatonLocallyMany", scopeInterface);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createSetTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());
@@ -454,7 +454,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("resolveAdaptedAutomatonLocallyMany", scopeInterface);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());
@@ -471,7 +471,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("continueAutomatonWithEnclosingScope", scopeInterface);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());
@@ -488,7 +488,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("continueAsAutomatonSubScope", scopeInterface);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());
@@ -564,7 +564,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("getSubScopes", scopeInterface);
 
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertDeepEquals("Collection<? extends IAutomatonScope>", method.getMCReturnType().getMCType());
+    assertDeepEquals("List<? extends IAutomatonScope>", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 

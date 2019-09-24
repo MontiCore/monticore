@@ -3,11 +3,11 @@ ${tc.signature("simpleName", "symbolFullName", "scopeInterface")}
   if (!is${simpleName}SymbolsAlreadyResolved()) {
     set${simpleName}SymbolsAlreadyResolved(true);
   } else {
-    return new LinkedHashSet<>();
+    return new ArrayList<>();
   }
 
   // 1. Conduct search locally in the current scope
-  final Set<${symbolFullName}> resolved = this.resolve${simpleName}LocallyMany(foundSymbols, name, modifier, predicate);
+  final List<${symbolFullName}> resolved = this.resolve${simpleName}LocallyMany(foundSymbols, name, modifier, predicate);
 
   foundSymbols = foundSymbols | resolved.size() > 0;
 
@@ -18,7 +18,7 @@ ${tc.signature("simpleName", "symbolFullName", "scopeInterface")}
   if (resolved.isEmpty()) {
     // 2. Continue search in sub scopes and ...
     for (${scopeInterface} subScope : getSubScopes()) {
-      final Collection<${symbolFullName}> resolvedFromSub = subScope
+      final List<${symbolFullName}> resolvedFromSub = subScope
         .continueAs${simpleName}SubScope(foundSymbols, name, modifier, predicate);
       foundSymbols = foundSymbols | resolved.size() > 0;
       // 3. unify results

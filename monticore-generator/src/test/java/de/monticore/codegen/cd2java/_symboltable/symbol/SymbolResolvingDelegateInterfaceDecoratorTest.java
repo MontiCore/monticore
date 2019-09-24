@@ -93,7 +93,7 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
     ASTCDMethod method = getMethodBy("resolveAdaptedAutomatonSymbol", symbolClassAutomaton);
 
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createCollectionTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());

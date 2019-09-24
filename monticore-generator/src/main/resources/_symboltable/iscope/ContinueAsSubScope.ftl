@@ -5,4 +5,4 @@ ${tc.signature( "simpleName")}
     final String remainingSymbolName = getRemainingNameForResolveDown(name);
     return this.resolve${simpleName}DownMany(foundSymbols, remainingSymbolName, modifier, predicate);
   }
-  return Collections.emptySet();
+  return new ArrayList<>();

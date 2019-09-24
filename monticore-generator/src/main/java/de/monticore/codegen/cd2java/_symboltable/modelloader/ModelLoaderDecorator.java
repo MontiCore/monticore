@@ -101,8 +101,8 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDParameter modelPathParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(MODEL_PATH_TYPE), "modelPath");
     ASTCDParameter enclosingScopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(globalScopeInterface), "enclosingScope");
 
-    ASTMCType collectionTypeOfAST = getCDTypeFacade().createCollectionTypeOf(astName);
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, collectionTypeOfAST, "loadModelsIntoScope",
+    ASTMCType listTypeOfAST = getCDTypeFacade().createListTypeOf(astName);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, listTypeOfAST, "loadModelsIntoScope",
         qualifiedModelNameParam, modelPathParam, enclosingScopeParam);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
         "_symboltable.modelloader.LoadModelsIntoScope", globalScopeInterface, astName));
@@ -113,8 +113,8 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDParameter qualifiedModelNameParam = getCDParameterFacade().createParameter(String.class, "qualifiedModelName");
     ASTCDParameter modelPathParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(MODEL_PATH_TYPE), "modelPath");
 
-    ASTMCType collectionTypeOfAST = getCDTypeFacade().createCollectionTypeOf(astName);
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, collectionTypeOfAST, "loadModels",
+    ASTMCType listTypeOfAST = getCDTypeFacade().createListTypeOf(astName);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, listTypeOfAST, "loadModels",
         qualifiedModelNameParam, modelPathParam);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
         "_symboltable.modelloader.LoadModels", astName));
@@ -162,10 +162,9 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDMethod createShowWarningIfParsedModelsMethod() {
-    ASTCDParameter astsParam = getCDParameterFacade().createParameter(getCDTypeFacade().createTypeByDefinition("Collection<?>"), "asts");
+    ASTCDParameter astsParam = getCDParameterFacade().createParameter(getCDTypeFacade().createTypeByDefinition("List<?>"), "asts");
     ASTCDParameter modelNameParam = getCDParameterFacade().createParameter(String.class, "modelName");
 
-    ASTMCType modelCoordinate = getCDTypeFacade().createQualifiedType(MODEL_COORDINATE);
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED,
         "showWarningIfParsedModels", astsParam, modelNameParam);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(

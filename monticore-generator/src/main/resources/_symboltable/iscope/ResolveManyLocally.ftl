@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("simpleName", "symbolFullName")}
-  final Set<${symbolFullName}> resolvedSymbols = new LinkedHashSet<>();
+  final List<${symbolFullName}> resolvedSymbols = new ArrayList<>();
 
   try {
   // TODO remove filter?
@@ -13,7 +13,7 @@ ${tc.signature("simpleName", "symbolFullName")}
   }
 
       // filter out symbols that are not included within the access modifier
-  Set<${symbolFullName}> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
-  filteredSymbols = new LinkedHashSet<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toSet()));
+  List<${symbolFullName}> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
+  filteredSymbols = new ArrayList<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList()));
 
   return filteredSymbols;

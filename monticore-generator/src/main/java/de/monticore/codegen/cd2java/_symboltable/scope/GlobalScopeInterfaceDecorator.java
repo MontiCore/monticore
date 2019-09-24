@@ -114,7 +114,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     List<ASTCDMethod> resolveMethods = new ArrayList<>();
     String className = symbolTableService.removeASTPrefix(symbolProd);
     String symbolFullTypeName = symbolTableService.getSymbolFullName(symbolProd, cdDefinitionSymbol);
-    ASTMCType listSymbol = getCDTypeFacade().createCollectionTypeOf(symbolFullTypeName);
+    ASTMCType listSymbol = getCDTypeFacade().createListTypeOf(symbolFullTypeName);
 
     ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
         .createTypeByDefinition(String.format(PREDICATE, symbolFullTypeName)), "predicate");

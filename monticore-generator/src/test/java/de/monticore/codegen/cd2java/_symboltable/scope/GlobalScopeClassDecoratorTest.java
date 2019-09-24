@@ -133,28 +133,28 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAdaptedAutomatonSymbolResolvingDelegateListAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("adaptedAutomatonSymbolResolvingDelegateList", scopeClass);
+    ASTCDAttribute astcdAttribute = getAttributeBy("adaptedAutomatonSymbolResolvingDelegate", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("Collection<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate>", astcdAttribute.getMCType());
+    assertDeepEquals("List<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate>", astcdAttribute.getMCType());
   }
 
   @Test
   public void testAdaptedStateSymbolResolvingDelegateListAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("adaptedStateSymbolResolvingDelegateList", scopeClass);
+    ASTCDAttribute astcdAttribute = getAttributeBy("adaptedStateSymbolResolvingDelegate", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("Collection<de.monticore.codegen.ast.automaton._symboltable.IStateSymbolResolvingDelegate>", astcdAttribute.getMCType());
+    assertDeepEquals("List<de.monticore.codegen.ast.automaton._symboltable.IStateSymbolResolvingDelegate>", astcdAttribute.getMCType());
   }
 
   @Test
   public void testAdaptedQualifiedNameSymbolResolvingDelegateListAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("adaptedQualifiedNameSymbolResolvingDelegateList", scopeClass);
+    ASTCDAttribute astcdAttribute = getAttributeBy("adaptedQualifiedNameSymbolResolvingDelegate", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("Collection<de.monticore.codegen.ast.lexicals._symboltable.IQualifiedNameSymbolResolvingDelegate>", astcdAttribute.getMCType());
+    assertDeepEquals("List<de.monticore.codegen.ast.lexicals._symboltable.IQualifiedNameSymbolResolvingDelegate>", astcdAttribute.getMCType());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(20, scopeClass.getCDMethodList().size());
+    assertEquals(113, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -212,8 +212,8 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("Collection<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate>", method.getCDParameter(0).getMCType());
-    assertEquals("adaptedAutomatonSymbolResolvingDelegateList", method.getCDParameter(0).getName());
+    assertDeepEquals("List<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate>", method.getCDParameter(0).getMCType());
+    assertEquals("adaptedAutomatonSymbolResolvingDelegate", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -221,7 +221,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("getAdaptedAutomatonSymbolResolvingDelegateList", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("Collection<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate>",
+    assertDeepEquals("List<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate>",
         method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
@@ -235,11 +235,12 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate", method.getCDParameter(0).getMCType());
-    assertEquals("adaptedAutomatonSymbolResolvingDelegateList", method.getCDParameter(0).getName());
+    assertEquals("element", method.getCDParameter(0).getName());
   }
 
   @Test

@@ -3,10 +3,10 @@ ${tc.signature("simpleName", "symbolFullName")}
   if (!is${simpleName}SymbolsAlreadyResolved()) {
     set${simpleName}SymbolsAlreadyResolved(true);
   } else {
-    return new LinkedHashSet<>();
+    return new ArrayList<>();
   }
 
-  final Set<${symbolFullName}> resolvedSymbols = this.resolve${simpleName}LocallyMany(foundSymbols, name, modifier, predicate);
+  final List<${symbolFullName}> resolvedSymbols = this.resolve${simpleName}LocallyMany(foundSymbols, name, modifier, predicate);
   if (!resolvedSymbols.isEmpty()) {
     set${simpleName}SymbolsAlreadyResolved(false);
     return resolvedSymbols;
@@ -16,7 +16,7 @@ ${tc.signature("simpleName", "symbolFullName")}
     set${simpleName}SymbolsAlreadyResolved(false);
     return resolvedSymbols;
   }
-  final Collection<${symbolFullName}> resolvedFromEnclosing = continue${simpleName}WithEnclosingScope((foundSymbols | resolvedSymbols.size() > 0), name, modifier, predicate);
+  final List<${symbolFullName}> resolvedFromEnclosing = continue${simpleName}WithEnclosingScope((foundSymbols | resolvedSymbols.size() > 0), name, modifier, predicate);
   resolvedSymbols.addAll(resolvedFromEnclosing);
   set${simpleName}SymbolsAlreadyResolved(false);
   return resolvedSymbols;
