@@ -128,5 +128,4 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   public void setLastResult(LastResult lastResult){
     this.lastResult = lastResult;
   }
-
 }
