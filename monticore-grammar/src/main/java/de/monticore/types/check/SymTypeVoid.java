@@ -20,8 +20,13 @@ public class SymTypeVoid extends SymTypeExpression {
   protected String printAsJson() {
     return "\""+print()+"\"";
   }
-  
-    
+
+  @Override
+  public SymTypeVoid clone() {
+    return new SymTypeVoid();
+  }
+
+
   // --------------------------------------------------------------------------
   
 }

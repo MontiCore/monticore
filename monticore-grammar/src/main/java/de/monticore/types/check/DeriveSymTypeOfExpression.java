@@ -52,6 +52,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       lastResult.setLastOpt(Optional.of(result));
     }else{
       //No type found --> error
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0207 The resulting type cannot be calculated");
     }
   }

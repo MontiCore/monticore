@@ -20,6 +20,11 @@ public class SymTypePackage extends SymTypeExpression {
     return "\""+print()+"\"";
   }
 
+  @Override
+  public SymTypePackage clone() {
+    return new SymTypePackage();
+  }
+
 
   // --------------------------------------------------------------------------
 

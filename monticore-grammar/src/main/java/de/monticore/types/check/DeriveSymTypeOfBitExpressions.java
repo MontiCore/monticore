@@ -67,6 +67,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0209 The resulting type cannot be calculated");
     }
   }
@@ -99,6 +100,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0210 The resulting type cannot be calculated");
     }
   }
@@ -131,6 +133,8 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0211 The resulting type cannot be calculated");
     }
   }
@@ -163,6 +167,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0212 The resulting type cannot be calculated");
     }
   }
@@ -195,6 +200,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0213 The resulting type cannot be calculated");
     }
   }
@@ -227,6 +233,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0214 The resulting type cannot be calculated");
     }
   }

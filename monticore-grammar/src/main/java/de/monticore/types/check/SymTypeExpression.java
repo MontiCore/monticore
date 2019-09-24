@@ -1,14 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
+import de.monticore.types.typesymbols._symboltable.*;
+import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * SymTypeExpression is the superclass for all typeexpressions, such as
@@ -35,7 +31,79 @@ public abstract class SymTypeExpression {
   public boolean isPrimitiveType() {
     return false;
   }
-  
+
+  /**
+   * Am I a generic type? (such as "List<Integer>")
+   */
+  public boolean isGenericType() {
+    return false;
+  }
+
+  public abstract SymTypeExpression clone();
+
+  public List<MethodSymbol> getMethodList(){
+    //TODO: clone methods and parameters --> erst alles holen und dann erst vergleichen
+    List<MethodSymbol> methods = typeInfo.get().getMethods();
+    if(!isGenericType()){
+      return methods;
+    }else{
+      List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this).getArgumentList();
+      List<TypeVarSymbol> typeVariableArguments = typeInfo.get().getTypeParameters();
+      Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
+      if(arguments.size()!=typeVariableArguments.size()){
+        Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");
+      }
+      for(int i=0;i<typeVariableArguments.size();i++){
+        map.put(typeVariableArguments.get(i),arguments.get(i));
+      }
+
+      for(MethodSymbol method: methods){
+        for(TypeVarSymbol typeVariableArgument : typeVariableArguments){
+          if(method.getReturnType().print().equals(typeVariableArgument.getName())){
+            method.setReturnType(map.get(typeVariableArgument));
+          }
+        }
+        for(FieldSymbol parameter: method.getParameter()){
+          SymTypeExpression parameterType = parameter.getType();
+          for(TypeVarSymbol typeVariableArgument: typeVariableArguments){
+            if(parameterType.print().equals(typeVariableArgument.getName())){
+              parameter.setType(map.get(typeVariableArgument));
+            }
+          }
+        }
+      }
+      return methods;
+    }
+  }
+
+  public List<FieldSymbol> getFieldList(){
+    //TODO: clone fields --> erst alles holen und dann erst vergleichen
+    List<FieldSymbol> fields = typeInfo.get().getFields();
+    if(!isGenericType()){
+      return fields;
+    }else{
+      List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this).getArgumentList();
+      List<TypeVarSymbol> typeVariableArguments = typeInfo.get().getTypeParameters();
+      Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
+      if(arguments.size()!=typeVariableArguments.size()){
+        Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");
+      }
+      for(int i=0;i<typeVariableArguments.size();i++){
+        map.put(typeVariableArguments.get(i),arguments.get(i));
+      }
+
+      for(FieldSymbol field: fields){
+        SymTypeExpression fieldType = field.getType();
+        for(TypeVarSymbol typeVariableArgument: typeVariableArguments){
+          if(fieldType.print().equals(typeVariableArgument.getName())){
+            field.setType(map.get(typeVariableArgument));
+          }
+        }
+      }
+      return fields;
+    }
+  }
+
   /**
    * Assumption:
    * We assume that each(!) and really each SymTypeExpression has

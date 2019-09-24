@@ -53,7 +53,15 @@ public class SymTypeOfObject extends SymTypeExpression {
     jp.endObject();
     return jp.getContent();
   }
-  
+
+  @Override
+  public SymTypeOfObject clone() {
+    SymTypeOfObject clone = new SymTypeOfObject(this.objFullName);
+    clone.setName(this.name);
+    typeInfo.ifPresent(clone::setTypeInfo);
+    return clone;
+  }
+
   /**
    * getFullName: get the Qualified Name including Package
    */

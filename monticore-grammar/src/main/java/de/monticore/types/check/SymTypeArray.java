@@ -67,8 +67,16 @@ public class SymTypeArray extends SymTypeExpression {
     jp.endObject();
     return jp.getContent();
   }
-  
-  
+
+  @Override
+  public SymTypeArray clone() {
+    SymTypeArray clone = new SymTypeArray(this.dim,this.argument.clone());
+    clone.setName(this.name);
+    clone.setTypeInfo(this.typeInfo.orElseGet(() -> DefsTypeBasic._array));
+    return clone;
+  }
+
+
   // --------------------------------------------------------------------------
   
 }

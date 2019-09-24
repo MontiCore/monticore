@@ -120,7 +120,25 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     String[] parts = getTypeConstructorFullName().split("\\.");
     return parts[parts.length - 1];
   }
-  
+
+  @Override
+  public boolean isGenericType(){
+    return true;
+  }
+
+  @Override
+  public SymTypeOfGenerics clone() {
+    List<SymTypeExpression> typeArguments = new ArrayList<>();
+    for(SymTypeExpression typeArgument : this.getArgumentList()){
+      typeArguments.add(typeArgument.clone());
+    }
+
+    SymTypeOfGenerics clone = new SymTypeOfGenerics(this.getTypeConstructorFullName(),typeArguments,this.typeInfo.get());
+    clone.setObjTypeConstructorSymbol(this.getObjTypeConstructorSymbol().clone());
+    clone.setName(this.name);
+    return clone;
+  }
+
   // --------------------------------------------------------------------------
   // From here on: Standard functionality to access the list of arguments
   // TODO: (was copied from a created class)

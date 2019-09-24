@@ -59,7 +59,16 @@ public class SymTypeVariable extends SymTypeExpression {
     // TODO: ?sometimes the var is, sometimes not ...
     // Unless we always assume boxed implementations then return false would be correct
   }
-  
+
+  @Override
+  public SymTypeVariable clone() {
+    SymTypeVariable clone = new SymTypeVariable();
+    clone.setVarName(this.getVarName());
+    clone.setName(this.getName());
+    typeInfo.ifPresent(clone::setTypeInfo);
+    return clone;
+  }
+
 
   // --------------------------------------------------------------------------
   
