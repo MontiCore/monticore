@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._cocos;
 
+import com.github.javaparser.StaticJavaParser;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
@@ -63,15 +64,13 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassList()) {
-      // System.out.printf("==================== %s ====================\n", clazz.getName());
       StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
-      // TODO Check System.out.println(sb.toString());
+      StaticJavaParser.parse(sb.toString());
     }
 
     for (ASTCDInterface interfaze : ast.getCDDefinition().getCDInterfaceList()) {
-      // System.out.printf("==================== %s ====================\n", interfaze.getName());
       StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, interfaze, interfaze);
-      // TODO Check System.out.println(sb.toString());
+      StaticJavaParser.parse(sb.toString());
     }
   }
 }

@@ -249,7 +249,6 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, languageClass, languageClass);
-    System.out.println(sb.toString());
     StaticJavaParser.parse(sb.toString());
   }
 

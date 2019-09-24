@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
+import com.github.javaparser.StaticJavaParser;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
@@ -67,6 +68,6 @@ public class DataEmfDecoratorTest extends DecoratorTestCase {
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, emfClass, emfClass);
     //check if list types where changed
     assertTrue(sb.toString().contains("EObjectContainmentEList"));
-    // TODO Check System.out.println(sb.toString());
+    StaticJavaParser.parse(sb.toString());
   }
 }

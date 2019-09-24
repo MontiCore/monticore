@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_new;
 
+import com.github.javaparser.StaticJavaParser;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -121,7 +122,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAcceptSuperMethod() {
     List<ASTCDMethod> methods = getMethodsBy("accept", 1, astClass);
-    ASTMCType visitorType = this.cdTypeFacade.createQualifiedType("de.monticore.codegen.ast.super._visitor.SuperVisitor");
+    ASTMCType visitorType = this.cdTypeFacade.createQualifiedType("de.monticore.codegen.ast.supercd._visitor.SuperCDVisitor");
 
     methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameter(0).getMCType())).collect(Collectors.toList());
     assertEquals(1, methods.size());
@@ -166,7 +167,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, astClass, astClass);
-    // TODOO: Check einführen System.out.println(sb.toString());
+    StaticJavaParser.parse(sb.toString());
   }
 
   @Test

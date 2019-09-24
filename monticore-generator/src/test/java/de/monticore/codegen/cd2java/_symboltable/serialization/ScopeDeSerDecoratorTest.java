@@ -349,7 +349,6 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, scopeDeSer, scopeDeSer);
-    System.out.println(sb.toString());
     StaticJavaParser.parse(sb.toString());
   }
 }

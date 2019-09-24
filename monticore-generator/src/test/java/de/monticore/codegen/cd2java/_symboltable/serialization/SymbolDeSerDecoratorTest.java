@@ -195,7 +195,6 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolDeSer, symbolDeSer);
-    System.out.println(sb.toString());
     StaticJavaParser.parse(sb.toString());
   }
 

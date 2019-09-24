@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
+import com.github.javaparser.StaticJavaParser;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
@@ -8,7 +10,6 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.cd.cd4analysis._ast.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -341,7 +342,7 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate("_ast_emf.emf_package.EmfPackage", packageInterface, packageInterface, astcdDefinition);
-    // TODO Check System.out.println(sb.toString());
+    StaticJavaParser.parse(sb.toString());
   }
 
 }

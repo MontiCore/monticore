@@ -128,7 +128,6 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, constantClass, constantClass);
     StaticJavaParser.parse(sb.toString());
-    // TODO Check System.out.println(sb.toString());
   }
 
 

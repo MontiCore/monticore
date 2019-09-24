@@ -224,7 +224,6 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, modelLoaderClass, modelLoaderClass);
-    System.out.println(sb.toString());
     StaticJavaParser.parse(sb.toString());
   }
 }

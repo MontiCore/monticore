@@ -352,7 +352,6 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolTablePrinter, symbolTablePrinter);
-    System.out.println(sb.toString());
     StaticJavaParser.parse(sb.toString());
   }
 }

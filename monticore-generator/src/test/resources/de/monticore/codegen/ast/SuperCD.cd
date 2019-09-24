@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.ast;
 
-classdiagram Super {
+classdiagram SuperCD {
 }

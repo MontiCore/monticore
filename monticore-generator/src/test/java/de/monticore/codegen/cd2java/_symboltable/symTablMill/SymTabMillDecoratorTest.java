@@ -489,7 +489,6 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symTabMill, symTabMill);
-    System.out.println(sb.toString());
     StaticJavaParser.parse(sb.toString());
   }
 }
