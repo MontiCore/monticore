@@ -55,8 +55,9 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public String getSerializationPackage(CDDefinitionSymbol cdDefinitionSymbol) {
     return getPackage(cdDefinitionSymbol) + "." + SERIALIZATION_PACKAGE;
   }
-  /*
-    scope class names e.g. AutomataScope
+
+  /**
+   * scope class names e.g. AutomataScope
    */
 
   public String getScopeClassSimpleName() {
@@ -79,8 +80,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getCDTypeFacade().createQualifiedType(getScopeClassFullName());
   }
 
-  /*
-    scope interface names e.g. IAutomataScope
+  /**
+   * scope interface names e.g. IAutomataScope
    */
 
   public String getScopeInterfaceSimpleName() {
@@ -107,9 +108,9 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getCDTypeFacade().createQualifiedType(getScopeInterfaceFullName(cdSymbol));
   }
 
-  /*
-   artifact scope class names e.g. AutomataArtifactScope
- */
+  /**
+   * artifact scope class names e.g. AutomataArtifactScope
+   */
 
   public String getArtifactScopeSimpleName(CDDefinitionSymbol cdSymbol) {
     return cdSymbol.getName() + ARTIFACT_PREFIX + SCOPE_SUFFIX;
@@ -126,8 +127,9 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public String getArtifactScopeFullName() {
     return getArtifactScopeFullName(getCDSymbol());
   }
-    /*
-    global scope class names e.g. AutomataGlobalScope
+
+  /**
+   * global scope class names e.g. AutomataGlobalScope
    */
 
   public String getGlobalScopeFullName(CDDefinitionSymbol cdSymbol) {
@@ -146,8 +148,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getGlobalScopeSimpleName(getCDSymbol());
   }
 
-   /*
-    global scope interface names e.g. IAutomataGlobalScope
+  /**
+   * global scope interface names e.g. IAutomataGlobalScope
    */
 
   public String getGlobalScopeInterfaceFullName(CDDefinitionSymbol cdSymbol) {
@@ -165,8 +167,9 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public String getGlobalScopeInterfaceSimpleName() {
     return getGlobalScopeInterfaceSimpleName(getCDSymbol());
   }
-   /*
-    language class names e.g. AutomataLanguage
+
+  /**
+   * language class names e.g. AutomataLanguage
    */
 
   public String getLanguageClassFullName(CDDefinitionSymbol cdSymbol) {
@@ -184,8 +187,9 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public String getLanguageClassSimpleName() {
     return getLanguageClassSimpleName(getCDSymbol());
   }
-     /*
-    model loader class names e.g. AutomataModelLoader
+
+  /**
+   * model loader class names e.g. AutomataModelLoader
    */
 
   public String getModelLoaderClassFullName(CDDefinitionSymbol cdSymbol) {
@@ -204,8 +208,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getModelLoaderClassSimpleName(getCDSymbol());
   }
 
-   /*
-    symbol reference class names e.g. AutomatonSymbolReference
+  /**
+   * symbol reference class names e.g. AutomatonSymbolReference
    */
 
   public String getSymbolReferenceClassFullName(ASTCDType astcdType, CDDefinitionSymbol cdSymbol) {
@@ -220,9 +224,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getSymbolSimpleName(astcdType) + REFERENCE_SUFFIX;
   }
 
-
-    /*
-    resolving delegate symbol interface e.g. IAutomatonSymbolResolvingDelegate
+  /**
+   * resolving delegate symbol interface e.g. IAutomatonSymbolResolvingDelegate
    */
 
   public String getSymbolResolvingDelegateInterfaceSimpleName(ASTCDType astcdType) {
@@ -237,8 +240,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getPackage(cdDefinitionSymbol) + "." + getSymbolResolvingDelegateInterfaceSimpleName(astcdType);
   }
 
-    /*
-    common symbol interface names e.g. ICommonAutomataSymbol
+  /**
+   * common symbol interface names e.g. ICommonAutomataSymbol
    */
 
   public String getCommonSymbolInterfaceSimpleName(CDDefinitionSymbol cdSymbol) {
@@ -257,8 +260,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getCommonSymbolInterfaceFullName(getCDSymbol());
   }
 
-      /*
-    symbol table symbol interface names e.g. AutomataSymbolTable
+  /**
+   * symbol table symbol interface names e.g. AutomataSymbolTable
    */
 
   public String getSymbolTableCreatorSimpleName(CDDefinitionSymbol cdSymbol) {
@@ -277,8 +280,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getSymbolTableCreatorFullName(getCDSymbol());
   }
 
-      /*
-    symbol table symbol interface names e.g. AutomataSymbolTable
+  /**
+   * symbol table symbol interface names e.g. AutomataSymbolTable
    */
 
   public String getSymbolTableCreatorDelegatorSimpleName(CDDefinitionSymbol cdSymbol) {
@@ -297,8 +300,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getSymbolTableCreatorDelegatorFullName(getCDSymbol());
   }
 
-  /*
-    deser class names e.g. AutomataDeSer
+  /**
+   * deser class names e.g. AutomataDeSer
    */
 
   public String getScopeDeSerSimpleName(CDDefinitionSymbol cdSymbol) {
@@ -318,8 +321,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
 
-    /*
-    symTabMill interface names e.g. AutomataSymTabMill
+  /**
+   * symTabMill interface names e.g. AutomataSymTabMill
    */
 
   public String getSymTabMillSimpleName(CDDefinitionSymbol cdSymbol) {
@@ -338,8 +341,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getSymTabMillFullName(getCDSymbol());
   }
 
-      /*
-    symTabMill interface names e.g. AutomataSymTabMill
+  /**
+   * symTabMill interface names e.g. AutomataSymTabMill
    */
 
   public String getSuperSTCForSubSTCSimpleName(CDDefinitionSymbol superCDSymbol, CDDefinitionSymbol subCDSymbol) {
@@ -358,8 +361,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getSuperSTCForSubSTCFullName(superCDSymbol, getCDSymbol());
   }
 
-        /*
-    symbolDeSer class names e.g. StateSymbolDeSer
+  /**
+   * symbolDeSer class names e.g. StateSymbolDeSer
    */
 
   public String getSymbolDeSerFullName(ASTCDType astcdType, CDDefinitionSymbol cdSymbol) {
@@ -374,8 +377,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getSymbolSimpleName(astcdType) + DE_SER_SUFFIX;
   }
 
-      /*
-    symTabMill interface names e.g. AutomataSymTabMill
+  /**
+   * symTabMill interface names e.g. AutomataSymTabMill
    */
 
   public String getSymbolTablePrinterSimpleName(CDDefinitionSymbol cdSymbol) {
@@ -395,8 +398,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
 
-  /*
-    symbol class names e.g. AutomatonSymbol
+  /**
+   * symbol class names e.g. AutomatonSymbol
    */
 
   public String getNameWithSymbolSuffix(ASTCDType clazz) {
@@ -470,8 +473,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SYMBOL_SUFFIX));
   }
 
-  /*
-    symbol builder class name e.g. AutomatonSymbolBuilder
+  /**
+   * symbol builder class name e.g. AutomatonSymbolBuilder
    */
   public String getSymbolBuilderSimpleName(ASTCDType astcdType) {
     return getSymbolSimpleName(astcdType) + BUILDER_SUFFIX;
@@ -547,8 +550,9 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     }
     return Optional.empty();
   }
-  /*
-  only get classes and interfaces with scope or symbol stereotype
+
+  /**
+   * get classes and interfaces with scope or symbol stereotype
    */
 
   public List<ASTCDType> getSymbolDefiningProds(ASTCDDefinition astcdDefinition) {
@@ -609,12 +613,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return inheritedSymbolProds;
   }
 
-  public List<ASTCDType> getNoSymbolAndScopeDefiningProds(ASTCDDefinition astcdDefinition) {
-    List<ASTCDType> symbolProds = getNoSymbolAndScopeDefiningClasses(astcdDefinition.getCDClassList());
-    symbolProds.addAll(getNoSymbolAndScopeDefiningInterfaces(astcdDefinition.getCDInterfaceList()));
-    return symbolProds;
-  }
-
   public List<ASTCDType> getNoSymbolAndScopeDefiningClasses(List<ASTCDClass> astcdClasses) {
     return astcdClasses.stream()
         .filter(ASTCDClassTOP::isPresentModifier)
@@ -622,27 +620,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
         .filter(c -> !hasScopeStereotype(c.getModifier()))
         .filter(c -> !hasInheritedSymbolStereotype(c.getModifier()))
         .collect(Collectors.toList());
-  }
-
-  public List<ASTCDType> getNoSymbolAndScopeDefiningInterfaces(List<ASTCDInterface> astcdInterfaces) {
-    return astcdInterfaces.stream()
-        .filter(ASTCDInterface::isPresentModifier)
-        .filter(c -> !hasSymbolStereotype(c.getModifier()))
-        .filter(c -> !hasScopeStereotype(c.getModifier()))
-        .collect(Collectors.toList());
-  }
-
-  public List<ASTCDType> getScopeClasses(ASTCDDefinition astcdDefinition) {
-    List<ASTCDType> symbolProds = astcdDefinition.getCDClassList().stream()
-        .filter(ASTCDClassTOP::isPresentModifier)
-        .filter(c -> hasScopeStereotype(c.getModifier()))
-        .collect(Collectors.toList());
-
-    symbolProds.addAll(astcdDefinition.getCDInterfaceList().stream()
-        .filter(ASTCDInterface::isPresentModifier)
-        .filter(c -> hasScopeStereotype(c.getModifier()))
-        .collect(Collectors.toList()));
-    return symbolProds;
   }
 
   public List<ASTCDType> getOnlyScopeClasses(ASTCDDefinition astcdDefinition) {

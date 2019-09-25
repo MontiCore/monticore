@@ -35,6 +35,8 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected boolean isArtifactScopeTop;
 
+  protected static final String TEMPLATE_PATH = "_symboltable.artifactscope.";
+
   public ArtifactScopeDecorator(final GlobalExtensionManagement glex,
                                 final SymbolTableService symbolTableService,
                                 final VisitorService visitorService,
@@ -94,7 +96,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
         getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceFullName()), ENCLOSING_SCOPE_VAR);
     ASTCDConstructor constructorWithEnclosingScope = getCDConstructorFacade().createConstructor(PUBLIC.build(),
         artifactScopeName, enclosingScopeParam, packageNameParam, importsParam);
-    this.replaceTemplate(EMPTY_BODY, constructorWithEnclosingScope, new TemplateHookPoint("_symboltable.artifactscope.Constructor"));
+    this.replaceTemplate(EMPTY_BODY, constructorWithEnclosingScope, new TemplateHookPoint(TEMPLATE_PATH + "Constructor"));
     return new ArrayList<>(Arrays.asList(constructor, constructorWithEnclosingScope));
   }
 
@@ -112,34 +114,34 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected ASTCDMethod createGetNameOptMethod() {
     ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createOptionalTypeOf(String.class), "getNameOpt");
-    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint("_symboltable.artifactscope.GetNameOpt"));
+    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "GetNameOpt"));
     return getNameMethod;
   }
 
   protected ASTCDMethod createGetTopLevelSymbolMethod() {
     ASTCDMethod getTopLevelSymbol = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createOptionalTypeOf(I_SYMBOL), "getTopLevelSymbol");
-    this.replaceTemplate(EMPTY_BODY, getTopLevelSymbol, new TemplateHookPoint("_symboltable.artifactscope.GetTopLevelSymbol"));
+    this.replaceTemplate(EMPTY_BODY, getTopLevelSymbol, new TemplateHookPoint(TEMPLATE_PATH + "GetTopLevelSymbol"));
     return getTopLevelSymbol;
   }
 
   protected ASTCDMethod createCheckIfContinueAsSubScopeMethod() {
     ASTCDParameter symbolNameParam = getCDParameterFacade().createParameter(String.class, "symbolName");
     ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), "checkIfContinueAsSubScope", symbolNameParam);
-    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint("_symboltable.artifactscope.CheckIfContinueAsSubScope"));
+    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "CheckIfContinueAsSubScope"));
     return getNameMethod;
   }
 
   protected ASTCDMethod createGetRemainingNameForResolveDownMethod() {
     ASTCDParameter parameter = getCDParameterFacade().createParameter(String.class, "symbolName");
     ASTCDMethod getRemainingNameForResolveDown = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createStringType(), "getRemainingNameForResolveDown", parameter);
-    this.replaceTemplate(EMPTY_BODY, getRemainingNameForResolveDown, new TemplateHookPoint("_symboltable.artifactscope.GetRemainingNameForResolveDown"));
+    this.replaceTemplate(EMPTY_BODY, getRemainingNameForResolveDown, new TemplateHookPoint(TEMPLATE_PATH + "GetRemainingNameForResolveDown"));
     return getRemainingNameForResolveDown;
   }
 
   protected ASTCDMethod createGetFilePathMethod() {
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(symbolTableService.getLanguageClassFullName()), "lang");
     ASTCDMethod getFilePath = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(PATH), "getFilePath", parameter);
-    this.replaceTemplate(EMPTY_BODY, getFilePath, new TemplateHookPoint("_symboltable.artifactscope.GetFilePath"));
+    this.replaceTemplate(EMPTY_BODY, getFilePath, new TemplateHookPoint(TEMPLATE_PATH + "GetFilePath"));
     return getFilePath;
   }
 
@@ -162,7 +164,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
         ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createListTypeOf(definingSymbolFullName.get()),
             methodName, parameterFoundSymbols, parameterName, parameterModifier, parameterPredicate);
         this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
-            "_symboltable.artifactscope.ContinueWithEnclosingScope", definingSymbolFullName.get(), className, globalScopeInterface));
+            TEMPLATE_PATH + "ContinueWithEnclosingScope", definingSymbolFullName.get(), className, globalScopeInterface));
         methodList.add(method);
       }
     }

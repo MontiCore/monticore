@@ -20,6 +20,7 @@ public class ScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass, ASTC
 
   protected final BuilderDecorator builderDecorator;
 
+  protected static final String TEMPLATE_PATH = "_symboltable.scope.";
 
   public ScopeClassBuilderDecorator(final GlobalExtensionManagement glex,
                                     final BuilderDecorator builderDecorator) {
@@ -29,13 +30,13 @@ public class ScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass, ASTC
 
   @Override
   public ASTCDClass decorate(ASTCDClass scopeClass) {
-    ASTCDClass decoratedScopClass = scopeClass.deepClone();
+    ASTCDClass decoratedScopeClass = scopeClass.deepClone();
     String scopeBuilderName = scopeClass.getName() + BUILDER_SUFFIX;
 
-    decoratedScopClass.getCDMethodList().clear();
+    decoratedScopeClass.getCDMethodList().clear();
 
     builderDecorator.setPrintBuildMethodTemplate(false);
-    ASTCDClass scopeBuilder = builderDecorator.decorate(decoratedScopClass);
+    ASTCDClass scopeBuilder = builderDecorator.decorate(decoratedScopeClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
     scopeBuilder.setName(scopeBuilderName);
@@ -46,7 +47,7 @@ public class ScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass, ASTC
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint("_symboltable.scope.Build", scopeClass.getName())));
+        new TemplateHookPoint(TEMPLATE_PATH + "Build", scopeClass.getName())));
 
     // add '= true' template to exportingSymbols attribute
     Optional<ASTCDAttribute> exportingSymbolsAttribute = scopeBuilder.getCDAttributeList()

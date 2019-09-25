@@ -25,6 +25,8 @@ public class SymbolReferenceBuilderDecorator extends AbstractCreator<ASTCDType, 
 
   protected final AccessorDecorator accessorDecorator;
 
+  protected static final String TEMPLATE_PATH = "_symboltable.symbolreferece.";
+
   public SymbolReferenceBuilderDecorator(final GlobalExtensionManagement glex,
                                          final SymbolTableService symbolTableService,
                                          final AccessorDecorator accessorDecorator) {
@@ -76,13 +78,13 @@ public class SymbolReferenceBuilderDecorator extends AbstractCreator<ASTCDType, 
     return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR);
   }
 
-  protected ASTCDAttribute createRealThisAttribute(String symbolReferenceBuilderName){
+  protected ASTCDAttribute createRealThisAttribute(String symbolReferenceBuilderName) {
     return this.getCDAttributeFacade().createAttribute(PROTECTED, symbolReferenceBuilderName, REAL_BUILDER);
   }
 
   protected ASTCDMethod createBuildMethod(String symbolReference) {
     ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(symbolReference), "build");
-    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_symboltable.symbolreferece.Build", symbolReference));
+    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(TEMPLATE_PATH + "Build", symbolReference));
     return buildMethod;
   }
 }

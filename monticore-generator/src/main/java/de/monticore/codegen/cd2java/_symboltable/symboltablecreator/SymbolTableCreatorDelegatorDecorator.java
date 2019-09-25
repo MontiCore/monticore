@@ -27,6 +27,8 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
 
   protected final VisitorService visitorService;
 
+  protected static final String TEMPLATE_PATH = "_symboltable.symboltablecreatordelegator.";
+
   public SymbolTableCreatorDelegatorDecorator(final GlobalExtensionManagement glex,
                                               final SymbolTableService symbolTableService,
                                               final VisitorService visitorService) {
@@ -75,7 +77,7 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
     }
     ASTCDParameter globalScopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(globalScope), "globalScope");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreatorDelegator, globalScopeParam);
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("_symboltable.symboltablecreatordelegator.Constructor",
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "Constructor",
         superSymTabCreator, symbolTableCreator, simpleName));
     return constructor;
   }
@@ -98,7 +100,7 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
     ASTCDParameter startProdParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(startProd), "rootNode");
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(artifactScope),
         "createFromAST", startProdParam);
-    this.replaceTemplate(EMPTY_BODY, createFromAST, new TemplateHookPoint("_symboltable.symboltablecreatordelegator.CreateFromAST",
+    this.replaceTemplate(EMPTY_BODY, createFromAST, new TemplateHookPoint(TEMPLATE_PATH + "CreateFromAST",
         artifactScope));
     return createFromAST;
   }

@@ -41,6 +41,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
   protected boolean isSymbolTop = false;
 
+  protected static final String TEMPLATE_PATH = "_symboltable.symbol.";
+
   public SymbolDecorator(final GlobalExtensionManagement glex,
                          final SymbolTableService symbolTableService,
                          final VisitorService visitorService,
@@ -123,11 +125,10 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
     ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR);
 
     ASTMCOptionalType optionalTypeOfASTNode = getCDTypeFacade().createOptionalTypeOf(symbolTableService.getASTPackage() + "." + AST_PREFIX + astClassName);
-    ASTCDAttribute node = this.getCDAttributeFacade().createAttribute(PROTECTED, optionalTypeOfASTNode, AST_NODE_VAR);
-    this.replaceTemplate(VALUE, node, new StringHookPoint("= Optional.empty()"));
+    ASTCDAttribute node = this.getCDAttributeFacade().createAttribute(PROTECTED, optionalTypeOfASTNode, AST_NODE_VAR, this.glex);
 
     ASTCDAttribute accessModifier = this.getCDAttributeFacade().createAttribute(PROTECTED, ACCESS_MODIFIER, "accessModifier");
-    this.replaceTemplate(VALUE, accessModifier, new StringHookPoint("= de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION"));
+    this.replaceTemplate(VALUE, accessModifier, new StringHookPoint("= " + ACCESS_MODIFIER + ".ALL_INCLUSION"));
 
     return new ArrayList<>(Arrays.asList(name, enclosingScope, node, accessModifier));
   }
@@ -148,7 +149,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
     // template for getter mus be changed
     List<ASTCDMethod> packageNameMethod = accessorDecorator.decorate(symbolAttribute);
     packageNameMethod.forEach(m -> this.replaceTemplate(EMPTY_BODY, m,
-        new TemplateHookPoint("_symboltable.symbol.NameSetter", symbolAttribute.getName())));
+        new TemplateHookPoint(TEMPLATE_PATH + "NameSetter", symbolAttribute.getName())));
     symbolMethods.addAll(packageNameMethod);
     accessorDecorator.enableTemplates();
     return symbolMethods;
@@ -187,7 +188,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
     ASTMCType stringType = getCDTypeFacade().createStringType();
 
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, stringType, "determinePackageName");
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.symbol.DeterminePackageName",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "DeterminePackageName",
         scopeInterface, artifactScope));
     return method;
   }
@@ -196,7 +197,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
     ASTMCType stringType = getCDTypeFacade().createStringType();
 
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, stringType, "determineFullName");
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.symbol.DetermineFullName",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "DetermineFullName",
         scopeInterface, artifactScope, globalScope));
     return method;
   }

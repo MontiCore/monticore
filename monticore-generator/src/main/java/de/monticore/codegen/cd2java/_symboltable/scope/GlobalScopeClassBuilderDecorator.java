@@ -20,6 +20,8 @@ public class GlobalScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass
 
   protected final BuilderDecorator builderDecorator;
 
+  protected static final String TEMPLATE_PATH = "_symboltable.globalscope.";
+
   public GlobalScopeClassBuilderDecorator(final GlobalExtensionManagement glex,
                                           final SymbolTableService symbolTableService,
                                           final BuilderDecorator builderDecorator) {
@@ -47,7 +49,7 @@ public class GlobalScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint("_symboltable.globalscope.Build", scopeClass.getName(), symbolTableService.getCDName())));
+        new TemplateHookPoint(TEMPLATE_PATH + "Build", scopeClass.getName(), symbolTableService.getCDName())));
 
     return scopeBuilder;
   }

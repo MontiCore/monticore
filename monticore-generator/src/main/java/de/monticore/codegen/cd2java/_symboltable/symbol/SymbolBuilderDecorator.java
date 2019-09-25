@@ -20,6 +20,8 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
 
   protected final BuilderDecorator builderDecorator;
 
+  protected static final String TEMPLATE_PATH = "_symboltable.symbol.";
+
   public SymbolBuilderDecorator(final GlobalExtensionManagement glex,
                                 final BuilderDecorator builderDecorator) {
     super(glex);
@@ -48,7 +50,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint("_symboltable.symbol.Build", symbolClass.getName(), buildAttributes)));
+        new TemplateHookPoint(TEMPLATE_PATH + "Build", symbolClass.getName(), buildAttributes)));
 
     return symbolBuilder;
   }

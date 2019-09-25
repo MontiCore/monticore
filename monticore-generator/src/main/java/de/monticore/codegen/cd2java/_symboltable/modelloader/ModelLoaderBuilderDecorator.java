@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
+import static de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderDecorator.TEMPLATE_PATH;
 
 public class ModelLoaderBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
@@ -27,7 +28,7 @@ public class ModelLoaderBuilderDecorator extends AbstractCreator<ASTCDClass, AST
     ASTCDClass decoratedModelLoaderClass = modelLoaderClass.deepClone();
 
     decoratedModelLoaderClass.getCDMethodList().clear();
-    decoratedModelLoaderClass.getCDAttributeList().forEach(a->a.getModifier().setFinal(false));
+    decoratedModelLoaderClass.getCDAttributeList().forEach(a -> a.getModifier().setFinal(false));
     builderDecorator.setPrintBuildMethodTemplate(false);
     ASTCDClass modelLoaderBuilder = builderDecorator.decorate(decoratedModelLoaderClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
@@ -38,7 +39,7 @@ public class ModelLoaderBuilderDecorator extends AbstractCreator<ASTCDClass, AST
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint("_symboltable.modelloader.Build", modelLoaderClass.getName())));
+        new TemplateHookPoint(TEMPLATE_PATH + "_symboltable.modelloader.Build", modelLoaderClass.getName())));
 
     return modelLoaderBuilder;
   }

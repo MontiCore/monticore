@@ -30,6 +30,8 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
 
   protected final AccessorDecorator accessorDecorator;
 
+  protected static final String TEMPLATE_PATH = "_symboltable.artifactscope.";
+
   public ArtifactScopeBuilderDecorator(final GlobalExtensionManagement glex,
                                        final SymbolTableService symbolTableService,
                                        final BuilderDecorator builderDecorator,
@@ -42,13 +44,13 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
 
   @Override
   public ASTCDClass decorate(ASTCDClass scopeClass) {
-    ASTCDClass decoratedScopClass = scopeClass.deepClone();
+    ASTCDClass decoratedScopeClass = scopeClass.deepClone();
     String scopeBuilderName = scopeClass.getName() + BUILDER_SUFFIX;
 
-    decoratedScopClass.getCDMethodList().clear();
+    decoratedScopeClass.getCDMethodList().clear();
 
     builderDecorator.setPrintBuildMethodTemplate(false);
-    ASTCDClass scopeBuilder = builderDecorator.decorate(decoratedScopClass);
+    ASTCDClass scopeBuilder = builderDecorator.decorate(decoratedScopeClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
     scopeBuilder.getCDAttributeList().forEach(a -> a.setModifier(PROTECTED.build()));
@@ -60,7 +62,7 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint("_symboltable.artifactscope.Build", scopeClass.getName())));
+        new TemplateHookPoint(TEMPLATE_PATH + "Build", scopeClass.getName())));
 
     BuilderMutatorMethodDecorator builderMutatorMethodDecorator = new BuilderMutatorMethodDecorator(glex,
         getCDTypeFacade().createQualifiedType(scopeBuilderName));

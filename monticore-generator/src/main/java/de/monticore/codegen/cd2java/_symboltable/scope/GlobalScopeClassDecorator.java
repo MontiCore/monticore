@@ -36,6 +36,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected static final String ADAPTED_RESOLVING_DELEGATE = "adapted%sResolvingDelegate";
 
+  protected static final String TEMPLATE_PATH = "_symboltable.globalscope.";
+
   public GlobalScopeClassDecorator(final GlobalExtensionManagement glex,
                                    final SymbolTableService symbolTableService,
                                    final MethodDecorator methodDecorator) {
@@ -170,7 +172,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected ASTCDMethod createCacheMethod(String definitionName) {
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), CALCULATED_MODEL_NAME);
     ASTCDMethod cacheMethod = getCDMethodFacade().createMethod(PUBLIC, "cache", parameter);
-    this.replaceTemplate(EMPTY_BODY, cacheMethod, new TemplateHookPoint("_symboltable.globalscope.CacheMethod", definitionName));
+    this.replaceTemplate(EMPTY_BODY, cacheMethod, new TemplateHookPoint(TEMPLATE_PATH + "CacheMethod", definitionName));
     return cacheMethod;
   }
 

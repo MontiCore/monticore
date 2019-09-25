@@ -27,6 +27,8 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
 
   public static final String LOAD_MODELS_FOR = "loadModelsFor%s";
 
+  protected static final String TEMPLATE_PATH = "_symboltable.iglobalscope.";
+
   public GlobalScopeInterfaceDecorator(final GlobalExtensionManagement glex,
                                        final SymbolTableService symbolTableService) {
     super(glex);
@@ -89,9 +91,9 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
   protected ASTCDMethod createGetRealThisMethod(String globalScopeName) {
     ASTMCType globalScopeInterfaceType = getCDTypeFacade().createQualifiedType(globalScopeName);
     ASTCDMethod getRealThis = getCDMethodFacade().createMethod(PUBLIC, globalScopeInterfaceType, "getRealThis");
-    if(isGlobalScopeTop()){
+    if (isGlobalScopeTop()) {
       getRealThis.getModifier().setAbstract(true);
-    }else {
+    } else {
       this.replaceTemplate(EMPTY_BODY, getRealThis, new StringHookPoint("return this;"));
     }
     return getRealThis;
@@ -121,13 +123,11 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
         .createTypeByDefinition(String.format(PREDICATE, symbolFullTypeName)), PREDICATE_VAR);
 
-
     resolveMethods.add(createResolveManyMethod(className, symbolFullTypeName, listSymbol, foundSymbolsParameter,
         nameParameter, accessModifierParameter, predicateParameter));
 
     resolveMethods.add(createResolveAdaptedMethod(className, listSymbol, foundSymbolsParameter,
         nameParameter, accessModifierParameter, predicateParameter));
-
 
     resolveMethods.add(createLoadModelsForMethod(className, definitionName, nameParameter));
     return resolveMethods;
@@ -158,7 +158,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     this.replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint("_symboltable.iglobalscope.ResolveMany", className, fullSymbolName));
+        new TemplateHookPoint(TEMPLATE_PATH + "ResolveMany", className, fullSymbolName));
     return method;
   }
 
@@ -178,7 +178,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     String methodName = String.format(LOAD_MODELS_FOR, className);
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, methodName, nameParameter);
     this.replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint("_symboltable.iglobalscope.LoadModelsFor", className, definitionName));
+        new TemplateHookPoint(TEMPLATE_PATH + "LoadModelsFor", className, definitionName));
     return method;
   }
 

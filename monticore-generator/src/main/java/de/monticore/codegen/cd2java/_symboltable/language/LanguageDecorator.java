@@ -29,6 +29,8 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
 
   protected boolean isLanguageTop = false;
 
+  protected static final String TEMPLATE_PATH = "_symboltable.language.";
+
   public LanguageDecorator(final GlobalExtensionManagement glex,
                            final SymbolTableService symbolTableService,
                            final ParserService parserService,
@@ -68,7 +70,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
         .addAllCDMethods(nameMethods)
         .addAllCDMethods(fileExtensionMethods)
         .addCDMethod(createGetSymbolTableCreatorMethod())
-        .addCDMethod(createProvideModelLoaderMethod(modelLoaderClassName, input, languageClassName))
+        .addCDMethod(createProvideModelLoaderMethod(modelLoaderClassName))
         .addAllCDMethods(createCalculateModelNameMethods(symbolDefiningProds))
         .build();
     Optional<ASTCDMethod> getParserMethod = createGetParserMethod(input.getCDDefinition());
@@ -81,7 +83,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     ASTCDParameter fileEnding = getCDParameterFacade().createParameter(String.class, "fileEnding");
 
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), languageClassName, langName, fileEnding);
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("_symboltable.language.Constructor"));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "Constructor"));
     return constructor;
   }
 
@@ -114,11 +116,11 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
 
     ASTCDMethod getSymbolTableCreatorMethod = getCDMethodFacade().createMethod(PUBLIC,
         getCDTypeFacade().createQualifiedType(symbolTableCreatorDelegatorFullName), "getSymbolTableCreator", enclosingScope);
-    this.replaceTemplate(EMPTY_BODY, getSymbolTableCreatorMethod, new StringHookPoint(" return new " + symbolTableCreatorDelegatorFullName + "("+ ENCLOSING_SCOPE_VAR +");"));
+    this.replaceTemplate(EMPTY_BODY, getSymbolTableCreatorMethod, new StringHookPoint(" return new " + symbolTableCreatorDelegatorFullName + "(" + ENCLOSING_SCOPE_VAR + ");"));
     return getSymbolTableCreatorMethod;
   }
 
-  protected ASTCDMethod createProvideModelLoaderMethod(String modelLoaderName, ASTCDCompilationUnit astcdCompilationUnit, String languageName) {
+  protected ASTCDMethod createProvideModelLoaderMethod(String modelLoaderName) {
     ASTCDMethod provideModelLoaderMethod = getCDMethodFacade().createMethod(PROTECTED,
         getCDTypeFacade().createQualifiedType(modelLoaderName), "provideModelLoader");
     if (isLanguageTop()) {
@@ -137,7 +139,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
       ASTCDParameter nameParam = getCDParameterFacade().createParameter(String.class, NAME_VAR);
       ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, setTypeOfString,
           String.format("calculateModelNamesFor%s", simpleName), nameParam);
-      this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.language.CalculateModelNamesFor"));
+      this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "CalculateModelNamesFor"));
       methodList.add(method);
     }
     return methodList;

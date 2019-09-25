@@ -137,6 +137,8 @@ public class SymbolTableConstants {
 
   public static final String RESOLVE_MANY = "resolve%sMany";
 
+  public static final String RESOLVE = "resolve%s";
+
   public static final String RESOLVE_ADAPTED = "resolveAdapted%s";
 
   public static final String CONTINUE_WITH_ENCLOSING_SCOPE = "continue%sWithEnclosingScope";
