@@ -14,7 +14,6 @@ import de.monticore.cd.prettyprint.CDPrettyPrinterDelegator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.codegen.symboltable.SymbolTableGenerator;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
@@ -77,21 +76,11 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
 
   public static final String BUILDER = "Builder";
 
-  public static final String DELEGATE = "Delegate";
-
-  public static final String DESER = "DeSer";
-
   public static final String OPTIONAL = "Optional";
 
   public static final String SYMBOL = "Symbol";
 
   public static final String SCOPE = "Scope";
-
-  public static final String ARTIFACT_SCOPE = "ArtifactScope";
-
-  public static final String GLOBAL_SCOPE = "GlobalScope";
-
-  public static final String RESOLVING = "Resolving";
 
   public static final String BASE = "Node";
 
@@ -1760,7 +1749,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     Optional<ProdSymbol> symbolType = enclosingScope.resolveProd(simpleSymbolName);
     if (symbolType.isPresent()) {
       String packageName = symbolType.get().getFullName().substring(0, symbolType.get().getFullName().lastIndexOf(".")).toLowerCase();
-      return packageName + "." + SymbolTableGenerator.PACKAGE + "." + simpleSymbolName + SYMBOL;
+      return packageName + "." + SYMBOLTABLE_PACKAGE_SUFFIX + "." + simpleSymbolName + SYMBOL;
     }
     return "";
   }

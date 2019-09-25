@@ -72,9 +72,6 @@ import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
 import de.monticore.codegen.mc2cd.symbolTransl.MC2CDSymbolTranslation;
 import de.monticore.codegen.parser.Languages;
 import de.monticore.codegen.parser.ParserGenerator;
-import de.monticore.codegen.symboltable.SymbolTableGenerator;
-import de.monticore.codegen.symboltable.SymbolTableGeneratorBuilder;
-import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -287,24 +284,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         grammar,
         "0xA4038 Parser generation can't be processed: the reference to the grammar ast is null");
     ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, outputDirectory, embeddedJavaCode, lang);
-  }
-
-  /**
-   * Generates the model language infrastructure for the given grammar (e.g.,
-   * modeling language, model loader, symbols, symbol kinds, etc.)
-   *
-   * @param astGrammar      to generate the parser for
-   * @param astCd
-   * @param outputDirectory output directory for generated Java code
-   */
-  public void generateSymbolTable(GlobalExtensionManagement glex,
-                                  Grammar_WithConceptsGlobalScope mcGlobal, ASTMCGrammar astGrammar,
-                                  CD4AnalysisGlobalScope cdGlobal, ASTCDCompilationUnit astCd,
-                                  File outputDirectory, IterablePath handcodedPath) {
-    Log.errorIfNull(astGrammar);
-    SymbolTableGeneratorHelper genHelper = new SymbolTableGeneratorHelper(mcGlobal, astGrammar, cdGlobal, astCd);
-    SymbolTableGenerator symbolTableGenerator = new SymbolTableGeneratorBuilder().build();
-    symbolTableGenerator.generate(glex, astGrammar, genHelper, outputDirectory, handcodedPath);
   }
 
   /**

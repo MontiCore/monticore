@@ -74,7 +74,7 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
     assertEquals(1, stereotype.sizeValues());
     assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
-    assertEquals("de.monticore.codegen.ast.referencedSymbol.FooSymbol", stereotype.getValue(0).getValue());
+    assertEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol", stereotype.getValue(0).getValue());
     assertDeepEquals(cdTypeFacade.createTypeByDefinition("String"), nameAttribute.getMCType());
   }
 

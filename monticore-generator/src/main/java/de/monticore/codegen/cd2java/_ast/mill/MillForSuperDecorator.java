@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.MILL_FOR;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.MILL_SUFFIX;
@@ -87,7 +88,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
         continue;
       }
       ASTCDClass clazz = (ASTCDClass) cdType.getAstNode().get();
-      if (AstGeneratorHelper.isAbstract(clazz) || !GeneratorHelper.getPlainName(clazz).startsWith(GeneratorHelper.AST_PREFIX)) {
+      if (AstGeneratorHelper.isAbstract(clazz) || !GeneratorHelper.getPlainName(clazz).startsWith(AST_PREFIX)) {
         continue;
       }
       

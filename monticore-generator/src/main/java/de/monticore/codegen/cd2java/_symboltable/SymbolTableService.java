@@ -8,7 +8,6 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.types.MCSimpleGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -488,19 +487,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getSymbolBuilderFullName(astcdType, getCDSymbol());
   }
 
-
   public String getReferencedSymbolTypeName(ASTCDAttribute attribute) {
-    String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
+    return CD4AnalysisHelper.getStereotypeValues(attribute,
         MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
-
-    if (!getQualifier(referencedSymbol).isEmpty() && !referencedSymbol.contains(SYMBOL_TABLE_PACKAGE)) {
-      referencedSymbol = SymbolTableGeneratorHelper
-          .getQualifiedSymbolType(getQualifier(referencedSymbol)
-              .toLowerCase(), Names.getSimpleName(referencedSymbol));
-    }
-    return referencedSymbol;
   }
-
 
   public boolean isReferencedSymbol(ASTCDAttribute attribute) {
     return attribute.isPresentModifier() && hasStereotype(attribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL);

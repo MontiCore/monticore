@@ -214,7 +214,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       if (symbolTableCreatorDelegator.isPresent()) {
         symTabCD.addCDClass(symbolTableCreatorDelegator.get());
         symTabCD.addCDClass(createSymbolTableCreatorDelegatorBuilder(symbolTableCreatorDelegator.get()));
-
       }
 
       // SuperSTCForSub

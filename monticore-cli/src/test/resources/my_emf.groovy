@@ -72,9 +72,6 @@ for (astGrammar in getParsedGrammars()) {
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
 
-  // M8: generate symbol table
-  generateSymbolTable(glex, mcScope, astGrammar, cdScope, astClassDiagram, out, handcodedPath)
-
   // M9 Generate ast classes, visitor and context condition
   decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateEmfFromCD(glex, astClassDiagram, decoratedVisitorCD, out, handcodedPath)

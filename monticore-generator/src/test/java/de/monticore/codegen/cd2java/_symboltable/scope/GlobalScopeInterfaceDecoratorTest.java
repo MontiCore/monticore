@@ -67,7 +67,6 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
     GlobalScopeInterfaceDecorator decorator = new GlobalScopeInterfaceDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit));
 
-    //creates normal Symbol
     this.scopeInterface = decorator.decorate(decoratedCompilationUnit);
   }
 
