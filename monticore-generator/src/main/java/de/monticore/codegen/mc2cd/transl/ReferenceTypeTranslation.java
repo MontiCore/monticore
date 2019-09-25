@@ -13,7 +13,6 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesNodeFactory;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.Names;
 
@@ -65,7 +64,7 @@ public class ReferenceTypeTranslation implements
         return createType("String");
       }
       return determineConstantsType(HelperGrammar.createConvertType((ASTLexProd) ruleSymbol.getAstNode().get()))
-          .map(lexType -> (ASTMCType) MCBasicTypesNodeFactory.createASTMCPrimitiveType(lexType))
+          .map(lexType -> (ASTMCType) GrammarMill.mCPrimitiveTypeBuilder().setPrimitive(lexType).build())
           .orElse(createType("String"));
     } else if (ruleSymbol.isExternal()) {
       return createType(getPackageName(ruleSymbol) + "AST" + typeName + "Ext");
@@ -103,7 +102,7 @@ public class ReferenceTypeTranslation implements
           .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeNameWithoutAST));
     }
     Optional<ASTMCType> byPrimitive = determineConstantsType(typeName)
-        .map(MCBasicTypesNodeFactory::createASTMCPrimitiveType);
+        .map(p -> GrammarMill.mCPrimitiveTypeBuilder().setPrimitive(p).build());
     return byReference.orElse(byPrimitive.orElse(createType(FullGenericTypesPrinter.printType(astGenericType))));
   }
 
@@ -112,7 +111,7 @@ public class ReferenceTypeTranslation implements
         .resolveRule(astMCGrammar, typeName)
         .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeName));
     Optional<ASTMCType> byPrimitive = determineConstantsType(typeName)
-        .map(MCBasicTypesNodeFactory::createASTMCPrimitiveType);
+        .map(p -> GrammarMill.mCPrimitiveTypeBuilder().setPrimitive(p).build());
     return byReference.orElse(byPrimitive.orElse(createType(typeName)));
   }
 

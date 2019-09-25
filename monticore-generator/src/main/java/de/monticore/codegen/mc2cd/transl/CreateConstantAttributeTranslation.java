@@ -10,10 +10,10 @@ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.GrammarMill;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesNodeFactory;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.logging.Log;
 
@@ -62,8 +62,8 @@ public class CreateConstantAttributeTranslation implements
         cdAttribute
             .setName(MCGrammarSymbolTableHelper.getConstantName(prodComponent).orElse(""));
         int constantType = iterated ? ASTConstantsMCBasicTypes.INT : ASTConstantsMCBasicTypes.BOOLEAN;
-        cdAttribute.setMCType(MCBasicTypesNodeFactory
-            .createASTMCPrimitiveType(constantType));
+        cdAttribute.setMCType(
+                GrammarMill.mCPrimitiveTypeBuilder().setPrimitive(constantType).build());
         link.target().getCDAttributeList().add(cdAttribute);
       }
     }

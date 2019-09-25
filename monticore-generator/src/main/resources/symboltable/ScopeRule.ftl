@@ -19,6 +19,6 @@ ${tc.signature("scopeRule")}
 
 ${includeArgs("symboltable.ScopeRuleGetSet", scopeRule, false)}
 
-<#list scopeRule.getMethodList() as meth>
+<#list scopeRule.getGrammarMethodList() as meth>
   ${genHelper.printMethod(meth)}
 </#list>
