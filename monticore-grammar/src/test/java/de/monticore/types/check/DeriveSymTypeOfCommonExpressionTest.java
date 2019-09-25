@@ -90,6 +90,18 @@ public class DeriveSymTypeOfCommonExpressionTest {
     MethodSymbol ms = method("store",_doubleSymType);
     MethodSymbol ms1 = add(method("pay",_voidSymType),TypeSymbolsSymTabMill.fieldSymbolBuilder().setName("cost").setType(_intSymType).build());
 
+    MethodSymbol add = add(method("add",_voidSymType),field("element",_StringSymType));
+    TypeSymbol superclass = add(type("AList","AList"),add);
+    SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList",superclass);
+
+    TypeSymbol subclass = type("MyList","MyList");
+    subclass.setSuperTypes(Lists.newArrayList(supclass));
+    SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList",subclass);
+    FieldSymbol myList = field("myList",sub);
+    add2scope(scope,superclass);
+    add2scope(scope,subclass);
+    add2scope(scope,myList);
+
     ts.setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().setEnclosingScope(scope2).build());
     add2scope(scope2,add(add(add(ts,fs),ms),ms1));
     add2scope(scope3,add(add(add(ts,fs),ms),ms1));
@@ -474,5 +486,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s = "\"test\".toString().charAt(1)";
     astex = p.parse_StringExpression(s).get();
     assertEquals("char",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void testInheritance() throws IOException{
+    String s = "myList.add(\"Hallo\")";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("void",tc.typeOf(astex).print());
   }
 }

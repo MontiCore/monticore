@@ -61,32 +61,6 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   public void traverse(ASTNameExpression expr){
     Optional<FieldSymbol> optVar = scope.resolveField(expr.getName());
     Optional<TypeSymbol> optType = scope.resolveType(expr.getName());
-//    Collection<MethodSymbol> methods = scope.resolveMethodMany(expr.getName());
-//   if(lastResult.isMethodpreferred()) {
-//     //last ast node was call expression
-//     //in this case only method is tested
-//     lastResult.setMethodpreferred(false);
-//     if(!methods.isEmpty()){
-//       ArrayList<MethodSymbol> methodList = new ArrayList<>(methods);
-//       SymTypeExpression retType = methodList.get(0).getReturnType();
-//       for(MethodSymbol method: methodList){
-//         if(!method.getReturnType().print().equals(retType.print())){
-//           Log.error("More than one method with the same name and different return types found");
-//         }
-//       }
-//       if (!"void".equals(retType.print())) {
-//         SymTypeExpression type = retType;
-//         this.result = type;
-//         lastResult.setLast(retType);
-//       }else {
-//         SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeVoid();
-//         this.result = wholeResult;
-//         lastResult.setLast(wholeResult);
-//       }
-//     }else{
-//      Log.error("No method with the name " +expr.getName()+" found");
-//     }
-//   }else
     if(optVar.isPresent()){
      //no method here, test variable first
       // durch AST-Umbau kann ASTNameExpression keine Methode sein
