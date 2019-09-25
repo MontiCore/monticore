@@ -269,16 +269,16 @@ public class TypeCheck {
    * @param symbolTable the SymbolTable where subType/superType should be searched for
    */
   private static boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType, ITypeSymbolsScope symbolTable){
-    if(!subType.getTypeInfo(symbolTable).getSuperTypes().isEmpty()){
-      for(SymTypeExpression type: subType.getTypeInfo(symbolTable).getSuperTypes()){
+    if (!subType.getTypeInfo(symbolTable).getSuperTypeList().isEmpty()) {
+      for (SymTypeExpression type : subType.getTypeInfo(symbolTable).getSuperTypeList()) {
         if(type.print().equals(superType.print())){
           return true;
         }
       }
     }
     boolean subtype = false;
-    for(int i = 0;i<subType.getTypeInfo(symbolTable).getSuperTypes().size();i++){
-      if(isSubtypeOf(subType.getTypeInfo(symbolTable).getSuperTypes().get(i),superType,symbolTable)){
+    for (int i = 0; i < subType.getTypeInfo(symbolTable).getSuperTypeList().size(); i++) {
+      if (isSubtypeOf(subType.getTypeInfo(symbolTable).getSuperTypeList().get(i), superType, symbolTable)) {
         subtype=true;
         break;
       }

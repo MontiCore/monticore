@@ -1,6 +1,7 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.io.paths.ModelPath;
@@ -8,16 +9,12 @@ import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
-import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static org.junit.Assert.assertEquals;
@@ -43,11 +40,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     scope =
         ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
             .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-            .setExportsSymbols(true)
+            .setExportingSymbols(true)
             .setAstNode(null)
             .setName("Phantasy2").build();     // hopefully unused
 
-   ExpressionsBasisGlobalScope globalScope = ExpressionsBasisSymTabMill.expressionsBasisGlobalScopeBuilder().setLanguage(new ExpressionsBasisLanguage()).setModelPath(new ModelPath()).build();
+    ExpressionsBasisGlobalScope globalScope = ExpressionsBasisSymTabMill.expressionsBasisGlobalScopeBuilder().setExpressionsBasisLanguage(new ExpressionsBasisLanguage()).setModelPath(new ModelPath()).build();
    ExpressionsBasisArtifactScope artifactScope1 = ExpressionsBasisSymTabMill.expressionsBasisArtifactScopeBuilder().setEnclosingScope(globalScope).setImportList(Lists.newArrayList()).setPackageName("").build();
    ExpressionsBasisArtifactScope artifactScope2 = ExpressionsBasisSymTabMill.expressionsBasisArtifactScopeBuilder().setEnclosingScope(globalScope).setImportList(Lists.newArrayList()).setPackageName("").build();
    ExpressionsBasisArtifactScope artifactScope3 = ExpressionsBasisSymTabMill.expressionsBasisArtifactScopeBuilder().setEnclosingScope(globalScope).setImportList(Lists.newArrayList()).setPackageName("types2").build();
@@ -73,9 +70,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     // some FieldSymbols (ie. Variables, Attributes)
     TypeSymbol p = new TypeSymbol("Person");
     TypeSymbol s = new TypeSymbol("Student");
-    s.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",p)));
+    s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", p)));
     TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
-    f.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",s)));
+    f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", s)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",p)));

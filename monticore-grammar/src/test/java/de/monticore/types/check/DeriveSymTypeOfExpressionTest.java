@@ -2,11 +2,11 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,7 +37,7 @@ public class DeriveSymTypeOfExpressionTest {
     scope =
             ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
                     .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-                    .setExportsSymbols(true)
+                .setExportingSymbols(true)
                     .setAstNode(null)
                     .setName("Phantasy2").build();     // hopefully unused
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
@@ -55,9 +55,9 @@ public class DeriveSymTypeOfExpressionTest {
     // some FieldSymbols (ie. Variables, Attributes)
     TypeSymbol p = new TypeSymbol("Person");
     TypeSymbol s = new TypeSymbol("Student");
-    s.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",p)));
+    s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", p)));
     TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
-    f.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",s)));
+    f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", s)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",p)));
