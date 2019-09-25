@@ -14,7 +14,7 @@ public class SymbolReferenceListAccessorDecorator extends ListAccessorDecorator 
     super(glex);
   }
 
-  private static final String GET_METHOD_NAME = "get%sList";
+  protected static final String GET_METHOD_NAME = "get%sList";
 
   @Override
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {

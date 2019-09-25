@@ -14,7 +14,7 @@ public class SymbolReferenceListMutatorDecorator extends ListMutatorDecorator {
     super(glex);
   }
 
-  private static final String SET_METHOD_NAME = "set%sList";
+  protected static final String SET_METHOD_NAME = "set%sList";
 
   @Override
   protected ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
