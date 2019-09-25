@@ -23,7 +23,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   public SymTypeOfObject(String objFullName, TypeSymbol typeInfo)
   {
     this.objFullName = objFullName;
-    this.typeInfo = Optional.of(typeInfo);
+    this.typeInfo = typeInfo;
   }
   
   public String getObjName() {

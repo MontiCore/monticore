@@ -491,9 +491,9 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       Log.error("The type of the right expression could not be calculated");
     }
     //option one: both are numeric types and are assignable
-    if(leftResult.isPrimitiveType()&&((SymTypeConstant)leftResult).isNumericType()&&rightResult.isPrimitiveType()&&((SymTypeConstant)rightResult).isNumericType()&&compatible(leftResult,rightResult,scope)){
+    if(leftResult.isPrimitiveType()&&((SymTypeConstant)leftResult).isNumericType()&&rightResult.isPrimitiveType()&&((SymTypeConstant)rightResult).isNumericType()&&compatible(leftResult,rightResult)){
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
-    }else if (rightResult.print().equals(leftResult.print())||isSubtypeOf(rightResult,leftResult,scope)) {
+    }else if (rightResult.print().equals(leftResult.print())||isSubtypeOf(rightResult,leftResult)) {
       //option two: none of them are primitive types and they are either from the same class or stand in a super/subtype relation with the supertype on the left side
       return Optional.of(leftResult);
     }
