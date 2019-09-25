@@ -39,7 +39,7 @@ public class ModelLoaderBuilderDecorator extends AbstractCreator<ASTCDClass, AST
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(TEMPLATE_PATH + "_symboltable.modelloader.Build", modelLoaderClass.getName())));
+        new TemplateHookPoint(TEMPLATE_PATH + "Build", modelLoaderClass.getName())));
 
     return modelLoaderBuilder;
   }

@@ -149,7 +149,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
           .createTypeByDefinition(String.format(PREDICATE, symbolFullTypeName)), PREDICATE_VAR);
 
       // resolve methods
-      String resolveMethodName = String.format(String.format(RESOLVE, ""), className);
+      String resolveMethodName = String.format(RESOLVE, className);
       resolveMethods.add(createResolveNameMethod(resolveMethodName, optSymbol, nameParameter));
       resolveMethods.add(createResolveNameModifierMethod(resolveMethodName, optSymbol, nameParameter, accessModifierParameter));
       resolveMethods.add(createResolveNameModifierPredicateMethod(resolveMethodName, optSymbol, nameParameter,

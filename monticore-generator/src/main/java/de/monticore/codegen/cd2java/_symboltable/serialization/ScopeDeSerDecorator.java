@@ -26,7 +26,7 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
   protected final SymbolTableService symbolTableService;
 
-  protected static final String TEMPLATE_PATH = "_symboltable.serialization.symbolDeSer.";
+  protected static final String TEMPLATE_PATH = "_symboltable.serialization.scopeDeSer.";
 
   public ScopeDeSerDecorator(final GlobalExtensionManagement glex,
                              final SymbolTableService symbolTableService) {
@@ -114,7 +114,7 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   protected ASTCDMethod createSerializeMethod(String scopeInterfaceName, String symbolTablePrinter) {
     ASTCDParameter toSerializeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterfaceName), "toSerialize");
     ASTCDMethod serializeMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createStringType(), "serialize", toSerializeParam);
-    this.replaceTemplate(EMPTY_BODY, serializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "Serialize", symbolTablePrinter));
+    this.replaceTemplate(EMPTY_BODY, serializeMethod, new TemplateHookPoint("_symboltable.serialization.symbolDeSer.Serialize", symbolTablePrinter));
     return serializeMethod;
   }
 
@@ -136,7 +136,7 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   protected ASTCDMethod createDeserializeStringMethod(String scopeInterfaceName) {
     ASTCDParameter stringParam = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "serialized");
     ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createOptionalTypeOf(scopeInterfaceName), "deserialize", stringParam);
-    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "DeserializeString"));
+    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint("_symboltable.serialization.symbolDeSer.DeserializeString"));
     return deserializeMethod;
   }
 
