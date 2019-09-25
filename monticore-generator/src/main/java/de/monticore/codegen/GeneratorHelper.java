@@ -1273,25 +1273,6 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     return printSimpleRefType(type);
   }
 
-  public static String printDeprecatedAnnotation(Optional<ASTModifier> modifier) {
-    StringBuilder modifierStr = new StringBuilder();
-    if (modifier.isPresent() && modifier.get().isPresentStereotype()) {
-      ASTCDStereotype stereo = modifier.get().getStereotype();
-      for (ASTCDStereoValue stereoValue : stereo.getValueList()) {
-        if (DEPRECATED.equals(stereoValue.getName())) {
-          if (stereoValue.isPresentValue()) {
-            // Print java doc
-            modifierStr.append("/**\n * @deprecated ");
-            modifierStr.append(stereoValue.getValue());
-            modifierStr.append("\n **/\n");
-          }
-          modifierStr.append(DEPRECATED);
-        }
-      }
-    }
-    return modifierStr.toString();
-  }
-
   /**
    * Checks if the node is part of the current language (or one of its super
    * languages) or if it is external (e.g. String, List, etc.)
