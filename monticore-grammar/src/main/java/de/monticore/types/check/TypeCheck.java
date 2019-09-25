@@ -170,14 +170,12 @@ public class TypeCheck {
    *
    * @param left  Super-Type
    * @param right  Sub-Type (assignment-compatible to supertype?)
-   * @param symbolTable the SymbolTable where subType/superType Expressions
-   *                    should be evaluated in
    *
    * TODO: Probably needs to be extended for free type-variable assignments
    * (because it may be that they get unified over time: e.g. Map<a,List<c>> and Map<long,b>
    * are compatible, by refining the assignments a-> long, b->List<c>
    */
-  public static boolean compatible(SymTypeExpression left, SymTypeExpression right,ITypeSymbolsScope symbolTable) {
+  public static boolean compatible(SymTypeExpression left, SymTypeExpression right) {
     if(left.isPrimitiveType()&&right.isPrimitiveType()){
       SymTypeConstant leftType = (SymTypeConstant) left;
       SymTypeConstant rightType = (SymTypeConstant) right;
@@ -207,7 +205,7 @@ public class TypeCheck {
       }
       return false;
     }else {
-      if(isSubtypeOf(right,left, symbolTable)||right.print().equals(left.print())){
+      if(isSubtypeOf(right,left)||right.print().equals(left.print())){
         return true;
       }
     }
@@ -227,7 +225,7 @@ public class TypeCheck {
    *             type of a channel where to send a value)
    */
   public boolean isOfTypeForAssign(SymTypeExpression type, ASTExpression exp, ITypeSymbolsScope symbolTable) {
-    return compatible(  type, typeOf(exp),symbolTable);
+    return compatible(  type, typeOf(exp));
     // DONE: that is all what is needed
   }
 
@@ -236,9 +234,8 @@ public class TypeCheck {
    * determines if one SymTypeExpression is a subtype of another SymTypeExpression
    * @param subType the SymTypeExpression that could be a subtype of the other SymTypeExpression
    * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
-   * @param symbolTable the SymbolTable where subType/superType should be searched for
    */
-  public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType, ITypeSymbolsScope symbolTable){
+  public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType){
     if(subType.isPrimitiveType()&&superType.isPrimitiveType()) {
       SymTypeConstant sub = (SymTypeConstant) subType;
       SymTypeConstant supert = (SymTypeConstant) superType;
@@ -259,26 +256,25 @@ public class TypeCheck {
       }
       return false;
     }
-    return isSubtypeOfRec(subType,superType,symbolTable);
+    return isSubtypeOfRec(subType,superType);
   }
 
   /**
    * private recursive helper method for the method isSubTypeOf
    * @param subType the SymTypeExpression that could be a subtype of the other SymTypeExpression
    * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
-   * @param symbolTable the SymbolTable where subType/superType should be searched for
    */
-  private static boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType, ITypeSymbolsScope symbolTable){
-    if(!subType.getTypeInfo(symbolTable).getSuperTypes().isEmpty()){
-      for(SymTypeExpression type: subType.getTypeInfo(symbolTable).getSuperTypes()){
+  private static boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType){
+    if(!subType.getTypeInfo().getSuperTypes().isEmpty()){
+      for(SymTypeExpression type: subType.getTypeInfo().getSuperTypes()){
         if(type.print().equals(superType.print())){
           return true;
         }
       }
     }
     boolean subtype = false;
-    for(int i = 0;i<subType.getTypeInfo(symbolTable).getSuperTypes().size();i++){
-      if(isSubtypeOf(subType.getTypeInfo(symbolTable).getSuperTypes().get(i),superType,symbolTable)){
+    for(int i = 0;i<subType.getTypeInfo().getSuperTypes().size();i++){
+      if(isSubtypeOf(subType.getTypeInfo().getSuperTypes().get(i),superType)){
         subtype=true;
         break;
       }
