@@ -2,17 +2,17 @@
 
 package de.monticore.codegen.parser.antlr;
 
-import java.util.Optional;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+
+import java.util.Optional;
 
 /**
  * MinMax-constraint checks
@@ -60,7 +60,7 @@ public class AttributeCardinalityConstraint {
           String runtimemessage = "\"0xA7017" + de.monticore.codegen.GeneratorHelper.getGeneratedErrorCode(ast) + " Invalid minimal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
           
           runtimemessage = runtimemessage.replaceAll("%attributename%", usageName);
-          runtimemessage = runtimemessage.replaceAll("%rulename%", HelperGrammar.getRuleName(ast));
+          runtimemessage = runtimemessage.replaceAll("%rulename%", ast.getName());
           runtimemessage = runtimemessage.replaceAll("%value%", getCounterName(usageName));
           runtimemessage = runtimemessage.replaceAll("%reference%",
               ParserGeneratorHelper.formatAttributeValue(min));
@@ -81,7 +81,7 @@ public class AttributeCardinalityConstraint {
           String runtimemessage = "\"0xA7018" + de.monticore.codegen.GeneratorHelper.getGeneratedErrorCode(ast) + " Invalid maximal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
           
           runtimemessage = runtimemessage.replaceAll("%attributename%", usageName);
-          runtimemessage = runtimemessage.replaceAll("%rulename%", HelperGrammar.getRuleName(ast));
+          runtimemessage = runtimemessage.replaceAll("%rulename%", ast.getName());
           runtimemessage = runtimemessage.replaceAll("%value%", getCounterName(usageName));
           runtimemessage = runtimemessage.replaceAll("%reference%",
               ParserGeneratorHelper.formatAttributeValue(max));

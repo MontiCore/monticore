@@ -71,6 +71,13 @@ public class NameTranslation implements
             link.target().setName(nameToUse);
         }
 
+        for (Link<ASTKeyTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTKeyTerminal.class,
+                ASTCDAttribute.class)) {
+            Optional<String> usageName = getUsageName(rootLink.source(), link.source());
+            String nameToUse = usageName.isPresent() ? usageName.get() : link.source().getName();
+            link.target().setName(nameToUse);
+        }
+
         for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
                 ASTCDAttribute.class)) {
             String name = link.source().getNameOpt().orElse(null);

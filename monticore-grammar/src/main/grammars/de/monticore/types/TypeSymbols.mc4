@@ -31,7 +31,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
     methods: de.monticore.types.typesymbols._symboltable.MethodSymbol*
     fields: de.monticore.types.typesymbols._symboltable.FieldSymbol*
     typeParameters: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
-    superTypes: de.monticore.types2.SymTypeExpression*
+    superTypes: de.monticore.types.check.SymTypeExpression*
   ;
 
   /*=================================================================*/
@@ -41,7 +41,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
    */
   interface symbol TypeVar = Name;
   symbolrule TypeVar =
-    upperBound: de.monticore.types2.SymTypeExpression*
+    upperBound: de.monticore.types.check.SymTypeExpression*
   ;
 
   /*=================================================================*/
@@ -52,7 +52,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
    */
   interface symbol Field = Name ;
   symbolrule  Field =
-    type: de.monticore.types2.SymTypeExpression
+    type: de.monticore.types.check.SymTypeExpression
   ;
 
   /*=================================================================*/
@@ -66,7 +66,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   interface scope symbol Method = Name;
   symbolrule Method =
     parameter: de.monticore.types.typesymbols._symboltable.FieldSymbol*
-    returnType: de.monticore.types2.SymTypeExpression
+    returnType: de.monticore.types.check.SymTypeExpression
   ;
 
 }

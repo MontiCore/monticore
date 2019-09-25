@@ -56,25 +56,27 @@ The different development statuses of grammars are explained
 * A Java generator can be found [**here**](https://git.rwth-aachen.de/monticore/languages/OCL2Java).
 * A generator for Embedded MontiArc in combination with OCL can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
 
-### [Object Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
+### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Started updating to MC6, rearranging language to a basic version and several extensions)
 * Author: SH
-* INSERT DESCRIPTION HERE
+* Language for textual object diagrams.
 
 ### [Port Automata](https://git.rwth-aachen.de/monticore/montiarc/core) (Not started with MC6 changes)
 * Author: DS
 * Port automata are a certain type of state machines and utilized in component and connector architecture description languages (e.g. MontiArc) for behavior modeling.
 
-### [Sequence Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
+### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language) (Not started with MC6 changes)
 * Author: RE
-* INSERT DESCRIPTION HERE
+* Grammar to parse Sequence Diagrams
+* Can be used with testing generator to derive test cases
 
 ### [SI Units](INSERT LINK HERE) (INSERT STATUS HERE)
 * Author: EK
 * INSERT DESCRIPTION HERE
 
-### [Statecharts](INSERT LINK HERE) (INSERT STATUS HERE)
+### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (90% to MC6)
 * Author: RE
-* INSERT DESCRIPTION HERE
+* Language to parse Statecharts
+* creates transformation language within SC and sc<->cd4a
 
 ### [SysML/P](INSERT LINK HERE) (INSERT STATUS HERE)
 * Author: NJ

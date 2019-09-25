@@ -44,9 +44,6 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
     this.clazzName = originalClass.deepClone().getName();
     changedClass.addCDConstructor(createDefaultConstructor(originalClass));
-    if (!originalClass.isEmptyCDAttributes()) {
-      changedClass.addCDConstructor(createFullConstructor(originalClass));
-    }
     if (originalClass.isPresentSuperclass()) {
       changedClass.setSuperclass(originalClass.getSuperclass());
     }
@@ -84,16 +81,6 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
 
   protected ASTCDConstructor createDefaultConstructor(ASTCDClass clazz) {
     return this.getCDConstructorFacade().createDefaultConstructor(PROTECTED, clazz);
-  }
-
-  protected ASTCDConstructor createFullConstructor(ASTCDClass clazz) {
-    //remove referenced symbol attributes, because they are only calculated
-    List<ASTCDAttribute> attributeList = clazz.deepClone().getCDAttributeList().stream()
-        .filter(x -> !service.isReferencedSymbolAttribute(x))
-        .collect(Collectors.toList());
-    ASTCDConstructor fullConstructor = this.getCDConstructorFacade().createConstructor(PROTECTED, clazz.getName(), getCDParameterFacade().createParameters(attributeList));
-    this.replaceTemplate(EMPTY_BODY, fullConstructor, new TemplateHookPoint("data.ConstructorAttributesSetter", attributeList));
-    return fullConstructor;
   }
 
   protected List<ASTCDMethod> getAllDataMethods(ASTCDClass astcdClass, List<ASTCDAttribute> attributeList) {

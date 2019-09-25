@@ -291,13 +291,13 @@ public class ReferenceTest {
 
   @Test
   public void testFactoryMandatory() {
-    ASTReferenceToTest astReferenceToTest = ReferenceNodeFactory.createASTReferenceToTest("B");
+    ASTReferenceToTest astReferenceToTest = ReferenceMill.referenceToTestBuilder().setName("B").build();
     assertEquals(astReferenceToTest.getName(), "B");
   }
 
   @Test
   public void testFactoryOptional() {
-    ASTOptionalRef astOptionalRef = ReferenceNodeFactory.createASTOptionalRef(Optional.of("C"));
+    ASTOptionalRef astOptionalRef = ReferenceMill.optionalRefBuilder().setName("C").build();
     assertEquals(astOptionalRef.getName(), "C");
   }
 
@@ -307,7 +307,7 @@ public class ReferenceTest {
     names.add("C");
     names.add("B");
     names.add("A");
-    ASTListRef astListRef = ReferenceNodeFactory.createASTListRef(names);
+    ASTListRef astListRef = ReferenceMill.listRefBuilder().setNameList(names).build();
     assertFalse(astListRef.isEmptyNames());
     assertEquals(astListRef.getName(0), "C");
     assertEquals(astListRef.getName(1), "B");

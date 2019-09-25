@@ -18,38 +18,6 @@ import java.util.List;
  */
 public class HelperGrammar {
 
-  /**
-   * The result is true iff ASTTerminal is iterated
-   *
-   * @param a ASTConstantGroup to be evaluated
-   * @return true iff ASTConstantGroup is iterated
-   */
-  public static boolean isIterated(ASTTerminal a) {
-    return (a.getIteration() == ASTConstantsGrammar.PLUS)
-        || (a.getIteration() == ASTConstantsGrammar.STAR);
-
-  }
-
-  /**
-   * The result is true iff ASTOrGroup is iterated
-   *
-   * @param a ASTOrGroup to be evaluated
-   * @return true iff ASTOrGroup is iterated
-   */
-  public static boolean isIterated(ASTBlock a) {
-    return ((a.getIteration() == ASTConstantsGrammar.PLUS)
-        || (a.getIteration() == ASTConstantsGrammar.STAR));
-  }
-
-  /**
-   * Returns the name of a rule
-   *
-   * @param a rule
-   * @return Name of a rule
-   */
-  public static String getRuleName(ASTClassProd a) {
-    return a.getName();
-  }
 
   /**
    * Creates usuage name from a NtSym usually from its attribute or creates name
@@ -57,9 +25,7 @@ public class HelperGrammar {
    * @param a
    * @return
    */
-
   public static String getUsuageName(ASTNonTerminal a) {
-
     String name;
     if (a.isPresentUsageName()) {
       name = a.getUsageName();
@@ -72,7 +38,6 @@ public class HelperGrammar {
   }
 
   public static String getListName(ASTNonTerminal a) {
-
     String name;
     if (a.isPresentUsageName()) {
       name = a.getUsageName();
@@ -84,15 +49,6 @@ public class HelperGrammar {
     return name + GeneratorHelper.GET_SUFFIX_LIST;
   }
 
-  public static boolean isIterated(ASTNonTerminal a) {
-    return ((a.getIteration() == ASTConstantsGrammar.PLUS)
-        || (a.getIteration() == ASTConstantsGrammar.STAR));
-  }
-
-  public static String getTypeNameForEnum(String surroundtype, ASTConstantGroup a) {
-    return "[enum." + surroundtype + "." + a.getUsageName();
-  }
-
   /**
    * Creates the convert function for a lexrule
    *
@@ -101,7 +57,6 @@ public class HelperGrammar {
    */
   public static String createConvertFunction(ASTLexProd a,
                                              Grammar_WithConceptsPrettyPrinter prettyPrinter) {
-
     String name = a.getName();
     // simple String
     if (!a.isPresentVariable()) {
@@ -164,7 +119,6 @@ public class HelperGrammar {
             "0xA1061 No function for " + a.getVariable() + " registered, will treat it as string!");
         return createStringConvertFunction(name);
       }
-
     }
     // specific function
     else {
@@ -183,28 +137,21 @@ public class HelperGrammar {
 
   private static String createConvertFunction(String name, String function) {
     String f = function.replaceAll("%name%", name);
-
     return "// convert function for " + name + "\n" + f;
-
   }
 
   public static String createStringConvertFunction(String name) {
-
     String t = "private String convert" + name + "(Token t)  {\n" + "    return t.getText();\n"
         + "}\n";
-
     return "// convert function for " + name + "\n" + t;
   }
 
   public static String createConvertType(ASTLexProd a) {
-
     if (!a.isPresentVariable()) {
       return "String";
     }
     String variable = a.getVariable();
-
     String name = a.getName();
-    // simple String
 
     // default functions
     if (a.getTypeList() == null || a.getTypeList().isEmpty()) {
@@ -220,11 +167,9 @@ public class HelperGrammar {
             "0xA1032 No function for " + a.getVariable() + " registered, will treat it as string!");
         return createStringConvertFunction(name);
       }
-
     }
     // specific function
     else {
-
       return Names.getQualifiedName(a.getTypeList());
     }
   }
@@ -263,7 +208,6 @@ public class HelperGrammar {
   }
 
   public static boolean matchesJavaIdentifier(String checkedString) {
-
     if (checkedString == null || checkedString.length() == 0) {
       return false;
     }
@@ -296,7 +240,6 @@ public class HelperGrammar {
       }
     }
     return name;
-
   }
 
   /**
@@ -306,9 +249,7 @@ public class HelperGrammar {
    * @return Human-Readable, antlr conformed rule name
    */
   public static String getRuleNameForAntlr(String rulename) {
-
     return JavaNamesHelper.getNonReservedName(StringTransformations.uncapitalize(rulename));
-
   }
 
   /**
@@ -317,9 +258,7 @@ public class HelperGrammar {
    * @return Human-Readable, antlr conformed rule name
    */
   public static String getRuleNameForAntlr(ASTClassProd rule) {
-
-    String s = getRuleNameForAntlr(HelperGrammar.getRuleName(rule));
-
+    String s = getRuleNameForAntlr(rule.getName());
     return s;
   }
 
@@ -329,9 +268,7 @@ public class HelperGrammar {
    * @return Human-Readable, antlr conformed rule name
    */
   public static String getRuleNameForAntlr(ASTNonTerminal ntsym) {
-
     String s = getRuleNameForAntlr(ntsym.getName());
-
     return s;
   }
 
@@ -340,7 +277,6 @@ public class HelperGrammar {
     List<String> ret = Lists.newArrayList();
     StringBuilder buffer = new StringBuilder();
     buffer.append(prettyPrinter.prettyprint(action.getExpressionPredicate()));
-
     String actionText = buffer.toString();
     if (actionText.contains("_ttype")) {
       String[] split = actionText.split("_ttype");
@@ -369,7 +305,6 @@ public class HelperGrammar {
           }
         }
       }
-
     }
     return ret;
   }

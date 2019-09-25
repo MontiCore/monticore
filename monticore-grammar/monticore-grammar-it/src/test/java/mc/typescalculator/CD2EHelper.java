@@ -3,11 +3,11 @@ package mc.typescalculator;
 
 import de.monticore.cd.cd4analysis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types2.SymTypeExpression;
-import de.monticore.types2.SymTypeOfObject;
 
 import java.util.List;
 
@@ -47,17 +47,7 @@ public class CD2EHelper {
   }
 
   public static SymTypeExpression transformCDType2SymTypeExpression(CDTypeSymbol typeSymbol) {
-    SymTypeExpression res = new SymTypeOfObject();
-    boolean success = false;
-      List<CDTypeSymbolReference> superTypes = typeSymbol.getSuperTypes();
-      for (CDTypeSymbolReference ref : superTypes) {
-        res.addSuperType(transformCDType2SymTypeExpression(ref));
-      }
-      res.setName(typeSymbol.getName());
-      success = true;
-    if (!success){
-      res.setName(typeSymbol.getName());
-    }
+    SymTypeExpression res = new SymTypeOfObject(typeSymbol.getName());
     return res;
   }
 }

@@ -96,7 +96,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
   @Test
   public void testConstructors() {
     assertFalse(dataClass.isEmptyCDConstructors());
-    assertEquals(2, dataClass.sizeCDConstructors());
+    assertEquals(1, dataClass.sizeCDConstructors());
   }
 
   @Test
@@ -104,34 +104,6 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDConstructor defaultConstructor = dataClass.getCDConstructor(0);
     assertDeepEquals(PROTECTED, defaultConstructor.getModifier());
     assertTrue(defaultConstructor.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testFullConstructor() {
-    ASTCDConstructor fullConstructor = dataClass.getCDConstructor(1);
-    assertDeepEquals(PROTECTED, fullConstructor.getModifier());
-    assertFalse(fullConstructor.isEmptyCDParameters());
-    assertEquals(5, fullConstructor.sizeCDParameters());
-
-    ASTCDParameter parameter = fullConstructor.getCDParameter(0);
-    assertInt(parameter.getMCType());
-    assertEquals("i", parameter.getName());
-
-    parameter = fullConstructor.getCDParameter(1);
-    assertDeepEquals(String.class, parameter.getMCType());
-    assertEquals("s", parameter.getName());
-
-    parameter = fullConstructor.getCDParameter(2);
-    assertOptionalOf(String.class, parameter.getMCType());
-    assertEquals("opt", parameter.getName());
-
-    parameter = fullConstructor.getCDParameter(3);
-    assertListOf(String.class, parameter.getMCType());
-    assertEquals("list", parameter.getName());
-
-    parameter = fullConstructor.getCDParameter(4);
-    assertDeepEquals("de.monticore.codegen.data.ASTB", parameter.getMCType());
-    assertEquals("b", parameter.getName());
   }
 
   @Test

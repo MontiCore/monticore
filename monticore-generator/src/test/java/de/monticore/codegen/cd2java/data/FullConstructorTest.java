@@ -79,26 +79,6 @@ public class FullConstructorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testFullConstructorSubB() {
-    ASTCDConstructor fullConstructor = subBClass.getCDConstructor(1);
-    assertDeepEquals(PROTECTED, fullConstructor.getModifier());
-    assertFalse(fullConstructor.isEmptyCDParameters());
-    assertEquals(3, fullConstructor.sizeCDParameters());
-
-    ASTCDParameter parameter = fullConstructor.getCDParameter(0);
-    assertInt(parameter.getMCType());
-    assertEquals("i", parameter.getName());
-
-    parameter = fullConstructor.getCDParameter(1);
-    assertDeepEquals(String.class, parameter.getMCType());
-    assertEquals("s", parameter.getName());
-
-    parameter = fullConstructor.getCDParameter(2);
-    assertBoolean(parameter.getMCType());
-    assertEquals("b", parameter.getName());
-  }
-
-  @Test
   public void testAttributesCountSubA() {
     assertEquals(1, subAClass.getCDAttributeList().size());
   }
@@ -110,38 +90,12 @@ public class FullConstructorTest extends DecoratorTestCase {
     assertDeepEquals("char", attribute.getMCType());
   }
 
-
   @Test
   public void testNoInheritedAttributeSubA() {
     //test that inherited attributes are not contained in new class
     assertTrue(subAClass.getCDAttributeList().stream().noneMatch(a -> a.getName().equals("i")));
     assertTrue(subAClass.getCDAttributeList().stream().noneMatch(a -> a.getName().equals("s")));
     assertTrue(subAClass.getCDAttributeList().stream().noneMatch(a -> a.getName().equals("b")));
-  }
-
-  @Test
-  public void testFullConstructorSubA() {
-    //test for inheritance over more layers
-    ASTCDConstructor fullConstructor = subAClass.getCDConstructor(1);
-    assertDeepEquals(PROTECTED, fullConstructor.getModifier());
-    assertFalse(fullConstructor.isEmptyCDParameters());
-    assertEquals(4, fullConstructor.sizeCDParameters());
-
-    ASTCDParameter parameter = fullConstructor.getCDParameter(0);
-    assertInt(parameter.getMCType());
-    assertEquals("i", parameter.getName());
-
-    parameter = fullConstructor.getCDParameter(1);
-    assertBoolean(parameter.getMCType());
-    assertEquals("b", parameter.getName());
-
-    parameter = fullConstructor.getCDParameter(2);
-    assertDeepEquals(String.class, parameter.getMCType());
-    assertEquals("s", parameter.getName());
-
-    parameter = fullConstructor.getCDParameter(3);
-    assertDeepEquals("char", parameter.getMCType());
-    assertEquals("c", parameter.getName());
   }
 
   @Test
