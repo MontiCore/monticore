@@ -2,8 +2,8 @@
 ${tc.signature("symbolName", "simpleName", "globalScope")}
   final List<${symbolName}> result = new ArrayList<>();
 
-  if (checkIfContinueWithEnclosingScope(foundSymbols) && (isPresentEnclosingScope())) {
-    if (!(enclosingScope.get() instanceof ${globalScope})) {
+if (checkIfContinueWithEnclosingScope(foundSymbols) && enclosingScope != null) {
+if (!(enclosingScope instanceof ${globalScope})) {
       Log.warn("0xA1039 The artifact scope " + getNameOpt().orElse("") + " should have a global scope as enclosing scope or no "
               + "enclosing scope at all.");
       }
@@ -11,7 +11,8 @@ ${tc.signature("symbolName", "simpleName", "globalScope")}
     final Set<String> potentialQualifiedNames = qualifiedNamesCalculator.calculateQualifiedNames(name, packageName, imports);
 
     for (final String potentialQualifiedName : potentialQualifiedNames) {
-      final List<${symbolName}> resolvedFromEnclosing = enclosingScope.get().resolve${simpleName}Many(foundSymbols, potentialQualifiedName, modifier, predicate);
+  final List<${symbolName}> resolvedFromEnclosing = enclosingScope.resolve${simpleName}Many(foundSymbols,
+  potentialQualifiedName, modifier, predicate);
       foundSymbols = foundSymbols | resolvedFromEnclosing.size() > 0;
       result.addAll(resolvedFromEnclosing);
     }

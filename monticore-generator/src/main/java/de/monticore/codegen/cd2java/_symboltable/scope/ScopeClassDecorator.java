@@ -7,7 +7,6 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -28,7 +27,6 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTER
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 import static de.monticore.codegen.cd2java.data.ListSuffixDecorator.LIST_SUFFIX_S;
-import static de.monticore.codegen.cd2java.exception.DecoratorErrorCode.WRONG_SCOPE_CLASS_ENCLOSING_SCOPE_METHODS;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
@@ -314,8 +312,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute() {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED,
-        getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType()), ENCLOSING_SCOPE_VAR, this.glex);
+    return this.getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR, this.glex);
   }
 
   protected List<ASTCDMethod> createEnclosingScopeMethods(ASTCDAttribute enclosingScopeAttribute) {
@@ -323,20 +320,9 @@ public class ScopeClassDecorator extends AbstractDecorator {
     mutatorDecorator.disableTemplates();
     List<ASTCDMethod> mutatorMethods = mutatorDecorator.decorate(enclosingScopeAttribute);
     mutatorDecorator.enableTemplates();
-    for (ASTCDMethod mutatorMethod : mutatorMethods) {
-      switch (mutatorMethod.getName()) {
-        case "setEnclosingScope":
-          this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("methods.opt.Set", enclosingScopeAttribute, enclosingScopeAttribute.getName()));
-          break;
-        case "setEnclosingScopeOpt":
-          this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint(TEMPLATE_PATH + "SetEnclosingScopeOpt"));
-          break;
-        case "setEnclosingScopeAbsent":
-          this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint("methods.opt.SetAbsent", enclosingScopeAttribute));
-          break;
-        default:
-          throw new DecorateException(WRONG_SCOPE_CLASS_ENCLOSING_SCOPE_METHODS, mutatorMethod.getName());
-      }
+    // only one setter
+    if (mutatorMethods.size() == 1) {
+      this.replaceTemplate(EMPTY_BODY, mutatorMethods.get(0), new TemplateHookPoint(TEMPLATE_PATH + "SetEnclosingScope"));
     }
     enclosingScopeMethods.addAll(mutatorMethods);
 

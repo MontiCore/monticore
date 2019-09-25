@@ -237,7 +237,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   public void testEnclosingScopeAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("enclosingScope", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertOptionalOf(I_AUTOMATON_SCOPE, astcdAttribute.getMCType());
+    assertDeepEquals(I_AUTOMATON_SCOPE, astcdAttribute.getMCType());
   }
 
   @Test
@@ -299,7 +299,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(101, scopeClass.getCDMethodList().size());
+    assertEquals(97, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -491,25 +491,6 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetEnclosingScopeOptMethod() {
-    ASTCDMethod method = getMethodBy("getEnclosingScopeOpt", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertOptionalOf(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testisPresentEnclosingScopeMethod() {
-    ASTCDMethod method = getMethodBy("isPresentEnclosingScope", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-
-  @Test
   public void testSetSpanningSymbolMethod() {
     ASTCDMethod method = getMethodBy("setSpanningSymbol", scopeClass);
 
@@ -647,26 +628,6 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.get().sizeCDParameters());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.get().getCDParameter(0).getMCType());
     assertEquals("enclosingScope", method.get().getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetEnclosingScopeOptAutomatonMethod() {
-    ASTCDMethod method = getMethodBy("setEnclosingScopeOpt", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertOptionalOf(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
-    assertEquals("enclosingScope", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetEnclosingScopeAbsentAutomatonMethod() {
-    ASTCDMethod method = getMethodBy("setEnclosingScopeAbsent", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertTrue(method.isEmptyCDParameters());
   }
 
   @Test

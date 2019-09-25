@@ -126,10 +126,10 @@ public class SymbolTableReporter2 extends AReporter {
     else if (printEmptyOptional) {
       printer.println("spanningSymbol = absent;");
     }
-    
-    if (scope.getEnclosingScopeOpt().isPresent()) {
+
+    if (scope.getEnclosingScope() != null) {
       printer.print("enclosingScope = ");
-      printer.print(repository.getScopeNameFormatted(scope.getEnclosingScopeOpt().get()));
+      printer.print(repository.getScopeNameFormatted(scope.getEnclosingScope()));
       printer.println(";");
     }
     else if (printEmptyOptional) {

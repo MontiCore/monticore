@@ -3,7 +3,7 @@ ${tc.signature("scopeClassName")}
   ${scopeClassName} scope = new ${scopeClassName}(shadowing);
   this.spanningSymbol.ifPresent(scope::setSpanningSymbol);
   scope.setExportingSymbols(this.exportingSymbols);
-  scope.setEnclosingScopeOpt(this.enclosingScope);
+scope.setEnclosingScope(this.enclosingScope);
   scope.setSubScopes(this.subScopes);
   scope.setAstNodeOpt(this.astNode);
   this.name.ifPresent(scope::setName);

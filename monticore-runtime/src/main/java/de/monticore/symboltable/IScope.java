@@ -19,11 +19,7 @@ import static java.util.stream.Collectors.toSet;
 
 public interface IScope {
 
-  Optional<? extends IScope> getEnclosingScopeOpt();
-
   IScope getEnclosingScope();
-
-  boolean isPresentEnclosingScope();
 
   /**
    * @return number of symbols directly defined/contained in this scope (not in enclosing scope).

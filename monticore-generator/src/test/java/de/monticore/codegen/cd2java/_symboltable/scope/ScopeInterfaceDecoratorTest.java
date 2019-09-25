@@ -45,11 +45,11 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonSymbol";
 
-  public static final String I_LEXICAS_SCOPE = "de.monticore.codegen.ast.lexicals._symboltable.ILexicalsScope";
+  private static final String I_LEXICAS_SCOPE = "de.monticore.codegen.ast.lexicals._symboltable.ILexicalsScope";
 
-  public static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
+  private static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
 
-  public static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.symboltable.automaton._symboltable.AutomatonSymbol>";
+  private static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.symboltable.automaton._symboltable.AutomatonSymbol>";
 
 
   @Before
@@ -101,7 +101,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(141, scopeInterface.getCDMethodList().size());
+    assertEquals(139, scopeInterface.getCDMethodList().size());
   }
 
   @Test

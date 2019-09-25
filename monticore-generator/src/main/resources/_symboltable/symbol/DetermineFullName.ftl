@@ -10,10 +10,10 @@ ${tc.signature("scopeInterface", "artifactScope", "globalScope")}
   final Deque<String> nameParts = new ArrayDeque<>();
     nameParts.addFirst(name);
 
-    Optional<? extends ${scopeInterface}> optCurrentScope = Optional.of(enclosingScope);
+    ${scopeInterface} optCurrentScope = enclosingScope;
 
-    while (optCurrentScope.isPresent()) {
-      final ${scopeInterface} currentScope = optCurrentScope.get();
+  while (optCurrentScope != null) {
+  final ${scopeInterface} currentScope = optCurrentScope;
       if (currentScope.isPresentSpanningSymbol()) {
         // If one of the enclosing scope(s) is spanned by a symbol, the full name
         // of that symbol is the missing prefix, and hence, the calculation
@@ -38,7 +38,7 @@ ${tc.signature("scopeInterface", "artifactScope", "globalScope")}
           //         the full name is same as the simple name.
         }
       }
-      optCurrentScope = currentScope.getEnclosingScopeOpt();
+  optCurrentScope = currentScope.getEnclosingScope();
     }
 
     return de.se_rwth.commons.Names.getQualifiedName(nameParts);

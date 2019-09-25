@@ -11,9 +11,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
@@ -99,7 +97,6 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     if (superScopeInterfaces.isEmpty()) {
       superScopeInterfaces.add(getCDTypeFacade().createQualifiedType(I_SCOPE));
     }
-
 
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(scopeInterfaceName)
@@ -503,34 +500,34 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     return new ArrayList<>(Arrays.asList(getSubScopes, addSubScope, removeSubScope));
   }
 
-  //  protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {
-//    ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED,
-//        getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType()), "enclosingScope");
-//    methodDecorator.disableTemplates();
-//    List<ASTCDMethod> enclosingScopeMethods = methodDecorator.decorate(enclosingScope);
-//    methodDecorator.enableTemplates();
-//    enclosingScopeMethods.forEach(m -> m.getModifier().setAbstract(true));
-//    return enclosingScopeMethods;
-//  }
-  //todo think about setter with optional, is it possible to have them
   protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {
-    ASTCDAttribute enclosingScopeOpt = this.getCDAttributeFacade().createAttribute(PROTECTED,
-        getCDTypeFacade().createOptionalTypeOf(scopeInterface), ENCLOSING_SCOPE_VAR);
-    ASTCDAttribute enclosingScopeMand = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR);
+    ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED,
+        getCDTypeFacade().createQualifiedType(scopeInterface), "enclosingScope");
     methodDecorator.disableTemplates();
-    List<ASTCDMethod> enclosingScopeMethods = methodDecorator.getAccessorDecorator().decorate(enclosingScopeOpt);
-    Optional<ASTCDMethod> getEnclosingScopeOpt = enclosingScopeMethods.stream().filter(m -> m.getName().equals("getEnclosingScopeOpt")).findFirst();
-    if (getEnclosingScopeOpt.isPresent()) {
-      // make wildcard type
-      ASTMCOptionalType wildCardType = getCDTypeFacade().createOptionalTypeOf(getCDTypeFacade().createWildCardWithUpperBoundType(scopeInterface));
-      ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(wildCardType).build();
-      getEnclosingScopeOpt.get().setMCReturnType(returnType);
-    }
-    enclosingScopeMethods.addAll(methodDecorator.getMutatorDecorator().decorate(enclosingScopeMand));
+    List<ASTCDMethod> enclosingScopeMethods = methodDecorator.decorate(enclosingScope);
     methodDecorator.enableTemplates();
     enclosingScopeMethods.forEach(m -> m.getModifier().setAbstract(true));
     return enclosingScopeMethods;
   }
+  //todo think about setter with optional, is it possible to have them
+//  protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {
+//    ASTCDAttribute enclosingScopeOpt = this.getCDAttributeFacade().createAttribute(PROTECTED,
+//        getCDTypeFacade().createOptionalTypeOf(scopeInterface), ENCLOSING_SCOPE_VAR);
+//    ASTCDAttribute enclosingScopeMand = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR);
+//    methodDecorator.disableTemplates();
+//    List<ASTCDMethod> enclosingScopeMethods = methodDecorator.getAccessorDecorator().decorate(enclosingScopeOpt);
+//    Optional<ASTCDMethod> getEnclosingScopeOpt = enclosingScopeMethods.stream().filter(m -> m.getName().equals("getEnclosingScopeOpt")).findFirst();
+//    if (getEnclosingScopeOpt.isPresent()) {
+//      // make wildcard type
+//      ASTMCOptionalType wildCardType = getCDTypeFacade().createOptionalTypeOf(getCDTypeFacade().createWildCardWithUpperBoundType(scopeInterface));
+//      ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(wildCardType).build();
+//      getEnclosingScopeOpt.get().setMCReturnType(returnType);
+//    }
+//    enclosingScopeMethods.addAll(methodDecorator.getMutatorDecorator().decorate(enclosingScopeMand));
+//    methodDecorator.enableTemplates();
+//    enclosingScopeMethods.forEach(m -> m.getModifier().setAbstract(true));
+//    return enclosingScopeMethods;
+//  }
 
 
   protected ASTCDMethod createAcceptMethod() {
