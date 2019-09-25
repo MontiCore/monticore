@@ -65,7 +65,7 @@ public class SymTypeVariable extends SymTypeExpression {
     SymTypeVariable clone = new SymTypeVariable();
     clone.setVarName(this.getVarName());
     clone.setName(this.getName());
-    typeInfo.ifPresent(clone::setTypeInfo);
+    clone.setTypeInfo(this.getTypeInfo());
     return clone;
   }
 

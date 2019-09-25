@@ -183,7 +183,7 @@ public class SymTypeConstant extends SymTypeExpression {
   public SymTypeConstant clone() {
     SymTypeConstant clone = new SymTypeConstant(this.constName);
     clone.setName(this.name);
-    typeInfo.ifPresent(clone::setTypeInfo);
+    clone.setTypeInfo(this.getTypeInfo());
     return clone;
   }
 

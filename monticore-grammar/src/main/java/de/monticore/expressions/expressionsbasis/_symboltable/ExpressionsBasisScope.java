@@ -56,7 +56,7 @@ public class ExpressionsBasisScope extends ExpressionsBasisScopeTOP {
         }
       }
     }
-
+    return set;
   }
 
 }

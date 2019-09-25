@@ -96,11 +96,16 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     TypeSymbol subclass = type("MyList","MyList");
     subclass.setSuperTypes(Lists.newArrayList(supclass));
+    ExpressionsBasisScope myListScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    subclass.setSpannedScope(myListScope);
     SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList",subclass);
     FieldSymbol myList = field("myList",sub);
     add2scope(scope,superclass);
     add2scope(scope,subclass);
     add2scope(scope,myList);
+    ExpressionsBasisScope aListScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    aListScope.add(add);
+    superclass.setSpannedScope(aListScope);
 
     ts.setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().setEnclosingScope(scope2).build());
     add2scope(scope2,add(add(add(ts,fs),ms),ms1));

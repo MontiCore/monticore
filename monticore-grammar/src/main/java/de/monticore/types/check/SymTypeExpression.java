@@ -43,12 +43,12 @@ public abstract class SymTypeExpression {
   public abstract SymTypeExpression clone();
 
   public List<MethodSymbol> getMethodList(){
-    List<MethodSymbol> methods = typeInfo.get().clone().getMethods();
+    List<MethodSymbol> methods = typeInfo.clone().getMethods();
     if(!isGenericType()){
       return methods;
     }else{
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.clone()).getArgumentList();
-      List<TypeVarSymbol> typeVariableArguments = typeInfo.get().clone().getTypeParameters();
+      List<TypeVarSymbol> typeVariableArguments = typeInfo.clone().getTypeParameters();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");
@@ -88,12 +88,12 @@ public abstract class SymTypeExpression {
 
 
   public List<FieldSymbol> getFieldList(){
-    List<FieldSymbol> fields = typeInfo.get().clone().getFields();
+    List<FieldSymbol> fields = typeInfo.clone().getFields();
     if(!isGenericType()){
       return fields;
     }else{
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.clone()).getArgumentList();
-      List<TypeVarSymbol> typeVariableArguments = typeInfo.get().clone().getTypeParameters();
+      List<TypeVarSymbol> typeVariableArguments = typeInfo.clone().getTypeParameters();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");

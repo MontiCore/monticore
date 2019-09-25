@@ -72,7 +72,7 @@ public class SymTypeArray extends SymTypeExpression {
   public SymTypeArray clone() {
     SymTypeArray clone = new SymTypeArray(this.dim,this.argument.clone());
     clone.setName(this.name);
-    clone.setTypeInfo(this.typeInfo.orElseGet(() -> DefsTypeBasic._array));
+    clone.setTypeInfo(this.getTypeInfo());
     return clone;
   }
 
