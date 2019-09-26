@@ -33,7 +33,7 @@ public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  public static final String MODEL_PATH = "de.monticore.io.paths.ModelPath";
+  private static final String MODEL_PATH = "de.monticore.io.paths.ModelPath";
 
   @Before
   public void setUp() {

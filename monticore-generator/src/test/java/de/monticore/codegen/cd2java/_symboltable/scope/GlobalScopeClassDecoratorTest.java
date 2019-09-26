@@ -35,11 +35,13 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  public static final String MODEL_PATH = "de.monticore.io.paths.ModelPath";
+  private static final String MODEL_PATH = "de.monticore.io.paths.ModelPath";
 
-  public static final String AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.AutomatonScope";
+  private static final String AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.AutomatonScope";
 
-  public static final String I_AUTOMATON_GLOBAL_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope";
+  private static final String I_AUTOMATON_GLOBAL_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope";
+
+  private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
 
   @Before
   public void setUp() {
@@ -153,7 +155,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(113, scopeClass.getCDMethodList().size());
+    assertEquals(115, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -228,7 +230,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAddAdaptedAutomatonSymbolResolvingDelegateMethod() {
-    List<ASTCDMethod> methods = getMethodsBy("addAdaptedAutomatonSymbolResolvingDelegate",1,  scopeClass);
+    List<ASTCDMethod> methods = getMethodsBy("addAdaptedAutomatonSymbolResolvingDelegate", 1, scopeClass);
 
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
@@ -282,6 +284,26 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("stateSymbolsAlreadyResolved", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testGetEnclosingScopeMethod() {
+    ASTCDMethod method = getMethodBy("getEnclosingScope", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetEnclosingScopeMethod() {
+    ASTCDMethod method = getMethodBy("setEnclosingScope", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(0).getName());
   }
 
   @Test

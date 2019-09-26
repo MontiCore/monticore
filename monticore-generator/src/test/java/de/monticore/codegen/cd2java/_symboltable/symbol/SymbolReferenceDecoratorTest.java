@@ -47,7 +47,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
 
-  public static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbol>";
+  private static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbol>";
 
   @Before
   public void setUp() {

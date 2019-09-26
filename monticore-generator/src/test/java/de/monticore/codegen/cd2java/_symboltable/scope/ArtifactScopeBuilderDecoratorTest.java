@@ -38,9 +38,9 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
 
   private static final String ENCLOSING_SCOPE = "de.monticore.codegen.symboltable.cdforbuilder.artifactscope_builder._symboltable.IArtifactScope_BuilderScope";
 
-  public static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
+  private static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
 
-  public static final String ARTIFACT_SCOPE_BUILDER = "AArtifactScopeBuilder";
+  private static final String ARTIFACT_SCOPE_BUILDER = "AArtifactScopeBuilder";
 
   @Before
   public void setUp() {

@@ -256,16 +256,16 @@ public class TypeCheck {
    * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
    */
   private static boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType){
-    if(!subType.getTypeInfo().getSuperTypes().isEmpty()){
-      for(SymTypeExpression type: subType.getTypeInfo().getSuperTypes()){
+    if (!subType.getTypeInfo().getSuperTypeList().isEmpty()) {
+      for (SymTypeExpression type : subType.getTypeInfo().getSuperTypeList()) {
         if(type.print().equals(superType.print())){
           return true;
         }
       }
     }
     boolean subtype = false;
-    for(int i = 0;i<subType.getTypeInfo().getSuperTypes().size();i++){
-      if(isSubtypeOf(subType.getTypeInfo().getSuperTypes().get(i),superType)){
+    for (int i = 0; i < subType.getTypeInfo().getSuperTypeList().size(); i++) {
+      if (isSubtypeOf(subType.getTypeInfo().getSuperTypeList().get(i), superType)) {
         subtype=true;
         break;
       }

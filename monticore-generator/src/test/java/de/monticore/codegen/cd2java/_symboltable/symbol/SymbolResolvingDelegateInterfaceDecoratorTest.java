@@ -37,9 +37,9 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
 
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
 
-  public static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
+  private static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
 
-  public static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
+  private static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
 
   @Before
   public void setUp() {

@@ -5,14 +5,16 @@ import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
-import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeConstant.unbox;
 import static de.monticore.types.check.TypeCheck.compatible;
@@ -505,12 +507,13 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       List<MethodSymbol> fittingMethods = new ArrayList<>();
       for (MethodSymbol method : methodlist) {
         //for every method found check if the arguments are correct
-        if (expr.getArguments().getExpressionList().size() == method.getParameter().size()) {
+        if (expr.getArguments().getExpressionList().size() == method.getParameterList().size()) {
           boolean success = true;
-          for (int i = 0; i < method.getParameter().size(); i++) {
+          for (int i = 0; i < method.getParameterList().size(); i++) {
             expr.getArguments().getExpression(i).accept(getRealThis());
             //test if every single argument is correct
-            if (!method.getParameter().get(i).getType().print().equals(lastResult.getLast().print()) && !compatible(lastResult.getLast(), method.getParameter().get(i).getType())) {
+            if (!method.getParameterList().get(i).getType().print().equals(lastResult.getLast().print()) &&
+                !compatible(lastResult.getLast(), method.getParameterList().get(i).getType())) {
               success = false;
             }
           }
@@ -541,12 +544,13 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       List<MethodSymbol> fittingMethods = new ArrayList<>();
       for (MethodSymbol method : methodlist) {
         //for every method found check if the arguments are correct
-        if (expr.getArguments().getExpressionList().size() == method.getParameter().size()) {
+        if (expr.getArguments().getExpressionList().size() == method.getParameterList().size()) {
           boolean success = true;
-          for (int i = 0; i < method.getParameter().size(); i++) {
+          for (int i = 0; i < method.getParameterList().size(); i++) {
             expr.getArguments().getExpression(i).accept(getRealThis());
             //test if every single argument is correct
-            if (!method.getParameter().get(i).getType().print().equals(lastResult.getLast().print()) && !compatible(lastResult.getLast(), method.getParameter().get(i).getType())) {
+            if (!method.getParameterList().get(i).getType().print().equals(lastResult.getLast().print()) &&
+                !compatible(lastResult.getLast(), method.getParameterList().get(i).getType())) {
               success = false;
             }
           }
