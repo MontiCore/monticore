@@ -7,6 +7,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
@@ -487,7 +488,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       innerResult = lastResult.getLast();
       TypeSymbol innerResultType = innerResult.getTypeInfo();
       //resolve methods with name of the inner expression
-      Collection<MethodSymbol> methodcollection = innerResultType.getSpannedScope().resolveMethodMany(expr.getName());
+      Collection<MethodSymbol> methodcollection = innerResult.getMethod(expr.getName());
       List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
       //count how many methods can be found with the correct arguments and return type
       List<MethodSymbol> fittingMethods = new ArrayList<>();

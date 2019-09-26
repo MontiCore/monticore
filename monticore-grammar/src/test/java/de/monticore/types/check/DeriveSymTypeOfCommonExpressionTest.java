@@ -4,10 +4,7 @@ import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.MethodSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
+import de.monticore.types.typesymbols._symboltable.*;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -107,9 +104,37 @@ public class DeriveSymTypeOfCommonExpressionTest {
     aListScope.add(add);
     superclass.setSpannedScope(aListScope);
 
+    //Generics
+    TypeSymbol sym = type("List","List");
+    TypeVarSymbol t = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("T").setFullName("T").build();
+    sym.setTypeParameters(Lists.newArrayList(t));
+    sym = add(sym,add(method("add",_booleanSymType),field("x",SymTypeExpressionFactory.createTypeVariable("T"))));
+    ExpressionsBasisScope scopet = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    SymTypeExpression symexp = SymTypeExpressionFactory.createGenerics("List",Lists.newArrayList(_intSymType),sym);
+
+    TypeSymbol subsym = type("ArrayList","ArrayList");
+    subsym.setSuperTypes(Lists.newArrayList(symexp));
+    subsym.setTypeParameters(Lists.newArrayList(t));
+    scopet.add(subsym);
+    sym.setSpannedScope(scopet);
+    ExpressionsBasisScope scopef = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    subsym.setSpannedScope(scopef);
+    SymTypeExpression subsymexp = SymTypeExpressionFactory.createGenerics("ArrayList",Lists.newArrayList(_intSymType),subsym);
+
+    FieldSymbol listVar = field("listVar",symexp);
+    FieldSymbol arraylistVar = field("arraylistVar",subsymexp);
+
+
+    add2scope(scope,sym);
+    add2scope(scope,subsym);
+    add2scope(scope,listVar);
+    add2scope(scope,arraylistVar);
+
+
     ts.setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().setEnclosingScope(scope2).build());
-    add2scope(scope2,add(add(add(ts,fs),ms),ms1));
-    add2scope(scope3,add(add(add(ts,fs),ms),ms1));
+    TypeSymbol test = add(add(add(ts,fs),ms),ms1);
+    add2scope(scope2,test);
+    add2scope(scope3,test);
     ts.getSpannedScope().add(fs);
     ts.getSpannedScope().add(ms);
     ts.getSpannedScope().add(ms1);
@@ -498,5 +523,17 @@ public class DeriveSymTypeOfCommonExpressionTest {
     String s = "myList.add(\"Hallo\")";
     ASTExpression astex = p.parse_StringExpression(s).get();
     assertEquals("void",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void testGenerics() throws IOException{
+    String s = "listVar.add(2)";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void testGenericsAndInheritance() throws IOException{
+
   }
 }

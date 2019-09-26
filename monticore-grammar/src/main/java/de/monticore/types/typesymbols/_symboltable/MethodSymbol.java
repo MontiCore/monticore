@@ -16,7 +16,9 @@ public class MethodSymbol extends MethodSymbolTOP {
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
     clone.setAccessModifier(this.accessModifier);
-    clone.setSpannedScope(this.spannedScope);
+    if(spannedScope!=null){
+      clone.setSpannedScope(this.spannedScope);
+    }
     List<FieldSymbol> parameterClone = Lists.newArrayList();
     for(FieldSymbol parameter: this.getParameter()){
       parameterClone.add(parameter.clone());

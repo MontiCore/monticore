@@ -83,6 +83,9 @@ public abstract class SymTypeExpression {
         resultList.add(method);
       }
     }
+    for(SymTypeExpression superType:typeInfo.getSuperTypes()){
+      resultList.addAll(superType.getMethod(name));
+    }
     return resultList;
   }
 
