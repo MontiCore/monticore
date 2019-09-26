@@ -362,12 +362,12 @@ public class GrammarPrettyPrinter
       }
     }
 
-    if (!a.getAdditionalMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
+    if (!a.getGrammarMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
 
       println(" = ");
       getPrinter().indent();
       printList(a.getAdditionalAttributeList().iterator(), "");
-      printList(a.getAdditionalMethodList().iterator(), "");
+      printList(a.getGrammarMethodList().iterator(), "");
     }
 
     getPrinter().print(";");
@@ -404,12 +404,12 @@ public class GrammarPrettyPrinter
       }
     }
 
-    if (!a.getAdditionalMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
+    if (!a.getGrammarMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
 
       println(" = ");
       getPrinter().indent();
       printList(a.getAdditionalAttributeList().iterator(), "");
-      printList(a.getAdditionalMethodList().iterator(), "");
+      printList(a.getGrammarMethodList().iterator(), "");
     }
 
     getPrinter().print(";");
@@ -445,12 +445,12 @@ public class GrammarPrettyPrinter
       }
     }
 
-    if (!a.getAdditionalMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
+    if (!a.getGrammarMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
 
       println(" = ");
       getPrinter().indent();
       printList(a.getAdditionalAttributeList().iterator(), "");
-      printList(a.getAdditionalMethodList().iterator(), "");
+      printList(a.getGrammarMethodList().iterator(), "");
     }
 
     getPrinter().print(";");
@@ -462,7 +462,7 @@ public class GrammarPrettyPrinter
   }
 
   @Override
-  public void handle(ASTAdditionalMethod a) {
+  public void handle(ASTGrammarMethod a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     print("method ");
 

@@ -67,7 +67,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     grammarOption:GrammarOption max=1
     startRule:StartRule max=1
     scopeRule:ScopeRule max=1 ;
-
+ 
   symbolrule MCGrammar = isComponent:boolean;
 
 
@@ -131,14 +131,14 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   /** Productions form the syntactical structure of the grammar
   */
   interface symbol scope Prod = DeprecatedAnnotation? Name;
-
-  symbolrule Prod =
-    isStartProd:boolean
-    isInterface:boolean
-    isAbstract:boolean
-    isExternal:boolean
-    isEnum:boolean
-    isLexerProd:boolean
+  
+  symbolrule Prod = 
+    isStartProd:boolean 
+    isInterface:boolean 
+    isAbstract:boolean 
+    isExternal:boolean  
+    isEnum:boolean 
+    isLexerProd:boolean 
     isScopeSpanning:boolean
     isSymbolDefinition:boolean
     ;
@@ -246,7 +246,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute action Action executed priot to the rule body
   @attribute alts List of alternatives representing the body of the rule
   */
- ClassProd implements ParserProd =
+  ClassProd implements ParserProd =
     DeprecatedAnnotation? SymbolDefinition* Name
     (
        "extends" superRule:(RuleReference || ",")+
@@ -311,8 +311,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   /** RuleComponents are parts of the alternatives
   */
   interface symbol RuleComponent;
-
-  symbolrule RuleComponent =
+  
+  symbolrule RuleComponent = 
     isTerminal:boolean
     isNonterminal:boolean
     isConstantGroup:boolean
@@ -320,8 +320,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     isLexerNonterminal:boolean
     isList:boolean
     isOptional:boolean
-    subProds:String*
-    //usageName:String // Waits for next release of MontiCore generator
+    subProds:String* 
+    //usageName:String // Waits for next release of MontiCore generator 
     referencedSymbolName:String?
     ;
 
@@ -460,7 +460,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
       "astimplements" aSTSuperInterface:(MCType || ",")+
     )*
     (
-      "=" ( AdditionalMethod | AdditionalAttribute )*
+      "=" ( GrammarMethod | AdditionalAttribute )*
     )? ";";
 
 
@@ -476,7 +476,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute exceptions Lit of the thrown exceptions
   @attribute body Body of the Method (mostly a JavaLazy-Object)
   */
-  AdditionalMethod=
+  GrammarMethod=
       "method"
       (["public"] | ["private"] | ["protected"])?
       (["final"])?
@@ -504,7 +504,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     (Name  ":")?
     MCType
     Card?;
-
+    
   // ------------------------------------------------------------------------------
   // Lexer
 
@@ -574,7 +574,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
       "implements" superInterface:(MCType || ",")+
     )*
     (
-      "=" ( AdditionalMethod | AdditionalAttribute )*
+      "=" ( GrammarMethod | AdditionalAttribute )*
     )? ";";
     
   ScopeRule =
@@ -584,7 +584,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
       "implements" superInterface:(MCType || ",")+
     )*
     (
-      "=" ( AdditionalMethod | AdditionalAttribute )*
+      "=" ( GrammarMethod | AdditionalAttribute )*
     )? 
   	 ";";
   	 

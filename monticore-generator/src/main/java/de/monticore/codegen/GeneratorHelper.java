@@ -158,7 +158,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     // Create list of CDs for super grammars
     for (ASTMCImportStatement importSt : topAst.getMCImportStatementList()) {
       if (importSt.isStar()) {
-        superGrammarCds.add(Names.getQualifiedName(importSt.getMCQualifiedName().getPartList()));
+        superGrammarCds.add(importSt.getQName());
       }
     }
   }

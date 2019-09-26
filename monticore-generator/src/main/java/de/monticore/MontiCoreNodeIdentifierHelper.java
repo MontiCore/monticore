@@ -89,7 +89,7 @@ public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdent
     return format(ast.getName(), nodeName(ast));
   }
   
-  public String getIdent(ASTAdditionalMethod ast) {
+  public String getIdent(ASTGrammarMethod ast) {
     return format(ast.getName(), nodeName(ast));
   }
   
@@ -155,8 +155,8 @@ public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdent
     else if (ast instanceof ASTMCGrammar) {
       return getIdent((ASTMCGrammar) ast);
     }
-    else if (ast instanceof ASTAdditionalMethod) {
-      return getIdent((ASTAdditionalMethod) ast);
+    else if (ast instanceof ASTGrammarMethod) {
+      return getIdent((ASTGrammarMethod) ast);
     }
     else if (ast instanceof ASTMethodParameter) {
       return getIdent((ASTMethodParameter) ast);

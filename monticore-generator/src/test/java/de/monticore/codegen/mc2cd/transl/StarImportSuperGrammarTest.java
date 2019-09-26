@@ -25,7 +25,6 @@ public class StarImportSuperGrammarTest {
   public void testStarImport() {
     ASTMCImportStatement importStatement = cdCompilationUnit.getMCImportStatementList().get(0);
     assertTrue(importStatement.isStar());
-    assertEquals("mc2cdtransformation", importStatement.getMCQualifiedName().getPartList().get(0));
-    assertEquals("Supergrammar", importStatement.getMCQualifiedName().getPartList().get(1));
+    assertEquals("mc2cdtransformation.Supergrammar", importStatement.getQName());
   }
 }
