@@ -13,6 +13,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -154,7 +155,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope,subsym);
 
 
-    //TODO: two generic parameters, supertype
+    //two generic parameters, supertype
     TypeSymbol genSup = type("GenSup","GenSup");
     TypeVarSymbol t1 = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("S").setFullName("S").build();
     TypeVarSymbol t2 = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("V").setFullName("V").build();
@@ -170,7 +171,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope,genSup);
     add2scope(scope,genSupVar);
 
-    //TODO: two generic parameters, subtype
+    //two generic parameters, subtype
     TypeSymbol genSub = type("GenSub","GenSub");
     genSub.setTypeParameters(Lists.newArrayList(t1,t2));
     genSub.setSuperTypes(Lists.newArrayList(genSupType));
@@ -182,9 +183,39 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope,genSub);
     add2scope(scope,genSubVar);
 
-    //TODO: subtype with typevariable generic parameter, supertype with actual type generic parameter
-    //TODO: supertype with less generic parameters than subtype
+    //subtype with variable generic parameter, supertype with fixed generic parameter
+    //use existing type as supertype
+    TypeSymbol varGenType = type("VarGen","VarGen");
+    varGenType.setSuperTypes(Lists.newArrayList(symexp));
+    TypeVarSymbol typeVarSymbol = ExpressionsBasisSymTabMill.typeVarSymbolBuilder().setName("N").setFullName("N").build();
+    varGenType.setTypeParameters(Lists.newArrayList(typeVarSymbol));
+    MethodSymbol calculate = method("calculate",SymTypeExpressionFactory.createTypeVariable("N",typeVarSymbol));
+    varGenType = add(varGenType,calculate);
+    ExpressionsBasisScope varGenScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    varGenScope.add(calculate);
+    varGenType.setSpannedScope(varGenScope);
+    SymTypeExpression varGenSym = SymTypeExpressionFactory.createGenerics("VarGen",Lists.newArrayList(_intSymType),varGenType);
+    varGenSym.setTypeInfo(varGenType);
+    FieldSymbol varGen = field("varGen",varGenSym);
+    add2scope(scope,varGenType);
+    add2scope(scope,varGen);
 
+    //supertype with less generic parameters than subtype
+    //use existing type as supertype
+    TypeSymbol moreGenType = type("MoreGen","MoreGen");
+    moreGenType.setSuperTypes(Lists.newArrayList(symexp));
+    TypeVarSymbol moreType1 = ExpressionsBasisSymTabMill.typeVarSymbolBuilder().setName("F").setFullName("F").build();
+    moreGenType.setTypeParameters(Lists.newArrayList(t,moreType1));
+    MethodSymbol insert = add(method("insert",SymTypeExpressionFactory.createTypeVariable("T",t)),field("x",SymTypeExpressionFactory.createTypeVariable("F",moreType1)));
+    moreGenType = add(moreGenType,insert);
+    ExpressionsBasisScope moreGenScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    moreGenScope.add(insert);
+    moreGenType.setSpannedScope(moreGenScope);
+    SymTypeExpression moreGenSym = SymTypeExpressionFactory.createGenerics("MoreGen",Lists.newArrayList(_intSymType,_longSymType),moreGenType);
+    moreGenSym.setTypeInfo(moreGenType);
+    FieldSymbol moreGen = field("moreGen",moreGenSym);
+    add2scope(scope,moreGenType);
+    add2scope(scope,moreGen);
 
     derLit.setScope(scope);
   }
@@ -586,6 +617,14 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s = "genSupVar.load(3)";
     astex = p.parse_StringExpression(s).get();
     assertEquals("String",tc.typeOf(astex).print());
+
+    s = "varGen.calculate()";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+
+    s = "moreGen.insert(12L)";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
   }
 
   @Test
@@ -597,5 +636,13 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s = "genSubVar.load(3)";
     astex = p.parse_StringExpression(s).get();
     assertEquals("String",tc.typeOf(astex).print());
+
+    s="varGen.add(4)";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
+
+    s="moreGen.add(12)";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
   }
 }
