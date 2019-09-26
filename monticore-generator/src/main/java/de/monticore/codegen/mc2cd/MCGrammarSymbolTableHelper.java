@@ -467,12 +467,12 @@ public class MCGrammarSymbolTableHelper {
    */
   public static boolean isConstGroupIterated(RuleComponentSymbol prodComponent) {
     Preconditions.checkArgument(prodComponent.isConstantGroup());
-    if (!prodComponent.isList() && prodComponent.getSubProdComponents().size() <= 1) {
+    if (!prodComponent.isList() && prodComponent.getSubProds().size() <= 1) {
       return false;
     }
-    prodComponent.getSubProdComponents();
+    prodComponent.getSubProds();
     Collection<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-    for (String component : prodComponent.getSubProdComponents()) {
+    for (String component : prodComponent.getSubProds()) {
       set.add(component);
     }
     return set.size() > 1;

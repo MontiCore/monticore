@@ -7,7 +7,6 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.utils.Link;
 
 import java.util.Optional;
@@ -21,7 +20,6 @@ import static de.monticore.codegen.mc2cd.TransformationHelper.getUsageName;
 /**
  * The CDAttributes generated from AttributeInASTs completely hide any CDAttributes derived from
  * NonTerminals.
- *
  */
 public class RemoveOverriddenAttributesTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
@@ -32,11 +30,12 @@ public class RemoveOverriddenAttributesTranslation implements
     for (Link<ASTNode, ASTCDClass> classLink : rootLink.getLinks(ASTNode.class,
         ASTCDClass.class)) {
 
-      classLink.getLinks(ASTNode.class, ASTCDAttribute.class).stream()
-          .filter(attributeLink -> isOverridden(attributeLink.source(), classLink))
-          .filter(attributeLink -> isNotInherited(attributeLink.target()))
-          .map(Link::target)
-          .forEach(classLink.target().getCDAttributeList()::remove);
+      for (Link<ASTNode, ASTCDAttribute> link : classLink.getLinks(ASTNode.class, ASTCDAttribute.class)) {
+        if (isOverridden(link.source(), classLink) && isNotInherited(link.target())) {
+          ASTCDAttribute target = link.target();
+          classLink.target().getCDAttributeList().remove(target);
+        }
+      }
     }
     return rootLink;
   }
@@ -53,11 +52,18 @@ public class RemoveOverriddenAttributesTranslation implements
         .map(Optional::get)
         .anyMatch(usageName.get()::equals);
 
-    boolean matchByTypeName = !usageName.isPresent() && attributesInASTLinkingToSameClass.stream()
-        .filter(attributeInAST -> !attributeInAST.getNameOpt().isPresent())
-        .map(ASTAdditionalAttribute::getMCType)
-        .map(FullGenericTypesPrinter::printType)
-        .anyMatch(getName(source).orElse("")::equals);
+    boolean matchByTypeName = false;
+    if (!usageName.isPresent()) {
+      for (ASTAdditionalAttribute attributeInAST : attributesInASTLinkingToSameClass) {
+        if (!attributeInAST.getNameOpt().isPresent()) {
+          String name = attributeInAST.getMCType().printType();
+          if(getName(source).orElse("").equals(name)){
+            matchByTypeName= true;
+            break;
+          }
+        }
+      }
+    }
 
     return matchByUsageName || matchByTypeName;
   }

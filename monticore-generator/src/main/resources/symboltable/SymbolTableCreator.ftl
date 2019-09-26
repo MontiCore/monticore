@@ -115,13 +115,12 @@ public class ${className} implements ${grammarName}Visitor {
     return scope;
   }
 
-<#list symbolDefiningRules as ruleSymbol>
+<#list symbolDefiningRules as ruleSymbol, symbolName>
   <#assign ruleName = ruleSymbol.getName()>
-  <#assign symbolName = ruleSymbol.getSymbolDefinitionKind().orElse("") + "Symbol">
   <#assign astName = genHelper.getQualifiedASTName(ruleSymbol)>
-  <#assign isScopeSpanning = genHelper.isScopeSpanningSymbol(ruleSymbol)>
-  <#assign qualifiedSymbolName = genHelper.getQualifiedSymbolName(ruleSymbol.getEnclosingScope(), ruleSymbol.getSymbolDefinitionKind().orElse("") )>
-  // Methods for ${symbolName}
+  <#assign isScopeSpanning = genHelper.spansScope(ruleSymbol)>
+  <#assign qualifiedSymbolName = genHelper.getQualifiedSymbolName(ruleSymbol.getEnclosingScope(), symbolName )>
+  // Methods for ${ruleSymbol.getName()}: ${symbolName}
 <#if !ruleSymbol.isInterface()>
   @Override
   public void visit(${astName} ast) {
@@ -146,12 +145,12 @@ public class ${className} implements ${grammarName}Visitor {
 
   public void addToScopeAndLinkWithNode(${qualifiedSymbolName} symbol, ${astName} astNode) {
     addToScope(symbol);
-    setLinkBetweenSymbolAndNode(symbol, astNode);
 <#if isScopeSpanning>
   ${scopeName} scope = createScope(false);
     putOnStack(scope);
     symbol.setSpannedScope(scope);
 </#if>
+    setLinkBetweenSymbolAndNode(symbol, astNode);
   }
 
   public void setLinkBetweenSymbolAndNode(${qualifiedSymbolName} symbol, ${astName} astNode) {
@@ -160,7 +159,7 @@ public class ${className} implements ${grammarName}Visitor {
 
     // ast -> symbol
     astNode.setSymbol(symbol);
-    astNode.set${genHelper.getSymbolNameFromQualifiedSymbol(symbolName)}(symbol);
+    astNode.set${genHelper.getSymbolNameFromQualifiedSymbol(qualifiedSymbolName)}(symbol);
     astNode.setEnclosingScope(symbol.getEnclosingScope());
 
 <#if isScopeSpanning>
@@ -183,6 +182,7 @@ public class ${className} implements ${grammarName}Visitor {
 </#list>
 
 <#list nonSymbolDefiningRules as ruleSymbol>
+  <#assign isScopeSpanning = genHelper.spansScope(ruleSymbol)>
   @Override
   public void visit(AST${ruleSymbol.getName()} node) {
     if (getCurrentScope().isPresent()) {
@@ -192,7 +192,7 @@ public class ${className} implements ${grammarName}Visitor {
       Log.error("Could not set enclosing scope of ASTNode \"" + node
           + "\", because no scope is set yet!");
     }
-    <#if ruleSymbol.isScopeDefinition()>
+    <#if isScopeSpanning>
         ${scopeName} scope = create_${ruleSymbol.getName()}(node);
       initialize_${ruleSymbol.getName()}(scope, node);
       putOnStack(scope);
@@ -200,7 +200,7 @@ public class ${className} implements ${grammarName}Visitor {
     </#if>
   }
 
-  <#if ruleSymbol.isScopeDefinition()>
+  <#if isScopeSpanning>
     protected ${scopeName} create_${ruleSymbol.getName()}(AST${ruleSymbol.getName()} ast) {
       <#if !genHelper.isNamed(ruleSymbol)>
         // creates new visibility scope

@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore
 image: maven:3.5.4-jdk-8-alpine
 
 #include:
@@ -5,6 +6,7 @@ image: maven:3.5.4-jdk-8-alpine
 
 variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+  GRADLE_OPTS: ""
   MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
 
 
@@ -13,18 +15,19 @@ before_script:
   - chmod +x monticore-generator/it/experiments/gradlew
   - chmod +x monticore-generator/it/gradlew
   - chmod +x monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/gradlew
+  - chmod +x monticore-grammar/monticore-grammar-it/gradlew
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 cache:
   paths:
     - .m2/
     - .gradle/wrapper
-    - .gradle/caches
   key: ${CI_COMMIT_REF_SLUG} # Cache per branch
 
 stages:
   - build
-  - test
+  - test1
+  - test2
 
 build_dev:
   stage: build
@@ -51,38 +54,34 @@ build_branches:
     - dev
     - master
 
-integration-test:
-  stage: test
+it:
+  stage: test2
   dependencies: []
   script:
     - cd monticore-generator/it
-    - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify"
-    - "mvn --settings ../../settings.xml $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS clean verify -P emf-it-tests"
-
-it-gradle:
-  stage: test
-  dependencies: []
-  script:
-    - cd monticore-generator/it
-    - "./gradlew build"
-    - "./gradlew build -PbuildProfile=emf"
+    - "./gradlew build $GRADLE_OPTS"
+    - "./gradlew build -PbuildProfile=emf $GRADLE_OPTS"
     - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
-    - "./gradlew build"
-  only:
-    - dev
+    - "./gradlew build $GRADLE_OPTS"
 
-it-experiments-gradle:
-  stage: test
+  #rules:
+  #  - if: '$CI_COMMIT_REF_SLUG == "dev"'
+  #    when: always
+  #  - when: manual
+
+it-experiments-grammar:
+  stage: test1
   dependencies: []
   script:
     - cd monticore-generator/it/experiments
-    - "./gradlew build"
-  allow_failure: true
-  only:
-    - dev
+    - "./gradlew build $GRADLE_OPTS"
+    - "cd ../../../monticore-grammar/monticore-grammar-it"
+    - "./gradlew build $GRADLE_OPTS"
+  #only:
+  #  - dev
 
 trigger-automata:
-  stage: test
+  stage: test1
   trigger:
     project: monticore/languages/automaton
     branch: master
@@ -90,7 +89,7 @@ trigger-automata:
     - dev
 
 trigger-cd4a:
-  stage: test
+  stage: test1
   trigger:
     project: monticore/cd4analysis/cd4analysis
     branch: develop

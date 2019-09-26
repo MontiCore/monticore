@@ -15,34 +15,40 @@ import java.io.StringReader;
  */
 public class JsonParser {
   
+  /**
+   * Parses a given String encoded in JSON to a {@link JsonElement}. This method should be used if
+   * the Json type (i.e., Object, Array,...) of the encoded JSON is unclear.
+   * 
+   * @param s
+   * @return
+   */
   public static JsonElement parseJson(String s) {
     JsonReader reader = new JsonReader(new StringReader(s));
     return parseJson(reader);
   }
   
+  /**
+   * Parses a given String encoded in JSON to a {@link JsonObject}. Parsing of the String fails with
+   * an error if the encoded String cannot be parsed into a Json object.
+   * 
+   * @param s
+   * @return
+   */
   public static JsonObject parseJsonObject(String s) {
     JsonReader reader = new JsonReader(new StringReader(s));
     return parseJsonObject(reader);
   }
   
+  /**
+   * Parses a given String encoded in JSON to a {@link JsonArray}. Parsing of the String fails with
+   * an error if the encoded String cannot be parsed into a Json array.
+   * 
+   * @param s
+   * @return
+   */
   public static JsonArray parseJsonArray(String s) {
     JsonReader reader = new JsonReader(new StringReader(s));
     return parseJsonArray(reader);
-  }
-  
-  @Deprecated
-  public static JsonElement deserializeJson(String s) {
-    return parseJson(s);
-  }
-  
-  @Deprecated
-  public static JsonObject deserializeJsonObject(String s) {
-    return parseJsonObject(s);
-  }
-  
-  @Deprecated
-  public static JsonArray deserializeJsonArray(String s) {
-    return parseJsonArray(s);
   }
   
   protected static JsonElement parseJson(JsonReader reader) {
@@ -55,15 +61,15 @@ public class JsonParser {
           case BEGIN_OBJECT:
             return parseJsonObject(reader);
           case BOOLEAN:
-            return new JsonBoolean(reader.nextBoolean());
+            return JsonElementFactory.createJsonBoolean(reader.nextBoolean());
           case END_DOCUMENT:
           case NULL:
             reader.nextNull();
-            return new JsonNull();
+            return JsonElementFactory.createJsonNull();
           case NUMBER:
-            return new JsonNumber(reader.nextString());
+            return JsonElementFactory.createJsonNumber(reader.nextString());
           case STRING:
-            return new JsonString(reader.nextString());
+            return JsonElementFactory.createJsonString(reader.nextString());
           case END_ARRAY:
           case END_OBJECT:
           case NAME:
@@ -81,7 +87,7 @@ public class JsonParser {
   }
   
   protected static JsonObject parseJsonObject(JsonReader reader) {
-    JsonObject result = new JsonObject();
+    JsonObject result = JsonElementFactory.createJsonObject();
     try {
       reader.beginObject();
       while (reader.hasNext()) {
@@ -107,7 +113,7 @@ public class JsonParser {
   }
   
   protected static JsonArray parseJsonArray(JsonReader reader) {
-    JsonArray result = new JsonArray();
+    JsonArray result = JsonElementFactory.createJsonArray();
     try {
       reader.beginArray();
       while (reader.hasNext()) {
@@ -122,20 +128,20 @@ public class JsonParser {
             result.add(object);
             break;
           case BOOLEAN:
-            JsonBoolean bool = new JsonBoolean(reader.nextBoolean());
+            JsonBoolean bool = JsonElementFactory.createJsonBoolean(reader.nextBoolean());
             result.add(bool);
             break;
           case NUMBER:
-            JsonNumber number = new JsonNumber(reader.nextString());
+            JsonNumber number = JsonElementFactory.createJsonNumber(reader.nextString());
             result.add(number);
             break;
           case STRING:
-            JsonString string = new JsonString(reader.nextString());
+            JsonString string = JsonElementFactory.createJsonString(reader.nextString());
             result.add(string);
             break;
           case NULL:
             reader.nextNull();
-            result.add(new JsonNull());
+            result.add(JsonElementFactory.createJsonNull());
             break;
           case END_DOCUMENT:
           case NAME:
@@ -151,6 +157,24 @@ public class JsonParser {
       e.printStackTrace();
     }
     return result;
+  }
+  
+  public static void enableObjectMemberTracing() {
+    JsonElementFactory.setInstance(new JsonElementFactory() {
+      @Override
+      protected JsonObject doCreateJsonObject() {
+        return new TraceableJsonObject();
+      }
+    });
+  }
+  
+  public static void disableObjectMemberTracing() {
+    JsonElementFactory.setInstance(new JsonElementFactory());
+  }
+  
+  static {
+    //by default, enableObjectMemberTracing
+    enableObjectMemberTracing();
   }
   
 }

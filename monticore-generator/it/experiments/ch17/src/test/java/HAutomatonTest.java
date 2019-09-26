@@ -1,5 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
+import de.se_rwth.commons.logging.Log;
 import hautomaton._parser.HAutomatonParser;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import sautomaton._ast.ASTAutomaton;
 
@@ -9,6 +11,12 @@ import java.util.Optional;
 import static org.junit.Assert.assertTrue;
 
 public class HAutomatonTest {
+
+  @BeforeClass
+  public static void setup() {
+    Log.init();
+    Log.enableFailQuick(false);
+  }
 
 
   @Test

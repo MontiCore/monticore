@@ -159,12 +159,6 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${scopeClass} {
 <#list symbolNames?keys as symbol>
   /**
    * Starts the bottom-up inter-model resolution process.
-   *
-   * @param <T>
-   * @param resolvingInfo
-   * @param name
-   * @param kind
-   * @return
    */
   @Override
   public Collection<${symbolNames[symbol]}> continue${symbol}WithEnclosingScope(
@@ -190,4 +184,18 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${scopeClass} {
   }
 
 </#list>
+
+  <#assign langVisitorType = glex.getGlobalVar("nameHelper").getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "ScopeVisitor")>
+  public void accept(${langVisitorType} visitor) {
+  <#if genHelper.isSupertypeOfHWType(className, "")>
+    <#assign plainName = className?remove_ending("TOP")>
+    if (this instanceof ${plainName}) {
+      visitor.handle((${plainName}) this);
+    } else {
+      throw new UnsupportedOperationException("0xA7010${genHelper.getGeneratedErrorCode(ast)} Only handwritten class ${plainName} is supported for the visitor");
+    }
+  <#else>
+    visitor.handle(this);
+  </#if>
+  }
 }

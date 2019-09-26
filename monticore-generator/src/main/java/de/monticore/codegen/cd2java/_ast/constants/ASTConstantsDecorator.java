@@ -62,7 +62,7 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
             .collect(Collectors.toList()));
       }
     }
-    Collection<CDDefinitionSymbol> superSymbolList = service.getSuperCDs();
+    List<CDDefinitionSymbol> superSymbolList = service.getSuperCDsTransitive();
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(className)

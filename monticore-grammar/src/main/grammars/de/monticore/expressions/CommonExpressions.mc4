@@ -43,9 +43,29 @@ component grammar CommonExpressions
 
 
   /*=================================================================*/
-
+  /** CallExpression is a Method-Call like toString()
+  * Method Name must be a name (nothing like f()() or a[0]())
+  * left can be any expression, a Class-Name: A.f(), variable-Name a.f(),
+  * BracketExpression ("foo"+"Bar").toLowerCase() or other Method Calls:
+  * c.getA().getB()
+  *
+  */
   CallExpression implements Expression <240> =
 	Expression Arguments;
+
+	astrule CallExpression = Name;
+
+  /*=================================================================*/
+
+  /** Field access: e.g. obj.attr or also (b ? getobject() : obj).attribute
+   *  This is similar to package names:
+   *  So when the language shall also allow QualifiedNames as Expressions,
+   *  they might be parsed here. E.g. in "x.y.Person", "x" might be
+   *  parsed as NameExpression, even though it is a package name.
+   *  This is to be resolved via SymbolTable
+   */
+  FieldAccessExpression implements Expression <290> =
+  	Expression "." Name;
 
   /*=================================================================*/
 

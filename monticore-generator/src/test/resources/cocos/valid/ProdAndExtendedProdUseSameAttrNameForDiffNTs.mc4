@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cocos.valid;
+
+grammar ProdAndExtendedProdUseSameAttrNameForDiffNTs{
+
+  A;
+
+  B;
+
+  Super1 = x:B;
+
+  Sub1 extends Super1 = c:A;
+
+  Super2 = c:A;
+
+  Sub2 extends Super2 = c:A;
+
+  Super3 = "c";
+
+  Sub3 extends Super3 = c:A;
+
+  State =
+  "state" Name
+  ( ("{" (State)* "}") | ";") ;
+
+  ActState extends State =
+  "state" Name
+  ("entry:" entry:Name)?
+  ( ("{" (State)* "}") | ";") ;
+}

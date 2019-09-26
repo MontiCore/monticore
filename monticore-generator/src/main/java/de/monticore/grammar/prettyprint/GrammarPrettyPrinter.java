@@ -134,20 +134,33 @@ public class GrammarPrettyPrinter
   }
 
   @Override
+  public void handle(ASTKeyTerminal a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    if (a.isPresentUsageName()) {
+      print("" + a.getUsageName() + ":");
+    }
+    print(" key(");
+    String sep = "";
+    for (String name: a.getStringList()) {
+      print(sep);
+      print("\"" + name + "\"");
+      sep = " | ";
+    }
+    print(")");
+    outputIteration(a.getIteration());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+  @Override
   public void handle(ASTTerminal a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     // output("ASTTerminal Iteration " + a.getIteration());
     if (a.isPresentUsageName()) {
       print("" + a.getUsageName() + ":");
     }
-    /* if (a.isKeyword()) { output("!" + QUOTE + a.getName() + QUOTE + " "); } else { */
-
-    // Transfering to new version
     print("\"" + a.getName() + "\"");
-    // }
     outputIteration(a.getIteration());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
-
   }
   
   @Override

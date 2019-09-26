@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cocos.valid;
+
+grammar ProdAndOverriddenProdUseSameAttrNameForDiffNTs_sub extends cocos.valid.ProdAndOverriddenProdUseSameAttrNameForDiffNTs_super{
+
+  B;
+
+  Prod1 = c:B;
+
+  Prod2 = c:B;
+
+  Prod3 = c:B;
+
+  State =
+  "state" Name
+  ("entry:" entry:Name)?
+  ( ("{" (State)* "}") | ";") ;
+}

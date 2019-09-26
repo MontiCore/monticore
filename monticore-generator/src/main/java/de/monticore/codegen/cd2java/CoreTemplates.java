@@ -1,11 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDStereoValue;
+import de.monticore.cd.cd4analysis._ast.ASTCDStereotype;
+import de.monticore.cd.cd4analysis._ast.ASTModifier;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public final class CoreTemplates {
 
@@ -29,6 +34,8 @@ public final class CoreTemplates {
 
   public static final String ENUM = "core.Enum";
 
+  public static final String ANNOTATIONS = "core.Annotations";
+
   private CoreTemplates() {}
 
   public static HookPoint createPackageHookPoint(final String... packageName) {
@@ -37,5 +44,22 @@ public final class CoreTemplates {
 
   public static HookPoint createPackageHookPoint(final List<String> packageName) {
     return new StringHookPoint("package " + String.join(".", packageName) + ";");
+  }
+
+  public static HookPoint createAnnotationsHookPoint(final Optional<ASTModifier> modifier) {
+    String anno = "";
+    if (modifier.isPresent() && modifier.get().isPresentStereotype()) {
+      ASTCDStereotype stereo = modifier.get().getStereotype();
+      for (ASTCDStereoValue stereoValue : stereo.getValueList()) {
+        if (MC2CDStereotypes.DEPRECATED.toString().equals(stereoValue.getName())) {
+          if (stereoValue.isPresentValue()) {
+            // Append tag for java api
+            anno = "/**\n * @deprecated " + stereoValue.getValue() + "\n **/\n";
+          }
+          anno += MC2CDStereotypes.DEPRECATED.toString();
+        }
+      }
+    }
+    return new StringHookPoint(anno);
   }
 }

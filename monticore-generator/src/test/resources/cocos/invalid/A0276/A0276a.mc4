@@ -2,7 +2,7 @@
 
 package cocos.invalid.A0276;
 
-grammar A0276a {
+component grammar A0276a {
 
   external A;
 

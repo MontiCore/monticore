@@ -20,7 +20,8 @@ import de.se_rwth.commons.Names;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.*;
+import static de.monticore.codegen.mc2cd.TransformationHelper.createType;
+import static de.monticore.codegen.mc2cd.TransformationHelper.getPackageName;
 
 /**
  * Infers the type that ASTCDAttributes should have according to what kind of rule the original
@@ -43,11 +44,16 @@ public class ReferenceTypeTranslation implements
       link.target().setMCType(createType("String"));
     }
 
+    for (Link<ASTKeyTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTKeyTerminal.class,
+            ASTCDAttribute.class)) {
+      link.target().setMCType(createType("String"));
+    }
+
     for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
         ASTCDAttribute.class)) {
       ASTMCType type = determineTypeToSetForAttributeInAST(link.source().getMCType(), rootLink.source());
       link.target().setMCType(type);
-        addStereotypeForASTTypes(link.source(), link.target(), rootLink.source());
+      addStereotypeForASTTypes(type, link.target(), rootLink.source());
     }
 
     return rootLink;
@@ -71,7 +77,7 @@ public class ReferenceTypeTranslation implements
   }
 
   private ASTMCType determineTypeToSetForAttributeInAST(ASTMCType astGenericType,
-                                                      ASTMCGrammar astMCGrammar) {
+                                                        ASTMCGrammar astMCGrammar) {
     Optional<ProdSymbol> ruleSymbol = TransformationHelper
         .resolveAstRuleType(astMCGrammar, astGenericType);
     if (!ruleSymbol.isPresent()) {
@@ -90,6 +96,12 @@ public class ReferenceTypeTranslation implements
     Optional<ASTMCType> byReference = MCGrammarSymbolTableHelper
         .resolveRule(astMCGrammar, typeName)
         .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeName));
+    if (!byReference.isPresent() && typeName.startsWith("AST")) {
+      String typeNameWithoutAST = typeName.replaceFirst("AST", "");
+      byReference = MCGrammarSymbolTableHelper
+          .resolveRule(astMCGrammar, typeNameWithoutAST)
+          .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeNameWithoutAST));
+    }
     Optional<ASTMCType> byPrimitive = determineConstantsType(typeName)
         .map(MCBasicTypesNodeFactory::createASTMCPrimitiveType);
     return byReference.orElse(byPrimitive.orElse(createType(FullGenericTypesPrinter.printType(astGenericType))));
@@ -134,16 +146,16 @@ public class ReferenceTypeTranslation implements
     }
   }
 
-  private void addStereotypeForASTTypes(ASTAdditionalAttribute astAdditionalAttributes,
-                                        ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
+  private void addStereotypeForASTTypes(ASTMCType type, ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
     //if in astrule is Prod given without AST prefix e.g. foo:Foo
-    String simpleName = astAdditionalAttributes.getMCType().getNameList().stream().reduce((a, b) -> a + "." + b).get();
+    String simpleName = type.getNameList().stream().reduce((a, b) -> a + "." + b).get();
     Optional<ProdSymbol> mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, simpleName);
     if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
       TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
-    } else if (simpleName.startsWith("AST")) {
-      //if in astrule is Prod given with AST prefix e.g. foo:ASTFoo
-      simpleName = simpleName.replaceFirst("AST", "");
+    } else if (type.getNameList().get(type.getNameList().size() - 1).startsWith("AST")) {
+      //case if the type name constist e.g. of bla.ASTFoo -> have to remove AST prefix to find in symboltable -> bla.Foo
+      String noASTPrefix = type.getNameList().get(type.getNameList().size() - 1).replaceFirst("AST", "");
+      simpleName = simpleName.contains(".") ? simpleName.substring(0, simpleName.lastIndexOf(".") + 1) + noASTPrefix : noASTPrefix;
       mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, simpleName);
       if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
         TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");

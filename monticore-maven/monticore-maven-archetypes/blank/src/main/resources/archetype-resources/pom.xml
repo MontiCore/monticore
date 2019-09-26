@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -19,12 +20,12 @@
     <junit.version>4.12</junit.version>
     <logback.version>1.1.2</logback.version>
     <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
-    <monticore.version>5.2.0</monticore.version>
+    <monticore.version>5.3.0</monticore.version>
 
     <!-- .. Plugins ....................................................... -->
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
-    <monticore.plugin>5.2.0</monticore.plugin>
+    <monticore.plugin>5.3.0</monticore.plugin>
 
     <!-- Classifiers -->
     <grammars.classifier>grammars</grammars.classifier>

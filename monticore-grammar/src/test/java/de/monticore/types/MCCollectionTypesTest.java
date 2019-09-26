@@ -12,6 +12,7 @@ import de.monticore.types.mccollectiontypeswithoutprimitivestest._parser.MCColle
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -224,7 +225,6 @@ public class MCCollectionTypesTest {
     assertTrue(type.get().getMCTypeArgumentList().get(0) instanceof ASTMCPrimitiveTypeArgument);
 
   }
-
 
   @Test
   public void collectionTypeWithIntFail() throws IOException {

@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.typescalculator;
+
+grammar CombineExpressionsWithLiterals extends
+          de.monticore.expressions.AssignmentExpressions,
+	        de.monticore.expressions.CommonExpressions,
+	          de.monticore.expressions.BitExpressions,
+	    	    de.monticore.literals.MCCommonLiterals {
+
+    start Expression;
+
+}

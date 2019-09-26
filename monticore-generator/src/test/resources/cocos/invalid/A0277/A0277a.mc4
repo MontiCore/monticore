@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cocos.invalid.A0277;
+
+component grammar A0277a{
+
+
+    abstract A;
+
+}

@@ -6,6 +6,10 @@ target/
 *.iml
 .idea/
 *.factorypath
-/monticore-gradle/.gradle
-/monticore-gradle/build
+build
 .mvn/extensions.xml
+.profiler/
+.gradle
+*.bak
+out
+target-emf/

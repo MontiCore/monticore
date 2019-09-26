@@ -17,6 +17,8 @@ import de.se_rwth.commons.logging.Log;
  */
 public class JsonPrinter {
   
+  protected static boolean enableIndentation = false;
+  
   protected boolean serializeEmptyLists;
   
   protected IndentPrinter printer;
@@ -27,52 +29,108 @@ public class JsonPrinter {
   
   protected int nestedObjectDepth;
   
+  protected boolean indentBeforeNewLine;
+  
+  /**
+   * Constructor for de.monticore.symboltable.serialization.JsonPrinter
+   * 
+   * @param serializeEmptyLists
+   */
   public JsonPrinter(boolean serializeEmptyLists) {
     this.serializeEmptyLists = serializeEmptyLists;
     this.printer = new IndentPrinter();
     this.isFirstAttribute = true;
     this.nestedListDepth = 0;
     this.nestedObjectDepth = 0;
+    this.indentBeforeNewLine = false;
   }
   
+  /**
+   * Constructor for de.monticore.symboltable.serialization.JsonPrinter that does not print empty
+   * lists
+   */
   public JsonPrinter() {
     this(false);
   }
   
+  /**
+   * @return enableIndentation
+   */
+  public static boolean isIndentationEnabled() {
+    return enableIndentation;
+  }
+  
+  /**
+   * @param enableIndentation the enableIndentation to set
+   */
+  public static void enableIndentation() {
+    JsonPrinter.enableIndentation = true;
+  }
+  
+  /**
+   * @param enableIndentation the enableIndentation to set
+   */
+  public static void disableIndentation() {
+    JsonPrinter.enableIndentation = false;
+  }
+  
+  /**
+   * Prints the begin of an object in Json notation.
+   */
   public void beginObject() {
     printCommaIfNecessary();
-    printer.print("{");
+    print("{");
     isFirstAttribute = true;
     nestedObjectDepth++;
+    indentBeforeNewLine = true;
+  }
+  /**
+   * Prints the begin of an object in Json notation as member or the current object.
+   */
+  public void beginObject(String kind) {
+    printCommaIfNecessary();
+    print("\"");
+    print(kind);
+    if (isIndentationEnabled()) {
+      print("\": {");
+    }
+    else {
+      print("\":{");
+    }
+    isFirstAttribute = true;
+    nestedObjectDepth++;
+    indentBeforeNewLine = true;
   }
   
   /**
    * Prints the end of an object in Json notation.
    */
   public void endObject() {
-    printer.print("}");
+    println("");
+    print("}");
     if (0 == nestedListDepth) {
       isFirstAttribute = true;
     }
     nestedObjectDepth--;
+    unindent();
   }
   
   /**
-   * Prints the beginning of a collection in Json notation. If the optional parameter "kind" is
-   * present, it prints the collection as attribute of the given kind.
+   * Prints the beginning of a collection in Json notation as member or the current object.
    */
   public void beginArray(String kind) {
     printCommaIfNecessary();
-    printer.print("\"");
-    printer.print(kind);
-    printer.print("\":[");
+    print("\"");
+    print(kind);
+    if (isIndentationEnabled()) {
+      print("\": [");
+    }
+    else {
+      print("\":[");
+    }
     isFirstAttribute = true;
     nestedListDepth++;
-  }
-  
-  @Deprecated
-  public void beginAttributeList(String kind) {
-    beginArray(kind);
+    indentBeforeNewLine = true;
   }
   
   /**
@@ -81,28 +139,21 @@ public class JsonPrinter {
    */
   public void beginArray() {
     printCommaIfNecessary();
-    printer.print("[");
+    print("[");
     isFirstAttribute = true;
     nestedListDepth++;
-  }
-  
-  @Deprecated
-  public void beginAttributeList() {
-    beginArray();
+    indentBeforeNewLine = true;
   }
   
   /**
    * Prints the end of a collection in Json notation.
    */
   public void endArray() {
-    printer.print("]");
+    println("");
+    print("]");
     nestedListDepth--;
     isFirstAttribute = false; // This is to handle empty lists
-  }
-  
-  @Deprecated
-  public void endAttributeList() {
-    endArray();
+    unindent();
   }
   
   /**
@@ -116,19 +167,14 @@ public class JsonPrinter {
    */
   public void member(String kind, Collection<String> values) {
     if (!values.isEmpty()) {
-      beginAttributeList(kind);
-      values.stream().forEach(o -> attribute(o));
-      endAttributeList();
+      beginArray(kind);
+      values.stream().forEach(o -> value(o));
+      endArray();
     }
     else if (serializeEmptyLists) {
-      beginAttributeList(kind);
-      endAttributeList();
+      beginArray(kind);
+      endArray();
     }
-  }
-  
-  @Deprecated
-  public void attribute(String kind, Collection<String> values) {
-    member(kind, values);
   }
   
   /**
@@ -143,16 +189,11 @@ public class JsonPrinter {
    */
   public void member(String kind, Optional<String> value) {
     if (null != value && value.isPresent()) {
-      attribute(kind, value.get());
+      member(kind, value.get());
     }
     else if (serializeEmptyLists) {
-      internalAttribute(kind, null);
+      internalMember(kind, null);
     }
-  }
-  
-  @Deprecated
-  public void attribute(String kind, Optional<String> value) {
-    member(kind, value);
   }
   
   /**
@@ -163,12 +204,7 @@ public class JsonPrinter {
    * @param value The double value of the Json attribute
    */
   public void member(String kind, double value) {
-    internalAttribute(kind, value);
-  }
-  
-  @Deprecated
-  public void attribute(String kind, double value) {
-    member(kind, value);
+    internalMember(kind, value);
   }
   
   /**
@@ -179,12 +215,7 @@ public class JsonPrinter {
    * @param value The long value of the Json attribute
    */
   public void member(String kind, long value) {
-    internalAttribute(kind, value);
-  }
-  
-  @Deprecated
-  public void attribute(String kind, long value) {
-    member(kind, value);
+    internalMember(kind, value);
   }
   
   /**
@@ -195,12 +226,7 @@ public class JsonPrinter {
    * @param value The float value of the Json attribute
    */
   public void member(String kind, float value) {
-    internalAttribute(kind, value);
-  }
-  
-  @Deprecated
-  public void attribute(String kind, float value) {
-    member(kind, value);
+    internalMember(kind, value);
   }
   
   /**
@@ -211,12 +237,7 @@ public class JsonPrinter {
    * @param value The int value of the Json attribute
    */
   public void member(String kind, int value) {
-    internalAttribute(kind, value);
-  }
-  
-  @Deprecated
-  public void attribute(String kind, int value) {
-    member(kind, value);
+    internalMember(kind, value);
   }
   
   /**
@@ -227,29 +248,24 @@ public class JsonPrinter {
    * @param value The boolean value of the Json attribute
    */
   public void member(String kind, boolean value) {
-    internalAttribute(kind, value);
-  }
-  
-  @Deprecated
-  public void attribute(String kind, boolean value) {
-    member(kind, value);
+    internalMember(kind, value);
   }
   
   /**
    * Prints a Json member with the given kind as key and the given String value, which is a basic
    * data type in Json. NOTE: if the parameter value is a serialized String, use the
-   * value(JsonPrinter) method instead!
+   * value(JsonPrinter) method instead! Otherwise escaped symbols are double escaped!
    * 
    * @param kind The key of the Json attribute
    * @param value The boolean value of the Json attribute
    */
   public void member(String kind, String value) {
-    internalAttribute(kind, preprocessString(value));
+    internalMember(kind, "\""+escapeSpecialChars(value)+"\"");
   }
   
-  @Deprecated
-  public void attribute(String kind, String value) {
-    member(kind, value);
+
+  public void memberJson(String kind, String value) {
+    internalMember(kind, value);
   }
   
   /**
@@ -260,7 +276,7 @@ public class JsonPrinter {
    * @param value The boolean value of the Json attribute
    */
   public void member(String kind, JsonPrinter value) {
-    internalAttribute(kind, value.getContent());
+    internalMember(kind, value.getContent());
   }
   
   /**
@@ -270,12 +286,7 @@ public class JsonPrinter {
    * @param value The double value of the Json attribute
    */
   public void value(double value) {
-    internalAttribute(value);
-  }
-  
-  @Deprecated
-  public void attribute(double value) {
-    value(value);
+    internalValue(value);
   }
   
   /**
@@ -285,12 +296,7 @@ public class JsonPrinter {
    * @param value The long value of the Json attribute
    */
   public void value(long value) {
-    internalAttribute(value);
-  }
-  
-  @Deprecated
-  public void attribute(long value) {
-    value(value);
+    internalValue(value);
   }
   
   /**
@@ -300,12 +306,7 @@ public class JsonPrinter {
    * @param value The float value of the Json attribute
    */
   public void value(float value) {
-    internalAttribute(value);
-  }
-  
-  @Deprecated
-  public void attribute(float value) {
-    value(value);
+    internalValue(value);
   }
   
   /**
@@ -315,12 +316,7 @@ public class JsonPrinter {
    * @param value The int value of the Json attribute
    */
   public void value(int value) {
-    internalAttribute(value);
-  }
-  
-  @Deprecated
-  public void attribute(int value) {
-    value(value);
+    internalValue(value);
   }
   
   /**
@@ -330,28 +326,22 @@ public class JsonPrinter {
    * @param value The boolean value of the Json attribute
    */
   public void value(boolean value) {
-    internalAttribute(value);
-  }
-  
-  @Deprecated
-  public void attribute(boolean value) {
-    value(value);
+    internalValue(value);
   }
   
   /**
    * Prints a String as Json value. NOTE: if the parameter value is a serialized String, use the
-   * value(JsonPrinter) method instead!
+   * value(JsonPrinter) method instead! Otherwise escaped symbols are double escaped!
    * 
    * @param kind The key of the Json attribute
    * @param value The String value of the Json attribute
    */
   public void value(String value) {
-    internalAttribute(preprocessString(value));
+    internalValue("\""+escapeSpecialChars(value)+"\"");
   }
   
-  @Deprecated
-  public void attribute(String value) {
-    value(value);
+  public void valueJson(String value) {
+    internalValue(value);
   }
   
   /**
@@ -361,20 +351,7 @@ public class JsonPrinter {
    * @param value The JsonPrinter of the value object
    */
   public void value(JsonPrinter value) {
-    internalAttribute(value.getContent());
-  }
-  
-  protected String preprocessString(String string) {
-    String s = string.trim();
-    boolean isFramedInQuotationMarks = s.length() > 0 && s.startsWith("\"") && s.endsWith("\"");
-    boolean isSerializedObject = s.length() > 0 && s.startsWith("{") && s.endsWith("}");
-    string = escapeSpecialChars(string);
-    if (!isFramedInQuotationMarks && !isSerializedObject) {
-      return "\"" + string + "\"";
-    }
-    else {
-      return s;
-    }
+    internalValue(value.getContent());
   }
   
   /**
@@ -383,14 +360,14 @@ public class JsonPrinter {
    */
   protected String escapeSpecialChars(String input) {
     return input
-    .replace("\\", "\\\\")  // Insert a backslash character in the text at this point.
-    .replace("\t", "\\t")   // Insert a tab in the text at this point.
-    .replace("\b", "\\b")   // Insert a backspace in the text at this point.
-    .replace("\n", "\\n")   // Insert a newline in the text at this point.
-    .replace("\r", "\\r")   // Insert a carriage return in the text at this point.
-    .replace("\f", "\\f")   // Insert a formfeed in the text at this point.
-    .replace("\'", "\\\'")  // Insert a single quote character in the text at this point.
-    .replace("\"", "\\\""); // Insert a double quote character in the text at this point.
+        .replace("\\", "\\\\") // Insert a backslash character in the text at this point.
+        .replace("\t", "\\t") // Insert a tab in the text at this point.
+        .replace("\b", "\\b") // Insert a backspace in the text at this point.
+        .replace("\n", "\\n") // Insert a newline in the text at this point.
+        .replace("\r", "\\r") // Insert a carriage return in the text at this point.
+        .replace("\f", "\\f") // Insert a formfeed in the text at this point.
+        .replace("\'", "\\\'") // Insert a single quote character in the text at this point.
+        .replace("\"", "\\\""); // Insert a double quote character in the text at this point.
   }
   
   /**
@@ -399,34 +376,50 @@ public class JsonPrinter {
    */
   protected void printCommaIfNecessary() {
     if (!isFirstAttribute) {
-      printer.print(",");
+      println(",");
     }
     else {
       isFirstAttribute = false;
+      println("");
     }
+    if (indentBeforeNewLine) {
+      indent();
+      indentBeforeNewLine = false;
+    }
+    
   }
   
-  private void internalAttribute(String kind, Object value) {
+  private void internalMember(String kind, Object value) {
     printCommaIfNecessary();
-    printer.print("\"");
-    printer.print(kind);
-    printer.print("\":");
-    printer.print(value);
+    print("\"");
+    print(kind);
+    if (isIndentationEnabled()) {
+      print("\": ");
+    }
+    else {
+      print("\":");
+    }
+    print(value);
   }
   
-  private void internalAttribute(Object value) {
+  private void internalValue(Object value) {
     printCommaIfNecessary();
-    printer.print(value);
+    print(value);
   }
   
+  /**
+   * Returns the current value of the Json code produced so far And performs basic checks for
+   * correct nesting of composed data
+   */
   public String getContent() {
     if (0 != nestedListDepth) {
-      Log.error("0xA0600 Invalid nesting of Json lists in " + printer.getContent());
+      Log.error("0xA0600 Invalid nesting of Json lists in " + toString());
     }
     if (0 != nestedObjectDepth) {
-      Log.error("0xA0601 Invalid nesting of Json objects in " + printer.getContent());
+      Log.error("0xA0601 Invalid nesting of Json objects in " + toString());
     }
-    return printer.getContent();
+    // return content of printer without first character, which is a newline
+    return toString();
   }
   
   /**
@@ -436,7 +429,39 @@ public class JsonPrinter {
    */
   @Override
   public String toString() {
-    return printer.getContent();
+    // return content of printer without first character, which is a newline
+    String content = printer.getContent();
+    if (content.startsWith("\n")) {
+      content = content.substring(1);
+    }
+    return content;
+  }
+  
+  /////////////////////////// methods to handle optional pretty printing with line breaks and
+  /////////////////////////// indentation ////////////////////////////
+  private void print(Object o) {
+    printer.print(o);
+  }
+  
+  private void println(Object o) {
+    if (JsonPrinter.isIndentationEnabled()) {
+      printer.println(o);
+    }
+    else {
+      printer.print(o);
+    }
+  }
+  
+  private void indent() {
+    if (JsonPrinter.isIndentationEnabled()) {
+      printer.indent();
+    }
+  }
+  
+  private void unindent() {
+    if (JsonPrinter.isIndentationEnabled()) {
+      printer.unindent();
+    }
   }
   
 }

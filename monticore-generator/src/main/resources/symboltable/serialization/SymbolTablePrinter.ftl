@@ -40,7 +40,7 @@ public class ${symTabPrinterName}
     printer.beginArray(JsonConstants.IMPORTS);
     as.getImports().forEach(x -> printer.value(x.toString()));
     printer.endArray();
-    printer.member(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(as.getSpanningSymbol()));
+    addScopeSpanningSymbol(as.getSpanningSymbol());
   }
 
   /**
@@ -53,7 +53,7 @@ public class ${symTabPrinterName}
     printer.member(JsonConstants.NAME, scope.getName());
     printer.member(JsonConstants.IS_SHADOWING_SCOPE, scope.isShadowingScope());
     printer.member(JsonConstants.EXPORTS_SYMBOLS, scope.exportsSymbols());
-    printer.member(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(scope.getSpanningSymbol()));
+    addScopeSpanningSymbol(scope.getSpanningSymbol());
     
 <#if scopeRule.isPresent()>
 <#list scopeRule.get().getAdditionalAttributeList() as attr>
@@ -92,18 +92,19 @@ public class ${symTabPrinterName}
 </#list>
 </#if>
 
-  protected Optional<String> serializeScopeSpanningSymbol(
-      Optional<IScopeSpanningSymbol> spanningSymbol) {
+  protected void addScopeSpanningSymbol(Optional<IScopeSpanningSymbol> spanningSymbol) {
     if (null != spanningSymbol && spanningSymbol.isPresent()) {
-      JsonPrinter spPrinter = new JsonPrinter();
-      spPrinter.beginObject();
-      spPrinter.member(JsonConstants.KIND, spanningSymbol.get().getClass().getName());
-      spPrinter.member(JsonConstants.NAME, spanningSymbol.get().getName());
-      spPrinter.endObject();
-      return Optional.ofNullable(spPrinter.getContent());
+      printer.beginObject(JsonConstants.SCOPE_SPANNING_SYMBOL);
+      printer.member(JsonConstants.KIND, spanningSymbol.get().getClass().getName());
+      printer.member(JsonConstants.NAME, spanningSymbol.get().getName());
+      printer.endObject();
     }
-    return Optional.empty();
   }
+  
+  public void traverse(${languageName}ArtifactScope scope) {
+    traverse((${languageName}Scope) scope);
+  }
+  
 
    /**
    * @see ${languageName}ScopeVisitor#traverse(${languageName}Scope)
@@ -125,11 +126,11 @@ public class ${symTabPrinterName}
     }
   }
 
-  /**
-   * @see ${languageName}ScopeVisitor#endVisit(${languageName}Scope)
-   */
-  @Override
   public void endVisit(${languageName}Scope scope) {
+    printer.endObject();
+  }
+  
+  public void endVisit(${languageName}ArtifactScope scope) {
     printer.endObject();
   }
 <#list symbols as symbol>
@@ -175,15 +176,17 @@ public class ${symTabPrinterName}
      attrType == "double" || 
      attrType == "long" || 
      attrType == "String">
-<#assign retType=attrType>
-<#assign retStatement="symbol."+methodName+"()">
-<#else>
-<#assign retType="String">
-<#assign retStatement="String.valueOf(symbol."+methodName+"())">
-</#if>
-  protected ${retType} serialize${attr.name}(${symbol.name}Symbol symbol) {
-    return ${retStatement};
+  protected ${attrType} serialize${attr.name}(${symbol.name}Symbol symbol) {
+    return symbol.${methodName}();
   }
+<#else>
+  protected JsonPrinter serialize${attr.name}(${symbol.name}Symbol symbol) {
+    JsonPrinter jp = new JsonPrinter();
+    jp.value(String.valueOf(symbol.${methodName}()));
+    return jp;
+  }
+</#if>
+
   
 </#list>
 </#if>
@@ -204,10 +207,19 @@ public class ${symTabPrinterName}
       Collection<I${languageName}Scope> subScopes) {
     List<I${languageName}Scope> result = new ArrayList<>();
     for (I${languageName}Scope scope : subScopes) {
-      // TODO: start DFS to check whether a transitive subscope exports symbols
-      result.add(scope);
+      if(hasSymbolsInSubScopes(scope)) {
+        result.add(scope);
+      }
     }
     return result;
   }
-
+  
+  protected boolean hasSymbolsInSubScopes(I${languageName}Scope scope) {
+    boolean hasSymbolsInSubScopes = false;
+    for (I${languageName}Scope subScope : scope.getSubScopes()) {
+      hasSymbolsInSubScopes |= hasSymbolsInSubScopes(subScope);
+    }
+    return hasSymbolsInSubScopes | scope.getSymbolsSize()>0;
+  }
+  
 }

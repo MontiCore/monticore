@@ -39,8 +39,9 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
+import static org.junit.Assert.*;
+
 
 public class ASTCDDecoratorTest extends DecoratorTestCase {
 
@@ -113,6 +114,19 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
   public void testPackage() {
     List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "ast", "ast", "_ast");
     assertEquals(expectedPackage, decoratedCompilationUnit.getPackageList());
+  }
+
+  @Test
+  public void testNewModifierObjects(){
+    // test that the modifier of AST classes have a different object ID
+    ASTCDClass originalClass = getClassBy("A", originalCompilationUnit);
+    ASTCDClass decoratedClass = getClassBy("A", decoratedCompilationUnit);
+
+    assertTrue(originalClass.isPresentModifier());
+    assertTrue(decoratedClass.isPresentModifier());
+
+    assertNotEquals(originalClass.getModifier().toString(), decoratedClass.getModifier().toString());
+    assertNotEquals(originalClass.getModifier(), decoratedClass.getModifier());
   }
 
   @Test

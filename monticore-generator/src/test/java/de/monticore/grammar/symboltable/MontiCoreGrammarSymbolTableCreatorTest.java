@@ -315,7 +315,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertNotNull(transition);
     
     try {
-      Optional<RuleComponentSymbol> r = transition.getSpannedScope().resolveRuleComponent("args");
+      Optional<RuleComponentSymbol> r = transition.getSpannedScope().resolveRuleComponent("arg");
       assertTrue(r.isPresent());
     }
     catch (ResolvedSeveralEntriesForSymbolException e) {
@@ -355,12 +355,12 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     ProdSymbol autProd = grammar.getSpannedScope()
         .resolveProd("Automaton").orElse(null);
     assertNotNull(autProd);
-    assertTrue(autProd.isScopeDefinition());
+    assertTrue(autProd.isScopeSpanning());
     assertTrue(autProd.isSymbolDefinition());
 
     ProdSymbol stateProd = grammar.getSpannedScope().resolveProd("State").orElse(null);
     assertNotNull(stateProd);
-    assertFalse(stateProd.isScopeDefinition());
+    assertFalse(stateProd.isScopeSpanning());
     assertTrue(stateProd.isSymbolDefinition());
   }
   
@@ -379,17 +379,17 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     ProdSymbol s = grammar.getProd("S").orElse(null);
     assertNotNull(s);
     assertTrue(s.isSymbolDefinition());
-    assertEquals("S", s.getSymbolDefinitionKind().get());
+    assertEquals("S", s.getName());
     
     ProdSymbol t = grammar.getProd("T").orElse(null);
     assertTrue(t.isSymbolDefinition());
-    assertEquals("S", t.getSymbolDefinitionKind().get());
+    assertEquals("S", t.getName());
     
     // The symbol kinds are determined transitively, i.e., A -> T -> S, hence, the symbol kind of
     // prod A is S.
     ProdSymbol a = grammar.getProd("A").orElse(null);
     assertTrue(a.isSymbolDefinition());
-    assertEquals("S", a.getSymbolDefinitionKind().get());
+    assertEquals("S", a.getName());
     
     ProdSymbol b = grammar.getProd("B").orElse(null);
     assertFalse(b.isSymbolDefinition());

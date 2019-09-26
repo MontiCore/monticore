@@ -54,16 +54,6 @@ public class JsonObject implements JsonElement {
   public void setMembers(Map<String, JsonElement> members) {
     this.members = members;
   }
-
-  @Deprecated
-  public Map<String, JsonElement> getAttributes() {
-    return getMembers();
-  }
-  
-  @Deprecated
-  public void setAttributes(Map<String, JsonElement> members) {
-    setMembers(members);
-  }
   
   /**
    * TODO: Write me!
@@ -177,7 +167,7 @@ public class JsonObject implements JsonElement {
     JsonPrinter printer = new JsonPrinter();
     printer.beginObject();
     for (String s : members.keySet()) {
-      printer.member(s, members.get(s).toString());
+      printer.memberJson(s, members.get(s).toString());
     }
     printer.endObject();
     return printer.getContent();

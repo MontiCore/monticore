@@ -1,17 +1,17 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "interfaceName","scopeRule", "symbolNames", "superScopes", "superScopeVisitors", "hasHWC")}
+${signature("className", "interfaceName","scopeRules", "symbolNames", "superScopes", "superScopeVisitors", "hasHWC")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign names = glex.getGlobalVar("nameHelper")>
 <#assign languageName = genHelper.getGrammarSymbol().getName()>
 <#assign superInterfaces = "implements "+ interfaceName>
 <#assign superClass = "">
-<#if scopeRule.isPresent()>
-  <#list scopeRule.get().getSuperInterfaceList() as s>
+<#if (scopeRules?size >0) >
+  <#list scopeRules[0].getSuperInterfaceList() as s>
     <#assign superInterfaces = superInterfaces + ", "+ s.printType()>
   </#list>
-  <#if !scopeRule.get().isEmptySuperClasss()>
-    <#assign superClass = " extends " + scopeRule.get().getSuperClass(0).printType()>
+  <#if !scopeRules[0].isEmptySuperClasss()>
+    <#assign superClass = " extends " + scopeRules[0].getSuperClass(0).printType()>
   </#if>
 </#if>
 
@@ -36,7 +36,9 @@ import de.se_rwth.commons.logging.Log;
 public <#if hasHWC>abstract</#if> class ${className} ${superClass} ${superInterfaces} {
 
 <#list symbolNames?keys as symbol>
-  protected LinkedListMultimap<String, ${symbolNames[symbol]}> ${symbol?lower_case}s = LinkedListMultimap.create();
+  protected LinkedListMultimap<String,
+    ${symbolNames[symbol]}> ${symbol?lower_case}s
+    = LinkedListMultimap.create();
 
   protected boolean ${symbol?lower_case}AlreadyResolved = false;
 
@@ -182,7 +184,8 @@ public <#if hasHWC>abstract</#if> class ${className} ${superClass} ${superInterf
 
   @Override public int getSymbolsSize() {
     <#if (symbolNames?keys?size gt 0)>
-    return <#list symbolNames?keys as symbol>${symbol?lower_case}s.size()<#sep> + </#sep></#list>;
+    return <#list symbolNames?keys as symbol>${symbol?lower_case}s.size()<#sep> +
+      </#sep></#list>;
     <#else>
       return 0;
     </#if>
@@ -214,9 +217,9 @@ public <#if hasHWC>abstract</#if> class ${className} ${superClass} ${superInterf
   }
 
 </#list>
-  <#if scopeRule.isPresent()>
-    ${includeArgs("symboltable.ScopeRule", scopeRule.get())}
-  </#if>
+  <#list scopeRules as scopeRule>
+    ${includeArgs("symboltable.ScopeRule", scopeRule)}
+  </#list>
 
   <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "ScopeVisitor")>
     public void accept(${langVisitorType} visitor) {

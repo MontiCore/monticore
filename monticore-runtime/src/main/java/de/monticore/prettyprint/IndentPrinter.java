@@ -109,7 +109,7 @@ public class IndentPrinter {
    * This method actually does the print. It deals with "\r""\n","\r","\n" in
    * the string. This method is not meant for external use.
    * 
-   * @param String String to be
+   * @param s String to be
    */
   protected void doPrint(String s) {
     

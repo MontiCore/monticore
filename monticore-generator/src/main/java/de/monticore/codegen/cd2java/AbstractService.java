@@ -4,6 +4,8 @@ package de.monticore.codegen.cd2java;
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
@@ -19,6 +21,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
+import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 
 public class AbstractService<T extends AbstractService> {
 
@@ -45,16 +50,27 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public Collection<CDDefinitionSymbol> getAllCDs() {
-    return Stream.of(Collections.singletonList(getCDSymbol()), getSuperCDs())
+    return Stream.of(Collections.singletonList(getCDSymbol()), getSuperCDsTransitive())
         .flatMap(Collection::stream)
         .collect(Collectors.toList());
   }
 
-  public Collection<CDDefinitionSymbol> getSuperCDs() {
-    return getSuperCDs(getCDSymbol());
+  public List<CDDefinitionSymbol> getSuperCDsDirect() {
+    return getSuperCDsDirect(getCDSymbol());
   }
 
-  public Collection<CDDefinitionSymbol> getSuperCDs(CDDefinitionSymbol cdSymbol) {
+  public List<CDDefinitionSymbol> getSuperCDsDirect(CDDefinitionSymbol cdSymbol) {
+    // get direct parent CDSymbols
+    return cdSymbol.getImports().stream()
+        .map(this::resolveCD)
+        .collect(Collectors.toList());
+  }
+
+  public List<CDDefinitionSymbol> getSuperCDsTransitive() {
+    return getSuperCDsTransitive(getCDSymbol());
+  }
+
+  public List<CDDefinitionSymbol> getSuperCDsTransitive(CDDefinitionSymbol cdSymbol) {
     // get direct parent CDSymbols
     List<CDDefinitionSymbol> directSuperCdSymbols = cdSymbol.getImports().stream()
         .map(this::resolveCD)
@@ -62,7 +78,7 @@ public class AbstractService<T extends AbstractService> {
     // search for super Cds in super Cds
     List<CDDefinitionSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
     for (CDDefinitionSymbol superSymbol : directSuperCdSymbols) {
-      Collection<CDDefinitionSymbol> superCDs = getSuperCDs(superSymbol);
+      List<CDDefinitionSymbol> superCDs = getSuperCDsTransitive(superSymbol);
       for (CDDefinitionSymbol superCD : superCDs) {
         if (resolvedCds
             .stream()
@@ -79,11 +95,16 @@ public class AbstractService<T extends AbstractService> {
         .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
   }
 
+  public CDTypeSymbol resolveCDType(String qualifiedName) {
+    return getCDSymbol().getEnclosingScope().<CDDefinitionSymbol>resolveCDType(qualifiedName)
+        .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
+  }
+
   public String getCDName() {
     return getCDSymbol().getName();
   }
 
-  private String getBasePackage(CDDefinitionSymbol cdSymbol) {
+  protected String getBasePackage(CDDefinitionSymbol cdSymbol) {
     return cdSymbol.getPackageName();
   }
 
@@ -111,7 +132,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public Collection<T> getServicesOfSuperCDs() {
-    return getSuperCDs().stream()
+    return getSuperCDsTransitive().stream()
         .map(this::createService)
         .collect(Collectors.toList());
   }
@@ -130,7 +151,7 @@ public class AbstractService<T extends AbstractService> {
   public String getNativeTypeName(ASTMCType astType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
     // if not generic returns simple Type like 'int'
-    if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentList().size() == 1 ) {
+    if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentList().size() == 1) {
       return ((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get().printType();
     }
     return astType.printType();
@@ -203,6 +224,12 @@ public class AbstractService<T extends AbstractService> {
         .anyMatch(x -> x.getName().equals(methodname));
   }
 
+  public boolean isMethodAlreadyDefined(ASTCDMethod method, List<ASTCDMethod> definedMethods) {
+    return definedMethods
+        .stream()
+        .anyMatch(x -> isSameMethodSignature(method, x));
+  }
+
   public List<ASTCDMethod> getMethodListWithoutDuplicates(List<ASTCDMethod> astRuleMethods, List<ASTCDMethod> attributeMethods) {
     List<ASTCDMethod> methodList = new ArrayList<>(attributeMethods);
     for (int i = 0; i < astRuleMethods.size(); i++) {
@@ -233,7 +260,7 @@ public class AbstractService<T extends AbstractService> {
     if (astcdDefinition.getCDClassList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
       return "this";
     } else {
-      Collection<CDDefinitionSymbol> superCDs = getSuperCDs(resolveCD(astcdDefinition.getName()));
+      List<CDDefinitionSymbol> superCDs = getSuperCDsTransitive(resolveCD(astcdDefinition.getName()));
       for (CDDefinitionSymbol superCD : superCDs) {
         if (superCD.getTypes().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
           return superCD.getName() + "PackageImpl";
@@ -251,4 +278,68 @@ public class AbstractService<T extends AbstractService> {
     return hasStereotype(modifier, MC2CDStereotypes.SYMBOL);
   }
 
+  public boolean isLiteralsEnum(ASTCDEnum astcdEnum, String definitionName) {
+    String enumName = astcdEnum.getName();
+    // remove package
+    if (astcdEnum.getName().contains(".")) {
+      enumName = enumName.substring(enumName.lastIndexOf(".") + 1);
+    }
+    return enumName.equals(definitionName + LITERALS_SUFFIX);
+  }
+
+  public String getLanguageInterfaceName() {
+    return getASTPackage() + "." + AST_PREFIX + getCDName() + NODE_SUFFIX;
+  }
+
+  public String getSimleLanguageInterfaceName() {
+    return AST_PREFIX + getCDName() + NODE_SUFFIX;
+  }
+
+  public String getASTPackage() {
+    return getASTPackage(getCDSymbol());
+  }
+
+  public String getASTPackage(CDDefinitionSymbol cdSymbol) {
+    if (getBasePackage(cdSymbol).isEmpty()) {
+      return String.join(".", cdSymbol.getName(), AST_PACKAGE).toLowerCase();
+    }
+    return String.join(".", getBasePackage(cdSymbol), cdSymbol.getName(), AST_PACKAGE).toLowerCase();
+  }
+
+  public List<String> getAllSuperClassesTransitive(ASTCDClass astcdClass) {
+    return getAllSuperClassesTransitive(astcdClass.getSymbol());
+  }
+
+  public List<String> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
+    List<String> superSymbolList = new ArrayList<>();
+    if (cdTypeSymbol.getSuperClass().isPresent()) {
+      String fullName = cdTypeSymbol.getSuperClass().get().getFullName();
+      superSymbolList.add(createASTFullName(fullName));
+      CDTypeSymbol superSymbol = resolveCDType(fullName);
+      superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
+    }
+    return superSymbolList;
+  }
+
+  public List<String> getAllSuperInterfacesTransitive(ASTCDClass astcdClass) {
+    return getAllSuperInterfacesTransitive(astcdClass.getSymbol());
+  }
+
+  public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
+    List<String> superSymbolList = new ArrayList<>();
+    for (CDTypeSymbolReference cdInterface : cdTypeSymbol.getCdInterfaces()) {
+      String fullName = cdInterface.getFullName();
+      superSymbolList.add(createASTFullName(fullName));
+      CDTypeSymbol superSymbol = resolveCDType(fullName);
+      superSymbolList.addAll(getAllSuperInterfacesTransitive(superSymbol));
+    }
+    return superSymbolList;
+  }
+
+  public String createASTFullName(String simpleName) {
+    String packageName = simpleName.substring(0, simpleName.lastIndexOf("."));
+    packageName = packageName.toLowerCase();
+    String astName = simpleName.substring(simpleName.lastIndexOf(".") + 1);
+    return packageName + "." + AST_PACKAGE + "." + astName;
+  }
 }

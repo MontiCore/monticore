@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) https://github.com/MontiCore/monticore -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>5.2.0</version>
+    <version>5.3.0</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -24,14 +25,17 @@
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-generator</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-grammar</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -83,7 +87,7 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>5.2.0</version><!--$NO-MVN-MAN-VER$ -->
+            <version>5.3.0</version><!--$NO-MVN-MAN-VER$ -->
             <executions>
               <execution>
                 <id>it-python</id>
@@ -131,6 +135,17 @@
         <dependency>
           <groupId>de.monticore</groupId>
           <artifactId>monticore-emf-runtime</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>de.monticore</groupId>
+          <artifactId>monticore-runtime</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>de.monticore</groupId>
+          <artifactId>monticore-generator</artifactId>
+          <version>${project.version}</version>
         </dependency>
 
         <!-- EMF dependencies -->
@@ -168,7 +183,7 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>5.2.0</version><!--$NO-MVN-MAN-VER$ -->
+            <version>5.3.0</version><!--$NO-MVN-MAN-VER$ -->
             <executions>
               <execution>
                 <id>it-python</id>

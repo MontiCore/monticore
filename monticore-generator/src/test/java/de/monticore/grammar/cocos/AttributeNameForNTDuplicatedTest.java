@@ -12,7 +12,7 @@ public class AttributeNameForNTDuplicatedTest extends CocoTest {
   
   private final String CODE = "xA4077";
   
-  private final String MESSAGE = " The production C must not use the attribute name as for different nonterminals.";
+  private final String MESSAGE = " The production C must not use the attribute name a for different nonterminals.";
   
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   

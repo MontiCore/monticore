@@ -4,7 +4,6 @@ description = 'Experiments: patternAccess'
 task generate (type: MCTask) {
   grammar = file "$projectDir/$grammarDir/Example.mc4"
   outputDir = file outDir
-  handcodedPath file("$projectDir/src/main/java")
-  def uptoDate = incCheck(outputDir.toString() + "/example/IncGenGradleCheck.txt")
+  def uptoDate = incCheck("Example.mc4")
   outputs.upToDateWhen { uptoDate }
 }

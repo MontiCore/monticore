@@ -1,26 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test;
 
-import static org.junit.Assert.*;
+import de.monticore.scannerless._ast.*;
+import de.monticore.scannerless._parser.ScannerlessParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.Optional;
 
-import org.antlr.v4.runtime.RecognitionException;
-import org.junit.*;
-
-import de.monticore.scannerless._ast.*;
-import de.monticore.scannerless._cocos.*;
-import de.monticore.scannerless._symboltable.*;
-import de.monticore.scannerless._parser.*;
-
-import de.monticore.ModelingLanguage;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.*;
-import de.monticore.ast.*;
-import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 
 public class CheckScannerlessTest {

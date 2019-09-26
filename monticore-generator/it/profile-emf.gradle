@@ -1,4 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
+
+buildDir = file("$projectDir/target-emf")
+ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
+sourceSets.main.java.srcDirs += [ outDir ]
+
 fileTree(dir: grammarDir, include: '**/*.mc4').each {
   def g = it
   def taskname = file(grammarDir).toURI().relativize(g.toURI()).toString()
@@ -9,9 +14,8 @@ fileTree(dir: grammarDir, include: '**/*.mc4').each {
     handcodedPath file("$projectDir/src/main/java")
     modelPath file("$projectDir/$grammarDir")
     script file('it-emf.groovy')
-    def incCheckDir = file(grammarDir).toURI().relativize(g.toURI()).toString()
-    incCheckDir = incCheckDir.substring(0, incCheckDir.lastIndexOf('.')).toLowerCase()
-    def uptoDate = incCheck(outputDir.toString() + "/$incCheckDir/IncGenGradleCheck.txt")
+    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
+    def uptoDate = incCheck(grammarIncludingPackage)
     outputs.upToDateWhen { uptoDate }
   }
 }

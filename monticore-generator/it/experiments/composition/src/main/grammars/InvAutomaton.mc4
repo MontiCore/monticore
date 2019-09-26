@@ -7,7 +7,7 @@ component grammar InvAutomaton
     "automaton" Name "{" (State | Transition)* "}" ;
 
   external Invariant;
-  
+
   State = "state" Name
           Invariant
           ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )* ";" ;

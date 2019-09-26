@@ -3,6 +3,7 @@ ${tc.signature("cdEnum")}
 
 ${tc.include("core.Package")}
 
+${tc.include("core.Annotations")}
 public enum ${cdEnum.getName()}<#if !cdEnum.isEmptyInterfaces()> implements ${cdEnum.printInterfaces()}</#if> {
 
 <#list cdEnum.getCDEnumConstantList() as constants>

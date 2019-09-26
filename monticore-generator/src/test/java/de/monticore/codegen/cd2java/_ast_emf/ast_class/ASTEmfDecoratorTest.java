@@ -72,7 +72,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(5, emfClass.getCDAttributeList().size());
+    assertEquals(4, emfClass.getCDAttributeList().size());
 
 
   }
@@ -81,7 +81,6 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
   public void testAttributeNames(){
     getAttributeBy("automatonSymbol", emfClass);
     getAttributeBy("symbol", emfClass);
-    getAttributeBy("spannedAutomatonScope", emfClass);
     getAttributeBy("spannedScope", emfClass);
     getAttributeBy("enclosingScope", emfClass);
   }
@@ -89,7 +88,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethodSize() {
     assertFalse(emfClass.getCDMethodList().isEmpty());
-    assertEquals(39, emfClass.getCDMethodList().size());
+    assertEquals(29, emfClass.getCDMethodList().size());
   }
 
   @Test

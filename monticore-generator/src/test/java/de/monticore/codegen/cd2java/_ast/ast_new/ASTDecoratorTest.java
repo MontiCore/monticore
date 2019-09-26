@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_new;
 
 import de.monticore.cd.cd4analysis._ast.*;
@@ -40,7 +41,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass astClass;
 
-  private static final String AST_SCOPE = "de.monticore.codegen.ast.ast._symboltable.ASTScope";
+  private static final String AST_SCOPE = "de.monticore.codegen.ast.ast._symboltable.IASTScope";
 
   private static final String AST_SYMBOL = "de.monticore.codegen.ast.ast._symboltable.ASymbol";
 
@@ -82,7 +83,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(5, astClass.getCDAttributeList().size());
+    assertEquals(4, astClass.getCDAttributeList().size());
   }
 
   @Test
@@ -93,7 +94,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethods() {
     assertFalse(astClass.getCDMethodList().isEmpty());
-    assertEquals(31, astClass.getCDMethodList().size());
+    assertEquals(21, astClass.getCDMethodList().size());
   }
 
   @Test
@@ -170,7 +171,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGetScopeMethod() {
-    ASTCDMethod method = getMethodBy("getSpannedASTScope", astClass);
+    ASTCDMethod method = getMethodBy("getSpannedScope", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_SCOPE);
     assertTrue(method.getMCReturnType().isPresentMCType());
@@ -179,43 +180,14 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetScopeOptMethod() {
-    ASTCDMethod method = getMethodBy("getSpannedASTScopeOpt", astClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertOptionalOf(AST_SCOPE, method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testIsPresentScopeMethod() {
-    ASTCDMethod method = getMethodBy("isPresentSpannedASTScope", astClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertBoolean(method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
   public void testIsSetScopeMethod() {
-    ASTCDMethod method = getMethodBy("setSpannedASTScope", astClass);
+    ASTCDMethod method = getMethodBy("setSpannedScope", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("spannedASTScope", method.getCDParameter(0).getName());
+    assertEquals("spannedScope", method.getCDParameter(0).getName());
     ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_SCOPE);
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
-  }
-
-
-  @Test
-  public void testIsSetScopeOptMethod() {
-    ASTCDMethod method = getMethodBy("setSpannedASTScopeOpt", astClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertEquals("spannedASTScope", method.getCDParameter(0).getName());
-    assertOptionalOf(AST_SCOPE, method.getCDParameter(0).getMCType());
   }
 
   @Test
@@ -272,15 +244,6 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   @Test
   public void testIsSetSymbolAbsentMethod() {
     ASTCDMethod method = getMethodBy("setASymbolAbsent", astClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-
-  @Test
-  public void testIsSetScopeAbsentMethod() {
-    ASTCDMethod method = getMethodBy("setSpannedASTScopeAbsent", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertTrue(method.isEmptyCDParameters());

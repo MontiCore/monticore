@@ -22,13 +22,5 @@ public class GeneratedAstClassesTest extends GeneratorIntegrationsTest {
     // thrown.expectMessage("must not be null.");
     b.setTransitionsList(null);
   }
-  
-  @Test
-  public void testErrorsIfNullByAstNodeFactories() {
-    // Log.errorIfNull is not generated
-    // thrown.expect(NullPointerException.class);
-    // thrown.expectMessage("must not be null.");
-    StatechartDSLNodeFactory.createASTCode(null);
-  }
-  
+
 }

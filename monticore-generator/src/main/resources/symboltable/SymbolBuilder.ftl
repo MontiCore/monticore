@@ -29,17 +29,14 @@ public class ${className} {
 
   protected String name;
 
-  protected AST${ruleName} node;
+  protected ${genHelper.getQualifiedGrammarName()?lower_case}._ast.AST${ruleName} node;
 
   protected String packageName;
 
   protected AccessModifier accessModifier = ALL_INCLUSION;
 
   <#if symbolRule.isPresent()>
-    <#list symbolRule.get().getAdditionalAttributeList() as attr>
-      <#assign attrType=genHelper.deriveAdditionalAttributeTypeWithMult(attr)>
-  protected ${attrType} ${attr.getName()};
-    </#list>
+    ${includeArgs("symboltable.symbols.SymbolRuleForBuilder", symbolRule.get())}
   </#if>
 
   protected ${className}() {}

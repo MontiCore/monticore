@@ -3,6 +3,7 @@ package de.monticore.symboltable.serialization;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.ImportStatement;
@@ -36,6 +37,52 @@ public class JsonUtil {
     spPrinter.member(JsonConstants.NAME, spanningSymbol.getName());
     spPrinter.endObject();
     return spPrinter;
+  }
+  
+  /**
+   * Returns true if the passed DeSer object is responsible to (de)serialize the passed JsonElement,
+   * based on it being a serialized object with a member of the key "KIND" with the suitable value.
+   * Returns false otherwise.
+   * 
+   * @param deser
+   * @param serializedObject
+   * @return
+   */
+  public static boolean isCorrectDeSerForKind(IDeSer<?> deser, JsonElement serializedObject) {
+    return deser.getSerializedKind()
+        .equals(getOptStringMember(serializedObject, JsonConstants.KIND).orElse(null));
+  }
+  
+  /**
+   * Returns the member with the passed key of the passed JsonElement as String, if it exists.
+   * Otherwise, returns empty()
+   * 
+   * @param json
+   * @param key
+   * @return
+   */
+  public static Optional<String> getOptStringMember(JsonElement json, String key) {
+    if (json.isJsonObject()) {
+      if (json.getAsJsonObject().containsKey(key)) {
+        JsonElement jsonMember = json.getAsJsonObject().get(key);
+        if (jsonMember.isJsonString()) {
+          return Optional.ofNullable(jsonMember.getAsJsonString().getValue());
+        }
+      }
+    }
+    return Optional.empty();
+  }
+  
+  public static Optional<Integer> getOptIntMember(JsonElement json, String key) {
+    if (json.isJsonObject()) {
+      if (json.getAsJsonObject().containsKey(key)) {
+        JsonElement jsonMember = json.getAsJsonObject().get(key);
+        if (jsonMember.isJsonNumber()) {
+          return Optional.ofNullable(jsonMember.getAsJsonNumber().getNumberAsInt());
+        }
+      }
+    }
+    return Optional.empty();
   }
   
 }

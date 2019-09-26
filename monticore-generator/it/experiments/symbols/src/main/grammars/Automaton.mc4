@@ -1,22 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-grammar Automaton extends de.monticore.MCNumbers {
+grammar Automaton extends de.monticore.literals.MCCommonLiterals {
 
   symbol scope Automaton =
     "automaton" Name "{" (State | Transition)* "}" ;
 
   symbol scope State =
     "state" Name
-  
+
     (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
-  
+
     ( ("{" (State | Transition | Counter)* "}") | ";") ;
 
   Transition =
     source:Name@State "-" input:Name ("|" Statement)? ">"
                              target:Name@State ";" ;
-  
-  symbol Counter = "counter" Name "=" Decimal ";" ;
+
+  symbol Counter = "counter" Name "=" NatLiteral ";" ;
 
   interface Statement ;
 

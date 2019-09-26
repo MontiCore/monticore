@@ -25,6 +25,10 @@ public enum MC2CDStereotypes {
    */
   REFERENCED_SYMBOL_ATTRIBUTE("referencedSymbolAttribute"),
   /**
+   * To mark class as deprecated
+   */
+  DEPRECATED("@Deprecated"),
+  /**
    * To mark class as symbol
    */
   SYMBOL("symbol"),

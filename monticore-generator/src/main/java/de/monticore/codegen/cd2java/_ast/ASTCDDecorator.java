@@ -21,8 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.PACKAGE;
-import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
+import static de.monticore.codegen.cd2java.CoreTemplates.*;
 
 public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
@@ -86,14 +85,17 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
     for (ASTCDClass cdClass : astCD.getCDClassList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(astPackage));
+      this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifierOpt()));
     }
 
     for (ASTCDInterface cdInterface : astCD.getCDInterfaceList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(astPackage));
+      this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifierOpt()));
     }
 
     for (ASTCDEnum cdEnum : astCD.getCDEnumList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(astPackage));
+      this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifierOpt()));
     }
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()
@@ -106,7 +108,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     List<ASTCDClass> astcdClassList = new ArrayList<>();
     for (ASTCDClass astcdClass : ast.getCDDefinition().getCDClassList()) {
       ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(astcdClass.getName())
-          .setModifier(astcdClass.getModifier())
+          .setModifier(astcdClass.getModifier().deepClone())
           .build();
       astFullDecorator.decorate(astcdClass, changedClass);
       astcdClassList.add(changedClass);
@@ -146,7 +148,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     List<ASTCDInterface> astcdInterfaceList = new ArrayList<>();
     for (ASTCDInterface astcdInterface : ast.getCDDefinition().getCDInterfaceList()) {
       ASTCDInterface changedInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(astcdInterface.getName())
-          .setModifier(astcdInterface.getModifier())
+          .setModifier(astcdInterface.getModifier().deepClone())
           .build();
       ASTCDInterface decoratedASTClass = astInterfaceDecorator.decorate(astcdInterface, changedInterface);
       astcdInterfaceList.add(decoratedASTClass);

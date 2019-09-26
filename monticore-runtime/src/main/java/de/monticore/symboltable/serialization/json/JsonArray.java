@@ -48,17 +48,6 @@ public class JsonArray implements JsonElement {
     this.values = values;
   }
 
-  @Deprecated
-  public List<JsonElement> getElements() {
-    return this.getValues();
-  }
-  
-
-  @Deprecated
-  public void setElements(List<JsonElement> values) {
-    setValues(values);
-  }
-  
   /**
    * @return
    * @see java.util.List#size()
@@ -137,7 +126,7 @@ public class JsonArray implements JsonElement {
     JsonPrinter printer = new JsonPrinter();
     printer.beginArray();
     for (JsonElement e : values) {
-      printer.value(e.toString());
+      printer.valueJson(e.toString());
     }
     printer.endArray();
     return printer.getContent();

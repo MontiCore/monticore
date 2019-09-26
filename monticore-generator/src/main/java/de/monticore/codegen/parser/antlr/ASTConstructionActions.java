@@ -2,23 +2,17 @@
 
 package de.monticore.codegen.parser.antlr;
 
-import java.util.Optional;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
-import de.monticore.grammar.grammar._ast.ASTAlt;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTConstant;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
+
+import java.util.Optional;
 
 public class ASTConstructionActions {
 
@@ -95,12 +89,12 @@ public class ASTConstructionActions {
   public String getActionForRuleBeforeRuleBody(ASTClassProd a) {
     StringBuilder b = new StringBuilder();
     String type = MCGrammarSymbolTableHelper
-        .getQualifiedName(symbolTable.getProdWithInherited(HelperGrammar.getRuleName(a)).get());
+        .getQualifiedName(symbolTable.getProdWithInherited(a.getName()).get());
     Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a.getEnclosingScope());
     String name = grammar.isPresent()
         ? grammar.get().getName()
-        : symbolTable.getProdWithInherited(HelperGrammar.getRuleName(a)).get().getName();
+        : symbolTable.getProdWithInherited(a.getName()).get().getName();
     
         // Setup return value
         b.append(
@@ -153,17 +147,17 @@ public class ASTConstructionActions {
     String tmpname = parserGenHelper.getTmpVarNameForAntlrCode(a);
     String tmp = " addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), convert" + a.getName()
         + "($%tmp%));";
-    
+
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
         StringTransformations.capitalize(HelperGrammar.getListName(a)));
     tmp = tmp.replaceAll("%tmp%", tmpname);
-    
+
     return tmp;
   }
-  
+
   public String getActionForInternalRuleIteratedAttribute(ASTNonTerminal a) {
-    
+
     String tmp = "addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), _localctx.%tmp%.ret);";
     // TODO GV: || isConst()
     if (symbolTable.getProdWithInherited(a.getName()).get().isEnum() ) {
@@ -231,6 +225,21 @@ public class ASTConstructionActions {
 
   }
 
+  public String getActionForKeyTerminalNotIteratedAttribute(ASTKeyTerminal a) {
+
+    String tmp = "_aNode.set%u_usage%(%text%);";
+
+    if (!a.isPresentUsageName()) {
+      return "";
+    }
+    // Replace templates
+    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(a.getUsageName()));
+    tmp = tmp.replaceAll("%text%", "_input.LT(-1).getText()");
+
+    return tmp;
+
+  }
+
   public String getActionForTerminalIteratedAttribute(ASTTerminal a) {
 
     if (!a.isPresentUsageName()) {
@@ -240,15 +249,27 @@ public class ASTConstructionActions {
     String tmp = "_aNode.get%u_usage%().add(\"%text%\");";
 
     // Replace templates
-    // TODO MB : Find better solution
     String usageName = StringTransformations.capitalize(a.getUsageName());
-    if (usageName.endsWith(TransformationHelper.LIST_SUFFIX)) {
-      usageName = usageName.substring(0, usageName.length()-TransformationHelper.LIST_SUFFIX.length());    
-    }
     tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName+ GeneratorHelper.GET_SUFFIX_LIST));
     tmp = tmp.replaceAll("%text%", a.getName());
 
     return tmp;
   }
-  
+
+  public String getActionForKeyTerminalIteratedAttribute(ASTKeyTerminal a) {
+
+    if (!a.isPresentUsageName()) {
+      return "";
+    }
+
+    String tmp = "_aNode.get%u_usage%().add(%text%);";
+
+    // Replace templates
+    String usageName = StringTransformations.capitalize(a.getUsageName());
+    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName+ GeneratorHelper.GET_SUFFIX_LIST));
+    tmp = tmp.replaceAll("%text%", "_input.LT(-1).getText()");
+
+    return tmp;
+  }
+
 }

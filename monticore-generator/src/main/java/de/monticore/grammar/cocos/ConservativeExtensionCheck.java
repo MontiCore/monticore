@@ -14,27 +14,29 @@ import java.util.Optional;
 
 public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
 
+    // TODO: Multiple kinds of Errors, #2376
+
   public static final String ERROR_CODE = "0xA2007";
 
   public static final String ERROR_MSG_FORMAT = " The production %s does not extend the Rule %s conservative at component %s. This can lead to problems in the AST.";
 
   @Override
   public void check(ASTMCGrammar node) {
-    Optional<MCGrammarSymbol> symbol = node.getMCGrammarSymbolOpt();
-    for (ProdSymbol prodSymbol : symbol.get().getProds()) {
+    Optional<MCGrammarSymbol> g = node.getMCGrammarSymbolOpt();
+    for (ProdSymbol nt : g.get().getProds()) {
       //check when you extend a class not conservative directly (Subclass extends Superclass = ...)
-      if (prodSymbol.isClass() && !prodSymbol.getSuperProds().isEmpty() && !MCGrammarSymbolTableHelper.getAllSuperProds(prodSymbol).isEmpty()) {
-        for (ProdSymbol superProdSymbol : MCGrammarSymbolTableHelper.getAllSuperProds(prodSymbol)) {
-          compareComponents(prodSymbol, superProdSymbol);
+      if (nt.isClass() && !nt.getSuperProds().isEmpty()
+              && !MCGrammarSymbolTableHelper.getAllSuperProds(nt).isEmpty()) {
+        for (ProdSymbol superNt : MCGrammarSymbolTableHelper.getAllSuperProds(nt)) {
+          compareComponents(nt, superNt);
         }
       }
       //checks when you define a Prod with the same Name as a Prod in a Supergrammar
-      if(!symbol.get().getSuperGrammarSymbols().isEmpty()){
-        List<MCGrammarSymbol> superGrammarSymbols = symbol.get().getSuperGrammarSymbols();
-        for(MCGrammarSymbol grammarSymbol : superGrammarSymbols){
-          for(ProdSymbol mcProdSymbol : grammarSymbol.getProds()){
-            if(prodSymbol.getName().equals(mcProdSymbol.getName())){
-              compareComponents(prodSymbol, mcProdSymbol);
+      if(!g.get().getSuperGrammarSymbols().isEmpty()){
+        for(MCGrammarSymbol superg : g.get().getSuperGrammarSymbols()){
+          for(ProdSymbol superNt : superg.getProds()){
+            if(nt.getName().equals(superNt.getName())){
+              compareComponents(nt, superNt);
             }
           }
         }
@@ -42,19 +44,19 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
     }
   }
 
-  private void compareComponents(ProdSymbol prodSymbol, ProdSymbol superProdSymbol) {
-    for (RuleComponentSymbol superProdComponent : superProdSymbol.getProdComponents()) {
-      Optional<RuleComponentSymbol> prodComponent = prodSymbol.getProdComponent(superProdComponent.getName());
+  private void compareComponents(ProdSymbol p, ProdSymbol superp) {
+    for (RuleComponentSymbol comp : superp.getProdComponents()) {
+      Optional<RuleComponentSymbol> prodComponent = p.getProdComponent(comp.getName());
       if (!prodComponent.isPresent()) {
-        Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodSymbol.getName(), superProdSymbol.getName(), superProdComponent.getName(),
-            prodSymbol.getSourcePosition()));
-      }else if (prodComponent.get().isTerminal() != superProdComponent.isTerminal() ||
-          prodComponent.get().isNonterminal() != superProdComponent.isNonterminal() ||
-          prodComponent.get().isList() != superProdComponent.isList() ||
-          prodComponent.get().isOptional() != superProdComponent.isOptional() ||
-          !prodComponent.get().getUsageName().equals(superProdComponent.getUsageName())) {
-        Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodSymbol.getName(), superProdSymbol.getName(), superProdComponent.getName(),
-            prodSymbol.getSourcePosition()));
+        Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getName(), comp.getName(),
+            p.getSourcePosition()));
+      }else if (prodComponent.get().isTerminal() != comp.isTerminal() ||
+          prodComponent.get().isNonterminal() != comp.isNonterminal() ||
+          prodComponent.get().isList() != comp.isList() ||
+          prodComponent.get().isOptional() != comp.isOptional() ||
+          !prodComponent.get().getUsageName().equals(comp.getUsageName())) {
+        Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getName(), comp.getName(),
+            p.getSourcePosition()));
       }
     }
   }

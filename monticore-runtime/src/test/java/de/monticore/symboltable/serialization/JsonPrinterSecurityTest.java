@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import de.monticore.symboltable.serialization.json.JsonArray;
@@ -21,6 +22,12 @@ import de.monticore.symboltable.serialization.json.JsonObject;
  * @since TODO: add version number
  */
 public class JsonPrinterSecurityTest {
+  
+  
+  @Before
+  public void disableIndentation() {
+    JsonPrinter.enableIndentation();
+  }
   
   @Test
   public void test() {
@@ -40,7 +47,7 @@ public class JsonPrinterSecurityTest {
     
     // use JSONPrinter to produce json stirng
     String s = printFoo(bar);
-    
+    System.out.println(s);
     // use JsonParser to produce JsonObject form seriaiized stnirg
     JsonObject o = JsonParser.parseJsonObject(s);
     
@@ -79,7 +86,7 @@ public class JsonPrinterSecurityTest {
     p.member("name", f.name);
     if (!f.children.isEmpty()) {
       p.beginArray("children");
-      f.children.stream().forEach(F -> p.value(printFoo(F)));
+      f.children.stream().forEach(F -> p.valueJson(printFoo(F)));
       p.endArray();
     }
     p.member("name2", f.name);

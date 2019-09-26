@@ -7,6 +7,7 @@ import de.monticore.codegen.GeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTScopeRule;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
@@ -15,8 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static de.monticore.codegen.GeneratorHelper.existsHandwrittenClass;
-import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
+import static de.monticore.codegen.GeneratorHelper.*;
 import static de.se_rwth.commons.Names.getSimpleName;
 
 public class CommonScopeGenerator implements ScopeGenerator {
@@ -78,19 +78,28 @@ public class CommonScopeGenerator implements ScopeGenerator {
 
     // Maps Symbol Name to Symbol Kind Name
     Map<String, String> symbolNames = new HashMap<String, String>();
-    Map<String, String> spanningSymbolNames = new HashMap<String, String>();
     for (ProdSymbol sym : allSymbolDefiningRules) {
       String name = getSimpleName(sym.getName());
       String kind;
-      if (sym.getSymbolDefinitionKind().isPresent()) {
-        kind = getSimpleName(sym.getSymbolDefinitionKind().get() + GeneratorHelper.SYMBOL);
+      if (sym.isSymbolDefinition()) {
+        kind = getSimpleName(sym.getName() + GeneratorHelper.SYMBOL);
       } else {
         kind = name + GeneratorHelper.SYMBOL;
       }
       symbolNames.put(name, kind);
-      if(sym.isScopeDefinition()){
-        spanningSymbolNames.put(name,kind);
+    }
+
+    Map<String, String> symbolNamesWithSuper = new HashMap<String, String>();
+    for (ProdSymbol sym : allSymbolDefiningRulesWithSuperGrammar) {
+      String packageName = sym.getFullName().substring(0, sym.getFullName().lastIndexOf(".")+1).toLowerCase() + SYMBOLTABLE_PACKAGE_SUFFIX+".";
+      String name = getSimpleName(sym.getName());
+      String kind;
+      if (sym.isSymbolDefinition()) {
+        kind = getSimpleName(sym.getName() + GeneratorHelper.SYMBOL);
+      } else {
+        kind = name + GeneratorHelper.SYMBOL;
       }
+      symbolNamesWithSuper.put(name, packageName+kind);
     }
 
     Map<String, String> allSymbols = new HashMap<String, String>();
@@ -99,7 +108,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
       String name = getSimpleName(sym.getName());
       String kind = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
       allSymbols.put(name, kind);
-      if(sym.isScopeDefinition()){
+      if(sym.isScopeSpanning()){
         allSpanningSymbolNames.put(name,kind);
       }
     }
@@ -107,12 +116,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     // Maps Symbol Name to Symbol Kind Name
     Map<String, String> symbolNamesWithSuperGrammar = new HashMap<>();
     for (ProdSymbol sym : allSymbolDefiningRulesWithSuperGrammar) {
-      String name;
-      if (sym.getSymbolDefinitionKind().isPresent()) {
-        name = getSimpleName(sym.getSymbolDefinitionKind().get() + GeneratorHelper.SYMBOL);
-      } else {
-        name =  getSimpleName(sym.getName()) + GeneratorHelper.SYMBOL;
-      }
+      String name =  getSimpleName(sym.getName()) + GeneratorHelper.SYMBOL;
       String qualifiedName = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
       symbolNamesWithSuperGrammar.put(name, qualifiedName);
     }
@@ -121,12 +125,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     // needed so the scope does implement all methods from the interface
     // discuss if this is even allowed to do
     for (ProdSymbol sym : genHelper.getAllOverwrittenSymbolProductions()) {
-      String name;
-      if (sym.getSymbolDefinitionKind().isPresent()) {
-        name = getSimpleName(sym.getSymbolDefinitionKind().get() + GeneratorHelper.SYMBOL);
-      } else {
-        name =  getSimpleName(sym.getName()) + GeneratorHelper.SYMBOL;
-      }
+      String name =  getSimpleName(sym.getName()) + GeneratorHelper.SYMBOL;
       String qualifiedName = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
       symbolNamesWithSuperGrammar.put(name, qualifiedName);
     }
@@ -182,15 +181,19 @@ public class CommonScopeGenerator implements ScopeGenerator {
 
 
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
-    Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
-    genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, baseNameInterface, scopeRule, symbolNamesWithSuperGrammar, allSuperScopes, superScopeVisitors,existsHWCScopeImpl);
-    genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, allSuperScopes, languageName, scopeRule);
-    genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName, scopeRule);
+    List<ASTScopeRule> scopeRules = Lists.newArrayList();
+    grammar.getScopeRulesOpt().ifPresent(s -> scopeRules.add(s));
+    for (MCGrammarSymbol grammarSymbol: genHelper.getGrammarSymbol().getAllSuperGrammars()) {
+      grammarSymbol.getAstGrammar().get().getScopeRulesOpt().ifPresent(s -> scopeRules.add(s));
+    }
+    genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, baseNameInterface, scopeRules, symbolNamesWithSuperGrammar, allSuperScopes, superScopeVisitors,existsHWCScopeImpl);
+    genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, allSuperScopes, languageName,  grammar.getScopeRulesOpt());
+    genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName, scopeRules);
 
     if(genHelper.getGrammarSymbol().getStartProd().isPresent()) {
-      genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, allSymbols,allSpanningSymbolNames, superGrammarPackages);
+      genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRules, allSymbols,allSpanningSymbolNames, superGrammarPackages);
 
-      genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, baseNameClass, languageName, symbolNames,existsHWCArtifactScopeImpl);
+      genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, baseNameClass, languageName, symbolNamesWithSuper,existsHWCArtifactScopeImpl);
 
       genEngine.generateNoA("symboltable.ArtifactScopeBuilder",artifactScopeBuilderFilePath, artifactScopeBuilderClassName, languageName);
 

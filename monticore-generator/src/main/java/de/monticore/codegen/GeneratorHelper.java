@@ -229,7 +229,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
    * @return converted type or original type if type is java type already
    */
   public ASTMCObjectType convertTypeCd2Java(ASTMCObjectType astType,
-                                                   String packageSuffix) {
+                                            String packageSuffix) {
     Log.error("TODO transformTypeCd2Java2: Was soll hier implementiert werden?");
 /*
     Log.trace("Converted Cd or Java type: " + CollectionTypesPrinter.printType(astType), LOG_NAME);
@@ -288,7 +288,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     }
     return astType;
 */
-return null;
+    return null;
   }
 
   /**
@@ -1028,7 +1028,7 @@ return null;
   }
 
   public boolean isListAstNode(CDTypeSymbolReference type) {
-    if (!isListType(type.getName()))  {
+    if (!isListType(type.getName())) {
       return false;
     }
     List<CDTypeSymbolReference> typeArgs = type.getActualTypeArguments();
@@ -1195,12 +1195,8 @@ return null;
     if (isOptional(field)) {
       sb.append(GET_SUFFIX_OPTINAL);
     } else if (isListType(astType)) {
-      if (field.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
-        sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
-            sb.length(), GET_SUFFIX_LIST);
-      } else {
-        sb.append(GET_SUFFIX_LIST);
-      }
+      //list suffix `s` not added to field name
+      sb.append(GET_SUFFIX_LIST);
     }
     return sb.toString();
   }
@@ -1229,12 +1225,7 @@ return null;
     StringBuilder sb = new StringBuilder(SET_PREFIX).append(
         StringTransformations.capitalize(getNativeAttributeName(field.getName())));
     if (isListType(field.getType().getName())) {
-      if (field.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
-        sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
-            sb.length(), GET_SUFFIX_LIST);
-      } else {
         sb.append(GET_SUFFIX_LIST);
-      }
     }
     return sb.toString();
   }
@@ -1280,25 +1271,6 @@ return null;
       }
     }
     return printSimpleRefType(type);
-  }
-
-  public static String printDeprecatedAnnotation(Optional<ASTModifier> modifier) {
-    StringBuilder modifierStr = new StringBuilder();
-    if (modifier.isPresent() && modifier.get().isPresentStereotype()) {
-      ASTCDStereotype stereo = modifier.get().getStereotype();
-      for (ASTCDStereoValue stereoValue : stereo.getValueList()) {
-        if (DEPRECATED.equals(stereoValue.getName())) {
-          if (stereoValue.isPresentValue()) {
-            // Print java doc
-            modifierStr.append("/**\n * @deprecated ");
-            modifierStr.append(stereoValue.getValue());
-            modifierStr.append("\n **/\n");
-          }
-          modifierStr.append(DEPRECATED);
-        }
-      }
-    }
-    return modifierStr.toString();
   }
 
   /**
@@ -1583,8 +1555,8 @@ return null;
     String astName = name.substring(name.lastIndexOf("AST") + 3);
     MCGrammarSymbol grammarSymbol = astGeneratorHelper.getGrammarSymbol();
     Optional<ProdSymbol> mcProdSymbol = grammarSymbol.getProd(astName);
-    if (mcProdSymbol.isPresent()) {
-      return mcProdSymbol.get().getSymbolDefinitionKind();
+    if (mcProdSymbol.isPresent() && mcProdSymbol.get().isSymbolDefinition()) {
+      return Optional.of(mcProdSymbol.get().getName());
     }
     return Optional.empty();
   }
@@ -1593,7 +1565,7 @@ return null;
     String astName = name.substring(name.lastIndexOf("AST") + 3);
     MCGrammarSymbol grammarSymbol = astGeneratorHelper.getGrammarSymbol();
     Optional<ProdSymbol> mcProdSymbol = grammarSymbol.getProd(astName);
-    if (mcProdSymbol.isPresent() && mcProdSymbol.get().isScopeDefinition()) {
+    if (mcProdSymbol.isPresent() && mcProdSymbol.get().isScopeSpanning()) {
       return true;
     }
     return false;
@@ -1720,7 +1692,7 @@ return null;
     Optional<ProdSymbol> symbolType = enclosingScope.resolveProd(simpleSymbolName);
     if (symbolType.isPresent()) {
       String packageName = symbolType.get().getFullName().substring(0, symbolType.get().getFullName().lastIndexOf(".")).toLowerCase();
-      return packageName + "." + SymbolTableGenerator.PACKAGE + "." + simpleSymbolName +SYMBOL;
+      return packageName + "." + SymbolTableGenerator.PACKAGE + "." + simpleSymbolName + SYMBOL;
     }
     return "";
   }

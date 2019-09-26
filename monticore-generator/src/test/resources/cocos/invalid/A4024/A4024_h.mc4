@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4024;
+
+grammar A4024_h {
+
+  token Name =
+        ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
+
+  A;
+
+  Super = c:Name;
+
+  Sub extends Super = c:A;
+}

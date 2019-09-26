@@ -5,13 +5,16 @@
 // Instead we double-dispatch the call, to call the correctly typed
 // traverse(...) method with the elements concrete type.
 ${tc.signature("cdClass")}
+<#assign genHelper = glex.getGlobalVar("astHelper")>
+<#assign service = glex.getGlobalVar("service")>
 
 <#list cdClass.getCDAttributeList() as attr>
-  <#if genHelper.isAstNode(attr) || genHelper.isOptionalAstNode(attr) >
-    <#assign attrGetter = "get"+ attr.getName()?cap_first>
+  <#assign attrName = service.getNativeAttributeName(attr.getName())>
+  <#if genHelper.isSimpleAstNode(attr) || genHelper.isOptionalAstNode(attr) >
+    <#assign attrGetter = "get"+ attrName?cap_first>
     <#if genHelper.isOptional(attr.getMCType())>
-      if (node.${attrGetter}().isPresent()) {
-        node.${attrGetter}().get().accept(getRealThis());
+      if (node.isPresent${attrName?cap_first}()) {
+        node.${attrGetter}().accept(getRealThis());
       }
     <#else>
       if (null != node.${attrGetter}()) {
@@ -19,12 +22,12 @@ ${tc.signature("cdClass")}
       }
     </#if>
   <#elseif genHelper.isListAstNode(attr)>
-    <#assign attrGetter = "get"+ attr.getName()?cap_first + "List">
-    <#assign astChildTypeName = attr.printType()>
+    <#assign attrGetter = "get"+ attrName?remove_ending("s")?cap_first + "List">
+    <#assign astChildTypeName = genHelper.getAstClassNameForASTLists(attr)>
     {
-      Iterator<${astChildTypeName}> iter_${attr.getName()} = node.${attrGetter}().iterator();
-      while (iter_${attr.getName()}.hasNext()) {
-        iter_${attr.getName()}.next().accept(getRealThis());
+      Iterator<${astChildTypeName}> iter_${attrName} = node.${attrGetter}().iterator();
+      while (iter_${attrName}.hasNext()) {
+        iter_${attrName}.next().accept(getRealThis());
       }
     }
   </#if>

@@ -15,7 +15,7 @@ public class TransitionSourceExists
   @Override
   public void check(ASTTransition node) {
   
-    IAutomatonScope enclosingScope = node.getEnclosingScope2();
+    IAutomatonScope enclosingScope = node.getEnclosingScope();
     Optional<StateSymbol> sourceState =
         enclosingScope.resolveState(node.getFrom());
 

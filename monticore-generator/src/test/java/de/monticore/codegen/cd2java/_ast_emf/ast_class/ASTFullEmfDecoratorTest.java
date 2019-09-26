@@ -74,18 +74,18 @@ public class ASTFullEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(8, astClass.getCDAttributeList().size());
+    assertEquals(7, astClass.getCDAttributeList().size());
   }
 
   @Test
   public void testConstructorSize() {
-    assertEquals(2, astClass.getCDConstructorList().size());
+    assertEquals(1, astClass.getCDConstructorList().size());
   }
 
   @Test
   public void testMethodSize() {
     assertFalse(astClass.getCDMethodList().isEmpty());
-    assertEquals(117, astClass.getCDMethodList().size());
+    assertEquals(107, astClass.getCDMethodList().size());
   }
 
 }

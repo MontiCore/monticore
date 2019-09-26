@@ -6,4 +6,6 @@ grammar A0278 {
 
   interface A;
 
+  B = A;
+
 }

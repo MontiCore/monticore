@@ -12,9 +12,7 @@ import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.GeneratorHelper.existsHandwrittenClass;
@@ -41,28 +39,27 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
 
     Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
   
-    Set<ProdSymbol> symbolDefiningRules = Sets.newHashSet();
+    Map<ProdSymbol, String> symbolDefiningRules = Maps.newHashMap();
     Set<ProdSymbol> nonSymbolDefiningRules = Sets.newHashSet();
-    Set<String> symbolKinds = Sets.newHashSet();
 
+    Collection<String> kinds = Sets.newHashSet();
     for(ProdSymbol rule: grammarSymbol.getProds()) {
-      if(rule.isSymbolDefinition()) {
-        symbolDefiningRules.add(rule);
-      }
-      else {
+      Optional<ProdSymbol> kind = genHelper.getTypeWithSymbolInfo(rule);
+      if (kind.isPresent()) {
+        symbolDefiningRules.put(rule, kind.get().getName());
+        kinds.add(genHelper.getQualifiedSymbolType(kind.get()));
+      } else {
         if(rule.isParserProd()) {
           nonSymbolDefiningRules.add(rule);
         }
       }
     }
-    symbolDefiningRules.forEach(p -> symbolKinds.add(genHelper.getQualifiedSymbolName(p.getEnclosingScope(),
-        p.getSymbolDefinitionKind().orElse(""))));
 
     List<CDDefinitionSymbol> directSuperCds = genHelper.getDirectSuperCds(genHelper.getCd());
     if(grammarSymbol.getStartProd().isPresent()) {
       genEngine
           .generate("symboltable.SymbolTableCreator", filePath, grammarSymbol.getAstNode().get(),
-              className, directSuperCds, symbolDefiningRules, nonSymbolDefiningRules, symbolKinds, handCodedPath);
+              className, directSuperCds, symbolDefiningRules, nonSymbolDefiningRules, kinds, handCodedPath);
       String stcName;
       if(className.endsWith("TOP")){
         stcName = className.replaceAll("TOP","");
@@ -166,4 +163,5 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
     genEngine.generate("symboltable.SymTabMill", filePath, grammarSymbol.getAstNode().get(),
         hasHWCImpl, className, name,localSymbolsAndScope,mills, superSymbols,symbolToMill, languageName, existsHW,symbols);
   }
+
 }

@@ -10,29 +10,14 @@ public class ElementFactory {
     return createElement(rootPkg, qualifiedName, extension, ElementType.TEMPLATE);
   } 
 
-  /**
-   * @param qualifiedfilename
-   * @param fileextension
-   * @return 
-   */
   public Element createFile(RootPkg rootPkg, String qualifiedName, String extension) {
     return createElement(rootPkg, qualifiedName, extension, ElementType.FILE);
   }
 
-  /**
-   * @param rootPkg
-   * @param modelname
-   * @param filename
-   */
   public Element createModel(RootPkg rootPkg, String qualifiedName, String extension) {
     return createElement(rootPkg, qualifiedName, extension, ElementType.MODEL);
   }
   
-  /**
-   * @param rootPkg
-   * @param modelname
-   * @param filename
-   */
   public Element createHelper(RootPkg rootPkg, String qualifiedName, String extension) {
     return createElement(rootPkg, qualifiedName, extension, ElementType.HELPER);
   }

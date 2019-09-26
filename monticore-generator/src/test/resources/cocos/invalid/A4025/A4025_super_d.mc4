@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4025;
+
+grammar A4025_super_d  {
+
+ A = ["c"];
+
+}

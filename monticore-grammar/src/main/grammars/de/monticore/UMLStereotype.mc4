@@ -4,12 +4,12 @@ package de.monticore;
 /**
  * Grammar for common elements of the UML/P-Language-Family
  */
-component grammar UMLStereotype extends de.monticore.StringLiterals {
+component grammar UMLStereotype extends de.monticore.literals.MCCommonLiterals {
 
     /*========================================================================*/
     /*======================= AST extension ================================*/
     /*========================================================================*/
-    
+
     astrule Stereotype =
         method public boolean contains(String name) {
           for (ASTStereoValue sv : values) {
@@ -35,9 +35,9 @@ component grammar UMLStereotype extends de.monticore.StringLiterals {
           }
           throw new java.util.NoSuchElementException();
         };
-    
+
     astrule StereoValue =
-	// Caution: decoded value is in cache: so change of value leads 
+	// Caution: decoded value is in cache: so change of value leads
 	// to outdated result in getValue()
 	content:String
         method public String getValue() {
@@ -55,7 +55,7 @@ component grammar UMLStereotype extends de.monticore.StringLiterals {
     /*========================================================================*/
     /*============================== GRAMMAR =================================*/
     /*========================================================================*/
-    
+
     /** ASTStereotype represents Stereotypes in the UML/P
         @attribute values List of Values of this Stereotype
     */
@@ -64,7 +64,7 @@ component grammar UMLStereotype extends de.monticore.StringLiterals {
         // It is not possible to define ">>" in one string.
         // Parsing generic types like "List<List<String>>"
         // is then not working.
-    
+
     /** ASTStereoValue represents a Value of a Stereotype in the UML/P
         @attribute name  Name of the Stereotype-Value
         @attribute text Content of the Stereotype (String including '"';
@@ -72,5 +72,5 @@ component grammar UMLStereotype extends de.monticore.StringLiterals {
     */
     StereoValue =
         Name& ("=" text:StringLiteral)?;
-    
+
 }

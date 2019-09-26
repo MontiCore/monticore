@@ -67,6 +67,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     grammarOptions:GrammarOption max=1
     startRules:StartRule max=1
     scopeRules:ScopeRule max=1 ;
+ 
+  symbolrule MCGrammar = isComponent:boolean;
 
 
   /** A GrammarReference references another grammar
@@ -129,6 +131,17 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   /** Productions form the syntactical structure of the grammar
   */
   interface symbol scope Prod = DeprecatedAnnotation? Name;
+  
+  symbolrule Prod = 
+    isStartProd:boolean 
+    isInterface:boolean 
+    isAbstract:boolean 
+    isExternal:boolean  
+    isEnum:boolean 
+    isLexerProd:boolean 
+    isScopeSpanning:boolean
+    isSymbolDefinition:boolean
+    ;
 
   /** ParserProduction are handled by the parser
   */
@@ -298,6 +311,19 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   /** RuleComponents are parts of the alternatives
   */
   interface symbol RuleComponent;
+  
+  symbolrule RuleComponent = 
+    isTerminal:boolean
+    isNonterminal:boolean
+    isConstantGroup:boolean
+    isConstant:boolean
+    isLexerNonterminal:boolean
+    isList:boolean
+    isOptional:boolean
+    subProds:String* 
+    //usageName:String // Waits for next release of MontiCore generator 
+    referencedSymbolName:String?
+    ;
 
   /** A NonTerminalSeparator is a shortcut for the description of list structures
   @attribute variableName Name for a variable binding (Note: Only one attribute of
@@ -372,6 +398,11 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     name:String
     (iteration:["?"|"*"|"+"])*;
 
+  /** Use KeyTerminal instead of Terminal if you don't want this to be a keyword */
+  symbol (RuleComponent) KeyTerminal implements RuleComponent, ITerminal =
+    (usageName:Name&  ":")?
+    "key" "(" (String || "|")+ ")"
+    (iteration:["?"|"*"|"+"])*;
 
   /** Constants are constant string but lead to an attribute */
   Constant implements ITerminal =
@@ -473,8 +504,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     (Name  ":")?
     MCType
     Card?;
- 
-
+    
   // ------------------------------------------------------------------------------
   // Lexer
 
@@ -557,5 +587,5 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
       "=" ( Method | AdditionalAttribute )*
     )? 
   	 ";";
-    
+  	 
 }

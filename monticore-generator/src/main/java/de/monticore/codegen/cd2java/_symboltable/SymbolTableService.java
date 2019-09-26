@@ -7,20 +7,22 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.types.MCSimpleGenericTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 
 import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.INTERFACE_PREFIX;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKGE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.utils.Names.getSimpleName;
 import static de.se_rwth.commons.Names.getQualifier;
 
@@ -60,6 +62,18 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getScopeInterfaceTypeName(getCDSymbol());
   }
 
+  public String getArtifactScopeTypeName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + cdSymbol.getName() + ARTIFACT_PREFIX + SymbolTableConstants.SCOPE_SUFFIX;
+  }
+
+  public String getArtifactScopeTypeName() {
+    return getArtifactScopeTypeName(getCDSymbol());
+  }
+
+  public ASTMCQualifiedType getArtifactScopeType() {
+    return getCDTypeFactory().createQualifiedType(getArtifactScopeTypeName(getCDSymbol()));
+  }
+
   public String getScopeInterfaceTypeName(CDDefinitionSymbol cdSymbol) {
     return getPackage(cdSymbol) + "." + INTERFACE_PREFIX + cdSymbol.getName() + SymbolTableConstants.SCOPE_SUFFIX;
   }
@@ -77,6 +91,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getSymbolName(ASTCDType clazz) {
+    // normal symbol name calculation from
     if (clazz.getName().startsWith(AST_PREFIX)) {
       return clazz.getName().substring(AST_PREFIX.length()) + SymbolTableConstants.SYMBOL_SUFFIX;
     } else {
@@ -85,7 +100,38 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getSymbolTypeName(ASTCDType clazz) {
-    return getPackage() + "." + getSymbolName(clazz);
+    if (!clazz.isPresentCDTypeSymbol()) {
+      return getSymbolTypeName(clazz, getCDSymbol());
+    }
+    CDTypeSymbol symbol = clazz.getCDTypeSymbol();
+    return Joiners.DOT.join(symbol.getModelName().toLowerCase(), getSubPackage(), getSymbolName(clazz));
+  }
+
+  public String getSymbolTypeName(ASTCDType clazz, CDDefinitionSymbol cdDefinitionSymbol) {
+    //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
+    if (clazz.getModifierOpt().isPresent()) {
+      Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifierOpt().get());
+      if (symbolTypeValue.isPresent()) {
+        return symbolTypeValue.get();
+      }
+    }
+    return getPackage(cdDefinitionSymbol) + "." + getSymbolName(clazz);
+  }
+
+  public Optional<String> getDefiningSymbolTypeName(ASTCDType clazz) {
+    // does only return symbol defining parts not parts with e.g. symbol (MCType)
+    return getDefiningSymbolTypeName(clazz, getCDSymbol());
+  }
+
+  public Optional<String> getDefiningSymbolTypeName(ASTCDType clazz, CDDefinitionSymbol cdDefinitionSymbol) {
+    //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
+    if (clazz.getModifierOpt().isPresent()) {
+      Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifierOpt().get());
+      if (symbolTypeValue.isPresent()) {
+        return Optional.empty();
+      }
+    }
+    return Optional.of(getPackage(cdDefinitionSymbol) + "." + getSymbolName(clazz));
   }
 
   public ASTMCType getSymbolType(ASTCDType clazz) {
@@ -94,18 +140,17 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getReferencedSymbolTypeName(ASTCDAttribute attribute) {
     String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
-            MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
+        MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
 
     if (!getQualifier(referencedSymbol).isEmpty() && !referencedSymbol.contains(SYMBOL_TABLE_PACKGE)) {
       referencedSymbol = SymbolTableGeneratorHelper
-              .getQualifiedSymbolType(getQualifier(referencedSymbol)
-                      .toLowerCase(), Names.getSimpleName(referencedSymbol));
+          .getQualifiedSymbolType(getQualifier(referencedSymbol)
+              .toLowerCase(), Names.getSimpleName(referencedSymbol));
     }
     return referencedSymbol;
   }
 
   public String getSimpleSymbolNameFromOptional(ASTMCType type) {
-    String bla = type.printType();
     ASTMCType referencedSymbolType = MCSimpleGenericTypesHelper.getReferenceTypeFromOptional(type).getMCTypeOpt().get();
     String referencedSymbol = referencedSymbolType.printType();
     return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SymbolTableConstants.SYMBOL_SUFFIX));
@@ -134,7 +179,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (!type.getCDTypeSymbolOpt().isPresent()) {
       return Optional.empty();
     }
-    for (CDTypeSymbolReference superType: type.getCDTypeSymbol().getCdInterfaces()) {
+    for (CDTypeSymbolReference superType : type.getCDTypeSymbol().getCdInterfaces()) {
       if (superType.existsReferencedSymbol() && superType.getReferencedSymbol().getAstNode().isPresent()) {
         Optional<ASTCDType> result = getTypeWithSymbolInfo(superType.getReferencedSymbol().getAstNode().get());
         if (result.isPresent()) {
@@ -152,7 +197,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (!type.getCDTypeSymbolOpt().isPresent()) {
       return Optional.empty();
     }
-    for (CDTypeSymbolReference superType: type.getCDTypeSymbol().getCdInterfaces()) {
+    for (CDTypeSymbolReference superType : type.getCDTypeSymbol().getCdInterfaces()) {
       if (superType.existsReferencedSymbol() && superType.getReferencedSymbol().getAstNode().isPresent()) {
         Optional<ASTCDType> result = getTypeWithScopeInfo(superType.getReferencedSymbol().getAstNode().get());
         if (result.isPresent()) {

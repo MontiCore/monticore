@@ -21,15 +21,16 @@ public class CDASTCreator implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompi
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
     return new GrammarToCDDefinition()
-        .andThen(new ClassProdsToCDClasses())
-        .andThen(new AbstractProdsToCDClasses())
-        .andThen(new InterfaceProdsToCDInterfaces())
-        .andThen(new EnumProdsToCDEnums())
-        .andThen(new ExternalProdsToCDInterfaces())
-        .andThen(new ASTRulesToCDClassesAndCDInterfaces())
-        .andThen(new AttributeInASTsToCDAttributes())
-        .andThen(new NonTerminalsToCDAttributes())
-        .andThen(new TerminalsToCDAttributes())
-        .apply(rootLink);
+            .andThen(new ClassProdsToCDClasses())
+            .andThen(new AbstractProdsToCDClasses())
+            .andThen(new InterfaceProdsToCDInterfaces())
+            .andThen(new EnumProdsToCDEnums())
+            .andThen(new ExternalProdsToCDInterfaces())
+            .andThen(new ASTRulesToCDClassesAndCDInterfaces())
+            .andThen(new AttributeInASTsToCDAttributes())
+            .andThen(new NonTerminalsToCDAttributes())
+            .andThen(new TerminalsToCDAttributes())
+            .andThen(new KeyTerminalsToCDAttributes())
+            .apply(rootLink);
   }
 }

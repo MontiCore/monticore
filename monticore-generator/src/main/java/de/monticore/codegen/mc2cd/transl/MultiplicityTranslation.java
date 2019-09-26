@@ -34,7 +34,6 @@ import static de.monticore.grammar.Multiplicity.determineMultiplicity;
  * <li>Star or Plus indicates a List
  * <li>Question mark implies an  Optional
  * <li>the default is just a normal reference
- *
  */
 public class MultiplicityTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
@@ -46,12 +45,11 @@ public class MultiplicityTranslation implements
     Map<ASTCDAttribute, Multiplicity> cdAttributesToMaxMultiplicities =
         mapCDAttributesToMaxMultiplicities(rootLink.getLinks(ASTNode.class, ASTCDAttribute.class));
 
-    cdAttributesToMaxMultiplicities.entrySet().stream()
-        .forEach(entry -> {
-          ASTCDAttribute cdAttribute = entry.getKey();
-          Multiplicity multiplicity = entry.getValue();
-          cdAttribute.setMCType(createNewType(cdAttribute.getMCType(), multiplicity));
-        });
+    for (Map.Entry<ASTCDAttribute, Multiplicity> entry : cdAttributesToMaxMultiplicities.entrySet()) {
+      ASTCDAttribute cdAttribute = entry.getKey();
+      Multiplicity multiplicity = entry.getValue();
+      cdAttribute.setMCType(createNewType(cdAttribute.getMCType(), multiplicity));
+    }
 
     return rootLink;
   }
@@ -79,8 +77,7 @@ public class MultiplicityTranslation implements
     } else {
       if (multiplicity == Multiplicity.LIST) {
         return createNewListType(typeToString(oldType));
-      }
-      else if (multiplicity == Multiplicity.OPTIONAL) {
+      } else if (multiplicity == Multiplicity.OPTIONAL) {
         return createType("Optional", typeToString(oldType));
       }
     }
@@ -98,7 +95,7 @@ public class MultiplicityTranslation implements
       return createSimpleReference("java.util.List", oldTypeName);
     }*/
   }
-  
+
   private static String changePrimitiveType(int primType) {
     switch (primType) {
       case ASTConstantsMCBasicTypes.INT:
@@ -121,5 +118,5 @@ public class MultiplicityTranslation implements
         return "Object";
     }
   }
-  
+
 }

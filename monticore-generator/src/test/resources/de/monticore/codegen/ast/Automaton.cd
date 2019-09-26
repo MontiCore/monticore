@@ -5,6 +5,8 @@ import de.monticore.codegen.ast.Lexicals.*;
 
 classdiagram Automaton {
 
+    public interface ASTAutomatonNode;
+
     <<scope, symbol>> public class ASTAutomaton{
       protected String name;
       <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;

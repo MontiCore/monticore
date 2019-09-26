@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions;
 
-/* This is intended to become(!) a MontiCore stable grammar.
+/* Alpha-version: This is intended to become a MontiCore stable grammar.
  */
  
 /**
@@ -25,7 +25,7 @@ package de.monticore.expressions;
 */
 
 component grammar SetExpressions
-          extends de.monticore.expressions.CommonExpressions {
+          extends de.monticore.expressions.ExpressionsBasis {
 
   /*=================================================================*/
 

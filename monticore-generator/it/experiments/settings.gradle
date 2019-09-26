@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 pluginManagement {
   repositories {
+    mavenLocal()
     maven {
       credentials.username mavenUser
       credentials.password mavenPassword
       url repo
     }
     gradlePluginPortal()
-    mavenLocal()
   }
 }
 
