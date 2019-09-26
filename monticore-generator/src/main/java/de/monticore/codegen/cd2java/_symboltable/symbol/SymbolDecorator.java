@@ -164,7 +164,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
     mutatorDecorator.disableTemplates();
     List<ASTCDMethod> setter = mutatorDecorator.decorate(spannedScopeAttribute);
     setter.forEach(m -> this.replaceTemplate(EMPTY_BODY, m, new StringHookPoint("this.spannedScope = spannedScope;\n" +
-        "    getSpannedScope().setSpanningSymbol(this);")));
+        "      getSpannedScope().setSpanningSymbol(this);")));
     methodList.addAll(setter);
     mutatorDecorator.enableTemplates();
     return methodList;
