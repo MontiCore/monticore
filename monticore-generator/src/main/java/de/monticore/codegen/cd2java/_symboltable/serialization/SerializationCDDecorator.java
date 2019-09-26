@@ -39,7 +39,7 @@ public class SerializationCDDecorator extends AbstractDecorator {
     this.symbolTablePrinterDecorator = symbolTablePrinterDecorator;
   }
 
-  public ASTCDCompilationUnit decorate(ASTCDCompilationUnit astCD, ASTCDCompilationUnit symbolInput) {
+  public ASTCDCompilationUnit decorate(ASTCDCompilationUnit astCD, ASTCDCompilationUnit symbolInput, ASTCDCompilationUnit scopeInput) {
 
     List<String> symbolTablePackage = new ArrayList<>(symbolInput.getPackageList());
     symbolTablePackage.addAll(Arrays.asList(symbolInput.getCDDefinition().getName().toLowerCase(), SYMBOL_TABLE_PACKAGE, SERIALIZATION_PACKAGE));

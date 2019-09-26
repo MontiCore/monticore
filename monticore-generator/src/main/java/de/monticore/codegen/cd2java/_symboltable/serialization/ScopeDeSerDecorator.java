@@ -35,7 +35,7 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDCompilationUnit input) {
+  public ASTCDClass decorate(ASTCDCompilationUnit scopeInput) {
     String scopeDeSerName = symbolTableService.getScopeDeSerSimpleName();
     String scopeInterfaceName = symbolTableService.getScopeInterfaceFullName();
     String iDeSer = String.format(I_DE_SER_TYPE, scopeInterfaceName);
@@ -45,14 +45,22 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     String symbolTablePrinterFullName = symbolTableService.getSymbolTablePrinterFullName();
     String simpleName = symbolTableService.getCDName();
 
-    List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
+    List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(scopeInput.getCDDefinition());
     Map<String, String> symbolMap = new HashMap<>();
     for (ASTCDType symbolDefiningProd : symbolDefiningProds) {
       String symbolFullName = symbolTableService.getSymbolFullName(symbolDefiningProd);
       String symbolSimpleName = symbolTableService.getSymbolSimpleName(symbolDefiningProd);
       symbolMap.put(symbolSimpleName, symbolFullName);
     }
-    ASTCDDefinition astcdDefinition = input.getCDDefinition().deepClone();
+    ASTCDDefinition astcdDefinition = scopeInput.getCDDefinition().deepClone();
+
+    // list of all scope rule attributes
+    List<ASTCDAttribute> scopeRuleAttributeList = scopeInput.deepClone().getCDDefinition().getCDClassList()
+        .stream()
+        .map(ASTCDClassTOP::getCDAttributeList)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+    scopeRuleAttributeList.forEach(a -> symbolTableService.addAttributeDefaultValues(a, this.glex));
 
     return CD4CodeMill.cDClassBuilder()
         .setName(scopeDeSerName)
@@ -63,11 +71,13 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         .addCDMethod(createGetSerializedKindMethod(scopeClassFullName))
         .addCDMethod(createGetSerializedASKindMethod(artifactScopeFullName))
         .addCDMethod(createSerializeMethod(scopeInterfaceName, symbolTablePrinterFullName))
-        .addAllCDMethods(createDeserializeMethods(scopeInterfaceName, scopeClassFullName, artifactScopeFullName, simpleName))
+        .addAllCDMethods(createDeserializeMethods(scopeInterfaceName, scopeClassFullName, artifactScopeFullName,
+            simpleName, scopeRuleAttributeList))
         .addCDMethod(createAddSymbolsMethod(scopeClassFullName, symbolMap))
         .addCDMethod(createAddAndLinkSubScopesMethod(scopeClassFullName, scopeInterfaceName))
         .addCDMethod(createAddAndLinkSpanningSymbolMethod(scopeClassFullName, scopeInterfaceName, astcdDefinition))
         .addAllCDMethods(createDeserializeSymbolMethods(scopeClassFullName, symbolMap))
+        .addAllCDMethods(createDeserializeScopeRuleAttributesMethod(scopeRuleAttributeList, scopeDeSerName))
         .build();
   }
 
@@ -84,7 +94,7 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     List<ASTCDAttribute> symbolDeSerAttributes = new ArrayList<>();
     for (String symbolDeSerName : symbolDeSerNames) {
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, symbolDeSerName, StringTransformations.uncapitalize(symbolDeSerName));
-      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= new " + symbolDeSerName + "();"));
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= new " + symbolDeSerName + "()"));
       symbolDeSerAttributes.add(attribute);
     }
     return symbolDeSerAttributes;
@@ -120,13 +130,14 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
 
   protected List<ASTCDMethod> createDeserializeMethods(String scopeInterfaceName, String scopeClassName,
-                                                       String artifactScopeName, String simpleName) {
+                                                       String artifactScopeName, String simpleName,
+                                                       List<ASTCDAttribute> scopeRuleAttributes) {
     ASTCDMethod deserializeStringMethod = createDeserializeStringMethod(scopeInterfaceName);
 
     ASTCDParameter scopeJsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), SCOPE_JSON_VAR);
     ASTCDMethod deserializeJsonObjectMethod = createDeserializeJsonObjectMethod(scopeInterfaceName, simpleName, scopeJsonParam);
-    ASTCDMethod deserializeScopeMethod = createDeserializeScopeMethod(scopeClassName, simpleName, scopeJsonParam);
-    ASTCDMethod deserializeArtifactScopeMethod = createDeserializeArtifactScopeMethod(artifactScopeName, simpleName, scopeJsonParam);
+    ASTCDMethod deserializeScopeMethod = createDeserializeScopeMethod(scopeClassName, simpleName, scopeJsonParam, scopeRuleAttributes);
+    ASTCDMethod deserializeArtifactScopeMethod = createDeserializeArtifactScopeMethod(artifactScopeName, simpleName, scopeJsonParam, scopeRuleAttributes);
     ASTCDMethod deserializeAdditionalAttributesMethod = createDeserializeAdditionalAttributesMethod(scopeInterfaceName, scopeJsonParam);
 
     return Lists.newArrayList(deserializeStringMethod, deserializeJsonObjectMethod, deserializeScopeMethod,
@@ -147,15 +158,19 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     return deserializeMethod;
   }
 
-  protected ASTCDMethod createDeserializeScopeMethod(String scopeClassName, String simpleName, ASTCDParameter jsonParam) {
+  protected ASTCDMethod createDeserializeScopeMethod(String scopeClassName, String simpleName,
+                                                     ASTCDParameter jsonParam, List<ASTCDAttribute> scopeRuleAttributes) {
     ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, getCDTypeFacade().createQualifiedType(scopeClassName), "deserialize" + simpleName + SCOPE_SUFFIX, jsonParam);
-    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "DeserializeScope", scopeClassName));
+    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(
+        TEMPLATE_PATH + "DeserializeScope", scopeClassName, scopeRuleAttributes));
     return deserializeMethod;
   }
 
-  protected ASTCDMethod createDeserializeArtifactScopeMethod(String artifactScopeName, String simpleName, ASTCDParameter jsonParam) {
+  protected ASTCDMethod createDeserializeArtifactScopeMethod(String artifactScopeName, String simpleName,
+                                                             ASTCDParameter jsonParam, List<ASTCDAttribute> scopeRuleAttributes) {
     ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, getCDTypeFacade().createQualifiedType(artifactScopeName), "deserialize" + simpleName + ARTIFACT_PREFIX + SCOPE_SUFFIX, jsonParam);
-    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "DeserializeArtifactScope", artifactScopeName));
+    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(
+        TEMPLATE_PATH + "DeserializeArtifactScope", artifactScopeName, scopeRuleAttributes));
     return deserializeMethod;
   }
 
@@ -219,4 +234,17 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     }
     return deserializeMethodList;
   }
+
+  protected List<ASTCDMethod> createDeserializeScopeRuleAttributesMethod(List<ASTCDAttribute> attributeList, String deSerName) {
+    List<ASTCDMethod> methodList = new ArrayList<>();
+    for (ASTCDAttribute astcdAttribute : attributeList) {
+      ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), SYMBOL_VAR);
+      ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, astcdAttribute.getMCType(), "deserialize" +
+          StringTransformations.capitalize(astcdAttribute.getName()), jsonParam);
+      this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(
+          TEMPLATE_PATH + "DeserializeSymbolRuleAttr", astcdAttribute, deSerName));
+    }
+    return methodList;
+  }
+
 }

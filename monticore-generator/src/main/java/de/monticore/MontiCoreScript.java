@@ -287,7 +287,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
-   *
    * @param ast
    * @return
    */
@@ -324,7 +323,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
-   *
    * @param ast
    * @return
    */
@@ -514,14 +512,16 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   public ASTCDCompilationUnit decorateForSerializationPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
-                                                              ASTCDCompilationUnit astClassDiagram, ASTCDCompilationUnit symbolClassDiagramm,
-                                                              IterablePath handCodedPath) {
-    ASTCDCompilationUnit preparedSymbolCD = prepareCD(cdScope, symbolClassDiagramm);
-    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
-    return decorateWithSerialization(preparedCD, preparedSymbolCD, glex, handCodedPath);
+                                                              ASTCDCompilationUnit astCD, ASTCDCompilationUnit symbolCD,
+                                                              ASTCDCompilationUnit scopeCD, IterablePath handCodedPath) {
+    ASTCDCompilationUnit preparedSymbolCD = prepareCD(cdScope, symbolCD);
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astCD);
+    ASTCDCompilationUnit preparedScopeCD = prepareCD(cdScope, scopeCD);
+    return decorateWithSerialization(preparedCD, preparedSymbolCD, preparedScopeCD, glex, handCodedPath);
   }
 
-  private ASTCDCompilationUnit decorateWithSerialization(ASTCDCompilationUnit cd, ASTCDCompilationUnit symbolCD, GlobalExtensionManagement glex,
+  private ASTCDCompilationUnit decorateWithSerialization(ASTCDCompilationUnit cd, ASTCDCompilationUnit symbolCD,
+                                                         ASTCDCompilationUnit scopeCD, GlobalExtensionManagement glex,
                                                          IterablePath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
@@ -532,7 +532,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     SerializationCDDecorator serializationCDDecorator = new SerializationCDDecorator(glex, symbolTableService, symbolDeSerDecorator,
         scopeDeSerDecorator, symbolTablePrinterDecorator);
-    ASTCDCompilationUnit serializeCD = serializationCDDecorator.decorate(cd, symbolCD);
+    ASTCDCompilationUnit serializeCD = serializationCDDecorator.decorate(cd, symbolCD, scopeCD);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(serializeCD);
