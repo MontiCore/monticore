@@ -362,12 +362,12 @@ public class GrammarPrettyPrinter
       }
     }
 
-    if (!a.getMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
+    if (!a.getGrammarMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
 
       println(" = ");
       getPrinter().indent();
       printList(a.getAdditionalAttributeList().iterator(), "");
-      printList(a.getMethodList().iterator(), "");
+      printList(a.getGrammarMethodList().iterator(), "");
     }
 
     getPrinter().print(";");
@@ -404,12 +404,12 @@ public class GrammarPrettyPrinter
       }
     }
 
-    if (!a.getMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
+    if (!a.getGrammarMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
 
       println(" = ");
       getPrinter().indent();
       printList(a.getAdditionalAttributeList().iterator(), "");
-      printList(a.getMethodList().iterator(), "");
+      printList(a.getGrammarMethodList().iterator(), "");
     }
 
     getPrinter().print(";");
@@ -445,12 +445,12 @@ public class GrammarPrettyPrinter
       }
     }
 
-    if (!a.getMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
+    if (!a.getGrammarMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
 
       println(" = ");
       getPrinter().indent();
       printList(a.getAdditionalAttributeList().iterator(), "");
-      printList(a.getMethodList().iterator(), "");
+      printList(a.getGrammarMethodList().iterator(), "");
     }
 
     getPrinter().print(";");
@@ -462,7 +462,7 @@ public class GrammarPrettyPrinter
   }
 
   @Override
-  public void handle(ASTMethod a) {
+  public void handle(ASTGrammarMethod a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     print("method ");
 
@@ -782,8 +782,8 @@ public class GrammarPrettyPrinter
     }
     println(" {");
     getPrinter().indent();
-    if (a.getGrammarOptionsOpt().isPresent()) {
-      a.getGrammarOptions().accept(getRealThis());
+    if (a.getGrammarOptionOpt().isPresent()) {
+      a.getGrammarOption().accept(getRealThis());
     }
     printList(a.getLexProdList().iterator(), "");
     printList(a.getClassProdList().iterator(), "");
@@ -793,12 +793,12 @@ public class GrammarPrettyPrinter
     printList(a.getAbstractProdList().iterator(), "");
     printList(a.getASTRuleList().iterator(), "");
     printList(a.getConceptList().iterator(), "");
-    if (a.getStartRulesOpt().isPresent()) {
-      a.getStartRules().accept(getRealThis());
+    if (a.getStartRuleOpt().isPresent()) {
+      a.getStartRule().accept(getRealThis());
     }
     printList(a.getSymbolRuleList().iterator(), "");
-    if (a.getScopeRulesOpt().isPresent()) {
-      a.getScopeRules().accept(getRealThis());
+    if (a.getScopeRuleOpt().isPresent()) {
+      a.getScopeRule().accept(getRealThis());
     }
 
     getPrinter().unindent();

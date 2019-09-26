@@ -64,9 +64,9 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
 
   // One OptionBlock, one StartRule, one ScopeRule only
   astrule MCGrammar =
-    grammarOptions:GrammarOption max=1
-    startRules:StartRule max=1
-    scopeRules:ScopeRule max=1 ;
+    grammarOption:GrammarOption max=1
+    startRule:StartRule max=1
+    scopeRule:ScopeRule max=1 ;
  
   symbolrule MCGrammar = isComponent:boolean;
 
@@ -164,7 +164,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute Type Type of the lexer tokens
   @attribute Block Block used if other than standard mapping shall be used
   */
-  symbol (Prod) scope LexProd implements Prod =
+  LexProd implements Prod =
     DeprecatedAnnotation? (["fragment"] | ["comment"]  )*
     ("token") Name
     (
@@ -186,7 +186,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute name Name of the production
   @attribute constant List of all constants
   */
-  symbol (Prod) scope EnumProd implements Prod =
+  EnumProd implements Prod =
     DeprecatedAnnotation? "enum" Name "=" (Constant || "|")+ ";";
 
 
@@ -195,7 +195,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute name Name of the hole
   @attribute MCType External type used for this hole rule
   */
-  symbol (Prod) scope ExternalProd implements Prod =
+  ExternalProd implements Prod =
     DeprecatedAnnotation? "external" SymbolDefinition* Name MCType? ";";
 
 
@@ -206,7 +206,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute superInterfaceRule Super interfaces
   @attribute aSTSuperInterface Super interfaces abstract syntax only
   */
-  symbol (Prod) scope InterfaceProd implements ParserProd =
+  InterfaceProd implements ParserProd =
     DeprecatedAnnotation? "interface" SymbolDefinition* Name
     (
       "extends" superInterfaceRule:(RuleReference || "," )+
@@ -223,7 +223,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute aSTSuperClass Super productions (abstract syntax only)
   @attribute aSTSuperInterface Super interfaces  (abstract syntax only)
   */
-  symbol (Prod) scope AbstractProd implements Prod =
+  AbstractProd implements Prod =
     DeprecatedAnnotation? "abstract" SymbolDefinition* Name
     (
       "extends" superRule:(RuleReference || ",")+
@@ -246,7 +246,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute action Action executed priot to the rule body
   @attribute alts List of alternatives representing the body of the rule
   */
-  symbol (Prod) scope ClassProd implements ParserProd =
+  ClassProd implements ParserProd =
     DeprecatedAnnotation? SymbolDefinition* Name
     (
        "extends" superRule:(RuleReference || ",")+
@@ -334,7 +334,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute plusKeywords True indicates that all keywords are allowed as well
   @attribute iteration Iteration of nonterminal
   */
-  symbol (RuleComponent) NonTerminalSeparator implements RuleComponent =
+  NonTerminalSeparator implements RuleComponent =
     (usageName:Name&  ":")?
     "(" Name (plusKeywords:["&"])? "||" separator:String ")" iteration:["*"|"+"];
 
@@ -345,7 +345,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute Alts List of alternatives
   @attribute Iteration Iteration of this block
   */
-  symbol (RuleComponent) Block  implements RuleComponent =
+  Block  implements RuleComponent =
     "("
     (
       (
@@ -381,7 +381,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute plusKeywords True indicates that all keywords are allowed as well
   @attribute iteration Iteration of nonterminal
   */
-  symbol (RuleComponent) NonTerminal implements RuleComponent =
+  NonTerminal implements RuleComponent =
     (usageName:Name&  ":")?
     Name ("@" referencedSymbol:Name)? (genSymbol:["!!"] symbolName:Name?)?
     (plusKeywords:["&"] | iteration:["?"|"*"|"+"] )*;
@@ -393,13 +393,13 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
       Name;
 
   /** A Terminal is usually something like "," or "start" */
-  symbol (RuleComponent) Terminal implements RuleComponent, ITerminal =
+  Terminal implements RuleComponent, ITerminal =
     (usageName:Name&  ":")?
     name:String
     (iteration:["?"|"*"|"+"])*;
 
   /** Use KeyTerminal instead of Terminal if you don't want this to be a keyword */
-  symbol (RuleComponent) KeyTerminal implements RuleComponent, ITerminal =
+  KeyTerminal implements RuleComponent, ITerminal =
     (usageName:Name&  ":")?
     "key" "(" (String || "|")+ ")"
     (iteration:["?"|"*"|"+"])*;
@@ -410,18 +410,18 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
 
   /** constants are sth like keywords which one needs to know that they where there,
   e.g. public. In the ast-class they are reflected as int oder boolean isMethods  */
-  symbol (RuleComponent) ConstantGroup implements RuleComponent =
+  ConstantGroup implements RuleComponent =
      (usageName:Name&  ":")?
      "[" Constant ("|" Constant )* "]"
      (iteration:["?"|"*"|"+"])? ;
 
 
   /** End of file as EOF keyword */
-  symbol (RuleComponent) Eof implements RuleComponent =
+  Eof implements RuleComponent =
     "EOF";
 
   /** Handed on as antlr action or predicate, realised by external JavaDSLParser */
-  symbol (RuleComponent) SemanticpredicateOrAction implements RuleComponent=
+  SemanticpredicateOrAction implements RuleComponent=
      "{" ExpressionPredicate "}" Predicate:["?"]
      |
       "{" Action "}"
@@ -460,7 +460,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
       "astimplements" aSTSuperInterface:(MCType || ",")+
     )*
     (
-      "=" ( Method | AdditionalAttribute )*
+      "=" ( GrammarMethod | AdditionalAttribute )*
     )? ";";
 
 
@@ -476,7 +476,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
   @attribute exceptions Lit of the thrown exceptions
   @attribute body Body of the Method (mostly a JavaLazy-Object)
   */
-  Method=
+  GrammarMethod=
       "method"
       (["public"] | ["private"] | ["protected"])?
       (["final"])?
@@ -542,7 +542,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
      "{" ExpressionPredicate "}" Predicate:["?"]
      ;
 
-  symbol (RuleComponent) LexNonTerminal implements LexComponent, RuleComponent =
+  LexNonTerminal implements LexComponent, RuleComponent =
     Name ;
 
   LexSimpleIteration implements LexComponent =
@@ -574,7 +574,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
       "implements" superInterface:(MCType || ",")+
     )*
     (
-      "=" ( Method | AdditionalAttribute )*
+      "=" ( GrammarMethod | AdditionalAttribute )*
     )? ";";
     
   ScopeRule =
@@ -584,8 +584,9 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
       "implements" superInterface:(MCType || ",")+
     )*
     (
-      "=" ( Method | AdditionalAttribute )*
+      "=" ( GrammarMethod | AdditionalAttribute )*
     )? 
   	 ";";
-  	 
+
+
 }

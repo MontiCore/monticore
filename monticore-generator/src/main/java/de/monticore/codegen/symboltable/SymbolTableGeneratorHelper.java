@@ -32,7 +32,7 @@ import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTCard;
 import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTMethod;
+import de.monticore.grammar.grammar._ast.ASTGrammarMethod;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
@@ -519,7 +519,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return name;
   }
 
-  public String printMethod(ASTMethod meth) {
+  public String printMethod(ASTGrammarMethod meth) {
     Grammar_WithConceptsPrettyPrinter pp = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
     String code = pp.prettyprint(meth);
     code = code.replaceFirst("method", "");

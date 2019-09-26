@@ -22,7 +22,7 @@ IncrementalChecker.initialize(out, report)
 InputOutputFilesReporter.resetModelToArtifactMap()
 mcScope = createMCGlobalScope(modelPath)
 cdScope = createCD4AGlobalScope(modelPath)
-Reporting.init(report.getAbsolutePath(), reportManagerFactory)
+Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
 // ############################################################
 
 // ############################################################
