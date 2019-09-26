@@ -86,54 +86,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     FieldSymbol fs = field("variable",_intSymType);
     MethodSymbol ms = method("store",_doubleSymType);
     MethodSymbol ms1 = add(method("pay",_voidSymType),TypeSymbolsSymTabMill.fieldSymbolBuilder().setName("cost").setType(_intSymType).build());
-
-    MethodSymbol add = add(method("add",_voidSymType),field("element",_StringSymType));
-    TypeSymbol superclass = add(type("AList","AList"),add);
-    SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList",superclass);
-
-    TypeSymbol subclass = type("MyList","MyList");
-    subclass.setSuperTypes(Lists.newArrayList(supclass));
-    ExpressionsBasisScope myListScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    subclass.setSpannedScope(myListScope);
-    SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList",subclass);
-    FieldSymbol myList = field("myList",sub);
-    add2scope(scope,superclass);
-    add2scope(scope,subclass);
-    add2scope(scope,myList);
-    ExpressionsBasisScope aListScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    aListScope.add(add);
-    superclass.setSpannedScope(aListScope);
-
-    //Generics
-    TypeSymbol sym = type("List","List");
-    TypeVarSymbol t = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("T").setFullName("T").build();
-    sym.setTypeParameters(Lists.newArrayList(t));
-    MethodSymbol addMethod = add(method("add",_booleanSymType),field("x",SymTypeExpressionFactory.createTypeVariable("T",t)));
-    sym = add(sym,addMethod);
-    ExpressionsBasisScope scopet = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    SymTypeExpression symexp = SymTypeExpressionFactory.createGenerics("List",Lists.newArrayList(_intSymType),sym);
-    symexp.setTypeInfo(sym);
-
-    TypeSymbol subsym = type("ArrayList","ArrayList");
-    subsym.setSuperTypes(Lists.newArrayList(symexp));
-    subsym.setTypeParameters(Lists.newArrayList(t));
-    scopet.add(addMethod);
-    sym.setSpannedScope(scopet);
-    ExpressionsBasisScope scopef = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    subsym.setSpannedScope(scopef);
-    SymTypeExpression subsymexp = SymTypeExpressionFactory.createGenerics("ArrayList",Lists.newArrayList(_intSymType),subsym);
-    subsymexp.setTypeInfo(subsym);
-
-    FieldSymbol listVar = field("listVar",symexp);
-    FieldSymbol arraylistVar = field("arraylistVar",subsymexp);
-
-
-    add2scope(scope,sym);
-    add2scope(scope,subsym);
-    add2scope(scope,listVar);
-    add2scope(scope,arraylistVar);
-
-
     ts.setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().setEnclosingScope(scope2).build());
     TypeSymbol test = add(add(add(ts,fs),ms),ms1);
     add2scope(scope2,test);
@@ -141,6 +93,99 @@ public class DeriveSymTypeOfCommonExpressionTest {
     ts.getSpannedScope().add(fs);
     ts.getSpannedScope().add(ms);
     ts.getSpannedScope().add(ms1);
+
+    //inheritance example
+    //super
+    MethodSymbol add = add(method("add",_voidSymType),field("element",_StringSymType));
+    TypeSymbol superclass = add(type("AList","AList"),add);
+    SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList",superclass);
+    ExpressionsBasisScope aListScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    aListScope.add(add);
+    superclass.setSpannedScope(aListScope);
+    add2scope(scope,superclass);
+
+    //sub
+    TypeSymbol subclass = type("MyList","MyList");
+    subclass.setSuperTypes(Lists.newArrayList(supclass));
+    ExpressionsBasisScope myListScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    subclass.setSpannedScope(myListScope);
+    SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList",subclass);
+    FieldSymbol myList = field("myList",sub);
+    add2scope(scope,subclass);
+    add2scope(scope,myList);
+
+    //subsub
+    TypeSymbol subsubclass = type("MySubList","MySubList");
+    subsubclass.setSuperTypes(Lists.newArrayList(sub));
+    ExpressionsBasisScope mySubListScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    subsubclass.setSpannedScope(mySubListScope);
+    SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList",subsubclass);
+    FieldSymbol mySubList = field("mySubList",subsub);
+    add2scope(scope,subsubclass);
+    add2scope(scope,mySubList);
+
+    //Generics example
+    //one generic parameter, supertype
+    TypeSymbol sym = type("List","List");
+    TypeVarSymbol t = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("T").setFullName("T").build();
+    sym.setTypeParameters(Lists.newArrayList(t));
+    MethodSymbol addMethod = add(method("add",_booleanSymType),field("x",SymTypeExpressionFactory.createTypeVariable("T",t)));
+    sym = add(sym,addMethod);
+    ExpressionsBasisScope scopet = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    scopet.add(addMethod);
+    sym.setSpannedScope(scopet);
+    SymTypeExpression symexp = SymTypeExpressionFactory.createGenerics("List",Lists.newArrayList(_intSymType),sym);
+    symexp.setTypeInfo(sym);
+    FieldSymbol listVar = field("listVar",symexp);
+    add2scope(scope,listVar);
+    add2scope(scope,sym);
+
+
+    //one generic parameter, subtype
+    TypeSymbol subsym = type("ArrayList","ArrayList");
+    subsym.setSuperTypes(Lists.newArrayList(symexp));
+    subsym.setTypeParameters(Lists.newArrayList(t));
+    ExpressionsBasisScope scopef = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    subsym.setSpannedScope(scopef);
+    SymTypeExpression subsymexp = SymTypeExpressionFactory.createGenerics("ArrayList",Lists.newArrayList(_intSymType),subsym);
+    subsymexp.setTypeInfo(subsym);
+    FieldSymbol arraylistVar = field("arraylistVar",subsymexp);
+    add2scope(scope,arraylistVar);
+    add2scope(scope,subsym);
+
+
+    //TODO: two generic parameters, supertype
+    TypeSymbol genSup = type("GenSup","GenSup");
+    TypeVarSymbol t1 = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("S").setFullName("S").build();
+    TypeVarSymbol t2 = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("V").setFullName("V").build();
+    genSup.setTypeParameters(Lists.newArrayList(t1,t2));
+    MethodSymbol load = add(method("load",SymTypeExpressionFactory.createTypeVariable("S",t1)),field("x",SymTypeExpressionFactory.createTypeVariable("V",t2)));
+    genSup = add(genSup,load);
+    ExpressionsBasisScope scopeGenSup = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    scopeGenSup.add(load);
+    genSup.setSpannedScope(scopeGenSup);
+    SymTypeExpression genSupType = SymTypeExpressionFactory.createGenerics("GenSup",Lists.newArrayList(_StringSymType,_intSymType),genSup);
+    genSupType.setTypeInfo(genSup);
+    FieldSymbol genSupVar = field("genSupVar",genSupType);
+    add2scope(scope,genSup);
+    add2scope(scope,genSupVar);
+
+    //TODO: two generic parameters, subtype
+    TypeSymbol genSub = type("GenSub","GenSub");
+    genSub.setTypeParameters(Lists.newArrayList(t1,t2));
+    genSub.setSuperTypes(Lists.newArrayList(genSupType));
+    ExpressionsBasisScope scopeGenSub = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    genSub.setSpannedScope(scopeGenSub);
+    SymTypeExpression genSubType = SymTypeExpressionFactory.createGenerics("GenSub",Lists.newArrayList(_StringSymType,_intSymType),genSub);
+    genSubType.setTypeInfo(genSub);
+    FieldSymbol genSubVar = field("genSubVar",genSubType);
+    add2scope(scope,genSub);
+    add2scope(scope,genSubVar);
+
+    //TODO: subtype with typevariable generic parameter, supertype with actual type generic parameter
+    //TODO: supertype with less generic parameters than subtype
+
+
     derLit.setScope(scope);
   }
 
@@ -523,8 +568,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @Test
   public void testInheritance() throws IOException{
-    String s = "myList.add(\"Hallo\")";
+    String s = "myList.add(\"Hello\")";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("void",tc.typeOf(astex).print());
+
+    s = "mySubList.add(\"World\")";
+    astex = p.parse_StringExpression(s).get();
     assertEquals("void",tc.typeOf(astex).print());
   }
 
@@ -533,6 +582,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
     String s = "listVar.add(2)";
     ASTExpression astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
+
+    s = "genSupVar.load(3)";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("String",tc.typeOf(astex).print());
   }
 
   @Test
@@ -540,5 +593,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     String s = "arraylistVar.add(3)";
     ASTExpression astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
+
+    s = "genSubVar.load(3)";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("String",tc.typeOf(astex).print());
   }
 }
