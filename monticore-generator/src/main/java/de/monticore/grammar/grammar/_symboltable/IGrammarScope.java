@@ -3,8 +3,10 @@
 
 package de.monticore.grammar.grammar._symboltable;
 
+import com.google.common.collect.LinkedListMultimap;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -111,7 +113,6 @@ public interface IGrammarScope extends IGrammarScopeTOP {
   default Optional<ProdSymbol> resolveInSuperGrammar(String name, MCGrammarSymbol superGrammar) {
     return superGrammar.getSpannedScope().resolveProdImported(name, ALL_INCLUSION);
   }
-
 
 }
 
