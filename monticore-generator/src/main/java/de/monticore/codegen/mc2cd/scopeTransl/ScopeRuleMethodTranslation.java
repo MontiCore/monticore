@@ -5,7 +5,7 @@ import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.grammar._ast.ASTAdditionalMethod;
+import de.monticore.grammar.grammar._ast.ASTGrammarMethod;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethodParameter;
 import de.monticore.grammar.grammar._ast.ASTScopeRule;
@@ -36,7 +36,7 @@ public class ScopeRuleMethodTranslation implements UnaryOperator<Link<ASTMCGramm
 
     for (Link<ASTScopeRule, ASTCDClass> link : rootLink.getLinks(ASTScopeRule.class,
         ASTCDClass.class)) {
-      for (ASTAdditionalMethod method : link.source().getAdditionalMethodList()) {
+      for (ASTGrammarMethod method : link.source().getGrammarMethodList()) {
         link.target().getCDMethodList().add(translateASTMethodToASTCDMethod(method));
       }
     }
@@ -44,7 +44,7 @@ public class ScopeRuleMethodTranslation implements UnaryOperator<Link<ASTMCGramm
     return rootLink;
   }
 
-  private ASTCDMethod createSimpleCDMethod(ASTAdditionalMethod method) {
+  private ASTCDMethod createSimpleCDMethod(ASTGrammarMethod method) {
     ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
@@ -65,7 +65,7 @@ public class ScopeRuleMethodTranslation implements UnaryOperator<Link<ASTMCGramm
         code.toString());
   }
 
-  private ASTCDMethod translateASTMethodToASTCDMethod(ASTAdditionalMethod method) {
+  private ASTCDMethod translateASTMethodToASTCDMethod(ASTGrammarMethod method) {
     ASTCDMethod cdMethod = createSimpleCDMethod(method);
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();

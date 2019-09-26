@@ -23,7 +23,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
-public class GlobalScopeClassBuilderDecortorTest extends DecoratorTestCase {
+public class GlobalScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass scopeClass;
 
