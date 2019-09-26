@@ -34,6 +34,6 @@ ${tc.signature("ruleSymbol")}
   
 </#list>
 
-<#list ruleSymbol.getMethodList() as meth>
+<#list ruleSymbol.getGrammarMethodList() as meth>
   ${genHelper.printMethod(meth)}
 </#list>

@@ -54,15 +54,6 @@ public class TypeCheck {
     this.iTypesCalculator = iTypesCalculator;
   }
   
-  /**
-   * Predefined minimal Configuration as default:
-   * (cannot handle mire than only the top elements)
-   */
-  public TypeCheck() {
-    synthesizeSymType = new SynthesizeSymTypeFromMCBasicTypes();
-    iTypesCalculator = new DeriveSymTypeOfLiteralsAndExpressions();
-  }
-  
   /*************************************************************************/
   
   /**

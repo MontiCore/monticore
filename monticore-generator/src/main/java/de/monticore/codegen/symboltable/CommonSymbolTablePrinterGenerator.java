@@ -37,7 +37,7 @@ public class CommonSymbolTablePrinterGenerator implements SymbolTablePrinterGene
         Names.getPathFromPackage(genHelper.getSerializationTargetPackage()), className + ".java");
     
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
-    Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
+    Optional<ASTScopeRule> scopeRule = grammar.getScopeRuleOpt();
     Map<String, ASTSymbolRule> symbolRules = getSymbolRules( grammar);
     
     genEngine.generateNoA(TEMPLATE, filePath, languageName, className,

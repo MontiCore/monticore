@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
+import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +14,11 @@ public class SymTypeExpressionFactory {
   
   public static SymTypeVariable createTypeVariable(String name) {
     SymTypeVariable o = new SymTypeVariable(name);
+    return o;
+  }
+
+  public static SymTypeVariable createTypeVariable(String name, TypeVarSymbol typeVarSymbol){
+    SymTypeVariable o = new SymTypeVariable(name,typeVarSymbol);
     return o;
   }
   

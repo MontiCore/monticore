@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 
 public class SymTypeVariable extends SymTypeExpression {
 
@@ -15,11 +16,16 @@ public class SymTypeVariable extends SymTypeExpression {
    * The Variable is connected to a symbol carrying that variable
    * (TODO: clarify if that is really needed)
    */
-  // TODO protected TypeVarSymbol typeVarSymbol;
+  protected TypeVarSymbol typeVarSymbol;
   
   public SymTypeVariable(String varName)
   {
     this.varName = varName;
+  }
+
+  public SymTypeVariable(String varName, TypeVarSymbol typeVarSymbol){
+    this.varName = varName;
+    this.typeVarSymbol = typeVarSymbol;
   }
 
 
