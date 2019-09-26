@@ -46,22 +46,14 @@ public abstract class SymTypeExpression {
    * Furthermore, each SymTypeExpression knows this TypeSymbol (i.e. the
    * TypeSymbols are loaded (or created) upon creation of the SymType.
    */
-  protected Optional<TypeSymbol> typeInfo;
+  protected TypeSymbol typeInfo;
   
-  public TypeSymbol getTypeInfo(ITypeSymbolsScope symbolTable) {
-    if(typeInfo.isPresent()) {
-      return typeInfo.get();
-    }
-
-    // TODO: in case of failure this is repeated each time ... may be inefficient
-    // (but the memorization of a repeated load may be stored before looking at symtab files)
-    typeInfo = symbolTable.resolveType(this.getName());
-    // TODO: Error may occur? e.g. missing symbol. Was there already an error message?
-    return typeInfo.get();
+  public TypeSymbol getTypeInfo() {
+      return typeInfo;
   }
   
   public void setTypeInfo(TypeSymbol typeInfo) {
-    this.typeInfo = Optional.of(typeInfo);
+    this.typeInfo = typeInfo;
   }
   
   // --------------------------------------------------------------------------

@@ -25,7 +25,7 @@ public class DeriveSymTypeOfLiteralsTest {
   }
   
   // This is the core Visitor under Test (but rather empty)
-  DeriveSymTypeOfLiteralsAndExpressions derLit = new DeriveSymTypeOfLiteralsAndExpressions();
+  ITypesCalculator derLit = new DeriveSymTypeOfLiteralsAndExpressions();
   
   // other arguments not used (and therefore deliberately null)
   
