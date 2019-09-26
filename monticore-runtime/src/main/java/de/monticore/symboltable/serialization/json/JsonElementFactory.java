@@ -2,11 +2,9 @@
 package de.monticore.symboltable.serialization.json;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * This factory creates instances of JsonElements. 
+ * It can be used to instantiate subtypes of the Json 
+ * classes instead of the default ones.
  */
 public class JsonElementFactory {
   

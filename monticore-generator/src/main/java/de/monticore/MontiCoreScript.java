@@ -79,6 +79,7 @@ import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
@@ -252,6 +253,22 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   protected Iterable<ASTMCGrammar> getParsedGrammars() {
     return this.firstPassGrammars.keySet();
+  }
+  
+  /**
+   * 
+   * Stores the symbol of the passed grammar AST at the passed location. 
+   * Note that this method should be invoked in the script after the symbol 
+   * table has been created and the cocos have been checked.
+   * TODO: "activate" this method by uncommenting the store instruction
+   * @param grammar
+   * @param location for stored symbols relative to out location of MontiCore
+   */
+  public void storeGrammarSymbol(ASTMCGrammar grammar, String location) {
+    // as there are no nested grammars, all grammar symbols have an artifact scope as enclosing scope.
+    Grammar_WithConceptsArtifactScope enclosingScope = (Grammar_WithConceptsArtifactScope)grammar.getEnclosingScope();
+    Path locPath = Paths.get(__configuration.getOut().getAbsolutePath(), location);
+//  new Grammar_WithConceptsScopeDeSer().store(enclosingScope, locPath);
   }
 
   /**

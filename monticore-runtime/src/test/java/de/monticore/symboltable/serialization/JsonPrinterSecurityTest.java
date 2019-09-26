@@ -17,9 +17,6 @@ import de.monticore.symboltable.serialization.json.JsonObject;
  * This test checks whether injection of objects into serialization and deserialization is avoided
  * correctly.
  *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
  */
 public class JsonPrinterSecurityTest {
   

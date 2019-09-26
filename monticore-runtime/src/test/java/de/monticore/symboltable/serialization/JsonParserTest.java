@@ -8,13 +8,6 @@ import org.junit.Test;
 
 import de.monticore.symboltable.serialization.json.JsonObject;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
- */
 public class JsonParserTest {
   
   @Test

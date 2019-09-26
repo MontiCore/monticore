@@ -2,11 +2,7 @@
 package de.monticore.symboltable.serialization.json;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * This realizes a Json String.
  */
 public class JsonString implements JsonElement {
   
@@ -47,7 +43,6 @@ public class JsonString implements JsonElement {
   }
 
   /**
-   * TODO: Write me!
    *
    * @return
    * @see java.lang.String#length()

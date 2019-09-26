@@ -2,11 +2,9 @@
 package de.monticore.symboltable.serialization.json;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * Represents a number in JSON. JSON does not distinguish different data types for numbers,
+ * therefore this class internally uses number parsers to return the number in a Java number data
+ * type of your choice. For example, to return the number as a long, call getNumberAsLong().
  */
 public class JsonNumber implements JsonElement {
   

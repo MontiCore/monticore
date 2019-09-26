@@ -9,11 +9,9 @@ import de.se_rwth.commons.logging.Log;
 
 /**
  * Facade for the {@link IndentPrinter} that is capable of printing JSON syntax only. It hides
- * details on the concrete syntax of Json.
+ * details on the concrete syntax of Json and performs basic well-formedness checks on the 
+ * produced Json.
  *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
  */
 public class JsonPrinter {
   
@@ -439,11 +437,11 @@ public class JsonPrinter {
   
   /////////////////////////// methods to handle optional pretty printing with line breaks and
   /////////////////////////// indentation ////////////////////////////
-  private void print(Object o) {
+  protected void print(Object o) {
     printer.print(o);
   }
   
-  private void println(Object o) {
+  protected void println(Object o) {
     if (JsonPrinter.isIndentationEnabled()) {
       printer.println(o);
     }
@@ -452,13 +450,13 @@ public class JsonPrinter {
     }
   }
   
-  private void indent() {
+  protected void indent() {
     if (JsonPrinter.isIndentationEnabled()) {
       printer.indent();
     }
   }
   
-  private void unindent() {
+  protected void unindent() {
     if (JsonPrinter.isIndentationEnabled()) {
       printer.unindent();
     }
