@@ -509,26 +509,6 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     enclosingScopeMethods.forEach(m -> m.getModifier().setAbstract(true));
     return enclosingScopeMethods;
   }
-  //todo think about setter with optional, is it possible to have them
-//  protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {
-//    ASTCDAttribute enclosingScopeOpt = this.getCDAttributeFacade().createAttribute(PROTECTED,
-//        getCDTypeFacade().createOptionalTypeOf(scopeInterface), ENCLOSING_SCOPE_VAR);
-//    ASTCDAttribute enclosingScopeMand = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR);
-//    methodDecorator.disableTemplates();
-//    List<ASTCDMethod> enclosingScopeMethods = methodDecorator.getAccessorDecorator().decorate(enclosingScopeOpt);
-//    Optional<ASTCDMethod> getEnclosingScopeOpt = enclosingScopeMethods.stream().filter(m -> m.getName().equals("getEnclosingScopeOpt")).findFirst();
-//    if (getEnclosingScopeOpt.isPresent()) {
-//      // make wildcard type
-//      ASTMCOptionalType wildCardType = getCDTypeFacade().createOptionalTypeOf(getCDTypeFacade().createWildCardWithUpperBoundType(scopeInterface));
-//      ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(wildCardType).build();
-//      getEnclosingScopeOpt.get().setMCReturnType(returnType);
-//    }
-//    enclosingScopeMethods.addAll(methodDecorator.getMutatorDecorator().decorate(enclosingScopeMand));
-//    methodDecorator.enableTemplates();
-//    enclosingScopeMethods.forEach(m -> m.getModifier().setAbstract(true));
-//    return enclosingScopeMethods;
-//  }
-
 
   protected ASTCDMethod createAcceptMethod() {
     String ownScopeVisitor = visitorService.getScopeVisitorFullName();
