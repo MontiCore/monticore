@@ -16,6 +16,7 @@ public class TypeVarSymbol extends TypeVarSymbolTOP {
     clone.setAccessModifier(this.getAccessModifier());
     clone.setEnclosingScope(this.getEnclosingScope());
     clone.setFullName(this.getFullName());
+    getAstNode().ifPresent(clone::setAstNode);
     List<SymTypeExpression> upperBounds = new ArrayList<>();
     for(SymTypeExpression upperBound : this.getUpperBound()){
       upperBounds.add(upperBound.clone());

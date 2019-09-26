@@ -11,7 +11,7 @@ public class FieldSymbol extends FieldSymbolTOP {
     clone.setAccessModifier(this.accessModifier);
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
-    clone.setType(this.getType());//hier auch clonen?
+    clone.setType(this.getType().clone());
     return clone;
   }
 

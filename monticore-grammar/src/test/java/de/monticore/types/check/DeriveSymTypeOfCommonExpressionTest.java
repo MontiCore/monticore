@@ -108,18 +108,21 @@ public class DeriveSymTypeOfCommonExpressionTest {
     TypeSymbol sym = type("List","List");
     TypeVarSymbol t = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("T").setFullName("T").build();
     sym.setTypeParameters(Lists.newArrayList(t));
-    sym = add(sym,add(method("add",_booleanSymType),field("x",SymTypeExpressionFactory.createTypeVariable("T"))));
+    MethodSymbol addMethod = add(method("add",_booleanSymType),field("x",SymTypeExpressionFactory.createTypeVariable("T",t)));
+    sym = add(sym,addMethod);
     ExpressionsBasisScope scopet = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     SymTypeExpression symexp = SymTypeExpressionFactory.createGenerics("List",Lists.newArrayList(_intSymType),sym);
+    symexp.setTypeInfo(sym);
 
     TypeSymbol subsym = type("ArrayList","ArrayList");
     subsym.setSuperTypes(Lists.newArrayList(symexp));
     subsym.setTypeParameters(Lists.newArrayList(t));
-    scopet.add(subsym);
+    scopet.add(addMethod);
     sym.setSpannedScope(scopet);
     ExpressionsBasisScope scopef = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     subsym.setSpannedScope(scopef);
     SymTypeExpression subsymexp = SymTypeExpressionFactory.createGenerics("ArrayList",Lists.newArrayList(_intSymType),subsym);
+    subsymexp.setTypeInfo(subsym);
 
     FieldSymbol listVar = field("listVar",symexp);
     FieldSymbol arraylistVar = field("arraylistVar",subsymexp);
@@ -534,6 +537,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @Test
   public void testGenericsAndInheritance() throws IOException{
-
+    String s = "arraylistVar.add(3)";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
   }
 }

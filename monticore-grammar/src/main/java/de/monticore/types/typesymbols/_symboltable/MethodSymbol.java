@@ -12,9 +12,10 @@ public class MethodSymbol extends MethodSymbolTOP {
 
   public MethodSymbol clone(){
     MethodSymbol clone = new MethodSymbol(name);
-    clone.setReturnType(this.getReturnType());//Hier auch clonen?
+    clone.setReturnType(this.getReturnType().clone());
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
+    getAstNode().ifPresent(clone::setAstNode);
     clone.setAccessModifier(this.accessModifier);
     if(spannedScope!=null){
       clone.setSpannedScope(this.spannedScope);
