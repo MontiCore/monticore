@@ -9,6 +9,7 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.types.MCSimpleGenericTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Names;
@@ -717,5 +718,18 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       return Optional.ofNullable(stereotypeValues.get(0));
     }
     return Optional.empty();
+  }
+
+  public String determineReturnType(ASTMCType type) {
+    if (type instanceof ASTMCPrimitiveType) {
+      ASTMCPrimitiveType primitiveType = (ASTMCPrimitiveType) type;
+      if (primitiveType.isBoolean()) {
+        return "false";
+      } else {
+        return "0";
+      }
+    } else {
+      return "null";
+    }
   }
 }

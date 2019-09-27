@@ -15,7 +15,7 @@ ext.grammarDir = 'src/main/grammars'
 ext.mc_version = '5.4.0-SNAPSHOT'
 ext.generator_version = '5.4.0-SNAPSHOT'
 ext.junit_version = '4.12'
-ext.cd4a_version = '1.4.0-SNAPSHOT'
+ext.cd4a_version = '1.5.0-SNAPSHOT'
 
 configurations {grammar}
 

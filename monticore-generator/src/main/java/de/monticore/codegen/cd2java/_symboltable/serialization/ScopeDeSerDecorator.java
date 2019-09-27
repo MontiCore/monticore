@@ -240,8 +240,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
       ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), "symbolJson");
       ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, astcdAttribute.getMCType(), "deserialize" +
           StringTransformations.capitalize(astcdAttribute.getName()), jsonParam);
+      String returnType = symbolTableService.determineReturnType(deserializeMethod.getMCReturnType().getMCType());
       this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(
-          "_symboltable.serialization.symbolDeSer.DeserializeSymbolRuleAttr", astcdAttribute, deSerName));
+          "_symboltable.serialization.symbolDeSer.DeserializeSymbolRuleAttr", astcdAttribute, deSerName, returnType));
       methodList.add(deserializeMethod);
     }
     return methodList;

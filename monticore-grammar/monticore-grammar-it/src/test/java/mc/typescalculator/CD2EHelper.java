@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import de.monticore.cd.cd4analysis._symboltable.*;
+import de.monticore.cd.cd4analysis._symboltable.CDAssociationSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDFieldSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDMethOrConstrSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfObject;
@@ -17,14 +20,14 @@ public class CD2EHelper {
     TypeSymbol res = ExpressionsBasisSymTabMill.typeSymbolBuilder().setAccessModifier(typeSymbol.getAccessModifier()).setName(typeSymbol.getName()).setFullName(typeSymbol.getFullName()).build();
     for(CDAssociationSymbol assoc : typeSymbol.getAllAssociations()){
       CDTypeSymbol targetType = assoc.getTargetType().getReferencedSymbol();
-      List<FieldSymbol> variableSymbols = res.getFields();
+      List<FieldSymbol> variableSymbols = res.getFieldList();
       variableSymbols.add(ExpressionsBasisSymTabMill.fieldSymbolBuilder().setName(targetType.getName()).setFullName(targetType.getFullName()).setAccessModifier(targetType.getAccessModifier()).build());
-      res.setFields(variableSymbols);
+      res.setFieldList(variableSymbols);
     }
     for(CDFieldSymbol fieldSymbol: typeSymbol.getFields()){
-      List<FieldSymbol> variableSymbols = res.getFields();
+      List<FieldSymbol> variableSymbols = res.getFieldList();
       variableSymbols.add(transformCDField2FieldSymbol(fieldSymbol));
-      res.setFields(variableSymbols);
+      res.setFieldList(variableSymbols);
     }
     return res;
   }
@@ -39,9 +42,9 @@ public class CD2EHelper {
     MethodSymbol res = ExpressionsBasisSymTabMill.methodSymbolBuilder().setName(methOrConstrSymbol.getName()).setFullName(methOrConstrSymbol.getFullName()).setAccessModifier(methOrConstrSymbol.getAccessModifier()).build();
     res.setReturnType(transformCDType2SymTypeExpression(methOrConstrSymbol.getReturnType()));
     for(CDFieldSymbol param: methOrConstrSymbol.getParameters()){
-      List<FieldSymbol> params = res.getParameter();
+      List<FieldSymbol> params = res.getParameterList();
       params.add(transformCDField2FieldSymbol(param));
-      res.setParameter(params);
+      res.setParameterList(params);
     }
     return res;
   }
