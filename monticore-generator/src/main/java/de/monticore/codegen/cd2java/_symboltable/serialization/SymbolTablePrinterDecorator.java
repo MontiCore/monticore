@@ -65,7 +65,7 @@ public class SymbolTablePrinterDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected ASTCDAttribute createJsonPrinterAttribute() {
     ASTCDAttribute printerAttribute = getCDAttributeFacade().createAttribute(PROTECTED, JSON_PRINTER, "printer");
-    this.replaceTemplate(VALUE, printerAttribute, new StringHookPoint("= new " + JSON_PRINTER + "();"));
+    this.replaceTemplate(VALUE, printerAttribute, new StringHookPoint("= new " + JSON_PRINTER + "()"));
     return printerAttribute;
   }
 

@@ -32,7 +32,7 @@ while (grammarIterator.hasNext()) {
         decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram, symbolCD, scopeCD, handcodedPath)
         generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
 
-        decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram, symbolCD, handcodedPath)
+        decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram, symbolCD, scopeCD, handcodedPath)
         generateFromCD(glex, astClassDiagram, decoratedSerializationCd, out, handcodedPath)
 
     }

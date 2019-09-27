@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.github.javaparser.StaticJavaParser;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -22,8 +23,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
+import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
@@ -32,6 +32,8 @@ import static org.junit.Assert.*;
 public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass symbolDeSer;
+
+  private ASTCDClass symbolFooDeSer;
 
   private GlobalExtensionManagement glex;
 
@@ -54,10 +56,14 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
+    this.glex.setGlobalValue("astHelper", new DecorationHelper());
 
     SymbolDeSerDecorator decorator = new SymbolDeSerDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit));
     ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);
     this.symbolDeSer = decorator.decorate(automatonClass);
+
+    ASTCDInterface fooClass = getInterfaceBy("Foo", decoratedCompilationUnit);
+    this.symbolFooDeSer = decorator.decorate(fooClass);
   }
 
   @Test
@@ -94,7 +100,6 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   public void testNoAttributes() {
     assertTrue(symbolDeSer.isEmptyCDAttributes());
   }
-
 
   @Test
   public void testMethods() {
@@ -189,12 +194,97 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertEquals("symbolJson", method.getCDParameter(1).getName());
   }
 
+  /**
+   * test with symbolrules
+   */
+  @Test
+  public void testClassNameFooSymbol() {
+    assertEquals("FooSymbolDeSer", symbolFooDeSer.getName());
+  }
+
+  @Test
+  public void testSuperInterfacesCountFooSymbol() {
+    assertEquals(1, symbolFooDeSer.sizeInterfaces());
+  }
+
+  @Test
+  public void testSuperInterfacesFooSymbol() {
+    assertDeepEquals("de.monticore.symboltable.serialization.IDeSer<de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.FooSymbol>",
+        symbolFooDeSer.getInterface(0));
+  }
+
+  @Test
+  public void testNoSuperClassFoo() {
+    assertFalse(symbolFooDeSer.isPresentSuperclass());
+  }
+
+  @Test
+  public void testNoConstructorFoo() {
+    assertTrue(symbolFooDeSer.isEmptyCDConstructors());
+  }
+
+  @Test
+  public void testNoAttributesFoo() {
+    assertTrue(symbolFooDeSer.isEmptyCDAttributes());
+  }
+
+  @Test
+  public void testMethodsFoo() {
+    assertEquals(9, symbolFooDeSer.getCDMethodList().size());
+  }
+
+
+  @Test
+  public void testDeserializeExtraAttributeMethod() {
+    ASTCDMethod method = getMethodBy("deserializeExtraAttribute", symbolFooDeSer);
+    assertDeepEquals(PROTECTED, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
+
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
+    assertEquals("symbolJson", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testDeserializeFooMethod() {
+    ASTCDMethod method = getMethodBy("deserializeFoo", symbolFooDeSer);
+    assertDeepEquals(PROTECTED, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertListOf(String.class, method.getMCReturnType().getMCType());
+
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
+    assertEquals("symbolJson", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testDeserializeBlaMethod() {
+    ASTCDMethod method = getMethodBy("deserializeBla", symbolFooDeSer);
+    assertDeepEquals(PROTECTED, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
+
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
+    assertEquals("symbolJson", method.getCDParameter(0).getName());
+  }
+
   @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolDeSer, symbolDeSer);
+    StaticJavaParser.parse(sb.toString());
+  }
+
+  @Test
+  public void testGeneratedCodeFoo() {
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolFooDeSer, symbolFooDeSer);
     StaticJavaParser.parse(sb.toString());
   }
 
