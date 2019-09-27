@@ -16,12 +16,14 @@ public class TypeVarSymbol extends TypeVarSymbolTOP {
     clone.setAccessModifier(this.getAccessModifier());
     clone.setEnclosingScope(this.getEnclosingScope());
     clone.setFullName(this.getFullName());
-    getAstNode().ifPresent(clone::setAstNode);
+    if(getAstNodeOpt().isPresent()) {
+      clone.setAstNode(this.getAstNode());
+    }
     List<SymTypeExpression> upperBounds = new ArrayList<>();
-    for(SymTypeExpression upperBound : this.getUpperBound()){
+    for(SymTypeExpression upperBound : this.getUpperBoundList()){
       upperBounds.add(upperBound.clone());
     }
-    clone.setUpperBound(upperBounds);
+    clone.setUpperBoundList(upperBounds);
     return clone;
   }
 }

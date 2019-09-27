@@ -107,7 +107,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     //sub
     TypeSymbol subclass = type("MyList","MyList");
-    subclass.setSuperTypes(Lists.newArrayList(supclass));
+    subclass.setSuperTypeList(Lists.newArrayList(supclass));
     ExpressionsBasisScope myListScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     subclass.setSpannedScope(myListScope);
     SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList",subclass);
@@ -117,7 +117,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     //subsub
     TypeSymbol subsubclass = type("MySubList","MySubList");
-    subsubclass.setSuperTypes(Lists.newArrayList(sub));
+    subsubclass.setSuperTypeList(Lists.newArrayList(sub));
     ExpressionsBasisScope mySubListScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     subsubclass.setSpannedScope(mySubListScope);
     SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList",subsubclass);
@@ -129,7 +129,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //one generic parameter, supertype
     TypeSymbol sym = type("List","List");
     TypeVarSymbol t = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("T").setFullName("T").build();
-    sym.setTypeParameters(Lists.newArrayList(t));
+    sym.setTypeParameterList(Lists.newArrayList(t));
     MethodSymbol addMethod = add(method("add",_booleanSymType),field("x",SymTypeExpressionFactory.createTypeVariable("T",t)));
     sym = add(sym,addMethod);
     ExpressionsBasisScope scopet = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
@@ -144,8 +144,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     //one generic parameter, subtype
     TypeSymbol subsym = type("ArrayList","ArrayList");
-    subsym.setSuperTypes(Lists.newArrayList(symexp));
-    subsym.setTypeParameters(Lists.newArrayList(t));
+    subsym.setSuperTypeList(Lists.newArrayList(symexp));
+    subsym.setTypeParameterList(Lists.newArrayList(t));
     ExpressionsBasisScope scopef = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     subsym.setSpannedScope(scopef);
     SymTypeExpression subsymexp = SymTypeExpressionFactory.createGenerics("ArrayList",Lists.newArrayList(_intSymType),subsym);
@@ -159,7 +159,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     TypeSymbol genSup = type("GenSup","GenSup");
     TypeVarSymbol t1 = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("S").setFullName("S").build();
     TypeVarSymbol t2 = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("V").setFullName("V").build();
-    genSup.setTypeParameters(Lists.newArrayList(t1,t2));
+    genSup.setTypeParameterList(Lists.newArrayList(t1,t2));
     MethodSymbol load = add(method("load",SymTypeExpressionFactory.createTypeVariable("S",t1)),field("x",SymTypeExpressionFactory.createTypeVariable("V",t2)));
     genSup = add(genSup,load);
     ExpressionsBasisScope scopeGenSup = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
@@ -173,8 +173,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     //two generic parameters, subtype
     TypeSymbol genSub = type("GenSub","GenSub");
-    genSub.setTypeParameters(Lists.newArrayList(t1,t2));
-    genSub.setSuperTypes(Lists.newArrayList(genSupType));
+    genSub.setTypeParameterList(Lists.newArrayList(t1,t2));
+    genSub.setSuperTypeList(Lists.newArrayList(genSupType));
     ExpressionsBasisScope scopeGenSub = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     genSub.setSpannedScope(scopeGenSub);
     SymTypeExpression genSubType = SymTypeExpressionFactory.createGenerics("GenSub",Lists.newArrayList(_StringSymType,_intSymType),genSub);
@@ -186,9 +186,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //subtype with variable generic parameter, supertype with fixed generic parameter
     //use existing type as supertype
     TypeSymbol varGenType = type("VarGen","VarGen");
-    varGenType.setSuperTypes(Lists.newArrayList(symexp));
+    varGenType.setSuperTypeList(Lists.newArrayList(symexp));
     TypeVarSymbol typeVarSymbol = ExpressionsBasisSymTabMill.typeVarSymbolBuilder().setName("N").setFullName("N").build();
-    varGenType.setTypeParameters(Lists.newArrayList(typeVarSymbol));
+    varGenType.setTypeParameterList(Lists.newArrayList(typeVarSymbol));
     MethodSymbol calculate = method("calculate",SymTypeExpressionFactory.createTypeVariable("N",typeVarSymbol));
     varGenType = add(varGenType,calculate);
     ExpressionsBasisScope varGenScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
@@ -203,9 +203,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //supertype with less generic parameters than subtype
     //use existing type as supertype
     TypeSymbol moreGenType = type("MoreGen","MoreGen");
-    moreGenType.setSuperTypes(Lists.newArrayList(symexp));
+    moreGenType.setSuperTypeList(Lists.newArrayList(symexp));
     TypeVarSymbol moreType1 = ExpressionsBasisSymTabMill.typeVarSymbolBuilder().setName("F").setFullName("F").build();
-    moreGenType.setTypeParameters(Lists.newArrayList(t,moreType1));
+    moreGenType.setTypeParameterList(Lists.newArrayList(t,moreType1));
     MethodSymbol insert = add(method("insert",SymTypeExpressionFactory.createTypeVariable("T",t)),field("x",SymTypeExpressionFactory.createTypeVariable("F",moreType1)));
     moreGenType = add(moreGenType,insert);
     ExpressionsBasisScope moreGenScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();

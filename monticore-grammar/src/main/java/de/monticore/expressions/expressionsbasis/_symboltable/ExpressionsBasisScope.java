@@ -9,6 +9,7 @@ import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 
+import java.util.List;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -31,29 +32,26 @@ public class ExpressionsBasisScope extends ExpressionsBasisScopeTOP {
     super(enclosingScope,isShadowingScope);
   }
 
-  public Set<MethodSymbol> resolveMethodLocallyMany(boolean foundSymbols, String name, AccessModifier modifier,
+  public List<MethodSymbol> resolveMethodLocallyMany(boolean foundSymbols, String name, AccessModifier modifier,
                                                      Predicate<MethodSymbol> predicate) {
-    Set<MethodSymbol> set = super.resolveMethodLocallyMany(foundSymbols,name,modifier,predicate);
-    if(this.isSpannedBySymbol()){
-      IScopeSpanningSymbol spanningSymbol = getSpanningSymbol().get();
+    List<MethodSymbol> set = super.resolveMethodLocallyMany(foundSymbols,name,modifier,predicate);
+    if(this.isPresentSpanningSymbol()){
+      IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
       if(spanningSymbol instanceof TypeSymbol){
         TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
-        for(SymTypeExpression t : typeSymbol.getSuperTypes()){
+        for(SymTypeExpression t : typeSymbol.getSuperTypeList()){
           //TODO: for every SymTypeExpression
-          set.addAll(t.getTypeInfo().getSpannedScope().resolveMethodMany(foundSymbols, name, modifier, predicate));
+          set.addAll(t.getMethodList(name));
         }
       }else if(spanningSymbol instanceof FieldSymbol){
         FieldSymbol fieldSymbol = (FieldSymbol) spanningSymbol;
-        for(SymTypeExpression t: fieldSymbol.getType().getTypeInfo().getSuperTypes()){
+        for(SymTypeExpression t: fieldSymbol.getType().getTypeInfo().getSuperTypeList()){
           //TODO: for every SymTypeExpression
-          set.addAll(t.getTypeInfo().getSpannedScope().resolveMethodMany(foundSymbols, name, modifier, predicate));
+          set.addAll(t.getMethodList(name));
         }
       }else if(spanningSymbol instanceof MethodSymbol){
         MethodSymbol methodSymbol = (MethodSymbol) spanningSymbol;
-        for(SymTypeExpression t: methodSymbol.getReturnType().getTypeInfo().getSuperTypes()){
-          //TODO: for every SymTypeExpression
-          set.addAll(t.getTypeInfo().getSpannedScope().resolveMethodMany(foundSymbols, name, modifier, predicate));
-        }
+       //TODO: what to do here?
       }
     }
     return set;

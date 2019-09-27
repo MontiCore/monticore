@@ -446,7 +446,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       //look for this type in our scope
       TypeSymbol innerResultType = innerResult.getTypeInfo();
       //search for a method, field or type in the scope of the type of the inner expression
-      Collection<MethodSymbol> methods = innerResultType.getSpannedScope().resolveMethodMany(expr.getName());
       Optional<FieldSymbol> fieldSymbolOpt = innerResultType.getSpannedScope().resolveField(expr.getName());
       Optional<TypeSymbol> typeSymbolOpt = innerResultType.getSpannedScope().resolveType(expr.getName());
       if (fieldSymbolOpt.isPresent()) {
@@ -490,8 +489,8 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       innerResult = lastResult.getLast();
       TypeSymbol innerResultType = innerResult.getTypeInfo();
       //resolve methods with name of the inner expression
-      Collection<MethodSymbol> methodcollection = innerResult.getMethod(expr.getName());
-      List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
+      List<MethodSymbol> methodlist = innerResult.getMethodList(expr.getName());
+//      List<MethodSymbol> methodlist = innerResult.getMethod(expr.getName());
       //count how many methods can be found with the correct arguments and return type
       List<MethodSymbol> fittingMethods = new ArrayList<>();
       for (MethodSymbol method : methodlist) {

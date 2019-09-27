@@ -15,16 +15,18 @@ public class MethodSymbol extends MethodSymbolTOP {
     clone.setReturnType(this.getReturnType().clone());
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
-    getAstNode().ifPresent(clone::setAstNode);
+    if(getAstNodeOpt().isPresent()) {
+      clone.setAstNode(this.getAstNode());
+    }
     clone.setAccessModifier(this.accessModifier);
     if(spannedScope!=null){
       clone.setSpannedScope(this.spannedScope);
     }
     List<FieldSymbol> parameterClone = Lists.newArrayList();
-    for(FieldSymbol parameter: this.getParameter()){
+    for(FieldSymbol parameter: this.getParameterList()){
       parameterClone.add(parameter.clone());
     }
-    clone.setParameter(parameterClone);
+    clone.setParameterList(parameterClone);
     return clone;
   }
 

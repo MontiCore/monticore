@@ -17,32 +17,39 @@ public class TypeSymbol extends TypeSymbolTOP {
     clone.setFullName(this.getFullName());
     clone.setAccessModifier(this.getAccessModifier());
     clone.setSpannedScope(this.getSpannedScope());
-    getAstNode().ifPresent(clone::setAstNode);
+    if(getAstNodeOpt().isPresent()) {
+      clone.setAstNode(this.getAstNode());
+    }
     List<MethodSymbol> methods = new ArrayList<>();
-    for(MethodSymbol method: this.getMethods()){
+    for(MethodSymbol method: this.getMethodList()){
       methods.add(method.clone());
     }
-    clone.setMethods(methods);
+    clone.setMethodList(methods);
 
     List<FieldSymbol> fields = new ArrayList<>();
-    for(FieldSymbol field: this.getFields()){
+    for(FieldSymbol field: this.getFieldList()){
       fields.add(field.clone());
     }
-    clone.setFields(fields);
+    clone.setFieldList(fields);
 
     List<SymTypeExpression> superTypes = new ArrayList<>();
-    for(SymTypeExpression superType: this.getSuperTypes()){
+    for(SymTypeExpression superType: this.getSuperTypeList()){
       superTypes.add(superType.clone());
     }
-    clone.setSuperTypes(superTypes);
+    clone.setSuperTypeList(superTypes);
 
     List<TypeVarSymbol> typeParameters = new ArrayList<>();
-    for(TypeVarSymbol typeParameter: this.getTypeParameters()){
+    for(TypeVarSymbol typeParameter: this.getTypeParameterList()){
       typeParameters.add(typeParameter.clone());
     }
-    clone.setTypeParameters(typeParameters);
+    clone.setTypeParameterList(typeParameters);
 
     return clone;
+  }
+
+  public List<MethodSymbol> getMethodList(String methodname){
+    List<MethodSymbol> methodSymbols = spannedScope.resolveMethodMany(methodname);
+    return methodSymbols;
   }
 
 }

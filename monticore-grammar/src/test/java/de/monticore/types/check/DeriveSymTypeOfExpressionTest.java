@@ -76,7 +76,7 @@ public class DeriveSymTypeOfExpressionTest {
 
     TypeSymbol superType = type("GenSuper");
     TypeSymbol subType = type("GenSub");
-    subType.setSuperTypes(Lists.newArrayList(genSuper));
+    subType.setSuperTypeList(Lists.newArrayList(genSuper));
     SymTypeExpression genArg = SymTypeExpressionFactory.createTypeObject("GenArg");
     List<SymTypeExpression> genArgs = new ArrayList<>();
     genArgs.add(genArg);

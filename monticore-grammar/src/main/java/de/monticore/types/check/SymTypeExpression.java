@@ -42,13 +42,23 @@ public abstract class SymTypeExpression {
 
   public abstract SymTypeExpression clone();
 
-  public List<MethodSymbol> getMethodList(){
-    List<MethodSymbol> methods = typeInfo.clone().getMethods();
+  public List<MethodSymbol> getMethodList(String methodname){
+    List<MethodSymbol> methods = typeInfo.clone().getMethodList();
+    List<MethodSymbol> methodList = new ArrayList<>();
+    for(MethodSymbol method:methods){
+      if(method.getName().equals(methodname)){
+        methodList.add(method);
+      }
+    }
+    for(SymTypeExpression superType:typeInfo.getSuperTypeList()){
+      methodList.addAll(superType.getTypeInfo().getMethodList(methodname));
+    }
     if(!isGenericType()){
-      return methods;
+      return methodList;
     }else{
+
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.clone()).getArgumentList();
-      List<TypeVarSymbol> typeVariableArguments = typeInfo.clone().getTypeParameters();
+      List<TypeVarSymbol> typeVariableArguments = typeInfo.clone().getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");
@@ -56,13 +66,13 @@ public abstract class SymTypeExpression {
       for(int i=0;i<typeVariableArguments.size();i++){
         map.put(typeVariableArguments.get(i),arguments.get(i));
       }
-      for(MethodSymbol method: methods) {
+      for(MethodSymbol method: methodList) {
         for (TypeVarSymbol typeVariableArgument : typeVariableArguments) {
           if (method.getReturnType().print().equals(typeVariableArgument.getName())) {
             method.setReturnType(map.get(typeVariableArgument));
           }
         }
-        for (FieldSymbol parameter : method.getParameter()) {
+        for (FieldSymbol parameter : method.getParameterList()) {
           SymTypeExpression parameterType = parameter.getType();
           for (TypeVarSymbol typeVariableArgument : typeVariableArguments) {
             if (parameterType.print().equals(typeVariableArgument.getName())) {
@@ -71,19 +81,19 @@ public abstract class SymTypeExpression {
           }
         }
       }
-      return methods;
+      return methodList;
     }
   }
 
-  public Collection<MethodSymbol> getMethod(String name){
-    List<MethodSymbol> methods = getMethodList();
+  public List<MethodSymbol> getMethod(String name){
+    List<MethodSymbol> methods = getMethodList(name);
     List<MethodSymbol> resultList = Lists.newArrayList();
     for(MethodSymbol method:methods){
       if(method.getName().equals(name)){
         resultList.add(method);
       }
     }
-    for(SymTypeExpression superType:typeInfo.getSuperTypes()){
+    for(SymTypeExpression superType:typeInfo.getSuperTypeList()){
       resultList.addAll(superType.getMethod(name));
     }
     return resultList;
@@ -91,12 +101,12 @@ public abstract class SymTypeExpression {
 
 
   public List<FieldSymbol> getFieldList(){
-    List<FieldSymbol> fields = typeInfo.clone().getFields();
+    List<FieldSymbol> fields = typeInfo.clone().getFieldList();
     if(!isGenericType()){
       return fields;
     }else{
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.clone()).getArgumentList();
-      List<TypeVarSymbol> typeVariableArguments = typeInfo.clone().getTypeParameters();
+      List<TypeVarSymbol> typeVariableArguments = typeInfo.clone().getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");
