@@ -512,7 +512,15 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         }
       }
       //there can only be one method with the correct arguments and return type
-      if(fittingMethods.size()==1){
+      if(fittingMethods.size()!=0){
+        if(fittingMethods.size()>1){
+          SymTypeExpression returnType = fittingMethods.get(0).getReturnType();
+          for(MethodSymbol method: fittingMethods){
+            if(!returnType.print().equals(method.getReturnType().print())){
+              Log.error("The fitting methods need to have the same return type");
+            }
+          }
+        }
         if (!"void".equals(fittingMethods.get(0).getReturnType().print())) {
           SymTypeExpression result = fittingMethods.get(0).getReturnType();
           this.result = result;
