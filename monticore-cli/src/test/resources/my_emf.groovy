@@ -51,7 +51,7 @@ while (grammarIterator.hasNext()) {
       runGrammarCoCos(astGrammar, mcScope)
 
       // M5: transform grammar AST into Class Diagram AST
-      astClassDiagramWithST = deriveCD(astGrammar, glex, cdScope, mcScope)
+      astClassDiagramWithST = deriveCD(astGrammar, glex, cdScope)
 
       // M6: generate parser and wrapper
       generateParser(glex, astGrammar, mcScope, handcodedPath, out)
@@ -71,9 +71,6 @@ for (astGrammar in getParsedGrammars()) {
   reportGrammarCd(astGrammar, cdScope, mcScope, report)
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
-
-  // M8: generate symbol table
-  generateSymbolTable(glex, mcScope, astGrammar, cdScope, astClassDiagram, out, handcodedPath)
 
   // M9 Generate ast classes, visitor and context condition
   decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)

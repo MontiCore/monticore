@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.symboltable;
+
+import de.monticore.codegen.ast.Lexicals.*;
+
+classdiagram AutomatonScopeCD {
+
+    public class AutomatonScope{
+      protected boolean extraAttribute;
+      protected List<String> foo;
+      protected Optional<Integer> bla;
+      <<methodBody="return de.se_rwth.commons.Names.getQualifiedName(this.getPartList());">>public String toString();
+    }
+}

@@ -18,7 +18,7 @@ public class CDEmfGenerator extends CDGenerator {
     super(generatorSetup);
   }
 
-  private ASTCDDefinition originalDefinition;
+  protected ASTCDDefinition originalDefinition;
 
   public ASTCDDefinition getOriginalDefinition() {
     return originalDefinition;

@@ -68,7 +68,7 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
     assertTrue(ast.isPresent());
     grammar = ast.get();
     File targetFile = new File(OUTPUT_FOLDER);
-    cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(), cd4AnalysisGlobalScope,grammar_withConceptsGlobalScope);
+    cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(), cd4AnalysisGlobalScope);
     assertEquals("CD4Analysis", cdCompilationUnit.getCDDefinition().getName());
 
     CoCoGenerator.generate(glex, cd4AnalysisGlobalScope, cdCompilationUnit, targetFile);
@@ -94,7 +94,7 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
 
     IterablePath targetPath = IterablePath.from(new File("target"), "java");
     File targetFile = new File(OUTPUT_FOLDER);
-    cdCompilationUnit = mc.deriveCD(grammar, glex,cd4AnalysisGlobalScope, grammar_withConceptsGlobalScope);
+    cdCompilationUnit = mc.deriveCD(grammar, glex,cd4AnalysisGlobalScope);
 
     CoCoGenerator.generate(glex, cd4AnalysisGlobalScope, cdCompilationUnit, targetFile);
     // TODO needs asts and visitors to be generated first

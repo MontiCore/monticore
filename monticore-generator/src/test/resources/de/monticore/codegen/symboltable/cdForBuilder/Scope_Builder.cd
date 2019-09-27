@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.symboltable.cdForBuilder;
+
+classdiagram Scope_Builder {
+
+    class AScope{
+      protected Optional<String> name;
+      protected de.monticore.codegen.builder.builder._symboltable.IBuilderScope enclosingScope;
+      protected Optional<de.monticore.codegen.builder.builder._ast.ASTA> astNode;
+      protected List<de.monticore.codegen.builder.builder._symboltable.IBuilderScope> subScopes;
+      protected Optional<de.monticore.symboltable.IScopeSpanningSymbol> spanningSymbol;
+      protected boolean shadowing;
+      protected boolean exportsSymbols;
+    }
+}

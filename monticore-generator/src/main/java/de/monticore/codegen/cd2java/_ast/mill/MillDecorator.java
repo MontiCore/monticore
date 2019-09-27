@@ -5,13 +5,11 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.CollectionTypesPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -20,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
@@ -94,8 +93,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
   }
 
   protected ASTCDMethod addGetMillMethods(ASTMCType millType) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(millType).build();
-    ASTCDMethod getMillMethod = this.getCDMethodFacade().createMethod(PROTECTED_STATIC, returnType, GET_MILL);
+    ASTCDMethod getMillMethod = this.getCDMethodFacade().createMethod(PROTECTED_STATIC, millType, GET_MILL);
     this.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint("_ast.mill.GetMillMethod", CollectionTypesPrinter.printType(millType)));
     return getMillMethod;
   }
@@ -124,8 +122,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
 
     for (ASTCDClass astcdClass : astcdClassList) {
       String astName = astcdClass.getName();
-      ASTMCReturnType builderType = MCBasicTypesMill.mCReturnTypeBuilder().
-              setMCType(this.getCDTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX)).build();
+      ASTMCQualifiedType builderType = this.getCDTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX);
       String methodName = StringTransformations.uncapitalize(astName.replaceFirst("AST", "")) + BUILDER_SUFFIX;
 
       // add public static Method for Builder
@@ -136,7 +133,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
       // add protected Method for Builder
       ASTCDMethod protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
       builderMethodsList.add(protectedMethod);
-      this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderMethod", CollectionTypesPrinter.printReturnType(builderType)));
+      this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderMethod", CollectionTypesPrinter.printType(builderType)));
     }
 
     return builderMethodsList;
@@ -159,9 +156,8 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
 
         for (ASTCDClass superClass : copiedList) {
           if (!service.isClassOverwritten(superClass, classList)) {
-            String packageName = superSymbol.getFullName().toLowerCase() + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
-            ASTMCReturnType superAstType = MCBasicTypesMill.mCReturnTypeBuilder().
-                    setMCType(this.getCDTypeFacade().createQualifiedType(packageName + superClass.getName() + BUILDER_SUFFIX)).build();
+            String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
+            ASTMCQualifiedType superAstType = this.getCDTypeFacade().createQualifiedType(packageName + superClass.getName() + BUILDER_SUFFIX);
             String methodName = StringTransformations.uncapitalize(superClass.getName().replaceFirst("AST", "")) + BUILDER_SUFFIX;
 
             //add builder method

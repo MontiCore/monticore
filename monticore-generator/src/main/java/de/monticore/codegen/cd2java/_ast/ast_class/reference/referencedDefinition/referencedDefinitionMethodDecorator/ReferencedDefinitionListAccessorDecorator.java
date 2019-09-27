@@ -15,7 +15,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 public class ReferencedDefinitionListAccessorDecorator extends ListAccessorDecorator {
 
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public ReferencedDefinitionListAccessorDecorator(final GlobalExtensionManagement glex,
                                                    final SymbolTableService symbolTableService) {

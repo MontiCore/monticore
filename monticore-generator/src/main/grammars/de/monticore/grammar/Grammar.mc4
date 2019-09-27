@@ -587,6 +587,5 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
       "=" ( GrammarMethod | AdditionalAttribute )*
     )? 
   	 ";";
-
-
+  	 
 }

@@ -18,11 +18,7 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * Tests the JsonPrinter
  */
 public class JsonPrinterTest {
   

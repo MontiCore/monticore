@@ -4,7 +4,7 @@ package mc.feature.symboltable;
 
 grammar AutomatonWithSTInfo1 extends mc.common.Basics {
 
-  symbol scope Automaton =
+  symbol  scope Automaton =
     "automaton" Name "{" (State | Transition)* "}" ;
 
   symbol scope State =

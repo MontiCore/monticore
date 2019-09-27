@@ -3,14 +3,13 @@ package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -30,7 +29,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
-  private final VisitorService visitorService;
+  protected final VisitorService visitorService;
 
   public DelegatorVisitorDecorator(final GlobalExtensionManagement glex,
                                    final VisitorService visitorService) {
@@ -43,22 +42,22 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
     // change class names to qualified name
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithPackage(input);
     // get visitor names of current node
-    String delegatorVisitorSimpleName = visitorService.getDelegatorVisitorSimpleTypeName();
-    ASTMCQualifiedType visitorType = visitorService.getVisitorReferenceType();
-    String simpleVisitorName = visitorService.getVisitorSimpleTypeName();
+    String delegatorVisitorSimpleName = visitorService.getDelegatorVisitorSimpleName();
+    ASTMCQualifiedType visitorType = visitorService.getVisitorType();
+    String simpleVisitorName = visitorService.getVisitorSimpleName();
 
     // get visitor types and names of super cds and own cd
     List<CDDefinitionSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
 
     List<String> visitorFullNameList = superCDsTransitive.stream()
-        .map(visitorService::getVisitorFullTypeName)
+        .map(visitorService::getVisitorFullName)
         .collect(Collectors.toList());
-    visitorFullNameList.add(visitorService.getVisitorFullTypeName());
+    visitorFullNameList.add(visitorService.getVisitorFullName());
 
     List<String> visitorSimpleNameList =new ArrayList<>();
     visitorSimpleNameList.add(simpleVisitorName);
     visitorSimpleNameList.addAll(superCDsTransitive.stream()
-        .map(visitorService::getVisitorSimpleTypeName)
+        .map(visitorService::getVisitorSimpleName)
         .collect(Collectors.toList()));
 
     // create list of cdDefinitions from superclass and own class
@@ -69,10 +68,10 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
         .map(visitorService::calculateCDTypeNamesWithPackage)
         .collect(Collectors.toList()));
 
-    return CD4AnalysisMill.cDClassBuilder()
+    return CD4CodeMill.cDClassBuilder()
         .setName(delegatorVisitorSimpleName)
         .setModifier(PUBLIC.build())
-        .addInterface(getCDTypeFacade().createQualifiedType(visitorService.getInheritanceVisitorSimpleTypeName()))
+        .addInterface(getCDTypeFacade().createQualifiedType(visitorService.getInheritanceVisitorSimpleName()))
         .addCDAttribute(getRealThisAttribute(delegatorVisitorSimpleName))
         .addCDMethod(addGetRealThisMethod(delegatorVisitorSimpleName))
         .addCDMethod(addSetRealThisMethods(visitorType, delegatorVisitorSimpleName, simpleVisitorName))
@@ -92,9 +91,8 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDMethod addGetRealThisMethod(String delegatorVisitorSimpleName) {
     ASTMCQualifiedType visitorType = getCDTypeFacade().createQualifiedType(delegatorVisitorSimpleName);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(visitorType).build();
 
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, returnType, GET_REAL_THIS);
+    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return realThis;"));
     return getRealThisMethod;
   }
@@ -149,8 +147,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
       //add getter for visitor attribute
       // e.g. public Optional<automata._visitor.AutomataVisitor> getAutomataVisitor()
       ASTMCOptionalType optionalVisitorType = getCDTypeFacade().createOptionalTypeOf(visitorType);
-      ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(optionalVisitorType).build();
-      ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "get" + simpleName);
+      ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, optionalVisitorType, "get" + simpleName);
       this.replaceTemplate(EMPTY_BODY, getVisitorMethod,
           new StringHookPoint("return " + StringTransformations.uncapitalize(simpleName) + ";"));
       methodList.add(getVisitorMethod);
@@ -161,7 +158,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
   protected List<ASTCDMethod> createVisitorDelegatorMethods(List<ASTCDDefinition> definitionList) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDDefinition astcdDefinition : definitionList) {
-      String simpleVisitorName = visitorService.getVisitorSimpleTypeName(astcdDefinition);
+      String simpleVisitorName = visitorService.getVisitorSimpleName(astcdDefinition.getSymbol());
       visitorMethods.addAll(createVisitorDelegatorClassMethods(astcdDefinition.getCDClassList(), simpleVisitorName));
       visitorMethods.addAll(createVisitorDelegatorInterfaceMethods(astcdDefinition.getCDInterfaceList(), simpleVisitorName));
     }

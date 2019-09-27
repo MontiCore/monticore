@@ -19,5 +19,13 @@ public final class CoCoConstants {
 
   public static final String CHECK_ALL = "checkAll";
 
+  public static final String COCOS = "CoCos";
+
+  public static final String NODE_SIMPLE_NAME = "node";
+
+  public static final String CHECKER_SIMPLE_NAME = "checker";
+
+  public static final String COCO_SIMPLE_NAME = "coco";
+
   private CoCoConstants() {}
 }

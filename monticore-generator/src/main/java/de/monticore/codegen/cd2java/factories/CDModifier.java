@@ -2,7 +2,7 @@
 package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.cd.cd4analysis._ast.ASTModifier;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 
 public enum CDModifier {
 
@@ -68,7 +68,7 @@ public enum CDModifier {
   }
 
   public ASTModifier build() {
-    return CD4AnalysisMill.modifierBuilder()
+    return CD4CodeMill.modifierBuilder()
         .setPublic(isPublic)
         .setProtected(isProtected)
         .setPrivate(isPrivate)

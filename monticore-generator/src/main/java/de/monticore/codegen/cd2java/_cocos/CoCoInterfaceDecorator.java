@@ -16,9 +16,9 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
 public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, List<ASTCDInterface>> {
 
-  private final CoCoService cocoService;
+  protected final CoCoService cocoService;
 
-  private final ASTService astService;
+  protected final ASTService astService;
 
   public CoCoInterfaceDecorator(final GlobalExtensionManagement glex, final CoCoService cocoService, final ASTService astService) {
     super(glex);

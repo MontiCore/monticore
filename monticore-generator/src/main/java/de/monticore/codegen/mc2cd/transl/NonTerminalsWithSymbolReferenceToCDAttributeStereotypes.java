@@ -16,22 +16,23 @@ import de.monticore.utils.Link;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
+
 /**
  * Creates the ASTCDAttributes corresponding to NonTerminals
- *
  */
 class NonTerminalsWithSymbolReferenceToCDAttributeStereotypes implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
-  
+
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-    
+
     for (Link<ASTNonTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTNonTerminal.class,
         ASTCDAttribute.class)) {
       final ASTNonTerminal nonTerminal = link.source();
       final ASTCDAttribute cdAttribute = link.target();
-      
+
       if (nonTerminal.isPresentReferencedSymbol()) {
         final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
             .getMCGrammarSymbol(nonTerminal.getEnclosingScope());
@@ -39,10 +40,8 @@ class NonTerminalsWithSymbolReferenceToCDAttributeStereotypes implements
           final Optional<ProdSymbol> referencedSymbol = grammarSymbol.get()
               .getProdWithInherited(nonTerminal.getReferencedSymbol());
           if (referencedSymbol.isPresent()) {
-            final String referencedSymbolName = TransformationHelper
-                .getGrammarName(referencedSymbol.get()) + "." + referencedSymbol.get().getName()
-                + "Symbol";
-            
+            final String referencedSymbolName = TransformationHelper.getGrammarName(referencedSymbol.get()).toLowerCase()
+                + "." + SYMBOL_TABLE_PACKAGE + "." + referencedSymbol.get().getName() + "Symbol";
             TransformationHelper.addStereoType(cdAttribute,
                 MC2CDStereotypes.REFERENCED_SYMBOL.toString(), referencedSymbolName);
           }

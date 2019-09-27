@@ -24,13 +24,13 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass> {
 
-  private static final String SYMBOL = "Symbol";
+  protected static final String SYMBOL = "Symbol";
 
   public static final String IS_OPTIONAL = "isOptional";
 
-  private final ReferencedSymbolAccessorDecorator accessorDecorator;
+  protected final ReferencedSymbolAccessorDecorator accessorDecorator;
 
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public ASTReferencedSymbolDecorator(final GlobalExtensionManagement glex, final ReferencedSymbolAccessorDecorator accessorDecorator,
                                       final SymbolTableService symbolTableService) {
@@ -79,7 +79,7 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
     }
   }
 
-  private List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol, boolean wasAttributeOptional) {
+  protected List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol, boolean wasAttributeOptional) {
     ASTCDAttribute methodDecorationAttribute = refSymbolAttribute.deepClone();
     if (GeneratorHelper.isMapType(refSymbolAttribute.printType())) {
       //have to change type of attribute list instead of map
@@ -96,7 +96,7 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
     return accessorDecorator.decorate(methodDecorationAttribute);
   }
 
-  private boolean wasAttributeOptional(ASTCDAttribute originalAttribute) {
+  protected boolean wasAttributeOptional(ASTCDAttribute originalAttribute) {
     return DecorationHelper.isOptional(originalAttribute.getMCType());
   }
 

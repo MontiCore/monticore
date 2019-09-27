@@ -21,7 +21,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttribute>> {
 
 
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public ASTSymbolDecorator(final GlobalExtensionManagement glex,
                             final SymbolTableService symbolTableService) {
@@ -51,7 +51,7 @@ public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAtt
       return getCDTypeFacade().createOptionalTypeOf(symbolTypeValue.get());
     } else {
       // use default type
-      return this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolType(clazz));
+      return this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolFullName(clazz));
     }
   }
 

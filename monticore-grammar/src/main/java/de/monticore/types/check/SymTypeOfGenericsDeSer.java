@@ -1,8 +1,4 @@
-/*
- * Copyright (c) 2019 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
 import java.util.ArrayList;
@@ -16,13 +12,6 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
- */
 public class SymTypeOfGenericsDeSer implements IDeSer<SymTypeOfGenerics> {
   
   /**
@@ -30,7 +19,6 @@ public class SymTypeOfGenericsDeSer implements IDeSer<SymTypeOfGenerics> {
    */
   @Override
   public String getSerializedKind() {
-    // TODO: anpassen, nachdem package umbenannt ist
     return "de.monticore.types.check.SymTypeOfGenerics";
   }
   
@@ -63,7 +51,8 @@ public class SymTypeOfGenericsDeSer implements IDeSer<SymTypeOfGenerics> {
           && serialized.getAsJsonObject().get("arguments").isJsonArray()) {
         // delegate deserialization of individual arguments to the SymTypeExpressionDeSer
         SymTypeExpressionDeSer symTypeExpressionDeSer = new SymTypeExpressionDeSer();
-        for (JsonElement e : serialized.getAsJsonObject().get("arguments").getAsJsonArray().getValues()) {
+        for (JsonElement e : serialized.getAsJsonObject().get("arguments").getAsJsonArray()
+            .getValues()) {
           Optional<SymTypeExpression> arg = symTypeExpressionDeSer.deserialize(e);
           if (arg.isPresent()) {
             arguments.add(arg.get());

@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static org.junit.Assert.*;
@@ -39,7 +38,7 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
 
   private static final String AST_I_SCOPE = "de.monticore.codegen.ast.ast._symboltable.IASTScope";
 
-  private static final String SUPER_I_SCOPE= "de.monticore.codegen.ast.super._symboltable.ISuperScope";
+  private static final String SUPER_I_SCOPE= "de.monticore.codegen.ast.supercd._symboltable.ISuperCDScope";
 
   @Before
   public void setup() {

@@ -24,7 +24,7 @@ import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.E_OBJECT_CONTAI
 
 public class DataEmfDecorator extends DataDecorator {
 
-  private final EmfMutatorDecorator emfMutatorDecorator;
+  protected final EmfMutatorDecorator emfMutatorDecorator;
 
   public DataEmfDecorator(final GlobalExtensionManagement glex,
                           final MethodDecorator methodDecorator,
@@ -44,7 +44,7 @@ public class DataEmfDecorator extends DataDecorator {
     }
   }
 
-  private String calculateListType(ASTCDAttribute attribute, String grammarName, String classname) {
+  protected String calculateListType(ASTCDAttribute attribute, String grammarName, String classname) {
     if (attribute.getMCType() instanceof ASTMCBasicGenericType && ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentList().size() == 1) {
       String simpleAttributeType = ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().get().printType();
       DecorationHelper decorationHelper = new DecorationHelper();

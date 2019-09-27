@@ -16,18 +16,20 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class ASTReferencedDefinitionDecorator extends AbstractTransformer<ASTCDClass> {
 
   public static final String DEFINITION = "Definition";
 
-  private final ReferencedDefinitionAccessorDecorator accessorDecorator;
+  protected final ReferencedDefinitionAccessorDecorator accessorDecorator;
 
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public ASTReferencedDefinitionDecorator(final GlobalExtensionManagement glex, final ReferencedDefinitionAccessorDecorator accessorDecorator,
-      final SymbolTableService symbolTableService) {
+                                          final SymbolTableService symbolTableService) {
     super(glex);
     this.accessorDecorator = accessorDecorator;
     this.symbolTableService = symbolTableService;
@@ -49,7 +51,8 @@ public class ASTReferencedDefinitionDecorator extends AbstractTransformer<ASTCDC
 
   protected List<ASTCDMethod> getRefDefinitionMethods(ASTCDAttribute astcdAttribute, String referencedSymbol) {
     ASTMCType symbolType;
-    String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) + GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + GeneratorHelper.AST_PREFIX + symbolTableService.getSimpleSymbolName(referencedSymbol);
+    String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) +
+        AST_PACKAGE + "." + AST_PREFIX + symbolTableService.getSimpleNameFromSymbolName(referencedSymbol);
     if (GeneratorHelper.isListType(astcdAttribute.printType())) {
       //if the attribute is a list
       symbolType = getCDTypeFacade().createListTypeOf(referencedNode);

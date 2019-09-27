@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._cocos;
 
+import com.github.javaparser.StaticJavaParser;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
@@ -19,7 +20,6 @@ import org.junit.Test;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -96,9 +96,8 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     for (ASTCDInterface i : interfaces) {
-      // System.out.printf("==================== %s ====================\n", i.getName());
       StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, i, i);
-      // TODO: Check System.out.println(sb.toString());
+      StaticJavaParser.parse(sb.toString());
     }
   }
 }

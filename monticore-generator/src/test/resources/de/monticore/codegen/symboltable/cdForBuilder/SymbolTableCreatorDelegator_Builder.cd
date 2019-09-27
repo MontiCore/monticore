@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.symboltable.cdForBuilder;
+
+classdiagram SymbolTableCreatorDelegator_Builder {
+
+    class ASymbolTableCreatorDelegator{
+      protected IAGlobalScope globalScope;
+      protected Deque<ISubSubAutScope> scopeStack;
+      protected final ASymbolTableCreator symboltable;
+    }
+}

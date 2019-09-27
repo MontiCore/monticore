@@ -2,13 +2,12 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
 
-  private final VisitorService visitorService;
+  protected final VisitorService visitorService;
 
   public ASTVisitorDecorator(final GlobalExtensionManagement glex,
                              final VisitorService visitorService) {
@@ -34,8 +33,8 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithPackage(ast);
     ASTMCType visitorType = this.visitorService.getVisitorType();
 
-    ASTCDInterface symbolVisitorInterface = CD4AnalysisMill.cDInterfaceBuilder()
-        .setName(this.visitorService.getVisitorSimpleTypeName())
+    ASTCDInterface symbolVisitorInterface = CD4CodeMill.cDInterfaceBuilder()
+        .setName(this.visitorService.getVisitorSimpleName())
         .addAllInterfaces(this.visitorService.getAllVisitorTypesInHierarchy())
         .setModifier(PUBLIC.build())
         .addCDMethod(addGetRealThisMethods(visitorType))
@@ -79,8 +78,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDMethod addGetRealThisMethods(ASTMCType visitorType) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(visitorType).build();
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, returnType, GET_REAL_THIS);
+    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return this;"));
     return getRealThisMethod;
   }

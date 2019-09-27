@@ -11,16 +11,8 @@ import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
- */
 public class SymTypeOfObjectDeSer implements IDeSer<SymTypeOfObject> {
   
   /**
@@ -28,7 +20,6 @@ public class SymTypeOfObjectDeSer implements IDeSer<SymTypeOfObject> {
    */
   @Override
   public String getSerializedKind() {
-    // TODO: anpassen, nachdem package umbenannt ist
     return "de.monticore.types.check.SymTypeOfObject";
   }
   

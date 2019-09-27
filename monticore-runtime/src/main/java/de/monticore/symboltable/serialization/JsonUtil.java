@@ -11,14 +11,17 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * Collection of (static) methods that support using DeSers in combination with Json.
+ * 
  */
 public class JsonUtil {
   
+  /**
+   * This method deserializes a list of import statements in the passed Json object
+   * 
+   * @param scope
+   * @return
+   */
   public static List<ImportStatement> deserializeImports(JsonObject scope) {
     List<ImportStatement> result = new ArrayList<>();
     if (scope.containsKey(JsonConstants.IMPORTS)) {
@@ -30,6 +33,12 @@ public class JsonUtil {
     return result;
   }
   
+  /**
+   * Serializes a scope spanning symbol in a form as used for the attribute "spanning symbol".
+   * 
+   * @param spanningSymbol
+   * @return
+   */
   public static JsonPrinter serializeScopeSpanningSymbol(IScopeSpanningSymbol spanningSymbol) {
     JsonPrinter spPrinter = new JsonPrinter();
     spPrinter.beginObject();
@@ -73,6 +82,14 @@ public class JsonUtil {
     return Optional.empty();
   }
   
+  /**
+   * Returns the member with the passed key of the passed JsonElement as integer, if it exists.
+   * Otherwise, returns empty()
+   * 
+   * @param json
+   * @param key
+   * @return
+   */
   public static Optional<Integer> getOptIntMember(JsonElement json, String key) {
     if (json.isJsonObject()) {
       if (json.getAsJsonObject().containsKey(key)) {

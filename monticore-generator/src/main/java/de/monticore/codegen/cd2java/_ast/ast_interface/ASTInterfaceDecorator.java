@@ -13,9 +13,7 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +24,15 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
 public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
 
-  private final ASTService astService;
+  protected final ASTService astService;
 
-  private final VisitorService visitorService;
+  protected final VisitorService visitorService;
 
-  private final ASTSymbolDecorator symbolDecorator;
+  protected final ASTSymbolDecorator symbolDecorator;
 
-  private final ASTScopeDecorator scopeDecorator;
+  protected final ASTScopeDecorator scopeDecorator;
 
-  private final MethodDecorator methodDecorator;
+  protected final MethodDecorator methodDecorator;
 
   public ASTInterfaceDecorator(final GlobalExtensionManagement glex,
                                final ASTService astService,
@@ -99,7 +97,6 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
   protected ASTCDMethod getAcceptMethod() {
     ASTMCType visitorType = visitorService.getVisitorType();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(visitorType, "visitor");
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCVoidType(getCDTypeFacade().createVoidType()).build();
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, returnType, ACCEPT_METHOD, parameter);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, parameter);
   }
 }

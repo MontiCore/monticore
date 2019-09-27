@@ -15,12 +15,11 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.CONSTANT;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.INT_VALUE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
-
-  protected static final String INT_VALUE = "intValue";
 
   protected final AccessorDecorator accessorDecorator;
 
@@ -37,7 +36,7 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
   @Override
   public ASTCDEnum decorate(final ASTCDEnum input) {
     String enumName = input.getName();
-    String constantClassName = astService.getASTConstantClassName();
+    String constantClassName = astService.getASTConstantClassFullName();
     ASTCDAttribute intValueAttribute = getIntValueAttribute();
     List<ASTCDMethod> intValueMethod = accessorDecorator.decorate(intValueAttribute);
     List<ASTCDEnumConstant> constants = input.getCDEnumConstantList().stream()

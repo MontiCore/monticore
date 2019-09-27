@@ -14,7 +14,6 @@ import de.monticore.cd.prettyprint.CDPrettyPrinterDelegator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.codegen.symboltable.SymbolTableGenerator;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
@@ -77,21 +76,11 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
 
   public static final String BUILDER = "Builder";
 
-  public static final String DELEGATE = "Delegate";
-
-  public static final String DESER = "DeSer";
-
   public static final String OPTIONAL = "Optional";
 
   public static final String SYMBOL = "Symbol";
 
   public static final String SCOPE = "Scope";
-
-  public static final String ARTIFACT_SCOPE = "ArtifactScope";
-
-  public static final String GLOBAL_SCOPE = "GlobalScope";
-
-  public static final String RESOLVING = "Resolving";
 
   public static final String BASE = "Node";
 
@@ -700,7 +689,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     if (!attr.isPresentSymbol() || !(attr.getSymbol() instanceof CDFieldSymbol)) {
       return false;
     }
-    CDTypeSymbolReference attrType =  attr.getSymbol().getType();
+    CDTypeSymbolReference attrType = attr.getSymbol().getType();
 
     List<CDTypeSymbolReference> typeArgs = attrType.getActualTypeArguments();
     if (typeArgs.size() > 1) {
@@ -1024,7 +1013,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     if (!attribute.isPresentSymbol()) {
       return false;
     }
-    return isListAstNode( attribute.getSymbol().getType());
+    return isListAstNode(attribute.getSymbol().getType());
   }
 
   public boolean isListAstNode(CDTypeSymbolReference type) {
@@ -1179,6 +1168,41 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     return sb.toString();
   }
 
+  public static String getPlainGetter(ASTAdditionalAttribute ast) {
+    String astType = printType(ast.getMCType());
+    StringBuilder sb = new StringBuilder();
+    if (CDTypes.isBoolean(astType)) {
+      sb.append(GET_PREFIX_BOOLEAN);
+    } else {
+      sb.append(GET_PREFIX);
+    }
+    sb.append(StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
+    if (isOptional(ast)) {
+      sb.append(GET_SUFFIX_OPTINAL);
+    } else if (isList(ast)) {
+      if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }
+    }
+    return sb.toString();
+  }
+
+  private static boolean isList(ASTAdditionalAttribute ast) {
+    return (ast.isPresentCard() && (ast.getCard().getIteration() == ASTConstantsGrammar.PLUS ||
+        ast.getCard().getIteration() == ASTConstantsGrammar.STAR || (ast.getCard().isPresentMax() && Integer.parseInt(ast.getCard().getMax()) > 1)))
+        || isListType(printType(ast.getMCType()));
+  }
+
+  private static boolean isOptional(ASTAdditionalAttribute ast) {
+    return (ast.isPresentCard() && (ast.getCard().getIteration() == ASTConstantsGrammar.QUESTION
+        || (ast.getCard().isPresentMax() && ast.getCard().isPresentMin() &&
+        Integer.parseInt(ast.getCard().getMin()) == 0 && Integer.parseInt(ast.getCard().getMax()) == 1)))
+        || isOptional(ast.getMCType());
+  }
+
   public static String getPlainName(ASTCDAttribute ast) {
     return StringTransformations.capitalize(getNativeAttributeName(ast.getName()));
   }
@@ -1218,6 +1242,20 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     return sb.toString();
   }
 
+  public static String getPlainSetter(ASTAdditionalAttribute ast) {
+    StringBuilder sb = new StringBuilder(SET_PREFIX).append(
+        StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
+    if (isList(ast)) {
+      if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }
+    }
+    return sb.toString();
+  }
+
   /**
    * Returns the plain getter for the given attribute
    */
@@ -1225,7 +1263,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     StringBuilder sb = new StringBuilder(SET_PREFIX).append(
         StringTransformations.capitalize(getNativeAttributeName(field.getName())));
     if (isListType(field.getType().getName())) {
-        sb.append(GET_SUFFIX_LIST);
+      sb.append(GET_SUFFIX_LIST);
     }
     return sb.toString();
   }
@@ -1692,7 +1730,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     Optional<ProdSymbol> symbolType = enclosingScope.resolveProd(simpleSymbolName);
     if (symbolType.isPresent()) {
       String packageName = symbolType.get().getFullName().substring(0, symbolType.get().getFullName().lastIndexOf(".")).toLowerCase();
-      return packageName + "." + SymbolTableGenerator.PACKAGE + "." + simpleSymbolName + SYMBOL;
+      return packageName + "." + SYMBOLTABLE_PACKAGE_SUFFIX + "." + simpleSymbolName + SYMBOL;
     }
     return "";
   }

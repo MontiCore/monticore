@@ -9,21 +9,19 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SPANNED_SCOPE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SPANNED_SCOPE_VAR;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttribute>> {
 
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public ASTScopeDecorator(final GlobalExtensionManagement glex,
                            final SymbolTableService symbolTableService) {
@@ -63,13 +61,13 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
 
   protected ASTCDAttribute createSpannedScopeAttribute(ASTMCType scopeType) {
     //todo better name with the grammar name in the attributeName, like it was before
-    String attributeName = String.format(SPANNED_SCOPE, "");
+    String attributeName = String.format(SPANNED_SCOPE_VAR, "");
     ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
     return attribute;
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute(ASTMCType scopeType) {
-    String attributeName = ENCLOSING_SCOPE;
+    String attributeName = ENCLOSING_SCOPE_VAR;
     return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
   }
 }

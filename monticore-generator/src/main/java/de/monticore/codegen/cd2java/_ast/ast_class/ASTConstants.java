@@ -21,6 +21,8 @@ public final class ASTConstants {
 
   public static final String AST_CONSTANTS = "ASTConstants";
 
+  public static final String INT_VALUE = "intValue";
+
   private ASTConstants() {
   }
 }

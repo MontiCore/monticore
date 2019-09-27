@@ -1,8 +1,4 @@
-/*
- * Copyright (c) 2019 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
 import java.util.Optional;
@@ -13,13 +9,6 @@ import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
- */
 public class SymTypeConstantDeSer implements IDeSer<SymTypeConstant> {
   
   /**

@@ -11,11 +11,8 @@ import java.util.Set;
 import de.monticore.symboltable.serialization.JsonPrinter;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * Json Objects contain members in form of key-value pairs. The key is a (unique) String, and the
+ * value any JsonElement.
  */
 public class JsonObject implements JsonElement {
   
@@ -56,8 +53,6 @@ public class JsonObject implements JsonElement {
   }
   
   /**
-   * TODO: Write me!
-   *
    * @return
    * @see java.util.Map#size()
    */
@@ -66,8 +61,6 @@ public class JsonObject implements JsonElement {
   }
   
   /**
-   * TODO: Write me!
-   *
    * @return
    * @see java.util.Map#isEmpty()
    */
@@ -103,14 +96,18 @@ public class JsonObject implements JsonElement {
   }
   
   public Optional<String> getStringOpt(String key) {
-    if (members.containsKey(key)) {
+    if (members.containsKey(key) && members.get(key).isJsonString()) {
       Optional.ofNullable(members.get(key).getAsJsonString().getValue());
     }
     return Optional.empty();
   }
   
+  /**
+   * @param key
+   * @return
+   */
   public Optional<Boolean> getBooleanOpt(String key) {
-    if (members.containsKey(key)) {
+    if (members.containsKey(key) && members.get(key).isJsonBoolean()) {
       Optional.ofNullable(members.get(key).getAsJsonBoolean().getValue());
     }
     return Optional.empty();

@@ -2,11 +2,9 @@
 package de.monticore.symboltable.serialization.json;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * Represents a Json null, which is a value type in Json. This class exists for
+ * reasons of completeness, but you should avoid using it 
+ * (cf. Hoare's "billion-dollar mistake")
  */
 public class JsonNull implements JsonElement {
   

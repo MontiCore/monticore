@@ -1,8 +1,4 @@
-/*
- * Copyright (c) 2019 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
 import java.util.Optional;
@@ -11,13 +7,6 @@ import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 
-/**
- * This class serializes and deserializes SymTypeVoid instances as the json value "void".
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
- */
 public class SymTypeVoidDeSer implements IDeSer<SymTypeVoid> {
   
   /**
@@ -25,7 +14,6 @@ public class SymTypeVoidDeSer implements IDeSer<SymTypeVoid> {
    */
   @Override
   public String getSerializedKind() {
-    // TODO: anpassen, nachdem package umbenannt ist
     return "de.monticore.types.check.SymTypeVoid";
   }
   

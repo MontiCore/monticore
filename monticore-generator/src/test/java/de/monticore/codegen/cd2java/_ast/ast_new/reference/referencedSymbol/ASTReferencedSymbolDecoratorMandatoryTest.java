@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_new.reference.referencedSymbol;
 
+import com.github.javaparser.StaticJavaParser;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -73,7 +74,7 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
     assertEquals(1, stereotype.sizeValues());
     assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
-    assertEquals("de.monticore.codegen.ast.referencedSymbol.FooSymbol", stereotype.getValue(0).getValue());
+    assertEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol", stereotype.getValue(0).getValue());
     assertDeepEquals(cdTypeFacade.createTypeByDefinition("String"), nameAttribute.getMCType());
   }
 
@@ -124,7 +125,7 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, astClass, astClass);
-    // TODO Check System.out.println(sb.toString());
+    StaticJavaParser.parse(sb.toString());
   }
 
 }

@@ -2,13 +2,12 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,10 +33,10 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithPackage(input);
     String languageInterfaceName = visitorService.getLanguageInterfaceName();
 
-    return CD4AnalysisMill.cDClassBuilder()
-        .setName(visitorService.getParentAwareVisitorSimpleTypeName())
+    return CD4CodeMill.cDClassBuilder()
+        .setName(visitorService.getParentAwareVisitorSimpleName())
         .setModifier(PUBLIC_ABSTRACT.build())
-        .addInterface(visitorService.getVisitorReferenceType())
+        .addInterface(visitorService.getVisitorType())
         .addCDAttribute(getParentAttribute(languageInterfaceName))
         .addCDMethod(getParentMethod(languageInterfaceName))
         .addCDMethod(getParentsMethod(languageInterfaceName))
@@ -54,16 +53,14 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected ASTCDMethod getParentMethod(String languageInterfaceName) {
     ASTMCType type = getCDTypeFacade().createOptionalTypeOf(languageInterfaceName);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
-    ASTCDMethod getParentMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, GET_PARENT_METHOD);
+    ASTCDMethod getParentMethod = getCDMethodFacade().createMethod(PUBLIC, type, GET_PARENT_METHOD);
     this.replaceTemplate(EMPTY_BODY, getParentMethod, new TemplateHookPoint(GET_PARENT_PAREENTAWARE_TEMPLATE, languageInterfaceName));
     return getParentMethod;
   }
 
   protected ASTCDMethod getParentsMethod(String languageInterfaceName) {
     ASTMCType type = getCDTypeFacade().createListTypeOf(languageInterfaceName);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
-    ASTCDMethod getParentsMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, GET_PARENTS_METHOD);
+    ASTCDMethod getParentsMethod = getCDMethodFacade().createMethod(PUBLIC, type, GET_PARENTS_METHOD);
     this.replaceTemplate(EMPTY_BODY, getParentsMethod, new StringHookPoint("return new java.util.ArrayList<>(parents);"));
     return getParentsMethod;
   }
@@ -78,7 +75,7 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
         .collect(Collectors.toList());
 
     // add template
-    String visitorSimpleTypeName = visitorService.getVisitorSimpleTypeName();
+    String visitorSimpleTypeName = visitorService.getVisitorSimpleName();
     traverseMethods.forEach(m -> replaceTemplate(EMPTY_BODY, m,
         new TemplateHookPoint(TRAVERSE_PAREENTAWARE_TEMPLATE, visitorSimpleTypeName)));
 

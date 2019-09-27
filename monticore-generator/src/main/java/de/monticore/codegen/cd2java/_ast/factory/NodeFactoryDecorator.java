@@ -8,9 +8,7 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaVisitor;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,8 +74,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
 
   protected ASTCDMethod addGetFactoryMethod(ASTMCType factoryType, String factoryClassName) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(factoryType).build();
-    ASTCDMethod getFactoryMethod = this.getCDMethodFacade().createMethod(PRIVATE_STATIC, returnType, GET_FACTORY_METHOD);
+    ASTCDMethod getFactoryMethod = this.getCDMethodFacade().createMethod(PRIVATE_STATIC, factoryType, GET_FACTORY_METHOD);
     this.replaceTemplate(EMPTY_BODY, getFactoryMethod, new TemplateHookPoint("_ast.nodefactory.GetFactory", factoryClassName));
     return getFactoryMethod;
   }
@@ -102,15 +99,13 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDMethod addCreateMethod(String astName, ASTMCType astType) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(astType).build();
-    ASTCDMethod createWithoutParameters = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, CREATE_METHOD + astName);
+    ASTCDMethod createWithoutParameters = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, astType, CREATE_METHOD + astName);
     this.replaceTemplate(EMPTY_BODY, createWithoutParameters, new TemplateHookPoint("_ast.nodefactory.Create", astName));
     return createWithoutParameters;
   }
 
   protected ASTCDMethod addDoCreateMethod(String astName, ASTMCType astType) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(astType).build();
-    ASTCDMethod doCreateWithoutParameters = this.getCDMethodFacade().createMethod(PROTECTED, returnType, DO_CREATE_METHOD + astName);
+    ASTCDMethod doCreateWithoutParameters = this.getCDMethodFacade().createMethod(PROTECTED, astType, DO_CREATE_METHOD + astName);
     this.replaceTemplate(EMPTY_BODY, doCreateWithoutParameters, new TemplateHookPoint("_ast.nodefactory.DoCreate", astName));
     return doCreateWithoutParameters;
   }
@@ -144,8 +139,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDMethod addCreateDelegateMethod(ASTMCType superAstType, String className, String packageName, String symbolName) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(superAstType).build();
-    ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, CREATE_METHOD + className);
+    ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, CREATE_METHOD + className);
     this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("_ast.nodefactory.CreateDelegateMethod", packageName + symbolName, className, ""));
     return createDelegateMethod;
   }

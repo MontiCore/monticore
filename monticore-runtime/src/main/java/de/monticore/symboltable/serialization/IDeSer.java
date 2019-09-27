@@ -20,9 +20,6 @@ import de.monticore.io.FileReaderWriter;
  * type from/to the file system. Within MontiCore, classes implementing this interface typically set
  * the generic type parameter to a concrete symbol class or a concrete scope class.
  *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
  */
 public interface IDeSer<T> {
   

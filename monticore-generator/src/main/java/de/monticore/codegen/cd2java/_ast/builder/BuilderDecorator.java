@@ -12,9 +12,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,9 +24,11 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
-  private final AccessorDecorator accessorDecorator;
+  protected final AccessorDecorator accessorDecorator;
 
   protected final AbstractService service;
+
+  private boolean printBuildMethodTemplate = true;
 
   public BuilderDecorator(final GlobalExtensionManagement glex,
                           final AccessorDecorator accessorDecorator,
@@ -53,6 +53,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTCDAttribute realThisAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED, builderType, REAL_BUILDER);
     List<ASTCDAttribute> builderAttributes = domainClass.getCDAttributeList().stream()
         .map(ASTCDAttribute::deepClone)
+        .filter(a -> !a.getModifier().isFinal())
         .collect(Collectors.toList());
     List<ASTCDAttribute> mandatoryAttributes = builderAttributes.stream()
         .filter(a -> !GeneratorHelper.isListType(a.printType()))
@@ -65,12 +66,12 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, builderClassName);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + builderClassName + ") this;"));
 
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(domainType).build();
-    ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier, returnType, BUILD_METHOD);
-    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes));
+    ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier, domainType, BUILD_METHOD);
+    if (isPrintBuildMethodTemplate()) {
+      this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes));
+    }
 
-    returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createBooleanType()).build();
-    ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, returnType, IS_VALID);
+    ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), IS_VALID);
     this.replaceTemplate(EMPTY_BODY, isValidMethod, new TemplateHookPoint("_ast.builder.IsValidMethod", mandatoryAttributes));
 
     List<ASTCDMethod> accessorMethods = builderAttributes.stream()
@@ -106,5 +107,13 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     } else if (GeneratorHelper.isOptional(attribute)) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     }
+  }
+
+  public boolean isPrintBuildMethodTemplate() {
+    return printBuildMethodTemplate;
+  }
+
+  public void setPrintBuildMethodTemplate(boolean printBuildMethodTemplate) {
+    this.printBuildMethodTemplate = printBuildMethodTemplate;
   }
 }

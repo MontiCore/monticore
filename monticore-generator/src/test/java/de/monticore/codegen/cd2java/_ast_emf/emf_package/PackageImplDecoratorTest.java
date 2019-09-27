@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
+import com.github.javaparser.StaticJavaParser;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
@@ -16,7 +17,8 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
@@ -278,7 +280,7 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, packageClass, packageClass);
-    // System.out.println(sb.toString());
+    StaticJavaParser.parse(sb.toString());
   }
 
 }

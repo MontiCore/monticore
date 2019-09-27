@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
  * Creates the ASTCDAttributes corresponding to NonTerminals
  * 
  */
-class NonTerminalsToCDAttributes implements
+public class NonTerminalsToCDAttributes implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
   
   @Override

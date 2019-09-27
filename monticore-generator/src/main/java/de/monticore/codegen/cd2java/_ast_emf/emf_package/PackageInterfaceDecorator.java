@@ -7,8 +7,6 @@ import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -24,9 +22,9 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
-  private static final String GET = "get%s";
+  protected static final String GET = "get%s";
 
-  private final EmfService emfService;
+  protected final EmfService emfService;
 
   public PackageInterfaceDecorator(final GlobalExtensionManagement glex,
                                    final EmfService emfService) {
@@ -172,16 +170,14 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     // e.g. AutomataNodeFactory getAutomataFactory();
     ASTMCQualifiedType nodeFactoryType = getCDTypeFacade().createQualifiedType(definitionName + NODE_FACTORY_SUFFIX);
     String methodName = String.format(GET, definitionName + FACTORY_SUFFIX);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(nodeFactoryType).build();
-    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName);
+    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, nodeFactoryType, methodName);
   }
 
   protected ASTCDMethod createEEnumMethod(String definitionName) {
     // e.g. EEnum getConstantsAutomata();
     ASTMCQualifiedType eEnumType = getCDTypeFacade().createQualifiedType(E_ENUM_TYPE);
     String methodName = String.format(GET, CONSTANTS_PREFIX + definitionName);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(eEnumType).build();
-    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName);
+    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eEnumType, methodName);
   }
 
   protected List<ASTCDMethod> createEClassMethods(ASTCDDefinition astcdDefinition) {
@@ -190,16 +186,14 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       String methodName = String.format(GET, astcdClass.getName());
       ASTMCQualifiedType eClassType = getCDTypeFacade().createQualifiedType(E_CLASS_TYPE);
-      ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(eClassType).build();
-      methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName));
+      methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eClassType, methodName));
     }
 
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
       if (!emfService.isASTNodeInterface(astcdInterface, astcdDefinition)) {
         String methodName = String.format(GET, astcdInterface.getName());
         ASTMCQualifiedType eClassType = getCDTypeFacade().createQualifiedType(E_CLASS_TYPE);
-        ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(eClassType).build();
-        methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName));
+        methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eClassType, methodName));
       }
     }
     return methodList;
@@ -216,9 +210,8 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     // e.g. EAttribute getASTAutomaton_Name() ; EReference getASTAutomaton_States() ;
     for (ASTCDClass astcdClass : noInheritedAttributesClasses) {
       for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
-        ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(emfService.getEmfAttributeType(astcdAttribute)).build();
         String methodName = String.format(GET, astcdClass.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
-        methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName));
+        methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, emfService.getEmfAttributeType(astcdAttribute), methodName));
       }
     }
 
@@ -230,9 +223,8 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     // e.g. EAttribute getASTAutomaton_Name() ; EReference getASTAutomaton_States() ;
     for (ASTCDInterface astcdInterface : noInheritedAttributesInterfaces) {
       for (ASTCDAttribute astcdAttribute : astcdInterface.getCDAttributeList()) {
-        ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(emfService.getEmfAttributeType(astcdAttribute)).build();
         String methodName = String.format(GET, astcdInterface.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
-        methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, returnType, methodName));
+        methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, emfService.getEmfAttributeType(astcdAttribute), methodName));
       }
     }
     return methodList;
@@ -243,9 +235,8 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : astcdAttributes) {
       String methodName = String.format(GET, astcdAttribute.getName());
-      ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createQualifiedType(E_DATA_TYPE)).build();
       methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT,
-          returnType, methodName));
+          getCDTypeFacade().createQualifiedType(E_DATA_TYPE), methodName));
     }
     return methodList;
   }

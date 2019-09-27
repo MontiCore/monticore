@@ -9,7 +9,10 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.se_rwth.commons.JavaNamesHelper;
@@ -22,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 
@@ -45,7 +49,7 @@ public class AbstractService<T extends AbstractService> {
     return this.cdSymbol;
   }
 
-  protected CDTypeFacade getCDTypeFactory() {
+  protected CDTypeFacade getCDTypeFacade() {
     return this.cdTypeFacade;
   }
 
@@ -167,8 +171,14 @@ public class AbstractService<T extends AbstractService> {
   public String getSimpleNativeType(String nativeAttributeType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
     // if not generic returns simple Type like 'int'
-    return nativeAttributeType.contains(".") ? nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".") + 1) :
-        nativeAttributeType;
+    String nativeType = nativeAttributeType;
+    if (nativeAttributeType.contains(".")) {
+      nativeAttributeType = nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".") + 1);
+    }
+    if (nativeAttributeType.contains(">")) {
+      nativeAttributeType = nativeAttributeType.replaceAll(">", "");
+    }
+    return nativeAttributeType;
   }
 
   public boolean isMethodBodyPresent(ASTCDMethod method) {
@@ -205,10 +215,12 @@ public class AbstractService<T extends AbstractService> {
   protected List<String> getStereotypeValues(ASTModifier modifier,
                                              MC2CDStereotypes stereotype) {
     List<String> values = Lists.newArrayList();
-    modifier.getStereotype().getValueList().stream()
-        .filter(value -> value.getName().equals(stereotype.toString()))
-        .filter(ASTCDStereoValue::isPresentValue)
-        .forEach(value -> values.add(value.getValue()));
+    if (modifier.isPresentStereotype()) {
+      modifier.getStereotype().getValueList().stream()
+          .filter(value -> value.getName().equals(stereotype.toString()))
+          .filter(ASTCDStereoValue::isPresentValue)
+          .forEach(value -> values.add(value.getValue()));
+    }
     return values;
   }
 
@@ -342,4 +354,14 @@ public class AbstractService<T extends AbstractService> {
     String astName = simpleName.substring(simpleName.lastIndexOf(".") + 1);
     return packageName + "." + AST_PACKAGE + "." + astName;
   }
+
+  public void addAttributeDefaultValues(ASTCDAttribute attribute, GlobalExtensionManagement glex) {
+    if (DecorationHelper.isListType(attribute.printType())) {
+      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
+
+    } else if (DecorationHelper.isOptional(attribute.getMCType())) {
+      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
+    }
+  }
+
 }

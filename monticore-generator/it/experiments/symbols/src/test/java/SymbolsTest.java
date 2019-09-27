@@ -1,20 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import java.util.Optional;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import static org.junit.Assert.*;
+import automaton._ast.ASTAutomaton;
+import automaton._parser.AutomatonParser;
+import automaton._symboltable.StateSymbol;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import automaton._ast.*;
-import automaton._parser.*;
-import automaton._symboltable.*;
-import automaton._visitor.*;
-import de.se_rwth.commons.logging.*;
+import java.io.IOException;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 public class SymbolsTest {
   
@@ -48,7 +47,7 @@ public class SymbolsTest {
   public void testStateSymbol1() throws IOException {
     StateSymbol s1 = new StateSymbol("ping");
     StateSymbol s2 = new StateSymbol("pong");
-    assertEquals(Optional.empty(),s1.getAstNode());
+    assertEquals(Optional.empty(),s1.getAstNodeOpt());
     assertEquals("ping",s1.getName());
     assertEquals("",s1.getPackageName());
     assertEquals("ping",s1.getFullName());

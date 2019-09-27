@@ -9,9 +9,6 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -23,7 +20,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDecorator {
 
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public ReferencedDefinitionOptAccessorDecorator(final GlobalExtensionManagement glex,
                                                   final SymbolTableService symbolTableService) {
@@ -43,8 +40,7 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
   @Override
   protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
     String name = String.format(GET_OPT, StringUtils.capitalize(naiveAttributeName));
-    ASTMCReturnType type = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(ast.getMCType().deepClone()).build();
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, ast.getMCType().deepClone(), name);
     String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetDefinitionOpt",
         ast.getName(), referencedSymbolType));

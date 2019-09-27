@@ -8,13 +8,10 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * This class is a subtype of a JsonObject that traces, which members have been visited. 
- * This can be used, e.g., to track members that are stored but not yet taken into account 
- * for building up Java objects.
+ * This class is a subtype of a JsonObject that traces, which members have been visited. This can be
+ * used, e.g., to track members that are stored but not yet taken into account for building up Java
+ * objects.
  *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
  */
 public class TraceableJsonObject extends JsonObject {
   
@@ -72,10 +69,15 @@ public class TraceableJsonObject extends JsonObject {
     return res;
   }
   
-  public Collection<String> getUnvisitedMembers(){
+  /**
+   * This returns a collection of keys of members for which no getter method has been invoked yet.
+   * 
+   * @return
+   */
+  public Collection<String> getUnvisitedMembers() {
     Set<String> keySet = keySet();
     keySet.removeAll(visitedMembers);
     return keySet;
   }
-
+  
 }

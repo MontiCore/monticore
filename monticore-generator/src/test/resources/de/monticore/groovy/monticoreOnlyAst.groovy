@@ -24,7 +24,7 @@ while (grammarIterator.hasNext()) {
     astGrammar = createSymbolsFromAST(mcScope, astGrammar)
 
     // Transform AST-Grammar -> AST-CD
-    astClassDiagramWithST = deriveCD(astGrammar, glex, cd4AScope, mcScope)
+    astClassDiagramWithST = deriveCD(astGrammar, glex, cd4AScope)
 
     // Writes Class Diagram AST to the CD-file (*.cd)
     storeInCdFile(astClassDiagramWithST, out)
