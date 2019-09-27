@@ -109,11 +109,12 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   protected List<ASTCDMethod> createDeserializeSymbolRuleAttributesMethod(List<ASTCDAttribute> attributeList, String deSerName) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : attributeList) {
-      ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), SYMBOL_VAR);
+      ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), "symbolJson");
       ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, astcdAttribute.getMCType(), "deserialize" +
           StringTransformations.capitalize(astcdAttribute.getName()), jsonParam);
       this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(
           TEMPLATE_PATH + "DeserializeSymbolRuleAttr", astcdAttribute, deSerName));
+      methodList.add(deserializeMethod);
     }
     return methodList;
   }

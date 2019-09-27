@@ -51,7 +51,7 @@ public class SerializationCDDecorator extends AbstractDecorator {
         .build();
 
     if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
-      serializeCD.addCDClass(createScopeDeSerClass(symbolInput));
+      serializeCD.addCDClass(createScopeDeSerClass(scopeInput, symbolInput));
     }
 
     for (ASTCDClass cdClass : serializeCD.getCDClassList()) {
@@ -84,8 +84,8 @@ public class SerializationCDDecorator extends AbstractDecorator {
     return symbolDeSerList;
   }
 
-  protected ASTCDClass createScopeDeSerClass(ASTCDCompilationUnit symbolCd) {
-    return scopeDeSerDecorator.decorate(symbolCd);
+  protected ASTCDClass createScopeDeSerClass(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit symbolCd) {
+    return scopeDeSerDecorator.decorate(scopeCD, symbolCd);
   }
 
   protected ASTCDClass createSymbolTablePrinterClass(ASTCDCompilationUnit symbolCd) {

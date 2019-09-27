@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
-import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -22,7 +22,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
+public class ScopeDeSerDecorator extends AbstractDecorator {
 
   protected final SymbolTableService symbolTableService;
 
@@ -34,8 +34,7 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     this.symbolTableService = symbolTableService;
   }
 
-  @Override
-  public ASTCDClass decorate(ASTCDCompilationUnit scopeInput) {
+  public ASTCDClass decorate(ASTCDCompilationUnit scopeInput, ASTCDCompilationUnit symbolInput) {
     String scopeDeSerName = symbolTableService.getScopeDeSerSimpleName();
     String scopeInterfaceName = symbolTableService.getScopeInterfaceFullName();
     String iDeSer = String.format(I_DE_SER_TYPE, scopeInterfaceName);
@@ -45,14 +44,14 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     String symbolTablePrinterFullName = symbolTableService.getSymbolTablePrinterFullName();
     String simpleName = symbolTableService.getCDName();
 
-    List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(scopeInput.getCDDefinition());
+    List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(symbolInput.getCDDefinition());
     Map<String, String> symbolMap = new HashMap<>();
     for (ASTCDType symbolDefiningProd : symbolDefiningProds) {
       String symbolFullName = symbolTableService.getSymbolFullName(symbolDefiningProd);
       String symbolSimpleName = symbolTableService.getSymbolSimpleName(symbolDefiningProd);
       symbolMap.put(symbolSimpleName, symbolFullName);
     }
-    ASTCDDefinition astcdDefinition = scopeInput.getCDDefinition().deepClone();
+    ASTCDDefinition symbolDefinition = symbolInput.getCDDefinition().deepClone();
 
     // list of all scope rule attributes
     List<ASTCDAttribute> scopeRuleAttributeList = scopeInput.deepClone().getCDDefinition().getCDClassList()
@@ -66,7 +65,7 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         .setName(scopeDeSerName)
         .setModifier(PUBLIC.build())
         .addInterface((ASTMCObjectType) getCDTypeFacade().createTypeByDefinition(iDeSer))
-        .addAllCDAttributes(createSymbolDeSerAttributes(astcdDefinition))
+        .addAllCDAttributes(createSymbolDeSerAttributes(symbolDefinition))
         .addCDMethod(createSoreMethod(artifactScopeFullName, languageClassFullName))
         .addCDMethod(createGetSerializedKindMethod(scopeClassFullName))
         .addCDMethod(createGetSerializedASKindMethod(artifactScopeFullName))
@@ -75,7 +74,7 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
             simpleName, scopeRuleAttributeList))
         .addCDMethod(createAddSymbolsMethod(scopeClassFullName, symbolMap))
         .addCDMethod(createAddAndLinkSubScopesMethod(scopeClassFullName, scopeInterfaceName))
-        .addCDMethod(createAddAndLinkSpanningSymbolMethod(scopeClassFullName, scopeInterfaceName, astcdDefinition))
+        .addCDMethod(createAddAndLinkSpanningSymbolMethod(scopeClassFullName, scopeInterfaceName, symbolDefinition))
         .addAllCDMethods(createDeserializeSymbolMethods(scopeClassFullName, symbolMap))
         .addAllCDMethods(createDeserializeScopeRuleAttributesMethod(scopeRuleAttributeList, scopeDeSerName))
         .build();
@@ -238,11 +237,12 @@ public class ScopeDeSerDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   protected List<ASTCDMethod> createDeserializeScopeRuleAttributesMethod(List<ASTCDAttribute> attributeList, String deSerName) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : attributeList) {
-      ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), SYMBOL_VAR);
+      ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), "symbolJson");
       ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, astcdAttribute.getMCType(), "deserialize" +
           StringTransformations.capitalize(astcdAttribute.getName()), jsonParam);
       this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(
-          TEMPLATE_PATH + "DeserializeSymbolRuleAttr", astcdAttribute, deSerName));
+          "_symboltable.serialization.symbolDeSer.DeserializeSymbolRuleAttr", astcdAttribute, deSerName));
+      methodList.add(deserializeMethod);
     }
     return methodList;
   }
