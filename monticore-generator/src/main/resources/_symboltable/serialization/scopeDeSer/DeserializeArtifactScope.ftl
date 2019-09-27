@@ -1,5 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("artifactScope")}
+${tc.signature("artifactScope", "scopeRuleAttrList")}
+<#assign genHelper = glex.getGlobalVar("astHelper")>
   String name = scopeJson.get(de.monticore.symboltable.serialization.JsonConstants.NAME).getAsJsonString().getValue();
   String packageName = scopeJson.get(de.monticore.symboltable.serialization.JsonConstants.PACKAGE).getAsJsonString().getValue();
   List<de.monticore.symboltable.ImportStatement> imports = de.monticore.symboltable.serialization.JsonUtil.deserializeImports(scopeJson);
@@ -8,7 +9,9 @@ ${tc.signature("artifactScope")}
   ${artifactScope} scope = new ${artifactScope}(packageName, imports);
   scope.setName(name);
   scope.setExportingSymbols(exportsSymbols);
-
+    <#list scopeRuleAttrList as attr>
+      scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson));
+    </#list>
 
   addSymbols(scopeJson, scope);
   addAndLinkSubScopes(scopeJson, scope);

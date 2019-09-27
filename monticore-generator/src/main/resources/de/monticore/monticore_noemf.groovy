@@ -88,7 +88,7 @@ for (astGrammar in getParsedGrammars()) {
   decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram ,symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
 
-  decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram ,symbolClassDiagramm, handcodedPath)
+  decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSerializationCd, out, handcodedPath)
 
   // M9 Generate ast classes, visitor and context condition
