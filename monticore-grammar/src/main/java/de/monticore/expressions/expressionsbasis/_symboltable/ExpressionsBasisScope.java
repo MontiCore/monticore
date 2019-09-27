@@ -43,15 +43,6 @@ public class ExpressionsBasisScope extends ExpressionsBasisScopeTOP {
           //TODO: for every SymTypeExpression
           set.addAll(t.getMethodList(name));
         }
-      }else if(spanningSymbol instanceof FieldSymbol){
-        FieldSymbol fieldSymbol = (FieldSymbol) spanningSymbol;
-        for(SymTypeExpression t: fieldSymbol.getType().getTypeInfo().getSuperTypeList()){
-          //TODO: for every SymTypeExpression
-          set.addAll(t.getMethodList(name));
-        }
-      }else if(spanningSymbol instanceof MethodSymbol){
-        MethodSymbol methodSymbol = (MethodSymbol) spanningSymbol;
-       //TODO: what to do here?
       }
     }
     return set;

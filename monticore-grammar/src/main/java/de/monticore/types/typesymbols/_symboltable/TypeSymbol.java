@@ -47,6 +47,11 @@ public class TypeSymbol extends TypeSymbolTOP {
     return clone;
   }
 
+  @Override
+  public List<MethodSymbol> getMethodList(){
+    return this.spannedScope.getMethodSymbols().values();
+  }
+
   public List<MethodSymbol> getMethodList(String methodname){
     List<MethodSymbol> methodSymbols = spannedScope.resolveMethodMany(methodname);
     return methodSymbols;

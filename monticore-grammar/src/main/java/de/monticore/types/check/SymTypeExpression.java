@@ -56,7 +56,6 @@ public abstract class SymTypeExpression {
     if(!isGenericType()){
       return methodList;
     }else{
-
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.clone()).getArgumentList();
       List<TypeVarSymbol> typeVariableArguments = typeInfo.clone().getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
@@ -75,7 +74,7 @@ public abstract class SymTypeExpression {
         for (FieldSymbol parameter : method.getParameterList()) {
           SymTypeExpression parameterType = parameter.getType();
           for (TypeVarSymbol typeVariableArgument : typeVariableArguments) {
-            if (parameterType.print().equals(typeVariableArgument.getName())) {
+            if (parameterType.print().equals(typeVariableArgument.getName())&& parameterType instanceof SymTypeVariable) {
               parameter.setType(map.get(typeVariableArgument));
             }
           }
