@@ -17,6 +17,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
@@ -71,13 +72,16 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
 
-    //creates normal Symbol
-    ASTCDClass stateClass = getClassBy("State", decoratedCompilationUnit);
-    this.symbolClassState = decorator.decorate(stateClass);
-
-    //creates normal Symbol
+    //creates normal Symbol with symbolRules
     ASTCDInterface fooClass = getInterfaceBy("Foo", decoratedCompilationUnit);
     this.symbolClassFoo = decorator.decorate(fooClass);
+
+    //creates normal Symbol with top class
+    SymbolDecorator mockDecorator = Mockito.spy(new SymbolDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit), new VisitorService(decoratedCompilationUnit),
+        new MethodDecorator(glex)));
+    Mockito.doReturn(true).when(mockDecorator).isSymbolTop();
+    ASTCDClass stateClass = getClassBy("State", decoratedCompilationUnit);
+    this.symbolClassState = mockDecorator.decorate(stateClass);
   }
 
   @Test

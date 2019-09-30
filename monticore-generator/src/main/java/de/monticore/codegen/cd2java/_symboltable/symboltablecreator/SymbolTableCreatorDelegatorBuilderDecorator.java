@@ -43,5 +43,6 @@ public class SymbolTableCreatorDelegatorBuilderDecorator extends AbstractCreator
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
         new TemplateHookPoint(TEMPLATE_PATH + "Build", input.getName())));
 
-    return sTCDelegatorBuilder;  }
+    return sTCDelegatorBuilder;
+  }
 }

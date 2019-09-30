@@ -6,11 +6,9 @@ import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
@@ -79,17 +77,6 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     replaceTemplate(EMPTY_BODY, handleMethod,
         new TemplateHookPoint(HANDLE_INHERITANCE_TEMPLATE,
             languageInterfaceName, visitorSimpleTypeName, new ArrayList<>()));
-    return handleMethod;
-  }
-
-  protected ASTCDMethod addLanguageInterfaceHandleMethod(String languageInterfaceName) {
-    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(languageInterfaceName);
-    String visitorSimpleTypeName = visitorService.getVisitorSimpleName();
-
-    ASTCDMethod handleMethod = visitorService.getVisitorMethod(VisitorConstants.HANDLE, astNodeType);
-    this.replaceTemplate(EMPTY_BODY, handleMethod,
-        new TemplateHookPoint(HANDLE_INHERITANCE_TEMPLATE, languageInterfaceName, visitorSimpleTypeName, Optional.empty()));
-
     return handleMethod;
   }
 }

@@ -32,6 +32,8 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
 
   private ASTCDClass originalClass;
 
+  private ASTCDClass mandAttrClass;
+
   private CDTypeFacade cdTypeFacade = CDTypeFacade.getInstance();
 
   private static final String NAME_SYMBOL = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol";
@@ -52,7 +54,17 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
         .setModifier(originalClass.getModifier())
         .build();
     this.astClass = decorator.decorate(originalClass, changedClass);
+
+    ASTCDClass mandAttrClass = getClassBy("ASTBarMand", ast);
+    ASTCDClass mandAttrClassChanged = CD4AnalysisMill.cDClassBuilder().setName(mandAttrClass.getName())
+        .setModifier(mandAttrClass.getModifier())
+        .build();
+    this.mandAttrClass = decorator.decorate(mandAttrClass, mandAttrClassChanged);
   }
+
+  /**
+   * test for generated optional methods for optional attribute
+   */
 
   @Test
   public void testClass() {
@@ -128,4 +140,67 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
     StaticJavaParser.parse(sb.toString());
   }
 
+  /**
+   * test for generated optional methods for mandatory attribute
+   */
+  @Test
+  public void testClassMand() {
+    assertEquals("ASTBarMand", mandAttrClass.getName());
+  }
+
+  @Test
+  public void testAttributesMand() {
+    assertFalse(mandAttrClass.isEmptyCDAttributes());
+    assertEquals(1, mandAttrClass.sizeCDAttributes());
+  }
+
+  @Test
+  public void testSymbolAttributeMand() {
+    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", mandAttrClass);
+    assertTrue(symbolAttribute.getModifier().isProtected());
+    assertOptionalOf(NAME_SYMBOL, symbolAttribute.getMCType());
+  }
+
+  @Test
+  public void testMethodsMand() {
+    assertEquals(6, mandAttrClass.getCDMethodList().size());
+  }
+
+
+  @Test
+  public void testGetNameSymbolMethodMand() {
+    ASTCDMethod method = getMethodBy("getNameSymbol", mandAttrClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(NAME_SYMBOL);
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(astType, method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGetNameSymbolOptMethodMand() {
+    ASTCDMethod method = getMethodBy("getNameSymbolOpt", mandAttrClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertOptionalOf(NAME_SYMBOL, method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testIsPresentNameSymbolMethodMand() {
+    ASTCDMethod method = getMethodBy("isPresentNameSymbol", mandAttrClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGeneratedCodeMand() {
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, mandAttrClass, mandAttrClass);
+    StaticJavaParser.parse(sb.toString());
+  }
 }

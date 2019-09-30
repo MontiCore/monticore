@@ -37,6 +37,8 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
 
   private CDTypeFacade cdTypeFacade;
 
+  private ModelLoaderDecorator decorator;
+
   @Before
   public void setUp() {
     Log.init();
@@ -49,12 +51,20 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
-    ModelLoaderDecorator decorator = new ModelLoaderDecorator(this.glex,
+    this.decorator = new ModelLoaderDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit), new AccessorDecorator(glex));
 
     Optional<ASTCDClass> astcdClass = decorator.decorate(decoratedCompilationUnit);
     assertTrue(astcdClass.isPresent());
     modelLoaderClass = astcdClass.get();
+  }
+
+  @Test
+  public void testNoStartProd() {
+    ASTCDCompilationUnit noStartProd = this.parse("de", "monticore", "codegen", "ast", "NoStartProd");
+
+    Optional<ASTCDClass> astcdClass = decorator.decorate(noStartProd);
+    assertFalse(astcdClass.isPresent());
   }
 
   @Test
