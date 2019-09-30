@@ -58,9 +58,9 @@ while (grammarIterator.hasNext()) {
       // M6: generate parser and wrapper
       generateParser(glex, astGrammar, mcScope, handcodedPath, out)
 
-      deriveSymbolCD(astGrammar, glex, symbolCdScope)
+      deriveSymbolCD(astGrammar, symbolCdScope)
 
-      deriveScopeCD(astGrammar, glex, scopeCdScope)
+      deriveScopeCD(astGrammar, scopeCdScope)
     }
   }
 }

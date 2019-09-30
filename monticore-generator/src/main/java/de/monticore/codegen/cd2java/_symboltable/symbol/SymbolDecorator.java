@@ -128,7 +128,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
     ASTCDAttribute node = this.getCDAttributeFacade().createAttribute(PROTECTED, optionalTypeOfASTNode, AST_NODE_VAR, this.glex);
 
     ASTCDAttribute accessModifier = this.getCDAttributeFacade().createAttribute(PROTECTED, ACCESS_MODIFIER, "accessModifier");
-    this.replaceTemplate(VALUE, accessModifier, new StringHookPoint("= " + ACCESS_MODIFIER + ".ALL_INCLUSION"));
+    this.replaceTemplate(VALUE, accessModifier, new StringHookPoint("= " + ACCESS_MODIFIER_ALL_INCLUSION));
 
     return new ArrayList<>(Arrays.asList(name, enclosingScope, node, accessModifier));
   }

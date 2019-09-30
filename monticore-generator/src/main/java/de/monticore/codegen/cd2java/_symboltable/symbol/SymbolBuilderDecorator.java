@@ -41,7 +41,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     List<ASTCDAttribute> buildAttributes =
         symbolClass.deepClone().getCDAttributeList()
             .stream()
-            .filter(a -> !a.getName().equals("spannedScope"))
+            .filter(a -> !"spannedScope".equals(a.getName()))
             .collect(Collectors.toList());
 
     // new build method template

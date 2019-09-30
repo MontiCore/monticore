@@ -29,6 +29,8 @@ public class SymbolTablePrinterDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected static final String TEMPLATE_PATH = "_symboltable.serialization.symbolTablePrinter.";
 
+  protected static final String PRINTER_END_OBJECT = "printer.endObject();";
+
   public SymbolTablePrinterDecorator(final GlobalExtensionManagement glex,
                                      final SymbolTableService symbolTableService,
                                      final VisitorService visitorService) {
@@ -149,13 +151,13 @@ public class SymbolTablePrinterDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected ASTCDMethod createEndVisitArtifactScopeMethod(String artifactScopeFullName) {
     ASTCDMethod visitorMethod = visitorService.getVisitorMethod(END_VISIT, getCDTypeFacade().createQualifiedType(artifactScopeFullName));
-    this.replaceTemplate(EMPTY_BODY, visitorMethod, new StringHookPoint("printer.endObject();"));
+    this.replaceTemplate(EMPTY_BODY, visitorMethod, new StringHookPoint(PRINTER_END_OBJECT));
     return visitorMethod;
   }
 
   protected ASTCDMethod createEndVisitScopeMethod(String scopeName) {
     ASTCDMethod visitorMethod = visitorService.getVisitorMethod(END_VISIT, getCDTypeFacade().createQualifiedType(scopeName));
-    this.replaceTemplate(EMPTY_BODY, visitorMethod, new StringHookPoint("printer.endObject();"));
+    this.replaceTemplate(EMPTY_BODY, visitorMethod, new StringHookPoint(PRINTER_END_OBJECT));
     return visitorMethod;
   }
 
@@ -169,7 +171,7 @@ public class SymbolTablePrinterDecorator extends AbstractCreator<ASTCDCompilatio
       visitorMethods.add(visitMethod);
 
       ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getCDTypeFacade().createQualifiedType(symbolFullName));
-      this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint("printer.endObject();"));
+      this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_OBJECT));
       visitorMethods.add(endVisitMethod);
     }
 

@@ -83,6 +83,8 @@ public class SymbolTableConstants {
 
   public static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
 
+  public static final String ACCESS_MODIFIER_ALL_INCLUSION = "de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION";
+
   public static final String DEQUE_TYPE = "Deque<%s>";
 
   public static final String DEQUE_WILDCARD_TYPE = "Deque<? extends %s>";
@@ -129,6 +131,10 @@ public class SymbolTableConstants {
 
   public static final String SCOPE_JSON_VAR = "scopeJson";
 
+  public static final String FOUND_SYMBOL_DELEGATE = "false";
+
+  public static final String PREDICATE_DELEGATE = "x -> true";
+
   /**
    * method names
    */
@@ -144,4 +150,6 @@ public class SymbolTableConstants {
   public static final String CONTINUE_WITH_ENCLOSING_SCOPE = "continue%sWithEnclosingScope";
 
   public static final String CALCULATED_MODEL_NAME = "calculatedModelName";
+
+  public static final String DESERIALIZE = "deserialize";
 }

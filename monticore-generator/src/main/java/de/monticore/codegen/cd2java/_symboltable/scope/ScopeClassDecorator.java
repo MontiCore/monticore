@@ -206,8 +206,8 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       String superScopeVisitor = visitorService.getScopeVisitorFullName(cdDefinitionSymbol);
-      ASTCDParameter SuperVisitorParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(superScopeVisitor), VISITOR_PREFIX);
-      ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, SuperVisitorParameter);
+      ASTCDParameter superVisitorParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(superScopeVisitor), VISITOR_PREFIX);
+      ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, superVisitorParameter);
       String errorCode = DecorationHelper.getGeneratedErrorCode(acceptMethod);
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(TEMPLATE_PATH + "Accept", ownScopeVisitor, scopeClassName, superScopeVisitor, errorCode));
       acceptMethods.add(acceptMethod);
@@ -341,11 +341,11 @@ public class ScopeClassDecorator extends AbstractDecorator {
     List<ASTCDMethod> mutatorMethods = mutatorDecorator.decorate(spanningSymbolAttr);
     mutatorDecorator.enableTemplates();
     for (ASTCDMethod mutatorMethod : mutatorMethods) {
-      if (mutatorMethod.getName().equals("setSpanningSymbol")) {
+      if ("setSpanningSymbol".equals(mutatorMethod.getName())) {
         this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint(TEMPLATE_PATH + "SetSpanningSymbol", spanningSymbolAttr));
-      } else if (mutatorMethod.getName().equals("setSpanningSymbolOpt")) {
+      } else if ("setSpanningSymbolOpt".equals(mutatorMethod.getName())) {
         this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint(TEMPLATE_PATH + "SetSpanningSymbolOpt", spanningSymbolAttr));
-      } else if (mutatorMethod.getName().equals("setSpanningSymbolAbsent")) {
+      } else if ("setSpanningSymbolAbsent".equals(mutatorMethod.getName())) {
         this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint(TEMPLATE_PATH + "SetSpanningSymbolAbsent", spanningSymbolAttr));
       }
     }
