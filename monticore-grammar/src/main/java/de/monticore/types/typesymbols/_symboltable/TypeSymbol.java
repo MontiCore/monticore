@@ -1,5 +1,6 @@
 package de.monticore.types.typesymbols._symboltable;
 
+import com.google.common.collect.Lists;
 import de.monticore.types.check.SymTypeExpression;
 
 import java.util.ArrayList;
@@ -49,7 +50,10 @@ public class TypeSymbol extends TypeSymbolTOP {
 
   @Override
   public List<MethodSymbol> getMethodList(){
-    return this.spannedScope.getMethodSymbols().values();
+    if(spannedScope==null || spannedScope.getMethodSymbols()==null||spannedScope.getMethodSymbols().isEmpty()){
+      return Lists.newArrayList();
+    }
+    return spannedScope.getMethodSymbols().values();
   }
 
   public List<MethodSymbol> getMethodList(String methodname){
