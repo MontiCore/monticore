@@ -67,7 +67,7 @@ public abstract class SymTypeExpression {
       }
       for(MethodSymbol method: methodList) {
         for (TypeVarSymbol typeVariableArgument : typeVariableArguments) {
-          if (method.getReturnType().print().equals(typeVariableArgument.getName())) {
+          if (method.getReturnType().print().equals(typeVariableArgument.getName())&&method.getReturnType() instanceof SymTypeVariable) {
             method.setReturnType(map.get(typeVariableArgument));
           }
         }
@@ -80,29 +80,40 @@ public abstract class SymTypeExpression {
           }
         }
       }
+      for(int i = 0;i<methodList.size()-1;i++){
+        for(int j = i+1;j<methodList.size();j++){
+          if(methodList.get(i).getReturnType().getName().equals(methodList.get(j).getReturnType().getName())&&
+              methodList.get(i).getParameterList().size()==methodList.get(j).getParameterList().size()){
+            boolean equal = true;
+            for(int k = 0;k<methodList.get(i).getParameterList().size();k++){
+              if(!methodList.get(i).getParameterList().get(k).getType().print().equals(
+                  methodList.get(j).getParameterList().get(k).getType().print())){
+                equal = false;
+              }
+            }
+            if(equal){
+              methodList.remove(methodList.get(j));
+            }
+          }
+        }
+      }
       return methodList;
     }
   }
 
-  public List<MethodSymbol> getMethod(String name){
-    List<MethodSymbol> methods = getMethodList(name);
-    List<MethodSymbol> resultList = Lists.newArrayList();
-    for(MethodSymbol method:methods){
-      if(method.getName().equals(name)){
-        resultList.add(method);
+  public List<FieldSymbol> getFieldList(String fieldName){
+    List<FieldSymbol> fields = typeInfo.deepClone().getFieldList();
+    List<FieldSymbol> fieldList = new ArrayList<>();
+    for(FieldSymbol field: fields){
+      if(field.getName().equals(fieldName)){
+        fieldList.add(field);
       }
     }
     for(SymTypeExpression superType:typeInfo.getSuperTypeList()){
-      resultList.addAll(superType.getMethod(name));
+      fieldList.addAll(superType.getFieldList(fieldName));
     }
-    return resultList;
-  }
-
-
-  public List<FieldSymbol> getFieldList(){
-    List<FieldSymbol> fields = typeInfo.deepClone().getFieldList();
     if(!isGenericType()){
-      return fields;
+      return fieldList;
     }else{
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
       List<TypeVarSymbol> typeVariableArguments = typeInfo.deepClone().getTypeParameterList();
@@ -113,18 +124,23 @@ public abstract class SymTypeExpression {
       for(int i=0;i<typeVariableArguments.size();i++){
         map.put(typeVariableArguments.get(i),arguments.get(i));
       }
-      for(FieldSymbol field: fields){
-        SymTypeExpression fieldType = field.getType();
-        for(TypeVarSymbol typeVariableArgument: typeVariableArguments){
-          if(fieldType.print().equals(typeVariableArgument.getName())){
+      for(FieldSymbol field: fieldList){
+        for(TypeVarSymbol typeVariableArgument:typeVariableArguments) {
+          if (field.getType().print().equals(typeVariableArgument.getName())&&field.getType() instanceof SymTypeVariable) {
             field.setType(map.get(typeVariableArgument));
           }
         }
       }
-      return fields;
     }
+    for(int i = 0;i<fieldList.size()-1;i++){
+      for(int j = i+1;j<fieldList.size();j++){
+        if(fieldList.get(i).getType().getName().equals(fieldList.get(j).getType().getName())){
+          fieldList.remove(fieldList.get(j));
+        }
+      }
+    }
+    return fieldList;
   }
-
 
   /**
    * Assumption:
