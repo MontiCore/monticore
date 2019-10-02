@@ -38,8 +38,7 @@ public class TestHelper {
     MontiCoreScript mc = new MontiCoreScript();
     Grammar_WithConceptsGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
     mc.createSymbolsFromAST(symbolTable, grammar.get());
-    ASTCDCompilationUnit cdCompilationUnit = new MC2CDSymbolTranslation(
-        new GlobalExtensionManagement()).apply(grammar.get());
+    ASTCDCompilationUnit cdCompilationUnit = new MC2CDSymbolTranslation().apply(grammar.get());
     return Optional.of(cdCompilationUnit);
   }
 
@@ -51,8 +50,7 @@ public class TestHelper {
     MontiCoreScript mc = new MontiCoreScript();
     Grammar_WithConceptsGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
     mc.createSymbolsFromAST(symbolTable, grammar.get());
-    ASTCDCompilationUnit cdCompilationUnit = new MC2CDScopeTranslation(
-        new GlobalExtensionManagement()).apply(grammar.get());
+    ASTCDCompilationUnit cdCompilationUnit = new MC2CDScopeTranslation().apply(grammar.get());
     return Optional.of(cdCompilationUnit);
   }
 
@@ -103,4 +101,5 @@ public class TestHelper {
     }
     return true;
   }
+
 }

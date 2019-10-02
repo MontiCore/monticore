@@ -111,7 +111,7 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
 
   protected ASTCDAttribute createAccessModifierAttribute() {
     ASTCDAttribute accessModifierAttribute = getCDAttributeFacade().createAttribute(PROTECTED, ACCESS_MODIFIER, "accessModifier");
-    this.replaceTemplate(VALUE, accessModifierAttribute, new StringHookPoint("= " + ACCESS_MODIFIER + ".ALL_INCLUSION"));
+    this.replaceTemplate(VALUE, accessModifierAttribute, new StringHookPoint("= " + ACCESS_MODIFIER_ALL_INCLUSION));
     return accessModifierAttribute;
   }
 

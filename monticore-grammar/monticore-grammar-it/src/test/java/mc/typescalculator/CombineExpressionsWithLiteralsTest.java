@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class CombineExpressionsWithLiteralsTest {
@@ -36,7 +35,8 @@ public class CombineExpressionsWithLiteralsTest {
 
     CD2EAdapter adapter = new CD2EAdapter(globalScope);
     CombineExpressionsWithLiteralsLanguage language = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsLanguageBuilder().build();
-    CombineExpressionsWithLiteralsGlobalScope globalScope1 = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsGlobalScopeBuilder().setLanguage(language).setModelPath(new ModelPath()).build();
+    CombineExpressionsWithLiteralsGlobalScope globalScope1 = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsGlobalScopeBuilder()
+        .setCombineExpressionsWithLiteralsLanguage(language).setModelPath(new ModelPath()).build();
     globalScope1.addAdaptedFieldSymbolResolvingDelegate(adapter);
     globalScope1.addAdaptedTypeSymbolResolvingDelegate(adapter);
     globalScope1.addAdaptedMethodSymbolResolvingDelegate(adapter);
@@ -52,7 +52,7 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsSymbolTableCreatorDelegator del = new CombineExpressionsWithLiteralsSymbolTableCreatorDelegator(globalScope1);
 
     CombineExpressionsWithLiteralsArtifactScope art = del.createFromAST(expr.get());
-    art.setImports(Lists.newArrayList(new ImportStatement("mc.typescalculator.TestCD.D", true)));
+    art.setImportList(Lists.newArrayList(new ImportStatement("mc.typescalculator.TestCD.D", true)));
 
     assertTrue(expr.isPresent());
     Optional<SymTypeExpression> j = calc.calculateType(expr.get());

@@ -18,8 +18,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.assertEquals;
@@ -42,6 +41,16 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   private static final String I_AUTOMATON_GLOBAL_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope";
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
+
+  private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
+
+  private static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
+
+  private static final String PREDICATE_AUTOMATON = "java.util.function.Predicate<de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
+
+  private static final String QUALIFIED_NAME_SYMBOL = "de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol";
+
+  private static final String PREDICATE_QUALIFIED_NAME = "java.util.function.Predicate<de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol>";
 
   @Before
   public void setUp() {
@@ -155,7 +164,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(115, scopeClass.getCDMethodList().size());
+    assertEquals(118, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -285,6 +294,42 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("stateSymbolsAlreadyResolved", method.getCDParameter(0).getName());
   }
+
+  @Test
+  public void testResolveAdaptedAutomatonMethod() {
+    ASTCDMethod method = getMethodBy("resolveAdaptedAutomaton", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertListOf(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
+    assertEquals(4, method.sizeCDParameters());
+    assertBoolean(method.getCDParameter(0).getMCType());
+    assertEquals("foundSymbols", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
+    assertEquals("name", method.getCDParameter(1).getName());
+    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
+    assertEquals("modifier", method.getCDParameter(2).getName());
+    assertDeepEquals(PREDICATE_AUTOMATON, method.getCDParameter(3).getMCType());
+    assertEquals("predicate", method.getCDParameter(3).getName());
+  }
+
+  @Test
+  public void testResolveAdaptedSuperProdMethod() {
+    ASTCDMethod method = getMethodBy("resolveAdaptedQualifiedName", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertListOf(QUALIFIED_NAME_SYMBOL, method.getMCReturnType().getMCType());
+    assertEquals(4, method.sizeCDParameters());
+    assertBoolean(method.getCDParameter(0).getMCType());
+    assertEquals("foundSymbols", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
+    assertEquals("name", method.getCDParameter(1).getName());
+    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
+    assertEquals("modifier", method.getCDParameter(2).getName());
+    assertDeepEquals(PREDICATE_QUALIFIED_NAME, method.getCDParameter(3).getMCType());
+    assertEquals("predicate", method.getCDParameter(3).getName());
+  }
+
+
 
   @Test
   public void testGetEnclosingScopeMethod() {

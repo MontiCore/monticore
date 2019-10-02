@@ -62,12 +62,10 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
   protected ASTCDAttribute createSpannedScopeAttribute(ASTMCType scopeType) {
     //todo better name with the grammar name in the attributeName, like it was before
     String attributeName = String.format(SPANNED_SCOPE_VAR, "");
-    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
-    return attribute;
+    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute(ASTMCType scopeType) {
-    String attributeName = ENCLOSING_SCOPE_VAR;
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
+    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, ENCLOSING_SCOPE_VAR);
   }
 }

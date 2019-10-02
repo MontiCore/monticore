@@ -23,8 +23,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase {
 
@@ -37,6 +36,8 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
   private ASTCDCompilationUnit originalCompilationUnit;
 
   private CDTypeFacade cdTypeFacade;
+
+  private SymbolTableCreatorDelegatorDecorator decorator;
 
   private static final String I_AUTOMATON_GLOBAL_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonGlobalScope";
 
@@ -58,13 +59,21 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
-    SymbolTableCreatorDelegatorDecorator decorator = new SymbolTableCreatorDelegatorDecorator(this.glex,
+    this.decorator = new SymbolTableCreatorDelegatorDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit), new VisitorService(decoratedCompilationUnit));
 
     //creates normal Symbol
     Optional<ASTCDClass> optSymTabCreator = decorator.decorate(decoratedCompilationUnit);
     assertTrue(optSymTabCreator.isPresent());
     this.symTabCreator = optSymTabCreator.get();
+  }
+
+  @Test
+  public void testNoStartProd() {
+    ASTCDCompilationUnit noStartProd = this.parse("de", "monticore", "codegen", "ast", "NoStartProd");
+
+    Optional<ASTCDClass> astcdClass = decorator.decorate(noStartProd);
+    assertFalse(astcdClass.isPresent());
   }
 
   @Test

@@ -75,7 +75,7 @@ public class SymbolTableCreatorBuilderDecorator extends AbstractCreator<ASTCDCom
     ASTCDParameter dequeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createTypeByDefinition(dequeType), SCOPE_STACK_VAR);
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, builderType,
         "setScopeStack", dequeParam);
-    String methodCall =  " = " + SCOPE_STACK_VAR;
+    String methodCall = " = " + SCOPE_STACK_VAR;
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(String.format(SCOPE_STACK_TEMPLATE, methodCall)));
     return method;
   }

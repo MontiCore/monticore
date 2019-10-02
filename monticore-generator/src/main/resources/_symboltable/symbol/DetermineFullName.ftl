@@ -37,8 +37,10 @@ ${tc.signature("scopeInterface", "artifactScope", "globalScope")}
           // ...else stop? If one of the enclosing scopes is unnamed,
           //         the full name is same as the simple name.
         }
-      }
   optCurrentScope = currentScope.getEnclosingScope();
+  } else {
+  break;
+  }
     }
 
     return de.se_rwth.commons.Names.getQualifiedName(nameParts);

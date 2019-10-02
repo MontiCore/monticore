@@ -4,7 +4,6 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTGrammarMethod;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethodParameter;
@@ -17,18 +16,6 @@ import de.monticore.utils.Link;
 import java.util.function.UnaryOperator;
 
 public class SymbolRuleMethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
-
-  private GlobalExtensionManagement glex;
-
-  /**
-   * Constructor for
-   * de.monticore.codegen.mc2cd.transl.MethodTranslation
-   *
-   * @param glex
-   */
-  public SymbolRuleMethodTranslation(GlobalExtensionManagement glex) {
-    this.glex = glex;
-  }
 
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
@@ -64,7 +51,7 @@ public class SymbolRuleMethodTranslation implements UnaryOperator<Link<ASTMCGram
     return cdMethod;
   }
 
-  private void addMethodBodyStereotype(ASTModifier modifier, StringBuilder code){
+  private void addMethodBodyStereotype(ASTModifier modifier, StringBuilder code) {
     // to save the body in the cd
     // todo think of better version
     TransformationHelper.addStereotypeValue(modifier,

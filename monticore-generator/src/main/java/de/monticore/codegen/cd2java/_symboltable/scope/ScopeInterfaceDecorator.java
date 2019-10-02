@@ -54,7 +54,11 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
   protected static final String RESOLVE_DOWN_MANY = "resolve%sDownMany";
 
+  protected static final String RESOLVE_DELEGATE = "ResolveDelegate";
+
   protected static final String TEMPLATE_PATH = "_symboltable.iscope.";
+
+  protected static final String METHOD_DELEGATE_CALL = "return this.%s(%s);";
 
   public ScopeInterfaceDecorator(final GlobalExtensionManagement glex,
                                  final SymbolTableService symbolTableService,
@@ -231,7 +235,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createResolveNameMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "ResolveDelegate",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + RESOLVE_DELEGATE,
         methodName, new ArrayList<>(method.getCDParameterList())));
 
     return method;
@@ -241,7 +245,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                         ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "ResolveDelegate",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + RESOLVE_DELEGATE,
         methodName, new ArrayList<>(method.getCDParameterList())));
 
     return method;
@@ -251,7 +255,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                                  ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter, predicateParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "ResolveDelegate",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + RESOLVE_DELEGATE,
         methodName, new ArrayList<>(method.getCDParameterList())));
     return method;
   }
@@ -260,14 +264,14 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                                     ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "ResolveDelegate",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + RESOLVE_DELEGATE,
         methodName, new ArrayList<>(method.getCDParameterList())));
     return method;
   }
 
   protected ASTCDMethod createResolveDownNameMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "ResolveDelegate", methodName,
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + RESOLVE_DELEGATE, methodName,
         new ArrayList<>(method.getCDParameterList())));
 
     return method;
@@ -277,7 +281,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                             ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "ResolveDelegate",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + RESOLVE_DELEGATE,
         methodName, new ArrayList<>(method.getCDParameterList())));
 
     return method;
@@ -287,17 +291,17 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                                      ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter, predicateParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "ResolveDelegate",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + RESOLVE_DELEGATE,
         methodName, new ArrayList<>(method.getCDParameterList())));
     return method;
   }
 
   protected ASTCDMethod createResolveDownManyNameMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter);
-    ArrayList<String> paramList = Lists.newArrayList("false", NAME_VAR, ACCESS_MODIFIER + ".ALL_INCLUSION", "x -> true");
+    ArrayList<String> paramList = Lists.newArrayList(FOUND_SYMBOL_DELEGATE, NAME_VAR, ACCESS_MODIFIER_ALL_INCLUSION, PREDICATE_DELEGATE);
     String paramCall = Joiners.COMMA.join(paramList);
     this.replaceTemplate(EMPTY_BODY, method,
-        new StringHookPoint("return this." + methodName + "(" + paramCall + ");"));
+        new StringHookPoint(String.format(METHOD_DELEGATE_CALL, methodName, paramCall)));
     return method;
   }
 
@@ -305,10 +309,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                                 ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter);
-    ArrayList<String> paramList = Lists.newArrayList("false", NAME_VAR, MODIFIER_VAR, "x -> true");
+    ArrayList<String> paramList = Lists.newArrayList(FOUND_SYMBOL_DELEGATE, NAME_VAR, MODIFIER_VAR, PREDICATE_DELEGATE);
     String paramCall = Joiners.COMMA.join(paramList);
     this.replaceTemplate(EMPTY_BODY, method,
-        new StringHookPoint("return this." + methodName + "(" + paramCall + ");"));
+        new StringHookPoint(String.format(METHOD_DELEGATE_CALL, methodName, paramCall)));
     return method;
   }
 
@@ -316,10 +320,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                                          ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter, predicateParameter);
-    ArrayList<String> paramList = Lists.newArrayList("false", NAME_VAR, MODIFIER_VAR, PREDICATE_VAR);
+    ArrayList<String> paramList = Lists.newArrayList(FOUND_SYMBOL_DELEGATE, NAME_VAR, MODIFIER_VAR, PREDICATE_VAR);
     String paramCall = Joiners.COMMA.join(paramList);
     this.replaceTemplate(EMPTY_BODY, method,
-        new StringHookPoint("return this." + methodName + "(" + paramCall + ");"));
+        new StringHookPoint(String.format(METHOD_DELEGATE_CALL, methodName, paramCall)));
     return method;
   }
 
@@ -336,7 +340,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createResolveLocallyNameMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter);
-    ArrayList<String> paramList = Lists.newArrayList("false", NAME_VAR, ACCESS_MODIFIER + ".ALL_INCLUSION", "x -> true");
+    ArrayList<String> paramList = Lists.newArrayList(FOUND_SYMBOL_DELEGATE, NAME_VAR, ACCESS_MODIFIER_ALL_INCLUSION, PREDICATE_DELEGATE);
     String paramCall = Joiners.COMMA.join(paramList);
     this.replaceTemplate(EMPTY_BODY, method,
         new StringHookPoint(" return getResolvedOrThrowException(this." + methodName + "Many(" + paramCall + "));"));
@@ -351,9 +355,9 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createResolveManyNameMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter);
-    ArrayList<String> paramList = Lists.newArrayList(NAME_VAR, ACCESS_MODIFIER + ".ALL_INCLUSION");
+    ArrayList<String> paramList = Lists.newArrayList(NAME_VAR, ACCESS_MODIFIER_ALL_INCLUSION);
     String paramCall = Joiners.COMMA.join(paramList);
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return " + methodName + "(" + paramCall + ");"));
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(String.format(METHOD_DELEGATE_CALL, methodName, paramCall)));
     return method;
   }
 
@@ -361,9 +365,9 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                             ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter);
-    ArrayList<String> paramList = Lists.newArrayList(NAME_VAR, MODIFIER_VAR, "x -> true");
+    ArrayList<String> paramList = Lists.newArrayList(NAME_VAR, MODIFIER_VAR, PREDICATE_DELEGATE);
     String paramCall = Joiners.COMMA.join(paramList);
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return " + methodName + "(" + paramCall + ");"));
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(String.format(METHOD_DELEGATE_CALL, methodName, paramCall)));
     return method;
   }
 
@@ -371,10 +375,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                                      ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         nameParameter, accessModifierParameter, predicateParameter);
-    ArrayList<String> paramList = Lists.newArrayList("false", NAME_VAR, MODIFIER_VAR, PREDICATE_VAR);
+    ArrayList<String> paramList = Lists.newArrayList(FOUND_SYMBOL_DELEGATE, NAME_VAR, MODIFIER_VAR, PREDICATE_VAR);
     String paramCall = Joiners.COMMA.join(paramList);
     this.replaceTemplate(EMPTY_BODY, method,
-        new StringHookPoint("return " + methodName + "(" + paramCall + ");"));
+        new StringHookPoint(String.format(METHOD_DELEGATE_CALL, methodName, paramCall)));
     return method;
   }
 
@@ -382,10 +386,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   protected ASTCDMethod createResolveManyNamePredicateMethod(String methodName, ASTMCType returnType, ASTCDParameter nameParameter,
                                                              ASTCDParameter predicateParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName, nameParameter, predicateParameter);
-    ArrayList<String> paramList = Lists.newArrayList("false", NAME_VAR, ACCESS_MODIFIER + ".ALL_INCLUSION", PREDICATE_VAR);
+    ArrayList<String> paramList = Lists.newArrayList(FOUND_SYMBOL_DELEGATE, NAME_VAR, ACCESS_MODIFIER_ALL_INCLUSION, PREDICATE_VAR);
     String paramCall = Joiners.COMMA.join(paramList);
     this.replaceTemplate(EMPTY_BODY, method,
-        new StringHookPoint("return " + methodName + "(" + paramCall + ");"));
+        new StringHookPoint(String.format(METHOD_DELEGATE_CALL, methodName, paramCall)));
     return method;
   }
 
@@ -394,10 +398,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
                                                                         ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter);
-    ArrayList<String> paramList = Lists.newArrayList(FOUND_SYMBOLS_VAR, NAME_VAR, MODIFIER_VAR, "x -> true");
+    ArrayList<String> paramList = Lists.newArrayList(FOUND_SYMBOLS_VAR, NAME_VAR, MODIFIER_VAR, PREDICATE_DELEGATE);
     String paramCall = Joiners.COMMA.join(paramList);
     this.replaceTemplate(EMPTY_BODY, method,
-        new StringHookPoint("return " + methodName + "(" + paramCall + ");"));
+        new StringHookPoint(String.format(METHOD_DELEGATE_CALL, methodName, paramCall)));
     return method;
   }
 

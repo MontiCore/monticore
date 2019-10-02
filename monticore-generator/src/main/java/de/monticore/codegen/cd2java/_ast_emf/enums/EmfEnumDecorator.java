@@ -16,8 +16,6 @@ import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.TO_STRING_CALL;
 
 public class EmfEnumDecorator extends EnumDecorator {
 
-
-
   public EmfEnumDecorator(GlobalExtensionManagement glex, AccessorDecorator accessorDecorator, ASTService astService) {
     super(glex, accessorDecorator, astService);
   }
@@ -45,9 +43,8 @@ public class EmfEnumDecorator extends EnumDecorator {
     return method;
   }
 
-
   protected ASTCDMethod createGetValueMethod(){
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getCDTypeFacade().createStringType(), "getValue");
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getCDTypeFacade().createIntType(), "getValue");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return intValue;"));
     return method;
   }

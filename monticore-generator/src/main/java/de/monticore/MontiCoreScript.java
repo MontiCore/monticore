@@ -393,14 +393,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
             .apply(astGrammar));
   }
 
-  public ASTCDCompilationUnit getOrCreateSymbolCD(ASTMCGrammar astGrammar,
-                                                  GlobalExtensionManagement glex, CD4AnalysisGlobalScope symbolTable) {
-    // transformation
-    return TransformationHelper.getCDforGrammar(symbolTable, astGrammar)
-        .orElse(new MC2CDSymbolTranslation(glex)
-            .apply(astGrammar));
-  }
-
   /**
    * Transforms grammar AST to class diagram AST.
    *
@@ -421,25 +413,19 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   public ASTCDCompilationUnit deriveSymbolCD(ASTMCGrammar astGrammar,
-                                             GlobalExtensionManagement glex,
                                              CD4AnalysisGlobalScope cdScope) {
-    // transformation
-    // transformation
     Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar);
-    ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTableForSymbolCD(astGrammar, glex, cdScope));
-    createCDSymbolsForSuperGrammarsForSymbolCD(glex, astGrammar, cdScope);
+    ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTableForSymbolCD(astGrammar, cdScope));
+    createCDSymbolsForSuperGrammarsForSymbolCD(astGrammar, cdScope);
     storeSymbolCDForGrammar(astGrammar, astCD);
     return astCD;
   }
 
   public ASTCDCompilationUnit deriveScopeCD(ASTMCGrammar astGrammar,
-                                            GlobalExtensionManagement glex,
                                             CD4AnalysisGlobalScope cdScope) {
-    // transformation
-    // transformation
     Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar);
-    ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTableForScopeCD(astGrammar, glex, cdScope));
-    createCDSymbolsForSuperGrammarsForScopeCD(glex, astGrammar, cdScope);
+    ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTableForScopeCD(astGrammar, cdScope));
+    createCDSymbolsForSuperGrammarsForScopeCD(astGrammar, cdScope);
     storeScopeCDForGrammar(astGrammar, astCD);
     return astCD;
   }
@@ -773,27 +759,27 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     }
   }
 
-  private void createCDSymbolsForSuperGrammarsForSymbolCD(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
+  private void createCDSymbolsForSuperGrammarsForSymbolCD(ASTMCGrammar astGrammar,
                                                           CD4AnalysisGlobalScope cdScope) {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
         Optional<CDDefinitionSymbol> importedCd = cdScope.resolveCDDefinitionDown(mcgsym.getFullName());
         if (!importedCd.isPresent() && mcgsym.getAstNode().isPresent()) {
-          transformAndCreateSymbolTableForSymbolCD(mcgsym.getAstNode().get(), glex, cdScope);
+          transformAndCreateSymbolTableForSymbolCD(mcgsym.getAstNode().get(), cdScope);
         }
       }
     }
   }
 
-  private void createCDSymbolsForSuperGrammarsForScopeCD(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
+  private void createCDSymbolsForSuperGrammarsForScopeCD(ASTMCGrammar astGrammar,
                                                          CD4AnalysisGlobalScope cdScope) {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
         Optional<CDDefinitionSymbol> importedCd = cdScope.resolveCDDefinitionDown(mcgsym.getFullName());
         if (!importedCd.isPresent() && mcgsym.getAstNode().isPresent()) {
-          transformAndCreateSymbolTableForScopeCD(mcgsym.getAstNode().get(), glex, cdScope);
+          transformAndCreateSymbolTableForScopeCD(mcgsym.getAstNode().get(), cdScope);
         }
       }
     }
@@ -814,17 +800,15 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return createSymbolsFromAST(symbolTable, compUnit);
   }
 
-  private ASTCDCompilationUnit transformAndCreateSymbolTableForSymbolCD(ASTMCGrammar astGrammar,
-                                                                        GlobalExtensionManagement glex, CD4AnalysisGlobalScope symbolTable) {
+  private ASTCDCompilationUnit transformAndCreateSymbolTableForSymbolCD(ASTMCGrammar astGrammar, CD4AnalysisGlobalScope symbolTable) {
     // transformation
-    ASTCDCompilationUnit compUnit = new MC2CDSymbolTranslation(glex).apply(astGrammar);
+    ASTCDCompilationUnit compUnit = new MC2CDSymbolTranslation().apply(astGrammar);
     return createSymbolsFromAST(symbolTable, compUnit);
   }
 
-  private ASTCDCompilationUnit transformAndCreateSymbolTableForScopeCD(ASTMCGrammar astGrammar,
-                                                                       GlobalExtensionManagement glex, CD4AnalysisGlobalScope symbolTable) {
+  private ASTCDCompilationUnit transformAndCreateSymbolTableForScopeCD(ASTMCGrammar astGrammar, CD4AnalysisGlobalScope symbolTable) {
     // transformation
-    ASTCDCompilationUnit compUnit = new MC2CDScopeTranslation(glex).apply(astGrammar);
+    ASTCDCompilationUnit compUnit = new MC2CDScopeTranslation().apply(astGrammar);
     return createSymbolsFromAST(symbolTable, compUnit);
   }
 

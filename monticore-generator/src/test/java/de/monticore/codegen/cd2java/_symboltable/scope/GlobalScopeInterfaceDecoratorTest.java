@@ -227,6 +227,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("predicate", method.getCDParameter(3).getName());
   }
 
+
   @Test
   public void testLoadModelsForSuperProdMethod() {
     ASTCDMethod method = getMethodBy("loadModelsForQualifiedName", scopeInterface);

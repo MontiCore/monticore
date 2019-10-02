@@ -25,6 +25,8 @@ IncrementalChecker.initialize(out, report)
 InputOutputFilesReporter.resetModelToArtifactMap()
 mcScope = createMCGlobalScope(modelPath)
 cdScope = createCD4AGlobalScope(modelPath)
+symbolCdScope = createCD4AGlobalScope(modelPath)
+scopeCdScope = createCD4AGlobalScope(modelPath)
 Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
 // ############################################################
 
@@ -59,6 +61,10 @@ while (grammarIterator.hasNext()) {
 
       // M6: generate parser and wrapper
       generateParser(glex, astGrammar, mcScope, handcodedPath, out)
+
+      deriveSymbolCD(astGrammar, symbolCdScope)
+
+      deriveScopeCD(astGrammar, scopeCdScope)
     }
   }
 }
@@ -75,6 +81,19 @@ for (astGrammar in getParsedGrammars()) {
   reportGrammarCd(astGrammar, cdScope, mcScope, report)
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
+
+  symbolClassDiagramm = getSymbolCDOfParsedGrammar(astGrammar)
+
+  scopeClassDiagramm = getScopeCDOfParsedGrammar(astGrammar)
+
+  astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
+
+  decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
+
+  decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedSerializationCd, out, handcodedPath)
+
 
   // M9 Generate ast classes, visitor and context condition
   decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)

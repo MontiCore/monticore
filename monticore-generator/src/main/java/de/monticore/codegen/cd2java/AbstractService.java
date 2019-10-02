@@ -171,7 +171,6 @@ public class AbstractService<T extends AbstractService> {
   public String getSimpleNativeType(String nativeAttributeType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
     // if not generic returns simple Type like 'int'
-    String nativeType = nativeAttributeType;
     if (nativeAttributeType.contains(".")) {
       nativeAttributeType = nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".") + 1);
     }

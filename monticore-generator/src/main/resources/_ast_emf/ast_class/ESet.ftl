@@ -5,7 +5,7 @@ ${tc.signature("attributeList", "packageName", "className")}
     <#list attributeList as attribute>
       <#assign setter = astHelper.getPlainSetter(attribute)>
       case ${packageName}.${className}_${attribute.getName()?cap_first}:
-        ${setter}<#if genHelper.isOptional(attribute.getMCType())>Opt</#if>((${attribute.printType()})newValue);
+        ${setter}((${attribute.printType()})newValue);
         return;
     </#list>
     }

@@ -25,9 +25,9 @@ while (grammarIterator.hasNext()) {
         // Transform AST-Grammar -> AST-CD
         astClassDiagram = deriveCD(astGrammar, glex, globalScope)
 
-        symbolCD = deriveSymbolCD(astGrammar, glex, symbolCdScope)
+      symbolCD = deriveSymbolCD(astGrammar, symbolCdScope)
 
-        scopeCD = deriveScopeCD(astGrammar, glex, scopeCdScope)
+      scopeCD = deriveScopeCD(astGrammar, scopeCdScope)
         // Generate symbol table
         decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram, symbolCD, scopeCD, handcodedPath)
         generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
