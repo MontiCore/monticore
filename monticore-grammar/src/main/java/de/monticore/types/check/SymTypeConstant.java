@@ -180,7 +180,7 @@ public class SymTypeConstant extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeConstant clone() {
+  public SymTypeConstant deepClone() {
     SymTypeConstant clone = new SymTypeConstant(this.constName);
     clone.setName(this.name);
     clone.setConstName(this.constName);

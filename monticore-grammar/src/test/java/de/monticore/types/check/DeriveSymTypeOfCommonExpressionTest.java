@@ -95,6 +95,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     ts.getSpannedScope().add(ms);
     ts.getSpannedScope().add(ms1);
 
+    //METHODS
+
     //inheritance example
     //super
     MethodSymbol add = add(method("add",_voidSymType),field("element",_StringSymType));
@@ -216,6 +218,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     FieldSymbol moreGen = field("moreGen",moreGenSym);
     add2scope(scope,moreGenType);
     add2scope(scope,moreGen);
+
+
+
+
+    //FIELDS
 
     derLit.setScope(scope);
   }

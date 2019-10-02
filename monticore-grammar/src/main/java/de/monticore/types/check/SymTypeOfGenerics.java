@@ -127,14 +127,14 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeOfGenerics clone() {
+  public SymTypeOfGenerics deepClone() {
     List<SymTypeExpression> typeArguments = new ArrayList<>();
     for(SymTypeExpression typeArgument : this.getArgumentList()){
-      typeArguments.add(typeArgument.clone());
+      typeArguments.add(typeArgument.deepClone());
     }
 
     SymTypeOfGenerics clone = new SymTypeOfGenerics(this.getTypeConstructorFullName(),typeArguments,this.typeInfo);
-    clone.setObjTypeConstructorSymbol(this.getObjTypeConstructorSymbol().clone());
+    clone.setObjTypeConstructorSymbol(this.getObjTypeConstructorSymbol().deepClone());
     clone.setName(this.name);
     return clone;
   }

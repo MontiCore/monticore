@@ -67,7 +67,7 @@ public class SymTypeVariable extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeVariable clone() {
+  public SymTypeVariable deepClone() {
     SymTypeVariable clone = new SymTypeVariable();
     clone.setVarName(this.getVarName());
     clone.setName(this.getName());

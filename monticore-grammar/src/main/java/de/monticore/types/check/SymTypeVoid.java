@@ -22,7 +22,7 @@ public class SymTypeVoid extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeVoid clone() {
+  public SymTypeVoid deepClone() {
     return new SymTypeVoid();
   }
 

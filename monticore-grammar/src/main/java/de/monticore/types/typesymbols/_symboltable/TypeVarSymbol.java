@@ -11,7 +11,7 @@ public class TypeVarSymbol extends TypeVarSymbolTOP {
     super(name);
   }
 
-  public TypeVarSymbol clone(){
+  public TypeVarSymbol deepClone(){
     TypeVarSymbol clone = new TypeVarSymbol(name);
     clone.setAccessModifier(this.getAccessModifier());
     clone.setEnclosingScope(this.getEnclosingScope());
@@ -21,7 +21,7 @@ public class TypeVarSymbol extends TypeVarSymbolTOP {
     }
     List<SymTypeExpression> upperBounds = new ArrayList<>();
     for(SymTypeExpression upperBound : this.getUpperBoundList()){
-      upperBounds.add(upperBound.clone());
+      upperBounds.add(upperBound.deepClone());
     }
     clone.setUpperBoundList(upperBounds);
     return clone;

@@ -12,7 +12,7 @@ public class TypeSymbol extends TypeSymbolTOP {
     super(name);
   }
 
-  public TypeSymbol clone(){
+  public TypeSymbol deepClone(){
     TypeSymbol clone = new TypeSymbol(name);
     clone.setEnclosingScope(this.getEnclosingScope());
     clone.setFullName(this.getFullName());
@@ -23,25 +23,25 @@ public class TypeSymbol extends TypeSymbolTOP {
     }
     List<MethodSymbol> methods = new ArrayList<>();
     for(MethodSymbol method: this.getMethodList()){
-      methods.add(method.clone());
+      methods.add(method.deepClone());
     }
     clone.setMethodList(methods);
 
     List<FieldSymbol> fields = new ArrayList<>();
     for(FieldSymbol field: this.getFieldList()){
-      fields.add(field.clone());
+      fields.add(field.deepClone());
     }
     clone.setFieldList(fields);
 
     List<SymTypeExpression> superTypes = new ArrayList<>();
     for(SymTypeExpression superType: this.getSuperTypeList()){
-      superTypes.add(superType.clone());
+      superTypes.add(superType.deepClone());
     }
     clone.setSuperTypeList(superTypes);
 
     List<TypeVarSymbol> typeParameters = new ArrayList<>();
     for(TypeVarSymbol typeParameter: this.getTypeParameterList()){
-      typeParameters.add(typeParameter.clone());
+      typeParameters.add(typeParameter.deepClone());
     }
     clone.setTypeParameterList(typeParameters);
 

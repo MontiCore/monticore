@@ -11,6 +11,7 @@ import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 
 import java.util.List;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -40,12 +41,37 @@ public class ExpressionsBasisScope extends ExpressionsBasisScopeTOP {
       if(spanningSymbol instanceof TypeSymbol){
         TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
         for(SymTypeExpression t : typeSymbol.getSuperTypeList()){
-          //TODO: for every SymTypeExpression
           set.addAll(t.getMethodList(name));
         }
       }
     }
     return set;
+  }
+
+  @Override
+  public List<FieldSymbol> resolveFieldLocallyMany(boolean foundSymbols,String name,AccessModifier modifier,Predicate predicate){
+    List<FieldSymbol> result = super.resolveFieldLocallyMany(foundSymbols,name,modifier,predicate);
+    if(this.isPresentSpanningSymbol()){
+      IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
+      if(spanningSymbol instanceof MethodSymbol){
+
+      }
+    }
+
+    return result;
+  }
+
+  @Override
+  public List<TypeSymbol> resolveTypeLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate predicate){
+    List<TypeSymbol> result = super.resolveTypeLocallyMany(foundSymbols,name,modifier,predicate);
+    if(this.isPresentSpanningSymbol()){
+      IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
+      if(spanningSymbol instanceof TypeSymbol){
+
+      }
+    }
+
+    return result;
   }
 
 }

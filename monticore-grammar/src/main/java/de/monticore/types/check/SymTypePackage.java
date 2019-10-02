@@ -21,7 +21,7 @@ public class SymTypePackage extends SymTypeExpression {
   }
 
   @Override
-  public SymTypePackage clone() {
+  public SymTypePackage deepClone() {
     return new SymTypePackage();
   }
 

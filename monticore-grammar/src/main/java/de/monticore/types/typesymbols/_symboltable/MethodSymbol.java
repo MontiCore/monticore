@@ -10,9 +10,9 @@ public class MethodSymbol extends MethodSymbolTOP {
     super(name);
   }
 
-  public MethodSymbol clone(){
+  public MethodSymbol deepClone(){
     MethodSymbol clone = new MethodSymbol(name);
-    clone.setReturnType(this.getReturnType().clone());
+    clone.setReturnType(this.getReturnType().deepClone());
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
     if(getAstNodeOpt().isPresent()) {
@@ -24,7 +24,7 @@ public class MethodSymbol extends MethodSymbolTOP {
     }
     List<FieldSymbol> parameterClone = Lists.newArrayList();
     for(FieldSymbol parameter: this.getParameterList()){
-      parameterClone.add(parameter.clone());
+      parameterClone.add(parameter.deepClone());
     }
     clone.setParameterList(parameterClone);
     return clone;

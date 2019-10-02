@@ -40,10 +40,10 @@ public abstract class SymTypeExpression {
     return false;
   }
 
-  public abstract SymTypeExpression clone();
+  public abstract SymTypeExpression deepClone();
 
   public List<MethodSymbol> getMethodList(String methodname){
-    List<MethodSymbol> methods = typeInfo.clone().getMethodList();
+    List<MethodSymbol> methods = typeInfo.deepClone().getMethodList();
     List<MethodSymbol> methodList = new ArrayList<>();
     for(MethodSymbol method:methods){
       if(method.getName().equals(methodname)){
@@ -56,8 +56,8 @@ public abstract class SymTypeExpression {
     if(!isGenericType()){
       return methodList;
     }else{
-      List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.clone()).getArgumentList();
-      List<TypeVarSymbol> typeVariableArguments = typeInfo.clone().getTypeParameterList();
+      List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
+      List<TypeVarSymbol> typeVariableArguments = typeInfo.deepClone().getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");
@@ -100,12 +100,12 @@ public abstract class SymTypeExpression {
 
 
   public List<FieldSymbol> getFieldList(){
-    List<FieldSymbol> fields = typeInfo.clone().getFieldList();
+    List<FieldSymbol> fields = typeInfo.deepClone().getFieldList();
     if(!isGenericType()){
       return fields;
     }else{
-      List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.clone()).getArgumentList();
-      List<TypeVarSymbol> typeVariableArguments = typeInfo.clone().getTypeParameterList();
+      List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
+      List<TypeVarSymbol> typeVariableArguments = typeInfo.deepClone().getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");

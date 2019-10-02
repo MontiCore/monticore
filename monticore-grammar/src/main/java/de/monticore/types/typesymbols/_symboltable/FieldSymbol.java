@@ -6,7 +6,7 @@ public class FieldSymbol extends FieldSymbolTOP {
     super(name);
   }
 
-  public FieldSymbol clone(){
+  public FieldSymbol deepClone(){
     FieldSymbol clone = new FieldSymbol(name);
     clone.setAccessModifier(this.accessModifier);
     clone.setEnclosingScope(this.enclosingScope);
@@ -15,7 +15,7 @@ public class FieldSymbol extends FieldSymbolTOP {
       clone.setAstNode(this.getAstNode());
     }
     if(getType()!=null){
-      clone.setType(this.getType().clone());
+      clone.setType(this.getType().deepClone());
     }
     return clone;
   }

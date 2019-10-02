@@ -55,7 +55,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeOfObject clone() {
+  public SymTypeOfObject deepClone() {
     SymTypeOfObject clone = new SymTypeOfObject(this.objFullName);
     clone.setName(this.name);
     clone.setTypeInfo(this.getTypeInfo());
