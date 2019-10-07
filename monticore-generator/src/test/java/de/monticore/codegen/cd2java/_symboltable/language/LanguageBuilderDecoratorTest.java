@@ -1,6 +1,8 @@
 package de.monticore.codegen.cd2java._symboltable.language;
 
-import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -40,7 +42,7 @@ public class LanguageBuilderDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
-    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable","cdForBuilder", "Language_Builder");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "cdForBuilder", "Language_Builder");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
@@ -63,7 +65,7 @@ public class LanguageBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperInterfaces() {
-    assertTrue( builderClass.isEmptyInterfaces());
+    assertTrue(builderClass.isEmptyInterfaces());
   }
 
   @Test
@@ -174,7 +176,11 @@ public class LanguageBuilderDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, builderClass, builderClass);
-    StaticJavaParser.parse(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 
 }

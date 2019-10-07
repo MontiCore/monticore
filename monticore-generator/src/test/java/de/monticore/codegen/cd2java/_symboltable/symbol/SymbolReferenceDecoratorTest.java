@@ -1,6 +1,8 @@
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
-import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -344,7 +346,11 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolClassAutomaton, symbolClassAutomaton);
-    StaticJavaParser.parse(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 
   // test symbol rule methods
@@ -412,6 +418,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
     assertOptionalOf(Integer.class, method.getCDParameter(0).getMCType());
     assertEquals("bla", method.getCDParameter(0).getName());
   }
+
   @Test
   public void testScopeRuleMethod() {
     ASTCDMethod method = getMethodBy("toString", symbolClassFoo);
@@ -428,6 +435,10 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolClassFoo, symbolClassFoo);
-    StaticJavaParser.parse(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 }

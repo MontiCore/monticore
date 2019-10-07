@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_new;
 
-import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -167,7 +169,11 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, astClass, astClass);
-    StaticJavaParser.parse(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 
   @Test

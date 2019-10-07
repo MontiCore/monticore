@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
-import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
@@ -33,7 +35,7 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
-  private GlobalExtensionManagement glex= new GlobalExtensionManagement();
+  private GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   @Before
   public void setUp() {
@@ -64,7 +66,7 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testMethodCount(){
+  public void testMethodCount() {
     assertEquals(1, languageInterface.sizeCDMethods());
   }
 
@@ -88,6 +90,10 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, languageInterface, languageInterface);
-    StaticJavaParser.parse(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 }
