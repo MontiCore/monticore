@@ -5,7 +5,6 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -64,7 +63,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);
     this.symbolDeSer = decorator.decorate(automatonClass);
 
-    ASTCDInterface fooClass = getInterfaceBy("Foo", decoratedCompilationUnit);
+    ASTCDClass fooClass = getClassBy("Foo", decoratedCompilationUnit);
     this.symbolFooDeSer = decorator.decorate(fooClass);
   }
 

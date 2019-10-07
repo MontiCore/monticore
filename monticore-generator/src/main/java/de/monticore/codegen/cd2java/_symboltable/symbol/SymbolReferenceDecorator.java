@@ -22,7 +22,7 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
+public class SymbolReferenceDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected SymbolTableService symbolTableService;
 
@@ -43,20 +43,20 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDType input) {
-    String symbolReferenceClassSimpleName = symbolTableService.getSymbolReferenceClassSimpleName(input);
-    String symbolFullName = symbolTableService.getSymbolFullName(input);
+  public ASTCDClass decorate(ASTCDClass symbolInput) {
+    String symbolReferenceClassSimpleName = symbolTableService.getSymbolReferenceClassSimpleName(symbolInput);
+    String symbolFullName = symbolTableService.getSymbolFullName(symbolInput);
     String scopeInterfaceType = symbolTableService.getScopeInterfaceFullName();
-    String astNodeName = symbolTableService.getASTPackage() + "." + AST_PREFIX + input.getName();
-    String simpleName = input.getName();
+    String astNodeName = symbolTableService.getASTPackage() + "." + AST_PREFIX + symbolInput.getName();
+    String simpleName = symbolInput.getName();
 
     // symbol rule methods and attributes
-    List<ASTCDMethod> symbolRuleAttributeMethods = input.deepClone().getCDAttributeList()
+    List<ASTCDMethod> symbolRuleAttributeMethods = symbolInput.deepClone().getCDAttributeList()
         .stream()
         .map(symbolReferenceMethodDecorator::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
-    List<ASTCDMethod> symbolRuleMethods = input.deepClone().getCDMethodList();
+    List<ASTCDMethod> symbolRuleMethods = symbolInput.deepClone().getCDMethodList();
 
     ASTCDAttribute accessModifierAttribute = createAccessModifierAttribute();
     List<ASTCDMethod> accessModifierMethods = symbolReferenceMethodDecorator.decorate(accessModifierAttribute);
@@ -93,8 +93,8 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDType, ASTCDCl
         .addAllCDMethods(symbolRuleAttributeMethods)
         .addAllCDMethods(symbolRuleMethods)
         .build();
-    if (input.getModifierOpt().isPresent() && (symbolTableService.hasScopeStereotype(input.getModifierOpt().get())
-        || symbolTableService.hasInheritedScopeStereotype(input.getModifierOpt().get()))) {
+    if (symbolInput.getModifierOpt().isPresent() && (symbolTableService.hasScopeStereotype(symbolInput.getModifierOpt().get())
+        || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifierOpt().get()))) {
       symbolReferenceClass.addCDMethod(createGetSpannedScopeMethod(scopeInterfaceType));
     }
 

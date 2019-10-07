@@ -1,7 +1,10 @@
 package de.monticore.codegen.mc2cd.symbolTransl;
 
 import com.google.common.collect.Iterables;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.utils.ASTNodes;
 import de.monticore.utils.Link;
@@ -23,53 +26,23 @@ public class SymbolRulesToCDClassAndCDInterface implements UnaryOperator<Link<AS
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
     Set<ASTSymbolRule> matchedASTRules = new LinkedHashSet<>();
-    // creates Links from ASTRules to the CDClasses of corresponding ClassProds
-    for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
-        ASTCDClass.class)) {
+    rootLink.getLinks(ASTClassProd.class, ASTCDClass.class).forEach(link -> addASTRuleLink(rootLink, link, matchedASTRules));
+    rootLink.getLinks(ASTAbstractProd.class, ASTCDClass.class).forEach(link -> addASTRuleLink(rootLink, link, matchedASTRules));
+    rootLink.getLinks(ASTInterfaceProd.class, ASTCDClass.class).forEach(link -> addASTRuleLink(rootLink, link, matchedASTRules));
+    rootLink.getLinks(ASTExternalProd.class, ASTCDClass.class).forEach(link -> addASTRuleLink(rootLink, link, matchedASTRules));
 
-      ASTNodes.getSuccessors(rootLink.source(), ASTSymbolRule.class).stream()
-          .filter(astRule -> astRule.getType().equals(link.source().getName()))
-          .forEach(matchedASTRule -> {
-            matchedASTRules.add(matchedASTRule);
-            new Link<>(matchedASTRule, link.target(), link.parent());
-          });
-    }
-
-    // creates Links from ASTRules to the CDClasses of corresponding AbstractProds
-    for (Link<ASTAbstractProd, ASTCDClass> link : rootLink.getLinks(ASTAbstractProd.class,
-        ASTCDClass.class)) {
-
-      ASTNodes.getSuccessors(rootLink.source(), ASTSymbolRule.class).stream()
-          .filter(astRule -> astRule.getType().equals(link.source().getName()))
-          .forEach(matchedASTRule -> {
-            matchedASTRules.add(matchedASTRule);
-            new Link<>(matchedASTRule, link.target(), link.parent());
-          });
-    }
-
-    // creates Links from ASTRules to the CDInterfaces of corresponding InterfaceProds
-    for (Link<ASTInterfaceProd, ASTCDInterface> link : rootLink.getLinks(ASTInterfaceProd.class,
-        ASTCDInterface.class)) {
-
-      ASTNodes.getSuccessors(rootLink.source(), ASTSymbolRule.class).stream()
-          .filter(astRule -> astRule.getType().equals(link.source().getName()))
-          .forEach(matchedASTRule -> {
-            matchedASTRules.add(matchedASTRule);
-            new Link<>(matchedASTRule, link.target(), link.parent());
-          });
-    }
-    // creates Links from ASTRules to the CDInterfaces of corresponding ExternalProds
-    for (Link<ASTExternalProd, ASTCDInterface> link : rootLink.getLinks(ASTExternalProd.class,
-        ASTCDInterface.class)) {
-
-      ASTNodes.getSuccessors(rootLink.source(), ASTSymbolRule.class).stream()
-          .filter(astRule -> astRule.getType().equals(link.source().getName()))
-          .forEach(matchedASTRule -> {
-            matchedASTRules.add(matchedASTRule);
-            new Link<>(matchedASTRule, link.target(), link.parent());
-          });
-    }
     return matchedASTRules;
+  }
+
+
+  private void addASTRuleLink(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink, Link<? extends ASTProd, ASTCDClass> link,
+                              Set<ASTSymbolRule> matchedASTRules) {
+    ASTNodes.getSuccessors(rootLink.source(), ASTSymbolRule.class).stream()
+        .filter(astRule -> astRule.getType().equals(link.source().getName()))
+        .forEach(matchedASTRule -> {
+          matchedASTRules.add(matchedASTRule);
+          new Link<>(matchedASTRule, link.target(), link.parent());
+        });
   }
 
   private void createLinksForUnmatchedASTRules(Set<ASTSymbolRule> matchedASTRules,

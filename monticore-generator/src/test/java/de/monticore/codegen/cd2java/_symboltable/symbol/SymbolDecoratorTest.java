@@ -75,7 +75,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
 
     //creates normal Symbol with symbolRules
-    ASTCDInterface fooClass = getInterfaceBy("Foo", decoratedCompilationUnit);
+    ASTCDClass fooClass = getClassBy("Foo", decoratedCompilationUnit);
     this.symbolClassFoo = decorator.decorate(fooClass);
 
     //creates normal Symbol with top class
@@ -478,6 +478,22 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
   @Test(expected = AssertionError.class)
   public void testSetSpannedScopeMethodStateSymbol() {
     getMethodBy("setSpannedScope", symbolClassState);
+  }
+
+
+  @Test
+  public void testFooSymbolSuperClass() {
+    assertTrue(symbolClassFoo.isPresentSuperclass());
+    assertDeepEquals("de.monticore.Foo2", symbolClassFoo.getSuperclass());
+  }
+
+  @Test
+  public void testFooSymbolInterfaces() {
+    assertEquals(2, symbolClassFoo.sizeInterfaces());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.ICommonAutomatonSymbolCDSymbol",
+        symbolClassFoo.getInterface(0));
+    assertDeepEquals("de.monticore.Foo3", symbolClassFoo.getInterface(1));
+
   }
 
   @Test

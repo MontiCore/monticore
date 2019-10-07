@@ -11,7 +11,7 @@ classdiagram AutomatonSymbolCD {
     <<symbol>> public class State{
     }
 
-    <<symbol>> public interface Foo{
+    <<symbol>> public class Foo extends de.monticore.Foo2 implements de.monticore.Foo3 {
       protected boolean extraAttribute;
       protected List<String> foo;
       protected Optional<Integer> bla;

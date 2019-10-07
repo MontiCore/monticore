@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
@@ -87,7 +88,6 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
 
     Map<String, ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolInput.getCDDefinition().getCDClassList(), symbolTableService.getCDSymbol());
-    symbolAttributes.putAll(createSymbolAttributes(symbolInput.getCDDefinition().getCDInterfaceList(), symbolTableService.getCDSymbol()));
     symbolAttributes.putAll(getSuperSymbolAttributes());
 
     List<ASTCDMethod> symbolMethods = createSymbolMethods(symbolAttributes.values());
@@ -117,11 +117,17 @@ public class ScopeClassDecorator extends AbstractDecorator {
     ASTCDAttribute astNodeAttribute = createASTNodeAttribute();
     List<ASTCDMethod> astNodeMethods = methodDecorator.decorate(astNodeAttribute);
 
+    Optional<ASTMCObjectType> scopeRuleSuperClass = scopeInput.deepClone().getCDDefinition().getCDClassList()
+        .stream()
+        .filter(ASTCDClassTOP::isPresentSuperclass)
+        .map(ASTCDClassTOP::getSuperclass)
+        .findFirst();
 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(scopeClassName)
         .setModifier(PUBLIC.build())
         .addInterface(scopeInterfaceType)
+        .setSuperclassOpt(scopeRuleSuperClass)
         .addAllCDConstructors(createConstructors(scopeClassName))
         .addAllCDAttributes(scopeRuleAttributeList)
         .addAllCDMethods(scopeRuleMethodList)

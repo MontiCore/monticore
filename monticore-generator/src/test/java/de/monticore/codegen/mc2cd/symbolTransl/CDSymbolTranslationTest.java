@@ -1,6 +1,9 @@
 package de.monticore.codegen.mc2cd.symbolTransl;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.factories.CDModifier;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
@@ -11,7 +14,6 @@ import java.nio.file.Paths;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
 import static org.junit.Assert.*;
 
 public class CDSymbolTranslationTest {
@@ -38,7 +40,7 @@ public class CDSymbolTranslationTest {
 
   @Test
   public void testClassCount() {
-    assertEquals(2, compilationUnit.getCDDefinition().sizeCDClasss());
+    assertEquals(4, compilationUnit.getCDDefinition().sizeCDClasss());
   }
 
   @Test
@@ -90,13 +92,13 @@ public class CDSymbolTranslationTest {
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(2, compilationUnit.getCDDefinition().sizeCDClasss());
+    assertTrue(compilationUnit.getCDDefinition().isEmptyCDInterfaces());
 
   }
 
   @Test
   public void testInterfaceSymbol() {
-    ASTCDInterface symbolClassSymbol = getInterfaceBy("SymbolInterface", compilationUnit);
+    ASTCDClass symbolClassSymbol = getClassBy("SymbolInterface", compilationUnit);
     assertEquals(1, symbolClassSymbol.sizeCDAttributes());
     assertTrue(symbolClassSymbol.isEmptyInterfaces());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());
@@ -110,7 +112,7 @@ public class CDSymbolTranslationTest {
 
   @Test
   public void testExternalSymbol() {
-    ASTCDInterface symbolClassSymbol = getInterfaceBy("SymbolExternal", compilationUnit);
+    ASTCDClass symbolClassSymbol = getClassBy("SymbolExternal", compilationUnit);
     assertEquals(1, symbolClassSymbol.sizeCDAttributes());
     assertTrue(symbolClassSymbol.isEmptyInterfaces());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());

@@ -87,14 +87,14 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(1, scopeInterface.sizeInterfaces());
+    assertEquals(2, scopeInterface.sizeInterfaces());
   }
 
   @Test
   public void testSuperInterfaces() {
     assertDeepEquals(I_LEXICAS_SCOPE, scopeInterface.getInterface(0));
+    assertDeepEquals("de.monticore.IBlaScope", scopeInterface.getInterface(1));
   }
-
 
   @Test
   public void testNoAttributes() {

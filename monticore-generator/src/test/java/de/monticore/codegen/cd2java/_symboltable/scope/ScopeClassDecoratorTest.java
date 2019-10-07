@@ -27,7 +27,8 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
@@ -111,8 +112,9 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testNoSuperClass() {
-    assertFalse(scopeClass.isPresentSuperclass());
+  public void testSuperClass() {
+    assertTrue(scopeClass.isPresentSuperclass());
+    assertDeepEquals("de.monticore.FooScope", scopeClass.getSuperclass());
   }
 
   @Test

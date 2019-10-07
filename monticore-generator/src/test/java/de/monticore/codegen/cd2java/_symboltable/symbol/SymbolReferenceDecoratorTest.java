@@ -70,7 +70,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
     ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
     //creates fooSymbolRef
-    ASTCDInterface fooClass = getInterfaceBy("Foo", decoratedCompilationUnit);
+    ASTCDClass fooClass = getClassBy("Foo", decoratedCompilationUnit);
     this.symbolClassFoo = decorator.decorate(fooClass);
   }
 

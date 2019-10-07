@@ -5,7 +5,7 @@ import de.monticore.codegen.ast.Lexicals.*;
 
 classdiagram AutomatonScopeCD {
 
-    public class AutomatonScope{
+    public class AutomatonScope extends de.monticore.FooScope implements de.monticore.IBlaScope {
       protected boolean extraAttribute;
       protected List<String> foo;
       protected Optional<Integer> bla;

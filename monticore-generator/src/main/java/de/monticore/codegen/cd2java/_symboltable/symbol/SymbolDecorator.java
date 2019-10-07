@@ -27,7 +27,7 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PRE
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
+public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;
 
@@ -56,7 +56,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDType input) {
+  public ASTCDClass decorate(ASTCDClass input) {
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
     String artifactScope = symbolTableService.getArtifactScopeFullName();
     String globalScopeInterface = symbolTableService.getGlobalScopeInterfaceFullName();
@@ -115,7 +115,10 @@ public class SymbolDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
       symbolClass.addAllCDMethods(spannedScopeMethods);
       symbolClass.addInterface(getCDTypeFacade().createQualifiedType(I_SCOPE_SPANNING_SYMBOL));
     }
-
+    if (input.isPresentSuperclass()) {
+      symbolClass.setSuperclass(input.getSuperclass());
+    }
+    symbolClass.addAllInterfaces(input.getInterfaceList());
     return symbolClass;
   }
 
