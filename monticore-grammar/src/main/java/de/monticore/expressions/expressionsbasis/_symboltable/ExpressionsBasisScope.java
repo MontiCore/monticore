@@ -29,7 +29,10 @@ public class ExpressionsBasisScope extends ExpressionsBasisScopeTOP {
   }
 
   /**
-   * override method from ExpressionBasisScope to resolve methods correctly
+   * override method from ExpressionBasisScope to resolve all methods correctly
+   * method needed to be overridden because of special cases: if the scope is spanned by a type symbol you have to look for fitting methods in its super types too because of inheritance
+   * the method resolves the methods like the overridden method and if the spanning symbol is a type symbol it additionally looks for methods in its super types
+   * it is used by the method getMethodList in SymTypeExpression
    */
   @Override
   public List<MethodSymbol> resolveMethodLocallyMany(boolean foundSymbols, String name, AccessModifier modifier,
@@ -50,7 +53,10 @@ public class ExpressionsBasisScope extends ExpressionsBasisScopeTOP {
   }
 
   /**
-   * override method from ExpressionBasisScope to resolve fields correctly
+   * override method from ExpressionBasisScope to resolve all fields correctly
+   * method needed to be overridden because of special cases: if the scope is spanned by a type symbol you have to look for fitting fields in its super types too because of inheritance
+   * the method resolves the fields like the overridden method and if the spanning symbol is a type symbol it additionally looks for fields in its super types
+   * it is used by the method getFieldList in SymTypeExpression
    */
   @Override
   public List<FieldSymbol> resolveFieldLocallyMany(boolean foundSymbols,String name,AccessModifier modifier,Predicate predicate){
