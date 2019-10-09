@@ -501,6 +501,11 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     List<String> stereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.SYMBOL);
     if (!stereotypeValues.isEmpty()) {
       return Optional.ofNullable(stereotypeValues.get(0));
+    }else {
+      List<String> inheritedStereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.INHERITED_SYMBOL);
+      if (!inheritedStereotypeValues.isEmpty()) {
+        return Optional.ofNullable(inheritedStereotypeValues.get(0));
+      }
     }
     return Optional.empty();
   }
@@ -524,8 +529,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public Optional<ASTCDType> getTypeWithScopeInfo(ASTCDType type) {
-    if (type.getModifierOpt().isPresent() && (hasScopeStereotype(type.getModifierOpt().get())
-        || hasInheritedScopeStereotype(type.getModifierOpt().get()))) {
+    if (type.getModifierOpt().isPresent() && hasScopeStereotype(type.getModifierOpt().get())) {
       return Optional.of(type);
     }
     if (!type.getCDTypeSymbolOpt().isPresent()) {

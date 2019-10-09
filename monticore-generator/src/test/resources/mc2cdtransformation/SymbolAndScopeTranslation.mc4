@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc2cdtransformation;
+
+grammar SymbolAndScopeTranslation {
+
+  interface symbol Type = Name;
+
+  interface CDType extends Type = Name;
+
+  CDClass implements CDType = "class" Name;
+
+  symbol SymbolClass = Name;
+
+  interface scope TypeScope;
+
+  interface CDTypeScope extends TypeScope = Name;
+
+  CDClassScope implements CDTypeScope = "scopeClass" Name;
+
+  scope ScopeClass = Name;
+}
