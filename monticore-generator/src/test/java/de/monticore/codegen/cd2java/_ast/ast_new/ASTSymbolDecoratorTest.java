@@ -43,19 +43,11 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAttributes() {
     assertFalse(attributes.isEmpty());
-    assertEquals(2, attributes.size());
+    assertEquals(1, attributes.size());
   }
 
   @Test
   public void testSymbolAttribute() {
-    Optional<ASTCDAttribute> symbolAttribute = attributes.stream().filter(x -> x.getName().equals("aSymbol")).findFirst();
-    assertTrue(symbolAttribute.isPresent());
-    assertDeepEquals(PROTECTED, symbolAttribute.get().getModifier());
-    assertOptionalOf("de.monticore.codegen.ast.ast._symboltable.ASymbol", symbolAttribute.get().getMCType());
-  }
-
-  @Test
-  public void testSymbolAttribute2() {
     Optional<ASTCDAttribute> symbolAttribute = attributes.stream().filter(x -> x.getName().equals("symbol")).findFirst();
     assertTrue(symbolAttribute.isPresent());
     assertDeepEquals(PROTECTED, symbolAttribute.get().getModifier());

@@ -207,14 +207,13 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     // initialize_$ method
     methodList.add(createSymbolInitialize_Method(simpleName, astParam, symbolParam));
     if (symbolClass.getModifierOpt().isPresent()) {
-      String simpleSymbolName = symbolTableService.removeASTPrefix(Names.getSimpleName(symbolFullName));
       boolean isScopeSpanningSymbol = symbolTableService.hasScopeStereotype(symbolClass.getModifierOpt().get()) ||
           symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifierOpt().get());
       // addToScopeAndLinkWithNode method
       methodList.add(createSymbolAddToScopeAndLinkWithNodeMethod(scopeInterface, astParam, symbolParam, isScopeSpanningSymbol));
 
       // setLinkBetweenSymbolAndNode method
-      methodList.add(createSymbolSetLinkBetweenSymbolAndNodeMethod(simpleSymbolName, astParam, symbolParam, isScopeSpanningSymbol));
+      methodList.add(createSymbolSetLinkBetweenSymbolAndNodeMethod(astParam, symbolParam, isScopeSpanningSymbol));
       if (isScopeSpanningSymbol) {
         // setLinkBetweenSpannedScopeAndNode method
         String scopeClassFullName = symbolTableService.getScopeClassFullName();
@@ -264,10 +263,10 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     return addToScopeAnLinkWithNode;
   }
 
-  protected ASTCDMethod createSymbolSetLinkBetweenSymbolAndNodeMethod(String simpleSymbolName, ASTCDParameter astParam, ASTCDParameter symbolParam, boolean isScopeSpanningSymbol) {
+  protected ASTCDMethod createSymbolSetLinkBetweenSymbolAndNodeMethod(ASTCDParameter astParam, ASTCDParameter symbolParam, boolean isScopeSpanningSymbol) {
     ASTCDMethod setLinkBetweenSymbolAndNode = getCDMethodFacade().createMethod(PUBLIC, "setLinkBetweenSymbolAndNode", symbolParam, astParam);
     this.replaceTemplate(EMPTY_BODY, setLinkBetweenSymbolAndNode, new TemplateHookPoint(
-        TEMPLATE_PATH + "SetLinkBetweenSymbolAndNode", simpleSymbolName, isScopeSpanningSymbol));
+        TEMPLATE_PATH + "SetLinkBetweenSymbolAndNode", isScopeSpanningSymbol));
     return setLinkBetweenSymbolAndNode;
   }
 

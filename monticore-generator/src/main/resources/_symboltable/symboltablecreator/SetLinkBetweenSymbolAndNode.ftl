@@ -1,11 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "simpleName", "isScopeSpanningSymbol")}
+${tc.signature("isScopeSpanningSymbol")}
   // symbol -> ast
   symbol.setAstNode(ast);
 
   // ast -> symbol
   ast.setSymbol(symbol);
-  ast.set${simpleName}(symbol);
   ast.setEnclosingScope(symbol.getEnclosingScope());
 
 <#if isScopeSpanningSymbol>
