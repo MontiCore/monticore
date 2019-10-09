@@ -7,6 +7,7 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.typesymbols._symboltable.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 
@@ -75,12 +76,16 @@ public class DefsTypeBasic {
   }
   
   public static TypeSymbol add(TypeSymbol t, FieldSymbol f) {
-    t.getFieldList().add(f);
+    List<FieldSymbol> fieldList = t.getFieldList();
+    fieldList.add(f);
+    t.setFieldList(fieldList);
     return t;
   }
   
   public static TypeSymbol add(TypeSymbol t, MethodSymbol m) {
-    t.getMethodList().add(m);
+    List<MethodSymbol> methodList = t.getMethodList();
+    methodList.add(m);
+    t.setMethodList(methodList);
     return t;
   }
   

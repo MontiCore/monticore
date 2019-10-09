@@ -95,15 +95,18 @@ public class DeriveSymTypeOfCommonExpressionTest {
     ts.getSpannedScope().add(ms);
     ts.getSpannedScope().add(ms1);
 
-    //METHODS
+    //METHODS AND FIELDS
 
     //inheritance example
     //super
     MethodSymbol add = add(method("add",_voidSymType),field("element",_StringSymType));
     TypeSymbol superclass = add(type("AList","AList"),add);
+    FieldSymbol field = field("field",_booleanSymType);
+    superclass = add(superclass,field);
     SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList",superclass);
     ExpressionsBasisScope aListScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     aListScope.add(add);
+    aListScope.add(field);
     superclass.setSpannedScope(aListScope);
     add2scope(scope,superclass);
 
@@ -133,9 +136,13 @@ public class DeriveSymTypeOfCommonExpressionTest {
     TypeVarSymbol t = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("T").setFullName("T").build();
     sym.setTypeParameterList(Lists.newArrayList(t));
     MethodSymbol addMethod = add(method("add",_booleanSymType),field("x",SymTypeExpressionFactory.createTypeVariable("T",t)));
+    FieldSymbol nextField = field("next",SymTypeExpressionFactory.createTypeVariable("T",t));
     sym = add(sym,addMethod);
+    sym = add(sym,nextField);
     ExpressionsBasisScope scopet = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     scopet.add(addMethod);
+    scopet.add(nextField);
+    scopet.add(sym);
     sym.setSpannedScope(scopet);
     SymTypeExpression symexp = SymTypeExpressionFactory.createGenerics("List",Lists.newArrayList(_intSymType),sym);
     symexp.setTypeInfo(sym);
@@ -163,9 +170,14 @@ public class DeriveSymTypeOfCommonExpressionTest {
     TypeVarSymbol t2 = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("V").setFullName("V").build();
     genSup.setTypeParameterList(Lists.newArrayList(t1,t2));
     MethodSymbol load = add(method("load",SymTypeExpressionFactory.createTypeVariable("S",t1)),field("x",SymTypeExpressionFactory.createTypeVariable("V",t2)));
+    FieldSymbol f1 = field("f1",SymTypeExpressionFactory.createTypeVariable("S",t1));
+    FieldSymbol f2 = field("f2",SymTypeExpressionFactory.createTypeVariable("V",t2));
     genSup = add(genSup,load);
+    genSup = add(add(genSup,f1),f2);
     ExpressionsBasisScope scopeGenSup = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     scopeGenSup.add(load);
+    scopeGenSup.add(f1);
+    scopeGenSup.add(f2);
     genSup.setSpannedScope(scopeGenSup);
     SymTypeExpression genSupType = SymTypeExpressionFactory.createGenerics("GenSup",Lists.newArrayList(_StringSymType,_intSymType),genSup);
     genSupType.setTypeInfo(genSup);
@@ -219,12 +231,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope,moreGenType);
     add2scope(scope,moreGen);
 
-
-
-
-    //FIELDS
-
     derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
   }
 
   // Parer used for convenience:
@@ -613,6 +621,14 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s = "mySubList.add(\"World\")";
     astex = p.parse_StringExpression(s).get();
     assertEquals("void",tc.typeOf(astex).print());
+
+    s = "myList.field";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
+
+    s = "mySubList.field";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
   }
 
   @Test
@@ -621,9 +637,21 @@ public class DeriveSymTypeOfCommonExpressionTest {
     ASTExpression astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
 
+    s = "listVar.next";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+
     s = "genSupVar.load(3)";
     astex = p.parse_StringExpression(s).get();
     assertEquals("String",tc.typeOf(astex).print());
+
+    s = "genSupVar.f1";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("String",tc.typeOf(astex).print());
+
+    s = "genSupVar.f2";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
 
     s = "varGen.calculate()";
     astex = p.parse_StringExpression(s).get();
@@ -640,9 +668,21 @@ public class DeriveSymTypeOfCommonExpressionTest {
     ASTExpression astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
 
+    s = "arraylistVar.next";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+
     s = "genSubVar.load(3)";
     astex = p.parse_StringExpression(s).get();
     assertEquals("String",tc.typeOf(astex).print());
+
+    s = "genSubVar.f1";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("String",tc.typeOf(astex).print());
+
+    s = "genSubVar.f2";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
 
     s="varGen.add(4)";
     astex = p.parse_StringExpression(s).get();

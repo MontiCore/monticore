@@ -54,10 +54,14 @@ public class ExpressionsBasisScope extends ExpressionsBasisScopeTOP {
     if(this.isPresentSpanningSymbol()){
       IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
       if(spanningSymbol instanceof MethodSymbol){
-
+        //TODO: Sonderbehandlung fuer FeldSymbol in Methode?
+      }else if(spanningSymbol instanceof TypeSymbol){
+        TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
+        for(SymTypeExpression superType : typeSymbol.getSuperTypeList()){
+          result.addAll(superType.getFieldList(name));
+        }
       }
     }
-
     return result;
   }
 

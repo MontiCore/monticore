@@ -2,9 +2,11 @@ package de.monticore.types.typesymbols._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.types.check.SymTypeExpression;
+import org.omg.CORBA.FieldNameHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TypeSymbol extends TypeSymbolTOP {
 
@@ -59,6 +61,20 @@ public class TypeSymbol extends TypeSymbolTOP {
   public List<MethodSymbol> getMethodList(String methodname){
     List<MethodSymbol> methodSymbols = spannedScope.resolveMethodMany(methodname);
     return methodSymbols;
+  }
+
+  @Override
+  public List<FieldSymbol> getFieldList(){
+    if(spannedScope==null || spannedScope.getMethodSymbols()==null||spannedScope.getMethodSymbols().isEmpty()){
+      return Lists.newArrayList();
+    }
+    return spannedScope.getFieldSymbols().values();
+  }
+
+  public List<FieldSymbol> getFieldList(String fieldname){
+    List<FieldSymbol> fieldSymbols = spannedScope.resolveFieldMany(fieldname);
+    //TODO: ExpressionsBasisScope --> override method resolveFieldLocallyMany
+    return fieldSymbols;
   }
 
 }

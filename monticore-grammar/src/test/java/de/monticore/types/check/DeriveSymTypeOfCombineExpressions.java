@@ -62,6 +62,8 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
     setMCCommonLiteralsVisitor(commonLiteralsTypesCalculator);
     this.deriveSymTypeOfMCCommonLiterals =commonLiteralsTypesCalculator;
     commonLiteralsTypesCalculator.setResult(lastResult);
+
+    setScope(scope);
   }
 
   /**

@@ -446,12 +446,15 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       //look for this type in our scope
       TypeSymbol innerResultType = innerResult.getTypeInfo();
       //search for a method, field or type in the scope of the type of the inner expression
-      Optional<FieldSymbol> fieldSymbolOpt = innerResultType.getSpannedScope().resolveField(expr.getName());
+      List<FieldSymbol> fieldSymbols = innerResult.getFieldList(expr.getName());
       Optional<TypeSymbol> typeSymbolOpt = innerResultType.getSpannedScope().resolveType(expr.getName());
-      if (fieldSymbolOpt.isPresent()) {
+      if (!fieldSymbols.isEmpty()) {
         //cannot be a method, test variable first
         //durch AST-Umbau kann ASTFieldAccessExpression keine Methode sein
-        FieldSymbol var = fieldSymbolOpt.get();
+        if(fieldSymbols.size()!=1){
+          Log.error("There cannot be more than one attribute with the same name");
+        }
+        FieldSymbol var = fieldSymbols.get(0);
         SymTypeExpression type = var.getType();
         this.result = type;
         lastResult.setLast(type);
