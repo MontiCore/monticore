@@ -143,7 +143,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
     // create symbol classes
     List<ASTCDClass> decoratedSymbolClasses = createSymbolClasses(symbolCD.getCDDefinition().getCDClassList(), symbolTablePackage);
-    decoratedSymbolClasses.addAll(createSymbolClasses(symbolCD.getCDDefinition().getCDInterfaceList(), symbolTablePackage));
 
     // create scope classes
     ASTCDClass scopeClass = createScopeClass(scopeCD, symbolCD, symbolTablePackage);
@@ -155,8 +154,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .addCDClass(scopeClass)
         .addCDClass(createScopeClassBuilder(scopeClass))
         .addCDInterface(createScopeInterface(scopeCD, symbolCD))
-        .addAllCDClasss(createSymbolReferenceClasses(symbolCD.getCDDefinition()))
-        .addAllCDClasss(createSymbolReferenceBuilderClasses(symbolCD.getCDDefinition()))
+        .addAllCDClasss(createSymbolReferenceClasses(symbolCD.getCDDefinition().getCDClassList()))
+        .addAllCDClasss(createSymbolReferenceBuilderClasses(symbolCD.getCDDefinition().getCDClassList()))
         .addCDInterface(createICommonSymbol(astCD))
         .addAllCDInterfaces(createSymbolResolvingDelegateInterfaces(symbolProds))
         .build();
@@ -240,13 +239,13 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .build();
   }
 
-  protected List<ASTCDClass> createSymbolClasses(List<? extends ASTCDType> astcdTypeList, List<String> symbolTablePackage) {
+  protected List<ASTCDClass> createSymbolClasses(List<ASTCDClass> symbolClases, List<String> symbolTablePackage) {
     List<ASTCDClass> symbolClassList = new ArrayList<>();
-    for (ASTCDType astcdType : astcdTypeList) {
+    for (ASTCDClass astcdClass : symbolClases) {
       boolean isSymbolHandCoded = existsHandwrittenClass(handCodedPath,
-          constructQualifiedName(symbolTablePackage, symbolTableService.getSymbolSimpleName(astcdType)));
+          constructQualifiedName(symbolTablePackage, symbolTableService.getSymbolSimpleName(astcdClass)));
       symbolDecorator.setSymbolTop(isSymbolHandCoded);
-      symbolClassList.add(symbolDecorator.decorate(astcdType));
+      symbolClassList.add(symbolDecorator.decorate(astcdClass));
     }
     return symbolClassList;
   }
@@ -258,28 +257,18 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
   }
 
-  protected List<ASTCDClass> createSymbolReferenceClasses(ASTCDDefinition symbolCD) {
-    List<ASTCDClass> symbolReferences = symbolCD.getCDClassList()
+  protected List<ASTCDClass> createSymbolReferenceClasses(List<ASTCDClass> symbolClasses) {
+    return symbolClasses
         .stream()
         .map(symbolReferenceDecorator::decorate)
         .collect(Collectors.toList());
-    symbolReferences.addAll(symbolCD.getCDInterfaceList()
-        .stream()
-        .map(symbolReferenceDecorator::decorate)
-        .collect(Collectors.toList()));
-    return symbolReferences;
   }
 
-  protected List<ASTCDClass> createSymbolReferenceBuilderClasses(ASTCDDefinition astcdDefinition) {
-    List<ASTCDClass> symbolReferences = astcdDefinition.getCDClassList()
+  protected List<ASTCDClass> createSymbolReferenceBuilderClasses(List<ASTCDClass> symbolClasses) {
+    return symbolClasses
         .stream()
         .map(symbolReferenceBuilderDecorator::decorate)
         .collect(Collectors.toList());
-    symbolReferences.addAll(astcdDefinition.getCDInterfaceList()
-        .stream()
-        .map(symbolReferenceBuilderDecorator::decorate)
-        .collect(Collectors.toList()));
-    return symbolReferences;
   }
 
   protected List<ASTCDInterface> createSymbolResolvingDelegateInterfaces(List<? extends ASTCDType> astcdTypeList) {

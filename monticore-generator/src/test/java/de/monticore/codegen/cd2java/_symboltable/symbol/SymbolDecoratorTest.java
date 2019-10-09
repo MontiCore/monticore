@@ -1,6 +1,8 @@
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
-import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -61,7 +63,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
-    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable","AutomatonSymbolCD");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
@@ -73,7 +75,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
 
     //creates normal Symbol with symbolRules
-    ASTCDInterface fooClass = getInterfaceBy("Foo", decoratedCompilationUnit);
+    ASTCDClass fooClass = getClassBy("Foo", decoratedCompilationUnit);
     this.symbolClassFoo = decorator.decorate(fooClass);
 
     //creates normal Symbol with top class
@@ -429,7 +431,11 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolClassAutomaton, symbolClassAutomaton);
-    StaticJavaParser.parse(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 
   //normal Symbol
@@ -472,6 +478,22 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
   @Test(expected = AssertionError.class)
   public void testSetSpannedScopeMethodStateSymbol() {
     getMethodBy("setSpannedScope", symbolClassState);
+  }
+
+
+  @Test
+  public void testFooSymbolSuperClass() {
+    assertTrue(symbolClassFoo.isPresentSuperclass());
+    assertDeepEquals("de.monticore.Foo2", symbolClassFoo.getSuperclass());
+  }
+
+  @Test
+  public void testFooSymbolInterfaces() {
+    assertEquals(2, symbolClassFoo.sizeInterfaces());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.ICommonAutomatonSymbolCDSymbol",
+        symbolClassFoo.getInterface(0));
+    assertDeepEquals("de.monticore.Foo3", symbolClassFoo.getInterface(1));
+
   }
 
   @Test
@@ -537,6 +559,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertOptionalOf(Integer.class, method.getCDParameter(0).getMCType());
     assertEquals("bla", method.getCDParameter(0).getName());
   }
+
   @Test
   public void testScopeRuleMethod() {
     ASTCDMethod method = getMethodBy("toString", symbolClassFoo);
@@ -553,6 +576,10 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolClassState, symbolClassState);
-    StaticJavaParser.parse(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 }

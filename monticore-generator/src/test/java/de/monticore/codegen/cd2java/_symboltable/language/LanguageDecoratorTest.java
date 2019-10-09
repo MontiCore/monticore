@@ -1,6 +1,8 @@
 package de.monticore.codegen.cd2java._symboltable.language;
 
-import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -76,7 +78,7 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfaces() {
-    assertDeepEquals("de.monticore.IModelingLanguage<AutomatonModelLoader>",  languageClass.getInterface(0));
+    assertDeepEquals("de.monticore.IModelingLanguage<AutomatonModelLoader>", languageClass.getInterface(0));
   }
 
   @Test
@@ -145,6 +147,7 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
 
     assertTrue(method.isEmptyCDParameters());
   }
+
   @Test
   public void testGetModelLoaderMethod() {
     ASTCDMethod method = getMethodBy("getModelLoader", languageClass);
@@ -182,7 +185,7 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbolTableCreatorDelegator", method.getMCReturnType().getMCType());
 
-    assertEquals(1,method.sizeCDParameters());
+    assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope", method.getCDParameter(0).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(0).getName());
   }
@@ -214,7 +217,7 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PROTECTED, method.getModifier());
     assertDeepEquals("Set<String>", method.getMCReturnType().getMCType());
 
-    assertEquals(1,method.sizeCDParameters());
+    assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("name", method.getCDParameter(0).getName());
   }
@@ -226,7 +229,7 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PROTECTED, method.getModifier());
     assertDeepEquals("Set<String>", method.getMCReturnType().getMCType());
 
-    assertEquals(1,method.sizeCDParameters());
+    assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("name", method.getCDParameter(0).getName());
   }
@@ -238,7 +241,7 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PROTECTED, method.getModifier());
     assertDeepEquals("Set<String>", method.getMCReturnType().getMCType());
 
-    assertEquals(1,method.sizeCDParameters());
+    assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("name", method.getCDParameter(0).getName());
   }
@@ -249,7 +252,11 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, languageClass, languageClass);
-    StaticJavaParser.parse(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 
 }

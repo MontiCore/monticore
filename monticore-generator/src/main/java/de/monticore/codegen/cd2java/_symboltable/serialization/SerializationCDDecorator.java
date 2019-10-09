@@ -46,7 +46,7 @@ public class SerializationCDDecorator extends AbstractDecorator {
 
     ASTCDDefinition serializeCD = CD4CodeMill.cDDefinitionBuilder()
         .setName(symbolInput.getCDDefinition().getName())
-        .addAllCDClasss(createSymbolDeSerClasses(symbolInput.getCDDefinition()))
+        .addAllCDClasss(createSymbolDeSerClasses(symbolInput.getCDDefinition().getCDClassList()))
         .addCDClass(createSymbolTablePrinterClass(astCD))
         .build();
 
@@ -72,16 +72,11 @@ public class SerializationCDDecorator extends AbstractDecorator {
         .build();
   }
 
-  protected List<ASTCDClass> createSymbolDeSerClasses(ASTCDDefinition astcdDefinition) {
-    List<ASTCDClass> symbolDeSerList = astcdDefinition.getCDClassList()
+  protected List<ASTCDClass> createSymbolDeSerClasses(List<ASTCDClass> symbolClassList) {
+    return symbolClassList
         .stream()
         .map(symbolDeSerDecorator::decorate)
         .collect(Collectors.toList());
-    symbolDeSerList.addAll(astcdDefinition.getCDInterfaceList()
-        .stream()
-        .map(symbolDeSerDecorator::decorate)
-        .collect(Collectors.toList()));
-    return symbolDeSerList;
   }
 
   protected ASTCDClass createScopeDeSerClass(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit symbolCd) {

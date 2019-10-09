@@ -1,6 +1,8 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
-import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
@@ -85,14 +87,14 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(1, scopeInterface.sizeInterfaces());
+    assertEquals(2, scopeInterface.sizeInterfaces());
   }
 
   @Test
   public void testSuperInterfaces() {
     assertDeepEquals(I_LEXICAS_SCOPE, scopeInterface.getInterface(0));
+    assertDeepEquals("de.monticore.IBlaScope", scopeInterface.getInterface(1));
   }
-
 
   @Test
   public void testNoAttributes() {
@@ -704,6 +706,10 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, scopeInterface, scopeInterface);
-    StaticJavaParser.parse(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 }

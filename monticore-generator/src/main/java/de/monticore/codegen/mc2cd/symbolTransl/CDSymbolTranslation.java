@@ -1,7 +1,9 @@
 package de.monticore.codegen.mc2cd.symbolTransl;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.codegen.mc2cd.transl.*;
+import de.monticore.codegen.mc2cd.transl.MultiplicityTranslation;
+import de.monticore.codegen.mc2cd.transl.PackageTranslation;
+import de.monticore.codegen.mc2cd.transl.ReferenceTypeTranslation;
 import de.monticore.codegen.mc2cd.transl.creation.GrammarToCDDefinition;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.utils.Link;
@@ -24,8 +26,7 @@ public class CDSymbolTranslation implements UnaryOperator<Link<ASTMCGrammar, AST
         .andThen(new SymbolRuleMethodTranslation())
         .andThen(new ReferenceTypeTranslation())
         .andThen(new MultiplicityTranslation())
-        .andThen(new SymbolAndScopeTranslation())
-        .andThen(new StartProdTranslation())
+        .andThen(new SymbolAndScopeTranslationForSymbolCD())
         .apply(rootLink);
   }
 }

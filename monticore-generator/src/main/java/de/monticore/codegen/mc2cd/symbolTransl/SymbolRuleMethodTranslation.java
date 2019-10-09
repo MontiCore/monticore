@@ -20,21 +20,12 @@ public class SymbolRuleMethodTranslation implements UnaryOperator<Link<ASTMCGram
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-
     for (Link<ASTSymbolRule, ASTCDClass> link : rootLink.getLinks(ASTSymbolRule.class,
         ASTCDClass.class)) {
       for (ASTGrammarMethod method : link.source().getGrammarMethodList()) {
         link.target().getCDMethodList().add(translateASTMethodToASTCDMethod(method));
       }
     }
-
-    for (Link<ASTSymbolRule, ASTCDInterface> link : rootLink.getLinks(ASTSymbolRule.class,
-        ASTCDInterface.class)) {
-      for (ASTGrammarMethod method : link.source().getGrammarMethodList()) {
-        link.target().getCDMethodList().add(translateASTMethodToASTCDMethodInterface(method));
-      }
-    }
-
     return rootLink;
   }
 
@@ -57,22 +48,6 @@ public class SymbolRuleMethodTranslation implements UnaryOperator<Link<ASTMCGram
     TransformationHelper.addStereotypeValue(modifier,
         MC2CDStereotypes.METHOD_BODY.toString(),
         code.toString());
-  }
-
-  private ASTCDMethod translateASTMethodToASTCDMethodInterface(ASTGrammarMethod method) {
-    ASTCDMethod cdMethod = createSimpleCDMethod(method);
-    if (method.getBody() instanceof ASTAction) {
-      StringBuilder code = new StringBuilder();
-      for (ASTBlockStatement action : ((ASTAction) method.getBody()).getBlockStatementList()) {
-        code.append(GeneratorHelper.getMcPrettyPrinter().prettyprint(action));
-      }
-      if (!code.toString().isEmpty()) {
-        addMethodBodyStereotype(cdMethod.getModifier(), code);
-      } else {
-        cdMethod.getModifier().setAbstract(true);
-      }
-    }
-    return cdMethod;
   }
 
   private ASTCDMethod translateASTMethodToASTCDMethod(ASTGrammarMethod method) {
