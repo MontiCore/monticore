@@ -28,6 +28,13 @@ public class SymTypeVariable extends SymTypeExpression {
     this.typeVarSymbol = typeVarSymbol;
   }
 
+  public TypeVarSymbol getTypeVarSymbol() {
+    return typeVarSymbol;
+  }
+
+  public void setTypeVarSymbol(TypeVarSymbol typeVarSymbol) {
+    this.typeVarSymbol = typeVarSymbol;
+  }
 
   public String getVarName() {
     return varName;
@@ -64,6 +71,10 @@ public class SymTypeVariable extends SymTypeExpression {
     return false;
     // TODO: ?sometimes the var is, sometimes not ...
     // Unless we always assume boxed implementations then return false would be correct
+  }
+
+  public boolean isTypeVariable(){
+    return true;
   }
 
   @Override

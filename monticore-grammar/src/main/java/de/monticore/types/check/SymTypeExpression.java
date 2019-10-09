@@ -40,6 +40,13 @@ public abstract class SymTypeExpression {
     return false;
   }
 
+  /**
+   * Am I a type variable?
+   */
+  public boolean isTypeVariable(){
+    return false;
+  }
+
   public abstract SymTypeExpression deepClone();
 
   /**
@@ -77,7 +84,7 @@ public abstract class SymTypeExpression {
       for(MethodSymbol method: methodList) {
         //return type
         for (TypeVarSymbol typeVariableArgument : typeVariableArguments) {
-          if (method.getReturnType().print().equals(typeVariableArgument.getName())&&method.getReturnType() instanceof SymTypeVariable) {
+          if (method.getReturnType().print().equals(typeVariableArgument.getName())&&method.getReturnType().isTypeVariable()) {
             method.setReturnType(map.get(typeVariableArgument));
           }
         }
@@ -85,7 +92,7 @@ public abstract class SymTypeExpression {
         for (FieldSymbol parameter : method.getParameterList()) {
           SymTypeExpression parameterType = parameter.getType();
           for (TypeVarSymbol typeVariableArgument : typeVariableArguments) {
-            if (parameterType.print().equals(typeVariableArgument.getName())&& parameterType instanceof SymTypeVariable) {
+            if (parameterType.print().equals(typeVariableArgument.getName())&& parameterType.isTypeVariable()) {
               parameter.setType(map.get(typeVariableArgument));
             }
           }
@@ -147,7 +154,7 @@ public abstract class SymTypeExpression {
       //every field in fieldList: replace typevariables in type with its actual symtypeexpression
       for(FieldSymbol field: fieldList){
         for(TypeVarSymbol typeVariableArgument:typeVariableArguments) {
-          if (field.getType().print().equals(typeVariableArgument.getName())&&field.getType() instanceof SymTypeVariable) {
+          if (field.getType().print().equals(typeVariableArgument.getName())&&field.getType().isTypeVariable()) {
             field.setType(map.get(typeVariableArgument));
           }
         }

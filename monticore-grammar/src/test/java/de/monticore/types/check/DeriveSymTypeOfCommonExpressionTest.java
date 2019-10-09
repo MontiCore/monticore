@@ -155,8 +155,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     TypeSymbol subsym = type("ArrayList","ArrayList");
     TypeVarSymbol arrayListT = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("T").setFullName("T").build();
     subsym.setTypeParameterList(Lists.newArrayList(arrayListT));
-
     SymTypeExpression listTSymTypeExp = SymTypeExpressionFactory.createGenerics("List",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T",arrayListT)),sym);
+    listTSymTypeExp.setTypeInfo(sym);
     subsym.setSuperTypeList(Lists.newArrayList(listTSymTypeExp));
     ExpressionsBasisScope scopef = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     subsym.setSpannedScope(scopef);
