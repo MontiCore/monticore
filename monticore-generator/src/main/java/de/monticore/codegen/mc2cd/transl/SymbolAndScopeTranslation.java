@@ -95,6 +95,9 @@ public class SymbolAndScopeTranslation implements
             TransformationHelper.addStereoType(astcdClass,
                 MC2CDStereotypes.INHERITED_SCOPE.toString());
           }
+          if(prodSymbol.get().getAstNode().get() instanceof ASTParserProd){
+            addSymbolInheritedProperty((ASTParserProd) prodSymbol.get().getAstNode().get(), astcdClass);
+          }
         }
       }
     }
@@ -117,6 +120,9 @@ public class SymbolAndScopeTranslation implements
           if (prodSymbol.get().isScopeSpanning()) {
             TransformationHelper.addStereoType(astcdClass,
                 MC2CDStereotypes.INHERITED_SCOPE.toString());
+          }
+          if(prodSymbol.get().getAstNode().get() instanceof ASTParserProd){
+            addSymbolInheritedProperty((ASTParserProd) prodSymbol.get().getAstNode().get(), astcdClass);
           }
         }
       }
