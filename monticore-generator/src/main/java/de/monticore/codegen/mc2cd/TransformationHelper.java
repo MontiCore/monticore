@@ -63,8 +63,7 @@ public final class TransformationHelper {
     if (type instanceof ASTMCObjectType) {
       return Names.getQualifiedName(
           ((ASTMCObjectType) type).getNameList());
-    }
-    else if (type instanceof ASTMCPrimitiveType) {
+    } else if (type instanceof ASTMCPrimitiveType) {
       return type.toString();
     }
     return "";
@@ -88,7 +87,7 @@ public final class TransformationHelper {
   }
 
   public static Optional<String> getUsageName(ASTNode root,
-      ASTNode successor) {
+                                              ASTNode successor) {
     List<ASTNode> intermediates = ASTNodes
         .getIntermediates(root, successor);
     for (ASTNode ancestor : Lists.reverse(intermediates)) {
@@ -311,7 +310,7 @@ public final class TransformationHelper {
    * @return true if a handwritten class with the qualifiedName exists
    */
   public static boolean existsHandwrittenClass(IterablePath targetPath,
-      String qualifiedName) {
+                                               String qualifiedName) {
     Path handwrittenFile = Paths.get(Names
         .getPathFromPackage(qualifiedName)
         + DEFAULT_FILE_EXTENSION);
@@ -353,12 +352,12 @@ public final class TransformationHelper {
   }
 
   public static String getQualifiedTypeNameAndMarkIfExternal(ASTMCType ruleReference,
-      ASTMCGrammar grammar, ASTCDClass cdClass) {
+                                                             ASTMCGrammar grammar, ASTCDClass cdClass) {
 
     Optional<ProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
 
     String qualifiedRuleName = getQualifiedAstName(
-        typeSymbol, ruleReference, grammar);
+        typeSymbol, ruleReference);
 
     if (!typeSymbol.isPresent()) {
       addStereoType(cdClass,
@@ -370,12 +369,12 @@ public final class TransformationHelper {
 
   // TODO GV: remove this if CDInterface and CDClass have a common type CDType
   public static String getQualifiedTypeNameAndMarkIfExternal(ASTMCType ruleReference,
-      ASTMCGrammar grammar, ASTCDInterface interf) {
+                                                             ASTMCGrammar grammar, ASTCDInterface interf) {
 
     Optional<ProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
 
     String qualifiedRuleName = getQualifiedAstName(
-        typeSymbol, ruleReference, grammar);
+        typeSymbol, ruleReference);
 
     if (!typeSymbol.isPresent()) {
       addStereoType(interf,
@@ -423,21 +422,16 @@ public final class TransformationHelper {
     return !resolveAstRuleType(node, type).isPresent();
   }
 
-  public static String getQualifiedAstName(
-          Optional<ProdSymbol> typeSymbol, ASTMCType type,
-          ASTMCGrammar grammar) {
-    if (!typeSymbol.isPresent()) {
+  public static String getQualifiedAstName(Optional<ProdSymbol> typeSymbol, ASTMCType type) {
+    if (typeSymbol.isPresent()) {
+      return Names.getQualifier(typeSymbol.get().getFullName()) + "." + AST_PREFIX + typeSymbol.get().getName();
+    } else {
       return FullGenericTypesPrinter.printType(type);
     }
-    if (type.getNameList().size() > 1) {
-      return FullGenericTypesPrinter.printType(type);
-    }
-    String refGrammarName = getGrammarName(typeSymbol.get());
-    return refGrammarName + "." + FullGenericTypesPrinter.printType(type);
   }
 
   public static void addStereoType(ASTCDType type, String stereotypeName,
-      String stereotypeValue) {
+                                   String stereotypeValue) {
     if (!type.getModifierOpt().isPresent()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
@@ -450,7 +444,7 @@ public final class TransformationHelper {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
     addStereotypeValue(type.getModifierOpt().get(),
-            stereotypeName);
+        stereotypeName);
   }
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName) {
@@ -462,8 +456,8 @@ public final class TransformationHelper {
   }
 
   public static void addStereoType(ASTCDAttribute attribute,
-      String stereotypeName,
-      String stereotypeValue) {
+                                   String stereotypeName,
+                                   String stereotypeValue) {
     if (!attribute.isPresentModifier()) {
       attribute.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
@@ -481,16 +475,16 @@ public final class TransformationHelper {
   }
 
   public static void addStereoType(ASTCDMethod method,
-      String stereotypeName,
-      String stereotypeValue) {
+                                   String stereotypeName,
+                                   String stereotypeValue) {
     method.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     addStereotypeValue(method.getModifier(),
         stereotypeName, stereotypeValue);
   }
 
   public static void addStereotypeValue(ASTModifier astModifier,
-      String stereotypeName,
-      String stereotypeValue) {
+                                        String stereotypeName,
+                                        String stereotypeValue) {
     if (!astModifier.isPresentStereotype()) {
       astModifier.setStereotype(CD4AnalysisNodeFactory
           .createASTCDStereotype());
@@ -508,12 +502,12 @@ public final class TransformationHelper {
                                         String stereotypeName) {
     if (!astModifier.isPresentStereotype()) {
       astModifier.setStereotype(CD4AnalysisNodeFactory
-              .createASTCDStereotype());
+          .createASTCDStereotype());
     }
     List<ASTCDStereoValue> stereoValueList = astModifier.getStereotype()
-            .getValueList();
+        .getValueList();
     ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory
-            .createASTCDStereoValue();
+        .createASTCDStereoValue();
     stereoValue.setName(stereotypeName);
     stereoValueList.add(stereoValue);
   }
