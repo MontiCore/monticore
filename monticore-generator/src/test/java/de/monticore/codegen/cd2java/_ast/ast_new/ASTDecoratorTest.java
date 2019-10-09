@@ -86,7 +86,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(4, astClass.getCDAttributeList().size());
+    assertEquals(3, astClass.getCDAttributeList().size());
   }
 
   @Test
@@ -97,7 +97,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethods() {
     assertFalse(astClass.getCDMethodList().isEmpty());
-    assertEquals(21, astClass.getCDMethodList().size());
+    assertEquals(15, astClass.getCDMethodList().size());
   }
 
   @Test
@@ -199,7 +199,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGetSymbolMethod() {
-    ASTCDMethod method = getMethodBy("getASymbol", astClass);
+    ASTCDMethod method = getMethodBy("getSymbol", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_SYMBOL);
     assertTrue(method.getMCReturnType().isPresentMCType());
@@ -209,7 +209,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGetSymbolOptMethod() {
-    ASTCDMethod method = getMethodBy("getASymbolOpt", astClass);
+    ASTCDMethod method = getMethodBy("getSymbolOpt", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertOptionalOf(AST_SYMBOL, method.getMCReturnType().getMCType());
@@ -218,7 +218,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testIsPresentSymbolMethod() {
-    ASTCDMethod method = getMethodBy("isPresentASymbol", astClass);
+    ASTCDMethod method = getMethodBy("isPresentSymbol", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertBoolean(method.getMCReturnType().getMCType());
@@ -227,11 +227,11 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testIsSetSymbolMethod() {
-    ASTCDMethod method = getMethodBy("setASymbol", astClass);
+    ASTCDMethod method = getMethodBy("setSymbol", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("aSymbol", method.getCDParameter(0).getName());
+    assertEquals("symbol", method.getCDParameter(0).getName());
     ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_SYMBOL);
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
   }
@@ -239,18 +239,18 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testIsSetSymbolOptMethod() {
-    ASTCDMethod method = getMethodBy("setASymbolOpt", astClass);
+    ASTCDMethod method = getMethodBy("setSymbolOpt", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("aSymbol", method.getCDParameter(0).getName());
+    assertEquals("symbol", method.getCDParameter(0).getName());
     assertOptionalOf(AST_SYMBOL, method.getCDParameter(0).getMCType());
   }
 
 
   @Test
   public void testIsSetSymbolAbsentMethod() {
-    ASTCDMethod method = getMethodBy("setASymbolAbsent", astClass);
+    ASTCDMethod method = getMethodBy("setSymbolAbsent", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertTrue(method.isEmptyCDParameters());

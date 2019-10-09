@@ -77,7 +77,7 @@ public class ReferenceTest {
     assertNotNull(astTest.getEnclosingScope());
     assertNotNull(astReferenceToTest.getEnclosingScope());
     assertTrue(astReferenceToTest.isPresentNameSymbol());
-    assertTrue(astTest.isPresentTestSymbol());
+    assertTrue(astTest.isPresentSymbol());
     assertTrue(astReferenceToTest.isPresentNameSymbol());
 
     assertTrue(astReferenceToTest.isPresentNameDefinition());
@@ -109,7 +109,7 @@ public class ReferenceTest {
     assertNotNull(astTest.getEnclosingScope());
     assertNotNull(astOptionalRef.getEnclosingScope());
     assertTrue(astOptionalRef.isPresentNameSymbol());
-    assertTrue(astTest.isPresentTestSymbol());
+    assertTrue(astTest.isPresentSymbol());
     assertTrue(astOptionalRef.isPresentNameSymbol());
 
     assertTrue(astOptionalRef.isPresentNameDefinition());

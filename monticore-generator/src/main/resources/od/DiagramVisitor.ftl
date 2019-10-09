@@ -46,8 +46,8 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
         pp.indent();
       <#assign symbolName=genHelper.getSymbolName(astName, genHelper)>
       <#if symbolName.isPresent()>
-        if (node.isPresent${symbolName.get()}Symbol()) {
-          String symName = StringTransformations.uncapitalize(reporting.getSymbolNameFormatted(node.get${symbolName.get()}SymbolOpt().get()));
+        if (node.isPresentSymbol()) {
+        String symName = StringTransformations.uncapitalize(reporting.getSymbolNameFormatted(node.getSymbol()));
           pp.println("symbol = " + symName + ";");
         } else if (printEmptyOptional) {
           pp.println("symbol = absent;");
