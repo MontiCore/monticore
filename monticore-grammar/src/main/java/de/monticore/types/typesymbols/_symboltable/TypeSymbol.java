@@ -50,6 +50,9 @@ public class TypeSymbol extends TypeSymbolTOP {
     return clone;
   }
 
+  /**
+   * get a list of all the methods the type definition can access
+   */
   @Override
   public List<MethodSymbol> getMethodList(){
     if(spannedScope==null || spannedScope.getMethodSymbols()==null||spannedScope.getMethodSymbols().isEmpty()){
@@ -58,11 +61,17 @@ public class TypeSymbol extends TypeSymbolTOP {
     return spannedScope.getMethodSymbols().values();
   }
 
+  /**
+   * search in the scope for methods with a specific name
+   */
   public List<MethodSymbol> getMethodList(String methodname){
     List<MethodSymbol> methodSymbols = spannedScope.resolveMethodMany(methodname);
     return methodSymbols;
   }
 
+  /**
+   * get a list of all the fields the type definition can access
+   */
   @Override
   public List<FieldSymbol> getFieldList(){
     if(spannedScope==null || spannedScope.getMethodSymbols()==null||spannedScope.getMethodSymbols().isEmpty()){
@@ -70,10 +79,11 @@ public class TypeSymbol extends TypeSymbolTOP {
     }
     return spannedScope.getFieldSymbols().values();
   }
-
+  /**
+   * search in the scope for methods with a specific name
+   */
   public List<FieldSymbol> getFieldList(String fieldname){
     List<FieldSymbol> fieldSymbols = spannedScope.resolveFieldMany(fieldname);
-    //TODO: ExpressionsBasisScope --> override method resolveFieldLocallyMany
     return fieldSymbols;
   }
 

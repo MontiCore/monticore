@@ -614,14 +614,18 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @Test
   public void testInheritance() throws IOException{
+    //methods
+    //test normal inheritance
     String s = "myList.add(\"Hello\")";
     ASTExpression astex = p.parse_StringExpression(s).get();
     assertEquals("void",tc.typeOf(astex).print());
 
+    //test inheritance over two levels
     s = "mySubList.add(\"World\")";
     astex = p.parse_StringExpression(s).get();
     assertEquals("void",tc.typeOf(astex).print());
 
+    //fields
     s = "myList.field";
     astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
@@ -633,6 +637,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @Test
   public void testGenerics() throws IOException{
+    //test if the generic types are resolved and calculated correctly
     String s = "listVar.add(2)";
     ASTExpression astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
@@ -664,6 +669,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @Test
   public void testGenericsAndInheritance() throws IOException{
+    //test if the subtypes of generic types are resolved and calculated correctly
     String s = "arraylistVar.add(3)";
     ASTExpression astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
