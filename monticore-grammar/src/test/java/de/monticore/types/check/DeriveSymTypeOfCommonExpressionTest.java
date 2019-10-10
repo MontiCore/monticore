@@ -1,20 +1,18 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.ast.ASTNode;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.typesymbols._symboltable.*;
-import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
@@ -33,209 +31,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public static void setup() {
     LogStub.init();
     LogStub.enableFailQuick(false);
-  }
-
-  @Before
-  public void setupForEach() {
-    // Setting up a Scope Infrastructure (without a global Scope)
-    scope =
-        ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
-            .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-            .setExportingSymbols(true)
-            .setAstNode(null)
-            .setName("Phantasy2").build();     // hopefully unused
-
-    ExpressionsBasisGlobalScope globalScope = ExpressionsBasisSymTabMill.expressionsBasisGlobalScopeBuilder().setExpressionsBasisLanguage(new ExpressionsBasisLanguage()).setModelPath(new ModelPath()).build();
-   ExpressionsBasisArtifactScope artifactScope1 = ExpressionsBasisSymTabMill.expressionsBasisArtifactScopeBuilder().setEnclosingScope(globalScope).setImportList(Lists.newArrayList()).setPackageName("").build();
-   ExpressionsBasisArtifactScope artifactScope2 = ExpressionsBasisSymTabMill.expressionsBasisArtifactScopeBuilder().setEnclosingScope(globalScope).setImportList(Lists.newArrayList()).setPackageName("").build();
-   ExpressionsBasisArtifactScope artifactScope3 = ExpressionsBasisSymTabMill.expressionsBasisArtifactScopeBuilder().setEnclosingScope(globalScope).setImportList(Lists.newArrayList()).setPackageName("types2").build();
-   ExpressionsBasisArtifactScope artifactScope4 = ExpressionsBasisSymTabMill.expressionsBasisArtifactScopeBuilder().setEnclosingScope(artifactScope3).setImportList(Lists.newArrayList()).setPackageName("types3").build();
-   scope.setEnclosingScope(artifactScope1);
-   ExpressionsBasisScope scope2 = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().setName("types").build();
-   scope2.setEnclosingScope(artifactScope2);
-   ExpressionsBasisScope scope3 = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().setName("types2").build();
-   scope3.setEnclosingScope(artifactScope4);
-
-    // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
-    add2scope(scope, DefsTypeBasic._int);
-    add2scope(scope, DefsTypeBasic._char);
-    add2scope(scope, DefsTypeBasic._boolean);
-    add2scope(scope, DefsTypeBasic._double);
-    add2scope(scope, DefsTypeBasic._float);
-    add2scope(scope, DefsTypeBasic._long);
-
-    add2scope(scope, DefsTypeBasic._array);
-    add2scope(scope, DefsTypeBasic._Object);
-    add2scope(scope, DefsTypeBasic._String);
-
-    // some FieldSymbols (ie. Variables, Attributes)
-    TypeSymbol p = new TypeSymbol("Person");
-    TypeSymbol s = new TypeSymbol("Student");
-    s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", p)));
-    TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
-    f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", s)));
-    add2scope(scope, field("foo", _intSymType));
-    add2scope(scope, field("bar2", _booleanSymType));
-    add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",p)));
-    add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObject("Person",p)));
-    add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",s)));
-    add2scope(scope, field("student2",SymTypeExpressionFactory.createTypeObject("Student",s)));
-    add2scope(scope, field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",f)));
-    add2scope(scope, method("isInt",_booleanSymType));
-    add2scope(scope,add(method("isInt",_booleanSymType),TypeSymbolsSymTabMill.fieldSymbolBuilder().setName("maxLength").setType(_intSymType).build()));
-    TypeSymbol ts = type("Test","Test");
-    FieldSymbol fs = field("variable",_intSymType);
-    MethodSymbol ms = method("store",_doubleSymType);
-    MethodSymbol ms1 = add(method("pay",_voidSymType),TypeSymbolsSymTabMill.fieldSymbolBuilder().setName("cost").setType(_intSymType).build());
-    ts.setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().setEnclosingScope(scope2).build());
-    TypeSymbol test = add(add(add(ts,fs),ms),ms1);
-    add2scope(scope2,test);
-    add2scope(scope3,test);
-    ts.getSpannedScope().add(fs);
-    ts.getSpannedScope().add(ms);
-    ts.getSpannedScope().add(ms1);
-
-    //METHODS AND FIELDS
-
-    //inheritance example
-    //super
-    MethodSymbol add = add(method("add",_voidSymType),field("element",_StringSymType));
-    TypeSymbol superclass = add(type("AList","AList"),add);
-    FieldSymbol field = field("field",_booleanSymType);
-    superclass = add(superclass,field);
-    SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList",superclass);
-    ExpressionsBasisScope aListScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    aListScope.add(add);
-    aListScope.add(field);
-    superclass.setSpannedScope(aListScope);
-    add2scope(scope,superclass);
-
-    //sub
-    TypeSymbol subclass = type("MyList","MyList");
-    subclass.setSuperTypeList(Lists.newArrayList(supclass));
-    ExpressionsBasisScope myListScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    subclass.setSpannedScope(myListScope);
-    SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList",subclass);
-    FieldSymbol myList = field("myList",sub);
-    add2scope(scope,subclass);
-    add2scope(scope,myList);
-
-    //subsub
-    TypeSymbol subsubclass = type("MySubList","MySubList");
-    subsubclass.setSuperTypeList(Lists.newArrayList(sub));
-    ExpressionsBasisScope mySubListScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    subsubclass.setSpannedScope(mySubListScope);
-    SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList",subsubclass);
-    FieldSymbol mySubList = field("mySubList",subsub);
-    add2scope(scope,subsubclass);
-    add2scope(scope,mySubList);
-
-    //Generics example
-    //one generic parameter, supertype
-    TypeSymbol sym = type("List","List");
-    TypeVarSymbol t = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("T").setFullName("T").build();
-    sym.setTypeParameterList(Lists.newArrayList(t));
-    MethodSymbol addMethod = add(method("add",_booleanSymType),field("x",SymTypeExpressionFactory.createTypeVariable("T",t)));
-    FieldSymbol nextField = field("next",SymTypeExpressionFactory.createTypeVariable("T",t));
-    sym = add(sym,addMethod);
-    sym = add(sym,nextField);
-    ExpressionsBasisScope scopet = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    scopet.add(addMethod);
-    scopet.add(nextField);
-    scopet.add(sym);
-    sym.setSpannedScope(scopet);
-    SymTypeExpression listIntSymTypeExp = SymTypeExpressionFactory.createGenerics("List",Lists.newArrayList(_intSymType),sym);
-    listIntSymTypeExp.setTypeInfo(sym);
-    FieldSymbol listVar = field("listVar",listIntSymTypeExp);
-    add2scope(scope,listVar);
-    add2scope(scope,sym);
-
-
-    //one generic parameter, subtype
-    TypeSymbol subsym = type("ArrayList","ArrayList");
-    TypeVarSymbol arrayListT = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("T").setFullName("T").build();
-    subsym.setTypeParameterList(Lists.newArrayList(arrayListT));
-    SymTypeExpression listTSymTypeExp = SymTypeExpressionFactory.createGenerics("List",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T",arrayListT)),sym);
-    listTSymTypeExp.setTypeInfo(sym);
-    subsym.setSuperTypeList(Lists.newArrayList(listTSymTypeExp));
-    ExpressionsBasisScope scopef = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    subsym.setSpannedScope(scopef);
-    SymTypeExpression subsymexp = SymTypeExpressionFactory.createGenerics("ArrayList",Lists.newArrayList(_intSymType),subsym);
-    subsymexp.setTypeInfo(subsym);
-    FieldSymbol arraylistVar = field("arraylistVar",subsymexp);
-    add2scope(scope,arraylistVar);
-    add2scope(scope,subsym);
-
-
-    //two generic parameters, supertype
-    TypeSymbol genSup = type("GenSup","GenSup");
-    TypeVarSymbol t1 = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("S").setFullName("S").build();
-    TypeVarSymbol t2 = TypeSymbolsSymTabMill.typeVarSymbolBuilder().setName("V").setFullName("V").build();
-    genSup.setTypeParameterList(Lists.newArrayList(t1,t2));
-    MethodSymbol load = add(method("load",SymTypeExpressionFactory.createTypeVariable("S",t1)),field("x",SymTypeExpressionFactory.createTypeVariable("V",t2)));
-    FieldSymbol f1 = field("f1",SymTypeExpressionFactory.createTypeVariable("S",t1));
-    FieldSymbol f2 = field("f2",SymTypeExpressionFactory.createTypeVariable("V",t2));
-    genSup = add(genSup,load);
-    genSup = add(add(genSup,f1),f2);
-    ExpressionsBasisScope scopeGenSup = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    scopeGenSup.add(load);
-    scopeGenSup.add(f1);
-    scopeGenSup.add(f2);
-    genSup.setSpannedScope(scopeGenSup);
-    SymTypeExpression genSupType = SymTypeExpressionFactory.createGenerics("GenSup",Lists.newArrayList(_StringSymType,_intSymType),genSup);
-    genSupType.setTypeInfo(genSup);
-    FieldSymbol genSupVar = field("genSupVar",genSupType);
-    add2scope(scope,genSup);
-    add2scope(scope,genSupVar);
-
-    //two generic parameters, subtype
-    TypeSymbol genSub = type("GenSub","GenSub");
-    genSub.setTypeParameterList(Lists.newArrayList(t1,t2));
-    genSub.setSuperTypeList(Lists.newArrayList(genSupType));
-    ExpressionsBasisScope scopeGenSub = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    genSub.setSpannedScope(scopeGenSub);
-    SymTypeExpression genSubType = SymTypeExpressionFactory.createGenerics("GenSub",Lists.newArrayList(_StringSymType,_intSymType),genSub);
-    genSubType.setTypeInfo(genSub);
-    FieldSymbol genSubVar = field("genSubVar",genSubType);
-    add2scope(scope,genSub);
-    add2scope(scope,genSubVar);
-
-    //subtype with variable generic parameter, supertype with fixed generic parameter
-    //use existing type as supertype
-    TypeSymbol varGenType = type("VarGen","VarGen");
-    varGenType.setSuperTypeList(Lists.newArrayList(listIntSymTypeExp));
-    TypeVarSymbol typeVarSymbol = ExpressionsBasisSymTabMill.typeVarSymbolBuilder().setName("N").setFullName("N").build();
-    varGenType.setTypeParameterList(Lists.newArrayList(typeVarSymbol));
-    MethodSymbol calculate = method("calculate",SymTypeExpressionFactory.createTypeVariable("N",typeVarSymbol));
-    varGenType = add(varGenType,calculate);
-    ExpressionsBasisScope varGenScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    varGenScope.add(calculate);
-    varGenType.setSpannedScope(varGenScope);
-    SymTypeExpression varGenSym = SymTypeExpressionFactory.createGenerics("VarGen",Lists.newArrayList(_intSymType),varGenType);
-    varGenSym.setTypeInfo(varGenType);
-    FieldSymbol varGen = field("varGen",varGenSym);
-    add2scope(scope,varGenType);
-    add2scope(scope,varGen);
-
-    //supertype with less generic parameters than subtype
-    //use existing type as supertype
-    TypeSymbol moreGenType = type("MoreGen","MoreGen");
-    moreGenType.setSuperTypeList(Lists.newArrayList(listIntSymTypeExp));
-    TypeVarSymbol moreType1 = ExpressionsBasisSymTabMill.typeVarSymbolBuilder().setName("F").setFullName("F").build();
-    moreGenType.setTypeParameterList(Lists.newArrayList(t,moreType1));
-    MethodSymbol insert = add(method("insert",SymTypeExpressionFactory.createTypeVariable("T",t)),field("x",SymTypeExpressionFactory.createTypeVariable("F",moreType1)));
-    moreGenType = add(moreGenType,insert);
-    ExpressionsBasisScope moreGenScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    moreGenScope.add(insert);
-    moreGenType.setSpannedScope(moreGenScope);
-    SymTypeExpression moreGenSym = SymTypeExpressionFactory.createGenerics("MoreGen",Lists.newArrayList(_intSymType,_longSymType),moreGenType);
-    moreGenSym.setTypeInfo(moreGenType);
-    FieldSymbol moreGen = field("moreGen",moreGenSym);
-    add2scope(scope,moreGenType);
-    add2scope(scope,moreGen);
-
-    derLit.setScope(scope);
-    tc = new TypeCheck(null,derLit);
   }
 
   // Parer used for convenience:
@@ -404,11 +199,34 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("boolean",tc.typeOf(astex).print());
   }
 
+  public void init_basic(){
+    scope = scope(null,true,null,"Phantasy2"); // No enclosing Scope: Search ending here
+
+    TypeSymbol person = DefsTypeBasic.type("Person");
+    TypeSymbol student = DefsTypeBasic.type("Student", Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",person)));
+    TypeSymbol firstsemesterstudent = DefsTypeBasic.type("FirstSemesterStudent", Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",student)));
+    add2scope(scope, field("foo", _intSymType));
+    add2scope(scope, field("bar2", _booleanSymType));
+    add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",person)));
+    add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObject("Person",person)));
+    add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",student)));
+    add2scope(scope, field("student2",SymTypeExpressionFactory.createTypeObject("Student",student)));
+    add2scope(scope, field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",firstsemesterstudent)));
+    add2scope(scope, method("isInt",_booleanSymType));
+    add2scope(scope,add(method("isInt",_booleanSymType),field("maxLength",_intSymType)));
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+  }
+
   /**
    * test EqualsExpression
    */
   @Test
   public void deriveFromEqualsExpression() throws IOException{
+    //initialize symbol table
+    init_basic();
+
     //example with two primitives
     String s = "7==9.5f";
     ASTExpression astex = p.parse_StringExpression(s).get();
@@ -430,6 +248,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
    */
   @Test
   public void deriveFromNotEqualsExpression() throws IOException{
+    //initialize symbol table
+    init_basic();
+
     //example with two primitives
     String s = "true!=false";
     ASTExpression astex = p.parse_StringExpression(s).get();
@@ -496,6 +317,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
    */
   @Test
   public void deriveFromBracketExpression() throws IOException{
+    //initialize symbol table
+    init_basic();
+
     //test with only a literal in the inner expression
     String s = "(3)";
     ASTExpression astex = p.parse_StringExpression(s).get();
@@ -517,6 +341,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
    */
   @Test
   public void deriveFromConditionalExpression() throws IOException{
+    //initialize symbol table
+    init_basic();
+
     //test with two ints as true and false expression
     String s = "3<4?9:10";
     ASTExpression astex = p.parse_StringExpression(s).get();
@@ -553,11 +380,55 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
+  public void init_advanced(){
+    ExpressionsBasisGlobalScope globalScope = globalScope(new ExpressionsBasisLanguage(), new ModelPath());
+    ExpressionsBasisArtifactScope artifactScope1 = artifactScope(globalScope,Lists.newArrayList(),"");
+    ExpressionsBasisArtifactScope artifactScope2 = artifactScope(globalScope,Lists.newArrayList(),"");
+    ExpressionsBasisArtifactScope artifactScope3 = artifactScope(globalScope,Lists.newArrayList(),"types2");
+    ExpressionsBasisArtifactScope artifactScope4 = artifactScope(artifactScope3,Lists.newArrayList(),"types3");
+    scope = scope(artifactScope1,true,null,"Phantasy2"); // No enclosing Scope: Search ending here
+    ExpressionsBasisScope scope2 = scope(artifactScope2,"types");
+    ExpressionsBasisScope scope3 = scope(artifactScope4,"types2");
+    scope3.setEnclosingScope(artifactScope4);
+
+    // some FieldSymbols (ie. Variables, Attributes)
+    TypeSymbol person = DefsTypeBasic.type("Person");
+    TypeSymbol student = DefsTypeBasic.type("Student", Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",person)));
+    TypeSymbol firstsemesterstudent = DefsTypeBasic.type("FirstSemesterStudent", Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",student)));
+    add2scope(scope, field("foo", _intSymType));
+    add2scope(scope, field("bar2", _booleanSymType));
+    add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",person)));
+    add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObject("Person",person)));
+    add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",student)));
+    add2scope(scope, field("student2",SymTypeExpressionFactory.createTypeObject("Student",student)));
+    add2scope(scope, field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",firstsemesterstudent)));
+    add2scope(scope, method("isInt",_booleanSymType));
+    add2scope(scope,add(method("isInt",_booleanSymType),field("maxLength",_intSymType)));
+    FieldSymbol fs = field("variable",_intSymType);
+    MethodSymbol ms = method("store",_doubleSymType);
+    MethodSymbol ms1 = add(method("pay",_voidSymType),TypeSymbolsSymTabMill.fieldSymbolBuilder().setName("cost").setType(_intSymType).build());
+    ExpressionsBasisScope testSpannedScope = scope(scope2,"");
+    testSpannedScope.add(fs);
+    testSpannedScope.add(ms);
+    testSpannedScope.add(ms1);
+    TypeSymbol testType = DefsTypeBasic.type("Test");
+    testType = add(add(add(testType,fs),ms),ms1);
+    testType.setSpannedScope(testSpannedScope);
+    add2scope(scope2,testType);
+    add2scope(scope3,testType);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+  }
+
   /**
    * test FieldAccessExpression
    */
   @Test
   public void deriveFromFieldAccessExpression() throws IOException{
+    //initialize symbol table
+    init_advanced();
+
     //test for type with only one package
     String s = "types.Test";
     ASTExpression astex = p.parse_StringExpression(s).get();
@@ -584,6 +455,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
    */
   @Test
   public void deriveFromCallExpression() throws IOException{
+    //initialize symbol table
+    init_advanced();
+
     //test for method with unqualified name without parameters
     String s = "isInt()";
     ASTExpression astex = p.parse_StringExpression(s).get();
@@ -615,8 +489,40 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("char",tc.typeOf(astex).print());
   }
 
+  public void init_inheritance(){
+    scope = scope(null,true,null,"Phantasy2"); // No enclosing Scope: Search ending here
+
+    //inheritance example
+    //super
+    MethodSymbol add = add(method("add",_voidSymType),field("element",_StringSymType));
+    FieldSymbol field = field("field",_booleanSymType);
+    TypeSymbol superclass = type("AList",Lists.newArrayList(add),Lists.newArrayList(field),Lists.newArrayList(),Lists.newArrayList());
+    SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList",superclass);
+    add2scope(scope,superclass);
+
+    //sub
+    TypeSymbol subclass = type("MyList",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(supclass),Lists.newArrayList());
+    SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList",subclass);
+    FieldSymbol myList = field("myList",sub);
+    add2scope(scope,subclass);
+    add2scope(scope,myList);
+
+    //subsub
+    TypeSymbol subsubclass = type("MyList",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(supclass),Lists.newArrayList());
+    SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList",subsubclass);
+    FieldSymbol mySubList = field("mySubList",subsub);
+    add2scope(scope,subsubclass);
+    add2scope(scope,mySubList);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+  }
+
   @Test
   public void testInheritance() throws IOException{
+    //initialize symbol table
+    init_inheritance();
+
     //methods
     //test normal inheritance
     String s = "myList.add(\"Hello\")";
@@ -638,8 +544,68 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("boolean",tc.typeOf(astex).print());
   }
 
+  public void init_generics(){
+    scope = scope(null,true,null,"Phantasy2"); // No enclosing Scope: Search ending here
+
+    //Generics example
+    //one generic parameter, supertype
+    TypeVarSymbol t = typeVariable("T");
+    MethodSymbol addMethod = add(method("add",_booleanSymType),field("x",SymTypeExpressionFactory.createTypeVariable("T",t)));
+    FieldSymbol nextField = field("next",SymTypeExpressionFactory.createTypeVariable("T",t));
+    TypeSymbol sym = type("List",Lists.newArrayList(addMethod),Lists.newArrayList(nextField),Lists.newArrayList(),Lists.newArrayList(t));
+    SymTypeExpression listIntSymTypeExp = SymTypeExpressionFactory.createGenerics("List",Lists.newArrayList(_intSymType),sym);
+    listIntSymTypeExp.setTypeInfo(sym);
+    FieldSymbol listVar = field("listVar",listIntSymTypeExp);
+    add2scope(scope,listVar);
+    add2scope(scope,sym);
+
+    //two generic parameters, supertype
+    TypeVarSymbol t1 = typeVariable("S");
+    TypeVarSymbol t2 = typeVariable("V");
+    MethodSymbol load = add(method("load",SymTypeExpressionFactory.createTypeVariable("S",t1)),field("x",SymTypeExpressionFactory.createTypeVariable("V",t2)));
+    FieldSymbol f1 = field("f1",SymTypeExpressionFactory.createTypeVariable("S",t1));
+    FieldSymbol f2 = field("f2",SymTypeExpressionFactory.createTypeVariable("V",t2));
+    TypeSymbol genSup = type("GenSup",Lists.newArrayList(load),Lists.newArrayList(f1,f2),Lists.newArrayList(),Lists.newArrayList(t1,t2));
+    SymTypeExpression genSupType = SymTypeExpressionFactory.createGenerics("GenSup",Lists.newArrayList(_StringSymType,_intSymType),genSup);
+    genSupType.setTypeInfo(genSup);
+    FieldSymbol genSupVar = field("genSupVar",genSupType);
+    add2scope(scope,genSup);
+    add2scope(scope,genSupVar);
+
+    //subtype with variable generic parameter, supertype with fixed generic parameter
+    //use existing type as supertype
+    TypeVarSymbol typeVarSymbol = typeVariable("N");
+    MethodSymbol calculate = method("calculate",SymTypeExpressionFactory.createTypeVariable("N",typeVarSymbol));
+    TypeSymbol varGenType = type("VarGen",Lists.newArrayList(calculate),Lists.newArrayList(),Lists.newArrayList(listIntSymTypeExp),Lists.newArrayList(typeVarSymbol));
+    SymTypeExpression varGenSym = SymTypeExpressionFactory.createGenerics("VarGen",Lists.newArrayList(_intSymType),varGenType);
+    varGenSym.setTypeInfo(varGenType);
+    FieldSymbol varGen = field("varGen",varGenSym);
+    add2scope(scope,varGenType);
+    add2scope(scope,varGen);
+
+    //supertype with less generic parameters than subtype
+    //use existing type as supertype
+    t = typeVariable("T");
+    TypeVarSymbol moreType1 = typeVariable("F");
+    SymTypeExpression listTSymTypeExp = SymTypeExpressionFactory.createGenerics("List",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T",t)),sym);
+    listTSymTypeExp.setTypeInfo(sym);
+    MethodSymbol insert = add(method("insert",SymTypeExpressionFactory.createTypeVariable("T",t)),field("x",SymTypeExpressionFactory.createTypeVariable("F",moreType1)));
+    TypeSymbol moreGenType = type("MoreGen",Lists.newArrayList(insert),Lists.newArrayList(),Lists.newArrayList(listTSymTypeExp),Lists.newArrayList(t,moreType1));
+    SymTypeExpression moreGenSym = SymTypeExpressionFactory.createGenerics("MoreGen",Lists.newArrayList(_intSymType,_longSymType),moreGenType);
+    moreGenSym.setTypeInfo(moreGenType);
+    FieldSymbol moreGen = field("moreGen",moreGenSym);
+    add2scope(scope,moreGenType);
+    add2scope(scope,moreGen);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null, derLit);
+  }
+
   @Test
   public void testGenerics() throws IOException{
+    //initialize symbol table
+    init_generics();
+
     //test if the generic types are resolved and calculated correctly
     String s = "listVar.add(2)";
     ASTExpression astex = p.parse_StringExpression(s).get();
@@ -670,8 +636,93 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
+  public void init_complex(){
+    scope = scope(null,true,null,"Phantasy2"); // No enclosing Scope: Search ending here
+
+    //Generics example
+    //one generic parameter, supertype
+    TypeVarSymbol t = typeVariable("T");
+    MethodSymbol addMethod = add(method("add",_booleanSymType),field("x",SymTypeExpressionFactory.createTypeVariable("T",t)));
+    FieldSymbol nextField = field("next",SymTypeExpressionFactory.createTypeVariable("T",t));
+    TypeSymbol sym = type("List",Lists.newArrayList(addMethod),Lists.newArrayList(nextField),Lists.newArrayList(),Lists.newArrayList(t));
+    SymTypeExpression listIntSymTypeExp = SymTypeExpressionFactory.createGenerics("List",Lists.newArrayList(_intSymType),sym);
+    listIntSymTypeExp.setTypeInfo(sym);
+    FieldSymbol listVar = field("listVar",listIntSymTypeExp);
+    add2scope(scope,listVar);
+    add2scope(scope,sym);
+
+
+    //one generic parameter, subtype
+    TypeVarSymbol arrayListT = typeVariable("T");
+    SymTypeExpression listTSymTypeExp = SymTypeExpressionFactory.createGenerics("List",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T",arrayListT)),sym);
+    listTSymTypeExp.setTypeInfo(sym);
+    TypeSymbol subsym = type("ArrayList",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(listTSymTypeExp),Lists.newArrayList(arrayListT));
+    SymTypeExpression subsymexp = SymTypeExpressionFactory.createGenerics("ArrayList",Lists.newArrayList(_intSymType),subsym);
+    subsymexp.setTypeInfo(subsym);
+    FieldSymbol arraylistVar = field("arraylistVar",subsymexp);
+    add2scope(scope,arraylistVar);
+    add2scope(scope,subsym);
+
+
+    //two generic parameters, supertype
+    TypeVarSymbol t1 = typeVariable("S");
+    TypeVarSymbol t2 = typeVariable("V");
+    MethodSymbol load = add(method("load",SymTypeExpressionFactory.createTypeVariable("S",t1)),field("x",SymTypeExpressionFactory.createTypeVariable("V",t2)));
+    FieldSymbol f1 = field("f1",SymTypeExpressionFactory.createTypeVariable("S",t1));
+    FieldSymbol f2 = field("f2",SymTypeExpressionFactory.createTypeVariable("V",t2));
+    TypeSymbol genSup = type("GenSup",Lists.newArrayList(load),Lists.newArrayList(f1,f2),Lists.newArrayList(),Lists.newArrayList(t1,t2));
+    SymTypeExpression genSupType = SymTypeExpressionFactory.createGenerics("GenSup",Lists.newArrayList(_StringSymType,_intSymType),genSup);
+    genSupType.setTypeInfo(genSup);
+    FieldSymbol genSupVar = field("genSupVar",genSupType);
+    add2scope(scope,genSup);
+    add2scope(scope,genSupVar);
+
+    //two generic parameters, subtype
+    t1 = typeVariable("S");
+    t2 = typeVariable("V");
+    SymTypeExpression genTypeSV = SymTypeExpressionFactory.createGenerics("GenSup",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("S",t1),SymTypeExpressionFactory.createTypeVariable("V",t2)),genSup);
+    genTypeSV.setTypeInfo(genSup);
+    TypeSymbol genSub = type("GenSub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(genTypeSV),Lists.newArrayList(t1,t2));
+    SymTypeExpression genSubType = SymTypeExpressionFactory.createGenerics("GenSub",Lists.newArrayList(_StringSymType,_intSymType),genSub);
+    genSubType.setTypeInfo(genSub);
+    FieldSymbol genSubVar = field("genSubVar",genSubType);
+    add2scope(scope,genSub);
+    add2scope(scope,genSubVar);
+
+    //subtype with variable generic parameter, supertype with fixed generic parameter
+    //use existing type as supertype
+    TypeVarSymbol typeVarSymbol = typeVariable("N");
+    MethodSymbol calculate = method("calculate",SymTypeExpressionFactory.createTypeVariable("N",typeVarSymbol));
+    TypeSymbol varGenType = type("VarGen",Lists.newArrayList(calculate),Lists.newArrayList(),Lists.newArrayList(listIntSymTypeExp),Lists.newArrayList(typeVarSymbol));
+    SymTypeExpression varGenSym = SymTypeExpressionFactory.createGenerics("VarGen",Lists.newArrayList(_intSymType),varGenType);
+    varGenSym.setTypeInfo(varGenType);
+    FieldSymbol varGen = field("varGen",varGenSym);
+    add2scope(scope,varGenType);
+    add2scope(scope,varGen);
+
+    //supertype with less generic parameters than subtype
+    //use existing type as supertype
+    t = typeVariable("T");
+    TypeVarSymbol moreType1 = typeVariable("F");
+    listTSymTypeExp = SymTypeExpressionFactory.createGenerics("List",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T",t)),sym);
+    listTSymTypeExp.setTypeInfo(sym);
+    MethodSymbol insert = add(method("insert",SymTypeExpressionFactory.createTypeVariable("T",t)),field("x",SymTypeExpressionFactory.createTypeVariable("F",moreType1)));
+    TypeSymbol moreGenType = type("MoreGen",Lists.newArrayList(insert),Lists.newArrayList(),Lists.newArrayList(listTSymTypeExp),Lists.newArrayList(t,moreType1));
+    SymTypeExpression moreGenSym = SymTypeExpressionFactory.createGenerics("MoreGen",Lists.newArrayList(_intSymType,_longSymType),moreGenType);
+    moreGenSym.setTypeInfo(moreGenType);
+    FieldSymbol moreGen = field("moreGen",moreGenSym);
+    add2scope(scope,moreGenType);
+    add2scope(scope,moreGen);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+  }
+
   @Test
   public void testGenericsAndInheritance() throws IOException{
+    //initialize symbol table
+    init_complex();
+
     //test if the subtypes of generic types are resolved and calculated correctly
     String s = "arraylistVar.add(3)";
     ASTExpression astex = p.parse_StringExpression(s).get();
@@ -700,5 +751,25 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s="moreGen.add(12)";
     astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
+  }
+
+  public static ExpressionsBasisScope scope(){
+    return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+  }
+
+  public static ExpressionsBasisScope scope(IExpressionsBasisScope enclosingScope, boolean exportingSymbols, ASTNode astnode, String name){
+    return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().setEnclosingScope(enclosingScope).setExportingSymbols(exportingSymbols).setAstNode(astnode).setName(name).build();
+  }
+
+  public static ExpressionsBasisScope scope(IExpressionsBasisScope enclosingScope, String name){
+    return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().setEnclosingScope(enclosingScope).setName(name).build();
+  }
+
+  public static ExpressionsBasisGlobalScope globalScope(ExpressionsBasisLanguage expressionsBasisLanguage, ModelPath modelPath){
+    return ExpressionsBasisSymTabMill.expressionsBasisGlobalScopeBuilder().setExpressionsBasisLanguage(expressionsBasisLanguage).setModelPath(modelPath).build();
+  }
+
+  public static ExpressionsBasisArtifactScope artifactScope(IExpressionsBasisScope enclosingScope, List<ImportStatement> importList, String packageName){
+    return ExpressionsBasisSymTabMill.expressionsBasisArtifactScopeBuilder().setEnclosingScope(enclosingScope).setImportList(importList).setPackageName(packageName).build();
   }
 }
