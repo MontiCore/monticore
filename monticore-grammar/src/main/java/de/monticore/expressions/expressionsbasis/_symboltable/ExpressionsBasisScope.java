@@ -43,7 +43,7 @@ public class ExpressionsBasisScope extends ExpressionsBasisScopeTOP {
       IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
       //if the methodsymbol is in the spanned scope of a typesymbol then look for method in super types too
       if(spanningSymbol instanceof TypeSymbol){
-        TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
+        TypeSymbol typeSymbol = ((TypeSymbol) spanningSymbol).deepClone();
         for(SymTypeExpression t : typeSymbol.getSuperTypeList()){
           set.addAll(t.getMethodList(name));
         }

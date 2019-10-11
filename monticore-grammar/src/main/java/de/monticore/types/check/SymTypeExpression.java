@@ -54,18 +54,21 @@ public abstract class SymTypeExpression {
    */
   public List<MethodSymbol> getMethodList(String methodname){
     //get methods from the typesymbol
-    List<MethodSymbol> methods = typeInfo.deepClone().getMethodList();
+    List<MethodSymbol> methods = typeInfo.getSpannedScope().resolveMethodMany(methodname);
     List<MethodSymbol> methodList = new ArrayList<>();
     //filter methods
     for(MethodSymbol method:methods){
       if(method.getName().equals(methodname)){
-        methodList.add(method);
+        methodList.add(method.deepClone());
       }
     }
     //get all methods from super types
-    for(SymTypeExpression superType:typeInfo.getSuperTypeList()){
-      methodList.addAll(superType.getTypeInfo().getMethodList(methodname));
-    }
+//    for(SymTypeExpression superType:typeInfo.getSuperTypeList()){
+//      List<MethodSymbol> methodsFromSuper = superType.getTypeInfo().getMethodList(methodname);
+//      for(MethodSymbol method: methodsFromSuper){
+//        methodList.add(method.deepClone());
+//      }
+//    }
     if(!isGenericType()){
       return methodList;
     }else{

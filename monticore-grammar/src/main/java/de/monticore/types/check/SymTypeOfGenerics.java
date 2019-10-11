@@ -134,8 +134,8 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     }
 
     SymTypeOfGenerics clone = new SymTypeOfGenerics(this.getTypeConstructorFullName(),typeArguments,this.typeInfo);
-    clone.setObjTypeConstructorSymbol(this.getObjTypeConstructorSymbol().deepClone());
     clone.setName(this.name);
+    clone.setTypeInfo(this.typeInfo);
     return clone;
   }
 

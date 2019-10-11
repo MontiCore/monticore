@@ -682,7 +682,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     t2 = typeVariable("V");
     SymTypeExpression genTypeSV = SymTypeExpressionFactory.createGenerics("GenSup",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("S",t1),SymTypeExpressionFactory.createTypeVariable("V",t2)),genSup);
     genTypeSV.setTypeInfo(genSup);
-    TypeSymbol genSub = type("GenSub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(genTypeSV),Lists.newArrayList(t1,t2));
+    TypeSymbol genSub = type("GenSub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(genTypeSV.deepClone()),Lists.newArrayList(t1,t2));
     SymTypeExpression genSubType = SymTypeExpressionFactory.createGenerics("GenSub",Lists.newArrayList(_StringSymType,_intSymType),genSub);
     genSubType.setTypeInfo(genSub);
     FieldSymbol genSubVar = field("genSubVar",genSubType);
@@ -690,11 +690,22 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope,genSubVar);
 
     //subtype with variable generic parameter, supertype with fixed generic parameter
-    //use existing type as supertype
-    TypeVarSymbol typeVarSymbol = typeVariable("N");
-    MethodSymbol calculate = method("calculate",SymTypeExpressionFactory.createTypeVariable("N",typeVarSymbol));
-    TypeSymbol varGenType = type("VarGen",Lists.newArrayList(calculate),Lists.newArrayList(),Lists.newArrayList(listIntSymTypeExp),Lists.newArrayList(typeVarSymbol));
-    SymTypeExpression varGenSym = SymTypeExpressionFactory.createGenerics("VarGen",Lists.newArrayList(_intSymType),varGenType);
+    //supertype with fixed generic parameter
+    TypeVarSymbol a = typeVariable("A");
+    MethodSymbol add2 = add(method("add",_booleanSymType),field("a",SymTypeExpressionFactory.createTypeVariable(a)));
+    FieldSymbol next2 = field("next",SymTypeExpressionFactory.createTypeVariable(a));
+    TypeSymbol fixGen = type("FixGen",Lists.newArrayList(add2),Lists.newArrayList(next2),Lists.newArrayList(),Lists.newArrayList(a));
+    SymTypeExpression fixGenType = SymTypeExpressionFactory.createGenerics("FixGen",Lists.newArrayList(_intSymType),fixGen);
+    fixGenType.setTypeInfo(fixGen);
+    FieldSymbol fixGenVar = field("fixGenVar",fixGenType);
+    add2scope(scope,fixGen);
+    add2scope(scope,fixGenVar);
+
+    //subtype with variable generic parameter
+    TypeVarSymbol n = typeVariable("N");
+    MethodSymbol calculate = method("calculate",SymTypeExpressionFactory.createTypeVariable(n));
+    TypeSymbol varGenType = type("VarGen",Lists.newArrayList(calculate),Lists.newArrayList(),Lists.newArrayList(fixGenType),Lists.newArrayList(n));
+    SymTypeExpression varGenSym = SymTypeExpressionFactory.createGenerics("VarGen",Lists.newArrayList(_StringSymType),varGenType);
     varGenSym.setTypeInfo(varGenType);
     FieldSymbol varGen = field("varGen",varGenSym);
     add2scope(scope,varGenType);
@@ -713,6 +724,27 @@ public class DeriveSymTypeOfCommonExpressionTest {
     FieldSymbol moreGen = field("moreGen",moreGenSym);
     add2scope(scope,moreGenType);
     add2scope(scope,moreGen);
+
+    //supertype is generic, subtype is not
+    //use existing supertype
+    TypeSymbol notgeneric = type("NotGen",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(listIntSymTypeExp),Lists.newArrayList());
+    SymTypeExpression notgenericType = SymTypeExpressionFactory.createTypeObject("NotGen",notgeneric);
+    FieldSymbol ng = field("notGen",notgenericType);
+    add2scope(scope,ng);
+    add2scope(scope,notgeneric);
+
+    //test for inheritance with more than one generic parameter and three steps
+    //use existing sup and sub, only create sub
+    t1 = typeVariable("S");
+    t2 = typeVariable("V");
+    SymTypeExpression genSubTypeSV = SymTypeExpressionFactory.createGenerics("GenSub",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("S",t1),SymTypeExpressionFactory.createTypeVariable("V",t2)),genSub);
+    genSubTypeSV.setTypeInfo(genSub);
+    TypeSymbol genSubSub = type("GenSubSub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(genSubTypeSV.deepClone()),Lists.newArrayList(t2,t1));
+    SymTypeExpression genSubSubType = SymTypeExpressionFactory.createGenerics("GenSubSub",Lists.newArrayList(_StringSymType,_intSymType),genSubSub);
+    genSubSubType.setTypeInfo(genSubSub);
+    FieldSymbol genSubSubVar = field("genSubSubVar",genSubSubType);
+    add2scope(scope,genSubSub);
+    add2scope(scope,genSubSubVar);
 
     derLit.setScope(scope);
     tc = new TypeCheck(null,derLit);
@@ -751,6 +783,18 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s="moreGen.add(12)";
     astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
+
+    s="notGen.add(14)";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
+
+    s="notGen.next";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
+
+    s="genSubSubVar.load(\"Hello\")";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("int",tc.typeOf(astex).print());
   }
 
   public static ExpressionsBasisScope scope(){
