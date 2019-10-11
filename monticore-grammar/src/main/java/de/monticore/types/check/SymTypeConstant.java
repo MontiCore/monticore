@@ -24,6 +24,15 @@ public class SymTypeConstant extends SymTypeExpression {
   public String getConstName() {
     return constName;
   }
+
+  @Override
+  public String getName() {
+    return getConstName();
+  }
+
+  public void setName(String name) {
+    setConstName(name);
+  }
   
   public String getBoxedConstName() {
     return box(constName);
@@ -36,7 +45,7 @@ public class SymTypeConstant extends SymTypeExpression {
   
   public void setConstName(String constName) {
     String c = unbox(constName);
-    if (primitiveTypes.contains(name)) {
+    if (primitiveTypes.contains(getName())) {
       this.constName = constName;
     } else {
       Log.error("0xD34B2 Only primitive types allowed (" + primitiveTypes.toString() + "), but was:" + constName);
@@ -181,11 +190,6 @@ public class SymTypeConstant extends SymTypeExpression {
   
   
   // --------------------------------------------------------------------------
-  
-  public void setName(String name) {
-    this.name = name;
-    this.constName = name; // Nur ein Hack um die Tests am laufen zu halten, die setName nutzen
-  }
 
   //hier enum attr für primitive types
   

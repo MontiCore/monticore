@@ -37,6 +37,15 @@ public class SymTypeVariable extends SymTypeExpression {
     this.varName = name;
   }
 
+  @Override
+  public String getName() {
+    return getVarName();
+  }
+
+  public void setName(String name) {
+    setVarName(name);
+  }
+
   /**
    * print: Umwandlung in einen kompakten String
    */

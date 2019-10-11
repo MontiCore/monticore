@@ -5,8 +5,6 @@ import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 
-import java.util.Optional;
-
 /**
  * An objectType is a full qualified class name.
  * Therefore, we have the fullName, the baseName and the
@@ -33,6 +31,15 @@ public class SymTypeOfObject extends SymTypeExpression {
   public void setObjName(String objname) {
     this.objFullName = objname;
   }
+
+  @Override
+  public String getName() {
+    return getObjName();
+  }
+
+  public void setName(String name) {
+    setObjName(name);
+  }
   
   /**
    * print: Umwandlung in einen kompakten String
@@ -53,7 +60,7 @@ public class SymTypeOfObject extends SymTypeExpression {
     jp.endObject();
     return jp.getContent();
   }
-  
+
   /**
    * getFullName: get the Qualified Name including Package
    */

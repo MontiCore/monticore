@@ -42,7 +42,11 @@ public class SymTypeArray extends SymTypeExpression {
   public void setArgument(SymTypeExpression argument) {
     this.argument = argument;
   }
-  
+
+  @Override
+  public String getName() {
+    return getArgument().print();
+  }
   /**
    * print: Umwandlung in einen kompakten String
    */

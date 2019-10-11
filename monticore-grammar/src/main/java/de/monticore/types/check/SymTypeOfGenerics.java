@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import com.google.common.collect.Lists;
-
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
@@ -63,6 +61,15 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   
   public void setTypeConstructorFullName(String typeConstructorFullName) {
     this.typeConstructorFullName = typeConstructorFullName;
+  }
+
+  @Override
+  public String getName() {
+    return getTypeConstructorFullName();
+  }
+
+  public void setName(String name) {
+    setTypeConstructorFullName(name);
   }
   
   public TypeSymbol getObjTypeConstructorSymbol() {

@@ -1,14 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * SymTypeExpression is the superclass for all typeexpressions, such as
@@ -62,13 +55,6 @@ public abstract class SymTypeExpression {
    * A type has a name (XXX BR Exceptions may apply?)
    * anonymous types only in List<?> in FullGenericTypes.mc4, not yet supported
    */
-  protected String name;
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
+  abstract public String getName();
 }

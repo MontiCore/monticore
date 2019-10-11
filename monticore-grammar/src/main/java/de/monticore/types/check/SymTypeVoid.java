@@ -20,7 +20,11 @@ public class SymTypeVoid extends SymTypeExpression {
   protected String printAsJson() {
     return "\""+print()+"\"";
   }
-  
+
+  @Override
+  public String getName() {
+    return print();
+  }
     
   // --------------------------------------------------------------------------
   
