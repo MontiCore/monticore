@@ -62,13 +62,6 @@ public abstract class SymTypeExpression {
         methodList.add(method.deepClone());
       }
     }
-    //get all methods from super types
-//    for(SymTypeExpression superType:typeInfo.getSuperTypeList()){
-//      List<MethodSymbol> methodsFromSuper = superType.getTypeInfo().getMethodList(methodname);
-//      for(MethodSymbol method: methodsFromSuper){
-//        methodList.add(method.deepClone());
-//      }
-//    }
     if(!isGenericType()){
       return methodList;
     }else{
@@ -83,7 +76,8 @@ public abstract class SymTypeExpression {
         //put the type arguments in a map TypeVarSymbol -> SymTypeExpression
         map.put(typeVariableArguments.get(i),arguments.get(i));
       }
-      //every method in methodList: replace typevariables in parameters or return type with its actual symtypeexpression
+      //every method in methodList: replace typevariables in parameters or return type with its
+      // actual symtypeexpression
       for(MethodSymbol method: methodList) {
         //return type
         for (TypeVarSymbol typeVariableArgument : typeVariableArguments) {
@@ -101,7 +95,8 @@ public abstract class SymTypeExpression {
           }
         }
       }
-      //if there are two methods with the same parameters and return type remove the second method in the list because it is a method from a super type and is overridden by the first method
+      //if there are two methods with the same parameters and return type remove the second method
+      // in the list because it is a method from a super type and is overridden by the first method
       for(int i = 0;i<methodList.size()-1;i++){
         for(int j = i+1;j<methodList.size();j++){
           if(methodList.get(i).getReturnType().getName().equals(methodList.get(j).getReturnType().getName())&&
@@ -124,7 +119,7 @@ public abstract class SymTypeExpression {
   }
 
   /**
-   * gets the list of fields the SymTypeExpression can access and filters these for a method with specific name
+   * gets the list of fields the SymTypeExpression can access and filters these for a field with specific name
    */
   public List<FieldSymbol> getFieldList(String fieldName){
     //get methods from the typesymbol
@@ -136,10 +131,6 @@ public abstract class SymTypeExpression {
         fieldList.add(field.deepClone());
       }
     }
-    //get all methods from super types
-//    for(SymTypeExpression superType:typeInfo.getSuperTypeList()){
-//      fieldList.addAll(superType.getTypeInfo().getFieldList(fieldName));
-//    }
     if(!isGenericType()){
       return fieldList;
     }else{
@@ -163,7 +154,8 @@ public abstract class SymTypeExpression {
         }
       }
     }
-    //if there are two fields with the same type remove the second field in the list because it is a field from a super type and is overridden by the first field
+    //if there are two fields with the same type remove the second field in the list because it is a
+    // field from a super type and is overridden by the first field
     for(int i = 0;i<fieldList.size()-1;i++){
       for(int j = i+1;j<fieldList.size();j++){
         if(fieldList.get(i).getType().getName().equals(fieldList.get(j).getType().getName())){

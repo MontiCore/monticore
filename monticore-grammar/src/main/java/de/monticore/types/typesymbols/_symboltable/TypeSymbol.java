@@ -14,6 +14,9 @@ public class TypeSymbol extends TypeSymbolTOP {
     super(name);
   }
 
+  /**
+   * returns a clone of this
+   */
   public TypeSymbol deepClone(){
     TypeSymbol clone = new TypeSymbol(name);
     clone.setEnclosingScope(this.getEnclosingScope());

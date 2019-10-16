@@ -10,6 +10,9 @@ public class MethodSymbol extends MethodSymbolTOP {
     super(name);
   }
 
+  /**
+   * returns a clone of this
+   */
   public MethodSymbol deepClone(){
     MethodSymbol clone = new MethodSymbol(name);
     clone.setReturnType(this.getReturnType().deepClone());

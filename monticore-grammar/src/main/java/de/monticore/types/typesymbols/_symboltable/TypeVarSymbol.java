@@ -11,6 +11,9 @@ public class TypeVarSymbol extends TypeVarSymbolTOP {
     super(name);
   }
 
+  /**
+   * returns a clone of this
+   */
   public TypeVarSymbol deepClone(){
     TypeVarSymbol clone = new TypeVarSymbol(name);
     clone.setAccessModifier(this.getAccessModifier());

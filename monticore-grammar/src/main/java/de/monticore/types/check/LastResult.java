@@ -3,6 +3,9 @@ package de.monticore.types.check;
 
 import java.util.Optional;
 
+/**
+ * Wrapper class for the last result in a type check
+ */
 public class LastResult{
 
   private Optional<SymTypeExpression> last;

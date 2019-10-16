@@ -92,14 +92,8 @@ public class DefsTypeBasic {
             .build();
   }
 
-  public static TypeVarSymbol typeVariable(String name){
-    return TypeSymbolsSymTabMill.typeVarSymbolBuilder()
-            .setName(name)
-            .setFullName(name)
-            .build();
-  }
-
-  public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList, List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList){
+  public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
+                                List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList){
     TypeSymbol t = TypeSymbolsSymTabMill.typeSymbolBuilder()
         .setName(name)
         .setFullName(name)
@@ -122,7 +116,9 @@ public class DefsTypeBasic {
     return t;
   }
 
-  public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList, List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList, ExpressionsBasisScope enclosingScope){
+  public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
+                                List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList,
+                                ExpressionsBasisScope enclosingScope){
     TypeSymbol t = TypeSymbolsSymTabMill.typeSymbolBuilder()
         .setName(name)
         .setFullName(name)
@@ -145,6 +141,16 @@ public class DefsTypeBasic {
     }
     t.setSpannedScope(spannedScope);
     return t;
+  }
+
+  /**
+   * create TypeVariableSymbols (some defaults apply)
+   */
+  public static TypeVarSymbol typeVariable(String name){
+    return TypeSymbolsSymTabMill.typeVarSymbolBuilder()
+        .setName(name)
+        .setFullName(name)
+        .build();
   }
   
   public static TypeSymbol add(TypeSymbol t, FieldSymbol f) {

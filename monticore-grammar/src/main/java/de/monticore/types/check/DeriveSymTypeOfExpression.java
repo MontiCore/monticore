@@ -12,6 +12,9 @@ import java.util.*;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeExpression;
 
+/**
+ * Visitor for ExpressionsBasis
+ */
 public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   protected IExpressionsBasisScope scope;

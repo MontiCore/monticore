@@ -6,7 +6,6 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisi
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
@@ -21,7 +20,9 @@ import static de.monticore.types.check.SymTypeConstant.unbox;
 import static de.monticore.types.check.TypeCheck.compatible;
 import static de.monticore.types.check.TypeCheck.isSubtypeOf;
 
-
+/**
+ * Visitor for CommonExpressions
+ */
 public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression implements CommonExpressionsVisitor {
 
   private CommonExpressionsVisitor realThis;
@@ -194,6 +195,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
   }
 
+  /**
+   * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
+   */
   @Override
   public void traverse(ASTEqualsExpression expr){
     Optional<SymTypeExpression> wholeResult = calculateTypeLogical(expr.getLeft(),expr.getRight());
@@ -208,6 +212,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
   }
 
+  /**
+   * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
+   */
   @Override
   public void traverse(ASTNotEqualsExpression expr){
     Optional<SymTypeExpression> wholeResult = calculateTypeLogical(expr.getLeft(),expr.getRight());
@@ -222,6 +229,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
   }
 
+  /**
+   * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
+   */
   @Override
   public void traverse(ASTBooleanAndOpExpression expr){
     SymTypeExpression leftResult = null;
@@ -260,6 +270,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
   }
 
+  /**
+   * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
+   */
   @Override
   public void endVisit(ASTBooleanOrOpExpression expr){
     SymTypeExpression leftResult = null;
@@ -298,6 +311,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
   }
 
+  /**
+   * We use traverse to collect the result of the inner part of the expression and calculate the result for the whole expression
+   */
   @Override
   public void traverse(ASTLogicalNotExpression expr) {
     SymTypeExpression innerResult = null;
@@ -325,6 +341,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
   }
 
+  /**
+   * We use traverse to collect the result of the inner part of the expression and calculate the result for the whole expression
+   */
   @Override
   public void traverse(ASTBracketExpression expr){
     SymTypeExpression innerResult = null;
@@ -349,6 +368,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
   }
 
+  /**
+   * We use traverse to collect the results of the three parts of the expression and calculate the result for the whole expression
+   */
   @Override
   public void traverse(ASTConditionalExpression expr){
     SymTypeExpression conditionResult = null;
@@ -407,6 +429,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
   }
 
+  /**
+   * We use traverse to collect the result of the inner part of the expression and calculate the result for the whole expression
+   */
   @Override
   public void traverse(ASTBooleanNotExpression expr){
     SymTypeExpression innerResult = null;
@@ -435,6 +460,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
   }
 
+  /**
+   * We use traverse to collect the result of the inner part of the expression and calculate the result for the whole expression
+   */
   @Override
   public void traverse(ASTFieldAccessExpression expr) {
     CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
@@ -482,6 +510,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
   }
 
+  /**
+   * We use traverse to collect the result of the inner part of the expression and calculate the result for the whole expression
+   */
   @Override
   public void traverse(ASTCallExpression expr){
     NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
@@ -678,17 +709,26 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
 
     //if one part of the expression is a double and the other is another numeric type then the result is a double
-    if(("double".equals(unbox(leftResult.print()))&&isNumericType(rightResult))||("double".equals(unbox(rightResult.print()))&&isNumericType(leftResult))){
+    if(("double".equals(unbox(leftResult.print()))&&isNumericType(rightResult))||
+        ("double".equals(unbox(rightResult.print()))&&isNumericType(leftResult))){
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("double"));
     //no part of the expression is a double -> try again with float
-    }else if(("float".equals(unbox(leftResult.print()))&&isNumericType(rightResult))||("float".equals(unbox(rightResult.print()))&&isNumericType(leftResult))){
+    }else if(("float".equals(unbox(leftResult.print()))&&isNumericType(rightResult))||
+        ("float".equals(unbox(rightResult.print()))&&isNumericType(leftResult))){
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("float"));
     //no part of the expression is a float -> try again with long
-    }else if(("long".equals(unbox(leftResult.print()))&&isNumericType(rightResult))||("long".equals(unbox(rightResult.print()))&&isNumericType(leftResult))) {
+    }else if(("long".equals(unbox(leftResult.print()))&&isNumericType(rightResult))||
+        ("long".equals(unbox(rightResult.print()))&&isNumericType(leftResult))) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
     //no part of the expression is a long -> if both parts are numeric types then the result is a int
     }else{
-      if (("int".equals(unbox(leftResult.print())) || "char".equals(unbox(leftResult.print())) || "short".equals(unbox(leftResult.print())) || "byte".equals(unbox(leftResult.print()))) && ("int".equals(unbox(rightResult.print())) || "char".equals(unbox(rightResult.print())) || "short".equals(unbox(rightResult.print())) || "byte".equals(unbox(rightResult.print())))) {
+      if (
+          ("int".equals(unbox(leftResult.print())) || "char".equals(unbox(leftResult.print())) ||
+          "short".equals(unbox(leftResult.print())) || "byte".equals(unbox(leftResult.print()))
+          ) && ("int".equals(unbox(rightResult.print())) || "char".equals(unbox(rightResult.print())) ||
+                  "short".equals(unbox(rightResult.print())) || "byte".equals(unbox(rightResult.print()))
+              )
+      ) {
         return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
       }
     }
@@ -734,7 +774,8 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
    * test if the expression is of numeric type (double, float, long, int, char, short, byte)
    */
   private boolean isNumericType(SymTypeExpression ex){
-    return (ex.print().equals("double") || ex.print().equals("float") || ex.print().equals("long") || ex.print().equals("int") || ex.print().equals("char") || ex.print().equals("short") || ex.print().equals("byte"));
+    return (ex.print().equals("double") || ex.print().equals("float") || ex.print().equals("long") ||
+        ex.print().equals("int") || ex.print().equals("char") || ex.print().equals("short") || ex.print().equals("byte"));
   }
 
   /**
@@ -764,6 +805,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     return Optional.empty();
   }
 
+  /**
+   * returns the calculated result of an expression
+   */
   public Optional<SymTypeExpression> calculateType(ASTExpression expr){
     expr.accept(realThis);
     Optional<SymTypeExpression> result = lastResult.getLastOpt();

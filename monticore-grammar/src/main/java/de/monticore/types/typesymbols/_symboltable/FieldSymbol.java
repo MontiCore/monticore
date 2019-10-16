@@ -6,6 +6,9 @@ public class FieldSymbol extends FieldSymbolTOP {
     super(name);
   }
 
+  /**
+   * returns a clone of this
+   */
   public FieldSymbol deepClone(){
     FieldSymbol clone = new FieldSymbol(name);
     clone.setAccessModifier(this.accessModifier);
