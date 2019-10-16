@@ -91,7 +91,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   protected String printAsJson() {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
-    //TODO: anpassen, nachdem package umbenannt ist
+    // Care: the following String needs to be adapted if the package was renamed
     jp.member(JsonConstants.KIND, "de.monticore.types.check.SymTypeOfGenerics");
     jp.member("typeConstructorFullName", getTypeConstructorFullName());
     jp.beginArray("arguments");

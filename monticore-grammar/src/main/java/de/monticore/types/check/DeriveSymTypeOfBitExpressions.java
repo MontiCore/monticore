@@ -246,7 +246,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
    * helper method for the calculation of the type of the ShiftExpressions
    */
   private Optional<SymTypeExpression> calculateTypeShift(SymTypeExpression left, SymTypeExpression right){
-    if(left.isPrimitiveType()&&right.isPrimitiveType()){
+    if(left.isPrimitive()&&right.isPrimitive()){
       SymTypeConstant leftEx = (SymTypeConstant) left;
       SymTypeConstant rightEx = (SymTypeConstant) right;
 
@@ -263,7 +263,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
    * helper method for the calculation of the type of the BinaryExpressions
    */
   private Optional<SymTypeExpression> calculateTypeBinary(SymTypeExpression left, SymTypeExpression right){
-    if(left.isPrimitiveType()&&right.isPrimitiveType()) {
+    if(left.isPrimitive()&&right.isPrimitive()) {
       SymTypeConstant leftEx = (SymTypeConstant) left;
       SymTypeConstant rightEx = (SymTypeConstant) right;
 
@@ -283,7 +283,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
    * cannot be linked with the BinaryExpressions because they are not calculated the same way
    */
   private Optional<SymTypeExpression> shiftCalculator(SymTypeExpression left, SymTypeExpression right){
-    if(left.isPrimitiveType() && right.isPrimitiveType()) {
+    if(left.isPrimitive() && right.isPrimitive()) {
       SymTypeConstant leftResult = (SymTypeConstant) left;
       SymTypeConstant rightResult = (SymTypeConstant) right;
 
@@ -309,7 +309,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
    */
   private Optional<SymTypeExpression> getBinaryNumericPromotion(SymTypeExpression left, SymTypeExpression right){
     //only integral type - integral type
-    if(left.isPrimitiveType() && right.isPrimitiveType()) {
+    if(left.isPrimitive() && right.isPrimitive()) {
       SymTypeConstant leftResult = (SymTypeConstant) left;
       SymTypeConstant rightResult = (SymTypeConstant) right;
       if (("long".equals(unbox(leftResult.print())) && rightResult.isIntegralType()) ||

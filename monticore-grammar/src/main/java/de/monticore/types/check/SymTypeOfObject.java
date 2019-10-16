@@ -47,7 +47,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   protected String printAsJson() {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
-    //TODO: anpassen, nachdem package umbenannt ist
+    // Care: the following String needs to be adapted if the package was renamed
     jp.member(JsonConstants.KIND, "de.monticore.types.check.SymTypeOfObject");
     jp.member("objName", getObjName());
     jp.endObject();
@@ -79,6 +79,8 @@ public class SymTypeOfObject extends SymTypeExpression {
   
   // --------------------------------------------------------------------------
 
+  // TODO 4: this constructor ignores the typeInfo: can we remove the typeInfo completely, because not needed?
+  @Deprecated
   public SymTypeOfObject(String name){
     this.objFullName = name;
   }
