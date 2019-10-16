@@ -111,6 +111,34 @@ public class DefsTypeBasic {
     ExpressionsBasisScope spannedScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     for(MethodSymbol method: methodList){
       add2scope(spannedScope,method);
+      if(method.getSpannedScope()!=null){
+        method.getSpannedScope().setEnclosingScope(spannedScope);
+      }
+    }
+    for(FieldSymbol field: fieldList){
+      add2scope(spannedScope,field);
+    }
+    t.setSpannedScope(spannedScope);
+    return t;
+  }
+
+  public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList, List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList, ExpressionsBasisScope enclosingScope){
+    TypeSymbol t = TypeSymbolsSymTabMill.typeSymbolBuilder()
+        .setName(name)
+        .setFullName(name)
+        .setTypeParameterList(typeVariableList)
+        .setSuperTypeList(superTypeList)
+        .setMethodList(methodList)
+        .setFieldList(fieldList)
+        .setEnclosingScope(enclosingScope)
+        .build();
+    ExpressionsBasisScope spannedScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    spannedScope.setEnclosingScope(enclosingScope);
+    for(MethodSymbol method: methodList){
+      add2scope(spannedScope,method);
+      if(method.getSpannedScope()!=null){
+        method.getSpannedScope().setEnclosingScope(spannedScope);
+      }
     }
     for(FieldSymbol field: fieldList){
       add2scope(spannedScope,field);

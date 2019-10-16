@@ -128,18 +128,18 @@ public abstract class SymTypeExpression {
    */
   public List<FieldSymbol> getFieldList(String fieldName){
     //get methods from the typesymbol
-    List<FieldSymbol> fields = typeInfo.deepClone().getFieldList();
+    List<FieldSymbol> fields = typeInfo.getSpannedScope().resolveFieldMany(fieldName);
     List<FieldSymbol> fieldList = new ArrayList<>();
     //filter fields
     for(FieldSymbol field: fields){
       if(field.getName().equals(fieldName)){
-        fieldList.add(field);
+        fieldList.add(field.deepClone());
       }
     }
     //get all methods from super types
-    for(SymTypeExpression superType:typeInfo.getSuperTypeList()){
-      fieldList.addAll(superType.getTypeInfo().getFieldList(fieldName));
-    }
+//    for(SymTypeExpression superType:typeInfo.getSuperTypeList()){
+//      fieldList.addAll(superType.getTypeInfo().getFieldList(fieldName));
+//    }
     if(!isGenericType()){
       return fieldList;
     }else{
