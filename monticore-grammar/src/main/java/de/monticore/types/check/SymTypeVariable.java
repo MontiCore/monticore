@@ -5,25 +5,26 @@ import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 
+import java.util.List;
+
 public class SymTypeVariable extends SymTypeExpression {
 
   /**
    * A typeVariable has a name
    */
   protected String varName;
-  
+
   /**
    * The Variable is connected to a symbol carrying that variable
    * (TODO: clarify if that is really needed)
    */
   protected TypeVarSymbol typeVarSymbol;
-  
-  public SymTypeVariable(String varName)
-  {
+
+  public SymTypeVariable(String varName) {
     this.varName = varName;
   }
 
-  public SymTypeVariable(String varName, TypeVarSymbol typeVarSymbol){
+  public SymTypeVariable(String varName, TypeVarSymbol typeVarSymbol) {
     this.varName = varName;
     this.typeVarSymbol = typeVarSymbol;
   }
@@ -39,7 +40,7 @@ public class SymTypeVariable extends SymTypeExpression {
   public String getVarName() {
     return varName;
   }
-  
+
   public void setVarName(String name) {
     this.varName = name;
   }
@@ -50,7 +51,7 @@ public class SymTypeVariable extends SymTypeExpression {
   public String print() {
     return getVarName();
   }
-  
+
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
    */
@@ -63,7 +64,7 @@ public class SymTypeVariable extends SymTypeExpression {
     jp.endObject();
     return jp.getContent();
   }
-  
+
   /**
    * Am I primitive? (such as "int")
    */
@@ -73,7 +74,7 @@ public class SymTypeVariable extends SymTypeExpression {
     // Unless we always assume boxed implementations then return false would be correct
   }
 
-  public boolean isTypeVariable(){
+  public boolean isTypeVariable() {
     return true;
   }
 
@@ -88,8 +89,8 @@ public class SymTypeVariable extends SymTypeExpression {
 
 
   // --------------------------------------------------------------------------
-  
+
   public SymTypeVariable() {
   }
-  
+
 }
