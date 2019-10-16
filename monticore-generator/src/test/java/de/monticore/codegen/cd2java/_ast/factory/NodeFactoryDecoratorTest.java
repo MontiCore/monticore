@@ -9,13 +9,10 @@ import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.CDParameterFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +23,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class NodeFactoryDecoratorTest extends DecoratorTestCase {
-
-  private MCTypeFacade MCTypeFacade;
-
-  private CDParameterFacade cdParameterFacade;
 
   private ASTCDClass factoryClass;
 
@@ -44,8 +37,6 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     LogStub.init();
     LogStub.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
-    this.MCTypeFacade = MCTypeFacade.getInstance();
-    this.cdParameterFacade = CDParameterFacade.getInstance();
 
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
@@ -103,9 +94,8 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("AutomatonNodeFactory");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
+    assertDeepEquals("AutomatonNodeFactory", method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -118,9 +108,8 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("ASTAutomaton");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
+    assertDeepEquals("ASTAutomaton", method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -133,9 +122,8 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("ASTAutomaton");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
+    assertDeepEquals("ASTAutomaton", method.getMCReturnType().getMCType());
   }
 
   @Test

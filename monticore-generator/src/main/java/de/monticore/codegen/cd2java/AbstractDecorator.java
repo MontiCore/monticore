@@ -2,10 +2,7 @@
 package de.monticore.codegen.cd2java;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
-import de.monticore.codegen.cd2java.factories.CDConstructorFacade;
-import de.monticore.codegen.cd2java.factories.CDMethodFacade;
-import de.monticore.codegen.cd2java.factories.CDParameterFacade;
+import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 
@@ -21,7 +18,7 @@ public abstract class AbstractDecorator{
 
   private boolean templatesEnabled;
 
-  private final MCTypeFacade MCTypeFacade;
+  private final MCTypeFacade mcTypeFacade;
 
   private final CDAttributeFacade cdAttributeFacade;
 
@@ -46,14 +43,14 @@ public abstract class AbstractDecorator{
   }
 
   public AbstractDecorator(final GlobalExtensionManagement glex,
-                           final MCTypeFacade MCTypeFacade,
+                           final MCTypeFacade mcTypeFacade,
                            final CDAttributeFacade cdAttributeFacade,
                            final CDConstructorFacade cdConstructorFacade,
                            final CDMethodFacade cdMethodFacade,
                            final CDParameterFacade cdParameterFacade) {
     this.glex = glex;
     this.templatesEnabled = true;
-    this.MCTypeFacade = MCTypeFacade;
+    this.mcTypeFacade = mcTypeFacade;
     this.cdAttributeFacade = cdAttributeFacade;
     this.cdConstructorFacade = cdConstructorFacade;
     this.cdMethodFacade = cdMethodFacade;
@@ -78,8 +75,8 @@ public abstract class AbstractDecorator{
     }
   }
 
-  protected MCTypeFacade getCDTypeFacade() {
-    return this.MCTypeFacade;
+  protected MCTypeFacade getMCTypeFacade() {
+    return this.mcTypeFacade;
   }
 
   protected CDAttributeFacade getCDAttributeFacade() {

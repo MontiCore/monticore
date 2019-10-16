@@ -15,6 +15,7 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,16 +65,16 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
     //add referenced Symbol modifier that it can later be distinguished
     TransformationHelper.addStereotypeValue(modifier, MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE.toString());
 
+    ASTMCOptionalType optionalTypeOfReferencedSymbol = getMCTypeFacade().createOptionalTypeOf(referencedSymbol);
     if (GeneratorHelper.isListType(attribute.printType())) {
       //if the attribute is a list
-      ASTMCType attributeType = getCDTypeFacade().createTypeByDefinition("Map< String, Optional<" + referencedSymbol + ">>");
+      ASTMCType attributeType = getMCTypeFacade().createMapTypeOf(getMCTypeFacade().createStringType(), optionalTypeOfReferencedSymbol);
       ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL);
       replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= new HashMap<>()"));
       return symbolAttribute;
     } else {
       //if the attribute is mandatory or optional
-      ASTMCType attributeType = getCDTypeFacade().createOptionalTypeOf(referencedSymbol);
-      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL);
+      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, optionalTypeOfReferencedSymbol, attribute.getName() + SYMBOL);
       replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= Optional.empty()"));
       return symbolAttribute;
     }
@@ -84,8 +85,8 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
     if (GeneratorHelper.isMapType(refSymbolAttribute.printType())) {
       //have to change type of attribute list instead of map
       //because the inner representation is a map but for users the List methods are only shown
-      ASTMCType optionalType = getCDTypeFacade().createOptionalTypeOf(referencedSymbol);
-      ASTMCType listType = getCDTypeFacade().createListTypeOf(optionalType);
+      ASTMCType optionalType = getMCTypeFacade().createOptionalTypeOf(referencedSymbol);
+      ASTMCType listType = getMCTypeFacade().createListTypeOf(optionalType);
       methodDecorationAttribute = getCDAttributeFacade().createAttribute(refSymbolAttribute.getModifier().deepClone(), listType, refSymbolAttribute.getName());
     } else if (wasAttributeOptional) {
       //add stereotype to attribute to later in the method generation know if the original attribute was optional or mandatory

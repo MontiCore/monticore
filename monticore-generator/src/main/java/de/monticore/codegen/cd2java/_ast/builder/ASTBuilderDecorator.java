@@ -39,7 +39,7 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
     builderClass.setSuperclass(createBuilderSuperClass(domainClass, builderClassName));
 
     if (!hasSuperClassOtherThanASTCNode(domainClass)) {
-      ASTMCType builderType = this.getCDTypeFacade().createQualifiedType(builderClassName);
+      ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(builderClassName);
       builderClass.addAllCDMethods(createBuilderMethodForASTCNodeMethods(builderType));
     }
 
@@ -56,7 +56,7 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
     if (hasSuperClassOtherThanASTCNode(domainClass)) {
       superClass = domainClass.printSuperClass()+ BUILDER_SUFFIX;
     }
-    return this.getCDTypeFacade().createQualifiedType(superClass);
+    return this.getMCTypeFacade().createQualifiedType(superClass);
   }
 
   protected boolean hasSuperClassOtherThanASTCNode(final ASTCDClass domainClass) {

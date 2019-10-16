@@ -82,7 +82,7 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
   protected List<ASTCDAttribute> getConstantAttribute(List<ASTCDEnumConstant> enumConstants) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     for (int i = 0; i < enumConstants.size(); i++) {
-      ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC_FINAL, getCDTypeFacade().createIntType(), enumConstants.get(i).getName());
+      ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC_FINAL, getMCTypeFacade().createIntType(), enumConstants.get(i).getName());
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (i + 1)));
       attributeList.add(attribute);
     }
@@ -91,7 +91,7 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
   protected ASTCDAttribute getSuperGrammarsAttribute(Collection<CDDefinitionSymbol> superSymbolList) {
     List<String> superGrammarNames = superSymbolList.stream().map(CDDefinitionSymbol::getFullName).map(x -> "\"" + x + "\"").collect(Collectors.toList());
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC, getCDTypeFacade().createArrayType(String.class, 1), SUPER_GRAMMARS);
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC, getMCTypeFacade().createArrayType(String.class, 1), SUPER_GRAMMARS);
     if (!superSymbolList.isEmpty()) {
       String s = superGrammarNames.stream().reduce((a, b) -> a + ", " + b).get();
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= {" + s + "}"));
@@ -102,7 +102,7 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
   }
 
   protected ASTCDAttribute getDefaultAttribute() {
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC_FINAL, getCDTypeFacade().createIntType(), DEFAULT);
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC_FINAL, getMCTypeFacade().createIntType(), DEFAULT);
     this.replaceTemplate(VALUE, attribute, new StringHookPoint("= 0"));
     return attribute;
   }
@@ -126,7 +126,7 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
   }
 
   protected ASTCDMethod getGetAllLanguagesMethod(Collection<CDDefinitionSymbol> superCDs) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, getCDTypeFacade().createCollectionTypeOf(String.class), GET_ALL_LANGUAGES);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, getMCTypeFacade().createCollectionTypeOf(String.class), GET_ALL_LANGUAGES);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_constants.GetAllLanguages",
        superCDs));
     return method;

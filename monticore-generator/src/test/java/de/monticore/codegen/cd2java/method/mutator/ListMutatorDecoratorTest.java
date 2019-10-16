@@ -140,8 +140,7 @@ public class ListMutatorDecoratorTest {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    ASTMCType expectedParameterType = MCTypeFacade.getInstance().createTypeByDefinition("Predicate<? super String>");
-    assertDeepEquals(expectedParameterType, parameter.getMCType());
+    assertDeepEquals("Predicate<? super String>", parameter.getMCType());
     assertEquals("filter", parameter.getName());
   }
 
@@ -152,8 +151,7 @@ public class ListMutatorDecoratorTest {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    ASTMCType expectedParameterType = MCTypeFacade.getInstance().createTypeByDefinition("Consumer<? super String>");
-    assertDeepEquals(expectedParameterType, parameter.getMCType());
+    assertDeepEquals("Consumer<? super String>", parameter.getMCType());
     assertEquals("action", parameter.getName());
   }
 
@@ -227,8 +225,7 @@ public class ListMutatorDecoratorTest {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    ASTMCType expectedParameterType = MCTypeFacade.getInstance().createTypeByDefinition("UnaryOperator<String>");
-    assertDeepEquals(expectedParameterType, parameter.getMCType());
+    assertDeepEquals("UnaryOperator<String>", parameter.getMCType());
     assertEquals("operator", parameter.getName());
   }
 
@@ -239,8 +236,7 @@ public class ListMutatorDecoratorTest {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    ASTMCType expectedParameterType = MCTypeFacade.getInstance().createTypeByDefinition("Comparator<? super String>");
-    assertDeepEquals(expectedParameterType, parameter.getMCType());
+    assertDeepEquals("Comparator<? super String>", parameter.getMCType());
     assertEquals("comparator", parameter.getName());
   }
 }

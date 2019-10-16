@@ -63,8 +63,8 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(packageImplName)
         .setModifier(PUBLIC.build())
-        .setSuperclass(getCDTypeFacade().createQualifiedType(E_PACKAGE_IMPL))
-        .addInterface(getCDTypeFacade().createQualifiedType(packageName))
+        .setSuperclass(getMCTypeFacade().createQualifiedType(E_PACKAGE_IMPL))
+        .addInterface(getMCTypeFacade().createQualifiedType(packageName))
         .addCDAttribute(constantsEEnumAttribute)
         .addAllCDAttributes(eAttributes)
         .addCDAttribute(createISCreatedAttribute())
@@ -112,16 +112,16 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDAttribute createISCreatedAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE, getCDTypeFacade().createBooleanType(), IS_CREATED);
+    return getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createBooleanType(), IS_CREATED);
   }
 
   protected ASTCDAttribute createIsInitializedAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE, getCDTypeFacade().createBooleanType(), IS_INITIALIZED);
+    return getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createBooleanType(), IS_INITIALIZED);
   }
 
 
   protected ASTCDAttribute createIsIntitedAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE_STATIC, getCDTypeFacade().createBooleanType(), IS_INITED);
+    return getCDAttributeFacade().createAttribute(PRIVATE_STATIC, getMCTypeFacade().createBooleanType(), IS_INITED);
   }
 
   protected ASTCDConstructor createContructor(String packageImplName, String definitionName) {
@@ -132,7 +132,7 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDMethod createInitMethod(String packageName) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, getCDTypeFacade().createQualifiedType(packageName), "init");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, getMCTypeFacade().createQualifiedType(packageName), "init");
     replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.InitMethod", packageName));
     return method;
   }
@@ -140,20 +140,20 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected ASTCDMethod createGetNodeFactoryMethod(String definitionName) {
     // e.g. AutomataNodeFactory getAutomataFactory();
     String methodName = String.format(GET, definitionName + FACTORY_SUFFIX);
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(definitionName + NODE_FACTORY_SUFFIX), methodName);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(definitionName + NODE_FACTORY_SUFFIX), methodName);
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + definitionName + NODE_FACTORY_SUFFIX + ")getEFactoryInstance();"));
     return method;
   }
 
   protected ASTCDMethod createGetPackageMethod(String definitionName) {
     // e.g. public String getPackageName() { return "automata"; }
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createStringType(),"getPackageName");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getPackageName");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return \"" + StringTransformations.uncapitalize(definitionName) + "\";"));
     return method;
   }
 
   protected ASTCDMethod createASTESuperPackagesMethod() {
-    ASTMCType type = getCDTypeFacade().createListTypeOf(ASTE_PACKAGE);
+    ASTMCType type = getMCTypeFacade().createListTypeOf(ASTE_PACKAGE);
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, type, "getASTESuperPackages");
     replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.GetASTESuperPackages"));
     return method;

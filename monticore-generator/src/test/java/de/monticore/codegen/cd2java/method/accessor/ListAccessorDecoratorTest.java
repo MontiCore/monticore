@@ -118,9 +118,8 @@ public class ListAccessorDecoratorTest {
   public void testSpliteratorMethod() {
     ASTCDMethod method = getMethodBy("spliteratorA", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    ASTMCType expectedReturnType = MCTypeFacade.getInstance().createTypeByDefinition("Spliterator<String>");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
+    assertDeepEquals("Spliterator<String>", method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
@@ -128,9 +127,8 @@ public class ListAccessorDecoratorTest {
   public void testStreamMethod() {
     ASTCDMethod method = getMethodBy("streamA", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    ASTMCType expectedReturnType = MCTypeFacade.getInstance().createTypeByDefinition("Stream<String>");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
+    assertDeepEquals("Stream<String>", method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
@@ -138,9 +136,8 @@ public class ListAccessorDecoratorTest {
   public void testParallelStreamMethod() {
     ASTCDMethod method = getMethodBy("parallelStreamA", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    ASTMCType expectedReturnType = MCTypeFacade.getInstance().createTypeByDefinition("Stream<String>");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
+    assertDeepEquals("Stream<String>", method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
@@ -207,18 +204,16 @@ public class ListAccessorDecoratorTest {
   public void testListIteratorMethod() {
     ASTCDMethod method = getMethodBy("listIteratorA", 0, this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    ASTMCType expectedReturnType = MCTypeFacade.getInstance().createTypeByDefinition("ListIterator<String>");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
+    assertDeepEquals("ListIterator<String>", method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
   @Test
   public void testListIteratorWithIndexMethod() {
     ASTCDMethod method = getMethodBy("listIteratorA", 1, this.methods);
-    ASTMCType expectedReturnType = MCTypeFacade.getInstance().createTypeByDefinition("ListIterator<String>");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
+    assertDeepEquals("ListIterator<String>", method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
 
     assertEquals(1, method.getCDParameterList().size());

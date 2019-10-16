@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 
 public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
 
-  private MCTypeFacade MCTypeFacade;
+  private MCTypeFacade mcTypeFacade;
 
   private ASTCDClass visitorClass;
 
@@ -44,6 +44,10 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
 
   private static final String AST_AUTOMATON_NODE = "de.monticore.codegen.ast.automaton._ast.ASTAutomatonNode";
 
+  private static final String AST_LEXICALS_NODE = "de.monticore.codegen.ast.lexicals._ast.ASTLexicalsNode";
+
+  private static final String AST_NAME_NODE = "de.monticore.codegen.ast.lexicals._ast.ASTName";
+
   private ASTCDCompilationUnit originalCompilationUnit;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
@@ -53,7 +57,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
     LogStub.init();
     LogStub.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
-    this.MCTypeFacade = MCTypeFacade.getInstance();
+    this.mcTypeFacade = MCTypeFacade.getInstance();
 
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
@@ -124,9 +128,8 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   public void testGetRealThis() {
     ASTCDMethod method = getMethodBy("getRealThis", visitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition("AutomatonDelegatorVisitor");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(astType, method.getMCReturnType().getMCType());
+    assertDeepEquals("AutomatonDelegatorVisitor", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -135,9 +138,8 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setRealThis", visitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(VISITOR_FULL_NAME);
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(astType, method.getCDParameter(0).getMCType());
+    assertDeepEquals(VISITOR_FULL_NAME, method.getCDParameter(0).getMCType());
     assertEquals("realThis", method.getCDParameter(0).getName());
   }
 
@@ -145,9 +147,8 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   public void testGetAutomatonVisitor() {
     ASTCDMethod method = getMethodBy("getAutomatonVisitor", visitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition("Optional<" + VISITOR_FULL_NAME + ">");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(astType, method.getMCReturnType().getMCType());
+    assertDeepEquals("Optional<" + VISITOR_FULL_NAME + ">", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -156,9 +157,8 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setAutomatonVisitor", visitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(VISITOR_FULL_NAME);
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(astType, method.getCDParameter(0).getMCType());
+    assertDeepEquals(VISITOR_FULL_NAME, method.getCDParameter(0).getMCType());
     assertEquals("automatonVisitor", method.getCDParameter(0).getName());
   }
 
@@ -166,9 +166,8 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   public void testGetLexicalsVisitor() {
     ASTCDMethod method = getMethodBy("getLexicalsVisitor", visitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition("Optional<de.monticore.codegen.ast.lexicals._visitor.LexicalsVisitor>");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(astType, method.getMCReturnType().getMCType());
+    assertDeepEquals("Optional<de.monticore.codegen.ast.lexicals._visitor.LexicalsVisitor>", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -177,16 +176,15 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setLexicalsVisitor", visitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition("de.monticore.codegen.ast.lexicals._visitor.LexicalsVisitor");
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(astType, method.getCDParameter(0).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsVisitor", method.getCDParameter(0).getMCType());
     assertEquals("lexicalsVisitor", method.getCDParameter(0).getName());
   }
 
   @Test
   public void tesVisitASTTransition() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_TRANSITION);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_TRANSITION);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -198,7 +196,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testEndVisitASTTransition() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_TRANSITION);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_TRANSITION);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -210,7 +208,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void tesHandleASTTransition() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_TRANSITION);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_TRANSITION);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -222,7 +220,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testTraverseASTTransition() {
     List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_TRANSITION);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_TRANSITION);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -234,7 +232,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void tesVisitASTName() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition("de.monticore.codegen.ast.lexicals._ast.ASTName");
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_NAME_NODE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -246,7 +244,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testEndVisitASTName() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition("de.monticore.codegen.ast.lexicals._ast.ASTName");
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_NAME_NODE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -258,7 +256,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void tesHandleASTName() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition("de.monticore.codegen.ast.lexicals._ast.ASTName");
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_NAME_NODE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -270,7 +268,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testTraverseASTName() {
     List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition("de.monticore.codegen.ast.lexicals._ast.ASTName");
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType("de.monticore.codegen.ast.lexicals._ast.ASTName");
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -282,7 +280,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void tesVisitASTAutomatonNode() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_TRANSITION);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_TRANSITION);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -294,7 +292,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testEndVisitASTAutomatonNode() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_AUTOMATON_NODE);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_AUTOMATON_NODE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -306,7 +304,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void tesHandleASTAutomatonNode() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_AUTOMATON_NODE);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_AUTOMATON_NODE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -318,7 +316,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void tesVisitASTLexicalsNode() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition("de.monticore.codegen.ast.lexicals._ast.ASTLexicalsNode");
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_LEXICALS_NODE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -330,7 +328,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testEndVisitASTLexicalsNode() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition("de.monticore.codegen.ast.lexicals._ast.ASTLexicalsNode");
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_LEXICALS_NODE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -342,7 +340,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void tesHandleASTLexicalsNode() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition("de.monticore.codegen.ast.lexicals._ast.ASTLexicalsNode");
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_LEXICALS_NODE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -354,7 +352,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testVisitASTNode() {
     List<ASTCDMethod> methodList = getMethodsBy("visit", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_NODE);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_NODE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -366,7 +364,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testEndVisitASTNode() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_NODE);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_NODE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();

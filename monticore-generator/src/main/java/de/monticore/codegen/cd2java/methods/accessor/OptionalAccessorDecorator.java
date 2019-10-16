@@ -61,7 +61,7 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
 
   protected ASTCDMethod createIsPresentMethod() {
     String name = String.format(IS_PRESENT, naiveAttributeName);
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.IsPresent", naiveAttributeName));
     return method;
   }

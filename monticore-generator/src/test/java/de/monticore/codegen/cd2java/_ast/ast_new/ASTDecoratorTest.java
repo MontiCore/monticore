@@ -40,7 +40,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
-  private MCTypeFacade MCTypeFacade = MCTypeFacade.getInstance();
+  private MCTypeFacade mcTypeFacade = MCTypeFacade.getInstance();
 
   private ASTCDClass astClass;
 
@@ -103,7 +103,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAcceptMethod() {
     List<ASTCDMethod> methods = getMethodsBy("accept", 1, astClass);
-    ASTMCType visitorType = this.MCTypeFacade.createQualifiedType("de.monticore.codegen.ast.ast._visitor.ASTVisitor");
+    ASTMCType visitorType = this.mcTypeFacade.createQualifiedType("de.monticore.codegen.ast.ast._visitor.ASTVisitor");
 
     methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameter(0).getMCType())).collect(Collectors.toList());
     assertEquals(1, methods.size());
@@ -124,7 +124,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAcceptSuperMethod() {
     List<ASTCDMethod> methods = getMethodsBy("accept", 1, astClass);
-    ASTMCType visitorType = this.MCTypeFacade.createQualifiedType("de.monticore.codegen.ast.supercd._visitor.SuperCDVisitor");
+    ASTMCType visitorType = this.mcTypeFacade.createQualifiedType("de.monticore.codegen.ast.supercd._visitor.SuperCDVisitor");
 
     methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameter(0).getMCType())).collect(Collectors.toList());
     assertEquals(1, methods.size());
@@ -147,7 +147,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
 
-    ASTMCType returnType = this.MCTypeFacade.createCollectionTypeOf("de.monticore.ast.ASTNode");
+    ASTMCType returnType = this.mcTypeFacade.createCollectionTypeOf("de.monticore.ast.ASTNode");
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, method.getMCReturnType().getMCType());
 
@@ -158,7 +158,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   public void testConstructMethod() {
     ASTCDMethod method = getMethodBy("_construct", astClass);
     assertDeepEquals(PROTECTED, method.getModifier());
-    ASTMCType astType = this.MCTypeFacade.createQualifiedType(astClass.getName());
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(astClass.getName());
     assertDeepEquals(astType, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
@@ -180,9 +180,8 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   public void testGetScopeMethod() {
     ASTCDMethod method = getMethodBy("getSpannedScope", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_SCOPE);
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(astType, method.getMCReturnType().getMCType());
+    assertDeepEquals(AST_SCOPE, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -193,17 +192,15 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
     assertEquals("spannedScope", method.getCDParameter(0).getName());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_SCOPE);
-    assertDeepEquals(astType, method.getCDParameter(0).getMCType());
+    assertDeepEquals(AST_SCOPE, method.getCDParameter(0).getMCType());
   }
 
   @Test
   public void testGetSymbolMethod() {
     ASTCDMethod method = getMethodBy("getSymbol", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_SYMBOL);
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(astType, method.getMCReturnType().getMCType());
+    assertDeepEquals(AST_SYMBOL, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -232,8 +229,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
     assertEquals("symbol", method.getCDParameter(0).getName());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_SYMBOL);
-    assertDeepEquals(astType, method.getCDParameter(0).getMCType());
+    assertDeepEquals(AST_SYMBOL, method.getCDParameter(0).getMCType());
   }
 
 

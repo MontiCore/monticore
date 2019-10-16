@@ -9,13 +9,10 @@ import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.CDParameterFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +24,6 @@ import static org.junit.Assert.assertTrue;
 
 public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
 
-  private MCTypeFacade MCTypeFacade;
-
-  private CDParameterFacade cdParameterFacade;
-
   private ASTCDClass factoryClass;
 
   private GlobalExtensionManagement glex;
@@ -40,8 +33,6 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
     LogStub.init();
     LogStub.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
-    this.MCTypeFacade = MCTypeFacade.getInstance();
-    this.cdParameterFacade = CDParameterFacade.getInstance();
 
     ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");
     this.glex.setGlobalValue("service", new AbstractService(compilationUnit));
@@ -93,9 +84,8 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("CGrammarNodeFactory");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
+    assertDeepEquals("CGrammarNodeFactory", method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -108,9 +98,8 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.bgrammar._ast.ASTB");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
+    assertDeepEquals("de.monticore.codegen.factory.bgrammar._ast.ASTB", method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -123,9 +112,8 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
+    assertDeepEquals("de.monticore.codegen.factory.agrammar._ast.ASTFoo", method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -138,9 +126,8 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTBar");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
+    assertDeepEquals("de.monticore.codegen.factory.agrammar._ast.ASTBar", method.getMCReturnType().getMCType());
   }
 
   @Test

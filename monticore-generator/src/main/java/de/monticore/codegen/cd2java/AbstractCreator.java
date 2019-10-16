@@ -1,10 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
-import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
-import de.monticore.codegen.cd2java.factories.CDConstructorFacade;
-import de.monticore.codegen.cd2java.factories.CDMethodFacade;
-import de.monticore.codegen.cd2java.factories.CDParameterFacade;
+import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 public abstract class AbstractCreator<I, R> extends AbstractDecorator {

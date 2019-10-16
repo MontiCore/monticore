@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java._ast.ast_class;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -32,7 +31,7 @@ public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAtt
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     Optional<ASTCDType> symbolClass = symbolTableService.getTypeWithSymbolInfo(clazz);
     if (symbolClass.isPresent()) {
-      ASTMCType symbolType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolFullName(clazz));
+      ASTMCType symbolType = this.getMCTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolFullName(clazz));
       attributeList.add(createSymbolAttribute(symbolType));
     }
     return attributeList;

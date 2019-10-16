@@ -24,7 +24,7 @@ public class EmfEnumDecorator extends EnumDecorator {
   public ASTCDEnum decorate(final ASTCDEnum input) {
     ASTCDEnum astcdEnum = super.decorate(input);
     //add emf interface
-    astcdEnum.addInterface(getCDTypeFacade().createQualifiedType(ENUMERATOR));
+    astcdEnum.addInterface(getMCTypeFacade().createQualifiedType(ENUMERATOR));
     astcdEnum.addCDMethod(createGetNameMethod());
     astcdEnum.addCDMethod(createGetLiteralMethod());
     astcdEnum.addCDMethod(createGetValueMethod());
@@ -32,19 +32,19 @@ public class EmfEnumDecorator extends EnumDecorator {
   }
 
   protected ASTCDMethod createGetNameMethod(){
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getCDTypeFacade().createStringType(), "getName");
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getMCTypeFacade().createStringType(), "getName");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint(TO_STRING_CALL));
     return method;
   }
 
   protected ASTCDMethod createGetLiteralMethod(){
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getCDTypeFacade().createStringType(), "getLiteral");
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getMCTypeFacade().createStringType(), "getLiteral");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint(TO_STRING_CALL));
     return method;
   }
 
   protected ASTCDMethod createGetValueMethod(){
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getCDTypeFacade().createIntType(), "getValue");
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getMCTypeFacade().createIntType(), "getValue");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return intValue;"));
     return method;
   }

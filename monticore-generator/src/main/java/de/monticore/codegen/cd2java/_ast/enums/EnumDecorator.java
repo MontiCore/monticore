@@ -55,12 +55,12 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
   }
 
   protected ASTCDAttribute getIntValueAttribute() {
-    ASTMCType intType = getCDTypeFacade().createIntType();
+    ASTMCType intType = getMCTypeFacade().createIntType();
     return getCDAttributeFacade().createAttribute(PROTECTED, intType, INT_VALUE);
   }
 
   protected ASTCDConstructor getLiteralsConstructor(String enumName) {
-    ASTMCType intType = getCDTypeFacade().createIntType();
+    ASTMCType intType = getMCTypeFacade().createIntType();
     ASTCDParameter intParameter = getCDParameterFacade().createParameter(intType, INT_VALUE);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PRIVATE.build(), enumName, intParameter);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + INT_VALUE + " = " + INT_VALUE + ";"));

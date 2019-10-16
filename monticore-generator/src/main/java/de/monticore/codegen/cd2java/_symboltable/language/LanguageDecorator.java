@@ -45,8 +45,8 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     String languageClassName = symbolTableService.getLanguageClassSimpleName();
     String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
-    ASTMCObjectType iModelingLanguage = (ASTMCObjectType) getCDTypeFacade().createTypeByDefinition(
-        I_MODELING_LANGUAGE + "<" + modelLoaderClassName + ">");
+    ASTMCObjectType iModelingLanguage = getMCTypeFacade().createBasicGenericTypeOf(
+        I_MODELING_LANGUAGE, modelLoaderClassName);
 
     List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
     symbolDefiningProds.addAll(symbolTableService.getSymbolDefiningSuperProds());
@@ -102,7 +102,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
   protected Optional<ASTCDMethod> createGetParserMethod(ASTCDDefinition astcdDefinition) {
     if (!(astcdDefinition.isPresentModifier() && symbolTableService.hasComponentStereotype(astcdDefinition.getModifier()))) {
       String parserClass = parserService.getParserClassFullName();
-      ASTCDMethod getParserMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(parserClass), "getParser");
+      ASTCDMethod getParserMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(parserClass), "getParser");
       this.replaceTemplate(EMPTY_BODY, getParserMethod, new StringHookPoint("return new " + parserClass + "();"));
       return Optional.ofNullable(getParserMethod);
     }
@@ -112,17 +112,17 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
   protected ASTCDMethod createGetSymbolTableCreatorMethod() {
     String symbolTableCreatorDelegatorFullName = symbolTableService.getSymbolTableCreatorDelegatorFullName();
     String globalScopeInterfaceFullName = symbolTableService.getGlobalScopeInterfaceFullName();
-    ASTCDParameter enclosingScope = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(globalScopeInterfaceFullName), ENCLOSING_SCOPE_VAR);
+    ASTCDParameter enclosingScope = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(globalScopeInterfaceFullName), ENCLOSING_SCOPE_VAR);
 
     ASTCDMethod getSymbolTableCreatorMethod = getCDMethodFacade().createMethod(PUBLIC,
-        getCDTypeFacade().createQualifiedType(symbolTableCreatorDelegatorFullName), "getSymbolTableCreator", enclosingScope);
+        getMCTypeFacade().createQualifiedType(symbolTableCreatorDelegatorFullName), "getSymbolTableCreator", enclosingScope);
     this.replaceTemplate(EMPTY_BODY, getSymbolTableCreatorMethod, new StringHookPoint(" return new " + symbolTableCreatorDelegatorFullName + "(" + ENCLOSING_SCOPE_VAR + ");"));
     return getSymbolTableCreatorMethod;
   }
 
   protected ASTCDMethod createProvideModelLoaderMethod(String modelLoaderName) {
     ASTCDMethod provideModelLoaderMethod = getCDMethodFacade().createMethod(PROTECTED,
-        getCDTypeFacade().createQualifiedType(modelLoaderName), "provideModelLoader");
+        getMCTypeFacade().createQualifiedType(modelLoaderName), "provideModelLoader");
     if (isLanguageTop()) {
       provideModelLoaderMethod.getModifier().setAbstract(true);
     } else {
@@ -135,7 +135,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDType symbolProd : symbolProds) {
       String simpleName = symbolTableService.removeASTPrefix(symbolProd);
-      ASTMCSetType setTypeOfString = getCDTypeFacade().createSetTypeOf(String.class);
+      ASTMCSetType setTypeOfString = getMCTypeFacade().createSetTypeOf(String.class);
       ASTCDParameter nameParam = getCDParameterFacade().createParameter(String.class, NAME_VAR);
       ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, setTypeOfString,
           String.format("calculateModelNamesFor%s", simpleName), nameParam);

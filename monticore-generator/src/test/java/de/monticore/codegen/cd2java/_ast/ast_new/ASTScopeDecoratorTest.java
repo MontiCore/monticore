@@ -10,7 +10,6 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -32,17 +31,12 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
 
   private List<ASTCDAttribute> attributes;
 
-  private MCTypeFacade MCTypeFacade = MCTypeFacade.getInstance();
-
-  private static final String AST_SCOPE = "de.monticore.codegen.ast.ast._symboltable.ASTScope";
-
   private static final String AST_I_SCOPE = "de.monticore.codegen.ast.ast._symboltable.IASTScope";
 
   private static final String SUPER_I_SCOPE= "de.monticore.codegen.ast.supercd._symboltable.ISuperCDScope";
 
   @Before
   public void setup() {
-    this.MCTypeFacade = MCTypeFacade.getInstance();
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "AST");
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());

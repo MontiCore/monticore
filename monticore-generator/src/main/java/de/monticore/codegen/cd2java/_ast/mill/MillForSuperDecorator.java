@@ -55,7 +55,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
       String millClassName = superSymbol.getName() + MILL_FOR + astcdDefinition.getName();
       List<ASTCDMethod> builderMethodsList = addBuilderMethodsForSuper(astcdClassList, superSymbol, superSymbolList);
-      ASTMCQualifiedType superclass = this.getCDTypeFacade().createQualifiedType(
+      ASTMCQualifiedType superclass = this.getMCTypeFacade().createQualifiedType(
               AstGeneratorHelper.getAstPackage(superSymbol.getFullName()) + superSymbol.getName() + MILL_SUFFIX);
       
       superMills.add(CD4AnalysisMill.cDClassBuilder()
@@ -98,12 +98,12 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       
       // Add method body based on whether method is overridden by this cdType
       if (firstClasses.contains(cdType)) {
-        ASTMCType builderType = this.getCDTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX);
+        ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX);
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
         this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderForSuperMethod", astcdDefinition.getName() + MILL_SUFFIX, methodName));
       }
       else {
-        ASTMCQualifiedType builderType = this.getCDTypeFacade().createQualifiedType(AstGeneratorHelper.getAstPackage(superSymbol.getFullName()) + astName + BUILDER_SUFFIX);
+        ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(AstGeneratorHelper.getAstPackage(superSymbol.getFullName()) + astName + BUILDER_SUFFIX);
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
         this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("Log.error(\"0xA7009" + AstGeneratorHelper.getGeneratedErrorCode(clazz) + " Overridden production " + AstGeneratorHelper.getPlainName(clazz) + " is not reachable\");\nreturn null;\n"));
       }

@@ -33,7 +33,7 @@ public class AbstractService<T extends AbstractService> {
 
   private final CDDefinitionSymbol cdSymbol;
 
-  private final MCTypeFacade MCTypeFacade;
+  private final MCTypeFacade mcTypeFacade;
 
 
   public AbstractService(final ASTCDCompilationUnit compilationUnit) {
@@ -42,7 +42,7 @@ public class AbstractService<T extends AbstractService> {
 
   public AbstractService(final CDDefinitionSymbol cdSymbol) {
     this.cdSymbol = cdSymbol;
-    this.MCTypeFacade = MCTypeFacade.getInstance();
+    this.mcTypeFacade = MCTypeFacade.getInstance();
   }
 
   public CDDefinitionSymbol getCDSymbol() {
@@ -50,7 +50,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   protected MCTypeFacade getCDTypeFacade() {
-    return this.MCTypeFacade;
+    return this.mcTypeFacade;
   }
 
   public Collection<CDDefinitionSymbol> getAllCDs() {

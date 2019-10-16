@@ -51,7 +51,7 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
   @Override
   public ASTCDInterface decorate(final ASTCDInterface originalInput, ASTCDInterface changedInput) {
     changedInput.addCDMethod(getAcceptMethod());
-    changedInput.addInterface(getCDTypeFacade().createReferenceTypeByDefinition(AST_INTERFACE));
+    changedInput.addInterface(getMCTypeFacade().createQualifiedType(AST_INTERFACE));
     changedInput.addInterface(astService.getASTBaseInterface());
     changedInput.clearCDAttributes();
 

@@ -40,7 +40,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  private MCTypeFacade MCTypeFacade;
+  private MCTypeFacade mcTypeFacade;
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope";
 
@@ -64,7 +64,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   public void setUp() {
     Log.init();
     this.glex = new GlobalExtensionManagement();
-    this.MCTypeFacade = MCTypeFacade.getInstance();
+    this.mcTypeFacade = MCTypeFacade.getInstance();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
@@ -209,9 +209,8 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   public void testGetRealThis() {
     ASTCDMethod method = getMethodBy("getRealThis", symTabCreatorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AUTOMATON_VISITOR);
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(astType, method.getMCReturnType().getMCType());
+    assertDeepEquals(AUTOMATON_VISITOR, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -220,9 +219,8 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setRealThis", symTabCreatorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AUTOMATON_VISITOR);
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(astType, method.getCDParameter(0).getMCType());
+    assertDeepEquals(AUTOMATON_VISITOR, method.getCDParameter(0).getMCType());
     assertEquals("realThis", method.getCDParameter(0).getName());
   }
 
@@ -232,9 +230,8 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PROTECTED, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition("Deque<" + I_AUTOMATON_SCOPE + ">");
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(astType, method.getCDParameter(0).getMCType());
+    assertDeepEquals("Deque<" + I_AUTOMATON_SCOPE + ">", method.getCDParameter(0).getMCType());
     assertEquals("scopeStack", method.getCDParameter(0).getName());
   }
 
@@ -242,7 +239,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   public void testGetCurrentScopeThis() {
     ASTCDMethod method = getMethodBy("removeCurrentScope", symTabCreatorClass);
     assertDeepEquals(PUBLIC_FINAL, method.getModifier());
-    ASTMCType astType = this.MCTypeFacade.createOptionalTypeOf(I_AUTOMATON_SCOPE);
+    ASTMCType astType = this.mcTypeFacade.createOptionalTypeOf(I_AUTOMATON_SCOPE);
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(astType, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
@@ -252,7 +249,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   public void testRemoveCurrentScopeThis() {
     ASTCDMethod method = getMethodBy("removeCurrentScope", symTabCreatorClass);
     assertDeepEquals(PUBLIC_FINAL, method.getModifier());
-    ASTMCType astType = this.MCTypeFacade.createOptionalTypeOf(I_AUTOMATON_SCOPE);
+    ASTMCType astType = this.mcTypeFacade.createOptionalTypeOf(I_AUTOMATON_SCOPE);
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(astType, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
@@ -274,7 +271,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testEndVisitASTAutomatonNode() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_AUTOMATON);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_AUTOMATON);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -286,7 +283,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testVisitASTAutomatonNode() {
     List<ASTCDMethod> methodList = getMethodsBy("visit", 1, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_AUTOMATON);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_AUTOMATON);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -299,7 +296,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testEndVisitASTStateNode() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_STATE);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_STATE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -311,7 +308,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testVisitASTStateNode() {
     List<ASTCDMethod> methodList = getMethodsBy("visit", 1, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_STATE);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_STATE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -381,7 +378,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddToScopeAndLinkWithNodeAutomatonNode() {
     List<ASTCDMethod> methodList = getMethodsBy("addToScopeAndLinkWithNode", 2, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AUTOMATON_SYMBOL);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -400,7 +397,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddToScopeAndLinkWithNodeStateNode() {
     List<ASTCDMethod> methodList = getMethodsBy("addToScopeAndLinkWithNode", 2, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(STATE_SYMBOL);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(STATE_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -419,7 +416,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSetLinkBetweenSymbolAndNodeAutomatonNode() {
     List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSymbolAndNode", 2, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AUTOMATON_SYMBOL);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -438,7 +435,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSetLinkBetweenSymbolAndNodeStateNode() {
     List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSymbolAndNode", 2, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(STATE_SYMBOL);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(STATE_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -457,7 +454,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSetLinkBetweenSpannedScopeAndNodeAutomatonNode() {
     List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSpannedScopeAndNode", 2, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_AUTOMATON);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_AUTOMATON);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(1).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(1).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(1).getMCType())).findFirst().get();
@@ -477,7 +474,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testVisitASTTransitionNode() {
     List<ASTCDMethod> methodList = getMethodsBy("visit", 1, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_TRANSITION);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_TRANSITION);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -489,7 +486,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testVisitASTScopeNode() {
     List<ASTCDMethod> methodList = getMethodsBy("visit", 1, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_SCOPE);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_SCOPE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -516,7 +513,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSetLinkBetweenSpannedScopeAndNodeScopeNode() {
     List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSpannedScopeAndNode", 2, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_SCOPE);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_SCOPE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(1).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(1).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(1).getMCType())).findFirst().get();
@@ -550,7 +547,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddToScopeAutomatonNode() {
     List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AUTOMATON_SYMBOL);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -562,7 +559,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddToScopeStateNode() {
     List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(STATE_SYMBOL);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(STATE_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -574,7 +571,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddToScopeQualifiedNameNode() {
     List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, symTabCreatorClass);
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(QUALIFIED_NAME_SYMBOL);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(QUALIFIED_NAME_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();

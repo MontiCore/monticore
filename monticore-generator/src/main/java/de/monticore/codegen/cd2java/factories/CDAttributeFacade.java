@@ -19,6 +19,12 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 
+/**
+ * @deprecated will be transfered into CD4A
+ * first the deprecation of MCTypeFacade has to be removed, then the CDAttributeFacade can be tranfered to CD4A
+ * after release of CD4A with CDAttributeFacade this class can be removed
+ */
+@Deprecated
 public class CDAttributeFacade {
 
   private static CDAttributeFacade cdAttributeFacade;

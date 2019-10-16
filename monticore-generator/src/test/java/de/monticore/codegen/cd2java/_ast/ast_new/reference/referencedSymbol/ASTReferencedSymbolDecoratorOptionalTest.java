@@ -12,11 +12,9 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,15 +34,12 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
 
   private ASTCDClass mandAttrClass;
 
-  private MCTypeFacade MCTypeFacade = MCTypeFacade.getInstance();
-
   private static final String NAME_SYMBOL = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol";
 
   @Before
   public void setup() {
     LogStub.init();
     LogStub.enableFailQuick(false);
-    this.MCTypeFacade = MCTypeFacade.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
@@ -89,7 +84,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
     assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
     assertEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol", stereotype.getValue(0).getValue());
-    assertDeepEquals(MCTypeFacade.createTypeByDefinition("Optional<String>"), nameAttribute.getMCType());
+    assertDeepEquals("Optional<String>", nameAttribute.getMCType());
   }
 
   @Test
@@ -109,9 +104,8 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
   public void testGetNameSymbolMethod() {
     ASTCDMethod method = getMethodBy("getNameSymbol", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(NAME_SYMBOL);
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(astType, method.getMCReturnType().getMCType());
+    assertDeepEquals(NAME_SYMBOL, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -177,9 +171,8 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
   public void testGetNameSymbolMethodMand() {
     ASTCDMethod method = getMethodBy("getNameSymbol", mandAttrClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(NAME_SYMBOL);
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(astType, method.getMCReturnType().getMCType());
+    assertDeepEquals(NAME_SYMBOL, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 

@@ -2,7 +2,6 @@
 package de.monticore.codegen.cd2java.factories;
 
 import com.google.common.collect.Lists;
-import de.monticore.types.MCCollectionTypesHelper;
 import de.monticore.types.MCFullGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
@@ -99,7 +98,7 @@ public class MCTypeFacade {
   }
 
   public ASTMCOptionalType createOptionalTypeOf(final ASTMCTypeArgument type) {
-    return createOptionalTypeOf(MCCollectionTypesHelper.printType(type));
+    return createOptionalTypeOf(MCFullGenericTypesHelper.printType(type));
   }
 
   /**
@@ -117,11 +116,11 @@ public class MCTypeFacade {
   }
 
   public ASTMCListType createListTypeOf(final ASTMCType type) {
-    return createListTypeOf(MCCollectionTypesHelper.printType(type));
+    return createListTypeOf(MCFullGenericTypesHelper.printType(type));
   }
 
   public ASTMCListType createListTypeOf(final ASTMCTypeArgument type) {
-    return createListTypeOf(MCCollectionTypesHelper.printType(type));
+    return createListTypeOf(MCFullGenericTypesHelper.printType(type));
   }
 
   /**
@@ -139,11 +138,11 @@ public class MCTypeFacade {
   }
 
   public ASTMCSetType createSetTypeOf(final ASTMCType type) {
-    return createSetTypeOf(MCCollectionTypesHelper.printType(type));
+    return createSetTypeOf(MCFullGenericTypesHelper.printType(type));
   }
 
   public ASTMCSetType createSetTypeOf(final ASTMCTypeArgument type) {
-    return createSetTypeOf(MCCollectionTypesHelper.printType(type));
+    return createSetTypeOf(MCFullGenericTypesHelper.printType(type));
   }
 
   /**
@@ -162,7 +161,7 @@ public class MCTypeFacade {
   }
 
   public ASTMCType createCollectionTypeOf(final ASTMCType type) {
-    return createCollectionTypeOf(MCCollectionTypesHelper.printType(type));
+    return createCollectionTypeOf(MCFullGenericTypesHelper.printType(type));
   }
 
   /**
@@ -181,11 +180,11 @@ public class MCTypeFacade {
   }
 
   public ASTMCMapType createMapTypeOf(final ASTMCType firstType, final ASTMCType secondType) {
-    return createMapTypeOf(MCCollectionTypesHelper.printType(firstType), MCCollectionTypesHelper.printType(secondType));
+    return createMapTypeOf(MCFullGenericTypesHelper.printType(firstType), MCFullGenericTypesHelper.printType(secondType));
   }
 
   public ASTMCMapType createMapTypeOf(final ASTMCTypeArgument firstType, final ASTMCTypeArgument secondType) {
-    return createMapTypeOf(MCCollectionTypesHelper.printType(firstType), MCCollectionTypesHelper.printType(secondType));
+    return createMapTypeOf(MCFullGenericTypesHelper.printType(firstType), MCFullGenericTypesHelper.printType(secondType));
   }
 
   /**

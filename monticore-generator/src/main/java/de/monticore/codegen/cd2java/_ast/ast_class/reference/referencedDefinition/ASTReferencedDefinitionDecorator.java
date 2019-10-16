@@ -55,10 +55,10 @@ public class ASTReferencedDefinitionDecorator extends AbstractTransformer<ASTCDC
         AST_PACKAGE + "." + AST_PREFIX + symbolTableService.getSimpleNameFromSymbolName(referencedSymbol);
     if (GeneratorHelper.isListType(astcdAttribute.printType())) {
       //if the attribute is a list
-      symbolType = getCDTypeFacade().createListTypeOf(referencedNode);
+      symbolType = getMCTypeFacade().createListTypeOf(referencedNode);
     } else {
       //if the attribute is mandatory or optional
-      symbolType = getCDTypeFacade().createOptionalTypeOf(referencedNode);
+      symbolType = getMCTypeFacade().createOptionalTypeOf(referencedNode);
     }
     ASTCDAttribute refSymbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolType, astcdAttribute.getName());
     TransformationHelper.addStereotypeValue(refSymbolAttribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL.toString(), referencedSymbol);

@@ -63,7 +63,7 @@ public class SymbolTableConstants {
 
   public static final String I_MODELING_LANGUAGE = "de.monticore.IModelingLanguage";
 
-  public static final String I_MODEL_LOADER = "de.monticore.modelloader.IModelLoader<%s, %s>";
+  public static final String I_MODEL_LOADER = "de.monticore.modelloader.IModelLoader";
 
   public static final String AST_PROVIDER = "de.monticore.modelloader.AstProvider<%s>";
 
@@ -73,9 +73,9 @@ public class SymbolTableConstants {
 
   public static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
 
-  public static final String PREDICATE = "java.util.function.Predicate<%s>";
+  public static final String PREDICATE = "java.util.function.Predicate";
 
-  public static final String SYMBOL_MULTI_MAP = "com.google.common.collect.LinkedListMultimap<String, %s>";
+  public static final String SYMBOL_MULTI_MAP = "com.google.common.collect.LinkedListMultimap";
 
   public static final String JSON_OBJECT = "de.monticore.symboltable.serialization.json.JsonObject";
 
@@ -85,11 +85,9 @@ public class SymbolTableConstants {
 
   public static final String ACCESS_MODIFIER_ALL_INCLUSION = "de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION";
 
-  public static final String DEQUE_TYPE = "Deque<%s>";
+  public static final String DEQUE_TYPE = "Deque";
 
-  public static final String DEQUE_WILDCARD_TYPE = "Deque<? extends %s>";
-
-  public static final String I_DE_SER_TYPE = "de.monticore.symboltable.serialization.IDeSer<%s>";
+  public static final String I_DE_SER_TYPE = "de.monticore.symboltable.serialization.IDeSer";
 
   public static final String MODEL_PATH_TYPE = "de.monticore.io.paths.ModelPath";
 

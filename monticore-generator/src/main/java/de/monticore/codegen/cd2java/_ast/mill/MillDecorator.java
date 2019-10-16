@@ -41,7 +41,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
         .collect(Collectors.toList());
 
     String millClassName = compilationUnit.getCDDefinition().getName() + MILL_SUFFIX;
-    ASTMCType millType = this.getCDTypeFacade().createTypeByDefinition(millClassName);
+    ASTMCType millType = this.getMCTypeFacade().createQualifiedType(millClassName);
 
     List<CDDefinitionSymbol> superSymbolList = service.getSuperCDsTransitive();
 
@@ -122,7 +122,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
 
     for (ASTCDClass astcdClass : astcdClassList) {
       String astName = astcdClass.getName();
-      ASTMCQualifiedType builderType = this.getCDTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX);
+      ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX);
       String methodName = StringTransformations.uncapitalize(astName.replaceFirst("AST", "")) + BUILDER_SUFFIX;
 
       // add public static Method for Builder
@@ -157,7 +157,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
         for (ASTCDClass superClass : copiedList) {
           if (!service.isClassOverwritten(superClass, classList)) {
             String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
-            ASTMCQualifiedType superAstType = this.getCDTypeFacade().createQualifiedType(packageName + superClass.getName() + BUILDER_SUFFIX);
+            ASTMCQualifiedType superAstType = this.getMCTypeFacade().createQualifiedType(packageName + superClass.getName() + BUILDER_SUFFIX);
             String methodName = StringTransformations.uncapitalize(superClass.getName().replaceFirst("AST", "")) + BUILDER_SUFFIX;
 
             //add builder method

@@ -12,11 +12,9 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,15 +32,12 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
 
   private ASTCDClass originalClass;
 
-  private MCTypeFacade MCTypeFacade = MCTypeFacade.getInstance();
-
-  private static final String NAME_SYMBOL_MAP = "Map<String, Optional<de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol>>";
+  private static final String NAME_SYMBOL_MAP = "Map<String,Optional<de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol>>";
 
   @Before
   public void setup() {
     LogStub.init();
     LogStub.enableFailQuick(false);
-    this.MCTypeFacade = MCTypeFacade.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
@@ -77,15 +72,14 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
     assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
     assertEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol", stereotype.getValue(0).getValue());
-    assertDeepEquals(MCTypeFacade.createTypeByDefinition("java.util.List<String>"), nameAttribute.getMCType());
+    assertDeepEquals("java.util.List<String>", nameAttribute.getMCType());
   }
 
   @Test
   public void testSymbolAttribute() {
     ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astClass);
     assertTrue(symbolAttribute.getModifier().isProtected());
-    ASTMCType symboType = this.MCTypeFacade.createTypeByDefinition(NAME_SYMBOL_MAP);
-    assertDeepEquals(symboType, symbolAttribute.getMCType());
+    assertDeepEquals(NAME_SYMBOL_MAP, symbolAttribute.getMCType());
   }
 
   @Test
