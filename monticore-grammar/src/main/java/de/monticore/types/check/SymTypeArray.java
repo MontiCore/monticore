@@ -9,7 +9,7 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 public class SymTypeArray extends SymTypeExpression {
   
   /**
-   * An arrayType has a dimension
+   * An arrayType has a dimension (>= 1)
    */
   protected int dim;
   
@@ -48,7 +48,7 @@ public class SymTypeArray extends SymTypeExpression {
    */
   public String print() {
     StringBuffer r = new StringBuffer(getArgument().print());
-    for(int i = 1; i<=dim;i++){
+    for(int i = 1; i<=dim; i++){
       r.append("[]");
     }
     return r.toString();

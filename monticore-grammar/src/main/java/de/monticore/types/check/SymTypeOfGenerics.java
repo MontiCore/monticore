@@ -41,7 +41,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   protected TypeSymbol objTypeConstructorSymbol;
   
   
-  @Deprecated // XXX bestezt nicht alle Attribute und kann wohl raus.
+  @Deprecated // TODO: delete, only used by another deprecated method
   public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments) {
     this.typeConstructorFullName = typeConstructorFullName;
     this.arguments = arguments;
@@ -123,8 +123,8 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   
   // --------------------------------------------------------------------------
   // From here on: Standard functionality to access the list of arguments
-  // TODO: (was copied from a created class)
-  // (and demonstrates that we still can optimize our generators)
+  // (was copied from a created class)
+  // (and demonstrates that we still can optimize our generators & build processes)
   // --------------------------------------------------------------------------
   
 
