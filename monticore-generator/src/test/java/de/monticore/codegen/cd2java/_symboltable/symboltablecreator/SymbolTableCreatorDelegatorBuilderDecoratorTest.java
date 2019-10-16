@@ -10,8 +10,8 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -37,7 +37,7 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  private CDTypeFacade cdTypeFacade;
+  private MCTypeFacade MCTypeFacade;
 
   private static final String I_A_SCOPE = "IAScope";
 
@@ -51,7 +51,7 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
   public void setUp() {
     Log.init();
     this.glex = new GlobalExtensionManagement();
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.MCTypeFacade = MCTypeFacade.getInstance();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
@@ -140,7 +140,7 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(BUILDER_NAME, method.getMCReturnType().getMCType());
 
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(DEQUE_TYPE);
+    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(DEQUE_TYPE);
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("scopeStack", method.getCDParameter(0).getName());
@@ -165,7 +165,7 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(BUILDER_NAME, method.getMCReturnType().getMCType());
 
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(I_A_GLOBAL_SCOPE);
+    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(I_A_GLOBAL_SCOPE);
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("globalScope", method.getCDParameter(0).getName());
@@ -186,7 +186,7 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
   public void testBuildMethod() {
     ASTCDMethod method = getMethodBy("build", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createQualifiedType("ASymbolTableCreatorDelegator"), method.getMCReturnType().getMCType());
+    assertDeepEquals(MCTypeFacade.createQualifiedType("ASymbolTableCreatorDelegator"), method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }

@@ -15,8 +15,8 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.referencedDefinition.ASTReferencedDefinitionDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.referencedDefinition.referencedDefinitionMethodDecorator.ReferencedDefinitionAccessorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -38,7 +38,7 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
 
   private ASTCDClass astClass;
 
-  private CDTypeFacade cdTypeFacade = CDTypeFacade.getInstance();
+  private MCTypeFacade MCTypeFacade = MCTypeFacade.getInstance();
 
   private static final String NAME_DEFINITION = "de.monticore.codegen.ast.referencedsymbol._ast.ASTFoo";
 
@@ -46,7 +46,7 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
   public void setup() {
     LogStub.init();
     LogStub.enableFailQuick(false);
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.MCTypeFacade = MCTypeFacade.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
@@ -80,7 +80,7 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
   public void testGetNameDefinitionMethod() {
     ASTCDMethod method = getMethodBy("getNameDefinition", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(NAME_DEFINITION);
+    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(NAME_DEFINITION);
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(astType, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());

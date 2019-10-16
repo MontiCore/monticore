@@ -7,7 +7,6 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -125,9 +124,9 @@ public class EmfService extends AbstractService {
     DecorationHelper decorationHelper = new DecorationHelper();
     if (decorationHelper.isAstNode(astcdAttribute) || decorationHelper.isOptionalAstNode(astcdAttribute)
         || decorationHelper.isListAstNode(astcdAttribute)) {
-      return CDTypeFacade.getInstance().createQualifiedType(E_REFERENCE_TYPE);
+      return MCTypeFacade.getInstance().createQualifiedType(E_REFERENCE_TYPE);
     } else {
-      return CDTypeFacade.getInstance().createQualifiedType(E_ATTRIBUTE_TYPE);
+      return MCTypeFacade.getInstance().createQualifiedType(E_ATTRIBUTE_TYPE);
     }
   }
 

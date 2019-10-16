@@ -13,8 +13,8 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MillDecoratorTest extends DecoratorTestCase {
 
-  private CDTypeFacade cdTypeFacade;
+  private MCTypeFacade MCTypeFacade;
 
   private ASTCDClass millClass;
 
@@ -45,7 +45,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     LogStub.init();
     LogStub.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.MCTypeFacade = MCTypeFacade.getInstance();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
@@ -98,7 +98,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     //test Parameters
     assertTrue(getMill.isEmptyCDParameters());
     //test ReturnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("AutomatonMill");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("AutomatonMill");
     assertTrue(getMill.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, getMill.getMCReturnType().getMCType());
     //test Modifier
@@ -112,7 +112,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertEquals("initMe", initMe.getName());
     //test Parameters
     assertEquals(1, initMe.sizeCDParameters());
-    ASTMCType type = cdTypeFacade.createQualifiedType("AutomatonMill");
+    ASTMCType type = MCTypeFacade.createQualifiedType("AutomatonMill");
     assertDeepEquals(type, initMe.getCDParameter(0).getMCType());
     assertEquals("a", initMe.getCDParameter(0).getName());
     //test ReturnType
@@ -155,7 +155,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomatonBuilder");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("ASTAutomatonBuilder");
     assertTrue(fooBarBuilder.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
@@ -170,7 +170,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomatonBuilder");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("ASTAutomatonBuilder");
     assertTrue(fooBarBuilder.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
@@ -186,7 +186,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTStateBuilder");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("ASTStateBuilder");
     assertTrue(fooBarBuilder.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
@@ -201,7 +201,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTStateBuilder");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("ASTStateBuilder");
     assertTrue(fooBarBuilder.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
@@ -217,7 +217,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTTransitionBuilder");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("ASTTransitionBuilder");
     assertTrue(fooBarBuilder.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
@@ -232,7 +232,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTTransitionBuilder");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("ASTTransitionBuilder");
     assertTrue(fooBarBuilder.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier

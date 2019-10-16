@@ -78,19 +78,19 @@ public class CDAttributeFacade {
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final String type, final String name) {
-    return createAttribute(modifier, CDTypeFacade.getInstance().createQualifiedType(type), name);
+    return createAttribute(modifier, MCTypeFacade.getInstance().createQualifiedType(type), name);
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final String type) {
-    return createAttribute(modifier, CDTypeFacade.getInstance().createQualifiedType(type), StringUtils.uncapitalize(type));
+    return createAttribute(modifier, MCTypeFacade.getInstance().createQualifiedType(type), StringUtils.uncapitalize(type));
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final Class<?> type, final String name) {
-    return createAttribute(modifier, CDTypeFacade.getInstance().createQualifiedType(type), name);
+    return createAttribute(modifier, MCTypeFacade.getInstance().createQualifiedType(type), name);
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final Class<?> type) {
-    return createAttribute(modifier, CDTypeFacade.getInstance().createQualifiedType(type), StringUtils.uncapitalize(type.getSimpleName()));
+    return createAttribute(modifier, MCTypeFacade.getInstance().createQualifiedType(type), StringUtils.uncapitalize(type.getSimpleName()));
   }
 
 

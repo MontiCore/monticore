@@ -5,7 +5,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -15,7 +15,8 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
@@ -31,7 +32,7 @@ public class OptionalMutatorDecoratorTest {
   @Before
   public void setup() {
     LogStub.init();
-    ASTMCType optionalType = CDTypeFacade.getInstance().createOptionalTypeOf(String.class);
+    ASTMCType optionalType = MCTypeFacade.getInstance().createOptionalTypeOf(String.class);
     ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED, optionalType, "a");
     OptionalMutatorDecorator optionalMutatorDecorator = new OptionalMutatorDecorator(glex);
     this.methods = optionalMutatorDecorator.decorate(attribute);

@@ -2,7 +2,10 @@
 package de.monticore.codegen.cd2java;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.cd2java.factories.*;
+import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
+import de.monticore.codegen.cd2java.factories.CDConstructorFacade;
+import de.monticore.codegen.cd2java.factories.CDMethodFacade;
+import de.monticore.codegen.cd2java.factories.CDParameterFacade;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 
@@ -18,7 +21,7 @@ public abstract class AbstractDecorator{
 
   private boolean templatesEnabled;
 
-  private final CDTypeFacade cdTypeFacade;
+  private final MCTypeFacade MCTypeFacade;
 
   private final CDAttributeFacade cdAttributeFacade;
 
@@ -34,7 +37,7 @@ public abstract class AbstractDecorator{
 
   public AbstractDecorator(final GlobalExtensionManagement glex) {
     this(glex,
-        CDTypeFacade.getInstance(),
+        MCTypeFacade.getInstance(),
         CDAttributeFacade.getInstance(),
         CDConstructorFacade.getInstance(),
         CDMethodFacade.getInstance(),
@@ -43,14 +46,14 @@ public abstract class AbstractDecorator{
   }
 
   public AbstractDecorator(final GlobalExtensionManagement glex,
-      final CDTypeFacade cdTypeFacade,
-      final CDAttributeFacade cdAttributeFacade,
-      final CDConstructorFacade cdConstructorFacade,
-      final CDMethodFacade cdMethodFacade,
-      final CDParameterFacade cdParameterFacade) {
+                           final MCTypeFacade MCTypeFacade,
+                           final CDAttributeFacade cdAttributeFacade,
+                           final CDConstructorFacade cdConstructorFacade,
+                           final CDMethodFacade cdMethodFacade,
+                           final CDParameterFacade cdParameterFacade) {
     this.glex = glex;
     this.templatesEnabled = true;
-    this.cdTypeFacade = cdTypeFacade;
+    this.MCTypeFacade = MCTypeFacade;
     this.cdAttributeFacade = cdAttributeFacade;
     this.cdConstructorFacade = cdConstructorFacade;
     this.cdMethodFacade = cdMethodFacade;
@@ -75,8 +78,8 @@ public abstract class AbstractDecorator{
     }
   }
 
-  protected CDTypeFacade getCDTypeFacade() {
-    return this.cdTypeFacade;
+  protected MCTypeFacade getCDTypeFacade() {
+    return this.MCTypeFacade;
   }
 
   protected CDAttributeFacade getCDAttributeFacade() {

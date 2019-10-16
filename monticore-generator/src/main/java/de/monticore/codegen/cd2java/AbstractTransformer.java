@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
-import de.monticore.codegen.cd2java.factories.*;
+import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
+import de.monticore.codegen.cd2java.factories.CDConstructorFacade;
+import de.monticore.codegen.cd2java.factories.CDMethodFacade;
+import de.monticore.codegen.cd2java.factories.CDParameterFacade;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 public abstract class AbstractTransformer<I> extends AbstractDecorator {
@@ -14,7 +17,7 @@ public abstract class AbstractTransformer<I> extends AbstractDecorator {
 
   public AbstractTransformer(final GlobalExtensionManagement glex) {
     super(glex,
-        CDTypeFacade.getInstance(),
+        MCTypeFacade.getInstance(),
         CDAttributeFacade.getInstance(),
         CDConstructorFacade.getInstance(),
         CDMethodFacade.getInstance(),

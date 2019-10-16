@@ -13,8 +13,8 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MillWithInheritanceTest extends DecoratorTestCase {
 
-  private CDTypeFacade cdTypeFacade;
+  private MCTypeFacade MCTypeFacade;
 
   private ASTCDClass millClass;
 
@@ -46,7 +46,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     LogStub.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
 
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.MCTypeFacade = MCTypeFacade.getInstance();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
@@ -93,7 +93,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     //test Parameters
     assertTrue(getMill.isEmptyCDParameters());
     //test ReturnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("CGrammarMill");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("CGrammarMill");
     assertTrue(getMill.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, getMill.getMCReturnType().getMCType());
     //test Modifier
@@ -107,7 +107,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     assertEquals("initMe", initMe.getName());
     //test Parameters
     assertEquals(1, initMe.sizeCDParameters());
-    ASTMCType type = cdTypeFacade.createQualifiedType("CGrammarMill");
+    ASTMCType type = MCTypeFacade.createQualifiedType("CGrammarMill");
     assertDeepEquals(type, initMe.getCDParameter(0).getMCType());
     assertEquals("a", initMe.getCDParameter(0).getName());
     //test ReturnType
@@ -150,7 +150,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.bgrammar._ast.ASTBBuilder");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.bgrammar._ast.ASTBBuilder");
     assertTrue(fooBarBuilder.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
@@ -166,7 +166,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTFooBuilder");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTFooBuilder");
     assertTrue(fooBarBuilder.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
@@ -181,7 +181,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTBarBuilder");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTBarBuilder");
     assertTrue(fooBarBuilder.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier

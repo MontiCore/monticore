@@ -9,8 +9,8 @@ import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -200,7 +200,7 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
   public void testGetASTESuperPackagesMethod() {
     ASTCDMethod method = getMethodBy("getASTESuperPackages", packageClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(CDTypeFacade.getInstance().createListTypeOf("de.monticore.emf._ast.ASTEPackage"), method.getMCReturnType().getMCType());
+    assertDeepEquals(MCTypeFacade.getInstance().createListTypeOf("de.monticore.emf._ast.ASTEPackage"), method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 

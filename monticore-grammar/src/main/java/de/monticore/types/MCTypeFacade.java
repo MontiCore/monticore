@@ -1,13 +1,11 @@
+// (c) https://github.com/MontiCore/monticore
+
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java.factories;
+package de.monticore.types;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.cd.cd4code._parser.CD4CodeParser;
-import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
-import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
-import de.monticore.types.MCCollectionTypesHelper;
-import de.monticore.types.MCFullGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
@@ -16,58 +14,32 @@ import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Optional;
 
-public class CDTypeFacade {
+/**
+ * Class that helps with the creation of ASTMCTypes
+ */
+
+public class MCTypeFacade {
 
   private static final String PACKAGE_SEPARATOR = "\\.";
 
-  private static CDTypeFacade cdTypeFacade;
+  private static MCTypeFacade MCTypeFacade;
 
-  private final CD4CodeParser parser;
+  private final MCfullgenerictypep parser;
 
-  private CDTypeFacade() {
+  private MCTypeFacade() {
     this.parser = new CD4CodeParser();
   }
 
-  public static CDTypeFacade getInstance() {
-    if (cdTypeFacade == null) {
-      cdTypeFacade = new CDTypeFacade();
+  public static MCTypeFacade getInstance() {
+    if (MCTypeFacade == null) {
+      MCTypeFacade = new MCTypeFacade();
     }
-    return cdTypeFacade;
+    return MCTypeFacade;
   }
 
-  public ASTMCType createTypeByDefinition(final String typeSignature) {
-    Optional<ASTMCType> type;
-    try {
-      type = parser.parseMCType(new StringReader(typeSignature));
-    } catch (IOException e) {
-      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_TYPE, typeSignature, e);
-    }
-
-    if (!type.isPresent()) {
-      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_TYPE, typeSignature);
-    }
-
-    return type.get();
-  }
-
-  public ASTMCQualifiedType createReferenceTypeByDefinition(final String typeSignature) {
-    Optional<ASTMCQualifiedType> type;
-    try {
-      type = parser.parseMCQualifiedType(new StringReader(typeSignature));
-    } catch (IOException e) {
-      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_TYPE, typeSignature, e);
-    }
-
-    if (!type.isPresent()) {
-      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_TYPE, typeSignature);
-    }
-
-    return type.get();
-  }
 
   public ASTMCQualifiedType createQualifiedType(final Class<?> clazz) {
     return createQualifiedType(clazz.getSimpleName());
@@ -83,8 +55,8 @@ public class CDTypeFacade {
   }
 
   public ASTMCOptionalType createOptionalTypeOf(final String name) {
-    ASTMCTypeArgument arg = CD4CodeMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
-    return CD4CodeMill.mCOptionalTypeBuilder().addMCTypeArgument(arg).build();
+    ASTMCTypeArgument arg = MCFullGenericTypesMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
+    return MCFullGenericTypesMill.mCOptionalTypeBuilder().addMCTypeArgument(arg).build();
   }
 
   public ASTMCOptionalType createOptionalTypeOf(final ASTMCType type) {
@@ -121,7 +93,7 @@ public class CDTypeFacade {
   }
 
   public ASTMCSetType createSetTypeOf(final String name) {
-    Optional<ASTMCTypeArgument> arg = null;
+    Optional<ASTMCTypeArgument> arg = MCFullGenericTypesMill.typearg;
     try {
       arg = new CD4CodeParser().parse_StringMCTypeArgument(name);
     } catch (IOException e) {
@@ -142,9 +114,10 @@ public class CDTypeFacade {
   }
 
   public ASTMCType createCollectionTypeOf(final String name) {
-    ASTMCTypeArgument arg = CD4CodeMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
+    ASTMCTypeArgument arg = MCFullGenericTypesMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(name)).build();
     // TODO Ersetze CD4Code durch was besseres
-    return CD4CodeMill.mCBasicGenericTypeBuilder().setNameList(Lists.newArrayList("Collection")).setMCTypeArgumentList(Lists.newArrayList(arg)).build();
+    return MCFullGenericTypesMill.mCBasicGenericTypeBuilder().setNameList(Lists.newArrayList("Collection"))
+        .setMCTypeArgumentList(Lists.newArrayList(arg)).build();
   }
 
   public ASTMCType createCollectionTypeOf(final ASTMCType type) {
@@ -152,9 +125,9 @@ public class CDTypeFacade {
   }
 
   public ASTMCMapType createMapTypeOf(final String firstType, final String secondType) {
-    ASTMCTypeArgument first = CD4CodeMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(firstType)).build();
-    ASTMCTypeArgument second = CD4CodeMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(secondType)).build();
-    return CD4CodeMill.mCMapTypeBuilder().setKey(first).setValue(second).build();
+    ASTMCTypeArgument first = MCFullGenericTypesMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(firstType)).build();
+    ASTMCTypeArgument second = MCFullGenericTypesMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(createQualifiedType(secondType)).build();
+    return MCFullGenericTypesMill.mCMapTypeBuilder().setKey(first).setValue(second).build();
   }
 
   public ASTMCArrayType createArrayType(final Class<?> clazz, int dimension) {

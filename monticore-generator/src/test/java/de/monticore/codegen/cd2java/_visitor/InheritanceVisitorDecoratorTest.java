@@ -9,7 +9,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class InheritanceVisitorDecoratorTest extends DecoratorTestCase {
-  private CDTypeFacade cdTypeFacade;
+  private MCTypeFacade MCTypeFacade;
 
   private ASTCDInterface visitorInterface;
 
@@ -50,7 +50,7 @@ public class InheritanceVisitorDecoratorTest extends DecoratorTestCase {
     LogStub.init();
     LogStub.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.MCTypeFacade = MCTypeFacade.getInstance();
 
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
@@ -97,7 +97,7 @@ public class InheritanceVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void tesHandleASTAutomaton() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorInterface);
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_AUTOMATON);
+    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_AUTOMATON);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -110,7 +110,7 @@ public class InheritanceVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void tesHandleASTState() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorInterface);
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_STATE);
+    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_STATE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -123,7 +123,7 @@ public class InheritanceVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void tesHandleASTTransition() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorInterface);
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_TRANSITION);
+    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_TRANSITION);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -135,7 +135,7 @@ public class InheritanceVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void tesHandleASTAutomatonNode() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorInterface);
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_AUTOMATON_NODE);
+    ASTMCType astType = this.MCTypeFacade.createTypeByDefinition(AST_AUTOMATON_NODE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();

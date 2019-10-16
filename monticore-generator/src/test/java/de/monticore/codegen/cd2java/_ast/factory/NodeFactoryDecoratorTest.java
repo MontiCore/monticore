@@ -10,8 +10,8 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.CDParameterFacade;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 
 public class NodeFactoryDecoratorTest extends DecoratorTestCase {
 
-  private CDTypeFacade cdTypeFacade;
+  private MCTypeFacade MCTypeFacade;
 
   private CDParameterFacade cdParameterFacade;
 
@@ -44,7 +44,7 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     LogStub.init();
     LogStub.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.MCTypeFacade = MCTypeFacade.getInstance();
     this.cdParameterFacade = CDParameterFacade.getInstance();
 
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
@@ -103,7 +103,7 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("AutomatonNodeFactory");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("AutomatonNodeFactory");
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, method.getMCReturnType().getMCType());
   }
@@ -118,7 +118,7 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("ASTAutomaton");
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, method.getMCReturnType().getMCType());
   }
@@ -133,7 +133,7 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTMCType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
+    ASTMCType returnType = MCTypeFacade.createTypeByDefinition("ASTAutomaton");
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(returnType, method.getMCReturnType().getMCType());
   }
