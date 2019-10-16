@@ -246,6 +246,9 @@ public class TypeCheck {
         return true;
       }
       return false;
+    }else if((subType.isPrimitive() && !superType.isPrimitive()) ||
+        (superType.isPrimitive() && !subType.isPrimitive())){
+      return false;
     }
     return isSubtypeOfRec(subType,superType);
   }

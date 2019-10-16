@@ -7,6 +7,7 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.typesymbols._symboltable.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 
@@ -73,14 +74,96 @@ public class DefsTypeBasic {
             .setMethodList(new ArrayList<>())
             .build();
   }
+
+  public static TypeSymbol type(String name, List<SymTypeExpression> superTypes){
+    return TypeSymbolsSymTabMill.typeSymbolBuilder()
+            .setName(name)
+            .setFullName(name)
+            .setSuperTypeList(superTypes)
+            .build();
+  }
+
+  public static TypeSymbol type(String name, List<SymTypeExpression> superTypes, List<TypeVarSymbol> typeArguments){
+    return TypeSymbolsSymTabMill.typeSymbolBuilder()
+            .setName(name)
+            .setFullName(name)
+            .setSuperTypeList(superTypes)
+            .setTypeParameterList(typeArguments)
+            .build();
+  }
+
+  public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
+                                List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList){
+    TypeSymbol t = TypeSymbolsSymTabMill.typeSymbolBuilder()
+        .setName(name)
+        .setFullName(name)
+        .setTypeParameterList(typeVariableList)
+        .setSuperTypeList(superTypeList)
+        .setMethodList(methodList)
+        .setFieldList(fieldList)
+        .build();
+    ExpressionsBasisScope spannedScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    for(MethodSymbol method: methodList){
+      add2scope(spannedScope,method);
+      if(method.getSpannedScope()!=null){
+        method.getSpannedScope().setEnclosingScope(spannedScope);
+      }
+    }
+    for(FieldSymbol field: fieldList){
+      add2scope(spannedScope,field);
+    }
+    t.setSpannedScope(spannedScope);
+    return t;
+  }
+
+  public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
+                                List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList,
+                                ExpressionsBasisScope enclosingScope){
+    TypeSymbol t = TypeSymbolsSymTabMill.typeSymbolBuilder()
+        .setName(name)
+        .setFullName(name)
+        .setTypeParameterList(typeVariableList)
+        .setSuperTypeList(superTypeList)
+        .setMethodList(methodList)
+        .setFieldList(fieldList)
+        .setEnclosingScope(enclosingScope)
+        .build();
+    ExpressionsBasisScope spannedScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    spannedScope.setEnclosingScope(enclosingScope);
+    for(MethodSymbol method: methodList){
+      add2scope(spannedScope,method);
+      if(method.getSpannedScope()!=null){
+        method.getSpannedScope().setEnclosingScope(spannedScope);
+      }
+    }
+    for(FieldSymbol field: fieldList){
+      add2scope(spannedScope,field);
+    }
+    t.setSpannedScope(spannedScope);
+    return t;
+  }
+
+  /**
+   * create TypeVariableSymbols (some defaults apply)
+   */
+  public static TypeVarSymbol typeVariable(String name){
+    return TypeSymbolsSymTabMill.typeVarSymbolBuilder()
+        .setName(name)
+        .setFullName(name)
+        .build();
+  }
   
   public static TypeSymbol add(TypeSymbol t, FieldSymbol f) {
-    t.getFieldList().add(f);
+    List<FieldSymbol> fieldList = t.getFieldList();
+    fieldList.add(f);
+    t.setFieldList(fieldList);
     return t;
   }
   
   public static TypeSymbol add(TypeSymbol t, MethodSymbol m) {
-    t.getMethodList().add(m);
+    List<MethodSymbol> methodList = t.getMethodList();
+    methodList.add(m);
+    t.setMethodList(methodList);
     return t;
   }
   

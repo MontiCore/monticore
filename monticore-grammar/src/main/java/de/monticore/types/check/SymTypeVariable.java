@@ -16,7 +16,7 @@ public class SymTypeVariable extends SymTypeExpression {
   {
     this.varName = varName;
   }
-  
+
   public String getVarName() {
     return varName;
   }
@@ -58,10 +58,23 @@ public class SymTypeVariable extends SymTypeExpression {
      *     a monomorphic type on its own and do hence not regard it as primitive type
       */
   }
-  
+
+  public boolean isTypeVariable() {
+    return true;
+  }
+
+  @Override
+  public SymTypeVariable deepClone() {
+    SymTypeVariable clone = new SymTypeVariable();
+    clone.setVarName(this.getVarName());
+    clone.setName(this.getName());
+    clone.setTypeInfo(this.getTypeInfo());
+    return clone;
+  }
+
 
   // --------------------------------------------------------------------------
-  
+
   // TODO 4: kann entfernt werden
   @Deprecated
   public SymTypeVariable() {

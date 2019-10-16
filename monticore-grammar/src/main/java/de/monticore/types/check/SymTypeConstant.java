@@ -63,7 +63,7 @@ public class SymTypeConstant extends SymTypeExpression {
     return jp.getContent();
   }
   
-  
+
   /**
    * List of potential constants
    * (on purpose not implemented as enum)
@@ -82,7 +82,7 @@ public class SymTypeConstant extends SymTypeExpression {
    */
   public static Map<String,String> boxMap;
   
-  
+
   /**
    * initializing the maps
    */
@@ -132,7 +132,7 @@ public class SymTypeConstant extends SymTypeExpression {
       return boxedName;
   }
   
-  
+
   /**
    * Boxing const types (e.g. "boolean" -> "java.lang.Boolean")
    * Results are fully qualified.
@@ -146,7 +146,7 @@ public class SymTypeConstant extends SymTypeExpression {
     else
       return unboxedName;
   }
-  
+
   
   /**
    * Checks whether it is an integer type (incl. byte, long, char)
@@ -176,8 +176,17 @@ public class SymTypeConstant extends SymTypeExpression {
   public boolean isPrimitive() {
     return true;
   }
-  
-  
+
+  @Override
+  public SymTypeConstant deepClone() {
+    SymTypeConstant clone = new SymTypeConstant(this.constName);
+    clone.setName(this.name);
+    clone.setConstName(this.constName);
+    clone.setTypeInfo(this.getTypeInfo());
+    return clone;
+  }
+
+
   // --------------------------------------------------------------------------
   
   @Deprecated

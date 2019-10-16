@@ -29,7 +29,12 @@ public class SymTypeOfNull extends SymTypeExpression {
   protected String printAsJson() {
     return "\""+print()+"\"";
   }
-    
+
+  @Override
+  public SymTypeOfNull deepClone() {
+    return new SymTypeOfNull();
+  }
+
   // --------------------------------------------------------------------------
   
 

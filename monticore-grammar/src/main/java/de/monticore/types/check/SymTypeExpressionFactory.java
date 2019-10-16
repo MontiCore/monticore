@@ -47,7 +47,7 @@ public class SymTypeExpressionFactory {
     SymTypeOfObject o = new SymTypeOfObject(name,objTypeSymbol);
     return o;
   }
-  
+
   /**
    * for ObjectTypes, as e.g. "Person"
    * @param name  Name of the type
@@ -58,7 +58,7 @@ public class SymTypeExpressionFactory {
     o.setObjName(name);
     return o;
   }
-  
+
   /**
    * creates the "Void"-type, i.e. a pseudotype that represents the absence of a real type
    * @return
@@ -86,7 +86,7 @@ public class SymTypeExpressionFactory {
     SymTypeArray o = new SymTypeArray(dim, argument);
     return o;
   }
-  
+
   /**
    * creates a TypeExpression for primitives, such as "int", for "null", "void" and
    * also for object types, such as "Person" from a given symbol
