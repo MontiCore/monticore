@@ -37,16 +37,15 @@ public class SymTypeVariableDeSer implements IDeSer<SymTypeVariable> {
   
   public Optional<SymTypeVariable> deserialize(JsonElement serialized) {
     if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
-      SymTypeVariable result = new SymTypeVariable();
       Optional<String> varName = JsonUtil.getOptStringMember(serialized, "varName");
       if (varName.isPresent()) {
-        result.setVarName(varName.get());
+        return Optional.of(new SymTypeVariable(varName.get()));
       }
       else {
-        Log.error("Could not find varName of SymTypeVariable " + serialized);
+        Log.error("0x75D4F5 Could not find varName of SymTypeVariable " + serialized);
       }
-      return Optional.of(result);
     }
+    // TODO: warum entsteht hier keine Fehlermeldung im else Teil
     return Optional.empty();
   }
   

@@ -50,16 +50,20 @@ public class SymTypeVariable extends SymTypeExpression {
    */
   public boolean isPrimitive() {
     return false;
-    // Please note that the var itself is not a primitive type, but it might
-    // be instantiated into a primitive type
-    // Unless we always assume boxed implementations then return false would be correct
-    // according to the W algorithm of Hindley-Milner, we regard a variable
-    // a monomorphic type on its own and do hence not regard it as primitive type
+    /**
+     *     Please note that the var itself is not a primitive type, but it might
+     *     be instantiated into a primitive type
+     *     unless we always assume boxed implementations then return false would be correct
+     *     according to the W algorithm of Hindley-Milner, we regard a variable
+     *     a monomorphic type on its own and do hence not regard it as primitive type
+      */
   }
   
 
   // --------------------------------------------------------------------------
   
+  // TODO 4: kann entfernt werden
+  @Deprecated
   public SymTypeVariable() {
   }
   

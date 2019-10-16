@@ -64,7 +64,6 @@ public class SymTypeConstant extends SymTypeExpression {
   }
   
   
-  // TODO Future: box, unbox hier rausnehmen und als überschreibbare Dynamische Methoden nach TypeCheck
   /**
    * List of potential constants
    * (on purpose not implemented as enum)
@@ -82,6 +81,7 @@ public class SymTypeConstant extends SymTypeExpression {
    * Results are fully qualified.
    */
   public static Map<String,String> boxMap;
+  
   
   /**
    * initializing the maps
@@ -125,13 +125,13 @@ public class SymTypeConstant extends SymTypeExpression {
    * @param boxedName
    * @return
    */
-
   public static String unbox(String boxedName) {
     if (unboxMap.containsKey(boxedName))
       return unboxMap.get(boxedName);
     else
       return boxedName;
   }
+  
   
   /**
    * Boxing const types (e.g. "boolean" -> "java.lang.Boolean")
@@ -146,8 +146,6 @@ public class SymTypeConstant extends SymTypeExpression {
     else
       return unboxedName;
   }
-  
-  // TODO: 2-3 Tests zB box(unbox("..."))
   
   
   /**
@@ -187,7 +185,5 @@ public class SymTypeConstant extends SymTypeExpression {
     this.name = name;
     this.constName = name; // Nur ein Hack um die Tests am laufen zu halten, die setName nutzen
   }
-
-  //hier enum attr für primitive types
   
 }
