@@ -1,6 +1,8 @@
 package de.monticore.codegen.cd2java._symboltable.symboltablecreator;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -52,7 +54,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       String dequeWildcardType = String.format(DEQUE_WILDCARD_TYPE, scopeInterface);
 
       String simpleName = symbolTableService.removeASTPrefix(Names.getSimpleName(startProd.get()));
-      List<ASTCDType> symbolDefiningClasses = symbolTableService.getSymbolDefiningClasses(input.getCDDefinition().getCDClassList());
+      List<ASTCDType> symbolDefiningClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition().getCDClassList());
       Map<ASTCDClass, String> inheritedSymbolPropertyClasses = symbolTableService.getInheritedSymbolPropertyClasses(input.getCDDefinition().getCDClassList());
       List<ASTCDType> noSymbolDefiningClasses = symbolTableService.getNoSymbolAndScopeDefiningClasses(input.getCDDefinition().getCDClassList());
       List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
@@ -84,6 +86,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
           .addAllCDMethods(createSymbolClassMethods(inheritedSymbolPropertyClasses, scopeInterface))
           .addAllCDMethods(createVisitForNoSymbolMethods(noSymbolDefiningClasses))
           .addAllCDMethods(createAddToScopeMethods(symbolDefiningProds))
+          .addAllCDMethods(createAddToScopeMethodsForSuperSymbols())
           .addAllCDMethods(createScopeClassMethods(onlyScopeProds, scopeInterface))
           .build();
       return Optional.ofNullable(symTabCreator);
@@ -348,6 +351,23 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       ASTCDMethod addToScopeMethod = getCDMethodFacade().createMethod(PUBLIC, "addToScope", symbolParam);
       this.replaceTemplate(EMPTY_BODY, addToScopeMethod, new TemplateHookPoint(TEMPLATE_PATH + "AddToScope"));
       methodList.add(addToScopeMethod);
+    }
+    return methodList;
+  }
+
+  protected List<ASTCDMethod> createAddToScopeMethodsForSuperSymbols() {
+    List<ASTCDMethod> methodList = new ArrayList<>();
+    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+        if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
+          String symbolFullName = symbolTableService.getSymbolFullName(type.getAstNode().get(), cdDefinitionSymbol);
+          ASTCDParameter symbolParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(symbolFullName), SYMBOL_VAR);
+          ASTCDMethod addToScopeMethod = getCDMethodFacade().createMethod(PUBLIC, "addToScope", symbolParam);
+          this.replaceTemplate(EMPTY_BODY, addToScopeMethod, new TemplateHookPoint(TEMPLATE_PATH + "AddToScope"));
+          methodList.add(addToScopeMethod);
+        }
+      }
     }
     return methodList;
   }

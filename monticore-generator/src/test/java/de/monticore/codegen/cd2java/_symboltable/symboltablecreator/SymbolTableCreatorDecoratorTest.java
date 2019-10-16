@@ -48,6 +48,8 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   private static final String STATE_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.StateSymbol";
 
+  private static final String QUALIFIED_NAME_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.StateSymbol";
+
   private static final String AUTOMATON_VISITOR = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor";
 
   private static final String AST_AUTOMATON = "de.monticore.codegen.symboltable.automaton._ast.ASTAutomaton";
@@ -167,7 +169,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(29, symTabCreatorClass.getCDMethodList().size());
+    assertEquals(30, symTabCreatorClass.getCDMethodList().size());
   }
 
   @Test
@@ -561,6 +563,18 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   public void testAddToScopeStateNode() {
     List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, symTabCreatorClass);
     ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(STATE_SYMBOL);
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  }
+
+  @Test
+  public void testAddToScopeQualifiedNameNode() {
+    List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, symTabCreatorClass);
+    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(QUALIFIED_NAME_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();

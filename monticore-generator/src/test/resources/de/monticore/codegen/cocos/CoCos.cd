@@ -5,9 +5,11 @@ import de.monticore.codegen.cocos.Super1;
 
 classdiagram CoCos {
 
-    class A {
+    public interface ASTCoCosNode;
+
+    class ASTA {
     }
 
-    interface I {
+    interface ASTI {
     }
 }

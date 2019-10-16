@@ -5,7 +5,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 public class CoCoService extends AbstractService<CoCoService> {
@@ -33,7 +32,7 @@ public class CoCoService extends AbstractService<CoCoService> {
   }
 
   public String getCoCoSimpleTypeName(ASTCDType type) {
-    return getCDName() + ASTConstants.AST_PREFIX +  type.getName() + CoCoConstants.COCO_SUFFIX;
+    return getCDName() + type.getName() + CoCoConstants.COCO_SUFFIX;
   }
 
   public String getCoCoFullTypeName(ASTCDType type) {
@@ -45,7 +44,7 @@ public class CoCoService extends AbstractService<CoCoService> {
   }
 
   public String getCoCoSimpleTypeName() {
-    return getCDName() + ASTConstants.AST_PREFIX +  getCDName() + CoCoConstants.NODE_INFIX + CoCoConstants.COCO_SUFFIX;
+    return getCDName() + getCDName() + CoCoConstants.NODE_INFIX + CoCoConstants.COCO_SUFFIX;
   }
 
   public String getCoCoFullTypeName() {
