@@ -56,5 +56,4 @@ public abstract class SymTypeExpression {
    * anonymous types only in List<?> in FullGenericTypes.mc4, not yet supported
    */
 
-  abstract public String getName();
 }

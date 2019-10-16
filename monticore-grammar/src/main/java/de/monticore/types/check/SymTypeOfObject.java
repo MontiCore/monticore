@@ -32,15 +32,6 @@ public class SymTypeOfObject extends SymTypeExpression {
     this.objFullName = objname;
   }
 
-  @Override
-  public String getName() {
-    return getObjName();
-  }
-
-  public void setName(String name) {
-    setObjName(name);
-  }
-  
   /**
    * print: Umwandlung in einen kompakten String
    */

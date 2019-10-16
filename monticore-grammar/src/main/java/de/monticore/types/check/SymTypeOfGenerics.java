@@ -63,15 +63,6 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     this.typeConstructorFullName = typeConstructorFullName;
   }
 
-  @Override
-  public String getName() {
-    return getTypeConstructorFullName();
-  }
-
-  public void setName(String name) {
-    setTypeConstructorFullName(name);
-  }
-  
   public TypeSymbol getObjTypeConstructorSymbol() {
     return objTypeConstructorSymbol;
   }

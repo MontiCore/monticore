@@ -30,11 +30,5 @@ public class SymTypeOfNull extends SymTypeExpression {
     return "\""+print()+"\"";
   }
 
-
-  @Override
-  public String getName() {
-    return print();
-  }
-
   // --------------------------------------------------------------------------
 }

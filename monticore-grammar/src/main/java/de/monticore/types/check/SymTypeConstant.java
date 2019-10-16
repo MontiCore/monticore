@@ -25,15 +25,6 @@ public class SymTypeConstant extends SymTypeExpression {
     return constName;
   }
 
-  @Override
-  public String getName() {
-    return getConstName();
-  }
-
-  public void setName(String name) {
-    setConstName(name);
-  }
-  
   public String getBoxedConstName() {
     return box(constName);
   }
@@ -45,8 +36,8 @@ public class SymTypeConstant extends SymTypeExpression {
   
   public void setConstName(String constName) {
     String c = unbox(constName);
-    if (primitiveTypes.contains(getName())) {
-      this.constName = constName;
+    if (primitiveTypes.contains(c)) {
+      this.constName = c;
     } else {
       Log.error("0xD34B2 Only primitive types allowed (" + primitiveTypes.toString() + "), but was:" + constName);
     }

@@ -24,7 +24,6 @@ public class SymTypeArray extends SymTypeExpression {
     this.setTypeInfo(DefsTypeBasic._array);
   }
   
-
   // ------------------------------------------------------------------ Functions
   
   public int getDim() {
@@ -43,10 +42,6 @@ public class SymTypeArray extends SymTypeExpression {
     this.argument = argument;
   }
 
-  @Override
-  public String getName() {
-    return getArgument().print();
-  }
   /**
    * print: Umwandlung in einen kompakten String
    */
@@ -71,8 +66,6 @@ public class SymTypeArray extends SymTypeExpression {
     jp.endObject();
     return jp.getContent();
   }
-  
-  
+
   // --------------------------------------------------------------------------
-  
 }
