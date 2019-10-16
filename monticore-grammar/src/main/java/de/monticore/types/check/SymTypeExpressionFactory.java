@@ -21,14 +21,20 @@ import java.util.Optional;
  */
 public class SymTypeExpressionFactory {
   
-  /**
-   * createTypeVariable vor Variables
-   */
+  @Deprecated  // weil unvollständige Parameter
   public static SymTypeVariable createTypeVariable(String name) {
     SymTypeVariable o = new SymTypeVariable(name);
     return o;
   }
   
+  /**
+   * createTypeVariable vor Variables
+   */
+  public static SymTypeVariable createTypeVariable(String name, TypeSymbol typeSymbol) {
+    SymTypeVariable o = new SymTypeVariable(name,typeSymbol);
+    return o;
+  }
+
   /**
    * for constants, such as "int" (and no other kinds).
    * TypeInfo is not needed (as the Objects are predefined singletons)
