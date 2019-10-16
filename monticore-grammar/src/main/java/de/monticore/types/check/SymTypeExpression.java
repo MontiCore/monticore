@@ -57,20 +57,4 @@ public abstract class SymTypeExpression {
   }
   
   // --------------------------------------------------------------------------
-
-  /**
-   * TODO 4BR
-   */
-  @Deprecated // and unused .. can be deleted
-  protected String name;
-
-  @Deprecated
-  public String getName() {
-    return name;
-  }
-
-  @Deprecated
-  public void setName(String name) {
-    this.name = name;
-  }
 }
