@@ -45,23 +45,23 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
 
   private static final String LEXICALS_COCO_CHECKER = "de.monticore.codegen.ast.lexicals._cocos.LexicalsCoCoChecker";
 
-  private static final String AUTOMATON_COCO = "de.monticore.codegen.ast.automaton._cocos.AutomatonASTASTAutomatonCoCo";
+  private static final String AUTOMATON_COCO = "de.monticore.codegen.ast.automaton._cocos.AutomatonASTAutomatonCoCo";
 
   private static final String AUTOMATON_NODE_COCO = "de.monticore.codegen.ast.automaton._cocos.AutomatonASTAutomatonNodeCoCo";
 
-  private static final String STATE_COCO = "de.monticore.codegen.ast.automaton._cocos.AutomatonASTASTStateCoCo";
+  private static final String STATE_COCO = "de.monticore.codegen.ast.automaton._cocos.AutomatonASTStateCoCo";
 
-  private static final String TRANSITION_COCO = "de.monticore.codegen.ast.automaton._cocos.AutomatonASTASTTransitionCoCo";
+  private static final String TRANSITION_COCO = "de.monticore.codegen.ast.automaton._cocos.AutomatonASTTransitionCoCo";
 
-  private static final String LEXICALS_NODE_COCO = "de.monticore.codegen.ast.lexicals._cocos.LexicalsASTASTLexicalsNodeCoCo";
+  private static final String LEXICALS_NODE_COCO = "de.monticore.codegen.ast.lexicals._cocos.LexicalsASTLexicalsNodeCoCo";
 
-  private static final String AUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTASTAutomaton";
+  private static final String AUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
 
   private static final String AUTOMATON_NODE = "de.monticore.codegen.ast.automaton._ast.ASTAutomatonNode";
 
-  private static final String STATE = "de.monticore.codegen.ast.automaton._ast.ASTASTState";
+  private static final String STATE = "de.monticore.codegen.ast.automaton._ast.ASTState";
 
-  private static final String TRANSITION = "de.monticore.codegen.ast.automaton._ast.ASTASTTransition";
+  private static final String TRANSITION = "de.monticore.codegen.ast.automaton._ast.ASTTransition";
 
   private static final String LEXICALS_NODE = "de.monticore.codegen.ast.lexicals._ast.ASTLexicalsNode";
 
@@ -98,7 +98,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(9, cocoChecker.getCDAttributeList().size());
+    assertEquals(7, cocoChecker.getCDAttributeList().size());
   }
 
   @Test
@@ -130,19 +130,19 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testStateCoCosAttribute() {
-    ASTCDAttribute attribute = getAttributeBy("de_monticore_codegen_ast_automaton__ast_ASTASTStateCoCos", cocoChecker);
+    ASTCDAttribute attribute = getAttributeBy("de_monticore_codegen_ast_automaton__ast_ASTStateCoCos", cocoChecker);
     assertDeepEquals(PRIVATE, attribute.getModifier());
   }
 
   @Test
   public void testTransitionCoCosAttribute() {
-    ASTCDAttribute attribute = getAttributeBy("de_monticore_codegen_ast_automaton__ast_ASTASTTransitionCoCos", cocoChecker);
+    ASTCDAttribute attribute = getAttributeBy("de_monticore_codegen_ast_automaton__ast_ASTTransitionCoCos", cocoChecker);
     assertDeepEquals(PRIVATE, attribute.getModifier());
   }
 
   @Test
   public void testAutomatonCoCosAttribute() {
-    ASTCDAttribute attribute = getAttributeBy("de_monticore_codegen_ast_automaton__ast_ASTASTAutomatonCoCos", cocoChecker);
+    ASTCDAttribute attribute = getAttributeBy("de_monticore_codegen_ast_automaton__ast_ASTAutomatonCoCos", cocoChecker);
     assertDeepEquals(PRIVATE, attribute.getModifier());
   }
 
@@ -161,7 +161,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(24, cocoChecker.getCDMethodList().size());
+    assertEquals(20, cocoChecker.getCDMethodList().size());
   }
 
   @Test
@@ -220,6 +220,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("coco", method.getCDParameter(0).getName());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(AUTOMATON_COCO_CHECKER, method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -232,6 +234,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("coco", method.getCDParameter(0).getName());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(AUTOMATON_COCO_CHECKER, method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -244,6 +248,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("coco", method.getCDParameter(0).getName());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(AUTOMATON_COCO_CHECKER, method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -256,6 +262,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("coco", method.getCDParameter(0).getName());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(AUTOMATON_COCO_CHECKER, method.getMCReturnType().getMCType());
   }
 
   @Test
@@ -268,6 +276,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("coco", method.getCDParameter(0).getName());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(AUTOMATON_COCO_CHECKER, method.getMCReturnType().getMCType());
   }
 
   @Test

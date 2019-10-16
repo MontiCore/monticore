@@ -35,6 +35,10 @@ import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
 import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
+import de.monticore.codegen.cd2java._cocos.CoCoCheckerDecorator;
+import de.monticore.codegen.cd2java._cocos.CoCoDecorator;
+import de.monticore.codegen.cd2java._cocos.CoCoInterfaceDecorator;
+import de.monticore.codegen.cd2java._cocos.CoCoService;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -53,7 +57,6 @@ import de.monticore.codegen.cd2java._symboltable.symbol.symbolReferenceMethodDec
 import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
 import de.monticore.codegen.cd2java._visitor.*;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
-import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
@@ -254,19 +257,19 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   protected Iterable<ASTMCGrammar> getParsedGrammars() {
     return this.firstPassGrammars.keySet();
   }
-  
+
   /**
-   * 
-   * Stores the symbol of the passed grammar AST at the passed location. 
-   * Note that this method should be invoked in the script after the symbol 
+   * Stores the symbol of the passed grammar AST at the passed location.
+   * Note that this method should be invoked in the script after the symbol
    * table has been created and the cocos have been checked.
    * TODO: "activate" this method by uncommenting the store instruction
+   *
    * @param grammar
    * @param location for stored symbols relative to out location of MontiCore
    */
   public void storeGrammarSymbol(ASTMCGrammar grammar, String location) {
     // as there are no nested grammars, all grammar symbols have an artifact scope as enclosing scope.
-    Grammar_WithConceptsArtifactScope enclosingScope = (Grammar_WithConceptsArtifactScope)grammar.getEnclosingScope();
+    Grammar_WithConceptsArtifactScope enclosingScope = (Grammar_WithConceptsArtifactScope) grammar.getEnclosingScope();
     Path locPath = Paths.get(__configuration.getOut().getAbsolutePath(), location);
 //  new Grammar_WithConceptsScopeDeSer().store(enclosingScope, locPath);
   }
@@ -569,6 +572,29 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return topDecorator.decorate(visitorCompilationUnit);
   }
 
+  public ASTCDCompilationUnit decorateForCoCoPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+                                                     ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
+    return decorateWithCoCo(preparedCD, glex, handCodedPath);
+  }
+
+  private ASTCDCompilationUnit decorateWithCoCo(ASTCDCompilationUnit cd, GlobalExtensionManagement glex,
+                                                IterablePath handCodedPath) {
+    ASTService astService = new ASTService(cd);
+    VisitorService visitorService = new VisitorService(cd);
+    CoCoService coCoService = new CoCoService(cd);
+    MethodDecorator methodDecorator = new MethodDecorator(glex);
+
+    CoCoCheckerDecorator coCoCheckerDecorator = new CoCoCheckerDecorator(glex, methodDecorator, coCoService, visitorService);
+    CoCoInterfaceDecorator coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex, coCoService, astService);
+    CoCoDecorator coCoDecorator = new CoCoDecorator(glex, coCoCheckerDecorator, coCoInterfaceDecorator);
+
+    ASTCDCompilationUnit visitorCompilationUnit = coCoDecorator.decorate(cd);
+
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(visitorCompilationUnit);
+  }
+
   public ASTCDCompilationUnit addListSuffixToAttributeName(ASTCDCompilationUnit originalCD) {
     ListSuffixDecorator listSuffixDecorator = new ListSuffixDecorator();
     return listSuffixDecorator.decorate(originalCD, originalCD);
@@ -733,18 +759,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     generator.generate(decoratedCD);
   }
 
-
-  public void generateCocos(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
-                            ASTCDCompilationUnit astClassDiagram, File outputDirectory) {
-    CoCoGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
-  }
-
   public void generateODs(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
                           Grammar_WithConceptsGlobalScope mcScope,
                           ASTCDCompilationUnit astClassDiagram, File outputDirectory) {
     ODGenerator.generate(glex, astClassDiagram, globalScope, mcScope, outputDirectory);
   }
-
 
   private void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
                                                CD4AnalysisGlobalScope cdScope) {

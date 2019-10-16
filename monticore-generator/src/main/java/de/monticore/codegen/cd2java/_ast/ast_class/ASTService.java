@@ -8,6 +8,8 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
+
 public class ASTService extends AbstractService<ASTService> {
 
   public ASTService(ASTCDCompilationUnit compilationUnit) {
@@ -36,11 +38,11 @@ public class ASTService extends AbstractService<ASTService> {
   create base interface name e.g. ASTAutomataNode
    */
   public String getASTBaseInterfaceSimpleName() {
-    return ASTConstants.AST_PREFIX + getCDName() + ASTConstants.NODE_SUFFIX;
+    return AST_PREFIX + getCDName() + ASTConstants.NODE_SUFFIX;
   }
 
   public String getASTBaseInterfaceSimpleName(CDDefinitionSymbol cdSymbol) {
-    return ASTConstants.AST_PREFIX + cdSymbol.getName() + ASTConstants.NODE_SUFFIX;
+    return AST_PREFIX + cdSymbol.getName() + ASTConstants.NODE_SUFFIX;
   }
 
   public String getASTBaseInterfaceFullName(CDDefinitionSymbol cdDefinitionSymbol) {
@@ -71,14 +73,14 @@ constant class names g.g. ASTConstantsAutomata
   }
 
   public String getASTConstantClassFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "."+ getASTConstantClassSimpleName(cdSymbol);
+    return getPackage(cdSymbol) + "." + getASTConstantClassSimpleName(cdSymbol);
   }
 
   /*
 ast class names g.g. ASTAutomaton
  */
   public String getASTSimpleName(ASTCDType type) {
-    return ASTConstants.AST_PREFIX + type.getName();
+    return type.getName().startsWith(AST_PREFIX) ? type.getName() : AST_PREFIX + type.getName();
   }
 
   public String getASTFullName(ASTCDType type) {

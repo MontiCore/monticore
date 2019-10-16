@@ -36,7 +36,9 @@ while (grammarIterator.hasNext()) {
     decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
     generateFromCD(glex, astClassDiagram, decoratedVisitorCD, out, handcodedPath)
 
-    generateCocos(glex, cd4AScope, astClassDiagramWithST, out)
+    decoratedCoCoCD = decorateForCoCoPackage(glex, cdScope, astClassDiagram, handcodedPath)
+    generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath)
+
     generateODs(glex, cd4AScope, mcScope, astClassDiagramWithST, out)
 
     decoratedASTClassDiagramm = decorateForASTPackage(glex,cd4AScope, astClassDiagramWithST, handcodedPath)

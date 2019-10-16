@@ -49,7 +49,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testCoCosNodeInterface() {
-    ASTCDInterface cdInterface = interfaces.get(0);
+    ASTCDInterface cdInterface = interfaces.get(1);
     assertEquals("CoCosASTCoCosNodeCoCo", cdInterface.getName());
     assertEquals(1, cdInterface.getCDMethodList().size());
     ASTCDMethod method = cdInterface.getCDMethod(0);
@@ -64,7 +64,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAInterface() {
-    ASTCDInterface cdInterface = interfaces.get(1);
+    ASTCDInterface cdInterface = interfaces.get(0);
     assertEquals("CoCosASTACoCo", cdInterface.getName());
     assertEquals(1, cdInterface.getCDMethodList().size());
     ASTCDMethod method = cdInterface.getCDMethod(0);

@@ -29,7 +29,6 @@ public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, Lis
   @Override
   public List<ASTCDInterface> decorate(ASTCDDefinition definition) {
     List<ASTCDInterface> cocoInterfaces = new ArrayList<>();
-    cocoInterfaces.add(createCoCoInterface());
 
     cocoInterfaces.addAll(definition.getCDClassList().stream()
         .map(this::createCoCoInterface)
@@ -40,20 +39,6 @@ public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, Lis
         .collect(Collectors.toList()));
 
     return cocoInterfaces;
-  }
-
-  protected ASTCDInterface createCoCoInterface() {
-    return CD4AnalysisMill.cDInterfaceBuilder()
-        .setModifier(PUBLIC.build())
-        .setName(this.cocoService.getCoCoSimpleTypeName())
-        .addCDMethod(createCheckMethod())
-        .build();
-  }
-
-  protected ASTCDMethod createCheckMethod() {
-    ASTMCType parameterType = astService.getASTBaseInterface();
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(parameterType, "node");
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, CoCoConstants.CHECK, parameter);
   }
 
   protected ASTCDInterface createCoCoInterface(ASTCDType type) {

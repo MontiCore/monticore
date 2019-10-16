@@ -39,20 +39,22 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     this.methodDecorator = methodDecorator;
     this.cocoService = cocoService;
     this.visitorService = visitorService;
-
   }
 
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
+    String cocoCheckerName = cocoService.getCheckerSimpleTypeName();
+    ASTMCType cocoCheckerType = cocoService.getCheckerType();
     ASTCDAttribute realThisAttribute = getCDAttributeFacade().createAttribute(PRIVATE, visitorService.getVisitorType(), REAL_THIS);
     this.replaceTemplate(VALUE, realThisAttribute, new StringHookPoint("= this"));
     List<ASTCDMethod> realThisMethods = methodDecorator.decorate(realThisAttribute);
 
-    ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PUBLIC, cocoService.getCheckerSimpleTypeName());
+    ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PUBLIC, cocoCheckerName);
 
     ASTCDClass cocoChecker = CD4AnalysisMill.cDClassBuilder()
-        .setName(cocoService.getCheckerSimpleTypeName())
-        .addInterface(visitorService.getVisitorType())
+        .setName(cocoCheckerName)
+        .setModifier(PUBLIC.build())
+        .addInterface(getCDTypeFacade().createQualifiedType(visitorService.getInheritanceVisitorFullName()))
         .addCDAttribute(realThisAttribute)
         .addCDConstructor(constructor)
         .addAllCDMethods(realThisMethods)
@@ -63,31 +65,19 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
       CoCoService cocoService = CoCoService.createCoCoService(currentCDSymbol);
       ASTService astService = ASTService.createASTService(currentCDSymbol);
 
-      ASTMCType checkerType = cocoService.getCheckerType();
-      String checkerName = MCCollectionTypesHelper.printType(checkerType).replaceAll("\\.", "_");
+      ASTMCType ownCheckerType = cocoService.getCheckerType();
+      String checkerName = MCCollectionTypesHelper.printType(ownCheckerType).replaceAll("\\.", "_");
       boolean isCurrentDiagram = cdSymbol.getFullName().equals(currentCDSymbol.getFullName());
 
-      cocoChecker.addCDAttribute(createCheckerAttribute(checkerType, checkerName, isCurrentDiagram));
-      cocoChecker.addCDMethod(createAddCheckerMethod(checkerType, checkerName));
+      cocoChecker.addCDAttribute(createCheckerAttribute(ownCheckerType, checkerName, isCurrentDiagram));
+      cocoChecker.addCDMethod(createAddCheckerMethod(ownCheckerType, checkerName));
 
       ASTMCType astBaseInterfaceType = astService.getASTBaseInterface();
-      ASTMCType cocoNodeType = cocoService.getCoCoType();
-      String cocoNodeCollectionName = MCCollectionTypesHelper.printType(astBaseInterfaceType).replaceAll("\\.", "_") + COCOS;
-      cocoChecker.addCDAttribute(createCoCoCollectionAttribute(cocoNodeType, cocoNodeCollectionName));
-
-      ASTCDMethod addNodeCoCo = createAddCoCoMethod(cocoNodeType, checkerType);
-      this.replaceTemplate(EMPTY_BODY, addNodeCoCo, createAddCoCoImpl(true, cocoNodeCollectionName, checkerName));
-
-      ASTCDMethod visitNode = createVisitMethod(astBaseInterfaceType);
-      this.replaceTemplate(EMPTY_BODY, visitNode, createVisitImpl(true, cocoNodeType, cocoNodeCollectionName, checkerName));
 
       ASTCDMethod checkAll = createCheckAllMethod(astBaseInterfaceType);
       this.replaceTemplate(EMPTY_BODY, checkAll, new StringHookPoint(NODE_SIMPLE_NAME + ".accept(getRealThis());"));
 
-      cocoChecker.addCDMethod(addNodeCoCo);
-      cocoChecker.addCDMethod(visitNode);
       cocoChecker.addCDMethod(checkAll);
-
 
       for (CDTypeSymbol cdTypeSymbol : currentCDSymbol.getTypes()) {
         if (!cdTypeSymbol.isClass() && !cdTypeSymbol.isInterface()) {
@@ -102,7 +92,8 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
           cocoChecker.addCDAttribute(createCoCoCollectionAttribute(cocoType, cocoCollectionName));
         }
 
-        ASTCDMethod addCoCo = createAddCoCoMethod(cocoType, checkerType);
+        // always use global checker type here, also for super grammar addCoCo methods
+        ASTCDMethod addCoCo = createAddCoCoMethod(cocoType, cocoCheckerType);
         this.replaceTemplate(EMPTY_BODY, addCoCo, createAddCoCoImpl(isCurrentDiagram, cocoCollectionName, checkerName));
 
         ASTCDMethod visit = createVisitMethod(astType);
@@ -119,7 +110,8 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected ASTCDAttribute createCheckerAttribute(ASTMCType checkerType, String checkerName, boolean isCurrentDiagram) {
     ASTMCType checkerListType = getCDTypeFacade().createListTypeOf(checkerType);
     ASTCDAttribute checker = getCDAttributeFacade().createAttribute(PRIVATE, checkerListType, checkerName);
-    HookPoint hp = isCurrentDiagram ? new StringHookPoint("= new ArrayList<>(Arrays.asList(new " + MCCollectionTypesHelper.printType(checkerType) + "()))")
+    // special list initialization for super coco checker attributes
+    HookPoint hp = !isCurrentDiagram ? new StringHookPoint("= new ArrayList<>(Arrays.asList(new " + MCCollectionTypesHelper.printType(checkerType) + "()))")
         : new StringHookPoint("= new ArrayList<>()");
     this.replaceTemplate(VALUE, checker, hp);
     return checker;
