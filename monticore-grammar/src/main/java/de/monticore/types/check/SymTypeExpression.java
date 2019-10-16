@@ -30,14 +30,14 @@ public abstract class SymTypeExpression {
   
   /**
    * Am I primitive? (such as "int")
-   * (is this needed?)
+   * (default: no)
    */
-  public boolean isPrimitiveType() {
+  public boolean isPrimitive() {
     return false;
   }
   
   /**
-   * Assumption:
+   * Constraint:
    * We assume that each(!) and really each SymTypeExpression has
    * an associated TypeSymbol, where all available Fields, Methods, etc. can be found.
    *
@@ -59,15 +59,18 @@ public abstract class SymTypeExpression {
   // --------------------------------------------------------------------------
 
   /**
+   * TODO 4BR
    * A type has a name (XXX BR Exceptions may apply?)
    * anonymous types only in List<?> in FullGenericTypes.mc4, not yet supported
    */
   protected String name;
 
+  @Deprecated
   public String getName() {
     return name;
   }
 
+  @Deprecated
   public void setName(String name) {
     this.name = name;
   }

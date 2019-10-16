@@ -56,7 +56,7 @@ public class SymTypeConstant extends SymTypeExpression {
   protected String printAsJson() {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
-    //TODO: anpassen, nachdem package umbenannt ist
+    // Care: the following String needs to be adapted if the package was renamed
     jp.member(JsonConstants.KIND, "de.monticore.types.check.SymTypeConstant");
     jp.member("constName", getConstName());
     jp.endObject();
@@ -175,13 +175,14 @@ public class SymTypeConstant extends SymTypeExpression {
   /**
    * Am I primitive? (such as "int")
    */
-  public boolean isPrimitiveType() {
+  public boolean isPrimitive() {
     return true;
   }
   
   
   // --------------------------------------------------------------------------
   
+  @Deprecated
   public void setName(String name) {
     this.name = name;
     this.constName = name; // Nur ein Hack um die Tests am laufen zu halten, die setName nutzen

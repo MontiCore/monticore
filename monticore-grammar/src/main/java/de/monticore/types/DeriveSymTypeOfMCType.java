@@ -20,7 +20,8 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
  * Visitor to convert from MCTypes (Typen Grammatiken, Basic, Collection,
  * BasicGeneric,FullGeneric)
  *
- * TODO Umbauen von Types-Map auf Traverse und single result
+ * TODO 4: Umbauen von Types-Map auf Traverse und single result
+ * TODO 4: remove deprecated method , weil da das ebenfalls benötigte Symbol fehlt
  */
 public class DeriveSymTypeOfMCType implements MCFullGenericTypesVisitor {
 
