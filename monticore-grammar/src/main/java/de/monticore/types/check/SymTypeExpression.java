@@ -60,9 +60,8 @@ public abstract class SymTypeExpression {
 
   /**
    * TODO 4BR
-   * A type has a name (XXX BR Exceptions may apply?)
-   * anonymous types only in List<?> in FullGenericTypes.mc4, not yet supported
    */
+  @Deprecated // and unused .. can be deleted
   protected String name;
 
   @Deprecated

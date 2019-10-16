@@ -36,7 +36,7 @@ public class SymTypeConstant extends SymTypeExpression {
   
   public void setConstName(String constName) {
     String c = unbox(constName);
-    if (primitiveTypes.contains(name)) {
+    if (primitiveTypes.contains(constName)) {
       this.constName = constName;
     } else {
       Log.error("0xD34B2 Only primitive types allowed (" + primitiveTypes.toString() + "), but was:" + constName);
