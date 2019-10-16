@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
@@ -16,7 +17,13 @@ public class SymTypeConstant extends SymTypeExpression {
    * A typeConstant has a name
    */
   protected String constName;
-
+  
+  public SymTypeConstant(String constName, TypeSymbol typeInfo) {
+    this.constName = constName;
+    this.setTypeInfo(typeInfo);
+  }
+  
+  @Deprecated  // TODO: delete weil TypeInfo nicht besetzt wird
   public SymTypeConstant(String constName) {
     this.constName = constName;
   }
@@ -176,13 +183,10 @@ public class SymTypeConstant extends SymTypeExpression {
   public boolean isPrimitive() {
     return true;
   }
-
+  
   @Override
   public SymTypeConstant deepClone() {
-    SymTypeConstant clone = new SymTypeConstant(this.constName);
-    clone.setName(this.name);
-    clone.setConstName(this.constName);
-    clone.setTypeInfo(this.getTypeInfo());
+    SymTypeConstant clone = new SymTypeConstant(getConstName(), getTypeInfo());
     return clone;
   }
 

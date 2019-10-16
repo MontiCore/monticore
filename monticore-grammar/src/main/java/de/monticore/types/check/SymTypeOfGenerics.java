@@ -41,6 +41,19 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   protected TypeSymbol objTypeConstructorSymbol;
   
   
+  /**
+   * Constructor with all parameters to be defined:
+   */
+  public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments,
+                           TypeSymbol objTypeConstructorSymbol, TypeSymbol typeInfo) {
+    this.typeConstructorFullName = typeConstructorFullName;
+    this.arguments = arguments;
+    this.objTypeConstructorSymbol = objTypeConstructorSymbol;
+    this.setTypeInfo(typeInfo);
+  }
+  
+  
+  
   @Deprecated // TODO: delete, only used by another deprecated method
   public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments) {
     this.typeConstructorFullName = typeConstructorFullName;
@@ -48,7 +61,8 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
 
 
-  // TODO: besetzt nicht die geerbten Attribute
+  // TODO: löschen, denn es besetzt nicht die geerbten Attribute
+  @Deprecated
   public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments,
                            TypeSymbol objTypeConstructorSymbol) {
     this.typeConstructorFullName = typeConstructorFullName;

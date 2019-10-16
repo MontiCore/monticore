@@ -30,17 +30,17 @@ public class SymTypeExpressionFactory {
   }
   
   /**
-   * for constants, such as "int"
+   * for constants, such as "int" (and no other kinds).
+   * TypeInfo is not needed (as the Objects are predefined singletons)
    */
   public static SymTypeConstant createTypeConstant(String name) {
-    SymTypeConstant o = new SymTypeConstant(name);
-    return o;
+    return DefsTypeBasic.typeConstants.get(name);
   }
   
   /**
    * for ObjectTypes, as e.g. "Person"
    * @param name  Name of the type
-   * @param objTypeSymbol  TODO 4: is this needed?
+   * @param objTypeSymbol  Symbol behind the Type
    * @return
    */
   public static SymTypeOfObject createTypeObject(String name, TypeSymbol objTypeSymbol) {
@@ -53,6 +53,7 @@ public class SymTypeExpressionFactory {
    * @param name  Name of the type
    * @return
    */
+  @Deprecated
   public static SymTypeOfObject createTypeObject(String name) {
     SymTypeOfObject o = new SymTypeOfObject(name);
     o.setObjName(name);
@@ -64,15 +65,25 @@ public class SymTypeExpressionFactory {
    * @return
    */
   public static SymTypeVoid createTypeVoid() {
-    SymTypeVoid o = new SymTypeVoid();
-    return o;
+    return DefsTypeBasic._voidSymType;
   }
   
   /**
    * That is the pseudo-type of "null"
    */
   public static SymTypeOfNull createTypeOfNull() {
-    SymTypeOfNull o = new SymTypeOfNull();
+    return DefsTypeBasic._nullSymType;
+  }
+  
+  /**
+   * creates an array-Type Expression
+   * @param dim   the dimension of the array
+   * @param argument the argument type (of the elements)
+   * @param typeInfo the Symbol behind this Type
+   * @return
+   */
+  public static SymTypeArray createTypeArray(int dim, SymTypeExpression argument, TypeSymbol typeInfo) {
+    SymTypeArray o = new SymTypeArray(dim, argument, typeInfo);
     return o;
   }
   
@@ -82,11 +93,13 @@ public class SymTypeExpressionFactory {
    * @param argument the argument type (of the elements)
    * @return
    */
+  @Deprecated
   public static SymTypeArray createTypeArray(int dim, SymTypeExpression argument) {
     SymTypeArray o = new SymTypeArray(dim, argument);
     return o;
   }
-
+  
+  
   /**
    * creates a TypeExpression for primitives, such as "int", for "null", "void" and
    * also for object types, such as "Person" from a given symbol
@@ -103,10 +116,10 @@ public class SymTypeExpressionFactory {
       o = createTypeConstant(type.getName());
     } else if("void".equals(type.getName())){
       o = createTypeVoid();
-    }else if("null".equals(type.getName())) {
+    } else if("null".equals(type.getName())) {
       o = createTypeOfNull();
-    }else {
-      o = createTypeObject(type.getName());
+    } else {
+      o = createTypeObject(type.getName(),type);
     }
     return o;
   }
