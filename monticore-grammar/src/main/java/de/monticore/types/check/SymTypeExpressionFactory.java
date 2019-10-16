@@ -28,15 +28,6 @@ public class SymTypeExpressionFactory {
     SymTypeVariable o = new SymTypeVariable(name);
     return o;
   }
-
-  public static SymTypeVariable createTypeVariable(String name, TypeVarSymbol typeVarSymbol){
-    SymTypeVariable o = new SymTypeVariable(name,typeVarSymbol);
-    return o;
-  }
-
-  public static SymTypeVariable createTypeVariable(TypeVarSymbol typeVarSymbol){
-    return createTypeVariable(typeVarSymbol.getName(),typeVarSymbol);
-  }
   
   /**
    * for constants, such as "int"

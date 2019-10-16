@@ -600,9 +600,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //one generic parameter, supertype List<T>
     TypeVarSymbol t = typeVariable("T");
     MethodSymbol addMethod = add(method("add",_booleanSymType),
-        field("x",SymTypeExpressionFactory.createTypeVariable("T",t))
+        field("x",SymTypeExpressionFactory.createTypeVariable("T"))
     );
-    FieldSymbol nextField = field("next",SymTypeExpressionFactory.createTypeVariable("T",t));
+    FieldSymbol nextField = field("next",SymTypeExpressionFactory.createTypeVariable("T"));
     TypeSymbol sym = type("List",Lists.newArrayList(addMethod),Lists.newArrayList(nextField),
         Lists.newArrayList(),Lists.newArrayList(t)
     );
@@ -617,7 +617,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     TypeVarSymbol arrayListT = typeVariable("T");
     SymTypeExpression listTSymTypeExp = SymTypeExpressionFactory
         .createGenerics("List",
-            Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T",arrayListT)),sym
+            Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T")),sym
         );
     listTSymTypeExp.setTypeInfo(sym);
     TypeSymbol subsym = type("ArrayList",Lists.newArrayList(),Lists.newArrayList(),
@@ -664,11 +664,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     TypeVarSymbol t1 = typeVariable("S");
     TypeVarSymbol t2 = typeVariable("V");
     MethodSymbol load = add(method("load",
-        SymTypeExpressionFactory.createTypeVariable("S",t1)),
-        field("x",SymTypeExpressionFactory.createTypeVariable("V",t2))
+        SymTypeExpressionFactory.createTypeVariable("S")),
+        field("x",SymTypeExpressionFactory.createTypeVariable("V"))
     );
-    FieldSymbol f1 = field("f1",SymTypeExpressionFactory.createTypeVariable("S",t1));
-    FieldSymbol f2 = field("f2",SymTypeExpressionFactory.createTypeVariable("V",t2));
+    FieldSymbol f1 = field("f1",SymTypeExpressionFactory.createTypeVariable("S"));
+    FieldSymbol f2 = field("f2",SymTypeExpressionFactory.createTypeVariable("V"));
     TypeSymbol genSup = type("GenSup",Lists.newArrayList(load),Lists.newArrayList(f1,f2),
         Lists.newArrayList(),Lists.newArrayList(t1,t2)
     );
@@ -684,7 +684,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     t2 = typeVariable("V");
     SymTypeExpression genTypeSV = SymTypeExpressionFactory.
         createGenerics("GenSup",Lists.newArrayList(SymTypeExpressionFactory.
-            createTypeVariable("S",t1),SymTypeExpressionFactory.createTypeVariable("V",t2)),genSup);
+            createTypeVariable("S"),SymTypeExpressionFactory.createTypeVariable("V")),genSup);
     genTypeSV.setTypeInfo(genSup);
     TypeSymbol genSub = type("GenSub",Lists.newArrayList(),Lists.newArrayList(),
         Lists.newArrayList(genTypeSV.deepClone()),Lists.newArrayList(t1,t2)
@@ -700,8 +700,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     t1 = typeVariable("S");
     t2 = typeVariable("V");
     SymTypeExpression genSubTypeSV = SymTypeExpressionFactory.
-        createGenerics("GenSub",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("S",t1),
-            SymTypeExpressionFactory.createTypeVariable("V",t2)),genSub
+        createGenerics("GenSub",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("S"),
+            SymTypeExpressionFactory.createTypeVariable("V")),genSub
         );
     genSubTypeSV.setTypeInfo(genSub);
     TypeSymbol genSubSub = type("GenSubSub",Lists.newArrayList(),Lists.newArrayList(),
@@ -770,9 +770,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //supertype with fixed generic parameter FixGen<A> and SymType FixGen<int>
     TypeVarSymbol a = typeVariable("A");
     MethodSymbol add2 = add(method("add",_booleanSymType),
-        field("a",SymTypeExpressionFactory.createTypeVariable(a))
+        field("a",SymTypeExpressionFactory.createTypeVariable("A"))
     );
-    FieldSymbol next2 = field("next",SymTypeExpressionFactory.createTypeVariable(a));
+    FieldSymbol next2 = field("next",SymTypeExpressionFactory.createTypeVariable("A"));
     TypeSymbol fixGen = type("FixGen",Lists.newArrayList(add2),Lists.newArrayList(next2),
         Lists.newArrayList(),Lists.newArrayList(a)
     );
@@ -786,7 +786,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     //subtype with variable generic parameter VarGen<N> which extends FixGen<int>, SymType VarGen<String>
     TypeVarSymbol n = typeVariable("N");
-    MethodSymbol calculate = method("calculate",SymTypeExpressionFactory.createTypeVariable(n));
+    MethodSymbol calculate = method("calculate",SymTypeExpressionFactory.createTypeVariable("N"));
     TypeSymbol varGenType = type("VarGen",Lists.newArrayList(calculate),Lists.newArrayList(),
         Lists.newArrayList(fixGenType),Lists.newArrayList(n)
     );
@@ -826,9 +826,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //one generic parameter, supertype List<T>
     TypeVarSymbol t = typeVariable("T");
     MethodSymbol addMethod = add(method("add",_booleanSymType),
-        field("x",SymTypeExpressionFactory.createTypeVariable("T",t))
+        field("x",SymTypeExpressionFactory.createTypeVariable("T"))
     );
-    FieldSymbol nextField = field("next",SymTypeExpressionFactory.createTypeVariable("T",t));
+    FieldSymbol nextField = field("next",SymTypeExpressionFactory.createTypeVariable("T"));
     TypeSymbol sym = type("List",Lists.newArrayList(addMethod),Lists.newArrayList(nextField),
         Lists.newArrayList(),Lists.newArrayList(t)
     );
@@ -843,11 +843,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     t = typeVariable("T");
     TypeVarSymbol moreType1 = typeVariable("F");
     SymTypeExpression listTSymTypeExp = SymTypeExpressionFactory
-        .createGenerics("List",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T",t)),sym);
+        .createGenerics("List",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T")),sym);
     listTSymTypeExp.setTypeInfo(sym);
     MethodSymbol insert = add(
-        method("insert",SymTypeExpressionFactory.createTypeVariable("T",t)),
-        field("x",SymTypeExpressionFactory.createTypeVariable("F",moreType1))
+        method("insert",SymTypeExpressionFactory.createTypeVariable("T")),
+        field("x",SymTypeExpressionFactory.createTypeVariable("F"))
     );
     TypeSymbol moreGenType = type("MoreGen",Lists.newArrayList(insert),Lists.newArrayList(),
         Lists.newArrayList(listTSymTypeExp),Lists.newArrayList(t,moreType1)
@@ -888,9 +888,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //one generic parameter, supertype List<T>
     TypeVarSymbol t = typeVariable("T");
     MethodSymbol addMethod = add(method("add",_booleanSymType),
-        field("x",SymTypeExpressionFactory.createTypeVariable("T",t))
+        field("x",SymTypeExpressionFactory.createTypeVariable("T"))
     );
-    FieldSymbol nextField = field("next",SymTypeExpressionFactory.createTypeVariable("T",t));
+    FieldSymbol nextField = field("next",SymTypeExpressionFactory.createTypeVariable("T"));
     TypeSymbol sym = type("List",Lists.newArrayList(addMethod),Lists.newArrayList(nextField),
         Lists.newArrayList(),Lists.newArrayList(t)
     );
@@ -934,24 +934,24 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     //supertype SupA<T>
     TypeVarSymbol t = typeVariable("T");
-    MethodSymbol testA = method("testA",SymTypeExpressionFactory.createTypeVariable("T",t));
-    FieldSymbol currentA = field("currentA",SymTypeExpressionFactory.createTypeVariable("T",t));
+    MethodSymbol testA = method("testA",SymTypeExpressionFactory.createTypeVariable("T"));
+    FieldSymbol currentA = field("currentA",SymTypeExpressionFactory.createTypeVariable("T"));
     TypeSymbol supA = type("SupA",Lists.newArrayList(testA),Lists.newArrayList(currentA),
         Lists.newArrayList(),Lists.newArrayList(t)
     );
     SymTypeExpression supATExpr = SymTypeExpressionFactory
-        .createGenerics("SupA",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable(t)),supA);
+        .createGenerics("SupA",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T")),supA);
     supATExpr.setTypeInfo(supA);
 
     //supertype SupB<T>
     t = typeVariable("T");
-    MethodSymbol testB = method("testB",SymTypeExpressionFactory.createTypeVariable("T",t));
-    FieldSymbol currentB = field("currentB",SymTypeExpressionFactory.createTypeVariable("T",t));
+    MethodSymbol testB = method("testB",SymTypeExpressionFactory.createTypeVariable("T"));
+    FieldSymbol currentB = field("currentB",SymTypeExpressionFactory.createTypeVariable("T"));
     TypeSymbol supB = type("SupA",Lists.newArrayList(testB),Lists.newArrayList(currentB),
         Lists.newArrayList(),Lists.newArrayList(t)
     );
     SymTypeExpression supBTExpr = SymTypeExpressionFactory.
-        createGenerics("SupB",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable(t)),supB);
+        createGenerics("SupB",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T")),supB);
     supBTExpr.setTypeInfo(supB);
 
     //subType SubA<T>
@@ -996,24 +996,24 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     //supertype SupA<T>
     TypeVarSymbol t = typeVariable("T");
-    MethodSymbol testA = method("testA",SymTypeExpressionFactory.createTypeVariable("T",t));
-    FieldSymbol currentA = field("currentA",SymTypeExpressionFactory.createTypeVariable("T",t));
+    MethodSymbol testA = method("testA",SymTypeExpressionFactory.createTypeVariable("T"));
+    FieldSymbol currentA = field("currentA",SymTypeExpressionFactory.createTypeVariable("T"));
     TypeSymbol supA = type("SupA",Lists.newArrayList(testA),Lists.newArrayList(currentA),
         Lists.newArrayList(),Lists.newArrayList(t)
     );
     SymTypeExpression supATExpr = SymTypeExpressionFactory
-        .createGenerics("SupA",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable(t)),supA);
+        .createGenerics("SupA",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T")),supA);
     supATExpr.setTypeInfo(supA);
 
     //supertype SupB<T>
     TypeVarSymbol s = typeVariable("S");
-    MethodSymbol testB = method("testB",SymTypeExpressionFactory.createTypeVariable("S",s));
-    FieldSymbol currentB = field("currentB",SymTypeExpressionFactory.createTypeVariable("S",s));
+    MethodSymbol testB = method("testB",SymTypeExpressionFactory.createTypeVariable("S"));
+    FieldSymbol currentB = field("currentB",SymTypeExpressionFactory.createTypeVariable("S"));
     TypeSymbol supB = type("SupA",Lists.newArrayList(testB),Lists.newArrayList(currentB),
         Lists.newArrayList(),Lists.newArrayList(s)
     );
     SymTypeExpression supBTExpr = SymTypeExpressionFactory
-        .createGenerics("SupB",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable(s)),supB);
+        .createGenerics("SupB",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("S")),supB);
     supBTExpr.setTypeInfo(supB);
 
     //subType SubA<T>
