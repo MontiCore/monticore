@@ -12,6 +12,8 @@ import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 /**
  * This class provides methods for printing types as Strings. The TypesPrinter
  * is a singleton.
+ *
+ * Care: It is not extensible (as it does not fully implement the static delegator pattern)
  */
 public class CollectionTypesPrinter {
 

@@ -30,13 +30,4 @@ grammar Grammar_WithConcepts extends de.monticore.grammar.Grammar,
   // Empty TypeParameters
   ExtTypeParameters = ;
 
-  // TODO Remove the following lines if the new generator generate the
-  // corresponding symbol table methods
-  MCDummyType implements Type = Name;
-
-  MCDummyMethod implements Method = Name;
-
-  MCDummyField implements Field = Name;
-
-  MCDummyTypeVar implements TypeVar = Name;
 }

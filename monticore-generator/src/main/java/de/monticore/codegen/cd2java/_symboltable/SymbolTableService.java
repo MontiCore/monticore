@@ -12,6 +12,7 @@ import de.monticore.types.MCSimpleGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.typesymbols._ast.ASTType;
 import de.se_rwth.commons.Names;
 
 import java.util.*;
@@ -501,7 +502,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     List<String> stereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.SYMBOL);
     if (!stereotypeValues.isEmpty()) {
       return Optional.ofNullable(stereotypeValues.get(0));
-    }else {
+    } else {
       List<String> inheritedStereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.INHERITED_SYMBOL);
       if (!inheritedStereotypeValues.isEmpty()) {
         return Optional.ofNullable(inheritedStereotypeValues.get(0));
@@ -551,8 +552,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    */
 
   public List<ASTCDType> getSymbolDefiningProds(ASTCDDefinition astcdDefinition) {
-    List<ASTCDType> symbolProds = getSymbolDefiningClasses(astcdDefinition.getCDClassList());
-    symbolProds.addAll(getSymbolDefiningInterfaces(astcdDefinition.getCDInterfaceList()));
+    List<ASTCDType> symbolProds = getSymbolDefiningProds(astcdDefinition.getCDClassList());
+    symbolProds.addAll(getSymbolDefiningProds(astcdDefinition.getCDInterfaceList()));
     return symbolProds;
   }
 
@@ -569,18 +570,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return symbolProds;
   }
 
-  public List<ASTCDType> getSymbolDefiningClasses(List<ASTCDClass> astcdClasses) {
+  public List<ASTCDType> getSymbolDefiningProds(List<? extends ASTCDType> astcdClasses) {
     return astcdClasses.stream()
-        .filter(ASTCDClassTOP::isPresentModifier)
-        .filter(c -> hasSymbolStereotype(c.getModifier()))
-        .filter(c -> !getSymbolTypeValue(c.getModifierOpt().get()).isPresent())
-        .collect(Collectors.toList());
-  }
-
-  public List<ASTCDType> getSymbolDefiningInterfaces(List<ASTCDInterface> astcdInterfaces) {
-    return astcdInterfaces.stream()
-        .filter(ASTCDInterface::isPresentModifier)
-        .filter(c -> hasSymbolStereotype(c.getModifier()))
+        .filter(c -> c.getModifierOpt().isPresent())
+        .filter(c -> hasSymbolStereotype(c.getModifierOpt().get()))
         .filter(c -> !getSymbolTypeValue(c.getModifierOpt().get()).isPresent())
         .collect(Collectors.toList());
   }
@@ -594,7 +587,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    * @return returns a Map of <the class that inherits the property, the symbol interface full name from which it inherits it>
    */
   public Map<ASTCDClass, String> getInheritedSymbolPropertyClasses(List<ASTCDClass> astcdClasses) {
-
     Map<ASTCDClass, String> inheritedSymbolProds = new HashMap<>();
     for (ASTCDClass astcdClass : astcdClasses) {
       // classes with inherited symbol property
