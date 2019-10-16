@@ -3,6 +3,7 @@
 package de.monticore.types.check;
 
 
+// TODO 4BR: @Deprecated
 public class SymTypePackage extends SymTypeExpression {
 
 
