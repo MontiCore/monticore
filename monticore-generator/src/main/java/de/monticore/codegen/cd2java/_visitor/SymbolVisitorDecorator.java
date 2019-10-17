@@ -18,6 +18,9 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_S
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a SymbolVisitor class from a grammar
+ */
 public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
   protected final VisitorService visitorService;

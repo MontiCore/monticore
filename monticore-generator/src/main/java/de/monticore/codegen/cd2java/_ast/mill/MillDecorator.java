@@ -19,10 +19,14 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * created mill class for a grammar
+ */
 public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final AbstractService<?> service;
@@ -123,7 +127,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
     for (ASTCDClass astcdClass : astcdClassList) {
       String astName = astcdClass.getName();
       ASTMCQualifiedType builderType = this.getCDTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX);
-      String methodName = StringTransformations.uncapitalize(astName.replaceFirst("AST", "")) + BUILDER_SUFFIX;
+      String methodName = StringTransformations.uncapitalize(astName.replaceFirst(AST_PREFIX, "")) + BUILDER_SUFFIX;
 
       // add public static Method for Builder
       ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, builderType, methodName);
@@ -139,13 +143,16 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
     return builderMethodsList;
   }
 
+  /**
+   * adds builder methods for the delegation to builders of super grammars
+   */
   protected List<ASTCDMethod> addSuperBuilderMethods(List<CDDefinitionSymbol> superSymbolList, List<ASTCDClass> classList) {
     List<ASTCDMethod> superMethods = new ArrayList<>();
     //get super symbols
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
       Optional<ASTCDDefinition> astNode = superSymbol.getAstNode();
       if (astNode.isPresent()) {
-        //get super cddefinition
+        //get super cdDefinition
         ASTCDDefinition superDefinition = astNode.get().deepClone();
         //filter out all abstract classes
         List<ASTCDClass> copiedList = superDefinition.getCDClassList()
@@ -158,7 +165,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
           if (!service.isClassOverwritten(superClass, classList)) {
             String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
             ASTMCQualifiedType superAstType = this.getCDTypeFacade().createQualifiedType(packageName + superClass.getName() + BUILDER_SUFFIX);
-            String methodName = StringTransformations.uncapitalize(superClass.getName().replaceFirst("AST", "")) + BUILDER_SUFFIX;
+            String methodName = StringTransformations.uncapitalize(superClass.getName().replaceFirst(AST_PREFIX, "")) + BUILDER_SUFFIX;
 
             //add builder method
             ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, methodName);

@@ -22,6 +22,11 @@ import java.util.List;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
+/**
+ * is a transforming class for the ast generation
+ * adds the symbol reference attributes and the corresponding getters -> uses the symbol reference attribute created in ASTReferencedSymbolDecorator
+ */
+
 public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass> {
 
   protected static final String SYMBOL = "Symbol";
@@ -59,6 +64,10 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
     return changedClass;
   }
 
+  /**
+   * creates optional attribute for mandatory and optional symbol references
+   * creates a map for a list of symbol references
+   */
   protected ASTCDAttribute getRefSymbolAttribute(ASTCDAttribute attribute, String referencedSymbol) {
     ASTModifier modifier = PROTECTED.build();
     //add referenced Symbol modifier that it can later be distinguished
@@ -79,6 +88,9 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
     }
   }
 
+  /**
+   * generated the correct getters for the reference symbol attributes
+   */
   protected List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol, boolean wasAttributeOptional) {
     ASTCDAttribute methodDecorationAttribute = refSymbolAttribute.deepClone();
     if (GeneratorHelper.isMapType(refSymbolAttribute.printType())) {

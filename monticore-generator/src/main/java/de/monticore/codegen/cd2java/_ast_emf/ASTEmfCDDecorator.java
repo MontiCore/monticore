@@ -26,6 +26,9 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 
+/**
+ * extension of the ASTCDDecorator with additional EMF functionality
+ */
 public class ASTEmfCDDecorator extends ASTCDDecorator {
 
   protected final PackageImplDecorator packageImplDecorator;

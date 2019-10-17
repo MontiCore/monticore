@@ -16,6 +16,9 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_INHERITANCE_TEMPLATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a InheritanceVisitor class from a grammar
+ */
 public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
   protected final VisitorService visitorService;

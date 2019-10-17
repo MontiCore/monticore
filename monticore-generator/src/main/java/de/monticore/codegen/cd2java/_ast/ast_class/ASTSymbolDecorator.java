@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java._ast.ast_class;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -17,6 +16,9 @@ import java.util.Optional;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
+/**
+ * creates a list of symbol attributes that are used for the AST class
+ */
 public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttribute>> {
 
   protected final SymbolTableService symbolTableService;

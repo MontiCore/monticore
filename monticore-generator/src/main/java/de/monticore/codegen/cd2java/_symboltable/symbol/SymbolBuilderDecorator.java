@@ -38,6 +38,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     ASTCDClass symbolBuilder = builderDecorator.decorate(decoratedSymbolClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
+    // builder has all attributes but not the spannedScope attribute from the symbol Class
     List<ASTCDAttribute> buildAttributes =
         symbolClass.deepClone().getCDAttributeList()
             .stream()

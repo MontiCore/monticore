@@ -17,8 +17,10 @@ import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * creates a ParentAwareVisitor class from a grammar
+ */
 public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
-
 
   private final VisitorService visitorService;
 

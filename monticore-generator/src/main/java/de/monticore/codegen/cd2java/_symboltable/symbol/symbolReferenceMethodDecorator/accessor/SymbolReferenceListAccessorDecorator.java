@@ -8,6 +8,9 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
+/**
+ * changes implementation of the getList method
+ */
 public class SymbolReferenceListAccessorDecorator extends ListAccessorDecorator {
 
   public SymbolReferenceListAccessorDecorator(GlobalExtensionManagement glex) {

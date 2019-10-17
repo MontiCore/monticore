@@ -24,6 +24,9 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates the CoCoChecker class for a grammar
+ */
 public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final MethodDecorator methodDecorator;
@@ -61,10 +64,12 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         .build();
 
     CDDefinitionSymbol cdSymbol = cocoService.getCDSymbol();
+    // travers all Super CDDefinitionSymbol transitive and own one
     for (CDDefinitionSymbol currentCDSymbol : cocoService.getAllCDs()) {
       CoCoService cocoService = CoCoService.createCoCoService(currentCDSymbol);
       ASTService astService = ASTService.createASTService(currentCDSymbol);
 
+      // local time checker for own or super CDDefinition
       ASTMCType ownCheckerType = cocoService.getCheckerType();
       String checkerName = MCCollectionTypesHelper.printType(ownCheckerType).replaceAll("\\.", "_");
       boolean isCurrentDiagram = cdSymbol.getFullName().equals(currentCDSymbol.getFullName());
@@ -80,7 +85,8 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
       cocoChecker.addCDMethod(checkAll);
 
       for (CDTypeSymbol cdTypeSymbol : currentCDSymbol.getTypes()) {
-        if (!cdTypeSymbol.isClass() && !cdTypeSymbol.isInterface()) {
+        // do not generate for enums (only classes and interfaces)
+        if (cdTypeSymbol.isEnum()) {
           continue;
         }
 
@@ -88,6 +94,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         ASTMCType astType = astService.getASTType(cdTypeSymbol.getAstNode().get());
         String cocoCollectionName = MCCollectionTypesHelper.printType(astType).replaceAll("\\.", "_") + COCOS;
 
+        // only create CoCoCollectionAttribute for the currentDiagram (so super CDDefinitionSymbol)
         if (isCurrentDiagram) {
           cocoChecker.addCDAttribute(createCoCoCollectionAttribute(cocoType, cocoCollectionName));
         }

@@ -17,6 +17,10 @@ import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SERIALIZATION_PACKAGE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
 
+/**
+ * creates all sclasses for the _symboltable._serialization package
+ * is own decorator because of the different package
+ */
 public class SerializationCDDecorator extends AbstractDecorator {
 
   protected final SymbolTableService symbolTableService;
@@ -54,6 +58,7 @@ public class SerializationCDDecorator extends AbstractDecorator {
       serializeCD.addCDClass(createScopeDeSerClass(scopeInput, symbolInput));
     }
 
+    // change to _serialization package
     for (ASTCDClass cdClass : serializeCD.getCDClassList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(symbolTablePackage));
     }
