@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
@@ -16,7 +17,13 @@ public class SymTypeConstant extends SymTypeExpression {
    * A typeConstant has a name
    */
   protected String constName;
-
+  
+  public SymTypeConstant(String constName, TypeSymbol typeInfo) {
+    this.constName = constName;
+    this.setTypeInfo(typeInfo);
+  }
+  
+  @Deprecated  // TODO: delete weil TypeInfo nicht besetzt wird
   public SymTypeConstant(String constName) {
     this.constName = constName;
   }
@@ -36,7 +43,7 @@ public class SymTypeConstant extends SymTypeExpression {
   
   public void setConstName(String constName) {
     String c = unbox(constName);
-    if (primitiveTypes.contains(name)) {
+    if (primitiveTypes.contains(constName)) {
       this.constName = constName;
     } else {
       Log.error("0xD34B2 Only primitive types allowed (" + primitiveTypes.toString() + "), but was:" + constName);
@@ -56,15 +63,14 @@ public class SymTypeConstant extends SymTypeExpression {
   protected String printAsJson() {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
-    //TODO: anpassen, nachdem package umbenannt ist
+    // Care: the following String needs to be adapted if the package was renamed
     jp.member(JsonConstants.KIND, "de.monticore.types.check.SymTypeConstant");
     jp.member("constName", getConstName());
     jp.endObject();
     return jp.getContent();
   }
   
-  
-  // TODO Future: box, unbox hier rausnehmen und als überschreibbare Dynamische Methoden nach TypeCheck
+
   /**
    * List of potential constants
    * (on purpose not implemented as enum)
@@ -83,6 +89,7 @@ public class SymTypeConstant extends SymTypeExpression {
    */
   public static Map<String,String> boxMap;
   
+
   /**
    * initializing the maps
    */
@@ -125,7 +132,6 @@ public class SymTypeConstant extends SymTypeExpression {
    * @param boxedName
    * @return
    */
-
   public static String unbox(String boxedName) {
     if (unboxMap.containsKey(boxedName))
       return unboxMap.get(boxedName);
@@ -133,6 +139,7 @@ public class SymTypeConstant extends SymTypeExpression {
       return boxedName;
   }
   
+
   /**
    * Boxing const types (e.g. "boolean" -> "java.lang.Boolean")
    * Results are fully qualified.
@@ -146,9 +153,7 @@ public class SymTypeConstant extends SymTypeExpression {
     else
       return unboxedName;
   }
-  
-  // TODO: 2-3 Tests zB box(unbox("..."))
-  
+
   
   /**
    * Checks whether it is an integer type (incl. byte, long, char)
@@ -175,18 +180,23 @@ public class SymTypeConstant extends SymTypeExpression {
   /**
    * Am I primitive? (such as "int")
    */
-  public boolean isPrimitiveType() {
+  public boolean isPrimitive() {
     return true;
   }
   
-  
+  @Override
+  public SymTypeConstant deepClone() {
+    SymTypeConstant clone = new SymTypeConstant(getConstName(), getTypeInfo());
+    return clone;
+  }
+
+
   // --------------------------------------------------------------------------
   
+  @Deprecated
   public void setName(String name) {
     this.name = name;
     this.constName = name; // Nur ein Hack um die Tests am laufen zu halten, die setName nutzen
   }
-
-  //hier enum attr für primitive types
   
 }

@@ -2,6 +2,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 
 /**
  * Arrays of a certain dimension (>= 1)
@@ -9,7 +10,7 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 public class SymTypeArray extends SymTypeExpression {
   
   /**
-   * An arrayType has a dimension
+   * An arrayType has a dimension (>= 1)
    */
   protected int dim;
   
@@ -18,6 +19,20 @@ public class SymTypeArray extends SymTypeExpression {
    */
   protected SymTypeExpression argument;
   
+  /**
+   * Constructor
+   * @param dim dimension
+   * @param argument Argument Type
+   * @param typeInfo Type-Symbol that defines this type
+   */
+  public SymTypeArray(int dim, SymTypeExpression argument, TypeSymbol typeInfo) {
+    this.dim = dim;
+    this.argument = argument;
+    this.setTypeInfo(DefsTypeBasic._array);
+    this.setTypeInfo(typeInfo);
+  }
+
+  @Deprecated // Löschen, weil es nicht alle Attribute besetzt
   public SymTypeArray(int dim, SymTypeExpression argument) {
     this.dim = dim;
     this.argument = argument;
@@ -48,7 +63,7 @@ public class SymTypeArray extends SymTypeExpression {
    */
   public String print() {
     StringBuffer r = new StringBuffer(getArgument().print());
-    for(int i = 1; i<=dim;i++){
+    for(int i = 1; i<=dim; i++){
       r.append("[]");
     }
     return r.toString();
@@ -60,15 +75,21 @@ public class SymTypeArray extends SymTypeExpression {
   protected String printAsJson() {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
-    //TODO: anpassen, nachdem package umbenannt ist
+    // Care: the following String needs to be adapted if the package was renamed
     jp.member(JsonConstants.KIND, "de.monticore.types.check.SymTypeArray");
     jp.memberJson("argument", argument.printAsJson());
     jp.member("dim", dim);
     jp.endObject();
     return jp.getContent();
   }
-  
-  
+
+  @Override
+  public SymTypeArray deepClone() {
+    SymTypeArray clone = new SymTypeArray(this.dim,this.argument.deepClone(),this.getTypeInfo());
+    return clone;
+  }
+
+
   // --------------------------------------------------------------------------
   
 }

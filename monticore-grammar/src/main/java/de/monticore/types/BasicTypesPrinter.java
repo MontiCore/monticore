@@ -9,8 +9,10 @@ import de.se_rwth.commons.Names;
 import java.util.List;
 
 /**
- * This class provides methods for printing types as Strings. The TypesPrinter
+ * This class provides methods for printing types as Strings. The BasicTypesPrinter
  * is a singleton.
+ *
+ * Care: It is not extensible (as it does not fully implement the static delegator pattern)
  */
 public class BasicTypesPrinter {
 
@@ -54,22 +56,22 @@ public class BasicTypesPrinter {
       return doPrintPrimitiveType((ASTMCPrimitiveType) type);
     }
     if (type instanceof ASTMCObjectType) {
-      return doPrintReferenceType((ASTMCObjectType) type);
+      return doPrintObjectType((ASTMCObjectType) type);
     }
     return "vxgcnfnhnhjggf";
   }
   
   /**
-   * Converts an ASTReferenceType to a String
+   * Converts an ASTMCObjectType to a String
    *
-   * @param type ASTReferenceType to be converted
+   * @param type ASTMCObjectType to be converted
    * @return String representation of "type"
    */
-  public static String printReferenceType(ASTMCObjectType type) {
-    return getInstance().doPrintReferenceType(type);
+  public static String printObjectType(ASTMCObjectType type) {
+    return getInstance().doPrintObjectType(type);
   }
 
-  protected String doPrintReferenceType(ASTMCObjectType type) {
+  protected String doPrintObjectType(ASTMCObjectType type) {
 
     return Names.getQualifiedName(type.getNameList());
   }
@@ -98,9 +100,7 @@ public class BasicTypesPrinter {
   /******************************************************************
    * Rules
    ******************************************************************/
- 
-
-
+  
   
   /**
    * Converts an ASTVoidType to a String
@@ -161,21 +161,21 @@ public class BasicTypesPrinter {
   }
 
   /**
-   * Converts an ASTReferenceTypeList to a String
+   * Converts an ASTObjectTypeList to a String
    *
-   * @param type ASTReferenceTypeList to be converted
+   * @param type ASTObjectTypeList to be converted
    * @return String representation of "type"
    */
-  public static String printReferenceTypeList(List<ASTMCObjectType> type) {
-    return getInstance().doPrintReferenceTypeList(type);
+  public static String printObjectTypeList(List<ASTMCObjectType> type) {
+    return getInstance().doPrintObjectTypeList(type);
   }
   
-  protected String doPrintReferenceTypeList(List<ASTMCObjectType> type) {
+  protected String doPrintObjectTypeList(List<ASTMCObjectType> type) {
     StringBuilder ret = new StringBuilder();
     if (type != null) {
       String sep = "";
       for (ASTMCObjectType refType : type) {
-        ret.append(sep + doPrintReferenceType(refType));
+        ret.append(sep + doPrintObjectType(refType));
         sep = ", ";
       }
     }

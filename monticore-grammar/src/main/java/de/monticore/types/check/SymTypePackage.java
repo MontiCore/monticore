@@ -3,6 +3,9 @@
 package de.monticore.types.check;
 
 
+// TODO 4BR: @Deprecated
+// A package is not a Type and this class is to be deleted
+@Deprecated
 public class SymTypePackage extends SymTypeExpression {
 
 
@@ -18,6 +21,11 @@ public class SymTypePackage extends SymTypeExpression {
    */
   protected String printAsJson() {
     return "\""+print()+"\"";
+  }
+
+  @Override
+  public SymTypePackage deepClone() {
+    return new SymTypePackage();
   }
 
 

@@ -34,6 +34,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Before
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
+    DefsTypeBasic.setup();
     scope =
         ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
             .setEnclosingScope(null)       // No enclosing Scope: Search ending here

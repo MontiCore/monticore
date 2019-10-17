@@ -119,7 +119,7 @@ public class TypeCheck {
     }
     return result.get();
   }
-  // TODO EK: Die Funktion muss noch getestet werden (und sein Expression-Visitor insbesondere auch)
+  // TODO RE: Die Funktion muss noch getestet werden (und sein Expression-Visitor insbesondere auch)
   // könnte man in    DeriveSymType.*Expression.*Test ablegen
   
   /**
@@ -167,7 +167,7 @@ public class TypeCheck {
    * are compatible, by refining the assignments a-> long, b->List<c>
    */
   public static boolean compatible(SymTypeExpression left, SymTypeExpression right) {
-    if(left.isPrimitiveType()&&right.isPrimitiveType()){
+    if(left.isPrimitive()&&right.isPrimitive()){
       SymTypeConstant leftType = (SymTypeConstant) left;
       SymTypeConstant rightType = (SymTypeConstant) right;
       if(isBoolean(leftType)&&isBoolean(rightType)){
@@ -227,7 +227,7 @@ public class TypeCheck {
    * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
    */
   public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType){
-    if(subType.isPrimitiveType()&&superType.isPrimitiveType()) {
+    if(subType.isPrimitive()&&superType.isPrimitive()) {
       SymTypeConstant sub = (SymTypeConstant) subType;
       SymTypeConstant supert = (SymTypeConstant) superType;
       if (isBoolean(supert) && isBoolean(sub)) {
@@ -245,6 +245,9 @@ public class TypeCheck {
       if (isInt(supert) && sub.isIntegralType() && !isLong(subType) && !isInt(subType)) {
         return true;
       }
+      return false;
+    }else if((subType.isPrimitive() && !superType.isPrimitive()) ||
+        (superType.isPrimitive() && !subType.isPrimitive())){
       return false;
     }
     return isSubtypeOfRec(subType,superType);

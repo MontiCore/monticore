@@ -18,14 +18,14 @@ public class SymTypeExpressionTest {
   // setup of objects (unchanged during tests)
   SymTypeExpression teDouble = createTypeConstant("double");
   SymTypeExpression teInt = createTypeConstant("int");
-  SymTypeExpression teVarA = createTypeVariable("A");
-  SymTypeExpression teVarB = createTypeVariable("B");
+  SymTypeExpression teVarA = createTypeVariable("A", new TypeSymbol("long"));
+  SymTypeExpression teVarB = createTypeVariable("B", new TypeSymbol("long"));
   SymTypeExpression teP = createTypeObject("de.x.Person", new TypeSymbol("long"));
   SymTypeExpression teH = createTypeObject("Human", new TypeSymbol("long"));  // on purpose: package missing
   SymTypeExpression teVoid = createTypeVoid();
   SymTypeExpression teNull = createTypeOfNull();
-  SymTypeExpression teArr1 = createTypeArray(1, teH);
-  SymTypeExpression teArr3 = createTypeArray(3, teInt);
+  SymTypeExpression teArr1 = createTypeArray(1, teH, (TypeSymbol) null);
+  SymTypeExpression teArr3 = createTypeArray(3, teInt, (TypeSymbol) null);
   SymTypeExpression teSet = createGenerics("java.util.Set", Lists.newArrayList(teP), (TypeSymbol) null);
   SymTypeExpression teSetA = createGenerics("java.util.Set", Lists.newArrayList(teVarA), (TypeSymbol) null);
   SymTypeExpression teMap = createGenerics("Map", Lists.newArrayList(teInt,teP), (TypeSymbol) null); // no package!

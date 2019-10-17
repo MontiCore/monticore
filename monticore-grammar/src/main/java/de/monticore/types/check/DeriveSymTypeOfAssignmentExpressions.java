@@ -54,6 +54,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0170 The resulting type cannot be calculated");
     }
   }
@@ -73,6 +74,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0171 The resulting type cannot be calculated");
     }
   }
@@ -92,6 +94,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0172 The resulting type cannot be calculated");
     }
   }
@@ -111,6 +114,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0173 The resulting type cannot be calculated");
     }
   }
@@ -130,6 +134,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0174 The resulting type cannot be calculated");
     }
   }
@@ -149,6 +154,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0175 The resulting type cannot be calculated");
     }
   }
@@ -161,6 +167,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0176 The resulting type cannot be calculated");
     }
   }
@@ -173,6 +180,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0177 The resulting type cannot be calculated");
     }
   }
@@ -185,6 +193,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0178 The resulting type cannot be calculated");
     }
   }
@@ -206,7 +215,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     //there has to be a variable on the left side of an assignmentexpression
     ExpressionsBasisPrettyPrinter expressionsBasisPrettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
     CommonExpressionsPrettyPrinter commonExpressionsPrettyPrinter = new CommonExpressionsPrettyPrinter(new IndentPrinter());
-    Optional<FieldSymbol> leftEx = scope.resolveField(expressionsBasisPrettyPrinter.prettyprint(expr.getLeft()).equals("")?commonExpressionsPrettyPrinter.prettyprint(expr.getLeft()):expressionsBasisPrettyPrinter.prettyprint(expr.getLeft()));
+    Optional<FieldSymbol> leftEx = scope.resolveField(expressionsBasisPrettyPrinter
+        .prettyprint(expr.getLeft()).equals("")
+        ?commonExpressionsPrettyPrinter.prettyprint(expr.getLeft())
+        :expressionsBasisPrettyPrinter.prettyprint(expr.getLeft()));
     if(!leftEx.isPresent()){
       Log.error("0xA0180 The resulting type cannot be calculated");
     }
@@ -242,6 +254,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
         this.result = sym.get();
       }
       else {
+        lastResult.setLastOpt(Optional.empty());
         Log.error("0xA0180 The resulting type cannot be calculated");
       }
     }
@@ -256,6 +269,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0181 The resulting type cannot be calculated");
     }
   }
@@ -269,6 +283,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0182 The resulting type cannot be calculated");
     }
   }
@@ -282,6 +297,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0183 The resulting type cannot be calculated");
     }
   }
@@ -295,6 +311,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0184 The resulting type cannot be calculated");
     }
   }
@@ -308,6 +325,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0185 The resulting type cannot be calculated");
     }
   }
@@ -321,6 +339,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0186 The resulting type cannot be calculated");
     }
   }
@@ -333,6 +352,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0187 The resulting type cannot be calculated");
     }
   }
@@ -358,7 +378,8 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       Log.error("The type of the right expression could not be calculated");
     }
     //if the left and the right result are a numeric type then the type of the whole expression is the type of the left expression
-    if(leftResult.isPrimitiveType()&&((SymTypeConstant)leftResult).isNumericType()&&rightResult.isPrimitiveType()&&((SymTypeConstant)rightResult).isNumericType()){
+    if(leftResult.isPrimitive()&&((SymTypeConstant)leftResult).isNumericType()&&rightResult
+        .isPrimitive()&&((SymTypeConstant)rightResult).isNumericType()){
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
     }
     //should not happen, not valid, will be handled in traverse
@@ -414,7 +435,8 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       Log.error("The type of the right expression could not be calculated");
     }
     //the bitshift operations are only defined for integers --> long, int, char, short, byte
-    if(leftResult.isPrimitiveType()&&((SymTypeConstant)leftResult).isIntegralType()&&rightResult.isPrimitiveType()&&((SymTypeConstant)rightResult).isIntegralType()){
+    if(leftResult.isPrimitive()&&((SymTypeConstant)leftResult).isIntegralType()&&rightResult
+        .isPrimitive()&&((SymTypeConstant)rightResult).isIntegralType()){
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
     }
     //should not happen, not valid, will be handled in traverse
@@ -441,7 +463,8 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }else{
       Log.error("The type of the right expression could not be calculated");
     }
-    if(leftResult.isPrimitiveType()&&((SymTypeConstant)leftResult).isIntegralType()&&rightResult.isPrimitiveType()&&((SymTypeConstant)rightResult).isIntegralType()){
+    if(leftResult.isPrimitive()&&((SymTypeConstant)leftResult).isIntegralType()&&rightResult
+        .isPrimitive()&&((SymTypeConstant)rightResult).isIntegralType()){
       //option 1: both are of integral type
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
     }else if("boolean".equals(unbox(leftResult.print()))&&"boolean".equals(unbox(rightResult.print()))) {
@@ -474,7 +497,8 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       Log.error("The type of the right expression could not be calculated");
     }
     //option one: both are numeric types and are assignable
-    if(leftResult.isPrimitiveType()&&((SymTypeConstant)leftResult).isNumericType()&&rightResult.isPrimitiveType()&&((SymTypeConstant)rightResult).isNumericType()&&compatible(leftResult,rightResult)){
+    if(leftResult.isPrimitive()&&((SymTypeConstant)leftResult).isNumericType()&&rightResult
+        .isPrimitive()&&((SymTypeConstant)rightResult).isNumericType()&&compatible(leftResult,rightResult)){
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
     }else if (rightResult.print().equals(leftResult.print())||isSubtypeOf(rightResult,leftResult)) {
       //option two: none of them are primitive types and they are either from the same class or stand in a super/subtype relation with the supertype on the left side
