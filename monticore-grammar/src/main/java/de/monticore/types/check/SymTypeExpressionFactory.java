@@ -126,6 +126,7 @@ public class SymTypeExpressionFactory {
   /**
    * creates a TypeExpression for primitives, such as "int", for "null", "void" and
    * also for object types, such as "Person" from a given symbol
+   * Primitives don't need a type symbol, object types need both.
    * @param name
    * @param type
    * @return
