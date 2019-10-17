@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 /**
  * @deprecated will be transfered into CD4A
- * first the deprecation of MCTypeFacade has to be removed, then the CDMethodFacade can be tranfered to CD4A
+ * first the deprecation of MCTypeFacade has to be removed, then the CDMethodFacade can be transfered to CD4A
  * after release of CD4A with CDMethodFacade this class can be removed
  */
 @Deprecated

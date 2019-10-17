@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java.factories;
+package de.monticore.types;
 
 import com.google.common.collect.Lists;
-import de.monticore.types.MCCollectionTypesHelper;
-import de.monticore.types.MCFullGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
@@ -18,11 +16,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @deprecated class will be replaced by same one in monticore-grammar module
- * can be deleted after monticore 5.4.0 release
- * Class that helps with the creation of ASTMCTypes
+ * facade for creation of ASTMCTypes
  */
-@Deprecated
 public class MCTypeFacade {
 
   private static final String PACKAGE_SEPARATOR = "\\.";
