@@ -20,6 +20,11 @@ public class SymTypeOfObject extends SymTypeExpression {
    */
   protected String objFullName;
   
+  /**
+   * Constructor: with the full name and the TypeSymbol behind
+   * @param objFullName
+   * @param typeInfo
+   */
   public SymTypeOfObject(String objFullName, TypeSymbol typeInfo)
   {
     this.objFullName = objFullName;
@@ -56,9 +61,7 @@ public class SymTypeOfObject extends SymTypeExpression {
 
   @Override
   public SymTypeOfObject deepClone() {
-    SymTypeOfObject clone = new SymTypeOfObject(this.objFullName);
-    clone.setName(this.name);
-    clone.setTypeInfo(this.getTypeInfo());
+    SymTypeOfObject clone = new SymTypeOfObject(this.objFullName,this.getTypeInfo());
     return clone;
   }
 
@@ -79,7 +82,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   
   // --------------------------------------------------------------------------
 
-  // TODO 4: this constructor ignores the typeInfo: can we remove the typeInfo completely, because not needed?
+  // TODO 4: this constructor ignores the typeInfo:
   @Deprecated
   public SymTypeOfObject(String name){
     this.objFullName = name;

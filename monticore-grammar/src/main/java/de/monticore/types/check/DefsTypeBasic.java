@@ -7,7 +7,9 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.typesymbols._symboltable.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 
@@ -25,7 +27,6 @@ public class DefsTypeBasic {
   // Original initialization
   static {
     setup();
-    
   }
   
   /**
@@ -310,11 +311,11 @@ public class DefsTypeBasic {
    * https://docs.oracle.com/javase/10/docs/api/java/lang/String.html
    */
   public static TypeSymbol _String;
-  public static SymTypeExpression _StringSymType;
+  public static SymTypeOfObject _StringSymType;
   
   public static void set_String() {
     _String = type("StringType");
-    _StringSymType = createTypeObject("String", _String);
+    _StringSymType = new SymTypeOfObject("String", _String);
   }
   
   public static void link_String() {
@@ -350,7 +351,7 @@ public class DefsTypeBasic {
     add(_String, m);
     scope.add(m);
     
-    // TODO RE: this function is very incomplete; ersetzen oder komplettieren
+    // TODO RE: this function is very incomplete (wegen der fehlenden Signatur); ersetzen oder komplettieren
     _String.setSpannedScope(scope);
     completeFullnames(_String);
   }
@@ -365,7 +366,7 @@ public class DefsTypeBasic {
    * https://docs.oracle.com/javase/10/docs/api/java/lang/Object.html
    */
   public static TypeSymbol _Object;
-  public static SymTypeExpression _ObjectSymType;
+  public static SymTypeOfObject _ObjectSymType;
   
   public static void set_Object() {
     _Object = type("ObjectType");
@@ -383,43 +384,62 @@ public class DefsTypeBasic {
     // TODO RE: this function is very incomplete; ersetzen oder komplettieren
     
     completeFullnames(_Object);
-    _ObjectSymType = createTypeObject("Object", _Object);
+    _ObjectSymType = new SymTypeOfObject("Object", _Object);
   }
   
   
   /*********************************************************************/
   
   /**
-   * This is the predefined Symbol for al Primitives, such as "int"
+   * This is the predefined Symbol for all Primitives, such as "int"
    * which has empty Fields and Methods
    */
   public static TypeSymbol _int;
-  public static SymTypeExpression _intSymType;
+  public static SymTypeConstant _intSymType;
   public static TypeSymbol _char;
-  public static SymTypeExpression _charSymType;
+  public static SymTypeConstant _charSymType;
   public static TypeSymbol _boolean;
-  public static SymTypeExpression _booleanSymType;
+  public static SymTypeConstant _booleanSymType;
   public static TypeSymbol _double;
-  public static SymTypeExpression _doubleSymType;
+  public static SymTypeConstant _doubleSymType;
   public static TypeSymbol _float;
-  public static SymTypeExpression _floatSymType;
+  public static SymTypeConstant _floatSymType;
   public static TypeSymbol _long;
-  public static SymTypeExpression _longSymType;
+  public static SymTypeConstant _longSymType;
+  public static TypeSymbol _byte;
+  public static SymTypeConstant _byteSymType;
+  public static TypeSymbol _short;
+  public static SymTypeConstant _shortSymType;
   
+  
+  public static Map<String,SymTypeConstant> typeConstants;
   
   public static void set_thePrimitives() {
+    typeConstants = new HashMap<>();
     _int = type("int");
-    _intSymType = SymTypeExpressionFactory.createTypeConstant("int");
+    _intSymType = new SymTypeConstant("int", _int);
+    typeConstants.put("int", _intSymType);
     _boolean = type("boolean");
-    _booleanSymType = SymTypeExpressionFactory.createTypeConstant("boolean");
+    _booleanSymType = new SymTypeConstant("boolean", _boolean);
+    typeConstants.put("boolean", _booleanSymType);
     _char = type("char");
-    _charSymType = SymTypeExpressionFactory.createTypeConstant("char");
+    _charSymType = new SymTypeConstant("char", _char);
+    typeConstants.put("char", _charSymType);
     _double = type("double");
-    _doubleSymType = SymTypeExpressionFactory.createTypeConstant("double");
+    _doubleSymType = new SymTypeConstant("double", _double);
+    typeConstants.put("double", _doubleSymType);
     _float = type("float");
-    _floatSymType = SymTypeExpressionFactory.createTypeConstant("float");
+    _floatSymType = new SymTypeConstant("float", _float);
+    typeConstants.put("float", _floatSymType);
     _long = type("long");
-    _longSymType = SymTypeExpressionFactory.createTypeConstant("long");
+    _longSymType = new SymTypeConstant("long", _long);
+    typeConstants.put("long", _longSymType);
+    _byte = type("byte");
+    _byteSymType = new SymTypeConstant("byte", _byte);
+    typeConstants.put("byte", _byteSymType);
+    _short = type("short");
+    _shortSymType = new SymTypeConstant("short", _short);
+    typeConstants.put("short", _shortSymType);
   }
   
   /*********************************************************************/
@@ -431,11 +451,11 @@ public class DefsTypeBasic {
    *
    */
   public static TypeSymbol _void;
-  public static SymTypeExpression _voidSymType;
+  public static SymTypeVoid _voidSymType;
   
   public static void set_Void() {
     _void = type("voidType");           // the name shouldn't be unused
-    _voidSymType = SymTypeExpressionFactory.createTypeVoid();
+    _voidSymType = new SymTypeVoid();
   }
   
   
@@ -446,16 +466,19 @@ public class DefsTypeBasic {
    * pseudoType "null" with no Fields, no Methods, etc.
    */
   public static TypeSymbol _null;
-  public static SymTypeExpression _nullSymType;
+  public static SymTypeOfNull _nullSymType;
   
   public static void set_Null() {
     _null = type("nullType");    // and the name shouldn't be used anyway
-    _nullSymType = SymTypeExpressionFactory.createTypeOfNull();
+    _nullSymType = new SymTypeOfNull();
   }
+  
+  /*********************************************************************/
   
   // TODO: diese Klasse etwas testen
 
-
+  // TODO: diese Objekte realisieren
+  
   public static TypeSymbol _list;
   public static SymTypeExpression _listSymType;
 

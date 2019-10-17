@@ -4,10 +4,13 @@ package de.monticore.types.check;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import static de.monticore.types.check.DefsTypeBasic.typeConstants;
 
 /**
  * SymTypeExpressionFactory contains static functions that create
@@ -21,26 +24,36 @@ import java.util.Optional;
  */
 public class SymTypeExpressionFactory {
   
-  /**
-   * createTypeVariable vor Variables
-   */
+  @Deprecated  // weil unvollständige Parameter
   public static SymTypeVariable createTypeVariable(String name) {
     SymTypeVariable o = new SymTypeVariable(name);
     return o;
   }
   
   /**
-   * for constants, such as "int"
+   * createTypeVariable vor Variables
+   */
+  public static SymTypeVariable createTypeVariable(String name, TypeSymbol typeSymbol) {
+    SymTypeVariable o = new SymTypeVariable(name,typeSymbol);
+    return o;
+  }
+
+  /**
+   * for constants, such as "int" (and no other kinds).
+   * TypeInfo is not needed (as the Objects are predefined singletons)
    */
   public static SymTypeConstant createTypeConstant(String name) {
-    SymTypeConstant o = new SymTypeConstant(name);
-    return o;
+    SymTypeConstant stc = typeConstants.get(name);
+    if(stc == null) {
+      Log.error("0x893F62 Internal Error: Non primitive type " + name + " stored as constant.");
+    }
+    return stc;
   }
   
   /**
    * for ObjectTypes, as e.g. "Person"
    * @param name  Name of the type
-   * @param objTypeSymbol  TODO 4: is this needed?
+   * @param objTypeSymbol  Symbol behind the Type
    * @return
    */
   public static SymTypeOfObject createTypeObject(String name, TypeSymbol objTypeSymbol) {
@@ -53,6 +66,7 @@ public class SymTypeExpressionFactory {
    * @param name  Name of the type
    * @return
    */
+  @Deprecated
   public static SymTypeOfObject createTypeObject(String name) {
     SymTypeOfObject o = new SymTypeOfObject(name);
     o.setObjName(name);
@@ -64,15 +78,25 @@ public class SymTypeExpressionFactory {
    * @return
    */
   public static SymTypeVoid createTypeVoid() {
-    SymTypeVoid o = new SymTypeVoid();
-    return o;
+    return DefsTypeBasic._voidSymType;
   }
   
   /**
    * That is the pseudo-type of "null"
    */
   public static SymTypeOfNull createTypeOfNull() {
-    SymTypeOfNull o = new SymTypeOfNull();
+    return DefsTypeBasic._nullSymType;
+  }
+  
+  /**
+   * creates an array-Type Expression
+   * @param dim   the dimension of the array
+   * @param argument the argument type (of the elements)
+   * @param typeInfo the Symbol behind this Type
+   * @return
+   */
+  public static SymTypeArray createTypeArray(int dim, SymTypeExpression argument, TypeSymbol typeInfo) {
+    SymTypeArray o = new SymTypeArray(dim, argument, typeInfo);
     return o;
   }
   
@@ -82,11 +106,13 @@ public class SymTypeExpressionFactory {
    * @param argument the argument type (of the elements)
    * @return
    */
+  @Deprecated
   public static SymTypeArray createTypeArray(int dim, SymTypeExpression argument) {
     SymTypeArray o = new SymTypeArray(dim, argument);
     return o;
   }
-
+  
+  
   /**
    * creates a TypeExpression for primitives, such as "int", for "null", "void" and
    * also for object types, such as "Person" from a given symbol
@@ -94,19 +120,27 @@ public class SymTypeExpressionFactory {
    * @return
    */
   public static SymTypeExpression createTypeExpression(TypeSymbol type){
-    List<String> primitiveTypes = Arrays
-        .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
-
+    return createTypeExpression(type.getName(),type);
+  }
+  
+  /**
+   * creates a TypeExpression for primitives, such as "int", for "null", "void" and
+   * also for object types, such as "Person" from a given symbol
+   * Primitives don't need a type symbol, object types need both.
+   * @param name
+   * @param type
+   * @return
+   */
+  public static SymTypeExpression createTypeExpression(String name, TypeSymbol type){
     SymTypeExpression o;
-
-    if (primitiveTypes.contains(type.getName())) {
-      o = createTypeConstant(type.getName());
-    } else if("void".equals(type.getName())){
+    if (typeConstants.containsKey(type.getName())) {
+      o = createTypeConstant(name);
+    } else if("void".equals(name)){
       o = createTypeVoid();
-    }else if("null".equals(type.getName())) {
+    } else if("null".equals(name)) {
       o = createTypeOfNull();
-    }else {
-      o = createTypeObject(type.getName());
+    } else {
+      o = createTypeObject(name,type);
     }
     return o;
   }

@@ -1,5 +1,6 @@
 package de.monticore.types.check;
 
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
 import de.se_rwth.commons.logging.Log;
@@ -155,7 +156,25 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends  SynthesizeSymTypeFr
     result = Optional.of(tex);
   }
   
-    // ASTMCTypeArgument, ASTMCBasicTypeArgument and  MCPrimitiveTypeArgument:
+  /**
+   * There are several forms of qualified Types possible:
+   * ** Object-types
+   * ** Boxed primitives, such as "java.lang.Boolean"
+   * Primitives, like "int", void, null are not possible here.
+   * This are the qualified Types that may occur.
+   *
+   * To distinguish these kinds, we use the symbol that the ASTMCQualifiedType identifies
+   * @param qType
+   */
+  @Override
+  public void endVisit(ASTMCQualifiedType qType) {
+    
+    // TODO TODO ! This implementation is incomplete, it does only create Object-Types, but the
+    // type could also be a boxed Primitive!
+    result = Optional.of(SymTypeExpressionFactory.createTypeObject(qType.getName()));
+  }
+  
+  // ASTMCTypeArgument, ASTMCBasicTypeArgument and  MCPrimitiveTypeArgument:
     // Do nothing, because result already contains the argument
     // (because: MCG contains:
     // interface MCTypeArgument;
@@ -164,5 +183,6 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends  SynthesizeSymTypeFr
     //
     // MCPrimitiveTypeArgument implements MCTypeArgument <190> =
     //       MCPrimitiveType;
+  
   
 }
