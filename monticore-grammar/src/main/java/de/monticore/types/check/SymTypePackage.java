@@ -4,6 +4,8 @@ package de.monticore.types.check;
 
 
 // TODO 4BR: @Deprecated
+// A package is not a Type and this class is to be deleted
+@Deprecated
 public class SymTypePackage extends SymTypeExpression {
 
 

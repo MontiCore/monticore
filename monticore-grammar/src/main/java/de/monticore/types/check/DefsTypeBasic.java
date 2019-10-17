@@ -311,11 +311,11 @@ public class DefsTypeBasic {
    * https://docs.oracle.com/javase/10/docs/api/java/lang/String.html
    */
   public static TypeSymbol _String;
-  public static SymTypeExpression _StringSymType;
+  public static SymTypeOfObject _StringSymType;
   
   public static void set_String() {
     _String = type("StringType");
-    _StringSymType = createTypeObject("String", _String);
+    _StringSymType = new SymTypeOfObject("String", _String);
   }
   
   public static void link_String() {
@@ -351,7 +351,7 @@ public class DefsTypeBasic {
     add(_String, m);
     scope.add(m);
     
-    // TODO RE: this function is very incomplete; ersetzen oder komplettieren
+    // TODO RE: this function is very incomplete (wegen der fehlenden Signatur); ersetzen oder komplettieren
     _String.setSpannedScope(scope);
     completeFullnames(_String);
   }
@@ -366,7 +366,7 @@ public class DefsTypeBasic {
    * https://docs.oracle.com/javase/10/docs/api/java/lang/Object.html
    */
   public static TypeSymbol _Object;
-  public static SymTypeExpression _ObjectSymType;
+  public static SymTypeOfObject _ObjectSymType;
   
   public static void set_Object() {
     _Object = type("ObjectType");
@@ -384,7 +384,7 @@ public class DefsTypeBasic {
     // TODO RE: this function is very incomplete; ersetzen oder komplettieren
     
     completeFullnames(_Object);
-    _ObjectSymType = createTypeObject("Object", _Object);
+    _ObjectSymType = new SymTypeOfObject("Object", _Object);
   }
   
   
@@ -406,6 +406,11 @@ public class DefsTypeBasic {
   public static SymTypeConstant _floatSymType;
   public static TypeSymbol _long;
   public static SymTypeConstant _longSymType;
+  public static TypeSymbol _byte;
+  public static SymTypeConstant _byteSymType;
+  public static TypeSymbol _short;
+  public static SymTypeConstant _shortSymType;
+  
   
   public static Map<String,SymTypeConstant> typeConstants;
   
@@ -429,6 +434,12 @@ public class DefsTypeBasic {
     _long = type("long");
     _longSymType = new SymTypeConstant("long", _long);
     typeConstants.put("long", _longSymType);
+    _byte = type("byte");
+    _byteSymType = new SymTypeConstant("byte", _byte);
+    typeConstants.put("byte", _byteSymType);
+    _short = type("short");
+    _shortSymType = new SymTypeConstant("short", _short);
+    typeConstants.put("short", _shortSymType);
   }
   
   /*********************************************************************/
