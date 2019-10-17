@@ -146,7 +146,6 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     }
 
     SymTypeOfGenerics clone = new SymTypeOfGenerics(this.getTypeConstructorFullName(),typeArguments,this.typeInfo);
-    clone.setName(this.name);
     clone.setTypeInfo(this.typeInfo);
     return clone;
   }

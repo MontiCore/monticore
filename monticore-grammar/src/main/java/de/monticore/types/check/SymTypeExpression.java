@@ -99,7 +99,7 @@ public abstract class SymTypeExpression {
       // in the list because it is a method from a super type and is overridden by the first method
       for(int i = 0;i<methodList.size()-1;i++){
         for(int j = i+1;j<methodList.size();j++){
-          if(methodList.get(i).getReturnType().getName().equals(methodList.get(j).getReturnType().getName())&&
+          if(methodList.get(i).getReturnType().print().equals(methodList.get(j).getReturnType().print())&&
               methodList.get(i).getParameterList().size()==methodList.get(j).getParameterList().size()){
             boolean equal = true;
             for(int k = 0;k<methodList.get(i).getParameterList().size();k++){
@@ -158,7 +158,7 @@ public abstract class SymTypeExpression {
     // field from a super type and is overridden by the first field
     for(int i = 0;i<fieldList.size()-1;i++){
       for(int j = i+1;j<fieldList.size();j++){
-        if(fieldList.get(i).getType().getName().equals(fieldList.get(j).getType().getName())){
+        if(fieldList.get(i).getType().print().equals(fieldList.get(j).getType().print())){
           fieldList.remove(fieldList.get(j));
         }
       }
