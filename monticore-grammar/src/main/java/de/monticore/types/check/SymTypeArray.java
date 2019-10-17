@@ -89,7 +89,5 @@ public class SymTypeArray extends SymTypeExpression {
     return clone;
   }
 
-
   // --------------------------------------------------------------------------
-  
 }
