@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static de.monticore.types.check.SymTypeConstant.unbox;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class CombineExpressionsWithLiteralsTest {
@@ -56,7 +58,7 @@ public class CombineExpressionsWithLiteralsTest {
 
     assertTrue(expr.isPresent());
     Optional<SymTypeExpression> j = calc.calculateType(expr.get());
-//    assertEquals("int", unbox(j.get().print()));
+    assertEquals("int", unbox(j.get().print()));
 
 
 
@@ -65,20 +67,17 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<ASTExpression> expr2 = p.parse_StringExpression("s+=s");
     assertTrue(expr2.isPresent());
     Optional<SymTypeExpression> j2 = calc2.calculateType(expr2.get());
-    //TODO RE resolve local variable via import
-//    assertEquals("int",j2.get().print());
+    assertEquals("int",j2.get().print());
 
 
     Optional<ASTExpression> exprC = p.parse_StringExpression("mc.typescalculator.TestCD.D.f = mc.typescalculator.TestCD.C.f");
     assertTrue(exprC.isPresent());
-//    j = calc.calculateType(exprC.get());
-    //TODO String vs mc.typescalculator.TestCD.String
-//    assertEquals("String",j.get().print());
+    j = calc.calculateType(exprC.get());
+    assertEquals("G",j.get().print());
 
     Optional<ASTExpression> exprD = p.parse_StringExpression("(mc.typescalculator.TestCD.B.a)++");
     assertTrue(exprD.isPresent());
-    //TODO
-//    assertEquals("double",calc.calculateType(exprD.get()).get().print());
+    assertEquals("double",calc.calculateType(exprD.get()).get().print());
 
     Optional<ASTExpression> exprB = p.parse_StringExpression("mc.typescalculator.TestCD.B.x = mc.typescalculator.TestCD.B.z");
 
@@ -86,8 +85,8 @@ public class CombineExpressionsWithLiteralsTest {
 
     ASTExpression b = exprB.get();
 
-//    Optional<SymTypeExpression> k = calc.calculateType(b);
+    Optional<SymTypeExpression> k = calc.calculateType(b);
     //TODO RE
-//    assertEquals("C",k.get().print());
+    assertEquals("C",k.get().print());
   }
 }

@@ -51,7 +51,7 @@ public class CD2EAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolR
       for(CDFieldSymbol fieldSymbol: typeSymbol.getFields()){
         List<FieldSymbol> variableSymbols = res.getFieldList();
         FieldSymbol varsym = ExpressionsBasisSymTabMill.fieldSymbolBuilder().setName(fieldSymbol.getName()).setFullName(fieldSymbol.getFullName()).setAccessModifier(fieldSymbol.getAccessModifier()).build();
-        varsym.setType(CD2EHelper.transformCDType2SymTypeExpression(fieldSymbol.getType()));
+        varsym.setType(CD2EHelper.transformCDTypeReference2SymTypeExpression(fieldSymbol.getType()));
         variableSymbols.add(varsym);
         res.getSpannedScope().add(varsym);
         res.setFieldList(variableSymbols);
@@ -59,7 +59,7 @@ public class CD2EAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolR
       for(CDMethOrConstrSymbol method : typeSymbol.getAllVisibleMethods()){
         List<MethodSymbol> methodSymbols = res.getMethodList();
         MethodSymbol metSym = ExpressionsBasisSymTabMill.methodSymbolBuilder().setName(method.getName()).setFullName(method.getFullName()).setAccessModifier(method.getAccessModifier()).build();
-        metSym.setReturnType(CD2EHelper.transformCDType2SymTypeExpression(method.getReturnType()));
+        metSym.setReturnType(CD2EHelper.transformCDTypeReference2SymTypeExpression(method.getReturnType()));
         for(CDFieldSymbol parameter: method.getParameters()){
           List<FieldSymbol> fieldSymbols = metSym.getParameterList();
           fieldSymbols.add(CD2EHelper.transformCDField2FieldSymbol(parameter));
@@ -71,7 +71,7 @@ public class CD2EAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolR
       }
       for(CDTypeSymbolReference ref : typeSymbol.getSuperTypes()){
         List<SymTypeExpression> superTypes = res.getSuperTypeList();
-        superTypes.add(CD2EHelper.transformCDType2SymTypeExpression(ref));
+        superTypes.add(CD2EHelper.transformCDTypeReference2SymTypeExpression(ref));
         res.setSuperTypeList(superTypes);
       }
       result.add(res);
