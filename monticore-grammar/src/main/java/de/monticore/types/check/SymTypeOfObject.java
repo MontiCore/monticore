@@ -5,6 +5,8 @@ import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 
+import java.util.Optional;
+
 /**
  * An objectType is a full qualified class name.
  * Therefore, we have the fullName, the baseName and the
@@ -18,6 +20,11 @@ public class SymTypeOfObject extends SymTypeExpression {
    */
   protected String objFullName;
   
+  /**
+   * Constructor: with the full name and the TypeSymbol behind
+   * @param objFullName
+   * @param typeInfo
+   */
   public SymTypeOfObject(String objFullName, TypeSymbol typeInfo)
   {
     this.objFullName = objFullName;
@@ -31,7 +38,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   public void setObjName(String objname) {
     this.objFullName = objname;
   }
-
+  
   /**
    * print: Umwandlung in einen kompakten String
    */
@@ -52,6 +59,12 @@ public class SymTypeOfObject extends SymTypeExpression {
     return jp.getContent();
   }
 
+  @Override
+  public SymTypeOfObject deepClone() {
+    SymTypeOfObject clone = new SymTypeOfObject(this.objFullName,this.getTypeInfo());
+    return clone;
+  }
+
   /**
    * getFullName: get the Qualified Name including Package
    */
@@ -69,7 +82,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   
   // --------------------------------------------------------------------------
 
-  // TODO 4: this constructor ignores the typeInfo: can we remove the typeInfo completely, because not needed?
+  // TODO 4: this constructor ignores the typeInfo:
   @Deprecated
   public SymTypeOfObject(String name){
     this.objFullName = name;

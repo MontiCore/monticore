@@ -119,7 +119,7 @@ public class TypeCheck {
     }
     return result.get();
   }
-  // TODO EK: Die Funktion muss noch getestet werden (und sein Expression-Visitor insbesondere auch)
+  // TODO RE: Die Funktion muss noch getestet werden (und sein Expression-Visitor insbesondere auch)
   // könnte man in    DeriveSymType.*Expression.*Test ablegen
   
   /**
@@ -245,6 +245,9 @@ public class TypeCheck {
       if (isInt(supert) && sub.isIntegralType() && !isLong(subType) && !isInt(subType)) {
         return true;
       }
+      return false;
+    }else if((subType.isPrimitive() && !superType.isPrimitive()) ||
+        (superType.isPrimitive() && !subType.isPrimitive())){
       return false;
     }
     return isSubtypeOfRec(subType,superType);

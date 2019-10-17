@@ -21,6 +21,12 @@ public class SymTypeVoid extends SymTypeExpression {
     return "\""+print()+"\"";
   }
 
+  @Override
+  public SymTypeVoid deepClone() {
+    return new SymTypeVoid();
+  }
+
+
   // --------------------------------------------------------------------------
   
 }

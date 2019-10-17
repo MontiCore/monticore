@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 
 public class SymTypeVariable extends SymTypeExpression {
@@ -12,6 +13,18 @@ public class SymTypeVariable extends SymTypeExpression {
    */
   protected String varName;
   
+  /**
+   * Constructor:
+   * @param varName
+   * @param typeSymbol
+   */
+  public SymTypeVariable(String varName, TypeSymbol typeSymbol)
+  {
+    this.varName = varName;
+    this.setTypeInfo(typeSymbol);
+  }
+  
+  @Deprecated  // weil unvollständig
   public SymTypeVariable(String varName)
   {
     this.varName = varName;
@@ -58,10 +71,20 @@ public class SymTypeVariable extends SymTypeExpression {
      *     a monomorphic type on its own and do hence not regard it as primitive type
       */
   }
-  
+
+  public boolean isTypeVariable() {
+    return true;
+  }
+
+  @Override
+  public SymTypeVariable deepClone() {
+    SymTypeVariable clone = new SymTypeVariable(this.getVarName(),this.getTypeInfo());
+    return clone;
+  }
+
 
   // --------------------------------------------------------------------------
-  
+
   // TODO 4: kann entfernt werden
   @Deprecated
   public SymTypeVariable() {

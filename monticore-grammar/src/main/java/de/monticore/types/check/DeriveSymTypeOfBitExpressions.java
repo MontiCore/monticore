@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
 import de.monticore.expressions.bitexpressions._ast.*;
@@ -9,6 +10,9 @@ import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeConstant.unbox;
 
+/**
+ *  Visitor for BitExpressions
+ */
 public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression implements BitExpressionsVisitor {
 
   private BitExpressionsVisitor realThis;
@@ -67,6 +71,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0209 The resulting type cannot be calculated");
     }
   }
@@ -99,6 +104,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0210 The resulting type cannot be calculated");
     }
   }
@@ -131,6 +137,8 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0211 The resulting type cannot be calculated");
     }
   }
@@ -163,6 +171,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0212 The resulting type cannot be calculated");
     }
   }
@@ -195,6 +204,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0213 The resulting type cannot be calculated");
     }
   }
@@ -227,6 +237,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
+      lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0214 The resulting type cannot be calculated");
     }
   }
@@ -301,11 +312,17 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     if(left.isPrimitive() && right.isPrimitive()) {
       SymTypeConstant leftResult = (SymTypeConstant) left;
       SymTypeConstant rightResult = (SymTypeConstant) right;
-      if (("long".equals(unbox(leftResult.print())) && rightResult.isIntegralType()) || ("long".equals(unbox(rightResult.print())) && rightResult.isIntegralType())) {
+      if (("long".equals(unbox(leftResult.print())) && rightResult.isIntegralType()) ||
+          ("long".equals(unbox(rightResult.print())) && rightResult.isIntegralType())) {
         return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
         //no part of the expression is a long -> if both parts are integral types then the result is a int
       }else{
-        if (("int".equals(unbox(leftResult.print())) || "char".equals(unbox(leftResult.print())) || "short".equals(unbox(leftResult.print())) || "byte".equals(unbox(leftResult.print()))) && ("int".equals(unbox(rightResult.print())) || "char".equals(unbox(rightResult.print())) || "short".equals(unbox(rightResult.print())) || "byte".equals(unbox(rightResult.print())))) {
+        if (
+            ("int".equals(unbox(leftResult.print())) || "char".equals(unbox(leftResult.print())) ||
+            "short".equals(unbox(leftResult.print())) || "byte".equals(unbox(leftResult.print()))) &&
+            ("int".equals(unbox(rightResult.print())) || "char".equals(unbox(rightResult.print())) ||
+                "short".equals(unbox(rightResult.print())) || "byte".equals(unbox(rightResult.print())))
+        ) {
           return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
         }
       }

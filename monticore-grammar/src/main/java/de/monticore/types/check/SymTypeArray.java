@@ -2,6 +2,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 
 /**
  * Arrays of a certain dimension (>= 1)
@@ -9,7 +10,7 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 public class SymTypeArray extends SymTypeExpression {
   
   /**
-   * An arrayType has a dimension
+   * An arrayType has a dimension (>= 1)
    */
   protected int dim;
   
@@ -18,12 +19,27 @@ public class SymTypeArray extends SymTypeExpression {
    */
   protected SymTypeExpression argument;
   
+  /**
+   * Constructor
+   * @param dim dimension
+   * @param argument Argument Type
+   * @param typeInfo Type-Symbol that defines this type
+   */
+  public SymTypeArray(int dim, SymTypeExpression argument, TypeSymbol typeInfo) {
+    this.dim = dim;
+    this.argument = argument;
+    this.setTypeInfo(DefsTypeBasic._array);
+    this.setTypeInfo(typeInfo);
+  }
+
+  @Deprecated // Löschen, weil es nicht alle Attribute besetzt
   public SymTypeArray(int dim, SymTypeExpression argument) {
     this.dim = dim;
     this.argument = argument;
     this.setTypeInfo(DefsTypeBasic._array);
   }
   
+
   // ------------------------------------------------------------------ Functions
   
   public int getDim() {
@@ -41,13 +57,13 @@ public class SymTypeArray extends SymTypeExpression {
   public void setArgument(SymTypeExpression argument) {
     this.argument = argument;
   }
-
+  
   /**
    * print: Umwandlung in einen kompakten String
    */
   public String print() {
     StringBuffer r = new StringBuffer(getArgument().print());
-    for(int i = 1; i<=dim;i++){
+    for(int i = 1; i<=dim; i++){
       r.append("[]");
     }
     return r.toString();

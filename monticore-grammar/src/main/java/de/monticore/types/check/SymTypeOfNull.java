@@ -30,5 +30,12 @@ public class SymTypeOfNull extends SymTypeExpression {
     return "\""+print()+"\"";
   }
 
+  @Override
+  public SymTypeOfNull deepClone() {
+    return new SymTypeOfNull();
+  }
+
   // --------------------------------------------------------------------------
+  
+
 }

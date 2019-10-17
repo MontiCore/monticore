@@ -5,6 +5,8 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
 
 import java.util.Optional;
 
+import static de.monticore.types.check.DefsTypeBasic.typeConstants;
+
 /**
  * Visitor for Derivation of SymType from MCBasicTypes
  * i.e. for
@@ -66,7 +68,16 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
     result = Optional.of(SymTypeExpressionFactory.createTypeVoid());
   }
   
+  /**
+   * Asks the SymTypeExpressionFactory to create the correct Type
+   * Here: the Argument may be qualified Type object, but that allows only primitives, such as "int" or
+   * boxed versions, such as "java.lang.Boolean"
+   * This are the only qualified Types that may occur.
+   * In particular: This method needs to be overriden when real qualified Types occur.
+   * @param qType
+   */
   public void endVisit(ASTMCQualifiedType qType) {
+    // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
     result = Optional.of(SymTypeExpressionFactory.createTypeConstant(qType.getName()));
   }
   
