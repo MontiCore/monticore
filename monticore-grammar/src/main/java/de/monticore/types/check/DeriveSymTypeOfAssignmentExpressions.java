@@ -15,6 +15,7 @@ import java.util.Optional;
 import static de.monticore.types.check.SymTypeConstant.unbox;
 import static de.monticore.types.check.TypeCheck.compatible;
 import static de.monticore.types.check.TypeCheck.isSubtypeOf;
+import static de.monticore.types.check.DeriveSymTypeOfCommonExpressions.getUnaryNumericPromotionType;
 
 /**
  * Visitor for AssignmentExpressions
@@ -377,11 +378,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       Log.error("The type of the right expression could not be calculated");
     }
     //if the left and the right result are a numeric type then the type of the whole expression is the type of the left expression
-    if(isNumericType(leftResult)&&isNumericType(rightResult)){
+    if(isNumericType(leftResult)&&isNumericType(rightResult)) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(unbox(leftResult.print())));
     }
-
-    //should not happen, not valid, will be handled in traverse
+      //should not happen, not valid, will be handled in traverse
     return Optional.empty();
   }
 
@@ -533,17 +533,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
    * helper method for the calculation of the ASTBooleanNotExpression
    */
   public static Optional<SymTypeExpression> getUnaryNumericPromotionType(SymTypeExpression type) {
-    if ("byte".equals(SymTypeConstant.unbox(type.print())) ||
-        "short".equals(SymTypeConstant.unbox(type.print())) ||
-        "char".equals(SymTypeConstant.unbox(type.print()))||
-        "int".equals(SymTypeConstant.unbox(type.print()))
-    ) {
+    if ("byte".equals(SymTypeConstant.unbox(type.print())) || "short".equals(SymTypeConstant.unbox(type.print())) || "char".equals(SymTypeConstant.unbox(type.print())) || "int".equals(SymTypeConstant.unbox(type.print()))) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
     }
-    if ("long".equals(SymTypeConstant.unbox(type.print())) ||
-        "double".equals(SymTypeConstant.unbox(type.print())) ||
-        "float".equals(SymTypeConstant.unbox(type.print()))
-    ) {
+    if ("long".equals(SymTypeConstant.unbox(type.print())) || "double".equals(SymTypeConstant.unbox(type.print())) || "float".equals(SymTypeConstant.unbox(type.print()))) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(SymTypeConstant.unbox(type.print())));
     }
     return Optional.empty();
