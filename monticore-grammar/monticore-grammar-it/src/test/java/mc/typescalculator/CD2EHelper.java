@@ -75,7 +75,7 @@ public class CD2EHelper {
       fieldSymbolsFormAssoc.forEach(f -> typeSymbol.getSpannedScope().add(f));
       typeSymbol.addAllMethods(methodSymbols);
       methodSymbols.forEach(f -> typeSymbol.getSpannedScope().add(f));
-
+      superClass.ifPresent(typeSymbol::addSuperType);
       return typeSymbol;
     }
 
