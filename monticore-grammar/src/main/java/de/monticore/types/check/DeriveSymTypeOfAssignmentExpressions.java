@@ -378,11 +378,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       Log.error("The type of the right expression could not be calculated");
     }
     //if the left and the right result are a numeric type then the type of the whole expression is the type of the left expression
-    if(leftResult.isPrimitive()&&((SymTypeConstant)leftResult).isNumericType()&&rightResult
-        .isPrimitive()&&((SymTypeConstant)rightResult).isNumericType()){
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
+    if(isNumericType(leftResult)&&isNumericType(rightResult)) {
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant(unbox(leftResult.print())));
     }
-    //should not happen, not valid, will be handled in traverse
+      //should not happen, not valid, will be handled in traverse
     return Optional.empty();
   }
 
@@ -517,6 +516,30 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
 
   public void setLastResult(LastResult lastResult){
     this.lastResult = lastResult;
+  }
+
+  /**
+   * test if the expression is of numeric type (double, float, long, int, char, short, byte)
+   */
+  private boolean isNumericType(SymTypeExpression ex){
+    return (unbox(ex.print()).equals("double") || unbox(ex.print()).equals("float") ||
+        unbox(ex.print()).equals("long") || unbox(ex.print()).equals("int") ||
+        unbox(ex.print()).equals("char") || unbox(ex.print()).equals("short") ||
+        unbox(ex.print()).equals("byte")
+    );
+  }
+
+  /**
+   * helper method for the calculation of the ASTBooleanNotExpression
+   */
+  public static Optional<SymTypeExpression> getUnaryNumericPromotionType(SymTypeExpression type) {
+    if ("byte".equals(SymTypeConstant.unbox(type.print())) || "short".equals(SymTypeConstant.unbox(type.print())) || "char".equals(SymTypeConstant.unbox(type.print())) || "int".equals(SymTypeConstant.unbox(type.print()))) {
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
+    }
+    if ("long".equals(SymTypeConstant.unbox(type.print())) || "double".equals(SymTypeConstant.unbox(type.print())) || "float".equals(SymTypeConstant.unbox(type.print()))) {
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant(SymTypeConstant.unbox(type.print())));
+    }
+    return Optional.empty();
   }
 
 }
