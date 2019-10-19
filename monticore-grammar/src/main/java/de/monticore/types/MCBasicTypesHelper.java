@@ -11,21 +11,46 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MCBasicTypesHelper {
-
-
-
+  
+  /**
+   * Exactly the ASTMCPrimitiveType is primitive; all others are not.
+   * Please aslo note that Type variables are not regarded as
+   * primitives, because they ma be not primitive
+   * @param type
+   * @return
+   */
   public static boolean isPrimitive(ASTMCType type) {
     return type instanceof ASTMCPrimitiveType;
   }
-
+  
+  /**
+   * Separate full qualified String into list of Strings (using "." as separator)
+   * @param s
+   * @return
+   */
   public static List<String> createListFromDotSeparatedString(String s) {
     return Arrays.asList(s.split("\\."));
   }
-
+  
+  /**
+   * Nullable are in principle all types, except the primitives.
+   * TODO: Erroneous implementation:
+   * However that is wrong in general, type variable e.g. are not necessarily nullable
+   * because they might stand for a primitive type.
+   * @param type
+   * @return
+   */
+  @Deprecated
   public static boolean isNullable(ASTMCType type) {
     return !isPrimitive(type);
   }
-
+  
+  /**
+   * Map the String with a primitive type, e.g. "int" to its
+   * enumerative Number, e.g.   ASTConstantsMCBasicTypes.INT
+   * @param typeName
+   * @return
+   */
   public static int getPrimitiveType(String typeName) {
     if (Strings.isNullOrEmpty(typeName)) {
       return -1;
