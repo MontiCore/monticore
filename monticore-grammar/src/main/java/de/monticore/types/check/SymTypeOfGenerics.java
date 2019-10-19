@@ -99,7 +99,6 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     return r.append('>').toString();
   }
   
-  // YYY BR
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
    */
