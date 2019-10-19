@@ -122,15 +122,15 @@ public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor {
    * Prints a list
    *
    * @param iter iterator for the list
-   * @param seperator string for seperating list
+   * @param separator string for separating list
    */
-  protected void printList(Iterator<? extends ASTMCBasicTypesNode> iter, String seperator) {
+  protected void printList(Iterator<? extends ASTMCBasicTypesNode> iter, String separator) {
     // print by iterate through all items
     String sep = "";
     while (iter.hasNext()) {
       getPrinter().print(sep);
       iter.next().accept(getRealThis());
-      sep = seperator;
+      sep = separator;
     }
   }
 
