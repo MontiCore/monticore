@@ -4,7 +4,7 @@ public class SymTypeOfNull extends SymTypeExpression {
   
   /**
    * This Class represents the type of the value "null".
-   * This type doesn't really exist (hence the print method delivers "nullType"),
+   * This type doesn't really exist (hence the print method delivers "nullType", i.e. _nullTypeString),
    * but the object is used to attach "null" a proper type,
    * which is then compatible to e.g. to TypeConstant or TypeArray,
    *       int[] j = null;        ok
@@ -21,7 +21,7 @@ public class SymTypeOfNull extends SymTypeExpression {
    */
   @Override
   public String print() {
-      return "nullType";
+      return DefsTypeBasic._nullTypeString;
   }
 
   /**

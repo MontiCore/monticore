@@ -46,9 +46,8 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
    */
-  @Override
   public String getSerializedKind() {
-    // Care: the following String needs to be adapted if the package was renamed
+    // Care: this String is never to occur, because all subclasses override this function
     return "de.monticore.types.check.SymTypeExpression";
   }
   
@@ -72,7 +71,6 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
    * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
    */
   public Optional<SymTypeExpression> deserialize(JsonElement serialized) {
-    SymTypeExpression result = null;
     
     // void, package, and null have special serializations (they are no json objects and do not have
     // a "kind" member)
@@ -94,6 +92,7 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
     
     // all other serialized SymTypeExrpressions are json objects with a kind
     String kind = JsonUtil.getOptStringMember(serialized, JsonConstants.KIND).orElse("");
+    SymTypeExpression result = null;
     
     if (symTypeArrayDeSer.getSerializedKind().equals(kind)) {
       result = symTypeArrayDeSer.deserialize(serialized).orElse(null);
@@ -114,7 +113,7 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
       result = symTypeVariableDeSer.deserialize(serialized).orElse(null);
     }
     else {
-      Log.error("Unknown kind of SymTypeExpression in SymTypeExpressionDeSer: " + kind + " in "
+      Log.error("0x823FE Internal error: Loading ill-structured SymTab: Unknown kind: " + kind + " in "
           + serialized);
     }
     return Optional.ofNullable(result);
