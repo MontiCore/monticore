@@ -34,9 +34,9 @@ public class SymTypeOfNullDeSer implements IDeSer<SymTypeOfNull> {
   }
 
   public Optional<SymTypeOfNull> deserialize(JsonElement serialized) {
+    // comparison to "nullType" because the serializer (print()-function) uses that
     if (serialized.isJsonString() && serialized.getAsJsonString().getValue().equals("nullType")) {
-      // TODO: check if creating a new instance is feasible
-      return Optional.of(new SymTypeOfNull());
+      return Optional.of(SymTypeExpressionFactory.createTypeOfNull());
     }
     return Optional.empty();
   }

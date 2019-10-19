@@ -39,13 +39,11 @@ public class SymTypeVariableDeSer implements IDeSer<SymTypeVariable> {
     if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
       Optional<String> varName = JsonUtil.getOptStringMember(serialized, "varName");
       if (varName.isPresent()) {
-        return Optional.of(new SymTypeVariable(varName.get()));
+        // TODO AB: korrekten Konstruktor einsetzen (TypeSym!)
+        return Optional.of(SymTypeExpressionFactory.createTypeVariable(varName.get()));
       }
-      else {
-        Log.error("0x75D4F5 Could not find varName of SymTypeVariable " + serialized);
-      }
+      Log.error("0x823F5 Internal error: Loading ill-structured SymTab: missing varName of SymTypeVariable " + serialized);
     }
-    // TODO: warum entsteht hier keine Fehlermeldung im else Teil
     return Optional.empty();
   }
   

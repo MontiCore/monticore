@@ -16,28 +16,39 @@ import de.se_rwth.commons.logging.Log;
  */
 public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
   
-  protected SymTypeArrayDeSer symTypeArrayDeSer = new SymTypeArrayDeSer();
+  /**
+   * The singleton that DeSerializes all SymTypeExpressions.
+   * It is stateless and can be reused recursively.
+   */
+  static public SymTypeExpressionDeSer theDeSer = new SymTypeExpressionDeSer();
+  // not realized as static delegator, but only as singleton
   
-  protected SymTypeConstantDeSer symTypeConstantDeSer = new SymTypeConstantDeSer();
+  // lots of singletons ...
   
-  protected SymTypeOfGenericsDeSer symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
+  static protected SymTypeArrayDeSer symTypeArrayDeSer = new SymTypeArrayDeSer();
   
-  protected SymTypeOfNullDeSer symTypeOfNullDeSer = new SymTypeOfNullDeSer();
+  static protected SymTypeConstantDeSer symTypeConstantDeSer = new SymTypeConstantDeSer();
   
-  protected SymTypeOfObjectDeSer symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
+  static protected SymTypeOfGenericsDeSer symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
   
+  static protected SymTypeOfNullDeSer symTypeOfNullDeSer = new SymTypeOfNullDeSer();
+  
+  static protected SymTypeOfObjectDeSer symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
+  
+  @Deprecated
   protected SymTypePackageDeSer symTypePackageDeSer = new SymTypePackageDeSer();
   
-  protected SymTypeVariableDeSer symTypeVariableDeSer = new SymTypeVariableDeSer();
+  static protected SymTypeVariableDeSer symTypeVariableDeSer = new SymTypeVariableDeSer();
   
-  protected SymTypeVoidDeSer symTypeVoidDeSer = new SymTypeVoidDeSer();
+  static protected SymTypeVoidDeSer symTypeVoidDeSer = new SymTypeVoidDeSer();
+  
   
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
    */
   @Override
   public String getSerializedKind() {
-    // TODO: anpassen, nachdem package umbenannt ist
+    // Care: the following String needs to be adapted if the package was renamed
     return "de.monticore.types.check.SymTypeExpression";
   }
   

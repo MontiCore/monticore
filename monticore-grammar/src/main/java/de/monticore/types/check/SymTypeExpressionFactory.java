@@ -146,8 +146,6 @@ public class SymTypeExpressionFactory {
   }
   
   
-  // -------------------------------------------------------- GenericTypeExpression
-  
   /**
    * createGenerics: for a generic Type
    * @param name    name of the Generic, such as "Map"
@@ -167,6 +165,8 @@ public class SymTypeExpressionFactory {
    * @param arguments   the SymTypes for the arguments
    * @param enclosingScope  used to derive the Symbol
    */
+  @Deprecated
+  // es macht keinen sinn den enclosing Scope da rein zu packen, man kann auch gleich das zugehörige Lazy<Symbol> laden (sobald das geht)
   public static SymTypeOfGenerics createGenerics(String name, List<SymTypeExpression> arguments,
                                                  TypeSymbolsScope enclosingScope){
     Optional<TypeSymbol> objTypeConstructorSymbol = enclosingScope.resolveType(name);

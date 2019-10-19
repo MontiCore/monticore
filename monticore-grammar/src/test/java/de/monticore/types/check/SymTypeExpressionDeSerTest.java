@@ -13,15 +13,6 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- * @version $Revision$,
- *          $Date$
- * @since   TODO: add version number
- *
- */
 public class SymTypeExpressionDeSerTest {
   
   // setup of objects (unchanged during tests) 
@@ -65,7 +56,7 @@ public class SymTypeExpressionDeSerTest {
   }
   
   protected void performRoundTripSerialization(SymTypeExpression expr) {
-    SymTypeExpressionDeSer deser = new SymTypeExpressionDeSer();
+    SymTypeExpressionDeSer deser = SymTypeExpressionDeSer.theDeSer;
     //first serialize the expression using the deser
     String serialized = deser.serialize(expr);
     // then deserialize it
