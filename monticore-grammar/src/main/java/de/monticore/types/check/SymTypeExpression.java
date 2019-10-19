@@ -16,7 +16,7 @@ import java.util.*;
 public abstract class SymTypeExpression {
 
   /**
-   * print: Umwandlung in einen kompakten String
+   * print: Conversion to a compact string, such as "int", "Person", "List< A >"
    */
   public abstract String print();
   
