@@ -3,6 +3,7 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.MCBasicTypesHelper;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
 import de.se_rwth.commons.Names;
@@ -57,33 +58,7 @@ public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor {
    */
   @Override
   public void handle(ASTMCPrimitiveType a) {
-    switch (a.getPrimitive()) {
-      case ASTConstantsMCBasicTypes.BOOLEAN:
-        getPrinter().print("boolean");
-        break;
-      case ASTConstantsMCBasicTypes.BYTE:
-        getPrinter().print("byte");
-        break;
-      case ASTConstantsMCBasicTypes.CHAR:
-        getPrinter().print("char");
-        break;
-      case ASTConstantsMCBasicTypes.SHORT:
-        getPrinter().print("short");
-        break;
-      case ASTConstantsMCBasicTypes.INT:
-        getPrinter().print("int");
-        break;
-      case ASTConstantsMCBasicTypes.FLOAT:
-        getPrinter().print("float");
-        break;
-      case ASTConstantsMCBasicTypes.LONG:
-        getPrinter().print("long");
-        break;
-      case ASTConstantsMCBasicTypes.DOUBLE:
-        getPrinter().print("double");
-        break;
-      default: getPrinter().print("");
-    }
+    getPrinter().print(MCBasicTypesHelper.primitiveConst2Name(a.getPrimitive()));
   }
 
   @Override

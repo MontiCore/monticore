@@ -12,6 +12,8 @@ import java.util.List;
 
 public class MCBasicTypesHelper {
   
+  // TODO: Klase kann gelöscht werden, weil sie keine benutzten Funktionen beinhaltet
+  
   /**
    * Exactly the ASTMCPrimitiveType is primitive; all others are not.
    * Please aslo note that Type variables are not regarded as
@@ -19,6 +21,7 @@ public class MCBasicTypesHelper {
    * @param type
    * @return
    */
+  @Deprecated // because unused
   public static boolean isPrimitive(ASTMCType type) {
     return type instanceof ASTMCPrimitiveType;
   }
@@ -28,30 +31,20 @@ public class MCBasicTypesHelper {
    * @param s
    * @return
    */
+  @Deprecated // because unused
   public static List<String> createListFromDotSeparatedString(String s) {
     return Arrays.asList(s.split("\\."));
   }
   
-  /**
-   * Nullable are in principle all types, except the primitives.
-   * TODO: Erroneous implementation:
-   * However that is wrong in general, type variable e.g. are not necessarily nullable
-   * because they might stand for a primitive type.
-   * @param type
-   * @return
-   */
-  @Deprecated
-  public static boolean isNullable(ASTMCType type) {
-    return !isPrimitive(type);
-  }
   
   /**
    * Map the String with a primitive type, e.g. "int" to its
    * enumerative Number, e.g.   ASTConstantsMCBasicTypes.INT
+   * Returns -1 if illegal name; no error message
    * @param typeName
    * @return
    */
-  public static int getPrimitiveType(String typeName) {
+  public static int primitiveName2Const(String typeName) {
     if (Strings.isNullOrEmpty(typeName)) {
       return -1;
     }
@@ -76,5 +69,35 @@ public class MCBasicTypesHelper {
       return -1;
     }
   }
-
+  
+  /**
+   * Map the integer e.g.   ASTConstantsMCBasicTypes.INT
+   * to the  respective String with a primitive type, e.g. "int"
+   * Returns "unknownType" if illegal number; no error message
+   * @param typeConstant
+   * @return
+   */
+  public static String primitiveConst2Name(int typeConstant) {
+    switch (typeConstant) {
+      case ASTConstantsMCBasicTypes.BOOLEAN:
+        return "boolean";
+      case ASTConstantsMCBasicTypes.BYTE:
+        return "byte";
+      case ASTConstantsMCBasicTypes.CHAR:
+        return "char";
+      case ASTConstantsMCBasicTypes.SHORT:
+        return "short";
+      case ASTConstantsMCBasicTypes.INT:
+        return "int";
+      case ASTConstantsMCBasicTypes.FLOAT:
+        return "float";
+      case ASTConstantsMCBasicTypes.LONG:
+        return "long";
+      case ASTConstantsMCBasicTypes.DOUBLE:
+        return "double";
+      default:
+        return "unknownType";
+    }
+  }
+  
 }

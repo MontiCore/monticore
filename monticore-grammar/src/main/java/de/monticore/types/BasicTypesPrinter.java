@@ -129,35 +129,12 @@ public class BasicTypesPrinter {
     return getInstance().doPrintPrimitiveType(type);
   }
   
+  
   protected String doPrintPrimitiveType(ASTMCPrimitiveType type) {
     if (type == null) {
-      return "";
+      return "0x52344missing";
     }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.BOOLEAN) {
-      return "boolean";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.BYTE) {
-      return "byte";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.CHAR) {
-      return "char";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.SHORT) {
-      return "short";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.INT) {
-      return "int";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.FLOAT) {
-      return "float";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.LONG) {
-      return "long";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.DOUBLE) {
-      return "double";
-    }
-    return "";
+    return MCBasicTypesHelper.primitiveConst2Name(type.getPrimitive());
   }
 
   /**
