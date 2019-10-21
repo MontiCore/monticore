@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import com.google.common.collect.Lists;
-
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
@@ -42,7 +40,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   
   
   /**
-   * Constructor with all parameters to be defined:
+   * Constructor with all parameters that are stored:
    */
   public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments,
                            TypeSymbol objTypeConstructorSymbol, TypeSymbol typeInfo) {
@@ -68,6 +66,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     this.typeConstructorFullName = typeConstructorFullName;
     this.arguments = arguments;
     this.objTypeConstructorSymbol = objTypeConstructorSymbol;
+    // missing: this.setTypeInfo(typeInfo);
   }
   
   
@@ -78,7 +77,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public void setTypeConstructorFullName(String typeConstructorFullName) {
     this.typeConstructorFullName = typeConstructorFullName;
   }
-  
+
   public TypeSymbol getObjTypeConstructorSymbol() {
     return objTypeConstructorSymbol;
   }
@@ -90,6 +89,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * print: Umwandlung in einen kompakten String
    */
+  @Override
   public String print() {
     StringBuffer r = new StringBuffer(getTypeConstructorFullName()).append('<');
     for(int i = 0; i<arguments.size();i++){
@@ -139,7 +139,12 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public boolean isGenericType(){
     return true;
   }
-
+  
+  /**
+   * This is a deep clone: it clones the whole structure including Symbols and Type-Info,
+   * but not the name of the constructor
+   * @return
+   */
   @Override
   public SymTypeOfGenerics deepClone() {
     List<SymTypeExpression> typeArguments = new ArrayList<>();
@@ -147,9 +152,8 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       typeArguments.add(typeArgument.deepClone());
     }
 
-    SymTypeOfGenerics clone = new SymTypeOfGenerics(this.getTypeConstructorFullName(),typeArguments,this.typeInfo);
-    clone.setName(this.name);
-    clone.setTypeInfo(this.typeInfo);
+    SymTypeOfGenerics clone = new SymTypeOfGenerics(this.getTypeConstructorFullName(),typeArguments,
+                                                    this.getObjTypeConstructorSymbol(), this.typeInfo.deepClone());
     return clone;
   }
 

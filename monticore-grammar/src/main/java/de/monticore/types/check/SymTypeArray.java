@@ -61,6 +61,7 @@ public class SymTypeArray extends SymTypeExpression {
   /**
    * print: Umwandlung in einen kompakten String
    */
+  @Override
   public String print() {
     StringBuffer r = new StringBuffer(getArgument().print());
     for(int i = 1; i<=dim; i++){
@@ -89,7 +90,5 @@ public class SymTypeArray extends SymTypeExpression {
     return clone;
   }
 
-
   // --------------------------------------------------------------------------
-  
 }

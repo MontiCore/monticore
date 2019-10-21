@@ -12,15 +12,15 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
   public ASTMCPrimitiveType() {
   }
 
-  // Es gibt eine Regel, die besagt "toString" sollte nicht überschrieben werden?
-
-  //TODO BR: ist das eine MontiCore Best Practice? allg. Java Best Practice
-  // toString nicht zu überschreiben konnte ich nicht direkt etwas zu finden
-  // Das schöne an aussagekräftigen toString methoden ist die verbesserte
-  // Hilfe beim Debuggen dieser Klassen
+  /**
+   * toString delivers a short name like "int" for the primitive Types
+   * @return
+   */
   public String toString(){
     return getBaseName();
   }
+
+  
   public boolean isBoolean(){
     return this.getPrimitive()==ASTConstantsMCBasicTypes.BOOLEAN;
   }
@@ -45,7 +45,11 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
   public boolean isDouble(){
     return this.getPrimitive()==ASTConstantsMCBasicTypes.DOUBLE;
   }
-
+  
+  /**
+   * Return the primitive type, such as "int"
+   * @return
+   */
   public String getBaseName() {
     if (isBoolean()){
       return "boolean";
@@ -73,7 +77,11 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
     }
     return "";
   }
-
+  
+  /**
+   * Return the primitive type as one element list, such as ["int"]
+   * @return
+   */
   public List<String> getNameList() {
     return Lists.newArrayList(getBaseName());
   }

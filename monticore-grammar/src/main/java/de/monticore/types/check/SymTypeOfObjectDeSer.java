@@ -42,12 +42,12 @@ public class SymTypeOfObjectDeSer implements IDeSer<SymTypeOfObject> {
   public Optional<SymTypeOfObject> deserialize(JsonElement serialized) {
     if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
       Optional<String> objName = JsonUtil.getOptStringMember(serialized, "objName");
-      if (!objName.isPresent()) {
-        Log.error("Could not find objName of SymTypeOfObject " + serialized);
+      if (objName.isPresent()) {
+        // TODO: Use appropriate constructor: especially: TypeSymbol is needed
+        SymTypeOfObject obj = SymTypeExpressionFactory.createTypeObject(objName.get());
+        return Optional.of(obj);
       }
-      // TODO: Deserialize TypeSymbol if it is present
-      SymTypeOfObject obj = new SymTypeOfObject(objName.get());
-      return Optional.of(obj);
+      Log.error("0x823F4 Internal error: Loading ill-structured SymTab: missing objName of SymTypeOfObject " + serialized);
     }
     return Optional.empty();
   }

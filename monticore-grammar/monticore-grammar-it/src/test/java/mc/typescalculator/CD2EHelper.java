@@ -1,56 +1,216 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import de.monticore.cd.cd4analysis._symboltable.CDAssociationSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDFieldSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDMethOrConstrSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import com.google.common.collect.Lists;
+import de.monticore.cd.cd4analysis._ast.ASTCDAssociation;
+import de.monticore.cd.cd4analysis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CD2EHelper {
 
-  public static TypeSymbol transformCDType2TypeSymbol(CDTypeSymbol typeSymbol){
-    TypeSymbol res = ExpressionsBasisSymTabMill.typeSymbolBuilder().setAccessModifier(typeSymbol.getAccessModifier()).setName(typeSymbol.getName()).setFullName(typeSymbol.getFullName()).build();
-    for(CDAssociationSymbol assoc : typeSymbol.getAllAssociations()){
-      CDTypeSymbol targetType = assoc.getTargetType().getReferencedSymbol();
-      List<FieldSymbol> variableSymbols = res.getFieldList();
-      variableSymbols.add(ExpressionsBasisSymTabMill.fieldSymbolBuilder().setName(targetType.getName()).setFullName(targetType.getFullName()).setAccessModifier(targetType.getAccessModifier()).build());
-      res.setFieldList(variableSymbols);
+  private Map<String, SymTypeExpression> symTypeExpressionMap = new HashMap<>();
+
+  private Map<String, TypeSymbol> typeSymbolMap = new HashMap<>();
+
+  private Map<String, FieldSymbol> fieldSymbolMap = new HashMap<>();
+
+  private Map<String, MethodSymbol> methodSymbolMap = new HashMap<>();
+
+  public TypeSymbol createTypeSymbolFormCDTypeSymbol(CDTypeSymbol cdTypeSymbol) {
+    if (typeSymbolMap.containsKey(cdTypeSymbol.getName())) {
+      return typeSymbolMap.get(cdTypeSymbol.getName());
+    } else {
+      // add to map
+      TypeSymbol typeSymbol = TypeSymbolsSymTabMill.typeSymbolBuilder()
+          .setName(cdTypeSymbol.getName())
+          .build();
+      typeSymbolMap.put(cdTypeSymbol.getName(), typeSymbol);
+      typeSymbol.setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
+
+      // super types of type reference
+      Optional<SymTypeExpression> superClass = Optional.empty();
+      if (cdTypeSymbol.isPresentSuperClass()) {
+        superClass = Optional.of(createSymTypeExpressionFormCDTypeSymbolReference(cdTypeSymbol.getSuperClass()));
+      }
+      List<SymTypeExpression> superInterfaces = cdTypeSymbol.getCdInterfaceList().stream()
+          .map(this::createSymTypeExpressionFormCDTypeSymbolReference)
+          .collect(Collectors.toList());
+
+      // add field symbols
+      List<FieldSymbol> fieldSymbols = cdTypeSymbol.getFields().stream()
+          .map(this::createFieldSymbolFormCDFieldSymbol)
+          .collect(Collectors.toList());
+
+      // add field symbols form associations
+      List<FieldSymbol> fieldSymbolsFormAssoc = cdTypeSymbol.getAllAssociations().stream()
+          .map(a -> this.createFieldSymbolFormCDAssociationSymbol(a, cdTypeSymbol))
+          .filter(Optional::isPresent)
+          .map(Optional::get)
+          .collect(Collectors.toList());
+
+      // add all methods
+      List<MethodSymbol> methodSymbols = cdTypeSymbol.getMethods().stream()
+          .map(this::createMethodSymbolFormCDMethOrConstrSymbol)
+          .collect(Collectors.toList());
+
+
+      typeSymbol.setName(cdTypeSymbol.getName());
+      typeSymbol.addAllSuperTypes(superInterfaces);
+      typeSymbol.addAllFields(fieldSymbols);
+      fieldSymbols.forEach(f -> typeSymbol.getSpannedScope().add(f));
+      typeSymbol.addAllFields(fieldSymbolsFormAssoc);
+      fieldSymbolsFormAssoc.forEach(f -> typeSymbol.getSpannedScope().add(f));
+      typeSymbol.addAllMethods(methodSymbols);
+      methodSymbols.forEach(f -> typeSymbol.getSpannedScope().add(f));
+      superClass.ifPresent(typeSymbol::addSuperType);
+      return typeSymbol;
     }
-    for(CDFieldSymbol fieldSymbol: typeSymbol.getFields()){
-      List<FieldSymbol> variableSymbols = res.getFieldList();
-      variableSymbols.add(transformCDField2FieldSymbol(fieldSymbol));
-      res.setFieldList(variableSymbols);
-    }
-    return res;
+
   }
 
-  public static FieldSymbol transformCDField2FieldSymbol(CDFieldSymbol fieldSymbol){
-    FieldSymbol res = ExpressionsBasisSymTabMill.fieldSymbolBuilder().setName(fieldSymbol.getName()).setFullName(fieldSymbol.getFullName()).setAccessModifier(fieldSymbol.getAccessModifier()).build();
-    res.setType(transformCDType2SymTypeExpression(fieldSymbol.getType()));
-    return res;
-  }
+  public FieldSymbol createFieldSymbolFormCDFieldSymbol(CDFieldSymbol cdFieldSymbol) {
+    if (fieldSymbolMap.containsKey(cdFieldSymbol.getName())) {
+      return fieldSymbolMap.get(cdFieldSymbol.getName());
+    } else {
+      // add to map
+      FieldSymbol fieldSymbol = TypeSymbolsSymTabMill.fieldSymbolBuilder()
+          .setName(cdFieldSymbol.getName())
+          .build();
+      fieldSymbolMap.put(cdFieldSymbol.getName(), fieldSymbol);
 
-  public static MethodSymbol transformCDMethOrConstr2EMethodSymbol(CDMethOrConstrSymbol methOrConstrSymbol){
-    MethodSymbol res = ExpressionsBasisSymTabMill.methodSymbolBuilder().setName(methOrConstrSymbol.getName()).setFullName(methOrConstrSymbol.getFullName()).setAccessModifier(methOrConstrSymbol.getAccessModifier()).build();
-    res.setReturnType(transformCDType2SymTypeExpression(methOrConstrSymbol.getReturnType()));
-    for(CDFieldSymbol param: methOrConstrSymbol.getParameters()){
-      List<FieldSymbol> params = res.getParameterList();
-      params.add(transformCDField2FieldSymbol(param));
-      res.setParameterList(params);
+      // add attribute type
+      SymTypeExpression type = createSymTypeExpressionFormCDTypeSymbolReference(cdFieldSymbol.getType());
+
+      fieldSymbol.setType(type);
+      return fieldSymbol;
     }
-    return res;
   }
 
-  public static SymTypeExpression transformCDType2SymTypeExpression(CDTypeSymbol typeSymbol) {
-    SymTypeExpression res = new SymTypeOfObject(typeSymbol.getName());
-    return res;
+  public MethodSymbol createMethodSymbolFormCDMethOrConstrSymbol(CDMethOrConstrSymbol cdMethOrConstrSymbol) {
+    if (methodSymbolMap.containsKey(cdMethOrConstrSymbol.getName())) {
+      return methodSymbolMap.get(cdMethOrConstrSymbol.getName());
+    } else {
+      // add to map
+      MethodSymbol methodSymbol = TypeSymbolsSymTabMill.methodSymbolBuilder()
+          .setName(cdMethOrConstrSymbol.getName())
+          .build();
+      methodSymbolMap.put(cdMethOrConstrSymbol.getName(), methodSymbol);
+      // add return type
+      SymTypeExpression returnType = createSymTypeExpressionFormCDTypeSymbolReference(cdMethOrConstrSymbol.getReturnType());
+      // add parameters
+      List<FieldSymbol> parameters = cdMethOrConstrSymbol.getParameters().stream()
+          .map(this::createFieldSymbolFormCDFieldSymbol)
+          .collect(Collectors.toList());
+
+      methodSymbol.setReturnType(returnType);
+      methodSymbol.setParameterList(parameters);
+      return methodSymbol;
+    }
+  }
+
+  public SymTypeExpression createSymTypeExpressionFormCDTypeSymbolReference(CDTypeSymbolReference cdTypeSymbolReference) {
+    if (symTypeExpressionMap.containsKey(cdTypeSymbolReference.getName())) {
+      return symTypeExpressionMap.get(cdTypeSymbolReference.getName());
+    } else {
+      SymTypeExpression symTypeExpression;
+      if (cdTypeSymbolReference.isReferencedSymbolLoaded()) {
+        // if typeSymbol is already loaded
+        TypeSymbol typeSymbol = createTypeSymbolFormCDTypeSymbol(cdTypeSymbolReference.getReferencedSymbol());
+        symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
+      } else {
+        // is typeSymbol can be loaded
+        Optional<CDTypeSymbol> cdTypeSymbol = cdTypeSymbolReference.loadReferencedSymbol();
+        if (cdTypeSymbol.isPresent()) {
+          TypeSymbol typeSymbol = createTypeSymbolFormCDTypeSymbol(cdTypeSymbolReference.getReferencedSymbol());
+          symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
+        } else {
+          // if typeSymbol could not be loaded
+          String typeName = cdTypeSymbolReference.getStringRepresentation();
+          TypeSymbol typeSymbol = TypeSymbolsSymTabMill.typeSymbolBuilder()
+              .setName(typeName)
+              .build();
+          symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
+        }
+      }
+      symTypeExpressionMap.put(cdTypeSymbolReference.getName(), symTypeExpression);
+      return symTypeExpression;
+    }
+  }
+
+  public SymTypeOfGenerics createSymTypeListFormCDTypeSymbolReference(CDTypeSymbolReference cdTypeSymbolReference) {
+    SymTypeExpression symTypeExpression = createSymTypeExpressionFormCDTypeSymbolReference(cdTypeSymbolReference);
+    return SymTypeExpressionFactory.createGenerics("List", Lists.newArrayList(symTypeExpression));
+  }
+
+  public SymTypeOfGenerics createSymTypeOptionalFormCDTypeSymbolReference(CDTypeSymbolReference cdTypeSymbolReference) {
+    SymTypeExpression symTypeExpression = createSymTypeExpressionFormCDTypeSymbolReference(cdTypeSymbolReference);
+    return SymTypeExpressionFactory.createGenerics("Optional", Lists.newArrayList(symTypeExpression));
+  }
+
+  public Optional<FieldSymbol> createFieldSymbolFormCDAssociationSymbol(CDAssociationSymbol cdAssociationSymbol, CDTypeSymbol cdTypeSymbol) {
+    // attribute name
+    if (cdAssociationSymbol.isPresentAstNode()) {
+      String name = cdAssociationSymbol.getDerivedName();
+      ASTCDAssociation astAssoc = cdAssociationSymbol.getAstNode();
+      if (isSourceNode(astAssoc, cdTypeSymbol) && !astAssoc.isRightToLeft()) {
+        SymTypeExpression type = createSymTypeExpressionFormCDAssociationSymbolReferenceSource(cdAssociationSymbol);
+        return Optional.ofNullable(TypeSymbolsSymTabMill.fieldSymbolBuilder()
+            .setName(name)
+            .setType(type)
+            .build());
+      } else if (isTargetNode(astAssoc, cdTypeSymbol) && !astAssoc.isLeftToRight()) {
+        SymTypeExpression type = createSymTypeExpressionFormCDAssociationSymbolReferenceTarget(cdAssociationSymbol);
+        return Optional.ofNullable(TypeSymbolsSymTabMill.fieldSymbolBuilder()
+            .setName(name)
+            .setType(type)
+            .build());
+      }
+    }
+    return Optional.empty();
+  }
+
+  private boolean isSourceNode(ASTCDAssociation association, CDTypeSymbol cdTypeSymbol) {
+    return association.getLeftReferenceName().getBaseName().equals(cdTypeSymbol.getName());
+  }
+
+  private boolean isTargetNode(ASTCDAssociation association, CDTypeSymbol cdTypeSymbol) {
+    return association.getRightReferenceName().getBaseName().equals(cdTypeSymbol.getName());
+  }
+
+  private SymTypeExpression createSymTypeExpressionFormCDAssociationSymbolReferenceSource(CDAssociationSymbol cdAssociationSymbol) {
+    if (cdAssociationSymbol.isPresentAstNode() && cdAssociationSymbol.getAstNode().isPresentRightCardinality()) {
+      ASTCDAssociation association = cdAssociationSymbol.getAstNode();
+      if (association.getRightCardinality().isMany() || association.getRightCardinality().isOneToMany()) {
+        return createSymTypeListFormCDTypeSymbolReference(cdAssociationSymbol.getTargetType());
+      } else if (association.getRightCardinality().isOptional()) {
+        return createSymTypeOptionalFormCDTypeSymbolReference(cdAssociationSymbol.getTargetType());
+      }
+    }
+    return createSymTypeExpressionFormCDTypeSymbolReference(cdAssociationSymbol.getTargetType());
+  }
+
+  private SymTypeExpression createSymTypeExpressionFormCDAssociationSymbolReferenceTarget(CDAssociationSymbol cdAssociationSymbol) {
+    if (cdAssociationSymbol.isPresentAstNode() && cdAssociationSymbol.getAstNode().isPresentLeftCardinality()) {
+      ASTCDAssociation association = cdAssociationSymbol.getAstNode();
+      if (association.getLeftCardinality().isMany() || association.getLeftCardinality().isOneToMany()) {
+        return createSymTypeListFormCDTypeSymbolReference(cdAssociationSymbol.getTargetType());
+      } else if (association.getLeftCardinality().isOptional()) {
+        return createSymTypeOptionalFormCDTypeSymbolReference(cdAssociationSymbol.getTargetType());
+      }
+    }
+    return createSymTypeExpressionFormCDTypeSymbolReference(cdAssociationSymbol.getTargetType());
   }
 }

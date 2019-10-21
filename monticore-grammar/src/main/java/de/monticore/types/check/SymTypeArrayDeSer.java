@@ -16,7 +16,7 @@ public class SymTypeArrayDeSer implements IDeSer<SymTypeArray> {
    */
   @Override
   public String getSerializedKind() {
-    // TODO: anpassen, nachdem package umbenannt ist
+    // Care: the following String needs to be adapted if the package was renamed
     return "de.monticore.types.check.SymTypeArray";
   }
   
@@ -40,17 +40,19 @@ public class SymTypeArrayDeSer implements IDeSer<SymTypeArray> {
     if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
       Optional<Integer> dim = JsonUtil.getOptIntMember(serialized, "dim");
       if (!dim.isPresent()) {
-        Log.error("Could not find dim of SymTypeArray " + serialized);
+        Log.error("0x823F2 Internal error: Loading ill-structured SymTab: missing dim of SymTypeArray " + serialized);
+        dim = Optional.of(Integer.valueOf(1)); // Dummy value, because dimension is absent
       }
       Optional<SymTypeExpression> argument = Optional.empty();
       if (serialized.getAsJsonObject().containsKey("argument")) {
-        argument = new SymTypeExpressionDeSer()
+        argument = SymTypeExpressionDeSer.theDeSer
             .deserialize(serialized.getAsJsonObject().get("argument"));
       }
-      if (!argument.isPresent()) {
-        Log.error("Could not find argument of SymTypeArray " + serialized);
+      if (argument.isPresent()) {
+        // TODO AB: use the appropriate creation from SymType.Factory
+        return Optional.of(new SymTypeArray(dim.get(), argument.get()));
       }
-      return Optional.of(new SymTypeArray(dim.get(), argument.get()));
+      Log.error("0x823F3 Internal error: Loading ill-structured SymTab: missing argument of SymTypeArray " + serialized);
     }
     return Optional.empty();
   }

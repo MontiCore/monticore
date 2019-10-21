@@ -42,6 +42,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   /**
    * print: Umwandlung in einen kompakten String
    */
+  @Override
   public String print() {
     return getObjName();
   }
