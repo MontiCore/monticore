@@ -19,6 +19,9 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKA
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * creates the nodeFactory class for a grammar
+ */
 public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final NodeFactoryService nodeFactoryService;
@@ -51,7 +54,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         continue;
       }
       //add factory attributes for all classes
-      factoryAttributeList.add(addAttributes(astcdClass, factoryType));
+      factoryAttributeList.add(addAttribute(astcdClass, factoryType));
       //add create and doCreate Methods for all classes
       createMethodList.addAll(addFactoryMethods(astcdClass));
     }
@@ -79,7 +82,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return getFactoryMethod;
   }
 
-  protected ASTCDAttribute addAttributes(ASTCDClass astcdClass, ASTMCType factoryType) {
+  protected ASTCDAttribute addAttribute(ASTCDClass astcdClass, ASTMCType factoryType) {
     // create attribute for AST
     return this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC, factoryType, FACTORY + astcdClass.getName());
   }
@@ -110,13 +113,17 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return doCreateWithoutParameters;
   }
 
+  /**
+   * creates methods that delegate to factories of super grammars
+   * has to go over all super grammars
+   */
   protected List<ASTCDMethod> addFactoryDelegateMethods(List<ASTCDClass> classList) {
     List<ASTCDMethod> delegateMethodList = new ArrayList<>();
     //get super symbols
     for (CDDefinitionSymbol superSymbol : nodeFactoryService.getSuperCDsTransitive()) {
       Optional<ASTCDDefinition> astNode = superSymbol.getAstNode();
       if (astNode.isPresent()) {
-        //get super cddefinition
+        //get super cdDefinition
         ASTCDDefinition superDefinition = astNode.get();
 
         TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor(superSymbol.getEnclosingScope());

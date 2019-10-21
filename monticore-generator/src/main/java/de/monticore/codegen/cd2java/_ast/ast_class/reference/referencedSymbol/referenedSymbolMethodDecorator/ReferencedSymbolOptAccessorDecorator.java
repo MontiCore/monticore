@@ -14,6 +14,9 @@ import org.apache.commons.lang3.StringUtils;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates all optional getter methods for the referencedSymbols
+ */
 public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecorator {
 
   protected final SymbolTableService symbolTableService;
@@ -24,6 +27,9 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
     this.symbolTableService = symbolTableService;
   }
 
+  /**
+   * overwrite only the getOpt method implementation, because the other methods are delegated to this one
+   */
   @Override
   protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
     String name = String.format(GET_OPT, StringUtils.capitalize(ast.getName()));
@@ -36,6 +42,10 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
     return method;
   }
 
+  /**
+   * has to check if the original symbol reference prod was mandatory or optional
+   * is needed for template -> add a '.get()' after the attribute (optional) or not (mandatory)
+   */
   protected boolean isOptionalAttribute(final ASTCDAttribute clazz) {
     //have to ask here if the original attribute was an optional or mandatory String attribute
     //the template has to be different

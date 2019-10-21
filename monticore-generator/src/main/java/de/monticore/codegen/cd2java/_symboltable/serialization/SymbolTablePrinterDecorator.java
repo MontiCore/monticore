@@ -21,6 +21,9 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a SymbolTablePrinter class from a grammar
+ */
 public class SymbolTablePrinterDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;

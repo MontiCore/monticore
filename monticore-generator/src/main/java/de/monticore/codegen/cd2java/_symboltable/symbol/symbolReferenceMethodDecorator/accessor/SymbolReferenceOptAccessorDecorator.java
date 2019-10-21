@@ -10,6 +10,9 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * changes implementation of the getOpt method
+ */
 public class SymbolReferenceOptAccessorDecorator extends OptionalAccessorDecorator {
   public SymbolReferenceOptAccessorDecorator(GlobalExtensionManagement glex) {
     super(glex);

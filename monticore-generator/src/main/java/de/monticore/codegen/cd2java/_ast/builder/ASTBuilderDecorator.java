@@ -22,6 +22,9 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
 
+/**
+ * uses the BuilderDecorator and adds ASTBuilder specific properties
+ */
 public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected final BuilderDecorator builderDecorator;
@@ -59,6 +62,11 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
     return this.getCDTypeFacade().createQualifiedType(superClass);
   }
 
+  /**
+   * checks what superclass is needed
+   * corresponding AST has own superClass -> use that superBuilder
+   * corresponding AST has just ASTCNode as superclass -> use ASTCNodeBuilder as superclass
+   */
   protected boolean hasSuperClassOtherThanASTCNode(final ASTCDClass domainClass) {
     return domainClass.isPresentSuperclass() && !ASTCNode.class.getSimpleName().equals(domainClass.printSuperClass());
   }

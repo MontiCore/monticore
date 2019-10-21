@@ -5,6 +5,9 @@ import de.monticore.codegen.cd2java._symboltable.symbol.symbolReferenceMethodDec
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
+/**
+ * combines the Accessor and Mutator decorators to a general MethodDecorator
+ */
 public class SymbolReferenceMethodDecorator extends MethodDecorator {
 
   public SymbolReferenceMethodDecorator(final GlobalExtensionManagement glex) {

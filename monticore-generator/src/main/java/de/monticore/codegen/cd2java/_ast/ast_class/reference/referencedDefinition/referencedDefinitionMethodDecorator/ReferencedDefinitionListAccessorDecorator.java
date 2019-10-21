@@ -13,6 +13,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
+/**
+ * created all list getter methods for the referencedDefinition AST
+ */
+
 public class ReferencedDefinitionListAccessorDecorator extends ListAccessorDecorator {
 
   protected final SymbolTableService symbolTableService;
@@ -23,16 +27,25 @@ public class ReferencedDefinitionListAccessorDecorator extends ListAccessorDecor
     this.symbolTableService = symbolTableService;
   }
 
+  /**
+   * has to overwrite this method to add the 'Definition' suffix
+   */
   @Override
   public String getCapitalizedAttributeNameWithS(ASTCDAttribute attribute) {
     return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(attribute.getName())) + ASTReferencedDefinitionDecorator.DEFINITION;
   }
 
+  /**
+   * overwrite attributetype because List<Optional<ASTX>> has to be created
+   */
   @Override
   public String getAttributeType(ASTCDAttribute attribute) {
     return "Optional<" + getTypeArgumentFromListType(attribute.getMCType()) + ">";
   }
 
+  /**
+   * overwrite only the getList method implementation, because the other methods are delegated to this one
+   */
   @Override
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
     String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithS);

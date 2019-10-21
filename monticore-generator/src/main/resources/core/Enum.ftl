@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("cdEnum")}
-
+/* (c) https://github.com/MontiCore/monticore */
 ${tc.include("core.Package")}
 
 ${tc.include("core.Annotations")}

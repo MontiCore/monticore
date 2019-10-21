@@ -21,6 +21,9 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.DEQ
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_STACK_VAR;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * creates a SymbolReference class from a grammar
+ */
 public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional<ASTCDClass>> {
 
   protected final SymbolTableService symbolTableService;

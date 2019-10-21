@@ -20,6 +20,11 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKA
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
+/**
+ * is a transforming class for the ast generation
+ * adds the symbol reference definition getters -> uses the symbol reference attribute created in ASTReferencedSymbolDecorator
+ */
+
 public class ASTReferencedDefinitionDecorator extends AbstractTransformer<ASTCDClass> {
 
   public static final String DEFINITION = "Definition";
@@ -49,6 +54,9 @@ public class ASTReferencedDefinitionDecorator extends AbstractTransformer<ASTCDC
     return changedInput;
   }
 
+  /**
+   * created dummy attribute to easily create the corresponding getters
+   */
   protected List<ASTCDMethod> getRefDefinitionMethods(ASTCDAttribute astcdAttribute, String referencedSymbol) {
     ASTMCType symbolType;
     String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) +

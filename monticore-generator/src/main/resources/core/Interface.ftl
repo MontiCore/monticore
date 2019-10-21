@@ -1,5 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("cdInterface")}
+/* (c) https://github.com/MontiCore/monticore */
 ${tc.include("core.Package")}
 
 ${tc.include("core.Imports")}

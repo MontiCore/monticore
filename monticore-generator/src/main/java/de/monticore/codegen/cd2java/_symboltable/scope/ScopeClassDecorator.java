@@ -31,6 +31,9 @@ import static de.monticore.codegen.cd2java.data.ListSuffixDecorator.LIST_SUFFIX_
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a Scope class from a grammar
+ */
 public class ScopeClassDecorator extends AbstractDecorator {
 
   protected final SymbolTableService symbolTableService;
@@ -43,6 +46,11 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
   protected final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
 
+  /**
+   * flag added to define if the Scope class was overwritten with the TOP mechanism
+   * if top mechanism was used, must use setter to set flag true, before the decoration
+   * is needed for different accept method implementations
+   */
   protected boolean isScopeTop;
 
   protected static final String TEMPLATE_PATH = "_symboltable.scope.";
@@ -60,8 +68,8 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   /**
-   * uses a scopeCD for scopeRule attributes and methods
-   * and a normalCD for Symbol Classes and Interfaces
+   * @param scopeInput for scopeRule attributes and methods
+   * @param symbolInput for Symbol Classes and Interfaces
    */
   public ASTCDClass decorate(ASTCDCompilationUnit scopeInput, ASTCDCompilationUnit symbolInput) {
     String scopeClassName = scopeInput.getCDDefinition().getName() + SCOPE_SUFFIX;
@@ -224,6 +232,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createSymbolsSizeMethod(Collection<String> symbolAttributeNames) {
     ASTCDMethod getSymbolSize = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createIntType(), "getSymbolsSize");
+    // if there are no symbols, the symbol size is always zero
     if (symbolAttributeNames.isEmpty()) {
       this.replaceTemplate(EMPTY_BODY, getSymbolSize, new StringHookPoint("return 0;"));
     } else {
@@ -255,6 +264,9 @@ public class ScopeClassDecorator extends AbstractDecorator {
     return symbolAttributeList;
   }
 
+  /**
+   * only returns a attribute if the cdType really defines a symbol
+   */
   protected Optional<ASTCDAttribute> createSymbolAttribute(ASTCDType cdType, CDDefinitionSymbol cdDefinitionSymbol) {
     Optional<String> symbolSimpleName = symbolTableService.getDefiningSymbolSimpleName(cdType);
     Optional<String> symbolFullName = symbolTableService.getDefiningSymbolFullName(cdType, cdDefinitionSymbol);
@@ -326,7 +338,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
     mutatorDecorator.disableTemplates();
     List<ASTCDMethod> mutatorMethods = mutatorDecorator.decorate(enclosingScopeAttribute);
     mutatorDecorator.enableTemplates();
-    // only one setter
+    // only one setter, because the attribute is mandatory
     if (mutatorMethods.size() == 1) {
       this.replaceTemplate(EMPTY_BODY, mutatorMethods.get(0), new TemplateHookPoint(TEMPLATE_PATH + "SetEnclosingScope"));
     }
@@ -346,6 +358,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
     mutatorDecorator.disableTemplates();
     List<ASTCDMethod> mutatorMethods = mutatorDecorator.decorate(spanningSymbolAttr);
     mutatorDecorator.enableTemplates();
+    // needs to change the template for the setters
     for (ASTCDMethod mutatorMethod : mutatorMethods) {
       if ("setSpanningSymbol".equals(mutatorMethod.getName())) {
         this.replaceTemplate(EMPTY_BODY, mutatorMethod, new TemplateHookPoint(TEMPLATE_PATH + "SetSpanningSymbol", spanningSymbolAttr));

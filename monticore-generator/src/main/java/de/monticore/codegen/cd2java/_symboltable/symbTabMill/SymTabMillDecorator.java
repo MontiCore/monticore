@@ -22,10 +22,18 @@ import static de.monticore.codegen.cd2java._ast.mill.MillConstants.*;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.REFERENCE_SUFFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * creates a SymTabMill class from a grammar
+ */
 public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;
 
+  /**
+   * flag added to define if the Language class was overwritten with the TOP mechanism
+   * if top mechanism was used, must use setter to set flag true, before the decoration
+   * is needed for the languageAttribute
+   */
   protected boolean isLanguageTop;
 
   protected static final String TEMPLATE_PATH = "_symboltable.symTabMill.";

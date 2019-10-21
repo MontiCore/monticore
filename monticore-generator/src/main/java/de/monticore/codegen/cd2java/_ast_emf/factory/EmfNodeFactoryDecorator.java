@@ -55,7 +55,7 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
         continue;
       }
       //add factory attributes for all classes
-      factoryAttributeList.add(addAttributes(astcdClass, factoryType));
+      factoryAttributeList.add(addAttribute(astcdClass, factoryType));
       //add create and doCreate Methods for all classes
       createMethodList.addAll(addFactoryMethods(astcdClass));
     }
