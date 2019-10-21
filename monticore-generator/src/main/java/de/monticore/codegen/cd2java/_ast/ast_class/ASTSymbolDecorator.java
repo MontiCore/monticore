@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._ast.ast_class;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -14,8 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttribute>> {
 

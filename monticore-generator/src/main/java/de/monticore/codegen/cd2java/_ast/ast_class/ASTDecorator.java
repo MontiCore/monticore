@@ -2,10 +2,7 @@
 package de.monticore.codegen.cd2java._ast.ast_class;
 
 import de.monticore.ast.ASTCNode;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
@@ -80,6 +77,12 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(originalClass);
     addSymboltableMethods(scopeAttributes, changedClass);
 
+    // if a ast has a symbol definition without a name, the getName has to be implemented manually
+    // class and getName method are getting abstract
+    if (astService.isSymbolWithoutName(originalClass)) {
+      changedClass.getModifier().setAbstract(true);
+      changedClass.addCDMethod(astService.createGetNameMethod());
+    }
     return changedClass;
   }
 
