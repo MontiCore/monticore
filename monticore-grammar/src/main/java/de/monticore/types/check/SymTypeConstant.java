@@ -53,6 +53,7 @@ public class SymTypeConstant extends SymTypeExpression {
   /**
    * print: Umwandlung in einen kompakten String
    */
+  @Override
   public String print() {
     return getConstName();
   }
@@ -195,8 +196,9 @@ public class SymTypeConstant extends SymTypeExpression {
   
   @Deprecated
   public void setName(String name) {
-    this.name = name;
     this.constName = name; // Nur ein Hack um die Tests am laufen zu halten, die setName nutzen
   }
-  
+
+  //hier enum attr für primitive types
+
 }

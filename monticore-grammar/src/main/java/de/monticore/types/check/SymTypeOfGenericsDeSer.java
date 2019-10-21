@@ -43,26 +43,29 @@ public class SymTypeOfGenericsDeSer implements IDeSer<SymTypeOfGenerics> {
       Optional<String> typeConstructorFullName = JsonUtil.getOptStringMember(serialized,
           "typeConstructorFullName");
       if (!typeConstructorFullName.isPresent()) {
-        Log.error("Could not find typeConstructorFullName of SymTypeOfGenerics " + serialized);
+        Log.error("0x823F6 Internal error: Loading ill-structured SymTab: missing typeConstructorFullName of SymTypeOfGenerics " + serialized);
+        return Optional.empty();   // we ignore the rest
       }
       
       List<SymTypeExpression> arguments = new ArrayList<>();
       if (serialized.getAsJsonObject().containsKey("arguments")
           && serialized.getAsJsonObject().get("arguments").isJsonArray()) {
         // delegate deserialization of individual arguments to the SymTypeExpressionDeSer
-        SymTypeExpressionDeSer symTypeExpressionDeSer = new SymTypeExpressionDeSer();
         for (JsonElement e : serialized.getAsJsonObject().get("arguments").getAsJsonArray()
             .getValues()) {
-          Optional<SymTypeExpression> arg = symTypeExpressionDeSer.deserialize(e);
+          Optional<SymTypeExpression> arg = SymTypeExpressionDeSer.theDeSer.deserialize(e);
           if (arg.isPresent()) {
             arguments.add(arg.get());
           }
+          // if the Argument is not present: then there was already an error and we ignore the argument
+          // However, as an alternative, we might add a dummy-type, such that at least the
+          // number of arguments for our type constructor is correct.
         }
       }
       
-      // TODO: Deserialize TypeSymbol if it is present
-      TypeSymbol symbol = null;
-      return Optional.of(new SymTypeOfGenerics(typeConstructorFullName.get(), arguments, symbol));
+      // TODO AB: Identify the correct TypeSymbol & use correct constructor
+      // return Optional.of(SymTypeExpressionFactory.createGenerics(typeConstructorFullName.get(), arguments, symbol));
+      return Optional.of(SymTypeExpressionFactory.createGenerics(typeConstructorFullName.get(), arguments));
     }
     return Optional.empty();
   }

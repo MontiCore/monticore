@@ -774,8 +774,11 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
    * test if the expression is of numeric type (double, float, long, int, char, short, byte)
    */
   private boolean isNumericType(SymTypeExpression ex){
-    return (ex.print().equals("double") || ex.print().equals("float") || ex.print().equals("long") ||
-        ex.print().equals("int") || ex.print().equals("char") || ex.print().equals("short") || ex.print().equals("byte"));
+    return (unbox(ex.print()).equals("double") || unbox(ex.print()).equals("float") ||
+        unbox(ex.print()).equals("long") || unbox(ex.print()).equals("int") ||
+        unbox(ex.print()).equals("char") || unbox(ex.print()).equals("short") ||
+        unbox(ex.print()).equals("byte")
+    );
   }
 
   /**

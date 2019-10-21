@@ -34,9 +34,9 @@ public class SymTypeVoidDeSer implements IDeSer<SymTypeVoid> {
   }
   
   public Optional<SymTypeVoid> deserialize(JsonElement serialized) {
+    // comparison to "void" because the serializer (print()-function) uses that
     if (serialized.isJsonString() && serialized.getAsJsonString().getValue().equals("void")) {
-      // TODO: check if creating a new instance is feasible
-      return Optional.of(new SymTypeVoid());
+      return Optional.of(SymTypeExpressionFactory.createTypeVoid());
     }
     return Optional.empty();
   }

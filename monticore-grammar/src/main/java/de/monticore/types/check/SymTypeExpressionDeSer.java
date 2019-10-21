@@ -16,28 +16,38 @@ import de.se_rwth.commons.logging.Log;
  */
 public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
   
-  protected SymTypeArrayDeSer symTypeArrayDeSer = new SymTypeArrayDeSer();
+  /**
+   * The singleton that DeSerializes all SymTypeExpressions.
+   * It is stateless and can be reused recursively.
+   */
+  static public SymTypeExpressionDeSer theDeSer = new SymTypeExpressionDeSer();
+  // not realized as static delegator, but only as singleton
   
-  protected SymTypeConstantDeSer symTypeConstantDeSer = new SymTypeConstantDeSer();
+  // lots of singletons ...
   
-  protected SymTypeOfGenericsDeSer symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
+  static protected SymTypeArrayDeSer symTypeArrayDeSer = new SymTypeArrayDeSer();
   
-  protected SymTypeOfNullDeSer symTypeOfNullDeSer = new SymTypeOfNullDeSer();
+  static protected SymTypeConstantDeSer symTypeConstantDeSer = new SymTypeConstantDeSer();
   
-  protected SymTypeOfObjectDeSer symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
+  static protected SymTypeOfGenericsDeSer symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
   
+  static protected SymTypeOfNullDeSer symTypeOfNullDeSer = new SymTypeOfNullDeSer();
+  
+  static protected SymTypeOfObjectDeSer symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
+  
+  @Deprecated
   protected SymTypePackageDeSer symTypePackageDeSer = new SymTypePackageDeSer();
   
-  protected SymTypeVariableDeSer symTypeVariableDeSer = new SymTypeVariableDeSer();
+  static protected SymTypeVariableDeSer symTypeVariableDeSer = new SymTypeVariableDeSer();
   
-  protected SymTypeVoidDeSer symTypeVoidDeSer = new SymTypeVoidDeSer();
+  static protected SymTypeVoidDeSer symTypeVoidDeSer = new SymTypeVoidDeSer();
+  
   
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
    */
-  @Override
   public String getSerializedKind() {
-    // TODO: anpassen, nachdem package umbenannt ist
+    // Care: this String is never to occur, because all subclasses override this function
     return "de.monticore.types.check.SymTypeExpression";
   }
   
@@ -61,7 +71,6 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
    * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
    */
   public Optional<SymTypeExpression> deserialize(JsonElement serialized) {
-    SymTypeExpression result = null;
     
     // void, package, and null have special serializations (they are no json objects and do not have
     // a "kind" member)
@@ -83,6 +92,7 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
     
     // all other serialized SymTypeExrpressions are json objects with a kind
     String kind = JsonUtil.getOptStringMember(serialized, JsonConstants.KIND).orElse("");
+    SymTypeExpression result = null;
     
     if (symTypeArrayDeSer.getSerializedKind().equals(kind)) {
       result = symTypeArrayDeSer.deserialize(serialized).orElse(null);
@@ -103,7 +113,7 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
       result = symTypeVariableDeSer.deserialize(serialized).orElse(null);
     }
     else {
-      Log.error("Unknown kind of SymTypeExpression in SymTypeExpressionDeSer: " + kind + " in "
+      Log.error("0x823FE Internal error: Loading ill-structured SymTab: Unknown kind: " + kind + " in "
           + serialized);
     }
     return Optional.ofNullable(result);

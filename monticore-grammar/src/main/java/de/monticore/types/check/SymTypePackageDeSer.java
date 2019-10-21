@@ -7,6 +7,7 @@ import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 
+@Deprecated
 public class SymTypePackageDeSer implements IDeSer<SymTypePackage> {
   
   /**

@@ -11,8 +11,12 @@ public class ASTMCCustomTypeArgument extends ASTMCCustomTypeArgumentTOP {
     super();
   }
 
-  // TODO RE: entfernbar
+  // TODO RE: das hier tut das falsche: Der Typ eines Arrays unterscheidet sich vom Typ seines arguments
+  @Deprecated
   public Optional<ASTMCType> getMCTypeOpt(){
     return Optional.ofNullable(getMCType());
   }
+  
+  // TODO: Klasse kann entfernt werden
+  
 }
