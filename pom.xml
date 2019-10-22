@@ -20,7 +20,7 @@
     <module>monticore-runtime</module>
     <module>monticore-emf-runtime</module>
     <module>monticore-templateclassgenerator</module>
-<!--    <module>monticore-emf-grammar</module>-->
+    <module>monticore-emf-grammar</module>
   </modules>
 
   <!-- == PROJECT PROPERTIES ============================================== -->
