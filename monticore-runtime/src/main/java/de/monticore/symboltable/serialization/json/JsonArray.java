@@ -27,7 +27,7 @@ public class JsonArray implements JsonElement {
   }
   
   /**
-   * @see de.monticore.symboltable.serialization.json.JsonElement#getAsJsonArray()
+   * @see de.monticore.symboltable.serialization.json.JsonElement#getAsJsonArray()  
    */
   @Override
   public JsonArray getAsJsonArray() {
