@@ -57,7 +57,7 @@ public class ASTService extends AbstractService<ASTService> {
   }
 
   public ASTMCQualifiedType getASTBaseInterface() {
-    return getCDTypeFacade().createQualifiedType(getASTBaseInterfaceFullName());
+    return getMCTypeFacade().createQualifiedType(getASTBaseInterfaceFullName());
   }
 
   /**
@@ -95,6 +95,6 @@ public class ASTService extends AbstractService<ASTService> {
   }
 
   public ASTMCType getASTType(ASTCDType type) {
-    return getCDTypeFacade().createQualifiedType(getASTFullName(type));
+    return getMCTypeFacade().createQualifiedType(getASTFullName(type));
   }
 }

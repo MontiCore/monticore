@@ -49,7 +49,7 @@ public class AbstractService<T extends AbstractService> {
     return this.cdSymbol;
   }
 
-  protected MCTypeFacade getCDTypeFacade() {
+  protected MCTypeFacade getMCTypeFacade() {
     return this.mcTypeFacade;
   }
 

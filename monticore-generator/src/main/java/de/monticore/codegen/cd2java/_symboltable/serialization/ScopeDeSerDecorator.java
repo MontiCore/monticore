@@ -108,8 +108,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createStoreMethod(String artifactScopeName, String languageName) {
-    ASTCDParameter artifactScopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(artifactScopeName), "as");
-    ASTCDParameter langParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(languageName), "lang");
+    ASTCDParameter artifactScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(artifactScopeName), "as");
+    ASTCDParameter langParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(languageName), "lang");
     ASTCDParameter symbolPathParam = getCDParameterFacade().createParameter(String.class, "symbolPath");
     ASTCDMethod storeMethod = getCDMethodFacade().createMethod(PUBLIC, "store", artifactScopeParam, langParam, symbolPathParam);
     this.replaceTemplate(EMPTY_BODY, storeMethod, new StringHookPoint("store(as, java.nio.file.Paths.get(symbolPath, as.getFilePath(lang).toString()));"));

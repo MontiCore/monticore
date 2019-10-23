@@ -231,7 +231,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createSymbolsSizeMethod(Collection<String> symbolAttributeNames) {
-    ASTCDMethod getSymbolSize = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createIntType(), "getSymbolsSize");
+    ASTCDMethod getSymbolSize = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createIntType(), "getSymbolsSize");
     // if there are no symbols, the symbol size is always zero
     if (symbolAttributeNames.isEmpty()) {
       this.replaceTemplate(EMPTY_BODY, getSymbolSize, new StringHookPoint("return 0;"));
@@ -383,7 +383,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDAttribute createNameAttribute() {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, getCDTypeFacade().createOptionalTypeOf(String.class),
+    return this.getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createOptionalTypeOf(String.class),
         NAME_VAR, this.glex);
   }
 

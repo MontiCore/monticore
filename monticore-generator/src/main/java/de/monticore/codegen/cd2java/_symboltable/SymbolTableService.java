@@ -12,7 +12,6 @@ import de.monticore.types.MCSimpleGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.typesymbols._ast.ASTType;
 import de.se_rwth.commons.Names;
 
 import java.util.*;
@@ -78,7 +77,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public ASTMCQualifiedType getScopeType() {
-    return getCDTypeFacade().createQualifiedType(getScopeClassFullName());
+    return getMCTypeFacade().createQualifiedType(getScopeClassFullName());
   }
 
   /**
@@ -106,7 +105,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public ASTMCQualifiedType getScopeInterfaceType(CDDefinitionSymbol cdSymbol) {
-    return getCDTypeFacade().createQualifiedType(getScopeInterfaceFullName(cdSymbol));
+    return getMCTypeFacade().createQualifiedType(getScopeInterfaceFullName(cdSymbol));
   }
 
   /**

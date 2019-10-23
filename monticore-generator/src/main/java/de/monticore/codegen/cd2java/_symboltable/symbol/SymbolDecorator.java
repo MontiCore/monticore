@@ -101,7 +101,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTCDClass symbolClass = CD4AnalysisMill.cDClassBuilder()
         .setName(symbolName)
         .setModifier(PUBLIC.build())
-        .addInterface(getCDTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName()))
+        .addInterface(getMCTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName()))
         .addAllInterfaces(symbolInput.getInterfaceList())
         .addCDConstructor(constructor)
         .addAllCDAttributes(symbolAttributes)
