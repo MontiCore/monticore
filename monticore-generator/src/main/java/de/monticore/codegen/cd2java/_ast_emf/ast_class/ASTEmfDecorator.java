@@ -25,6 +25,9 @@ import java.util.List;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 
+/**
+ * extension of the ASTDecorator with additional EMF functionality
+ */
 public class ASTEmfDecorator extends ASTDecorator {
 
   protected final EmfService emfService;
@@ -47,7 +50,6 @@ public class ASTEmfDecorator extends ASTDecorator {
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
     changedClass.addInterface(this.astService.getASTBaseInterface());
     // have to use the changed one here because this one will get the TOP prefix
-    // todo: find better way to determine if TOP class, than by TOP prefix
     changedClass.addCDMethod(createAcceptMethod(changedClass));
     changedClass.addAllCDMethods(createAcceptSuperMethods(originalClass));
     changedClass.addCDMethod(getConstructMethod(originalClass));
@@ -59,10 +61,10 @@ public class ASTEmfDecorator extends ASTDecorator {
     }
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(originalClass);
-    addSymboltableMethods(symbolAttributes, changedClass);
+    addSymbolTableMethods(symbolAttributes, changedClass);
 
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(originalClass);
-    addSymboltableMethods(scopeAttributes, changedClass);
+    addSymbolTableMethods(scopeAttributes, changedClass);
 
     return changedClass;
   }

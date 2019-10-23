@@ -19,6 +19,9 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a SymbolDeSer class from a grammar
+ */
 public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;
@@ -57,7 +60,6 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   protected List<ASTCDMethod> createDeserializeMethods(String symbolFullName, String symbolSimpleName,
                                                        String symbolBuilderFullName, String symbolBuilderSimpleName,
                                                        String symTabMill, List<ASTCDAttribute> symbolRuleAttributes) {
-
     ASTCDMethod deserializeStringMethod = createDeserializeStringMethod(symbolFullName);
     ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), SYMBOL_JSON_VAR);
     ASTCDMethod deserializeJsonObjectMethod = createDeserializeJsonObjectMethod(symbolFullName, symbolSimpleName, jsonParam);

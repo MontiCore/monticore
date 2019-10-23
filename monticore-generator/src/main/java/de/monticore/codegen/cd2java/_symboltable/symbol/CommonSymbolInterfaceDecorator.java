@@ -16,6 +16,9 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_S
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * creates a CommonSymbolInterface interface from a grammar
+ */
 public class CommonSymbolInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
   protected final SymbolTableService symbolTableService;

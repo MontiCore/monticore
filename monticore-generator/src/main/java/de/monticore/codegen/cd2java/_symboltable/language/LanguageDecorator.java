@@ -19,6 +19,9 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * created language class from a grammar
+ */
 public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected SymbolTableService symbolTableService;
@@ -27,6 +30,10 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
 
   protected AccessorDecorator accessorDecorator;
 
+  /**
+   * flag added to define if the Language class was overwritten with the TOP mechanism
+   * if top mechanism was used, must use setter to set flag true, before the decoration
+   */
   protected boolean isLanguageTop = false;
 
   protected static final String TEMPLATE_PATH = "_symboltable.language.";

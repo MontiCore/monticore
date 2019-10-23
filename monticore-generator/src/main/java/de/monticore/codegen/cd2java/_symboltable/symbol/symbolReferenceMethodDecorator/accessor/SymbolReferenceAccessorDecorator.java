@@ -3,6 +3,10 @@ package de.monticore.codegen.cd2java._symboltable.symbol.symbolReferenceMethodDe
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
+/**
+ * combination of mandatory, optional, list symbolReference getters
+ * change implementation
+ */
 public class SymbolReferenceAccessorDecorator extends AccessorDecorator {
 
   public SymbolReferenceAccessorDecorator(GlobalExtensionManagement glex) {

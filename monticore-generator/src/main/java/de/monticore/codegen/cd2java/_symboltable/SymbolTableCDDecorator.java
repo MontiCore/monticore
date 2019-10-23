@@ -25,6 +25,9 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYM
 import static de.monticore.codegen.mc2cd.TransformationHelper.existsHandwrittenClass;
 import static de.monticore.utils.Names.constructQualifiedName;
 
+/**
+ * creates all classes and interfaces for the _symboltbale package
+ */
 public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final SymbolDecorator symbolDecorator;

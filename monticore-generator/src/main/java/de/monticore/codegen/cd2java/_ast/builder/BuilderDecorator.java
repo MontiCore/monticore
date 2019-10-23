@@ -22,12 +22,20 @@ import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * simple and abstract BuilderDecorator, can be used for special builder generations
+ * for a special generation use this class as basis and add additional features
+ */
 public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected final AccessorDecorator accessorDecorator;
 
   protected final AbstractService service;
 
+  /**
+   * additional flag that can be disabled to not insert a template for the build method
+   * was inserted, because special implementations often only want to change the build method implementation
+   */
   private boolean printBuildMethodTemplate = true;
 
   public BuilderDecorator(final GlobalExtensionManagement glex,
@@ -44,7 +52,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTMCType domainType = this.getMCTypeFacade().createQualifiedType(domainClass.getName());
     ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(builderClassName);
 
-
+    // make the builder abstract for a abstract AST class
     CDModifier modifier = PUBLIC;
     if (domainClass.isPresentModifier() && domainClass.getModifier().isAbstract()) {
       modifier = PUBLIC_ABSTRACT;

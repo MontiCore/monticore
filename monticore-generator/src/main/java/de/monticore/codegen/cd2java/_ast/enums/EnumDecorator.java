@@ -19,6 +19,9 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.INT_VALUE
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
+/**
+ * creates corresponding AST enums for enum definitions in grammars
+ */
 public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
 
   protected final AccessorDecorator accessorDecorator;

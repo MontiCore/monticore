@@ -13,6 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * changes return type of builder setters for mandatory attributes
+ */
 public class BuilderMandatoryMutatorDecorator extends MandatoryMutatorDecorator {
   protected final ASTMCType builderType;
 

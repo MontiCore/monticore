@@ -23,6 +23,10 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
 
+/**
+ * combines all decorators to create all classes, interfaces and enums for the _ast package
+ * returns them all combined in ASTCDCompilationUnit
+ */
 public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
   protected final ASTFullDecorator astFullDecorator;
@@ -83,6 +87,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
         .addAllCDEnums(createEnums(ast))
         .build();
 
+    // change the package and add deprecated annotations to all classes, interfaces, enums
     for (ASTCDClass cdClass : astCD.getCDClassList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(astPackage));
       this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifierOpt()));

@@ -19,13 +19,20 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
+/**
+ * creates a globalScope interface from a grammar
+ */
 public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
   protected final SymbolTableService symbolTableService;
-
+  /**
+   * flag added to define if the GlobalScope interface was overwritten with the TOP mechanism
+   * if top mechanism was used, must use setter to set flag true, before the decoration
+   * is needed for different getRealThis method implementations
+   */
   protected boolean isGlobalScopeTop = false;
 
-  public static final String LOAD_MODELS_FOR = "loadModelsFor%s";
+  protected static final String LOAD_MODELS_FOR = "loadModelsFor%s";
 
   protected static final String TEMPLATE_PATH = "_symboltable.iglobalscope.";
 
@@ -99,6 +106,10 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     return getRealThis;
   }
 
+  /**
+   * creates all resolve methods
+   * reuses the often used parameters, so that they only need to be created once
+   */
   protected List<ASTCDMethod> createResolveMethods(List<? extends ASTCDType> symbolProds, String definitionName) {
     List<ASTCDMethod> resolveMethods = new ArrayList<>();
     ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
@@ -106,15 +117,15 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
 
     for (ASTCDType symbolProd : symbolProds) {
-      resolveMethods.addAll(createResolveMethod(symbolProd, nameParameter, foundSymbolsParameter, accessModifierParameter,
+      resolveMethods.addAll(createResolveMethods(symbolProd, nameParameter, foundSymbolsParameter, accessModifierParameter,
           symbolTableService.getCDSymbol(), definitionName));
     }
 
     return resolveMethods;
   }
 
-  protected List<ASTCDMethod> createResolveMethod(ASTCDType symbolProd, ASTCDParameter nameParameter, ASTCDParameter foundSymbolsParameter,
-                                                  ASTCDParameter accessModifierParameter, CDDefinitionSymbol cdDefinitionSymbol, String definitionName) {
+  protected List<ASTCDMethod> createResolveMethods(ASTCDType symbolProd, ASTCDParameter nameParameter, ASTCDParameter foundSymbolsParameter,
+                                                   ASTCDParameter accessModifierParameter, CDDefinitionSymbol cdDefinitionSymbol, String definitionName) {
     List<ASTCDMethod> resolveMethods = new ArrayList<>();
     String className = symbolTableService.removeASTPrefix(symbolProd);
     String symbolFullTypeName = symbolTableService.getSymbolFullName(symbolProd, cdDefinitionSymbol);
@@ -143,7 +154,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
         if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
-          resolveMethods.addAll(createResolveMethod(type.getAstNode().get(), nameParameter, foundSymbolsParameter,
+          resolveMethods.addAll(createResolveMethods(type.getAstNode().get(), nameParameter, foundSymbolsParameter,
               accessModifierParameter, cdDefinitionSymbol, definitionName));
         }
       }

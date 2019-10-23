@@ -14,6 +14,9 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
+/**
+ * creates CoCo interfaces with a abstract check method for AST classes and interfaces
+ */
 public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, List<ASTCDInterface>> {
 
   protected final CoCoService cocoService;

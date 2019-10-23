@@ -25,6 +25,9 @@ import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * creates a globalScope class from a grammar
+ */
 public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;
@@ -205,6 +208,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected List<ASTCDMethod> createAlreadyResolvedSuperMethods() {
     List<ASTCDAttribute> symbolAlreadyResolvedAttributes = new ArrayList<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      // only types that define a symbol
       List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes().stream().filter(t -> t.getAstNode().isPresent())
           .filter(t -> t.getAstNode().get().getModifierOpt().isPresent())
           .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().get().getModifierOpt().get()))
@@ -275,16 +279,16 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
 
     for (ASTCDType symbolProd : symbolProds) {
-      methodList.add(createResolveAdaptedMethods(symbolProd, symbolTableService.getCDSymbol(), foundSymbolsParameter, nameParameter,
+      methodList.add(createResolveAdaptedMethod(symbolProd, symbolTableService.getCDSymbol(), foundSymbolsParameter, nameParameter,
           accessModifierParameter));
     }
     return methodList;
   }
 
 
-  protected ASTCDMethod createResolveAdaptedMethods(ASTCDType symbolProd, CDDefinitionSymbol cdDefinitionSymbol,
-                                                    ASTCDParameter foundSymbolsParameter, ASTCDParameter nameParameter,
-                                                    ASTCDParameter accessModifierParameter) {
+  protected ASTCDMethod createResolveAdaptedMethod(ASTCDType symbolProd, CDDefinitionSymbol cdDefinitionSymbol,
+                                                   ASTCDParameter foundSymbolsParameter, ASTCDParameter nameParameter,
+                                                   ASTCDParameter accessModifierParameter) {
     String symbolFullName = symbolTableService.getSymbolFullName(symbolProd, cdDefinitionSymbol);
     String symbolSimpleName = symbolTableService.getSymbolSimpleName(symbolProd);
     String symbolResolvingDelegateInterfaceFullName = symbolTableService.getSymbolResolvingDelegateInterfaceFullName(symbolProd, cdDefinitionSymbol);
@@ -310,7 +314,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
         if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
-          methodList.add(createResolveAdaptedMethods(type.getAstNode().get(), cdDefinitionSymbol, foundSymbolsParameter, nameParameter,
+          methodList.add(createResolveAdaptedMethod(type.getAstNode().get(), cdDefinitionSymbol, foundSymbolsParameter, nameParameter,
               accessModifierParameter));
         }
       }

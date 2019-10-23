@@ -27,7 +27,9 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-
+/**
+ * transformation decorator which adds AST class specific properties
+ */
 public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
 
   protected final ASTService astService;
@@ -75,15 +77,18 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     }
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(originalClass);
-    addSymboltableMethods(symbolAttributes, changedClass);
+    addSymbolTableMethods(symbolAttributes, changedClass);
 
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(originalClass);
-    addSymboltableMethods(scopeAttributes, changedClass);
+    addSymbolTableMethods(scopeAttributes, changedClass);
 
     return changedClass;
   }
 
-  protected void addSymboltableMethods(List<ASTCDAttribute> astcdAttributes, ASTCDClass clazz) {
+  /**
+   * creates symbol and scope methods and attributes with the help of the ASTSymbolDecorator and ASTScopeDecorator
+   */
+  protected void addSymbolTableMethods(List<ASTCDAttribute> astcdAttributes, ASTCDClass clazz) {
     for (ASTCDAttribute attribute : astcdAttributes) {
       if (!astService.hasStereotype(attribute.getModifier(), MC2CDStereotypes.INHERITED)) {
         clazz.addCDAttribute(attribute);
@@ -101,7 +106,6 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
       }
     }
   }
-
 
   protected ASTCDMethod createAcceptMethod(ASTCDClass astClass) {
     ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getVisitorType(), VISITOR_PREFIX);

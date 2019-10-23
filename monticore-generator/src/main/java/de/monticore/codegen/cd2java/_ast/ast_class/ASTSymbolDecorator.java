@@ -16,6 +16,9 @@ import java.util.Optional;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
+/**
+ * creates a list of symbol attributes that are used for the AST class
+ */
 public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttribute>> {
 
   protected final SymbolTableService symbolTableService;

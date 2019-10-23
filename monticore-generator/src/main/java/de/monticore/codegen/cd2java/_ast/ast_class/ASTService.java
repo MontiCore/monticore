@@ -10,6 +10,9 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 
+/**
+ * helper class for the AST package generation
+ */
 public class ASTService extends AbstractService<ASTService> {
 
   public ASTService(ASTCDCompilationUnit compilationUnit) {
@@ -34,8 +37,8 @@ public class ASTService extends AbstractService<ASTService> {
     return new ASTService(cdSymbol);
   }
 
-  /*
-  create base interface name e.g. ASTAutomataNode
+  /**
+   * create base interface name e.g. ASTAutomataNode
    */
   public String getASTBaseInterfaceSimpleName() {
     return AST_PREFIX + getCDName() + ASTConstants.NODE_SUFFIX;
@@ -57,9 +60,9 @@ public class ASTService extends AbstractService<ASTService> {
     return getCDTypeFacade().createQualifiedType(getASTBaseInterfaceFullName());
   }
 
-  /*
-constant class names g.g. ASTConstantsAutomata
- */
+  /**
+   * constant class names g.g. ASTConstantsAutomata
+   */
   public String getASTConstantClassSimpleName() {
     return getASTConstantClassSimpleName(getCDSymbol());
   }
@@ -76,9 +79,9 @@ constant class names g.g. ASTConstantsAutomata
     return getPackage(cdSymbol) + "." + getASTConstantClassSimpleName(cdSymbol);
   }
 
-  /*
-ast class names g.g. ASTAutomaton
- */
+  /**
+   * ast class names g.g. ASTAutomaton
+   */
   public String getASTSimpleName(ASTCDType type) {
     return type.getName().startsWith(AST_PREFIX) ? type.getName() : AST_PREFIX + type.getName();
   }

@@ -22,6 +22,9 @@ import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * creates a ScopeDeSer class from a grammar
+ */
 public class ScopeDeSerDecorator extends AbstractDecorator {
 
   protected final SymbolTableService symbolTableService;
@@ -34,6 +37,10 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     this.symbolTableService = symbolTableService;
   }
 
+  /**
+   * @param scopeInput  for scopeRule attributes and methods
+   * @param symbolInput for Symbol Classes and Interfaces
+   */
   public ASTCDClass decorate(ASTCDCompilationUnit scopeInput, ASTCDCompilationUnit symbolInput) {
     String scopeDeSerName = symbolTableService.getScopeDeSerSimpleName();
     String scopeInterfaceName = symbolTableService.getScopeInterfaceFullName();
@@ -66,7 +73,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .setModifier(PUBLIC.build())
         .addInterface(iDeSerType)
         .addAllCDAttributes(createSymbolDeSerAttributes(symbolDefinition))
-        .addCDMethod(createSoreMethod(artifactScopeFullName, languageClassFullName))
+        .addCDMethod(createStoreMethod(artifactScopeFullName, languageClassFullName))
         .addCDMethod(createGetSerializedKindMethod(scopeClassFullName))
         .addCDMethod(createGetSerializedASKindMethod(artifactScopeFullName))
         .addCDMethod(createSerializeMethod(scopeInterfaceName, symbolTablePrinterFullName))
@@ -81,6 +88,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   protected List<ASTCDAttribute> createSymbolDeSerAttributes(ASTCDDefinition astcdDefinition) {
+    // collects symbolDeSer names form all symbol definitions
     List<String> symbolDeSerNames = astcdDefinition.getCDClassList()
         .stream()
         .map(symbolTableService::getSymbolDeSerSimpleName)
@@ -99,9 +107,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return symbolDeSerAttributes;
   }
 
-  protected ASTCDMethod createSoreMethod(String artifactScopeName, String languageName) {
-    ASTCDParameter artifactScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(artifactScopeName), "as");
-    ASTCDParameter langParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(languageName), "lang");
+  protected ASTCDMethod createStoreMethod(String artifactScopeName, String languageName) {
+    ASTCDParameter artifactScopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(artifactScopeName), "as");
+    ASTCDParameter langParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(languageName), "lang");
     ASTCDParameter symbolPathParam = getCDParameterFacade().createParameter(String.class, "symbolPath");
     ASTCDMethod storeMethod = getCDMethodFacade().createMethod(PUBLIC, "store", artifactScopeParam, langParam, symbolPathParam);
     this.replaceTemplate(EMPTY_BODY, storeMethod, new StringHookPoint("store(as, java.nio.file.Paths.get(symbolPath, as.getFilePath(lang).toString()));"));
@@ -199,12 +207,14 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   protected ASTCDMethod createAddAndLinkSpanningSymbolMethod(String scopeClassName, String scopeInterfaceName, ASTCDDefinition astcdDefinition) {
     List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(astcdDefinition);
 
+    // finds all symbols that also define a scope or inherit the scope property
     List<ASTCDType> scopeSpanningSymbolNames = symbolDefiningProds.stream()
         .filter(c -> c.getModifierOpt().isPresent())
         .filter(c -> symbolTableService.hasScopeStereotype(c.getModifierOpt().get())
             || symbolTableService.hasInheritedScopeStereotype(c.getModifierOpt().get()))
         .collect(Collectors.toList());
 
+    // maps the simpleSymbol name to the fullSymbolName, to use both in the templates
     Map<String, String> symbolMap = new HashMap<>();
     for (ASTCDType symbolDefiningProd : scopeSpanningSymbolNames) {
       String symbolFullName = symbolTableService.getSymbolFullName(symbolDefiningProd);

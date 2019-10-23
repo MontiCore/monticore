@@ -10,6 +10,11 @@ import de.monticore.codegen.cd2java._ast.ast_class.reference.referencedSymbol.re
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
+/**
+ * combines the referenceSymbol and referenceDefinition decorators to execute both
+ * if you use the referenceDefinition decorator you also need the referenceSymbol decorator
+ * the other way around is no problem
+ */
 public class ASTReferenceDecorator extends CompositeDecorator<ASTCDClass> {
 
   public ASTReferenceDecorator(GlobalExtensionManagement glex, SymbolTableService symbolTableService) {

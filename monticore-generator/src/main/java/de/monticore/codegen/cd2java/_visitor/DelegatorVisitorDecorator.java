@@ -27,6 +27,9 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a DelegatorVisitor class from a grammar
+ */
 public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final VisitorService visitorService;

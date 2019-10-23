@@ -22,6 +22,9 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_ME
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
+/**
+ * transformation decorator which adds AST interface specific properties
+ */
 public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
 
   protected final ASTService astService;

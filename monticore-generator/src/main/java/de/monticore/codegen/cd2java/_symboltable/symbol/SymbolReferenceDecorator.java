@@ -23,6 +23,9 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a SymbolReference class from a grammar
+ */
 public class SymbolReferenceDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected SymbolTableService symbolTableService;
@@ -156,8 +159,7 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     ASTCDMethod getEnclosingScope = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterface), "getEnclosingScope");
     this.replaceTemplate(EMPTY_BODY, getEnclosingScope, new StringHookPoint("return getReferencedSymbol().getEnclosingScope();"));
 
-    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterface), SCOPE_VAR);
-
+    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), SCOPE_VAR);
     ASTCDMethod setEnclosingScope = getCDMethodFacade().createMethod(PUBLIC, "setEnclosingScope", scopeParam);
     this.replaceTemplate(EMPTY_BODY, setEnclosingScope, new StringHookPoint("getReferencedSymbol().setEnclosingScope(" + SCOPE_VAR + ");"));
 

@@ -25,6 +25,9 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PRE
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a artifactScope class from a grammar
+ */
 public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;
@@ -33,6 +36,11 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected final VisitorService visitorService;
 
+  /**
+   * flag added to define if the ArtifactScope class was overwritten with the TOP mechanism
+   * if top mechanism was used, must use setter to set flag true, before the decoration
+   * is needed for different accept method implementations
+   */
   protected boolean isArtifactScopeTop;
 
   protected static final String TEMPLATE_PATH = "_symboltable.artifactscope.";
@@ -174,6 +182,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
   protected List<ASTCDMethod> createSuperContinueWithEnclosingScopeMethods() {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      // only filter for types which define a symbol
       List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes()
           .stream()
           .filter(t -> t.getAstNode().isPresent())

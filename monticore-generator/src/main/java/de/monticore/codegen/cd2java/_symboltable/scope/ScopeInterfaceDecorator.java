@@ -31,6 +31,9 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PRE
 import static de.monticore.codegen.cd2java.data.ListSuffixDecorator.LIST_SUFFIX_S;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * creates a Scope interface from a grammar
+ */
 public class ScopeInterfaceDecorator extends AbstractDecorator {
 
   protected final SymbolTableService symbolTableService;
@@ -57,9 +60,9 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
   protected static final String RESOLVE_DELEGATE = "ResolveDelegate";
 
-  protected static final String TEMPLATE_PATH = "_symboltable.iscope.";
-
   protected static final String METHOD_DELEGATE_CALL = "return this.%s(%s);";
+
+  protected static final String TEMPLATE_PATH = "_symboltable.iscope.";
 
   public ScopeInterfaceDecorator(final GlobalExtensionManagement glex,
                                  final SymbolTableService symbolTableService,
@@ -71,9 +74,14 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     this.methodDecorator = methodDecorator;
   }
 
+  /**
+   * @param scopeInput  for scopeRule attributes and methods
+   * @param symbolInput for Symbol Classes and Interfaces
+   */
   public ASTCDInterface decorate(ASTCDCompilationUnit scopeInput, ASTCDCompilationUnit symbolInput) {
     String scopeInterfaceName = INTERFACE_PREFIX + symbolTableService.getCDName() + SCOPE_SUFFIX;
 
+    // get scope rule attributes and methods
     List<ASTCDAttribute> scopeRuleAttributes = scopeInput.deepClone().getCDDefinition().getCDClassList()
         .stream()
         .map(ASTCDClassTOP::getCDAttributeList)
@@ -138,7 +146,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     return methodList;
   }
 
-
+  /**
+   * method that creates the scope interface methods
+   * summed up in this method to reuse commonly created variables for many methods
+   */
   protected List<ASTCDMethod> createScopeInterfaceMethodsForSymbols(List<? extends ASTCDType> symbolProds) {
     List<ASTCDMethod> resolveMethods = new ArrayList<>();
     ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
@@ -146,7 +157,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
 
     for (ASTCDType symbolProd : symbolProds) {
-      // initialiaztions
+      // initializations
       String className = symbolTableService.removeASTPrefix(symbolProd);
       String symbolFullTypeName = symbolTableService.getSymbolFullName(symbolProd);
       ASTMCOptionalType optSymbol = getMCTypeFacade().createOptionalTypeOf(symbolFullTypeName);
@@ -501,11 +512,11 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     ASTCDParameter subScopeParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterface), "subScope");
     ASTCDMethod addSubScope = getCDMethodFacade().createMethod(PUBLIC, "addSubScope", subScopeParameter);
     this.replaceTemplate(EMPTY_BODY, addSubScope,
-        new StringHookPoint("Log.error(\"0xA7013x558 The method \\\"addSubScope\\\" of interface \\\"IAutomataScope\\\" is not implemented.\");"));
+        new StringHookPoint("Log.error(\"0xA7013x558 The method \\\"addSubScope\\\" of interface \\\"" + scopeInterface + "\\\" is not implemented.\");"));
 
     ASTCDMethod removeSubScope = getCDMethodFacade().createMethod(PUBLIC, "removeSubScope", subScopeParameter);
     this.replaceTemplate(EMPTY_BODY, removeSubScope,
-        new StringHookPoint("Log.error(\"0xA7013x558 The method \\\"removeSubScope\\\" of interface \\\"IAutomataScope\\\" is not implemented.\");"));
+        new StringHookPoint("Log.error(\"0xA7013x558 The method \\\"removeSubScope\\\" of interface \\\"" + scopeInterface + "\\\" is not implemented.\");"));
 
     return new ArrayList<>(Arrays.asList(getSubScopes, addSubScope, removeSubScope));
   }

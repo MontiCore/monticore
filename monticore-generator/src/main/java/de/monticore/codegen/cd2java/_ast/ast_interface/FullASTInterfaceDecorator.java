@@ -5,6 +5,9 @@ import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.CompositeDecorator;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 
+/**
+ * combines all decorators for the ast interface generation
+ */
 public class FullASTInterfaceDecorator extends CompositeDecorator<ASTCDInterface> {
 
   public FullASTInterfaceDecorator(final InterfaceDecorator dataInterfaceDecorator, final ASTInterfaceDecorator astInterfaceDecorator) {

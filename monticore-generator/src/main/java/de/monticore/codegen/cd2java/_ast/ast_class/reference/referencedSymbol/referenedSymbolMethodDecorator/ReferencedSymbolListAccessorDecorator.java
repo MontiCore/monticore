@@ -10,6 +10,10 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
+/**
+ * created all list getter methods for the referencedSymbols
+ */
+
 public class ReferencedSymbolListAccessorDecorator extends ListAccessorDecorator {
 
   protected final SymbolTableService symbolTableService;
@@ -20,6 +24,9 @@ public class ReferencedSymbolListAccessorDecorator extends ListAccessorDecorator
     this.symbolTableService = symbolTableService;
   }
 
+  /**
+   * overwrite only the getList method implementation, because the other methods are delegated to this one
+   */
   @Override
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
     String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithS);

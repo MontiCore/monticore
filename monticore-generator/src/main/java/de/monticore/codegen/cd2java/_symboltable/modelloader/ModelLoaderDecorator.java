@@ -18,6 +18,9 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * creates modelLoader class from grammar if the grammar has a start prod
+ */
 public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional<ASTCDClass>> {
 
   protected final SymbolTableService symbolTableService;
@@ -79,6 +82,10 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return getCDAttributeFacade().createAttribute(PROTECTED, String.format(AST_PROVIDER, astName), "astProvider");
   }
 
+  /**
+   * return a list of modelLoader methods
+   * to reuse often used parameter definitions, to not declare them again for every method definition
+   */
   protected List<ASTCDMethod> createModelLoaderMethod(String astFullName, String globalScopeInterfaceName,
                                                       String modelLoaderClassName) {
     // parameters that are often used in the methods

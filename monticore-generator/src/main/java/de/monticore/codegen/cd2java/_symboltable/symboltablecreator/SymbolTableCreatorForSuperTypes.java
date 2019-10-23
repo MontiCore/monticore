@@ -19,6 +19,9 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a SymbolReference class from a grammar
+ */
 public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompilationUnit, List<ASTCDClass>> {
 
   protected final SymbolTableService symbolTableService;

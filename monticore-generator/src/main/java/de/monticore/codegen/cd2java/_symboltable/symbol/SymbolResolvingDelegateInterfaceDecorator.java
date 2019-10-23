@@ -10,6 +10,9 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
+/**
+ * creates a SymbolResolvingDelegate interface from a grammar
+ */
 public class SymbolResolvingDelegateInterfaceDecorator extends AbstractCreator<ASTCDType, ASTCDInterface> {
 
   protected final SymbolTableService symbolTableService;

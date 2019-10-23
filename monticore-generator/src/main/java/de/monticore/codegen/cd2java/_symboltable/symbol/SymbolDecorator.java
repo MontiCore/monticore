@@ -27,6 +27,9 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PRE
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a Symbol class from a grammar
+ */
 public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;
@@ -39,6 +42,11 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected final VisitorService visitorService;
 
+  /**
+   * flag added to define if the ArtifactScope class was overwritten with the TOP mechanism
+   * if top mechanism was used, must use setter to set flag true, before the decoration
+   * is needed for different accept method implementations
+   */
   protected boolean isSymbolTop = false;
 
   protected static final String TEMPLATE_PATH = "_symboltable.symbol.";
@@ -56,22 +64,23 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDClass input) {
+  public ASTCDClass decorate(ASTCDClass symbolInput) {
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
     String artifactScope = symbolTableService.getArtifactScopeFullName();
     String globalScopeInterface = symbolTableService.getGlobalScopeInterfaceFullName();
-    String symbolName = symbolTableService.getNameWithSymbolSuffix(input);
+    String symbolName = symbolTableService.getNameWithSymbolSuffix(symbolInput);
 
-    List<ASTCDAttribute> symbolRuleAttributes = input.deepClone().getCDAttributeList();
+    // uses symbol rule methods and attributes
+    List<ASTCDAttribute> symbolRuleAttributes = symbolInput.deepClone().getCDAttributeList();
     symbolRuleAttributes.forEach(a -> symbolTableService.addAttributeDefaultValues(a, this.glex));
     List<ASTCDMethod> symbolRuleAttributeMethods = symbolRuleAttributes
         .stream()
         .map(methodDecorator::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
-    List<ASTCDMethod> symbolRuleMethods = input.deepClone().getCDMethodList();
+    List<ASTCDMethod> symbolRuleMethods = symbolInput.deepClone().getCDMethodList();
 
-    List<ASTCDAttribute> symbolAttributes = createSymbolAttributes(input.getName(), scopeInterface);
+    List<ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolInput.getName(), scopeInterface);
     List<ASTCDMethod> symbolMethods = symbolAttributes
         .stream()
         .map(methodDecorator::decorate)
@@ -92,7 +101,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTCDClass symbolClass = CD4AnalysisMill.cDClassBuilder()
         .setName(symbolName)
         .setModifier(PUBLIC.build())
-        .addInterface(getMCTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName()))
+        .addInterface(getCDTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName()))
+        .addAllInterfaces(symbolInput.getInterfaceList())
         .addCDConstructor(constructor)
         .addAllCDAttributes(symbolAttributes)
         .addAllCDAttributes(symbolNameAttributes)
@@ -107,18 +117,17 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .build();
 
     // add only for scope spanning symbols
-    if (input.getModifierOpt().isPresent() && (symbolTableService.hasScopeStereotype(input.getModifierOpt().get())
-        || symbolTableService.hasInheritedScopeStereotype(input.getModifierOpt().get()))) {
+    if (symbolInput.getModifierOpt().isPresent() && (symbolTableService.hasScopeStereotype(symbolInput.getModifierOpt().get())
+        || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifierOpt().get()))) {
       ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
       List<ASTCDMethod> spannedScopeMethods = createSpannedScopeMethods(spannedScopeAttribute);
       symbolClass.addCDAttribute(spannedScopeAttribute);
       symbolClass.addAllCDMethods(spannedScopeMethods);
       symbolClass.addInterface(getMCTypeFacade().createQualifiedType(I_SCOPE_SPANNING_SYMBOL));
     }
-    if (input.isPresentSuperclass()) {
-      symbolClass.setSuperclass(input.getSuperclass());
+    if (symbolInput.isPresentSuperclass()) {
+      symbolClass.setSuperclass(symbolInput.getSuperclass());
     }
-    symbolClass.addAllInterfaces(input.getInterfaceList());
     return symbolClass;
   }
 
