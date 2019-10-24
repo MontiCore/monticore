@@ -115,6 +115,6 @@ public class ASTService extends AbstractService<ASTService> {
    * abstract getName method only generated when isSymbolWithoutName evaluates true for the ast class
    */
   public ASTCDMethod createGetNameMethod() {
-    return CDMethodFacade.getInstance().createMethod(PUBLIC_ABSTRACT, getCDTypeFacade().createStringType(), "getName");
+    return CDMethodFacade.getInstance().createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createStringType(), "getName");
   }
 }
