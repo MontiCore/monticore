@@ -19,6 +19,9 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.INT_VALUE
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
+/**
+ * creates corresponding AST enums for enum definitions in grammars
+ */
 public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
 
   protected final AccessorDecorator accessorDecorator;
@@ -55,12 +58,12 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
   }
 
   protected ASTCDAttribute getIntValueAttribute() {
-    ASTMCType intType = getCDTypeFacade().createIntType();
+    ASTMCType intType = getMCTypeFacade().createIntType();
     return getCDAttributeFacade().createAttribute(PROTECTED, intType, INT_VALUE);
   }
 
   protected ASTCDConstructor getLiteralsConstructor(String enumName) {
-    ASTMCType intType = getCDTypeFacade().createIntType();
+    ASTMCType intType = getMCTypeFacade().createIntType();
     ASTCDParameter intParameter = getCDParameterFacade().createParameter(intType, INT_VALUE);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PRIVATE.build(), enumName, intParameter);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + INT_VALUE + " = " + INT_VALUE + ";"));

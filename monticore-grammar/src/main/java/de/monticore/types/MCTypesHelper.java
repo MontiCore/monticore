@@ -172,31 +172,6 @@ public class MCTypesHelper {
     return CollectionTypesPrinter.printType(type);
   }
   
-  public static int getPrimitiveType(String typeName) {
-    if (Strings.isNullOrEmpty(typeName)) {
-      return -1;
-    }
-    switch (typeName) {
-      case "boolean":
-        return ASTConstantsMCBasicTypes.BOOLEAN;
-      case "float":
-        return ASTConstantsMCBasicTypes.FLOAT;
-      case "byte":
-        return ASTConstantsMCBasicTypes.BYTE;
-      case "char":
-        return ASTConstantsMCBasicTypes.CHAR;
-      case "double":
-        return ASTConstantsMCBasicTypes.DOUBLE;
-      case "int":
-        return ASTConstantsMCBasicTypes.INT;
-      case "short":
-        return ASTConstantsMCBasicTypes.SHORT;
-      case "long":
-        return ASTConstantsMCBasicTypes.LONG;
-      default:
-        return -1;
-    }
-  }
 
   public static SymTypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type) {
     DeriveSymTypeOfMCType visitor = new DeriveSymTypeOfMCType();

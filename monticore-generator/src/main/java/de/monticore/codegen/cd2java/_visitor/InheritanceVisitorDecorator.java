@@ -16,6 +16,9 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_INHERITANCE_TEMPLATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a InheritanceVisitor class from a grammar
+ */
 public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
   protected final VisitorService visitorService;
@@ -58,7 +61,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
   }
 
   protected ASTCDMethod getHandleMethod(ASTCDClass astcdClass, String languageInterfaceName, String visitorSimpleTypeName) {
-    ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getCDTypeFacade().createQualifiedType(astcdClass.getName()));
+    ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getMCTypeFacade().createQualifiedType(astcdClass.getName()));
     List<String> superTypeList = new ArrayList<>();
     // super classes
     if (astcdClass.isPresentSuperclass() && !astcdClass.printSuperClass().isEmpty()) {
@@ -73,7 +76,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
   }
 
   protected ASTCDMethod getHandleMethod(ASTCDInterface astcdInterface, String languageInterfaceName, String visitorSimpleTypeName) {
-    ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getCDTypeFacade().createQualifiedType(astcdInterface.getName()));
+    ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getMCTypeFacade().createQualifiedType(astcdInterface.getName()));
     replaceTemplate(EMPTY_BODY, handleMethod,
         new TemplateHookPoint(HANDLE_INHERITANCE_TEMPLATE,
             languageInterfaceName, visitorSimpleTypeName, new ArrayList<>()));

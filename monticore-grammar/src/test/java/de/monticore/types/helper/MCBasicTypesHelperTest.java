@@ -20,7 +20,6 @@ public class MCBasicTypesHelperTest {
     Optional<ASTMCPrimitiveType> astmcPrimitiveType = parser.parse_StringMCPrimitiveType("boolean");
     assertTrue(astmcPrimitiveType.isPresent());
     assertTrue(MCBasicTypesHelper.isPrimitive(astmcPrimitiveType.get()));
-    assertFalse(MCBasicTypesHelper.isNullable(astmcPrimitiveType.get()));
     assertFalse(parser.hasErrors());
   }
 
@@ -29,7 +28,6 @@ public class MCBasicTypesHelperTest {
     MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     Optional<ASTMCQualifiedType> astmcQualifiedType = parser.parse_StringMCQualifiedType("String");
     assertTrue(astmcQualifiedType.isPresent());
-    assertTrue(MCBasicTypesHelper.isNullable(astmcQualifiedType.get()));
     assertFalse(MCBasicTypesHelper.isPrimitive(astmcQualifiedType.get()));
     assertFalse(parser.hasErrors());
   }
@@ -45,15 +43,15 @@ public class MCBasicTypesHelperTest {
 
   @Test
   public void testGetPrimitive(){
-    assertEquals(1,MCBasicTypesHelper.getPrimitiveType("boolean"));
-    assertEquals(-1,MCBasicTypesHelper.getPrimitiveType(null));
-    assertEquals(-1,MCBasicTypesHelper.getPrimitiveType(""));
-    assertEquals(2,MCBasicTypesHelper.getPrimitiveType("byte"));
-    assertEquals(3,MCBasicTypesHelper.getPrimitiveType("char"));
-    assertEquals(4,MCBasicTypesHelper.getPrimitiveType("double"));
-    assertEquals(5,MCBasicTypesHelper.getPrimitiveType("float"));
-    assertEquals(6,MCBasicTypesHelper.getPrimitiveType("int"));
-    assertEquals(7,MCBasicTypesHelper.getPrimitiveType("long"));
-    assertEquals(8,MCBasicTypesHelper.getPrimitiveType("short"));
+    assertEquals(1,MCBasicTypesHelper.primitiveName2Const("boolean"));
+    assertEquals(-1,MCBasicTypesHelper.primitiveName2Const(null));
+    assertEquals(-1,MCBasicTypesHelper.primitiveName2Const(""));
+    assertEquals(2,MCBasicTypesHelper.primitiveName2Const("byte"));
+    assertEquals(3,MCBasicTypesHelper.primitiveName2Const("char"));
+    assertEquals(4,MCBasicTypesHelper.primitiveName2Const("double"));
+    assertEquals(5,MCBasicTypesHelper.primitiveName2Const("float"));
+    assertEquals(6,MCBasicTypesHelper.primitiveName2Const("int"));
+    assertEquals(7,MCBasicTypesHelper.primitiveName2Const("long"));
+    assertEquals(8,MCBasicTypesHelper.primitiveName2Const("short"));
   }
 }

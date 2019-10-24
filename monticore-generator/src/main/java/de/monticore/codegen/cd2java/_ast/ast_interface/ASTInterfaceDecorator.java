@@ -22,6 +22,9 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_ME
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
+/**
+ * transformation decorator which adds AST interface specific properties
+ */
 public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
 
   protected final ASTService astService;
@@ -51,7 +54,7 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
   @Override
   public ASTCDInterface decorate(final ASTCDInterface originalInput, ASTCDInterface changedInput) {
     changedInput.addCDMethod(getAcceptMethod());
-    changedInput.addInterface(getCDTypeFacade().createReferenceTypeByDefinition(AST_INTERFACE));
+    changedInput.addInterface(getMCTypeFacade().createQualifiedType(AST_INTERFACE));
     changedInput.addInterface(astService.getASTBaseInterface());
     changedInput.clearCDAttributes();
 
@@ -63,6 +66,11 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(originalInput);
     changedInput.addAllCDMethods(addScopeMethods(scopeAttributes));
 
+    // if a ast has a symbol definition without a name, the getName has to be implemented manually
+    // add getName method that is abstract
+    if (astService.isSymbolWithoutName(originalInput)) {
+      changedInput.addCDMethod(astService.createGetNameMethod());
+    }
     return changedInput;
   }
 

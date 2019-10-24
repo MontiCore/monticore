@@ -17,8 +17,10 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTER
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a ASTVisitor class from a grammar
+ */
 public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
-
 
   protected final VisitorService visitorService;
 
@@ -32,6 +34,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   public ASTCDInterface decorate(ASTCDCompilationUnit ast) {
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithPackage(ast);
     ASTMCType visitorType = this.visitorService.getVisitorType();
+    ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(AST_INTERFACE);
 
     ASTCDInterface symbolVisitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitorSimpleName())
@@ -39,8 +42,8 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         .setModifier(PUBLIC.build())
         .addCDMethod(addGetRealThisMethods(visitorType))
         .addCDMethod(addSetRealThisMethods(visitorType))
-        .addCDMethod(addEndVisitASTNodeMethods())
-        .addCDMethod(addVisitASTNodeMethods())
+        .addCDMethod(addEndVisitASTNodeMethods(astNodeType))
+        .addCDMethod(addVisitASTNodeMethods(astNodeType))
         .build();
 
     // add visitor methods, but no double signatures
@@ -67,13 +70,11 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     return symbolVisitorInterface;
   }
 
-  protected ASTCDMethod addVisitASTNodeMethods() {
-    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(AST_INTERFACE);
+  protected ASTCDMethod addVisitASTNodeMethods(ASTMCType astNodeType) {
     return visitorService.getVisitorMethod(VisitorConstants.VISIT, astNodeType);
   }
 
-  protected ASTCDMethod addEndVisitASTNodeMethods() {
-    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(AST_INTERFACE);
+  protected ASTCDMethod addEndVisitASTNodeMethods(ASTMCType astNodeType) {
     return visitorService.getVisitorMethod(VisitorConstants.END_VISIT, astNodeType);
   }
 
@@ -96,7 +97,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdClassList) {
       boolean doTraverse = !(astcdClass.isPresentModifier() && astcdClass.getModifier().isAbstract());
-      ASTMCType classType = getCDTypeFacade().createTypeByDefinition(astcdClass.getName());
+      ASTMCType classType = getMCTypeFacade().createQualifiedType(astcdClass.getName());
       visitorMethods.add(addVisitMethod(classType));
       visitorMethods.add(addEndVisitMethod(classType));
       visitorMethods.add(addHandleMethod(classType, doTraverse));
@@ -112,7 +113,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDEnum astcdEnum : astcdEnumList) {
       if (!visitorService.isLiteralsEnum(astcdEnum, definitionName)) {
-        ASTMCType enumType = getCDTypeFacade().createTypeByDefinition(astcdEnum.getName());
+        ASTMCType enumType = getMCTypeFacade().createQualifiedType(astcdEnum.getName());
         visitorMethods.add(addVisitMethod(enumType));
         visitorMethods.add(addEndVisitMethod(enumType));
         visitorMethods.add(addHandleMethod(enumType, false));
@@ -125,7 +126,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     // no traverse method
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDInterface astcdInterface : astcdInterfaceList) {
-      ASTMCType interfaceType = getCDTypeFacade().createTypeByDefinition(astcdInterface.getName());
+      ASTMCType interfaceType = getMCTypeFacade().createQualifiedType(astcdInterface.getName());
       visitorMethods.add(addVisitMethod(interfaceType));
       visitorMethods.add(addEndVisitMethod(interfaceType));
       visitorMethods.add(addHandleMethod(interfaceType, false));

@@ -24,6 +24,9 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates the CoCoChecker class for a grammar
+ */
 public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final MethodDecorator methodDecorator;
@@ -54,17 +57,19 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDClass cocoChecker = CD4AnalysisMill.cDClassBuilder()
         .setName(cocoCheckerName)
         .setModifier(PUBLIC.build())
-        .addInterface(getCDTypeFacade().createQualifiedType(visitorService.getInheritanceVisitorFullName()))
+        .addInterface(getMCTypeFacade().createQualifiedType(visitorService.getInheritanceVisitorFullName()))
         .addCDAttribute(realThisAttribute)
         .addCDConstructor(constructor)
         .addAllCDMethods(realThisMethods)
         .build();
 
     CDDefinitionSymbol cdSymbol = cocoService.getCDSymbol();
+    // travers all Super CDDefinitionSymbol transitive and own one
     for (CDDefinitionSymbol currentCDSymbol : cocoService.getAllCDs()) {
       CoCoService cocoService = CoCoService.createCoCoService(currentCDSymbol);
       ASTService astService = ASTService.createASTService(currentCDSymbol);
 
+      // local time checker for own or super CDDefinition
       ASTMCType ownCheckerType = cocoService.getCheckerType();
       String checkerName = MCCollectionTypesHelper.printType(ownCheckerType).replaceAll("\\.", "_");
       boolean isCurrentDiagram = cdSymbol.getFullName().equals(currentCDSymbol.getFullName());
@@ -80,7 +85,8 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
       cocoChecker.addCDMethod(checkAll);
 
       for (CDTypeSymbol cdTypeSymbol : currentCDSymbol.getTypes()) {
-        if (!cdTypeSymbol.isClass() && !cdTypeSymbol.isInterface()) {
+        // do not generate for enums (only classes and interfaces)
+        if (cdTypeSymbol.isEnum()) {
           continue;
         }
 
@@ -88,6 +94,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         ASTMCType astType = astService.getASTType(cdTypeSymbol.getAstNode().get());
         String cocoCollectionName = MCCollectionTypesHelper.printType(astType).replaceAll("\\.", "_") + COCOS;
 
+        // only create CoCoCollectionAttribute for the currentDiagram (so super CDDefinitionSymbol)
         if (isCurrentDiagram) {
           cocoChecker.addCDAttribute(createCoCoCollectionAttribute(cocoType, cocoCollectionName));
         }
@@ -108,7 +115,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDAttribute createCheckerAttribute(ASTMCType checkerType, String checkerName, boolean isCurrentDiagram) {
-    ASTMCType checkerListType = getCDTypeFacade().createListTypeOf(checkerType);
+    ASTMCType checkerListType = getMCTypeFacade().createListTypeOf(checkerType);
     ASTCDAttribute checker = getCDAttributeFacade().createAttribute(PRIVATE, checkerListType, checkerName);
     // special list initialization for super coco checker attributes
     HookPoint hp = !isCurrentDiagram ? new StringHookPoint("= new ArrayList<>(Arrays.asList(new " + MCCollectionTypesHelper.printType(checkerType) + "()))")
@@ -125,7 +132,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDAttribute createCoCoCollectionAttribute(ASTMCType cocoType, String cocoCollectionName) {
-    ASTMCType cocoCollectionType = getCDTypeFacade().createCollectionTypeOf(cocoType);
+    ASTMCType cocoCollectionType = getMCTypeFacade().createCollectionTypeOf(cocoType);
     ASTCDAttribute cocoCollectionAttribute = getCDAttributeFacade().createAttribute(PRIVATE, cocoCollectionType, cocoCollectionName);
     this.replaceTemplate(VALUE, cocoCollectionAttribute, new StringHookPoint("= new LinkedHashSet<>()"));
     return cocoCollectionAttribute;

@@ -20,6 +20,11 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKA
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
+/**
+ * is a transforming class for the ast generation
+ * adds the symbol reference definition getters -> uses the symbol reference attribute created in ASTReferencedSymbolDecorator
+ */
+
 public class ASTReferencedDefinitionDecorator extends AbstractTransformer<ASTCDClass> {
 
   public static final String DEFINITION = "Definition";
@@ -49,16 +54,19 @@ public class ASTReferencedDefinitionDecorator extends AbstractTransformer<ASTCDC
     return changedInput;
   }
 
+  /**
+   * created dummy attribute to easily create the corresponding getters
+   */
   protected List<ASTCDMethod> getRefDefinitionMethods(ASTCDAttribute astcdAttribute, String referencedSymbol) {
     ASTMCType symbolType;
     String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) +
         AST_PACKAGE + "." + AST_PREFIX + symbolTableService.getSimpleNameFromSymbolName(referencedSymbol);
     if (GeneratorHelper.isListType(astcdAttribute.printType())) {
       //if the attribute is a list
-      symbolType = getCDTypeFacade().createListTypeOf(referencedNode);
+      symbolType = getMCTypeFacade().createListTypeOf(referencedNode);
     } else {
       //if the attribute is mandatory or optional
-      symbolType = getCDTypeFacade().createOptionalTypeOf(referencedNode);
+      symbolType = getMCTypeFacade().createOptionalTypeOf(referencedNode);
     }
     ASTCDAttribute refSymbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolType, astcdAttribute.getName());
     TransformationHelper.addStereotypeValue(refSymbolAttribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL.toString(), referencedSymbol);

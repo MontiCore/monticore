@@ -11,6 +11,7 @@ public interface ASTMCGenericType extends ASTMCGenericTypeTOP {
   /* TODO RE: Das ist leider nur eine Funktion (von 30 sinnvollen
    Wäre es besser, dies in der Grammatik hinzuzufügen?
    und in der Grammatik etwas in der Art zu evrankern:
+   (( oder die Funktion einfach rauszuwerfen, weil sie eh nicht hierher gehört))
  
    interface MCGenericType extends MCObjectType = MCTypeArgument*;
 

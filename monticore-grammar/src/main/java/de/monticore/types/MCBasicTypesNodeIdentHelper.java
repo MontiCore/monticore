@@ -13,12 +13,12 @@ public class MCBasicTypesNodeIdentHelper extends ASTNodeIdentHelper {
     int p = a.getPrimitive();
     return format(String.valueOf(p), Layouter.nodeName(a));
   }
-
+  
   public String getIdent(ASTMCType a)
   {
     return format(a.getBaseName(),Layouter.nodeName(a));
   }
-
+  
   public String getIdent(ASTMCQualifiedName a)
   {
     return format(a.getBaseName(),Layouter.nodeName(a));

@@ -12,6 +12,9 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 
+/**
+ * combines the CoCo checker class and all CoCo interfaces to create the _coco package
+ */
 public class CoCoDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
   protected final CoCoCheckerDecorator cocoCheckerDecorator;
@@ -19,7 +22,7 @@ public class CoCoDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCo
   protected final CoCoInterfaceDecorator cocoInterfaceDecorator;
 
   public CoCoDecorator(GlobalExtensionManagement glex,
-      CoCoCheckerDecorator cocoCheckerDecorator, CoCoInterfaceDecorator cocoInterfaceDecorator) {
+                       CoCoCheckerDecorator cocoCheckerDecorator, CoCoInterfaceDecorator cocoInterfaceDecorator) {
     super(glex);
     this.cocoCheckerDecorator = cocoCheckerDecorator;
     this.cocoInterfaceDecorator = cocoInterfaceDecorator;
@@ -36,6 +39,7 @@ public class CoCoDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCo
         .addAllCDInterfaces(cocoInterfaceDecorator.decorate(input.getCDDefinition()))
         .build();
 
+    // change the package to _coco
     for (ASTCDClass ast : cocoCD.getCDClassList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, ast, createPackageHookPoint(cocoPackage));
     }

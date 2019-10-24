@@ -14,7 +14,7 @@ public abstract class AbstractCreator<I, R> extends AbstractDecorator {
 
   public AbstractCreator(final GlobalExtensionManagement glex) {
     super(glex,
-        CDTypeFacade.getInstance(),
+        MCTypeFacade.getInstance(),
         CDAttributeFacade.getInstance(),
         CDConstructorFacade.getInstance(),
         CDMethodFacade.getInstance(),

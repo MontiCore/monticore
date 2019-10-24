@@ -26,7 +26,7 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
   public ASTCDClass decorate(final ASTCDCompilationUnit astcdCompilationUnit) {
     ASTCDDefinition astcdDefinition = astcdCompilationUnit.getCDDefinition();
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
-    ASTMCType factoryType = this.getCDTypeFacade().createQualifiedType(factoryClassName);
+    ASTMCType factoryType = this.getMCTypeFacade().createQualifiedType(factoryClassName);
 
     //remove abstract classes
     List<ASTCDClass> astcdClassList = astcdDefinition.deepClone().getCDClassList()
@@ -55,7 +55,7 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
         continue;
       }
       //add factory attributes for all classes
-      factoryAttributeList.add(addAttributes(astcdClass, factoryType));
+      factoryAttributeList.add(addAttribute(astcdClass, factoryType));
       //add create and doCreate Methods for all classes
       createMethodList.addAll(addFactoryMethods(astcdClass));
     }
@@ -67,7 +67,7 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(factoryClassName)
-        .setSuperclass(getCDTypeFacade().createQualifiedType(E_FACTORY_IMPL))
+        .setSuperclass(getMCTypeFacade().createQualifiedType(E_FACTORY_IMPL))
         .addCDAttribute(factoryAttribute)
         .addAllCDAttributes(factoryAttributeList)
         .addCDConstructor(constructor)
@@ -87,9 +87,9 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
   }
 
   protected ASTCDMethod addEmfCreateMethod(List<ASTCDClass> astcdClassList, String grammarName, String factoryClassName) {
-    ASTCDParameter eClassParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(E_CLASS_TYPE), "eClass");
+    ASTCDParameter eClassParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(E_CLASS_TYPE), "eClass");
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC,
-        getCDTypeFacade().createQualifiedType(E_OBJECT_TYPE), CREATE_METHOD, eClassParameter);
+        getMCTypeFacade().createQualifiedType(E_OBJECT_TYPE), CREATE_METHOD, eClassParameter);
     this.replaceTemplate(EMPTY_BODY, method,
         new TemplateHookPoint("_ast_emf.factory.EmfCreate",
             factoryClassName, grammarName + PACKAGE_SUFFIX, astcdClassList));
@@ -99,7 +99,7 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
   protected ASTCDMethod addGetPackageMethod(String grammarName) {
     String packageName = grammarName + PACKAGE_SUFFIX;
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PACKAGE_PRIVATE,
-        getCDTypeFacade().createQualifiedType(packageName), "get" + packageName);
+        getMCTypeFacade().createQualifiedType(packageName), "get" + packageName);
     this.replaceTemplate(EMPTY_BODY, method,
         new StringHookPoint("return (" + packageName + ")getEPackage();"));
     return method;

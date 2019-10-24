@@ -12,6 +12,9 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_ME
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
+/**
+ * creates for a grammar the corresponding ASTXNode interface
+ */
 public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
   protected final ASTService astService;
@@ -29,7 +32,7 @@ public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setModifier(PUBLIC.build())
         .setName(astService.getASTBaseInterfaceSimpleName())
-        .addInterface(getCDTypeFacade().createQualifiedType(ASTNode.class))
+        .addInterface(getMCTypeFacade().createQualifiedType(ASTNode.class))
         .addCDMethod(getAcceptMethod())
         .build();
   }

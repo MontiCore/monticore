@@ -10,8 +10,8 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolReferenceMethodDecorator.SymbolReferenceMethodDecorator;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -35,7 +35,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private CDTypeFacade cdTypeFacade;
+  private MCTypeFacade MCTypeFacade;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
@@ -54,7 +54,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     Log.init();
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.MCTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -259,7 +259,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   public void testGetEnclosingScopeNameMethod() {
     ASTCDMethod method = getMethodBy("getEnclosingScope", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
+    assertDeepEquals(MCTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
@@ -269,7 +269,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   public void testGetSpannedScopeNameMethod() {
     ASTCDMethod method = getMethodBy("getSpannedScope", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
+    assertDeepEquals(MCTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
@@ -335,7 +335,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(cdTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE),
+    assertDeepEquals(MCTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE),
         method.getCDParameter(0).getMCType());
     assertEquals("scope", method.getCDParameter(0).getName());
   }

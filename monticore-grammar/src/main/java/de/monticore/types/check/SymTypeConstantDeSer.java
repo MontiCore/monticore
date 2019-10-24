@@ -16,7 +16,7 @@ public class SymTypeConstantDeSer implements IDeSer<SymTypeConstant> {
    */
   @Override
   public String getSerializedKind() {
-    // TODO: anpassen, nachdem package umbenannt ist
+    // Care: the following String needs to be adapted if the package was renamed
     return "de.monticore.types.check.SymTypeConstant";
   }
   
@@ -39,12 +39,11 @@ public class SymTypeConstantDeSer implements IDeSer<SymTypeConstant> {
   public Optional<SymTypeConstant> deserialize(JsonElement serialized) {
     if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
       Optional<String> constName = JsonUtil.getOptStringMember(serialized, "constName");
-      if (!constName.isPresent()) {
-        Log.error("Could not find constName of SymTypeConstant " + serialized);
+      if (constName.isPresent()) {
+        return Optional.of(SymTypeExpressionFactory.createTypeConstant(constName.get()));
       }
-      return Optional.of(new SymTypeConstant(constName.get()));
+      Log.error("0x823F1 Internal error: Loading ill-structured SymTab: missing constName of SymTypeConstant " + serialized);
     }
     return Optional.empty();
   }
-  
 }

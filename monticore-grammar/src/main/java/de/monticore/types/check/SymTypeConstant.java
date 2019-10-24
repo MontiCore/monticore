@@ -53,6 +53,7 @@ public class SymTypeConstant extends SymTypeExpression {
   /**
    * print: Umwandlung in einen kompakten String
    */
+  @Override
   public String print() {
     return getConstName();
   }

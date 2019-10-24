@@ -19,6 +19,12 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 
+/**
+ * @deprecated will be transfered into CD4A
+ * first the deprecation of MCTypeFacade has to be removed, then the CDAttributeFacade can be transfered to CD4A
+ * after release of CD4A with CDAttributeFacade this class can be removed
+ */
+@Deprecated
 public class CDAttributeFacade {
 
   private static CDAttributeFacade cdAttributeFacade;
@@ -78,19 +84,19 @@ public class CDAttributeFacade {
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final String type, final String name) {
-    return createAttribute(modifier, CDTypeFacade.getInstance().createQualifiedType(type), name);
+    return createAttribute(modifier, MCTypeFacade.getInstance().createQualifiedType(type), name);
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final String type) {
-    return createAttribute(modifier, CDTypeFacade.getInstance().createQualifiedType(type), StringUtils.uncapitalize(type));
+    return createAttribute(modifier, MCTypeFacade.getInstance().createQualifiedType(type), StringUtils.uncapitalize(type));
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final Class<?> type, final String name) {
-    return createAttribute(modifier, CDTypeFacade.getInstance().createQualifiedType(type), name);
+    return createAttribute(modifier, MCTypeFacade.getInstance().createQualifiedType(type), name);
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final Class<?> type) {
-    return createAttribute(modifier, CDTypeFacade.getInstance().createQualifiedType(type), StringUtils.uncapitalize(type.getSimpleName()));
+    return createAttribute(modifier, MCTypeFacade.getInstance().createQualifiedType(type), StringUtils.uncapitalize(type.getSimpleName()));
   }
 
 

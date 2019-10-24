@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class MCCollectionTypesHelper extends MCBasicTypesHelper {
-  public static final String OPTIONAL = "Optional";
+
 
   public static ASTMCTypeArgument getReferenceTypeFromOptional(ASTMCType type) {
     Preconditions.checkArgument(isOptional(type));
@@ -28,7 +28,9 @@ public class MCCollectionTypesHelper extends MCBasicTypesHelper {
 
     return Optional.of(typeArgument);
   }
-
+  
+  public static final String OPTIONAL = "Optional";
+  
   /**
    * Gets the first type argument of the generic type
    *

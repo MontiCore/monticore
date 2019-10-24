@@ -41,6 +41,7 @@ public class SymTypeVariable extends SymTypeExpression {
   /**
    * print: Umwandlung in einen kompakten String
    */
+  @Override
   public String print() {
     return getVarName();
   }

@@ -11,8 +11,8 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -33,7 +33,7 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDInterface visitorInterface;
 
-  private CDTypeFacade cdTypeFacade;
+  private MCTypeFacade mcTypeFacade;
 
   private GlobalExtensionManagement glex;
 
@@ -47,7 +47,7 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -90,9 +90,8 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
   public void testGetRealThis() {
     ASTCDMethod method = getMethodBy("getRealThis", visitorInterface);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition("SymbolTestSymbolVisitor");
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(astType, method.getMCReturnType().getMCType());
+    assertDeepEquals("SymbolTestSymbolVisitor", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -101,16 +100,15 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setRealThis", visitorInterface);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition("SymbolTestSymbolVisitor");
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(astType, method.getCDParameter(0).getMCType());
+    assertDeepEquals("SymbolTestSymbolVisitor", method.getCDParameter(0).getMCType());
     assertEquals("realThis", method.getCDParameter(0).getName());
   }
 
   @Test
   public void testVisitISymbol() {
     List<ASTCDMethod> methodList = getMethodsBy("visit", 1, visitorInterface);
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(I_SYMBOL);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(I_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -122,7 +120,7 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testEndVisitISymbol() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorInterface);
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(I_SYMBOL);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(I_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -134,7 +132,7 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void tesVisitAutomatonSymbol() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorInterface);
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AUTOMATON_SYMBOL);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -146,7 +144,7 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testEndVisitAutomatonSymbol() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, visitorInterface);
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AUTOMATON_SYMBOL);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -158,7 +156,7 @@ public class SymbolVisitorInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void tesHandleAutomatonSymbol() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorInterface);
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AUTOMATON_SYMBOL);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();

@@ -11,6 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * changes implementation of the set method
+ */
 public class SymbolReferenceMandatoryMutatorDecorator extends MandatoryMutatorDecorator {
 
   public SymbolReferenceMandatoryMutatorDecorator(GlobalExtensionManagement glex) {

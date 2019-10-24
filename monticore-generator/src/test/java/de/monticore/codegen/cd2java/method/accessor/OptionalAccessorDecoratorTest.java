@@ -4,7 +4,7 @@ package de.monticore.codegen.cd2java.method.accessor;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -54,7 +54,7 @@ public class OptionalAccessorDecoratorTest {
   public void testGetOptMethod() {
     ASTCDMethod method = getMethodBy("getAOpt", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    ASTMCType expectedReturnType = CDTypeFacade.getInstance().createOptionalTypeOf("String");
+    ASTMCType expectedReturnType = MCTypeFacade.getInstance().createOptionalTypeOf("String");
     Assert.assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
