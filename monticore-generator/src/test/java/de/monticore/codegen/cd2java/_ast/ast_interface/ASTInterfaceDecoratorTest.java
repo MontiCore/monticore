@@ -21,6 +21,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
@@ -32,7 +33,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDInterface dataInterface;
 
-  private GlobalExtensionManagement glex;
+  private GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
 
   @Before
@@ -110,6 +111,36 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  }
+
+  @Test
+  public void testSymbolInterfaceWithNoName() {
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+
+    ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "data", "DataInterface");
+    glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
+    glex.setGlobalValue("astHelper", new DecorationHelper());
+    SymbolTableService symbolTableService = new SymbolTableService(astcdCompilationUnit);
+    ASTService mockService = Mockito.spy(new ASTService(astcdCompilationUnit));
+    ASTCDInterface interfaceBy = getInterfaceBy("ASTA", astcdCompilationUnit);
+    ASTInterfaceDecorator decorator = new ASTInterfaceDecorator(glex, mockService
+        , new VisitorService(astcdCompilationUnit), new ASTSymbolDecorator(glex, symbolTableService),
+        new ASTScopeDecorator(glex, symbolTableService), new MethodDecorator(glex));
+    ASTCDInterface changeInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(interfaceBy.getName())
+        .setModifier(interfaceBy.getModifier())
+        .build();
+    // return true, when asked if is symbol without name
+    Mockito.doReturn(true).when(mockService).isSymbolWithoutName(Mockito.any(ASTCDType.class));
+
+    ASTCDInterface noNameSymbol = decorator.decorate(interfaceBy, changeInterface);
+
+    assertEquals(4,noNameSymbol.sizeCDMethods());
+
+    ASTCDMethod method = getMethodBy("getName", noNameSymbol);
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
   }
 
 }

@@ -66,6 +66,11 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(originalInput);
     changedInput.addAllCDMethods(addScopeMethods(scopeAttributes));
 
+    // if a ast has a symbol definition without a name, the getName has to be implemented manually
+    // add getName method that is abstract
+    if (astService.isSymbolWithoutName(originalInput)) {
+      changedInput.addCDMethod(astService.createGetNameMethod());
+    }
     return changedInput;
   }
 

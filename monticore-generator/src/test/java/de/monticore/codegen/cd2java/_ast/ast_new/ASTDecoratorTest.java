@@ -32,8 +32,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.*;
 
 public class ASTDecoratorTest extends DecoratorTestCase {
@@ -65,12 +64,18 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
         .setModifier(clazz.getModifier())
         .build();
-    this.astClass = decorator.decorate(clazz , changedClass);
+    this.astClass = decorator.decorate(clazz, changedClass);
   }
 
   @Test
   public void testClassName() {
     assertEquals("A", astClass.getName());
+  }
+
+  @Test
+  public void testClassModifier() {
+    // because it defines a symbol but has no name attribute or a getName method
+    assertTrue(astClass.getModifier().isAbstract());
   }
 
   @Test
@@ -97,7 +102,22 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethods() {
     assertFalse(astClass.getCDMethodList().isEmpty());
-    assertEquals(15, astClass.getCDMethodList().size());
+    assertEquals(16, astClass.getCDMethodList().size());
+  }
+
+  /**
+   * abstract method generated because A is a symbol but has no name
+   */
+  @Test
+  public void testGetNameMethod() {
+    ASTCDMethod method = getMethodBy("getName", astClass);
+
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
