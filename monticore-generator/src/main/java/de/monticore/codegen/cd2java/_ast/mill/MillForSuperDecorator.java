@@ -9,7 +9,7 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -55,8 +55,8 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
       String millClassName = superSymbol.getName() + MILL_FOR + astcdDefinition.getName();
       List<ASTCDMethod> builderMethodsList = addBuilderMethodsForSuper(astcdClassList, superSymbol, superSymbolList);
-      ASTMCQualifiedType superclass = this.getMCTypeFacade().createQualifiedType(
-              AstGeneratorHelper.getAstPackage(superSymbol.getFullName()) + superSymbol.getName() + MILL_SUFFIX);
+      ASTMCQualifiedType superclass = this.getCDTypeFacade().createQualifiedType(
+              service.getASTPackage(superSymbol) + "." + superSymbol.getName() + MILL_SUFFIX);
       
       superMills.add(CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
@@ -88,7 +88,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
         continue;
       }
       ASTCDClass clazz = (ASTCDClass) cdType.getAstNode().get();
-      if (AstGeneratorHelper.isAbstract(clazz) || !GeneratorHelper.getPlainName(clazz).startsWith(AST_PREFIX)) {
+      if (GeneratorHelper.isAbstract(clazz) || !GeneratorHelper.getPlainName(clazz).startsWith(AST_PREFIX)) {
         continue;
       }
       
@@ -103,9 +103,10 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
         this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderForSuperMethod", astcdDefinition.getName() + MILL_SUFFIX, methodName));
       }
       else {
-        ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(AstGeneratorHelper.getAstPackage(superSymbol.getFullName()) + astName + BUILDER_SUFFIX);
+        ASTMCQualifiedType builderType = this.getCDTypeFacade().createQualifiedType(service.getASTPackage(superSymbol) + "." + astName + BUILDER_SUFFIX);
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
-        this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("Log.error(\"0xA7009" + AstGeneratorHelper.getGeneratedErrorCode(clazz) + " Overridden production " + AstGeneratorHelper.getPlainName(clazz) + " is not reachable\");\nreturn null;\n"));
+        this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("Log.error(\"0xA7009" + DecorationHelper
+                .getGeneratedErrorCode(clazz) + " Overridden production " + clazz.getName() + " is not reachable\");\nreturn null;\n"));
       }
       builderMethodsList.add(protectedMethod);
     }

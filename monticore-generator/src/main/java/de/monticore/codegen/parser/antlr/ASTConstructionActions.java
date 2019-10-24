@@ -3,12 +3,13 @@
 package de.monticore.codegen.parser.antlr;
 
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
@@ -25,6 +26,12 @@ public class ASTConstructionActions {
     this.symbolTable = parserGenHelper.getGrammarSymbol();
   }
 
+  protected String getConstantClassName(MCGrammarSymbol symbol) {
+    return Joiners.DOT.join(symbol.getFullName().toLowerCase(),
+            ASTConstants.AST_PACKAGE,
+            ASTConstants.AST_CONSTANTS + symbol.getName());
+  }
+
   public String getConstantInConstantGroupMultipleEntries(ASTConstant constant,
       ASTConstantGroup constgroup) {
     String tmp = "";
@@ -34,11 +41,11 @@ public class ASTConstructionActions {
       Optional<MCGrammarSymbol> ruleGrammar = MCGrammarSymbolTableHelper
           .getMCGrammarSymbol(constgroup.getEnclosingScope());
       if (ruleGrammar.isPresent()) {
-        constfile = AstGeneratorHelper.getConstantClassName(ruleGrammar.get());
+        constfile = getConstantClassName(ruleGrammar.get());
         constantname = parserGenHelper.getConstantNameForConstant(constant);
       }
       else {
-        constfile = AstGeneratorHelper.getConstantClassName(symbolTable);
+        constfile = getConstantClassName(symbolTable);
         constantname = parserGenHelper.getConstantNameForConstant(constant);
       }
       
