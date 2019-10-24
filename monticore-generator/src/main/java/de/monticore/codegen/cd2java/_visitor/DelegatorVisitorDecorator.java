@@ -74,7 +74,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
     return CD4CodeMill.cDClassBuilder()
         .setName(delegatorVisitorSimpleName)
         .setModifier(PUBLIC.build())
-        .addInterface(getCDTypeFacade().createQualifiedType(visitorService.getInheritanceVisitorSimpleName()))
+        .addInterface(getMCTypeFacade().createQualifiedType(visitorService.getInheritanceVisitorSimpleName()))
         .addCDAttribute(getRealThisAttribute(delegatorVisitorSimpleName))
         .addCDMethod(addGetRealThisMethod(delegatorVisitorSimpleName))
         .addCDMethod(addSetRealThisMethods(visitorType, delegatorVisitorSimpleName, simpleVisitorName))
@@ -93,7 +93,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   protected ASTCDMethod addGetRealThisMethod(String delegatorVisitorSimpleName) {
-    ASTMCQualifiedType visitorType = getCDTypeFacade().createQualifiedType(delegatorVisitorSimpleName);
+    ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(delegatorVisitorSimpleName);
 
     ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return realThis;"));
@@ -125,7 +125,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     for (String fullName : fullVisitorNameList) {
       String simpleName = Names.getSimpleName(fullName);
-      ASTCDAttribute visitorAttribute = getCDAttributeFacade().createAttribute(PRIVATE, getCDTypeFacade().createOptionalTypeOf(fullName),
+      ASTCDAttribute visitorAttribute = getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createOptionalTypeOf(fullName),
           StringTransformations.uncapitalize(simpleName));
       this.replaceTemplate(VALUE, visitorAttribute, new StringHookPoint("= Optional.empty();"));
       attributeList.add(visitorAttribute);
@@ -140,7 +140,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
       String simpleName = Names.getSimpleName(fullName);
       //add setter for visitor attribute
       //e.g. public void setAutomataVisitor(automata._visitor.AutomataVisitor AutomataVisitor)
-      ASTMCQualifiedType visitorType = getCDTypeFacade().createQualifiedType(fullName);
+      ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(fullName);
       ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, StringTransformations.uncapitalize(simpleName));
       ASTCDMethod setVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "set" + simpleName, visitorParameter);
       this.replaceTemplate(EMPTY_BODY, setVisitorMethod, new TemplateHookPoint(
@@ -149,7 +149,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
 
       //add getter for visitor attribute
       // e.g. public Optional<automata._visitor.AutomataVisitor> getAutomataVisitor()
-      ASTMCOptionalType optionalVisitorType = getCDTypeFacade().createOptionalTypeOf(visitorType);
+      ASTMCOptionalType optionalVisitorType = getMCTypeFacade().createOptionalTypeOf(visitorType);
       ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, optionalVisitorType, "get" + simpleName);
       this.replaceTemplate(EMPTY_BODY, getVisitorMethod,
           new StringHookPoint("return " + StringTransformations.uncapitalize(simpleName) + ";"));
@@ -178,7 +178,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected List<ASTCDMethod> createVisitorDelegatorClassMethod(ASTCDClass astcdClass, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    ASTMCType classType = getCDTypeFacade().createTypeByDefinition(astcdClass.getName());
+    ASTMCType classType = getMCTypeFacade().createQualifiedType(astcdClass.getName());
     visitorMethods.add(addVisitorMethod(classType, simpleVisitorName, VISIT));
     visitorMethods.add(addVisitorMethod(classType, simpleVisitorName, END_VISIT));
     visitorMethods.add(addVisitorMethod(classType, simpleVisitorName, HANDLE));
@@ -198,7 +198,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected List<ASTCDMethod> createVisitorDelegatorInterfaceMethod(ASTCDInterface astcdInterface, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    ASTMCType interfaceType = getCDTypeFacade().createTypeByDefinition(astcdInterface.getName());
+    ASTMCType interfaceType = getMCTypeFacade().createQualifiedType(astcdInterface.getName());
     visitorMethods.add(addVisitorMethod(interfaceType, simpleVisitorName, VISIT));
     visitorMethods.add(addVisitorMethod(interfaceType, simpleVisitorName, END_VISIT));
     visitorMethods.add(addVisitorMethod(interfaceType, simpleVisitorName, HANDLE));
@@ -212,7 +212,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
   protected List<ASTCDMethod> addASTNodeVisitorMethods(List<String> simpleVisitorNameList) {
     //only visit and endVisit
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    ASTMCQualifiedType interfaceType = getCDTypeFacade().createQualifiedType(AST_INTERFACE);
+    ASTMCQualifiedType interfaceType = getMCTypeFacade().createQualifiedType(AST_INTERFACE);
     visitorMethods.add(addVisitorMethod(interfaceType, simpleVisitorNameList, VISIT));
     ArrayList<String> reversedList = new ArrayList<>(simpleVisitorNameList);
     Collections.reverse(reversedList);

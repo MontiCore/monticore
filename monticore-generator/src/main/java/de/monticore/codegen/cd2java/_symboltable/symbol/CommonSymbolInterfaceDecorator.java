@@ -44,14 +44,14 @@ public class CommonSymbolInterfaceDecorator extends AbstractCreator<ASTCDCompila
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(commonSymbolInterfaceName)
         .setModifier(PUBLIC.build())
-        .addInterface(getCDTypeFacade().createQualifiedType(I_SYMBOL))
+        .addInterface(getMCTypeFacade().createQualifiedType(I_SYMBOL))
         .addCDMethod(createAcceptMethod())
         .addAllCDMethods(createEnclosingScopeMethods(scopeInterfaceName))
         .build();
   }
 
   protected ASTCDMethod createAcceptMethod() {
-    ASTMCQualifiedType symbolVisitorType = getCDTypeFacade().createQualifiedType(visitorService.getSymbolVisitorFullName());
+    ASTMCQualifiedType symbolVisitorType = getMCTypeFacade().createQualifiedType(visitorService.getSymbolVisitorFullName());
     ASTCDParameter parameter = getCDParameterFacade().createParameter(symbolVisitorType, VISITOR_PREFIX);
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, parameter);
   }

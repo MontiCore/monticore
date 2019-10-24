@@ -9,8 +9,8 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -37,7 +37,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  private CDTypeFacade cdTypeFacade;
+  private MCTypeFacade MCTypeFacade;
 
   private ModelLoaderDecorator decorator;
 
@@ -45,7 +45,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
   public void setUp() {
     Log.init();
     this.glex = new GlobalExtensionManagement();
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.MCTypeFacade = MCTypeFacade.getInstance();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
@@ -169,7 +169,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("loadModelsIntoScope", modelLoaderClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createListTypeOf("de.monticore.codegen.ast.automaton._ast.ASTAutomaton"),
+    assertDeepEquals(MCTypeFacade.createListTypeOf("de.monticore.codegen.ast.automaton._ast.ASTAutomaton"),
         method.getMCReturnType().getMCType());
 
     assertEquals(3, method.sizeCDParameters());

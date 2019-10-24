@@ -70,7 +70,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     changedClass.addCDMethod(getConstructMethod(originalClass));
     changedClass.addCDMethod(createGetChildrenMethod(originalClass));
     if (!originalClass.isPresentSuperclass()) {
-      changedClass.setSuperclass(this.getCDTypeFacade().createQualifiedType(ASTCNode.class));
+      changedClass.setSuperclass(this.getMCTypeFacade().createQualifiedType(ASTCNode.class));
     }
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(originalClass);
@@ -118,7 +118,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   }
 
   protected ASTCDMethod createGetChildrenMethod(ASTCDClass astClass) {
-    ASTMCType astNodeType = getCDTypeFacade().createCollectionTypeOf(ASTConstants.AST_INTERFACE);
+    ASTMCType astNodeType = getMCTypeFacade().createCollectionTypeOf(ASTConstants.AST_INTERFACE);
     ASTCDMethod getChildrenMethod = this.getCDMethodFacade().createMethod(PUBLIC, astNodeType, ASTConstants.GET_CHILDREN_METHOD);
     this.replaceTemplate(EMPTY_BODY, getChildrenMethod, new TemplateHookPoint("_ast.ast_class.GetChildren", astClass));
     return getChildrenMethod;
@@ -141,7 +141,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
 
   protected ASTCDMethod getConstructMethod(ASTCDClass astClass) {
     ASTCDMethod constructMethod;
-    ASTMCType classType = this.getCDTypeFacade().createQualifiedType(astClass.getName());
+    ASTMCType classType = this.getMCTypeFacade().createQualifiedType(astClass.getName());
     if (astClass.isPresentModifier() && astClass.getModifier().isAbstract()) {
       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT, classType, ASTConstants.CONSTRUCT_METHOD);
     } else {

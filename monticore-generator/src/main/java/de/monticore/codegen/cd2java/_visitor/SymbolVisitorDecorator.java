@@ -39,7 +39,7 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   public ASTCDInterface decorate(ASTCDCompilationUnit input) {
     ASTCDCompilationUnit compilationUnit = input.deepClone();
 
-    ASTMCQualifiedType symbolVisitorType = getCDTypeFacade().createQualifiedType(visitorService.getSymbolVisitorSimpleName());
+    ASTMCQualifiedType symbolVisitorType = getMCTypeFacade().createQualifiedType(visitorService.getSymbolVisitorSimpleName());
     Set<String> symbolNames = getSymbolNames(compilationUnit.getCDDefinition());
 
     return CD4CodeMill.cDInterfaceBuilder()
@@ -55,17 +55,17 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   }
 
   protected ASTCDMethod addVisitISymbolMethod() {
-    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(I_SYMBOL);
+    ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(I_SYMBOL);
     return visitorService.getVisitorMethod(VISIT, astNodeType);
   }
 
   protected ASTCDMethod addEndVisitISymbolMethod() {
-    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(I_SYMBOL);
+    ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(I_SYMBOL);
     return visitorService.getVisitorMethod(END_VISIT, astNodeType);
   }
 
   protected ASTCDMethod addHandleISymbolMethod() {
-    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(I_SYMBOL);
+    ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(I_SYMBOL);
     return visitorService.getVisitorMethod(HANDLE, astNodeType);
   }
 
@@ -91,7 +91,7 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   protected List<ASTCDMethod> getVisitorMethods(Set<String> symbolNames) {
     List<ASTCDMethod> visitorMethodList = new ArrayList<>();
     for (String symbolName : symbolNames) {
-      ASTMCQualifiedType symbolType = getCDTypeFacade().createQualifiedType(symbolName);
+      ASTMCQualifiedType symbolType = getMCTypeFacade().createQualifiedType(symbolName);
       visitorMethodList.add(visitorService.getVisitorMethod(VISIT, symbolType));
       visitorMethodList.add(visitorService.getVisitorMethod(END_VISIT, symbolType));
       //add template for handle method

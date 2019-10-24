@@ -42,7 +42,7 @@ public class SymbolReferenceBuilderDecorator extends AbstractCreator<ASTCDType, 
     String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
 
     BuilderMutatorMethodDecorator builderMutatorMethodDecorator = new BuilderMutatorMethodDecorator(glex,
-        getCDTypeFacade().createQualifiedType(symbolReferenceBuilderName));
+        getMCTypeFacade().createQualifiedType(symbolReferenceBuilderName));
     ASTCDAttribute nameAttribute = createNameAttribute();
     List<ASTCDMethod> nameMethods = accessorDecorator.decorate(nameAttribute);
     nameMethods.addAll(builderMutatorMethodDecorator.decorate(nameAttribute));
@@ -83,7 +83,7 @@ public class SymbolReferenceBuilderDecorator extends AbstractCreator<ASTCDType, 
   }
 
   protected ASTCDMethod createBuildMethod(String symbolReference) {
-    ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(symbolReference), "build");
+    ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolReference), "build");
     this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(TEMPLATE_PATH + "Build", symbolReference));
     return buildMethod;
   }

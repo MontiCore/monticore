@@ -65,7 +65,7 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
 
   public ASTMCQualifiedType getVisitorType(CDDefinitionSymbol cdSymbol) {
-    return getCDTypeFacade().createQualifiedType(getVisitorFullName(cdSymbol));
+    return getMCTypeFacade().createQualifiedType(getVisitorFullName(cdSymbol));
   }
 
   public ASTMCQualifiedType getVisitorType() {
@@ -215,7 +215,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     return superCDs
         .stream()
         .map(this::getInheritanceVisitorFullName)
-        .map(getCDTypeFacade()::createQualifiedType)
+        .map(getMCTypeFacade()::createQualifiedType)
         .collect(Collectors.toList());
   }
 

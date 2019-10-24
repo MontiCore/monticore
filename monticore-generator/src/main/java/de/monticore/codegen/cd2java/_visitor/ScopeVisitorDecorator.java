@@ -46,18 +46,18 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
     String scopeVisitorName = visitorService.getScopeVisitorSimpleName();
     String symbolVisitorName = visitorService.getSymbolVisitorSimpleName();
 
-    ASTMCQualifiedType scopeVisitorType = getCDTypeFacade().createQualifiedType(scopeVisitorName);
+    ASTMCQualifiedType scopeVisitorType = getMCTypeFacade().createQualifiedType(scopeVisitorName);
 
     List<ASTMCQualifiedType> superScopeVisitorTypes = visitorService.getSuperCDsDirect()
         .stream()
         .map(visitorService::getScopeVisitorFullName)
-        .map(getCDTypeFacade()::createQualifiedType)
+        .map(getMCTypeFacade()::createQualifiedType)
         .collect(Collectors.toList());
 
     return CD4CodeMill.cDInterfaceBuilder()
         .setName(scopeVisitorName)
         .setModifier(PUBLIC.build())
-        .addInterface(getCDTypeFacade().createQualifiedType(visitorService.getSymbolVisitorSimpleName()))
+        .addInterface(getMCTypeFacade().createQualifiedType(visitorService.getSymbolVisitorSimpleName()))
         .addAllInterfaces(superScopeVisitorTypes)
         .addCDMethod(addGetRealThisMethods(scopeVisitorType))
         .addCDMethod(addSetRealThisMethods(scopeVisitorType))
@@ -84,7 +84,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
   protected List<ASTCDMethod> createIScopeVisitorMethods() {
     List<ASTCDMethod> methodList = new ArrayList<>();
-    ASTMCQualifiedType iScopeType = getCDTypeFacade().createQualifiedType(I_SCOPE);
+    ASTMCQualifiedType iScopeType = getMCTypeFacade().createQualifiedType(I_SCOPE);
     methodList.add(visitorService.getVisitorMethod(VISIT, iScopeType));
     methodList.add(visitorService.getVisitorMethod(END_VISIT, iScopeType));
     return methodList;
@@ -92,7 +92,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
   protected List<ASTCDMethod> createISymbolVisitorMethods(String scopeVisitorName) {
     List<ASTCDMethod> methodList = new ArrayList<>();
-    ASTMCQualifiedType iScopeType = getCDTypeFacade().createQualifiedType(I_SYMBOL);
+    ASTMCQualifiedType iScopeType = getMCTypeFacade().createQualifiedType(I_SYMBOL);
     methodList.add(visitorService.getVisitorMethod(VISIT, iScopeType));
     methodList.add(visitorService.getVisitorMethod(END_VISIT, iScopeType));
     methodList.add(visitorService.getVisitorMethod(HANDLE, iScopeType));
@@ -109,7 +109,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
   protected List<ASTCDMethod> createScopeVisitorMethods(Set<String> symbolsNameList, ASTCDDefinition astcdDefinition) {
 
     ASTMCType scopeType = symbolTableService.getScopeType();
-    ASTMCQualifiedType artifactScopeType = getCDTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeFullName());
+    ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeFullName());
 
     List<ASTCDMethod> methodList = new ArrayList<>();
     methodList.addAll(createVisitorMethods(symbolsNameList, scopeType));

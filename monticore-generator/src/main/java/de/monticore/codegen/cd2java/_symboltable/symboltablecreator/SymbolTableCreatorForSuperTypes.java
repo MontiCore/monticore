@@ -8,6 +8,9 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +43,13 @@ public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompil
         String superSTCForSubSTCName = symbolTableService.getSuperSTCForSubSTCSimpleName(cdDefinitionSymbol);
         String superSTC = symbolTableService.getSymbolTableCreatorFullName(cdDefinitionSymbol);
         String superScopeInterface = symbolTableService.getScopeInterfaceFullName(cdDefinitionSymbol);
-        String dequeWildcardType = String.format(DEQUE_WILDCARD_TYPE, superScopeInterface);
+        ASTMCWildcardTypeArgument wildCardTypeArgument = getMCTypeFacade().createWildCardWithUpperBoundType(superScopeInterface);
+        ASTMCBasicGenericType dequeWildcardType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, wildCardTypeArgument);
 
         ASTCDClass superSTCForSubClass = CD4CodeMill.cDClassBuilder()
             .setName(superSTCForSubSTCName)
             .setModifier(PUBLIC.build())
-            .setSuperclass(getCDTypeFacade().createQualifiedType(superSTC))
+            .setSuperclass(getMCTypeFacade().createQualifiedType(superSTC))
             .addCDConstructor(createConstructor(superSTCForSubSTCName, dequeWildcardType))
             .addCDMethod(createCreateScopeMethod(ownScopeInterface, symbolTableService.getCDName()))
             .build();
@@ -55,8 +59,8 @@ public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompil
     return superForSubSTC;
   }
 
-  protected ASTCDConstructor createConstructor(String className, String dequeWildcardType) {
-    ASTCDParameter enclosingScope = getCDParameterFacade().createParameter(getCDTypeFacade().createTypeByDefinition(dequeWildcardType), SCOPE_STACK_VAR);
+  protected ASTCDConstructor createConstructor(String className, ASTMCType dequeWildcardType) {
+    ASTCDParameter enclosingScope = getCDParameterFacade().createParameter(dequeWildcardType, SCOPE_STACK_VAR);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), className, enclosingScope);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("super(" + SCOPE_STACK_VAR + ");"));
     return constructor;
@@ -64,8 +68,8 @@ public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompil
 
   protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName, String definitionName) {
     String symTabMill = symbolTableService.getSymTabMillFullName();
-    ASTCDParameter boolParam = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), SHADOWING_VAR);
-    ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(scopeInterfaceName),
+    ASTCDParameter boolParam = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), SHADOWING_VAR);
+    ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterfaceName),
         "createScope", boolParam);
     this.replaceTemplate(EMPTY_BODY, createFromAST, new TemplateHookPoint(
         "_symboltable.symboltablecreator.CreateScope", scopeInterfaceName, symTabMill, definitionName));

@@ -48,7 +48,7 @@ abstract class SpecificMethodDecorator extends AbstractCreator<ASTCDAttribute, L
   }
 
   private AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> determineMethodDecoratorStrategy(final ASTCDAttribute ast) {
-    if(getCDTypeFacade().isBooleanType(ast.getMCType())){
+    if (getMCTypeFacade().isBooleanType(ast.getMCType())) {
       return mandatoryMethodDecorator;
     }
     //TODO: helper durch OO-Ansatz ersetzen (und vereinheitlichen)

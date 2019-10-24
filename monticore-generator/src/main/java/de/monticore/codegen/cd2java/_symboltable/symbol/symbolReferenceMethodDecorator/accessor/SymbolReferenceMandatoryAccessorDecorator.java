@@ -25,7 +25,7 @@ public class SymbolReferenceMandatoryAccessorDecorator extends MandatoryAccessor
   protected ASTCDMethod createGetter(final ASTCDAttribute ast) {
     String getterPrefix;
     // determine correct getter name with 'is' or 'get' prefix
-    if (getCDTypeFacade().isBooleanType(ast.getMCType())) {
+    if (getMCTypeFacade().isBooleanType(ast.getMCType())) {
       getterPrefix = IS;
     } else {
       getterPrefix = GET;

@@ -47,21 +47,21 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
   }
 
   protected ASTCDAttribute getParentAttribute(String languageInterfaceName) {
-    ASTMCType stackType = getCDTypeFacade().createTypeByDefinition("java.util.Stack<" + languageInterfaceName + ">");
+    ASTMCType stackType = getMCTypeFacade().createBasicGenericTypeOf("java.util.Stack", languageInterfaceName);
     ASTCDAttribute parentsAttribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE_FINAL, stackType, PARENTS_ATTRIBUTE);
     this.replaceTemplate(VALUE, parentsAttribute, new StringHookPoint("= new java.util.Stack<>();"));
     return parentsAttribute;
   }
 
   protected ASTCDMethod getParentMethod(String languageInterfaceName) {
-    ASTMCType type = getCDTypeFacade().createOptionalTypeOf(languageInterfaceName);
+    ASTMCType type = getMCTypeFacade().createOptionalTypeOf(languageInterfaceName);
     ASTCDMethod getParentMethod = getCDMethodFacade().createMethod(PUBLIC, type, GET_PARENT_METHOD);
     this.replaceTemplate(EMPTY_BODY, getParentMethod, new TemplateHookPoint(GET_PARENT_PAREENTAWARE_TEMPLATE, languageInterfaceName));
     return getParentMethod;
   }
 
   protected ASTCDMethod getParentsMethod(String languageInterfaceName) {
-    ASTMCType type = getCDTypeFacade().createListTypeOf(languageInterfaceName);
+    ASTMCType type = getMCTypeFacade().createListTypeOf(languageInterfaceName);
     ASTCDMethod getParentsMethod = getCDMethodFacade().createMethod(PUBLIC, type, GET_PARENTS_METHOD);
     this.replaceTemplate(EMPTY_BODY, getParentsMethod, new StringHookPoint("return new java.util.ArrayList<>(parents);"));
     return getParentsMethod;
@@ -73,7 +73,7 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
         .stream()
         .filter(ASTCDClassTOP::isPresentModifier)
         .filter(c -> !c.getModifier().isAbstract())
-        .map(c -> visitorService.getVisitorMethod(TRAVERSE, getCDTypeFacade().createQualifiedType(c.getName())))
+        .map(c -> visitorService.getVisitorMethod(TRAVERSE, getMCTypeFacade().createQualifiedType(c.getName())))
         .collect(Collectors.toList());
 
     // add template

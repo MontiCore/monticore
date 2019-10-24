@@ -49,8 +49,8 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   @Override
   public ASTCDClass decorate(final ASTCDClass domainClass) throws DecorateException {
     String builderClassName = domainClass.getName() + BUILDER_SUFFIX;
-    ASTMCType domainType = this.getCDTypeFacade().createQualifiedType(domainClass.getName());
-    ASTMCType builderType = this.getCDTypeFacade().createQualifiedType(builderClassName);
+    ASTMCType domainType = this.getMCTypeFacade().createQualifiedType(domainClass.getName());
+    ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(builderClassName);
 
     // make the builder abstract for a abstract AST class
     CDModifier modifier = PUBLIC;
@@ -80,7 +80,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
       this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes));
     }
 
-    ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), IS_VALID);
+    ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), IS_VALID);
     this.replaceTemplate(EMPTY_BODY, isValidMethod, new TemplateHookPoint("_ast.builder.IsValidMethod", mandatoryAttributes));
 
     List<ASTCDMethod> accessorMethods = builderAttributes.stream()

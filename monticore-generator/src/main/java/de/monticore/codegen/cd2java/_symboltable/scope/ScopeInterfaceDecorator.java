@@ -108,7 +108,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
         .map(symbolTableService::getScopeInterfaceType)
         .collect(Collectors.toList());
     if (superScopeInterfaces.isEmpty()) {
-      superScopeInterfaces.add(getCDTypeFacade().createQualifiedType(I_SCOPE));
+      superScopeInterfaces.add(getMCTypeFacade().createQualifiedType(I_SCOPE));
     }
 
     List<ASTMCObjectType> scopeRuleInterfaces = scopeInput.deepClone().getCDDefinition().getCDClassList()
@@ -138,8 +138,8 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       Optional<String> definingSymbolTypeName = symbolTableService.getDefiningSymbolSimpleName(symbolProd);
       if (definingSymbolTypeName.isPresent()) {
         String alreadyResolvedName = StringTransformations.capitalize(Names.getSimpleName(definingSymbolTypeName.get())) + LIST_SUFFIX_S + ALREADY_RESOLVED;
-        methodList.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getCDTypeFacade().createBooleanType(), "is" + alreadyResolvedName));
-        ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "symbolAlreadyResolved");
+        methodList.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createBooleanType(), "is" + alreadyResolvedName));
+        ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), "symbolAlreadyResolved");
         methodList.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "set" + alreadyResolvedName, parameter));
       }
     }
@@ -153,18 +153,18 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   protected List<ASTCDMethod> createScopeInterfaceMethodsForSymbols(List<? extends ASTCDType> symbolProds) {
     List<ASTCDMethod> resolveMethods = new ArrayList<>();
     ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
-    ASTCDParameter accessModifierParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ACCESS_MODIFIER), MODIFIER_VAR);
-    ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
+    ASTCDParameter accessModifierParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ACCESS_MODIFIER), MODIFIER_VAR);
+    ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
 
     for (ASTCDType symbolProd : symbolProds) {
       // initializations
       String className = symbolTableService.removeASTPrefix(symbolProd);
       String symbolFullTypeName = symbolTableService.getSymbolFullName(symbolProd);
-      ASTMCOptionalType optSymbol = getCDTypeFacade().createOptionalTypeOf(symbolFullTypeName);
-      ASTMCType listSymbol = getCDTypeFacade().createListTypeOf(symbolFullTypeName);
+      ASTMCOptionalType optSymbol = getMCTypeFacade().createOptionalTypeOf(symbolFullTypeName);
+      ASTMCType listSymbol = getMCTypeFacade().createListTypeOf(symbolFullTypeName);
 
-      ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getCDTypeFacade()
-          .createTypeByDefinition(String.format(PREDICATE, symbolFullTypeName)), PREDICATE_VAR);
+      ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getMCTypeFacade()
+          .createBasicGenericTypeOf(PREDICATE, symbolFullTypeName), PREDICATE_VAR);
 
       // resolve methods
       String resolveMethodName = String.format(RESOLVE, className);
@@ -239,10 +239,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
       //getLocalSymbols method
       String getLocalSymbolsMethodName = "getLocal" + className + "Symbols";
-      resolveMethods.add(createGetLocalSymbolsMethod(getLocalSymbolsMethodName, className, getCDTypeFacade().createListTypeOf(symbolFullTypeName)));
+      resolveMethods.add(createGetLocalSymbolsMethod(getLocalSymbolsMethodName, className, getMCTypeFacade().createListTypeOf(symbolFullTypeName)));
 
       //add and remove methods
-      ASTCDParameter symbolParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(symbolFullTypeName), SYMBOL_VAR);
+      ASTCDParameter symbolParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(symbolFullTypeName), SYMBOL_VAR);
       resolveMethods.add(createAddMethod(symbolParameter));
       resolveMethods.add(createRemoveMethod(symbolParameter));
     }
@@ -454,7 +454,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createFilterMethod(String methodName, String fullSymbolName, ASTMCType returnType, ASTCDParameter nameParameter) {
-    ASTMCType symbolsMap = getCDTypeFacade().createTypeByDefinition(String.format(SYMBOL_MULTI_MAP, fullSymbolName));
+    ASTMCType symbolsMap = getMCTypeFacade().createBasicGenericTypeOf(SYMBOL_MULTI_MAP, "String", fullSymbolName);
     ASTCDParameter symbolsParameter = getCDParameterFacade().createParameter(symbolsMap, "symbols");
 
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
@@ -486,7 +486,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createGetSymbolsMethod(String methodName, String fullSymbolName) {
-    ASTMCType symbolsMap = getCDTypeFacade().createTypeByDefinition(String.format(SYMBOL_MULTI_MAP, fullSymbolName));
+    ASTMCType symbolsMap = getMCTypeFacade().createBasicGenericTypeOf(SYMBOL_MULTI_MAP, "String", fullSymbolName);
 
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, symbolsMap, methodName);
   }
@@ -506,10 +506,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   }
 
   protected List<ASTCDMethod> createSubScopesMethods(String scopeInterface) {
-    ASTMCType listType = getCDTypeFacade().createListTypeOf("? extends " + scopeInterface);
+    ASTMCType listType = getMCTypeFacade().createListTypeOf("? extends " + scopeInterface);
     ASTCDMethod getSubScopes = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, listType, "getSubScopes");
 
-    ASTCDParameter subScopeParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), "subScope");
+    ASTCDParameter subScopeParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterface), "subScope");
     ASTCDMethod addSubScope = getCDMethodFacade().createMethod(PUBLIC, "addSubScope", subScopeParameter);
     this.replaceTemplate(EMPTY_BODY, addSubScope,
         new StringHookPoint("Log.error(\"0xA7013x558 The method \\\"addSubScope\\\" of interface \\\"" + scopeInterface + "\\\" is not implemented.\");"));
@@ -523,7 +523,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
   protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {
     ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED,
-        getCDTypeFacade().createQualifiedType(scopeInterface), "enclosingScope");
+        getMCTypeFacade().createQualifiedType(scopeInterface), "enclosingScope");
     methodDecorator.disableTemplates();
     List<ASTCDMethod> enclosingScopeMethods = methodDecorator.decorate(enclosingScope);
     methodDecorator.enableTemplates();
@@ -533,7 +533,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createAcceptMethod() {
     String ownScopeVisitor = visitorService.getScopeVisitorFullName();
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, parameter);
   }
 

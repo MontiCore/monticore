@@ -57,7 +57,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDClass cocoChecker = CD4AnalysisMill.cDClassBuilder()
         .setName(cocoCheckerName)
         .setModifier(PUBLIC.build())
-        .addInterface(getCDTypeFacade().createQualifiedType(visitorService.getInheritanceVisitorFullName()))
+        .addInterface(getMCTypeFacade().createQualifiedType(visitorService.getInheritanceVisitorFullName()))
         .addCDAttribute(realThisAttribute)
         .addCDConstructor(constructor)
         .addAllCDMethods(realThisMethods)
@@ -115,7 +115,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDAttribute createCheckerAttribute(ASTMCType checkerType, String checkerName, boolean isCurrentDiagram) {
-    ASTMCType checkerListType = getCDTypeFacade().createListTypeOf(checkerType);
+    ASTMCType checkerListType = getMCTypeFacade().createListTypeOf(checkerType);
     ASTCDAttribute checker = getCDAttributeFacade().createAttribute(PRIVATE, checkerListType, checkerName);
     // special list initialization for super coco checker attributes
     HookPoint hp = !isCurrentDiagram ? new StringHookPoint("= new ArrayList<>(Arrays.asList(new " + MCCollectionTypesHelper.printType(checkerType) + "()))")
@@ -132,7 +132,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDAttribute createCoCoCollectionAttribute(ASTMCType cocoType, String cocoCollectionName) {
-    ASTMCType cocoCollectionType = getCDTypeFacade().createCollectionTypeOf(cocoType);
+    ASTMCType cocoCollectionType = getMCTypeFacade().createCollectionTypeOf(cocoType);
     ASTCDAttribute cocoCollectionAttribute = getCDAttributeFacade().createAttribute(PRIVATE, cocoCollectionType, cocoCollectionName);
     this.replaceTemplate(VALUE, cocoCollectionAttribute, new StringHookPoint("= new LinkedHashSet<>()"));
     return cocoCollectionAttribute;
