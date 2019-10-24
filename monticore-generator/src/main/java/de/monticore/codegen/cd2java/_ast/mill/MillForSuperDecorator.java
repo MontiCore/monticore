@@ -55,7 +55,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
       String millClassName = superSymbol.getName() + MILL_FOR + astcdDefinition.getName();
       List<ASTCDMethod> builderMethodsList = addBuilderMethodsForSuper(astcdClassList, superSymbol, superSymbolList);
-      ASTMCQualifiedType superclass = this.getCDTypeFacade().createQualifiedType(
+      ASTMCQualifiedType superclass = this.getMCTypeFacade().createQualifiedType(
               service.getASTPackage(superSymbol) + "." + superSymbol.getName() + MILL_SUFFIX);
       
       superMills.add(CD4AnalysisMill.cDClassBuilder()
@@ -103,7 +103,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
         this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderForSuperMethod", astcdDefinition.getName() + MILL_SUFFIX, methodName));
       }
       else {
-        ASTMCQualifiedType builderType = this.getCDTypeFacade().createQualifiedType(service.getASTPackage(superSymbol) + "." + astName + BUILDER_SUFFIX);
+        ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(service.getASTPackage(superSymbol) + "." + astName + BUILDER_SUFFIX);
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
         this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("Log.error(\"0xA7009" + DecorationHelper
                 .getGeneratedErrorCode(clazz) + " Overridden production " + clazz.getName() + " is not reachable\");\nreturn null;\n"));
