@@ -27,6 +27,8 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
 
   private DeriveSymTypeOfMCCommonLiterals deriveSymTypeOfMCCommonLiterals;
 
+  private DeriveSymTypeOfMCCommonLiterals commonLiteralsTypesCalculator;
+
   private LastResult lastResult = new LastResult();
 
 
@@ -53,14 +55,12 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
     deriveSymTypeOfExpression.setLastResult(lastResult);
     setExpressionsBasisVisitor(deriveSymTypeOfExpression);
 
-    DeriveSymTypeOfLiterals deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
+    deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
     setMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
     deriveSymTypeOfLiterals.setResult(lastResult);
-    this.deriveSymTypeOfLiterals = deriveSymTypeOfLiterals;
 
-    DeriveSymTypeOfMCCommonLiterals commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
+    commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
     setMCCommonLiteralsVisitor(commonLiteralsTypesCalculator);
-    this.deriveSymTypeOfMCCommonLiterals =commonLiteralsTypesCalculator;
     commonLiteralsTypesCalculator.setResult(lastResult);
 
     setScope(scope);
