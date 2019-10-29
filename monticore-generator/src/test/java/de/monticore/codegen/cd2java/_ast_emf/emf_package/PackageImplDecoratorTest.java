@@ -66,13 +66,13 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(10, packageClass.getCDAttributeList().size());
+    assertEquals(11, packageClass.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodSize() {
     assertFalse(packageClass.getCDMethodList().isEmpty());
-    assertEquals(25, packageClass.getCDMethodList().size());
+    assertEquals(26, packageClass.getCDMethodList().size());
   }
 
   @Test

@@ -88,7 +88,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(19, visitorInterface.sizeCDMethods());
+    assertEquals(22, visitorInterface.sizeCDMethods());
   }
 
   @Test

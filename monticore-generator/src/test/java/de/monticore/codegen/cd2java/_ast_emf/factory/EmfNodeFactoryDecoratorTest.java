@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._ast_emf.factory;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
@@ -20,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.*;
@@ -32,7 +34,7 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "_ast_emf", "Automata");
 
     this.glex.setGlobalValue("service", new EmfService(compilationUnit));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -45,7 +47,7 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassName() {
-    assertEquals("AutomatonNodeFactory", emfClass.getName());
+    assertEquals("AutomataNodeFactory", emfClass.getName());
   }
 
 
@@ -57,20 +59,56 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(4, emfClass.getCDAttributeList().size());
+    assertEquals(6, emfClass.getCDAttributeList().size());
+  }
+
+
+  @Test
+  public void testFactoryAttribute() {
+    ASTCDAttribute factoryAttr = getAttributeBy("factory", emfClass);
+    assertDeepEquals(PROTECTED_STATIC, factoryAttr.getModifier());
+    assertDeepEquals("AutomataNodeFactory", factoryAttr.getMCType());
+  }
+
+  @Test
+  public void testFactoryAttributes() {
+    ASTCDAttribute factoryASTAutomaton = getAttributeBy("factoryASTAutomaton", emfClass);
+    assertDeepEquals(PROTECTED_STATIC, factoryASTAutomaton.getModifier());
+    assertDeepEquals("AutomataNodeFactory", factoryASTAutomaton.getMCType());
+
+    ASTCDAttribute factoryASTState = getAttributeBy("factoryASTState", emfClass);
+    assertDeepEquals(PROTECTED_STATIC, factoryASTState.getModifier());
+    assertDeepEquals("AutomataNodeFactory", factoryASTState.getMCType());
+
+    ASTCDAttribute factoryASTTransition = getAttributeBy("factoryASTTransition", emfClass);
+    assertDeepEquals(PROTECTED_STATIC, factoryASTTransition.getModifier());
+    assertDeepEquals("AutomataNodeFactory", factoryASTTransition.getMCType());
+
+    ASTCDAttribute factoryASTTransitionWithAction = getAttributeBy("factoryASTTransitionWithAction", emfClass);
+    assertDeepEquals(PROTECTED_STATIC, factoryASTTransitionWithAction.getModifier());
+    assertDeepEquals("AutomataNodeFactory", factoryASTTransitionWithAction.getMCType());
+
+    ASTCDAttribute factoryASTAutName = getAttributeBy("factoryASTAutName", emfClass);
+    assertDeepEquals(PROTECTED_STATIC, factoryASTAutName.getModifier());
+    assertDeepEquals("AutomataNodeFactory", factoryASTAutName.getMCType());
+  }
+
+  @Test(expected = AssertionError.class)
+  public void testNoFactoryAttributeForAbstractClass() {
+    getAttributeBy("factoryASTAbstractClass", emfClass);
   }
 
   @Test
   public void testMethodSize() {
     assertFalse(emfClass.getCDMethodList().isEmpty());
-    assertEquals(11, emfClass.getCDMethodList().size());
+    assertEquals(15, emfClass.getCDMethodList().size());
   }
 
   @Test
   public void testGetFactoryMethod() {
     ASTCDMethod method = getMethodBy("getFactory", emfClass);
     assertDeepEquals(PUBLIC_STATIC, method.getModifier());
-    assertDeepEquals("AutomatonNodeFactory", method.getMCReturnType().getMCType());
+    assertDeepEquals("AutomataNodeFactory", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -87,9 +125,9 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAutomatonPackageMethod() {
-    ASTCDMethod method = getMethodBy("getAutomatonPackage", emfClass);
+    ASTCDMethod method = getMethodBy("getAutomataPackage", emfClass);
     assertDeepEquals(PACKAGE_PRIVATE, method.getModifier());
-    assertDeepEquals("AutomatonPackage", method.getMCReturnType().getMCType());
+    assertDeepEquals("AutomataPackage", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }

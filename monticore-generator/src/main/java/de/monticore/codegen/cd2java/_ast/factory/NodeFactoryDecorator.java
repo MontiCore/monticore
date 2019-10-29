@@ -130,9 +130,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build().accept(visitor);
 
         for (ASTCDClass superClass : superDefinition.getCDClassList()) {
-          if (!nodeFactoryService.isClassOverwritten(superClass, classList)
-              && !(superClass.isPresentModifier() && superClass.getModifier().isAbstract())
-              && !nodeFactoryService.isMethodAlreadyDefined(CREATE_METHOD + superClass.getName(), delegateMethodList)) {
+          if (canAddDelegateMethod(superClass, classList, delegateMethodList)) {
             String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
             ASTMCType superAstType = this.getMCTypeFacade().createQualifiedType(packageName + superClass.getName());
 
@@ -143,6 +141,17 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
       }
     }
     return delegateMethodList;
+  }
+
+  /**
+   * checks if a superClass is not overwritten and is not abstract
+   * it is also checked if the method which will be created, does not already exist
+   * only then the delegate method can be added
+   */
+  protected boolean canAddDelegateMethod(ASTCDClass superClass, List<ASTCDClass> classList, List<ASTCDMethod> delegateMethodList) {
+    return !nodeFactoryService.isClassOverwritten(superClass, classList)
+        && !(superClass.isPresentModifier() && superClass.getModifier().isAbstract())
+        && !nodeFactoryService.isMethodAlreadyDefined(CREATE_METHOD + superClass.getName(), delegateMethodList);
   }
 
   protected ASTCDMethod addCreateDelegateMethod(ASTMCType superAstType, String className, String packageName, String symbolName) {

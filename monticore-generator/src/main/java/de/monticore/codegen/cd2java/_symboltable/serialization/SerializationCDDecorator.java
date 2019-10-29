@@ -63,14 +63,6 @@ public class SerializationCDDecorator extends AbstractDecorator {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(symbolTablePackage));
     }
 
-    for (ASTCDInterface cdInterface : serializeCD.getCDInterfaceList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(symbolTablePackage));
-    }
-
-    for (ASTCDEnum cdEnum : serializeCD.getCDEnumList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(symbolTablePackage));
-    }
-
     return CD4AnalysisMill.cDCompilationUnitBuilder()
         .setPackageList(symbolTablePackage)
         .setCDDefinition(serializeCD)
