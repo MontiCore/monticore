@@ -112,6 +112,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
 
   @Test
   public void testInvalidLeftShiftExpression() throws IOException{
+    //only possible with integral types
     String s = "3<<4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try{
@@ -139,6 +140,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
 
   @Test
   public void testInvalidRightShiftExpression() throws IOException{
+    //only possible with integral types
     String s = "3>>4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try{
@@ -166,6 +168,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
 
   @Test
   public void testInvalidLogicalRightExpression() throws IOException{
+    //only possible with integral types
     String s = "3>>>4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try{
@@ -193,6 +196,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
 
   @Test
   public void testInvalidBinaryOrOpExpression() throws IOException{
+    //only possible with integral types
     String s = "3|4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try{
@@ -220,6 +224,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
 
   @Test
   public void testInvalidBinaryAndExpression() throws IOException{
+    //only possible with integral types
     String s = "3&4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try{
@@ -247,6 +252,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
 
   @Test
   public void testInvalidBinaryXorExpression() throws IOException{
+    //only possible with integral types
     String s = "3^4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try{

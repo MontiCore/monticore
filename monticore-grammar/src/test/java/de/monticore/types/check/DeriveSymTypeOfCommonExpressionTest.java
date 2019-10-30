@@ -373,6 +373,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     }
 
     LogStub.init();
+    //person1 has the type Person, foo is a boolean
     s = "person1==foo";
     astex = p.parse_StringExpression(s).get();
     try{
@@ -419,6 +420,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     }
 
     LogStub.init();
+    //person1 is a Person, foo is a boolean
     s = "person1!=foo";
     astex = p.parse_StringExpression(s).get();
     try{
@@ -445,6 +447,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @Test
   public void testInvalidAndOpExpression() throws IOException{
+    //only possible with two booleans
     String s = "3&&true";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try{
@@ -471,6 +474,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @Test
   public void testInvalidOrOpExpression() throws IOException{
+    //only possible with two booleans
     String s = "3||true";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try{
@@ -497,6 +501,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @Test
   public void testInvalidLogicalNotExpression() throws IOException{
+    //only possible with a boolean as inner expression
     String s = "!4";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try{
@@ -532,6 +537,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @Test
   public void testInvalidBracketExpression() throws IOException{
+    //a cannot be resolved -> a has no type
     String s = "(a)";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try{
@@ -572,6 +578,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @Test
   public void testInvalidConditionalExpression() throws IOException{
+    //true and 7 are not of the same type
     String s = "3<4?true:7";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try{
@@ -580,6 +587,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
       assertEquals("0xA0204 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
 
+    //3 is not a boolean condition
     LogStub.init();
     s = "3?true:false";
     astex = p.parse_StringExpression(s).get();
@@ -607,6 +615,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @Test
   public void testInvalidBooleanNotExpression() throws IOException{
+    //only possible with an integral type (int, long, char, short, byte)
     String s = "~3.4";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try{
@@ -744,6 +753,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @Test
   public void testInvalidCallExpression() throws IOException{
+    //method isNot() is not in scope -> method cannot be resolved -> method has no return type
     String s = "isNot()";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try{

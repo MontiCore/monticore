@@ -119,6 +119,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidIncSuffixExpression() throws IOException{
+    //only possible with numeric types
     String s = "\"Hello\"++";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -133,8 +134,6 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
    */
   @Test
   public void deriveFromDecSuffixExpression() throws IOException{
-    ASTExpression b = p.parse_StringExpression("12345678901234567").get();
-
     //example with int
     String s = "12--";
     ASTExpression astex = p.parse_StringExpression(s).get();
@@ -148,6 +147,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidDecSuffixExpression() throws IOException{
+    //only possible with numeric types
     String s = "\"Hello\"--";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -175,6 +175,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidIncPrefixExpression() throws IOException{
+    //only possible with numeric types
     String s = "++\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -202,6 +203,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidDecPrefixExpression() throws IOException{
+    //only possible with numeric types
     String s = "--\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -229,6 +231,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidMinusPrefixExpression() throws IOException{
+    //only possible with numeric types
     String s = "-\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -257,6 +260,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidPlusPrefixExpression() throws IOException{
+    //only possible with numeric types
     String s = "+\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -287,6 +291,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidPlusAssignmentExpression() throws IOException{
+    //not possible because int = int + (int) String returns a casting error
     String s = "varint+=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -296,6 +301,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     }
 
     LogStub.init();
+    //there has to be a variable on the left side
     s = "3+=4";
     astex = p.parse_StringExpression(s).get();
     tc.typeOf(astex);
@@ -319,6 +325,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidMinusAssignmentExpression() throws IOException{
+    //not possible because int = int - (int) String returns a casting error
     String s = "varint-=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -328,6 +335,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     }
 
     LogStub.init();
+    //There has to be a variable on the left side
     s = "3-=4";
     astex = p.parse_StringExpression(s).get();
     tc.typeOf(astex);
@@ -351,6 +359,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidMultAssignmentExpression() throws IOException{
+    //not possible because int = int * (int) String returns a casting error
     String s = "varint*=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -360,6 +369,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     }
 
     LogStub.init();
+    //there has to be a variable on the left side
     s = "3*=4";
     astex = p.parse_StringExpression(s).get();
     tc.typeOf(astex);
@@ -383,6 +393,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidDivideAssignmentExpression() throws IOException{
+    //not possible because int = int / (int) String returns a casting error
     String s = "varint/=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -392,6 +403,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     }
 
     LogStub.init();
+    //there has to be a variable on the left side
     s = "3/=4";
     astex = p.parse_StringExpression(s).get();
     tc.typeOf(astex);
@@ -415,6 +427,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidModuloAssignmentExpression() throws IOException{
+    //not possible because int = int % (int) String returns a casting error
     String s = "varint%=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -424,6 +437,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     }
 
     LogStub.init();
+    //there has to be a variable on the left side
     s = "3%=4";
     astex = p.parse_StringExpression(s).get();
     tc.typeOf(astex);
@@ -451,6 +465,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidAndAssignmentExpression() throws IOException{
+    //not possible because int = int & (int) String returns a casting error
     String s = "varint&=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -460,6 +475,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     }
 
     LogStub.init();
+    //there has to be a variable on the left side
     s = "3&=4";
     astex = p.parse_StringExpression(s).get();
     tc.typeOf(astex);
@@ -483,6 +499,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidOrAssignmentExpression() throws IOException{
+    //not possible because int = int | (int) String returns a casting error
     String s = "varint|=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -492,6 +509,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     }
 
     LogStub.init();
+    //there has to be a variable on the left side
     s = "3|=4";
     astex = p.parse_StringExpression(s).get();
     tc.typeOf(astex);
@@ -519,6 +537,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidBinaryXorAssignmentExpression() throws IOException{
+    //not possible because int = int ^ (int) String returns a casting error
     String s = "varint^=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -528,6 +547,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     }
 
     LogStub.init();
+    //there has to be a variable on the left side
     s = "3^=4";
     astex = p.parse_StringExpression(s).get();
     tc.typeOf(astex);
@@ -551,6 +571,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidDoubleLeftAssignmentExpression() throws IOException{
+    //not possible because int = int << (int) String returns a casting error
     String s = "varint<<=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -560,6 +581,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     }
 
     LogStub.init();
+    //there has to be a variable on the left side
     s = "3<<=4";
     astex = p.parse_StringExpression(s).get();
     tc.typeOf(astex);
@@ -583,6 +605,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidDoubleRightAssignmentExpression() throws IOException{
+    //not possible because int = int >> (int) String returns a casting error
     String s = "varint>>=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -592,6 +615,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     }
 
     LogStub.init();
+    //there has to be a variable on the left side
     s = "3>>=4";
     astex = p.parse_StringExpression(s).get();
     tc.typeOf(astex);
@@ -615,6 +639,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidLogicalRightAssignmentExpression() throws IOException{
+    //not possible because int = int >>> (int) String returns a casting error
     String s = "varint>>>=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -624,6 +649,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     }
 
     LogStub.init();
+    //there has to be a variable on the left side
     s = "3>>>=4";
     astex = p.parse_StringExpression(s).get();
     tc.typeOf(astex);
@@ -655,6 +681,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @Test
   public void testInvalidRegularAssignmentExpression() throws IOException{
+    //not possible because int = (int) String returns a casting error
     String s = "varint=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
     try {
@@ -664,6 +691,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     }
 
     LogStub.init();
+    //there has to be a variable on the left side
     s = "3=4";
     astex = p.parse_StringExpression(s).get();
     tc.typeOf(astex);
