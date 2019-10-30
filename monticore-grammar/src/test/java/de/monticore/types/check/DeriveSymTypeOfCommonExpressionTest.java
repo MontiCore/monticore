@@ -759,7 +759,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
-      assertEquals("0xA0209 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0xA0217 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 

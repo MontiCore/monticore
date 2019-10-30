@@ -550,7 +550,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
           SymTypeExpression returnType = fittingMethods.get(0).getReturnType();
           for(MethodSymbol method: fittingMethods){
             if(!returnType.print().equals(method.getReturnType().print())){
-              Log.error("0xA0209 The fitting methods need to have the same return type");
+              Log.error("0xA0215 The fitting methods need to have the same return type");
             }
           }
         }
@@ -564,7 +564,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
           lastResult.setLastOpt(wholeResult);
         }
       }else {
-        Log.error("0xA0209 The resulting type cannot be calculated");
+        Log.error("0xA0216 The resulting type cannot be calculated");
       }
     }else{
       Collection<MethodSymbol> methodcollection = scope.resolveMethodMany(expr.getName());
@@ -602,7 +602,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         }
       }else {
         lastResult.setLastOpt(Optional.empty());
-        Log.error("0xA0209 The resulting type cannot be calculated");
+        Log.error("0xA0217 The resulting type cannot be calculated");
       }
     }
   }
