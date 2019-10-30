@@ -50,6 +50,7 @@ public class TypeCheckTest {
 
     ExpressionsBasisScope scope = scope(null,true,null,"Phantasy2");
 
+    //a FirstSemesterStudent is a Student and a Student is a Person
     TypeSymbol person = DefsTypeBasic.type("Person");
     TypeSymbol student = DefsTypeBasic.type("Student",
         Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",person))
@@ -105,6 +106,7 @@ public class TypeCheckTest {
 
     ExpressionsBasisScope scope = scope(null,true,null,"Phantasy2");
 
+    //a FirstSemesterStudent is a Student and a Student is a Person
     TypeSymbol person = DefsTypeBasic.type("Person");
     TypeSymbol student = DefsTypeBasic.type("Student",
         Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",person))
