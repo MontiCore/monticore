@@ -15,7 +15,6 @@ import java.util.Optional;
 import static de.monticore.types.check.SymTypeConstant.unbox;
 import static de.monticore.types.check.TypeCheck.compatible;
 import static de.monticore.types.check.TypeCheck.isSubtypeOf;
-import static de.monticore.types.check.DeriveSymTypeOfCommonExpressions.getUnaryNumericPromotionType;
 
 /**
  * Visitor for AssignmentExpressions
@@ -215,10 +214,11 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     //there has to be a variable on the left side of an assignmentexpression
     ExpressionsBasisPrettyPrinter expressionsBasisPrettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
     CommonExpressionsPrettyPrinter commonExpressionsPrettyPrinter = new CommonExpressionsPrettyPrinter(new IndentPrinter());
-    Optional<FieldSymbol> leftEx = scope.resolveField(expressionsBasisPrettyPrinter
+    String toResolve = expressionsBasisPrettyPrinter
         .prettyprint(expr.getLeft()).equals("")
         ?commonExpressionsPrettyPrinter.prettyprint(expr.getLeft())
-        :expressionsBasisPrettyPrinter.prettyprint(expr.getLeft()));
+        :expressionsBasisPrettyPrinter.prettyprint(expr.getLeft());
+    Optional<FieldSymbol> leftEx = scope.resolveField(toResolve);
     if(!leftEx.isPresent()){
       Log.error("0xA0180 The resulting type cannot be calculated");
     }
@@ -399,12 +399,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       Log.error("The type of the left expression could not be calculated");
     }
     right.accept(getRealThis());
-    if(lastResult.isPresentLast()){
-      //store the result of the right inner expression in a variable
-      rightResult = lastResult.getLast();
-    }else{
-      Log.error("The type of the right expression could not be calculated");
-    }
     //if the type of the left expression is a String then so is the type of the whole expression
     if("String".equals(leftResult.print())){
       return Optional.of(SymTypeExpressionFactory.createTypeObject("String"));
@@ -505,13 +499,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
     //should not happen, not valid, will be handled in traverse
     return Optional.empty();
-  }
-
-  public Optional<SymTypeExpression> calculateType(ASTExpression expr){
-    expr.accept(realThis);
-    Optional<SymTypeExpression> result = lastResult.getLastOpt();
-    lastResult.setLastOpt(Optional.empty());
-    return result;
   }
 
   public void setLastResult(LastResult lastResult){

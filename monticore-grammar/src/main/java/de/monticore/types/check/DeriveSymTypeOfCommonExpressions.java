@@ -447,7 +447,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     //the inner result has to be an integral type
     if(innerResult instanceof SymTypeConstant && ((SymTypeConstant) innerResult).isIntegralType()){
-      wholeResult = getUnaryNumericPromotionType(lastResult.getLast());
+      wholeResult = getUnaryIntegralPromotionType(lastResult.getLast());
     }
     if(wholeResult.isPresent()) {
       //store the result of the expression in the last result
@@ -466,7 +466,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
   @Override
   public void traverse(ASTFieldAccessExpression expr) {
     CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
-    SymTypeExpression innerResult = null;
+    SymTypeExpression innerResult;
     expr.getExpression().accept(getRealThis());
     if(lastResult.isPresentLast()) {
       //store the type of the inner expression in a variable
@@ -521,7 +521,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     expr.getExpression().accept(getRealThis());
     if(lastResult.isPresentLast()){
       innerResult = lastResult.getLast();
-      TypeSymbol innerResultType = innerResult.getTypeInfo();
       //resolve methods with name of the inner expression
       List<MethodSymbol> methodlist = innerResult.getMethodList(expr.getName());
 //      List<MethodSymbol> methodlist = innerResult.getMethod(expr.getName());
@@ -551,7 +550,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
           SymTypeExpression returnType = fittingMethods.get(0).getReturnType();
           for(MethodSymbol method: fittingMethods){
             if(!returnType.print().equals(method.getReturnType().print())){
-              Log.error("The fitting methods need to have the same return type");
+              Log.error("0xA0215 The fitting methods need to have the same return type");
             }
           }
         }
@@ -565,7 +564,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
           lastResult.setLastOpt(wholeResult);
         }
       }else {
-        Log.error("0xA209 the resulting type cannot be resolved");
+        Log.error("0xA0216 The resulting type cannot be calculated");
       }
     }else{
       Collection<MethodSymbol> methodcollection = scope.resolveMethodMany(expr.getName());
@@ -603,7 +602,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         }
       }else {
         lastResult.setLastOpt(Optional.empty());
-        Log.error("0xA209 the resulting type cannot be resolved");
+        Log.error("0xA0217 The resulting type cannot be calculated");
       }
     }
   }
@@ -791,7 +790,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
   /**
    * helper method for the calculation of the ASTBooleanNotExpression
    */
-  public static Optional<SymTypeExpression> getUnaryNumericPromotionType(SymTypeExpression type) {
+  public static Optional<SymTypeExpression> getUnaryIntegralPromotionType(SymTypeExpression type) {
     if ("byte".equals(SymTypeConstant.unbox(type.print())) ||
         "short".equals(SymTypeConstant.unbox(type.print())) ||
         "char".equals(SymTypeConstant.unbox(type.print()))||
@@ -799,23 +798,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     ) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
     }
-    if ("long".equals(SymTypeConstant.unbox(type.print())) ||
-        "double".equals(SymTypeConstant.unbox(type.print())) ||
-        "float".equals(SymTypeConstant.unbox(type.print()))
-    ) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant(SymTypeConstant.unbox(type.print())));
-    }
     return Optional.empty();
-  }
-
-  /**
-   * returns the calculated result of an expression
-   */
-  public Optional<SymTypeExpression> calculateType(ASTExpression expr){
-    expr.accept(realThis);
-    Optional<SymTypeExpression> result = lastResult.getLastOpt();
-    lastResult.setLastOpt(Optional.empty());
-    return result;
   }
 
   public void setLastResult(LastResult lastResult){
