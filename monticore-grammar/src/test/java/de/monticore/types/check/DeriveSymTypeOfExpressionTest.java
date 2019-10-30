@@ -9,6 +9,7 @@ import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSy
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfExpressionTest {
   

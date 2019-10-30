@@ -214,10 +214,11 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     //there has to be a variable on the left side of an assignmentexpression
     ExpressionsBasisPrettyPrinter expressionsBasisPrettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
     CommonExpressionsPrettyPrinter commonExpressionsPrettyPrinter = new CommonExpressionsPrettyPrinter(new IndentPrinter());
-    Optional<FieldSymbol> leftEx = scope.resolveField(expressionsBasisPrettyPrinter
+    String toResolve = expressionsBasisPrettyPrinter
         .prettyprint(expr.getLeft()).equals("")
         ?commonExpressionsPrettyPrinter.prettyprint(expr.getLeft())
-        :expressionsBasisPrettyPrinter.prettyprint(expr.getLeft()));
+        :expressionsBasisPrettyPrinter.prettyprint(expr.getLeft());
+    Optional<FieldSymbol> leftEx = scope.resolveField(toResolve);
     if(!leftEx.isPresent()){
       Log.error("0xA0180 The resulting type cannot be calculated");
     }
