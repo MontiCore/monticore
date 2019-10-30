@@ -22,11 +22,7 @@ public class AttributeInScopeRuleToCDAttribute implements
         ASTCDClass.class)) {
       for (ASTAdditionalAttribute attributeInAST : ASTNodes.getSuccessors(link.source(),
           ASTAdditionalAttribute.class)) {
-        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        cdAttribute.setName(attributeInAST.getName());
-        cdAttribute.setModifier(PROTECTED.build());
-        link.target().getCDAttributeList().add(cdAttribute);
-        new Link<>(attributeInAST, cdAttribute, link);
+        createAttributeLink(attributeInAST, link);
       }
     }
 
@@ -34,14 +30,18 @@ public class AttributeInScopeRuleToCDAttribute implements
         ASTCDInterface.class)) {
       for (ASTAdditionalAttribute attributeInAST : ASTNodes.getSuccessors(link.source(),
           ASTAdditionalAttribute.class)) {
-        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        cdAttribute.setName(attributeInAST.getName());
-        cdAttribute.setModifier(PROTECTED.build());
-        link.target().getCDAttributeList().add(cdAttribute);
-        new Link<>(attributeInAST, cdAttribute, link);
+        createAttributeLink(attributeInAST, link);
       }
     }
 
     return rootLink;
+  }
+
+  protected void createAttributeLink(ASTAdditionalAttribute attributeInAST, Link<ASTScopeRule, ? extends ASTCDType> link) {
+    ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+    cdAttribute.setName(attributeInAST.getName());
+    cdAttribute.setModifier(PROTECTED.build());
+    link.target().getCDAttributeList().add(cdAttribute);
+    new Link<>(attributeInAST, cdAttribute, link);
   }
 }

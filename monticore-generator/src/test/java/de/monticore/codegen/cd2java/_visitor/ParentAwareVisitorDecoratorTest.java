@@ -45,6 +45,8 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
 
   private static final String AST_STATE = "de.monticore.codegen.ast.automaton._ast.ASTState";
 
+  private static final String AST_ABSTRACT_CLASS = "de.monticore.codegen.ast.automaton._ast.ASTAbstractClass";
+
   private static final String AST_AUTOMATON_NODE = "de.monticore.codegen.ast.automaton._ast.ASTAutomatonNode";
 
   private ASTCDCompilationUnit originalCompilationUnit;
@@ -165,6 +167,16 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  }
+
+  /**
+   * no traverse method for abstract classes
+   */
+  @Test
+  public void testTraverseASTAbstractClass() {
+    List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorClass);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_ABSTRACT_CLASS);
+    assertTrue(methodList.stream().noneMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
   }
 
   @Test

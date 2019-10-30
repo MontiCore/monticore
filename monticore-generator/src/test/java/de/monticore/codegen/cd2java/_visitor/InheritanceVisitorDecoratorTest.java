@@ -27,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class InheritanceVisitorDecoratorTest extends DecoratorTestCase {
+
   private MCTypeFacade mcTypeFacade;
 
   private ASTCDInterface visitorInterface;
@@ -80,7 +81,7 @@ public class InheritanceVisitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(4, visitorInterface.sizeCDMethods());
+    assertEquals(5, visitorInterface.sizeCDMethods());
   }
 
   @Test
@@ -144,7 +145,6 @@ public class InheritanceVisitorDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
-
   @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
@@ -156,5 +156,34 @@ public class InheritanceVisitorDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  }
+
+  /**
+   * for a AST with a super class
+   */
+  @Test
+  public void testSuperClassHandleMethods() {
+    LogStub.init();
+    LogStub.enableFailQuick(false);
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+
+    ASTCDCompilationUnit decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "_ast_emf", "Automata");
+
+    glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
+
+    InheritanceVisitorDecorator decorator = new InheritanceVisitorDecorator(this.glex,
+        new VisitorService(decoratedCompilationUnit));
+    ASTCDInterface visitorInterface = decorator.decorate(decoratedCompilationUnit);
+
+    assertEquals(7, visitorInterface.sizeCDMethods());
+    List<ASTCDMethod> handleMethods = getMethodsBy("handle", 1, visitorInterface);
+
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType("de.monticore.codegen._ast_emf.automata._ast.ASTTransitionWithAction");
+    assertTrue(handleMethods.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+    assertEquals(1, handleMethods.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
+    ASTCDMethod method = handleMethods.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 }

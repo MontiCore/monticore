@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java._ast_emf.ast_class.emfMutatorMethodDecorator;
+package de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator;
 
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java.methods.MutatorDecorator;

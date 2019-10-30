@@ -55,6 +55,8 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
   protected static final String TEMPLATE_PATH = "_symboltable.scope.";
 
+  protected static final String ASSIGN_OPTIONAL_NAME = "    this." + NAME_VAR + " = Optional.empty();";
+
   public ScopeClassDecorator(final GlobalExtensionManagement glex,
                              final SymbolTableService symbolTableService,
                              final VisitorService visitorService,
@@ -174,8 +176,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
   protected ASTCDConstructor createDefaultConstructor(String scopeClassName) {
     ASTCDConstructor defaultConstructor = getCDConstructorFacade().createConstructor(PUBLIC, scopeClassName);
-    this.replaceTemplate(EMPTY_BODY, defaultConstructor, new StringHookPoint("super();\n" +
-        "    this." + NAME_VAR + " = Optional.empty();"));
+    this.replaceTemplate(EMPTY_BODY, defaultConstructor, new StringHookPoint("super();\n" + ASSIGN_OPTIONAL_NAME));
     return defaultConstructor;
   }
 
@@ -190,7 +191,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
     ASTCDParameter shadowingParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), SHADOWING_VAR);
     ASTCDConstructor defaultConstructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopeClassName, shadowingParameter);
     this.replaceTemplate(EMPTY_BODY, defaultConstructor, new StringHookPoint("this." + SHADOWING_VAR + " = " + SHADOWING_VAR + ";\n" +
-        "    this." + NAME_VAR + " = Optional.empty();"));
+        ASSIGN_OPTIONAL_NAME));
     return defaultConstructor;
   }
 
@@ -199,8 +200,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
     ASTCDParameter scopeParameter = getCDParameterFacade().createParameter(symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
     ASTCDConstructor defaultConstructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopeClassName, scopeParameter, shadowingParameter);
     this.replaceTemplate(EMPTY_BODY, defaultConstructor, new StringHookPoint("this.setEnclosingScope(" + ENCLOSING_SCOPE_VAR + ");\n" +
-        "    this." + SHADOWING_VAR + " = " + SHADOWING_VAR + "; \n" +
-        "    this." + NAME_VAR + " = Optional.empty();"));
+        "    this." + SHADOWING_VAR + " = " + SHADOWING_VAR + "; \n" + ASSIGN_OPTIONAL_NAME));
     return defaultConstructor;
   }
 
