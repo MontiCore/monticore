@@ -176,7 +176,7 @@ public class TypeCheck {
       if(isDouble(leftType)&&rightType.isNumericType()){
         return true;
       }
-      if(isFloat(leftType)&&(rightType.isIntegralType())||isFloat(right)){
+      if(isFloat(leftType)&&((rightType.isIntegralType())||isFloat(right))){
         return true;
       }
       if(isLong(leftType)&&rightType.isIntegralType()){
@@ -230,9 +230,6 @@ public class TypeCheck {
     if(subType.isPrimitive()&&superType.isPrimitive()) {
       SymTypeConstant sub = (SymTypeConstant) subType;
       SymTypeConstant supert = (SymTypeConstant) superType;
-      if (isBoolean(supert) && isBoolean(sub)) {
-        return true;
-      }
       if (isDouble(supert) && sub.isNumericType() &&!isDouble(sub)) {
         return true;
       }

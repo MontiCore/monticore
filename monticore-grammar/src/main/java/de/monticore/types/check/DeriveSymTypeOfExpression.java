@@ -46,8 +46,6 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     expr.getLiteral().accept(getRealThis());
     if(lastResult.isPresentLast()) {
       result = lastResult.getLast();
-    }else{
-      result = null;
     }
     if(result!=null) {
       this.result=result;
@@ -75,7 +73,6 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       SymTypeExpression res = createTypeExpression(type);
       this.result = res;
       lastResult.setLast(res);
-
     }else{
      //name not found --> package or nothing
      lastResult.setLastOpt(Optional.empty());
@@ -83,24 +80,10 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     }
   }
 
-  public SymTypeExpression getResult() {
-    return result;
-  }
-
-  protected IExpressionsBasisScope getScope() {
-    return scope;
-  }
-
   public void setScope(IExpressionsBasisScope scope) {
     this.scope = scope;
   }
 
-  public Optional<SymTypeExpression> calculateType(ASTExpression expr){
-    expr.accept(realThis);
-    Optional<SymTypeExpression> result = lastResult.getLastOpt();
-    lastResult.setLastOpt(Optional.empty());
-    return result;
-  }
   public void setLastResult(LastResult lastResult){
     this.lastResult = lastResult;
   }

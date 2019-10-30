@@ -47,18 +47,7 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
   public void init() {
     result = new LastResult();
   }
-  
-  // ---------------------------------------------------------- Visting Methods
-  
-  /**
-   * Derive the Type (through calling the visitor)
-   */
-  public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
-    lit.accept(realThis);
-    Optional<SymTypeExpression> result = this.result.getLastOpt();
-    this.result.setLastOpt(Optional.empty());
-    return result;
-  }
+
   
   // ---------------------------------------------------------- Visting Methods
   

@@ -319,6 +319,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     s = "bar2^=false";
     astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
+
+    s= "true^=false";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
   }
 
   /**

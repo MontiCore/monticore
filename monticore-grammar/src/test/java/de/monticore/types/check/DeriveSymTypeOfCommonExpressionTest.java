@@ -439,6 +439,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     testType.setSpannedScope(testSpannedScope);
     add2scope(scope2,testType);
     add2scope(scope3,testType);
+    add2scope(scope,testType);
 
     derLit.setScope(scope);
     tc = new TypeCheck(null,derLit);
@@ -471,6 +472,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s = "types2.types3.types2.Test.variable";
     astex = p.parse_StringExpression(s).get();
     assertEquals("int",tc.typeOf(astex).print());
+
+    s="Test";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("Test",tc.typeOf(astex).print());
   }
 
   /**
