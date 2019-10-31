@@ -12,7 +12,6 @@ import de.monticore.types.mccollectiontypeswithoutprimitivestest._parser.MCColle
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -221,7 +220,7 @@ public class MCCollectionTypesTest {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<int>");
     assertTrue(type.isPresent());
-    assertEquals("List",type.get().getBaseName());
+    assertEquals("List",type.get().printBaseType());
     assertTrue(type.get().getMCTypeArgumentList().get(0) instanceof ASTMCPrimitiveTypeArgument);
 
   }

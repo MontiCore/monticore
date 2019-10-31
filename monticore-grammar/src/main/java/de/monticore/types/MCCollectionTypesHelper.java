@@ -7,7 +7,6 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.se_rwth.commons.Names;
 
-import java.util.List;
 import java.util.Optional;
 
 public class MCCollectionTypesHelper extends MCBasicTypesHelper {
@@ -19,7 +18,7 @@ public class MCCollectionTypesHelper extends MCBasicTypesHelper {
   }
 
   public static Optional<ASTMCTypeArgument> getFirstTypeArgumentOfGenericType(ASTMCType type,
-                                                                             String simpleRefTypeName) {
+                                                                              String simpleRefTypeName) {
     if (!isGenericTypeWithOneTypeArgument(type, simpleRefTypeName)) {
       return Optional.empty();
     }
@@ -28,9 +27,9 @@ public class MCCollectionTypesHelper extends MCBasicTypesHelper {
 
     return Optional.of(typeArgument);
   }
-  
+
   public static final String OPTIONAL = "Optional";
-  
+
   /**
    * Gets the first type argument of the generic type
    *
@@ -43,18 +42,12 @@ public class MCCollectionTypesHelper extends MCBasicTypesHelper {
   }
 
   public static String getSimpleName(ASTMCGenericType simpleType) {
-    String name = "";
-    List<String> qualifiedName = simpleType.getNameList();
-    if (qualifiedName != null && !qualifiedName.isEmpty()) {
-      name = qualifiedName.get(qualifiedName.size() - 1);
-    }
-    return name;
+    return Names.getSimpleName(simpleType.printBaseType());
   }
 
   public static String printSimpleRefType(ASTMCType type) {
     return SimpleGenericTypesPrinter.printType(type);
   }
-
 
 
   public static String printType(ASTMCType type) {
@@ -78,12 +71,12 @@ public class MCCollectionTypesHelper extends MCBasicTypesHelper {
       return false;
     }
 
-    if (simpleRefType.getNameList().size() == 1 && simpleRefTypeName.contains(".")) {
-      if (simpleRefTypeName.endsWith("." + simpleRefType.getBaseName())){
+    if (simpleRefType.printType().split("\\.").length == 1 && simpleRefTypeName.contains(".")) {
+      if (simpleRefTypeName.endsWith("." + simpleRefType.printBaseType())) {
         return true;
       }
     }
-    if (Names.getQualifiedName(simpleRefType.getNameList()).equals(simpleRefTypeName)) {
+    if (simpleRefType.printBaseType().equals(simpleRefTypeName)) {
       return true;
     }
     return false;

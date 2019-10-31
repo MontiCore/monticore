@@ -7,14 +7,8 @@ public class ASTMCArrayType extends ASTMCArrayTypeTOP {
   public ASTMCArrayType() {
   }
 
-  @Override
-  public List<String> getNameList() {
-    return getMCType().getNameList();
-  }
-
-  @Override
-  public String getBaseName() {
-    return getMCType().getBaseName();
+  public String printBaseType() {
+    return this.getMCType().printType();
   }
 
 }

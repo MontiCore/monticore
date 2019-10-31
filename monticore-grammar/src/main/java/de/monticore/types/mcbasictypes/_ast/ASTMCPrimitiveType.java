@@ -3,10 +3,6 @@
 package de.monticore.types.mcbasictypes._ast;
 
 
-import com.google.common.collect.Lists;
-
-import java.util.List;
-
 public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
 
   public ASTMCPrimitiveType() {
@@ -17,9 +13,8 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
    * @return
    */
   public String toString(){
-    return getBaseName();
+    return printType();
   }
-
   
   public boolean isBoolean(){
     return this.getPrimitive()==ASTConstantsMCBasicTypes.BOOLEAN;
@@ -45,45 +40,9 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
   public boolean isDouble(){
     return this.getPrimitive()==ASTConstantsMCBasicTypes.DOUBLE;
   }
-  
-  /**
-   * Return the primitive type, such as "int"
-   * @return
-   */
-  public String getBaseName() {
-    if (isBoolean()){
-      return "boolean";
-    }
-    if (isByte()){
-      return "byte";
-    }
-    if (isChar()){
-      return "char";
-    }
-    if (isShort()){
-      return "short";
-    }
-    if (isInt()){
-      return "int";
-    }
-    if (isFloat()){
-      return "float";
-    }
-    if (isLong()){
-      return "long";
-    }
-    if (isDouble()){
-      return "double";
-    }
-    return "";
-  }
-  
-  /**
-   * Return the primitive type as one element list, such as ["int"]
-   * @return
-   */
-  public List<String> getNameList() {
-    return Lists.newArrayList(getBaseName());
-  }
 
+  @Override
+  public String printBaseType() {
+    return printType();
+  }
 }
