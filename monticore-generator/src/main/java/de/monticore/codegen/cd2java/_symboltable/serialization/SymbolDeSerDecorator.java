@@ -84,14 +84,14 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   protected ASTCDMethod createDeserializeStringMethod(String symbolName) {
     ASTCDParameter stringParam = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "serialized");
-    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createOptionalTypeOf(symbolName), DESERIALIZE, stringParam);
+    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(symbolName), DESERIALIZE, stringParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "DeserializeString"));
     return deserializeMethod;
   }
 
   protected ASTCDMethod createDeserializeJsonObjectMethod(String symbolFullName, String symbolSimpleName,
                                                           ASTCDParameter jsonParam) {
-    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createOptionalTypeOf(symbolFullName), DESERIALIZE, jsonParam);
+    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(symbolFullName), DESERIALIZE, jsonParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "DeserializeJsonObject", symbolSimpleName));
     return deserializeMethod;
   }

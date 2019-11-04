@@ -57,24 +57,24 @@ public class JsonPrinterSecurityTest {
     
     JsonObject b11 = getChildren(b1).get(0).getAsJsonObject();
     assertEquals("Bar1.1", getName(b11));
-    assertEquals(false, b11.containsKey("children"));
+    assertEquals(false, b11.hasMember("children"));
     
     JsonObject b2 = getChildren(o).get(1).getAsJsonObject();
     assertTrue(getName(b2).startsWith("Bar2"));
     // without escaping, Bar2 would contain the injected child Bar2.1
-    assertEquals(false, b2.containsKey("children"));
+    assertEquals(false, b2.hasMember("children"));
   }
   
   protected JsonArray getChildren(JsonObject foo) {
-    assertEquals(true, foo.containsKey("children"));
-    assertEquals(true, foo.get("children").isJsonArray());
-    return foo.get("children").getAsJsonArray();
+    assertEquals(true, foo.hasMember("children"));
+    assertEquals(true, foo.getMember("children").isJsonArray());
+    return foo.getMember("children").getAsJsonArray();
   }
   
   protected String getName(JsonObject foo) {
-    assertEquals(true, foo.containsKey("name"));
-    assertEquals(true, foo.get("name").isJsonString());
-    return foo.get("name").getAsJsonString().getValue();
+    assertEquals(true, foo.hasMember("name"));
+    assertEquals(true, foo.getMember("name").isJsonString());
+    return foo.getMember("name").getAsJsonString().getValue();
   }
   
   protected String printFoo(Foo f) {

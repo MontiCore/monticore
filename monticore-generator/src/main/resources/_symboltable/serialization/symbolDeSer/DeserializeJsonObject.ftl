@@ -1,7 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("symbolName")}
-  String kind = symbolJson.get(de.monticore.symboltable.serialization.JsonConstants.KIND).getAsJsonString().getValue();
-  if (this.getSerializedKind().equals(kind)) {
-    return Optional.of(deserialize${symbolName}(symbolJson));
+  if (this.getSerializedKind().equals(kind) de.monticore.symboltable.serialization.JsonUtil.isCorrectDeSerForKind(this, symbolJson)) {
+    return deserialize${symbolName}(symbolJson);
   }
-  return Optional.empty();
+  else {
+    Log.error("Unable to deserialize \""+symbolJson+"\" with DeSer for kind "+this.getSerializedKind());
+  }
+  return null;

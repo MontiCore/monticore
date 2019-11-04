@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import com.google.common.base.Charsets;
 
 import de.monticore.io.FileReaderWriter;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Common interface for classes <b>De</b>serializing and <b>Ser</b>ializing objects of a generic
@@ -43,9 +44,8 @@ public interface IDeSer<T> {
    * 
    * @param serialized
    * @return
-   * @throws IOException
    */
-  public Optional<T> deserialize(String serialized);
+  public T deserialize(String serialized);
   
   /**
    * Stores a given object of generic class parameter T in a (new) file located at given path using
@@ -61,13 +61,12 @@ public interface IDeSer<T> {
   
   /**
    * Tries to load an object of generic class parameter type T at the given location. If the file
-   * does not exist or does not contained the expected stored symbols, returns an
-   * {@link Optional#empty()}.
+   * does not exist or does not contained the expected stored symbols, returns an error.
    * 
    * @param url
    * @return
    */
-  default public Optional<T> load(URL url) {
+  default public T load(URL url) {
     try {
       Reader reader = new InputStreamReader(url.openStream(), Charsets.UTF_8.name());
       BufferedReader buffer = new BufferedReader(reader);
@@ -76,8 +75,10 @@ public interface IDeSer<T> {
     }
     catch (IOException e) {
       e.printStackTrace();
+      Log.error("0xTODO Unable to load stored symbol table at \""+url+"\"");
+      return null;
     }
-    return Optional.empty();
   }
+
   
 }

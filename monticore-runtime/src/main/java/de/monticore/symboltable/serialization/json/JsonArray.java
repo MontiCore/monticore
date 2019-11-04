@@ -11,13 +11,13 @@ import de.monticore.symboltable.serialization.JsonPrinter;
  * Represents a Json Array, i.e., a list of any Json elements. These can be of different types.
  */
 public class JsonArray implements JsonElement {
-  
+
   protected List<JsonElement> values;
-  
+
   public JsonArray() {
     this.values = new ArrayList<>();
   }
-  
+
   /**
    * @see de.monticore.symboltable.serialization.json.JsonElement#isJsonArray()
    */
@@ -25,22 +25,22 @@ public class JsonArray implements JsonElement {
   public boolean isJsonArray() {
     return true;
   }
-  
+
   /**
-   * @see de.monticore.symboltable.serialization.json.JsonElement#getAsJsonArray()  
+   * @see de.monticore.symboltable.serialization.json.JsonElement#getAsJsonArray()
    */
   @Override
   public JsonArray getAsJsonArray() {
     return this;
   }
-  
+
   /**
    * @return elements
    */
   public List<JsonElement> getValues() {
     return this.values;
   }
-  
+
   /**
    * @param values the elements to set
    */
@@ -55,7 +55,7 @@ public class JsonArray implements JsonElement {
   public int size() {
     return this.values.size();
   }
-  
+
   /**
    * @return
    * @see java.util.List#isEmpty()
@@ -63,7 +63,7 @@ public class JsonArray implements JsonElement {
   public boolean isEmpty() {
     return this.values.isEmpty();
   }
-  
+
   /**
    * @param o
    * @return
@@ -72,7 +72,7 @@ public class JsonArray implements JsonElement {
   public boolean contains(Object o) {
     return this.values.contains(o);
   }
-  
+
   /**
    * @param e
    * @return
@@ -81,7 +81,7 @@ public class JsonArray implements JsonElement {
   public boolean add(JsonElement e) {
     return this.values.add(e);
   }
-  
+
   /**
    * @param o
    * @return
@@ -90,7 +90,7 @@ public class JsonArray implements JsonElement {
   public boolean remove(Object o) {
     return this.values.remove(o);
   }
-  
+
   /**
    * @param c
    * @return
@@ -99,7 +99,7 @@ public class JsonArray implements JsonElement {
   public boolean addAll(Collection<? extends JsonElement> c) {
     return this.values.addAll(c);
   }
-  
+
   /**
    * @param index
    * @return
@@ -108,7 +108,7 @@ public class JsonArray implements JsonElement {
   public JsonElement get(int index) {
     return this.values.get(index);
   }
-  
+
   /**
    * @param index
    * @return
@@ -117,7 +117,7 @@ public class JsonArray implements JsonElement {
   public JsonElement remove(int index) {
     return this.values.remove(index);
   }
-  
+
   /**
    * @see java.lang.Object#toString()
    */
@@ -131,5 +131,5 @@ public class JsonArray implements JsonElement {
     printer.endArray();
     return printer.getContent();
   }
-  
+
 }

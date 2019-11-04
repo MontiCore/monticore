@@ -145,14 +145,14 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createDeserializeStringMethod(String scopeInterfaceName) {
     ASTCDParameter stringParam = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "serialized");
-    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createOptionalTypeOf(scopeInterfaceName), DESERIALIZE, stringParam);
+    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(scopeInterfaceName), DESERIALIZE, stringParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint("_symboltable.serialization.symbolDeSer.DeserializeString"));
     return deserializeMethod;
   }
 
   protected ASTCDMethod createDeserializeJsonObjectMethod(String scopeInterfaceName, String simpleName,
                                                           ASTCDParameter jsonParam) {
-    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createOptionalTypeOf(scopeInterfaceName), DESERIALIZE, jsonParam);
+    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(scopeInterfaceName), DESERIALIZE, jsonParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "DeserializeJsonObject", simpleName));
     return deserializeMethod;
   }

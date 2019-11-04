@@ -143,7 +143,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodOpt.get();
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertOptionalOf(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
+    assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
@@ -163,7 +163,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodOpt.get();
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertOptionalOf(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
+    assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());

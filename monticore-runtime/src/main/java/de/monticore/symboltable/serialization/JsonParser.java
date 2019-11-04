@@ -14,23 +14,23 @@ import java.io.StringReader;
  * then be used, e.g., to build Java objects with their builders.
  */
 public class JsonParser {
-  
+
   /**
    * Parses a given String encoded in JSON to a {@link JsonElement}. This method should be used if
    * the Json type (i.e., Object, Array,...) of the encoded JSON is unclear.
-   * 
+   *
    * @param s
    * @return
    */
-  public static JsonElement parseJson(String s) {
+  public static JsonElement parse(String s) {
     JsonReader reader = new JsonReader(new StringReader(s));
     return parseJson(reader);
   }
-  
+
   /**
    * Parses a given String encoded in JSON to a {@link JsonObject}. Parsing of the String fails with
    * an error if the encoded String cannot be parsed into a Json object.
-   * 
+   *
    * @param s
    * @return
    */
@@ -38,11 +38,11 @@ public class JsonParser {
     JsonReader reader = new JsonReader(new StringReader(s));
     return parseJsonObject(reader);
   }
-  
+
   /**
    * Parses a given String encoded in JSON to a {@link JsonArray}. Parsing of the String fails with
    * an error if the encoded String cannot be parsed into a Json array.
-   * 
+   *
    * @param s
    * @return
    */
@@ -50,7 +50,12 @@ public class JsonParser {
     JsonReader reader = new JsonReader(new StringReader(s));
     return parseJsonArray(reader);
   }
-  
+
+  /**
+   * Parses any JsonElement with the passed JsonReader
+   * @param reader
+   * @return
+   */
   protected static JsonElement parseJson(JsonReader reader) {
     try {
       while (reader.hasNext()) {
@@ -75,17 +80,21 @@ public class JsonParser {
           case NAME:
           default:
             Log.error(
-                "Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
+                "0xTODO Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
         }
       }
-      // reader.close();
     }
     catch (IOException e) {
       e.printStackTrace();
     }
     return null;
   }
-  
+
+  /**
+   * Parses a Json Object with the passed JsonReader
+   * @param reader
+   * @return
+   */
   protected static JsonObject parseJsonObject(JsonReader reader) {
     JsonObject result = JsonElementFactory.createJsonObject();
     try {
@@ -96,22 +105,35 @@ public class JsonParser {
           case NAME:
             String name = reader.nextName();
             JsonElement value = parseJson(reader);
-            result.put(name, value);
+            result.putMember(name, value);
             break;
+          case BEGIN_ARRAY:
+          case BEGIN_OBJECT:
+          case BOOLEAN:
+          case END_DOCUMENT:
+          case NULL:
+          case NUMBER:
+          case STRING:
+          case END_ARRAY:
+          case END_OBJECT:
           default:
             Log.error(
-                "Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
+                " 0xTODO Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
         }
       }
       reader.endObject();
-      // reader.close();
     }
     catch (IOException e) {
       e.printStackTrace();
     }
     return result;
   }
-  
+
+  /**
+   * Parses a Json array by using the passed JsonReader
+   * @param reader
+   * @return
+   */
   protected static JsonArray parseJsonArray(JsonReader reader) {
     JsonArray result = JsonElementFactory.createJsonArray();
     try {
@@ -147,18 +169,21 @@ public class JsonParser {
           case NAME:
           default:
             Log.error(
-                "Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
+                "0xTODO Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
         }
       }
       reader.endArray();
-      // reader.close();
     }
     catch (IOException e) {
       e.printStackTrace();
     }
     return result;
   }
-  
+
+  /**
+   * If object member tracing is enabled, getter-methods of Json objects are tracked to identify,
+   * if any members have been forgotten during deserialization
+   */
   public static void enableObjectMemberTracing() {
     JsonElementFactory.setInstance(new JsonElementFactory() {
       @Override
@@ -167,14 +192,18 @@ public class JsonParser {
       }
     });
   }
-  
+
+  /**
+   * Disables object member tracing.
+   * @see JsonParser#enableObjectMemberTracing()
+   */
   public static void disableObjectMemberTracing() {
     JsonElementFactory.setInstance(new JsonElementFactory());
   }
-  
+
   static {
     //by default, enableObjectMemberTracing
     enableObjectMemberTracing();
   }
-  
+
 }

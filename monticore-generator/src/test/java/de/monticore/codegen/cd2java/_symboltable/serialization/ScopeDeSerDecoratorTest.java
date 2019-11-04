@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import com.github.javaparser.Problem;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
@@ -198,7 +199,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodOpt.get();
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertOptionalOf(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
@@ -218,7 +219,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methodOpt.get();
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertOptionalOf(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
@@ -390,8 +391,12 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, scopeDeSer, scopeDeSer);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
+    System.out.println(sb.toString());
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
+    for (Object o:parseResult.getProblems()) {
+      System.out.println(o); //TODO AB: Remove output
+    }
     assertTrue(parseResult.isSuccessful());
   }
 }

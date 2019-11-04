@@ -1,16 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import java.util.Optional;
-
 import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 public class SymTypeArrayDeSer implements IDeSer<SymTypeArray> {
-  
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
    */
@@ -19,7 +19,7 @@ public class SymTypeArrayDeSer implements IDeSer<SymTypeArray> {
     // Care: the following String needs to be adapted if the package was renamed
     return "de.monticore.types.check.SymTypeArray";
   }
-  
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#serialize(java.lang.Object)
    */
@@ -27,33 +27,28 @@ public class SymTypeArrayDeSer implements IDeSer<SymTypeArray> {
   public String serialize(SymTypeArray toSerialize) {
     return toSerialize.printAsJson();
   }
-  
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
    */
   @Override
-  public Optional<SymTypeArray> deserialize(String serialized) {
-    return deserialize(JsonParser.parseJson(serialized));
+  public SymTypeArray deserialize(String serialized) {
+    return deserialize(JsonParser.parse(serialized));
   }
-  
-  public Optional<SymTypeArray> deserialize(JsonElement serialized) {
+
+  public SymTypeArray deserialize(JsonElement serialized) {
     if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
-      Optional<Integer> dim = JsonUtil.getOptIntMember(serialized, "dim");
-      if (!dim.isPresent()) {
-        Log.error("0x823F2 Internal error: Loading ill-structured SymTab: missing dim of SymTypeArray " + serialized);
-        dim = Optional.of(Integer.valueOf(1)); // Dummy value, because dimension is absent
-      }
-      Optional<SymTypeExpression> argument = Optional.empty();
-      if (serialized.getAsJsonObject().containsKey("argument")) {
-        argument = SymTypeExpressionDeSer.theDeSer
-            .deserialize(serialized.getAsJsonObject().get("argument"));
-      }
-      if (argument.isPresent()) {
-        // TODO AB: use the appropriate creation from SymType.Factory
-        return Optional.of(new SymTypeArray(dim.get(), argument.get()));
-      }
-      Log.error("0x823F3 Internal error: Loading ill-structured SymTab: missing argument of SymTypeArray " + serialized);
+      JsonObject o = serialized.getAsJsonObject();  //if it has a kind, it is an object
+      int dim = o.getIntegerMember("dim");
+      JsonElement argumentJson = o.getMember("argument");
+      SymTypeExpression argument = SymTypeExpressionDeSer.getInstance().deserialize(argumentJson);
+      TypeSymbol typeLoader = null; // TODO AB: waits for TypeSymbolLoader
+      return new SymTypeExpressionFactory.createTypeArray(dim, argument, typeLoader);
     }
-    return Optional.empty();
+    else {
+      Log.error(
+          "0x823F2 Internal error: Cannot deserialize \"" + serialized + "\" as SymTypeArray!");
+    }
+    return null;
   }
 }
