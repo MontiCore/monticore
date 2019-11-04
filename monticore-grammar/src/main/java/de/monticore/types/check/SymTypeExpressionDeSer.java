@@ -41,7 +41,7 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
   }
 
   /**
-   * This method can be used to set the instzance of the SymTypeExpressionDeSer to a custom suptype
+   * This method can be used to set the instance of the SymTypeExpressionDeSer to a custom suptype
    *
    * @param theInstance
    */
