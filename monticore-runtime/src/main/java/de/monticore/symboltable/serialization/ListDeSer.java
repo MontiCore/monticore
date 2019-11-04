@@ -49,9 +49,7 @@ public class ListDeSer<T> {
     if (serialized.isJsonArray()) {
       for (JsonElement e : serialized.getAsJsonArray().getValues()) {
         T deserialized = delegateDeSer.deserialize(e.toString());
-        if (null != deserialized) {
-          result.add(deserialized);
-        }
+        result.add(deserialized);
       }
     }
     return result;
