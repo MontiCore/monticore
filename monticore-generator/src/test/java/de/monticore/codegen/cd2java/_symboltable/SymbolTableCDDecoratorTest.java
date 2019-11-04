@@ -13,7 +13,6 @@ import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderDecorato
 import de.monticore.codegen.cd2java._symboltable.scope.*;
 import de.monticore.codegen.cd2java._symboltable.symbTabMill.SymTabMillDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
-import de.monticore.codegen.cd2java._symboltable.symbol.symbolReferenceMethodDecorator.SymbolReferenceMethodDecorator;
 import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
@@ -79,7 +78,6 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ParserService parserService = new ParserService(decoratedASTCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     AccessorDecorator accessorDecorator = new AccessorDecorator(glex);
-    SymbolReferenceMethodDecorator symbolReferenceMethodDecorator = new SymbolReferenceMethodDecorator(glex);
 
     SymbolDecorator symbolDecorator = new SymbolDecorator(glex, symbolTableService, visitorService, methodDecorator);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, accessorDecorator, symbolTableService);
@@ -92,7 +90,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator = new GlobalScopeClassBuilderDecorator(glex, symbolTableService, builderDecorator);
     ArtifactScopeDecorator artifactScopeDecorator = new ArtifactScopeDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator = new ArtifactScopeBuilderDecorator(glex, symbolTableService, builderDecorator, accessorDecorator);
-    SymbolReferenceDecorator symbolReferenceDecorator = new SymbolReferenceDecorator(glex, symbolTableService, symbolReferenceMethodDecorator, methodDecorator);
+    SymbolReferenceDecorator symbolReferenceDecorator = new SymbolReferenceDecorator(glex, symbolTableService, methodDecorator);
     SymbolReferenceBuilderDecorator symbolReferenceBuilderDecorator = new SymbolReferenceBuilderDecorator(glex, symbolTableService, accessorDecorator);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     LanguageDecorator languageDecorator = new LanguageDecorator(glex, symbolTableService, parserService, accessorDecorator);
@@ -164,12 +162,12 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass fooSymbolBuilder = getClassBy("FooSymbolBuilder", symTabCD);
     ASTCDClass automatonScopeCDScope = getClassBy("AutomatonScopeCDScope", symTabCD);
     ASTCDClass automatonScopeCDScopeBuilder = getClassBy("AutomatonScopeCDScopeBuilder", symTabCD);
-    ASTCDClass automatonSymbolReference = getClassBy("AutomatonSymbolReference", symTabCD);
-    ASTCDClass stateSymbolReference = getClassBy("StateSymbolReference", symTabCD);
-    ASTCDClass fooSymbolReference = getClassBy("FooSymbolReference", symTabCD);
-    ASTCDClass automatonSymbolReferenceBuilder = getClassBy("AutomatonSymbolReferenceBuilder", symTabCD);
-    ASTCDClass stateSymbolReferenceBuilder = getClassBy("StateSymbolReferenceBuilder", symTabCD);
-    ASTCDClass fooSymbolReferenceBuilder = getClassBy("FooSymbolReferenceBuilder", symTabCD);
+    ASTCDClass automatonSymbolLoader = getClassBy("AutomatonSymbolLoader", symTabCD);
+    ASTCDClass stateSymbolLoader = getClassBy("StateSymbolLoader", symTabCD);
+    ASTCDClass fooSymbolLoader = getClassBy("FooSymbolLoader", symTabCD);
+    ASTCDClass automatonSymbolLoaderBuilder = getClassBy("AutomatonSymbolLoaderBuilder", symTabCD);
+    ASTCDClass stateSymbolLoaderBuilder = getClassBy("StateSymbolLoaderBuilder", symTabCD);
+    ASTCDClass fooSymbolLoaderBuilder = getClassBy("FooSymbolLoaderBuilder", symTabCD);
     ASTCDClass automatonGlobalScope = getClassBy("AutomatonGlobalScope", symTabCD);
     ASTCDClass automatonGlobalScopeBuilder = getClassBy("AutomatonGlobalScopeBuilder", symTabCD);
     ASTCDClass automatonArtifactScope = getClassBy("AutomatonArtifactScope", symTabCD);
@@ -241,12 +239,12 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass fooSymbolBuilder = getClassBy("FooSymbolBuilder", symTabCDWithHC);
     ASTCDClass automatonScopeCDScope = getClassBy("AutomatonScopeCDScope", symTabCDWithHC);
     ASTCDClass automatonScopeCDScopeBuilder = getClassBy("AutomatonScopeCDScopeBuilder", symTabCDWithHC);
-    ASTCDClass automatonSymbolReference = getClassBy("AutomatonSymbolReference", symTabCDWithHC);
-    ASTCDClass stateSymbolReference = getClassBy("StateSymbolReference", symTabCDWithHC);
-    ASTCDClass fooSymbolReference = getClassBy("FooSymbolReference", symTabCDWithHC);
-    ASTCDClass automatonSymbolReferenceBuilder = getClassBy("AutomatonSymbolReferenceBuilder", symTabCDWithHC);
-    ASTCDClass stateSymbolReferenceBuilder = getClassBy("StateSymbolReferenceBuilder", symTabCDWithHC);
-    ASTCDClass fooSymbolReferenceBuilder = getClassBy("FooSymbolReferenceBuilder", symTabCDWithHC);
+    ASTCDClass automatonSymbolLoader = getClassBy("AutomatonSymbolLoader", symTabCDWithHC);
+    ASTCDClass stateSymbolLoader = getClassBy("StateSymbolLoader", symTabCDWithHC);
+    ASTCDClass fooSymbolLoader = getClassBy("FooSymbolLoader", symTabCDWithHC);
+    ASTCDClass automatonSymbolLoaderBuilder = getClassBy("AutomatonSymbolLoaderBuilder", symTabCDWithHC);
+    ASTCDClass stateSymbolLoaderBuilder = getClassBy("StateSymbolLoaderBuilder", symTabCDWithHC);
+    ASTCDClass fooSymbolLoaderBuilder = getClassBy("FooSymbolLoaderBuilder", symTabCDWithHC);
     ASTCDClass automatonGlobalScope = getClassBy("AutomatonGlobalScope", symTabCDWithHC);
     ASTCDClass automatonGlobalScopeBuilder = getClassBy("AutomatonGlobalScopeBuilder", symTabCDWithHC);
     ASTCDClass automatonArtifactScope = getClassBy("AutomatonArtifactScope", symTabCDWithHC);
@@ -301,12 +299,12 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass fooSymbolBuilder = getClassBy("FooSymbolBuilder", symTabCDComponent);
     ASTCDClass automatonScopeCDScope = getClassBy("AutomatonScopeCDScope", symTabCDComponent);
     ASTCDClass automatonScopeCDScopeBuilder = getClassBy("AutomatonScopeCDScopeBuilder", symTabCDComponent);
-    ASTCDClass automatonSymbolReference = getClassBy("AutomatonSymbolReference", symTabCDComponent);
-    ASTCDClass stateSymbolReference = getClassBy("StateSymbolReference", symTabCDComponent);
-    ASTCDClass fooSymbolReference = getClassBy("FooSymbolReference", symTabCDComponent);
-    ASTCDClass automatonSymbolReferenceBuilder = getClassBy("AutomatonSymbolReferenceBuilder", symTabCDComponent);
-    ASTCDClass stateSymbolReferenceBuilder = getClassBy("StateSymbolReferenceBuilder", symTabCDComponent);
-    ASTCDClass fooSymbolReferenceBuilder = getClassBy("FooSymbolReferenceBuilder", symTabCDComponent);
+    ASTCDClass automatonSymbolLoader = getClassBy("AutomatonSymbolLoader", symTabCDComponent);
+    ASTCDClass stateSymbolLoader = getClassBy("StateSymbolLoader", symTabCDComponent);
+    ASTCDClass fooSymbolLoader = getClassBy("FooSymbolLoader", symTabCDComponent);
+    ASTCDClass automatonSymbolLoaderBuilder = getClassBy("AutomatonSymbolLoaderBuilder", symTabCDComponent);
+    ASTCDClass stateSymbolLoaderBuilder = getClassBy("StateSymbolLoaderBuilder", symTabCDComponent);
+    ASTCDClass fooSymbolLoaderBuilder = getClassBy("FooSymbolLoaderBuilder", symTabCDComponent);
   }
 
   @Test

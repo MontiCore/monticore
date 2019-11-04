@@ -9,7 +9,6 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._symboltable.symbol.symbolReferenceMethodDecorator.SymbolReferenceMethodDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -47,13 +46,10 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbol";
 
-  private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
-
-  private static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbol>";
-
   @Before
   public void setUp() {
     Log.init();
+    Log.enableFailQuick(false);
     this.MCTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
@@ -64,8 +60,9 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
 
-    SymbolReferenceDecorator decorator = new SymbolReferenceDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
-        new SymbolReferenceMethodDecorator(glex), new MethodDecorator(glex));
+    SymbolReferenceDecorator decorator = new SymbolReferenceDecorator(this.glex,
+            new SymbolTableService(decoratedCompilationUnit),
+            new MethodDecorator(glex));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
@@ -83,7 +80,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassNameAutomatonSymbol() {
-    assertEquals("AutomatonSymbolReference", symbolClassAutomaton.getName());
+    assertEquals("AutomatonSymbolLoader", symbolClassAutomaton.getName());
   }
 
   @Test
@@ -93,17 +90,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
-    assertDeepEquals("de.monticore.symboltable.references.ISymbolReference", symbolClassAutomaton.getInterface(0));
-  }
-
-  @Test
-  public void testSuperClassPresent() {
-    assertTrue(symbolClassAutomaton.isPresentSuperclass());
-  }
-
-  @Test
-  public void testSuperClass() {
-    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbol", symbolClassAutomaton.getSuperclass());
+    assertDeepEquals("de.monticore.symboltable.ISymbolLoader", symbolClassAutomaton.getInterface(0));
   }
 
   @Test
@@ -115,7 +102,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   public void testConstructor() {
     ASTCDConstructor cdConstructor = symbolClassAutomaton.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonSymbolReference", cdConstructor.getName());
+    assertEquals("AutomatonSymbolLoader", cdConstructor.getName());
 
     assertEquals(2, cdConstructor.sizeCDParameters());
     assertDeepEquals(String.class, cdConstructor.getCDParameter(0).getMCType());
@@ -133,77 +120,20 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testAccessModifierAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("accessModifier", symbolClassAutomaton);
-    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals(ACCESS_MODIFIER_TYPE, astcdAttribute.getMCType());
-  }
-
-  @Test
-  public void testPredicateAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("predicate", symbolClassAutomaton);
-    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals(PREDICATE, astcdAttribute.getMCType());
-  }
-
-  @Test
-  public void testAstNodeAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("astNode", symbolClassAutomaton);
-    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertOptionalOf(AST_AUTOMATON, astcdAttribute.getMCType());
-  }
-
-  @Test
   public void testReferencedSymbolAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("referencedSymbol", symbolClassAutomaton);
+    ASTCDAttribute astcdAttribute = getAttributeBy("loadedSymbol", symbolClassAutomaton);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(AUTOMATON_SYMBOL, astcdAttribute.getMCType());
   }
 
   @Test
   public void testMethods() {
-    assertEquals(18, symbolClassAutomaton.getCDMethodList().size());
-  }
-
-  @Test
-  public void testGetAccessModifierMethod() {
-    ASTCDMethod method = getMethodBy("getAccessModifier", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(ACCESS_MODIFIER_TYPE, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetASTNodeMethod() {
-    ASTCDMethod method = getMethodBy("getAstNode", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(AST_AUTOMATON, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetASTNodeOptMethod() {
-    ASTCDMethod method = getMethodBy("getAstNodeOpt", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertOptionalOf(AST_AUTOMATON, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testIsPresentASTNodeMethod() {
-    ASTCDMethod method = getMethodBy("isPresentAstNode", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
+    assertEquals(5, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
   public void testGetReferencedSymbolMethod() {
-    ASTCDMethod method = getMethodBy("getReferencedSymbol", symbolClassAutomaton);
+    ASTCDMethod method = getMethodBy("getLoadedSymbol", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
@@ -219,27 +149,10 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
   }
 
-  @Test
-  public void testGetFullNameMethod() {
-    ASTCDMethod method = getMethodBy("getFullName", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testExistsReferencedSymbolMethod() {
-    ASTCDMethod method = getMethodBy("existsReferencedSymbol", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
 
   @Test
   public void testLoadReferencedSymbolMethod() {
-    ASTCDMethod method = getMethodBy("loadReferencedSymbol", symbolClassAutomaton);
+    ASTCDMethod method = getMethodBy("loadSymbol", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertOptionalOf(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
@@ -248,7 +161,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testIsReferencedSymbolLoadedMethod() {
-    ASTCDMethod method = getMethodBy("isReferencedSymbolLoaded", symbolClassAutomaton);
+    ASTCDMethod method = getMethodBy("isSymbolLoaded", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertBoolean(method.getMCReturnType().getMCType());
 
@@ -266,81 +179,6 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetSpannedScopeNameMethod() {
-    ASTCDMethod method = getMethodBy("getSpannedScope", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
-        , method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetAccessModifierMethod() {
-    ASTCDMethod method = getMethodBy("setAccessModifier", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(ACCESS_MODIFIER_TYPE, method.getCDParameter(0).getMCType());
-    assertEquals("accessModifier", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetPredicateMethod() {
-    ASTCDMethod method = getMethodBy("setPredicate", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(PREDICATE, method.getCDParameter(0).getMCType());
-    assertEquals("predicate", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetAstNodeMethod() {
-    ASTCDMethod method = getMethodBy("setAstNode", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
-    assertEquals("astNode", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetAstNodeOptMethod() {
-    ASTCDMethod method = getMethodBy("setAstNodeOpt", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertOptionalOf(AST_AUTOMATON, method.getCDParameter(0).getMCType());
-    assertEquals("astNode", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetAstNodeAbsentMethod() {
-    ASTCDMethod method = getMethodBy("setAstNodeAbsent", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetEnclosingScopeMethod() {
-    ASTCDMethod method = getMethodBy("setEnclosingScope", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE),
-        method.getCDParameter(0).getMCType());
-    assertEquals("scope", method.getCDParameter(0).getName());
-  }
-
-  @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
@@ -353,81 +191,6 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
     assertTrue(parseResult.isSuccessful());
   }
 
-  // test symbol rule methods
-
-  @Test
-  public void testIsExtraAttributeMethod() {
-    ASTCDMethod method = getMethodBy("isExtraAttribute", symbolClassFoo);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetExtraAttributeMethod() {
-    ASTCDMethod method = getMethodBy("setExtraAttribute", symbolClassFoo);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertBoolean(method.getCDParameter(0).getMCType());
-    assertEquals("extraAttribute", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testGetFooListMethod() {
-    ASTCDMethod method = getMethodBy("getFooList", symbolClassFoo);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertListOf(String.class, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetFooListMethod() {
-    ASTCDMethod method = getMethodBy("setFooList", symbolClassFoo);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertListOf(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("foo", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testGetBlaOptMethod() {
-    ASTCDMethod method = getMethodBy("getBlaOpt", symbolClassFoo);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-
-  @Test
-  public void testSetBlaOptMethod() {
-    ASTCDMethod method = getMethodBy("setBlaOpt", symbolClassFoo);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertOptionalOf(Integer.class, method.getCDParameter(0).getMCType());
-    assertEquals("bla", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testScopeRuleMethod() {
-    ASTCDMethod method = getMethodBy("toString", symbolClassFoo);
-
-    assertTrue(method.getModifier().isPublic());
-    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
 
   @Test
   public void testGeneratedCodeFoo() {

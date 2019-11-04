@@ -25,7 +25,7 @@ public class SymbolReferenceBuilderDecorator extends AbstractCreator<ASTCDType, 
 
   protected final AccessorDecorator accessorDecorator;
 
-  protected static final String TEMPLATE_PATH = "_symboltable.symbolreferece.";
+  protected static final String TEMPLATE_PATH = "_symboltable.symbolreference.";
 
   public SymbolReferenceBuilderDecorator(final GlobalExtensionManagement glex,
                                          final SymbolTableService symbolTableService,

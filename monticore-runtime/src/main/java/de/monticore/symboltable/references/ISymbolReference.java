@@ -12,6 +12,7 @@ import java.util.Optional;
  * Represents a symbol reference and is the super type of all symbol references. Do not
  * implement this interface directly. Instead, use one of its subtypes.
  */
+@Deprecated
 public interface ISymbolReference {
 
   /**
