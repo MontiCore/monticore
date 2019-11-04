@@ -55,11 +55,8 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
     visitor.setMCSimpleGenericTypesVisitor(new MCSimpleGenericTypesPrettyPrinter(out));
     visitor.setMCCommonLiteralsVisitor(new MCCommonLiteralsPrettyPrinter(out));
     visitor.setGrammar_WithConceptsVisitor(this);
-    visitor.setMCAssertStatementsVisitor(new MCAssertStatementsPrettyPrinter(out));
     visitor.setMCExceptionStatementsVisitor(new MCExceptionStatementsPrettyPrinter(out));
-    visitor.setMCLowLevelStatementsVisitor(new MCLowLevelStatementsPrettyPrinter(out));
     visitor.setMCReturnStatementsVisitor(new MCReturnStatementsPrettyPrinter(out));
-    visitor.setMCSynchronizedStatementsVisitor(new MCSynchronizedStatementsPrettyPrinter(out));
     visitor.setMCCommonStatementsVisitor(new MCCommonStatementsPrettyPrinter(out));
     visitor.setJavaLightVisitor(new JavaLightPrettyPrinter(out));
   }

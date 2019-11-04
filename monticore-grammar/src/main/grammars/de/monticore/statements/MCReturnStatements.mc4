@@ -2,7 +2,8 @@
 
 package de.monticore.statements;
 
-component grammar MCReturnStatements extends de.monticore.statements.MCCommonStatements {
+component grammar MCReturnStatements extends de.monticore.statements.MCStatementsBasis,
+                                             de.monticore.expressions.ExpressionsBasis  {
 
 ReturnStatement implements MCStatement
     =   "return" Expression? ";"
