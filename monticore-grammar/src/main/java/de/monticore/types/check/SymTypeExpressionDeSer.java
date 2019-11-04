@@ -33,7 +33,7 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
     //this is a singleton, do not use constructor
   }
 
-  protected static SymTypeExpressionDeSer getInstance() {
+  public static SymTypeExpressionDeSer getInstance() {
     if (null == instance) {
       instance = new SymTypeExpressionDeSer();
     }

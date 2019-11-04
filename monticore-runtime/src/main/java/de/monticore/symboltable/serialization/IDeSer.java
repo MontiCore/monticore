@@ -75,7 +75,7 @@ public interface IDeSer<T> {
     }
     catch (IOException e) {
       e.printStackTrace();
-      Log.error("0xTODO Unable to load stored symbol table at \""+url+"\"");
+      Log.error("0xA0577 Unable to load stored symbol table at \""+url+"\"");
       return null;
     }
   }

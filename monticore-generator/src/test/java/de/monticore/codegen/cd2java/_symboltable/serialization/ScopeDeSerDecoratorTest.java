@@ -391,12 +391,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, scopeDeSer, scopeDeSer);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
-    System.out.println(sb.toString());
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
-    for (Object o:parseResult.getProblems()) {
-      System.out.println(o); //TODO AB: Remove output
-    }
     assertTrue(parseResult.isSuccessful());
   }
 }

@@ -21,6 +21,7 @@ public class JsonObject implements JsonElement {
 
   /**
    * As this is a Json object, return true
+   *
    * @return
    */
   @Override
@@ -29,7 +30,8 @@ public class JsonObject implements JsonElement {
   }
 
   /**
-   *As this is a Json object, return "this"
+   * As this is a Json object, return "this"
+   *
    * @return
    */
   @Override
@@ -39,6 +41,7 @@ public class JsonObject implements JsonElement {
 
   /**
    * A map with all members of this object
+   *
    * @return attributes
    */
   public Map<String, JsonElement> getMembers() {
@@ -86,7 +89,7 @@ public class JsonObject implements JsonElement {
     if (this.members.containsKey(name)) {
       return this.members.get(name);
     }
-    Log.error("0xTODO Member \"" + name + "\" is not contained in Jsob object " + this);
+    Log.error("0xA0570 Member \"" + name + "\" is not contained in Jsob object " + this);
     return null;
   }
 
@@ -108,6 +111,10 @@ public class JsonObject implements JsonElement {
    * @see java.util.Map#put(java.lang.Object, java.lang.Object)
    */
   public JsonElement putMember(String name, JsonElement value) {
+    if (null == value) {
+      Log.error("0xA0571 Cannot add the member  \"" + "\" to the current Json object \"" + this
+          + "\", because its value is null!");
+    }
     return this.members.put(name, value);
   }
 
@@ -136,7 +143,12 @@ public class JsonObject implements JsonElement {
     JsonPrinter printer = new JsonPrinter();
     printer.beginObject();
     for (String s : members.keySet()) {
-      printer.memberJson(s, members.get(s).toString());
+      if(members.get(s).isJsonString()){
+        printer.member(s, members.get(s).toString());
+      }
+      else{
+        printer.memberJson(s, members.get(s).toString());
+      }
     }
     printer.endObject();
     return printer.getContent();
@@ -170,7 +182,7 @@ public class JsonObject implements JsonElement {
       return result.get();
     }
     else {
-      Log.error("0xTODO \"" + name + "\" is not a Json String member of \""+this+"\"!");
+      Log.error("0xA0572 \"" + name + "\" is not a Json String member of \"" + this + "\"!");
       return null;
     }
   }
@@ -201,7 +213,7 @@ public class JsonObject implements JsonElement {
       return result.get().getValues();
     }
     else {
-      Log.error("0xTODO \"" + name + "\" is not a Json Array member of \""+this+"\"!");
+      Log.error("0xA0573 \"" + name + "\" is not a Json Array member of \"" + this + "\"!");
       return null;
     }
   }
@@ -232,7 +244,7 @@ public class JsonObject implements JsonElement {
       return result.get().booleanValue();
     }
     else {
-      Log.error("0xTODO \"" + name + "\" is not a Json Boolean member of \""+this+"\"!");
+      Log.error("0xA0574 \"" + name + "\" is not a Json Boolean member of \"" + this + "\"!");
       return false;
     }
   }
@@ -263,7 +275,7 @@ public class JsonObject implements JsonElement {
       return result.get();
     }
     else {
-      Log.error("0xTODO \"" + name + "\" is not a Json Object member of \""+this+"\"!");
+      Log.error("0xA0575 \"" + name + "\" is not a Json Object member of \"" + this + "\"!");
       return null;
     }
   }
@@ -294,7 +306,7 @@ public class JsonObject implements JsonElement {
       return result.get().intValue();
     }
     else {
-      Log.error("0xTODO \"" + name + "\" is not a Json Integer member of \""+this+"\"!");
+      Log.error("0xA0576 \"" + name + "\" is not a Json Integer member of \"" + this + "\"!");
       return -1;
     }
   }

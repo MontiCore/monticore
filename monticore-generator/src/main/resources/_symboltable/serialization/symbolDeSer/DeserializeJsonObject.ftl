@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("symbolName")}
-  if (this.getSerializedKind().equals(kind) de.monticore.symboltable.serialization.JsonUtil.isCorrectDeSerForKind(this, symbolJson)) {
+  if (de.monticore.symboltable.serialization.JsonUtil.isCorrectDeSerForKind(this, symbolJson)) {
     return deserialize${symbolName}(symbolJson);
   }
   else {

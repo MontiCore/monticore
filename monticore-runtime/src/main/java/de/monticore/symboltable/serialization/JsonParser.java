@@ -80,12 +80,12 @@ public class JsonParser {
           case NAME:
           default:
             Log.error(
-                "0xTODO Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
+                "0xA0564 Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
         }
       }
     }
     catch (IOException e) {
-      e.printStackTrace();
+      Log.error("0xA0565: An error occured while parsing malformed JSON "+wrapExceptionMessage(e));
     }
     return null;
   }
@@ -118,13 +118,13 @@ public class JsonParser {
           case END_OBJECT:
           default:
             Log.error(
-                " 0xTODO Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
+                " 0xA0566 Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
         }
       }
       reader.endObject();
     }
     catch (IOException e) {
-      e.printStackTrace();
+      Log.error("0xA0567: An error occured while parsing malformed JSON "+wrapExceptionMessage(e));
     }
     return result;
   }
@@ -169,13 +169,13 @@ public class JsonParser {
           case NAME:
           default:
             Log.error(
-                "0xTODO Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
+                "0xA0568 Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
         }
       }
       reader.endArray();
     }
     catch (IOException e) {
-      e.printStackTrace();
+      Log.error("0xA0569: An error occured while parsing malformed JSON "+wrapExceptionMessage(e));
     }
     return result;
   }
@@ -204,6 +204,10 @@ public class JsonParser {
   static {
     //by default, enableObjectMemberTracing
     enableObjectMemberTracing();
+  }
+
+  private static String wrapExceptionMessage(IOException e){
+    return e.getMessage().replace("Use JsonReader.setLenient(true) to accept malformed JSON ","");
   }
 
 }

@@ -43,7 +43,7 @@ public class SymTypeArrayDeSer implements IDeSer<SymTypeArray> {
       JsonElement argumentJson = o.getMember("argument");
       SymTypeExpression argument = SymTypeExpressionDeSer.getInstance().deserialize(argumentJson);
       TypeSymbol typeLoader = null; // TODO AB: waits for TypeSymbolLoader
-      return new SymTypeExpressionFactory.createTypeArray(dim, argument, typeLoader);
+      return SymTypeExpressionFactory.createTypeArray(dim, argument, typeLoader);
     }
     else {
       Log.error(
