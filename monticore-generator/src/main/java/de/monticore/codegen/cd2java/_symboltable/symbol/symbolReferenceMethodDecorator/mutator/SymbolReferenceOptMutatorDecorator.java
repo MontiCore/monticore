@@ -9,6 +9,9 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * changes implementation of the setOpt method
+ */
 public class SymbolReferenceOptMutatorDecorator extends OptionalMutatorDecorator {
 
   public SymbolReferenceOptMutatorDecorator(GlobalExtensionManagement glex) {

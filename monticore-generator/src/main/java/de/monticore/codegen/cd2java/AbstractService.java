@@ -8,8 +8,8 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -33,7 +33,7 @@ public class AbstractService<T extends AbstractService> {
 
   private final CDDefinitionSymbol cdSymbol;
 
-  private final CDTypeFacade cdTypeFacade;
+  private final MCTypeFacade mcTypeFacade;
 
 
   public AbstractService(final ASTCDCompilationUnit compilationUnit) {
@@ -42,15 +42,15 @@ public class AbstractService<T extends AbstractService> {
 
   public AbstractService(final CDDefinitionSymbol cdSymbol) {
     this.cdSymbol = cdSymbol;
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.mcTypeFacade = MCTypeFacade.getInstance();
   }
 
   public CDDefinitionSymbol getCDSymbol() {
     return this.cdSymbol;
   }
 
-  protected CDTypeFacade getCDTypeFacade() {
-    return this.cdTypeFacade;
+  protected MCTypeFacade getMCTypeFacade() {
+    return this.mcTypeFacade;
   }
 
   public Collection<CDDefinitionSymbol> getAllCDs() {

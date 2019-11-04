@@ -80,7 +80,7 @@ for (astGrammar in getParsedGrammars()) {
   decoratedCoCoCD = decorateForCoCoPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath)
 
-  generateODs(glex, cdScope, mcScope, astClassDiagram, out)
+  generateODs(glex, cdScope, mcScope, astClassDiagram, astGrammar, out)
 
   // M7: decorate Class Diagram AST
   decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)

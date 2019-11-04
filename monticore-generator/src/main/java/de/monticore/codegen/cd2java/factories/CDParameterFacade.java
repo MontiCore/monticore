@@ -12,6 +12,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @deprecated will be transfered into CD4A
+ * first the deprecation of MCTypeFacade has to be removed, then the CDParameterFacade can be transfered to CD4A
+ * after release of CD4A with CDParameterFacade this class can be removed
+ */
+@Deprecated
 public class CDParameterFacade {
 
   private static CDParameterFacade cdParameterFacade;
@@ -38,11 +44,11 @@ public class CDParameterFacade {
   }
 
   public ASTCDParameter createParameter(final Class<?> type, final String name) {
-    return createParameter(CDTypeFacade.getInstance().createQualifiedType(type), name);
+    return createParameter(MCTypeFacade.getInstance().createQualifiedType(type), name);
   }
 
   public ASTCDParameter createParameter(final Class<?> type) {
-    return createParameter(CDTypeFacade.getInstance().createQualifiedType(type), StringUtils.uncapitalize(type.getSimpleName()));
+    return createParameter(MCTypeFacade.getInstance().createQualifiedType(type), StringUtils.uncapitalize(type.getSimpleName()));
   }
 
   public ASTCDParameter createParameter(final ASTCDAttribute ast) {

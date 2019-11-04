@@ -65,7 +65,7 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
         new TemplateHookPoint(TEMPLATE_PATH + "Build", scopeClass.getName())));
 
     BuilderMutatorMethodDecorator builderMutatorMethodDecorator = new BuilderMutatorMethodDecorator(glex,
-        getCDTypeFacade().createQualifiedType(scopeBuilderName));
+        getMCTypeFacade().createQualifiedType(scopeBuilderName));
 
     ASTCDAttribute enclosingScopeAttribute = createEnclosingScopeAttribute();
     List<ASTCDMethod> enclosingScopeMethods = builderMutatorMethodDecorator.decorate(enclosingScopeAttribute);
@@ -80,7 +80,7 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
 
   protected ASTCDAttribute createEnclosingScopeAttribute() {
     ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PROTECTED,
-        getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType()), ENCLOSING_SCOPE_VAR);
+        getMCTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType()), ENCLOSING_SCOPE_VAR);
     this.replaceTemplate(VALUE, enclosingScope, new StringHookPoint("= Optional.empty()"));
     return enclosingScope;
   }

@@ -16,6 +16,9 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_S
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * creates a CommonSymbolInterface interface from a grammar
+ */
 public class CommonSymbolInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
   protected final SymbolTableService symbolTableService;
@@ -41,14 +44,14 @@ public class CommonSymbolInterfaceDecorator extends AbstractCreator<ASTCDCompila
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(commonSymbolInterfaceName)
         .setModifier(PUBLIC.build())
-        .addInterface(getCDTypeFacade().createQualifiedType(I_SYMBOL))
+        .addInterface(getMCTypeFacade().createQualifiedType(I_SYMBOL))
         .addCDMethod(createAcceptMethod())
         .addAllCDMethods(createEnclosingScopeMethods(scopeInterfaceName))
         .build();
   }
 
   protected ASTCDMethod createAcceptMethod() {
-    ASTMCQualifiedType symbolVisitorType = getCDTypeFacade().createQualifiedType(visitorService.getSymbolVisitorFullName());
+    ASTMCQualifiedType symbolVisitorType = getMCTypeFacade().createQualifiedType(visitorService.getSymbolVisitorFullName());
     ASTCDParameter parameter = getCDParameterFacade().createParameter(symbolVisitorType, VISITOR_PREFIX);
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, parameter);
   }

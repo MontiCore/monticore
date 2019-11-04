@@ -8,8 +8,8 @@ import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -29,7 +29,7 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
 
   private GlobalExtensionManagement glex;
 
-  private CDTypeFacade cdTypeFacade;
+  private MCTypeFacade MCTypeFacade;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
@@ -44,7 +44,7 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
   @Before
   public void setUp() {
     Log.init();
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.MCTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -93,7 +93,7 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
     ASTCDMethod method = getMethodBy("resolveAdaptedAutomatonSymbol", symbolClassAutomaton);
 
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(MCTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());

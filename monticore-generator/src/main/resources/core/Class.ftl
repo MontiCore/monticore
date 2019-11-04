@@ -2,7 +2,7 @@
 ${tc.signature("cdClass")}
 <#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
 <#assign service = glex.getGlobalVar("service")>
-
+/* (c) https://github.com/MontiCore/monticore */
 ${tc.include("core.Package")}
 
 ${tc.include("core.Imports")}

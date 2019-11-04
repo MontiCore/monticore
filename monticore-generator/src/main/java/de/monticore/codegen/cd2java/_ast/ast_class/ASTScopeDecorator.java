@@ -19,6 +19,9 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENC
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SPANNED_SCOPE_VAR;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
+/**
+ * creates a list of scope attributes that are used for the AST class
+ */
 public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttribute>> {
 
   protected final SymbolTableService symbolTableService;

@@ -22,12 +22,20 @@ import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * simple and abstract BuilderDecorator, can be used for special builder generations
+ * for a special generation use this class as basis and add additional features
+ */
 public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected final AccessorDecorator accessorDecorator;
 
   protected final AbstractService service;
 
+  /**
+   * additional flag that can be disabled to not insert a template for the build method
+   * was inserted, because special implementations often only want to change the build method implementation
+   */
   private boolean printBuildMethodTemplate = true;
 
   public BuilderDecorator(final GlobalExtensionManagement glex,
@@ -41,10 +49,10 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   @Override
   public ASTCDClass decorate(final ASTCDClass domainClass) throws DecorateException {
     String builderClassName = domainClass.getName() + BUILDER_SUFFIX;
-    ASTMCType domainType = this.getCDTypeFacade().createQualifiedType(domainClass.getName());
-    ASTMCType builderType = this.getCDTypeFacade().createQualifiedType(builderClassName);
+    ASTMCType domainType = this.getMCTypeFacade().createQualifiedType(domainClass.getName());
+    ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(builderClassName);
 
-
+    // make the builder abstract for a abstract AST class
     CDModifier modifier = PUBLIC;
     if (domainClass.isPresentModifier() && domainClass.getModifier().isAbstract()) {
       modifier = PUBLIC_ABSTRACT;
@@ -72,7 +80,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
       this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes));
     }
 
-    ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), IS_VALID);
+    ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), IS_VALID);
     this.replaceTemplate(EMPTY_BODY, isValidMethod, new TemplateHookPoint("_ast.builder.IsValidMethod", mandatoryAttributes));
 
     List<ASTCDMethod> accessorMethods = builderAttributes.stream()

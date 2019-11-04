@@ -25,6 +25,8 @@ classdiagram Automaton {
       protected String to;
     }
 
+    public abstract class ASTAbstractClass {}
+
     enum AutomatonLiterals{
       FINAL,
       INITIAL;

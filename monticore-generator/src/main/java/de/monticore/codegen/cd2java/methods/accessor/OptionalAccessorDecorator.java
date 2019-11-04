@@ -35,11 +35,15 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     //todo find better util than the DecorationHelper
-    naiveAttributeName = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
+    naiveAttributeName = getNaiveAttributeName(ast);
     ASTCDMethod get = createGetMethod(ast);
     ASTCDMethod getOpt = createGetOptMethod(ast);
     ASTCDMethod isPresent = createIsPresentMethod();
     return new ArrayList<>(Arrays.asList(get, getOpt, isPresent));
+  }
+
+  protected String getNaiveAttributeName(ASTCDAttribute astcdAttribute) {
+    return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(astcdAttribute.getName()));
   }
 
 
@@ -61,7 +65,7 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
 
   protected ASTCDMethod createIsPresentMethod() {
     String name = String.format(IS_PRESENT, naiveAttributeName);
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createBooleanType(), name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.IsPresent", naiveAttributeName));
     return method;
   }

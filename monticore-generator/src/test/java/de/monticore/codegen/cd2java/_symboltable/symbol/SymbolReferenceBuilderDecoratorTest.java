@@ -9,8 +9,8 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -31,7 +31,7 @@ public class SymbolReferenceBuilderDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private CDTypeFacade cdTypeFacade;
+  private MCTypeFacade MCTypeFacade;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
@@ -42,7 +42,7 @@ public class SymbolReferenceBuilderDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     Log.init();
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.MCTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -141,7 +141,7 @@ public class SymbolReferenceBuilderDecoratorTest extends DecoratorTestCase {
   public void testSetNameMethod() {
     ASTCDMethod method = getMethodBy("setName", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createQualifiedType("AutomatonSymbolReferenceBuilder"), method.getMCReturnType().getMCType());
+    assertDeepEquals(MCTypeFacade.createQualifiedType("AutomatonSymbolReferenceBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
@@ -161,7 +161,7 @@ public class SymbolReferenceBuilderDecoratorTest extends DecoratorTestCase {
   public void testSetEnclosingScopeMethod() {
     ASTCDMethod method = getMethodBy("setEnclosingScope", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createQualifiedType("AutomatonSymbolReferenceBuilder"), method.getMCReturnType().getMCType());
+    assertDeepEquals(MCTypeFacade.createQualifiedType("AutomatonSymbolReferenceBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());

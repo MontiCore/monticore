@@ -31,14 +31,6 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     realThis = this;
   }
 
-  @Override
-  public Optional<SymTypeExpression> calculateType(ASTExpression expr) {
-    expr.accept(getRealThis());
-    Optional<SymTypeExpression> result = lastResult.getLastOpt();
-    lastResult.setLastOpt(Optional.empty());
-    return result;
-  }
-
   public void setLastResult(LastResult lastResult){
     this.lastResult = lastResult;
   }
@@ -137,7 +129,6 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLastOpt(sym);
       this.result = sym.get();
     }else{
-      lastResult.setLastOpt(Optional.empty());
       lastResult.setLastOpt(Optional.empty());
       Log.error("0xA0211 The resulting type cannot be calculated");
     }

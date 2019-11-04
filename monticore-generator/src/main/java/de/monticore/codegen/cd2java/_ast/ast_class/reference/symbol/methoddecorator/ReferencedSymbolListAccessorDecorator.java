@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java._ast.ast_class.reference.referencedSymbol.referenedSymbolMethodDecorator;
+package de.monticore.codegen.cd2java._ast.ast_class.reference.symbol.methoddecorator;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
@@ -9,6 +9,10 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+
+/**
+ * created all list getter methods for the referencedSymbols
+ */
 
 public class ReferencedSymbolListAccessorDecorator extends ListAccessorDecorator {
 
@@ -20,6 +24,9 @@ public class ReferencedSymbolListAccessorDecorator extends ListAccessorDecorator
     this.symbolTableService = symbolTableService;
   }
 
+  /**
+   * overwrite only the getList method implementation, because the other methods are delegated to this one
+   */
   @Override
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
     String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithS);

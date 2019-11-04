@@ -6,6 +6,9 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 
+/**
+ * helper class that helps with the decoration of nodeFactories
+ */
 public class NodeFactoryService extends AbstractService<NodeFactoryService> {
 
   public NodeFactoryService(ASTCDCompilationUnit compilationUnit) {
@@ -30,9 +33,9 @@ public class NodeFactoryService extends AbstractService<NodeFactoryService> {
     return new NodeFactoryService(cdSymbol);
   }
 
-  /*
+  /**
    node factory class names e.g. AutomataNodeFactory
-  */
+   */
   public String getNodeFactorySimpleTypeName() {
     return getNodeFactorySimpleTypeName(getCDSymbol());
   }

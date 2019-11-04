@@ -7,8 +7,8 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.CDModifier;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
@@ -26,7 +26,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private CDTypeFacade cdTypeFacade;
+  private MCTypeFacade MCTypeFacade;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
@@ -41,7 +41,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     Log.init();
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.MCTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -113,7 +113,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
   public void testEnclosingScopeAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("enclosingScope", scopeBuilderClass);
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals(cdTypeFacade.createQualifiedType(ENCLOSING_SCOPE_TYPE),
+    assertDeepEquals(MCTypeFacade.createQualifiedType(ENCLOSING_SCOPE_TYPE),
         astcdAttribute.getMCType());
   }
 
@@ -121,7 +121,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
   public void testASTNodeAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("astNode", scopeBuilderClass);
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals(cdTypeFacade.createQualifiedType(A_NODE_TYPE_OPT), astcdAttribute.getMCType());
+    assertDeepEquals(MCTypeFacade.createQualifiedType(A_NODE_TYPE_OPT), astcdAttribute.getMCType());
   }
 
   @Test
@@ -161,7 +161,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
   public void testBuildMethod() {
     ASTCDMethod method = getMethodBy("build", scopeBuilderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createQualifiedType("AScope"), method.getMCReturnType().getMCType());
+    assertDeepEquals(MCTypeFacade.createQualifiedType("AScope"), method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }

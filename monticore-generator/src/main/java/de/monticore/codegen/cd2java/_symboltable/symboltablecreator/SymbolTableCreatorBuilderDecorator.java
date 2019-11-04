@@ -7,6 +7,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
@@ -35,9 +36,8 @@ public class SymbolTableCreatorBuilderDecorator extends AbstractCreator<ASTCDCom
     String symbolTableCreator = symbolTableService.getSymbolTableCreatorSimpleName();
     String symbolTableCreatorBuilder = symbolTableCreator + BUILDER_SUFFIX;
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
-    String dequeType = String.format(DEQUE_TYPE, scopeInterface);
-    ASTMCQualifiedType builderType = getCDTypeFacade().createQualifiedType(symbolTableCreatorBuilder);
-
+    ASTMCBasicGenericType dequeType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, scopeInterface);
+    ASTMCQualifiedType builderType = getMCTypeFacade().createQualifiedType(symbolTableCreatorBuilder);
 
     ASTCDAttribute scopeStackAttribute = createScopeStackAttribute(dequeType);
 
@@ -59,48 +59,44 @@ public class SymbolTableCreatorBuilderDecorator extends AbstractCreator<ASTCDCom
   }
 
   protected ASTCDMethod createBuildMethod(String symTabCreator) {
-    ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC.build(), getCDTypeFacade().createTypeByDefinition(symTabCreator), BUILD_METHOD);
+    ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createQualifiedType(symTabCreator), BUILD_METHOD);
     this.replaceTemplate(EMPTY_BODY, buildMethod, new
         StringHookPoint("return new " + symTabCreator + "(" + SCOPE_STACK_VAR + ");"));
     return buildMethod;
   }
 
-  protected ASTCDAttribute createScopeStackAttribute(String dequeType) {
+  protected ASTCDAttribute createScopeStackAttribute(ASTMCType dequeType) {
     ASTCDAttribute scopeStack = getCDAttributeFacade().createAttribute(PROTECTED, dequeType, SCOPE_STACK_VAR);
     this.replaceTemplate(VALUE, scopeStack, new StringHookPoint("= new java.util.ArrayDeque<>()"));
     return scopeStack;
   }
 
-  protected ASTCDMethod createSetScopeStackMethod(String dequeType, ASTMCType builderType) {
-    ASTCDParameter dequeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createTypeByDefinition(dequeType), SCOPE_STACK_VAR);
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, builderType,
-        "setScopeStack", dequeParam);
+  protected ASTCDMethod createSetScopeStackMethod(ASTMCType dequeType, ASTMCType builderType) {
+    ASTCDParameter dequeParam = getCDParameterFacade().createParameter(dequeType, SCOPE_STACK_VAR);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, builderType, "setScopeStack", dequeParam);
     String methodCall = " = " + SCOPE_STACK_VAR;
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(String.format(SCOPE_STACK_TEMPLATE, methodCall)));
     return method;
   }
 
   protected ASTCDMethod createAddToScopeStackMethod(String scopeInterface, ASTMCType builderType) {
-    ASTCDParameter dequeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), SCOPE_VAR);
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, builderType,
-        "addToScopeStack", dequeParam);
+    ASTCDParameter dequeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterface), SCOPE_VAR);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, builderType, "addToScopeStack", dequeParam);
     String methodCall = ".add(" + SCOPE_VAR + ")";
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(String.format(SCOPE_STACK_TEMPLATE, methodCall)));
     return method;
   }
 
   protected ASTCDMethod createRemoveFromScopeStackMethod(String scopeInterface, ASTMCType builderType) {
-    ASTCDParameter dequeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(scopeInterface), SCOPE_VAR);
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, builderType,
-        "removeFromScopeStack", dequeParam);
+    ASTCDParameter dequeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterface), SCOPE_VAR);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, builderType, "removeFromScopeStack", dequeParam);
     String methodCall = ".remove(" + SCOPE_VAR + ")";
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(String.format(SCOPE_STACK_TEMPLATE, methodCall)));
     return method;
   }
 
-  protected ASTCDMethod createGetScopeStackMethod(String dequeType) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createTypeByDefinition(dequeType),
-        "getScopeStack");
+  protected ASTCDMethod createGetScopeStackMethod(ASTMCType dequeType) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, dequeType, "getScopeStack");
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(
         "return this." + SCOPE_STACK_VAR + ";"));
     return method;

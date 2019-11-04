@@ -5,7 +5,7 @@ package mc.examples.automaton;
 grammar Automaton extends mc.grammar.lexicals.ItTestLexicals {
 
 symbol scope Automaton =
-  "automaton" Name "{" (State | Transition)* (bla:Name) ?"}" ;
+  "automaton" Name "{" (State | Transition)* "}" ;
 
 /** A ASTState represents a state of a finite automaton
     @attribute Name Name of state

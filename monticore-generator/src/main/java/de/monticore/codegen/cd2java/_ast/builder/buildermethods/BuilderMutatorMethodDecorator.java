@@ -5,6 +5,10 @@ import de.monticore.codegen.cd2java.methods.MutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
+/**
+ * combination of mandatory, optional, list builder setters
+ * returnType of these methods has to be changed to the BuilderType
+ */
 public class BuilderMutatorMethodDecorator extends MutatorDecorator {
 
   public BuilderMutatorMethodDecorator(final GlobalExtensionManagement glex,

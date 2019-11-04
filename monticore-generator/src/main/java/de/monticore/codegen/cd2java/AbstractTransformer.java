@@ -14,7 +14,7 @@ public abstract class AbstractTransformer<I> extends AbstractDecorator {
 
   public AbstractTransformer(final GlobalExtensionManagement glex) {
     super(glex,
-        CDTypeFacade.getInstance(),
+        MCTypeFacade.getInstance(),
         CDAttributeFacade.getInstance(),
         CDConstructorFacade.getInstance(),
         CDMethodFacade.getInstance(),

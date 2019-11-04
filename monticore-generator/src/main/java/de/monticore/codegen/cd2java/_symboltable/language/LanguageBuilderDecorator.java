@@ -13,6 +13,9 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates corresponding builder for a language class
+ */
 public class LanguageBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected final BuilderDecorator builderDecorator;

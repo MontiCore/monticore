@@ -9,6 +9,8 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +23,9 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.DEQ
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_STACK_VAR;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * creates a SymbolReference class from a grammar
+ */
 public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional<ASTCDClass>> {
 
   protected final SymbolTableService symbolTableService;
@@ -49,12 +54,12 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
       String simpleName = symbolTableService.getCDName();
       String artifactScopeName = symbolTableService.getArtifactScopeFullName();
       String delegatorVisitorName = visitorService.getDelegatorVisitorFullName();
-      String dequeType = String.format(DEQUE_TYPE, scopeInterface);
+      ASTMCBasicGenericType dequeType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, scopeInterface);
 
       ASTCDClass symTabCreatorDelegator = CD4CodeMill.cDClassBuilder()
           .setName(symbolTableCreatorDelegatorName)
           .setModifier(PUBLIC.build())
-          .setSuperclass(getCDTypeFacade().createQualifiedType(delegatorVisitorName))
+          .setSuperclass(getMCTypeFacade().createQualifiedType(delegatorVisitorName))
           .addCDConstructor(createConstructor(symbolTableCreatorDelegatorName, globalScopeName, symbolTableCreatorName, simpleName))
           .addCDAttribute(createScopeStackAttribute(dequeType))
           .addCDAttribute(createSymbolTableCreatorAttribute(symbolTableCreatorName))
@@ -75,14 +80,14 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
         superSymTabCreator.put(cdDefinitionSymbol.getName(), symbolTableService.getSuperSTCForSubSTCSimpleName(cdDefinitionSymbol));
       }
     }
-    ASTCDParameter globalScopeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(globalScope), "globalScope");
+    ASTCDParameter globalScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(globalScope), "globalScope");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreatorDelegator, globalScopeParam);
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "Constructor",
         superSymTabCreator, symbolTableCreator, simpleName));
     return constructor;
   }
 
-  protected ASTCDAttribute createScopeStackAttribute(String dequeType) {
+  protected ASTCDAttribute createScopeStackAttribute(ASTMCType dequeType) {
     ASTCDAttribute scopeStack = getCDAttributeFacade().createAttribute(PROTECTED, dequeType, SCOPE_STACK_VAR);
     this.replaceTemplate(VALUE, scopeStack, new StringHookPoint("= new java.util.ArrayDeque<>()"));
     return scopeStack;
@@ -97,8 +102,8 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
   }
 
   protected ASTCDMethod createCreateFromASTMethod(String startProd, String artifactScope) {
-    ASTCDParameter startProdParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(startProd), "rootNode");
-    ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(artifactScope),
+    ASTCDParameter startProdParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(startProd), "rootNode");
+    ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(artifactScope),
         "createFromAST", startProdParam);
     this.replaceTemplate(EMPTY_BODY, createFromAST, new TemplateHookPoint(TEMPLATE_PATH + "CreateFromAST",
         artifactScope));

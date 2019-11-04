@@ -2,10 +2,7 @@
 package de.monticore.codegen.cd2java._ast.ast_class;
 
 import de.monticore.ast.ASTCNode;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
@@ -27,7 +24,9 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-
+/**
+ * transformation decorator which adds AST class specific properties
+ */
 public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
 
   protected final ASTService astService;
@@ -71,19 +70,28 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     changedClass.addCDMethod(getConstructMethod(originalClass));
     changedClass.addCDMethod(createGetChildrenMethod(originalClass));
     if (!originalClass.isPresentSuperclass()) {
-      changedClass.setSuperclass(this.getCDTypeFacade().createQualifiedType(ASTCNode.class));
+      changedClass.setSuperclass(this.getMCTypeFacade().createQualifiedType(ASTCNode.class));
     }
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(originalClass);
-    addSymboltableMethods(symbolAttributes, changedClass);
+    addSymbolTableMethods(symbolAttributes, changedClass);
 
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(originalClass);
-    addSymboltableMethods(scopeAttributes, changedClass);
+    addSymbolTableMethods(scopeAttributes, changedClass);
 
+    // if a ast has a symbol definition without a name, the getName has to be implemented manually
+    // class and getName method are getting abstract
+    if (astService.isSymbolWithoutName(originalClass)) {
+      changedClass.getModifier().setAbstract(true);
+      changedClass.addCDMethod(astService.createGetNameMethod());
+    }
     return changedClass;
   }
 
-  protected void addSymboltableMethods(List<ASTCDAttribute> astcdAttributes, ASTCDClass clazz) {
+  /**
+   * creates symbol and scope methods and attributes with the help of the ASTSymbolDecorator and ASTScopeDecorator
+   */
+  protected void addSymbolTableMethods(List<ASTCDAttribute> astcdAttributes, ASTCDClass clazz) {
     for (ASTCDAttribute attribute : astcdAttributes) {
       if (!astService.hasStereotype(attribute.getModifier(), MC2CDStereotypes.INHERITED)) {
         clazz.addCDAttribute(attribute);
@@ -102,7 +110,6 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     }
   }
 
-
   protected ASTCDMethod createAcceptMethod(ASTCDClass astClass) {
     ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getVisitorType(), VISITOR_PREFIX);
     ASTCDMethod acceptMethod = this.getCDMethodFacade().createMethod(PUBLIC, ASTConstants.ACCEPT_METHOD, visitorParameter);
@@ -111,7 +118,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   }
 
   protected ASTCDMethod createGetChildrenMethod(ASTCDClass astClass) {
-    ASTMCType astNodeType = getCDTypeFacade().createCollectionTypeOf(ASTConstants.AST_INTERFACE);
+    ASTMCType astNodeType = getMCTypeFacade().createCollectionTypeOf(ASTConstants.AST_INTERFACE);
     ASTCDMethod getChildrenMethod = this.getCDMethodFacade().createMethod(PUBLIC, astNodeType, ASTConstants.GET_CHILDREN_METHOD);
     this.replaceTemplate(EMPTY_BODY, getChildrenMethod, new TemplateHookPoint("_ast.ast_class.GetChildren", astClass));
     return getChildrenMethod;
@@ -134,7 +141,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
 
   protected ASTCDMethod getConstructMethod(ASTCDClass astClass) {
     ASTCDMethod constructMethod;
-    ASTMCType classType = this.getCDTypeFacade().createQualifiedType(astClass.getName());
+    ASTMCType classType = this.getMCTypeFacade().createQualifiedType(astClass.getName());
     if (astClass.isPresentModifier() && astClass.getModifier().isAbstract()) {
       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT, classType, ASTConstants.CONSTRUCT_METHOD);
     } else {

@@ -22,10 +22,18 @@ import static de.monticore.codegen.cd2java._ast.mill.MillConstants.*;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.REFERENCE_SUFFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * creates a SymTabMill class from a grammar
+ */
 public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;
 
+  /**
+   * flag added to define if the Language class was overwritten with the TOP mechanism
+   * if top mechanism was used, must use setter to set flag true, before the decoration
+   * is needed for the languageAttribute
+   */
   protected boolean isLanguageTop;
 
   protected static final String TEMPLATE_PATH = "_symboltable.symTabMill.";
@@ -117,13 +125,13 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDMethod createGetMillMethod(String symTabMill) {
-    ASTCDMethod getMillMethod = getCDMethodFacade().createMethod(PROTECTED_STATIC, getCDTypeFacade().createQualifiedType(symTabMill), GET_MILL);
+    ASTCDMethod getMillMethod = getCDMethodFacade().createMethod(PROTECTED_STATIC, getMCTypeFacade().createQualifiedType(symTabMill), GET_MILL);
     this.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint(TEMPLATE_PATH + "GetMill", symTabMill));
     return getMillMethod;
   }
 
   protected ASTCDMethod createInitMeMethod(String symTabMill, List<ASTCDAttribute> attributeList) {
-    ASTCDParameter millParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(symTabMill), "a");
+    ASTCDParameter millParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(symTabMill), "a");
     ASTCDMethod getMillMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, INIT_ME, millParam);
     this.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint(TEMPLATE_PATH + "InitMe", attributeList));
     return getMillMethod;
@@ -152,10 +160,11 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     List<ASTCDMethod> builderMethodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : attributeList) {
       String builderName = astcdAttribute.getName() + BUILDER_SUFFIX;
-      ASTMCQualifiedType builderType = getCDTypeFacade().createQualifiedType(StringTransformations.capitalize(builderName));
+      ASTMCQualifiedType builderType = getMCTypeFacade().createQualifiedType(StringTransformations.capitalize(builderName));
       ASTCDMethod _builderMethod = getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + builderName);
       this.replaceTemplate(EMPTY_BODY, _builderMethod, new StringHookPoint("return new " + StringTransformations.capitalize(builderName) + "();"));
       builderMethodList.add(_builderMethod);
+
 
       ASTCDMethod builderMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, builderType, builderName);
       this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint(TEMPLATE_PATH + "BuilderMethod", astcdAttribute.getName()));
@@ -176,7 +185,7 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
           String symTabMillFullName = symbolTableService.getSymTabMillFullName(cdDefinitionSymbol);
           String symbolBuilderSimpleName = StringTransformations.uncapitalize(symbolTableService.getSymbolBuilderSimpleName(type.getAstNode().get()));
           ASTCDMethod builderMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC,
-              getCDTypeFacade().createQualifiedType(symbolBuilderFullName), symbolBuilderSimpleName);
+              getMCTypeFacade().createQualifiedType(symbolBuilderFullName), symbolBuilderSimpleName);
 
           this.replaceTemplate(EMPTY_BODY, builderMethod, new StringHookPoint("return " + symTabMillFullName + "." + symbolBuilderSimpleName + "();"));
           builderMethodList.add(builderMethod);

@@ -12,6 +12,9 @@ import org.apache.commons.lang3.StringUtils;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * changes implementation of the get method
+ */
 public class SymbolReferenceMandatoryAccessorDecorator extends MandatoryAccessorDecorator {
 
   public SymbolReferenceMandatoryAccessorDecorator(GlobalExtensionManagement glex) {
@@ -21,7 +24,8 @@ public class SymbolReferenceMandatoryAccessorDecorator extends MandatoryAccessor
   @Override
   protected ASTCDMethod createGetter(final ASTCDAttribute ast) {
     String getterPrefix;
-    if (getCDTypeFacade().isBooleanType(ast.getMCType())) {
+    // determine correct getter name with 'is' or 'get' prefix
+    if (getMCTypeFacade().isBooleanType(ast.getMCType())) {
       getterPrefix = IS;
     } else {
       getterPrefix = GET;

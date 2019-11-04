@@ -3,6 +3,7 @@
 package de.monticore;
 
 component grammar JavaLight extends de.monticore.expressions.CommonExpressions,
+                                    de.monticore.expressions.AssignmentExpressions,
                                     de.monticore.statements.MCCommonStatements,
                                     de.monticore.types.MCBasicTypes {
 

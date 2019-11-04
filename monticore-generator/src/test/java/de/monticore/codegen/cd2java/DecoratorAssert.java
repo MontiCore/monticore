@@ -5,10 +5,9 @@ import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.factories.CDModifier;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.types.MCFullGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import static org.junit.Assert.assertEquals;
@@ -18,7 +17,7 @@ public final class DecoratorAssert {
 
   private static final int DEFAULT_ARRAY_DIMENSION = 1;
 
-  private static final CDTypeFacade CD_TYPE_FACADE = CDTypeFacade.getInstance();
+  private static final MCTypeFacade CD_TYPE_FACADE = MCTypeFacade.getInstance();
 
   private DecoratorAssert() {
   }

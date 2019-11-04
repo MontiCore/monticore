@@ -30,7 +30,7 @@ import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTEmfDecorator;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTFullEmfDecorator;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.DataEmfDecorator;
-import de.monticore.codegen.cd2java._ast_emf.ast_class.emfMutatorMethodDecorator.EmfMutatorDecorator;
+import de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator.EmfMutatorDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
@@ -56,7 +56,6 @@ import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolReferenceMethodDecorator.SymbolReferenceMethodDecorator;
 import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
 import de.monticore.codegen.cd2java._visitor.*;
-import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
@@ -450,8 +449,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         ? cd.getCDDefinition().getName()
         : reportSubDir.concat(".").concat(cd.getCDDefinition().getName());
 
-    // Write reporting CD
-    ASTCDCompilationUnit astCdForReporting = new AstGeneratorHelper(cd, globalScope, mcScope).getASTCDForReporting();
+    // Clone CD for reporting
+    ASTCDCompilationUnit astCdForReporting = cd.deepClone();
     // No star imports in reporting CDs
     astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
     GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
@@ -761,8 +760,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   public void generateODs(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
                           Grammar_WithConceptsGlobalScope mcScope,
-                          ASTCDCompilationUnit astClassDiagram, File outputDirectory) {
-    ODGenerator.generate(glex, astClassDiagram, globalScope, mcScope, outputDirectory);
+                          ASTCDCompilationUnit astClassDiagram, ASTMCGrammar grammar, File outputDirectory) {
+    ODGenerator.generate(glex, astClassDiagram, grammar, globalScope, mcScope, outputDirectory);
   }
 
   private void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,

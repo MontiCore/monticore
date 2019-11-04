@@ -19,6 +19,9 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKA
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * creates the nodeFactory class for a grammar
+ */
 public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final NodeFactoryService nodeFactoryService;
@@ -31,7 +34,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   public ASTCDClass decorate(final ASTCDCompilationUnit astcdCompilationUnit) {
     ASTCDDefinition astcdDefinition = astcdCompilationUnit.getCDDefinition();
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
-    ASTMCType factoryType = this.getCDTypeFacade().createQualifiedType(factoryClassName);
+    ASTMCType factoryType = this.getMCTypeFacade().createQualifiedType(factoryClassName);
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, factoryClassName);
 
@@ -51,7 +54,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         continue;
       }
       //add factory attributes for all classes
-      factoryAttributeList.add(addAttributes(astcdClass, factoryType));
+      factoryAttributeList.add(addAttribute(astcdClass, factoryType));
       //add create and doCreate Methods for all classes
       createMethodList.addAll(addFactoryMethods(astcdClass));
     }
@@ -79,7 +82,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return getFactoryMethod;
   }
 
-  protected ASTCDAttribute addAttributes(ASTCDClass astcdClass, ASTMCType factoryType) {
+  protected ASTCDAttribute addAttribute(ASTCDClass astcdClass, ASTMCType factoryType) {
     // create attribute for AST
     return this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC, factoryType, FACTORY + astcdClass.getName());
   }
@@ -87,7 +90,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected List<ASTCDMethod> addFactoryMethods(ASTCDClass astcdClass) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     String astName = astcdClass.getName();
-    ASTMCType astType = this.getCDTypeFacade().createQualifiedType(astName);
+    ASTMCType astType = this.getMCTypeFacade().createQualifiedType(astName);
 
     // add create Method for AST without parameters
     methodList.add(addCreateMethod(astName, astType));
@@ -110,24 +113,26 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return doCreateWithoutParameters;
   }
 
+  /**
+   * creates methods that delegate to factories of super grammars
+   * has to go over all super grammars
+   */
   protected List<ASTCDMethod> addFactoryDelegateMethods(List<ASTCDClass> classList) {
     List<ASTCDMethod> delegateMethodList = new ArrayList<>();
     //get super symbols
     for (CDDefinitionSymbol superSymbol : nodeFactoryService.getSuperCDsTransitive()) {
       Optional<ASTCDDefinition> astNode = superSymbol.getAstNode();
       if (astNode.isPresent()) {
-        //get super cddefinition
+        //get super cdDefinition
         ASTCDDefinition superDefinition = astNode.get();
 
         TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor(superSymbol.getEnclosingScope());
         CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build().accept(visitor);
 
         for (ASTCDClass superClass : superDefinition.getCDClassList()) {
-          if (!nodeFactoryService.isClassOverwritten(superClass, classList)
-              && !(superClass.isPresentModifier() && superClass.getModifier().isAbstract())
-              && !nodeFactoryService.isMethodAlreadyDefined(CREATE_METHOD + superClass.getName(), delegateMethodList)) {
+          if (canAddDelegateMethod(superClass, classList, delegateMethodList)) {
             String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
-            ASTMCType superAstType = this.getCDTypeFacade().createQualifiedType(packageName + superClass.getName());
+            ASTMCType superAstType = this.getMCTypeFacade().createQualifiedType(packageName + superClass.getName());
 
             //add create method without parameters
             delegateMethodList.add(addCreateDelegateMethod(superAstType, superClass.getName(), packageName, superSymbol.getName()));
@@ -136,6 +141,17 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
       }
     }
     return delegateMethodList;
+  }
+
+  /**
+   * checks if a superClass is not overwritten and is not abstract
+   * it is also checked if the method which will be created, does not already exist
+   * only then the delegate method can be added
+   */
+  protected boolean canAddDelegateMethod(ASTCDClass superClass, List<ASTCDClass> classList, List<ASTCDMethod> delegateMethodList) {
+    return !nodeFactoryService.isClassOverwritten(superClass, classList)
+        && !(superClass.isPresentModifier() && superClass.getModifier().isAbstract())
+        && !nodeFactoryService.isMethodAlreadyDefined(CREATE_METHOD + superClass.getName(), delegateMethodList);
   }
 
   protected ASTCDMethod addCreateDelegateMethod(ASTMCType superAstType, String className, String packageName, String symbolName) {

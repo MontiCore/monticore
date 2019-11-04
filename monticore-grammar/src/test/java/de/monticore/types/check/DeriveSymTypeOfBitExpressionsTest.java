@@ -6,6 +6,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -72,6 +73,8 @@ public class DeriveSymTypeOfBitExpressionsTest {
     add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",f)));
     derLit.setScope(scope);
+
+    LogStub.init();
   }
 
   // Parer used for convenience:
@@ -107,6 +110,18 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
+  @Test
+  public void testInvalidLeftShiftExpression() throws IOException{
+    //only possible with integral types
+    String s = "3<<4.5";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0209 The resulting type cannot be calculated");
+    }
+  }
+
   /**
    * test rightShiftExpression
    */
@@ -121,6 +136,18 @@ public class DeriveSymTypeOfBitExpressionsTest {
     s = "6L>>4L";
     astex = p.parse_StringExpression(s).get();
     assertEquals("long",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void testInvalidRightShiftExpression() throws IOException{
+    //only possible with integral types
+    String s = "3>>4.5";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0210 The resulting type cannot be calculated");
+    }
   }
 
   /**
@@ -139,6 +166,18 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
+  @Test
+  public void testInvalidLogicalRightExpression() throws IOException{
+    //only possible with integral types
+    String s = "3>>>4.5";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0211 The resulting type cannot be calculated");
+    }
+  }
+
   /**
    * test BinaryOrOpExpression
    */
@@ -153,6 +192,18 @@ public class DeriveSymTypeOfBitExpressionsTest {
     s = "\'a\'|4L";
     astex = p.parse_StringExpression(s).get();
     assertEquals("long",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void testInvalidBinaryOrOpExpression() throws IOException{
+    //only possible with integral types
+    String s = "3|4.5";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0213 The resulting type cannot be calculated");
+    }
   }
 
   /**
@@ -171,6 +222,18 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("long",tc.typeOf(astex).print());
   }
 
+  @Test
+  public void testInvalidBinaryAndExpression() throws IOException{
+    //only possible with integral types
+    String s = "3&4.5";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0212 The resulting type cannot be calculated");
+    }
+  }
+
   /**
    * test BinaryXorExpression
    */
@@ -185,5 +248,17 @@ public class DeriveSymTypeOfBitExpressionsTest {
     s = "true^false";
     astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void testInvalidBinaryXorExpression() throws IOException{
+    //only possible with integral types
+    String s = "3^4.5";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0214 The resulting type cannot be calculated");
+    }
   }
 }

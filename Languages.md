@@ -18,7 +18,7 @@ of the language and its development status.
 The different development statuses of grammars are explained 
 [**here**](00.org/Explanations/StatusOfGrammars.md).
 
-## List of Languages
+## List of Languages 
 
 ### [Activity Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
 * Author: Not available

@@ -8,7 +8,7 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -19,6 +19,9 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a SymbolDeSer class from a grammar
+ */
 public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;
@@ -36,7 +39,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     String symbolDeSerName = symbolTableService.getSymbolDeSerSimpleName(symbolClass);
     String symbolFullName = symbolTableService.getSymbolFullName(symbolClass);
     String symbolSimpleName = symbolTableService.getSymbolSimpleName(symbolClass);
-    String iDeSer = String.format(I_DE_SER_TYPE, symbolFullName);
+    ASTMCBasicGenericType iDeSerType = getMCTypeFacade().createBasicGenericTypeOf(I_DE_SER_TYPE, symbolFullName);
     String symbolTablePrinterName = symbolTableService.getSymbolTablePrinterFullName();
     String symbolBuilderFullName = symbolTableService.getSymbolBuilderFullName(symbolClass);
     String symbolBuilderSimpleName = symbolTableService.getSymbolBuilderSimpleName(symbolClass);
@@ -45,7 +48,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     return CD4CodeMill.cDClassBuilder()
         .setName(symbolDeSerName)
         .setModifier(PUBLIC.build())
-        .addInterface((ASTMCObjectType) getCDTypeFacade().createTypeByDefinition(iDeSer))
+        .addInterface(iDeSerType)
         .addCDMethod(createGetSerializedKindMethod(symbolFullName))
         .addCDMethod(createSerializeMethod(symbolFullName, symbolTablePrinterName))
         .addAllCDMethods(createDeserializeMethods(symbolFullName, symbolSimpleName, symbolBuilderFullName,
@@ -57,9 +60,8 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   protected List<ASTCDMethod> createDeserializeMethods(String symbolFullName, String symbolSimpleName,
                                                        String symbolBuilderFullName, String symbolBuilderSimpleName,
                                                        String symTabMill, List<ASTCDAttribute> symbolRuleAttributes) {
-
     ASTCDMethod deserializeStringMethod = createDeserializeStringMethod(symbolFullName);
-    ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), SYMBOL_JSON_VAR);
+    ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), SYMBOL_JSON_VAR);
     ASTCDMethod deserializeJsonObjectMethod = createDeserializeJsonObjectMethod(symbolFullName, symbolSimpleName, jsonParam);
     ASTCDMethod deserializeSymbolMethod = createDeserializeSymbolMethod(symbolBuilderFullName, symbolBuilderSimpleName,
         symTabMill, symbolFullName, symbolSimpleName, jsonParam, symbolRuleAttributes);
@@ -70,28 +72,28 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   }
 
   protected ASTCDMethod createGetSerializedKindMethod(String symbolName) {
-    ASTCDMethod getSerializedKindMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createStringType(), "getSerializedKind");
+    ASTCDMethod getSerializedKindMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getSerializedKind");
     this.replaceTemplate(EMPTY_BODY, getSerializedKindMethod, new StringHookPoint("return \"" + symbolName + "\";"));
     return getSerializedKindMethod;
   }
 
   protected ASTCDMethod createSerializeMethod(String symbolName, String symbolTablePrinter) {
-    ASTCDParameter toSerializeParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(symbolName), "toSerialize");
-    ASTCDMethod serializeMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createStringType(), "serialize", toSerializeParam);
+    ASTCDParameter toSerializeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(symbolName), "toSerialize");
+    ASTCDMethod serializeMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "serialize", toSerializeParam);
     this.replaceTemplate(EMPTY_BODY, serializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "Serialize", symbolTablePrinter));
     return serializeMethod;
   }
 
   protected ASTCDMethod createDeserializeStringMethod(String symbolName) {
-    ASTCDParameter stringParam = getCDParameterFacade().createParameter(getCDTypeFacade().createStringType(), "serialized");
-    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(symbolName), DESERIALIZE, stringParam);
+    ASTCDParameter stringParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "serialized");
+    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolName), DESERIALIZE, stringParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "DeserializeString"));
     return deserializeMethod;
   }
 
   protected ASTCDMethod createDeserializeJsonObjectMethod(String symbolFullName, String symbolSimpleName,
                                                           ASTCDParameter jsonParam) {
-    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getCDTypeFacade().createQualifiedType(symbolFullName), DESERIALIZE, jsonParam);
+    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolFullName), DESERIALIZE, jsonParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "DeserializeJsonObject", symbolSimpleName));
     return deserializeMethod;
   }
@@ -100,7 +102,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   protected ASTCDMethod createDeserializeSymbolMethod(String symbolBuilderFullName, String symbolBuilderSimpleName,
                                                       String symTabMill, String symbolFullName, String symbolSimpleName,
                                                       ASTCDParameter jsonParam, List<ASTCDAttribute> symbolRuleAttributes) {
-    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, getCDTypeFacade().createQualifiedType(symbolFullName), DESERIALIZE + symbolSimpleName, jsonParam);
+    ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(symbolFullName), DESERIALIZE + symbolSimpleName, jsonParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "DeserializeSymbol",
         symbolBuilderFullName, symbolBuilderSimpleName, symTabMill, symbolFullName, symbolRuleAttributes));
     return deserializeMethod;
@@ -109,7 +111,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   protected List<ASTCDMethod> createDeserializeSymbolRuleAttributesMethod(List<ASTCDAttribute> attributeList, String deSerName) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : attributeList) {
-      ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(JSON_OBJECT), "symbolJson");
+      ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), "symbolJson");
       ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, astcdAttribute.getMCType(), DESERIALIZE +
           StringTransformations.capitalize(astcdAttribute.getName()), jsonParam);
       String returnType = symbolTableService.determineReturnType(deserializeMethod.getMCReturnType().getMCType());
@@ -121,7 +123,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   }
 
   protected ASTCDMethod createDeserializeAdditionalAttributesSymbolMethod(String symbolFullName, ASTCDParameter jsonParam) {
-    ASTCDParameter symbolParam = getCDParameterFacade().createParameter(getCDTypeFacade().createQualifiedType(symbolFullName), SYMBOL_VAR);
+    ASTCDParameter symbolParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(symbolFullName), SYMBOL_VAR);
     return getCDMethodFacade().createMethod(PROTECTED, "deserializeAdditionalAttributes", symbolParam, jsonParam);
   }
 }

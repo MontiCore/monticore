@@ -11,7 +11,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
 
-  private CDTypeFacade cdTypeFacade;
+  private MCTypeFacade mcTypeFacade;
 
   private ASTCDClass visitorClass;
 
@@ -44,6 +44,8 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
   private static final String AST_TRANSITION = "de.monticore.codegen.ast.automaton._ast.ASTTransition";
 
   private static final String AST_STATE = "de.monticore.codegen.ast.automaton._ast.ASTState";
+
+  private static final String AST_ABSTRACT_CLASS = "de.monticore.codegen.ast.automaton._ast.ASTAbstractClass";
 
   private static final String AST_AUTOMATON_NODE = "de.monticore.codegen.ast.automaton._ast.ASTAutomatonNode";
 
@@ -56,7 +58,7 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
     LogStub.init();
     LogStub.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.mcTypeFacade = MCTypeFacade.getInstance();
 
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
@@ -112,7 +114,7 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
     ASTCDMethod getParentMethod = getMethodBy("getParent", visitorClass);
 
     assertDeepEquals(PUBLIC, getParentMethod.getModifier());
-    ASTMCType type = cdTypeFacade.createOptionalTypeOf(AST_AUTOMATON_NODE);
+    ASTMCType type = mcTypeFacade.createOptionalTypeOf(AST_AUTOMATON_NODE);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
     assertDeepEquals(returnType, getParentMethod.getMCReturnType());
     assertTrue(getParentMethod.isEmptyCDParameters());
@@ -123,7 +125,7 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
     ASTCDMethod getParentsMethod = getMethodBy("getParents", visitorClass);
 
     assertDeepEquals(PUBLIC, getParentsMethod.getModifier());
-    ASTMCType type = cdTypeFacade.createListTypeOf(AST_AUTOMATON_NODE);
+    ASTMCType type = mcTypeFacade.createListTypeOf(AST_AUTOMATON_NODE);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
     assertDeepEquals(returnType, getParentsMethod.getMCReturnType());
     assertTrue(getParentsMethod.isEmptyCDParameters());
@@ -134,7 +136,7 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testTraverseASTAutomaton() {
     List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorClass);
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_AUTOMATON);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_AUTOMATON);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -146,7 +148,7 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testTraverseASTTransition() {
     List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorClass);
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_TRANSITION);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_TRANSITION);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
@@ -158,13 +160,23 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testTraverseASTState() {
     List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorClass);
-    ASTMCType astType = this.cdTypeFacade.createTypeByDefinition(AST_STATE);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_STATE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
     ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  }
+
+  /**
+   * no traverse method for abstract classes
+   */
+  @Test
+  public void testTraverseASTAbstractClass() {
+    List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorClass);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_ABSTRACT_CLASS);
+    assertTrue(methodList.stream().noneMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
   }
 
   @Test
