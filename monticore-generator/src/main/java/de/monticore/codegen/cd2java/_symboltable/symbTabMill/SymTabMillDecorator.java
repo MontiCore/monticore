@@ -165,6 +165,7 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
       this.replaceTemplate(EMPTY_BODY, _builderMethod, new StringHookPoint("return new " + StringTransformations.capitalize(builderName) + "();"));
       builderMethodList.add(_builderMethod);
 
+
       ASTCDMethod builderMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, builderType, builderName);
       this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint(TEMPLATE_PATH + "BuilderMethod", astcdAttribute.getName()));
       builderMethodList.add(builderMethod);

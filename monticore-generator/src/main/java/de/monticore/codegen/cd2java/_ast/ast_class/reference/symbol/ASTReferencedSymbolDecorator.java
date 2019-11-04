@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java._ast.ast_class.reference.referencedSymbol;
+package de.monticore.codegen.cd2java._ast.ast_class.reference.symbol;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
@@ -7,7 +7,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractTransformer;
-import de.monticore.codegen.cd2java._ast.ast_class.reference.referencedSymbol.referenedSymbolMethodDecorator.ReferencedSymbolAccessorDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.reference.symbol.methoddecorator.ReferencedSymbolAccessorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;

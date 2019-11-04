@@ -32,6 +32,7 @@ classdiagram Automata {
       protected String from;
       <<inherited="Automata">>protected String input;
       <<inherited="Automata">>protected String to;
+      public String toString();
     }
 
     public class ASTAutName extends de.monticore.codegen.ast.Lexicals.ASTName{
@@ -43,4 +44,6 @@ classdiagram Automata {
     public interface ASTBodyExt{
       protected String varname;
     }
+
+    public abstract class AbstractClass{}
 }

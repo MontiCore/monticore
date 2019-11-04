@@ -1,23 +1,24 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java._ast_emf.ast_class.emfMutatorMethodDecorator;
+package de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
-import de.monticore.codegen.cd2java.methods.mutator.OptionalMutatorDecorator;
+import de.monticore.codegen.cd2java.methods.mutator.ListMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.PACKAGE_SUFFIX;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class EmfOptionalMutatorDecorator extends OptionalMutatorDecorator {
+
+public class EmfListMutatorDecorator extends ListMutatorDecorator {
+
   protected final ASTService astService;
 
   protected String className;
 
-  public EmfOptionalMutatorDecorator(GlobalExtensionManagement glex, ASTService astService) {
+  public EmfListMutatorDecorator(GlobalExtensionManagement glex, ASTService astService) {
     super(glex);
     this.astService = astService;
   }
@@ -30,14 +31,13 @@ public class EmfOptionalMutatorDecorator extends OptionalMutatorDecorator {
     this.className = className;
   }
 
-
   @Override
-  protected ASTCDMethod createSetOptMethod(final ASTCDAttribute attribute) {
+  protected ASTCDMethod createSetListMethod(ASTCDAttribute attribute) {
     String packageName = astService.getCDName() + PACKAGE_SUFFIX;
-    String methodName = String.format(SET_OPT, naiveAttributeName);
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, methodName, this.getCDParameterFacade().createParameters(attribute));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.ast_class.Set",
-        packageName, getClassName(), attribute));
-    return method;
+    String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, attribute.getName());
+    ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
+    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("_ast_emf.ast_class.Set",
+        packageName, className, attribute));
+    return getList;
   }
 }

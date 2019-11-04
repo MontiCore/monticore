@@ -30,7 +30,7 @@ import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTEmfDecorator;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTFullEmfDecorator;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.DataEmfDecorator;
-import de.monticore.codegen.cd2java._ast_emf.ast_class.emfMutatorMethodDecorator.EmfMutatorDecorator;
+import de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator.EmfMutatorDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;

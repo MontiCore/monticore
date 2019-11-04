@@ -84,7 +84,7 @@ public class ASTEmfDecorator extends ASTDecorator {
     methodList.add(createEDerivedStructuralFeatureIDMethod());
     methodList.add(creatEStaticClassMethod(packageName, className));
 
-    if (astcdClass.getCDMethodList().stream().noneMatch(x -> x.getName().equals("toString"))) {
+    if (astcdClass.getCDMethodList().stream().noneMatch(x -> "toString".equals(x.getName()))) {
       methodList.add(createEToStringMethod(copiedAttributeList));
     }
     return methodList;

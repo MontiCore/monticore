@@ -14,10 +14,6 @@ public class LastResult{
     this.last = Optional.empty();
   }
 
-  public static <T> Optional<T> setAbsentLast() {
-    return Optional.empty();
-  }
-
   public SymTypeExpression getLast() {
     return last.get();
   }
