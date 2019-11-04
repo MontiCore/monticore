@@ -103,7 +103,7 @@ public class SymTypeExpressionTest {
 
     result = JsonParser.parse(teVoid.printAsJson());
     assertTrue(result.isJsonString());
-    assertEquals("void", result.getAsJsonString().getValue());
+    assertEquals("voidType", result.getAsJsonString().getValue());
 
     result = JsonParser.parse(teNull.printAsJson());
     assertTrue(result.isJsonString());
