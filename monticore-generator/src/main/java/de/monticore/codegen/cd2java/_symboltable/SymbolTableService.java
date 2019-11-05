@@ -213,15 +213,15 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    */
 
   public String getSymbolReferenceClassFullName(ASTCDType astcdType, CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getSymbolReferenceClassSimpleName(astcdType);
+    return getPackage(cdSymbol) + "." + getSymbolLoaderSimpleName(astcdType);
   }
 
   public String getSymbolReferenceClassFullName(ASTCDType astcdType) {
     return getSymbolReferenceClassFullName(astcdType, getCDSymbol());
   }
 
-  public String getSymbolReferenceClassSimpleName(ASTCDType astcdType) {
-    return getSymbolSimpleName(astcdType) + REFERENCE_SUFFIX;
+  public String getSymbolLoaderSimpleName(ASTCDType astcdType) {
+    return getSymbolSimpleName(astcdType) + LOADER_SUFFIX;
   }
 
   /**

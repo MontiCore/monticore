@@ -39,7 +39,7 @@ public class SymbolTableConstants {
 
   public static final String LANGUAGE_SUFFIX = "Language";
 
-  public static final String REFERENCE_SUFFIX = "Loader";
+  public static final String LOADER_SUFFIX = "Loader";
 
   public static final String DE_SER_SUFFIX = "DeSer";
 
@@ -57,7 +57,7 @@ public class SymbolTableConstants {
 
   public static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
 
-  public static final String I_SYMBOL_REFERENCE = "de.monticore.symboltable.ISymbolLoader";
+  public static final String I_SYMBOL_LOADER = "de.monticore.symboltable.ISymbolLoader";
 
   public static final String QUALIFIED_NAMES_CALCULATOR = "de.monticore.symboltable.names.QualifiedNamesCalculator";
 

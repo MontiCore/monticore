@@ -26,7 +26,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
+public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass symbolClassAutomaton;
 
@@ -58,7 +58,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
 
-    SymbolReferenceDecorator decorator = new SymbolReferenceDecorator(this.glex,
+    SymbolLoaderDecorator decorator = new SymbolLoaderDecorator(this.glex,
             new SymbolTableService(decoratedCompilationUnit),
             new MethodDecorator(glex));
     //creates ScopeSpanningSymbol
@@ -118,7 +118,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testReferencedSymbolAttribute() {
+  public void testLoadedSymbolAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("loadedSymbol", symbolClassAutomaton);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertOptionalOf(AUTOMATON_SYMBOL, astcdAttribute.getMCType());
@@ -130,7 +130,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetReferencedSymbolMethod() {
+  public void testGetLoadedymbolMethod() {
     ASTCDMethod method = getMethodBy("getLoadedSymbol", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
@@ -149,7 +149,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
 
   @Test
-  public void testLoadReferencedSymbolMethod() {
+  public void testLoadSymbolMethod() {
     ASTCDMethod method = getMethodBy("loadSymbol", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertOptionalOf(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
@@ -158,7 +158,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testIsReferencedSymbolLoadedMethod() {
+  public void testIsSymbolLoadedMethod() {
     ASTCDMethod method = getMethodBy("isSymbolLoaded", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertBoolean(method.getMCReturnType().getMCType());

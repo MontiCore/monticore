@@ -19,17 +19,17 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAM
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class SymbolReferenceBuilderDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
+public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;
 
   protected final AccessorDecorator accessorDecorator;
 
-  protected static final String TEMPLATE_PATH = "_symboltable.symbolreference.";
+  protected static final String TEMPLATE_PATH = "_symboltable.symbolloader.";
 
-  public SymbolReferenceBuilderDecorator(final GlobalExtensionManagement glex,
-                                         final SymbolTableService symbolTableService,
-                                         final AccessorDecorator accessorDecorator) {
+  public SymbolLoaderBuilderDecorator(final GlobalExtensionManagement glex,
+                                      final SymbolTableService symbolTableService,
+                                      final AccessorDecorator accessorDecorator) {
     super(glex);
     this.symbolTableService = symbolTableService;
     this.accessorDecorator = accessorDecorator;
@@ -37,12 +37,12 @@ public class SymbolReferenceBuilderDecorator extends AbstractCreator<ASTCDType, 
 
   @Override
   public ASTCDClass decorate(ASTCDType input) {
-    String symbolReferenceName = symbolTableService.getSymbolReferenceClassSimpleName(input);
-    String symbolReferenceBuilderName = symbolReferenceName + BUILDER_SUFFIX;
+    String symbolLoaderName = symbolTableService.getSymbolLoaderSimpleName(input);
+    String symbolLoaderBuilderName = symbolLoaderName + BUILDER_SUFFIX;
     String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
 
     BuilderMutatorMethodDecorator builderMutatorMethodDecorator = new BuilderMutatorMethodDecorator(glex,
-        getMCTypeFacade().createQualifiedType(symbolReferenceBuilderName));
+        getMCTypeFacade().createQualifiedType(symbolLoaderBuilderName));
     ASTCDAttribute nameAttribute = createNameAttribute();
     List<ASTCDMethod> nameMethods = accessorDecorator.decorate(nameAttribute);
     nameMethods.addAll(builderMutatorMethodDecorator.decorate(nameAttribute));
@@ -52,21 +52,21 @@ public class SymbolReferenceBuilderDecorator extends AbstractCreator<ASTCDType, 
     enclosingScopeMethods.addAll(builderMutatorMethodDecorator.decorate(enclosingScopeAttribute));
 
     return CD4AnalysisMill.cDClassBuilder()
-        .setName(symbolReferenceBuilderName)
+        .setName(symbolLoaderBuilderName)
         .setModifier(PUBLIC.build())
-        .addCDConstructor(createDefaultConstructor(symbolReferenceBuilderName))
-        .addCDAttribute(createRealThisAttribute(symbolReferenceBuilderName))
+        .addCDConstructor(createDefaultConstructor(symbolLoaderBuilderName))
+        .addCDAttribute(createRealThisAttribute(symbolLoaderBuilderName))
         .addCDAttribute(nameAttribute)
         .addCDAttribute(enclosingScopeAttribute)
         .addAllCDMethods(nameMethods)
         .addAllCDMethods(enclosingScopeMethods)
-        .addCDMethod(createBuildMethod(symbolReferenceName))
+        .addCDMethod(createBuildMethod(symbolLoaderName))
         .build();
   }
 
-  protected ASTCDConstructor createDefaultConstructor(String symbolReferenceBuilderName) {
-    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PROTECTED, symbolReferenceBuilderName);
-    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + symbolReferenceBuilderName + ") this;"));
+  protected ASTCDConstructor createDefaultConstructor(String symbolLoaderBuilderName) {
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PROTECTED, symbolLoaderBuilderName);
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + symbolLoaderBuilderName + ") this;"));
     return constructor;
   }
 
@@ -78,13 +78,13 @@ public class SymbolReferenceBuilderDecorator extends AbstractCreator<ASTCDType, 
     return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR);
   }
 
-  protected ASTCDAttribute createRealThisAttribute(String symbolReferenceBuilderName) {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, symbolReferenceBuilderName, REAL_BUILDER);
+  protected ASTCDAttribute createRealThisAttribute(String symbolLoaderBuilderName) {
+    return this.getCDAttributeFacade().createAttribute(PROTECTED, symbolLoaderBuilderName, REAL_BUILDER);
   }
 
-  protected ASTCDMethod createBuildMethod(String symbolReference) {
-    ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolReference), "build");
-    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(TEMPLATE_PATH + "Build", symbolReference));
+  protected ASTCDMethod createBuildMethod(String symbolLoader) {
+    ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolLoader), "build");
+    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(TEMPLATE_PATH + "Build", symbolLoader));
     return buildMethod;
   }
 }

@@ -25,7 +25,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
-public class SymbolReferenceBuilderDecoratorTest extends DecoratorTestCase {
+public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass builderClass;
 
@@ -52,7 +52,7 @@ public class SymbolReferenceBuilderDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
 
-    SymbolReferenceBuilderDecorator decorator = new SymbolReferenceBuilderDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
+    SymbolLoaderBuilderDecorator decorator = new SymbolLoaderBuilderDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
         new AccessorDecorator(glex));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("ASTAutomaton", decoratedCompilationUnit);
