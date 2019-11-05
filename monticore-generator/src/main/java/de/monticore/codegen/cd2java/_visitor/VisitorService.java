@@ -188,7 +188,7 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
 
   /**
-   * add package AST package to all classed, interfaces and enums at the beginning
+   * add AST package to all classes, interfaces and enums at the beginning
    * needed because visitor classes are in a different package and so need to fully qualify the ast classes
    */
   public ASTCDCompilationUnit calculateCDTypeNamesWithASTPackage(ASTCDCompilationUnit input) {
