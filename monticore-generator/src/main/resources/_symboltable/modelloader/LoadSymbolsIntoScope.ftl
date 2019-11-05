@@ -2,10 +2,8 @@
 ${tc.signature( "scopeInterface", "scopeDeSer")}
   final de.monticore.io.paths.ModelCoordinate resolvedCoordinate = resolveSymbol(qualifiedModelName, modelPath);
   if (resolvedCoordinate.hasLocation()) {
-    Optional<${scopeInterface}> deser  = new ${scopeDeSer}().load(resolvedCoordinate.getLocation());
-    if(deser.isPresent()) {
-      enclosingScope.addSubScope(deser.get());
-      return true;
-    }
+    ${scopeInterface} deser  = new ${scopeDeSer}().load(resolvedCoordinate.getLocation());
+    enclosingScope.addSubScope(deser);
+    return true;
   }
   return false;

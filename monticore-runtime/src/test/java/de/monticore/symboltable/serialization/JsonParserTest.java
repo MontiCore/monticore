@@ -13,17 +13,17 @@ public class JsonParserTest {
   @Test
   public void testSimpleObject() {
     JsonObject result = JsonParser.parseJsonObject("{\"foo\":false,\"bar\":3,\"bla\":\"yes\",\"blub\":3.4}");
-    assertTrue(result.get("foo").isJsonBoolean());
-    assertEquals(false, result.get("foo").getAsJsonBoolean().getValue());
+    assertTrue(result.getMember("foo").isJsonBoolean());
+    assertEquals(false, result.getMember("foo").getAsJsonBoolean().getValue());
     
-    assertTrue(result.get("bar").isJsonNumber());
-    assertEquals(3, result.get("bar").getAsJsonNumber().getNumberAsInt());
+    assertTrue(result.getMember("bar").isJsonNumber());
+    assertEquals(3, result.getMember("bar").getAsJsonNumber().getNumberAsInt());
 
-    assertTrue(result.get("bla").isJsonString());
-    assertEquals("yes", result.get("bla").getAsJsonString().getValue());
+    assertTrue(result.getMember("bla").isJsonString());
+    assertEquals("yes", result.getMember("bla").getAsJsonString().getValue());
 
-    assertTrue(result.get("blub").isJsonNumber());
-    assertEquals(3.4, result.get("blub").getAsJsonNumber().getNumberAsDouble(), 0.1);
+    assertTrue(result.getMember("blub").isJsonNumber());
+    assertEquals(3.4, result.getMember("blub").getAsJsonNumber().getNumberAsDouble(), 0.1);
   }
   
 }

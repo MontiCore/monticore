@@ -1,10 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("simpleName")}
-  String kind = scopeJson.get(de.monticore.symboltable.serialization.JsonConstants.KIND).getAsJsonString().getValue();
+  String kind = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonConstants.KIND);
   if (this.getSerializedKind().equals(kind)) {
-    return Optional.of(deserialize${simpleName}Scope(scopeJson));
+    return deserialize${simpleName}Scope(scopeJson);
   }
   else if (this.getSerializedASKind().equals(kind)) {
-    return Optional.of(deserialize${simpleName}ArtifactScope(scopeJson));
+    return deserialize${simpleName}ArtifactScope(scopeJson);
   }
-  return Optional.empty();
+  Log.error("Cannot deserialize \""+scopeJson+"\" with DeSer for kind \""+this.getSerializedKind()+"\"!");
+  return null;
