@@ -20,6 +20,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +54,10 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   private static final String AUTOMATON_VISITOR = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor";
 
   private static final String AST_AUTOMATON = "de.monticore.codegen.symboltable.automaton._ast.ASTAutomaton";
+
+  private static final String AST_INHERITED_SYMBOL = "de.monticore.codegen.symboltable.automaton._ast.ASTInheritedSymbolClass";
+
+  private static final String INHERITED_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol";
 
   private static final String AST_STATE = "de.monticore.codegen.symboltable.automaton._ast.ASTState";
 
@@ -169,7 +174,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(30, symTabCreatorClass.getCDMethodList().size());
+    assertEquals(37, symTabCreatorClass.getCDMethodList().size());
   }
 
   @Test
@@ -376,6 +381,60 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testInitialize_ASTInheritedSymbolClass() {
+    ASTCDMethod method = getMethodBy("initialize_InheritedSymbolClass", symTabCreatorClass);
+    assertDeepEquals(PROTECTED, method.getModifier());
+
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertEquals(2, method.sizeCDParameters());
+    assertDeepEquals(INHERITED_SYMBOL, method.getCDParameter(0).getMCType());
+    assertEquals("symbol", method.getCDParameter(0).getName());
+
+    assertDeepEquals(AST_INHERITED_SYMBOL, method.getCDParameter(1).getMCType());
+    assertEquals("ast", method.getCDParameter(1).getName());
+  }
+
+  @Test
+  public void testCreate_ASTInheritedSymbolClass() {
+    ASTCDMethod method = getMethodBy("create_InheritedSymbolClass", symTabCreatorClass);
+    assertDeepEquals(PROTECTED, method.getModifier());
+
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(INHERITED_SYMBOL, method.getMCReturnType().getMCType());
+
+    assertEquals(1, method.sizeCDParameters());
+
+    assertDeepEquals(AST_INHERITED_SYMBOL, method.getCDParameter(0).getMCType());
+    assertEquals("ast", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testEndVisitASTInheritedSymbolClassNode() {
+    List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, symTabCreatorClass);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_INHERITED_SYMBOL);
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  }
+
+  @Test
+  public void testVisitASTInheritedSymbolClassNode() {
+    List<ASTCDMethod> methodList = getMethodsBy("visit", 1, symTabCreatorClass);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_INHERITED_SYMBOL);
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  }
+
+
+  @Test
   public void testAddToScopeAndLinkWithNodeAutomatonNode() {
     List<ASTCDMethod> methodList = getMethodsBy("addToScopeAndLinkWithNode", 2, symTabCreatorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
@@ -448,6 +507,25 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
     assertEquals("symbol", method.getCDParameter(0).getName());
 
     assertDeepEquals(AST_STATE, method.getCDParameter(1).getMCType());
+    assertEquals("ast", method.getCDParameter(1).getName());
+  }
+
+  @Test
+  public void testSetLinkBetweenSymbolAndNodeInheritedSymbolClassNode() {
+    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSymbolAndNode", 2, symTabCreatorClass);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(INHERITED_SYMBOL);
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertEquals(2, method.sizeCDParameters());
+    assertDeepEquals(INHERITED_SYMBOL, method.getCDParameter(0).getMCType());
+    assertEquals("symbol", method.getCDParameter(0).getName());
+
+    assertDeepEquals(AST_INHERITED_SYMBOL, method.getCDParameter(1).getMCType());
     assertEquals("ast", method.getCDParameter(1).getName());
   }
 
@@ -591,5 +669,26 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  }
+
+  @Test
+  public void testNoStartProd() {
+    Log.init();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+
+    glex.setGlobalValue("astHelper", new DecorationHelper());
+    glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
+    glex.setGlobalValue("service", new AbstractService(cd));
+
+    SymbolTableService mockService = Mockito.spy(new SymbolTableService(cd));
+    Mockito.doReturn(Optional.empty()).when(mockService).getStartProdASTFullName(Mockito.any(ASTCDDefinition.class));
+
+    SymbolTableCreatorDecorator decorator = new SymbolTableCreatorDecorator(glex,
+        mockService, new VisitorService(cd), new MethodDecorator(glex));
+
+    //create non present SymbolTableCreator
+    Optional<ASTCDClass> optSymTabCreator = decorator.decorate(cd);
+    assertFalse(optSymTabCreator.isPresent());
   }
 }

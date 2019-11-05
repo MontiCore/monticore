@@ -31,7 +31,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
 
   @Override
   public ASTCDInterface decorate(ASTCDCompilationUnit input) {
-    ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithPackage(input);
+    ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithASTPackage(input);
     String languageInterfaceName = visitorService.getLanguageInterfaceName();
 
     return CD4CodeMill.cDInterfaceBuilder()

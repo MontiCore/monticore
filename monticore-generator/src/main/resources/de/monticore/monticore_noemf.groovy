@@ -43,8 +43,8 @@ while (grammarIterator.hasNext()) {
       // start reporting
       grammarName = Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName())
       Reporting.on(grammarName)
-	    Reporting.reportModelStart(astGrammar, grammarName, "")
-	  
+      Reporting.reportModelStart(astGrammar, grammarName, "")
+
       Reporting.reportParseInputFile(input, grammarName)
 
       // M3: populate symbol table
@@ -53,15 +53,13 @@ while (grammarIterator.hasNext()) {
       // M4: execute context conditions
       runGrammarCoCos(astGrammar, mcScope)
 
-      // M5: transform grammar AST into Class Diagram AST
+      // M5: transform grammar AST into Class Diagram AST and create symbol and scope class diagramm
       astClassDiagramWithST = deriveCD(astGrammar, glex, cdScope)
+      deriveSymbolCD(astGrammar, symbolCdScope)
+      deriveScopeCD(astGrammar, scopeCdScope)
 
       // M6: generate parser and wrapper
       generateParser(glex, astGrammar, mcScope, handcodedPath, out)
-
-      deriveSymbolCD(astGrammar, symbolCdScope)
-
-      deriveScopeCD(astGrammar, scopeCdScope)
     }
   }
 }
@@ -77,32 +75,36 @@ for (astGrammar in getParsedGrammars()) {
   Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
   reportGrammarCd(astGrammar, cdScope, mcScope, report)
 
+  // get already created base class diagramms
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
-
   symbolClassDiagramm = getSymbolCDOfParsedGrammar(astGrammar)
-
   scopeClassDiagramm = getScopeCDOfParsedGrammar(astGrammar)
 
   astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
 
+  // M9 Generate ast classes, visitor and context condition
+  // decorate and generate CD for the '_symboltable' package
   decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram ,symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
 
+  // decorate and generate CD for the '_symboltable.serialization' package
   decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSerializationCd, out, handcodedPath)
 
-  // M9 Generate ast classes, visitor and context condition
+  // decorate and generate CD for the '_visitor' package
   decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedVisitorCD, out, handcodedPath)
 
+  // decorate and generate CD for the '_coco' package
   decoratedCoCoCD = decorateForCoCoPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath)
 
-  generateODs(glex, cdScope, mcScope, astClassDiagram, astGrammar, out)
-
-  // M7: decorate Class Diagram AST
+  // decorate and generate CD for the '_ast' package
   decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
+
+  // generate for the '_od' package
+  generateODs(glex, cdScope, mcScope, astClassDiagram, astGrammar, out)
 
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 

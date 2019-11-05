@@ -40,7 +40,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     return createVisitorService(cdSymbol);
   }
 
-  public VisitorService createVisitorService(CDDefinitionSymbol cdSymbol) {
+  public static VisitorService createVisitorService(CDDefinitionSymbol cdSymbol) {
     return new VisitorService(cdSymbol);
   }
 
@@ -187,7 +187,11 @@ public class VisitorService extends AbstractService<VisitorService> {
     return CDMethodFacade.getInstance().createMethod(PUBLIC, methodName, visitorParameter);
   }
 
-  public ASTCDCompilationUnit calculateCDTypeNamesWithPackage(ASTCDCompilationUnit input) {
+  /**
+   * add package AST package to all classed, interfaces and enums at the beginning
+   * needed because visitor classes are in a different package and so need to fully qualify the ast classes
+   */
+  public ASTCDCompilationUnit calculateCDTypeNamesWithASTPackage(ASTCDCompilationUnit input) {
     // transform own cd
     ASTCDCompilationUnit compilationUnit = input.deepClone();
     //set classname to correct Name with path
@@ -198,7 +202,11 @@ public class VisitorService extends AbstractService<VisitorService> {
     return compilationUnit;
   }
 
-  public ASTCDDefinition calculateCDTypeNamesWithPackage(CDDefinitionSymbol input) {
+  /**
+   * add package AST package to all classed, interfaces and enums at the beginning
+   * needed because visitor classes are in a different package and so need to fully qualify the ast classes
+   */
+  public ASTCDDefinition calculateCDTypeNamesWithASTPackage(CDDefinitionSymbol input) {
     // transform inherited cd
     ASTCDDefinition astcdDefinition = input.getAstNode().get().deepClone();
     //set classname to correct Name with path

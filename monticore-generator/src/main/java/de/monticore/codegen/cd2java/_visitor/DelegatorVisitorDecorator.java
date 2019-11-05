@@ -43,7 +43,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     // change class names to qualified name
-    ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithPackage(input);
+    ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithASTPackage(input);
     // get visitor names of current node
     String delegatorVisitorSimpleName = visitorService.getDelegatorVisitorSimpleName();
     ASTMCQualifiedType visitorType = visitorService.getVisitorType();
@@ -68,7 +68,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
     definitionList.add(compilationUnit.getCDDefinition());
     definitionList.addAll(superCDsTransitive
         .stream()
-        .map(visitorService::calculateCDTypeNamesWithPackage)
+        .map(visitorService::calculateCDTypeNamesWithASTPackage)
         .collect(Collectors.toList()));
 
     return CD4CodeMill.cDClassBuilder()

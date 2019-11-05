@@ -26,4 +26,8 @@ public interface ASTAutomataNode;
     protected String input;
     protected String to;
   }
+
+    <<symbol>>public interface ASTFoo{
+      protected String name;
+    }
 }
