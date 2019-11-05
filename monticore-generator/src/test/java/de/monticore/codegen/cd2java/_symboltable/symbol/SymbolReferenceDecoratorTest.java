@@ -42,8 +42,6 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
 
-  private static final String AST_AUTOMATON = "de.monticore.codegen.symboltable.automatonsymbolcd._ast.ASTAutomaton";
-
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbol";
 
   @Before
@@ -123,7 +121,7 @@ public class SymbolReferenceDecoratorTest extends DecoratorTestCase {
   public void testReferencedSymbolAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("loadedSymbol", symbolClassAutomaton);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals(AUTOMATON_SYMBOL, astcdAttribute.getMCType());
+    assertOptionalOf(AUTOMATON_SYMBOL, astcdAttribute.getMCType());
   }
 
   @Test

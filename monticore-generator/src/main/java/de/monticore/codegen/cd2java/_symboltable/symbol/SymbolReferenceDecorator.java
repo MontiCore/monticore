@@ -7,15 +7,14 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 /**
  * creates a SymbolReference class from a grammar
@@ -44,15 +43,13 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     String simpleName = symbolInput.getName();
 
     ASTCDAttribute referencedSymbolAttribute = createReferencedSymbolAttribute(symbolFullName);
-    ASTCDMethod referencedSymbolMethod = createReferencedSymbolMethod(referencedSymbolAttribute, symbolReferenceClassSimpleName);
+    ASTCDMethod referencedSymbolMethod = createReferencedSymbolMethod(symbolFullName, symbolReferenceClassSimpleName);
 
     ASTCDAttribute nameAttribute = createNameAttribute();
     List<ASTCDMethod> nameMethods = methodDecorator.getAccessorDecorator().decorate(nameAttribute);
 
     ASTCDAttribute enclosingScopeAttribute = createEnclosingScopeAttribute(scopeInterfaceType);
     List<ASTCDMethod> enclosingScopeMethods = methodDecorator.getAccessorDecorator().decorate(enclosingScopeAttribute);
-
-    ASTCDAttribute isAlreadyLoadedAttribute = createisAlreadyLoadedAttribute();
 
     ASTCDClass symbolReferenceClass = CD4AnalysisMill.cDClassBuilder()
             .setName(symbolReferenceClassSimpleName)
@@ -65,7 +62,7 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDClass, ASTCDC
             .addAllCDMethods(nameMethods)
             .addCDAttribute(enclosingScopeAttribute)
             .addAllCDMethods(enclosingScopeMethods)
-            .addCDAttribute(createisAlreadyLoadedAttribute())
+            .addCDAttribute(createIsAlreadyLoadedAttribute())
             .addCDMethod(createIsReferencedSymbolLoadedMethod())
             .addCDMethod(createLoadReferencedSymbolMethod(symbolReferenceClassSimpleName, symbolFullName, simpleName))
             .build();
@@ -89,24 +86,24 @@ public class SymbolReferenceDecorator extends AbstractCreator<ASTCDClass, ASTCDC
   }
 
   protected ASTCDAttribute createReferencedSymbolAttribute(String symbolType) {
-    return getCDAttributeFacade().createAttribute(PROTECTED, symbolType, "loadedSymbol");
+    return getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createOptionalTypeOf(symbolType), "loadedSymbol");
   }
 
-  protected ASTCDAttribute createisAlreadyLoadedAttribute() {
+  protected ASTCDAttribute createIsAlreadyLoadedAttribute() {
     return getCDAttributeFacade().createAttribute(PRIVATE, "boolean", "isAlreadyLoaded");
   }
 
-  protected ASTCDMethod createReferencedSymbolMethod(ASTCDAttribute referencedSymbolAttribute, String symbolReferenceName) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, referencedSymbolAttribute.getMCType(),
-            "get" + StringTransformations.capitalize(referencedSymbolAttribute.getName()));
+  protected ASTCDMethod createReferencedSymbolMethod(String symbolType, String symbolReferenceName) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolType),
+            "getLoadedSymbol");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
-            TEMPLATE_PATH + "GetReferencedSymbol", symbolReferenceName, referencedSymbolAttribute.printType()));
+            TEMPLATE_PATH + "GetReferencedSymbol", symbolReferenceName, Names.getSimpleName(symbolType)));
     return method;
   }
 
   protected ASTCDMethod createIsReferencedSymbolLoadedMethod() {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "isSymbolLoaded");
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return isAlreadyLoaded;"));
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return isAlreadyLoaded && loadedSymbol.isPresent();"));
     return method;
   }
 
