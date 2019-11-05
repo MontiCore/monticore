@@ -9,6 +9,4 @@ component grammar MCFullJavaStatements extends de.monticore.statements.MCCommonS
                                                de.monticore.statements.MCReturnStatements,
                                                de.monticore.statements.MCSynchronizedStatements {
 
-  // TODO: Lösche dieses Statement, wenn der IScope-Generator gefixt ist
-  Bla = Name;
 }

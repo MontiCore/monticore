@@ -55,11 +55,12 @@ public interface JsonElement {
     return false;
   }
   
+  
   /**
    * @return this object as JsonObject if it is of this type and throws an error otherwise.
    */
   default public JsonObject getAsJsonObject() {
-    Log.error(this + " is not a Json Object!");
+    Log.error("0xA0605 "+ this + " is not a Json Object!");
     return null;
   }
   
@@ -67,7 +68,7 @@ public interface JsonElement {
    * @return this object as JsonArray if it is of this type and throws an error otherwise.
    */
   default public JsonArray getAsJsonArray() {
-    Log.error(this + " is not a Json Array!");
+    Log.error("0xA0606 "+ this + " is not a Json Array!");
     return null;
   }
   
@@ -75,7 +76,7 @@ public interface JsonElement {
    * @return this object as JsonBoolean if it is of this type and throws an error otherwise.
    */
   default public JsonBoolean getAsJsonBoolean() {
-    Log.error(this + " is not a Json Boolean!");
+    Log.error("0xA0607 "+ this + " is not a Json Boolean!");
     return null;
   }
   
@@ -83,7 +84,7 @@ public interface JsonElement {
    * @return this object as JsonString if it is of this type and throws an error otherwise.
    */
   default public JsonString getAsJsonString() {
-    Log.error(this + " is not a Json String!");
+    Log.error("0xA0608 "+ this + " is not a Json String!");
     return null;
   }
   
@@ -91,7 +92,7 @@ public interface JsonElement {
    * @return this object as JsonNumber if it is of this type and throws an error otherwise.
    */
   default public JsonNumber getAsJsonNumber() {
-    Log.error(this + " is not a Json Number!");
+    Log.error("0xA0609 "+ this + " is not a Json Number!");
     return null;
   }
   
@@ -99,7 +100,7 @@ public interface JsonElement {
    * @return this object as JsonNull if it is of this type and throws an error otherwise.
    */
   default public JsonNull getAsJsonNull() {
-    Log.error(this + " is not a Json Null!");
+    Log.error("0xA0610 "+ this + " is not a Json Null!");
     return null;
   }
   

@@ -15,7 +15,9 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
  */
 // TODO: BEschreiben
 // TODO 4Rel:
-// this class is used by DeriveSymTypeOfCommonExpressions
+// this class is used by DeriveSymTypeOfCommonExpressions (muss einmal benutzt werden und ende)
+
+
 // to derive a name for ASTCallExpression
 // However, call expressions not necessarily have a name. Unclear, what the purpose is
 

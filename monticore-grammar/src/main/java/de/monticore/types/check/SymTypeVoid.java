@@ -19,7 +19,7 @@ public class SymTypeVoid extends SymTypeExpression {
    * printAsJson: Umwandlung in einen kompakten Json String
    */
   protected String printAsJson() {
-    return "\""+print()+"\"";
+    return "\""+DefsTypeBasic._voidTypeString+"\"";
   }
 
   @Override
