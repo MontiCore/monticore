@@ -220,7 +220,7 @@ public class MCCollectionTypesTest {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<int>");
     assertTrue(type.isPresent());
-    assertEquals("List",type.get().printBaseType());
+    assertEquals("List",type.get().printWithoutTypeArguments());
     assertTrue(type.get().getMCTypeArgumentList().get(0) instanceof ASTMCPrimitiveTypeArgument);
 
   }

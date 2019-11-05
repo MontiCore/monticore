@@ -40,9 +40,4 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
   public boolean isDouble(){
     return this.getPrimitive()==ASTConstantsMCBasicTypes.DOUBLE;
   }
-
-  @Override
-  public String printBaseType() {
-    return printType();
-  }
 }

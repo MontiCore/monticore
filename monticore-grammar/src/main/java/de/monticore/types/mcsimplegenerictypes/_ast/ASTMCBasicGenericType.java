@@ -5,9 +5,4 @@ public class ASTMCBasicGenericType extends ASTMCBasicGenericTypeTOP {
 
   public ASTMCBasicGenericType() {
   }
-
-  @Override
-  public String printBaseType() {
-    return String.join(".", getNameList());
-  }
 }

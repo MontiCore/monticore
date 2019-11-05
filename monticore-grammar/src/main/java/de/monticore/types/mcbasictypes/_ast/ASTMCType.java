@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface ASTMCType extends ASTMCTypeTOP {
 
-  String printBaseType();
-
   // TODO: Beschreiben was die Funktionen berechnen und liefern sollen
   // und wozu was verwendet werden kann
   // Verdacht: Manchmal sind das Values aus dem Argument zB beim Array

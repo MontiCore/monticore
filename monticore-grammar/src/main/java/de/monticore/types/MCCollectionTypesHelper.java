@@ -42,7 +42,7 @@ public class MCCollectionTypesHelper extends MCBasicTypesHelper {
   }
 
   public static String getSimpleName(ASTMCGenericType simpleType) {
-    return Names.getSimpleName(simpleType.printBaseType());
+    return Names.getSimpleName(simpleType.printWithoutTypeArguments());
   }
 
   public static String printSimpleRefType(ASTMCType type) {
@@ -72,11 +72,11 @@ public class MCCollectionTypesHelper extends MCBasicTypesHelper {
     }
 
     if (simpleRefType.printType().split("\\.").length == 1 && simpleRefTypeName.contains(".")) {
-      if (simpleRefTypeName.endsWith("." + simpleRefType.printBaseType())) {
+      if (simpleRefTypeName.endsWith("." + simpleRefType.printWithoutTypeArguments())) {
         return true;
       }
     }
-    if (simpleRefType.printBaseType().equals(simpleRefTypeName)) {
+    if (simpleRefType.printWithoutTypeArguments().equals(simpleRefTypeName)) {
       return true;
     }
     return false;

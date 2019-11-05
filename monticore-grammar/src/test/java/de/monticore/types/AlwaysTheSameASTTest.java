@@ -174,7 +174,7 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().printBaseType().split("\\.")[0], "Map");
+    assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Map");
 
     assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 2);
 
@@ -234,7 +234,7 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().printBaseType().split("\\.")[0], "Map");
+    assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Map");
   }
 
   //TODO RE Wait for #2378

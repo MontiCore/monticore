@@ -41,11 +41,6 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
     return this.getMCTypeArgument(0);
   }
 
-  @Override
-  public String printBaseType() {
-    return Names.getSimpleName(getNameList());
-  }
-
   public void setName(String name) {
     // Name is fixed to "Set"   :  TODO: Internal Error, Error Msg
   }

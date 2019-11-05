@@ -35,11 +35,6 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
     // Name is fixed to "Optional"   :  TODO: Internal Error, Error Msg
   }
 
-  @Override
-  public String printBaseType() {
-    return Names.getSimpleName(getNameList());
-  }
-
   public ASTMCTypeArgument getMCTypeArgument() {
     return this.getMCTypeArgument(0);
   }

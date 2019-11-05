@@ -11,7 +11,7 @@ public class MCCollectionTypesNodeIdentHelper extends MCBasicTypesNodeIdentHelpe
 
   public String getIdent(ASTMCGenericType a) {
     StringBuilder name = new StringBuilder();
-    List<String> nameList = Arrays.asList(a.printBaseType().split("\\."));
+    List<String> nameList = Arrays.asList(a.printWithoutTypeArguments().split("\\."));
     int nameListSize = nameList.size();
     for (int i = 0; i < nameListSize; i++) {
       name.append(nameList.get(i));

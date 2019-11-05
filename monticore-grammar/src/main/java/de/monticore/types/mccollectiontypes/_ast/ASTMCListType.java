@@ -39,10 +39,6 @@ public class ASTMCListType extends ASTMCListTypeTOP {
     return this.getMCTypeArgument(0);
   }
 
-  @Override
-  public String printBaseType() {
-    return Names.getSimpleName(getNameList());
-  }
 
   public List<String> getNameList() {
     // copy of name List, so that the list cannot be changed

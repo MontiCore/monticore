@@ -67,7 +67,7 @@ public class DeriveSymTypeOfMCType implements MCFullGenericTypesVisitor {
     for(ASTMCTypeArgument typeArg : genType.getMCTypeArgumentList()) {
       argumentList.add(typeArgumentMapping.get(typeArg));
     }
-    SymTypeOfGenerics genericTypeExpression = createGenerics(genType.printBaseType(), argumentList);
+    SymTypeOfGenerics genericTypeExpression = createGenerics(genType.printWithoutTypeArguments(), argumentList);
     mapping.put(genType,genericTypeExpression);
   }
 

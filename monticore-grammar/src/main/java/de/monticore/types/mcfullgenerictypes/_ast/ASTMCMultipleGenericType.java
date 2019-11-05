@@ -2,18 +2,18 @@
 
 package de.monticore.types.mcfullgenerictypes._ast;
 
-import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class ASTMCMultipleGenericType extends ASTMCMultipleGenericTypeTOP {
 
   protected ASTMCMultipleGenericType() {
   }
 
-  @Override
-  public String printBaseType() {
-    return this.getMCBasicGenericType().printType();
+  public String printWithoutTypeArguments() {
+    // from a.B<C>D.E.<F>.G ist will return a.B.C.D.E.G
+    String firstGenericType = getMCBasicGenericType().printWithoutTypeArguments();
+    String innerTypes = getMCInnerTypeList()
+        .stream()
+        .map(ASTMCInnerType::getName)
+        .reduce((a, b) -> a + "." + b).get();
+    return firstGenericType + "." + innerTypes;
   }
 }
