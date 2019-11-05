@@ -212,7 +212,7 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
 
   astrule SignedNatLiteral =
     method public String getSource() {
-      return negative?"-":"" + getDigits();
+      return (negative?"-":"") + getDigits();
     }
     method public int getValue() {
       return de.monticore.MCLiteralsDecoder.decodeNat(getSource());
@@ -230,7 +230,7 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
 
   astrule SignedBasicLongLiteral =
     method public String getSource() {
-      return negative?"-":"" + getDigits() + "L";
+      return (negative?"-":"") + getDigits() + "L";
     }
     method public long getValue() {
       return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
@@ -248,7 +248,7 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
 
   astrule SignedBasicFloatLiteral =
     method public String getSource() {
-      return  isNegative()?"-":"" + getPre() + "." + getPost() + "F";
+      return  (isNegative()?"-":"") + getPre() + "." + getPost() + "F";
     }
     method public float getValue() {
       return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
@@ -266,7 +266,7 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
 
   astrule SignedBasicDoubleLiteral =
     method public String getSource() {
-      return isNegative()?"-":"" + getPre() + "." + getPost() + "D";
+      return (isNegative()?"-":"") + getPre() + "." + getPost() + "D";
     }
     method public double getValue() {
       return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
