@@ -52,11 +52,8 @@ public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
     visitor.setMCBasicTypesVisitor(new MCBasicTypes2OD(printer, reporting));
     visitor.setMCCommonLiteralsVisitor(new MCCommonLiterals2OD(printer, reporting));
     visitor.setMCLiteralsBasisVisitor(new MCLiteralsBasis2OD(printer, reporting));
-    visitor.setMCAssertStatementsVisitor(new MCAssertStatements2OD(printer, reporting));
     visitor.setMCExceptionStatementsVisitor(new MCExceptionStatements2OD(printer, reporting));
-    visitor.setMCLowLevelStatementsVisitor(new MCLowLevelStatements2OD(printer, reporting));
     visitor.setMCReturnStatementsVisitor(new MCReturnStatements2OD(printer, reporting));
-    visitor.setMCSynchronizedStatementsVisitor(new MCSynchronizedStatements2OD(printer, reporting));
     this.printer = printer;
   }
 

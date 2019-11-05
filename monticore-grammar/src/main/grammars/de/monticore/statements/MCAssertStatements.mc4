@@ -2,7 +2,8 @@
 
 package de.monticore.statements;
 
-component grammar MCAssertStatements extends de.monticore.statements.MCCommonStatements {
+component grammar MCAssertStatements extends de.monticore.statements.MCStatementsBasis,
+                                             de.monticore.expressions.ExpressionsBasis {
 
 AssertStatement implements MCStatement
     =   "assert" assertion:Expression (":" message:Expression)? ";"

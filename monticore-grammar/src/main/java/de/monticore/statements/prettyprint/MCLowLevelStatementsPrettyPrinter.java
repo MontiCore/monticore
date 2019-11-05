@@ -10,20 +10,26 @@ import de.monticore.statements.mclowlevelstatements._ast.ASTLabeledStatement;
 import de.monticore.statements.mclowlevelstatements._ast.ASTMCLowLevelStatementsNode;
 import de.monticore.statements.mclowlevelstatements._visitor.MCLowLevelStatementsVisitor;
 
-public class MCLowLevelStatementsPrettyPrinter extends MCCommonStatementsPrettyPrinter implements
+public class MCLowLevelStatementsPrettyPrinter  implements
         MCLowLevelStatementsVisitor {
 
 
   private MCLowLevelStatementsVisitor realThis = this;
 
+  private IndentPrinter printer;
+
   public MCLowLevelStatementsPrettyPrinter(IndentPrinter out) {
-    super(out);
+    this.printer = out;
+  }
+
+  public IndentPrinter getPrinter() {
+    return this.printer;
   }
 
   @Override
   public void handle(ASTLabeledStatement a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    printNode(a.getLabel());
+    getPrinter().print(a.getLabel());
     getPrinter().print(": ");
     a.getMCStatement().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
@@ -34,7 +40,7 @@ public class MCLowLevelStatementsPrettyPrinter extends MCCommonStatementsPrettyP
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("break");
     if (a.isPresentLabel()) {
-      printNode(a.getLabel());
+      getPrinter().print(a.getLabel());
     }
     getPrinter().println(";");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
@@ -45,7 +51,7 @@ public class MCLowLevelStatementsPrettyPrinter extends MCCommonStatementsPrettyP
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("continue");
     if (a.isPresentLabel()) {
-      printNode(a.getLabel());
+      getPrinter().print(a.getLabel());
     }
     getPrinter().println(";");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
