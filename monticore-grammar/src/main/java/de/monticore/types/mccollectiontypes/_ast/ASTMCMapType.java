@@ -3,6 +3,7 @@ package de.monticore.types.mccollectiontypes._ast;
 
 
 import com.google.common.collect.Lists;
+import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -31,11 +32,6 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
 
   public ASTMCMapType(ASTMCTypeArgument key, ASTMCTypeArgument value) {
     this(key, value, Lists.newArrayList(), Lists.newArrayList("Map"));
-  }
-
-  @Override
-  public String getBaseName() {
-    return getName();
   }
 
   public void setName(String name) {

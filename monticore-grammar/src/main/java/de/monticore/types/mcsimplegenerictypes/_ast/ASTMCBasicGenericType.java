@@ -5,10 +5,4 @@ public class ASTMCBasicGenericType extends ASTMCBasicGenericTypeTOP {
 
   public ASTMCBasicGenericType() {
   }
-
-  @Override
-  public String getBaseName() {
-    return getName(sizeNames()-1);
-  }
-
 }

@@ -8,8 +8,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static de.monticore.types.check.DefsTypeBasic.*;
-
 /**
  * Visitor for Derivation of SymType from MCBasicTypes
  * i.e. for
@@ -171,7 +169,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends  SynthesizeSymTypeFr
     
     // TODO TODO ! This implementation is incomplete, it does only create Object-Types, but the
     // type could also be a boxed Primitive!
-    result = Optional.of(SymTypeExpressionFactory.createTypeObject(qType.getName()));
+    result = Optional.of(SymTypeExpressionFactory.createTypeObject(qType.printType()));
   }
   
   // ASTMCTypeArgument, ASTMCBasicTypeArgument and  MCPrimitiveTypeArgument:

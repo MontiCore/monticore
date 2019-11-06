@@ -16,8 +16,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -43,6 +41,7 @@ public class AlwaysTheSameASTTest {
     this.customGenericTypesTestParser = new MCSimpleGenericTypesTestParser();
     this.genericTypesTestParser = new MCFullGenericTypesTestParser();
   }
+
   //TODO RE Wait for #2378
   @Ignore
   @Test
@@ -72,9 +71,9 @@ public class AlwaysTheSameASTTest {
     assertTrue(basicGenericList.deepEquals(genericList));
     assertTrue(genericList.deepEquals(customList));
 
-    assertEquals(basicGenericAst.get().getNameList().size(), 1);
+    assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().getNameList().get(0), "List");
+    assertEquals(basicGenericAst.get().printType().split("\\.")[0], "List");
 
     assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 1);
 
@@ -115,10 +114,11 @@ public class AlwaysTheSameASTTest {
     assertTrue(basicGenericList.deepEquals(genericList));
     assertTrue(genericList.deepEquals(customList));
 
-    assertEquals(basicGenericAst.get().getNameList().size(), 1);
+    assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().getNameList().get(0), "List");
+    assertEquals(basicGenericAst.get().printType().split("\\.")[0], "List");
   }
+
   //TODO RE Wait for #2378
   @Ignore
   @Test
@@ -172,9 +172,9 @@ public class AlwaysTheSameASTTest {
     assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
     assertTrue(genericAST.get().deepEquals(customAst.get()));
 
-    assertEquals(basicGenericAst.get().getNameList().size(), 1);
+    assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().getNameList().get(0), "Map");
+    assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Map");
 
     assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 2);
 
@@ -232,10 +232,11 @@ public class AlwaysTheSameASTTest {
     assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
     assertTrue(genericAST.get().deepEquals(customAst.get()));
 
-    assertEquals(basicGenericAst.get().getNameList().size(), 1);
+    assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().getNameList().get(0), "Map");
+    assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Map");
   }
+
   //TODO RE Wait for #2378
   @Ignore
   @Test
@@ -262,9 +263,9 @@ public class AlwaysTheSameASTTest {
     assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
     assertTrue(genericAST.get().deepEquals(customAst.get()));
 
-    assertEquals(basicGenericAst.get().getNameList().size(), 1);
+    assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().getNameList().get(0), "Optional");
+    assertEquals(basicGenericAst.get().printType().split("\\.")[0], "Optional");
 
     assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 1);
 
@@ -274,6 +275,7 @@ public class AlwaysTheSameASTTest {
     assertTrue(argument2.isPresent());
     assertTrue(argument.deepEquals(argument2.get()));
   }
+
   //TODO RE Wait for #2378
   @Ignore
   @Test
@@ -300,6 +302,7 @@ public class AlwaysTheSameASTTest {
     assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
     assertTrue(genericAST.get().deepEquals(customAst.get()));
   }
+
   //TODO RE Wait for #2378
   @Ignore
   @Test
@@ -326,10 +329,11 @@ public class AlwaysTheSameASTTest {
     assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
     assertTrue(genericAST.get().deepEquals(customAst.get()));
 
-    assertEquals(basicGenericAst.get().getNameList().size(), 1);
+    assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().getNameList().get(0), "Optional");
+    assertEquals(basicGenericAst.get().printType().split("\\.")[0], "Optional");
   }
+
   //TODO RE Wait for #2378
   @Ignore
   @Test
@@ -356,9 +360,9 @@ public class AlwaysTheSameASTTest {
     assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
     assertTrue(genericAST.get().deepEquals(customAst.get()));
 
-    assertEquals(basicGenericAst.get().getNameList().size(), 1);
+    assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().getNameList().get(0), "Set");
+    assertEquals(basicGenericAst.get().printType().split("\\.")[0], "Set");
 
     assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 1);
 
@@ -422,9 +426,9 @@ public class AlwaysTheSameASTTest {
     assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
     assertTrue(genericAST.get().deepEquals(customAst.get()));
 
-    assertEquals(basicGenericAst.get().getNameList().size(), 1);
+    assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().getNameList().get(0), "Set");
+    assertEquals(basicGenericAst.get().printType().split("\\.")[0], "Set");
 
   }
 
@@ -451,6 +455,7 @@ public class AlwaysTheSameASTTest {
     assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
     assertTrue(genericAST.get().deepEquals(customAst.get()));
   }
+
   //TODO RE Wait for #2378
   @Ignore
   @Test
