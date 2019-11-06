@@ -8,7 +8,6 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.types.MCSimpleGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -446,10 +445,15 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (clazz.getModifierOpt().isPresent()) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifierOpt().get());
       if (symbolTypeValue.isPresent()) {
+        // is a symbol, but no defining one
         return Optional.empty();
+      } else if (hasSymbolStereotype(clazz.getModifierOpt().get())) {
+        // is a defining symbol
+        return Optional.of(getPackage(cdDefinitionSymbol) + "." + getNameWithSymbolSuffix(clazz));
       }
     }
-    return Optional.of(getPackage(cdDefinitionSymbol) + "." + getNameWithSymbolSuffix(clazz));
+    // no symbol at all
+    return Optional.empty();
   }
 
   public Optional<String> getDefiningSymbolSimpleName(ASTCDType clazz) {
@@ -457,16 +461,15 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (clazz.getModifierOpt().isPresent()) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifierOpt().get());
       if (symbolTypeValue.isPresent()) {
+        // is a symbol, but no defining one
         return Optional.empty();
+      } else if (hasSymbolStereotype(clazz.getModifierOpt().get())) {
+        // is a defining symbol
+        return Optional.ofNullable(getNameWithSymbolSuffix(clazz));
       }
     }
-    return Optional.ofNullable(getNameWithSymbolSuffix(clazz));
-  }
-
-  public String getSimpleSymbolNameFromOptional(ASTMCType type) {
-    ASTMCType referencedSymbolType = MCSimpleGenericTypesHelper.getReferenceTypeFromOptional(type).getMCTypeOpt().get();
-    String referencedSymbol = referencedSymbolType.printType();
-    return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SYMBOL_SUFFIX));
+    // no symbol at all
+    return Optional.empty();
   }
 
   public String getSimpleNameFromSymbolName(String referencedSymbol) {
@@ -497,10 +500,14 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return attribute.isPresentModifier() && hasStereotype(attribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL);
   }
 
+  /**
+   * returns the stereotype value for 'symbol' or 'inheritedSymbol'
+   * only returns a value if it is a symbol reference and no symbol definition
+   */
   public Optional<String> getSymbolTypeValue(ASTModifier modifier) {
-    List<String> stereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.SYMBOL);
-    if (!stereotypeValues.isEmpty()) {
-      return Optional.ofNullable(stereotypeValues.get(0));
+    List<String> symbolStereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.SYMBOL);
+    if (!symbolStereotypeValues.isEmpty()) {
+      return Optional.ofNullable(symbolStereotypeValues.get(0));
     } else {
       List<String> inheritedStereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.INHERITED_SYMBOL);
       if (!inheritedStereotypeValues.isEmpty()) {

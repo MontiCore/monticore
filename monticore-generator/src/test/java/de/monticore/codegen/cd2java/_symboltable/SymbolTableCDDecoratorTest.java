@@ -186,7 +186,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(5, symTabCD.getCDDefinition().getCDInterfaceList().size());
+    assertEquals(6, symTabCD.getCDDefinition().getCDInterfaceList().size());
   }
 
   @Test
@@ -196,6 +196,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDInterface iAutomatonSymbolResolvingDelegate = getInterfaceBy("IAutomatonSymbolResolvingDelegate", symTabCD);
     ASTCDInterface iStateSymbolResolvingDelegate = getInterfaceBy("IStateSymbolResolvingDelegate", symTabCD);
     ASTCDInterface iAutomatonGlobalScope = getInterfaceBy("IAutomatonGlobalScope", symTabCD);
+    ASTCDInterface symbolInterfaceSymbol = getInterfaceBy("ISymbolInterfaceSymbolResolvingDelegate", symTabCD);
   }
 
   @Test
@@ -264,7 +265,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCountWithHC() {
-    assertEquals(5, symTabCDWithHC.getCDDefinition().getCDInterfaceList().size());
+    assertEquals(6, symTabCDWithHC.getCDDefinition().getCDInterfaceList().size());
   }
 
   @Test
@@ -274,6 +275,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDInterface iAutomatonSymbolResolvingDelegate = getInterfaceBy("IAutomatonSymbolResolvingDelegate", symTabCDWithHC);
     ASTCDInterface iStateSymbolResolvingDelegate = getInterfaceBy("IStateSymbolResolvingDelegate", symTabCDWithHC);
     ASTCDInterface iAutomatonGlobalScope = getInterfaceBy("IAutomatonGlobalScope", symTabCDWithHC);
+    ASTCDInterface symbolInterfaceSymbol = getInterfaceBy("ISymbolInterfaceSymbolResolvingDelegate", symTabCDComponent);
   }
 
   @Test
@@ -311,7 +313,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCountComponent() {
-    assertEquals(4, symTabCDComponent.getCDDefinition().getCDInterfaceList().size());
+    assertEquals(5, symTabCDComponent.getCDDefinition().getCDInterfaceList().size());
   }
 
   @Test
@@ -320,6 +322,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDInterface iCommonAutomatonSymbol = getInterfaceBy("ICommonAutomatonSymbol", symTabCDComponent);
     ASTCDInterface iAutomatonSymbolResolvingDelegate = getInterfaceBy("IAutomatonSymbolResolvingDelegate", symTabCDComponent);
     ASTCDInterface iStateSymbolResolvingDelegate = getInterfaceBy("IStateSymbolResolvingDelegate", symTabCDComponent);
+    ASTCDInterface symbolInterfaceSymbol = getInterfaceBy("ISymbolInterfaceSymbolResolvingDelegate", symTabCDComponent);
   }
 
   @Test
