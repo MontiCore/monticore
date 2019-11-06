@@ -5,8 +5,6 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
 
 import java.util.Optional;
 
-import static de.monticore.types.check.DefsTypeBasic.typeConstants;
-
 /**
  * Visitor for Derivation of SymType from MCBasicTypes
  * i.e. for
@@ -60,7 +58,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
 
   public void endVisit(ASTMCPrimitiveType primitiveType) {
     SymTypeConstant typeConstant =
-            SymTypeExpressionFactory.createTypeConstant(primitiveType.getName());
+            SymTypeExpressionFactory.createTypeConstant(primitiveType.printType());
     result = Optional.of(typeConstant);
   }
   
@@ -78,7 +76,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
    */
   public void endVisit(ASTMCQualifiedType qType) {
     // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
-    result = Optional.of(SymTypeExpressionFactory.createTypeConstant(qType.getName()));
+    result = Optional.of(SymTypeExpressionFactory.createTypeConstant(qType.printType()));
   }
   
   public void endVisit(ASTMCReturnType rType) {

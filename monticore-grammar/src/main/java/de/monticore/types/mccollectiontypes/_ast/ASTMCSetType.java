@@ -2,6 +2,7 @@
 package de.monticore.types.mccollectiontypes._ast;
 
 import com.google.common.collect.Lists;
+import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -38,11 +39,6 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
 
   public ASTMCTypeArgument getMCTypeArgument() {
     return this.getMCTypeArgument(0);
-  }
-
-  @Override
-  public String getBaseName() {
-    return getName();
   }
 
   public void setName(String name) {
