@@ -41,7 +41,7 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
   }
 
   public void setName(String name) {
-    // Name is fixed to "Set"   :  TODO: Internal Error, Error Msg
+    Log.error("0xA6105 Not allowed to set the name of a ASTMCSetType, because ist is fixed to \"Set\".");
   }
 
   public List<String> getNameList() {

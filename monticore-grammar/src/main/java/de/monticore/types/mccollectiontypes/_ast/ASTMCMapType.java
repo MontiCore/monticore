@@ -34,7 +34,7 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
   }
 
   public void setName(String name) {
-    // Name is fixed to "Map"   :  TODO: Internal Error, Error Msg
+    Log.error("0xA6103 Not allowed to set the name of a ASTMCOMapType, because ist is fixed to \"Map\".");
   }
 
   @Override

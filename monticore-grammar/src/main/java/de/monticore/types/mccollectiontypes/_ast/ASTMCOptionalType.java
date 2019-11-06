@@ -31,7 +31,7 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
   }
 
   public void setName(String name) {
-    // Name is fixed to "Optional"   :  TODO: Internal Error, Error Msg
+    Log.error("0xA6102 Not allowed to set the name of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
   }
 
   public ASTMCTypeArgument getMCTypeArgument() {

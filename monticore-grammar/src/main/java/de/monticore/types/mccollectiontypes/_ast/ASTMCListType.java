@@ -30,7 +30,7 @@ public class ASTMCListType extends ASTMCListTypeTOP {
   }
 
   public void setName(String name) {
-    // Name is fixed to "List"   :  TODO: Internal Error, Error Msg
+    Log.error("0xA6104 Not allowed to set the name of a ASTMCListType, because ist is fixed to \"List\".");
   }
 
   public ASTMCTypeArgument getMCTypeArgument() {
