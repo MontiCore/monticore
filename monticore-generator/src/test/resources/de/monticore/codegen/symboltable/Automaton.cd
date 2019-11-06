@@ -29,6 +29,15 @@ classdiagram Automaton {
       protected String name;
     }
 
+    <<symbol>> public interface ASTSymbolInterface{
+      protected String name;
+    }
+
+    <<inheritedSymbol="de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol">> public class ASTInheritedSymbolClass {
+      protected String name;
+      protected String input;
+    }
+
     enum AutomatonLiterals{
       FINAL,
       INITIAL;

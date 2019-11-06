@@ -32,7 +32,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
   @Override
   public ASTCDInterface decorate(ASTCDCompilationUnit ast) {
-    ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithPackage(ast);
+    ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithASTPackage(ast);
     ASTMCType visitorType = this.visitorService.getVisitorType();
     ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(AST_INTERFACE);
 

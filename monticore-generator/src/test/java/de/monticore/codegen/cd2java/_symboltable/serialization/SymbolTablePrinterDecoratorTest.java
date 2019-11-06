@@ -55,6 +55,8 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   private static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
 
+  private static final String SYMBOL_INTERFACE = "de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol";
+
   @Before
   public void setUp() {
     Log.init();
@@ -118,7 +120,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(15, symbolTablePrinter.getCDMethodList().size());
+    assertEquals(17, symbolTablePrinter.getCDMethodList().size());
   }
 
   @Test
@@ -331,7 +333,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testVisitstateSymbolMethod() {
+  public void testVisitStateSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("visit", symbolTablePrinter);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(STATE_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
@@ -347,6 +349,39 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertEquals("node", method.getCDParameter(0).getName());
   }
 
+  @Test
+  public void testEndVisitSymbolInterfaceSymbolMethod() {
+    List<ASTCDMethod> methodList = getMethodsBy("endVisit", symbolTablePrinter);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(SYMBOL_INTERFACE);
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(mcTypeFacade.createQualifiedType(SYMBOL_INTERFACE),
+        method.getCDParameter(0).getMCType());
+    assertEquals("node", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testVisitSymbolInterfaceSymbolMethod() {
+    List<ASTCDMethod> methodList = getMethodsBy("visit", symbolTablePrinter);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType(SYMBOL_INTERFACE);
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(mcTypeFacade.createQualifiedType(SYMBOL_INTERFACE),
+        method.getCDParameter(0).getMCType());
+    assertEquals("node", method.getCDParameter(0).getName());
+  }
 
   @Test
   public void testGeneratedCode() {
