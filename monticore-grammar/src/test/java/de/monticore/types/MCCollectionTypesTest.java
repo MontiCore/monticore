@@ -30,9 +30,9 @@ public class MCCollectionTypesTest {
   @Test
   public void testBasicGenericsTypes() throws IOException {
 
-    String[] types = new String[]{"List<a.A>","Optional<String>",
-            "Set<String>","Map<String,String>","List<socnet.Person>"
-            ,"List<int>"
+    String[] types = new String[]{"List<a.A>", "Optional<String>",
+        "Set<String>", "Map<String,String>", "List<socnet.Person>"
+        , "List<int>"
     };
     for (String testType : types) {
       MCCollectionTypesTestParser mcBasicTypesParser = new MCCollectionTypesTestParser();
@@ -220,7 +220,7 @@ public class MCCollectionTypesTest {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<int>");
     assertTrue(type.isPresent());
-    assertEquals("List",type.get().printWithoutTypeArguments());
+    assertEquals("List", type.get().printWithoutTypeArguments());
     assertTrue(type.get().getMCTypeArgumentList().get(0) instanceof ASTMCPrimitiveTypeArgument);
 
   }
@@ -231,7 +231,26 @@ public class MCCollectionTypesTest {
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<int>");
     assertTrue(parser.hasErrors());
     assertFalse(type.isPresent());
+  }
 
-
+  @Test
+  public void testPrintTypeWithoutTypeArguments() throws IOException {
+    MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
+    Optional<ASTMCListType> listType = parser.parse_StringMCListType("List<String>");
+    Optional<ASTMCOptionalType> optionalType = parser.parse_StringMCOptionalType("Optional<Integer>");
+    Optional<ASTMCSetType> setType = parser.parse_StringMCSetType("Set<Boolean>");
+    Optional<ASTMCMapType> mapType = parser.parse_StringMCMapType("Map<String,Integer>");
+    Optional<ASTMCGenericType> genericType = parser.parse_StringMCGenericType("Map<String,Integer>");
+    assertTrue(listType.isPresent());
+    assertTrue(optionalType.isPresent());
+    assertTrue(setType.isPresent());
+    assertTrue(mapType.isPresent());
+    assertTrue(genericType.isPresent());
+    assertEquals("List", listType.get().printWithoutTypeArguments());
+    assertEquals("Optional", optionalType.get().printWithoutTypeArguments());
+    assertEquals("Set", setType.get().printWithoutTypeArguments());
+    assertEquals("Map", genericType.get().printWithoutTypeArguments());
+    assertEquals("Map", genericType.get().printWithoutTypeArguments());
+    assertFalse(parser.hasErrors());
   }
 }
