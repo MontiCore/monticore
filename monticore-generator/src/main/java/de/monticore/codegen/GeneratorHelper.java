@@ -10,8 +10,6 @@ import de.monticore.cd.CD4AnalysisHelper;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.*;
 import de.monticore.cd.prettyprint.CDPrettyPrinterDelegator;
-import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -51,8 +49,6 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
   public static final String AST_PACKAGE_SUFFIX = "_ast";
 
   public static final String VISITOR_PACKAGE_SUFFIX = "_visitor";
-
-  public static final String TYPERESOLVER_PACKAGE_SUFFIX = "_types";
 
   public static final String AST_DOT_PACKAGE_SUFFIX_DOT = "._ast.";
 
@@ -186,10 +182,6 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     return isOptional(field.getType());
   }
 
-  public static boolean isBoolean(ASTCDAttribute attribute) {
-    return "boolean".equals(attribute.printType());
-  }
-
   public boolean isAstNode(CDTypeSymbol type) {
     String typeName = type.getName();
     if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
@@ -254,18 +246,6 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
         || "HashMap".equals(type) || "java.util.HashMap".equals(type);
   }
 
-  public static boolean isAbstract(ASTCDClass clazz) {
-    return clazz.isPresentModifier() && clazz.getModifier().isAbstract();
-  }
-
-  public static boolean isAbstract(ASTCDMethod method, ASTCDInterface type) {
-    return true;
-  }
-
-  public static boolean isAbstract(ASTCDMethod method, ASTCDEnum type) {
-    return false;
-  }
-
   public static boolean isAbstract(ASTCDMethod method, ASTCDClass type) {
     return CD4AnalysisHelper.isAbstract(method);
   }
@@ -327,14 +307,6 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     return isAstNode(typeArgs.get(0));
   }
 
-  public static boolean isSupertypeOfHWType(String className) {
-    return isSupertypeOfHWType(className, AST_PREFIX);
-  }
-
-  public static boolean isSupertypeOfHWType(String className, String prefix) {
-    return (prefix.isEmpty() || className.startsWith(prefix))
-        && className.endsWith(GeneratorSetup.GENERATED_CLASS_SUFFIX);
-  }
 
   public static String getJavaConformName(String name) {
     return JavaNamesHelper.javaAttribute(name);
@@ -374,51 +346,6 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     return getCdLanguageConformName(getJavaConformName(name));
   }
 
-  public boolean isOptionalAstNode(ASTCDAttribute attr) {
-    if (!attr.isPresentSymbol()) {
-      return false;
-    }
-    if (!(attr.getSymbol() instanceof CDFieldSymbol)) {
-      Log.error(String.format("0xA5014 Symbol of ASTCDAttribute %s is not CDFieldSymbol.",
-          attr.getName()));
-    }
-    return isOptionalAstNode(((CDFieldSymbol) attr.getSymbol()).getType());
-  }
-
-  /**
-   * Returns name without suffix for HW classes
-   *
-   * @param type
-   * @return
-   */
-  public static String getPlainName(ASTCDType type) {
-    String name = type.getName();
-    if (isSupertypeOfHWType(name)) {
-      return name.substring(0, name.lastIndexOf(GeneratorSetup.GENERATED_CLASS_SUFFIX));
-    }
-    return name;
-  }
-
-  /**
-   * Checks if the node is part of the current language (or one of its super
-   * languages) or if it is external (e.g. String, List, etc.)
-   *
-   * @param type
-   * @return
-   */
-  public static boolean isExternal(ASTCDType type, String superType) {
-    if (!type.getModifierOpt().isPresent()) {
-      return false;
-    }
-    if (!type.getModifierOpt().get().isPresentStereotype()) {
-      return false;
-    }
-    ASTCDStereotype stereoTypes = type.getModifierOpt().get().getStereotype();
-    return stereoTypes.getValueList().stream()
-        .filter(value -> value.getName().equals(MC2CDStereotypes.EXTERNAL_TYPE.toString()))
-        .filter(value -> value.getValue().equals(superType))
-        .count() <= 0;
-  }
 
   public static String getDotPackageName(String packageName) {
     if (packageName.isEmpty() || packageName.endsWith(".")) {
@@ -427,21 +354,6 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     return packageName + ".";
   }
 
-  /**
-   * Checks if the node is part of the current language (or one of its super
-   * languages) or if it is external (e.g. String, List, etc.)
-   *
-   * @param type
-   * @return
-   */
-  public static boolean isExternal(CDTypeSymbol type, String superType) {
-    Optional<Stereotype> ster = type.getStereotype(MC2CDStereotypes.EXTERNAL_TYPE.toString());
-    if (ster.isPresent()) {
-      return ster.get().getValue().equals(superType);
-    }
-    ;
-    return false;
-  }
 
   public static String getPackageName(String packageName, String suffix) {
     return packageName.isEmpty() ? suffix : packageName
@@ -629,14 +541,6 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
 
   public static String getCdPackage(String qualifiedCdName) {
     return qualifiedCdName.toLowerCase();
-  }
-
-  public static String getCdName(String qualifiedCdName) {
-    return Names.getSimpleName(qualifiedCdName);
-  }
-
-  public static String qualifiedJavaTypeToName(String type) {
-    return type.replace('.', '_');
   }
 
   public static Multiplicity getMultiplicity(ASTMCGrammar grammar,
