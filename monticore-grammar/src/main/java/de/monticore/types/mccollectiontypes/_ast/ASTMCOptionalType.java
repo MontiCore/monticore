@@ -31,7 +31,7 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
   }
 
   public void setName(String name) {
-    Log.error("0xA6102 Not allowed to set the name of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
+    // Name is fixed to "Optional"
   }
 
   public ASTMCTypeArgument getMCTypeArgument() {
@@ -43,82 +43,73 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
     return Lists.newArrayList(this.names);
   }
 
-
-  public void setNameList(List<String> names) {
-    Log.error("0xA6071 Not allowed to set the name of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
-  }
-
   public void clearNames() {
-    Log.error("0xA6072 Not allowed to clear the name of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
+    // Name is fixed to "Optional"
   }
 
   public boolean addName(String element) {
-    Log.error("0xA6073 Not allowed to add a name of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
+    // Name is fixed to "Optional"
     return false;
   }
 
   public boolean addAllNames(Collection<? extends String> collection) {
-    Log.error("0xA6074 Not allowed to addAll names of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
+    // Name is fixed to "Optional"
     return false;
   }
 
   public boolean removeName(Object element) {
-    Log.error("0xA6075 Not allowed to remove a name of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
+    // Name is fixed to "Optional"
     return false;
   }
 
   public boolean removeAllNames(Collection<?> collection) {
-    Log.error("0xA6076 Not allowed to removeAll names of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
+    // Name is fixed to "Optional"
     return false;
   }
 
   public boolean retainAllNames(Collection<?> collection) {
-    if (collection.contains(getNameList())) {
-      return true;
-    } else {
-      Log.error("0xA6077 Not allowed to retainAll names of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
-      return false;
-    }
+    // Name is fixed to "Optional"
+    return false;
   }
 
   public boolean removeIfName(Predicate<? super String> filter) {
-    if (getNameList().stream().noneMatch(filter)) {
-      return getNameList().removeIf(filter);
-    } else {
-      Log.error("0xA6078 Not allowed to remove names if of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
-      return false;
-    }
+    // Name is fixed to "Optional"
+    return false;
   }
 
   public void forEachNames(Consumer<? super String> action) {
-    Log.error("0xA6079 Not allowed to execute forEachNames in ASTMCOptionalType, because ist is fixed to \"Optional\".");
+    // Name is fixed to "Optional"
   }
 
   public void addName(int index, String element) {
-    Log.error("0xA6080 Not allowed to execute addName in ASTMCOptionalType, because ist is fixed to \"Optional\".");
+    // Name is fixed to "Optional"
   }
 
   public boolean addAllNames(int index, Collection<? extends String> collection) {
-    Log.error("0xA6081 Not allowed to execute addAllNames in ASTMCOptionalType, because ist is fixed to \"Optional\".");
+    // Name is fixed to "Optional"
     return false;
   }
 
   public String removeName(int index) {
-    Log.error("0xA6081 Not allowed to execute removeName in ASTMCOptionalType, because ist is fixed to \"Optional\".");
+    // Name is fixed to "Optional"
     return "";
   }
 
   public String setName(int index, String element) {
-    Log.error("0xA6082 Not allowed to execute setName in ASTMCOptionalType, because ist is fixed to \"Optional\".");
+    // Name is fixed to "Optional"
     return "";
   }
 
   public void replaceAllNames(UnaryOperator<String> operator) {
-    Log.error("0xA6083 Not allowed to execute replaceAllNames in ASTMCOptionalType, because ist is fixed to \"Optional\".");
+    // Name is fixed to "Optional"
   }
 
   public void sortNames(Comparator<? super String> comparator) {
-    Log.error("0xA6084 Not allowed to execute sortNames in ASTMCOptionalType, because ist is fixed to \"Optional\".");
+    // Name is fixed to "Optional"
+  }
+
+  public void setNameList(List<String> names) {
+    // Name is fixed to "Optional"
   }
 
   /**

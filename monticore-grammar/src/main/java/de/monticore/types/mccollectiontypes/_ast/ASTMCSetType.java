@@ -41,7 +41,7 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
   }
 
   public void setName(String name) {
-    Log.error("0xA6105 Not allowed to set the name of a ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
   }
 
   public List<String> getNameList() {
@@ -49,82 +49,73 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
     return Lists.newArrayList(this.names);
   }
 
-
   public void setNameList(List<String> names) {
-    Log.error("0xA6085 Not allowed to set the name of a ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
   }
 
   public void clearNames() {
-    Log.error("0xA6087 Not allowed to clear the name of a ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
   }
 
   public boolean addName(String element) {
-    Log.error("0xA6088 Not allowed to add a name of a ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
     return false;
   }
 
   public boolean addAllNames(Collection<? extends String> collection) {
-    Log.error("0xA6089 Not allowed to addAll names of a ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
     return false;
   }
 
   public boolean removeName(Object element) {
-    Log.error("0xA6090 Not allowed to remove a name of a ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
     return false;
   }
 
   public boolean removeAllNames(Collection<?> collection) {
-    Log.error("0xA6091 Not allowed to removeAll names of a ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
     return false;
   }
 
   public boolean retainAllNames(Collection<?> collection) {
-    if (collection.contains(getNameList())) {
-      return true;
-    } else {
-      Log.error("0xA6092 Not allowed to retainAll names of a ASTMCSetType, because ist is fixed to \"Set\".");
-      return false;
-    }
+    // Name is fixed to "Set"
+    return false;
   }
 
   public boolean removeIfName(Predicate<? super String> filter) {
-    if (getNameList().stream().noneMatch(filter)) {
-      return getNameList().removeIf(filter);
-    } else {
-      Log.error("0xA6093 Not allowed to remove names if of a ASTMCSetType, because ist is fixed to \"Set\".");
-      return false;
-    }
+    // Name is fixed to "Set"
+    return false;
   }
 
   public void forEachNames(Consumer<? super String> action) {
-    Log.error("0xA6094 Not allowed to execute forEachNames in ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
   }
 
   public void addName(int index, String element) {
-    Log.error("0xA6095 Not allowed to execute addName in ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
   }
 
   public boolean addAllNames(int index, Collection<? extends String> collection) {
-    Log.error("0xA6096 Not allowed to execute addAllNames in ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
     return false;
   }
 
   public String removeName(int index) {
-    Log.error("0xA6097 Not allowed to execute removeName in ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
     return "";
   }
 
   public String setName(int index, String element) {
-    Log.error("0xA6098 Not allowed to execute setName in ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
     return "";
   }
 
   public void replaceAllNames(UnaryOperator<String> operator) {
-    Log.error("0xA6099 Not allowed to execute replaceAllNames in ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
   }
 
   public void sortNames(Comparator<? super String> comparator) {
-    Log.error("0xA6101 Not allowed to execute sortNames in ASTMCSetType, because ist is fixed to \"Set\".");
+    // Name is fixed to "Set"
   }
 
 
