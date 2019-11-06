@@ -22,11 +22,11 @@ public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
   public void test() {
     AutomatonElementSymbol automatonElementSymbol = new AutomatonElementSymbol("A");
     assertFalse(automatonElementSymbol instanceof IScopeSpanningSymbol);
-    AutomatonElementSymbolReference automatonElementSymbolReference;
+    AutomatonElementSymbolLoader automatonElementSymbolLoader;
     AutomatonWithSTInfo4Scope automatonScope;
     AutomatonSymbol automatonSymbol= new AutomatonSymbol("A");
     assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
-    AutomatonSymbolReference automatonSymbolReference;
+    AutomatonSymbolLoader automatonSymbolLoader;
     AutomatonWithSTInfo4Language automatonWithSTInfo4Language;
     AutomatonWithSTInfo4ModelLoader automatonWithSTInfo4ModelLoader;
     AutomatonWithSTInfo4SymbolTableCreator automatonWithSTInfo4SymbolTableCreator;
