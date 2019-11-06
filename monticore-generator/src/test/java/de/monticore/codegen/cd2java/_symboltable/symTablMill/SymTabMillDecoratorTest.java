@@ -135,8 +135,8 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testMillSymbolInterfaceSymbolReferenceAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("symbolInterfaceSymbolReference", symTabMill);
+  public void testMillSymbolInterfaceSymbolLoaderAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("symbolInterfaceSymbolLoader", symTabMill);
     assertDeepEquals(PROTECTED_STATIC, astcdAttribute.getModifier());
     assertDeepEquals("AutomatonSymTabMill", astcdAttribute.getMCType());
   }
@@ -295,12 +295,12 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void test_SymbolInterfaceSymbolReferenceBuilderMethod() {
-    ASTCDMethod method = getMethodBy("_symbolInterfaceSymbolReferenceBuilder", symTabMill);
+  public void test_SymbolInterfaceSymbolLoaderBuilderMethod() {
+    ASTCDMethod method = getMethodBy("_symbolInterfaceSymbolLoaderBuilder", symTabMill);
     assertDeepEquals(PROTECTED, method.getModifier());
 
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals("SymbolInterfaceSymbolReferenceBuilder", method.getMCReturnType().getMCType());
+    assertDeepEquals("SymbolInterfaceSymbolLoaderBuilder", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
@@ -439,12 +439,12 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testSymbolInterfaceSymbolReferenceBuilderMethod() {
-    ASTCDMethod method = getMethodBy("symbolInterfaceSymbolReferenceBuilder", symTabMill);
+  public void testSymbolInterfaceSymbolLoaderBuilderMethod() {
+    ASTCDMethod method = getMethodBy("symbolInterfaceSymbolLoaderBuilder", symTabMill);
     assertDeepEquals(PUBLIC_STATIC, method.getModifier());
 
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals("SymbolInterfaceSymbolReferenceBuilder", method.getMCReturnType().getMCType());
+    assertDeepEquals("SymbolInterfaceSymbolLoaderBuilder", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
