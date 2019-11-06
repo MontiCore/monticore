@@ -119,8 +119,6 @@ public class TypeCheck {
     }
     return result.get();
   }
-  // TODO RE: Die Funktion muss noch getestet werden (und sein Expression-Visitor insbesondere auch)
-  // könnte man in    DeriveSymType.*Expression.*Test ablegen
   
   /**
    * Function 2b: Derive the SymTypeExpression of a Literal
