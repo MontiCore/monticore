@@ -3,6 +3,7 @@ package de.monticore.types.mccollectiontypes._ast;
 
 import com.google.common.collect.Lists;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
+import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -38,10 +39,6 @@ public class ASTMCListType extends ASTMCListTypeTOP {
     return this.getMCTypeArgument(0);
   }
 
-  @Override
-  public String getBaseName() {
-    return getName();
-  }
 
   public List<String> getNameList() {
     // copy of name List, so that the list cannot be changed
