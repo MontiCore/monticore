@@ -2,7 +2,6 @@
 package de.monticore.types.mccollectiontypes._ast;
 
 import com.google.common.collect.Lists;
-import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -44,75 +43,83 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
     return Lists.newArrayList(this.names);
   }
 
+
+  public void setNameList(List<String> names) {
+    Log.error("0xA6071 Not allowed to set the name of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
+  }
+
   public void clearNames() {
-    // Name is fixed to "Optional"
+    Log.error("0xA6072 Not allowed to clear the name of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
   }
 
   public boolean addName(String element) {
-    // Name is fixed to "Optional"
+    Log.error("0xA6073 Not allowed to add a name of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
     return false;
   }
 
   public boolean addAllNames(Collection<? extends String> collection) {
-    // Name is fixed to "Optional"
+    Log.error("0xA6074 Not allowed to addAll names of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
     return false;
   }
 
   public boolean removeName(Object element) {
-    // Name is fixed to "Optional"
+    Log.error("0xA6075 Not allowed to remove a name of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
     return false;
   }
 
   public boolean removeAllNames(Collection<?> collection) {
-    // Name is fixed to "Optional"
+    Log.error("0xA6076 Not allowed to removeAll names of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
     return false;
   }
 
   public boolean retainAllNames(Collection<?> collection) {
-    // Name is fixed to "Optional"
-    return false;
+    if (collection.contains(getNameList())) {
+      return true;
+    } else {
+      Log.error("0xA6077 Not allowed to retainAll names of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
+      return false;
+    }
   }
 
   public boolean removeIfName(Predicate<? super String> filter) {
-    // Name is fixed to "Optional"
-    return false;
+    if (getNameList().stream().noneMatch(filter)) {
+      return getNameList().removeIf(filter);
+    } else {
+      Log.error("0xA6078 Not allowed to remove names if of a ASTMCOptionalType, because ist is fixed to \"Optional\".");
+      return false;
+    }
   }
 
   public void forEachNames(Consumer<? super String> action) {
-    // Name is fixed to "Optional"
+    Log.error("0xA6079 Not allowed to execute forEachNames in ASTMCOptionalType, because ist is fixed to \"Optional\".");
   }
 
   public void addName(int index, String element) {
-    // Name is fixed to "Optional"
+    Log.error("0xA6080 Not allowed to execute addName in ASTMCOptionalType, because ist is fixed to \"Optional\".");
   }
 
   public boolean addAllNames(int index, Collection<? extends String> collection) {
-    // Name is fixed to "Optional"
+    Log.error("0xA6081 Not allowed to execute addAllNames in ASTMCOptionalType, because ist is fixed to \"Optional\".");
     return false;
   }
 
   public String removeName(int index) {
-    // Name is fixed to "Optional"
+    Log.error("0xA6081 Not allowed to execute removeName in ASTMCOptionalType, because ist is fixed to \"Optional\".");
     return "";
   }
 
   public String setName(int index, String element) {
-    // Name is fixed to "Optional"
+    Log.error("0xA6082 Not allowed to execute setName in ASTMCOptionalType, because ist is fixed to \"Optional\".");
     return "";
   }
 
   public void replaceAllNames(UnaryOperator<String> operator) {
-    // Name is fixed to "Optional"
+    Log.error("0xA6083 Not allowed to execute replaceAllNames in ASTMCOptionalType, because ist is fixed to \"Optional\".");
   }
 
   public void sortNames(Comparator<? super String> comparator) {
-    // Name is fixed to "Optional"
+    Log.error("0xA6084 Not allowed to execute sortNames in ASTMCOptionalType, because ist is fixed to \"Optional\".");
   }
-
-  public void setNameList(List<String> names) {
-    // Name is fixed to "Optional"
-  }
-
 
   /**
    * overwrite setter for mcTypeArgument, because only one element is allowed

@@ -68,7 +68,7 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().printType().split("\\.")[0], "List");
+    assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "List");
 
     assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 1);
 
@@ -109,7 +109,7 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().printType().split("\\.")[0], "List");
+    assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "List");
   }
 
   @Test
@@ -254,7 +254,7 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().printType().split("\\.")[0], "Optional");
+    assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Optional");
 
     assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 1);
 
@@ -316,7 +316,7 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().printType().split("\\.")[0], "Optional");
+    assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Optional");
   }
 
   @Test
@@ -345,7 +345,7 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().printType().split("\\.")[0], "Set");
+    assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Set");
 
     assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 1);
 
@@ -407,7 +407,7 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
 
-    assertEquals(basicGenericAst.get().printType().split("\\.")[0], "Set");
+    assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Set");
 
   }
 

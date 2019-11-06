@@ -113,11 +113,11 @@ public class DeriveSymTypeOfMCType implements MCFullGenericTypesVisitor {
       for (ASTMCTypeArgument typeArg : ((ASTMCGenericType) basicTypeArgument.getMCType()).getMCTypeArgumentList()) {
         argumentList.add(typeArgumentMapping.get(typeArg));
       }
-      SymTypeOfGenerics o = createGenerics(basicTypeArgument.getMCType().getName(), argumentList);
+      SymTypeOfGenerics o = createGenerics(((ASTMCGenericType) basicTypeArgument.getMCType()).printWithoutTypeArguments(), argumentList);
       //TODO RE rekursiv fehlt!
       typeArgumentMapping.put(basicTypeArgument, o);
     } else {
-      SymTypeOfObject o = createTypeObject(basicTypeArgument.getMCType().getName());
+      SymTypeOfObject o = createTypeObject(basicTypeArgument.getMCType().printType());
       //TODO RE rekursiv fehlt!
       typeArgumentMapping.put(basicTypeArgument, o);
     }

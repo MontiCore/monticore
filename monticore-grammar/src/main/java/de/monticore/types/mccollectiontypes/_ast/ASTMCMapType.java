@@ -3,7 +3,6 @@ package de.monticore.types.mccollectiontypes._ast;
 
 
 import com.google.common.collect.Lists;
-import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -70,72 +69,80 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
   }
 
   public void setNameList(List<String> names) {
-    // Name is fixed to "Map" TODO: Internal Error, Error Msg
+    Log.error("0xA6040 Not allowed to set the name of a ASTMCMapType, because ist is fixed to \"Map\".");
   }
 
   public void clearNames() {
-    // Name is fixed to "Map"
+    Log.error("0xA6041 Not allowed to clear the name of a ASTMCMapType, because ist is fixed to \"Map\".");
   }
 
   public boolean addName(String element) {
-    // Name is fixed to "Map"
+    Log.error("0xA6042 Not allowed to add a name of a ASTMCMapType, because ist is fixed to \"Map\".");
     return false;
   }
 
   public boolean addAllNames(Collection<? extends String> collection) {
-    // Name is fixed to "Map"
+    Log.error("0xA6043 Not allowed to addAll names of a ASTMCMapType, because ist is fixed to \"Map\".");
     return false;
   }
 
   public boolean removeName(Object element) {
-    // Name is fixed to "Map"
+    Log.error("0xA6044 Not allowed to remove a name of a ASTMCMapType, because ist is fixed to \"Map\".");
     return false;
   }
 
   public boolean removeAllNames(Collection<?> collection) {
-    // Name is fixed to "Map"
+    Log.error("0xA6045 Not allowed to removeAll names of a ASTMCMapType, because ist is fixed to \"Map\".");
     return false;
   }
 
   public boolean retainAllNames(Collection<?> collection) {
-    // Name is fixed to "Map"
-    return false;
+    if (collection.contains(getKey()) && collection.contains(getValue())) {
+      return true;
+    } else {
+      Log.error("0xA6046 Not allowed to retainAll names of a ASTMCMapType, because ist is fixed to \"Map\".");
+      return false;
+    }
   }
 
   public boolean removeIfName(Predicate<? super String> filter) {
-    // Name is fixed to "Map"
-    return false;
+    if (getNameList().stream().noneMatch(filter)) {
+      return getNameList().removeIf(filter);
+    } else {
+      Log.error("0xA6047 Not allowed to remove names if of a ASTMCMapType, because ist is fixed to \"Map\".");
+      return false;
+    }
   }
 
   public void forEachNames(Consumer<? super String> action) {
-    // Name is fixed to "Map"
+    Log.error("0xA6048 Not allowed to execute forEachNames in ASTMCMapType, because ist is fixed to \"Map\".");
   }
 
   public void addName(int index, String element) {
-    // Name is fixed to "Map"
+    Log.error("0xA6049 Not allowed to execute addName in ASTMCMapType, because ist is fixed to \"Map\".");
   }
 
   public boolean addAllNames(int index, Collection<? extends String> collection) {
-    // Name is fixed to "Map"
+    Log.error("0xA6050 Not allowed to execute addAllNames in ASTMCMapType, because ist is fixed to \"Map\".");
     return false;
   }
 
   public String removeName(int index) {
-    // Name is fixed to "Map"
+    Log.error("0xA6051 Not allowed to execute removeName in ASTMCMapType, because ist is fixed to \"Map\".");
     return "";
   }
 
   public String setName(int index, String element) {
-    // Name is fixed to "Map"
+    Log.error("0xA6052 Not allowed to execute setName in ASTMCMapType, because ist is fixed to \"Map\".");
     return "";
   }
 
   public void replaceAllNames(UnaryOperator<String> operator) {
-    // Name is fixed to "Map"
+    Log.error("0xA6053 Not allowed to execute replaceAllNames in ASTMCMapType, because ist is fixed to \"Map\".");
   }
 
   public void sortNames(Comparator<? super String> comparator) {
-    // Name is fixed to "Map"
+    Log.error("0xA6054 Not allowed to execute sortNames in ASTMCMapType, because ist is fixed to \"Map\".");
   }
 
   /**

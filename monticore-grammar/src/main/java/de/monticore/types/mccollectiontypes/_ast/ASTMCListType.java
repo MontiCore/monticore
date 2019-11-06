@@ -2,8 +2,6 @@
 package de.monticore.types.mccollectiontypes._ast;
 
 import com.google.common.collect.Lists;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -50,72 +48,80 @@ public class ASTMCListType extends ASTMCListTypeTOP {
    */
 
   public void setNameList(List<String> names) {
-    // Name is fixed to "List" TODO: Internal Error, Error Msg
+    Log.error("0xA6055 Not allowed to set the name of a ASTMCListType, because ist is fixed to \"List\".");
   }
 
   public void clearNames() {
-    // Name is fixed to "List"
+    Log.error("0xA6056 Not allowed to clear the name of a ASTMCListType, because ist is fixed to \"List\".");
   }
 
   public boolean addName(String element) {
-    // Name is fixed to "List"
+    Log.error("0xA6057 Not allowed to add a name of a ASTMCListType, because ist is fixed to \"List\".");
     return false;
   }
 
   public boolean addAllNames(Collection<? extends String> collection) {
-    // Name is fixed to "List"
+    Log.error("0xA6058 Not allowed to addAll names of a ASTMCListType, because ist is fixed to \"List\".");
     return false;
   }
 
   public boolean removeName(Object element) {
-    // Name is fixed to "List"
+    Log.error("0xA6059 Not allowed to remove a name of a ASTMCListType, because ist is fixed to \"List\".");
     return false;
   }
 
   public boolean removeAllNames(Collection<?> collection) {
-    // Name is fixed to "List"
+    Log.error("0xA6060 Not allowed to removeAll names of a ASTMCListType, because ist is fixed to \"List\".");
     return false;
   }
 
   public boolean retainAllNames(Collection<?> collection) {
-    // Name is fixed to "List"
-    return false;
+    if (collection.contains(getNameList())) {
+      return true;
+    } else {
+      Log.error("0xA6061 Not allowed to retainAll names of a ASTMCListType, because ist is fixed to \"List\".");
+      return false;
+    }
   }
 
   public boolean removeIfName(Predicate<? super String> filter) {
-    // Name is fixed to "List"
-    return false;
+    if (getNameList().stream().noneMatch(filter)) {
+      return getNameList().removeIf(filter);
+    } else {
+      Log.error("0xA6062 Not allowed to remove names if of a ASTMCListType, because ist is fixed to \"List\".");
+      return false;
+    }
   }
 
   public void forEachNames(Consumer<? super String> action) {
-    // Name is fixed to "List"
+    Log.error("0xA6063 Not allowed to execute forEachNames in ASTMCListType, because ist is fixed to \"List\".");
   }
 
   public void addName(int index, String element) {
-    // Name is fixed to "List"
+    Log.error("0xA6064 Not allowed to execute addName in ASTMCListType, because ist is fixed to \"List\".");
   }
 
   public boolean addAllNames(int index, Collection<? extends String> collection) {
-    // Name is fixed to "List"
+    Log.error("0xA6065 Not allowed to execute addAllNames in ASTMCListType, because ist is fixed to \"List\".");
     return false;
   }
 
   public String removeName(int index) {
-    // Name is fixed to "List"
+    Log.error("0xA6067 Not allowed to execute removeName in ASTMCListType, because ist is fixed to \"List\".");
     return "";
   }
 
   public String setName(int index, String element) {
-    // Name is fixed to "List"
+    Log.error("0xA6068 Not allowed to execute setName in ASTMCListType, because ist is fixed to \"List\".");
     return "";
   }
 
   public void replaceAllNames(UnaryOperator<String> operator) {
-    // Name is fixed to "List"
+    Log.error("0xA6069 Not allowed to execute replaceAllNames in ASTMCListType, because ist is fixed to \"List\".");
   }
 
   public void sortNames(Comparator<? super String> comparator) {
-    // Name is fixed to "List"
+    Log.error("0xA6070 Not allowed to execute sortNames in ASTMCListType, because ist is fixed to \"List\".");
   }
 
   /**
