@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.*;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.REFERENCE_SUFFIX;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.LOADER_SUFFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 /**
@@ -82,7 +82,7 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
       ASTCDAttribute millSymbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, symbolSimpleName);
       millAttributeList.add(millSymbolAttribute);
 
-      ASTCDAttribute millSymbolReferenceAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, symbolSimpleName + REFERENCE_SUFFIX);
+      ASTCDAttribute millSymbolReferenceAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, symbolSimpleName + LOADER_SUFFIX);
       millAttributeList.add(millSymbolReferenceAttribute);
     }
 
