@@ -122,21 +122,21 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMillAutomatonSymbolReferenceAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("automatonSymbolReference", symTabMill);
+    ASTCDAttribute astcdAttribute = getAttributeBy("automatonSymbolLoader", symTabMill);
     assertDeepEquals(PROTECTED_STATIC, astcdAttribute.getModifier());
     assertDeepEquals("AutomatonSymTabMill", astcdAttribute.getMCType());
   }
 
   @Test
   public void testMillStateSymbolReferenceAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("stateSymbolReference", symTabMill);
+    ASTCDAttribute astcdAttribute = getAttributeBy("stateSymbolLoader", symTabMill);
     assertDeepEquals(PROTECTED_STATIC, astcdAttribute.getModifier());
     assertDeepEquals("AutomatonSymTabMill", astcdAttribute.getMCType());
   }
 
   @Test
-  public void testMillSymbolInterfaceSymbolReferenceAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("symbolInterfaceSymbolReference", symTabMill);
+  public void testMillSymbolInterfaceSymbolLoaderAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("symbolInterfaceSymbolLoader", symTabMill);
     assertDeepEquals(PROTECTED_STATIC, astcdAttribute.getModifier());
     assertDeepEquals("AutomatonSymTabMill", astcdAttribute.getMCType());
   }
@@ -274,33 +274,33 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void test_AutomatonSymbolReferenceBuilderMethod() {
-    ASTCDMethod method = getMethodBy("_automatonSymbolReferenceBuilder", symTabMill);
+    ASTCDMethod method = getMethodBy("_automatonSymbolLoaderBuilder", symTabMill);
     assertDeepEquals(PROTECTED, method.getModifier());
 
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals("AutomatonSymbolReferenceBuilder", method.getMCReturnType().getMCType());
+    assertDeepEquals("AutomatonSymbolLoaderBuilder", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
   public void test_StateSymbolReferenceBuilderMethod() {
-    ASTCDMethod method = getMethodBy("_stateSymbolReferenceBuilder", symTabMill);
+    ASTCDMethod method = getMethodBy("_stateSymbolLoaderBuilder", symTabMill);
     assertDeepEquals(PROTECTED, method.getModifier());
 
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals("StateSymbolReferenceBuilder", method.getMCReturnType().getMCType());
+    assertDeepEquals("StateSymbolLoaderBuilder", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
-  public void test_SymbolInterfaceSymbolReferenceBuilderMethod() {
-    ASTCDMethod method = getMethodBy("_symbolInterfaceSymbolReferenceBuilder", symTabMill);
+  public void test_SymbolInterfaceSymbolLoaderBuilderMethod() {
+    ASTCDMethod method = getMethodBy("_symbolInterfaceSymbolLoaderBuilder", symTabMill);
     assertDeepEquals(PROTECTED, method.getModifier());
 
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals("SymbolInterfaceSymbolReferenceBuilder", method.getMCReturnType().getMCType());
+    assertDeepEquals("SymbolInterfaceSymbolLoaderBuilder", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
@@ -418,33 +418,33 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAutomatonSymbolReferenceBuilderMethod() {
-    ASTCDMethod method = getMethodBy("automatonSymbolReferenceBuilder", symTabMill);
+    ASTCDMethod method = getMethodBy("automatonSymbolLoaderBuilder", symTabMill);
     assertDeepEquals(PUBLIC_STATIC, method.getModifier());
 
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals("AutomatonSymbolReferenceBuilder", method.getMCReturnType().getMCType());
+    assertDeepEquals("AutomatonSymbolLoaderBuilder", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
   public void testStateSymbolReferenceBuilderMethod() {
-    ASTCDMethod method = getMethodBy("stateSymbolReferenceBuilder", symTabMill);
+    ASTCDMethod method = getMethodBy("stateSymbolLoaderBuilder", symTabMill);
     assertDeepEquals(PUBLIC_STATIC, method.getModifier());
 
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals("StateSymbolReferenceBuilder", method.getMCReturnType().getMCType());
+    assertDeepEquals("StateSymbolLoaderBuilder", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
-  public void testSymbolInterfaceSymbolReferenceBuilderMethod() {
-    ASTCDMethod method = getMethodBy("symbolInterfaceSymbolReferenceBuilder", symTabMill);
+  public void testSymbolInterfaceSymbolLoaderBuilderMethod() {
+    ASTCDMethod method = getMethodBy("symbolInterfaceSymbolLoaderBuilder", symTabMill);
     assertDeepEquals(PUBLIC_STATIC, method.getModifier());
 
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals("SymbolInterfaceSymbolReferenceBuilder", method.getMCReturnType().getMCType());
+    assertDeepEquals("SymbolInterfaceSymbolLoaderBuilder", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
