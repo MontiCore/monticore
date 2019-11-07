@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
@@ -11,6 +12,8 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +23,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_ARTIFACT_SCOPE_TYPE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
@@ -55,6 +59,8 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
 
     scopeBuilder.getCDAttributeList().forEach(a -> a.setModifier(PROTECTED.build()));
     scopeBuilder.setName(scopeBuilderName);
+    scopeBuilder.addInterface(
+    getMCTypeFacade().createQualifiedType(I_ARTIFACT_SCOPE_TYPE));
 
     // new build method template
     Optional<ASTCDMethod> buildMethod = scopeBuilder.getCDMethodList()

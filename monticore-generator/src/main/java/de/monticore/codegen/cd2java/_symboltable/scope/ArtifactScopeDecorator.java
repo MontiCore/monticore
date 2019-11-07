@@ -66,9 +66,6 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
     ASTCDAttribute importsAttribute = createImportsAttribute();
     List<ASTCDMethod> importsMethods = methodDecorator.decorate(importsAttribute);
 
-    ASTCDAttribute qualifiedNamesCalculatorAttribute = createQualifiedNamesCalculatorAttribute();
-    List<ASTCDMethod> qualifiedNameCalculatorMethod = methodDecorator.getMutatorDecorator().decorate(qualifiedNamesCalculatorAttribute);
-
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
     return CD4AnalysisMill.cDClassBuilder()
@@ -80,8 +77,6 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
         .addAllCDMethods(packageNameMethods)
         .addCDAttribute(importsAttribute)
         .addAllCDMethods(importsMethods)
-        .addCDAttribute(qualifiedNamesCalculatorAttribute)
-        .addAllCDMethods(qualifiedNameCalculatorMethod)
         .addCDMethod(createGetNameOptMethod())
         .addCDMethod(createGetTopLevelSymbolMethod())
         .addCDMethod(createCheckIfContinueAsSubScopeMethod())
@@ -114,10 +109,6 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected ASTCDAttribute createImportsAttribute() {
     return getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT), "imports");
-  }
-
-  protected ASTCDAttribute createQualifiedNamesCalculatorAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE, QUALIFIED_NAMES_CALCULATOR, "qualifiedNamesCalculator");
   }
 
   protected ASTCDMethod createGetNameOptMethod() {
