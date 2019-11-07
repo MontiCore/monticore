@@ -315,20 +315,23 @@ public class DeriveSymTypeOfCommonExpressionTest {
         scope = scope(null, true, null, "Phantasy2");
 
         TypeSymbol person = DefsTypeBasic.type("Person");
+        add2scope(scope, person);
         TypeSymbol student = DefsTypeBasic.type("Student",
-                Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", person))
+                Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope))
         );
+        add2scope(scope, student);
         TypeSymbol firstsemesterstudent = DefsTypeBasic.type("FirstSemesterStudent",
-                Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", student))
+                Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope))
         );
+        add2scope(scope, firstsemesterstudent);
         add2scope(scope, field("foo", _intSymType));
         add2scope(scope, field("bar2", _booleanSymType));
-        add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", person)));
-        add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", person)));
-        add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", student)));
-        add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", student)));
+        add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
+        add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
+        add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
+        add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
         add2scope(scope, field("firstsemester", SymTypeExpressionFactory.
-                createTypeObject("FirstSemesterStudent", firstsemesterstudent)));
+                createTypeObject("FirstSemesterStudent", scope)));
         add2scope(scope, method("isInt", _booleanSymType));
         add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
 
@@ -642,20 +645,22 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
         // some FieldSymbols (ie. Variables, Attributes)
         TypeSymbol person = DefsTypeBasic.type("Person");
+        add2scope(scope, person);
         TypeSymbol student = DefsTypeBasic.type("Student",
-                Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", person))
+                Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope))
         );
         TypeSymbol firstsemesterstudent = DefsTypeBasic.type("FirstSemesterStudent",
-                Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", student))
+                Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope))
         );
+        add2scope(scope, firstsemesterstudent);
         add2scope(scope, field("foo", _intSymType));
         add2scope(scope, field("bar2", _booleanSymType));
-        add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", person)));
-        add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", person)));
-        add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", student)));
-        add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", student)));
+        add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
+        add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
+        add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
+        add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
         add2scope(scope, field("firstsemester",
-                SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", firstsemesterstudent))
+                SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope))
         );
         add2scope(scope, method("isInt", _booleanSymType));
         add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
@@ -778,25 +783,26 @@ public class DeriveSymTypeOfCommonExpressionTest {
         TypeSymbol superclass = type("AList", Lists.newArrayList(add), Lists.newArrayList(field),
                 Lists.newArrayList(), Lists.newArrayList()
         );
-        SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList", superclass);
-        add2scope(scope, superclass);
+        add2scope(scope,superclass);
+        SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList", scope);
 
         //sub
         TypeSymbol subclass = type("MyList", Lists.newArrayList(), Lists.newArrayList(),
                 Lists.newArrayList(supclass), Lists.newArrayList()
         );
-        SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList", subclass);
-        FieldSymbol myList = field("myList", sub);
         add2scope(scope, subclass);
+
+        SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList", scope);
+        FieldSymbol myList = field("myList", sub);
         add2scope(scope, myList);
 
         //subsub
         TypeSymbol subsubclass = type("MyList", Lists.newArrayList(), Lists.newArrayList(),
                 Lists.newArrayList(supclass), Lists.newArrayList()
         );
-        SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList", subsubclass);
-        FieldSymbol mySubList = field("mySubList", subsub);
         add2scope(scope, subsubclass);
+        SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList", scope);
+        FieldSymbol mySubList = field("mySubList", subsub);
         add2scope(scope, mySubList);
 
         derLit.setScope(scope);

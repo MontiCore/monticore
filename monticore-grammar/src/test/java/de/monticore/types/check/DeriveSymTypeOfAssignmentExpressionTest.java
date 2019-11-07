@@ -6,6 +6,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -56,8 +57,8 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         add2scope(scope, DefsTypeBasic._String);
 
         // some FieldSymbols (ie. Variables, Attributes)
-        TypeSymbol p = new TypeSymbol("Person");
-        TypeSymbol s = new TypeSymbol("Student");
+        TypeSymbol p = TypeSymbolsSymTabMill.typeSymbolBuilder().setName("Person").build();
+        TypeSymbol s = TypeSymbolsSymTabMill.typeSymbolBuilder().setName("Student").build();
         s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
         TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
         f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
