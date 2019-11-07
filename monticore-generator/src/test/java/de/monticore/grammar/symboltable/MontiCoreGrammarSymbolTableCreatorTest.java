@@ -245,7 +245,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertTrue(grammar.getStartProd().isPresent());
     
     assertEquals(1, grammar.getSuperGrammars().size());
-    MCGrammarSymbolReference superGrammarRef = grammar.getSuperGrammars().get(0);
+    MCGrammarSymbolLoader superGrammarRef = grammar.getSuperGrammars().get(0);
     assertEquals("de.monticore.statechart.Statechart", superGrammarRef.getName());
     assertTrue(superGrammarRef.existsReferencedSymbol());
     testGrammarSymbolOfStatechart(superGrammarRef.getReferencedSymbol());
@@ -291,7 +291,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertEquals(5, countInterfaceAndAbstractProds(grammar));
     
     assertEquals(1, grammar.getSuperGrammars().size());
-    final MCGrammarSymbolReference superGrammarRef = grammar.getSuperGrammars().get(0);
+    final MCGrammarSymbolLoader superGrammarRef = grammar.getSuperGrammars().get(0);
     assertTrue(superGrammarRef.existsReferencedSymbol());
     final String superGrammarFullName = superGrammarRef.getReferencedSymbol().getFullName();
     assertEquals("mc.grammars.literals.TestLiterals", superGrammarFullName);

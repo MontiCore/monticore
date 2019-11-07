@@ -12,7 +12,7 @@ import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolReference;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolLoader;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
@@ -423,7 +423,7 @@ public class ParserGeneratorHelper {
     if (!ast.getAltList().isEmpty()) {
       return ast.getAltList();
     }
-    for (MCGrammarSymbolReference g : grammarSymbol.getSuperGrammars()) {
+    for (MCGrammarSymbolLoader g : grammarSymbol.getSuperGrammars()) {
       final Optional<ProdSymbol> ruleByName = g.getReferencedSymbol().getProdWithInherited(ast.getName());
       if (ruleByName.isPresent() && ruleByName.get().isClass()) {
         Optional<ASTProd> astProd = ruleByName.get().getAstNode();

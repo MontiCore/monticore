@@ -340,7 +340,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     for (ASTGrammarReference ref : astGrammar.getSupergrammarList()) {
       final String superGrammarName = getQualifiedName(ref.getNameList());
 
-      final MCGrammarSymbolReference superGrammar = new MCGrammarSymbolReference(
+      final MCGrammarSymbolLoader superGrammar = new MCGrammarSymbolLoader(
           superGrammarName, getCurrentScope().orElse(null));
 
       grammarSymbol.addSuperGrammar(superGrammar);
@@ -361,7 +361,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     // A astextends B
     for (ASTMCType astSuperClass : astSuperClasses) {
-      MCProdOrTypeReference superClass = new MCProdOrTypeReference(FullGenericTypesPrinter.printType(astSuperClass),
+      MCProdOrTypeLoader superClass = new MCProdOrTypeLoader(FullGenericTypesPrinter.printType(astSuperClass),
           enclosingScope);
       prodSymbol.addAstSuperClass(superClass);
     }
@@ -375,7 +375,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     // A astimplements B
     for (ASTMCType astInterface : astSuperInterfaces) {
-      MCProdOrTypeReference superClass = new MCProdOrTypeReference(FullGenericTypesPrinter.printType(astInterface),
+      MCProdOrTypeLoader superClass = new MCProdOrTypeLoader(FullGenericTypesPrinter.printType(astInterface),
           enclosingScope);
       prodSymbol.addAstSuperInterface(superClass);
     }
@@ -483,7 +483,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
         .orElse(uncapitalize(FullGenericTypesPrinter.printType(astAttribute.getMCType())));
 
     AdditionalAttributeSymbol astAttributeSymbol = new AdditionalAttributeSymbol(attributeName);
-    MCProdOrTypeReference attributeType = new MCProdOrTypeReference(
+    MCProdOrTypeLoader attributeType = new MCProdOrTypeLoader(
         FullGenericTypesPrinter.printType(astAttribute.getMCType()), mcProdSymbol.getSpannedScope());
     astAttributeSymbol.setTypeReference(attributeType);
 

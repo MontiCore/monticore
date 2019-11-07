@@ -7,7 +7,7 @@ import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdOrTypeReference;
+import de.monticore.grammar.grammar._symboltable.MCProdOrTypeLoader;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Joiners;
@@ -31,7 +31,7 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
     Map<String, ProdSymbol> allProds = grammarSymbol.getProdsWithInherited();
     
     for (ProdSymbol classProd : grammarSymbol.getProds()) {
-      for (MCProdOrTypeReference sClass : classProd.getAstSuperClasses()) {
+      for (MCProdOrTypeLoader sClass : classProd.getAstSuperClasses()) {
         if (!allProds.containsKey(
             sClass.getProdRef().getName().substring(TransformationHelper.AST_PREFIX.length()))) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,

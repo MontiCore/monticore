@@ -6,13 +6,13 @@ import java.util.Optional;
 
 public class AdditionalAttributeSymbol extends AdditionalAttributeSymbolTOP {
 
-  private MCProdOrTypeReference typeReference;
+  private MCProdOrTypeLoader typeReference;
 
   public AdditionalAttributeSymbol(String name) {
     super(name);
   }
 
-  public void setTypeReference(MCProdOrTypeReference referencedProd) {
+  public void setTypeReference(MCProdOrTypeLoader referencedProd) {
     this.typeReference = referencedProd;
   }
   
@@ -21,7 +21,7 @@ public class AdditionalAttributeSymbol extends AdditionalAttributeSymbolTOP {
    * defining prod for the nonterminal <code>... = s:A</code> is the production
    * <code>A = ...</code>.
    */
-  public Optional<MCProdOrTypeReference> getTypeReference() {
+  public Optional<MCProdOrTypeLoader> getTypeReference() {
     return Optional.ofNullable(typeReference);
   }
   

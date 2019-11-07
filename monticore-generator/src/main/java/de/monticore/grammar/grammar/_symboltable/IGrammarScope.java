@@ -3,10 +3,8 @@
 
 package de.monticore.grammar.grammar._symboltable;
 
-import com.google.common.collect.LinkedListMultimap;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -70,7 +68,7 @@ public interface IGrammarScope extends IGrammarScopeTOP {
     Optional<MCGrammarSymbol> spanningSymbol = MCGrammarSymbolTableHelper.getMCGrammarSymbol(this);
     if (spanningSymbol.isPresent()) {
       MCGrammarSymbol grammarSymbol = spanningSymbol.get();
-      for (MCGrammarSymbolReference superGrammarRef : grammarSymbol.getSuperGrammars()) {
+      for (MCGrammarSymbolLoader superGrammarRef : grammarSymbol.getSuperGrammars()) {
         if (checkIfContinueWithSuperGrammar(name, superGrammarRef)
                 && (superGrammarRef.existsReferencedSymbol())) {
           final MCGrammarSymbol superGrammar = superGrammarRef.getReferencedSymbol();
@@ -85,7 +83,7 @@ public interface IGrammarScope extends IGrammarScopeTOP {
     return resolvedSymbol;
   }
 
-  default boolean checkIfContinueWithSuperGrammar(String name, MCGrammarSymbolReference superGrammar) {
+  default boolean checkIfContinueWithSuperGrammar(String name, MCGrammarSymbolLoader superGrammar) {
     // checks cases:
     // 1) A   and A
     // 2) c.A and A

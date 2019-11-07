@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.toList;
 
 public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
-  private final List<MCGrammarSymbolReference> superGrammars = new ArrayList<>();
+  private final List<MCGrammarSymbolLoader> superGrammars = new ArrayList<>();
 
   // the start production of the grammar
   private ProdSymbol startProd;
@@ -41,7 +41,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return ofNullable(startProd);
   }
 
-  public List<MCGrammarSymbolReference> getSuperGrammars() {
+  public List<MCGrammarSymbolLoader> getSuperGrammars() {
     return copyOf(superGrammars);
   }
 
@@ -61,7 +61,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return copyOf(supGrammars);
   }
 
-  public void addSuperGrammar(MCGrammarSymbolReference superGrammarRef) {
+  public void addSuperGrammar(MCGrammarSymbolLoader superGrammarRef) {
     this.superGrammars.add(errorIfNull(superGrammarRef));
   }
 
@@ -85,7 +85,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
   public Optional<ProdSymbol> getProdWithInherited(String ruleName) {
     Optional<ProdSymbol> mcProd = getProd(ruleName);
-    Iterator<MCGrammarSymbolReference> itSuperGrammars = superGrammars.iterator();
+    Iterator<MCGrammarSymbolLoader> itSuperGrammars = superGrammars.iterator();
 
     while (!mcProd.isPresent() && itSuperGrammars.hasNext()) {
       mcProd = itSuperGrammars.next().getReferencedSymbol().getProdWithInherited(ruleName);
@@ -96,7 +96,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
   public Optional<ProdSymbol> getInheritedProd(String ruleName) {
     Optional<ProdSymbol> mcProd = empty();
-    Iterator<MCGrammarSymbolReference> itSuperGrammars = superGrammars.iterator();
+    Iterator<MCGrammarSymbolLoader> itSuperGrammars = superGrammars.iterator();
 
     while (!mcProd.isPresent() && itSuperGrammars.hasNext()) {
       mcProd = itSuperGrammars.next().getReferencedSymbol().getProdWithInherited(ruleName);
@@ -109,7 +109,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     final Map<String, ProdSymbol> ret = new LinkedHashMap<>();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbolReference superGrammarRef = superGrammars.get(i);
+      final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
 
       if (superGrammarRef.existsReferencedSymbol()) {
         ret.putAll(superGrammarRef.getReferencedSymbol().getProdsWithInherited());
