@@ -72,6 +72,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
         .setName(artifactScopeSimpleName)
         .setModifier(PUBLIC.build())
         .setSuperclass(getMCTypeFacade().createQualifiedType(scopeClassFullName))
+        .addInterface(getMCTypeFacade().createQualifiedType(I_ARTIFACT_SCOPE_TYPE))
         .addAllCDConstructors(createConstructors(artifactScopeSimpleName))
         .addCDAttribute(packageNameAttribute)
         .addAllCDMethods(packageNameMethods)

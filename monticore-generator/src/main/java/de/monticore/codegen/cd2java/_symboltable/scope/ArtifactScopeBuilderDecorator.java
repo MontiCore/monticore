@@ -59,8 +59,6 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
 
     scopeBuilder.getCDAttributeList().forEach(a -> a.setModifier(PROTECTED.build()));
     scopeBuilder.setName(scopeBuilderName);
-    scopeBuilder.addInterface(
-    getMCTypeFacade().createQualifiedType(I_ARTIFACT_SCOPE_TYPE));
 
     // new build method template
     Optional<ASTCDMethod> buildMethod = scopeBuilder.getCDMethodList()

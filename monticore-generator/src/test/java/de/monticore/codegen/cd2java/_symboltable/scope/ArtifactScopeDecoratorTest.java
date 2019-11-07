@@ -89,7 +89,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertTrue(scopeClass.isEmptyInterfaces());
+    assertEquals(1, scopeClass.sizeInterfaces());
   }
 
   @Test
