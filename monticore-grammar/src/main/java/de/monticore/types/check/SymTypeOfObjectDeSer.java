@@ -13,6 +13,8 @@ import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsArtifactScope;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
 public class SymTypeOfObjectDeSer implements IDeSer<SymTypeOfObject> {
@@ -46,7 +48,7 @@ public class SymTypeOfObjectDeSer implements IDeSer<SymTypeOfObject> {
       JsonObject o = serialized.getAsJsonObject();  //if it has a kind, it is an object
       String objName = o.getStringMember("objName");
       TypeSymbol typeLoader = null; // TODO AB: waits for TypeSymbolLoader
-      return SymTypeExpressionFactory.createTypeObject(objName, typeLoader);
+      return SymTypeExpressionFactory.createTypeObject(objName, new TypeSymbolsScope());
     }
     Log.error("0x823F4 Internal error: Cannot load \""
         + serialized + "\" as  SymTypeOfObject!");

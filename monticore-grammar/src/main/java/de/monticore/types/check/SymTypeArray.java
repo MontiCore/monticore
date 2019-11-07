@@ -18,6 +18,7 @@ public class SymTypeArray extends SymTypeExpression {
   /**
    * An Array has an argument Type
    */
+  //todo NP what is the argument for?
   protected SymTypeExpression argument;
 
   /**
