@@ -27,9 +27,7 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
 
   private ASTCDInterface symbolClassAutomaton;
 
-  private GlobalExtensionManagement glex;
-
-  private MCTypeFacade MCTypeFacade;
+  private MCTypeFacade mcTypeFacade;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
@@ -44,17 +42,18 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
   @Before
   public void setUp() {
     Log.init();
-    this.MCTypeFacade = MCTypeFacade.getInstance();
-    this.glex = new GlobalExtensionManagement();
+    this.mcTypeFacade = MCTypeFacade.getInstance();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    glex.setGlobalValue("astHelper", new DecorationHelper());
+    glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
-    this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
+    glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
 
-    SymbolResolvingDelegateInterfaceDecorator decorator = new SymbolResolvingDelegateInterfaceDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit));
+    SymbolResolvingDelegateInterfaceDecorator decorator = new SymbolResolvingDelegateInterfaceDecorator(glex,
+        new SymbolTableService(decoratedCompilationUnit));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("ASTAutomaton", decoratedCompilationUnit);
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
@@ -93,7 +92,7 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
     ASTCDMethod method = getMethodBy("resolveAdaptedAutomatonSymbol", symbolClassAutomaton);
 
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());
