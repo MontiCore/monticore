@@ -1,14 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
+import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.typeConstants;
 
@@ -52,25 +49,16 @@ public class SymTypeExpressionFactory {
   
   /**
    * for ObjectTypes, as e.g. "Person"
-   * @param name  Name of the type
-   * @param objTypeSymbol  Symbol behind the Type
-   * @return
    */
-  public static SymTypeOfObject createTypeObject(String name, TypeSymbol objTypeSymbol) {
-    SymTypeOfObject o = new SymTypeOfObject(name,objTypeSymbol);
-    return o;
+  public static SymTypeOfObject createTypeObject(TypeSymbolLoader typeSymbolLoader) {
+    return new SymTypeOfObject(typeSymbolLoader);
   }
 
   /**
    * for ObjectTypes, as e.g. "Person"
-   * @param name  Name of the type
-   * @return
    */
-  @Deprecated
-  public static SymTypeOfObject createTypeObject(String name) {
-    SymTypeOfObject o = new SymTypeOfObject(name);
-    o.setObjName(name);
-    return o;
+  public static SymTypeOfObject createTypeObject(String name, ITypeSymbolsScope enclosingScope) {
+    return new SymTypeOfObject(new TypeSymbolLoader(name, enclosingScope));
   }
 
   /**
@@ -90,25 +78,13 @@ public class SymTypeExpressionFactory {
   
   /**
    * creates an array-Type Expression
-   * @param dim   the dimension of the array
-   * @param argument the argument type (of the elements)
-   * @param typeInfo the Symbol behind this Type
-   * @return
-   */
-  public static SymTypeArray createTypeArray(int dim, SymTypeExpression argument, TypeSymbol typeInfo) {
-    SymTypeArray o = new SymTypeArray(dim, argument, typeInfo);
-    return o;
-  }
-  
-  /**
-   * creates an array-Type Expression
+   * @param typeSymbolLoader
    * @param dim   the dimension of the array
    * @param argument the argument type (of the elements)
    * @return
    */
-  @Deprecated
-  public static SymTypeArray createTypeArray(int dim, SymTypeExpression argument) {
-    SymTypeArray o = new SymTypeArray(dim, argument);
+  public static SymTypeArray createTypeArray(TypeSymbolLoader typeSymbolLoader, int dim, SymTypeExpression argument) {
+    SymTypeArray o = new SymTypeArray(typeSymbolLoader,dim, argument);
     return o;
   }
   
@@ -116,11 +92,11 @@ public class SymTypeExpressionFactory {
   /**
    * creates a TypeExpression for primitives, such as "int", for "null", "void" and
    * also for object types, such as "Person" from a given symbol
-   * @param type
+   * @param typeScope
    * @return
    */
-  public static SymTypeExpression createTypeExpression(TypeSymbol type){
-    return createTypeExpression(type.getName(),type);
+  public static SymTypeExpression createTypeExpression(ITypeSymbolsScope typeScope){
+    return createTypeExpression(typeScope.getName(),typeScope);
   }
   
   /**
@@ -131,7 +107,7 @@ public class SymTypeExpressionFactory {
    * @param type
    * @return
    */
-  public static SymTypeExpression createTypeExpression(String name, TypeSymbol type){
+  public static SymTypeExpression createTypeExpression(String name, ITypeSymbolsScope type){
     SymTypeExpression o;
     if (typeConstants.containsKey(type.getName())) {
       o = createTypeConstant(name);
@@ -148,40 +124,29 @@ public class SymTypeExpressionFactory {
   
   /**
    * createGenerics: for a generic Type
-   * @param name    name of the Generic, such as "Map"
-   * @param arguments   the SymTypes for the arguments
-   * @param objTypeConstructorSymbol  and the symbol-Object the generic type is linked to
    * @return
    */
-  public static SymTypeOfGenerics createGenerics(String name, List<SymTypeExpression> arguments,
-                                                 TypeSymbol objTypeConstructorSymbol){
-    SymTypeOfGenerics o = new SymTypeOfGenerics(name, arguments, objTypeConstructorSymbol);
-    return o;
-  }
-  
-  /**
-   * createGenerics: is created using the enclosing Scope to ask for the appropriate symbol.
-   * @param name    name of the Generic, such as "Map"
-   * @param arguments   the SymTypes for the arguments
-   * @param enclosingScope  used to derive the Symbol
-   */
-  @Deprecated
-  // es macht keinen sinn den enclosing Scope da rein zu packen, man kann auch gleich das zugehörige Lazy<Symbol> laden (sobald das geht)
-  public static SymTypeOfGenerics createGenerics(String name, List<SymTypeExpression> arguments,
-                                                 TypeSymbolsScope enclosingScope){
-    Optional<TypeSymbol> objTypeConstructorSymbol = enclosingScope.resolveType(name);
-    // No check, whether the symbol actually exists: Exception may be thrown
-    SymTypeOfGenerics o = new SymTypeOfGenerics(name, arguments, objTypeConstructorSymbol.get());
-    return o;
+  public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader){
+    return new SymTypeOfGenerics(typeSymbolLoader);
   }
 
-  @Deprecated // TODO: delete, because TypeSymbol is not set
-  // aktuell nur noch benutzt von DeriveSymTypeOfMCType
-  public static SymTypeOfGenerics createGenerics(String fullName, List<SymTypeExpression> arguments){
-    SymTypeOfGenerics o = new SymTypeOfGenerics(fullName, arguments);
-    // XXX BR: here we also have to add the Symbol
-    // being retrieved from somewhere ...
-    return o;
+  public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader, List<SymTypeExpression> arguments){
+    return new SymTypeOfGenerics(typeSymbolLoader,arguments);
+  }
+
+  public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader, SymTypeExpression... arguments){
+    return new SymTypeOfGenerics(typeSymbolLoader, Arrays.asList(arguments));
+  }
+
+  /**
+   * createGenerics: is created using the enclosing Scope to ask for the appropriate symbol.
+   */
+  public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope){
+    return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope));
+  }
+
+  public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope, List<SymTypeExpression> arguments){
+    return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope), arguments);
   }
 
 }

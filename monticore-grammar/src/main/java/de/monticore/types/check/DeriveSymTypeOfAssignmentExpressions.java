@@ -401,7 +401,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     right.accept(getRealThis());
     //if the type of the left expression is a String then so is the type of the whole expression
     if("String".equals(leftResult.print())){
-      return Optional.of(SymTypeExpressionFactory.createTypeObject("String"));
+      return Optional.of(SymTypeExpressionFactory.createTypeObject("String", left.getEnclosingScope()));
     }
     //else continue with the normal calculation of +=,-=,*=,/= and %=
     return calculateTypeArithmetic(left,right);

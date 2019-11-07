@@ -4,38 +4,24 @@ package de.monticore.types.check;
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 
 public class SymTypeVariable extends SymTypeExpression {
 
   /**
-   * A typeVariable has a name
-   */
-  protected String varName;
-  
-  /**
    * Constructor:
-   * @param varName
-   * @param typeSymbol
    */
-  public SymTypeVariable(String varName, TypeSymbol typeSymbol)
-  {
-    this.varName = varName;
-    this.setTypeInfo(typeSymbol);
+  public SymTypeVariable(TypeSymbolLoader typeSymbolLoader) {
+    this.typeSymbolLoader = typeSymbolLoader;
   }
-  
-  @Deprecated  // weil unvollständig
-  public SymTypeVariable(String varName)
-  {
-    this.varName = varName;
-  }
-  
+
   public String getVarName() {
-    return varName;
+    return typeSymbolLoader.getName();
   }
-  
+
   public void setVarName(String name) {
-    this.varName = name;
+    typeSymbolLoader.setName(name);
   }
 
   /**
@@ -45,7 +31,7 @@ public class SymTypeVariable extends SymTypeExpression {
   public String print() {
     return getVarName();
   }
-  
+
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
    */
@@ -58,7 +44,7 @@ public class SymTypeVariable extends SymTypeExpression {
     jp.endObject();
     return jp.getContent();
   }
-  
+
   /**
    * Am I primitive? (such as "int")
    */
@@ -70,7 +56,7 @@ public class SymTypeVariable extends SymTypeExpression {
      *     unless we always assume boxed implementations then return false would be correct
      *     according to the W algorithm of Hindley-Milner, we regard a variable
      *     a monomorphic type on its own and do hence not regard it as primitive type
-      */
+     */
   }
 
   public boolean isTypeVariable() {
@@ -79,16 +65,8 @@ public class SymTypeVariable extends SymTypeExpression {
 
   @Override
   public SymTypeVariable deepClone() {
-    SymTypeVariable clone = new SymTypeVariable(this.getVarName(),this.getTypeInfo());
-    return clone;
+    return new SymTypeVariable(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
   }
-
 
   // --------------------------------------------------------------------------
-
-  // TODO 4: kann entfernt werden
-  @Deprecated
-  public SymTypeVariable() {
-  }
-  
 }

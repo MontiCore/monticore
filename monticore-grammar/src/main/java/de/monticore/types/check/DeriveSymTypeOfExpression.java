@@ -70,7 +70,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     }else if(optType.isPresent()) {
      //no variable found, test if name is type
       TypeSymbol type = optType.get();
-      SymTypeExpression res = createTypeExpression(type);
+      SymTypeExpression res = createTypeExpression(type.getName(), expr.getEnclosingScope());
       this.result = res;
       lastResult.setLast(res);
     }else{
