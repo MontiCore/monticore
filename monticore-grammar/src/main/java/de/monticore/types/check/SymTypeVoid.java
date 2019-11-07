@@ -1,10 +1,12 @@
 package de.monticore.types.check;
 
 
+import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+
 public class SymTypeVoid extends SymTypeExpression {
   
   public SymTypeVoid() {
-    setTypeInfo(DefsTypeBasic._void);
+    typeSymbolLoader = new TypeSymbolLoader(DefsTypeBasic._voidTypeString, null);
   }
   
   /**

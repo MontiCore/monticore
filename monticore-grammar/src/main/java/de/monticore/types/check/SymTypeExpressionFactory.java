@@ -21,136 +21,139 @@ import static de.monticore.types.check.DefsTypeBasic.typeConstants;
  */
 public class SymTypeExpressionFactory {
 
-    /**
-     * createTypeVariable vor Variables
-     */
-    public static SymTypeVariable createTypeVariable(String name, TypeSymbolsScope typeSymbol) {
-        return new SymTypeVariable(new TypeSymbolLoader(name, typeSymbol));
+  /**
+   * createTypeVariable vor Variables
+   */
+  public static SymTypeVariable createTypeVariable(String name, ITypeSymbolsScope typeSymbol) {
+    return new SymTypeVariable(new TypeSymbolLoader(name, typeSymbol));
+  }
+
+  public static SymTypeVariable createTypeVariable(TypeSymbolLoader typeSymbolLoader) {
+    return new SymTypeVariable(typeSymbolLoader);
+  }
+
+  /**
+   * for constants, such as "int" (and no other kinds).
+   * TypeInfo is not needed (as the Objects are predefined singletons)
+   */
+  public static SymTypeConstant createTypeConstant(String name) {
+    SymTypeConstant stc = typeConstants.get(name);
+    if (stc == null) {
+      Log.error("0x893F62 Internal Error: Non primitive type " + name + " stored as constant.");
     }
+    return stc;
+  }
 
-    public static SymTypeVariable createTypeVariable(TypeSymbolLoader typeSymbolLoader) {
-        return new SymTypeVariable(typeSymbolLoader);
+  /**
+   * for ObjectTypes, as e.g. "Person"
+   */
+  public static SymTypeOfObject createTypeObject(TypeSymbolLoader typeSymbolLoader) {
+    return new SymTypeOfObject(typeSymbolLoader);
+  }
+
+  /**
+   * for ObjectTypes, as e.g. "Person"
+   */
+  public static SymTypeOfObject createTypeObject(String name, ITypeSymbolsScope enclosingScope) {
+    return new SymTypeOfObject(new TypeSymbolLoader(name, enclosingScope));
+  }
+
+  /**
+   * creates the "Void"-type, i.e. a pseudotype that represents the absence of a real type
+   *
+   * @return
+   */
+  public static SymTypeVoid createTypeVoid() {
+    return DefsTypeBasic._voidSymType;
+  }
+
+  /**
+   * That is the pseudo-type of "null"
+   */
+  public static SymTypeOfNull createTypeOfNull() {
+    return DefsTypeBasic._nullSymType;
+  }
+
+  /**
+   * creates an array-Type Expression
+   *
+   * @param typeSymbolLoader
+   * @param dim              the dimension of the array
+   * @param argument         the argument type (of the elements)
+   * @return
+   */
+  public static SymTypeArray createTypeArray(TypeSymbolLoader typeSymbolLoader, int dim, SymTypeExpression argument) {
+    return new SymTypeArray(typeSymbolLoader, dim, argument);
+  }
+
+  public static SymTypeArray createTypeArray(String name, TypeSymbolsScope typeSymbolsScope, int dim, SymTypeExpression argument) {
+    return new SymTypeArray(new TypeSymbolLoader(name, typeSymbolsScope), dim, argument);
+  }
+
+  /**
+   * creates a TypeExpression for primitives, such as "int", for "null", "void" and
+   * also for object types, such as "Person" from a given symbol
+   *
+   * @param typeScope
+   * @return
+   */
+  public static SymTypeExpression createTypeExpression(ITypeSymbolsScope typeScope) {
+    return createTypeExpression(typeScope.getName(), typeScope);
+  }
+
+  /**
+   * creates a TypeExpression for primitives, such as "int", for "null", "void" and
+   * also for object types, such as "Person" from a given symbol
+   * Primitives don't need a type symbol, object types need both.
+   *
+   * @param name
+   * @param type
+   * @return
+   */
+  public static SymTypeExpression createTypeExpression(String name, ITypeSymbolsScope type) {
+    SymTypeExpression o;
+    if (typeConstants.containsKey(type.getName())) {
+      o = createTypeConstant(name);
+    } else if ("void".equals(name)) {
+      o = createTypeVoid();
+    } else if ("null".equals(name)) {
+      o = createTypeOfNull();
+    } else {
+      o = createTypeObject(name, type);
     }
-
-    /**
-     * for constants, such as "int" (and no other kinds).
-     * TypeInfo is not needed (as the Objects are predefined singletons)
-     */
-    public static SymTypeConstant createTypeConstant(String name) {
-        SymTypeConstant stc = typeConstants.get(name);
-        if (stc == null) {
-            Log.error("0x893F62 Internal Error: Non primitive type " + name + " stored as constant.");
-        }
-        return stc;
-    }
-
-    /**
-     * for ObjectTypes, as e.g. "Person"
-     */
-    public static SymTypeOfObject createTypeObject(TypeSymbolLoader typeSymbolLoader) {
-        return new SymTypeOfObject(typeSymbolLoader);
-    }
-
-    /**
-     * for ObjectTypes, as e.g. "Person"
-     */
-    public static SymTypeOfObject createTypeObject(String name, ITypeSymbolsScope enclosingScope) {
-        return new SymTypeOfObject(new TypeSymbolLoader(name, enclosingScope));
-    }
-
-    /**
-     * creates the "Void"-type, i.e. a pseudotype that represents the absence of a real type
-     *
-     * @return
-     */
-    public static SymTypeVoid createTypeVoid() {
-        return DefsTypeBasic._voidSymType;
-    }
-
-    /**
-     * That is the pseudo-type of "null"
-     */
-    public static SymTypeOfNull createTypeOfNull() {
-        return DefsTypeBasic._nullSymType;
-    }
-
-    /**
-     * creates an array-Type Expression
-     *
-     * @param typeSymbolLoader
-     * @param dim              the dimension of the array
-     * @param argument         the argument type (of the elements)
-     * @return
-     */
-    public static SymTypeArray createTypeArray(TypeSymbolLoader typeSymbolLoader, int dim, SymTypeExpression argument) {
-        return new SymTypeArray(typeSymbolLoader, dim, argument);
-    }
-
-    public static SymTypeArray createTypeArray(String name, TypeSymbolsScope typeSymbolsScope, int dim, SymTypeExpression argument) {
-        return new SymTypeArray(new TypeSymbolLoader(name, typeSymbolsScope), dim, argument);
-    }
-
-    /**
-     * creates a TypeExpression for primitives, such as "int", for "null", "void" and
-     * also for object types, such as "Person" from a given symbol
-     *
-     * @param typeScope
-     * @return
-     */
-    public static SymTypeExpression createTypeExpression(ITypeSymbolsScope typeScope) {
-        return createTypeExpression(typeScope.getName(), typeScope);
-    }
-
-    /**
-     * creates a TypeExpression for primitives, such as "int", for "null", "void" and
-     * also for object types, such as "Person" from a given symbol
-     * Primitives don't need a type symbol, object types need both.
-     *
-     * @param name
-     * @param type
-     * @return
-     */
-    public static SymTypeExpression createTypeExpression(String name, ITypeSymbolsScope type) {
-        SymTypeExpression o;
-        if (typeConstants.containsKey(type.getName())) {
-            o = createTypeConstant(name);
-        } else if ("void".equals(name)) {
-            o = createTypeVoid();
-        } else if ("null".equals(name)) {
-            o = createTypeOfNull();
-        } else {
-            o = createTypeObject(name, type);
-        }
-        return o;
-    }
+    return o;
+  }
 
 
-    /**
-     * createGenerics: for a generic Type
-     *
-     * @return
-     */
-    public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader) {
-        return new SymTypeOfGenerics(typeSymbolLoader);
-    }
+  /**
+   * createGenerics: for a generic Type
+   *
+   * @return
+   */
+  public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader) {
+    return new SymTypeOfGenerics(typeSymbolLoader);
+  }
 
-    public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader, List<SymTypeExpression> arguments) {
-        return new SymTypeOfGenerics(typeSymbolLoader, arguments);
-    }
+  public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader, List<SymTypeExpression> arguments) {
+    return new SymTypeOfGenerics(typeSymbolLoader, arguments);
+  }
 
-    public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader, SymTypeExpression... arguments) {
-        return new SymTypeOfGenerics(typeSymbolLoader, Arrays.asList(arguments));
-    }
+  public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader, SymTypeExpression... arguments) {
+    return new SymTypeOfGenerics(typeSymbolLoader, Arrays.asList(arguments));
+  }
 
-    /**
-     * createGenerics: is created using the enclosing Scope to ask for the appropriate symbol.
-     */
-    public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope) {
-        return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope));
-    }
+  /**
+   * createGenerics: is created using the enclosing Scope to ask for the appropriate symbol.
+   */
+  public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope) {
+    return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope));
+  }
 
-    public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope, List<SymTypeExpression> arguments) {
-        return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope), arguments);
-    }
+  public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope, List<SymTypeExpression> arguments) {
+    return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope), arguments);
+  }
 
+  public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope, SymTypeExpression... arguments) {
+    return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope), Arrays.asList(arguments));
+  }
 }

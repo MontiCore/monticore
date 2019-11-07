@@ -1,5 +1,7 @@
 package de.monticore.types.check;
 
+import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+
 public class SymTypeOfNull extends SymTypeExpression {
   
   /**
@@ -13,7 +15,7 @@ public class SymTypeOfNull extends SymTypeExpression {
    *       int i = null;          illegal
    */
   public SymTypeOfNull() {
-    setTypeInfo(DefsTypeBasic._null);
+    typeSymbolLoader = new TypeSymbolLoader(DefsTypeBasic._nullTypeString, null);
   }
   
   /**
