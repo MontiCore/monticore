@@ -1,0 +1,12 @@
+{
+	"name": "MyLangComp",
+	"include": [
+		"src/main/java/**",
+		"src/test/resources/**",
+		["src/test/java/de/monticore/cocos/helper/Assert.java", "de/monticore/cocos/helper/Assert.java"]
+	],
+	"exclude": [
+		"src/test/resources/de/monticore/symboltable/languagecomposition/family/Cla.cla",
+		"src/test/resources/de/monticore/parsing/*"
+	]
+}

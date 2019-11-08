@@ -170,6 +170,9 @@ public class SymbolTablePrinterDecorator extends AbstractCreator<ASTCDCompilatio
     for (ASTCDType symbolProd : symbolProds) {
       String symbolFullName = symbolTableService.getSymbolFullName(symbolProd);
       ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(symbolFullName));
+      for(ASTCDAttribute a : symbolProd.getCDAttributeList()){
+
+      }
       this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH + "VisitSymbol", symbolFullName));
       visitorMethods.add(visitMethod);
 
