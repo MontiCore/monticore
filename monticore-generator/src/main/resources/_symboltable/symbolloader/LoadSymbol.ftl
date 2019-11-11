@@ -9,6 +9,7 @@ ${tc.signature("symbolReferenceName", "symbolName", "simpelName")}
   if (resolvedSymbol.isPresent()) {
     Log.debug("Loaded full information of '" + name + "' successfully.",
     ${symbolReferenceName}.class.getSimpleName());
+    loadedSymbol = Optional.of(resolvedSymbol.get());
   } else {
     Log.debug("Cannot load full information of '" + name, ${symbolReferenceName}.class.getSimpleName());
   }

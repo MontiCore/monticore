@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4102;
+
+grammar A4102b {
+
+  A = "a";
+
+  astrule A =
+    b:Optional<String>+;
+
+}
