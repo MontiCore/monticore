@@ -54,6 +54,9 @@ public class ParserGeneratorTest extends AstDependentGeneratorTest {
     astTest.testInterfaces();
     doGenerate("de/monticore/interfaces/Sup.mc4");
     doGenerate("de/monticore/interfaces/Sub.mc4");
+    doGenerate("de/monticore/interfaces/InterfaceExtension.mc4");
+    doGenerate("de/monticore/interfaces/InterfaceExtensionRecursive.mc4");
+    doGenerate("de/monticore/interfaces/InterfaceExtensionPartialImpl.mc4");
   }
 
   @Test
