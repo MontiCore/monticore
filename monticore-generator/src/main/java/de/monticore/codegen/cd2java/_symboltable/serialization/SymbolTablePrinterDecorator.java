@@ -11,6 +11,7 @@ import de.monticore.codegen.cd2java.factories.CDParameterFacade;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.se_rwth.commons.StringTransformations;
 
@@ -63,7 +64,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     String symbolVisitorFullName = visitorService.getSymbolVisitorFullName();
     String scopeVisitorFullName = visitorService.getScopeVisitorFullName();
 
-    List<ASTCDClass> symbolTypes = input.getCDDefinition().getCDClassList(); /*.stream()
+    List<ASTCDClass> symbolTypes = symbolCD.getCDDefinition().getCDClassList(); /*.stream()
             .map(c -> c.deepClone().getCDAttributeList())
             .filter(c -> c.getModifierOpt().isPresent())
             .filter(cd -> cd.getCDTypeSymbol().containsStereotype() symbolTableService.hasSymbolStereotype(cd.getModifier()))
@@ -206,38 +207,51 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
   // Für jedes Attribut der Symbolrule erzeuge eine Methode welche es serialisieren kann.
   // Falls komplex -> log error innerhalb der Methode
   protected List<ASTCDMethod> createSerializeSymbolruleMethods(List<ASTCDClass> symbolProds) {
-    List<ASTCDMethod> visitorMethods = new ArrayList<>();
+    List<ASTCDMethod> methodsCreated = new ArrayList<>();
+
+    // 1. Create Method for whole symbol
+    // 2. Create Methods for each attr of sym which are called in 1.
     for(ASTCDClass symbolProd : symbolProds) {
+      String methodName = "serialize" + StringTransformations.capitalize(symbolProd.getName());
+      String symbolFullName = symbolTableService.getSymbolFullName(symbolProd);
+      ASTMCQualifiedType type = getMCTypeFacade().getInstance().createQualifiedType(symbolFullName);
+      ASTCDParameter serializeParameter = CDParameterFacade.getInstance().createParameter(type, "node");
+      ASTCDMethod serializeMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, methodName, serializeParameter);
+
+      // erst alles der Methode hinzufügen dann adden.
+
+      // für jeden Parameter erstelle eine Zeile in der Methode in der die Serialisierung des entsprechenenden typs aufgerufen wird
+      methodsCreated.add(serializeMethod);
+
       for(ASTCDAttribute attr : symbolProd.deepClone().getCDAttributeList()) {
-        visitorMethods.add(createSerializeMethodForAttr(symbolProd.getName() ,attr));
+        methodsCreated.add(createSerializeMethodForAttr(symbolProd.getName() ,attr));
       }
     }
-    return visitorMethods;
+    return methodsCreated;
   }
 
   protected ASTCDMethod createSerializeMethodForAttr(String symName, ASTCDAttribute attr) {
-    //String name = attr.printType();
-    String value = attr.getName();
-
     String attribute = attr.getName();
-    String methodName = "serialize"+ symName + StringTransformations.capitalize(attribute);
-            //attribute.substring(0,1).toUpperCase() + attribute.substring(1);
+    String methodName = "serialize" + symName + StringTransformations.capitalize(attribute);
     String operation = "serialize a complex attr";
-    String returnValue = "null";
+    String returnValue = "";
 
+    // Ist es eine Liste? -> Begin und end array machen, dazwischen Methodenaufruf für elemente
+    //
+    // ist es autoserialisierbar -> Generiere die Methode oder generiere die Methode mit Fehlercode
+      // Ist es Optional -> Serialisiere falls vorhanden & auto serialisiert
     ASTCDParameter serializeParameter = CDParameterFacade.getInstance().createParameter(attr);
     ASTCDMethod serializeMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, methodName, serializeParameter);
 
     if (isAutoSerialized(attr)) {
-      if(isSerializedAsList(attr)) {
-        // begin Array
+      if (isSerializedAsList(attr)) {
         serializeAsList(serializeMethod, attr);
-      } else if(isSerializedAsOptional(attr)) {
+      } else if (isSerializedAsOptional(attr)) {
         serializeAsOptional(serializeMethod, attr);
-      } else {
-      this.replaceTemplate(EMPTY_BODY, serializeMethod, new TemplateHookPoint(
-              TEMPLATE_PRINT_ATTR_PATH + "PrintSimpleAttribute", attr.getName(), attr.getName()));
-    }
+      } else if(!isSerializedAsList(attr) && !isSerializedAsOptional(attr)) {
+        this.replaceTemplate(EMPTY_BODY, serializeMethod, new TemplateHookPoint(
+                TEMPLATE_PRINT_ATTR_PATH + "PrintSimpleAttribute", attr.getName(), attr.getName()));
+      }
     } else {
       this.replaceTemplate(EMPTY_BODY, serializeMethod, new TemplateHookPoint(
               TEMPLATE_PRINT_ATTR_PATH + "PrintComplexAttribute", attribute, methodName, operation, returnValue));
@@ -253,10 +267,10 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
   }
 
   protected void serializeAsList(ASTCDMethod method, ASTCDAttribute attr) {
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(PRINTER_BEGIN_ARRAY));
+    //this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(PRINTER_BEGIN_ARRAY));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PRINT_ATTR_PATH
             + "PrintSimpleListAttribute", attr.getName()));
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(PRINTER_END_ARRAY));
+    //this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(PRINTER_END_ARRAY));
   }
 
   protected boolean isAutoSerialized(ASTCDAttribute attr) {
