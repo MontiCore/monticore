@@ -27,12 +27,12 @@ public class ProdSymbol extends ProdSymbolTOP {
   /**
    * A astextends B, C, external.java.Type
    */
-  private List<MCProdOrTypeLoader> astSuperClasses = new ArrayList<>();
+  private List<MCProdSymbolLoader> astSuperClasses = new ArrayList<>();
 
   /**
    * A implements B, C, external.java.Type
    */
-  private List<MCProdOrTypeLoader> astSuperInterfaces = new ArrayList<>();
+  private List<MCProdSymbolLoader> astSuperInterfaces = new ArrayList<>();
 
   public ProdSymbol(String name) {
     super(name);
@@ -91,19 +91,19 @@ public class ProdSymbol extends ProdSymbolTOP {
     return copyOf(superInterfaceProds);
   }
 
-  public void addAstSuperClass(MCProdOrTypeLoader ref) {
+  public void addAstSuperClass(MCProdSymbolLoader ref) {
     astSuperClasses.add(errorIfNull(ref));
   }
 
-  public List<MCProdOrTypeLoader> getAstSuperClasses() {
+  public List<MCProdSymbolLoader> getAstSuperClasses() {
     return copyOf(astSuperClasses);
   }
 
-  public void addAstSuperInterface(MCProdOrTypeLoader ref) {
+  public void addAstSuperInterface(MCProdSymbolLoader ref) {
     astSuperInterfaces.add(errorIfNull(ref));
   }
 
-  public List<MCProdOrTypeLoader> getAstSuperInterfaces() {
+  public List<MCProdSymbolLoader> getAstSuperInterfaces() {
     return copyOf(astSuperInterfaces);
   }
 

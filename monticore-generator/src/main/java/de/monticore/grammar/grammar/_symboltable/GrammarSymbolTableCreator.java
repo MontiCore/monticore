@@ -361,7 +361,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     // A astextends B
     for (ASTMCType astSuperClass : astSuperClasses) {
-      MCProdOrTypeLoader superClass = new MCProdOrTypeLoader(FullGenericTypesPrinter.printType(astSuperClass),
+      MCProdSymbolLoader superClass = new MCProdSymbolLoader(FullGenericTypesPrinter.printType(astSuperClass),
           enclosingScope);
       prodSymbol.addAstSuperClass(superClass);
     }
@@ -375,7 +375,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     // A astimplements B
     for (ASTMCType astInterface : astSuperInterfaces) {
-      MCProdOrTypeLoader superClass = new MCProdOrTypeLoader(FullGenericTypesPrinter.printType(astInterface),
+      MCProdSymbolLoader superClass = new MCProdSymbolLoader(FullGenericTypesPrinter.printType(astInterface),
           enclosingScope);
       prodSymbol.addAstSuperInterface(superClass);
     }
@@ -483,7 +483,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
         .orElse(uncapitalize(FullGenericTypesPrinter.printType(astAttribute.getMCType())));
 
     AdditionalAttributeSymbol astAttributeSymbol = new AdditionalAttributeSymbol(attributeName);
-    MCProdOrTypeLoader attributeType = new MCProdOrTypeLoader(
+    MCProdSymbolLoader attributeType = new MCProdSymbolLoader(
         FullGenericTypesPrinter.printType(astAttribute.getMCType()), mcProdSymbol.getSpannedScope());
     astAttributeSymbol.setTypeReference(attributeType);
 
