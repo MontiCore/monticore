@@ -46,41 +46,41 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
         .filter(ASTCDClassTOP::isPresentModifier)
         .filter(x -> !x.getModifier().isAbstract())
         .collect(Collectors.toList()));
-    
+
     Collection<CDDefinitionSymbol> superSymbolList = service.getSuperCDsTransitive();
     List<ASTCDClass> superMills = new ArrayList<ASTCDClass>();
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
-    
+
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
       String millClassName = superSymbol.getName() + MILL_FOR + astcdDefinition.getName();
-      List<ASTCDMethod> builderMethodsList = addBuilderMethodsForSuper(astcdClassList, superSymbol, superSymbolList);
+      List<ASTCDMethod> builderMethodsList = addBuilderMethodsForSuper(astcdClassList, superSymbol);
       ASTMCQualifiedType superclass = this.getMCTypeFacade().createQualifiedType(
-              service.getASTPackage(superSymbol) + "." + superSymbol.getName() + MILL_SUFFIX);
-      
+          service.getASTPackage(superSymbol) + "." + superSymbol.getName() + MILL_SUFFIX);
+
       superMills.add(CD4AnalysisMill.cDClassBuilder()
-        .setModifier(PUBLIC.build())
-        .setName(millClassName)
-        .setSuperclass(superclass)
-        .addAllCDMethods(builderMethodsList)
-        .build());
+          .setModifier(PUBLIC.build())
+          .setName(millClassName)
+          .setSuperclass(superclass)
+          .addAllCDMethods(builderMethodsList)
+          .build());
     }
-    
+
     return superMills;
   }
 
-  protected List<ASTCDMethod> addBuilderMethodsForSuper(List<ASTCDClass> astcdClassList, CDDefinitionSymbol superSymbol, Collection<CDDefinitionSymbol> superSymbolList) {
-    List<ASTCDMethod> builderMethodsList = new ArrayList<ASTCDMethod>();
-    
+  protected List<ASTCDMethod> addBuilderMethodsForSuper(List<ASTCDClass> astcdClassList, CDDefinitionSymbol superSymbol) {
+    List<ASTCDMethod> builderMethodsList = new ArrayList<>();
+
     HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
     Collection<CDTypeSymbol> firstClasses = Lists.newArrayList();
     calculateOverriddenCds(service.getCDSymbol(), astcdClassList.stream().map(ASTCDClass::getName).collect(Collectors.toList()), overridden, firstClasses);
     Collection<CDTypeSymbol> cdsForSuper = overridden.get(superSymbol);
-    
+
     // check if super cds exist
     if (cdsForSuper == null) {
       return builderMethodsList;
     }
-    
+
     // Add builder-creating methods
     for (CDTypeSymbol cdType : cdsForSuper) {
       if (!cdType.getAstNode().isPresent()) {
@@ -94,26 +94,27 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       String astName = cdType.getName();
       String methodName = StringTransformations.uncapitalize(astName.replaceFirst("AST", "")) + BUILDER_SUFFIX;
       ASTCDMethod protectedMethod = null;
-      
+
       // Add method body based on whether method is overridden by this cdType
       if (firstClasses.contains(cdType)) {
         ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX);
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
-        this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderForSuperMethod", astcdDefinition.getName() + MILL_SUFFIX, methodName));
-      }
-      else {
+        this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderForSuperMethod",
+            astcdDefinition.getName() + MILL_SUFFIX, methodName));
+      } else {
         ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(service.getASTPackage(superSymbol) + "." + astName + BUILDER_SUFFIX);
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
         this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("Log.error(\"0xA7009" + DecorationHelper
-                .getGeneratedErrorCode(clazz) + " Overridden production " + clazz.getName() + " is not reachable\");\nreturn null;\n"));
+            .getGeneratedErrorCode(clazz) + " Overridden production " + clazz.getName() + " is not reachable\");\nreturn null;\n"));
       }
       builderMethodsList.add(protectedMethod);
     }
-    
+
     return builderMethodsList;
   }
-  
-  protected void calculateOverriddenCds(CDDefinitionSymbol cd, Collection<String> nativeClasses, HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> overridden, Collection<CDTypeSymbol> firstClasses) {
+
+  protected void calculateOverriddenCds(CDDefinitionSymbol cd, Collection<String> nativeClasses, HashMap<CDDefinitionSymbol,
+      Collection<CDTypeSymbol>> overridden, Collection<CDTypeSymbol> firstClasses) {
     HashMap<String, CDTypeSymbol> l = Maps.newHashMap();
     Collection<CDDefinitionSymbol> importedClasses = cd.getImports().stream().map(service::resolveCD).collect(Collectors.toList());
     for (CDDefinitionSymbol superCd : importedClasses) {

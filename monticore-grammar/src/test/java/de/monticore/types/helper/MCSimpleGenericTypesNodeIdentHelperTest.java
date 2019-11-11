@@ -31,8 +31,8 @@ public class MCSimpleGenericTypesNodeIdentHelperTest {
 
     MCSimpleGenericTypesNodeIdentHelper helper = new MCSimpleGenericTypesNodeIdentHelper();
     assertEquals("@List!MCListType", helper.getIdent(astmcType.get()));
-    assertEquals("@List!MCBasicGenericType", helper.getIdent(astmcType1.get()));
+    assertEquals("@java.util.List!MCBasicGenericType", helper.getIdent(astmcType1.get()));
     assertEquals("@Optional!MCOptionalType", helper.getIdent(astmcType2.get()));
-    assertEquals("@Optional!MCBasicGenericType",helper.getIdent(astmcType3.get()));
+    assertEquals("@java.util.Optional!MCBasicGenericType",helper.getIdent(astmcType3.get()));
   }
 }

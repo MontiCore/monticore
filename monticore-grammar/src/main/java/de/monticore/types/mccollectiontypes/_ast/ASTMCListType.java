@@ -2,7 +2,6 @@
 package de.monticore.types.mccollectiontypes._ast;
 
 import com.google.common.collect.Lists;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -31,17 +30,13 @@ public class ASTMCListType extends ASTMCListTypeTOP {
   }
 
   public void setName(String name) {
-    // Name is fixed to "List"   :  TODO: Internal Error, Error Msg
+    // Name is fixed to "List"
   }
 
   public ASTMCTypeArgument getMCTypeArgument() {
     return this.getMCTypeArgument(0);
   }
 
-  @Override
-  public String getBaseName() {
-    return getName();
-  }
 
   public List<String> getNameList() {
     // copy of name List, so that the list cannot be changed
@@ -53,7 +48,7 @@ public class ASTMCListType extends ASTMCListTypeTOP {
    */
 
   public void setNameList(List<String> names) {
-    // Name is fixed to "List" TODO: Internal Error, Error Msg
+    // Name is fixed to "List"
   }
 
   public void clearNames() {
@@ -120,7 +115,6 @@ public class ASTMCListType extends ASTMCListTypeTOP {
   public void sortNames(Comparator<? super String> comparator) {
     // Name is fixed to "List"
   }
-
   /**
    * overwrite setter for mcTypeArgument, because only one element is allowed
    */

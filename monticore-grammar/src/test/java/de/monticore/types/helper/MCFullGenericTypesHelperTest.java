@@ -7,7 +7,6 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -44,8 +43,6 @@ public class MCFullGenericTypesHelperTest {
     assertTrue("?".equals(MCFullGenericTypesHelper.printType(astmcTypeArgument6.get())));
   }
 
-  //TODO RE Wait for #2378
-  @Ignore
   @Test
   public void testGetGenericTypeFromOptional() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
@@ -99,8 +96,6 @@ public class MCFullGenericTypesHelperTest {
     assertEquals("java.util.List",MCFullGenericTypesHelper.getQualifiedReferenceNameFromOptional(astmcGenericType.get()));
   }
 
-  //TODO RE wait for #2378
-  @Ignore
   @Test
   public void testGetSimpleReferenceTypeFromOptional() throws IOException{
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();

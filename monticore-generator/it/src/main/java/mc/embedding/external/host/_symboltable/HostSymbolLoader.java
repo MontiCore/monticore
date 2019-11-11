@@ -10,9 +10,9 @@ package mc.embedding.external.host._symboltable;
 /**
  * Represents a reference of {@link HostSymbol}.
  */
-public class HostSymbolReference extends HostSymbolReferenceTOP {
-  public HostSymbolReference(String name,
-      IHostScope enclosingScopeOfReference) {
+public class HostSymbolLoader extends HostSymbolLoaderTOP {
+  public HostSymbolLoader(String name,
+                          IHostScope enclosingScopeOfReference) {
     super(name, enclosingScopeOfReference);
   }
   

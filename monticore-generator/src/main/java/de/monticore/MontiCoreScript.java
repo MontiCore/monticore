@@ -53,7 +53,6 @@ import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecora
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolTablePrinterDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbTabMill.SymTabMillDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
-import de.monticore.codegen.cd2java._symboltable.symbol.symbolReferenceMethodDecorator.SymbolReferenceMethodDecorator;
 import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
 import de.monticore.codegen.cd2java._visitor.*;
 import de.monticore.codegen.cd2java.data.DataDecorator;
@@ -474,7 +473,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ParserService parserService = new ParserService(cd);
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     AccessorDecorator accessorDecorator = new AccessorDecorator(glex);
-    SymbolReferenceMethodDecorator symbolReferenceMethodDecorator = new SymbolReferenceMethodDecorator(glex);
 
     SymbolDecorator symbolDecorator = new SymbolDecorator(glex, symbolTableService, visitorService, methodDecorator);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, accessorDecorator, symbolTableService);
@@ -487,8 +485,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator = new GlobalScopeClassBuilderDecorator(glex, symbolTableService, builderDecorator);
     ArtifactScopeDecorator artifactScopeDecorator = new ArtifactScopeDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator = new ArtifactScopeBuilderDecorator(glex, symbolTableService, builderDecorator, accessorDecorator);
-    SymbolReferenceDecorator symbolReferenceDecorator = new SymbolReferenceDecorator(glex, symbolTableService, symbolReferenceMethodDecorator, methodDecorator);
-    SymbolReferenceBuilderDecorator symbolReferenceBuilderDecorator = new SymbolReferenceBuilderDecorator(glex, symbolTableService, accessorDecorator);
+    SymbolLoaderDecorator symbolReferenceDecorator = new SymbolLoaderDecorator(glex, symbolTableService, methodDecorator);
+    SymbolLoaderBuilderDecorator symbolReferenceBuilderDecorator = new SymbolLoaderBuilderDecorator(glex, symbolTableService, accessorDecorator);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     LanguageDecorator languageDecorator = new LanguageDecorator(glex, symbolTableService, parserService, accessorDecorator);
     LanguageBuilderDecorator languageBuilderDecorator = new LanguageBuilderDecorator(glex, builderDecorator);

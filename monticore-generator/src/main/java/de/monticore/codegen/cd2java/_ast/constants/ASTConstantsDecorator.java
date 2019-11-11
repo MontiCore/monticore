@@ -59,7 +59,7 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
           .map(ASTCDEnumConstant::deepClone)
           .collect(Collectors.toList());
     } else {
-      // otherwise search fo enum constants in all enum definitions
+      // otherwise search for enum constants in all enum definitions
       for (ASTCDEnum astcdEnum : input.getCDDefinition().getCDEnumList()) {
         enumConstants.addAll(astcdEnum.getCDEnumConstantList().stream()
             .map(ASTCDEnumConstant::deepClone)

@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.NODE_SUFFIX;
 
 /**
  * combines all decorators to create all classes, interfaces and enums for the _ast package
@@ -150,14 +152,16 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
   }
 
   protected List<ASTCDInterface> createASTInterfaces(final ASTCDCompilationUnit ast) {
-
     List<ASTCDInterface> astcdInterfaceList = new ArrayList<>();
     for (ASTCDInterface astcdInterface : ast.getCDDefinition().getCDInterfaceList()) {
-      ASTCDInterface changedInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(astcdInterface.getName())
-          .setModifier(astcdInterface.getModifier().deepClone())
-          .build();
-      ASTCDInterface decoratedASTClass = astInterfaceDecorator.decorate(astcdInterface, changedInterface);
-      astcdInterfaceList.add(decoratedASTClass);
+      // do not create normal ast interface for language interface, is seperately created by ASTLanguageInterfaceDecorator
+      if (!astcdInterface.getName().equals(AST_PREFIX + ast.getCDDefinition().getName() + NODE_SUFFIX)) {
+        ASTCDInterface changedInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(astcdInterface.getName())
+            .setModifier(astcdInterface.getModifier().deepClone())
+            .build();
+        ASTCDInterface decoratedASTClass = astInterfaceDecorator.decorate(astcdInterface, changedInterface);
+        astcdInterfaceList.add(decoratedASTClass);
+      }
     }
     return astcdInterfaceList;
   }
