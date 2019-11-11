@@ -169,7 +169,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends  SynthesizeSymTypeFr
     
     // TODO TODO ! This implementation is incomplete, it does only create Object-Types, but the
     // type could also be a boxed Primitive!
-    result = Optional.of(SymTypeExpressionFactory.createTypeObject(qType.printType()));
+    result = Optional.of(SymTypeExpressionFactory.createTypeObject(qType.printType(MCCollectionTypesMill.mcCollectionTypesPrettyPrinter())));
   }
   
   // ASTMCTypeArgument, ASTMCBasicTypeArgument and  MCPrimitiveTypeArgument:

@@ -5,6 +5,7 @@ import de.monticore.types.check.*;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
@@ -72,7 +73,7 @@ public class DeriveSymTypeOfMCType implements MCFullGenericTypesVisitor {
   }
 
   public void endVisit(ASTMCQualifiedType qType) {
-    SymTypeOfObject oType = createTypeObject(qType.printType());
+    SymTypeOfObject oType = createTypeObject(qType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
     mapping.put(qType,oType);
   }
 
@@ -82,7 +83,7 @@ public class DeriveSymTypeOfMCType implements MCFullGenericTypesVisitor {
   }
 
   public void endVisit(ASTMCPrimitiveType primitiveType) {
-    SymTypeConstant typeConstant = createTypeConstant(primitiveType.printType());
+    SymTypeConstant typeConstant = createTypeConstant(primitiveType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
     mapping.put(primitiveType,typeConstant);
   }
 
@@ -92,29 +93,29 @@ public class DeriveSymTypeOfMCType implements MCFullGenericTypesVisitor {
   }
 
   public void endVisit(ASTMCBasicTypeArgument basicTypeArgument) {
-    SymTypeOfObject o = createTypeObject(basicTypeArgument.getMCQualifiedType().printType());
+    SymTypeOfObject o = createTypeObject(basicTypeArgument.getMCQualifiedType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
     //TODO RE rekursiv fehlt!
     typeArgumentMapping.put(basicTypeArgument,o);
   }
 
   public void endVisit(ASTMCTypeArgument arg) {
-    SymTypeOfObject o = createTypeObject(arg.getMCTypeOpt().get().printType());
+    SymTypeOfObject o = createTypeObject(arg.getMCTypeOpt().get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
     typeArgumentMapping.put(arg,o);
   }
 
   public void endVisit(ASTMCPrimitiveTypeArgument basicTypeArgument) {
-    SymTypeConstant o = createTypeConstant(basicTypeArgument.getMCPrimitiveType().printType());
+    SymTypeConstant o = createTypeConstant(basicTypeArgument.getMCPrimitiveType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
     //TODO RE rekursiv fehlt!
     typeArgumentMapping.put(basicTypeArgument,o);
   }
   public void endVisit(ASTMCCustomTypeArgument basicTypeArgument) {
-    SymTypeOfObject o = createTypeObject(basicTypeArgument.getMCType().printType());
+    SymTypeOfObject o = createTypeObject(basicTypeArgument.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
     //TODO RE rekursiv fehlt!
     typeArgumentMapping.put(basicTypeArgument,o);
   }
 
   public void endVisit(ASTMCWildcardTypeArgument basicTypeArgument) {
-    SymTypeOfObject o = createTypeObject(basicTypeArgument.getMCTypeOpt().get().printType());
+    SymTypeOfObject o = createTypeObject(basicTypeArgument.getMCTypeOpt().get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
     //TODO RE rekursiv fehlt!
     typeArgumentMapping.put(basicTypeArgument,o);
   }
