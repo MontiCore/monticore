@@ -1,7 +1,10 @@
 package de.monticore.types.check;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
 import de.se_rwth.commons.logging.Log;
 
@@ -52,40 +55,6 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends  SynthesizeSymTypeFr
    * tree, when walking upwards
    */
 
-  // TODO Bug: Eigentlich sollte die EndVisit-Methode reichen,
-  // aber der Visitor hat mit astrule_Extensions ein Problem
-  // (in der Grammatik steht:)
-  //   MCListType implements MCGenericType <200> =
-  //       {next("List")}? Name "<" mCTypeArgument:MCTypeArgument ">";
-  //  astrule MCListType =
-  //    mCTypeArgument:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
-  //    name:String*
-  //  ;
-  // und deshalb schreiben wir hie rvon Hand auch die Traversal
-  // (um die Childs (in dem Fall nur eines) auch zu erreichen):
-  
-  public void traverse(ASTMCListType node) {
-    if (null != node.getMCTypeArgumentList()) {
-      // darf eigentlich nur 1 Argument sein
-      // (deshalb speichern wir auch das result nicht zwischen)
-      for(ASTMCTypeArgument a : node.getMCTypeArgumentList() ) {
-        a.accept(getRealThis());
-      }
-    }
-  }
-  
-  // Selber Bug für Set:
-  public void traverse(ASTMCSetType node) {
-    if (null != node.getMCTypeArgumentList()) {
-      // darf eigentlich nur 1 Argument sein
-      // (deshalb speichern wir auch das result nicht zwischen)
-      for(ASTMCTypeArgument a : node.getMCTypeArgumentList() ) {
-        a.accept(getRealThis());
-      }
-    }
-  }
-  
-  
   public void endVisit(ASTMCListType t) {
     // argument Type has been processed and stored in result:
     SymTypeExpression tex =

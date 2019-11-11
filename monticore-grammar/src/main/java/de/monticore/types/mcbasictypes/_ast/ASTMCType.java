@@ -2,18 +2,9 @@
 package de.monticore.types.mcbasictypes._ast;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.MCFullGenericTypesHelper;
 import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 
-import java.util.List;
-
 public interface ASTMCType extends ASTMCTypeTOP {
-
-  // TODO: Beschreiben was die Funktionen berechnen und liefern sollen
-  // und wozu was verwendet werden kann
-  // Verdacht: Manchmal sind das Values aus dem Argument zB beim Array
-  // und manchmal kann da gar nichts verwertbares rauskommen, zB bei anonymen Typen
-  // (anononymen java Klassen)
 
   // TODO: Völlig illegale verwebung von einer sehr abstrakten Klasse einer abstrakten Grammatik
   // mit einer ganz speziellen Grammatik, die man ja u.U. gar nicht haben und laden will.
