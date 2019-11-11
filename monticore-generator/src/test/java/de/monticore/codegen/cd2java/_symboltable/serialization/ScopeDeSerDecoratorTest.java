@@ -356,7 +356,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
-    assertEquals("symbolJson", method.getCDParameter(0).getName());
+    assertEquals("scopeJson", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -368,7 +368,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
-    assertEquals("symbolJson", method.getCDParameter(0).getName());
+    assertEquals("scopeJson", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -380,7 +380,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
-    assertEquals("symbolJson", method.getCDParameter(0).getName());
+    assertEquals("scopeJson", method.getCDParameter(0).getName());
   }
 
   @Test

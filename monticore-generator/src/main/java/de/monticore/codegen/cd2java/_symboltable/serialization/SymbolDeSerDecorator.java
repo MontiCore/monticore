@@ -12,6 +12,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -150,7 +151,9 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
           .createMethod(PROTECTED, astcdAttribute.getMCType(), methodName , jsonParam);
       String returnType = symbolTableService
           .determineReturnType(deserializeMethod.getMCReturnType().getMCType());
-      HookPoint deserImplementation = DeSerMap.getDeserializationImplementation(astcdAttribute, methodName, "symbolJson", null); //TODO AB Scope?
+      HookPoint deserImplementation = DeSerMap.getDeserializationImplementation(astcdAttribute, methodName, "symbolJson",
+//          astcdAttribute.getEnclosingScope()); //TODO AB Replace line below with this line after release of 5.4.0-SNAPSHOT
+          BuiltInJavaTypeSymbolResolvingDelegate.gs);
         this.replaceTemplate(EMPTY_BODY, deserializeMethod, deserImplementation);
       methodList.add(deserializeMethod);
     }

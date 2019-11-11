@@ -34,7 +34,7 @@ public class DeSerMapTest {
 
   protected HookPoint getHookPointFor(String attr){
     return DeSerMap.getDeserializationImplementation(parse(attr), "deserializeFoo()",
-        "symbolJson", DeSerMap.initializePrimitiveTypesGlobalScope());
+        "symbolJson", BuiltInJavaTypeSymbolResolvingDelegate.gs); //TODO AB Replace this line after release of 5.4.0-SNAPSHOT
   }
 
   protected ASTCDAttribute parse(String attr){
