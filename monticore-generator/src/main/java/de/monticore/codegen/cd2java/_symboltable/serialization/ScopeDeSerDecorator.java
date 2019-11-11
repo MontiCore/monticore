@@ -6,6 +6,7 @@ import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
@@ -247,12 +248,16 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   protected List<ASTCDMethod> createDeserializeScopeRuleAttributesMethod(List<ASTCDAttribute> attributeList, String deSerName) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : attributeList) {
-      ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), "symbolJson");
-      ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, astcdAttribute.getMCType(), DESERIALIZE +
-          StringTransformations.capitalize(astcdAttribute.getName()), jsonParam);
+      String methodName = DESERIALIZE +
+          StringTransformations.capitalize(astcdAttribute.getName());
+      ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), "scopeJson");
+      ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, astcdAttribute.getMCType(), methodName, jsonParam);
       String returnType = symbolTableService.determineReturnType(deserializeMethod.getMCReturnType().getMCType());
-      this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(
-          "_symboltable.serialization.symbolDeSer.DeserializeSymbolRuleAttr", astcdAttribute, deSerName, returnType));
+
+      HookPoint deserImplementation = DeSerMap.getDeserializationImplementation(astcdAttribute, methodName, "scopeJson",
+          //          astcdAttribute.getEnclosingScope()); //TODO AB Replace line below with this line after release of 5.4.0-SNAPSHOT
+          BuiltInJavaTypeSymbolResolvingDelegate.gs);
+      this.replaceTemplate(EMPTY_BODY, deserializeMethod, deserImplementation);
       methodList.add(deserializeMethod);
     }
     return methodList;

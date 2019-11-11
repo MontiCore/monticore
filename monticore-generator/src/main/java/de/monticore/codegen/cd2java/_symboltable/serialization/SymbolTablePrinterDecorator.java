@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.CDMethodFacade;
@@ -27,7 +28,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 /**
  * creates a SymbolTablePrinter class from a grammar
  */
-public class SymbolTablePrinterDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
+public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
   protected final SymbolTableService symbolTableService;
 
@@ -53,13 +54,12 @@ public class SymbolTablePrinterDecorator extends AbstractCreator<ASTCDCompilatio
     this.visitorService = visitorService;
   }
 
-  @Override
-  public ASTCDClass decorate(ASTCDCompilationUnit input) {
+  public ASTCDClass decorate(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit symbolCD) {
     String symbolTablePrinterName = symbolTableService.getSymbolTablePrinterSimpleName();
     String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
     String artifactScopeFullName = symbolTableService.getArtifactScopeFullName();
     String scopeClassFullName = symbolTableService.getScopeClassFullName();
-    List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
+    List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(symbolCD.getCDDefinition());
     String symbolVisitorFullName = visitorService.getSymbolVisitorFullName();
     String scopeVisitorFullName = visitorService.getScopeVisitorFullName();
 
@@ -81,7 +81,7 @@ public class SymbolTablePrinterDecorator extends AbstractCreator<ASTCDCompilatio
         .addCDMethod(createHasSymbolsInSubScopesMethod(scopeInterfaceFullName))
         .addCDMethod(createAddScopeSpanningSymbolMethod())
         .addAllCDMethods(createScopeVisitorMethods(artifactScopeFullName, scopeClassFullName,
-            scopeInterfaceFullName, symbolDefiningProds, input.getCDDefinition()))
+            scopeInterfaceFullName, symbolDefiningProds, scopeCD.getCDDefinition()))
         .addAllCDMethods(createSymbolVisitorMethods(symbolDefiningProds))
         .addAllCDMethods(createSerializeSymbolruleMethods(symbolTypes))
         .build();

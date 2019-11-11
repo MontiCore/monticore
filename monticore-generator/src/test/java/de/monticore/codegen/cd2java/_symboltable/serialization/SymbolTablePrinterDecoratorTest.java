@@ -66,12 +66,14 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
+
+    ASTCDCompilationUnit symbolCD = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     SymbolTablePrinterDecorator decorator = new SymbolTablePrinterDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
         new VisitorService(decoratedCompilationUnit));
-    this.symbolTablePrinter = decorator.decorate(decoratedCompilationUnit);
+    this.symbolTablePrinter = decorator.decorate(decoratedCompilationUnit, symbolCD);
   }
 
   @Test
@@ -336,49 +338,19 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   public void testVisitStateSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("visit", symbolTablePrinter);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(STATE_SYMBOL);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+    assertTrue(
+        methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+    assertEquals(1,
+        methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType()))
+            .count());
+    ASTCDMethod method = methodList.stream()
+        .filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(mcTypeFacade.createQualifiedType(STATE_SYMBOL),
-        method.getCDParameter(0).getMCType());
-    assertEquals("node", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testEndVisitSymbolInterfaceSymbolMethod() {
-    List<ASTCDMethod> methodList = getMethodsBy("endVisit", symbolTablePrinter);
-    ASTMCType astType = this.mcTypeFacade.createQualifiedType(SYMBOL_INTERFACE);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(SYMBOL_INTERFACE),
-        method.getCDParameter(0).getMCType());
-    assertEquals("node", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testVisitSymbolInterfaceSymbolMethod() {
-    List<ASTCDMethod> methodList = getMethodsBy("visit", symbolTablePrinter);
-    ASTMCType astType = this.mcTypeFacade.createQualifiedType(SYMBOL_INTERFACE);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(SYMBOL_INTERFACE),
         method.getCDParameter(0).getMCType());
     assertEquals("node", method.getCDParameter(0).getName());
   }
