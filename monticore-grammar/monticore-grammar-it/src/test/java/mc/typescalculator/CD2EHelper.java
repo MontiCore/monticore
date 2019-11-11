@@ -121,41 +121,41 @@ public class CD2EHelper {
     }
   }
 
-  public SymTypeExpression createSymTypeExpressionFormCDTypeSymbolReference(CDTypeSymbolReference cdTypeSymbolReference) {
-    if (symTypeExpressionMap.containsKey(cdTypeSymbolReference.getName())) {
-      return symTypeExpressionMap.get(cdTypeSymbolReference.getName());
+  public SymTypeExpression createSymTypeExpressionFormCDTypeSymbolReference(CDTypeSymbolLoader symbolLoader) {
+    if (symTypeExpressionMap.containsKey(symbolLoader.getName())) {
+      return symTypeExpressionMap.get(symbolLoader.getName());
     } else {
       SymTypeExpression symTypeExpression;
-      if (cdTypeSymbolReference.isReferencedSymbolLoaded()) {
+      if (symbolLoader.isSymbolLoaded()) {
         // if typeSymbol is already loaded
-        TypeSymbol typeSymbol = createTypeSymbolFormCDTypeSymbol(cdTypeSymbolReference.getReferencedSymbol());
+        TypeSymbol typeSymbol = createTypeSymbolFormCDTypeSymbol(symbolLoader.getLoadedSymbol());
         symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
       } else {
         // is typeSymbol can be loaded
-        Optional<CDTypeSymbol> cdTypeSymbol = cdTypeSymbolReference.loadReferencedSymbol();
+        Optional<CDTypeSymbol> cdTypeSymbol = symbolLoader.loadSymbol();
         if (cdTypeSymbol.isPresent()) {
-          TypeSymbol typeSymbol = createTypeSymbolFormCDTypeSymbol(cdTypeSymbolReference.getReferencedSymbol());
+          TypeSymbol typeSymbol = createTypeSymbolFormCDTypeSymbol(symbolLoader.getLoadedSymbol());
           symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
         } else {
           // if typeSymbol could not be loaded
-          String typeName = cdTypeSymbolReference.getStringRepresentation();
+          String typeName = symbolLoader.getName();
           TypeSymbol typeSymbol = TypeSymbolsSymTabMill.typeSymbolBuilder()
               .setName(typeName)
               .build();
           symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
         }
       }
-      symTypeExpressionMap.put(cdTypeSymbolReference.getName(), symTypeExpression);
+      symTypeExpressionMap.put(symbolLoader.getName(), symTypeExpression);
       return symTypeExpression;
     }
   }
 
-  public SymTypeOfGenerics createSymTypeListFormCDTypeSymbolReference(CDTypeSymbolReference cdTypeSymbolReference) {
+  public SymTypeOfGenerics createSymTypeListFormCDTypeSymbolReference(CDTypeSymbolLoader cdTypeSymbolReference) {
     SymTypeExpression symTypeExpression = createSymTypeExpressionFormCDTypeSymbolReference(cdTypeSymbolReference);
     return SymTypeExpressionFactory.createGenerics("List", Lists.newArrayList(symTypeExpression));
   }
 
-  public SymTypeOfGenerics createSymTypeOptionalFormCDTypeSymbolReference(CDTypeSymbolReference cdTypeSymbolReference) {
+  public SymTypeOfGenerics createSymTypeOptionalFormCDTypeSymbolReference(CDTypeSymbolLoader cdTypeSymbolReference) {
     SymTypeExpression symTypeExpression = createSymTypeExpressionFormCDTypeSymbolReference(cdTypeSymbolReference);
     return SymTypeExpressionFactory.createGenerics("Optional", Lists.newArrayList(symTypeExpression));
   }
