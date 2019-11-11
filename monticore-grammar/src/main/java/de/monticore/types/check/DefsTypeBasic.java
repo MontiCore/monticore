@@ -224,6 +224,14 @@ public class DefsTypeBasic {
   }
 
   /**
+   * add a Method to a Scope (bidirectional)
+   */
+  public static void add2scope(ITypeSymbolsScope p, TypeVarSymbol s) {
+    s.setEnclosingScope(p);
+    p.add(s);
+  }
+
+  /**
    * It is tedious to allways add name and fullNamee individually:
    * So this functions does that for Types,Methods,Fields afterwards
    * (only the Type needs a full name, the rest is added)
@@ -322,7 +330,7 @@ public class DefsTypeBasic {
   public static SymTypeOfObject _StringSymType;
 
   public static void set_String() {
-    _String = type("StringType");
+    _String = type("String");
     _StringSymType = new SymTypeOfObject(new TypeSymbolLoader("String", createScopeWithString()));
   }
 
@@ -438,44 +446,45 @@ public class DefsTypeBasic {
 
   public static void set_thePrimitives() {
     typeConstants = new HashMap<>();
-    ITypeSymbolsScope scopeWithPrimitives = createScopeWithPrimitives();
+    TypeSymbolsScope typeSymbolsScope = new TypeSymbolsScope();
     _int = type("int");
-    _intSymType = new SymTypeConstant(new TypeSymbolLoader("int", scopeWithPrimitives));
+    typeSymbolsScope.add(_int);
+    _intSymType = new SymTypeConstant(new TypeSymbolLoader("int", typeSymbolsScope));
     typeConstants.put("int", _intSymType);
+
     _boolean = type("boolean");
-    _booleanSymType = new SymTypeConstant(new TypeSymbolLoader("boolean", scopeWithPrimitives));
+    typeSymbolsScope.add(_boolean);
+    _booleanSymType = new SymTypeConstant(new TypeSymbolLoader("boolean", typeSymbolsScope));
     typeConstants.put("boolean", _booleanSymType);
+
     _char = type("char");
-    _charSymType = new SymTypeConstant(new TypeSymbolLoader("char", scopeWithPrimitives));
+    typeSymbolsScope.add(_char);
+    _charSymType = new SymTypeConstant(new TypeSymbolLoader("char", typeSymbolsScope));
     typeConstants.put("char", _charSymType);
+
     _double = type("double");
-    _doubleSymType = new SymTypeConstant(new TypeSymbolLoader("double", scopeWithPrimitives));
+    typeSymbolsScope.add(_double);
+    _doubleSymType = new SymTypeConstant(new TypeSymbolLoader("double", typeSymbolsScope));
     typeConstants.put("double", _doubleSymType);
     _float = type("float");
-    _floatSymType = new SymTypeConstant(new TypeSymbolLoader("float", scopeWithPrimitives));
-    typeConstants.put("float", _floatSymType);
-    _long = type("long");
-    _longSymType = new SymTypeConstant(new TypeSymbolLoader("long", scopeWithPrimitives));
-    typeConstants.put("long", _longSymType);
-    _byte = type("byte");
-    _byteSymType = new SymTypeConstant(new TypeSymbolLoader("byte", scopeWithPrimitives));
-    typeConstants.put("byte", _byteSymType);
-    _short = type("short");
-    _shortSymType = new SymTypeConstant(new TypeSymbolLoader("short", scopeWithPrimitives));
-    typeConstants.put("short", _shortSymType);
-  }
-
-  public static ITypeSymbolsScope createScopeWithPrimitives() {
-    TypeSymbolsScope typeSymbolsScope = new TypeSymbolsScope();
-    typeSymbolsScope.add(_int);
-    typeSymbolsScope.add(_boolean);
-    typeSymbolsScope.add(_char);
-    typeSymbolsScope.add(_double);
     typeSymbolsScope.add(_float);
+    _floatSymType = new SymTypeConstant(new TypeSymbolLoader("float", typeSymbolsScope));
+    typeConstants.put("float", _floatSymType);
+
+    _long = type("long");
     typeSymbolsScope.add(_long);
-    typeSymbolsScope.add(_long);
+    _longSymType = new SymTypeConstant(new TypeSymbolLoader("long", typeSymbolsScope));
+    typeConstants.put("long", _longSymType);
+
+    _byte = type("byte");
+    typeSymbolsScope.add(_byte);
+    _byteSymType = new SymTypeConstant(new TypeSymbolLoader("byte", typeSymbolsScope));
+    typeConstants.put("byte", _byteSymType);
+
+    _short = type("short");
     typeSymbolsScope.add(_short);
-    return typeSymbolsScope;
+    _shortSymType = new SymTypeConstant(new TypeSymbolLoader("short", typeSymbolsScope));
+    typeConstants.put("short", _shortSymType);
   }
 
   /*********************************************************************/

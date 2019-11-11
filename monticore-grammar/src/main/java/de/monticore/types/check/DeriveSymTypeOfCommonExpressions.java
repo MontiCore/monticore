@@ -499,7 +499,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       Optional<TypeSymbol> typeSymbolOpt = scope.resolveType(toResolve);
       if (typeSymbolOpt.isPresent()) {
         TypeSymbol typeSymbol = typeSymbolOpt.get();
-        SymTypeExpression type = SymTypeExpressionFactory.createTypeObject(typeSymbol.getFullName(), expr.getEnclosingScope());
+        SymTypeExpression type = SymTypeExpressionFactory.createTypeObject(typeSymbol.getFullName(), typeSymbol.getEnclosingScope());
         this.result = type;
         lastResult.setLast(type);
       } else {

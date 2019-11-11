@@ -86,7 +86,7 @@ public class SymTypeExpressionFactory {
     return new SymTypeArray(typeSymbolLoader, dim, argument);
   }
 
-  public static SymTypeArray createTypeArray(String name, TypeSymbolsScope typeSymbolsScope, int dim, SymTypeExpression argument) {
+  public static SymTypeArray createTypeArray(String name, ITypeSymbolsScope typeSymbolsScope, int dim, SymTypeExpression argument) {
     return new SymTypeArray(new TypeSymbolLoader(name, typeSymbolsScope), dim, argument);
   }
 
@@ -112,7 +112,7 @@ public class SymTypeExpressionFactory {
    */
   public static SymTypeExpression createTypeExpression(String name, ITypeSymbolsScope type) {
     SymTypeExpression o;
-    if (typeConstants.containsKey(type.getName())) {
+    if (typeConstants.containsKey(name)) {
       o = createTypeConstant(name);
     } else if ("void".equals(name)) {
       o = createTypeVoid();

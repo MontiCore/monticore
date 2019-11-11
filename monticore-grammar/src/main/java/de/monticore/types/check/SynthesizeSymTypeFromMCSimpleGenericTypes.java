@@ -2,6 +2,7 @@
 
 package de.monticore.types.check;
 
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
@@ -12,6 +13,8 @@ import de.se_rwth.commons.logging.Log;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 
 /**
  * Visitor for Derivation of SymType from MCSimpleGenericTypes
@@ -99,6 +102,12 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     // We need the SymbolTable to distinguish this stuff
     // PS: that also applies to other Visitors.
     result = Optional.of(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(), qType.getEnclosingScope())));
+  }
+
+  @Override
+  public void endVisit(ASTMCQualifiedName qName) {
+    SymTypeOfObject oType = createTypeObject(new TypeSymbolLoader(qName.getQName(), qName.getEnclosingScope()));
+    result = Optional.of(oType);
   }
 
 }

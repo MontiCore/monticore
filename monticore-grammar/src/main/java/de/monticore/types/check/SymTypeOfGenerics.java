@@ -22,23 +22,9 @@ import java.util.stream.Stream;
 public class SymTypeOfGenerics extends SymTypeExpression {
 
   /**
-   * A SymTypeExpression has
-   * a name (representing a TypeConstructor) and
-   * a list of Type Expressions
-   * This is always the full qualified name (i.e. including package)
-   */
-  protected String typeConstructorFullName;
-
-  /**
    * List of arguments of a type constructor
    */
   protected List<SymTypeExpression> arguments = new ArrayList<>();
-
-  /**
-   * Symbol corresponding to the type constructors's name (if loaded???)
-   */
-  protected TypeSymbol objTypeConstructorSymbol;
-
 
   /**
    * Constructor with all parameters that are stored:
@@ -53,19 +39,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
 
   public String getTypeConstructorFullName() {
-    return typeConstructorFullName;
+    return typeSymbolLoader.getName();
   }
 
   public void setTypeConstructorFullName(String typeConstructorFullName) {
-    this.typeConstructorFullName = typeConstructorFullName;
-  }
-
-  public TypeSymbol getObjTypeConstructorSymbol() {
-    return objTypeConstructorSymbol;
-  }
-
-  public void setObjTypeConstructorSymbol(TypeSymbol objTypeConstructorSymbol) {
-    this.objTypeConstructorSymbol = objTypeConstructorSymbol;
+    this.typeSymbolLoader.setName(typeConstructorFullName);
   }
 
   /**
@@ -132,7 +110,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   @Override
   public SymTypeOfGenerics deepClone() {
-       return new SymTypeOfGenerics(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
+    return new SymTypeOfGenerics(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()), getArgumentList());
   }
 
   // --------------------------------------------------------------------------

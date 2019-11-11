@@ -41,6 +41,7 @@ public class MCType2SymTypeExpressionTest {
     assertTrue(valueTypeArgument instanceof SymTypeOfObject);
     assertTrue("de.mc.PairB".equals(valueTypeArgument.print()));
   }
+
   //TODO RE Fix Types Grammar/AST
   @Ignore
   @Test
@@ -56,17 +57,17 @@ public class MCType2SymTypeExpressionTest {
 
     SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(1);
     assertTrue(valueTypeArgument instanceof SymTypeOfGenerics);
-    assertEquals("de.util.Pair2",valueTypeArgument.print());
+    assertEquals("de.util.Pair2", valueTypeArgument.print());
 
     SymTypeOfGenerics valueTypeArg = (SymTypeOfGenerics) valueTypeArgument;
 
     SymTypeExpression argument1 = valueTypeArg.getArgumentList().get(0);
     assertTrue(keyTypeArgument instanceof SymTypeOfObject);
-    assertEquals("de.mc.PairB",argument1.print());
+    assertEquals("de.mc.PairB", argument1.print());
 
     SymTypeExpression argument2 = valueTypeArg.getArgumentList().get(1);
     assertTrue(keyTypeArgument instanceof SymTypeOfObject);
-    assertEquals("de.mc.PairC",argument2.print());
+    assertEquals("de.mc.PairC", argument2.print());
 
 
   }
@@ -106,13 +107,13 @@ public class MCType2SymTypeExpressionTest {
 
   @Test
   public void testMapPrimitives() throws IOException {
-    for(String primitiveKey : primitiveTypes) {
-      for(String primitiveValue : primitiveTypes) {
-        Optional<ASTMCMapType> type = new MCCollectionTypesTestParser().parse_StringMCMapType("Map<"+primitiveKey+","+primitiveValue+">");
+    for (String primitiveKey : primitiveTypes) {
+      for (String primitiveValue : primitiveTypes) {
+        Optional<ASTMCMapType> type = new MCCollectionTypesTestParser().parse_StringMCMapType("Map<" + primitiveKey + "," + primitiveValue + ">");
         assertTrue(type.isPresent());
         SymTypeExpression listSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
         assertTrue(listSymTypeExpression instanceof SymTypeOfGenerics);
-        assertTrue(("Map<"+primitiveKey+","+primitiveValue+">").equals(listSymTypeExpression.print()));
+        assertTrue(("Map<" + primitiveKey + "," + primitiveValue + ">").equals(listSymTypeExpression.print()));
 
         SymTypeExpression keyTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(0);
         assertTrue(keyTypeArgument instanceof SymTypeConstant);
@@ -125,6 +126,7 @@ public class MCType2SymTypeExpressionTest {
     }
 
   }
+
   //TODO RE Fix Types Grammar/AST
   @Ignore
   @Test
@@ -138,6 +140,7 @@ public class MCType2SymTypeExpressionTest {
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertTrue("de.mc.Person".equals(listTypeArgument.print()));
   }
+
   //TODO RE Fix Types Grammar/AST
   @Ignore
   @Test
@@ -151,12 +154,13 @@ public class MCType2SymTypeExpressionTest {
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertTrue("Person".equals(listTypeArgument.print()));
   }
+
   //TODO RE Fix Types Grammar/AST
   @Ignore
   @Test
   public void testOptionalPrimitive() throws IOException {
-    for(String primitive : primitiveTypes) {
-      Optional<ASTMCOptionalType> type = new MCCollectionTypesTestParser().parse_StringMCOptionalType("Optional<"+primitive+">");
+    for (String primitive : primitiveTypes) {
+      Optional<ASTMCOptionalType> type = new MCCollectionTypesTestParser().parse_StringMCOptionalType("Optional<" + primitive + ">");
       assertTrue(type.isPresent());
       SymTypeExpression setSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
       assertTrue(setSymTypeExpression instanceof SymTypeOfGenerics);
@@ -181,9 +185,10 @@ public class MCType2SymTypeExpressionTest {
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertTrue("de.mc.Person".equals(listTypeArgument.print()));
   }
-//TODO RE Fix Types Grammar/AST
+
+  //TODO RE Fix Types Grammar/AST
   @Ignore
-    @Test
+  @Test
   public void testSetUnqualified() throws IOException {
     Optional<ASTMCSetType> type = new MCCollectionTypesTestParser().parse_StringMCSetType("Set<Person>");
     assertTrue(type.isPresent());
@@ -194,11 +199,12 @@ public class MCType2SymTypeExpressionTest {
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertTrue("Person".equals(listTypeArgument.print()));
   }
+
   //TODO RE Fix Types Grammar/AST
   @Ignore
   @Test
   public void testSetPrimitives() throws IOException {
-    for(String primitive : primitiveTypes) {
+    for (String primitive : primitiveTypes) {
       Optional<ASTMCSetType> type = new MCCollectionTypesTestParser().parse_StringMCSetType("Set<" + primitive + ">");
       assertTrue(type.isPresent());
       SymTypeExpression setSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
@@ -209,6 +215,7 @@ public class MCType2SymTypeExpressionTest {
       assertTrue(primitive.equals(listTypeArgument.print()));
     }
   }
+
   //TODO RE Fix Types Grammar/AST
   @Ignore
   @Test
@@ -222,6 +229,7 @@ public class MCType2SymTypeExpressionTest {
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertTrue("de.mc.Person".equals(listTypeArgument.print()));
   }
+
   //TODO RE Fix Types Grammar/AST
   @Ignore
   @Test
@@ -240,7 +248,7 @@ public class MCType2SymTypeExpressionTest {
   @Ignore
   @Test
   public void testListPrimitive() throws IOException {
-    for(String primitive : primitiveTypes) {
+    for (String primitive : primitiveTypes) {
       Optional<ASTMCListType> type = new MCCollectionTypesTestParser().parse_StringMCListType("List<" + primitive + ">");
       assertTrue(type.isPresent());
       SymTypeExpression listSymTypeExpression = MCTypesHelper.mcType2TypeExpression(type.get());
@@ -256,7 +264,7 @@ public class MCType2SymTypeExpressionTest {
   @Test
   public void testPrimitives() throws IOException {
 
-    for(String primitive : primitiveTypes) {
+    for (String primitive : primitiveTypes) {
       Optional<ASTMCPrimitiveType> type = new MCCollectionTypesTestParser().parse_StringMCPrimitiveType(primitive);
       assertTrue(type.isPresent());
       ASTMCPrimitiveType booleanType = type.get();
@@ -265,6 +273,7 @@ public class MCType2SymTypeExpressionTest {
       assertTrue(primitive.equals(symTypeExpression.print()));
     }
   }
+
   @Test
   public void testVoid() throws IOException {
     Optional<ASTMCVoidType> type = new MCCollectionTypesTestParser().parse_StringMCVoidType("void");
@@ -285,6 +294,7 @@ public class MCType2SymTypeExpressionTest {
     assertTrue(symTypeExpression instanceof SymTypeOfObject);
     assertTrue("de.mc.Person".equals(symTypeExpression.print()));
   }
+
   @Test
   public void testQualifiedTypeUnqualified() throws IOException {
     Optional<ASTMCQualifiedType> type = new MCCollectionTypesTestParser().parse_StringMCQualifiedType("Person");
@@ -294,6 +304,7 @@ public class MCType2SymTypeExpressionTest {
     assertTrue(symTypeExpression instanceof SymTypeOfObject);
     assertTrue("Person".equals(symTypeExpression.print()));
   }
+
   @Test
   public void testQualifiedName() throws IOException {
     Optional<ASTMCQualifiedName> type = new MCCollectionTypesTestParser().parse_StringMCQualifiedName("de.mc.Person");
@@ -303,6 +314,7 @@ public class MCType2SymTypeExpressionTest {
     assertTrue(symTypeExpression instanceof SymTypeOfObject);
     assertTrue("de.mc.Person".equals(symTypeExpression.print()));
   }
+
   @Test
   public void testQualifiedNameUnqualified() throws IOException {
     Optional<ASTMCQualifiedName> type = new MCCollectionTypesTestParser().parse_StringMCQualifiedName("Person");

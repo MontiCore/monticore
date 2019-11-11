@@ -2,14 +2,13 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.assignmentexpressions._symboltable.AssignmentExpressionsScope;
+import de.monticore.expressions.assignmentexpressions._symboltable.AssignmentExpressionsSymTabMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
-import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -21,7 +20,6 @@ import java.util.List;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfExpressionTest {
 
@@ -29,7 +27,7 @@ public class DeriveSymTypeOfExpressionTest {
      * Focus: Deriving Type of Literals, here:
      * literals/MCLiteralsBasis.mc4
      */
-    private ExpressionsBasisScope scope;
+    private AssignmentExpressionsScope scope;
 
     @BeforeClass
     public static void setup() {
@@ -41,7 +39,7 @@ public class DeriveSymTypeOfExpressionTest {
     public void setupForEach() {
         // Setting up a Scope Infrastructure (without a global Scope)
         scope =
-                ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+                AssignmentExpressionsSymTabMill.assignmentExpressionsScopeBuilder()
                         .setEnclosingScope(null)       // No enclosing Scope: Search ending here
                         .setExportingSymbols(true)
                         .setAstNode(null)
@@ -73,13 +71,14 @@ public class DeriveSymTypeOfExpressionTest {
         add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope)));
 
         //testing for generics
-        add2scope(scope, TypeSymbolsSymTabMill.typeSymbolBuilder().setName("GenSuper").build());
-        add2scope(scope, TypeSymbolsSymTabMill.typeSymbolBuilder().setName("GenSub").build());
+        TypeSymbol superType = type("GenSuper");
+        TypeSymbol subType = type("GenSub");
+        add2scope(scope, superType);
+        add2scope(scope, subType);
         SymTypeOfGenerics genSuper = SymTypeExpressionFactory.createGenerics("GenSuper", scope, Lists.newArrayList());
         SymTypeOfGenerics genSub = SymTypeExpressionFactory.createGenerics("GenSub", scope, Lists.newArrayList());
 
-        TypeSymbol superType = type("GenSuper");
-        TypeSymbol subType = type("GenSub");
+
         subType.setSuperTypeList(Lists.newArrayList(genSuper));
 
         add2scope(scope, TypeSymbolsSymTabMill.typeSymbolBuilder().setName("GenArg").build());

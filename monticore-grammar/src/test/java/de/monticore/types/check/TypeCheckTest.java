@@ -69,8 +69,11 @@ public class TypeCheckTest {
 
     //non-primitives
     ASTExpression pers = p.parse_StringExpression("Person").get();
+    pers.setEnclosingScope(scope);
     ASTExpression stud = p.parse_StringExpression("Student").get();
+    stud.setEnclosingScope(scope);
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
+    fstud.setEnclosingScope(scope);
 
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), stud, scope));
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), fstud, scope));
@@ -127,8 +130,11 @@ public class TypeCheckTest {
 
     //non-primitives
     ASTExpression pers = p.parse_StringExpression("Person").get();
+    pers.setEnclosingScope(scope);
     ASTExpression stud = p.parse_StringExpression("Student").get();
+    stud.setEnclosingScope(scope);
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
+    fstud.setEnclosingScope(scope);
 
     assertTrue(isSubtypeOf(tc.typeOf(stud), tc.typeOf(pers)));
     assertTrue(isSubtypeOf(tc.typeOf(fstud), tc.typeOf(pers)));
