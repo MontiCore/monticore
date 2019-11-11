@@ -10,8 +10,6 @@ import java.util.Optional;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 import static de.se_rwth.commons.logging.Log.errorIfNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 
 public class ProdSymbol extends ProdSymbolTOP {
 
@@ -29,12 +27,12 @@ public class ProdSymbol extends ProdSymbolTOP {
   /**
    * A astextends B, C, external.java.Type
    */
-  private List<MCProdOrTypeReference> astSuperClasses = new ArrayList<>();
+  private List<ProdSymbolReference> astSuperClasses = new ArrayList<>();
 
   /**
    * A implements B, C, external.java.Type
    */
-  private List<MCProdOrTypeReference> astSuperInterfaces = new ArrayList<>();
+  private List<ProdSymbolReference> astSuperInterfaces = new ArrayList<>();
 
   public ProdSymbol(String name) {
     super(name);
@@ -93,19 +91,19 @@ public class ProdSymbol extends ProdSymbolTOP {
     return copyOf(superInterfaceProds);
   }
 
-  public void addAstSuperClass(MCProdOrTypeReference ref) {
+  public void addAstSuperClass(ProdSymbolReference ref) {
     astSuperClasses.add(errorIfNull(ref));
   }
 
-  public List<MCProdOrTypeReference> getAstSuperClasses() {
+  public List<ProdSymbolReference> getAstSuperClasses() {
     return copyOf(astSuperClasses);
   }
 
-  public void addAstSuperInterface(MCProdOrTypeReference ref) {
+  public void addAstSuperInterface(ProdSymbolReference ref) {
     astSuperInterfaces.add(errorIfNull(ref));
   }
 
-  public List<MCProdOrTypeReference> getAstSuperInterfaces() {
+  public List<ProdSymbolReference> getAstSuperInterfaces() {
     return copyOf(astSuperInterfaces);
   }
 

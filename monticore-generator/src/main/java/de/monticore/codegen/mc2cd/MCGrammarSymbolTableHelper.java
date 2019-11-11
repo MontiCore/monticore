@@ -332,15 +332,15 @@ public class MCGrammarSymbolTableHelper {
    * @return
    */
   public static List<ProdSymbol> getSuperProds(ProdSymbol prod) {
-    List<ProdSymbol> superTypes = prod.getSuperProds().stream().map(s -> s.getReferencedSymbol())
-        .collect(Collectors.toList());
-    superTypes.addAll(prod.getSuperInterfaceProds().stream().map(s -> s.getReferencedSymbol())
-        .collect(Collectors.toList()));
+    List<ProdSymbol> superTypes = prod.getSuperProds().stream().filter(s -> s.existsReferencedSymbol())
+      .map(s -> s.getReferencedSymbol()).collect(Collectors.toList());
+    superTypes.addAll(prod.getSuperInterfaceProds().stream().filter(s -> s.existsReferencedSymbol())
+            .map(s -> s.getReferencedSymbol()).collect(Collectors.toList()));
     
-    superTypes.addAll(prod.getAstSuperClasses().stream().filter(s -> s.isProdRef())
-        .map(s -> s.getProdRef().getReferencedSymbol()).collect(Collectors.toList()));
-    superTypes.addAll(prod.getAstSuperInterfaces().stream().filter(s -> s.isProdRef())
-        .map(s -> s.getProdRef().getReferencedSymbol()).collect(Collectors.toList()));
+    superTypes.addAll(prod.getAstSuperClasses().stream().filter(s -> s.existsReferencedSymbol())
+        .map(s -> s.getReferencedSymbol()).collect(Collectors.toList()));
+    superTypes.addAll(prod.getAstSuperInterfaces().stream().filter(s -> s.existsReferencedSymbol())
+        .map(s -> s.getReferencedSymbol()).collect(Collectors.toList()));
     
     return ImmutableList.copyOf(superTypes);
   }
