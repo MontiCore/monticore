@@ -37,9 +37,8 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
     //todo find better util than the DecorationHelper
     naiveAttributeName = getNaiveAttributeName(ast);
     ASTCDMethod get = createGetMethod(ast);
-    ASTCDMethod getOpt = createGetOptMethod(ast);
     ASTCDMethod isPresent = createIsPresentMethod();
-    return new ArrayList<>(Arrays.asList(get, getOpt, isPresent));
+    return new ArrayList<>(Arrays.asList(get, isPresent));
   }
 
   protected String getNaiveAttributeName(ASTCDAttribute astcdAttribute) {
@@ -52,14 +51,6 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
     ASTMCType type = MCCollectionTypesHelper.getReferenceTypeFromOptional(ast.getMCType().deepClone()).getMCTypeOpt().get();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get", ast, naiveAttributeName));
-    return method;
-  }
-
-  protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
-    String name = String.format(GET_OPT, naiveAttributeName);
-    ASTMCType type = ast.getMCType().deepClone();
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Get", ast));
     return method;
   }
 
