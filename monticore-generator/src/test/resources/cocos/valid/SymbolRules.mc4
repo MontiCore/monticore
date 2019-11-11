@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.valid;
+
+grammar SymbolRules extends mc.grammars.types.TestTypes {
+
+ symbol A = Name;
+
+ symbolrule A implements ISymbol;
+
+ interface symbol B;
+
+ symbolrule B =
+  name:String*
+  foo:int
+  gen:List<String>
+  opt:String?;
+
+ abstract symbol C = Name;
+
+ symbolrule C =
+  method public int getDepth() {}
+;
+
+ D implements B;
+
+ symbol E = d:D;
+
+ symbolrule E = d:B;
+
+ symbol F = Name;
+
+ symbolrule F extends ESymbol;
+
+ interface symbol H;
+
+ symbolrule H extends java.util.Observer;
+
+}

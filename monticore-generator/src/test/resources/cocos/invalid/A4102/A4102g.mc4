@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4102;
+
+grammar A4102g extends mc.grammars.types.TestTypes{
+
+  symbol A = "a" Name;
+
+  symbolrule A =
+    b:Set<Optional<String>>;
+
+}
