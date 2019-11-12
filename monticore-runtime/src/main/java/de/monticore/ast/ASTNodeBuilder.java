@@ -47,30 +47,21 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder<?>> {
     return this.realBuilder;
   }
   
-  public Optional<SourcePosition> get_SourcePositionEndOpt() {
-    return sourcePositionEnd;
-  }
-  
   public SourcePosition get_SourcePositionEnd() {
-    if (get_SourcePositionEndOpt().isPresent()) {
-      return get_SourcePositionEndOpt().get();
+    if (sourcePositionEnd.isPresent()) {
+      return sourcePositionEnd.get();
     }
-    Log.error("0xB9266 get_SourcePositionEndOpt can't return a value. It is empty.");
+    Log.error("0xB9266 get_SourcePositionEnd can't return a value. It is empty.");
     // Normally this statement is not reachable
     throw new IllegalStateException();
   }
   
   public boolean isPresent_SourcePositionEnd() {
-    return get_SourcePositionEndOpt().isPresent();
+    return sourcePositionEnd.isPresent();
   }
   
   public T set_SourcePositionEndAbsent() {
     sourcePositionEnd = Optional.empty();
-    return this.realBuilder;
-  }
-  
-  public T set_SourcePositionEndOpt(Optional<SourcePosition> value) {
-    this.sourcePositionEnd = value;
     return this.realBuilder;
   }
   
@@ -83,30 +74,21 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder<?>> {
     return this.realBuilder;
   }
   
-  public Optional<SourcePosition> get_SourcePositionStartOpt() {
-    return sourcePositionStart;
-  }
-  
   public SourcePosition get_SourcePositionStart() {
-    if (get_SourcePositionStartOpt().isPresent()) {
-      return get_SourcePositionStartOpt().get();
+    if (sourcePositionStart.isPresent()) {
+      return sourcePositionStart.get();
     }
-    Log.error("0xB9267 get_SourcePositionStartOpt can't return a value. It is empty.");
+    Log.error("0xB9267 get_SourcePositionStart can't return a value. It is empty.");
     // Normally this statement is not reachable
     throw new IllegalStateException();
   }
   
   public boolean isPresent_SourcePositionStart() {
-    return get_SourcePositionStartOpt().isPresent();
+    return sourcePositionStart.isPresent();
   }
   
   public T set_SourcePositionStartAbsent() {
     sourcePositionStart = Optional.empty();
-    return this.realBuilder;
-  }
-  
-  public T set_SourcePositionStartOpt(Optional<SourcePosition> value) {
-    this.sourcePositionStart = value;
     return this.realBuilder;
   }
   

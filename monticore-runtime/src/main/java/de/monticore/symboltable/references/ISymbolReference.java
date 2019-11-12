@@ -20,11 +20,6 @@ public interface ISymbolReference {
    */
   String getName();
 
-  /**
-   * @return the corresponding ast node
-   */
-  Optional<? extends ASTNode> getAstNodeOpt();
-
   ASTNode getAstNode();
 
   boolean isPresentAstNode();
