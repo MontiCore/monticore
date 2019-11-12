@@ -25,6 +25,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_GLOBAL_SCOPE_TYPE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -84,12 +85,13 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(1, scopeInterface.sizeInterfaces());
+    assertEquals(2, scopeInterface.sizeInterfaces());
   }
 
   @Test
   public void testSuperInterfaces() {
     assertDeepEquals(I_AUTOMATON_SCOPE, scopeInterface.getInterface(0));
+    assertDeepEquals(I_GLOBAL_SCOPE_TYPE, scopeInterface.getInterface(1));
   }
 
   @Test
@@ -99,17 +101,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(15, scopeInterface.getCDMethodList().size());
-  }
-
-  @Test
-  public void testGetModelPathMethod() {
-    ASTCDMethod method = getMethodBy("getModelPath", scopeInterface);
-
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertDeepEquals(MODEL_PATH, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
+    assertEquals(14, scopeInterface.getCDMethodList().size());
   }
 
 

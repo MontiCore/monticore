@@ -4,7 +4,7 @@ ${attrType} result = new ArrayList<>();
 if(!${jsonParamName}.hasMember("${attrName}")){
   return result;
 }
-for(JsonElement e : ${jsonParamName}.getArrayMemberOpt("${attrName}")){
+for(de.monticore.symboltable.serialization.json.JsonElement e : ${jsonParamName}.getArrayMemberOpt("${attrName}")){
   result.add(${jsonParamName}.${typeMap});
 }
 return result;

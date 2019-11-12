@@ -57,6 +57,8 @@ public class SymbolTableConstants {
 
   public static final String I_ARTIFACT_SCOPE_TYPE = "de.monticore.symboltable.IArtifactScope";
 
+  public static final String I_GLOBAL_SCOPE_TYPE = "de.monticore.symboltable.IGlobalScope";
+
   public static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
 
   public static final String I_SYMBOL_LOADER = "de.monticore.symboltable.ISymbolLoader";
