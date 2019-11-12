@@ -54,8 +54,8 @@ public class CreateConstantAttributeTranslation implements
     
     ProdSymbol prodSymbol = typeProd.get();
     for (RuleComponentSymbol prodComponent : prodSymbol.getProdComponents()) {
-      if (prodComponent.isConstantGroup() && prodComponent.getAstNode().isPresent()
-          && prodComponent.getAstNode().get() instanceof ASTConstantGroup) {
+      if (prodComponent.isIsConstantGroup() && prodComponent.isPresentAstNode()
+          && prodComponent.getAstNode() instanceof ASTConstantGroup) {
         boolean iterated = MCGrammarSymbolTableHelper.isConstGroupIterated(prodComponent);
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory
             .createASTCDAttribute();

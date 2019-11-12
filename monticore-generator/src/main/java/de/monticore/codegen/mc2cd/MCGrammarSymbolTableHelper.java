@@ -12,6 +12,7 @@ import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.RegExpBuilder;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
@@ -28,7 +29,7 @@ import static com.google.common.collect.Sets.newLinkedHashSet;
 public class MCGrammarSymbolTableHelper {
   
    public static Optional<ProdSymbol> resolveRule(ASTMCGrammar astNode, String name) {
-    Optional<MCGrammarSymbol> grammarSymbol = astNode.getMCGrammarSymbolOpt();
+    Optional<MCGrammarSymbol> grammarSymbol = astNode.getSymbolOpt();
     if (!grammarSymbol.isPresent()) {
       return Optional.empty();
     }
@@ -50,13 +51,13 @@ public class MCGrammarSymbolTableHelper {
   public static Optional<MCGrammarSymbol> getMCGrammarSymbol(IGrammarScope scope) {
     boolean exist = true;
     while (exist) {
-      if (scope.getSpanningSymbol().isPresent() && scope.getSpanningSymbol().get() instanceof MCGrammarSymbol) {
-        return Optional.of((MCGrammarSymbol) scope.getSpanningSymbol().get());
+      if (scope.getSpanningSymbolOpt().isPresent() && scope.getSpanningSymbol() instanceof MCGrammarSymbol) {
+        return Optional.of((MCGrammarSymbol) scope.getSpanningSymbol());
       }
-      if (!scope.getEnclosingScope().isPresent()) {
+      if (scope instanceof Grammar_WithConceptsGlobalScope) {
         exist = false;
       } else {
-        scope = scope.getEnclosingScope().get();
+        scope = scope.getEnclosingScope();
       }
     }
     return Optional.empty();
@@ -64,7 +65,7 @@ public class MCGrammarSymbolTableHelper {
 
     public static Optional<ProdSymbol> getEnclosingRule(ASTRuleComponent astNode) {
     return getAllScopes(astNode.getEnclosingScope()).stream()
-        .map(IScope::getSpanningSymbol)
+        .map(IScope::getSpanningSymbolOpt)
         .filter(Optional::isPresent)
         .map(Optional::get)
         .filter(ProdSymbol.class::isInstance)
@@ -73,7 +74,7 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<ProdSymbol> getEnclosingRule(RuleComponentSymbol prod) {
-    return prod.getEnclosingScope().getSpanningSymbol().filter(ProdSymbol.class::isInstance)
+    return prod.getEnclosingScope().getSpanningSymbolOpt().filter(ProdSymbol.class::isInstance)
         .map(ProdSymbol.class::cast);
   }
   
@@ -181,19 +182,19 @@ public class MCGrammarSymbolTableHelper {
    */
   // TODO GV: change implementation
   public static String getQualifiedName(ProdSymbol symbol) {
-    if (!symbol.getAstNode().isPresent()) {
+    if (!symbol.isPresentAstNode()) {
       return "UNKNOWN_TYPE";
     }
-    if (symbol.isLexerProd()) {
-      return getLexType(symbol.getAstNode());
+    if (symbol.isIsLexerProd()) {
+      return getLexType(symbol.getAstNodeOpt());
     }
-    if (symbol.isEnum()) {
-      return getQualifiedName(symbol.getAstNode().get(), symbol, GeneratorHelper.AST_PREFIX, "");
+    if (symbol.isIsEnum()) {
+      return getQualifiedName(symbol.getAstNode(), symbol, GeneratorHelper.AST_PREFIX, "");
       // return "int";
       // TODO GV:
       // return getConstantType();
     }
-    return getQualifiedName(symbol.getAstNode().get(), symbol, GeneratorHelper.AST_PREFIX, "");
+    return getQualifiedName(symbol.getAstNode(), symbol, GeneratorHelper.AST_PREFIX, "");
   }
   
   public static String getDefaultValue(ProdSymbol symbol) {
@@ -223,7 +224,7 @@ public class MCGrammarSymbolTableHelper {
   
   public static String getQualifiedName(ASTProd astNode, ProdSymbol symbol, String prefix,
                                         String suffix) {
-    if (symbol.isExternal()) {
+    if (symbol.isIsExternal()) {
       return symbol.getName();
     }
     else {
@@ -242,14 +243,14 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<String> getConstantName(RuleComponentSymbol compSymbol) {
-    if (compSymbol.isConstantGroup() && compSymbol.getAstNode().isPresent()
-        && compSymbol.getAstNode().get() instanceof ASTConstantGroup) {
-      return getConstantGroupName((ASTConstantGroup) compSymbol.getAstNode().get());
+    if (compSymbol.isIsConstantGroup() && compSymbol.isPresentAstNode()
+        && compSymbol.getAstNode() instanceof ASTConstantGroup) {
+      return getConstantGroupName((ASTConstantGroup) compSymbol.getAstNode());
     }
-    if (compSymbol.isConstant() && compSymbol.getAstNode().isPresent()
-        && compSymbol.getAstNode().get() instanceof ASTConstant) {
+    if (compSymbol.isIsConstant() && compSymbol.isPresentAstNode()
+        && compSymbol.getAstNode() instanceof ASTConstant) {
       return Optional.of(
-          HelperGrammar.getAttributeNameForConstant((ASTConstant) compSymbol.getAstNode().get()));
+          HelperGrammar.getAttributeNameForConstant((ASTConstant) compSymbol.getAstNode()));
     }
     return Optional.empty();
   }
@@ -323,7 +324,7 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Set<ProdSymbol> getAllSuperInterfaces(ProdSymbol prod) {
-    return getAllSuperProds(prod).stream().filter(p -> p.isInterface()).collect(Collectors.toSet());
+    return getAllSuperProds(prod).stream().filter(p -> p.isIsInterface()).collect(Collectors.toSet());
   }
   
   /**
@@ -332,15 +333,15 @@ public class MCGrammarSymbolTableHelper {
    * @return
    */
   public static List<ProdSymbol> getSuperProds(ProdSymbol prod) {
-    List<ProdSymbol> superTypes = prod.getSuperProds().stream().filter(s -> s.existsReferencedSymbol())
-      .map(s -> s.getReferencedSymbol()).collect(Collectors.toList());
-    superTypes.addAll(prod.getSuperInterfaceProds().stream().filter(s -> s.existsReferencedSymbol())
-            .map(s -> s.getReferencedSymbol()).collect(Collectors.toList()));
+    List<ProdSymbol> superTypes = prod.getSuperProds().stream().filter(s -> s.isSymbolLoaded())
+      .map(s -> s.getLoadedSymbol()).collect(Collectors.toList());
+    superTypes.addAll(prod.getSuperInterfaceProds().stream().filter(s -> s.isSymbolLoaded())
+            .map(s -> s.getLoadedSymbol()).collect(Collectors.toList()));
     
-    superTypes.addAll(prod.getAstSuperClasses().stream().filter(s -> s.existsReferencedSymbol())
-        .map(s -> s.getReferencedSymbol()).collect(Collectors.toList()));
-    superTypes.addAll(prod.getAstSuperInterfaces().stream().filter(s -> s.existsReferencedSymbol())
-        .map(s -> s.getReferencedSymbol()).collect(Collectors.toList()));
+    superTypes.addAll(prod.getAstSuperClasses().stream().filter(s -> s.isSymbolLoaded())
+        .map(s -> s.getLoadedSymbol()).collect(Collectors.toList()));
+    superTypes.addAll(prod.getAstSuperInterfaces().stream().filter(s -> s.isSymbolLoaded())
+        .map(s -> s.getLoadedSymbol()).collect(Collectors.toList()));
     
     return ImmutableList.copyOf(superTypes);
   }
@@ -419,8 +420,8 @@ public class MCGrammarSymbolTableHelper {
                                                             ProdSymbol superType, Set<ProdSymbol> handledTypes) {
     // Return true if this type or the other type are both external
     // TODO GV: check, wenn Java angebunden
-    if (subType.isExternal()
-        || superType.isExternal()) {
+    if (subType.isIsExternal()
+        || superType.isIsExternal()) {
       return true;
     }
     
@@ -454,9 +455,9 @@ public class MCGrammarSymbolTableHelper {
    * @param ref2
    * @return
    */
-  public static boolean isSubType(ProdSymbolReference ref1, ProdSymbolReference ref2) {
-    ProdSymbol type1 = ref1.getReferencedSymbol();
-    ProdSymbol type2 = ref2.getReferencedSymbol();
+  public static boolean isSubType(ProdSymbolLoader ref1, ProdSymbolLoader ref2) {
+    ProdSymbol type1 = ref1.getLoadedSymbol();
+    ProdSymbol type2 = ref2.getLoadedSymbol();
     return areSameTypes(type1, type2) || isSubtype(type1, type2) || isSubtype(type2, type1);
   }
   
@@ -464,24 +465,24 @@ public class MCGrammarSymbolTableHelper {
    *
    * @param prodComponent
    * @return
+   *
    */
   public static boolean isConstGroupIterated(RuleComponentSymbol prodComponent) {
-    Preconditions.checkArgument(prodComponent.isConstantGroup());
-    if (!prodComponent.isList() && prodComponent.getSubProds().size() <= 1) {
+    Preconditions.checkArgument(prodComponent.isIsConstantGroup());
+    if (!prodComponent.isIsList() && prodComponent.getSubProdList().size() <= 1) {
       return false;
     }
-    prodComponent.getSubProds();
+    prodComponent.getSubProdList();
     Collection<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-    for (String component : prodComponent.getSubProds()) {
+    for (String component : prodComponent.getSubProdList()) {
       set.add(component);
     }
     return set.size() > 1;
   }
   
   public static boolean isAttributeIterated(AdditionalAttributeSymbol attrSymbol) {
-    return attrSymbol.getAstNode().isPresent()
-        && attrSymbol.getAstNode().get() instanceof ASTAdditionalAttribute
-        && isAttributeIterated((ASTAdditionalAttribute) attrSymbol.getAstNode().get());
+    return attrSymbol.isPresentAstNode()
+        && isAttributeIterated((ASTAdditionalAttribute) attrSymbol.getAstNode());
   }
   
   /**
@@ -501,11 +502,10 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<Integer> getMax(AdditionalAttributeSymbol attrSymbol) {
-    if (!attrSymbol.getAstNode().isPresent()
-        || !(attrSymbol.getAstNode().get() instanceof ASTAdditionalAttribute)) {
+    if (!attrSymbol.isPresentAstNode()) {
       return Optional.empty();
     }
-    return getMax((ASTAdditionalAttribute) attrSymbol.getAstNode().get());
+    return getMax((ASTAdditionalAttribute) attrSymbol.getAstNode());
   }
   
   public static Optional<Integer> getMax(ASTAdditionalAttribute ast) {
@@ -530,11 +530,10 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<Integer> getMin(AdditionalAttributeSymbol attrSymbol) {
-    if (!attrSymbol.getAstNode().isPresent()
-        || !(attrSymbol.getAstNode().get() instanceof ASTAdditionalAttribute)) {
+    if (!attrSymbol.isPresentAstNode()) {
       return Optional.empty();
     }
-    return getMin((ASTAdditionalAttribute) attrSymbol.getAstNode().get());
+    return getMin((ASTAdditionalAttribute) attrSymbol.getAstNode());
   }
   
   public static Optional<Integer> getMin(ASTAdditionalAttribute ast) {

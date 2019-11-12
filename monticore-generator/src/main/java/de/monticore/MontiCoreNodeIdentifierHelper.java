@@ -114,7 +114,7 @@ public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdent
   }
   public String getIdent(ASTMCType a)
   {
-    return format(a.getBaseName(), Layouter.nodeName(a));
+    return format(a.printType(), Layouter.nodeName(a));
   }
   /**
    * @see de.monticore.generating.templateengine.reporting.commons.IASTNodeIdentHelper#getIdent(de.monticore.ast.ASTNode)

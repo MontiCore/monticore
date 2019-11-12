@@ -31,21 +31,21 @@ public class CoCoServiceTest extends DecoratorTestCase {
 
   @Test
   public void testCDSymbolPresent() {
-    assertTrue(cocoService.getCDSymbol().getAstNode().isPresent());
+    assertTrue(cocoService.getCDSymbol().isPresentAstNode());
   }
 
   @Test
   public void testConstructorsCreateEqualService() {
     CoCoService astServiceFromDefinitionSymbol = new CoCoService(astcdCompilationUnit.getCDDefinition().getSymbol());
-    assertTrue(astServiceFromDefinitionSymbol.getCDSymbol().getAstNode().isPresent());
-    assertDeepEquals(cocoService.getCDSymbol().getAstNode().get(), astServiceFromDefinitionSymbol.getCDSymbol().getAstNode().get());
+    assertTrue(astServiceFromDefinitionSymbol.getCDSymbol().isPresentAstNode());
+    assertDeepEquals(cocoService.getCDSymbol().getAstNode(), astServiceFromDefinitionSymbol.getCDSymbol().getAstNode());
   }
 
   @Test
   public void testCreateCoCoService() {
     CoCoService createdCoCoService = CoCoService.createCoCoService(astcdCompilationUnit.getCDDefinition().getSymbol());
-    assertTrue(createdCoCoService.getCDSymbol().getAstNode().isPresent());
-    assertDeepEquals(cocoService.getCDSymbol().getAstNode().get(), createdCoCoService.getCDSymbol().getAstNode().get());
+    assertTrue(createdCoCoService.getCDSymbol().isPresentAstNode());
+    assertDeepEquals(cocoService.getCDSymbol().getAstNode(), createdCoCoService.getCDSymbol().getAstNode());
   }
 
   @Test

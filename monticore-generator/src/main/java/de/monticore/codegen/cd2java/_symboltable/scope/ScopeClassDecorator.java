@@ -245,9 +245,9 @@ public class ScopeClassDecorator extends AbstractDecorator {
     Map<String, ASTCDAttribute> symbolAttributes = new HashMap<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
-          Optional<ASTCDAttribute> symbolAttribute = createSymbolAttribute(type.getAstNode().get(), cdDefinitionSymbol);
+        if (type.isPresentAstNode() && type.getAstNode().getModifierOpt().isPresent()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifierOpt().get())) {
+          Optional<ASTCDAttribute> symbolAttribute = createSymbolAttribute(type.getAstNode(), cdDefinitionSymbol);
           symbolAttribute.ifPresent(attr -> symbolAttributes.put(attr.getName(), attr));
         }
       }

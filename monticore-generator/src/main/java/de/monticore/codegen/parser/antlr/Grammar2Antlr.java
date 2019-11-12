@@ -507,7 +507,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     if (embeddedJavaCode) {
       boolean isAttribute = ast.isPresentUsageName();
-      boolean isList = ast.getSymbolOpt().isPresent() && ast.getSymbol().isList();
+      boolean isList = ast.getSymbolOpt().isPresent() && ast.getSymbol().isIsList();
       // Add Actions
       if (isAttribute) {
         if (isList) {
@@ -548,7 +548,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     if (embeddedJavaCode) {
       boolean isAttribute = ast.isPresentUsageName();
-      boolean isList = ast.getSymbolOpt().isPresent() && ast.getSymbol().isList();
+      boolean isList = ast.getSymbolOpt().isPresent() && ast.getSymbol().isIsList();
       // Add Actions
       if (isAttribute) {
         if (isList) {
@@ -678,17 +678,17 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
               ast.get_SourcePositionStart());
     }
     // Lexer Rule
-    if (prod.get().isLexerProd()) {
+    if (prod.get().isIsLexerProd()) {
       addCodeForLexerRule(ast);
     }
     // Other Rule called
     else if (prod.get().isParserProd()
             ||
-            prod.get().isInterface()
+            prod.get().isIsInterface()
             ||
-            prod.get().isAbstract()
+            prod.get().isIsAbstract()
             ||
-            prod.get().isEnum()) {
+            prod.get().isIsEnum()) {
 
       addCodeForRuleReference(ast);
     }
@@ -882,10 +882,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         continue;
       }
       ProdSymbol superSymbol = symbol.get();
-      if (!prodSymbol.getAstNode().isPresent()) {
+      if (!prodSymbol.isPresentAstNode()) {
         continue;
       }
-      ASTNode astNode = superSymbol.getAstNode().get();
+      ASTNode astNode = superSymbol.getAstNode();
       if (grammarInfo.isProdLeftRecursive(superSymbol.getName())) {
         isLeft = true;
         if (superSymbol.isClass()) {
@@ -893,7 +893,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
           for(ASTAlt alt : localAlts) {
             alts.add(new NodePair(alt, interf));
           }
-        } else if (prodSymbol.isInterface()) {
+        } else if (prodSymbol.isIsInterface()) {
           addAlternatives(superSymbol, alts);
         }
       } else {
@@ -931,7 +931,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         addToAction(attributeConstraints.addActionForNonTerminal(ast));
         String attributename = HelperGrammar.getUsuageName(ast);
         if (scope.get().getProdComponent(attributename).isPresent()
-                && scope.get().getProdComponent(attributename).get().isList()) {
+                && scope.get().getProdComponent(attributename).get().isIsList()) {
           addToAction(astActions.getActionForLexerRuleIteratedAttribute(ast));
         } else {
           addToAction(astActions.getActionForLexerRuleNotIteratedAttribute(ast));
@@ -964,7 +964,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
           Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper
                   .getEnclosingRule(componentSymbol);
           if (rule.isPresent()) {
-            addActionForKeyword(term, rule.get(), componentSymbol.isList());
+            addActionForKeyword(term, rule.get(), componentSymbol.isIsList());
           }
         }
       }
@@ -1019,7 +1019,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       // TODO GV:
       String attributename = HelperGrammar.getUsuageName(ast);
       if (scope.isPresent() && scope.get().getProdComponent(attributename).isPresent()
-              && scope.get().getProdComponent(attributename).get().isList()) {
+              && scope.get().getProdComponent(attributename).get().isIsList()) {
         addToAction(astActions.getActionForInternalRuleIteratedAttribute(ast));
       } else {
         addToAction(astActions.getActionForInternalRuleNotIteratedAttribute(ast));

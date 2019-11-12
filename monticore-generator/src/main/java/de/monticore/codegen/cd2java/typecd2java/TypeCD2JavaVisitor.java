@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static de.monticore.codegen.mc2cd.TransformationHelper.simpleName;
+
 public class TypeCD2JavaVisitor implements CD4AnalysisVisitor {
 
   private static final String PACKAGE_SEPARATOR = "\\.";
@@ -37,8 +39,7 @@ public class TypeCD2JavaVisitor implements CD4AnalysisVisitor {
       }
       l.remove(node.getNameList().size()-1);
       l.add( ASTConstants.AST_PACKAGE);
-      l.add(node.getBaseName()
-      );
+      l.add(simpleName(node));
       node.getMCQualifiedName().setPartList(l);
     }
     if(node.getNameList().size() <= 1){

@@ -83,14 +83,14 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
     // Add builder-creating methods
     for (CDTypeSymbol cdType : cdsForSuper) {
-      if (!cdType.getAstNode().isPresent()) {
+      if (!cdType.isPresentAstNode()) {
         continue;
       }
-      ASTCDClass clazz = (ASTCDClass) cdType.getAstNode().get();
-      if (cdType.isAbstract() || !cdType.getName().startsWith(AST_PREFIX)) {
+      ASTCDClass clazz = (ASTCDClass) cdType.getAstNode();
+      if (cdType.isIsAbstract() || !cdType.getName().startsWith(AST_PREFIX)) {
         continue;
       }
-      
+
       String astName = cdType.getName();
       String methodName = StringTransformations.uncapitalize(astName.replaceFirst("AST", "")) + BUILDER_SUFFIX;
       ASTCDMethod protectedMethod = null;

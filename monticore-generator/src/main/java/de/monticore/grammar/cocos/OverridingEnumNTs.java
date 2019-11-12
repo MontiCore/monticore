@@ -32,11 +32,11 @@ public class OverridingEnumNTs implements GrammarASTMCGrammarCoCo {
     prods.addAll(a.getEnumProdList());
     prods.addAll(a.getAbstractProdList());
     
-    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = a.getSymbol();
     
     for (ASTProd p : prods) {
       Optional<ProdSymbol> typeSymbol = grammarSymbol.getInheritedProd(p.getName());
-      if (typeSymbol.isPresent() && typeSymbol.get().isEnum()) {
+      if (typeSymbol.isPresent() && typeSymbol.get().isIsEnum()) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName()));
       }
     }

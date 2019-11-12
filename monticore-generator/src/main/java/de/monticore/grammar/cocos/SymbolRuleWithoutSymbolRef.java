@@ -18,7 +18,7 @@ public class SymbolRuleWithoutSymbolRef implements GrammarASTSymbolRuleCoCo {
   @Override
   public void check(ASTSymbolRule a) {
     Optional<ProdSymbol> symbol = a.getEnclosingScope().resolveProd(a.getType());
-    if (!symbol.isPresent() || !symbol.get().isSymbolDefinition()) {
+    if (!symbol.isPresent() || !symbol.get().isIsSymbolDefinition()) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getType()),
               a.get_SourcePositionStart());
     }
