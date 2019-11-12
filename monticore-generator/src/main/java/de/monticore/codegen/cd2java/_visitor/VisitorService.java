@@ -40,91 +40,158 @@ public class VisitorService extends AbstractService<VisitorService> {
     return createVisitorService(cdSymbol);
   }
 
-  public VisitorService createVisitorService(CDDefinitionSymbol cdSymbol) {
+  public static VisitorService createVisitorService(CDDefinitionSymbol cdSymbol) {
     return new VisitorService(cdSymbol);
   }
 
-  public String getVisitorSimpleTypeName() {
-    return getVisitorSimpleTypeName(getCDSymbol());
+  /*
+  simple visitor name e.g. AutomataVisitor
+   */
+
+  public String getVisitorSimpleName() {
+    return getVisitorSimpleName(getCDSymbol());
   }
 
-  public String getInheritanceVisitorSimpleTypeName() {
-    return getInheritanceVisitorSimpleTypeName(getCDSymbol());
-  }
-
-  public String getParentAwareVisitorSimpleTypeName() {
-    return getCDName() + PARENT_AWARE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
-  }
-
-  public String getDelegatorVisitorSimpleTypeName() {
-    return getCDName() + DELEGATOR_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
-  }
-
-  public String getScopeVisitorSimpleTypeName() {
-    return getCDName() + SCOPE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
-  }
-
-  public String getScopeVisitorFullTypeName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + cdSymbol.getName() + SCOPE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
-  }
-
-  public String getSymbolVisitorSimpleTypeName() {
-    return getCDName() + SYMBOL_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
-  }
-
-  public String getVisitorFullTypeName() {
-    return getVisitorFullTypeName(getCDSymbol());
-  }
-
-  public ASTMCType getVisitorType() {
-    return getVisitorType(getCDSymbol());
-  }
-
-  public ASTMCQualifiedType getVisitorReferenceType() {
-    return getVisitorReferenceType(getCDSymbol());
-  }
-
-  public String getVisitorSimpleTypeName(CDDefinitionSymbol cdSymbol) {
+  public String getVisitorSimpleName(CDDefinitionSymbol cdSymbol) {
     return cdSymbol.getName() + VisitorConstants.VISITOR_SUFFIX;
   }
 
-  public String getVisitorSimpleTypeName(ASTCDDefinition astcdDefinition) {
-    return astcdDefinition.getName() + VisitorConstants.VISITOR_SUFFIX;
+  public String getVisitorFullName() {
+    return getVisitorFullName(getCDSymbol());
   }
 
-  public String getInheritanceVisitorSimpleTypeName(CDDefinitionSymbol cdSymbol) {
+  public String getVisitorFullName(CDDefinitionSymbol cdSymbol) {
+    return String.join(".", getPackage(cdSymbol), getVisitorSimpleName(cdSymbol));
+  }
+
+  public ASTMCQualifiedType getVisitorType(CDDefinitionSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getVisitorFullName(cdSymbol));
+  }
+
+  public ASTMCQualifiedType getVisitorType() {
+    return getVisitorType(getCDSymbol());
+  }
+    /*
+  inheritance visitor name e.g. AutomataInheritanceVisitor
+   */
+
+  public String getInheritanceVisitorSimpleName() {
+    return getInheritanceVisitorSimpleName(getCDSymbol());
+  }
+
+  public String getInheritanceVisitorSimpleName(CDDefinitionSymbol cdSymbol) {
     return cdSymbol.getName() + INHERITANCE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }
 
-  public String getInheritanceVisitorFullTypeName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getInheritanceVisitorSimpleTypeName(cdSymbol);
+  public String getInheritanceVisitorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getInheritanceVisitorSimpleName(cdSymbol);
   }
 
-  public String getVisitorFullTypeName(CDDefinitionSymbol cdSymbol) {
-    return String.join(".", getPackage(cdSymbol), getVisitorSimpleTypeName(cdSymbol));
+  public String getInheritanceVisitorFullName() {
+    return getInheritanceVisitorFullName(getCDSymbol());
   }
 
-  public ASTMCType getVisitorType(CDDefinitionSymbol cdSymbol) {
-    return getCDTypeFactory().createQualifiedType(getVisitorFullTypeName(cdSymbol));
+  /*
+  parent aware visitor name e.g. AutomataParentAwareVisitor
+   */
+
+  public String getParentAwareVisitorSimpleName() {
+    return getParentAwareVisitorSimpleName(getCDSymbol());
   }
 
-  public ASTMCQualifiedType getVisitorReferenceType(CDDefinitionSymbol cdSymbol) {
-    return getCDTypeFactory().createQualifiedType(getVisitorFullTypeName(cdSymbol));
+  public String getParentAwareVisitorSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return cdDefinitionSymbol.getName() + PARENT_AWARE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }
+
+  public String getParentAwareVisitorFullName() {
+    return getParentAwareVisitorFullName(getCDSymbol());
+  }
+
+  public String getParentAwareVisitorFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + getParentAwareVisitorSimpleName(cdDefinitionSymbol);
+  }
+
+      /*
+  delegator visitor name e.g. AutomataDelegatorVisitor
+   */
+
+  public String getDelegatorVisitorSimpleName() {
+    return getDelegatorVisitorSimpleName(getCDSymbol());
+  }
+
+
+  public String getDelegatorVisitorSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return cdDefinitionSymbol.getName() + DELEGATOR_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
+  }
+
+  public String getDelegatorVisitorFullName() {
+    return getDelegatorVisitorFullName(getCDSymbol());
+  }
+
+  public String getDelegatorVisitorFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + getDelegatorVisitorSimpleName(cdDefinitionSymbol);
+  }
+
+      /*
+  scope visitor name e.g. AutomataScopeVisitor
+   */
+
+  public String getScopeVisitorSimpleName() {
+    return getScopeVisitorSimpleName(getCDSymbol());
+  }
+
+  public String getScopeVisitorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SCOPE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
+  }
+
+  public String getScopeVisitorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getScopeVisitorSimpleName(cdSymbol);
+  }
+
+  public String getScopeVisitorFullName() {
+    return getScopeVisitorFullName(getCDSymbol());
+  }
+
+  /*
+  symbol visitor name e.g. AutomataSymbolVisitor
+   */
+
+  public String getSymbolVisitorSimpleName() {
+    return getSymbolVisitorSimpleName(getCDSymbol());
+  }
+
+  public String getSymbolVisitorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SYMBOL_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
+  }
+
+  public String getSymbolVisitorFullName() {
+    return getSymbolVisitorFullName(getCDSymbol());
+  }
+
+  public String getSymbolVisitorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getSymbolVisitorSimpleName(cdSymbol);
+  }
+
+  /*
+  other helpful methods
+   */
 
   public List<ASTMCQualifiedType> getAllVisitorTypesInHierarchy() {
     return getServicesOfSuperCDs().stream()
-        .map(VisitorService::getVisitorReferenceType)
+        .map(VisitorService::getVisitorType)
         .collect(Collectors.toList());
   }
-
 
   public ASTCDMethod getVisitorMethod(String methodName, ASTMCType nodeType) {
     ASTCDParameter visitorParameter = CDParameterFacade.getInstance().createParameter(nodeType, "node");
     return CDMethodFacade.getInstance().createMethod(PUBLIC, methodName, visitorParameter);
   }
 
-  public ASTCDCompilationUnit calculateCDTypeNamesWithPackage(ASTCDCompilationUnit input) {
+  /**
+   * add AST package to all classes, interfaces and enums at the beginning
+   * needed because visitor classes are in a different package and so need to fully qualify the ast classes
+   */
+  public ASTCDCompilationUnit calculateCDTypeNamesWithASTPackage(ASTCDCompilationUnit input) {
     // transform own cd
     ASTCDCompilationUnit compilationUnit = input.deepClone();
     //set classname to correct Name with path
@@ -135,7 +202,11 @@ public class VisitorService extends AbstractService<VisitorService> {
     return compilationUnit;
   }
 
-  public ASTCDDefinition calculateCDTypeNamesWithPackage(CDDefinitionSymbol input) {
+  /**
+   * add AST package to all classes, interfaces and enums at the beginning
+   * needed because visitor classes are in a different package and so need to fully qualify the ast classes
+   */
+  public ASTCDDefinition calculateCDTypeNamesWithASTPackage(CDDefinitionSymbol input) {
     // transform inherited cd
     ASTCDDefinition astcdDefinition = input.getAstNode().get().deepClone();
     //set classname to correct Name with path
@@ -151,8 +222,8 @@ public class VisitorService extends AbstractService<VisitorService> {
     List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
     return superCDs
         .stream()
-        .map(this::getInheritanceVisitorFullTypeName)
-        .map(getCDTypeFactory()::createQualifiedType)
+        .map(this::getInheritanceVisitorFullName)
+        .map(getMCTypeFacade()::createQualifiedType)
         .collect(Collectors.toList());
   }
 
@@ -161,7 +232,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
     return superCDs
         .stream()
-        .map(this::getVisitorReferenceType)
+        .map(this::getVisitorType)
         .collect(Collectors.toList());
   }
 }

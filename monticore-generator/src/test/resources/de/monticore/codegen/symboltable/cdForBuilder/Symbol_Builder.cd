@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.symboltable.cdForBuilder;
+
+classdiagram Symbol_Builder {
+
+    class ASymbol{
+      protected String name;
+      protected String fullName;
+      protected String packageName;
+      protected de.monticore.codegen.builder.builder._symboltable.IBuilderScope enclosingScope;
+      protected Optional<de.monticore.codegen.builder.builder._ast.ASTA> astNode;
+      protected de.monticore.symboltable.modifiers.AccessModifier accessModifier;
+
+    }
+}

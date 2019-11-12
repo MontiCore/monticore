@@ -4,7 +4,6 @@ package de.monticore.testsymtabmill;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.testsymtabmill.testsymtabmill._symboltable.*;
-import de.monticore.testsymtabmill.testsymtabmill._symboltable.TestSymTabMillSymTabMill;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -18,15 +17,15 @@ public class MillTest {
     TestSymTabMillModelLoader modelLoader = TestSymTabMillSymTabMill.testSymTabMillModelLoaderBuilder().setModelingLanguage(language).build();
     TestSymTabMillScope scope = TestSymTabMillSymTabMill.testSymTabMillScopeBuilder().build();
     TestSymTabMillArtifactScope artifactScope = TestSymTabMillSymTabMill.testSymTabMillArtifactScopeBuilder().addImport(new ImportStatement("a.b.c",false)).setPackageName("sym").build();
-    TestSymTabMillGlobalScope globalScope = TestSymTabMillSymTabMill.testSymTabMillGlobalScopeBuilder().setLanguage(language).setModelPath(new ModelPath()).build();
+    TestSymTabMillGlobalScope globalScope = TestSymTabMillSymTabMill.testSymTabMillGlobalScopeBuilder().setTestSymTabMillLanguage(language).setModelPath(new ModelPath()).build();
     TestSymTabMillSymbolTableCreator symbolTableCreator = TestSymTabMillSymTabMill.testSymTabMillSymbolTableCreatorBuilder().addToScopeStack(scope).build();
     TestSymTabMillSymbolTableCreatorDelegator symbolTableCreatorDelegator = TestSymTabMillSymTabMill.testSymTabMillSymbolTableCreatorDelegatorBuilder().setGlobalScope(globalScope).build();
 
     assertTrue(language.getFileExtension().equals("ts"));
     assertTrue(modelLoader.getModelingLanguage().equals(language));
-    assertFalse(scope.isShadowingScope());
+    assertFalse(scope.isShadowing());
     assertTrue(globalScope.getTestSymTabMillLanguage().equals(language));
-    assertTrue(artifactScope.getImports().get(0).getStatement().equals("a.b.c"));
+    assertTrue(artifactScope.getImportList().get(0).getStatement().equals("a.b.c"));
     assertTrue(symbolTableCreator.getCurrentScope().get().equals(scope));
   }
 

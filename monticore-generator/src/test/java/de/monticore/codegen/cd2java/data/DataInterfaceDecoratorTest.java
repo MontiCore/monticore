@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.data;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
@@ -51,9 +54,9 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void testAttributesCount() {
     assertTrue(dataInterface.isEmptyCDAttributes());
   }
-  
+
   @Test
-  public void testMethodCount(){
+  public void testMethodCount() {
     assertEquals(51, dataInterface.sizeCDMethods());
   }
 
@@ -170,7 +173,11 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, dataInterface, dataInterface);
-    // TODO Check System.out.println(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 
 }

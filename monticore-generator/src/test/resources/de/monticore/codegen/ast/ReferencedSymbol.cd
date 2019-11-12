@@ -11,14 +11,14 @@ classdiagram ReferencedSymbol {
     }
 
     public class ASTBarMand{
-      <<referencedSymbol = "de.monticore.codegen.ast.referencedSymbol.FooSymbol">> protected String name;
+      <<referencedSymbol = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol">> protected String name;
     }
 
     public class ASTBarOpt{
-      <<referencedSymbol = "de.monticore.codegen.ast.referencedSymbol.FooSymbol">> protected Optional<String> name;
+      <<referencedSymbol = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol">> protected Optional<String> name;
     }
 
     public class ASTBarList{
-       <<referencedSymbol = "de.monticore.codegen.ast.referencedSymbol.FooSymbol">> protected java.util.List<String> name;
+       <<referencedSymbol = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol">> protected java.util.List<String> name;
     }
 }

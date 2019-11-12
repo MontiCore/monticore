@@ -84,7 +84,7 @@ public class BuildersTest {
   // tests whether handcoded subclass of Builder is used
   // for the subclass-NT as well
   // Yes: here it works
-  @Test @Ignore
+  @Test
   public void testHWCClassHWCBuilderInSubNT() throws IOException {
     ASTActStateBuilder b = AutomatonMill.actStateBuilder();
 	b.setName("x2");

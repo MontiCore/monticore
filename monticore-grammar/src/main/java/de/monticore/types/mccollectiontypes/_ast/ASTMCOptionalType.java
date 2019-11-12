@@ -31,12 +31,7 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
   }
 
   public void setName(String name) {
-    // Name is fixed to "Optional"   :  TODO: Internal Error, Error Msg
-  }
-
-  @Override
-  public String getBaseName() {
-    return getName();
+    // Name is fixed to "Optional"
   }
 
   public ASTMCTypeArgument getMCTypeArgument() {
@@ -116,7 +111,6 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
   public void setNameList(List<String> names) {
     // Name is fixed to "Optional"
   }
-
 
   /**
    * overwrite setter for mcTypeArgument, because only one element is allowed

@@ -1,6 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
@@ -8,7 +12,6 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.cd.cd4analysis._ast.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,13 +57,13 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(27, packageInterface.getCDAttributeList().size());
+    assertEquals(28, packageInterface.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodSize() {
     assertFalse(packageInterface.getCDMethodList().isEmpty());
-    assertEquals(20, packageInterface.getCDMethodList().size());
+    assertEquals(21, packageInterface.getCDMethodList().size());
   }
 
   @Test
@@ -341,7 +344,11 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate("_ast_emf.emf_package.EmfPackage", packageInterface, packageInterface, astcdDefinition);
-    // TODO Check System.out.println(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 
 }

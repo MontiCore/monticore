@@ -8,13 +8,10 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * This class is a subtype of a JsonObject that traces, which members have been visited. 
- * This can be used, e.g., to track members that are stored but not yet taken into account 
- * for building up Java objects.
+ * This class is a subtype of a JsonObject that traces, which members have been visited. This can be
+ * used, e.g., to track members that are stored but not yet taken into account for building up Java
+ * objects.
  *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
  */
 public class TraceableJsonObject extends JsonObject {
   
@@ -37,45 +34,36 @@ public class TraceableJsonObject extends JsonObject {
   }
   
   /**
-   * @see de.monticore.symboltable.serialization.json.JsonObject#get(java.lang.String)
+   * @see de.monticore.symboltable.serialization.json.JsonObject#getMember(java.lang.String)
    */
   @Override
-  public JsonElement get(String key) {
-    JsonElement jsonElement = super.get(key);
-    if (null != jsonElement) {
-      visitedMembers.add(key);
+  public JsonElement getMember(String name) {
+    JsonElement result = super.getMember(name);
+    if (null != result) {
+      visitedMembers.add(name);
     }
-    return jsonElement;
+    return result;
   }
-  
+
+  @Override public Optional<JsonElement> getMemberOpt(String name) {
+    Optional<JsonElement> result = super.getMemberOpt(name);
+    if(result.isPresent()){
+      visitedMembers.add(name);
+    }
+    return result;
+  }
+
   /**
-   * @see de.monticore.symboltable.serialization.json.JsonObject#getStringOpt(java.lang.String)
+   * This returns a collection of keys of members for which no getter method has been invoked yet.
+   * 
+   * @return
    */
-  @Override
-  public Optional<String> getStringOpt(String key) {
-    Optional<String> res = super.getStringOpt(key);
-    if (null != res && res.isPresent()) {
-      visitedMembers.add(key);
-    }
-    return res;
-  }
-  
-  /**
-   * @see de.monticore.symboltable.serialization.json.JsonObject#getBooleanOpt(java.lang.String)
-   */
-  @Override
-  public Optional<Boolean> getBooleanOpt(String key) {
-    Optional<Boolean> res = super.getBooleanOpt(key);
-    if (null != res && res.isPresent()) {
-      visitedMembers.add(key);
-    }
-    return res;
-  }
-  
-  public Collection<String> getUnvisitedMembers(){
-    Set<String> keySet = keySet();
+  public Collection<String> getUnvisitedMembers() {
+    //first create a copy of the set of member names
+    Set<String> keySet = new HashSet<>(this.getMemberNames());
+    //and then remove all members that have been visited
     keySet.removeAll(visitedMembers);
     return keySet;
   }
-
+  
 }

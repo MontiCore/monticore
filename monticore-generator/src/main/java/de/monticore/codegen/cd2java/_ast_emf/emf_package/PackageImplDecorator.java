@@ -9,9 +9,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -27,11 +25,11 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
-  private static final String GET = "get%s";
+  protected static final String GET = "get%s";
 
-  private final MandatoryAccessorDecorator accessorDecorator;
+  protected final MandatoryAccessorDecorator accessorDecorator;
 
-  private final EmfService emfService;
+  protected final EmfService emfService;
 
 
   public PackageImplDecorator(final GlobalExtensionManagement glex,
@@ -65,8 +63,8 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(packageImplName)
         .setModifier(PUBLIC.build())
-        .setSuperclass(getCDTypeFacade().createQualifiedType(E_PACKAGE_IMPL))
-        .addInterface(getCDTypeFacade().createQualifiedType(packageName))
+        .setSuperclass(getMCTypeFacade().createQualifiedType(E_PACKAGE_IMPL))
+        .addInterface(getMCTypeFacade().createQualifiedType(packageName))
         .addCDAttribute(constantsEEnumAttribute)
         .addAllCDAttributes(eAttributes)
         .addCDAttribute(createISCreatedAttribute())
@@ -114,16 +112,16 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDAttribute createISCreatedAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE, getCDTypeFacade().createBooleanType(), IS_CREATED);
+    return getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createBooleanType(), IS_CREATED);
   }
 
   protected ASTCDAttribute createIsInitializedAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE, getCDTypeFacade().createBooleanType(), IS_INITIALIZED);
+    return getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createBooleanType(), IS_INITIALIZED);
   }
 
 
   protected ASTCDAttribute createIsIntitedAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE_STATIC, getCDTypeFacade().createBooleanType(), IS_INITED);
+    return getCDAttributeFacade().createAttribute(PRIVATE_STATIC, getMCTypeFacade().createBooleanType(), IS_INITED);
   }
 
   protected ASTCDConstructor createContructor(String packageImplName, String definitionName) {
@@ -134,33 +132,29 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDMethod createInitMethod(String packageName) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createQualifiedType(packageName)).build();
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, "init");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, getMCTypeFacade().createQualifiedType(packageName), "init");
     replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.InitMethod", packageName));
     return method;
   }
 
   protected ASTCDMethod createGetNodeFactoryMethod(String definitionName) {
     // e.g. AutomataNodeFactory getAutomataFactory();
-    ASTMCReturnType nodeFactoryType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createQualifiedType(definitionName + NODE_FACTORY_SUFFIX)).build();
     String methodName = String.format(GET, definitionName + FACTORY_SUFFIX);
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, nodeFactoryType, methodName);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(definitionName + NODE_FACTORY_SUFFIX), methodName);
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + definitionName + NODE_FACTORY_SUFFIX + ")getEFactoryInstance();"));
     return method;
   }
 
   protected ASTCDMethod createGetPackageMethod(String definitionName) {
     // e.g. public String getPackageName() { return "automata"; }
-    ASTMCReturnType type = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createStringType()).build();
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, type,"getPackageName");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getPackageName");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return \"" + StringTransformations.uncapitalize(definitionName) + "\";"));
     return method;
   }
 
   protected ASTCDMethod createASTESuperPackagesMethod() {
-    ASTMCType type = getCDTypeFacade().createListTypeOf(ASTE_PACKAGE);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, "getASTESuperPackages");
+    ASTMCType type = getMCTypeFacade().createListTypeOf(ASTE_PACKAGE);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, type, "getASTESuperPackages");
     replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.GetASTESuperPackages"));
     return method;
   }
@@ -183,11 +177,10 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   protected ASTCDMethod createGetEAttributeMethod(ASTCDAttribute astcdAttribute, int index, String astcdClassName){
     ASTMCQualifiedType type = emfService.getEmfAttributeType(astcdAttribute);
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(type).build();
     String methodName = String.format(GET, astcdClassName + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, type, methodName);
 
-    replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + returnType.printType() + ")" +
+    replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + type.printType() + ")" +
         StringTransformations.uncapitalize(astcdClassName) + ".getEStructuralFeatures().get(" + index + ");"));
     return method;
   }

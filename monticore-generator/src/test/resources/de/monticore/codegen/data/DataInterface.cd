@@ -3,7 +3,7 @@ package de.monticore.codegen.data;
 
 classdiagram DataInterface {
 
-    public interface ASTA {
+    <<symbol>> public interface ASTA {
         protected int i;
         protected String s;
         protected Optional<String> opt;

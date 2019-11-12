@@ -5,6 +5,7 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
@@ -69,7 +70,7 @@ public class TypeCheck {
     Optional<SymTypeExpression> result = synthesizeSymType.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD4 Internal Error: No SymType for: "
-              + astMCType.printType() + ". Probably TypeCheck mis-configured.");
+              + astMCType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ". Probably TypeCheck mis-configured.");
     }
     return result.get();
   }
@@ -119,8 +120,6 @@ public class TypeCheck {
     }
     return result.get();
   }
-  // TODO EK: Die Funktion muss noch getestet werden (und sein Expression-Visitor insbesondere auch)
-  // könnte man in    DeriveSymType.*Expression.*Test ablegen
   
   /**
    * Function 2b: Derive the SymTypeExpression of a Literal
@@ -167,7 +166,7 @@ public class TypeCheck {
    * are compatible, by refining the assignments a-> long, b->List<c>
    */
   public static boolean compatible(SymTypeExpression left, SymTypeExpression right) {
-    if(left.isPrimitiveType()&&right.isPrimitiveType()){
+    if(left.isPrimitive()&&right.isPrimitive()){
       SymTypeConstant leftType = (SymTypeConstant) left;
       SymTypeConstant rightType = (SymTypeConstant) right;
       if(isBoolean(leftType)&&isBoolean(rightType)){
@@ -176,7 +175,7 @@ public class TypeCheck {
       if(isDouble(leftType)&&rightType.isNumericType()){
         return true;
       }
-      if(isFloat(leftType)&&(rightType.isIntegralType())||isFloat(right)){
+      if(isFloat(leftType)&&((rightType.isIntegralType())||isFloat(right))){
         return true;
       }
       if(isLong(leftType)&&rightType.isIntegralType()){
@@ -227,12 +226,9 @@ public class TypeCheck {
    * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
    */
   public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType){
-    if(subType.isPrimitiveType()&&superType.isPrimitiveType()) {
+    if(subType.isPrimitive()&&superType.isPrimitive()) {
       SymTypeConstant sub = (SymTypeConstant) subType;
       SymTypeConstant supert = (SymTypeConstant) superType;
-      if (isBoolean(supert) && isBoolean(sub)) {
-        return true;
-      }
       if (isDouble(supert) && sub.isNumericType() &&!isDouble(sub)) {
         return true;
       }
@@ -246,6 +242,9 @@ public class TypeCheck {
         return true;
       }
       return false;
+    }else if((subType.isPrimitive() && !superType.isPrimitive()) ||
+        (superType.isPrimitive() && !subType.isPrimitive())){
+      return false;
     }
     return isSubtypeOfRec(subType,superType);
   }
@@ -256,16 +255,16 @@ public class TypeCheck {
    * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
    */
   private static boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType){
-    if(!subType.getTypeInfo().getSuperTypes().isEmpty()){
-      for(SymTypeExpression type: subType.getTypeInfo().getSuperTypes()){
+    if (!subType.getTypeInfo().getSuperTypeList().isEmpty()) {
+      for (SymTypeExpression type : subType.getTypeInfo().getSuperTypeList()) {
         if(type.print().equals(superType.print())){
           return true;
         }
       }
     }
     boolean subtype = false;
-    for(int i = 0;i<subType.getTypeInfo().getSuperTypes().size();i++){
-      if(isSubtypeOf(subType.getTypeInfo().getSuperTypes().get(i),superType)){
+    for (int i = 0; i < subType.getTypeInfo().getSuperTypeList().size(); i++) {
+      if (isSubtypeOf(subType.getTypeInfo().getSuperTypeList().get(i), superType)) {
         subtype=true;
         break;
       }

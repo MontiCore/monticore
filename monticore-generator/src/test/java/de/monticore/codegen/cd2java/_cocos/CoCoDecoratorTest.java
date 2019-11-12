@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._cocos;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
@@ -23,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CoCoDecoratorTest extends DecoratorTestCase {
 
@@ -63,15 +67,20 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassList()) {
-      // System.out.printf("==================== %s ====================\n", clazz.getName());
       StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
-      // TODO Check System.out.println(sb.toString());
+      // test parsing
+      ParserConfiguration configuration = new ParserConfiguration();
+      JavaParser parser = new JavaParser(configuration);
+      ParseResult parseResult = parser.parse(sb.toString());
+      assertTrue(parseResult.isSuccessful());
     }
-
-    for (ASTCDInterface interfaze : ast.getCDDefinition().getCDInterfaceList()) {
-      // System.out.printf("==================== %s ====================\n", interfaze.getName());
-      StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, interfaze, interfaze);
-      // TODO Check System.out.println(sb.toString());
+    for (ASTCDInterface astcdInterface : ast.getCDDefinition().getCDInterfaceList()) {
+      StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, astcdInterface, astcdInterface);
+      // test parsing
+      ParserConfiguration configuration = new ParserConfiguration();
+      JavaParser parser = new JavaParser(configuration);
+      ParseResult parseResult = parser.parse(sb.toString());
+      assertTrue(parseResult.isSuccessful());
     }
   }
 }

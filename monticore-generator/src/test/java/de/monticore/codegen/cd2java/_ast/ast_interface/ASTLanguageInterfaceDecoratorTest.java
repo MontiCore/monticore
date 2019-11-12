@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
@@ -9,7 +12,7 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -18,14 +21,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
-  private CDTypeFacade cdTypeFacade;
+  private MCTypeFacade MCTypeFacade;
 
   private ASTCDInterface languageInterface;
 
@@ -33,11 +35,11 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
-  private GlobalExtensionManagement glex= new GlobalExtensionManagement();
+  private GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   @Before
   public void setUp() {
-    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.MCTypeFacade = MCTypeFacade.getInstance();
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     this.glex.setGlobalValue("service", new AbstractService(originalCompilationUnit));
 
@@ -64,7 +66,7 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testMethodCount(){
+  public void testMethodCount() {
     assertEquals(1, languageInterface.sizeCDMethods());
   }
 
@@ -78,7 +80,7 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertEquals("visitor", method.getCDParameter(0).getName());
-    ASTMCType visitorType = this.cdTypeFacade.createQualifiedType("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor");
+    ASTMCType visitorType = this.MCTypeFacade.createQualifiedType("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor");
     assertDeepEquals(visitorType, method.getCDParameter(0).getMCType());
   }
 
@@ -88,6 +90,10 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, languageInterface, languageInterface);
-    // TODO Check System.out.println(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 }

@@ -7,8 +7,8 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -22,7 +22,7 @@ import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 
 public class EmfService extends AbstractService {
 
-  private static final String ABSTRACT = "IS_ABSTRACT";
+  protected static final String ABSTRACT = "IS_ABSTRACT";
 
   public EmfService(ASTCDCompilationUnit compilationUnit) {
     super(compilationUnit);
@@ -125,9 +125,9 @@ public class EmfService extends AbstractService {
     DecorationHelper decorationHelper = new DecorationHelper();
     if (decorationHelper.isAstNode(astcdAttribute) || decorationHelper.isOptionalAstNode(astcdAttribute)
         || decorationHelper.isListAstNode(astcdAttribute)) {
-      return CDTypeFacade.getInstance().createQualifiedType(E_REFERENCE_TYPE);
+      return MCTypeFacade.getInstance().createQualifiedType(E_REFERENCE_TYPE);
     } else {
-      return CDTypeFacade.getInstance().createQualifiedType(E_ATTRIBUTE_TYPE);
+      return MCTypeFacade.getInstance().createQualifiedType(E_ATTRIBUTE_TYPE);
     }
   }
 

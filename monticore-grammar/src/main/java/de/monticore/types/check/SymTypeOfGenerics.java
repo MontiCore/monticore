@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import com.google.common.collect.Lists;
-
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
@@ -41,19 +39,34 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   protected TypeSymbol objTypeConstructorSymbol;
   
   
-  @Deprecated // XXX bestezt nicht alle Attribute und kann wohl raus.
+  /**
+   * Constructor with all parameters that are stored:
+   */
+  public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments,
+                           TypeSymbol objTypeConstructorSymbol, TypeSymbol typeInfo) {
+    this.typeConstructorFullName = typeConstructorFullName;
+    this.arguments = arguments;
+    this.objTypeConstructorSymbol = objTypeConstructorSymbol;
+    this.setTypeInfo(typeInfo);
+  }
+  
+  
+  
+  @Deprecated // TODO: delete, only used by another deprecated method
   public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments) {
     this.typeConstructorFullName = typeConstructorFullName;
     this.arguments = arguments;
   }
 
 
-  // TODO: besetzt nicht die geerbten Attribute
+  // TODO: löschen, denn es besetzt nicht die geerbten Attribute
+  @Deprecated
   public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments,
                            TypeSymbol objTypeConstructorSymbol) {
     this.typeConstructorFullName = typeConstructorFullName;
     this.arguments = arguments;
     this.objTypeConstructorSymbol = objTypeConstructorSymbol;
+    // missing: this.setTypeInfo(typeInfo);
   }
   
   
@@ -64,7 +77,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public void setTypeConstructorFullName(String typeConstructorFullName) {
     this.typeConstructorFullName = typeConstructorFullName;
   }
-  
+
   public TypeSymbol getObjTypeConstructorSymbol() {
     return objTypeConstructorSymbol;
   }
@@ -76,6 +89,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * print: Umwandlung in einen kompakten String
    */
+  @Override
   public String print() {
     StringBuffer r = new StringBuffer(getTypeConstructorFullName()).append('<');
     for(int i = 0; i<arguments.size();i++){
@@ -91,7 +105,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   protected String printAsJson() {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
-    //TODO: anpassen, nachdem package umbenannt ist
+    // Care: the following String needs to be adapted if the package was renamed
     jp.member(JsonConstants.KIND, "de.monticore.types.check.SymTypeOfGenerics");
     jp.member("typeConstructorFullName", getTypeConstructorFullName());
     jp.beginArray("arguments");
@@ -120,11 +134,33 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     String[] parts = getTypeConstructorFullName().split("\\.");
     return parts[parts.length - 1];
   }
+
+  @Override
+  public boolean isGenericType(){
+    return true;
+  }
   
+  /**
+   * This is a deep clone: it clones the whole structure including Symbols and Type-Info,
+   * but not the name of the constructor
+   * @return
+   */
+  @Override
+  public SymTypeOfGenerics deepClone() {
+    List<SymTypeExpression> typeArguments = new ArrayList<>();
+    for(SymTypeExpression typeArgument : this.getArgumentList()){
+      typeArguments.add(typeArgument.deepClone());
+    }
+
+    SymTypeOfGenerics clone = new SymTypeOfGenerics(this.getTypeConstructorFullName(),typeArguments,
+                                                    this.getObjTypeConstructorSymbol(), this.typeInfo.deepClone());
+    return clone;
+  }
+
   // --------------------------------------------------------------------------
   // From here on: Standard functionality to access the list of arguments
-  // TODO: (was copied from a created class)
-  // (and demonstrates that we still can optimize our generators)
+  // (was copied from a created class)
+  // (and demonstrates that we still can optimize our generators & build processes)
   // --------------------------------------------------------------------------
   
 

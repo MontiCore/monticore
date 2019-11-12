@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._cocos;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
@@ -19,7 +22,6 @@ import org.junit.Test;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -47,7 +49,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testCoCosNodeInterface() {
-    ASTCDInterface cdInterface = interfaces.get(0);
+    ASTCDInterface cdInterface = interfaces.get(1);
     assertEquals("CoCosASTCoCosNodeCoCo", cdInterface.getName());
     assertEquals(1, cdInterface.getCDMethodList().size());
     ASTCDMethod method = cdInterface.getCDMethod(0);
@@ -62,7 +64,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAInterface() {
-    ASTCDInterface cdInterface = interfaces.get(1);
+    ASTCDInterface cdInterface = interfaces.get(0);
     assertEquals("CoCosASTACoCo", cdInterface.getName());
     assertEquals(1, cdInterface.getCDMethodList().size());
     ASTCDMethod method = cdInterface.getCDMethod(0);
@@ -96,9 +98,12 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     for (ASTCDInterface i : interfaces) {
-      // System.out.printf("==================== %s ====================\n", i.getName());
       StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, i, i);
-      // TODO: Check System.out.println(sb.toString());
+      // test parsing
+      ParserConfiguration configuration = new ParserConfiguration();
+      JavaParser parser = new JavaParser(configuration);
+      ParseResult parseResult = parser.parse(sb.toString());
+      assertTrue(parseResult.isSuccessful());
     }
   }
 }

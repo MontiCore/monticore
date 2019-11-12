@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc2cdtransformation;
+
+grammar StartProd extends mc2cdtransformation.Supergrammar{
+
+  start X;
+}

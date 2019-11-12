@@ -2,8 +2,14 @@
 package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.cd.cd4analysis._ast.ASTModifier;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 
+/**
+ * @deprecated will be transfered into CD4A
+ * first the deprecation of MCTypeFacade has to be removed, then the CDModifier can be transfered to CD4A
+ * after release of CD4A with CDModifier this class can be removed
+ */
+@Deprecated
 public enum CDModifier {
 
   PUBLIC (true, false, false, false, false, false),
@@ -42,9 +48,7 @@ public enum CDModifier {
 
   PRIVATE_STATIC (false, false, true, true, false, false),
 
-  PRIVATE_STATIC_FINAL (false, false, true, true, true, false)
-
-  ;
+  PRIVATE_STATIC_FINAL (false, false, true, true, true, false);
 
   private final boolean isPublic;
 
@@ -68,7 +72,7 @@ public enum CDModifier {
   }
 
   public ASTModifier build() {
-    return CD4AnalysisMill.modifierBuilder()
+    return CD4CodeMill.modifierBuilder()
         .setPublic(isPublic)
         .setProtected(isProtected)
         .setPrivate(isPrivate)

@@ -15,6 +15,9 @@ public class NameToCallExpressionVisitorTest {
 
   private CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
+  /**
+   * test if the visitor transforms a call expression with inner name expression correctly
+   */
   @Test
   public void nameTest() throws IOException {
     Optional<ASTExpression> astex = p.parse_StringExpression("test()");
@@ -23,6 +26,9 @@ public class NameToCallExpressionVisitorTest {
     assertEquals("test",((ASTCallExpression)astex.get()).getName());
   }
 
+  /**
+   * test if the visitor transforms a call expression with inner field access expression correctly
+   */
   @Test
   public void fieldAccessTest() throws IOException{
     Optional<ASTExpression> astex = p.parse_StringExpression("a.b.test()");

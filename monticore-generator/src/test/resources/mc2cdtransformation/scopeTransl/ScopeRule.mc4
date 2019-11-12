@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc2cdtransformation.scopeTransl;
+
+component grammar ScopeRule {
+
+// defining prods will not be shown in cd, only one scope class created
+ symbol SymbolClass = Name;
+
+ symbol scope ScopeSpanningSym = Name;
+
+ NoSymbol = "noSymbol";
+
+ enum EnumNoSymbol = "noSym";
+
+ // add attribute and method to scope class
+ scoperule implements de.monticore.symboltable.IScope extends de.monticore.mcbasics._symboltable.IMCBasicsScope =
+   extraAttr:String
+   method public String toString(){
+     return "foo";
+   };
+
+
+}

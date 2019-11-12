@@ -11,7 +11,7 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
-import de.monticore.codegen.cd2java._ast_emf.ast_class.emfMutatorMethodDecorator.EmfMutatorDecorator;
+import de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator.EmfMutatorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
@@ -74,7 +74,7 @@ public class ASTFullEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(7, astClass.getCDAttributeList().size());
+    assertEquals(6, astClass.getCDAttributeList().size());
   }
 
   @Test
@@ -85,7 +85,7 @@ public class ASTFullEmfDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethodSize() {
     assertFalse(astClass.getCDMethodList().isEmpty());
-    assertEquals(107, astClass.getCDMethodList().size());
+    assertEquals(101, astClass.getCDMethodList().size());
   }
 
 }

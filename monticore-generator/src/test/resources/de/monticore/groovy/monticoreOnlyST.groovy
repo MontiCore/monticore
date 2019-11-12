@@ -25,7 +25,15 @@ while (grammarIterator.hasNext()) {
         // Transform AST-Grammar -> AST-CD
         astClassDiagram = deriveCD(astGrammar, glex, globalScope)
 
+      symbolCD = deriveSymbolCD(astGrammar, symbolCdScope)
+
+      scopeCD = deriveScopeCD(astGrammar, scopeCdScope)
         // Generate symbol table
-        generateSymbolTable(astGrammar, globalScope, astClassDiagram, out, handcodedPath)
+        decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram, symbolCD, scopeCD, handcodedPath)
+        generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
+
+        decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram, symbolCD, scopeCD, handcodedPath)
+        generateFromCD(glex, astClassDiagram, decoratedSerializationCd, out, handcodedPath)
+
     }
 }

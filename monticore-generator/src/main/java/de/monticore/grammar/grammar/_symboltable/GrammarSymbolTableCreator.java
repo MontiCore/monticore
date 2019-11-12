@@ -361,7 +361,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     // A astextends B
     for (ASTMCType astSuperClass : astSuperClasses) {
-      MCProdOrTypeReference superClass = new MCProdOrTypeReference(FullGenericTypesPrinter.printType(astSuperClass),
+      ProdSymbolReference superClass = new ProdSymbolReference(FullGenericTypesPrinter.printType(astSuperClass),
           enclosingScope);
       prodSymbol.addAstSuperClass(superClass);
     }
@@ -375,7 +375,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     // A astimplements B
     for (ASTMCType astInterface : astSuperInterfaces) {
-      MCProdOrTypeReference superClass = new MCProdOrTypeReference(FullGenericTypesPrinter.printType(astInterface),
+      ProdSymbolReference superClass = new ProdSymbolReference(FullGenericTypesPrinter.printType(astInterface),
           enclosingScope);
       prodSymbol.addAstSuperInterface(superClass);
     }
@@ -419,8 +419,8 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   }
 
   private void computeStartParserProd(ASTMCGrammar astGrammar) {
-    if (astGrammar.getStartRulesOpt().isPresent()) {
-      String name = astGrammar.getStartRules().getName();
+    if (astGrammar.getStartRuleOpt().isPresent()) {
+      String name = astGrammar.getStartRule().getName();
       Optional<ProdSymbol> prod = grammarSymbol.getProdWithInherited(name);
       if (!prod.isPresent()) {
         error("0xA0243 Rule " + name + " couldn't be found!");
@@ -483,7 +483,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
         .orElse(uncapitalize(FullGenericTypesPrinter.printType(astAttribute.getMCType())));
 
     AdditionalAttributeSymbol astAttributeSymbol = new AdditionalAttributeSymbol(attributeName);
-    MCProdOrTypeReference attributeType = new MCProdOrTypeReference(
+    ProdSymbolReference attributeType = new ProdSymbolReference(
         FullGenericTypesPrinter.printType(astAttribute.getMCType()), mcProdSymbol.getSpannedScope());
     astAttributeSymbol.setTypeReference(attributeType);
 

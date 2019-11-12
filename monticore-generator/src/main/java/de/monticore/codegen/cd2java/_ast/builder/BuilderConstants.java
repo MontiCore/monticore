@@ -13,6 +13,10 @@ public class BuilderConstants {
 
   public static final String IS_VALID = "isValid";
 
+  public static final String DEFAULT_SUPER_CLASS = "de.monticore.ast.ASTNodeBuilder<%s>";
+
+  public static final String AST_BUILDER_INIT_TEMPLATE = "_ast.ast_class.builder.ASTCNodeInit";
+
   private BuilderConstants() {
   }
 }

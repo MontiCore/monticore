@@ -8,20 +8,20 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_SUFFIX;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
+/**
+ * creates a list of symbol attributes that are used for the AST class
+ */
 public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttribute>> {
 
-
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public ASTSymbolDecorator(final GlobalExtensionManagement glex,
                             final SymbolTableService symbolTableService) {
@@ -34,37 +34,13 @@ public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAtt
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     Optional<ASTCDType> symbolClass = symbolTableService.getTypeWithSymbolInfo(clazz);
     if (symbolClass.isPresent()) {
-      ASTMCType symbolType = createSymbolType(symbolClass.get());
-
-      String attributeName = StringUtils.uncapitalize(symbolTableService.getSimpleSymbolNameFromOptional(symbolType)) + SYMBOL_SUFFIX;
-
-      attributeList.add(createSymbolAttribute(symbolType, attributeName));
+      ASTMCType symbolType = this.getMCTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolFullName(clazz));
       attributeList.add(createSymbolAttribute(symbolType));
     }
     return attributeList;
   }
 
-  protected ASTMCType createSymbolType(ASTCDType clazz) {
-    Optional<String> symbolTypeValue = symbolTableService.getSymbolTypeValue(clazz.getModifierOpt().get());
-    if (symbolTypeValue.isPresent()) {
-      // if symboltype was already defined in the grammar
-      return getCDTypeFacade().createOptionalTypeOf(symbolTypeValue.get());
-    } else {
-      // use default type
-      return this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolType(clazz));
-    }
-  }
-
-
-  protected ASTCDAttribute createSymbolAttribute(ASTMCType symbolType, String attributeName) {
-    //todo replace with symbol2 some day
-    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, symbolType, attributeName);
-    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
-    return attribute;
-  }
-
   protected ASTCDAttribute createSymbolAttribute(ASTMCType symbolType) {
-    //todo better name with the grammar name in the attributeName, like it was before
     String attributeName = "symbol";
     ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, symbolType, attributeName);
     this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));

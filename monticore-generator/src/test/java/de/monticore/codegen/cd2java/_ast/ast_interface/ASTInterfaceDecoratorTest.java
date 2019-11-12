@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
@@ -18,8 +21,9 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
@@ -29,8 +33,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDInterface dataInterface;
 
-  private GlobalExtensionManagement glex;
-
+  private GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   @Before
   public void setUp() {
@@ -61,13 +64,13 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testMethodCount(){
-    assertEquals(3, dataInterface.sizeCDMethods());
+  public void testMethodCount() {
+    assertEquals(7, dataInterface.sizeCDMethods());
   }
 
   @Test
-  public void testAcceptMethod(){
-    ASTCDMethod method = getMethodBy("accept",  dataInterface);
+  public void testAcceptMethod() {
+    ASTCDMethod method = getMethodBy("accept", dataInterface);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
@@ -80,18 +83,85 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testSuperInterfacesCount(){
+  public void testGetSymbolMethod() {
+    ASTCDMethod method = getMethodBy("getSymbol", dataInterface);
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals("de.monticore.codegen.data.datainterface._symboltable.ASymbol", method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGetSymbolOptMethod() {
+    ASTCDMethod method = getMethodBy("getSymbolOpt", dataInterface);
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertOptionalOf("de.monticore.codegen.data.datainterface._symboltable.ASymbol", method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testIsPresentSymbolMethod() {
+    ASTCDMethod method = getMethodBy("isPresentSymbol", dataInterface);
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertBoolean(method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+
+  @Test
+  public void testGetEnclosingScopeMethod() {
+    ASTCDMethod method = getMethodBy("getEnclosingScope", dataInterface);
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals("de.monticore.codegen.data.datainterface._symboltable.IDataInterfaceScope",
+        method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetEnclosingScopeMethod() {
+    ASTCDMethod method = getMethodBy("setEnclosingScope", dataInterface);
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertEquals(1, method.sizeCDParameters());
+
+    ASTCDParameter parameter = method.getCDParameter(0);
+    assertDeepEquals("de.monticore.codegen.data.datainterface._symboltable.IDataInterfaceScope",
+        parameter.getMCType());
+    assertEquals("enclosingScope", parameter.getName());
+  }
+
+
+  @Test
+  public void testGetNameMethod() {
+    ASTCDMethod method = getMethodBy("getName", dataInterface);
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSuperInterfacesCount() {
     assertEquals(2, dataInterface.sizeInterfaces());
   }
 
   @Test
-  public void testASTNodeSuperInterface(){
+  public void testASTNodeSuperInterface() {
     ASTMCObjectType superInteface = dataInterface.getInterface(0);
     assertDeepEquals("de.monticore.ast.ASTNode", superInteface);
   }
 
   @Test
-  public void testASTDataInterfaceNodeSuperInterface(){
+  public void testASTDataInterfaceNodeSuperInterface() {
     ASTMCObjectType superInteface = dataInterface.getInterface(1);
     assertDeepEquals("de.monticore.codegen.data.datainterface._ast.ASTDataInterfaceNode", superInteface);
   }
@@ -102,7 +172,41 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, dataInterface, dataInterface);
-    // TODO Check System.out.println(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
+  }
+
+  @Test
+  public void testSymbolInterfaceWithNoName() {
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+
+    ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "data", "DataInterface");
+    glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
+    glex.setGlobalValue("astHelper", new DecorationHelper());
+    SymbolTableService symbolTableService = new SymbolTableService(astcdCompilationUnit);
+    ASTService mockService = Mockito.spy(new ASTService(astcdCompilationUnit));
+    ASTCDInterface interfaceBy = getInterfaceBy("ASTA", astcdCompilationUnit);
+    ASTInterfaceDecorator decorator = new ASTInterfaceDecorator(glex, mockService
+        , new VisitorService(astcdCompilationUnit), new ASTSymbolDecorator(glex, symbolTableService),
+        new ASTScopeDecorator(glex, symbolTableService), new MethodDecorator(glex));
+    ASTCDInterface changeInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(interfaceBy.getName())
+        .setModifier(interfaceBy.getModifier())
+        .build();
+    // return true, when asked if is symbol without name
+    Mockito.doReturn(true).when(mockService).isSymbolWithoutName(Mockito.any(ASTCDType.class));
+
+    ASTCDInterface noNameSymbol = decorator.decorate(interfaceBy, changeInterface);
+
+    assertEquals(7, noNameSymbol.sizeCDMethods());
+
+    ASTCDMethod method = getMethodBy("getName", noNameSymbol);
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
   }
 
 }

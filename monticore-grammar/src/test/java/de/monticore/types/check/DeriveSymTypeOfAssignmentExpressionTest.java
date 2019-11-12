@@ -1,11 +1,12 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -15,6 +16,7 @@ import java.io.IOException;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfAssignmentExpressionTest {
 
@@ -34,10 +36,11 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Before
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
+    DefsTypeBasic.setup();
     scope =
         ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
             .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-            .setExportsSymbols(true)
+            .setExportingSymbols(true)
             .setAstNode(null)
             .setName("Phantasy2").build();     // hopefully unused
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
@@ -55,9 +58,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     // some FieldSymbols (ie. Variables, Attributes)
     TypeSymbol p = new TypeSymbol("Person");
     TypeSymbol s = new TypeSymbol("Student");
-    s.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",p)));
+    s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", p)));
     TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
-    f.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",s)));
+    f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", s)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("vardouble", _doubleSymType));
@@ -72,6 +75,8 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",f)));
     derLit.setScope(scope);
+
+    LogStub.init();
   }
 
   // Parer used for convenience:
@@ -112,6 +117,18 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
+  @Test
+  public void testInvalidIncSuffixExpression() throws IOException{
+    //only possible with numeric types
+    String s = "\"Hello\"++";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0170 The resulting type cannot be calculated");
+    }
+  }
+
   /**
    * test DecSuffixExpression
    */
@@ -126,6 +143,18 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     s = "4.2--";
     astex = p.parse_StringExpression(s).get();
     assertEquals("double",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void testInvalidDecSuffixExpression() throws IOException{
+    //only possible with numeric types
+    String s = "\"Hello\"--";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0171 The resulting type cannot be calculated");
+    }
   }
 
   /**
@@ -144,6 +173,18 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("long",tc.typeOf(astex).print());
   }
 
+  @Test
+  public void testInvalidIncPrefixExpression() throws IOException{
+    //only possible with numeric types
+    String s = "++\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0172 The resulting type cannot be calculated");
+    }
+  }
+
   /**
    * test DecPrefixExpression
    */
@@ -158,6 +199,18 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     s = "--6.7f";
     astex = p.parse_StringExpression(s).get();
     assertEquals("float",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void testInvalidDecPrefixExpression() throws IOException{
+    //only possible with numeric types
+    String s = "--\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0173 The resulting type cannot be calculated");
+    }
   }
 
   /**
@@ -176,6 +229,18 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("double",tc.typeOf(astex).print());
   }
 
+  @Test
+  public void testInvalidMinusPrefixExpression() throws IOException{
+    //only possible with numeric types
+    String s = "-\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0175 The resulting type cannot be calculated");
+    }
+  }
+
   /**
    * test PlusPrefixExpression
    */
@@ -190,6 +255,19 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     s = "+4L";
     astex = p.parse_StringExpression(s).get();
     assertEquals("long",tc.typeOf(astex).print());
+  }
+
+
+  @Test
+  public void testInvalidPlusPrefixExpression() throws IOException{
+    //only possible with numeric types
+    String s = "+\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0174 The resulting type cannot be calculated");
+    }
   }
 
   /**
@@ -211,6 +289,25 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("String",tc.typeOf(astex).print());
   }
 
+  @Test
+  public void testInvalidPlusAssignmentExpression() throws IOException{
+    //not possible because int = int + (int) String returns a casting error
+    String s = "varint+=\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0176 The resulting type cannot be calculated");
+    }
+
+    LogStub.init();
+    //there has to be a variable on the left side
+    s = "3+=4";
+    astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
+    assertEquals(Log.getFindings().get(2).getMsg(),"0xA0180 The resulting type cannot be calculated");
+  }
+
   /**
    * test MinusAssignmentExpression
    */
@@ -224,6 +321,25 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     s = "varchar-=4.5f";
     astex = p.parse_StringExpression(s).get();
     assertEquals("char",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void testInvalidMinusAssignmentExpression() throws IOException{
+    //not possible because int = int - (int) String returns a casting error
+    String s = "varint-=\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0177 The resulting type cannot be calculated");
+    }
+
+    LogStub.init();
+    //There has to be a variable on the left side
+    s = "3-=4";
+    astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
+    assertEquals(Log.getFindings().get(2).getMsg(),"0xA0180 The resulting type cannot be calculated");
   }
 
   /**
@@ -241,6 +357,25 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("double",tc.typeOf(astex).print());
   }
 
+  @Test
+  public void testInvalidMultAssignmentExpression() throws IOException{
+    //not possible because int = int * (int) String returns a casting error
+    String s = "varint*=\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0178 The resulting type cannot be calculated");
+    }
+
+    LogStub.init();
+    //there has to be a variable on the left side
+    s = "3*=4";
+    astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
+    assertEquals(Log.getFindings().get(2).getMsg(),"0xA0180 The resulting type cannot be calculated");
+  }
+
   /**
    * test DivideAssignmentExpression
    */
@@ -256,6 +391,25 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("float",tc.typeOf(astex).print());
   }
 
+  @Test
+  public void testInvalidDivideAssignmentExpression() throws IOException{
+    //not possible because int = int / (int) String returns a casting error
+    String s = "varint/=\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0179 The resulting type cannot be calculated");
+    }
+
+    LogStub.init();
+    //there has to be a variable on the left side
+    s = "3/=4";
+    astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
+    assertEquals(Log.getFindings().get(2).getMsg(),"0xA0180 The resulting type cannot be calculated");
+  }
+
   /**
    * test ModuloAssignmentExpression
    */
@@ -269,6 +423,25 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     s = "foo%=9.8f";
     astex = p.parse_StringExpression(s).get();
     assertEquals("int",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void testInvalidModuloAssignmentExpression() throws IOException{
+    //not possible because int = int % (int) String returns a casting error
+    String s = "varint%=\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0187 The resulting type cannot be calculated");
+    }
+
+    LogStub.init();
+    //there has to be a variable on the left side
+    s = "3%=4";
+    astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
+    assertEquals(Log.getFindings().get(2).getMsg(),"0xA0180 The resulting type cannot be calculated");
   }
 
   /**
@@ -290,6 +463,25 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("char",tc.typeOf(astex).print());
   }
 
+  @Test
+  public void testInvalidAndAssignmentExpression() throws IOException{
+    //not possible because int = int & (int) String returns a casting error
+    String s = "varint&=\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0181 The resulting type cannot be calculated");
+    }
+
+    LogStub.init();
+    //there has to be a variable on the left side
+    s = "3&=4";
+    astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
+    assertEquals(Log.getFindings().get(2).getMsg(),"0xA0180 The resulting type cannot be calculated");
+  }
+
   /**
    * test OrAssignmentExpression
    */
@@ -305,6 +497,25 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("boolean",tc.typeOf(astex).print());
   }
 
+  @Test
+  public void testInvalidOrAssignmentExpression() throws IOException{
+    //not possible because int = int | (int) String returns a casting error
+    String s = "varint|=\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0182 The resulting type cannot be calculated");
+    }
+
+    LogStub.init();
+    //there has to be a variable on the left side
+    s = "3|=4";
+    astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
+    assertEquals(Log.getFindings().get(2).getMsg(),"0xA0180 The resulting type cannot be calculated");
+  }
+
   /**
    * test BinaryXorAssignmentExpression
    */
@@ -318,6 +529,29 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     s = "bar2^=false";
     astex = p.parse_StringExpression(s).get();
     assertEquals("boolean",tc.typeOf(astex).print());
+
+    s= "true^=false";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("boolean",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void testInvalidBinaryXorAssignmentExpression() throws IOException{
+    //not possible because int = int ^ (int) String returns a casting error
+    String s = "varint^=\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0183 The resulting type cannot be calculated");
+    }
+
+    LogStub.init();
+    //there has to be a variable on the left side
+    s = "3^=4";
+    astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
+    assertEquals(Log.getFindings().get(2).getMsg(),"0xA0180 The resulting type cannot be calculated");
   }
 
   /**
@@ -335,6 +569,25 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
+  @Test
+  public void testInvalidDoubleLeftAssignmentExpression() throws IOException{
+    //not possible because int = int << (int) String returns a casting error
+    String s = "varint<<=\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0185 The resulting type cannot be calculated");
+    }
+
+    LogStub.init();
+    //there has to be a variable on the left side
+    s = "3<<=4";
+    astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
+    assertEquals(Log.getFindings().get(2).getMsg(),"0xA0180 The resulting type cannot be calculated");
+  }
+
   /**
    * test DoubleRightAssignmentExpression
    */
@@ -350,6 +603,25 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     assertEquals("char",tc.typeOf(astex).print());
   }
 
+  @Test
+  public void testInvalidDoubleRightAssignmentExpression() throws IOException{
+    //not possible because int = int >> (int) String returns a casting error
+    String s = "varint>>=\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0184 The resulting type cannot be calculated");
+    }
+
+    LogStub.init();
+    //there has to be a variable on the left side
+    s = "3>>=4";
+    astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
+    assertEquals(Log.getFindings().get(2).getMsg(),"0xA0180 The resulting type cannot be calculated");
+  }
+
   /**
    * test LogicalRightAssignmentExpression
    */
@@ -363,6 +635,25 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     s = "varchar>>>=\'3\'";
     astex = p.parse_StringExpression(s).get();
     assertEquals("char",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void testInvalidLogicalRightAssignmentExpression() throws IOException{
+    //not possible because int = int >>> (int) String returns a casting error
+    String s = "varint>>>=\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0186 The resulting type cannot be calculated");
+    }
+
+    LogStub.init();
+    //there has to be a variable on the left side
+    s = "3>>>=4";
+    astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
+    assertEquals(Log.getFindings().get(2).getMsg(),"0xA0180 The resulting type cannot be calculated");
   }
 
   /**
@@ -386,5 +677,24 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     s = "person2 = firstsemester";
     astex = p.parse_StringExpression(s).get();
     assertEquals("Person",tc.typeOf(astex).print());
+  }
+
+  @Test
+  public void testInvalidRegularAssignmentExpression() throws IOException{
+    //not possible because int = (int) String returns a casting error
+    String s = "varint=\"Hello\"";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try {
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0180 The resulting type cannot be calculated");
+    }
+
+    LogStub.init();
+    //there has to be a variable on the left side
+    s = "3=4";
+    astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
+    assertEquals(Log.getFindings().get(2).getMsg(),"0xA0180 The resulting type cannot be calculated");
   }
 }

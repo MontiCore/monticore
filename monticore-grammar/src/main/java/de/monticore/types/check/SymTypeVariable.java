@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 
 public class SymTypeVariable extends SymTypeExpression {
 
@@ -12,17 +13,22 @@ public class SymTypeVariable extends SymTypeExpression {
   protected String varName;
   
   /**
-   * The Variable is connected to a symbol carrying that variable
-   * (TODO: clarify if that is really needed)
+   * Constructor:
+   * @param varName
+   * @param typeSymbol
    */
-  // TODO protected TypeVarSymbol typeVarSymbol;
+  public SymTypeVariable(String varName, TypeSymbol typeSymbol)
+  {
+    this.varName = varName;
+    this.setTypeInfo(typeSymbol);
+  }
   
+  @Deprecated  // weil unvollständig
   public SymTypeVariable(String varName)
   {
     this.varName = varName;
   }
-
-
+  
   public String getVarName() {
     return varName;
   }
@@ -34,6 +40,7 @@ public class SymTypeVariable extends SymTypeExpression {
   /**
    * print: Umwandlung in einen kompakten String
    */
+  @Override
   public String print() {
     return getVarName();
   }
@@ -44,7 +51,7 @@ public class SymTypeVariable extends SymTypeExpression {
   protected String printAsJson() {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
-    //TODO: anpassen, nachdem package umbenannt ist
+    // Care: the following String needs to be adapted if the package was renamed
     jp.member(JsonConstants.KIND, "de.monticore.types.check.SymTypeVariable");
     jp.member("varName", getVarName());
     jp.endObject();
@@ -54,16 +61,27 @@ public class SymTypeVariable extends SymTypeExpression {
   /**
    * Am I primitive? (such as "int")
    */
-  public boolean isPrimitiveType() {
+  public boolean isPrimitive() {
     return false;
-    // TODO: ?sometimes the var is, sometimes not ...
-    // Unless we always assume boxed implementations then return false would be correct
+    /**
+     *     Please note that the var itself is not a primitive type, but it might
+     *     be instantiated into a primitive type
+     *     unless we always assume boxed implementations then return false would be correct
+     *     according to the W algorithm of Hindley-Milner, we regard a variable
+     *     a monomorphic type on its own and do hence not regard it as primitive type
+      */
   }
-  
+
+  public boolean isTypeVariable() {
+    return true;
+  }
+
+  @Override
+  public SymTypeVariable deepClone() {
+    SymTypeVariable clone = new SymTypeVariable(this.getVarName(),this.getTypeInfo());
+    return clone;
+  }
+
 
   // --------------------------------------------------------------------------
-  
-  public SymTypeVariable() {
-  }
-  
 }

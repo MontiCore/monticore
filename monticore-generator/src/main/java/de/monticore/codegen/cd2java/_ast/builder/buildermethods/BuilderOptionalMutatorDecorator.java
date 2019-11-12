@@ -15,10 +15,12 @@ import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-
+/**
+ * changes return type of builder setters for optional attributes
+ */
 public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
 
-  private final ASTMCType builderType;
+  protected final ASTMCType builderType;
 
   public BuilderOptionalMutatorDecorator(final GlobalExtensionManagement glex,
                                          final ASTMCType builderType) {

@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.types.MCCollectionTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +12,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @deprecated will be transfered into CD4A
+ * first the deprecation of MCTypeFacade has to be removed, then the CDParameterFacade can be transfered to CD4A
+ * after release of CD4A with CDParameterFacade this class can be removed
+ */
+@Deprecated
 public class CDParameterFacade {
 
   private static CDParameterFacade cdParameterFacade;
@@ -27,7 +33,7 @@ public class CDParameterFacade {
   }
 
   public ASTCDParameter createParameter(final ASTMCType type, final String name) {
-    return CD4AnalysisMill.cDParameterBuilder()
+    return CD4CodeMill.cDParameterBuilder()
         .setMCType(type)
         .setName(name)
         .build();
@@ -38,11 +44,11 @@ public class CDParameterFacade {
   }
 
   public ASTCDParameter createParameter(final Class<?> type, final String name) {
-    return createParameter(CDTypeFacade.getInstance().createQualifiedType(type), name);
+    return createParameter(MCTypeFacade.getInstance().createQualifiedType(type), name);
   }
 
   public ASTCDParameter createParameter(final Class<?> type) {
-    return createParameter(CDTypeFacade.getInstance().createQualifiedType(type), StringUtils.uncapitalize(type.getSimpleName()));
+    return createParameter(MCTypeFacade.getInstance().createQualifiedType(type), StringUtils.uncapitalize(type.getSimpleName()));
   }
 
   public ASTCDParameter createParameter(final ASTCDAttribute ast) {

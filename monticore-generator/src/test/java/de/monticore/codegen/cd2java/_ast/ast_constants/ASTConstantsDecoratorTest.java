@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_constants;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
@@ -11,7 +14,6 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java.factories.CDModifier;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -32,8 +34,6 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private CDTypeFacade cdTypeFacade;
-
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
   private ASTCDCompilationUnit originalCompilationUnit;
@@ -41,7 +41,6 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     Log.init();
-    this.cdTypeFacade = CDTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -49,7 +48,6 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
-
 
     ASTConstantsDecorator decorator = new ASTConstantsDecorator(this.glex, new AbstractService(decoratedCompilationUnit));
     this.constantClass = decorator.decorate(decoratedCompilationUnit);
@@ -102,7 +100,7 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
   public void testSuperGrammarsAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("superGrammars", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC, astcdAttribute.getModifier());
-    assertDeepEquals(cdTypeFacade.createTypeByDefinition("String[]"), astcdAttribute.getMCType());
+    assertDeepEquals("String[]", astcdAttribute.getMCType());
     assertFalse(astcdAttribute.isPresentValue());
   }
 
@@ -115,8 +113,7 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
   public void testGetAllLanguagesMethod() {
     ASTCDMethod method = getMethodBy("getAllLanguages", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC, method.getModifier());
-    assertDeepEquals(cdTypeFacade.createTypeByDefinition("Collection<String>"),
-            method.getMCReturnType().getMCType());
+    assertDeepEquals("Collection<String>", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -126,8 +123,10 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, constantClass, constantClass);
-    // TODO Check System.out.println(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
-
-
 }

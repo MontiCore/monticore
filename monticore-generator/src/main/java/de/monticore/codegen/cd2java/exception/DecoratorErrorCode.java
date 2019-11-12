@@ -6,8 +6,8 @@ public enum DecoratorErrorCode {
   AST_FOR_CD_TYPE_SYMBOL_NOT_FOUND(11, "Could find ASTCDClass for CDTypeSymbol '%s'"),
   AST_FOR_CD_FIELD_SYMBOL_NOT_FOUND(12, "Could find ASTCDAttribute for CDFieldSymbol '%s'"),
   CD_TYPE_NOT_FOUND(13, "Could find CDTypeSymbol '%s'"),
-  EXPECTED_LIST_TYPE(14, "List type was expected for Type: '%s'")
-  ;
+  EXPECTED_LIST_TYPE(14, "List type was expected for Type: '%s'"),
+  WRONG_SCOPE_CLASS_ENCLOSING_SCOPE_METHODS(15, "In Scope Class setter '%s' is not allowed.");
 
   final int code;
 

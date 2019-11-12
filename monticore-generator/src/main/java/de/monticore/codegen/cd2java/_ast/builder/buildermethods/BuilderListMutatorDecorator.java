@@ -16,9 +16,12 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
+/**
+ * changes return type of builder setters for list attributes
+ */
 public class BuilderListMutatorDecorator extends ListMutatorDecorator {
 
-  private final ASTMCType builderType;
+  protected final ASTMCType builderType;
 
   public BuilderListMutatorDecorator(GlobalExtensionManagement glex, final ASTMCType builderType) {
     super(glex);

@@ -1,36 +1,25 @@
-/*
- * Copyright (c) 2019 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
-
-import java.util.Optional;
 
 import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
- */
 public class SymTypeArrayDeSer implements IDeSer<SymTypeArray> {
-  
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
    */
   @Override
   public String getSerializedKind() {
-    // TODO: anpassen, nachdem package umbenannt ist
+    // Care: the following String needs to be adapted if the package was renamed
     return "de.monticore.types.check.SymTypeArray";
   }
-  
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#serialize(java.lang.Object)
    */
@@ -38,31 +27,28 @@ public class SymTypeArrayDeSer implements IDeSer<SymTypeArray> {
   public String serialize(SymTypeArray toSerialize) {
     return toSerialize.printAsJson();
   }
-  
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
    */
   @Override
-  public Optional<SymTypeArray> deserialize(String serialized) {
-    return deserialize(JsonParser.parseJson(serialized));
+  public SymTypeArray deserialize(String serialized) {
+    return deserialize(JsonParser.parse(serialized));
   }
-  
-  public Optional<SymTypeArray> deserialize(JsonElement serialized) {
+
+  public SymTypeArray deserialize(JsonElement serialized) {
     if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
-      Optional<Integer> dim = JsonUtil.getOptIntMember(serialized, "dim");
-      if (!dim.isPresent()) {
-        Log.error("Could not find dim of SymTypeArray " + serialized);
-      }
-      Optional<SymTypeExpression> argument = Optional.empty();
-      if (serialized.getAsJsonObject().containsKey("argument")) {
-        argument = new SymTypeExpressionDeSer()
-            .deserialize(serialized.getAsJsonObject().get("argument"));
-      }
-      if (!argument.isPresent()) {
-        Log.error("Could not find argument of SymTypeArray " + serialized);
-      }
-      return Optional.of(new SymTypeArray(dim.get(), argument.get()));
+      JsonObject o = serialized.getAsJsonObject();  //if it has a kind, it is an object
+      int dim = o.getIntegerMember("dim");
+      JsonElement argumentJson = o.getMember("argument");
+      SymTypeExpression argument = SymTypeExpressionDeSer.getInstance().deserialize(argumentJson);
+      TypeSymbol typeLoader = null; // TODO AB: waits for TypeSymbolLoader
+      return SymTypeExpressionFactory.createTypeArray(dim, argument, typeLoader);
     }
-    return Optional.empty();
+    else {
+      Log.error(
+          "0x823F2 Internal error: Cannot deserialize \"" + serialized + "\" as SymTypeArray!");
+    }
+    return null;
   }
 }

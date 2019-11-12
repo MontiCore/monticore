@@ -1,0 +1,45 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.symboltable;
+
+import de.monticore.codegen.ast.Lexicals.*;
+
+classdiagram Automaton {
+
+    public interface ASTAutomatonNode;
+
+    <<scope, symbol, startProd>> public class ASTAutomaton{
+      protected String name;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition> transitions;
+    }
+
+    <<symbol>> public class ASTState{
+      protected String name;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition> transitions;
+    }
+
+    public class ASTTransition{
+      protected String from;
+      protected String input;
+      protected String to;
+    }
+
+    <<scope>> public class ASTScope{
+      protected String name;
+    }
+
+    <<symbol>> public interface ASTSymbolInterface{
+      protected String name;
+    }
+
+    <<inheritedSymbol="de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol">> public class ASTInheritedSymbolClass {
+      protected String name;
+      protected String input;
+    }
+
+    enum AutomatonLiterals{
+      FINAL,
+      INITIAL;
+    }
+}

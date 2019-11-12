@@ -14,7 +14,7 @@ import java.util.function.UnaryOperator;
  * Creates the CDDefinition corresponding to the ASTMCGrammar
  * 
  */
-class GrammarToCDDefinition implements
+public class GrammarToCDDefinition implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
   
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(

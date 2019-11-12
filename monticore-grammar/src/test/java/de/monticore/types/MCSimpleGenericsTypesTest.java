@@ -162,4 +162,16 @@ public class MCSimpleGenericsTypesTest {
     assertTrue(parser.hasErrors());
     assertFalse(type.isPresent());
   }
+
+  @Test
+  public void testPrintTypeWithoutTypeArguments() throws IOException {
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
+    Optional<ASTMCBasicGenericType> basicGenericType = parser.parse_StringMCBasicGenericType("a.B<C, D>");
+    Optional<ASTMCGenericType> genericType = parser.parse_StringMCGenericType("a.B<C, D>");
+    assertTrue(genericType.isPresent());
+    assertTrue(basicGenericType.isPresent());
+    assertEquals("a.B", basicGenericType.get().printWithoutTypeArguments());
+    assertEquals("a.B", genericType.get().printWithoutTypeArguments());
+    assertFalse(parser.hasErrors());
+  }
 }

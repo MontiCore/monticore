@@ -8,8 +8,6 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,6 +19,9 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
+/**
+ * created c class for the generation of the constant class for a grammar
+ */
 public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   public static final String LITERALS_SUFFIX = "Literals";
@@ -47,15 +48,18 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
   public ASTCDClass decorate(final ASTCDCompilationUnit input) {
     String grammarName = input.getCDDefinition().getName();
     String className = AST_CONSTANTS + grammarName;
+    // searches if a Literals Enum is already defined in the input
     Optional<ASTCDEnum> literalsEnum = input.getCDDefinition().getCDEnumList().stream()
         .filter(astcdEnum -> astcdEnum.getName().equals(grammarName + LITERALS_SUFFIX))
         .findFirst();
     List<ASTCDEnumConstant> enumConstants = new ArrayList<>();
     if (literalsEnum.isPresent()) {
+      // if Literals enum is already present use their enumConstants
       enumConstants = literalsEnum.get().getCDEnumConstantList().stream()
           .map(ASTCDEnumConstant::deepClone)
           .collect(Collectors.toList());
     } else {
+      // otherwise search for enum constants in all enum definitions
       for (ASTCDEnum astcdEnum : input.getCDDefinition().getCDEnumList()) {
         enumConstants.addAll(astcdEnum.getCDEnumConstantList().stream()
             .map(ASTCDEnumConstant::deepClone)
@@ -84,7 +88,7 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
   protected List<ASTCDAttribute> getConstantAttribute(List<ASTCDEnumConstant> enumConstants) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     for (int i = 0; i < enumConstants.size(); i++) {
-      ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC_FINAL, getCDTypeFacade().createIntType(), enumConstants.get(i).getName());
+      ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC_FINAL, getMCTypeFacade().createIntType(), enumConstants.get(i).getName());
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (i + 1)));
       attributeList.add(attribute);
     }
@@ -93,7 +97,7 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
   protected ASTCDAttribute getSuperGrammarsAttribute(Collection<CDDefinitionSymbol> superSymbolList) {
     List<String> superGrammarNames = superSymbolList.stream().map(CDDefinitionSymbol::getFullName).map(x -> "\"" + x + "\"").collect(Collectors.toList());
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC, getCDTypeFacade().createArrayType(String.class, 1), SUPER_GRAMMARS);
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC, getMCTypeFacade().createArrayType(String.class, 1), SUPER_GRAMMARS);
     if (!superSymbolList.isEmpty()) {
       String s = superGrammarNames.stream().reduce((a, b) -> a + ", " + b).get();
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= {" + s + "}"));
@@ -104,35 +108,19 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
   }
 
   protected ASTCDAttribute getDefaultAttribute() {
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC_FINAL, getCDTypeFacade().createIntType(), DEFAULT);
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC_FINAL, getMCTypeFacade().createIntType(), DEFAULT);
     this.replaceTemplate(VALUE, attribute, new StringHookPoint("= 0"));
     return attribute;
   }
 
- /*
-   TODO Braucht man das?
- protected ASTCDAttribute getSuperGrammarsAttribute(Collection<CDDefinitionSymbol> superSymbolList) {
-    List<String> superGrammarNames = superSymbolList.stream().map(CDDefinitionSymbol::getFullName).map(x -> "\"" + x + "\"").collect(Collectors.toList());
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC, getCDTypeFacade().createArrayType(String.class, 1), SUPER_GRAMMARS);
-    if (!superSymbolList.isEmpty()) {
-      String s = superGrammarNames.stream().reduce((a, b) -> a + ", " + b).get();
-      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= {" + s + "}"));
-    } else {
-      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= {}"));
-    }
-    return attribute;
-  }
-*/
   protected ASTCDConstructor getDefaultConstructor(String className) {
     return getCDConstructorFacade().createConstructor(PUBLIC, className);
   }
 
   protected ASTCDMethod getGetAllLanguagesMethod(Collection<CDDefinitionSymbol> superCDs) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(getCDTypeFacade().createTypeByDefinition("Collection<String>")).build();
-
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, GET_ALL_LANGUAGES);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, getMCTypeFacade().createCollectionTypeOf(String.class), GET_ALL_LANGUAGES);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_constants.GetAllLanguages",
-       superCDs));
+        superCDs));
     return method;
   }
 }

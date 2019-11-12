@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
@@ -9,7 +12,7 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
-import de.monticore.codegen.cd2java._ast_emf.ast_class.emfMutatorMethodDecorator.EmfMutatorDecorator;
+import de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator.EmfMutatorDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -31,7 +34,7 @@ public class DataEmfDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "_ast_emf", "Automata");
 
     ASTCDClass clazz = getClassBy("ASTAutomaton", compilationUnit);
     this.glex.setGlobalValue("service", new AbstractService(compilationUnit));
@@ -67,6 +70,10 @@ public class DataEmfDecoratorTest extends DecoratorTestCase {
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, emfClass, emfClass);
     //check if list types where changed
     assertTrue(sb.toString().contains("EObjectContainmentEList"));
-    // TODO Check System.out.println(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 }

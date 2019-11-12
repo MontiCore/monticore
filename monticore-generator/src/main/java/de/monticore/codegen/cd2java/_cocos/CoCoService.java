@@ -5,7 +5,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 public class CoCoService extends AbstractService<CoCoService> {
@@ -32,30 +31,31 @@ public class CoCoService extends AbstractService<CoCoService> {
     return new CoCoService(cdSymbol);
   }
 
+  /**
+   * coco interface name
+   */
   public String getCoCoSimpleTypeName(ASTCDType type) {
-    return getCDName() + ASTConstants.AST_PREFIX +  type.getName() + CoCoConstants.COCO_SUFFIX;
+    return getCDName() + type.getName() + CoCoConstants.COCO_SUFFIX;
+  }
+
+  public String getCoCoSimpleTypeName(String type) {
+    return getCDName() + type + CoCoConstants.COCO_SUFFIX;
   }
 
   public String getCoCoFullTypeName(ASTCDType type) {
     return String.join(".", getPackage(), getCoCoSimpleTypeName(type));
   }
 
+  /**
+   * coco type
+   */
   public ASTMCType getCoCoType(ASTCDType type) {
-    return getCDTypeFactory().createQualifiedType(getCoCoFullTypeName(type));
+    return getMCTypeFacade().createQualifiedType(getCoCoFullTypeName(type));
   }
 
-  public String getCoCoSimpleTypeName() {
-    return getCDName() + ASTConstants.AST_PREFIX +  getCDName() + CoCoConstants.NODE_INFIX + CoCoConstants.COCO_SUFFIX;
-  }
-
-  public String getCoCoFullTypeName() {
-    return String.join(".", getPackage(), getCoCoSimpleTypeName());
-  }
-
-  public ASTMCType getCoCoType() {
-    return getCDTypeFactory().createQualifiedType(getCoCoFullTypeName());
-  }
-
+  /**
+   * coco checker name
+   */
   public String getCheckerSimpleTypeName() {
     return getCDName() + CoCoConstants.COCO_CHECKER_SUFFIX;
   }
@@ -65,6 +65,6 @@ public class CoCoService extends AbstractService<CoCoService> {
   }
 
   public ASTMCType getCheckerType() {
-    return getCDTypeFactory().createQualifiedType(getCheckerFullTypeName());
+    return getMCTypeFacade().createQualifiedType(getCheckerFullTypeName());
   }
 }

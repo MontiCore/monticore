@@ -7,11 +7,11 @@ import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 public class MCSimpleGenericTypesNodeIdentHelper extends MCCollectionTypesNodeIdentHelper {
   public String getIdent(ASTMCBasicGenericType type){
-    return format(type.getBaseName(), Layouter.nodeName(type));
+    return format(type.printWithoutTypeArguments(), Layouter.nodeName(type));
   }
 
   @Override
   public String getIdent(ASTMCGenericType a){
-    return format(a.getBaseName(), Layouter.nodeName(a));
+    return format(a.printWithoutTypeArguments(), Layouter.nodeName(a));
   }
 }

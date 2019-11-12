@@ -40,13 +40,8 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
     return this.getMCTypeArgument(0);
   }
 
-  @Override
-  public String getBaseName() {
-    return getName();
-  }
-
   public void setName(String name) {
-    // Name is fixed to "Set"   :  TODO: Internal Error, Error Msg
+    // Name is fixed to "Set"
   }
 
   public List<String> getNameList() {
@@ -55,7 +50,7 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
   }
 
   public void setNameList(List<String> names) {
-    // Name is fixed to "Set" TODO: Internal Error, Error Msg
+    // Name is fixed to "Set"
   }
 
   public void clearNames() {
@@ -123,6 +118,7 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
     // Name is fixed to "Set"
   }
 
+
   /**
    * overwrite setter for mcTypeArgument, because only one element is allowed
    */
@@ -130,7 +126,6 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
   public void clearMCTypeArguments() {
     Log.error("0xA6026 Not allowed to clear MCTypeArgumentList of ASTMCSetType.A MCTypeArgumentList must always have one element.");
   }
-
 
   public boolean addMCTypeArgument(de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument element) {
     Log.error("0xA6027 Not allowed to add an element to MCTypeArgumentList of ASTMCSetType. A MCTypeArgumentList must always have one element.");

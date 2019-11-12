@@ -10,6 +10,7 @@ public class SymTypeVoid extends SymTypeExpression {
   /**
      * print: Umwandlung in einen kompakten String
      */
+  @Override
   public String print() {
     return "void";
   }
@@ -18,10 +19,13 @@ public class SymTypeVoid extends SymTypeExpression {
    * printAsJson: Umwandlung in einen kompakten Json String
    */
   protected String printAsJson() {
-    return "\""+print()+"\"";
+    return "\""+DefsTypeBasic._voidTypeString+"\"";
   }
-  
-    
-  // --------------------------------------------------------------------------
+
+  @Override
+  public SymTypeVoid deepClone() {
+    return new SymTypeVoid();
+  }
+
   
 }

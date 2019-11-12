@@ -2,12 +2,13 @@
 
 package de.monticore.types.check;
 
-import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mcsimplegenerictypes._ast.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -73,9 +74,31 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends  SynthesizeSymTyp
 
     SymTypeExpression tex =
             SymTypeExpressionFactory.createGenerics(
-                    genericType.getName(), arguments);
+                    genericType.printWithoutTypeArguments(), arguments);
     result = Optional.of(tex);
 
+  }
+  
+  /**
+   * There are several forms of qualified Types possible:
+   * ** Object-types
+   * ** Boxed primitives, such as "java.lang.Boolean"
+   * ** Type Variables
+   * Primitives, like "int", void, null are not possible here.
+   * This are the qualified Types that may occur.
+   *
+   * To distinguish these kinds, we use the symbol that the ASTMCQualifiedType identifies
+   * @param qType
+   */
+  @Override
+  public void endVisit(ASTMCQualifiedType qType) {
+    
+    // TODO TODO ! This implementation is incomplete, it does only create Object-Types, but the
+    // type could also be a boxed Primitive or an Type Variable!
+    // We need the SymbolTable to distinguish this stuff
+    // PS: that also applies to other Visitors.
+    result = Optional.of(SymTypeExpressionFactory.createTypeObject(qType.printType(
+        MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter())));
   }
   
 }

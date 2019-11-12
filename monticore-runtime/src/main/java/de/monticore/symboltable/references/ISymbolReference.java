@@ -11,8 +11,8 @@ import java.util.Optional;
 /**
  * Represents a symbol reference and is the super type of all symbol references. Do not
  * implement this interface directly. Instead, use one of its subtypes.
- *
  */
+@Deprecated
 public interface ISymbolReference {
 
   /**
@@ -23,8 +23,11 @@ public interface ISymbolReference {
   /**
    * @return the corresponding ast node
    */
-  Optional<? extends ASTNode> getAstNode();
+  Optional<? extends ASTNode> getAstNodeOpt();
 
+  ASTNode getAstNode();
+
+  boolean isPresentAstNode();
 
   /**
    * @return the referenced symbol

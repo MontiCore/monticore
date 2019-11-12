@@ -33,13 +33,8 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
     this(key, value, Lists.newArrayList(), Lists.newArrayList("Map"));
   }
 
-  @Override
-  public String getBaseName() {
-    return getName();
-  }
-
   public void setName(String name) {
-    // Name is fixed to "Map"   :  TODO: Internal Error, Error Msg
+    // Name is fixed to "Map"
   }
 
   @Override
@@ -74,7 +69,7 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
   }
 
   public void setNameList(List<String> names) {
-    // Name is fixed to "Map" TODO: Internal Error, Error Msg
+    // Name is fixed to "Map"
   }
 
   public void clearNames() {

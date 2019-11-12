@@ -1,13 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -16,7 +19,8 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
@@ -62,13 +66,13 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(10, packageClass.getCDAttributeList().size());
+    assertEquals(11, packageClass.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodSize() {
     assertFalse(packageClass.getCDMethodList().isEmpty());
-    assertEquals(25, packageClass.getCDMethodList().size());
+    assertEquals(26, packageClass.getCDMethodList().size());
   }
 
   @Test
@@ -196,7 +200,7 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
   public void testGetASTESuperPackagesMethod() {
     ASTCDMethod method = getMethodBy("getASTESuperPackages", packageClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(CDTypeFacade.getInstance().createListTypeOf("de.monticore.emf._ast.ASTEPackage"), method.getMCReturnType().getMCType());
+    assertDeepEquals(MCTypeFacade.getInstance().createListTypeOf("de.monticore.emf._ast.ASTEPackage"), method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -278,7 +282,11 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, packageClass, packageClass);
-    // System.out.println(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 
 }

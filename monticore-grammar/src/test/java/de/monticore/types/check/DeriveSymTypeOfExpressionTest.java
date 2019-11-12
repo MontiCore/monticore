@@ -2,20 +2,26 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfExpressionTest {
   
@@ -37,7 +43,7 @@ public class DeriveSymTypeOfExpressionTest {
     scope =
             ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
                     .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-                    .setExportsSymbols(true)
+                .setExportingSymbols(true)
                     .setAstNode(null)
                     .setName("Phantasy2").build();     // hopefully unused
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
@@ -55,9 +61,9 @@ public class DeriveSymTypeOfExpressionTest {
     // some FieldSymbols (ie. Variables, Attributes)
     TypeSymbol p = new TypeSymbol("Person");
     TypeSymbol s = new TypeSymbol("Student");
-    s.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",p)));
+    s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", p)));
     TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
-    f.setSuperTypes(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",s)));
+    f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", s)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",p)));
@@ -65,6 +71,23 @@ public class DeriveSymTypeOfExpressionTest {
     add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObject("Student",s)));
     add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",f)));
+
+    //testing for generics
+    SymTypeOfGenerics genSuper = SymTypeExpressionFactory.createGenerics("GenSuper",Lists.newArrayList(), TypeSymbolsSymTabMill.typeSymbolBuilder().build());
+    SymTypeOfGenerics genSub = SymTypeExpressionFactory.createGenerics("GenSub",Lists.newArrayList(),TypeSymbolsSymTabMill.typeSymbolBuilder().build());
+
+    TypeSymbol superType = type("GenSuper");
+    TypeSymbol subType = type("GenSub");
+    subType.setSuperTypeList(Lists.newArrayList(genSuper));
+    SymTypeExpression genArg = SymTypeExpressionFactory.createTypeObject("GenArg");
+    List<SymTypeExpression> genArgs = new ArrayList<>();
+    genArgs.add(genArg);
+    genSuper.setTypeInfo(superType);
+    genSub.setTypeInfo(subType);
+    genSuper.setArgumentList(genArgs);
+    genSub.setArgumentList(genArgs);
+    add2scope(scope,field("genericSub",genSub));
+    add2scope(scope,field("genericSuper",genSuper));
     derLit.setScope(scope);
   }
   
@@ -132,16 +155,10 @@ public class DeriveSymTypeOfExpressionTest {
     assertEquals("String", tc.typeOf(astex).print());
   }
 
-
-/*
-
   @Test
-  public void deriveTFromNot() throws IOException {
-    String s = "!(3+aBoolean)";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean", tc.typeOf(astex).print());
-    // does work, but should issue a CoCo violation (TODO later)
+  public void genericsTest() throws IOException {
+    ASTExpression astex = p.parse_StringExpression("genericSuper = genericSub").get();
+    assertEquals("GenSuper<GenArg>",tc.typeOf(astex).print());
   }
-*/
 
 }

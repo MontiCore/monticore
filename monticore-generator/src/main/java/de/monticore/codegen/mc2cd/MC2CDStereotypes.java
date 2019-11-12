@@ -37,13 +37,29 @@ public enum MC2CDStereotypes {
    */
   SCOPE("scope"),
   /**
+   * To mark class as symbol
+   */
+  INHERITED_SYMBOL("inheritedSymbol"),
+  /**
+   * To mark class as symbol
+   */
+  INHERITED_SCOPE("inheritedScope"),
+  /**
    * To add bodies to methods
    */
   METHOD_BODY("methodBody"),
   /**
    * To add bodies to methods
    */
-  AST_TYPE("astType");
+  AST_TYPE("astType"),
+  /**
+   * shows if a prod is the start prod in a grammar
+   */
+  START_PROD("startProd"),
+  /**
+   * shows if a prod is the start prod in a grammar
+   */
+  COMPONENT("component");
 
   private final String stereotype;
 

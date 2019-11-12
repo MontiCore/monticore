@@ -1,14 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.factories.CDMethodFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
+
+/**
+ * helper class for the AST package generation
+ */
 public class ASTService extends AbstractService<ASTService> {
 
   public ASTService(ASTCDCompilationUnit compilationUnit) {
@@ -33,8 +40,19 @@ public class ASTService extends AbstractService<ASTService> {
     return new ASTService(cdSymbol);
   }
 
+  /**
+   * create base interface name e.g. ASTAutomataNode
+   */
   public String getASTBaseInterfaceSimpleName() {
-    return ASTConstants.AST_PREFIX + getCDName() + ASTConstants.NODE_SUFFIX;
+    return AST_PREFIX + getCDName() + ASTConstants.NODE_SUFFIX;
+  }
+
+  public String getASTBaseInterfaceSimpleName(CDDefinitionSymbol cdSymbol) {
+    return AST_PREFIX + cdSymbol.getName() + ASTConstants.NODE_SUFFIX;
+  }
+
+  public String getASTBaseInterfaceFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return String.join(".", getPackage(), getASTBaseInterfaceSimpleName());
   }
 
   public String getASTBaseInterfaceFullName() {
@@ -42,30 +60,60 @@ public class ASTService extends AbstractService<ASTService> {
   }
 
   public ASTMCQualifiedType getASTBaseInterface() {
-    return getCDTypeFactory().createQualifiedType(getASTBaseInterfaceFullName());
+    return getMCTypeFacade().createQualifiedType(getASTBaseInterfaceFullName());
   }
 
-  public String getSimpleTypeName(ASTCDType type) {
-    return type.getName().startsWith(ASTConstants.AST_PREFIX) ? type.getName().substring(ASTConstants.AST_PREFIX.length()) : type.getName();
+  /**
+   * constant class names g.g. ASTConstantsAutomata
+   */
+  public String getASTConstantClassSimpleName() {
+    return getASTConstantClassSimpleName(getCDSymbol());
   }
 
-  public String getASTSimpleTypeName(ASTCDType type) {
-    return ASTConstants.AST_PREFIX + type.getName();
+  public String getASTConstantClassSimpleName(CDDefinitionSymbol cdSymbol) {
+    return ASTConstants.AST_CONSTANTS + cdSymbol.getName();
   }
 
-  public String getASTFullTypeName(ASTCDType type) {
-    return String.join(".", getPackage(), getASTSimpleTypeName(type));
+  public String getASTConstantClassFullName() {
+    return getASTConstantClassFullName(getCDSymbol());
+  }
+
+  public String getASTConstantClassFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getASTConstantClassSimpleName(cdSymbol);
+  }
+
+  /**
+   * ast class names g.g. ASTAutomaton
+   */
+  public String getASTSimpleName(ASTCDType type) {
+    return type.getName().startsWith(AST_PREFIX) ? type.getName() : AST_PREFIX + type.getName();
+  }
+
+  public String getASTFullName(ASTCDType type) {
+    return String.join(".", getPackage(), getASTSimpleName(type));
+  }
+
+  public String getASTFullName(ASTCDType type, CDDefinitionSymbol cdSymbol) {
+    return String.join(".", getPackage(cdSymbol), getASTSimpleName(type));
   }
 
   public ASTMCType getASTType(ASTCDType type) {
-    return getCDTypeFactory().createQualifiedType(getASTFullTypeName(type));
+    return getMCTypeFacade().createQualifiedType(getASTFullName(type));
   }
 
-  public ASTMCQualifiedType getASTNodeInterfaceType() {
-    return getCDTypeFactory().createQualifiedType(ASTNode.class);
+  /**
+   * returns true if the ast defines a symbol and no name attribute and no getName method are already defined
+   */
+  public boolean isSymbolWithoutName(ASTCDType type) {
+    return type.getModifierOpt().isPresent() && hasSymbolStereotype(type.getModifierOpt().get())
+        && type.getCDAttributeList().stream().noneMatch(a -> "name".equals(a.getName()))
+        && type.getCDMethodList().stream().noneMatch(m -> "getName".equals(m.getName()));
   }
 
-  public String getASTConstantClassName() {
-    return getPackage() + "." + ASTConstants.AST_CONSTANTS + getCDName();
+  /**
+   * abstract getName method only generated when isSymbolWithoutName evaluates true for the ast class
+   */
+  public ASTCDMethod createGetNameMethod() {
+    return CDMethodFacade.getInstance().createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createStringType(), "getName");
   }
 }

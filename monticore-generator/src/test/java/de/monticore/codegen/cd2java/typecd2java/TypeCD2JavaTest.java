@@ -14,7 +14,6 @@ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConcep
 import de.monticore.io.paths.ModelPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +45,7 @@ public class TypeCD2JavaTest {
     MontiCoreScript script = new MontiCoreScript();
     script.createSymbolsFromAST(grammar_withConceptsGlobalScope, grammar.get());
     cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
-        cd4AnalysisGlobalScope,grammar_withConceptsGlobalScope);
+        cd4AnalysisGlobalScope);
 
     cdCompilationUnit.setEnclosingScope(cd4AnalysisGlobalScope);
     //make types java compatible

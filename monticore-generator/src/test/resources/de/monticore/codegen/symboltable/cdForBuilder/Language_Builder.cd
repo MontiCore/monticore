@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.symboltable.cdForBuilder;
+
+classdiagram Language_Builder {
+
+    class ALanguage{
+      protected String name;
+      protected String fileEnding;
+    }
+}

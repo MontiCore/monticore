@@ -20,6 +20,11 @@ public class SymTypeOfObject extends SymTypeExpression {
    */
   protected String objFullName;
   
+  /**
+   * Constructor: with the full name and the TypeSymbol behind
+   * @param objFullName
+   * @param typeInfo
+   */
   public SymTypeOfObject(String objFullName, TypeSymbol typeInfo)
   {
     this.objFullName = objFullName;
@@ -37,6 +42,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   /**
    * print: Umwandlung in einen kompakten String
    */
+  @Override
   public String print() {
     return getObjName();
   }
@@ -47,13 +53,19 @@ public class SymTypeOfObject extends SymTypeExpression {
   protected String printAsJson() {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
-    //TODO: anpassen, nachdem package umbenannt ist
+    // Care: the following String needs to be adapted if the package was renamed
     jp.member(JsonConstants.KIND, "de.monticore.types.check.SymTypeOfObject");
     jp.member("objName", getObjName());
     jp.endObject();
     return jp.getContent();
   }
-  
+
+  @Override
+  public SymTypeOfObject deepClone() {
+    SymTypeOfObject clone = new SymTypeOfObject(this.objFullName,this.getTypeInfo());
+    return clone;
+  }
+
   /**
    * getFullName: get the Qualified Name including Package
    */
@@ -71,6 +83,8 @@ public class SymTypeOfObject extends SymTypeExpression {
   
   // --------------------------------------------------------------------------
 
+  // TODO 4: this constructor ignores the typeInfo:
+  @Deprecated
   public SymTypeOfObject(String name){
     this.objFullName = name;
   }

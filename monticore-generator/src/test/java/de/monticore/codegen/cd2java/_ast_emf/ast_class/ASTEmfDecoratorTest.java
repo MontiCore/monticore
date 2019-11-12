@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
@@ -30,13 +33,16 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
 public class ASTEmfDecoratorTest extends DecoratorTestCase {
+
   private GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private ASTCDClass emfClass;
 
+  private ASTCDClass emfTransitionClass;
+
   @Before
   public void setup() {
-    ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "_ast_emf", "Automata");
 
     this.glex.setGlobalValue("service", new EmfService(ast));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -46,11 +52,19 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     ASTEmfDecorator decorator = new ASTEmfDecorator(this.glex, new ASTService(ast), new VisitorService(ast), new NodeFactoryService(ast),
         new ASTSymbolDecorator(glex, symbolTableService), new ASTScopeDecorator(glex, symbolTableService), new MethodDecorator(glex),
         new SymbolTableService(ast), new EmfService(ast));
+    // automaton ast class
     ASTCDClass clazz = getClassBy("ASTAutomaton", ast);
     ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
         .setModifier(clazz.getModifier())
         .build();
-    this.emfClass = decorator.decorate(clazz,changedClass);
+    this.emfClass = decorator.decorate(clazz, changedClass);
+
+    // transition ast class
+    ASTCDClass clazzTransition = getClassBy("ASTTransitionWithAction", ast);
+    ASTCDClass changedClassTransition = CD4AnalysisMill.cDClassBuilder().setName(clazzTransition.getName())
+        .setModifier(clazzTransition.getModifier())
+        .build();
+    this.emfTransitionClass = decorator.decorate(clazzTransition, changedClassTransition);
   }
 
   @Test
@@ -61,7 +75,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSuperInterface() {
     assertEquals(1, emfClass.sizeInterfaces());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._ast.ASTAutomatonNode", emfClass.getInterface(0));
+    assertDeepEquals("de.monticore.codegen._ast_emf.automata._ast.ASTAutomataNode", emfClass.getInterface(0));
   }
 
   @Test
@@ -72,14 +86,13 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(4, emfClass.getCDAttributeList().size());
+    assertEquals(3, emfClass.getCDAttributeList().size());
 
 
   }
 
   @Test
-  public void testAttributeNames(){
-    getAttributeBy("automatonSymbol", emfClass);
+  public void testAttributeNames() {
     getAttributeBy("symbol", emfClass);
     getAttributeBy("spannedScope", emfClass);
     getAttributeBy("enclosingScope", emfClass);
@@ -88,7 +101,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethodSize() {
     assertFalse(emfClass.getCDMethodList().isEmpty());
-    assertEquals(29, emfClass.getCDMethodList().size());
+    assertEquals(23, emfClass.getCDMethodList().size());
   }
 
   @Test
@@ -175,12 +188,33 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
   }
 
+  /**
+   * ASTTransitionWithAction already has a toString method in the classdiagramm
+   * tests that no toString method is separately generated
+   */
+  @Test (expected = AssertionError.class)
+  public void testToStringASTTransitionWithAction() {
+    getMethodBy("toString", emfTransitionClass);
+  }
+
+  /**
+   * no super class if AST has already a super class
+   */
+  @Test
+  public void testSuperClassASTTransitionWithAction() {
+    assertFalse(emfTransitionClass.isPresentSuperclass());
+  }
+
   @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, emfClass, emfClass);
-    // TODO Check System.out.println(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 }

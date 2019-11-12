@@ -25,6 +25,8 @@ IncrementalChecker.initialize(out, report)
 InputOutputFilesReporter.resetModelToArtifactMap()
 mcScope = createMCGlobalScope(modelPath)
 cdScope = createCD4AGlobalScope(modelPath)
+symbolCdScope = createCD4AGlobalScope(modelPath)
+scopeCdScope = createCD4AGlobalScope(modelPath)
 Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
 // ############################################################
 
@@ -55,10 +57,14 @@ while (grammarIterator.hasNext()) {
       runGrammarCoCos(astGrammar, mcScope)
 
       // M5: transform grammar AST into Class Diagram AST
-      astClassDiagramWithST = deriveCD(astGrammar, glex, cdScope, mcScope)
+      astClassDiagramWithST = deriveCD(astGrammar, glex, cdScope)
 
       // M6: generate parser and wrapper
       generateParser(glex, astGrammar, mcScope, handcodedPath, out)
+
+      deriveSymbolCD(astGrammar, symbolCdScope)
+
+      deriveScopeCD(astGrammar, scopeCdScope)
     }
   }
 }
@@ -76,15 +82,27 @@ for (astGrammar in getParsedGrammars()) {
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
 
-  // M8: generate symbol table
-  generateSymbolTable(glex, mcScope, astGrammar, cdScope, astClassDiagram, out, handcodedPath)
+  symbolClassDiagramm = getSymbolCDOfParsedGrammar(astGrammar)
+
+  scopeClassDiagramm = getScopeCDOfParsedGrammar(astGrammar)
+
+  astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
+
+  decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
+
+  decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedSerializationCd, out, handcodedPath)
+
 
   // M9 Generate ast classes, visitor and context condition
   decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedVisitorCD, out, handcodedPath)
 
-  generateCocos(glex, cdScope, astClassDiagram, out)
-  generateODs(glex, cdScope, mcScope, astClassDiagram, out)
+  decoratedCoCoCD = decorateForCoCoPackage(glex, cdScope, astClassDiagram, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath)
+
+  generateODs(glex, cdScope, mcScope, astClassDiagram, astGrammar, out)
 
   // M7: decorate Class Diagram AST
   decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)

@@ -1,36 +1,24 @@
-/*
- * Copyright (c) 2019 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
-
-import java.util.Optional;
 
 import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
- */
 public class SymTypeVariableDeSer implements IDeSer<SymTypeVariable> {
-  
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
    */
   @Override
   public String getSerializedKind() {
-    // TODO: anpassen, nachdem package umbenannt ist
     return "de.monticore.types.check.SymTypeVariable";
   }
-  
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#serialize(java.lang.Object)
    */
@@ -38,28 +26,24 @@ public class SymTypeVariableDeSer implements IDeSer<SymTypeVariable> {
   public String serialize(SymTypeVariable toSerialize) {
     return toSerialize.printAsJson();
   }
-  
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
    */
   @Override
-  public Optional<SymTypeVariable> deserialize(String serialized) {
-    return deserialize(JsonParser.parseJson(serialized));
+  public SymTypeVariable deserialize(String serialized) {
+    return deserialize(JsonParser.parse(serialized));
   }
-  
-  public Optional<SymTypeVariable> deserialize(JsonElement serialized) {
+
+  public SymTypeVariable deserialize(JsonElement serialized) {
     if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
-      SymTypeVariable result = new SymTypeVariable();
-      Optional<String> varName = JsonUtil.getOptStringMember(serialized, "varName");
-      if (varName.isPresent()) {
-        result.setVarName(varName.get());
-      }
-      else {
-        Log.error("Could not find varName of SymTypeVariable " + serialized);
-      }
-      return Optional.of(result);
+      JsonObject o = serialized.getAsJsonObject();  //if it has a kind, it is an object
+      String varName = o.getStringMember("varName");
+      TypeSymbol typeLoader = null; // TODO AB: waits for TypeSymbolLoader
+      return SymTypeExpressionFactory.createTypeVariable(varName, typeLoader);
     }
-    return Optional.empty();
+    Log.error("0x823F5 Internal error: Cannot load \"" + serialized + "\" as  SymTypeVariable!");
+    return null;
   }
-  
+
 }

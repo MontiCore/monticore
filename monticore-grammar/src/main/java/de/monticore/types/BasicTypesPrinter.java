@@ -2,15 +2,15 @@
 
 package de.monticore.types;
 
-
 import de.monticore.types.mcbasictypes._ast.*;
-import de.se_rwth.commons.Names;
 
 import java.util.List;
 
 /**
- * This class provides methods for printing types as Strings. The TypesPrinter
+ * This class provides methods for printing types as Strings. The BasicTypesPrinter
  * is a singleton.
+ * <p>
+ * Care: It is not extensible (as it does not fully implement the static delegator pattern)
  */
 public class BasicTypesPrinter {
 
@@ -21,7 +21,7 @@ public class BasicTypesPrinter {
    */
   protected BasicTypesPrinter() {
   }
-  
+
   /**
    * Returns the singleton instance.
    *
@@ -33,11 +33,11 @@ public class BasicTypesPrinter {
     }
     return instance;
   }
-  
+
   /******************************************************************
    * INTERFACES
    ******************************************************************/
-  
+
   /**
    * Converts an ASTType to a String
    *
@@ -47,31 +47,30 @@ public class BasicTypesPrinter {
   public static String printType(ASTMCType type) {
     return getInstance().doPrintType(type);
   }
-  
+
   protected String doPrintType(ASTMCType type) {
 
     if (type instanceof ASTMCPrimitiveType) {
       return doPrintPrimitiveType((ASTMCPrimitiveType) type);
     }
     if (type instanceof ASTMCObjectType) {
-      return doPrintReferenceType((ASTMCObjectType) type);
+      return doPrintObjectType((ASTMCObjectType) type);
     }
     return "vxgcnfnhnhjggf";
   }
-  
+
   /**
-   * Converts an ASTReferenceType to a String
+   * Converts an ASTMCObjectType to a String
    *
-   * @param type ASTReferenceType to be converted
+   * @param type ASTMCObjectType to be converted
    * @return String representation of "type"
    */
-  public static String printReferenceType(ASTMCObjectType type) {
-    return getInstance().doPrintReferenceType(type);
+  public static String printObjectType(ASTMCObjectType type) {
+    return getInstance().doPrintObjectType(type);
   }
 
-  protected String doPrintReferenceType(ASTMCObjectType type) {
-
-    return Names.getQualifiedName(type.getNameList());
+  protected String doPrintObjectType(ASTMCObjectType type) {
+    return type.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter());
   }
 
   /**
@@ -83,7 +82,7 @@ public class BasicTypesPrinter {
   public static String printReturnType(ASTMCReturnType type) {
     return getInstance().doPrintReturnType(type);
   }
-  
+
   protected String doPrintReturnType(ASTMCReturnType type) {
     if (type.isPresentMCType()) {
       return doPrintType(type.getMCType());
@@ -93,15 +92,13 @@ public class BasicTypesPrinter {
     }
     return "";
   }
-  
-  
+
+
   /******************************************************************
    * Rules
    ******************************************************************/
- 
 
 
-  
   /**
    * Converts an ASTVoidType to a String
    *
@@ -111,14 +108,14 @@ public class BasicTypesPrinter {
   public static String printVoidType(ASTMCVoidType type) {
     return getInstance().doPrintVoidType(type);
   }
-  
+
   protected String doPrintVoidType(ASTMCVoidType type) {
     if (type != null) {
       return "void";
     }
     return "";
   }
-  
+
   /**
    * Converts an ASTPrimitiveType to a String
    *
@@ -128,54 +125,31 @@ public class BasicTypesPrinter {
   public static String printPrimitiveType(ASTMCPrimitiveType type) {
     return getInstance().doPrintPrimitiveType(type);
   }
-  
+
+
   protected String doPrintPrimitiveType(ASTMCPrimitiveType type) {
     if (type == null) {
-      return "";
+      return "0x52344missing";
     }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.BOOLEAN) {
-      return "boolean";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.BYTE) {
-      return "byte";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.CHAR) {
-      return "char";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.SHORT) {
-      return "short";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.INT) {
-      return "int";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.FLOAT) {
-      return "float";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.LONG) {
-      return "long";
-    }
-    if (type.getPrimitive() == ASTConstantsMCBasicTypes.DOUBLE) {
-      return "double";
-    }
-    return "";
+    return MCBasicTypesHelper.primitiveConst2Name(type.getPrimitive());
   }
 
   /**
-   * Converts an ASTReferenceTypeList to a String
+   * Converts an ASTObjectTypeList to a String
    *
-   * @param type ASTReferenceTypeList to be converted
+   * @param type ASTObjectTypeList to be converted
    * @return String representation of "type"
    */
-  public static String printReferenceTypeList(List<ASTMCObjectType> type) {
-    return getInstance().doPrintReferenceTypeList(type);
+  public static String printObjectTypeList(List<ASTMCObjectType> type) {
+    return getInstance().doPrintObjectTypeList(type);
   }
-  
-  protected String doPrintReferenceTypeList(List<ASTMCObjectType> type) {
+
+  protected String doPrintObjectTypeList(List<ASTMCObjectType> type) {
     StringBuilder ret = new StringBuilder();
     if (type != null) {
       String sep = "";
       for (ASTMCObjectType refType : type) {
-        ret.append(sep + doPrintReferenceType(refType));
+        ret.append(sep + doPrintObjectType(refType));
         sep = ", ";
       }
     }

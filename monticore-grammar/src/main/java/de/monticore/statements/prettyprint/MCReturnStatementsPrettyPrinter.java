@@ -8,16 +8,21 @@ import de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode
 import de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement;
 import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor;
 
-public class MCReturnStatementsPrettyPrinter extends MCCommonStatementsPrettyPrinter implements
+public class MCReturnStatementsPrettyPrinter  implements
         MCReturnStatementsVisitor {
 
+
+  protected IndentPrinter printer = null;
 
   private MCReturnStatementsVisitor realThis = this;
 
   public MCReturnStatementsPrettyPrinter(IndentPrinter out) {
-    super(out);
+    this.printer = out;
   }
 
+  public IndentPrinter getPrinter() {
+    return this.printer;
+  }
 
   @Override
   public void handle(ASTReturnStatement a) {

@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
@@ -22,7 +25,7 @@ import de.monticore.codegen.cd2java._ast.mill.MillForSuperDecorator;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTEmfDecorator;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTFullEmfDecorator;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.DataEmfDecorator;
-import de.monticore.codegen.cd2java._ast_emf.ast_class.emfMutatorMethodDecorator.EmfMutatorDecorator;
+import de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator.EmfMutatorDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
@@ -44,8 +47,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
 
@@ -131,9 +133,12 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     for (ASTCDClass clazz : decoratedCompilationUnit.getCDDefinition().getCDClassList()) {
-      // System.out.printf("==================== %s ====================\n", clazz.getName());
       StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
-      // TODO Check System.out.println(sb.toString());
+      // test parsing
+      ParserConfiguration configuration = new ParserConfiguration();
+      JavaParser parser = new JavaParser(configuration);
+      ParseResult parseResult = parser.parse(sb.toString());
+      assertTrue(parseResult.isSuccessful());
     }
   }
 }

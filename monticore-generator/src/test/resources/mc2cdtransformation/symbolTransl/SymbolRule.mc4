@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc2cdtransformation.symbolTransl;
+
+component grammar SymbolRule {
+
+// symbol prods should be shown
+ symbol SymbolClass = Name;
+
+ symbolrule SymbolClass implements de.monticore.symboltable.ISymbol extends de.monticore.symboltable.Symbol=
+   extraString:String
+   method public String toString(){
+     return "foo";
+   };
+
+ abstract symbol SymbolAbstractClass = Name;
+
+  symbolrule SymbolAbstractClass =
+     extraString:String;
+
+ interface symbol SymbolInterface = Name;
+
+  symbolrule SymbolInterface =
+     extraString:String;
+
+ external symbol SymbolExternal;
+
+  symbolrule SymbolExternal =
+     extraString:String;
+
+ // prods defining no symbols should not be shown
+ NoSymbol = "noSymbol";
+
+ enum EnumNoSymbol = "noSym";
+
+}

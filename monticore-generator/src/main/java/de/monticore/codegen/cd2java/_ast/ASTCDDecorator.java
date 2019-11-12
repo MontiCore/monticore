@@ -22,7 +22,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.NODE_SUFFIX;
 
+/**
+ * combines all decorators to create all classes, interfaces and enums for the _ast package
+ * returns them all combined in ASTCDCompilationUnit
+ */
 public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
   protected final ASTFullDecorator astFullDecorator;
@@ -83,6 +89,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
         .addAllCDEnums(createEnums(ast))
         .build();
 
+    // change the package and add deprecated annotations to all classes, interfaces, enums
     for (ASTCDClass cdClass : astCD.getCDClassList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(astPackage));
       this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifierOpt()));
@@ -107,7 +114,8 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
   protected List<ASTCDClass> createASTClasses(final ASTCDCompilationUnit ast) {
     List<ASTCDClass> astcdClassList = new ArrayList<>();
     for (ASTCDClass astcdClass : ast.getCDDefinition().getCDClassList()) {
-      ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(astcdClass.getName())
+      ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder()
+          .setName(astcdClass.getName())
           .setModifier(astcdClass.getModifier().deepClone())
           .build();
       astFullDecorator.decorate(astcdClass, changedClass);
@@ -144,14 +152,16 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
   }
 
   protected List<ASTCDInterface> createASTInterfaces(final ASTCDCompilationUnit ast) {
-
     List<ASTCDInterface> astcdInterfaceList = new ArrayList<>();
     for (ASTCDInterface astcdInterface : ast.getCDDefinition().getCDInterfaceList()) {
-      ASTCDInterface changedInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(astcdInterface.getName())
-          .setModifier(astcdInterface.getModifier().deepClone())
-          .build();
-      ASTCDInterface decoratedASTClass = astInterfaceDecorator.decorate(astcdInterface, changedInterface);
-      astcdInterfaceList.add(decoratedASTClass);
+      // do not create normal ast interface for language interface, is seperately created by ASTLanguageInterfaceDecorator
+      if (!astcdInterface.getName().equals(AST_PREFIX + ast.getCDDefinition().getName() + NODE_SUFFIX)) {
+        ASTCDInterface changedInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(astcdInterface.getName())
+            .setModifier(astcdInterface.getModifier().deepClone())
+            .build();
+        ASTCDInterface decoratedASTClass = astInterfaceDecorator.decorate(astcdInterface, changedInterface);
+        astcdInterfaceList.add(decoratedASTClass);
+      }
     }
     return astcdInterfaceList;
   }

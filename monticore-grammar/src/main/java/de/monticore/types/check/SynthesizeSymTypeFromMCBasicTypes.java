@@ -58,7 +58,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
 
   public void endVisit(ASTMCPrimitiveType primitiveType) {
     SymTypeConstant typeConstant =
-            SymTypeExpressionFactory.createTypeConstant(primitiveType.getName());
+            SymTypeExpressionFactory.createTypeConstant(primitiveType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
     result = Optional.of(typeConstant);
   }
   
@@ -66,8 +66,17 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
     result = Optional.of(SymTypeExpressionFactory.createTypeVoid());
   }
   
+  /**
+   * Asks the SymTypeExpressionFactory to create the correct Type
+   * Here: the Argument may be qualified Type object, but that allows only primitives, such as "int" or
+   * boxed versions, such as "java.lang.Boolean"
+   * This are the only qualified Types that may occur.
+   * In particular: This method needs to be overriden when real qualified Types occur.
+   * @param qType
+   */
   public void endVisit(ASTMCQualifiedType qType) {
-    result = Optional.of(SymTypeExpressionFactory.createTypeConstant(qType.getName()));
+    // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
+    result = Optional.of(SymTypeExpressionFactory.createTypeConstant(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter())));
   }
   
   public void endVisit(ASTMCReturnType rType) {

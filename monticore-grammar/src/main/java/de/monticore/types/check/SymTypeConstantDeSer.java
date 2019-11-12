@@ -1,36 +1,24 @@
-/*
- * Copyright (c) 2019 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
-
-import java.util.Optional;
 
 import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
- */
 public class SymTypeConstantDeSer implements IDeSer<SymTypeConstant> {
-  
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
    */
   @Override
   public String getSerializedKind() {
-    // TODO: anpassen, nachdem package umbenannt ist
+    // Care: the following String needs to be adapted if the package was renamed
     return "de.monticore.types.check.SymTypeConstant";
   }
-  
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#serialize(java.lang.Object)
    */
@@ -38,24 +26,22 @@ public class SymTypeConstantDeSer implements IDeSer<SymTypeConstant> {
   public String serialize(SymTypeConstant toSerialize) {
     return toSerialize.printAsJson();
   }
-  
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
    */
   @Override
-  public Optional<SymTypeConstant> deserialize(String serialized) {
-    return deserialize(JsonParser.parseJson(serialized));
+  public SymTypeConstant deserialize(String serialized) {
+    return deserialize(JsonParser.parse(serialized));
   }
-  
-  public Optional<SymTypeConstant> deserialize(JsonElement serialized) {
+
+  public SymTypeConstant deserialize(JsonElement serialized) {
     if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
-      Optional<String> constName = JsonUtil.getOptStringMember(serialized, "constName");
-      if (!constName.isPresent()) {
-        Log.error("Could not find constName of SymTypeConstant " + serialized);
-      }
-      return Optional.of(new SymTypeConstant(constName.get()));
+      JsonObject o = serialized.getAsJsonObject();  //if it has a kind, it is an object
+      String constName = o.getStringMember("constName");
+      return SymTypeExpressionFactory.createTypeConstant(constName);
     }
-    return Optional.empty();
+    Log.error("0x823F1 Internal error: Cannot load \"" + serialized + "\" as  SymTypeConstant!");
+    return null;
   }
-  
 }

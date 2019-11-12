@@ -9,7 +9,6 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -22,7 +21,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static org.junit.Assert.*;
@@ -33,17 +31,12 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
 
   private List<ASTCDAttribute> attributes;
 
-  private CDTypeFacade cdTypeFacade = CDTypeFacade.getInstance();
-
-  private static final String AST_SCOPE = "de.monticore.codegen.ast.ast._symboltable.ASTScope";
-
   private static final String AST_I_SCOPE = "de.monticore.codegen.ast.ast._symboltable.IASTScope";
 
-  private static final String SUPER_I_SCOPE= "de.monticore.codegen.ast.super._symboltable.ISuperScope";
+  private static final String SUPER_I_SCOPE= "de.monticore.codegen.ast.supercd._symboltable.ISuperCDScope";
 
   @Before
   public void setup() {
-    this.cdTypeFacade = CDTypeFacade.getInstance();
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "AST");
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());

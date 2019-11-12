@@ -2,12 +2,12 @@
 package de.monticore.types.helper;
 
 import de.monticore.types.MCCollectionTypesHelper;
-import de.monticore.types.MCCollectionTypesTest;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mccollectiontypes._ast.ASTMCBasicTypeArgument;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
-import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class MCCollectionTypesHelperTest {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
     Optional<ASTMCGenericType> astmcGenericType = parser.parse_StringMCGenericType("List<String>");
     assertTrue(astmcGenericType.isPresent());
-    assertTrue(MCCollectionTypesHelper.getSimpleName(astmcGenericType.get()).equals("List"));
+    assertEquals("List", MCCollectionTypesHelper.getSimpleName(astmcGenericType.get()));
     assertFalse(parser.hasErrors());
   }
 
@@ -58,24 +58,26 @@ public class MCCollectionTypesHelperTest {
     assertTrue(astmcType1.isPresent());
     assertTrue(astmcType2.isPresent());
     assertTrue(astmcType3.isPresent());
-    assertEquals("List<String>",MCCollectionTypesHelper.printType(astmcType.get())); // funktioniert nicht
-    assertEquals("boolean",MCCollectionTypesHelper.printType(astmcType1.get()));
-    assertEquals("TestType",MCCollectionTypesHelper.printType(astmcType2.get()));
-    assertEquals("Map<String,Integer>",MCCollectionTypesHelper.printType(astmcType3.get()));
-    assertEquals("String",MCCollectionTypesHelper.printType(astmcTypeArgument.get()));
-    assertEquals("TestType",MCCollectionTypesHelper.printType(astmcTypeArgument1.get()));
+    assertEquals("List<String>", MCCollectionTypesHelper.printType(astmcType.get()));
+    assertEquals("boolean", MCCollectionTypesHelper.printType(astmcType1.get()));
+    assertEquals("TestType", MCCollectionTypesHelper.printType(astmcType2.get()));
+    assertEquals("Map<String,Integer>", MCCollectionTypesHelper.printType(astmcType3.get()));
+    assertEquals("String", MCCollectionTypesHelper.printType(astmcTypeArgument.get()));
+    assertEquals("TestType", MCCollectionTypesHelper.printType(astmcTypeArgument1.get()));
     assertFalse(parser.hasErrors());
   }
 
+
+
   @Test
-  public void testGetFirstTypeArgumentOfGenericType() throws IOException{
+  public void testGetFirstTypeArgumentOfGenericType() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
     Optional<ASTMCGenericType> astmcGenericType = parser.parse_StringMCGenericType("List<Character>");
     Optional<ASTMCType> astmcType = parser.parse_StringMCType("Character");
     assertTrue(astmcGenericType.isPresent());
     assertTrue(astmcType.isPresent());
     ASTMCType type = astmcType.get();
-    Optional<ASTMCTypeArgument> typeArgument = MCCollectionTypesHelper.getFirstTypeArgumentOfGenericType(astmcGenericType.get(),"List");
+    Optional<ASTMCTypeArgument> typeArgument = MCCollectionTypesHelper.getFirstTypeArgumentOfGenericType(astmcGenericType.get(), "List");
     assertTrue(typeArgument.isPresent());
     assertTrue(typeArgument.get() instanceof ASTMCBasicTypeArgument);
     ASTMCBasicTypeArgument astmcBasicTypeArgument = (ASTMCBasicTypeArgument) typeArgument.get();
@@ -91,7 +93,7 @@ public class MCCollectionTypesHelperTest {
     assertTrue(astmcGenericType.isPresent());
     assertTrue(astmcType.isPresent());
     ASTMCType type = astmcType.get();
-    Optional<ASTMCTypeArgument> typeArgument = MCCollectionTypesHelper.getFirstTypeArgumentOfGenericType(astmcGenericType.get(),"Optional");
+    Optional<ASTMCTypeArgument> typeArgument = MCCollectionTypesHelper.getFirstTypeArgumentOfGenericType(astmcGenericType.get(), "Optional");
     assertTrue(typeArgument.isPresent());
     assertTrue(typeArgument.get() instanceof ASTMCBasicTypeArgument);
     ASTMCBasicTypeArgument astmcBasicTypeArgument = (ASTMCBasicTypeArgument) typeArgument.get();
@@ -130,11 +132,11 @@ public class MCCollectionTypesHelperTest {
     assertTrue(astmcType2.isPresent());
     assertTrue(astmcType3.isPresent());
     assertTrue(astmcType4.isPresent());
-    assertTrue(MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astmcType.get(),"Optional"));
-    assertFalse(MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astmcType1.get(),"Map"));
-    assertTrue(MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astmcType2.get(),"List"));
-    assertFalse(MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astmcType3.get(),"List"));
-    assertFalse(MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astmcType4.get(),"String"));
+    assertTrue(MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astmcType.get(), "Optional"));
+    assertFalse(MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astmcType1.get(), "Map"));
+    assertTrue(MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astmcType2.get(), "List"));
+    assertFalse(MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astmcType3.get(), "List"));
+    assertFalse(MCCollectionTypesHelper.isGenericTypeWithOneTypeArgument(astmcType4.get(), "String"));
     assertFalse(parser.hasErrors());
   }
 

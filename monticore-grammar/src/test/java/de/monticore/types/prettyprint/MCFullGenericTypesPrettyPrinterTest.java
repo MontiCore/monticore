@@ -10,7 +10,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -61,8 +60,7 @@ public class MCFullGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertTrue(wildcardType.deepEquals(ast.get()));
   }
-  //TODO RE wait for #2378
-  @Ignore
+
   @Test
   public void testMCMultipleGenericType() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();

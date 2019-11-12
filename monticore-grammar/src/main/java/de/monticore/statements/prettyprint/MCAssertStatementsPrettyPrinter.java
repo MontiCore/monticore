@@ -8,14 +8,19 @@ import de.monticore.statements.mcassertstatements._ast.ASTAssertStatement;
 import de.monticore.statements.mcassertstatements._ast.ASTMCAssertStatementsNode;
 import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsVisitor;
 
-public class MCAssertStatementsPrettyPrinter extends MCCommonStatementsPrettyPrinter implements
+public class MCAssertStatementsPrettyPrinter implements
         MCAssertStatementsVisitor {
 
 
   private MCAssertStatementsVisitor realThis = this;
+  private IndentPrinter printer;
 
   public MCAssertStatementsPrettyPrinter(IndentPrinter out) {
-    super(out);
+    this.printer = out;
+  }
+
+  public IndentPrinter getPrinter() {
+    return this.printer;
   }
 
   @Override

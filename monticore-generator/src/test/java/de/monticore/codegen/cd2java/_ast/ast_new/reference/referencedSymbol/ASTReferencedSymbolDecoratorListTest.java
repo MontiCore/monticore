@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_new.reference.referencedSymbol;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -8,12 +11,10 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,15 +32,12 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
 
   private ASTCDClass originalClass;
 
-  private CDTypeFacade cdTypeFacade = CDTypeFacade.getInstance();
-
-  private static final String NAME_SYMBOL_MAP = "Map<String, Optional<de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol>>";
+  private static final String NAME_SYMBOL_MAP = "Map<String,Optional<de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol>>";
 
   @Before
   public void setup() {
     LogStub.init();
     LogStub.enableFailQuick(false);
-    this.cdTypeFacade = CDTypeFacade.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
@@ -73,16 +71,15 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
     assertEquals(1, stereotype.sizeValues());
     assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
-    assertEquals("de.monticore.codegen.ast.referencedSymbol.FooSymbol", stereotype.getValue(0).getValue());
-    assertDeepEquals(cdTypeFacade.createTypeByDefinition("java.util.List<String>"), nameAttribute.getMCType());
+    assertEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol", stereotype.getValue(0).getValue());
+    assertDeepEquals("java.util.List<String>", nameAttribute.getMCType());
   }
 
   @Test
   public void testSymbolAttribute() {
     ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astClass);
     assertTrue(symbolAttribute.getModifier().isProtected());
-    ASTMCType symboType = this.cdTypeFacade.createTypeByDefinition(NAME_SYMBOL_MAP);
-    assertDeepEquals(symboType, symbolAttribute.getMCType());
+    assertDeepEquals(NAME_SYMBOL_MAP, symbolAttribute.getMCType());
   }
 
   @Test
@@ -96,6 +93,10 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, astClass, astClass);
-    // TODO Check System.out.println(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
   }
 }

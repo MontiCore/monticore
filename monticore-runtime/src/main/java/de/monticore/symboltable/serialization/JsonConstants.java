@@ -6,9 +6,6 @@ package de.monticore.symboltable.serialization;
  * These constants avoid inconsistencies between the Json keys used for storing and those expected
  * while loading an object.
  *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
  */
 public interface JsonConstants {
   

@@ -18,7 +18,7 @@ of the language and its development status.
 The different development statuses of grammars are explained 
 [**here**](00.org/Explanations/StatusOfGrammars.md).
 
-## List of Languages
+## List of Languages 
 
 ### [Activity Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
 * Author: Not available
@@ -70,7 +70,7 @@ The different development statuses of grammars are explained
 * Can be used with testing generator to derive test cases
 
 ### [SI Units](INSERT LINK HERE) (INSERT STATUS HERE)
-* Author: EK
+* Author: EK, NJ, DS
 * INSERT DESCRIPTION HERE
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (90% to MC6)

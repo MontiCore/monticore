@@ -22,7 +22,6 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-
 public class TransitionSourceExistsTest {
   
   // setup the language infrastructure
@@ -68,7 +67,7 @@ public class TransitionSourceExistsTest {
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Simple.A");
     assertTrue(aSymbol.isPresent());
     assertEquals("A", aSymbol.get().getName());
-    ASTNode n = aSymbol.get().getAstNode().get();
+    ASTNode n = aSymbol.get().getAstNode();
     assertEquals("A", ((ASTState)n).getName());
   }
 

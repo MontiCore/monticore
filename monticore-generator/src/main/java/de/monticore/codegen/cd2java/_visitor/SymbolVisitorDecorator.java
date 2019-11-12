@@ -2,28 +2,30 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 import java.util.*;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_FULL_NAME;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
+/**
+ * creates a SymbolVisitor class from a grammar
+ */
 public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
-  private final VisitorService visitorService;
+  protected final VisitorService visitorService;
 
-  private final SymbolTableService symbolTableService;
+  protected final SymbolTableService symbolTableService;
 
   public SymbolVisitorDecorator(final GlobalExtensionManagement glex,
                                 final VisitorService visitorService,
@@ -37,11 +39,11 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   public ASTCDInterface decorate(ASTCDCompilationUnit input) {
     ASTCDCompilationUnit compilationUnit = input.deepClone();
 
-    ASTMCQualifiedType symbolVisitorType = getCDTypeFacade().createQualifiedType(visitorService.getSymbolVisitorSimpleTypeName());
+    ASTMCQualifiedType symbolVisitorType = getMCTypeFacade().createQualifiedType(visitorService.getSymbolVisitorSimpleName());
     Set<String> symbolNames = getSymbolNames(compilationUnit.getCDDefinition());
 
-    return CD4AnalysisMill.cDInterfaceBuilder()
-        .setName(visitorService.getSymbolVisitorSimpleTypeName())
+    return CD4CodeMill.cDInterfaceBuilder()
+        .setName(visitorService.getSymbolVisitorSimpleName())
         .setModifier(PUBLIC.build())
         .addCDMethod(addEndVisitISymbolMethod())
         .addCDMethod(addVisitISymbolMethod())
@@ -53,17 +55,17 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   }
 
   protected ASTCDMethod addVisitISymbolMethod() {
-    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(SYMBOL_FULL_NAME);
+    ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(I_SYMBOL);
     return visitorService.getVisitorMethod(VISIT, astNodeType);
   }
 
   protected ASTCDMethod addEndVisitISymbolMethod() {
-    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(SYMBOL_FULL_NAME);
+    ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(I_SYMBOL);
     return visitorService.getVisitorMethod(END_VISIT, astNodeType);
   }
 
   protected ASTCDMethod addHandleISymbolMethod() {
-    ASTMCType astNodeType = getCDTypeFacade().createTypeByDefinition(SYMBOL_FULL_NAME);
+    ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(I_SYMBOL);
     return visitorService.getVisitorMethod(HANDLE, astNodeType);
   }
 
@@ -72,14 +74,14 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     Set<String> symbolNames = new HashSet<>();
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       if (astcdClass.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdClass.getModifier())) {
-        Optional<String> definingSymbolTypeName = symbolTableService.getDefiningSymbolTypeName(astcdClass);
+        Optional<String> definingSymbolTypeName = symbolTableService.getDefiningSymbolFullName(astcdClass);
         definingSymbolTypeName.ifPresent(symbolNames::add);
       }
     }
 
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
       if (astcdInterface.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdInterface.getModifier())) {
-        Optional<String> definingSymbolTypeName = symbolTableService.getDefiningSymbolTypeName(astcdInterface);
+        Optional<String> definingSymbolTypeName = symbolTableService.getDefiningSymbolFullName(astcdInterface);
         definingSymbolTypeName.ifPresent(symbolNames::add);
       }
     }
@@ -89,7 +91,7 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   protected List<ASTCDMethod> getVisitorMethods(Set<String> symbolNames) {
     List<ASTCDMethod> visitorMethodList = new ArrayList<>();
     for (String symbolName : symbolNames) {
-      ASTMCQualifiedType symbolType = getCDTypeFacade().createQualifiedType(symbolName);
+      ASTMCQualifiedType symbolType = getMCTypeFacade().createQualifiedType(symbolName);
       visitorMethodList.add(visitorService.getVisitorMethod(VISIT, symbolType));
       visitorMethodList.add(visitorService.getVisitorMethod(END_VISIT, symbolType));
       //add template for handle method
@@ -102,8 +104,7 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   }
 
   protected ASTCDMethod addGetRealThisMethods(ASTMCType visitorType) {
-    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(visitorType).build();
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, returnType, GET_REAL_THIS);
+    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return this;"));
     return getRealThisMethod;
   }
