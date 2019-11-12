@@ -1,10 +1,7 @@
 package de.monticore.types.check;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
+import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
 import de.se_rwth.commons.logging.Log;
 
@@ -138,7 +135,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends  SynthesizeSymTypeFr
     
     // TODO TODO ! This implementation is incomplete, it does only create Object-Types, but the
     // type could also be a boxed Primitive!
-    result = Optional.of(SymTypeExpressionFactory.createTypeObject(qType.printType()));
+    result = Optional.of(SymTypeExpressionFactory.createTypeObject(qType.printType(MCCollectionTypesMill.mcCollectionTypesPrettyPrinter())));
   }
   
   // ASTMCTypeArgument, ASTMCBasicTypeArgument and  MCPrimitiveTypeArgument:
