@@ -208,20 +208,20 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
       List<ASTCDAttribute> listAttr = new ArrayList<>();
       List<ASTCDAttribute> nonListAttr = new ArrayList<>();
-      List<ASTCDAttribute> optAttr = new ArrayList<>();
+      //List<ASTCDAttribute> optAttr = new ArrayList<>();
 
       for (ASTCDAttribute attr : symbolProd.deepClone().getCDAttributeList()) {
         if (isSerializedAsList(attr)) {
           listAttr.add(attr);
-        } else if (isSerializedAsOptional(attr)) {
+        } /*else if (isSerializedAsOptional(attr)) {
           optAttr.add(attr);
-        }else {
+        }*/else {
           nonListAttr.add(attr);
         }
         methodsCreated.add(createSerializeMethodForAttr(symbolProd.getName(), attr));
       }
       this.replaceTemplate(EMPTY_BODY, serializeSymMethod, new TemplateHookPoint(
-              TEMPLATE_PRINT_ATTR_PATH + "SerializeSymbol", symbolProd.getName(), nonListAttr, listAttr, optAttr));
+              TEMPLATE_PRINT_ATTR_PATH + "SerializeSymbol", symbolProd.getName(), nonListAttr, listAttr));//, optAttr));
       methodsCreated.add(serializeSymMethod);
     }
     return methodsCreated;
