@@ -8,7 +8,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -59,8 +58,7 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertTrue(typeArgument.deepEquals(ast.get()));
   }
-  //TODO RE wait for #2378
-  @Ignore
+
   @Test
   public void testMCListType() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
@@ -76,8 +74,6 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertTrue(listType.deepEquals(ast.get()));
   }
 
-  //TODO RE wait for #2378
-  @Ignore
   @Test
   public void testMCOptionalType() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
@@ -107,8 +103,7 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertTrue(mapType.deepEquals(ast.get()));
   }
-  //TODO RE wait for #2378
-  @Ignore
+
   @Test
   public void testMCSetType() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();

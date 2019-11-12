@@ -6,7 +6,6 @@ import com.google.common.collect.Maps;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
@@ -88,11 +87,11 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
         continue;
       }
       ASTCDClass clazz = (ASTCDClass) cdType.getAstNode().get();
-      if (GeneratorHelper.isAbstract(clazz) || !GeneratorHelper.getPlainName(clazz).startsWith(AST_PREFIX)) {
+      if (cdType.isAbstract() || !cdType.getName().startsWith(AST_PREFIX)) {
         continue;
       }
-
-      String astName = clazz.getName();
+      
+      String astName = cdType.getName();
       String methodName = StringTransformations.uncapitalize(astName.replaceFirst("AST", "")) + BUILDER_SUFFIX;
       ASTCDMethod protectedMethod = null;
 

@@ -242,8 +242,7 @@ public class MCTypeFacade {
   }
 
   public boolean isBooleanType(ASTMCType type) {
-    // TODO : was ist die beste Möglichkeit, um ein Boolen zu erkennen return type.deepEquals(createBooleanType());
-    return type instanceof ASTMCPrimitiveType && ((ASTMCPrimitiveType) type).isBoolean();
+    return MCSimpleGenericTypesHelper.isPrimitive(type) && ((ASTMCPrimitiveType) type).isBoolean();
   }
 
   public ASTMCType createIntType() {

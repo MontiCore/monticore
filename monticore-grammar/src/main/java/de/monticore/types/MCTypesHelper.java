@@ -150,10 +150,9 @@ public class MCTypesHelper {
   }
 
   public static String printType(ASTMCTypeArgument type) {
-    // TODO MB
-//    if (type instanceof ASTMCWildcardTypeArgument) {
-//      return BasicGenericsTypesPrinter.printWildcardType((ASTMCWildcardTypeArgument) type);
-//    }
+    if (type instanceof ASTMCWildcardTypeArgument) {
+      return FullGenericTypesPrinter.printType((ASTMCWildcardTypeArgument) type);
+    }
     return printType((ASTMCType) type);
   }
 
