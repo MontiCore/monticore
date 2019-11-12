@@ -197,11 +197,7 @@ public class ParserGeneratorHelper {
     for (ProdSymbol ruleSymbol : grammarSymbol.getProdsWithInherited()
             .values()) {
       if (ruleSymbol.isAbstract() || ruleSymbol.isInterface()) {
-        List<PredicatePair> subRules = grammarInfo
-                .getSubRulesForParsing(ruleSymbol.getName());
-        if (!subRules.isEmpty()) {
-          interfaceRules.add(ruleSymbol);
-        }
+        interfaceRules.add(ruleSymbol);
       }
     }
     return interfaceRules;

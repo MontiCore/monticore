@@ -6,6 +6,6 @@ grammar Sup extends mc.grammars.lexicals.TestLexicals {
 
   A = "Hello" B;
   
-  B = firstName:Name lastName: Name;
+  B = firstName:Name lastName:Name;
 
 }
