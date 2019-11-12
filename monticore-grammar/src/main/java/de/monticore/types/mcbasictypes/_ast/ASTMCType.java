@@ -8,7 +8,7 @@ import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 public interface ASTMCType extends ASTMCTypeTOP {
 
   /**
-   * TODO remove after Release of 5.4.0
+   * TODO remove after Release of 5.4.0.1
    */
   @Deprecated
   default String printType() {

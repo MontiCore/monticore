@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 /**
  * @deprecated class will be replaced by same one in monticore-grammar module
- * can be deleted after monticore 5.4.0 release
+ * can be deleted after monticore 5.4.0.1 release
  * Class that helps with the creation of ASTMCTypes
  */
 @Deprecated
