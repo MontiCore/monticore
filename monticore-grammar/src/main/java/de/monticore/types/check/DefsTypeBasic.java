@@ -66,7 +66,9 @@ public class DefsTypeBasic {
   /** create TypeSymbols (some defaults apply)
    */
   public static TypeSymbol type(String name, String fullName) {
+    ExpressionsBasisScope spannedScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     return TypeSymbolsSymTabMill.typeSymbolBuilder()
+            .setSpannedScope(spannedScope)
             .setName(name)
             .setFullName(fullName)
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
@@ -77,7 +79,9 @@ public class DefsTypeBasic {
   }
 
   public static TypeSymbol type(String name, List<SymTypeExpression> superTypes){
+    ExpressionsBasisScope spannedScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     return TypeSymbolsSymTabMill.typeSymbolBuilder()
+            .setSpannedScope(spannedScope)
             .setName(name)
             .setFullName(name)
             .setSuperTypeList(superTypes)
@@ -85,7 +89,9 @@ public class DefsTypeBasic {
   }
 
   public static TypeSymbol type(String name, List<SymTypeExpression> superTypes, List<TypeVarSymbol> typeArguments){
+    ExpressionsBasisScope spannedScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     return TypeSymbolsSymTabMill.typeSymbolBuilder()
+            .setSpannedScope(spannedScope)
             .setName(name)
             .setFullName(name)
             .setSuperTypeList(superTypes)
@@ -155,16 +161,20 @@ public class DefsTypeBasic {
   }
   
   public static TypeSymbol add(TypeSymbol t, FieldSymbol f) {
-    List<FieldSymbol> fieldList = t.getFieldList();
-    fieldList.add(f);
-    t.setFieldList(fieldList);
+    //replaced with addFieldSymbol Method
+    //List<FieldSymbol> fieldList = t.getFieldList();
+    //fieldList.add(f);
+    //t.setFieldList(fieldList);
+    t.addFieldSymbol(f);
     return t;
   }
   
   public static TypeSymbol add(TypeSymbol t, MethodSymbol m) {
-    List<MethodSymbol> methodList = t.getMethodList();
-    methodList.add(m);
-    t.setMethodList(methodList);
+    //replaced with addmethodSymbol Method
+    //List<MethodSymbol> methodList = t.getMethodList();
+    //methodList.add(m);
+    //t.setMethodList(methodList);
+    t.addMethodSymbol(m);
     return t;
   }
   
