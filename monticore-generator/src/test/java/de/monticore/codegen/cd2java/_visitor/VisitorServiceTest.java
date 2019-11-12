@@ -39,21 +39,21 @@ public class VisitorServiceTest extends DecoratorTestCase {
 
   @Test
   public void testCDSymbolPresent() {
-    assertTrue(astService.getCDSymbol().getAstNode().isPresent());
+    assertTrue(astService.getCDSymbol().isPresentAstNode());
   }
 
   @Test
   public void testConstructorsCreateEqualService() {
     VisitorService astServiceFromDefinitionSymbol = new VisitorService(astcdCompilationUnit.getCDDefinition().getSymbol());
-    assertTrue(astServiceFromDefinitionSymbol.getCDSymbol().getAstNode().isPresent());
-    assertDeepEquals(astService.getCDSymbol().getAstNode().get(), astServiceFromDefinitionSymbol.getCDSymbol().getAstNode().get());
+    assertTrue(astServiceFromDefinitionSymbol.getCDSymbol().isPresentAstNode());
+    assertDeepEquals(astService.getCDSymbol().getAstNode(), astServiceFromDefinitionSymbol.getCDSymbol().getAstNode());
   }
 
   @Test
   public void testCreateVisitorService() {
     VisitorService createdVisitorService = VisitorService.createVisitorService(astcdCompilationUnit.getCDDefinition().getSymbol());
-    assertTrue(createdVisitorService.getCDSymbol().getAstNode().isPresent());
-    assertDeepEquals(astService.getCDSymbol().getAstNode().get(), createdVisitorService.getCDSymbol().getAstNode().get());
+    assertTrue(createdVisitorService.getCDSymbol().isPresentAstNode());
+    assertDeepEquals(astService.getCDSymbol().getAstNode(), createdVisitorService.getCDSymbol().getAstNode());
   }
 
   @Test

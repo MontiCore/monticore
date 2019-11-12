@@ -5,11 +5,10 @@ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.List;
 import java.util.Optional;
 
 public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
@@ -22,7 +21,7 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar node) {
-    Optional<MCGrammarSymbol> g = node.getMCGrammarSymbolOpt();
+    Optional<MCGrammarSymbol> g = node.getSymbolOpt();
     for (ProdSymbol nt : g.get().getProds()) {
       //check when you extend a class not conservative directly (Subclass extends Superclass = ...)
       if (nt.isClass() && !nt.getSuperProds().isEmpty()
@@ -50,10 +49,10 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
       if (!prodComponent.isPresent()) {
         Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getName(), comp.getName(),
             p.getSourcePosition()));
-      }else if (prodComponent.get().isTerminal() != comp.isTerminal() ||
-          prodComponent.get().isNonterminal() != comp.isNonterminal() ||
-          prodComponent.get().isList() != comp.isList() ||
-          prodComponent.get().isOptional() != comp.isOptional() ||
+      }else if (prodComponent.get().isIsTerminal() != comp.isIsTerminal() ||
+          prodComponent.get().isIsNonterminal() != comp.isIsNonterminal() ||
+          prodComponent.get().isIsList() != comp.isIsList() ||
+          prodComponent.get().isIsOptional() != comp.isIsOptional() ||
           !prodComponent.get().getUsageName().equals(comp.getUsageName())) {
         Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getName(), comp.getName(),
             p.getSourcePosition()));

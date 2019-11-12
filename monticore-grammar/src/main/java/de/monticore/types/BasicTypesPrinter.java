@@ -2,7 +2,6 @@
 
 package de.monticore.types;
 
-
 import de.monticore.types.mcbasictypes._ast.*;
 
 import java.util.List;
@@ -71,7 +70,7 @@ public class BasicTypesPrinter {
   }
 
   protected String doPrintObjectType(ASTMCObjectType type) {
-    return type.printType();
+    return type.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter());
   }
 
   /**

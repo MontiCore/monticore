@@ -33,7 +33,7 @@ public class OverridingClassProdTranslation implements
           .resolveRuleInSupersOnly(
               link.source(),
               link.source().getName());
-      if (ruleSymbol.isPresent() && !ruleSymbol.get().isExternal()) {
+      if (ruleSymbol.isPresent() && !ruleSymbol.get().isIsExternal()) {
         String qualifiedASTNodeName = TransformationHelper.getPackageName(ruleSymbol.get()) + "AST"
             + ruleSymbol.get().getName();
         link.target().setSuperclass(

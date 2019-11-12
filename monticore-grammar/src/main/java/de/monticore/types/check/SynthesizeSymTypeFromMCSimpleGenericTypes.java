@@ -3,8 +3,9 @@
 package de.monticore.types.check;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mcsimplegenerictypes._ast.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
 import de.se_rwth.commons.logging.Log;
 
@@ -96,7 +97,8 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends  SynthesizeSymTyp
     // type could also be a boxed Primitive or an Type Variable!
     // We need the SymbolTable to distinguish this stuff
     // PS: that also applies to other Visitors.
-    result = Optional.of(SymTypeExpressionFactory.createTypeObject(qType.printType()));
+    result = Optional.of(SymTypeExpressionFactory.createTypeObject(qType.printType(
+        MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter())));
   }
   
 }

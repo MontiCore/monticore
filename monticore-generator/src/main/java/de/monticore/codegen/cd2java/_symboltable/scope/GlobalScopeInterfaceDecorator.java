@@ -152,9 +152,9 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
 
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
-          resolveMethods.addAll(createResolveMethods(type.getAstNode().get(), nameParameter, foundSymbolsParameter,
+        if (type.isPresentAstNode() && type.getAstNode().getModifierOpt().isPresent()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifierOpt().get())) {
+          resolveMethods.addAll(createResolveMethods(type.getAstNode(), nameParameter, foundSymbolsParameter,
               accessModifierParameter, cdDefinitionSymbol, definitionName));
         }
       }

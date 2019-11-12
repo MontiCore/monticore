@@ -26,7 +26,7 @@ public class ExternalImplementationTranslation implements
       String name = link.source().getName();
       Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRuleInSupersOnly(
           link.source(), name);
-      if (ruleSymbol.isPresent() && ruleSymbol.get().isExternal()) {
+      if (ruleSymbol.isPresent() && ruleSymbol.get().isIsExternal()) {
         link.target().getInterfaceList().add(
             TransformationHelper.createObjectType(TransformationHelper.getGrammarNameAsPackage(
                 ruleSymbol.get()) + "AST" + name + "Ext"));

@@ -69,8 +69,8 @@ public class MontiCoreScriptTest {
 
   @BeforeClass
   public static void setup() {
-    LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.init();
+    Log.enableFailQuick(false);
     additionalMethods.add("deepEquals");
     additionalMethods.add("deepEqualsWithComments");
     additionalMethods.add("equalAttributes");

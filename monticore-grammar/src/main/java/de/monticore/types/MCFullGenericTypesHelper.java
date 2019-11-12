@@ -7,6 +7,7 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 public class MCFullGenericTypesHelper extends MCSimpleGenericTypesHelper {
@@ -76,5 +77,29 @@ public class MCFullGenericTypesHelper extends MCSimpleGenericTypesHelper {
 //    }
     Preconditions.checkState(refType.getMCTypeOpt().get() instanceof ASTMCGenericType);
     return (ASTMCGenericType) (refType.getMCTypeOpt().get());
+  }
+  
+  public static boolean isOptional(ASTMCType type) {
+    return isGenericTypeWithOneTypeArgument(type, OPTIONAL);
+  }
+  
+  public static boolean isGenericTypeWithOneTypeArgument(ASTMCType type, String simpleRefTypeName) {
+    if (!(type instanceof ASTMCGenericType)) {
+      return false;
+    }
+    ASTMCGenericType simpleRefType = (ASTMCGenericType) type;
+    if (simpleRefType.getMCTypeArgumentList().isEmpty() || simpleRefType.getMCTypeArgumentList().size() != 1) {
+      return false;
+    }
+    
+    if (simpleRefType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).split("\\.").length == 1 && simpleRefTypeName.contains(".")) {
+      if (simpleRefTypeName.endsWith("." + simpleRefType.printWithoutTypeArguments())) {
+        return true;
+      }
+    }
+    if (simpleRefType.printWithoutTypeArguments().equals(simpleRefTypeName)) {
+      return true;
+    }
+    return false;
   }
 }
