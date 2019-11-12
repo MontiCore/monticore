@@ -11,6 +11,9 @@ import static de.se_rwth.commons.Names.getQualifier;
 import static de.se_rwth.commons.Names.getSimpleName;
 import static de.se_rwth.commons.logging.Log.trace;
 
+/**
+ * Common interface for all artifact scopes
+ */
 public interface IArtifactScope {
 
   /**

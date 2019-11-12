@@ -242,7 +242,8 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     if (isAutoSerialized(attr)) {
       if (isSerializedAsList(attr)) {
         serializeAsList(serializeAttrMethod, attr);
-      } else if (isSerializedAsOptional(attr)) {
+      }
+      else if (isSerializedAsOptional(attr)) {
           //serializeAsOptional(serializeAttrMethod, attr);
           this.replaceTemplate(EMPTY_BODY, serializeAttrMethod, new TemplateHookPoint(TEMPLATE_PRINT_ATTR_PATH
                   + "SerializeOptAttribute", attr));
