@@ -12,6 +12,11 @@ public class TypeSymbol extends TypeSymbolTOP {
     super(name);
   }
 
+  public List<MethodSymbol> setMethodList(List<MethodSymbol> symbolList) {
+
+  }
+
+
   /**
    * returns a clone of this
    */
