@@ -43,10 +43,6 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
   protected static final String PRINTER_END_OBJECT = "printer.endObject();";
 
-  protected static final String PRINTER_BEGIN_ARRAY = "printer.beginArray();";
-
-  protected static final String PRINTER_END_ARRAY = "printer.endArray();";
-
   public SymbolTablePrinterDecorator(final GlobalExtensionManagement glex,
                                      final SymbolTableService symbolTableService,
                                      final VisitorService visitorService) {
@@ -63,12 +59,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(symbolCD.getCDDefinition());
     String symbolVisitorFullName = visitorService.getSymbolVisitorFullName();
     String scopeVisitorFullName = visitorService.getScopeVisitorFullName();
-
-    List<ASTCDClass> symbolTypes = symbolCD.getCDDefinition().getCDClassList(); /*.stream()
-            .map(c -> c.deepClone().getCDAttributeList())
-            .filter(c -> c.getModifierOpt().isPresent())
-            .filter(cd -> cd.getCDTypeSymbol().containsStereotype() symbolTableService.hasSymbolStereotype(cd.getModifier()))
-            .collect(Collectors.toList());*/
+    List<ASTCDClass> symbolTypes = symbolCD.getCDDefinition().getCDClassList();
 
     return CD4CodeMill.cDClassBuilder()
         .setName(symbolTablePrinterName)
@@ -193,7 +184,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
       for(ASTCDAttribute a : symbolProd.getCDAttributeList()){
 
       }
-      this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH + "VisitSymbol", symbolFullName));
+      this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH + "VisitSymbol", symbolProd, symbolFullName));
 
       visitorMethods.add(visitMethod);
 
@@ -204,28 +195,34 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     return visitorMethods;
   }
 
-  // Für jedes Attribut der Symbolrule erzeuge eine Methode welche es serialisieren kann.
-  // Falls komplex -> log error innerhalb der Methode
   protected List<ASTCDMethod> createSerializeSymbolruleMethods(List<ASTCDClass> symbolProds) {
     List<ASTCDMethod> methodsCreated = new ArrayList<>();
-
     // 1. Create Method for whole symbol
     // 2. Create Methods for each attr of sym which are called in 1.
-    for(ASTCDClass symbolProd : symbolProds) {
+    for (ASTCDClass symbolProd : symbolProds) {
       String methodName = "serialize" + StringTransformations.capitalize(symbolProd.getName());
       String symbolFullName = symbolTableService.getSymbolFullName(symbolProd);
       ASTMCQualifiedType type = getMCTypeFacade().getInstance().createQualifiedType(symbolFullName);
       ASTCDParameter serializeParameter = CDParameterFacade.getInstance().createParameter(type, "node");
-      ASTCDMethod serializeMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, methodName, serializeParameter);
+      ASTCDMethod serializeSymMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, methodName, serializeParameter);
 
-      // erst alles der Methode hinzufügen dann adden.
+      List<ASTCDAttribute> listAttr = new ArrayList<>();
+      List<ASTCDAttribute> nonListAttr = new ArrayList<>();
+      List<ASTCDAttribute> optAttr = new ArrayList<>();
 
-      // für jeden Parameter erstelle eine Zeile in der Methode in der die Serialisierung des entsprechenenden typs aufgerufen wird
-      methodsCreated.add(serializeMethod);
-
-      for(ASTCDAttribute attr : symbolProd.deepClone().getCDAttributeList()) {
-        methodsCreated.add(createSerializeMethodForAttr(symbolProd.getName() ,attr));
+      for (ASTCDAttribute attr : symbolProd.deepClone().getCDAttributeList()) {
+        if (isSerializedAsList(attr)) {
+          listAttr.add(attr);
+        } else if (isSerializedAsOptional(attr)) {
+          optAttr.add(attr);
+        }else {
+          nonListAttr.add(attr);
+        }
+        methodsCreated.add(createSerializeMethodForAttr(symbolProd.getName(), attr));
       }
+      this.replaceTemplate(EMPTY_BODY, serializeSymMethod, new TemplateHookPoint(
+              TEMPLATE_PRINT_ATTR_PATH + "SerializeSymbol", symbolProd.getName(), nonListAttr, listAttr, optAttr));
+      methodsCreated.add(serializeSymMethod);
     }
     return methodsCreated;
   }
@@ -236,41 +233,40 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     String operation = "serialize a complex attr";
     String returnValue = "";
 
-    // Ist es eine Liste? -> Begin und end array machen, dazwischen Methodenaufruf für elemente
-    //
-    // ist es autoserialisierbar -> Generiere die Methode oder generiere die Methode mit Fehlercode
-      // Ist es Optional -> Serialisiere falls vorhanden & auto serialisiert
+    // isList? -> Begin/End array + methodCall in-between
+    // elem autoSerializable? -> gen method that serializes or errorCode if elem complex
+    // additional serialize Optional iff present
     ASTCDParameter serializeParameter = CDParameterFacade.getInstance().createParameter(attr);
-    ASTCDMethod serializeMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, methodName, serializeParameter);
+    ASTCDMethod serializeAttrMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, methodName, serializeParameter);
 
     if (isAutoSerialized(attr)) {
       if (isSerializedAsList(attr)) {
-        serializeAsList(serializeMethod, attr);
+        serializeAsList(serializeAttrMethod, attr);
       } else if (isSerializedAsOptional(attr)) {
-        serializeAsOptional(serializeMethod, attr);
-      } else if(!isSerializedAsList(attr) && !isSerializedAsOptional(attr)) {
-        this.replaceTemplate(EMPTY_BODY, serializeMethod, new TemplateHookPoint(
-                TEMPLATE_PRINT_ATTR_PATH + "PrintSimpleAttribute", attr.getName(), attr.getName()));
+          //serializeAsOptional(serializeAttrMethod, attr);
+          this.replaceTemplate(EMPTY_BODY, serializeAttrMethod, new TemplateHookPoint(TEMPLATE_PRINT_ATTR_PATH
+                  + "SerializeOptAttribute", attr));
+        } else {//if(!isSerializedAsList(attr) && !isSerializedAsOptional(attr)) {
+          this.replaceTemplate(EMPTY_BODY, serializeAttrMethod, new TemplateHookPoint(
+                  TEMPLATE_PRINT_ATTR_PATH + "PrintSimpleAttribute", attr.getName(), attr.getName()));
+        }
+      } else {
+        this.replaceTemplate(EMPTY_BODY, serializeAttrMethod, new TemplateHookPoint(
+                TEMPLATE_PRINT_ATTR_PATH + "PrintComplexAttribute", attribute, methodName, operation, returnValue));
       }
-    } else {
-      this.replaceTemplate(EMPTY_BODY, serializeMethod, new TemplateHookPoint(
-              TEMPLATE_PRINT_ATTR_PATH + "PrintComplexAttribute", attribute, methodName, operation, returnValue));
-    }
-    return serializeMethod;
+    return serializeAttrMethod;
   }
 
-  protected void serializeAsOptional(ASTCDMethod method, ASTCDAttribute attr) {
-    if(attr.isPresentValue()) {
+ /* protected void serializeAsOptional(ASTCDMethod method, ASTCDAttribute attr) {
+    //if(attr.isPresentValue()) {
       this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PRINT_ATTR_PATH
-              + "PrintSimpleAttribute", attr.getName(), attr.getName()));
-    }
-  }
+              + "PrintSerializeOptAttribute", attr));
+    //}
+  }*/
 
   protected void serializeAsList(ASTCDMethod method, ASTCDAttribute attr) {
-    //this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(PRINTER_BEGIN_ARRAY));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PRINT_ATTR_PATH
-            + "PrintSimpleListAttribute", attr.getName()));
-    //this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(PRINTER_END_ARRAY));
+            + "SerializeSimpleListAttribute", attr.getName()));
   }
 
   protected boolean isAutoSerialized(ASTCDAttribute attr) {
@@ -314,7 +310,6 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
   protected boolean isPrimitive(String type) {
     switch (type) {
       case "boolean":
-      case "byte":
       case "short":
       case "int":
       case "long":
