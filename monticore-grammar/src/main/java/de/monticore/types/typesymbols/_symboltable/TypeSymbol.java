@@ -12,44 +12,7 @@ public class TypeSymbol extends TypeSymbolTOP {
     super(name);
   }
 
-  /**
-   * returns a clone of this
-   */
-  public TypeSymbol deepClone() {
-    TypeSymbol clone = new TypeSymbol(name);
-    clone.setEnclosingScope(this.getEnclosingScope());
-    clone.setFullName(this.getFullName());
-    clone.setAccessModifier(this.getAccessModifier());
-    clone.setSpannedScope(this.getSpannedScope());
-    if (getAstNodeOpt().isPresent()) {
-      clone.setAstNode(this.getAstNode());
-    }
-    List<MethodSymbol> methods = new ArrayList<>();
-    for (MethodSymbol method : this.getMethodList()) {
-      methods.add(method.deepClone());
-    }
-    clone.setMethodList(methods);
 
-    List<FieldSymbol> fields = new ArrayList<>();
-    for (FieldSymbol field : this.getFieldList()) {
-      fields.add(field.deepClone());
-    }
-    clone.setFieldList(fields);
-
-    List<SymTypeExpression> superTypes = new ArrayList<>();
-    for (SymTypeExpression superType : this.getSuperTypeList()) {
-      superTypes.add(superType.deepClone());
-    }
-    clone.setSuperTypeList(superTypes);
-
-    List<TypeVarSymbol> typeParameters = new ArrayList<>();
-    for (TypeVarSymbol typeParameter : this.getTypeParameterList()) {
-      typeParameters.add(typeParameter.deepClone());
-    }
-    clone.setTypeParameterList(typeParameters);
-
-    return clone;
-  }
 
   /**
    * get a list of all the methods the type definition can access
