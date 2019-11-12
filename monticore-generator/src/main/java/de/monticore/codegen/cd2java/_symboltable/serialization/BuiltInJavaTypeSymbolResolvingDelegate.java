@@ -33,7 +33,7 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolv
     gs = new TypeSymbolsGlobalScope(new ModelPath(),
         new TypeSymbolsLanguage("Types Symbols Language", "ts") {
           @Override public MCConcreteParser getParser() {
-            Log.error("0xTODO Type Symbols do not have a parser!");
+            Log.error("0xA0120 Type Symbols do not have a parser!");
             return null;
           }
         });
