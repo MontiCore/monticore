@@ -22,7 +22,7 @@ package de.monticore.types;
  *
 */
 
-component grammar MCBasicTypes extends de.monticore.MCBasics {
+component grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.types.TypeSymbols {
 
   /*=================================================================*/
 
