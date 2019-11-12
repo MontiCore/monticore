@@ -38,7 +38,7 @@ public class OptionalAccessorDecoratorTest {
 
   @Test
   public void testMethods() {
-    assertEquals(3, methods.size());
+    assertEquals(2, methods.size());
   }
 
   @Test
@@ -47,16 +47,6 @@ public class OptionalAccessorDecoratorTest {
     assertTrue(method.getCDParameterList().isEmpty());
     Assert.assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
-    assertDeepEquals(PUBLIC, method.getModifier());
-  }
-
-  @Test
-  public void testGetOptMethod() {
-    ASTCDMethod method = getMethodBy("getAOpt", this.methods);
-    assertTrue(method.getCDParameterList().isEmpty());
-    ASTMCType expectedReturnType = MCTypeFacade.getInstance().createOptionalTypeOf("String");
-    Assert.assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 

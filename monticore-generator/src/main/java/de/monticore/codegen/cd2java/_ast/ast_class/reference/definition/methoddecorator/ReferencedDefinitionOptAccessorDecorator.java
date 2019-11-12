@@ -35,17 +35,4 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
   protected String getNaiveAttributeName(ASTCDAttribute astcdAttribute) {
     return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(astcdAttribute.getName())) + ASTReferencedDefinitionDecorator.DEFINITION;
   }
-
-  /**
-   * overwrite only the getOpt method implementation, because the other methods are delegated to this one
-   */
-  @Override
-  protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
-    String name = String.format(GET_OPT, StringUtils.capitalize(naiveAttributeName));
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, ast.getMCType().deepClone(), name);
-    String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetDefinitionOpt",
-        ast.getName(), referencedSymbolType));
-    return method;
-  }
 }

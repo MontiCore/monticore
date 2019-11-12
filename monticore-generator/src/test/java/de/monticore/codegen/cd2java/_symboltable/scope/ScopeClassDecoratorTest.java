@@ -303,7 +303,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(97, scopeClass.getCDMethodList().size());
+    assertEquals(89, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -468,15 +468,6 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetSpanningSymbolOptMethod() {
-    ASTCDMethod method = getMethodBy("getSpanningSymbolOpt", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertOptionalOf(I_SCOPE_SPANNING_SYMBOL, method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
   public void testisPresentSpanningSymbolMethod() {
     ASTCDMethod method = getMethodBy("isPresentSpanningSymbol", scopeClass);
 
@@ -502,17 +493,6 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(I_SCOPE_SPANNING_SYMBOL, method.getCDParameter(0).getMCType());
-    assertEquals("spanningSymbol", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetSpanningSymbolOptMethod() {
-    ASTCDMethod method = getMethodBy("setSpanningSymbolOpt", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createOptionalTypeOf(I_SCOPE_SPANNING_SYMBOL), method.getCDParameter(0).getMCType());
     assertEquals("spanningSymbol", method.getCDParameter(0).getName());
   }
 
@@ -692,28 +672,6 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertListOf(String.class, method.getCDParameter(0).getMCType());
     assertEquals("foo", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testGetBlaOptMethod() {
-    ASTCDMethod method = getMethodBy("getBlaOpt", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-
-  @Test
-  public void testSetBlaOptMethod() {
-    ASTCDMethod method = getMethodBy("setBlaOpt", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertOptionalOf(Integer.class, method.getCDParameter(0).getMCType());
-    assertEquals("bla", method.getCDParameter(0).getName());
   }
 
   @Test

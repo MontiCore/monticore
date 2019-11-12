@@ -68,7 +68,7 @@ public class ASTReferencedDefinitionDecoratorMandatoryTest extends DecoratorTest
 
   @Test
   public void testMethods() {
-    assertEquals(3, astClass.getCDMethodList().size());
+    assertEquals(2, astClass.getCDMethodList().size());
   }
 
   @Test
@@ -77,15 +77,6 @@ public class ASTReferencedDefinitionDecoratorMandatoryTest extends DecoratorTest
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(NAME_DEFINITION, method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetNameDefinitionOptMethod() {
-    ASTCDMethod method = getMethodBy("getNameDefinitionOpt", astClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertOptionalOf(NAME_DEFINITION, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 

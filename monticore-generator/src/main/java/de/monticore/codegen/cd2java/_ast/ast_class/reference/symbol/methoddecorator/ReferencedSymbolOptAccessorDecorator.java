@@ -28,21 +28,6 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
   }
 
   /**
-   * overwrite only the getOpt method implementation, because the other methods are delegated to this one
-   */
-  @Override
-  protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
-    String name = String.format(GET_OPT, StringUtils.capitalize(ast.getName()));
-    ASTMCType type = ast.getMCType().deepClone();
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
-    //create correct Name A for resolveA method
-    String simpleSymbolName = symbolTableService.getSimpleNameFromSymbolName(symbolTableService.getReferencedSymbolTypeName(ast));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetSymbolOpt",
-        ast.getName(), simpleSymbolName, isOptionalAttribute(ast)));
-    return method;
-  }
-
-  /**
    * has to check if the original symbol reference prod was mandatory or optional
    * is needed for template -> add a '.get()' after the attribute (optional) or not (mandatory)
    */
