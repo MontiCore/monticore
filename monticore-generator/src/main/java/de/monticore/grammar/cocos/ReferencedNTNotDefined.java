@@ -21,9 +21,9 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = a.getSymbol();
     for (ASTClassProd p : a.getClassProdList()) {
-      if (!p.getSuperRuleList().isEmpty() && p.isPresentProdSymbol()) {
+      if (!p.getSuperRuleList().isEmpty() && p.isPresentSymbol()) {
         for (ASTRuleReference sr : p.getSuperRuleList()) {
           if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(),
@@ -43,7 +43,7 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
       }
     }
     for (ASTAbstractProd p : a.getAbstractProdList()) {
-      if (!p.getSuperRuleList().isEmpty() && p.isPresentProdSymbol()) {
+      if (!p.getSuperRuleList().isEmpty() && p.isPresentSymbol()) {
         for (ASTRuleReference sr : p.getSuperRuleList()) {
           if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(),
@@ -52,7 +52,7 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
           }
         }
       }
-      if (!p.getSuperInterfaceRuleList().isEmpty() && p.isPresentProdSymbol()) {
+      if (!p.getSuperInterfaceRuleList().isEmpty() && p.isPresentSymbol()) {
         for (ASTRuleReference sr : p.getSuperInterfaceRuleList()) {
           if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ",
@@ -63,7 +63,7 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
       }
     }
     for (ASTInterfaceProd p : a.getInterfaceProdList()) {
-      if (!p.getSuperInterfaceRuleList().isEmpty() && p.isPresentProdSymbol()) {
+      if (!p.getSuperInterfaceRuleList().isEmpty() && p.isPresentSymbol()) {
         for (ASTRuleReference sr : p.getSuperInterfaceRuleList()) {
           if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ",

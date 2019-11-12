@@ -4,7 +4,7 @@ package de.monticore.codegen.cd2java.factories;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolLoader;
 import de.monticore.cd.cd4analysis._symboltable.CDTypes;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -125,9 +125,9 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     if (!attr.isPresentSymbol()) {
       return false;
     }
-    CDTypeSymbolReference attrType = attr.getSymbol().getType();
+    CDTypeSymbolLoader attrType = attr.getSymbol().getType();
 
-    List<CDTypeSymbolReference> typeArgs = attrType.getActualTypeArguments();
+    List<CDTypeSymbolLoader> typeArgs = attrType.getActualTypeArguments();
     if (typeArgs.size() > 1) {
       return false;
     }
@@ -145,12 +145,12 @@ public class DecorationHelper extends MCCollectionTypesHelper {
     }
 
     if (typeArgs.isEmpty()) {
-      return attrType.existsReferencedSymbol() && attrType.isEnum();
+      return attrType.isSymbolLoaded() && attrType.getLoadedSymbol().isIsEnum();
     }
 
-    CDTypeSymbolReference typeArgument = (CDTypeSymbolReference) typeArgs
+    CDTypeSymbolLoader typeArgument =  typeArgs
         .get(0);
-    return typeArgument.existsReferencedSymbol() && typeArgument.isEnum();
+    return typeArgument.isSymbolLoaded() && typeArgument.getLoadedSymbol().isIsEnum();
   }
 
 

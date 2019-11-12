@@ -6,10 +6,7 @@ package de.monticore.grammar.grammar._symboltable;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.symboltable.modifiers.AccessModifier;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static de.monticore.codegen.GeneratorHelper.isQualified;
@@ -29,33 +26,33 @@ public interface IGrammarScope extends IGrammarScopeTOP {
   }
 
 
-  default public Collection<ProdSymbol> resolveProdMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<ProdSymbol> predicate)  {
-    if (!isProdSymbolAlreadyResolved()) {
-      setProdSymbolAlreadyResolved(true);
+  default public List<ProdSymbol> resolveProdMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<ProdSymbol> predicate)  {
+    if (!isProdSymbolsAlreadyResolved()) {
+      setProdSymbolsAlreadyResolved(true);
     } else {
-      return new LinkedHashSet<>();
+      return new ArrayList<>();
     }
 
-    final Set<ProdSymbol> resolvedSymbols = this.resolveProdLocallyMany(foundSymbols, name, modifier, predicate);
+    final List<ProdSymbol> resolvedSymbols = this.resolveProdLocallyMany(foundSymbols, name, modifier, predicate);
     if (!resolvedSymbols.isEmpty()) {
-      setProdSymbolAlreadyResolved(false);
+      setProdSymbolsAlreadyResolved(false);
       return resolvedSymbols;
     }
 
     resolveInSuperGrammars(name, modifier).ifPresent(resolvedSymbols::add);
     if (!resolvedSymbols.isEmpty()) {
-      setProdSymbolAlreadyResolved(false);
+      setProdSymbolsAlreadyResolved(false);
       return resolvedSymbols;
     }
 
     resolvedSymbols.addAll(resolveAdaptedProdLocallyMany(foundSymbols, name, modifier, predicate));
     if (!resolvedSymbols.isEmpty()) {
-      setProdSymbolAlreadyResolved(false);
+      setProdSymbolsAlreadyResolved(false);
       return resolvedSymbols;
     }
     final Collection<ProdSymbol> resolvedFromEnclosing = continueProdWithEnclosingScope((foundSymbols | resolvedSymbols.size() > 0), name, modifier, predicate);
     resolvedSymbols.addAll(resolvedFromEnclosing);
-    setProdSymbolAlreadyResolved(false);
+    setProdSymbolsAlreadyResolved(false);
     return resolvedSymbols;
   }
 
@@ -70,8 +67,8 @@ public interface IGrammarScope extends IGrammarScopeTOP {
       MCGrammarSymbol grammarSymbol = spanningSymbol.get();
       for (MCGrammarSymbolLoader superGrammarRef : grammarSymbol.getSuperGrammars()) {
         if (checkIfContinueWithSuperGrammar(name, superGrammarRef)
-                && (superGrammarRef.existsReferencedSymbol())) {
-          final MCGrammarSymbol superGrammar = superGrammarRef.getReferencedSymbol();
+                && (superGrammarRef.isSymbolLoaded())) {
+          final MCGrammarSymbol superGrammar = superGrammarRef.getLoadedSymbol();
           resolvedSymbol = resolveInSuperGrammar(name, superGrammar);
           // Stop as soon as symbol is found in a super grammar.
           if (resolvedSymbol.isPresent()) {

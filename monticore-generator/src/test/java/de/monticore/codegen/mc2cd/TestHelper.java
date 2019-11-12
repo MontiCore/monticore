@@ -96,7 +96,7 @@ public class TestHelper {
     if (type.getMCTypeArgumentList().size() != 1) {
       return false;
     }
-    if (type.getMCTypeArgumentList().get(0).getMCTypeOpt().get().getBaseName().equals(typeArg)) {
+    if (!type.getMCTypeArgumentList().get(0).getMCTypeOpt().get().printType().equals(typeArg)) {
       return false;
     }
     return true;

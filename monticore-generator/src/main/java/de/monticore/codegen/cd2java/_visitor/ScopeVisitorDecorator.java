@@ -139,7 +139,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
     Set<String> superSymbolNames = new HashSet<>();
     for (CDDefinitionSymbol cdSymbol : superCDsTransitive) {
       // get AST for symbol
-      ASTCDDefinition astcdDefinition = cdSymbol.getAstNode().get();
+      ASTCDDefinition astcdDefinition = cdSymbol.getAstNode();
       // add all symbol definitions to list
       for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
         if (astcdInterface.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdInterface.getModifier())) {

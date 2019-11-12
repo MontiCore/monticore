@@ -7,7 +7,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolReference;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -29,26 +29,26 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
 
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = a.getSymbol();
 
     if (!a.isComponent()) {
       List<ProdSymbol> interfaceProds = grammarSymbol.getProds().stream().
-          filter(ProdSymbol::isInterface).collect(Collectors.toList());
+          filter(ProdSymbol::isIsInterface).collect(Collectors.toList());
       for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
         Collection<ProdSymbol> prodSymbols = symbol.getProds();
         for(ProdSymbol mcProdSymbol : prodSymbols){
-          if (mcProdSymbol.isInterface()) {
+          if (mcProdSymbol.isIsInterface()) {
             interfaceProds.add(mcProdSymbol);
           }
         }
       }
 
       List<ProdSymbol> prods = grammarSymbol.getProds().stream().
-          filter(prodSymbol -> prodSymbol.isClass() || prodSymbol.isAbstract()).collect(Collectors.toList());
+          filter(prodSymbol -> prodSymbol.isClass() || prodSymbol.isIsAbstract()).collect(Collectors.toList());
       for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
         Collection<ProdSymbol> prodSymbols = symbol.getProds();
         for(ProdSymbol mcProdSymbol : prodSymbols){
-          if (mcProdSymbol.isAbstract() || mcProdSymbol.isClass()) {
+          if (mcProdSymbol.isIsAbstract() || mcProdSymbol.isClass()) {
             prods.add(mcProdSymbol);
           }
         }
@@ -57,11 +57,11 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
       if(!interfaceProds.isEmpty()) {
         List<ProdSymbol> temp = new ArrayList<>(interfaceProds);
         for(ProdSymbol interfaceProdSymbol : interfaceProds){
-          for(ProdSymbolReference interfaceProdExtended : interfaceProdSymbol.getSuperInterfaceProds()){
+          for(ProdSymbolLoader interfaceProdExtended : interfaceProdSymbol.getSuperInterfaceProds()){
             for(int i = interfaceProds.size()-1;i>=0;--i){
               ProdSymbol interfaceProd = interfaceProds.get(i);
-              if(interfaceProdExtended.getReferencedSymbol().getName().equals(interfaceProd.getName())){
-                temp.remove(interfaceProdExtended.getReferencedSymbol());
+              if(interfaceProdExtended.getLoadedSymbol().getName().equals(interfaceProd.getName())){
+                temp.remove(interfaceProdExtended.getLoadedSymbol());
               }
             }
           }
@@ -71,7 +71,7 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
         
       if(!interfaceProds.isEmpty()){
         for (ProdSymbol prodSymbol : prods) {
-          for (ProdSymbolReference interfaceProdImplemented : prodSymbol.getSuperInterfaceProds()) {
+          for (ProdSymbolLoader interfaceProdImplemented : prodSymbol.getSuperInterfaceProds()) {
             for (int i = interfaceProds.size() - 1; i >= 0; --i) {
               ProdSymbol interfaceProd = interfaceProds.get(i);
               if (interfaceProdImplemented.getName().equals(interfaceProd.getName())) {

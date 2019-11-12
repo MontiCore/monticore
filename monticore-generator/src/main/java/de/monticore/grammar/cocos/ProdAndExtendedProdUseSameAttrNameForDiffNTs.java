@@ -33,30 +33,30 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
           .resolveRuleComponent(attributename);
       if (componentSymbol.isPresent()) {
         Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(a);
-        if (rule.isPresent() && rule.get().getAstNode().get() instanceof ASTClassProd) {
-          ASTClassProd prod = (ASTClassProd) rule.get().getAstNode().get();
+        if (rule.isPresent() && rule.get().getAstNode() instanceof ASTClassProd) {
+          ASTClassProd prod = (ASTClassProd) rule.get().getAstNode();
           if (!prod.getSuperRuleList().isEmpty()) {
             ASTRuleReference type = prod.getSuperRuleList().get(0);
             String typename = type.getTypeName();
             Optional<ProdSymbol> ruleSymbol = type.getEnclosingScope().getEnclosingScope()
-                .get().resolveProd(typename);
+                .resolveProd(typename);
             if (ruleSymbol.isPresent()) {
               Optional<RuleComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
                   .resolveRuleComponent(attributename);
               if (rcs.isPresent()) {
-                if (rcs.get().isLexerNonterminal()) {
+                if (rcs.get().isIsLexerNonterminal()) {
                   logError(prod, ruleSymbol.get(), attributename, componentSymbol.get(),
                       "production that is a lexical nonTerminal", a);
-                } else if (rcs.get().isConstant()) {
+                } else if (rcs.get().isIsConstant()) {
                   logError(prod, ruleSymbol.get(), attributename, componentSymbol.get(),
                       "production that is not a constant", a);
-                } else if (rcs.get().isConstantGroup()) {
+                } else if (rcs.get().isIsConstantGroup()) {
                   logError(prod, ruleSymbol.get(), attributename, componentSymbol.get(),
                       "production that is not a constant group", a);
-                } else if (rcs.get().isTerminal() && !"".equals(rcs.get().getUsageName())) {
+                } else if (rcs.get().isIsTerminal() && !"".equals(rcs.get().getUsageName())) {
                   logError(prod, ruleSymbol.get(), attributename, componentSymbol.get(),
                       "production that is a terminal named " + rcs.get().getUsageName(), a);
-                } else if (rcs.get().isNonterminal() && rcs.get().getReferencedProd().isPresent()
+                } else if (rcs.get().isIsNonterminal() && rcs.get().getReferencedProd().isPresent()
                     && !rcs.get().getReferencedProd().get().getName().equals(componentSymbol.get().getReferencedProd().get().getName())) {
                   logError(prod, ruleSymbol.get(), attributename,
                       componentSymbol.get(), "nonterminal " + rcs.get().getReferencedProd().get().getName(), a);
@@ -64,7 +64,7 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
               } else {
                 //try to find NonTerminal with same Name, but with capitalised start -> will both become the same attribute
                 rcs = ruleSymbol.get().getSpannedScope().resolveRuleComponent(StringTransformations.capitalize(attributename));
-                if (rcs.isPresent() && rcs.get().isNonterminal() && rcs.get().getReferencedProd().isPresent()
+                if (rcs.isPresent() && rcs.get().isIsNonterminal() && rcs.get().getReferencedProd().isPresent()
                     && !rcs.get().getReferencedProd().get().getName().equals(componentSymbol.get().getReferencedProd().get().getName())) {
                   // logs error when e.g. State = F; A extends State = f:R;
                   // because F form State will evaluate to attributeName with small f

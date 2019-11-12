@@ -21,6 +21,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.StreamSupport;
 
 import static de.monticore.codegen.mc2cd.AttributeCategory.determineCategory;
+import static de.monticore.codegen.mc2cd.TransformationHelper.simpleName;
 
 /**
  * Removes duplicate attributes that may result from rules having multiple nonterminals referencing
@@ -99,7 +100,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
       List<ASTMCTypeArgument> argList = ((ASTMCGenericType) cdAttribute.getMCType()).getMCTypeArgumentList();
       if (!argList.isEmpty()) {
-        return Optional.of(argList.get(0).getMCTypeOpt().get().getBaseName());
+        return Optional.of(simpleName(argList.get(0).getMCTypeOpt().get()));
       }
     }
     return Optional.empty();

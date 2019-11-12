@@ -46,7 +46,7 @@ public class ProdSymbol extends ProdSymbolTOP {
     if (prevProdComp != null) {
       // a prod component is a list (*), if at list one of the prod components
       // is a list
-      prevProdComp.setIsList(prevProdComp.isList() || prodComp.isList());
+      prevProdComp.setIsList(prevProdComp.isIsList() || prodComp.isIsList());
       return prevProdComp;
     } else {
       getSpannedScope().add(prodComp);
@@ -108,14 +108,14 @@ public class ProdSymbol extends ProdSymbolTOP {
   }
 
   public boolean isParserProd() {
-    return isClass() || isAbstract();
+    return isClass() || isIsAbstract();
   }
 
   /**
    * @return true, if production is a class production (which is the default)
    */
   public boolean isClass() {
-    return !isInterface() && !isAbstract() && !isExternal() && !isEnum() && !isLexerProd();
+    return !isIsInterface() && !isIsAbstract() && !isIsExternal() && !isIsEnum() && !isIsLexerProd();
   }
 
   @Override

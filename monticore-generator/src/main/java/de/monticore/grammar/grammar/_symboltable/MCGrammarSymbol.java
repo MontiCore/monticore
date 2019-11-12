@@ -46,8 +46,8 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
   }
 
   public List<MCGrammarSymbol> getSuperGrammarSymbols() {
-    return copyOf(superGrammars.stream().filter(g -> g.getReferencedSymbol() != null)
-            .map(g -> g.getReferencedSymbol())
+    return copyOf(superGrammars.stream().filter(g -> g.isSymbolLoaded())
+            .map(g -> g.getLoadedSymbol())
             .collect(toList()));
   }
 
@@ -88,7 +88,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     Iterator<MCGrammarSymbolLoader> itSuperGrammars = superGrammars.iterator();
 
     while (!mcProd.isPresent() && itSuperGrammars.hasNext()) {
-      mcProd = itSuperGrammars.next().getReferencedSymbol().getProdWithInherited(ruleName);
+      mcProd = itSuperGrammars.next().getLoadedSymbol().getProdWithInherited(ruleName);
     }
 
     return mcProd;
@@ -99,7 +99,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     Iterator<MCGrammarSymbolLoader> itSuperGrammars = superGrammars.iterator();
 
     while (!mcProd.isPresent() && itSuperGrammars.hasNext()) {
-      mcProd = itSuperGrammars.next().getReferencedSymbol().getProdWithInherited(ruleName);
+      mcProd = itSuperGrammars.next().getLoadedSymbol().getProdWithInherited(ruleName);
     }
 
     return mcProd;
@@ -111,8 +111,8 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
       final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
 
-      if (superGrammarRef.existsReferencedSymbol()) {
-        ret.putAll(superGrammarRef.getReferencedSymbol().getProdsWithInherited());
+      if (superGrammarRef.isSymbolLoaded()) {
+        ret.putAll(superGrammarRef.getLoadedSymbol().getProdsWithInherited());
       }
     }
 
@@ -124,7 +124,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
   }
 
   public Optional<ASTMCGrammar> getAstGrammar() {
-    return getAstNode().filter(ASTMCGrammar.class::isInstance).map(ASTMCGrammar.class::cast);
+    return getAstNodeOpt().filter(ASTMCGrammar.class::isInstance).map(ASTMCGrammar.class::cast);
   }
 
   /**
@@ -147,12 +147,12 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
     while (optCurrentScope.isPresent()) {
       final IGrammarScope currentScope = optCurrentScope.get();
-      if (currentScope.isSpannedBySymbol()) {
+      if (currentScope.isPresentSpanningSymbol()) {
         // If one of the enclosing scope(s) is spanned by a symbol, the full name
         // of that symbol is the missing prefix, and hence, the calculation
         // ends here. This check is important, since the full name of the enclosing
         // symbol might be set manually.
-        nameParts.addFirst(currentScope.getSpanningSymbol().get().getFullName());
+        nameParts.addFirst(currentScope.getSpanningSymbol().getFullName());
         break;
       }
 
@@ -164,14 +164,16 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
             nameParts.addFirst(getPackageName());
           }
         } else {
-          if (currentScope.getName().isPresent()) {
-            nameParts.addFirst(currentScope.getName().get());
+          if (currentScope.getNameOpt().isPresent()) {
+            nameParts.addFirst(currentScope.getName());
           }
           // ...else stop? If one of the enclosing scopes is unnamed,
           //         the full name is same as the simple name.
         }
+        optCurrentScope = Optional.ofNullable(currentScope.getEnclosingScope());
+      } else {
+        optCurrentScope = Optional.empty();
       }
-      optCurrentScope = currentScope.getEnclosingScope();
     }
 
     return Names.getQualifiedName(nameParts);
@@ -182,16 +184,16 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
     while (optCurrentScope.isPresent()) {
       final IGrammarScope currentScope = optCurrentScope.get();
-      if (currentScope.isSpannedBySymbol()) {
+      if (currentScope.isPresentSpanningSymbol()) {
         // If one of the enclosing scope(s) is spanned by a symbol, take its
         // package name. This check is important, since the package name of the
         // enclosing symbol might be set manually.
-        return currentScope.getSpanningSymbol().get().getPackageName();
+        return currentScope.getSpanningSymbol().getPackageName();
       } else if (currentScope instanceof Grammar_WithConceptsArtifactScope) {
         return ((Grammar_WithConceptsArtifactScope) currentScope).getPackageName();
       }
 
-      optCurrentScope = currentScope.getEnclosingScope();
+      optCurrentScope = Optional.of(currentScope.getEnclosingScope());
     }
 
     return "";
