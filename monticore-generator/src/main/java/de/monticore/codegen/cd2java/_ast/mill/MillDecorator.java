@@ -150,7 +150,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
     List<ASTCDMethod> superMethods = new ArrayList<>();
     //get super symbols
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
-      Optional<ASTCDDefinition> astNode = superSymbol.getAstNode();
+      Optional<ASTCDDefinition> astNode = superSymbol.getAstNodeOpt();
       if (astNode.isPresent()) {
         //get super cdDefinition
         ASTCDDefinition superDefinition = astNode.get().deepClone();

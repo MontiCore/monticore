@@ -9,6 +9,8 @@ import de.monticore.utils.ASTNodes;
 
 import java.util.function.UnaryOperator;
 
+import static de.monticore.codegen.mc2cd.TransformationHelper.simpleName;
+
 public class ListInitializingManipulation implements UnaryOperator<ASTCDCompilationUnit> {
   
   @Override
@@ -16,7 +18,7 @@ public class ListInitializingManipulation implements UnaryOperator<ASTCDCompilat
     
     for (ASTCDAttribute cdAttribute : ASTNodes.getSuccessors(cdCompilationUnit,
         ASTCDAttribute.class)) {
-      if ("List".equals(((ASTMCObjectType) cdAttribute.getMCType()).getNameList().get(0))) {
+      if ("List".equals(simpleName( cdAttribute.getMCType()))) {
         // TODO: Implement
       }
     }

@@ -2,16 +2,16 @@
 
 package de.monticore.grammar.cocos;
 
-import java.util.Optional;
-
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolReference;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Optional;
 
 /**
  * Checks that the productions, which implement an interface, use the
@@ -26,7 +26,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar a) {
-    Optional<MCGrammarSymbol> symbol = a.getMCGrammarSymbolOpt();
+    Optional<MCGrammarSymbol> symbol = a.getSymbolOpt();
     if (!symbol.isPresent()) {
       Log.error(
           "0xA5001 The CoCo 'SubrulesUseInterfaceNTs' can't be checked: There is no grammar symbol for the grammar "
@@ -34,7 +34,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
           a.get_SourcePositionStart());
     }
     for (ProdSymbol prodSymbol : symbol.get().getProds()) {
-      if (!prodSymbol.isInterface()) {
+      if (!prodSymbol.isIsInterface()) {
         for (ProdSymbol interfaceSymbol : MCGrammarSymbolTableHelper
             .getAllSuperInterfaces(prodSymbol)) {
           compareComponents(prodSymbol, interfaceSymbol);
@@ -52,21 +52,21 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
       }
       RuleComponentSymbol prodComponent = prodComponentOpt.get();
 
-      if (prodComponent.isList() != interfaceComponent.isList()
-         || prodComponent.isOptional() != interfaceComponent.isOptional()) {
+      if (prodComponent.isIsList() != interfaceComponent.isIsList()
+         || prodComponent.isIsOptional() != interfaceComponent.isIsOptional()) {
         logError(prodSymbol, interfaceSymbol, interfaceComponent);
         continue;
       }
 
-      if (prodComponent.isTerminal() && interfaceComponent.isTerminal()) {
+      if (prodComponent.isIsTerminal() && interfaceComponent.isIsTerminal()) {
         if (interfaceComponent.getUsageName().isEmpty()
           || interfaceComponent.getUsageName().equals(prodComponent.getUsageName())) {
           continue;
         }
       }
 
-      Optional<ProdSymbolReference> prodComponentRefOpt = prodComponent.getReferencedProd();
-      Optional<ProdSymbolReference> interfaceComponentRefOpt = interfaceComponent.getReferencedProd();
+      Optional<ProdSymbolLoader> prodComponentRefOpt = prodComponent.getReferencedProd();
+      Optional<ProdSymbolLoader> interfaceComponentRefOpt = interfaceComponent.getReferencedProd();
 
       if (prodComponentRefOpt.isPresent() != interfaceComponentRefOpt.isPresent()) {
         logError(prodSymbol, interfaceSymbol, interfaceComponent);
@@ -85,7 +85,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
   }
 
   private void logError(ProdSymbol prodSymbol, ProdSymbol interfaceSymbol, RuleComponentSymbol interfaceComponent) {
-    String suffix = interfaceComponent.isList() ? "*" : interfaceComponent.isOptional() ? "?" : "";
+    String suffix = interfaceComponent.isIsList() ? "*" : interfaceComponent.isIsOptional() ? "?" : "";
     Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodSymbol.getName(),
           interfaceComponent.getName() + suffix, interfaceSymbol.getName()),
           prodSymbol.getSourcePosition());

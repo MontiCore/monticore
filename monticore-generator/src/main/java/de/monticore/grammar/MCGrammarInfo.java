@@ -90,7 +90,7 @@ public class MCGrammarInfo {
     for (MCGrammarSymbol grammar : grammarsToHandle) {
       HashMap<String, List<ASTRuleReference>> ruleMap = Maps.newLinkedHashMap();
       // Collect superclasses and superinterfaces for classes
-      for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode().get())
+      for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode())
           .getClassProdList()) {
         List<ASTRuleReference> ruleRefs = Lists.newArrayList();
         ruleRefs.addAll(classProd.getSuperRuleList());
@@ -99,7 +99,7 @@ public class MCGrammarInfo {
       }
       
       // Collect superclasses and superinterfaces for abstract classes
-      for (ASTAbstractProd classProd : ((ASTMCGrammar) grammar.getAstNode().get())
+      for (ASTAbstractProd classProd : ((ASTMCGrammar) grammar.getAstNode())
           .getAbstractProdList()) {
         List<ASTRuleReference> ruleRefs = Lists.newArrayList();
         ruleRefs.addAll(classProd.getSuperRuleList());
@@ -108,7 +108,7 @@ public class MCGrammarInfo {
       }
       
       // Collect superinterfaces for interfaces
-      for (ASTInterfaceProd classProd : ((ASTMCGrammar) grammar.getAstNode().get())
+      for (ASTInterfaceProd classProd : ((ASTMCGrammar) grammar.getAstNode())
           .getInterfaceProdList()) {
         List<ASTRuleReference> ruleRefs = Lists.newArrayList();
         ruleRefs.addAll(classProd.getSuperInterfaceRuleList());
@@ -158,7 +158,7 @@ public class MCGrammarInfo {
         .newLinkedHashSet(Arrays.asList(grammarSymbol));
     grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
     for (MCGrammarSymbol grammar : grammarsToHandle) {
-      for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode().get()).getClassProdList()) {
+      for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode()).getClassProdList()) {
         leftRecursiveRules.addAll(addLeftRecursiveRuleForProd(classProd));
       }
     }
@@ -198,11 +198,11 @@ public class MCGrammarInfo {
         .newLinkedHashSet(Arrays.asList(grammarSymbol));
     grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
     for (MCGrammarSymbol grammar : grammarsToHandle) {
-      if (grammar.getAstNode().isPresent()) {
+      if (grammar.isPresentAstNode()) {
         // Add additional java code for lexer and parser
-        ASTNodes.getSuccessors(grammar.getAstNode().get(), ASTAntlrParserAction.class).forEach(
+        ASTNodes.getSuccessors(grammar.getAstNode(), ASTAntlrParserAction.class).forEach(
             a -> addAdditionalParserJavaCode(a.getText()));
-        ASTNodes.getSuccessors(grammar.getAstNode().get(), ASTAntlrLexerAction.class).forEach(
+        ASTNodes.getSuccessors(grammar.getAstNode(), ASTAntlrLexerAction.class).forEach(
             a -> addAdditionalLexerJavaCode(a.getText()));
       }
     }
@@ -296,7 +296,7 @@ public class MCGrammarInfo {
   private void findAllKeywords() {
     for (ProdSymbol ruleSymbol : grammarSymbol.getProdsWithInherited().values()) {
       if (ruleSymbol.isParserProd()) {
-        Optional<ASTProd> astProd = ruleSymbol.getAstNode();
+        Optional<ASTProd> astProd = ruleSymbol.getAstNodeOpt();
         if (astProd.isPresent() && astProd.get() instanceof ASTClassProd) {
           Optional<MCGrammarSymbol> refGrammarSymbol = MCGrammarSymbolTableHelper
               .getMCGrammarSymbol(astProd.get().getEnclosingScope());
@@ -332,11 +332,11 @@ public class MCGrammarInfo {
     }
     
     for (ProdSymbol rule : grammar.getProdsWithInherited().values()) {
-      if (rule.isLexerProd()) {
-        if (!MCGrammarSymbolTableHelper.isFragment(rule.getAstNode())) {
+      if (rule.isIsLexerProd()) {
+        if (!MCGrammarSymbolTableHelper.isFragment(rule.getAstNodeOpt())) {
           Optional<Pattern> lexPattern = MCGrammarSymbolTableHelper.calculateLexPattern(
               grammar,
-              rule.getAstNode());
+              rule.getAstNodeOpt());
           
           if (lexPattern.isPresent()) {
             patterns.add(lexPattern.get());

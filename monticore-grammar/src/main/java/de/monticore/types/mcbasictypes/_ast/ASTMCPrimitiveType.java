@@ -13,7 +13,7 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
    * @return
    */
   public String toString(){
-    return printType();
+    return printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter());
   }
   
   public boolean isBoolean(){

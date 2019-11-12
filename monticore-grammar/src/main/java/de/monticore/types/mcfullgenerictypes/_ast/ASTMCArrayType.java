@@ -6,7 +6,7 @@ public class ASTMCArrayType extends ASTMCArrayTypeTOP {
   }
 
   public String printTypeWithoutBrackets() {
-    return this.getMCType().printType();
+    return this.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
   }
 
 }
