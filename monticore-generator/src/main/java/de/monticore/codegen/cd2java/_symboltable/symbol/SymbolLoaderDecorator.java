@@ -85,7 +85,7 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
   }
 
   protected ASTCDAttribute createLoadedSymbolAttribute(String symbolType) {
-    return getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createOptionalTypeOf(symbolType), "loadedSymbol");
+    return getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createOptionalTypeOf(symbolType), "loadedSymbol", glex);
   }
 
   protected ASTCDAttribute createIsAlreadyLoadedAttribute() {
@@ -102,7 +102,7 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
 
   protected ASTCDMethod createIsSymbolLoadedMethod() {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "isSymbolLoaded");
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return isAlreadyLoaded && loadedSymbol.isPresent();"));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "IsSymbolLoaded"));
     return method;
   }
 
