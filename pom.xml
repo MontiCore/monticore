@@ -30,7 +30,7 @@
     <!-- .. Libraries ..................................................... -->
 
     <cd4analysis.version>1.5.0</cd4analysis.version>
-    <last.mc.release>5.4.0</last.mc.release>
+    <last.mc.release>5.4.0.1</last.mc.release>
 
     <se-commons.version>1.7.9</se-commons.version>
     <antlr.version>4.7.1</antlr.version>
