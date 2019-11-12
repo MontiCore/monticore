@@ -71,8 +71,14 @@ public class DeriveSymTypeOfExpressionTest {
     add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",f)));
 
     //testing for generics
-    SymTypeOfGenerics genSuper = SymTypeExpressionFactory.createGenerics("GenSuper",Lists.newArrayList(), TypeSymbolsSymTabMill.typeSymbolBuilder().build());
-    SymTypeOfGenerics genSub = SymTypeExpressionFactory.createGenerics("GenSub",Lists.newArrayList(),TypeSymbolsSymTabMill.typeSymbolBuilder().build());
+    ExpressionsBasisScope genSuperSpannedScope = ExpressionsBasisSymTabMill
+            .expressionsBasisScopeBuilder().build();
+    SymTypeOfGenerics genSuper = SymTypeExpressionFactory.createGenerics("GenSuper",Lists.newArrayList(), TypeSymbolsSymTabMill.typeSymbolBuilder().setSpannedScope(genSuperSpannedScope).build());
+
+
+    ExpressionsBasisScope genSubSpannedScope = ExpressionsBasisSymTabMill
+            .expressionsBasisScopeBuilder().build();
+    SymTypeOfGenerics genSub = SymTypeExpressionFactory.createGenerics("GenSub",Lists.newArrayList(),TypeSymbolsSymTabMill.typeSymbolBuilder().setSpannedScope(genSubSpannedScope).build());
 
     TypeSymbol superType = type("GenSuper");
     TypeSymbol subType = type("GenSub");
