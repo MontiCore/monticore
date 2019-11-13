@@ -3,9 +3,8 @@
 package de.monticore.types;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SynthesizeSymTypeFromMCSimpleGenericTypes;
-import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
