@@ -4,6 +4,7 @@ package de.monticore.types;
 
 import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SynthesizeSymTypeFromMCSimpleGenericTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -165,8 +166,8 @@ public class MCTypesHelper {
 
 
   public static SymTypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type) {
-    DeriveSymTypeOfMCType visitor = new DeriveSymTypeOfMCType();
+    SynthesizeSymTypeFromMCSimpleGenericTypes visitor = new SynthesizeSymTypeFromMCSimpleGenericTypes();
     type.accept(visitor);
-    return visitor.mapping.get(type);
+    return visitor.getResult().get();
   }
 }
