@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -19,86 +20,47 @@ import java.util.stream.Stream;
  * MC-Type grammars.
  */
 public class SymTypeOfGenerics extends SymTypeExpression {
-  
-  /**
-   * A SymTypeExpression has
-   *    a name (representing a TypeConstructor) and
-   *    a list of Type Expressions
-   * This is always the full qualified name (i.e. including package)
-   */
-  protected String typeConstructorFullName;
-  
+
   /**
    * List of arguments of a type constructor
    */
-  protected List<SymTypeExpression> arguments = new LinkedList<>();
-  
-  /**
-   * Symbol corresponding to the type constructors's name (if loaded???)
-   */
-  protected TypeSymbol objTypeConstructorSymbol;
-  
-  
+  protected List<SymTypeExpression> arguments = new ArrayList<>();
+
   /**
    * Constructor with all parameters that are stored:
    */
-  public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments,
-                           TypeSymbol objTypeConstructorSymbol, TypeSymbol typeInfo) {
-    this.typeConstructorFullName = typeConstructorFullName;
-    this.arguments = arguments;
-    this.objTypeConstructorSymbol = objTypeConstructorSymbol;
-    this.setTypeInfo(typeInfo);
+  public SymTypeOfGenerics(TypeSymbolLoader typeSymbolLoader) {
+    this.typeSymbolLoader = typeSymbolLoader;
   }
-  
-  
-  
-  @Deprecated // TODO: delete, only used by another deprecated method
-  public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments) {
-    this.typeConstructorFullName = typeConstructorFullName;
+
+  public SymTypeOfGenerics(TypeSymbolLoader typeSymbolLoader, List<SymTypeExpression> arguments) {
+    this.typeSymbolLoader = typeSymbolLoader;
     this.arguments = arguments;
   }
 
-
-  // TODO: löschen, denn es besetzt nicht die geerbten Attribute
-  @Deprecated
-  public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments,
-                           TypeSymbol objTypeConstructorSymbol) {
-    this.typeConstructorFullName = typeConstructorFullName;
-    this.arguments = arguments;
-    this.objTypeConstructorSymbol = objTypeConstructorSymbol;
-    // missing: this.setTypeInfo(typeInfo);
-  }
-  
-  
   public String getTypeConstructorFullName() {
-    return typeConstructorFullName;
-  }
-  
-  public void setTypeConstructorFullName(String typeConstructorFullName) {
-    this.typeConstructorFullName = typeConstructorFullName;
+    return typeSymbolLoader.getName();
   }
 
-  public TypeSymbol getObjTypeConstructorSymbol() {
-    return objTypeConstructorSymbol;
+  public void setTypeConstructorFullName(String typeConstructorFullName) {
+    this.typeSymbolLoader.setName(typeConstructorFullName);
   }
-  
-  public void setObjTypeConstructorSymbol(TypeSymbol objTypeConstructorSymbol) {
-    this.objTypeConstructorSymbol = objTypeConstructorSymbol;
-  }
-  
+
   /**
    * print: Umwandlung in einen kompakten String
    */
   @Override
   public String print() {
     StringBuffer r = new StringBuffer(getTypeConstructorFullName()).append('<');
-    for(int i = 0; i<arguments.size();i++){
+    for (int i = 0; i < arguments.size(); i++) {
       r.append(arguments.get(i).print());
-      if(i<arguments.size()-1) { r.append(','); }
+      if (i < arguments.size() - 1) {
+        r.append(',');
+      }
     }
     return r.append('>').toString();
   }
-  
+
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
    */
@@ -109,7 +71,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     jp.member(JsonConstants.KIND, "de.monticore.types.check.SymTypeOfGenerics");
     jp.member("typeConstructorFullName", getTypeConstructorFullName());
     jp.beginArray("arguments");
-    for(SymTypeExpression exp : getArgumentList()) {
+    for (SymTypeExpression exp : getArgumentList()) {
       jp.valueJson(exp.printAsJson());
     }
     jp.endArray();
@@ -118,15 +80,15 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     jp.endObject();
     return jp.getContent();
   }
-  
-  
+
+
   /**
    * getFullName: get the Qualified Name including Package
    */
   public String getFullName() {
     return getTypeConstructorFullName();
   }
-  
+
   /**
    * getBaseName: get the unqualified Name (no ., no Package)
    */
@@ -136,25 +98,19 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
 
   @Override
-  public boolean isGenericType(){
+  public boolean isGenericType() {
     return true;
   }
-  
+
   /**
    * This is a deep clone: it clones the whole structure including Symbols and Type-Info,
    * but not the name of the constructor
+   *
    * @return
    */
   @Override
   public SymTypeOfGenerics deepClone() {
-    List<SymTypeExpression> typeArguments = new ArrayList<>();
-    for(SymTypeExpression typeArgument : this.getArgumentList()){
-      typeArguments.add(typeArgument.deepClone());
-    }
-
-    SymTypeOfGenerics clone = new SymTypeOfGenerics(this.getTypeConstructorFullName(),typeArguments,
-                                                    this.getObjTypeConstructorSymbol(), this.typeInfo.deepClone());
-    return clone;
+    return new SymTypeOfGenerics(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()), getArgumentList());
   }
 
   // --------------------------------------------------------------------------
@@ -162,139 +118,141 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   // (was copied from a created class)
   // (and demonstrates that we still can optimize our generators & build processes)
   // --------------------------------------------------------------------------
-  
 
-  public  boolean containsArgument (Object element)  {
+
+  public boolean containsArgument(Object element) {
     return this.getArgumentList().contains(element);
   }
 
-  public  boolean containsAllArguments (Collection<?> collection)  {
+  public boolean containsAllArguments(Collection<?> collection) {
     return this.getArgumentList().containsAll(collection);
   }
 
-  public  boolean isEmptyArguments ()  {
+  public boolean isEmptyArguments() {
     return this.getArgumentList().isEmpty();
   }
 
-  public Iterator<SymTypeExpression> iteratorArguments ()  {
+  public Iterator<SymTypeExpression> iteratorArguments() {
     return this.getArgumentList().iterator();
   }
 
-  public  int sizeArguments ()  {
+  public int sizeArguments() {
     return this.getArgumentList().size();
   }
 
-  public  de.monticore.types.check.SymTypeExpression[] toArrayArguments (de.monticore.types.check.SymTypeExpression[] array)  {
+  public de.monticore.types.check.SymTypeExpression[] toArrayArguments(de.monticore.types.check.SymTypeExpression[] array) {
     return this.getArgumentList().toArray(array);
   }
 
-  public  Object[] toArrayArguments ()  {
+  public Object[] toArrayArguments() {
     return this.getArgumentList().toArray();
   }
 
-  public  Spliterator<de.monticore.types.check.SymTypeExpression> spliteratorArguments ()  {
+  public Spliterator<de.monticore.types.check.SymTypeExpression> spliteratorArguments() {
     return this.getArgumentList().spliterator();
   }
 
-  public Stream<SymTypeExpression> streamArguments ()  {
+  public Stream<SymTypeExpression> streamArguments() {
     return this.getArgumentList().stream();
   }
 
-  public  Stream<de.monticore.types.check.SymTypeExpression> parallelStreamArguments ()  {
+  public Stream<de.monticore.types.check.SymTypeExpression> parallelStreamArguments() {
     return this.getArgumentList().parallelStream();
   }
 
-  public  de.monticore.types.check.SymTypeExpression getArgument (int index)  {
+  public de.monticore.types.check.SymTypeExpression getArgument(int index) {
     return this.getArgumentList().get(index);
   }
 
-  public  int indexOfArgument (Object element)  {
+  public int indexOfArgument(Object element) {
     return this.getArgumentList().indexOf(element);
   }
 
-  public  int lastIndexOfArgument (Object element)  {
+  public int lastIndexOfArgument(Object element) {
     return this.getArgumentList().lastIndexOf(element);
   }
 
-  public  boolean equalsArguments (Object o)  {
+  public boolean equalsArguments(Object o) {
     return this.getArgumentList().equals(o);
   }
 
-  public  int hashCodeArguments ()  {
+  public int hashCodeArguments() {
     return this.getArgumentList().hashCode();
   }
 
-  public  ListIterator<de.monticore.types.check.SymTypeExpression> listIteratorArguments ()  {
+  public ListIterator<de.monticore.types.check.SymTypeExpression> listIteratorArguments() {
     return this.getArgumentList().listIterator();
   }
 
-  public  ListIterator<de.monticore.types.check.SymTypeExpression> listIteratorArguments (int index)  {
+  public ListIterator<de.monticore.types.check.SymTypeExpression> listIteratorArguments(int index) {
     return this.getArgumentList().listIterator(index);
   }
 
-  public  List<de.monticore.types.check.SymTypeExpression> subListArguments (int start,int end)  {
+  public List<de.monticore.types.check.SymTypeExpression> subListArguments(int start, int end) {
     return this.getArgumentList().subList(start, end);
   }
 
-  public  List<de.monticore.types.check.SymTypeExpression> getArgumentList ()  {
+  public List<de.monticore.types.check.SymTypeExpression> getArgumentList() {
     return this.arguments;
   }
 
-  public  void clearArguments ()  {
+  public void clearArguments() {
     this.getArgumentList().clear();
   }
 
-  public  boolean addArgument (de.monticore.types.check.SymTypeExpression element)  {
+  public boolean addArgument(de.monticore.types.check.SymTypeExpression element) {
     return this.getArgumentList().add(element);
   }
 
-  public  boolean addAllArguments (Collection<? extends de.monticore.types.check.SymTypeExpression> collection)  {
+  public boolean addAllArguments(Collection<? extends de.monticore.types.check.SymTypeExpression> collection) {
     return this.getArgumentList().addAll(collection);
   }
-  public  boolean removeArgument (Object element)  {
+
+  public boolean removeArgument(Object element) {
     return this.getArgumentList().remove(element);
   }
 
-  public  boolean removeAllArguments (Collection<?> collection)  {
+  public boolean removeAllArguments(Collection<?> collection) {
     return this.getArgumentList().removeAll(collection);
   }
-  public  boolean retainAllArguments (Collection<?> collection)  {
+
+  public boolean retainAllArguments(Collection<?> collection) {
     return this.getArgumentList().retainAll(collection);
   }
 
-  public  boolean removeIfArgument (Predicate<? super SymTypeExpression> filter)  {
+  public boolean removeIfArgument(Predicate<? super SymTypeExpression> filter) {
     return this.getArgumentList().removeIf(filter);
   }
 
-  public  void forEachArguments (Consumer<? super SymTypeExpression> action)  {
+  public void forEachArguments(Consumer<? super SymTypeExpression> action) {
     this.getArgumentList().forEach(action);
   }
 
-  public  void addArgument (int index,de.monticore.types.check.SymTypeExpression element)  {
+  public void addArgument(int index, de.monticore.types.check.SymTypeExpression element) {
     this.getArgumentList().add(index, element);
   }
 
-  public  boolean addAllArguments (int index,Collection<? extends de.monticore.types.check.SymTypeExpression> collection)  {
+  public boolean addAllArguments(int index, Collection<? extends de.monticore.types.check.SymTypeExpression> collection) {
     return this.getArgumentList().addAll(index, collection);
   }
 
-  public  de.monticore.types.check.SymTypeExpression removeArgument (int index)  {
+  public de.monticore.types.check.SymTypeExpression removeArgument(int index) {
     return this.getArgumentList().remove(index);
   }
 
-  public  de.monticore.types.check.SymTypeExpression setArgument (int index,de.monticore.types.check.SymTypeExpression element)  {
+  public de.monticore.types.check.SymTypeExpression setArgument(int index, de.monticore.types.check.SymTypeExpression element) {
     return this.getArgumentList().set(index, element);
   }
 
-  public  void replaceAllArguments (UnaryOperator<SymTypeExpression> operator)  {
+  public void replaceAllArguments(UnaryOperator<SymTypeExpression> operator) {
     this.getArgumentList().replaceAll(operator);
   }
 
-  public  void sortArguments (Comparator<? super de.monticore.types.check.SymTypeExpression> comparator)  {
+  public void sortArguments(Comparator<? super de.monticore.types.check.SymTypeExpression> comparator) {
     this.getArgumentList().sort(comparator);
   }
 
-  public  void setArgumentList (List<de.monticore.types.check.SymTypeExpression> arguments)  {
+  public void setArgumentList(List<de.monticore.types.check.SymTypeExpression> arguments) {
     this.arguments = arguments;
   }
 }

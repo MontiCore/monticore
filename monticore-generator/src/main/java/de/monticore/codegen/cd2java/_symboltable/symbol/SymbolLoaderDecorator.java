@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.symbol;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._symboltable.symbol.symbolloadermutator.MandatoryMutatorSymbolLoaderDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -24,14 +25,18 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
 
   protected MethodDecorator methodDecorator;
 
+  protected MandatoryMutatorSymbolLoaderDecorator symbolLoaderMethodDecorator;
+
   protected static final String TEMPLATE_PATH = "_symboltable.symbolloader.";
 
   public SymbolLoaderDecorator(final GlobalExtensionManagement glex,
                                final SymbolTableService symbolTableService,
-                               final MethodDecorator methodDecorator) {
+                               final MethodDecorator methodDecorator,
+                               final MandatoryMutatorSymbolLoaderDecorator symbolLoaderMethodDecorator) {
     super(glex);
     this.methodDecorator = methodDecorator;
     this.symbolTableService = symbolTableService;
+    this.symbolLoaderMethodDecorator = symbolLoaderMethodDecorator;
   }
 
   @Override
@@ -46,26 +51,27 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
 
     ASTCDAttribute nameAttribute = createNameAttribute();
     List<ASTCDMethod> nameMethods = methodDecorator.getAccessorDecorator().decorate(nameAttribute);
+    nameMethods.addAll(symbolLoaderMethodDecorator.decorate(nameAttribute));
 
     ASTCDAttribute enclosingScopeAttribute = createEnclosingScopeAttribute(scopeInterfaceType);
     List<ASTCDMethod> enclosingScopeMethods = methodDecorator.getAccessorDecorator().decorate(enclosingScopeAttribute);
+    enclosingScopeMethods.addAll(symbolLoaderMethodDecorator.decorate(enclosingScopeAttribute));
 
-    ASTCDClass symbolLoaderClass = CD4AnalysisMill.cDClassBuilder()
-            .setName(symbolLoaderSimpleName)
-            .setModifier(PUBLIC.build())
-            .addInterface(getMCTypeFacade().createQualifiedType(I_SYMBOL_LOADER))
-            .addCDConstructor(createConstructor(symbolLoaderSimpleName, scopeInterfaceType))
-            .addCDAttribute(loadedSymbolAttribute)
-            .addCDMethod(loadedSymbolMethod)
-            .addCDAttribute(nameAttribute)
-            .addAllCDMethods(nameMethods)
-            .addCDAttribute(enclosingScopeAttribute)
-            .addAllCDMethods(enclosingScopeMethods)
-            .addCDAttribute(createIsAlreadyLoadedAttribute())
-            .addCDMethod(createIsSymbolLoadedMethod())
-            .addCDMethod(createLoadSymbolMethod(symbolLoaderSimpleName, symbolFullName, simpleName))
-            .build();
-    return symbolLoaderClass;
+    return CD4AnalysisMill.cDClassBuilder()
+        .setName(symbolLoaderSimpleName)
+        .setModifier(PUBLIC.build())
+        .addInterface(getMCTypeFacade().createQualifiedType(I_SYMBOL_LOADER))
+        .addCDConstructor(createConstructor(symbolLoaderSimpleName, scopeInterfaceType))
+        .addCDAttribute(loadedSymbolAttribute)
+        .addCDMethod(loadedSymbolMethod)
+        .addCDAttribute(nameAttribute)
+        .addAllCDMethods(nameMethods)
+        .addCDAttribute(enclosingScopeAttribute)
+        .addAllCDMethods(enclosingScopeMethods)
+        .addCDAttribute(createIsAlreadyLoadedAttribute())
+        .addCDMethod(createIsSymbolLoadedMethod())
+        .addCDMethod(createLoadSymbolMethod(symbolLoaderSimpleName, symbolFullName, simpleName))
+        .build();
   }
 
   protected ASTCDConstructor createConstructor(String symbolLoaderClass, String scopeInterfaceType) {
@@ -94,9 +100,9 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
 
   protected ASTCDMethod createLoadedSymbolMethod(String symbolType, String symbolLoaderName) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolType),
-            "getLoadedSymbol");
+        "getLoadedSymbol");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
-            TEMPLATE_PATH + "GetSymbol", symbolLoaderName, Names.getSimpleName(symbolType)));
+        TEMPLATE_PATH + "GetSymbol", symbolLoaderName, Names.getSimpleName(symbolType)));
     return method;
   }
 
@@ -109,7 +115,7 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
   protected ASTCDMethod createLoadSymbolMethod(String symbolLoaderName, String symbolName, String simpleName) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createOptionalTypeOf(symbolName), "loadSymbol");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "LoadSymbol", symbolLoaderName,
-            symbolName, simpleName));
+        symbolName, simpleName));
     return method;
   }
 
