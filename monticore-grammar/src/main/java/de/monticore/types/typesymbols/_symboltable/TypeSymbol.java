@@ -21,7 +21,7 @@ public class TypeSymbol extends TypeSymbolTOP {
     clone.setFullName(this.getFullName());
     clone.setAccessModifier(this.getAccessModifier());
     clone.setSpannedScope(this.getSpannedScope());
-    if (getAstNodeOpt().isPresent()) {
+    if (isPresentAstNode()) {
       clone.setAstNode(this.getAstNode());
     }
     List<MethodSymbol> methods = new ArrayList<>();
