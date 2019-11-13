@@ -61,7 +61,7 @@ public class ContentAssistProcessorImpl implements IContentAssistProcessor {
         Optional<IScope> rootScope = language.getScope(legalRoot);
         if (rootScope.isPresent()) {
           // Get all symbols in global scope
-          IScope globalScope =  rootScope.get().getEnclosingScope().get();
+          IScope globalScope =  rootScope.get().getEnclosingScope();
           Optional<IScope> enclosingScope;
           // TODO Auf neue symtab umbauen
 //          if (actNode.get().isPresentEnclosingScope()) {
