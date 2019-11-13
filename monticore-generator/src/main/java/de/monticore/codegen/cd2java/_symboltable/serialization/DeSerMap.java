@@ -86,7 +86,7 @@ public class DeSerMap {
       String varName, String jsonName, TypeSymbolsScope enclosingScope) {
     for (SymTypeExpression e : primitiveDataTypes.keySet()) {
       if (isTypeOf(e, actualType, enclosingScope)) {
-        String s = jsonName+"."+String.format(primitiveDataTypes.get(e), varName)+";";
+        String s = "return " + jsonName+"."+String.format(primitiveDataTypes.get(e), varName)+";";
         return Optional.of(new StringHookPoint(s));
       }
       else if (isOptionalTypeOf(e, actualType, enclosingScope)) {
