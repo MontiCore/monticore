@@ -238,10 +238,10 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGetNameOptMethod() {
-    ASTCDMethod method = getMethodBy("getNameOpt", scopeClass);
+    ASTCDMethod method = getMethodBy("getName", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertOptionalOf(String.class, method.getMCReturnType().getMCType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }

@@ -121,8 +121,8 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
   }
 
   protected ASTCDMethod createGetNameOptMethod() {
-    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createOptionalTypeOf(String.class), "getNameOpt");
-    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "GetNameOpt"));
+    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
+    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "GetName"));
     return getNameMethod;
   }
 

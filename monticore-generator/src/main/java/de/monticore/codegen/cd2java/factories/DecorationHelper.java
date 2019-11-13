@@ -163,8 +163,6 @@ public class DecorationHelper extends MCCollectionTypesHelper {
       } else {
         sb.append(GET_SUFFIX_LIST);
       }
-    } else if (isOptional(ast.getMCType())) {
-      sb.append(GET_SUFFIX_OPTINAL);
     }
     return sb.toString();
   }

@@ -4,7 +4,7 @@ ${tc.signature("symbolName", "simpleName", "globalScope")}
 
 if (checkIfContinueWithEnclosingScope(foundSymbols) && enclosingScope != null) {
 if (!(enclosingScope instanceof ${globalScope})) {
-      Log.warn("0xA1039 The artifact scope " + getNameOpt().orElse("") + " should have a global scope as enclosing scope or no "
+      Log.warn("0xA1039 The artifact scope " + (isPresentName() ? getName() : "") + " should have a global scope as enclosing scope or no "
               + "enclosing scope at all.");
       }
     foundSymbols = foundSymbols | result.size() > 0;

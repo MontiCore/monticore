@@ -10,7 +10,7 @@ ${tc.signature( "symbolTableDelegator", "modelLoader", "scopeInterface", "artifa
 
     if (!(scope instanceof ${artifactScope})) {
       Log.warn("0xA7001x050 Top scope of model " + modelName + " is expected to be an artifact scope, but"
-                + " is scope \"" + scope.getName() + "\"");
+                + " is scope \"" + (scope.isPresentName() ? scope.getName() : "") + "\"");
     }
 
     Log.debug("Created symbol table for model \"" + modelName + "\".", ${modelLoader}.class.getSimpleName());
