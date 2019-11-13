@@ -24,7 +24,7 @@ public class NameToCallExpressionVisitor implements CommonExpressionsVisitor {
 
   public void traverse(ASTCallExpression expr){
     // avoid run if Name is already set
-    if (expr.getName().isEmpty()) {
+    if (expr.getName()==null || expr.getName().isEmpty()) {
       expr.getExpression().accept(this);
       if (lastName != null) {
         expr.setName(lastName);
