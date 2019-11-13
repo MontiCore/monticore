@@ -25,8 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 public class SymTypeExpressionTest {
 
-//  private ExpressionsBasisScope scope;
-  private TypeSymbolsScope scope = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
+  private static TypeSymbolsScope scope = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
 
   // setup of objects (unchanged during tests)
   SymTypeExpression teDouble = createTypeConstant("double");
@@ -50,26 +49,20 @@ public class SymTypeExpressionTest {
 
   SymTypeExpression teArr3 = createTypeArray(teInt.print(), scope, 3, teInt);
 
-  SymTypeExpression teSet = createGenerics("java.util.Set", Lists.newArrayList(teP),
-      scope);
+  SymTypeExpression teSet = createGenerics("java.util.Set", scope, Lists.newArrayList(teP));
 
-  SymTypeExpression teSetA = createGenerics("java.util.Set", Lists.newArrayList(teVarA),
-      scope);
+  SymTypeExpression teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
 
-  SymTypeExpression teMap = createGenerics("Map", Lists.newArrayList(teInt, teP),
-      scope); // no package!
+  SymTypeExpression teMap = createGenerics("Map", scope, Lists.newArrayList(teInt, teP)); // no package!
 
-  SymTypeExpression teFoo = createGenerics("x.Foo", Lists.newArrayList(teP, teDouble, teInt, teH),
-      scope);
+  SymTypeExpression teFoo = createGenerics("x.Foo", scope,  Lists.newArrayList(teP, teDouble, teInt, teH));
 
-  SymTypeExpression teDeep1 = createGenerics("java.util.Set", Lists.newArrayList(teMap),
-      scope);
+  SymTypeExpression teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
 
-  SymTypeExpression teDeep2 = createGenerics("java.util.Map2", Lists.newArrayList(teInt, teDeep1),
-      scope);
+  SymTypeExpression teDeep2 = createGenerics("java.util.Map2", scope, Lists.newArrayList(teInt, teDeep1));
 
   @BeforeClass
-  public void setUpScope(){
+  public static void setUpScope(){
     scope.add(new TypeSymbol("long"));
   }
 
