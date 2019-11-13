@@ -102,7 +102,7 @@ public class SymbolTablePrinterDecorator extends AbstractCreator<ASTCDCompilatio
   }
 
   protected ASTCDMethod createAddScopeSpanningSymbolMethod() {
-    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createOptionalTypeOf(I_SCOPE_SPANNING_SYMBOL), "spanningSymbol");
+    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(I_SCOPE_SPANNING_SYMBOL), "spanningSymbol");
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, "addScopeSpanningSymbol", scopeParam);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "AddScopeSpanningSymbol"));
     return method;

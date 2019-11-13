@@ -175,7 +175,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertOptionalOf(I_SCOPE_SPANNING_SYMBOL, method.getCDParameter(0).getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType(I_SCOPE_SPANNING_SYMBOL), method.getCDParameter(0).getMCType());
     assertEquals("spanningSymbol", method.getCDParameter(0).getName());
   }
 
