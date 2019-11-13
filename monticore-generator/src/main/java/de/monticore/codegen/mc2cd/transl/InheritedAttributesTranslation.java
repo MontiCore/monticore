@@ -55,8 +55,8 @@ public class InheritedAttributesTranslation implements
       for (AdditionalAttributeSymbol attributeInAST : entry.getValue()) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
         link.target().getCDAttributeList().add(cdAttribute);
-        if (attributeInAST.getAstNode().isPresent()) {
-          new Link<>(attributeInAST.getAstNode().get(), cdAttribute, link);
+        if (attributeInAST.isPresentAstNode()) {
+          new Link<>(attributeInAST.getAstNode(), cdAttribute, link);
         }
       }
     }

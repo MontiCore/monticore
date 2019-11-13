@@ -25,8 +25,8 @@ public class StarImportSuperGrammarTranslation implements
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     ASTMCGrammar grammar = rootLink.source();
-    if (grammar.isPresentMCGrammarSymbol()) {
-      MCGrammarSymbol symbol = grammar.getMCGrammarSymbol();
+    if (grammar.isPresentSymbol()) {
+      MCGrammarSymbol symbol = grammar.getSymbol();
       for (MCGrammarSymbol superSymbol : symbol.getSuperGrammarSymbols()) {
         List<String> names = Arrays.asList(superSymbol.getFullName().split("\\."));
         ASTMCImportStatement importStatement = MCBasicTypesMill.mCImportStatementBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(names).build())

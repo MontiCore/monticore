@@ -6,6 +6,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mccollectiontypes._ast.MCCollectionTypesMill;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.Names;
 
 import java.util.Optional;
@@ -72,7 +73,7 @@ public class MCCollectionTypesHelper extends MCBasicTypesHelper {
       return false;
     }
 
-    if (simpleRefType.printType(MCCollectionTypesMill.mcCollectionTypesPrettyPrinter()).split("\\.").length == 1 && simpleRefTypeName.contains(".")) {
+    if (simpleRefType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).split("\\.").length == 1 && simpleRefTypeName.contains(".")) {
       if (simpleRefTypeName.endsWith("." + simpleRefType.printWithoutTypeArguments())) {
         return true;
       }

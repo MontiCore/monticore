@@ -8,7 +8,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>experiments</artifactId>
-    <version>5.4.0</version>
+    <version>5.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>scannerless</artifactId>

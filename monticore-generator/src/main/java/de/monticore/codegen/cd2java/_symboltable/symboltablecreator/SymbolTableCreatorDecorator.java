@@ -367,9 +367,9 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
-          String symbolFullName = symbolTableService.getSymbolFullName(type.getAstNode().get(), cdDefinitionSymbol);
+        if (type.isPresentAstNode() && type.getAstNode().getModifierOpt().isPresent()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifierOpt().get())) {
+          String symbolFullName = symbolTableService.getSymbolFullName(type.getAstNode(), cdDefinitionSymbol);
           ASTCDParameter symbolParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(symbolFullName), SYMBOL_VAR);
           ASTCDMethod addToScopeMethod = getCDMethodFacade().createMethod(PUBLIC, "addToScope", symbolParam);
           this.replaceTemplate(EMPTY_BODY, addToScopeMethod, new TemplateHookPoint(TEMPLATE_PATH + "AddToScope"));

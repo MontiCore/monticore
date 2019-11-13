@@ -33,7 +33,7 @@ public class LexNTsOnlyUseLexNTs implements GrammarASTLexNonTerminalCoCo {
     String ruleName = ruleSymbol.isPresent() ? ruleSymbol.get().getName() : "";
     if (grammarSymbol.isPresent()
         && grammarSymbol.get().getProdWithInherited(a.getName()).isPresent() &&
-        !grammarSymbol.get().getProdWithInherited(a.getName()).get().isLexerProd()) {
+        !grammarSymbol.get().getProdWithInherited(a.getName()).get().isIsLexerProd()) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, ruleName, a.getName(), a.getName()),
           a.get_SourcePositionStart());
     }

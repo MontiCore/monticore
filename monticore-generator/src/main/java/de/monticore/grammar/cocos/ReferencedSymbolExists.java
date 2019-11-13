@@ -22,7 +22,7 @@ public class ReferencedSymbolExists implements GrammarASTNonTerminalCoCo {
     if (node.isPresentReferencedSymbol()) {
       String symbol = node.getReferencedSymbol();
       if (grammarSymbol.get().getProdWithInherited(symbol).isPresent() &&
-          grammarSymbol.get().getProdWithInherited(symbol).get().isSymbolDefinition()) {
+          grammarSymbol.get().getProdWithInherited(symbol).get().isIsSymbolDefinition()) {
         return;
       }
       Log.error(String.format(ERROR_CODE + String.format(ERROR_MSG_FORMAT, symbol),
