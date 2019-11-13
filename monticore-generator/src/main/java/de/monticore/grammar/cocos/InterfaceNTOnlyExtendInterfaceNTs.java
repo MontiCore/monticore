@@ -31,9 +31,9 @@ public class InterfaceNTOnlyExtendInterfaceNTs implements GrammarASTInterfacePro
         Optional<ProdSymbol> ruleSymbol = a.getEnclosingScope().resolveProd(sr.getName());
         if (ruleSymbol.isPresent()) {
           ProdSymbol r = ruleSymbol.get();
-          boolean isAbstract = r.isAbstract();
-          boolean isExternal = r.isExternal();
-          if (!r.isInterface()) {
+          boolean isAbstract = r.isIsAbstract();
+          boolean isExternal = r.isIsExternal();
+          if (!r.isIsInterface()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(),
                 isAbstract ? " abstract" : isExternal ? " external" : "", r.getName()),
                 a.get_SourcePositionStart());

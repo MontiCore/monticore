@@ -16,6 +16,7 @@ import java.io.StringReader;
 import java.util.*;
 import java.util.Map.Entry;
 
+import static de.monticore.codegen.mc2cd.TransformationHelper.simpleName;
 import static de.monticore.grammar.Multiplicity.multiplicityByDuplicates;
 import static de.monticore.grammar.Multiplicity.multiplicityOfAttributeInAST;
 
@@ -108,7 +109,7 @@ public class GrammarTransformer {
         .filter(attributeInAST -> multiplicityOfAttributeInAST(attributeInAST) == Multiplicity.LIST)
         .forEach(
             attributeInAST -> {
-              String typeName = StringTransformations.uncapitalize(attributeInAST.getMCType().getBaseName());
+              String typeName = StringTransformations.uncapitalize(simpleName(attributeInAST.getMCType()));
 
               attributeInAST.setName(attributeInAST.getNameOpt().orElse(typeName));
               Log.debug("Change the name of ast-rule " + astRule.getType()

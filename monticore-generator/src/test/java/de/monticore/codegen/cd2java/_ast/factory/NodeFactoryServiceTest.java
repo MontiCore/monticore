@@ -27,14 +27,14 @@ public class NodeFactoryServiceTest extends DecoratorTestCase {
 
   @Test
   public void testCDSymbolPresent() {
-    assertTrue(factoryService.getCDSymbol().getAstNode().isPresent());
+    assertTrue(factoryService.getCDSymbol().isPresentAstNode());
   }
 
   @Test
   public void testConstructorsCreateEqualService() {
     NodeFactoryService factoryServiceFromDefinitionSymbol = new NodeFactoryService(astcdCompilationUnit.getCDDefinition().getSymbol());
-    assertTrue(factoryServiceFromDefinitionSymbol.getCDSymbol().getAstNode().isPresent());
-    assertDeepEquals(factoryService.getCDSymbol().getAstNode().get(), factoryServiceFromDefinitionSymbol.getCDSymbol().getAstNode().get());
+    assertTrue(factoryServiceFromDefinitionSymbol.getCDSymbol().isPresentAstNode());
+    assertDeepEquals(factoryService.getCDSymbol().getAstNode(), factoryServiceFromDefinitionSymbol.getCDSymbol().getAstNode());
   }
 
   @Test
@@ -45,8 +45,8 @@ public class NodeFactoryServiceTest extends DecoratorTestCase {
   @Test
   public void testCreateNodeFactoryService() {
     NodeFactoryService nodeFactoryService = NodeFactoryService.createNodeFactoryService(astcdCompilationUnit.getCDDefinition().getSymbol());
-    assertTrue(nodeFactoryService.getCDSymbol().getAstNode().isPresent());
-    assertDeepEquals(factoryService.getCDSymbol().getAstNode().get(), nodeFactoryService.getCDSymbol().getAstNode().get());
+    assertTrue(nodeFactoryService.getCDSymbol().isPresentAstNode());
+    assertDeepEquals(factoryService.getCDSymbol().getAstNode(), nodeFactoryService.getCDSymbol().getAstNode());
   }
 
   @Test

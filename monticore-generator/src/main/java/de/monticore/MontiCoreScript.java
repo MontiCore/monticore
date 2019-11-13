@@ -317,7 +317,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTMCGrammar result = ast;
 
     if (grammarSymbol.isPresent()) {
-      result = grammarSymbol.get().getAstNode().get();
+      result = grammarSymbol.get().getAstNode();
     } else {
       Grammar_WithConceptsLanguage language = new Grammar_WithConceptsLanguage();
 
@@ -355,8 +355,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     ASTCDCompilationUnit result = ast;
 
-    if (cdSymbol.isPresent() && cdSymbol.get().getEnclosingScope().getAstNode().isPresent()) {
-      result = (ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode().get();
+    if (cdSymbol.isPresent() && cdSymbol.get().getEnclosingScope().isPresentAstNode()) {
+      result = (ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode();
       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
     } else {
       CD4AnalysisSymbolTableCreatorDelegator stCreator = cd4AnalysisLanguage.getSymbolTableCreator(globalScope);
@@ -768,8 +768,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       MCGrammarSymbol sym = astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
         Optional<CDDefinitionSymbol> importedCd = cdScope.resolveCDDefinitionDown(mcgsym.getFullName());
-        if (!importedCd.isPresent() && mcgsym.getAstNode().isPresent()) {
-          transformAndCreateSymbolTable(mcgsym.getAstNode().get(), glex, cdScope);
+        if (!importedCd.isPresent() && mcgsym.isPresentAstNode()) {
+          transformAndCreateSymbolTable(mcgsym.getAstNode(), glex, cdScope);
         }
       }
     }
@@ -781,8 +781,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       MCGrammarSymbol sym = astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
         Optional<CDDefinitionSymbol> importedCd = cdScope.resolveCDDefinitionDown(mcgsym.getFullName());
-        if (!importedCd.isPresent() && mcgsym.getAstNode().isPresent()) {
-          transformAndCreateSymbolTableForSymbolCD(mcgsym.getAstNode().get(), cdScope);
+        if (!importedCd.isPresent() && mcgsym.isPresentAstNode()) {
+          transformAndCreateSymbolTableForSymbolCD(mcgsym.getAstNode(), cdScope);
         }
       }
     }
@@ -794,8 +794,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       MCGrammarSymbol sym = astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
         Optional<CDDefinitionSymbol> importedCd = cdScope.resolveCDDefinitionDown(mcgsym.getFullName());
-        if (!importedCd.isPresent() && mcgsym.getAstNode().isPresent()) {
-          transformAndCreateSymbolTableForScopeCD(mcgsym.getAstNode().get(), cdScope);
+        if (!importedCd.isPresent() && mcgsym.isPresentAstNode()) {
+          transformAndCreateSymbolTableForScopeCD(mcgsym.getAstNode(), cdScope);
         }
       }
     }

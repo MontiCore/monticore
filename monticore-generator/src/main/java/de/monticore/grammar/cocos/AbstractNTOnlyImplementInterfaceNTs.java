@@ -31,7 +31,7 @@ public class AbstractNTOnlyImplementInterfaceNTs implements GrammarASTAbstractPr
         Optional<ProdSymbol> ruleSymbol = a.getEnclosingScope().resolveProd(i.getName());
         if (ruleSymbol.isPresent()) {
           ProdSymbol r = ruleSymbol.get();
-          if (!r.isInterface()) {
+          if (!r.isIsInterface()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(), r.getName()),
                 a.get_SourcePositionStart());
           }

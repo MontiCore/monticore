@@ -7,7 +7,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolReference;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -28,26 +28,26 @@ public class AbstractNTWithoutExtensionOnlyInComponentGrammar implements Grammar
 
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = a.getSymbol();
 
     if (!a.isComponent()) {
       List<ProdSymbol> abstractProds = grammarSymbol.getProds().stream().
-              filter(ProdSymbol::isAbstract).collect(Collectors.toList());
+              filter(ProdSymbol::isIsAbstract).collect(Collectors.toList());
       for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
         Collection<ProdSymbol> prodSymbols = symbol.getProds();
         for(ProdSymbol mcProdSymbol : prodSymbols){
-          if (mcProdSymbol.isAbstract()) {
+          if (mcProdSymbol.isIsAbstract()) {
             abstractProds.add(mcProdSymbol);
           }
         }
       }
 
       List<ProdSymbol> prods = grammarSymbol.getProds().stream().
-              filter(prodSymbol -> prodSymbol.isClass() || prodSymbol.isAbstract()).collect(Collectors.toList());
+              filter(prodSymbol -> prodSymbol.isClass() || prodSymbol.isIsAbstract()).collect(Collectors.toList());
       for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
         Collection<ProdSymbol> prodSymbols = symbol.getProds();
         for(ProdSymbol mcProdSymbol : prodSymbols){
-          if (mcProdSymbol.isAbstract() || mcProdSymbol.isClass()) {
+          if (mcProdSymbol.isIsAbstract() || mcProdSymbol.isClass()) {
             prods.add(mcProdSymbol);
           }
         }
@@ -56,11 +56,11 @@ public class AbstractNTWithoutExtensionOnlyInComponentGrammar implements Grammar
       if(!abstractProds.isEmpty()) {
         List<ProdSymbol> temp = new ArrayList<>(abstractProds);
         for(ProdSymbol abstractProdSymbol : abstractProds){
-          for(ProdSymbolReference absractProdExtended : abstractProdSymbol.getSuperProds()){
+          for(ProdSymbolLoader absractProdExtended : abstractProdSymbol.getSuperProds()){
             for(int i = abstractProds.size()-1;i>=0;--i){
               ProdSymbol abstractProd = abstractProds.get(i);
-              if(absractProdExtended.getReferencedSymbol().getName().equals(abstractProd.getName())){
-                temp.remove(absractProdExtended.getReferencedSymbol());
+              if(absractProdExtended.getLoadedSymbol().getName().equals(abstractProd.getName())){
+                temp.remove(absractProdExtended.getLoadedSymbol());
               }
             }
           }
@@ -70,7 +70,7 @@ public class AbstractNTWithoutExtensionOnlyInComponentGrammar implements Grammar
 
       if(!abstractProds.isEmpty()){
         for (ProdSymbol prodSymbol : prods) {
-          for (ProdSymbolReference abstractProdImplemented : prodSymbol.getSuperProds()) {
+          for (ProdSymbolLoader abstractProdImplemented : prodSymbol.getSuperProds()) {
             for (int i = abstractProds.size() - 1; i >= 0; --i) {
               ProdSymbol interfaceProd = abstractProds.get(i);
               if (abstractProdImplemented.getName().equals(interfaceProd.getName())) {

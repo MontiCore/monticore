@@ -49,22 +49,22 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
           Optional<RuleComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
               .resolveRuleComponentLocally(attributename);
           if (rcs.isPresent()) {
-            if (rcs.get().isTerminal() && !"".equals(rcs.get().getUsageName())) {
+            if (rcs.get().isIsTerminal() && !"".equals(rcs.get().getUsageName())) {
               logError(rule.get(), attributename, componentSymbol.get(), "production of a terminal", a);
-            } else if (rcs.get().isConstantGroup()) {
+            } else if (rcs.get().isIsConstantGroup()) {
               logError(rule.get(), attributename, componentSymbol.get(), "production of a constant group", a);
-            } else if (rcs.get().isConstant()) {
+            } else if (rcs.get().isIsConstant()) {
               logError(rule.get(), attributename, componentSymbol.get(), "production of a constant", a);
-            } else if (rcs.get().isLexerNonterminal()) {
+            } else if (rcs.get().isIsLexerNonterminal()) {
               logError(rule.get(), attributename, componentSymbol.get(), "production of a lexer nonterminal", a);
-            } else if (rcs.get().isNonterminal() && rcs.get().getReferencedProd().isPresent()
+            } else if (rcs.get().isIsNonterminal() && rcs.get().getReferencedProd().isPresent()
                 && !rcs.get().getReferencedProd().get().getName().equals(componentSymbol.get().getReferencedProd().get().getName())) {
               logError(rule.get(), attributename, componentSymbol.get(), "nonterminal " + rcs.get().getReferencedProd().get().getName(), a);
             }
           }else {
             //try to find NonTerminal with same Name, but with capitalised start -> will both become the same attribute
             rcs = ruleSymbol.get().getSpannedScope().resolveRuleComponent(StringTransformations.capitalize(attributename));
-            if (rcs.isPresent() && rcs.get().isNonterminal() && rcs.get().getReferencedProd().isPresent()
+            if (rcs.isPresent() && rcs.get().isIsNonterminal() && rcs.get().getReferencedProd().isPresent()
                 && !rcs.get().getReferencedProd().get().getName().equals(componentSymbol.get().getReferencedProd().get().getName())) {
               // logs error when e.g. State = F; A extends State = f:R;
               // because F form State will evaluate to attributeName with small f
