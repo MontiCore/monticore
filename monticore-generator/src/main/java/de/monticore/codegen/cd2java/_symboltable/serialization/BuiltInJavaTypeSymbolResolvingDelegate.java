@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 
 /**
  * TODO REPLACE ME WITH CLASS BuiltInJavaTypeSymbolResolvingDelegate IN MONTICORE-GRAMMAR MODULE!
- * (this is not available here in 5.4.0-SNAPSHOT due to bootstrapping)
+ * (this is not available here in 5.5.0-SNAPSHOT due to bootstrapping)
  */
 public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolvingDelegate {
 
@@ -68,7 +68,7 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolv
     javautil.add(new TypeSymbol("Optional"));
   }
 
-  @Override public Collection<TypeSymbol> resolveAdaptedTypeSymbol(boolean foundSymbols,
+  @Override public List<TypeSymbol> resolveAdaptedTypeSymbol(boolean foundSymbols,
       String symbolName, AccessModifier modifier, Predicate<TypeSymbol> predicate) {
     return gs.resolveTypeMany(foundSymbols, symbolName, modifier, predicate);
   }
