@@ -122,7 +122,63 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    //assertEquals(17, symbolTablePrinter.getCDMethodList().size());
+    assertEquals(23, symbolTablePrinter.getCDMethodList().size());
+  }
+
+  @Test
+  public void testSerializeFooMethod() {
+    ASTCDMethod method = getMethodBy("serializeFoo", symbolTablePrinter);
+    assertDeepEquals(PROTECTED, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertFalse(method.isEmptyCDParameters());
+    assertTrue(method.getCDParameterList().size() == 1);
+    assertTrue(method.getCDParameter(0).getName().equals("node"));
+    assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.FooSymbol", method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testSerializeFooExtraAttributeMethod() {
+    ASTCDMethod method = getMethodBy("serializeFooExtraAttribute", symbolTablePrinter);
+    assertDeepEquals(PROTECTED, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertFalse(method.isEmptyCDParameters());
+    assertTrue(method.getCDParameterList().size() == 1);
+    assertTrue(method.getCDParameter(0).getName().equals("extraAttribute"));
+    assertDeepEquals("boolean", method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testSerializeFooFooMethod() {
+    ASTCDMethod method = getMethodBy("serializeFooFoo", symbolTablePrinter);
+    assertDeepEquals(PROTECTED, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertFalse(method.isEmptyCDParameters());
+    assertTrue(method.getCDParameterList().size() == 1);
+    assertTrue(method.getCDParameter(0).getName().equals("foo"));
+    assertDeepEquals("List<String>", method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testSerializeFooBlaMethod() {
+    ASTCDMethod method = getMethodBy("serializeFooBla", symbolTablePrinter);
+    assertDeepEquals(PROTECTED, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertFalse(method.isEmptyCDParameters());
+    assertTrue(method.getCDParameterList().size() == 1);
+    assertTrue(method.getCDParameter(0).getName().equals("bla"));
+    assertDeepEquals("Optional<Integer>", method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testSerializeStateMethod() {
+    ASTCDMethod method = getMethodBy("serializeState", symbolTablePrinter);
+    assertDeepEquals(PROTECTED, method.getModifier());
+    assertFalse(method.getMCReturnType().isPresentMCType());
+
+    assertTrue(!method.isEmptyCDParameters());
+    assertTrue(method.getCDParameterList().size() == 1);
+    assertTrue(method.getCDParameter(0).getName().equals("node"));
+    assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.StateSymbol", method.getCDParameter(0).getMCType());
   }
 
   @Test
