@@ -96,7 +96,8 @@ public class TypeCheck {
     Optional<SymTypeExpression> result = synthesizeSymType.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD5 Internal Error: No SymType for return type: "
-              + astMCReturnType.printType() + ". Probably TypeCheck mis-configured.");
+              + astMCReturnType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
+              + ". Probably TypeCheck mis-configured.");
     }
     return result.get();
   }

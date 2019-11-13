@@ -3,6 +3,7 @@ package de.monticore.types;
 
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.se_rwth.commons.Joiners;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,15 +11,7 @@ import java.util.List;
 public class MCCollectionTypesNodeIdentHelper extends MCBasicTypesNodeIdentHelper {
 
   public String getIdent(ASTMCGenericType a) {
-    StringBuilder name = new StringBuilder();
-    List<String> nameList = Arrays.asList(a.printWithoutTypeArguments().split("\\."));
-    int nameListSize = nameList.size();
-    for (int i = 0; i < nameListSize; i++) {
-      name.append(nameList.get(i));
-      if (i != nameListSize - 1) {
-        name.append(".");
-      }
-    }
+    String name = Joiners.DOT.join(a.getNameList());
     return format(name.toString(), Layouter.nodeName(a));
   }
 
