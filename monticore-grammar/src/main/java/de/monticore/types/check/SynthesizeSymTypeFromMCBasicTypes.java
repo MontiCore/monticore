@@ -58,7 +58,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
 
   public void endVisit(ASTMCPrimitiveType primitiveType) {
     SymTypeConstant typeConstant =
-            SymTypeExpressionFactory.createTypeConstant(primitiveType.printType());
+            SymTypeExpressionFactory.createTypeConstant(primitiveType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
     result = Optional.of(typeConstant);
   }
   
@@ -76,7 +76,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
    */
   public void endVisit(ASTMCQualifiedType qType) {
     // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
-    result = Optional.of(SymTypeExpressionFactory.createTypeConstant(qType.printType()));
+    result = Optional.of(SymTypeExpressionFactory.createTypeConstant(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter())));
   }
   
   public void endVisit(ASTMCReturnType rType) {

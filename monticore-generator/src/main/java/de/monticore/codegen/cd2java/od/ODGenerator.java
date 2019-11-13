@@ -43,7 +43,7 @@ public class ODGenerator {
     final CDDefinitionSymbol cd = odHelper.getCd();
     final String astPackage = GeneratorHelper.getPackageName(odHelper.getPackageName(),
             GeneratorHelper.AST_PACKAGE_SUFFIX);
-    Optional<MCGrammarSymbol> grammarSymbol = grammar.getMCGrammarSymbolOpt();
+    Optional<MCGrammarSymbol> grammarSymbol = grammar.getSymbolOpt();
     if (!grammarSymbol.isPresent()) {
       return;
     }

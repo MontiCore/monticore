@@ -86,12 +86,12 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
       for (CDTypeSymbol cdTypeSymbol : currentCDSymbol.getTypes()) {
         // do not generate for enums (only classes and interfaces)
-        if (cdTypeSymbol.isEnum()) {
+        if (cdTypeSymbol.isIsEnum()) {
           continue;
         }
 
-        ASTMCType cocoType = cocoService.getCoCoType(cdTypeSymbol.getAstNode().get());
-        ASTMCType astType = astService.getASTType(cdTypeSymbol.getAstNode().get());
+        ASTMCType cocoType = cocoService.getCoCoType(cdTypeSymbol.getAstNode());
+        ASTMCType astType = astService.getASTType(cdTypeSymbol.getAstNode());
         String cocoCollectionName = MCCollectionTypesHelper.printType(astType).replaceAll("\\.", "_") + COCOS;
 
         // only create CoCoCollectionAttribute for the currentDiagram (so super CDDefinitionSymbol)

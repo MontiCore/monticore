@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
+
 public class AddAttributesOfExtendedInterfacesManipulation implements
     UnaryOperator<ASTCDCompilationUnit> {
   
@@ -47,7 +49,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
     List<ASTCDAttribute> attributes = new ArrayList<>();
     // TODO GV:use Cd4Analysis symboltable to get all interfaces recursively
     for (ASTMCObjectType interf : cdClass.getInterfaceList()) {
-      String interfaceName = Joiners.DOT.join(interf.getNameList());
+      String interfaceName = typeToString(interf);
       if (cDInterfaces.containsKey(interfaceName)) {
         for (ASTCDAttribute interfaceAttribute :cDInterfaces.get(interfaceName).getCDAttributeList()){
           if(cdClass.getCDAttributeList()

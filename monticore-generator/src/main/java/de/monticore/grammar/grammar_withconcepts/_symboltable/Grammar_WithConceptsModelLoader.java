@@ -2,7 +2,7 @@
 
 package de.monticore.grammar.grammar_withconcepts._symboltable;
 
-import java.util.Collection;
+import java.util.List;
 
 public class Grammar_WithConceptsModelLoader extends Grammar_WithConceptsModelLoaderTOP {
 
@@ -11,7 +11,7 @@ public class Grammar_WithConceptsModelLoader extends Grammar_WithConceptsModelLo
   }
 
   @Override
-  protected void showWarningIfParsedModels(Collection<?> asts, String modelName) {
+  protected void showWarningIfParsedModels(List<?> asts, String modelName) {
     // Do nothing
   }
 

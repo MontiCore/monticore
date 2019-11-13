@@ -10,8 +10,6 @@ import java.util.Optional;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 import static de.se_rwth.commons.logging.Log.errorIfNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 
 public class ProdSymbol extends ProdSymbolTOP {
 
@@ -19,22 +17,22 @@ public class ProdSymbol extends ProdSymbolTOP {
   /**
    * A extends B, C = ...
    */
-  private final List<ProdSymbolReference> superProds = new ArrayList<>();
+  private final List<ProdSymbolLoader> superProds = new ArrayList<>();
 
   /**
    * A implements B, C = ...
    */
-  private final List<ProdSymbolReference> superInterfaceProds = new ArrayList<>();
+  private final List<ProdSymbolLoader> superInterfaceProds = new ArrayList<>();
 
   /**
    * A astextends B, C, external.java.Type
    */
-  private List<MCProdOrTypeReference> astSuperClasses = new ArrayList<>();
+  private List<ProdSymbolLoader> astSuperClasses = new ArrayList<>();
 
   /**
    * A implements B, C, external.java.Type
    */
-  private List<MCProdOrTypeReference> astSuperInterfaces = new ArrayList<>();
+  private List<ProdSymbolLoader> astSuperInterfaces = new ArrayList<>();
 
   public ProdSymbol(String name) {
     super(name);
@@ -48,7 +46,7 @@ public class ProdSymbol extends ProdSymbolTOP {
     if (prevProdComp != null) {
       // a prod component is a list (*), if at list one of the prod components
       // is a list
-      prevProdComp.setIsList(prevProdComp.isList() || prodComp.isList());
+      prevProdComp.setIsList(prevProdComp.isIsList() || prodComp.isIsList());
       return prevProdComp;
     } else {
       getSpannedScope().add(prodComp);
@@ -77,47 +75,47 @@ public class ProdSymbol extends ProdSymbolTOP {
     return getSpannedScope().resolveAdditionalAttributeLocally(attributeName);
   }
 
-  public void addSuperProd(ProdSymbolReference superProdRef) {
+  public void addSuperProd(ProdSymbolLoader superProdRef) {
     this.superProds.add(errorIfNull(superProdRef));
   }
 
-  public List<ProdSymbolReference> getSuperProds() {
+  public List<ProdSymbolLoader> getSuperProds() {
     return copyOf(superProds);
   }
 
-  public void addSuperInterfaceProd(ProdSymbolReference superInterfaceProdRef) {
+  public void addSuperInterfaceProd(ProdSymbolLoader superInterfaceProdRef) {
     this.superInterfaceProds.add(errorIfNull(superInterfaceProdRef));
   }
 
-  public List<ProdSymbolReference> getSuperInterfaceProds() {
+  public List<ProdSymbolLoader> getSuperInterfaceProds() {
     return copyOf(superInterfaceProds);
   }
 
-  public void addAstSuperClass(MCProdOrTypeReference ref) {
+  public void addAstSuperClass(ProdSymbolLoader ref) {
     astSuperClasses.add(errorIfNull(ref));
   }
 
-  public List<MCProdOrTypeReference> getAstSuperClasses() {
+  public List<ProdSymbolLoader> getAstSuperClasses() {
     return copyOf(astSuperClasses);
   }
 
-  public void addAstSuperInterface(MCProdOrTypeReference ref) {
+  public void addAstSuperInterface(ProdSymbolLoader ref) {
     astSuperInterfaces.add(errorIfNull(ref));
   }
 
-  public List<MCProdOrTypeReference> getAstSuperInterfaces() {
+  public List<ProdSymbolLoader> getAstSuperInterfaces() {
     return copyOf(astSuperInterfaces);
   }
 
   public boolean isParserProd() {
-    return isClass() || isAbstract();
+    return isClass() || isIsAbstract();
   }
 
   /**
    * @return true, if production is a class production (which is the default)
    */
   public boolean isClass() {
-    return !isInterface() && !isAbstract() && !isExternal() && !isEnum() && !isLexerProd();
+    return !isIsInterface() && !isIsAbstract() && !isIsExternal() && !isIsEnum() && !isIsLexerProd();
   }
 
   @Override

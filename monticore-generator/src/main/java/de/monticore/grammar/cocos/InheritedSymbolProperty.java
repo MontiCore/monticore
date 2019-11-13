@@ -21,13 +21,13 @@ public class InheritedSymbolProperty implements GrammarASTProdCoCo {
 
   @Override
   public void check(ASTProd a) {
-    ProdSymbol s = a.getProdSymbol();
+    ProdSymbol s = a.getSymbol();
     Set<ProdSymbol> superProds = MCGrammarSymbolTableHelper.getAllSuperProds(s);
-    boolean found = s.isSymbolDefinition();
+    boolean found = s.isIsSymbolDefinition();
     for (ProdSymbol prod : superProds) {
-      if (found && prod.isSymbolDefinition()) {
+      if (found && prod.isIsSymbolDefinition()) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()), a.get_SourcePositionStart());
-      } else if (prod.isSymbolDefinition()) {
+      } else if (prod.isIsSymbolDefinition()) {
         found = true;
       }
     }

@@ -3,7 +3,6 @@ package de.monticore.types.mccollectiontypes._ast;
 
 
 import com.google.common.collect.Lists;
-import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -35,7 +34,7 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
   }
 
   public void setName(String name) {
-    // Name is fixed to "Map"   :  TODO: Internal Error, Error Msg
+    // Name is fixed to "Map"
   }
 
   @Override
@@ -70,7 +69,7 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
   }
 
   public void setNameList(List<String> names) {
-    // Name is fixed to "Map" TODO: Internal Error, Error Msg
+    // Name is fixed to "Map"
   }
 
   public void clearNames() {

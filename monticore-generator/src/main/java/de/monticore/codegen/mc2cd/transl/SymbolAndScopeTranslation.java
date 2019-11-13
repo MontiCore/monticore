@@ -85,18 +85,18 @@ public class SymbolAndScopeTranslation implements
       for (ASTRuleReference astRuleReference : astClassProd.getSuperInterfaceRuleList()) {
         Optional<ProdSymbol> prodSymbol = grammarSymbol.get().getProdWithInherited(astRuleReference.getName());
         if (prodSymbol.isPresent()) {
-          if (prodSymbol.get().isSymbolDefinition()) {
+          if (prodSymbol.get().isIsSymbolDefinition()) {
             String packageName = prodSymbol.get().getFullName().substring(0, prodSymbol.get().getFullName().lastIndexOf(".")).toLowerCase();
             String qualifiedName = packageName + "." + SYMBOL_TABLE_PACKAGE + "." + prodSymbol.get().getName() + SYMBOL_SUFFIX;
             TransformationHelper.addStereoType(astcdClass,
                 MC2CDStereotypes.INHERITED_SYMBOL.toString(), qualifiedName);
           }
-          if (prodSymbol.get().isScopeSpanning()) {
+          if (prodSymbol.get().isIsScopeSpanning()) {
             TransformationHelper.addStereoType(astcdClass,
                 MC2CDStereotypes.INHERITED_SCOPE.toString());
           }
-          if(prodSymbol.get().getAstNode().get() instanceof ASTParserProd){
-            addSymbolInheritedProperty((ASTParserProd) prodSymbol.get().getAstNode().get(), astcdClass);
+          if(prodSymbol.get().getAstNode() instanceof ASTParserProd){
+            addSymbolInheritedProperty((ASTParserProd) prodSymbol.get().getAstNode(), astcdClass);
           }
         }
       }
@@ -111,18 +111,18 @@ public class SymbolAndScopeTranslation implements
       for (ASTRuleReference astRuleReference : astClassProd.getSuperInterfaceRuleList()) {
         Optional<ProdSymbol> prodSymbol = grammarSymbol.get().getProdWithInherited(astRuleReference.getName());
         if (prodSymbol.isPresent()) {
-          if (prodSymbol.get().isSymbolDefinition()) {
+          if (prodSymbol.get().isIsSymbolDefinition()) {
             String packageName = prodSymbol.get().getFullName().substring(0, prodSymbol.get().getFullName().lastIndexOf(".")).toLowerCase();
             String qualifiedName = packageName + "." + SYMBOL_TABLE_PACKAGE + "." + prodSymbol.get().getName() + SYMBOL_SUFFIX;
             TransformationHelper.addStereoType(astcdClass,
                 MC2CDStereotypes.INHERITED_SYMBOL.toString(), qualifiedName);
           }
-          if (prodSymbol.get().isScopeSpanning()) {
+          if (prodSymbol.get().isIsScopeSpanning()) {
             TransformationHelper.addStereoType(astcdClass,
                 MC2CDStereotypes.INHERITED_SCOPE.toString());
           }
-          if(prodSymbol.get().getAstNode().get() instanceof ASTParserProd){
-            addSymbolInheritedProperty((ASTParserProd) prodSymbol.get().getAstNode().get(), astcdClass);
+          if(prodSymbol.get().getAstNode() instanceof ASTParserProd){
+            addSymbolInheritedProperty((ASTParserProd) prodSymbol.get().getAstNode(), astcdClass);
           }
         }
       }

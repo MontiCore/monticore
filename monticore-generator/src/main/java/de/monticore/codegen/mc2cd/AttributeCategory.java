@@ -10,6 +10,8 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 
+import static de.monticore.codegen.mc2cd.TransformationHelper.simpleName;
+
 /**
  * An enumeration of the different categories that ASTCDAttributes in a CD AST can fall into.
  */
@@ -47,14 +49,14 @@ public enum AttributeCategory {
   
   private static boolean isGenericList(ASTCDAttribute cdAttribute) {
     if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
-      return "List".equals(cdAttribute.getMCType().getBaseName());
+      return "List".equals(simpleName(cdAttribute.getMCType()));
     }
     return false;
   }
 
   private static boolean isOptional(ASTCDAttribute cdAttribute) {
     if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
-      return "Optional".equals(cdAttribute.getMCType().getBaseName());
+      return "Optional".equals(simpleName(cdAttribute.getMCType()));
     }
     return false;
   }
