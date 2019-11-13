@@ -30,7 +30,7 @@ public class OverridingNTs implements GrammarASTMCGrammarCoCo {
   
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = a.getSymbol();
     List<MCGrammarSymbol> grammarSymbols =  grammarSymbol.getSuperGrammarSymbols();
 
     for(MCGrammarSymbol s: grammarSymbols) {
@@ -53,7 +53,7 @@ public class OverridingNTs implements GrammarASTMCGrammarCoCo {
   }
 
   private void doCheck(Optional<ProdSymbol> typeSymbol, String type) {
-    if (typeSymbol.isPresent() && typeSymbol.get().isClass() && !typeSymbol.get().isAbstract()) {
+    if (typeSymbol.isPresent() && typeSymbol.get().isClass() && !typeSymbol.get().isIsAbstract()) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, typeSymbol.get().getName(), type));
     }
   }

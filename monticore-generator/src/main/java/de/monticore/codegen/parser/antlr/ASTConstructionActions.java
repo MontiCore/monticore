@@ -167,7 +167,7 @@ public class ASTConstructionActions {
 
     String tmp = "addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), _localctx.%tmp%.ret);";
     // TODO GV: || isConst()
-    if (symbolTable.getProdWithInherited(a.getName()).get().isEnum() ) {
+    if (symbolTable.getProdWithInherited(a.getName()).get().isIsEnum() ) {
       tmp = "addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), _localctx.%tmp%.ret);";
     }
     

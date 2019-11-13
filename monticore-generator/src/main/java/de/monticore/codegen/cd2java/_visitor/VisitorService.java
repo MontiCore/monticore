@@ -208,7 +208,7 @@ public class VisitorService extends AbstractService<VisitorService> {
    */
   public ASTCDDefinition calculateCDTypeNamesWithASTPackage(CDDefinitionSymbol input) {
     // transform inherited cd
-    ASTCDDefinition astcdDefinition = input.getAstNode().get().deepClone();
+    ASTCDDefinition astcdDefinition = input.getAstNode().deepClone();
     //set classname to correct Name with path
     String astPath = getASTPackage(input);
     astcdDefinition.getCDClassList().forEach(c -> c.setName(astPath + "." + c.getName()));

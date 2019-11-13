@@ -23,11 +23,6 @@ public class SymTypeConstant extends SymTypeExpression {
     this.setTypeInfo(typeInfo);
   }
   
-  @Deprecated  // TODO: delete weil TypeInfo nicht besetzt wird
-  public SymTypeConstant(String constName) {
-    this.constName = constName;
-  }
-  
   public String getConstName() {
     return constName;
   }

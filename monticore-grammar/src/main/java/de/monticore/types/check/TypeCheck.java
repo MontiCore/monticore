@@ -5,6 +5,7 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
@@ -69,7 +70,7 @@ public class TypeCheck {
     Optional<SymTypeExpression> result = synthesizeSymType.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD4 Internal Error: No SymType for: "
-              + astMCType.printType() + ". Probably TypeCheck mis-configured.");
+              + astMCType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ". Probably TypeCheck mis-configured.");
     }
     return result.get();
   }
@@ -119,8 +120,6 @@ public class TypeCheck {
     }
     return result.get();
   }
-  // TODO RE: Die Funktion muss noch getestet werden (und sein Expression-Visitor insbesondere auch)
-  // könnte man in    DeriveSymType.*Expression.*Test ablegen
   
   /**
    * Function 2b: Derive the SymTypeExpression of a Literal

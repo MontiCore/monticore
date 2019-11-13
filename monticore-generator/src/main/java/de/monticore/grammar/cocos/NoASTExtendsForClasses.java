@@ -7,10 +7,12 @@ import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCProdOrTypeReference;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.se_rwth.commons.Joiners;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Map;
@@ -27,17 +29,17 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
   
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = a.getSymbol();
     Map<String, ProdSymbol> allProds = grammarSymbol.getProdsWithInherited();
     
     for (ProdSymbol classProd : grammarSymbol.getProds()) {
-      for (MCProdOrTypeReference sClass : classProd.getAstSuperClasses()) {
+      for (ProdSymbolLoader sClass : classProd.getAstSuperClasses()) {
         if (!allProds.containsKey(
-            sClass.getProdRef().getName().substring(TransformationHelper.AST_PREFIX.length()))) {
+            sClass.getName().substring(TransformationHelper.AST_PREFIX.length()))) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
               classProd.getName(),
-              sClass.getProdRef().getName(),
-              classProd.getAstNode().get().get_SourcePositionStart()));
+              Names.getSimpleName(sClass.getName()),
+              classProd.getAstNode().get_SourcePositionStart()));
         }
       }
     }
@@ -47,10 +49,10 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
         ProdSymbol prod = allProds.get(rule.getType());
         if (prod.isClass()) {
           for (ASTMCType type : rule.getASTSuperClassList()) {
-            String simpleName = type.getBaseName();
+            String simpleName = simpleName(type);
             if (!allProds.containsKey(simpleName.substring(TransformationHelper.AST_PREFIX.length()))) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
-                  rule.getType(), Joiners.DOT.join(type.getNameList()),
+                  rule.getType(), simpleName,
                   rule.get_SourcePositionStart()));
             }
           }
@@ -58,5 +60,16 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
       }
     }
   }
-  
+
+  protected static String simpleName(ASTMCType type) {
+    String name;
+    if (type instanceof ASTMCGenericType) {
+      name = ((ASTMCGenericType) type).printWithoutTypeArguments();
+    } else if (type instanceof ASTMCArrayType) {
+      name = ((ASTMCArrayType) type).printTypeWithoutBrackets();
+    } else {
+      name = type.printType();
+    }
+    return Names.getSimpleName(name);
+  }
 }
