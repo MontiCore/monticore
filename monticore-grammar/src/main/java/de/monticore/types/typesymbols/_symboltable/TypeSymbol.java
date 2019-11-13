@@ -14,10 +14,13 @@ public class TypeSymbol extends TypeSymbolTOP {
 
 
 
+
+
+
   /**
    * get a list of all the methods the type definition can access
    */
-  @Override
+
   public List<MethodSymbol> getMethodList() {
     if (spannedScope == null || spannedScope.getMethodSymbols() == null || spannedScope.getMethodSymbols().isEmpty()) {
       return Lists.newArrayList();
@@ -35,7 +38,7 @@ public class TypeSymbol extends TypeSymbolTOP {
   /**
    * get a list of all the fields the type definition can access
    */
-  @Override
+
   public List<FieldSymbol> getFieldList() {
     if (spannedScope == null || spannedScope.getFieldSymbols() == null || spannedScope.getFieldSymbols().isEmpty()) {
       return Lists.newArrayList();
@@ -50,4 +53,20 @@ public class TypeSymbol extends TypeSymbolTOP {
     return spannedScope.resolveFieldMany(fieldname);
   }
 
+  public List<TypeVarSymbol> getTypeParameterList() {
+    return spannedScope.getTypeVarSymbols().values();
+  }
+
+
+  public void addTypeVarSymbol(TypeVarSymbol t) {
+    spannedScope.add(t);
+  }
+
+  public void addFieldSymbol(FieldSymbol f) {
+    spannedScope.add(f);
+  }
+
+  public void addMethodSymbol(MethodSymbol m) {
+    spannedScope.add(m);
+  }
 }
