@@ -17,7 +17,6 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
     super(printer);
     this.printer=printer;
     realThis = this;
-
   }
 
   @Override
@@ -107,6 +106,7 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
   public void handle(ASTPrimaryGenericInvocationExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getExtTypeArguments().accept(getRealThis());
+    getPrinter().print(" ");
     node.getGenericInvocationSuffix().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
