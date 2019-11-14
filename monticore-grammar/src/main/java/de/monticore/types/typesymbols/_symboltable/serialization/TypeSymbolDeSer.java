@@ -15,21 +15,6 @@ import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 public class TypeSymbolDeSer extends TypeSymbolDeSerTOP {
 
   @Override
-  protected List<MethodSymbol> deserializeMethods(JsonObject symbolJson, ITypeSymbolsScope enclosingScope) {
-    return ListDeSer.of(new MethodSymbolDeSer()).deserialize(symbolJson.getMember("methodSymbol"), enclosingScope);
-  }
-
-  @Override
-  protected List<FieldSymbol> deserializeFields(JsonObject symbolJson, ITypeSymbolsScope enclosingScope) {
-    return ListDeSer.of(new FieldSymbolDeSer()).deserialize(symbolJson.getMember("fields"), enclosingScope);
-  }
-
-  @Override
-  protected List<TypeVarSymbol> deserializeTypeParameters(JsonObject symbolJson, ITypeSymbolsScope enclosingScope) {
-    return ListDeSer.of(new TypeVarSymbolDeSer()).deserialize(symbolJson.getMember("typeParameters"), enclosingScope);
-  }
-
-  @Override
   protected List<SymTypeExpression> deserializeSuperTypes(JsonObject symbolJson, ITypeSymbolsScope enclosingScope) {
     return ListDeSer.of(SymTypeExpressionDeSer.getInstance()).deserialize(symbolJson.getMember("superTypes"), enclosingScope);
   }
