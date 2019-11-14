@@ -12,18 +12,10 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
  * name expression and set the inner expression to the inner expression of the inner expression
  *
  * This makes it far easier to calculate the type of a call expression
+ *
+ * Visitor Run is idempotent (use #2430 technique if available)
+ * actually this is called in DeriveSymTypeOfCommonExpressions
  */
-// TODO: BEschreiben
-// TODO 4Rel:
-// this class is used by DeriveSymTypeOfCommonExpressions (muss einmal benutzt werden und ende)
-
-
-// to derive a name for ASTCallExpression
-// However, call expressions not necessarily have a name. Unclear, what the purpose is
-
-// Wenn es darum geht, bei einem call der form  "foo(x,y)" das foo zu extrahieren, lässt sich das
-// auch regeln, ohne im Baum Veränderungen vorzunehmen, zB durch lokales speichern und übergabe
-// des Ergebnisses and en Aufrufer
 
 public class NameToCallExpressionVisitor implements CommonExpressionsVisitor {
 
@@ -31,13 +23,16 @@ public class NameToCallExpressionVisitor implements CommonExpressionsVisitor {
   private ASTExpression lastExpression = null;
 
   public void traverse(ASTCallExpression expr){
-    expr.getExpression().accept(this);
-    if(lastName!=null) {
-      expr.setName(lastName);
-      lastName=null;
-    }
-    if(lastExpression!=null){
-      expr.setExpression(lastExpression);
+    // avoid run if Name is already set
+    if (expr.getName()==null || expr.getName().isEmpty()) {
+      expr.getExpression().accept(this);
+      if (lastName != null) {
+        expr.setName(lastName);
+        lastName = null;
+      }
+      if (lastExpression != null) {
+        expr.setExpression(lastExpression);
+      }
     }
   }
 
