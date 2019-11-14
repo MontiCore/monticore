@@ -68,7 +68,7 @@ public class SymbolAndScopeTranslationTest {
 
   @Test
   public void testSimpleSymbolClass() {
-    ASTCDClass astType = getClassBy("ASTSymbolClass", symbolCD);
+    ASTCDClass astType = getClassBy("ASTSimpleSymbolClass", symbolCD);
     assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(1, astType.getModifier().getStereotype().getValueList().size());
@@ -76,6 +76,17 @@ public class SymbolAndScopeTranslationTest {
     assertFalse(astType.getModifier().getStereotype().getValue(0).isPresentValue());
   }
 
+  @Test
+  public void testSymbolClassOverwritten() {
+    ASTCDClass astType = getClassBy("ASTSymbolClass", symbolCD);
+    assertTrue(astType.isPresentModifier());
+    assertTrue(astType.getModifier().isPresentStereotype());
+    assertEquals(1, astType.getModifier().getStereotype().getValueList().size());
+    assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValue(0).getName());
+    assertTrue(astType.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals("mc2cdtransformation.symboltransl.symbolrule._symboltable.SymbolClassSymbol",
+        astType.getModifier().getStereotype().getValue(0).getValue());
+  }
   /**
    * scope test
    */
