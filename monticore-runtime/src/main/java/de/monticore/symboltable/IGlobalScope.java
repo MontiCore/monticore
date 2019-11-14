@@ -5,6 +5,8 @@
  */
 package de.monticore.symboltable;
 
+import de.monticore.io.paths.ModelPath;
+
 /**
  * Common interface for all global scopes
  */
@@ -14,5 +16,5 @@ public interface IGlobalScope {
    * Method returning the model path of this global scope
    * @return
    */
-   public  de.monticore.io.paths.ModelPath getModelPath () ;
+   public ModelPath getModelPath () ;
 }
