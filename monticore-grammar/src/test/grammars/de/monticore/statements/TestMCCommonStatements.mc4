@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+grammar TestMCCommonStatements extends de.monticore.statements.MCCommonStatements, de.monticore.literals.MCCommonLiterals {
+
+}

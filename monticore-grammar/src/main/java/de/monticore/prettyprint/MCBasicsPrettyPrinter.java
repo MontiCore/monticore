@@ -16,7 +16,7 @@ public class MCBasicsPrettyPrinter implements MCBasicsVisitor {
 
   private MCBasicsVisitor realThis = this;
 
-  protected IndentPrinter printer = null;
+  protected IndentPrinter printer;
 
   /**
    * Constructor.

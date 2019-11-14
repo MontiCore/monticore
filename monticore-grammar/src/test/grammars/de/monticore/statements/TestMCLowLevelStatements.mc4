@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+grammar TestMCLowLevelStatements extends de.monticore.statements.MCLowLevelStatements , de.monticore.literals.MCCommonLiterals{
+
+
+}
