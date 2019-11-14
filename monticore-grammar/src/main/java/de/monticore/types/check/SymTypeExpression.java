@@ -67,7 +67,7 @@ public abstract class SymTypeExpression {
     }else{
       //compare type arguments of SymTypeExpression(actual type) and its TypeSymbol(type definition)
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
-      List<TypeVarSymbol> typeVariableArguments = typeInfo.deepClone().getTypeParameterList();
+      List<TypeVarSymbol> typeVariableArguments = typeInfo.getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");
@@ -136,7 +136,7 @@ public abstract class SymTypeExpression {
     }else{
       //compare type arguments of SymTypeExpression(actual type) and its TypeSymbol(type definition)
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
-      List<TypeVarSymbol> typeVariableArguments = typeInfo.deepClone().getTypeParameterList();
+      List<TypeVarSymbol> typeVariableArguments = typeInfo.getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");
