@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.List;
@@ -67,7 +68,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     List<ASTCDAttribute> mandatoryAttributes = builderAttributes.stream()
         .filter(a -> !GeneratorHelper.isListType(a.printType()))
         .filter(a -> !GeneratorHelper.isOptional(a))
-        .filter(a -> !GeneratorHelper.isPrimitive(a.getMCType()))
+        .filter(a -> !(a.getMCType() instanceof ASTMCPrimitiveType))
         .filter(a -> !service.isInherited(a))
         .collect(Collectors.toList());
 

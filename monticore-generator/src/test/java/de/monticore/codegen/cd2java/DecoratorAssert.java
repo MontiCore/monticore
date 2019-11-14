@@ -5,10 +5,10 @@ import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
-import de.monticore.types.MCFullGenericTypesHelper;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,7 +32,7 @@ public final class DecoratorAssert {
   }
 
   private static String getAsString(ASTNode node) {
-    return node instanceof ASTMCType ? MCFullGenericTypesHelper.printType((ASTMCType) node) : node.toString();
+    return node instanceof ASTMCType ? ((ASTMCType) node).printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) : node.toString();
   }
 
   public static void assertDeepEquals(CDModifier expected, ASTNode actual) {

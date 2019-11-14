@@ -9,8 +9,8 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
   protected abstract List<String> getMethodSignatures();
 
   protected String getTypeArgumentFromListType(ASTMCType type) {
-    String typeString = FullGenericTypesPrinter.printType(type);
+    String typeString = type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     int lastListIndex = typeString.lastIndexOf("List<") + 5;
     return typeString.substring(lastListIndex, typeString.length() - 1);
   }
