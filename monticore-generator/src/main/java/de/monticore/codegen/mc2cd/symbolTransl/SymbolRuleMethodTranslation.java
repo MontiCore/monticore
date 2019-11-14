@@ -10,7 +10,7 @@ import de.monticore.grammar.grammar._ast.ASTMethodParameter;
 import de.monticore.grammar.grammar._ast.ASTSymbolRule;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.statements.mccommonstatements._ast.ASTBlockStatement;
-import de.monticore.types.FullGenericTypesPrinter;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
@@ -33,10 +33,10 @@ public class SymbolRuleMethodTranslation implements UnaryOperator<Link<ASTMCGram
     ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
-    String dotSeparatedName = FullGenericTypesPrinter.printReturnType(method.getMCReturnType());
+    String dotSeparatedName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(method.getMCReturnType());
     cdMethod.setMCReturnType(TransformationHelper.createReturnType(dotSeparatedName));
     for (ASTMethodParameter param : method.getMethodParameterList()) {
-      String typeName = FullGenericTypesPrinter.printType(param.getType());
+      String typeName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(param.getType());
       cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     return cdMethod;

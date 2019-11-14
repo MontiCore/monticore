@@ -18,11 +18,11 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.MCCollectionTypesHelper;
-import de.monticore.types.MCSimpleGenericTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Joiners;
@@ -41,7 +41,7 @@ import static de.monticore.grammar.Multiplicity.multiplicityByAlternative;
 import static de.monticore.grammar.Multiplicity.multiplicityByIteration;
 import static java.util.Collections.max;
 
-public class GeneratorHelper extends MCSimpleGenericTypesHelper {
+public class GeneratorHelper {
 
   public static final String AST_PREFIX = "AST";
 
@@ -154,8 +154,33 @@ public class GeneratorHelper extends MCSimpleGenericTypesHelper {
     return nameAsList.get(nameAsList.size() - 1);
   }
 
-  public static boolean isOptional(ASTCDAttribute attribute) {
+  public static boolean isOptional(ASTCDAttribute attribute)
+  {
     return isOptional(attribute.getMCType());
+  }
+
+  public static boolean isOptional(ASTMCType type) {
+    return isGenericTypeWithOneTypeArgument(type, OPTIONAL);
+  }
+
+  public static boolean isGenericTypeWithOneTypeArgument(ASTMCType type, String simpleRefTypeName) {
+    if (!(type instanceof ASTMCGenericType)) {
+      return false;
+    }
+    ASTMCGenericType simpleRefType = (ASTMCGenericType) type;
+    if (simpleRefType.getMCTypeArgumentList().isEmpty() || simpleRefType.getMCTypeArgumentList().size() != 1) {
+      return false;
+    }
+
+    if (simpleRefType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).split("\\.").length == 1 && simpleRefTypeName.contains(".")) {
+      if (simpleRefTypeName.endsWith("." + simpleRefType.printWithoutTypeArguments())) {
+        return true;
+      }
+    }
+    if (simpleRefType.printWithoutTypeArguments().equals(simpleRefTypeName)) {
+      return true;
+    }
+    return false;
   }
 
   public static boolean isOptional(CDTypeSymbol type) {
@@ -179,7 +204,7 @@ public class GeneratorHelper extends MCSimpleGenericTypesHelper {
     if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
       return false;
     } else {
-      List<String> listName = MCCollectionTypesHelper.createListFromDotSeparatedString(typeName);
+      List<String> listName = Arrays.asList(typeName.split("\\."));
       if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
         return false;
       }

@@ -9,7 +9,7 @@ import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
 
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.*;
 
 public class AttributeInScopeRuleToCDAttribute implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

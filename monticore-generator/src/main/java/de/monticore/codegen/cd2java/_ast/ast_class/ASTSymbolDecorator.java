@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a list of symbol attributes that are used for the AST class

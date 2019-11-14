@@ -19,7 +19,7 @@ import java.util.Optional;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static org.junit.Assert.*;
 
 public class ASTSymbolDecoratorTest extends DecoratorTestCase {
