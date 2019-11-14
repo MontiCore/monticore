@@ -71,7 +71,14 @@ public class JsonPrinter {
   public static void disableIndentation() {
     JsonPrinter.enableIndentation = false;
   }
-  
+
+  /**
+   *
+   * @return serializeEmptyLists
+   */
+  public boolean isSerializingEmptyLists() {
+    return serializeEmptyLists;
+  }
   /**
    * Prints the begin of an object in Json notation.
    */
