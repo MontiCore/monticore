@@ -56,9 +56,9 @@ public class DeriveSymTypeOfBitExpressionsTest {
     // some FieldSymbols (ie. Variables, Attributes)
     TypeSymbol p = new TypeSymbol("Person");
     TypeSymbol s = new TypeSymbol("Student");
-    s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", p)));
+    s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
     TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
-    f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", s)));
+    f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("vardouble", _doubleSymType));
@@ -66,12 +66,12 @@ public class DeriveSymTypeOfBitExpressionsTest {
     add2scope(scope, field("varfloat", _floatSymType));
     add2scope(scope, field("varlong", _longSymType));
     add2scope(scope, field("varint", _intSymType));
-    add2scope(scope, field("varString",SymTypeExpressionFactory.createTypeObject("String",_String)));
-    add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",p)));
-    add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObject("Person",p)));
-    add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",s)));
-    add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObject("Student",s)));
-    add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",f)));
+    add2scope(scope, field("varString",SymTypeExpressionFactory.createTypeObject("String",scope)));
+    add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",scope)));
+    add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObject("Person",scope)));
+    add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",scope)));
+    add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObject("Student",scope)));
+    add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",scope)));
     derLit.setScope(scope);
 
     LogStub.init();

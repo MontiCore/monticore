@@ -8,10 +8,7 @@ import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSy
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.MethodSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
+import de.monticore.types.typesymbols._symboltable.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +18,8 @@ import java.util.stream.Collectors;
 
 public class CD2EHelper {
 
+  private ITypeSymbolsScope iTypeSymbolsScope;
+
   private Map<String, SymTypeExpression> symTypeExpressionMap = new HashMap<>();
 
   private Map<String, TypeSymbol> typeSymbolMap = new HashMap<>();
@@ -28,6 +27,10 @@ public class CD2EHelper {
   private Map<String, FieldSymbol> fieldSymbolMap = new HashMap<>();
 
   private Map<String, MethodSymbol> methodSymbolMap = new HashMap<>();
+
+  public CD2EHelper() {
+    this.iTypeSymbolsScope = TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build();
+  }
 
   public TypeSymbol createTypeSymbolFormCDTypeSymbol(CDTypeSymbol cdTypeSymbol) {
     if (typeSymbolMap.containsKey(cdTypeSymbol.getName())) {
@@ -129,20 +132,23 @@ public class CD2EHelper {
       if (symbolLoader.isSymbolLoaded()) {
         // if typeSymbol is already loaded
         TypeSymbol typeSymbol = createTypeSymbolFormCDTypeSymbol(symbolLoader.getLoadedSymbol());
-        symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
+        iTypeSymbolsScope.add(typeSymbol);
+        symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(),iTypeSymbolsScope);
       } else {
         // is typeSymbol can be loaded
         Optional<CDTypeSymbol> cdTypeSymbol = symbolLoader.loadSymbol();
         if (cdTypeSymbol.isPresent()) {
           TypeSymbol typeSymbol = createTypeSymbolFormCDTypeSymbol(symbolLoader.getLoadedSymbol());
-          symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
+          iTypeSymbolsScope.add(typeSymbol);
+          symTypeExpression = SymTypeExpressionFactory.createTypeExpression( typeSymbol.getName(),iTypeSymbolsScope);
         } else {
           // if typeSymbol could not be loaded
           String typeName = symbolLoader.getName();
           TypeSymbol typeSymbol = TypeSymbolsSymTabMill.typeSymbolBuilder()
               .setName(typeName)
               .build();
-          symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
+          iTypeSymbolsScope.add(typeSymbol);
+          symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(),iTypeSymbolsScope);
         }
       }
       symTypeExpressionMap.put(symbolLoader.getName(), symTypeExpression);
@@ -152,12 +158,12 @@ public class CD2EHelper {
 
   public SymTypeOfGenerics createSymTypeListFormCDTypeSymbolReference(CDTypeSymbolLoader cdTypeSymbolReference) {
     SymTypeExpression symTypeExpression = createSymTypeExpressionFormCDTypeSymbolReference(cdTypeSymbolReference);
-    return SymTypeExpressionFactory.createGenerics("List", Lists.newArrayList(symTypeExpression));
+    return SymTypeExpressionFactory.createGenerics("List", iTypeSymbolsScope, Lists.newArrayList(symTypeExpression));
   }
 
   public SymTypeOfGenerics createSymTypeOptionalFormCDTypeSymbolReference(CDTypeSymbolLoader cdTypeSymbolReference) {
     SymTypeExpression symTypeExpression = createSymTypeExpressionFormCDTypeSymbolReference(cdTypeSymbolReference);
-    return SymTypeExpressionFactory.createGenerics("Optional", Lists.newArrayList(symTypeExpression));
+    return SymTypeExpressionFactory.createGenerics("Optional", iTypeSymbolsScope, Lists.newArrayList(symTypeExpression));
   }
 
   public Optional<FieldSymbol> createFieldSymbolFormCDAssociationSymbol(CDAssociationSymbol cdAssociationSymbol, CDTypeSymbol cdTypeSymbol) {

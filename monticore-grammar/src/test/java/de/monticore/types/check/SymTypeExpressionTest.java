@@ -2,60 +2,69 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
 
+import static de.monticore.types.check.DefsTypeBasic.add2scope;
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class SymTypeExpressionTest {
 
+  private static TypeSymbolsScope scope = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
+
   // setup of objects (unchanged during tests)
   SymTypeExpression teDouble = createTypeConstant("double");
 
   SymTypeExpression teInt = createTypeConstant("int");
 
-  SymTypeExpression teVarA = createTypeVariable("A", new TypeSymbol("long"));
+  SymTypeExpression teVarA = createTypeVariable("A", scope);
 
-  SymTypeExpression teVarB = createTypeVariable("B", new TypeSymbol("long"));
+  SymTypeExpression teVarB = createTypeVariable("B", scope);
 
-  SymTypeExpression teP = createTypeObject("de.x.Person", new TypeSymbol("long"));
+  SymTypeExpression teP = createTypeObject("de.x.Person", scope);
 
   SymTypeExpression teH = createTypeObject("Human",
-      new TypeSymbol("long"));  // on purpose: package missing
+      scope);  // on purpose: package missing
 
   SymTypeExpression teVoid = createTypeVoid();
 
   SymTypeExpression teNull = createTypeOfNull();
 
-  SymTypeExpression teArr1 = createTypeArray(1, teH, (TypeSymbol) null);
+  SymTypeExpression teArr1 = createTypeArray(teH.print(), scope, 1, teH);
 
-  SymTypeExpression teArr3 = createTypeArray(3, teInt, (TypeSymbol) null);
+  SymTypeExpression teArr3 = createTypeArray(teInt.print(), scope, 3, teInt);
 
-  SymTypeExpression teSet = createGenerics("java.util.Set", Lists.newArrayList(teP),
-      (TypeSymbol) null);
+  SymTypeExpression teSet = createGenerics("java.util.Set", scope, Lists.newArrayList(teP));
 
-  SymTypeExpression teSetA = createGenerics("java.util.Set", Lists.newArrayList(teVarA),
-      (TypeSymbol) null);
+  SymTypeExpression teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
 
-  SymTypeExpression teMap = createGenerics("Map", Lists.newArrayList(teInt, teP),
-      (TypeSymbol) null); // no package!
+  SymTypeExpression teMap = createGenerics("Map", scope, Lists.newArrayList(teInt, teP)); // no package!
 
-  SymTypeExpression teFoo = createGenerics("x.Foo", Lists.newArrayList(teP, teDouble, teInt, teH),
-      (TypeSymbol) null);
+  SymTypeExpression teFoo = createGenerics("x.Foo", scope,  Lists.newArrayList(teP, teDouble, teInt, teH));
 
-  SymTypeExpression teDeep1 = createGenerics("java.util.Set", Lists.newArrayList(teMap),
-      (TypeSymbol) null);
+  SymTypeExpression teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
 
-  SymTypeExpression teDeep2 = createGenerics("java.util.Map2", Lists.newArrayList(teInt, teDeep1),
-      (TypeSymbol) null);
+  SymTypeExpression teDeep2 = createGenerics("java.util.Map2", scope, Lists.newArrayList(teInt, teDeep1));
+
+  @BeforeClass
+  public static void setUpScope(){
+    scope.add(new TypeSymbol("long"));
+  }
 
   @Test
   public void printTest() {

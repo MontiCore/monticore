@@ -39,7 +39,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private MCTypeFacade MCTypeFacade;
+  private MCTypeFacade mcTypeFacade;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
@@ -50,7 +50,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     Log.init();
-    this.MCTypeFacade = MCTypeFacade.getInstance();
+    this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -126,7 +126,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(AUTOMATON_SYMBOL),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL),
         method.getCDParameter(0).getMCType());
     assertEquals("toSerialize", method.getCDParameter(0).getName());
   }
@@ -134,7 +134,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeStringMethod() {
     List<ASTCDMethod> methods = getMethodsBy("deserialize", 1, symbolDeSer);
-    ASTMCType astType = this.MCTypeFacade.createStringType();
+    ASTMCType astType = this.mcTypeFacade.createStringType();
 
     assertTrue(methods.stream().anyMatch(m -> m.getCDParameter(0).getMCType()
         .deepEquals(astType)));
@@ -154,7 +154,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeJsonObjectMethod() {
     List<ASTCDMethod> methods = getMethodsBy("deserialize", 1, symbolDeSer);
-    ASTMCType astType = this.MCTypeFacade.createQualifiedType("de.monticore.symboltable.serialization.json.JsonObject");
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType("de.monticore.symboltable.serialization.json.JsonObject");
 
     assertTrue(methods.stream().anyMatch(m -> m.getCDParameter(0).getMCType()
         .deepEquals(astType)));

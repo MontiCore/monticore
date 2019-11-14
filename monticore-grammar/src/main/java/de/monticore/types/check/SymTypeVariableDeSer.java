@@ -7,6 +7,7 @@ import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
 public class SymTypeVariableDeSer implements IDeSer<SymTypeVariable> {
@@ -40,7 +41,7 @@ public class SymTypeVariableDeSer implements IDeSer<SymTypeVariable> {
       JsonObject o = serialized.getAsJsonObject();  //if it has a kind, it is an object
       String varName = o.getStringMember("varName");
       TypeSymbol typeLoader = null; // TODO AB: waits for TypeSymbolLoader
-      return SymTypeExpressionFactory.createTypeVariable(varName, typeLoader);
+      return SymTypeExpressionFactory.createTypeVariable(varName, new TypeSymbolsScope());
     }
     Log.error("0x823F5 Internal error: Cannot load \"" + serialized + "\" as  SymTypeVariable!");
     return null;

@@ -6,7 +6,9 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
@@ -17,31 +19,31 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class SymTypeExpressionDeSerTest {
-  //TODO AB: Replace TypSymbol constructors with real values and mill
+  private static TypeSymbolsScope scope = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
 
   // setup of objects (unchanged during tests) 
   // these should be the same as those of SymTypeExpressionText
   SymTypeExpression teDouble = createTypeConstant("double");
   SymTypeExpression teInt = createTypeConstant("int");
-  SymTypeExpression teVarA = createTypeVariable("A", null);
-  SymTypeExpression teVarB = createTypeVariable("B", null);
-  SymTypeExpression teP = createTypeObject("de.x.Person", new TypeSymbol("long"));
-  SymTypeExpression teH = createTypeObject("Human", new TypeSymbol("long"));  // on purpose: package missing
+  SymTypeExpression teVarA = createTypeVariable("A", scope);
+  SymTypeExpression teVarB = createTypeVariable("B", scope);
+  SymTypeExpression teP = createTypeObject("de.x.Person", scope);
+  SymTypeExpression teH = createTypeObject("Human", scope);  // on purpose: package missing
   SymTypeExpression teVoid = createTypeVoid();
   SymTypeExpression teNull = createTypeOfNull();
-  SymTypeExpression teArr1 = createTypeArray(1, teH, new TypeSymbol("long"));
-  SymTypeExpression teArr3 = createTypeArray(3, teInt, new TypeSymbol("long"));
-  SymTypeExpression teSet = createGenerics("java.util.Set", Lists.newArrayList(teP), new TypeSymbol("long"));
-  SymTypeExpression teSetA = createGenerics("java.util.Set", Lists.newArrayList(teVarA), new TypeSymbol("long"));
-  SymTypeExpression teMap = createGenerics("Map", Lists.newArrayList(teInt,teP), (TypeSymbol) new TypeSymbol("long")); // no package!
-  SymTypeExpression teFoo = createGenerics("x.Foo", Lists.newArrayList(teP,teDouble,teInt,teH), new TypeSymbol("long"));
-  SymTypeExpression teDeep1 = createGenerics("java.util.Set", Lists.newArrayList(teMap), new TypeSymbol("long"));
-  SymTypeExpression teDeep2 = createGenerics("java.util.Map2", Lists.newArrayList(teInt,teDeep1), new TypeSymbol("long"));
+  SymTypeExpression teArr1 = createTypeArray(teH.print(), scope,  1, teH);
+  SymTypeExpression teArr3 = createTypeArray(teInt.print(), scope, 3, teInt);
+  SymTypeExpression teSet = createGenerics("java.util.Set", scope, Lists.newArrayList(teP));
+  SymTypeExpression teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
+  SymTypeExpression teMap = createGenerics("Map", scope, Lists.newArrayList(teInt,teP)); // no package!
+  SymTypeExpression teFoo = createGenerics("x.Foo", scope, Lists.newArrayList(teP,teDouble,teInt,teH));
+  SymTypeExpression teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
+  SymTypeExpression teDeep2 = createGenerics("java.util.Map2", scope, Lists.newArrayList(teInt,teDeep1));
 
   @BeforeClass
   public static void init() {
-//    LogStub.init();
     Log.enableFailQuick(false);
+    scope.add(new TypeSymbol("long"));
   }
 
   @Test

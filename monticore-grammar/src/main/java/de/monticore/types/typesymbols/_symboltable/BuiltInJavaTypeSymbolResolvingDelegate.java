@@ -17,13 +17,9 @@ import java.util.function.Predicate;
  */
 public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolvingDelegate {
 
-  protected static TypeSymbolsGlobalScope gs;
+  protected static TypeSymbolsGlobalScope gs = initScope();
 
-  public BuiltInJavaTypeSymbolResolvingDelegate() {
-    init();
-  }
-
-  protected static void init() {
+  protected static TypeSymbolsGlobalScope initScope() {
     gs = new TypeSymbolsGlobalScope(new ModelPath(),
         new TypeSymbolsLanguage("Types Symbols Language", "ts") {
           @Override public MCConcreteParser getParser() {
@@ -61,11 +57,16 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolv
     javautil.add(new TypeSymbol("Optional"));
 
     //TODO complete me with other built in types
+    return gs;
   }
 
   @Override public List<TypeSymbol> resolveAdaptedTypeSymbol(boolean foundSymbols,
       String symbolName, AccessModifier modifier, Predicate<TypeSymbol> predicate) {
     return gs.resolveTypeMany(foundSymbols, symbolName, modifier, predicate);
+  }
+
+  public static TypeSymbolsScope getScope(){
+    return gs;
   }
 
 }

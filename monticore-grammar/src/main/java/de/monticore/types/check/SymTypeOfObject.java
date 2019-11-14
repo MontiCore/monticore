@@ -3,7 +3,9 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 
 import java.util.Optional;
 
@@ -13,30 +15,21 @@ import java.util.Optional;
  * Symbol behind that full qualified class name to retrieve
  */
 public class SymTypeOfObject extends SymTypeExpression {
-  
+
   /**
-   * An SymTypeOfObject has a name.
-   * This is always the full qualified name (i.e. including package)
+   * Constructor: with a TypeSymbolLoader that contains the name and enclosingScope
    */
-  protected String objFullName;
-  
-  /**
-   * Constructor: with the full name and the TypeSymbol behind
-   * @param objFullName
-   * @param typeInfo
-   */
-  public SymTypeOfObject(String objFullName, TypeSymbol typeInfo)
+  public SymTypeOfObject(TypeSymbolLoader typeSymbolLoader)
   {
-    this.objFullName = objFullName;
-    this.typeInfo = typeInfo;
+    this.typeSymbolLoader = typeSymbolLoader;
   }
-  
+
   public String getObjName() {
-    return objFullName;
+    return typeSymbolLoader.getName();
   }
   
   public void setObjName(String objname) {
-    this.objFullName = objname;
+    this.typeSymbolLoader.setName(objname);
   }
   
   /**
@@ -62,8 +55,7 @@ public class SymTypeOfObject extends SymTypeExpression {
 
   @Override
   public SymTypeOfObject deepClone() {
-    SymTypeOfObject clone = new SymTypeOfObject(this.objFullName,this.getTypeInfo());
-    return clone;
+    return  new SymTypeOfObject(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
   }
 
   /**
@@ -82,12 +74,4 @@ public class SymTypeOfObject extends SymTypeExpression {
   }
   
   // --------------------------------------------------------------------------
-
-  // TODO 4: this constructor ignores the typeInfo:
-  @Deprecated
-  public SymTypeOfObject(String name){
-    this.objFullName = name;
-  }
-  
-
 }
