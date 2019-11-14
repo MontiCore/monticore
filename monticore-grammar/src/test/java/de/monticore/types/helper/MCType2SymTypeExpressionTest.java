@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.helper;
 
-import de.monticore.types.DeriveSymTypeOfMCType;
 import de.monticore.types.check.*;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
@@ -27,9 +26,9 @@ public class MCType2SymTypeExpressionTest {
 
 
   private SymTypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type) {
-    DeriveSymTypeOfMCType visitor = new DeriveSymTypeOfMCType();
+    SynthesizeSymTypeFromMCSimpleGenericTypes visitor = new SynthesizeSymTypeFromMCSimpleGenericTypes();
     type.accept(visitor);
-    return visitor.mapping.get(type);
+    return visitor.getResult().get();
   }
 
   @Test
