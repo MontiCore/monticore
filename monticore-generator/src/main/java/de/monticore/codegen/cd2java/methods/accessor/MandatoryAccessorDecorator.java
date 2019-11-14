@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class MandatoryAccessorDecorator extends AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> {
 

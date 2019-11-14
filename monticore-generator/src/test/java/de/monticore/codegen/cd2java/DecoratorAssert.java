@@ -3,10 +3,10 @@ package de.monticore.codegen.cd2java;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTModifier;
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
-import de.monticore.codegen.cd2java.factories.CDModifier;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.types.MCFullGenericTypesHelper;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 

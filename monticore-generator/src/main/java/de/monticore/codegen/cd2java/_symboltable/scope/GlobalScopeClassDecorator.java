@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a globalScope class from a grammar
@@ -248,8 +248,10 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected List<ASTCDMethod> createEnclosingScopeMethods(String globalScopeName) {
     // create attribute just for method generation purposes
-    ASTCDAttribute enclosingScopeAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED,
-        symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR, this.glex);
+    ASTCDAttribute enclosingScopeAttribute = this.getCDAttributeFacade()
+            .createAttribute(PROTECTED,
+        symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
+    symbolTableService.addAttributeDefaultValues(enclosingScopeAttribute, glex);
 
     methodDecorator.disableTemplates();
     List<ASTCDMethod> enclosingScopeMethods = methodDecorator.decorate(enclosingScopeAttribute);

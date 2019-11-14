@@ -8,7 +8,6 @@ import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
-import de.monticore.types.mcsimplegenerictypes._ast.MCSimpleGenericTypesMill;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -198,7 +197,7 @@ public class MCTypeFacade {
    * create ASTMCBasicGenericType
    */
   public ASTMCBasicGenericType createBasicGenericTypeOf(final List<String> nameList, List<ASTMCTypeArgument> typeArguments) {
-    return MCSimpleGenericTypesMill.mCBasicGenericTypeBuilder()
+    return MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
         .setNameList(nameList)
         .setMCTypeArgumentList(typeArguments)
         .build();
