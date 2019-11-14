@@ -2,21 +2,19 @@
 
 package de.monticore.statements.prettyprint;
 
+import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcassertstatements._ast.ASTAssertStatement;
 import de.monticore.statements.mcassertstatements._ast.ASTMCAssertStatementsNode;
 import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsVisitor;
 
-public class MCAssertStatementsPrettyPrinter implements
-        MCAssertStatementsVisitor {
-
+public class MCAssertStatementsPrettyPrinter extends ExpressionsBasisPrettyPrinter implements MCAssertStatementsVisitor {
 
   private MCAssertStatementsVisitor realThis = this;
-  private IndentPrinter printer;
 
   public MCAssertStatementsPrettyPrinter(IndentPrinter out) {
-    this.printer = out;
+    super(out);
   }
 
   public IndentPrinter getPrinter() {
