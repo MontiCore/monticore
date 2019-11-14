@@ -7,14 +7,12 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.expressions.bitexpressions._ast.*;
 import de.monticore.expressions.bitexpressions._visitor.BitExpressionsVisitor;
 
-public class BitExpressionsPrettyPrinter implements BitExpressionsVisitor{
+public class BitExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter implements BitExpressionsVisitor{
 
   protected BitExpressionsVisitor realThis;
   
-  protected IndentPrinter printer;
-  
   public BitExpressionsPrettyPrinter(IndentPrinter printer) {
-    this.printer = printer;
+    super(printer);
     realThis = this;
   }
 

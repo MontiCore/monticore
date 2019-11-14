@@ -153,18 +153,18 @@ public class MCTypeFacade {
    * collection types of ASTMCBasicTypeArgument
    */
 
-  public ASTMCType createCollectionTypeOf(final String name) {
+  public ASTMCGenericType createCollectionTypeOf(final String name) {
     return MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
         .setNameList(Lists.newArrayList("Collection"))
         .setMCTypeArgumentList(Lists.newArrayList(createBasicTypeArgumentOf(name)))
         .build();
   }
 
-  public ASTMCType createCollectionTypeOf(final Class<?> clazz) {
+  public ASTMCGenericType createCollectionTypeOf(final Class<?> clazz) {
     return createCollectionTypeOf(clazz.getSimpleName());
   }
 
-  public ASTMCType createCollectionTypeOf(final ASTMCType type) {
+  public ASTMCGenericType createCollectionTypeOf(final ASTMCType type) {
     return createCollectionTypeOf(type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
   }
 
@@ -247,7 +247,7 @@ public class MCTypeFacade {
         .build();
   }
 
-  public ASTMCType createBooleanType() {
+  public ASTMCPrimitiveType createBooleanType() {
     return createPrimitiveType(ASTConstantsMCBasicTypes.BOOLEAN);
   }
 
@@ -255,11 +255,11 @@ public class MCTypeFacade {
     return type instanceof ASTMCPrimitiveType && ((ASTMCPrimitiveType) type).isBoolean();
   }
 
-  public ASTMCType createIntType() {
+  public ASTMCPrimitiveType createIntType() {
     return createPrimitiveType(ASTConstantsMCBasicTypes.INT);
   }
 
-  private ASTMCType createPrimitiveType(int constantsType) {
+  private ASTMCPrimitiveType createPrimitiveType(int constantsType) {
     return MCBasicTypesMill.mCPrimitiveTypeBuilder()
         .setPrimitive(constantsType)
         .build();

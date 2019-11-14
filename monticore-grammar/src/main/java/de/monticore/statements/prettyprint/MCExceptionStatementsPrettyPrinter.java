@@ -81,6 +81,7 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     a.getPrimitiveModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
     a.getMCType().accept(getRealThis());
+    getPrinter().print(" ");
     a.getDeclaratorId().accept(getRealThis());
     getPrinter().print(" = ");
     a.getExpression().accept(getRealThis());
@@ -104,7 +105,7 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
     a.getPrimitiveModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
     a.getCatchType().accept(getRealThis());
     getPrinter().print(" ");
-    printNode(a.getName());
+    getPrinter().print(a.getName());
     getPrinter().print(") ");
     a.getMCJavaBlock().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
