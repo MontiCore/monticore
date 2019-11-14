@@ -2,7 +2,7 @@
 ${tc.signature("artifactScope", "scopeRuleAttrList")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   String name = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonConstants.NAME);
-  String packageName = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonConstants.PACKAGE);
+  String packageName = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonConstants.PACKAGE).orElse("");
   List<de.monticore.symboltable.ImportStatement> imports = de.monticore.symboltable.serialization.JsonUtil.deserializeImports(scopeJson);
   boolean exportsSymbols = scopeJson.getBooleanMember(de.monticore.symboltable.serialization.JsonConstants.EXPORTS_SYMBOLS);
 
