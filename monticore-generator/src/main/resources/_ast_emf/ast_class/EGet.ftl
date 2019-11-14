@@ -6,7 +6,7 @@ switch (featureID) {
     <#assign getter = astHelper.getPlainGetter(attribute)>
   case ${packageName}.${className}_${attribute.getName()?cap_first}:
     <#if genHelper.isOptional(attribute.getMCType())>
-      return ${getter}().isPresent()? ${getter}().get() : null;
+      return isPresent${genHelper.getNativeAttributeName(attribute.getName())?cap_first}()? ${getter}() : null;
     <#else>
       return ${getter}();
     </#if>
