@@ -9,9 +9,9 @@ ${tc.signature("artifactScope", "scopeRuleAttrList")}
   ${artifactScope} scope = new ${artifactScope}(packageName, imports);
   scope.setName(name);
   scope.setExportingSymbols(exportsSymbols);
-    <#list scopeRuleAttrList as attr>
-      scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson));
-    </#list>
+<#list scopeRuleAttrList as attr>
+  scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson));
+</#list>
 
   addSymbols(scopeJson, scope);
   addAndLinkSubScopes(scopeJson, scope);
