@@ -23,6 +23,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -62,7 +63,7 @@ public final class TransformationHelper {
     } else if (type instanceof ASTMCArrayType) {
       return ((ASTMCArrayType) type).printTypeWithoutBrackets();
     }
-    return type.printType();
+    return type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
   }
 
   public static String simpleName(ASTMCType type) {
@@ -72,7 +73,7 @@ public final class TransformationHelper {
     } else if (type instanceof ASTMCArrayType) {
       name = ((ASTMCArrayType) type).printTypeWithoutBrackets();
     } else {
-      name = type.printType();
+      name = type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     }
     return Names.getSimpleName(name);
   }

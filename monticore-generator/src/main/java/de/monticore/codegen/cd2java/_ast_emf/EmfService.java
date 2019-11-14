@@ -13,6 +13,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
@@ -82,7 +83,7 @@ public class EmfService extends AbstractService {
 
   //for InitializePackageContents template
   public String determineListInteger(ASTMCType astType) {
-    if (DecorationHelper.isListType(astType.printType())) {
+    if (DecorationHelper.isListType(astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))) {
       return "-1";
     } else {
       return "1";
@@ -211,7 +212,7 @@ public class EmfService extends AbstractService {
     Map<String, String> superTypes = new HashMap<>();
     superTypes.put(getSimpleNativeType(astcdClass.printSuperClass()), getPackage(astcdClass.printSuperClass()));
     for (ASTMCObjectType astReferenceType : astcdClass.getInterfaceList()) {
-      superTypes.put(getSimpleNativeType(astReferenceType), getPackage(astReferenceType.printType()));
+      superTypes.put(getSimpleNativeType(astReferenceType), getPackage(astReferenceType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())));
     }
     return superTypes;
   }
