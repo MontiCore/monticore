@@ -49,10 +49,10 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     }
     if(result!=null) {
       this.result=result;
-      lastResult.setLastOpt(Optional.of(result));
+      lastResult.setLast(result);
     }else{
       //No type found --> error
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0207 The resulting type cannot be calculated");
     }
   }
@@ -75,7 +75,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       lastResult.setLast(res);
     }else{
      //name not found --> package or nothing
-     lastResult.setLastOpt(Optional.empty());
+     lastResult.setLastAbsent();
       Log.info("package suspected","ExpressionBasisTypesCalculator");
     }
   }
