@@ -281,24 +281,4 @@ public class MCType2SymTypeExpressionTest {
     assertEquals("Person", symTypeExpression.print());
   }
 
-  @Test
-  public void testQualifiedName() throws IOException {
-    Optional<ASTMCQualifiedName> type = new MCCollectionTypesTestParser().parse_StringMCQualifiedName("de.mc.Person");
-    assertTrue(type.isPresent());
-    ASTMCQualifiedName qualifiedName = type.get();
-    SymTypeExpression symTypeExpression = MCTypesHelper.mcType2TypeExpression(qualifiedName);
-    assertTrue(symTypeExpression instanceof SymTypeOfObject);
-    assertEquals("de.mc.Person", symTypeExpression.print());
-  }
-
-  @Test
-  public void testQualifiedNameUnqualified() throws IOException {
-    Optional<ASTMCQualifiedName> type = new MCCollectionTypesTestParser().parse_StringMCQualifiedName("Person");
-    assertTrue(type.isPresent());
-    ASTMCQualifiedName qualifiedName = type.get();
-    SymTypeExpression symTypeExpression = MCTypesHelper.mcType2TypeExpression(qualifiedName);
-    assertTrue(symTypeExpression instanceof SymTypeOfObject);
-    assertEquals("Person", symTypeExpression.print());
-  }
-
 }
