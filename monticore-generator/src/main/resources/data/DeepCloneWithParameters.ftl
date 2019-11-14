@@ -18,7 +18,11 @@ ${tc.signature("attributeList")}
     <#assign reference = genHelper.getFirstTypeArgumentOfOptional(attrType)>
     <#assign referenceName = typeName>
     <#if genHelper.isString(reference) || genHelper.isAttributeOfTypeEnum(attribute)>
-    result.set${methName}Opt(get${methName}Opt());
+    if (isPresent${methName}()) {
+      result.set${methName}(get${methName}());
+    } else {
+      result.set${methName}Absent();
+    }
     <#elseif genHelper.isOptionalAstNode(attribute)>
     if (isPresent${methName}()){
       result.set${methName}(get${methName}().deepClone());
