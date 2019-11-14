@@ -4,5 +4,5 @@ if(${jsonParamName}.hasMember("${attrName}")){
   return java.util.Optional.of(${jsonParamName}.${typeMap});
 }
 else{
-return java.util.Optional.empty();
+  return java.util.Optional.empty();
 }
