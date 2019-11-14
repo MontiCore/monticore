@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.valid;
+
+grammar SymbolOverwriting extends cocos.valid.SubGrammarWithSymbol {
+
+  SubSymbol = Name "sub";
+
+  symbol SubNonTer = Name "NonTer";
+
+}

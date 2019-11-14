@@ -10,9 +10,11 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.utils.Link;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
 
@@ -95,11 +97,12 @@ public class SymbolAndScopeTranslation implements
             TransformationHelper.addStereoType(astcdClass,
                 MC2CDStereotypes.INHERITED_SCOPE.toString());
           }
-          if(prodSymbol.get().getAstNode() instanceof ASTParserProd){
+          if (prodSymbol.get().getAstNode() instanceof ASTParserProd) {
             addSymbolInheritedProperty((ASTParserProd) prodSymbol.get().getAstNode(), astcdClass);
           }
         }
       }
+      addInheritsSymbolPropertyThroughOverwriting(grammarSymbol.get(), astcdClass);
     }
   }
 
@@ -112,24 +115,47 @@ public class SymbolAndScopeTranslation implements
         Optional<ProdSymbol> prodSymbol = grammarSymbol.get().getProdWithInherited(astRuleReference.getName());
         if (prodSymbol.isPresent()) {
           if (prodSymbol.get().isIsSymbolDefinition()) {
-            String packageName = prodSymbol.get().getFullName().substring(0, prodSymbol.get().getFullName().lastIndexOf(".")).toLowerCase();
-            String qualifiedName = packageName + "." + SYMBOL_TABLE_PACKAGE + "." + prodSymbol.get().getName() + SYMBOL_SUFFIX;
             TransformationHelper.addStereoType(astcdClass,
-                MC2CDStereotypes.INHERITED_SYMBOL.toString(), qualifiedName);
+                MC2CDStereotypes.INHERITED_SYMBOL.toString(), getSymbolName(prodSymbol.get()));
           }
           if (prodSymbol.get().isIsScopeSpanning()) {
             TransformationHelper.addStereoType(astcdClass,
                 MC2CDStereotypes.INHERITED_SCOPE.toString());
           }
-          if(prodSymbol.get().getAstNode() instanceof ASTParserProd){
+          if (prodSymbol.get().getAstNode() instanceof ASTParserProd) {
             addSymbolInheritedProperty((ASTParserProd) prodSymbol.get().getAstNode(), astcdClass);
           }
         }
       }
+      addInheritsSymbolPropertyThroughOverwriting(grammarSymbol.get(), astcdClass);
     }
   }
 
+  protected String getSymbolName(ProdSymbol prodSymbol) {
+    String packageName = prodSymbol.getFullName().substring(0, prodSymbol.getFullName().lastIndexOf(".")).toLowerCase();
+    return packageName + "." + SYMBOL_TABLE_PACKAGE + "." + prodSymbol.getName() + SYMBOL_SUFFIX;
+  }
+
   protected boolean hasStereotype(MC2CDStereotypes stereotype, ASTModifier modifier) {
-    return modifier.isPresentStereotype() && modifier.getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(stereotype.toString()));
+    return modifier.isPresentStereotype() && modifier.getStereotype().getValueList()
+        .stream()
+        .anyMatch(v -> v.getName().equals(stereotype.toString()));
+  }
+
+  /**
+   * returns true for e.g. for Foo in B in: A { symbol Foo; }  grammar B extends A { Foo; }
+   */
+  protected void addInheritsSymbolPropertyThroughOverwriting(MCGrammarSymbol grammarSymbol, ASTCDType prod) {
+    List<MCGrammarSymbol> superGrammarSymbols = grammarSymbol.getSuperGrammarSymbols();
+    for (MCGrammarSymbol superGrammar : superGrammarSymbols) {
+      String prodName = prod.getName().startsWith(AST_PREFIX) ? prod.getName().replaceFirst(AST_PREFIX, "") : prod.getName();
+      Optional<ProdSymbol> superProd = superGrammar.getProd(prodName);
+      if (superProd.isPresent()) {
+        if (superProd.get().isIsSymbolDefinition()) {
+          TransformationHelper.addStereoType(prod,
+              MC2CDStereotypes.INHERITED_SYMBOL.toString(), getSymbolName(superProd.get()));
+        }
+      }
+    }
   }
 }
