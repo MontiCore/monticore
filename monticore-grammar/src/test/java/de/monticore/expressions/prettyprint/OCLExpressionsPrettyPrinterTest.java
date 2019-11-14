@@ -210,7 +210,6 @@ public class OCLExpressionsPrettyPrinterTest {
 
     // does not print 'a' and 'c' because functionality for type printing has to be added over delegation form
     // prettyprinter of langauge that fills the external
-    // TODO: 11/12/2019 NP
     assertEquals("let ; ; in foo", output);
   }
 
