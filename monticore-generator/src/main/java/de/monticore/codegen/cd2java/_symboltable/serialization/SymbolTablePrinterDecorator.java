@@ -2,7 +2,6 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
-import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -56,8 +55,10 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     String symbolVisitorFullName = visitorService.getSymbolVisitorFullName();
     String scopeVisitorFullName = visitorService.getScopeVisitorFullName();
     List<ASTCDClass> symbolTypes = symbolCD.getCDDefinition().getCDClassList();
+    boolean isComponent = symbolCD.getCDDefinition().isPresentModifier() &&
+        symbolTableService.hasComponentStereotype(symbolCD.getCDDefinition().getModifier());
 
-    return CD4CodeMill.cDClassBuilder()
+    ASTCDClass symbolTablePrinterClass = CD4CodeMill.cDClassBuilder()
         .setName(symbolTablePrinterName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(symbolVisitorFullName))
@@ -68,11 +69,16 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         .addCDMethod(createFilterRelevantSubScopesMethod(scopeInterfaceFullName))
         .addCDMethod(createHasSymbolsInSubScopesMethod(scopeInterfaceFullName))
         .addCDMethod(createAddScopeSpanningSymbolMethod())
-        .addAllCDMethods(createScopeVisitorMethods(artifactScopeFullName, scopeClassFullName,
-            scopeInterfaceFullName, symbolDefiningProds, scopeCD.getCDDefinition()))
+        .addCDMethod(createSerializeRelevantSubScopes(scopeInterfaceFullName))
+        .addCDMethod(createSerializeLocalSymbols(scopeInterfaceFullName, symbolDefiningProds))
+        .addAllCDMethods(createScopeVisitorMethods(scopeClassFullName))
         .addAllCDMethods(createSymbolVisitorMethods(symbolDefiningProds))
         .addAllCDMethods(createSerializeSymbolruleMethods(symbolTypes))
         .build();
+    if (!isComponent) {
+      symbolTablePrinterClass.addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeFullName, scopeClassFullName));
+    }
+    return symbolTablePrinterClass;
   }
 
   protected ASTCDAttribute createJsonPrinterAttribute() {
@@ -95,7 +101,8 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createFilterRelevantSubScopesMethod(String scopeInterfaceName) {
     ASTMCListType listTypeOfScopeInterface = getMCTypeFacade().createListTypeOf(scopeInterfaceName);
-    ASTCDParameter subScopesParam = getCDParameterFacade().createParameter(listTypeOfScopeInterface, "subScopes");
+    ASTMCListType listTypeOfExtendsScopeInterface = getMCTypeFacade().createListTypeOf("? extends " + scopeInterfaceName);
+    ASTCDParameter subScopesParam = getCDParameterFacade().createParameter(listTypeOfExtendsScopeInterface, "subScopes");
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, listTypeOfScopeInterface, "filterRelevantSubScopes", subScopesParam);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.FilterRelevantSubScopes", scopeInterfaceName));
     return method;
@@ -115,19 +122,19 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     return method;
   }
 
-  protected List<ASTCDMethod> createScopeVisitorMethods(String artifactScopeName, String scopeName,
-                                                        String scopeInterfaceName, List<ASTCDType> symbolProds,
-                                                        ASTCDDefinition astcdDefinition) {
+  protected List<ASTCDMethod> createScopeVisitorMethods(String scopeName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    if (symbolTableService.hasStartProd(astcdDefinition)) {
-      visitorMethods.add(createVisitArtifactScopeMethod(artifactScopeName));
-      visitorMethods.add(createEndVisitArtifactScopeMethod(artifactScopeName));
-      visitorMethods.add(createTraverseArtifactScopeMethod(artifactScopeName, scopeName));
-    }
-
     visitorMethods.add(createVisitScopeMethod(scopeName));
     visitorMethods.add(createEndVisitScopeMethod(scopeName));
-    visitorMethods.add(createTraverseScopeMethod(scopeName, scopeInterfaceName, symbolProds));
+    visitorMethods.add(createTraverseScopeMethod(scopeName));
+    return visitorMethods;
+  }
+
+  protected List<ASTCDMethod> createArtifactScopeVisitorMethods(String artifactScopeName, String scopeName) {
+    List<ASTCDMethod> visitorMethods = new ArrayList<>();
+    visitorMethods.add(createVisitArtifactScopeMethod(artifactScopeName));
+    visitorMethods.add(createEndVisitArtifactScopeMethod(artifactScopeName));
+    visitorMethods.add(createTraverseArtifactScopeMethod(artifactScopeName, scopeName));
     return visitorMethods;
   }
 
@@ -145,17 +152,46 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createTraverseArtifactScopeMethod(String artifactScopeFullName, String scopeFullName) {
     ASTCDMethod visitorMethod = visitorService.getVisitorMethod(TRAVERSE, getMCTypeFacade().createQualifiedType(artifactScopeFullName));
-    this.replaceTemplate(EMPTY_BODY, visitorMethod, new StringHookPoint(" traverse((" + scopeFullName + ") node);"));
+    this.replaceTemplate(EMPTY_BODY, visitorMethod, new StringHookPoint("traverse((" + scopeFullName + ") node);"));
     return visitorMethod;
   }
 
-  protected ASTCDMethod createTraverseScopeMethod(String scopeName, String scopeInterfaceName, List<ASTCDType> symbolProds) {
+  protected ASTCDMethod createSerializeLocalSymbols(String scopeInterfaceFullName, List<ASTCDType> symbolProds) {
     List<String> simpleSymbolNames = symbolProds.stream()
         .map(symbolTableService::removeASTPrefix)
         .collect(Collectors.toList());
+
+    String methodName = "serializeLocalSymbols";
+
+    ASTCDParameter parameter = getASTCDParameter(scopeInterfaceFullName, "node");
+    ASTCDMethod serLocalMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, methodName, parameter);
+
+    this.replaceTemplate(EMPTY_BODY, serLocalMethod, new TemplateHookPoint(
+        TEMPLATE_PATH + "symbolTablePrinter.SerializeLocalSymbols", simpleSymbolNames));
+    return serLocalMethod;
+
+  }
+
+  protected ASTCDParameter getASTCDParameter(String type, String name) {
+    ASTMCQualifiedType paramType = getMCTypeFacade().getInstance().createQualifiedType(type);
+    ASTCDParameter param = CDParameterFacade.getInstance().createParameter(paramType, name);
+    return param;
+  }
+
+  protected ASTCDMethod createSerializeRelevantSubScopes(String scopeInterfaceFullName) {
+    String methodName = "serializeRelevantSubScopes";
+    ASTCDParameter parameter = getASTCDParameter(scopeInterfaceFullName, "node");
+    ASTCDMethod traverseRelevantMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, methodName, parameter);
+
+    this.replaceTemplate(EMPTY_BODY, traverseRelevantMethod, new TemplateHookPoint(
+        TEMPLATE_PATH + "symbolTablePrinter.SerializeRelevantSubScopes", scopeInterfaceFullName));
+    return traverseRelevantMethod;
+  }
+
+  protected ASTCDMethod createTraverseScopeMethod(String scopeName) {
     ASTCDMethod visitorMethod = visitorService.getVisitorMethod(TRAVERSE, getMCTypeFacade().createQualifiedType(scopeName));
-    this.replaceTemplate(EMPTY_BODY, visitorMethod, new TemplateHookPoint(
-        TEMPLATE_PATH + "symbolTablePrinter.TraverseScope", simpleSymbolNames, scopeInterfaceName));
+    this.replaceTemplate(EMPTY_BODY, visitorMethod, new StringHookPoint("serializeRelevantSubScopes(node);"));
+
     return visitorMethod;
   }
 
@@ -199,20 +235,17 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
       List<ASTCDAttribute> listAttr = new ArrayList<>();
       List<ASTCDAttribute> nonListAttr = new ArrayList<>();
-      //List<ASTCDAttribute> optAttr = new ArrayList<>();
 
       for (ASTCDAttribute attr : symbolProd.deepClone().getCDAttributeList()) {
         if (isSerializedAsList(attr)) {
           listAttr.add(attr);
-        } /*else if (isSerializedAsOptional(attr)) {
-          optAttr.add(attr);
-        }*/else {
+        } else {
           nonListAttr.add(attr);
         }
         methodsCreated.add(createSerializeMethodForAttr(symbolProd.getName(), attr));
       }
       this.replaceTemplate(EMPTY_BODY, serializeSymMethod, new TemplateHookPoint(
-              TEMPLATE_PATH + "symbolTablePrinter.SerializeSymbol", symbolProd.getName(), nonListAttr, listAttr));
+          TEMPLATE_PATH + "symbolTablePrinter.SerializeSymbol", symbolProd.getName(), nonListAttr, listAttr));
       methodsCreated.add(serializeSymMethod);
     }
     return methodsCreated;
@@ -234,23 +267,22 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
       if (isSerializedAsList(attr)) {
         serializeAsList(serializeAttrMethod, attr);
       } else if (isSerializedAsOptional(attr)) {
-        //serializeAsOptional(serializeAttrMethod, attr);
         this.replaceTemplate(EMPTY_BODY, serializeAttrMethod, new TemplateHookPoint(TEMPLATE_PATH
-                + "symbolTablePrinter.SerializeOptAttribute", attr));
-      } else {//if(!isSerializedAsList(attr) && !isSerializedAsOptional(attr)) {
+            + "symbolTablePrinter.SerializeOptAttribute", attr));
+      } else {
         this.replaceTemplate(EMPTY_BODY, serializeAttrMethod, new TemplateHookPoint(
-                TEMPLATE_PATH + "PrintSimpleAttribute", attr.getName(), attr.getName()));
+            TEMPLATE_PATH + "PrintSimpleAttribute", attr.getName(), attr.getName()));
       }
     } else {
       this.replaceTemplate(EMPTY_BODY, serializeAttrMethod, new TemplateHookPoint(
-              TEMPLATE_PATH + "PrintComplexAttribute", attribute, methodName, operation, returnValue));
+          TEMPLATE_PATH + "PrintComplexAttribute", attribute, methodName, operation, returnValue));
     }
     return serializeAttrMethod;
   }
 
   protected void serializeAsList(ASTCDMethod method, ASTCDAttribute attr) {
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH
-            + "symbolTablePrinter.SerializeSimpleListAttribute", attr.getName()));
+        + "symbolTablePrinter.SerializeSimpleListAttribute", attr.getName()));
   }
 
   protected boolean isAutoSerialized(ASTCDAttribute attr) {

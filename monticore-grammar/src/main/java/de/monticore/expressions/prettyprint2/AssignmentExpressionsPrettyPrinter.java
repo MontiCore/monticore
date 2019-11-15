@@ -8,14 +8,13 @@ import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 
-public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressionsVisitor {
+public class AssignmentExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter implements AssignmentExpressionsVisitor {
   
   protected AssignmentExpressionsVisitor realThis;
   
-  protected IndentPrinter printer;
-  
+
   public AssignmentExpressionsPrettyPrinter(IndentPrinter printer) {
-    this.printer=printer;
+    super(printer);
     realThis = this;
   }
   

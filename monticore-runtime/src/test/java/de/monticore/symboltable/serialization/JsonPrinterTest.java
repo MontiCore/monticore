@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -16,6 +14,8 @@ import com.google.common.collect.Lists;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests the JsonPrinter
@@ -165,6 +165,14 @@ public class JsonPrinterTest {
     // unmute Sytem.err
     System.setErr(_err);
     
+  }
+
+  @Test
+  public void testIsSerializingEmptyLists() {
+    JsonPrinter serializeEmpty = new JsonPrinter(true);
+    JsonPrinter serializeEmptyNot = new JsonPrinter();
+    assertTrue(serializeEmpty.isSerializingEmptyLists());
+    assertFalse(serializeEmptyNot.isSerializingEmptyLists());
   }
   
 }

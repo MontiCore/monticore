@@ -33,6 +33,8 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   protected static final String TEMPLATE_PATH = "_symboltable.serialization.symbolDeSer.";
 
+  protected ASTCDParameter enclosingScopeParameter;
+
   public SymbolDeSerDecorator(final GlobalExtensionManagement glex,
       final SymbolTableService symbolTableService) {
     super(glex);
@@ -45,11 +47,12 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     String symbolFullName = symbolTableService.getSymbolFullName(symbolClass);
     String symbolSimpleName = symbolTableService.getSymbolSimpleName(symbolClass);
     ASTMCBasicGenericType iDeSerType = getMCTypeFacade()
-        .createBasicGenericTypeOf(I_DE_SER_TYPE, symbolFullName);
+        .createBasicGenericTypeOf(I_DE_SER_TYPE, symbolFullName, symbolTableService.getScopeInterfaceFullName());
     String symbolTablePrinterName = symbolTableService.getSymbolTablePrinterFullName();
     String symbolBuilderFullName = symbolTableService.getSymbolBuilderFullName(symbolClass);
     String symbolBuilderSimpleName = symbolTableService.getSymbolBuilderSimpleName(symbolClass);
     String symTabMillFullName = symbolTableService.getSymTabMillFullName();
+    this.enclosingScopeParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName()), ENCLOSING_SCOPE_VAR);
 
     return CD4CodeMill.cDClassBuilder()
         .setName(symbolDeSerName)
@@ -108,7 +111,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
         .createParameter(getMCTypeFacade().createStringType(), "serialized");
     ASTCDMethod deserializeMethod = getCDMethodFacade()
         .createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolName), DESERIALIZE,
-            stringParam);
+            stringParam, enclosingScopeParameter);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
         new TemplateHookPoint(TEMPLATE_PATH + "DeserializeString"));
     return deserializeMethod;
@@ -119,7 +122,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
       ASTCDParameter jsonParam) {
     ASTCDMethod deserializeMethod = getCDMethodFacade()
         .createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolFullName), DESERIALIZE,
-            jsonParam);
+            jsonParam, enclosingScopeParameter);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
         new TemplateHookPoint(TEMPLATE_PATH + "DeserializeJsonObject", symbolSimpleName));
     return deserializeMethod;
@@ -131,7 +134,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
       ASTCDParameter jsonParam, List<ASTCDAttribute> symbolRuleAttributes) {
     ASTCDMethod deserializeMethod = getCDMethodFacade()
         .createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(symbolFullName),
-            DESERIALIZE + symbolSimpleName, jsonParam);
+            DESERIALIZE + symbolSimpleName, jsonParam, enclosingScopeParameter);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
         new TemplateHookPoint(TEMPLATE_PATH + "DeserializeSymbol",
             symbolBuilderFullName, symbolBuilderSimpleName, symTabMill, symbolFullName,
@@ -148,11 +151,11 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
       ASTCDParameter jsonParam = getCDParameterFacade()
           .createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), "symbolJson");
       ASTCDMethod deserializeMethod = getCDMethodFacade()
-          .createMethod(PROTECTED, astcdAttribute.getMCType(), methodName , jsonParam);
+          .createMethod(PROTECTED, astcdAttribute.getMCType(), methodName , jsonParam, enclosingScopeParameter);
       String returnType = symbolTableService
           .determineReturnType(deserializeMethod.getMCReturnType().getMCType());
       HookPoint deserImplementation = DeSerMap.getDeserializationImplementation(astcdAttribute, methodName, "symbolJson",
-//          astcdAttribute.getEnclosingScope()); //TODO AB Replace line below with this line after release of 5.4.0-SNAPSHOT
+//          astcdAttribute.getEnclosingScope()); //TODO AB Replace line below with this line after release of 5.5.0-SNAPSHOT
           BuiltInJavaTypeSymbolResolvingDelegate.gs);
         this.replaceTemplate(EMPTY_BODY, deserializeMethod, deserImplementation);
       methodList.add(deserializeMethod);
@@ -165,6 +168,6 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     ASTCDParameter symbolParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createQualifiedType(symbolFullName), SYMBOL_VAR);
     return getCDMethodFacade()
-        .createMethod(PROTECTED, "deserializeAdditionalAttributes", symbolParam, jsonParam);
+        .createMethod(PROTECTED, "deserializeAdditionalAttributes", symbolParam, jsonParam, enclosingScopeParameter);
   }
 }

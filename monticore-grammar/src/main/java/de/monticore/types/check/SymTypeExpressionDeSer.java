@@ -5,32 +5,38 @@ import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
 /**
  * This DeSer reailizes serialization and deserialization of SymTypeExpressions.
  */
-public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
+public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression, ITypeSymbolsScope> {
 
   /**
    * The singleton that DeSerializes all SymTypeExpressions.
    * It is stateless and can be reused recursively.
    */
-  protected static SymTypeExpressionDeSer instance = new SymTypeExpressionDeSer();
+  protected static SymTypeExpressionDeSer instance;
   // not realized as static delegator, but only as singleton
 
-  protected SymTypeArrayDeSer symTypeArrayDeSer = new SymTypeArrayDeSer();
+  protected SymTypeArrayDeSer symTypeArrayDeSer;
 
-  protected SymTypeConstantDeSer symTypeConstantDeSer = new SymTypeConstantDeSer();
+  protected SymTypeConstantDeSer symTypeConstantDeSer;
 
-  protected SymTypeOfGenericsDeSer symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
+  protected SymTypeOfGenericsDeSer symTypeOfGenericsDeSer;
 
-  protected SymTypeOfObjectDeSer symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
+  protected SymTypeOfObjectDeSer symTypeOfObjectDeSer;
 
-  protected SymTypeVariableDeSer symTypeVariableDeSer = new SymTypeVariableDeSer();
+  protected SymTypeVariableDeSer symTypeVariableDeSer;
 
   protected SymTypeExpressionDeSer() {
     //this is a singleton, do not use constructor
+    this.symTypeArrayDeSer = new SymTypeArrayDeSer();
+    this.symTypeConstantDeSer = new SymTypeConstantDeSer();
+    this.symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
+    this.symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
+    this.symTypeVariableDeSer = new SymTypeVariableDeSer();
   }
 
   public static SymTypeExpressionDeSer getInstance() {
@@ -72,17 +78,21 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
   }
 
   /**
-   * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
+   *
+   * @param serialized
+   * @return
    */
   @Override
-  public SymTypeExpression deserialize(String serialized) {
-    return deserialize(JsonParser.parse(serialized));
+  public SymTypeExpression deserialize(String serialized, ITypeSymbolsScope enclosingScope) {
+    return deserialize(JsonParser.parse(serialized), enclosingScope);
   }
 
   /**
-   * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
+   *
+   * @param serialized
+   * @return
    */
-  public SymTypeExpression deserialize(JsonElement serialized) {
+  public SymTypeExpression deserialize(JsonElement serialized, ITypeSymbolsScope enclosingScope) {
 
     // void and null are stored as strings
     if (serialized.isJsonString()) {
@@ -104,19 +114,19 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression> {
 
     // all other serialized SymTypeExrpressions are json objects with a kind
     if (JsonUtil.isCorrectDeSerForKind(symTypeArrayDeSer, serialized)) {
-      return symTypeArrayDeSer.deserialize(serialized);
+      return symTypeArrayDeSer.deserialize(serialized, enclosingScope);
     }
     else if (JsonUtil.isCorrectDeSerForKind(symTypeConstantDeSer, serialized)) {
-      return symTypeConstantDeSer.deserialize(serialized);
+      return symTypeConstantDeSer.deserialize(serialized, enclosingScope);
     }
     else if (JsonUtil.isCorrectDeSerForKind(symTypeOfGenericsDeSer, serialized)) {
-      return symTypeOfGenericsDeSer.deserialize(serialized);
+      return symTypeOfGenericsDeSer.deserialize(serialized, enclosingScope);
     }
     else if (JsonUtil.isCorrectDeSerForKind(symTypeOfObjectDeSer, serialized)) {
-      return symTypeOfObjectDeSer.deserialize(serialized);
+      return symTypeOfObjectDeSer.deserialize(serialized, enclosingScope);
     }
     else if (JsonUtil.isCorrectDeSerForKind(symTypeVariableDeSer, serialized)) {
-      return symTypeVariableDeSer.deserialize(serialized);
+      return symTypeVariableDeSer.deserialize(serialized, enclosingScope);
     }
     else {
       Log.error(

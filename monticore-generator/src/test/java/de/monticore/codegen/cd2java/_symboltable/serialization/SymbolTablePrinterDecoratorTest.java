@@ -122,7 +122,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(23, symbolTablePrinter.getCDMethodList().size());
+    assertEquals(25, symbolTablePrinter.getCDMethodList().size());
   }
 
   @Test
@@ -209,7 +209,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertListOf(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertListOf(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
+    assertListOf("? extends " + I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
     assertEquals("subScopes", method.getCDParameter(0).getName());
   }
 

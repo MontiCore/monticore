@@ -1355,15 +1355,14 @@ public class DeriveSymTypeOfCommonExpressionTest {
     ExpressionsBasisScope methodSpannedScope = scope();
     myAdd.setSpannedScope(methodSpannedScope);
     TypeSymbol subsubclass = type("MyList", Lists.newArrayList(myAdd), Lists.newArrayList(myNext),
-        Lists.newArrayList(supclass), Lists.newArrayList(), scope
-    );
+        Lists.newArrayList(supclass), Lists.newArrayList(), scope);
     add2scope(scope, subsubclass);
     SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList", scope);
     FieldSymbol mySubList = field("mySubList", subsub);
     add2scope(scope, mySubList);
 
     //set scope of method myAdd as standard resolving scope
-    derLit.setScope(methodSpannedScope);
+//    derLit.setScope(methodSpannedScope);
     tc = new TypeCheck(null, derLit);
 
     String s = "mySubList";
