@@ -5,7 +5,7 @@ package mc2cdtransformation.symbolTransl;
 component grammar SymbolRule {
 
 // symbol prods should be shown
- symbol SymbolClass = Name;
+ symbol scope SymbolClass = Name;
 
  symbolrule SymbolClass implements de.monticore.symboltable.ISymbol extends de.monticore.symboltable.Symbol=
    extraString:String
