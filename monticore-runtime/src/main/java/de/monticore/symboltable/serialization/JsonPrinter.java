@@ -113,7 +113,7 @@ public class JsonPrinter {
   public void endObject() {
     println("");
     print("}");
-    if (0 == nestedListDepth) {
+    if (0 == nestedObjectDepth) {
       isFirstAttribute = true;
     }
     nestedObjectDepth--;
