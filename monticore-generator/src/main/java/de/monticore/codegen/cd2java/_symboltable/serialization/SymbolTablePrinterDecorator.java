@@ -55,8 +55,6 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     String symbolVisitorFullName = visitorService.getSymbolVisitorFullName();
     String scopeVisitorFullName = visitorService.getScopeVisitorFullName();
     List<ASTCDClass> symbolTypes = symbolCD.getCDDefinition().getCDClassList();
-    boolean isComponent = symbolCD.getCDDefinition().isPresentModifier() &&
-        symbolTableService.hasComponentStereotype(symbolCD.getCDDefinition().getModifier());
 
     ASTCDClass symbolTablePrinterClass = CD4CodeMill.cDClassBuilder()
         .setName(symbolTablePrinterName)
@@ -75,7 +73,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         .addAllCDMethods(createSymbolVisitorMethods(symbolDefiningProds))
         .addAllCDMethods(createSerializeSymbolruleMethods(symbolTypes))
         .build();
-    if (!isComponent) {
+    if (symbolTableService.hasStartProd(symbolCD.getCDDefinition())) {
       symbolTablePrinterClass.addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeFullName, scopeClassFullName));
     }
     return symbolTablePrinterClass;
