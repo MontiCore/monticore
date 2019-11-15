@@ -17,7 +17,6 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -39,7 +38,6 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.nullToEmpty;
 
 public final class TransformationHelper {
 
@@ -363,7 +361,7 @@ public final class TransformationHelper {
     if (typeSymbol.isPresent()) {
       return Names.getQualifier(typeSymbol.get().getFullName()) + "." + AST_PREFIX + typeSymbol.get().getName();
     } else {
-      return FullGenericTypesPrinter.printType(type);
+      return type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     }
   }
 

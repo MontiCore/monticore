@@ -18,7 +18,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * is a transforming class for the ast generation

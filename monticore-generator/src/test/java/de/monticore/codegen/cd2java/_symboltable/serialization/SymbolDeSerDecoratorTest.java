@@ -12,10 +12,10 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -24,10 +24,11 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Optional;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+
 import static org.junit.Assert.*;
 
 public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
@@ -38,7 +39,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private MCTypeFacade mcTypeFacade;
+  private de.monticore.types.MCTypeFacade mcTypeFacade;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
@@ -292,7 +293,6 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolDeSer, symbolDeSer);
     // test parsing
-    System.out.println(sb);
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
@@ -309,7 +309,6 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
-
     assertTrue(parseResult.isSuccessful());
   }
 

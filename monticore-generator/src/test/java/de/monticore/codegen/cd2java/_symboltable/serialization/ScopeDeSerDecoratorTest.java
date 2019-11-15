@@ -13,7 +13,7 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -27,7 +27,7 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 import static org.junit.Assert.*;
 
 public class ScopeDeSerDecoratorTest extends DecoratorTestCase {

@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CoreTemplates.CONSTANT;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.INT_VALUE;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates corresponding AST enums for enum definitions in grammars

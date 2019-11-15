@@ -24,8 +24,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFI
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.MILL_FOR;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.MILL_SUFFIX;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.*;
 
 public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit, Collection<ASTCDClass>> {
 

@@ -21,10 +21,7 @@ import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.nio.file.Path;

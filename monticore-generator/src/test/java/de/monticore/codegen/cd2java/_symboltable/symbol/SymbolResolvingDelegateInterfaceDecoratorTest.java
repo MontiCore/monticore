@@ -9,23 +9,25 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDInterface symbolClassAutomaton;
+
+  private GlobalExtensionManagement glex;
 
   private MCTypeFacade mcTypeFacade;
 
@@ -43,17 +45,16 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
   public void setUp() {
     Log.init();
     this.mcTypeFacade = MCTypeFacade.getInstance();
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    this.glex = new GlobalExtensionManagement();
 
-    glex.setGlobalValue("astHelper", new DecorationHelper());
-    glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
-    glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
+    this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
 
-    SymbolResolvingDelegateInterfaceDecorator decorator = new SymbolResolvingDelegateInterfaceDecorator(glex,
-        new SymbolTableService(decoratedCompilationUnit));
+    SymbolResolvingDelegateInterfaceDecorator decorator = new SymbolResolvingDelegateInterfaceDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("ASTAutomaton", decoratedCompilationUnit);
     this.symbolClassAutomaton = decorator.decorate(automatonClass);

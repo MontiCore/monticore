@@ -12,10 +12,10 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
-  private MCTypeFacade MCTypeFacade;
+  private de.monticore.types.MCTypeFacade MCTypeFacade;
 
   private ASTCDInterface languageInterface;
 

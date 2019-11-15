@@ -9,7 +9,7 @@ import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymTabMill;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.junit.Before;

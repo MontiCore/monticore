@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfAssignmentExpressionTest {
 
-    private ExpressionsBasisScope scope;
+  private ExpressionsBasisScope scope;
 
     /**
      * Focus: Deriving Type of Literals, here:
@@ -30,8 +30,8 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
     @BeforeClass
     public static void setup() {
-        LogStub.init();
-        LogStub.enableFailQuick(false);
+    Log.init();
+    Log.enableFailQuick(false);
     }
 
     @Before

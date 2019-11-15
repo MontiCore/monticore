@@ -4,11 +4,11 @@ package de.monticore.codegen.cd2java.method.accessor;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.codegen.cd2java.CDTypeFactory;
-import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -17,9 +17,9 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 

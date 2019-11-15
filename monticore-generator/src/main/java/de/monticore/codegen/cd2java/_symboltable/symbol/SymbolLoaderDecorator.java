@@ -6,15 +6,14 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolloadermutator.MandatoryMutatorSymbolLoaderDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.se_rwth.commons.Names;
 
 import java.util.List;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 /**
  * creates a SymbolLoader class from a grammar
@@ -91,7 +90,9 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
   }
 
   protected ASTCDAttribute createLoadedSymbolAttribute(String symbolType) {
-    return getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createOptionalTypeOf(symbolType), "loadedSymbol", glex);
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createOptionalTypeOf(symbolType), "loadedSymbol");
+    symbolTableService.addAttributeDefaultValues(attribute, glex);
+    return attribute;
   }
 
   protected ASTCDAttribute createIsAlreadyLoadedAttribute() {

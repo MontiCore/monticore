@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * is a transforming class for the ast generation

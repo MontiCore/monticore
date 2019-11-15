@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a ScopeDeSer class from a grammar

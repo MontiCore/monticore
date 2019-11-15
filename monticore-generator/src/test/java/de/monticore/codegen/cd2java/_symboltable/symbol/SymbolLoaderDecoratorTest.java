@@ -9,21 +9,21 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._symboltable.symbol.symbolloadermutator.MandatoryMutatorSymbolLoaderDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -34,6 +34,8 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
   private ASTCDClass symbolClassFoo;
 
   private GlobalExtensionManagement glex;
+
+  private de.monticore.types.MCTypeFacade MCTypeFacade;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
@@ -47,6 +49,7 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
   public void setUp() {
     Log.init();
     Log.enableFailQuick(false);
+    this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -179,7 +182,8 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
   public void testGetEnclosingScopeNameMethod() {
     ASTCDMethod method = getMethodBy("getEnclosingScope", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
+        , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }

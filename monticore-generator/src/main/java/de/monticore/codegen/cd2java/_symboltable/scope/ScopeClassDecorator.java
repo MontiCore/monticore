@@ -28,8 +28,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTER
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 import static de.monticore.codegen.cd2java.data.ListSuffixDecorator.LIST_SUFFIX_S;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a Scope class from a grammar
@@ -330,7 +329,9 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute() {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR, this.glex);
+    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
+    symbolTableService.addAttributeDefaultValues(attribute, glex);
+    return attribute;
   }
 
   protected List<ASTCDMethod> createEnclosingScopeMethods(ASTCDAttribute enclosingScopeAttribute) {
@@ -348,8 +349,10 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDAttribute createSpanningSymbolAttribute() {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED,
-        getMCTypeFacade().createOptionalTypeOf(I_SCOPE_SPANNING_SYMBOL), "spanningSymbol", this.glex);
+    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED,
+        getMCTypeFacade().createOptionalTypeOf(I_SCOPE_SPANNING_SYMBOL), "spanningSymbol");
+    symbolTableService.addAttributeDefaultValues(attribute, glex);
+    return attribute;
   }
 
   protected List<ASTCDMethod> createSpanningSymbolMethods(ASTCDAttribute spanningSymbolAttr) {
@@ -383,18 +386,24 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDAttribute createNameAttribute() {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createOptionalTypeOf(String.class),
-        NAME_VAR, this.glex);
+    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createOptionalTypeOf(String.class),
+        NAME_VAR);
+    symbolTableService.addAttributeDefaultValues(attribute, glex);
+    return attribute;
   }
 
   protected ASTCDAttribute createASTNodeAttribute() {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().
-        createOptionalTypeOf(AST_INTERFACE), AST_NODE_VAR, this.glex);
+    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().
+        createOptionalTypeOf(AST_INTERFACE), AST_NODE_VAR);
+    symbolTableService.addAttributeDefaultValues(attribute, glex);
+    return attribute;
   }
 
   protected ASTCDAttribute createSubScopesAttribute(ASTMCQualifiedType scopeInterfaceType) {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createListTypeOf(scopeInterfaceType),
-        "subScopes", this.glex);
+    ASTCDAttribute attribute =  this.getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createListTypeOf(scopeInterfaceType),
+        "subScopes");
+    symbolTableService.addAttributeDefaultValues(attribute, glex);
+    return attribute;
   }
 
   protected List<ASTCDMethod> createSubScopeMethods(ASTMCType scopeInterface) {

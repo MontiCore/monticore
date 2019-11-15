@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
+
 /**
  * DefsTypeBasic offers one Symbol-Infrastructure
  * including Scopes etc. that is used to provide relevant Symbols.

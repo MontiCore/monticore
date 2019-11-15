@@ -18,9 +18,9 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
 /**
  * transformation decorator which adds AST interface specific properties

@@ -4,7 +4,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.codegen.cd2java.factories.CDModifier;
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import org.junit.Before;

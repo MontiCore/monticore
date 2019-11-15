@@ -10,7 +10,7 @@ import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._cocos.GrammarASTASTRuleCoCo;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.types.FullGenericTypesPrinter;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -30,7 +30,7 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
     ProdSymbol symbol = a.getEnclosingScope().resolveProd(a.getType()).get();
     for (ASTAdditionalAttribute attr : a.getAdditionalAttributeList()) {
       Optional<RuleComponentSymbol> rc = symbol.getProdComponent(attr.getNameOpt().orElse(""));
-      String typeName = FullGenericTypesPrinter.printType(attr.getMCType());
+      String typeName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(attr.getMCType());
       if (rc.isPresent()) {
         if (!typeName
             .endsWith(rc.get().getReferencedProd().get().getName())) {
@@ -42,7 +42,8 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
               && !MCGrammarSymbolTableHelper.isSubtype(compType.get(), attrType.get())) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getType(),
                 attr.getName(), typeName,
-                FullGenericTypesPrinter.printType(attr.getMCType()), rc.get().getReferencedProd().get().getName()),
+                    MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(attr.getMCType()),
+                    rc.get().getReferencedProd().get().getName()),
                 a.get_SourcePositionStart());
           }
         }

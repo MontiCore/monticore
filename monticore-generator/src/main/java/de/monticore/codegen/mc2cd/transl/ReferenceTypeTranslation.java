@@ -10,9 +10,9 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.Names;
 
@@ -102,7 +102,7 @@ public class ReferenceTypeTranslation implements
     }
     Optional<ASTMCType> byPrimitive = determineConstantsType(typeName)
         .map(p -> GrammarMill.mCPrimitiveTypeBuilder().setPrimitive(p).build());
-    return byReference.orElse(byPrimitive.orElse(createType(FullGenericTypesPrinter.printType(astGenericType))));
+    return byReference.orElse(byPrimitive.orElse(createType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astGenericType))));
   }
 
   private ASTMCType determineTypeToSet(String typeName, ASTMCGrammar astMCGrammar) {

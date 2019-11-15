@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 import static org.junit.Assert.assertEquals;
 
 public class TopDecoratorTest extends DecoratorTestCase {

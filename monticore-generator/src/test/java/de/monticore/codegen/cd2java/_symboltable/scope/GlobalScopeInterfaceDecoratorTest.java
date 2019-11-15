@@ -12,20 +12,19 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_GLOBAL_SCOPE_TYPE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -35,7 +34,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private MCTypeFacade MCTypeFacade;
+  private de.monticore.types.MCTypeFacade MCTypeFacade;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 

@@ -21,8 +21,8 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

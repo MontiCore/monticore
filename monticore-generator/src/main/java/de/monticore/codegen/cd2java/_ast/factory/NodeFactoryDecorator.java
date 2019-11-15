@@ -17,7 +17,7 @@ import java.util.Optional;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates the nodeFactory class for a grammar

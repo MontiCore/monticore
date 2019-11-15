@@ -6,7 +6,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.types.FullGenericTypesPrinter;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -34,7 +34,7 @@ public class NTAndASTRuleExtendType implements GrammarASTMCGrammarCoCo {
                     && (!((ASTClassProd) prod.get()).getASTSuperClassList().isEmpty()
                     || !((ASTClassProd) prod.get()).getSuperRuleList().isEmpty())) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rule.getType(),
-                      FullGenericTypesPrinter.printType(rule.getASTSuperClassList().get(0))),
+                      MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(rule.getASTSuperClassList().get(0))),
                       rule.get_SourcePositionStart());
             }
           } else if (ruleSymbol.get().isPresentAstNode()
@@ -42,7 +42,7 @@ public class NTAndASTRuleExtendType implements GrammarASTMCGrammarCoCo {
             ASTAbstractProd prod = (ASTAbstractProd) ruleSymbol.get().getAstNode();
             if (!prod.getASTSuperClassList().isEmpty() || !prod.getSuperRuleList().isEmpty()) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rule.getType(),
-                      FullGenericTypesPrinter.printType(rule.getASTSuperClassList().get(0))),
+                      MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(rule.getASTSuperClassList().get(0))),
                       rule.get_SourcePositionStart());
             }
           }

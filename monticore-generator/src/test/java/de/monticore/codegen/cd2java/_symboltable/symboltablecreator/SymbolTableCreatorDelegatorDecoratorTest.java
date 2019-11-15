@@ -11,20 +11,22 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Optional;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PROTECTED_FINAL;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.*;
 
 public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase {
@@ -37,7 +39,7 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  private MCTypeFacade MCTypeFacade;
+  private de.monticore.types.MCTypeFacade MCTypeFacade;
 
   private SymbolTableCreatorDelegatorDecorator decorator;
 
