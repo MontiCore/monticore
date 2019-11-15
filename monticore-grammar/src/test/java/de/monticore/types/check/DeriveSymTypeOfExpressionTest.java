@@ -6,8 +6,7 @@ import de.monticore.expressions.combineexpressionswithliterals._parser.CombineEx
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
+import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -71,27 +70,20 @@ public class DeriveSymTypeOfExpressionTest {
     add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",scope)));
 
     //testing for generics
-    ExpressionsBasisScope genSuperSpannedScope = ExpressionsBasisSymTabMill
-            .expressionsBasisScopeBuilder().build();
-    SymTypeOfGenerics genSuper = SymTypeExpressionFactory.createGenerics("GenSuper",scope, Lists.newArrayList());
-
-
-    ExpressionsBasisScope genSubSpannedScope = ExpressionsBasisSymTabMill
-            .expressionsBasisScopeBuilder().build();
-    SymTypeOfGenerics genSub = SymTypeExpressionFactory.createGenerics("GenSub",scope, Lists.newArrayList());
-
-    TypeSymbol superType = type("GenSuper");
-    TypeSymbol subType = type("GenSub");
-    subType.setSuperTypeList(Lists.newArrayList(genSuper));
-    SymTypeExpression genArg = SymTypeExpressionFactory.createTypeObject("GenArg", scope);
-    List<SymTypeExpression> genArgs = new ArrayList<>();
-    genArgs.add(genArg);
-    genSuper.setTypeInfo(superType);
-    genSub.setTypeInfo(subType);
-    genSuper.setArgumentList(genArgs);
-    genSub.setArgumentList(genArgs);
-    add2scope(scope,field("genericSub",genSub));
-    add2scope(scope,field("genericSuper",genSuper));
+    TypeVarSymbol genArgs = typeVariable("GenArg");
+    TypeSymbol genSuperType = type("GenSuper",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(genArgs),scope);
+    SymTypeExpression genArg = SymTypeExpressionFactory.createTypeVariable(new TypeSymbolLoader("GenArg",scope));
+    SymTypeExpression genSuper = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("GenSuper",scope),genArg);
+    genSuper.setTypeInfo(genSuperType);
+    TypeSymbol genSubType = type("GenSub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(genSuper),Lists.newArrayList(genArgs),scope);
+    SymTypeExpression genSub = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("GenSub",scope),genArg);
+    genSub.setTypeInfo(genSubType);
+    FieldSymbol genSubField = field("genericSub",genSub);
+    FieldSymbol genSuperField = field("genericSuper",genSuper);
+    add2scope(scope,genSuperType);
+    add2scope(scope,genSubType);
+    add2scope(scope,genSubField);
+    add2scope(scope,genSuperField);
     derLit.setScope(scope);
   }
   
