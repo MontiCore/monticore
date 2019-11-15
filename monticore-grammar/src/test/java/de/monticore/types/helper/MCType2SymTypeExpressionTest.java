@@ -291,7 +291,7 @@ public class MCType2SymTypeExpressionTest {
     Optional<ASTMCQualifiedName> type = new MCCollectionTypesTestParser().parse_StringMCQualifiedName("de.mc.Person");
     assertTrue(type.isPresent());
     ASTMCQualifiedName qualifiedName = type.get();
-    SymTypeExpression symTypeExpression = MCTypesHelper.mcType2TypeExpression(qualifiedName);
+    SymTypeExpression symTypeExpression = mcType2TypeExpression(qualifiedName);
     assertTrue(symTypeExpression instanceof SymTypeOfObject);
     assertEquals("de.mc.Person", symTypeExpression.print());
   }
@@ -301,7 +301,7 @@ public class MCType2SymTypeExpressionTest {
     Optional<ASTMCQualifiedName> type = new MCCollectionTypesTestParser().parse_StringMCQualifiedName("Person");
     assertTrue(type.isPresent());
     ASTMCQualifiedName qualifiedName = type.get();
-    SymTypeExpression symTypeExpression = MCTypesHelper.mcType2TypeExpression(qualifiedName);
+    SymTypeExpression symTypeExpression = mcType2TypeExpression(qualifiedName);
     assertTrue(symTypeExpression instanceof SymTypeOfObject);
     assertEquals("Person", symTypeExpression.print());
   }
