@@ -69,8 +69,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         .addCDMethod(createAddScopeSpanningSymbolMethod())
         .addCDMethod(createSerializeRelevantSubScopes(scopeInterfaceFullName))
         .addCDMethod(createSerializeLocalSymbols(scopeInterfaceFullName, symbolDefiningProds))
-        .addAllCDMethods(createScopeVisitorMethods(artifactScopeFullName, scopeClassFullName,
-            scopeInterfaceFullName, scopeCD.getCDDefinition()))
+        .addAllCDMethods(createScopeVisitorMethods(artifactScopeFullName, scopeClassFullName))
         .addAllCDMethods(createSymbolVisitorMethods(symbolDefiningProds))
         .addAllCDMethods(createSerializeSymbolruleMethods(symbolTypes))
         .build();
