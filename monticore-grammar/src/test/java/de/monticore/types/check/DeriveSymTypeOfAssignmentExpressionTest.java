@@ -57,9 +57,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         add2scope(scope, DefsTypeBasic._String);
 
         // some FieldSymbols (ie. Variables, Attributes)
-        TypeSymbol p = TypeSymbolsSymTabMill.typeSymbolBuilder().setName("Person").build();
+        TypeSymbol p = new TypeSymbol("Person");
         scope.add(p);
-        TypeSymbol s = TypeSymbolsSymTabMill.typeSymbolBuilder().setName("Student").build();
+        TypeSymbol s = new TypeSymbol("Student");
         scope.add(s);
         s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
         TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
