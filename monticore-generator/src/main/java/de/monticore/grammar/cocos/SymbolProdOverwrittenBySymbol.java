@@ -17,7 +17,7 @@ import java.util.Optional;
  * only one of the prods can define a symbol
  * the symbol property is inherited from the super prod and does not need to be defined again
  */
-public class SymbolProdNotOverwrittenBySymbol implements GrammarASTMCGrammarCoCo {
+public class SymbolProdOverwrittenBySymbol implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA0274";
 

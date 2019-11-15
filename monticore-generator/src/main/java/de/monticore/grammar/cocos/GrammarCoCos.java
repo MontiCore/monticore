@@ -57,7 +57,7 @@ public class GrammarCoCos {
     checker.addCoCo(new InheritedScopeProperty());
     checker.addCoCo(new SymbolRuleWithoutSymbolRef());
     checker.addCoCo(new NoNestedGenericsInAdditionalAttributes());
-    checker.addCoCo(new SymbolProdNotOverwrittenBySymbol());
+    checker.addCoCo(new SymbolProdOverwrittenBySymbol());
     // checker.addCoCo(new NoNTInheritanceCycle());
 
     return checker;
