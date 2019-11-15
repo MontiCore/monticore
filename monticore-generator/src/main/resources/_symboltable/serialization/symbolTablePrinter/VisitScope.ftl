@@ -6,3 +6,4 @@ ${tc.signature("scopeFullName")}
   printer.member(de.monticore.symboltable.serialization.JsonConstants.IS_SHADOWING_SCOPE, node.isShadowing());
   printer.member(de.monticore.symboltable.serialization.JsonConstants.EXPORTS_SYMBOLS, node.isExportingSymbols());
   addScopeSpanningSymbol(node.getSpanningSymbolOpt());
+  serializeLocalSymbols(node);
