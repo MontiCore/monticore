@@ -42,6 +42,10 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     return typeSymbolLoader.getName();
   }
   
+  public void setTypeConstructorFullName(String typeConstructorFullName) {
+    this.typeSymbolLoader.setName(typeConstructorFullName);
+  }
+
   /**
    * print: Umwandlung in einen kompakten String
    */

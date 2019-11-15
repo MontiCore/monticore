@@ -178,8 +178,6 @@ public abstract class SymTypeExpression {
    */
   protected TypeSymbolLoader typeSymbolLoader;
 
-
-
   public TypeSymbol getTypeInfo() {
     return typeSymbolLoader.getLoadedSymbol();
   }

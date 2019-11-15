@@ -324,7 +324,7 @@ public class DefsTypeBasic {
   public static SymTypeOfObject _StringSymType;
   
   public static void set_String() {
-    _String = type("StringType");
+    _String = type("String");
     _StringSymType = new SymTypeOfObject(new TypeSymbolLoader("String", createScopeWithString()));
   }
 
