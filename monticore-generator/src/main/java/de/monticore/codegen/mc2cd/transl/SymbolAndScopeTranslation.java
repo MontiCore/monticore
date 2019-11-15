@@ -79,29 +79,17 @@ public class SymbolAndScopeTranslation implements
     }
   }
 
+  /**
+   * need two methods 'addSymbolInheritedProperty', because there is no interface that also contains ASTAbstractProd
+   * because method 'getSuperInterfaceRuleList' is missing in complete general interface ASTProd
+   */
+
   protected void addSymbolInheritedProperty(ASTParserProd astClassProd, ASTCDType astcdClass) {
     final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(astClassProd.getEnclosingScope());
     if (grammarSymbol.isPresent() &&
         astcdClass.getModifierOpt().isPresent() && !hasStereotype(MC2CDStereotypes.SYMBOL, astcdClass.getModifierOpt().get())) {
-      for (ASTRuleReference astRuleReference : astClassProd.getSuperInterfaceRuleList()) {
-        Optional<ProdSymbol> prodSymbol = grammarSymbol.get().getProdWithInherited(astRuleReference.getName());
-        if (prodSymbol.isPresent()) {
-          if (prodSymbol.get().isIsSymbolDefinition()) {
-            String packageName = prodSymbol.get().getFullName().substring(0, prodSymbol.get().getFullName().lastIndexOf(".")).toLowerCase();
-            String qualifiedName = packageName + "." + SYMBOL_TABLE_PACKAGE + "." + prodSymbol.get().getName() + SYMBOL_SUFFIX;
-            TransformationHelper.addStereoType(astcdClass,
-                MC2CDStereotypes.INHERITED_SYMBOL.toString(), qualifiedName);
-          }
-          if (prodSymbol.get().isIsScopeSpanning()) {
-            TransformationHelper.addStereoType(astcdClass,
-                MC2CDStereotypes.INHERITED_SCOPE.toString());
-          }
-          if (prodSymbol.get().getAstNode() instanceof ASTParserProd) {
-            addSymbolInheritedProperty((ASTParserProd) prodSymbol.get().getAstNode(), astcdClass);
-          }
-        }
-      }
+      addInheritedScopeAndSymbolPropertyFromInterface(astClassProd.getSuperInterfaceRuleList(), grammarSymbol.get(), astcdClass);
       addInheritsSymbolPropertyThroughOverwriting(grammarSymbol.get(), astcdClass);
     }
   }
@@ -111,22 +99,7 @@ public class SymbolAndScopeTranslation implements
         .getMCGrammarSymbol(astClassProd.getEnclosingScope());
     if (grammarSymbol.isPresent() &&
         astcdClass.getModifierOpt().isPresent() && !hasStereotype(MC2CDStereotypes.SYMBOL, astcdClass.getModifierOpt().get())) {
-      for (ASTRuleReference astRuleReference : astClassProd.getSuperInterfaceRuleList()) {
-        Optional<ProdSymbol> prodSymbol = grammarSymbol.get().getProdWithInherited(astRuleReference.getName());
-        if (prodSymbol.isPresent()) {
-          if (prodSymbol.get().isIsSymbolDefinition()) {
-            TransformationHelper.addStereoType(astcdClass,
-                MC2CDStereotypes.INHERITED_SYMBOL.toString(), getSymbolName(prodSymbol.get()));
-          }
-          if (prodSymbol.get().isIsScopeSpanning()) {
-            TransformationHelper.addStereoType(astcdClass,
-                MC2CDStereotypes.INHERITED_SCOPE.toString());
-          }
-          if (prodSymbol.get().getAstNode() instanceof ASTParserProd) {
-            addSymbolInheritedProperty((ASTParserProd) prodSymbol.get().getAstNode(), astcdClass);
-          }
-        }
-      }
+      addInheritedScopeAndSymbolPropertyFromInterface(astClassProd.getSuperInterfaceRuleList(), grammarSymbol.get(), astcdClass);
       addInheritsSymbolPropertyThroughOverwriting(grammarSymbol.get(), astcdClass);
     }
   }
@@ -143,7 +116,32 @@ public class SymbolAndScopeTranslation implements
   }
 
   /**
-   * returns true for e.g. for Foo in B in: A { symbol Foo; }  grammar B extends A { Foo; }
+   * adds inheritedSymbol and inheritedScope property to the CD if an interface already defines a symbol or scope
+   * e.g. for Bar in: A { symbol scope interface Foo;  Bar implements Foo; }
+   */
+  protected void addInheritedScopeAndSymbolPropertyFromInterface(List<ASTRuleReference> superInterfaceList,
+                                                                 MCGrammarSymbol grammarSymbol, ASTCDType astcdClass) {
+    for (ASTRuleReference astRuleReference : superInterfaceList) {
+      Optional<ProdSymbol> prodSymbol = grammarSymbol.getProdWithInherited(astRuleReference.getName());
+      if (prodSymbol.isPresent()) {
+        if (prodSymbol.get().isIsSymbolDefinition()) {
+          TransformationHelper.addStereoType(astcdClass,
+              MC2CDStereotypes.INHERITED_SYMBOL.toString(), getSymbolName(prodSymbol.get()));
+        }
+        if (prodSymbol.get().isIsScopeSpanning()) {
+          TransformationHelper.addStereoType(astcdClass,
+              MC2CDStereotypes.INHERITED_SCOPE.toString());
+        }
+        if (prodSymbol.get().getAstNode() instanceof ASTParserProd) {
+          addSymbolInheritedProperty((ASTParserProd) prodSymbol.get().getAstNode(), astcdClass);
+        }
+      }
+    }
+  }
+
+  /**
+   * adds inheritedSymbol property to a CD if the prod overwrites a symbol prod
+   * e.g. for Foo in B in: A { symbol Foo; }  grammar B extends A { Foo; }
    */
   protected void addInheritsSymbolPropertyThroughOverwriting(MCGrammarSymbol grammarSymbol, ASTCDType prod) {
     List<MCGrammarSymbol> superGrammarSymbols = grammarSymbol.getSuperGrammarSymbols();
