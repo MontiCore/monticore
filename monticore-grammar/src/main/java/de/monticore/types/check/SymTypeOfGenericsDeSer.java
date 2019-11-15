@@ -12,13 +12,14 @@ import de.monticore.symboltable.serialization.ListDeSer;
 import de.monticore.symboltable.serialization.json.JsonArray;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
-public class SymTypeOfGenericsDeSer implements IDeSer<SymTypeOfGenerics> {
+public class SymTypeOfGenericsDeSer implements IDeSer<SymTypeOfGenerics, ITypeSymbolsScope> {
 
-    /**
+  /**
      * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
      */
     @Override
@@ -26,23 +27,28 @@ public class SymTypeOfGenericsDeSer implements IDeSer<SymTypeOfGenerics> {
         return "de.monticore.types.check.SymTypeOfGenerics";
     }
 
-    /**
-     * @see de.monticore.symboltable.serialization.IDeSer#serialize(java.lang.Object)
-     */
+  /**
+   *
+   * @param toSerialize
+   * @return
+   */
     @Override
     public String serialize(SymTypeOfGenerics toSerialize) {
         return toSerialize.printAsJson();
     }
 
-    /**
-     * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
-     */
+  /**
+   *
+   * @param serialized
+   * @param enclosingScope
+   * @return
+   */
     @Override
-    public SymTypeOfGenerics deserialize(String serialized) {
-        return deserialize(JsonParser.parse(serialized));
+    public SymTypeOfGenerics deserialize(String serialized, ITypeSymbolsScope enclosingScope) {
+        return deserialize(JsonParser.parse(serialized), enclosingScope);
     }
 
-    public SymTypeOfGenerics deserialize(JsonElement serialized) {
+    public SymTypeOfGenerics deserialize(JsonElement serialized, ITypeSymbolsScope enclosingScope) {
         if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
             JsonObject o = serialized.getAsJsonObject();  //if it has a kind, it is an object
 
@@ -50,11 +56,10 @@ public class SymTypeOfGenericsDeSer implements IDeSer<SymTypeOfGenerics> {
 
             JsonElement argumentsJson = o.getMember("arguments");
             List<SymTypeExpression> arguments = ListDeSer.of(SymTypeExpressionDeSer.getInstance())
-                    .deserialize(argumentsJson);
+                    .deserialize(argumentsJson, enclosingScope);
 
-            TypeSymbol typeLoader = null; // TODO AB: waits for TypeSymbolLoader
             return SymTypeExpressionFactory
-                    .createGenerics(typeConstructorFullName, new TypeSymbolsScope(), arguments);
+                    .createGenerics(typeConstructorFullName, enclosingScope, arguments);
         }
         Log.error(
                 "0x823F6 Internal error: Loading ill-structured SymTab: missing typeConstructorFullName of SymTypeOfGenerics "

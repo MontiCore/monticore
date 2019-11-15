@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.expressions;
+
+grammar TestOCLExpressions
+          extends de.monticore.expressions.OCLExpressions, de.monticore.literals.MCCommonLiterals,
+           de.monticore.types.MCCollectionTypes,de.monticore.expressions.AssignmentExpressions  {
+	    start Expression;
+      EDeclaration = Expression;
+      ExtType = MCType;
+}

@@ -55,7 +55,7 @@ public class JsonUtil {
    * @param serializedObject
    * @return
    */
-  public static boolean isCorrectDeSerForKind(IDeSer<?> deser, JsonElement serializedObject) {
+  public static boolean isCorrectDeSerForKind(IDeSer<?,?> deser, JsonElement serializedObject) {
     if (!serializedObject.isJsonObject()) {
       return false;
     }

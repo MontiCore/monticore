@@ -63,8 +63,6 @@ public class SymbolTableConstants {
 
   public static final String I_SYMBOL_LOADER = "de.monticore.symboltable.ISymbolLoader";
 
-  public static final String QUALIFIED_NAMES_CALCULATOR = "de.monticore.symboltable.names.QualifiedNamesCalculator";
-
   public static final String I_MODELING_LANGUAGE = "de.monticore.IModelingLanguage";
 
   public static final String I_MODEL_LOADER = "de.monticore.modelloader.IModelLoader";
@@ -154,4 +152,5 @@ public class SymbolTableConstants {
   public static final String CALCULATED_MODEL_NAME = "calculatedModelName";
 
   public static final String DESERIALIZE = "deserialize";
+
 }

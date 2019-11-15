@@ -46,6 +46,15 @@ public class CommonExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinte
     node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
+
+  @Override
+  public void handle(ASTModuloExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeft().accept(getRealThis());
+    getPrinter().print(" % ");
+    node.getRight().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
   
   @Override
   public void handle(ASTPlusExpression node) {

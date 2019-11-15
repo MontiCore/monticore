@@ -71,7 +71,7 @@ public class SymTypeExpressionDeSerTest {
     //first serialize the expression using the deser
     String serialized = deser.serialize(expr);
     // then deserialize it
-    SymTypeExpression deserialized = deser.deserialize(serialized);
+    SymTypeExpression deserialized = deser.deserialize(serialized, scope);
     assertNotNull(deserialized);
     // and assert that the serialized and deserialized symtype expression equals the one before
     assertEquals(expr.print(), deserialized.print());

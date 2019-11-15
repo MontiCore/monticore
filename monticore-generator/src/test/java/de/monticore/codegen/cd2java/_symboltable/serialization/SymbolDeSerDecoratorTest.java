@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import com.github.javaparser.Problem;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
@@ -85,7 +84,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
-    assertDeepEquals("de.monticore.symboltable.serialization.IDeSer<de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbol>", symbolDeSer.getInterface(0));
+    assertDeepEquals("de.monticore.symboltable.serialization.IDeSer<de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbol,de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope>", symbolDeSer.getInterface(0));
   }
 
   @Test
@@ -133,7 +132,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDeserializeStringMethod() {
-    List<ASTCDMethod> methods = getMethodsBy("deserialize", 1, symbolDeSer);
+    List<ASTCDMethod> methods = getMethodsBy("deserialize", 2, symbolDeSer);
     ASTMCType astType = this.mcTypeFacade.createStringType();
 
     assertTrue(methods.stream().anyMatch(m -> m.getCDParameter(0).getMCType()
@@ -146,14 +145,16 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
-    assertEquals(1, method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("serialized", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(1).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(1).getName());
   }
 
   @Test
   public void testDeserializeJsonObjectMethod() {
-    List<ASTCDMethod> methods = getMethodsBy("deserialize", 1, symbolDeSer);
+    List<ASTCDMethod> methods = getMethodsBy("deserialize", 2, symbolDeSer);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType("de.monticore.symboltable.serialization.json.JsonObject");
 
     assertTrue(methods.stream().anyMatch(m -> m.getCDParameter(0).getMCType()
@@ -166,9 +167,11 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
-    assertEquals(1, method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("symbolJson", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(1).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(1).getName());
   }
 
   @Test
@@ -178,9 +181,11 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
-    assertEquals(1, method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
     assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
     assertEquals("symbolJson", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(1).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(1).getName());
   }
 
   @Test
@@ -189,11 +194,13 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PROTECTED, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
-    assertEquals(2, method.sizeCDParameters());
+    assertEquals(3, method.sizeCDParameters());
     assertDeepEquals(AUTOMATON_SYMBOL, method.getCDParameter(0).getMCType());
     assertEquals("symbol", method.getCDParameter(0).getName());
     assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(1).getMCType());
     assertEquals("symbolJson", method.getCDParameter(1).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(2).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(2).getName());
   }
 
   /**
@@ -211,7 +218,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesFooSymbol() {
-    assertDeepEquals("de.monticore.symboltable.serialization.IDeSer<de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.FooSymbol>",
+    assertDeepEquals("de.monticore.symboltable.serialization.IDeSer<de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.FooSymbol,de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope>",
         symbolFooDeSer.getInterface(0));
   }
 
@@ -243,9 +250,11 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertBoolean(method.getMCReturnType().getMCType());
 
-    assertEquals(1, method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
     assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
     assertEquals("symbolJson", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(1).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(1).getName());
   }
 
   @Test
@@ -255,9 +264,11 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertListOf(String.class, method.getMCReturnType().getMCType());
 
-    assertEquals(1, method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
     assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
     assertEquals("symbolJson", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(1).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(1).getName());
   }
 
   @Test
@@ -267,9 +278,11 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
 
-    assertEquals(1, method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
     assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
     assertEquals("symbolJson", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(1).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(1).getName());
   }
 
   @Test
@@ -279,6 +292,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolDeSer, symbolDeSer);
     // test parsing
+    System.out.println(sb);
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
