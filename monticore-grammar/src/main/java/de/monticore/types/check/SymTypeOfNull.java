@@ -1,9 +1,10 @@
 package de.monticore.types.check;
 
+import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 
 public class SymTypeOfNull extends SymTypeExpression {
-  
+
   /**
    * This Class represents the type of the value "null".
    * This type doesn't really exist (hence the print method delivers "nullType", i.e. _nullTypeString),
@@ -15,9 +16,10 @@ public class SymTypeOfNull extends SymTypeExpression {
    *       int i = null;          illegal
    */
   public SymTypeOfNull() {
-    typeSymbolLoader = new TypeSymbolLoader(DefsTypeBasic._nullTypeString, null);
+    typeSymbolLoader = new TypeSymbolLoader(DefsTypeBasic._nullTypeString,
+        BuiltInJavaTypeSymbolResolvingDelegate.getScope());
   }
-  
+
   /**
    * print: Umwandlung in einen kompakten String
    */
@@ -39,6 +41,6 @@ public class SymTypeOfNull extends SymTypeExpression {
   }
 
   // --------------------------------------------------------------------------
-  
+
 
 }

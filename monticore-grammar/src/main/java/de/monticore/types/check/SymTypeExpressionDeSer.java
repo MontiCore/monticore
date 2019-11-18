@@ -6,7 +6,10 @@ import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
+
+import java.nio.file.Paths;
 
 /**
  * This DeSer reailizes serialization and deserialization of SymTypeExpressions.
@@ -58,6 +61,11 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression, ITypeSy
     else {
       instance = theInstance;
     }
+  }
+
+  public  void store(SymTypeExpression expr, String symbolPath)  {
+    TypeSymbol symbol = expr.getTypeInfo();
+    store(expr, Paths.get(symbolPath, symbol.getPackageName(), symbol.getName()+".symtype"));
   }
 
   /**

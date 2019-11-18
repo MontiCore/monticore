@@ -29,7 +29,7 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolv
     gs = new TypeSymbolsGlobalScope(new ModelPath(),
         new TypeSymbolsLanguage("Types Symbols Language", "ts") {
           @Override public MCConcreteParser getParser() {
-            Log.error("0xTODO Type Symbols do not have a parser!");
+            Log.error("0xA0611 Type Symbols do not have a parser!");
             return null;
           }
         });
@@ -199,8 +199,12 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolv
     javautil.add(new TypeSymbol("Map"));
     javautil.add(new TypeSymbol("Set"));
 
+    gs.add(new TypeSymbol("char"));
 
     //TODO complete me with other built in types
+
+    gs.add(new TypeSymbol(_nullTypeString));
+    gs.add(new TypeSymbol(_voidTypeString));
     return gs;
   }
 

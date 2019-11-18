@@ -477,7 +477,7 @@ public class DefsTypeBasic {
    */
   public static TypeSymbol _void;
   public static SymTypeVoid _voidSymType;
-  public static String _voidTypeString = "voidType";
+  public static final String _voidTypeString = "voidType";
   
   public static void set_Void() {
     _void = type(_voidTypeString);           // the name shouldn't be used
@@ -494,7 +494,7 @@ public class DefsTypeBasic {
    */
   public static TypeSymbol _null;
   public static SymTypeOfNull _nullSymType;
-  public static String _nullTypeString = "nullType";
+  public static final String _nullTypeString = "nullType";
   
   public static void set_Null() {
     _null = type(_nullTypeString);    // and the name shouldn't be used anyway, but it is at DeSer

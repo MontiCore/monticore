@@ -69,8 +69,6 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       jp.valueJson(exp.printAsJson());
     }
     jp.endArray();
-    //TODO: TypeSymbolDeSer implementieren
-    jp.member("objTypeConstructorSymbol", "TODO");//new TypeSymbolDeSer().serialize(getObjTypeConstructorSymbol()));
     jp.endObject();
     return jp.getContent();
   }
