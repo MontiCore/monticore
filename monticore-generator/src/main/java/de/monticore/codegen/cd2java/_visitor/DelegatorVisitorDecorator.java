@@ -11,6 +11,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
@@ -106,7 +107,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTMCQualifiedType> superVisitors = visitorService.getSuperVisitors();
     List<String> superVisitorNames = superVisitors
         .stream()
-        .map(ASTMCType::printType)
+        .map(t -> t.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))
         .filter(s -> s.contains("."))
         .map(s -> s = s.substring(s.lastIndexOf(".") + 1))
         .collect(Collectors.toList());

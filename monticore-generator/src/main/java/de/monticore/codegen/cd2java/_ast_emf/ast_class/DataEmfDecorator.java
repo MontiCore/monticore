@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.StringTransformations;
 
@@ -46,7 +47,8 @@ public class DataEmfDecorator extends DataDecorator {
 
   protected String calculateListType(ASTCDAttribute attribute, String grammarName, String classname) {
     if (attribute.getMCType() instanceof ASTMCBasicGenericType && ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentList().size() == 1) {
-      String simpleAttributeType = ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().get().printType();
+      String simpleAttributeType = ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().get()
+              .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
       DecorationHelper decorationHelper = new DecorationHelper();
       String listType;
       if (decorationHelper.isListAstNode(attribute)) {

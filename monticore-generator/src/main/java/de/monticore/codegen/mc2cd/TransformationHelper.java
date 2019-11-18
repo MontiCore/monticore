@@ -61,7 +61,7 @@ public final class TransformationHelper {
     } else if (type instanceof ASTMCArrayType) {
       return ((ASTMCArrayType) type).printTypeWithoutBrackets();
     }
-    return type.printType();
+    return type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
   }
 
   public static String simpleName(ASTMCType type) {
@@ -71,7 +71,7 @@ public final class TransformationHelper {
     } else if (type instanceof ASTMCArrayType) {
       name = ((ASTMCArrayType) type).printTypeWithoutBrackets();
     } else {
-      name = type.printType();
+      name = type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     }
     return Names.getSimpleName(name);
   }
