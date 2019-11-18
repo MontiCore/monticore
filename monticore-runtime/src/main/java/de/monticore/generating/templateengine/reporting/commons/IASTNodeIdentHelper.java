@@ -5,7 +5,7 @@ package de.monticore.generating.templateengine.reporting.commons;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
-import de.monticore.symboltable.references.ISymbolReference;
+import de.monticore.symboltable.ISymbolLoader;
 
 public interface IASTNodeIdentHelper {
   
@@ -27,7 +27,7 @@ public interface IASTNodeIdentHelper {
     return format(maskSpecialChars(symbol.getName()), "Symbol");
   }
   
-  default public String getIdent(ISymbolReference symbol) {
+  default public String getIdent(ISymbolLoader symbol) {
     return format(maskSpecialChars(symbol.getName()), "SymbolReference");
   }
   
