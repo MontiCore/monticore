@@ -122,7 +122,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(25, symbolTablePrinter.getCDMethodList().size());
+    assertEquals(42, symbolTablePrinter.getCDMethodList().size());
   }
 
   @Test
