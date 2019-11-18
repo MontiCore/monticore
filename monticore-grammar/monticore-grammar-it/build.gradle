@@ -3,19 +3,19 @@ import de.monticore.MCTask
 
 plugins{
   id "java"
-  id "monticore" version "5.4.0" //Monticore Plugin
+  id "monticore" version "5.5.0-SNAPSHOT" //Monticore Plugin
 }
 
 group = 'de.monticore'
-version = '5.4.0'
+version = '5.5.0-SNAPSHOT'
 description = 'MontiCore Grammars Main Integration Test'
 sourceCompatibility = '1.8'
 
 ext.grammarDir = 'src/main/grammars'
-ext.mc_version = '5.4.0'
-ext.generator_version = '5.4.0'
+ext.mc_version = '5.5.0-SNAPSHOT'
+ext.generator_version = '5.5.0-SNAPSHOT'
 ext.junit_version = '4.12'
-ext.cd4a_version = '1.5.0-SNAPSHOT'
+ext.cd4a_version = '1.6.0-SNAPSHOT'
 
 configurations {grammar}
 
