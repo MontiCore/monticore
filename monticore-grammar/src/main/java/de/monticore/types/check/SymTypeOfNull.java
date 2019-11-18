@@ -1,7 +1,10 @@
 package de.monticore.types.check;
 
 import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+
+import java.util.Optional;
 
 public class SymTypeOfNull extends SymTypeExpression {
 
@@ -16,8 +19,9 @@ public class SymTypeOfNull extends SymTypeExpression {
    *       int i = null;          illegal
    */
   public SymTypeOfNull() {
-    typeSymbolLoader = new TypeSymbolLoader(DefsTypeBasic._nullTypeString,
-        BuiltInJavaTypeSymbolResolvingDelegate.getScope());
+//    typeSymbolLoader = new TypeSymbolLoader(DefsTypeBasic._nullTypeString,
+//        BuiltInJavaTypeSymbolResolvingDelegate.getScope());
+    typeSymbolLoader = new PseudoTypeSymbolLoader(DefsTypeBasic._null);
   }
 
   /**
