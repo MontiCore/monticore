@@ -15,4 +15,3 @@
   }
 
   this.imports = Collections.unmodifiableList(new ArrayList<>(imports));
-  this.qualifiedNamesCalculator = new de.monticore.symboltable.names.CommonQualifiedNamesCalculator();

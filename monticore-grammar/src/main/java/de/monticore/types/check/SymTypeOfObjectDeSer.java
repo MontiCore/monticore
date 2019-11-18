@@ -12,10 +12,13 @@ import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsArtifactScope;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
-public class SymTypeOfObjectDeSer implements IDeSer<SymTypeOfObject> {
+public class SymTypeOfObjectDeSer implements IDeSer<SymTypeOfObject, ITypeSymbolsScope> {
 
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
@@ -34,19 +37,21 @@ public class SymTypeOfObjectDeSer implements IDeSer<SymTypeOfObject> {
   }
 
   /**
-   * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
+   *
+   * @param serialized
+   * @param enclosingScope
+   * @return
    */
   @Override
-  public SymTypeOfObject deserialize(String serialized) {
-    return deserialize(JsonParser.parse(serialized));
+  public SymTypeOfObject deserialize(String serialized, ITypeSymbolsScope enclosingScope) {
+    return deserialize(JsonParser.parse(serialized), enclosingScope);
   }
 
-  public SymTypeOfObject deserialize(JsonElement serialized) {
+  public SymTypeOfObject deserialize(JsonElement serialized, ITypeSymbolsScope enclosingScope) {
     if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
       JsonObject o = serialized.getAsJsonObject();  //if it has a kind, it is an object
       String objName = o.getStringMember("objName");
-      TypeSymbol typeLoader = null; // TODO AB: waits for TypeSymbolLoader
-      return SymTypeExpressionFactory.createTypeObject(objName, typeLoader);
+      return SymTypeExpressionFactory.createTypeObject(objName, enclosingScope);
     }
     Log.error("0x823F4 Internal error: Cannot load \""
         + serialized + "\" as  SymTypeOfObject!");

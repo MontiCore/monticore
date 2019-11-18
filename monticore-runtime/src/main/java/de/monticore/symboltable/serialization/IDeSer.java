@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import com.google.common.base.Charsets;
 
 import de.monticore.io.FileReaderWriter;
+import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -22,7 +23,7 @@ import de.se_rwth.commons.logging.Log;
  * the generic type parameter to a concrete symbol class or a concrete scope class.
  *
  */
-public interface IDeSer<T> {
+public interface IDeSer<T, S extends IScope> {
   
   /**
    * A String representation of the
@@ -41,11 +42,11 @@ public interface IDeSer<T> {
   
   /**
    * Deserializes a given String and returns the resulting object of the generic class parameter T.
-   * 
    * @param serialized
+   * @param enclosingScope
    * @return
    */
-  public T deserialize(String serialized);
+  public T deserialize(String serialized, S enclosingScope);
   
   /**
    * Stores a given object of generic class parameter T in a (new) file located at given path using
@@ -66,16 +67,15 @@ public interface IDeSer<T> {
    * @param url
    * @return
    */
-  default public T load(URL url) {
+  default public T load(URL url, S enclosingScope) {
     try {
       Reader reader = new InputStreamReader(url.openStream(), Charsets.UTF_8.name());
       BufferedReader buffer = new BufferedReader(reader);
       String serialized = buffer.lines().collect(Collectors.joining());
-      return deserialize(serialized);
+      return deserialize(serialized, enclosingScope);
     }
     catch (IOException e) {
-      e.printStackTrace();
-      Log.error("0xA0577 Unable to load stored symbol table at \""+url+"\"");
+      Log.error("0xA0577 Unable to load stored symbol table at \""+url+"\"", e);
       return null;
     }
   }

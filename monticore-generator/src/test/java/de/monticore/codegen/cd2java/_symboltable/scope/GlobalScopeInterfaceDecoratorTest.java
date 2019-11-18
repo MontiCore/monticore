@@ -10,6 +10,7 @@ import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableConstants;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
@@ -34,7 +35,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private de.monticore.types.MCTypeFacade MCTypeFacade;
+  private MCTypeFacade mcTypeFacade;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
@@ -50,15 +51,12 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   private static final String PREDICATE_QUALIFIED_NAME = "java.util.function.Predicate<de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol>";
 
-  private static final String MODEL_PATH = "de.monticore.io.paths.ModelPath";
-
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
-
 
   @Before
   public void setUp() {
     Log.init();
-    this.MCTypeFacade = MCTypeFacade.getInstance();
+    this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -84,12 +82,13 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(1, scopeInterface.sizeInterfaces());
+    assertEquals(2, scopeInterface.sizeInterfaces());
   }
 
   @Test
   public void testSuperInterfaces() {
     assertDeepEquals(I_AUTOMATON_SCOPE, scopeInterface.getInterface(0));
+    assertDeepEquals(SymbolTableConstants.I_GLOBAL_SCOPE_TYPE, scopeInterface.getInterface(1));
   }
 
   @Test
@@ -99,17 +98,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(15, scopeInterface.getCDMethodList().size());
-  }
-
-  @Test
-  public void testGetModelPathMethod() {
-    ASTCDMethod method = getMethodBy("getModelPath", scopeInterface);
-
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertDeepEquals(MODEL_PATH, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
+    assertEquals(14, scopeInterface.getCDMethodList().size());
   }
 
 
@@ -155,7 +144,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("resolveAutomatonMany", scopeInterface);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());
@@ -172,7 +161,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("resolveAdaptedAutomaton", scopeInterface);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());
@@ -200,7 +189,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("resolveQualifiedNameMany", scopeInterface);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createListTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createListTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());
@@ -217,7 +206,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("resolveAdaptedQualifiedName", scopeInterface);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createListTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createListTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("foundSymbols", method.getCDParameter(0).getName());

@@ -6,9 +6,11 @@ import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
-public class SymTypeConstantDeSer implements IDeSer<SymTypeConstant> {
+public class SymTypeConstantDeSer implements IDeSer<SymTypeConstant, ITypeSymbolsScope> {
 
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
@@ -28,14 +30,17 @@ public class SymTypeConstantDeSer implements IDeSer<SymTypeConstant> {
   }
 
   /**
-   * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
+   *
+   * @param serialized
+   * @param enclosingScope
+   * @return
    */
   @Override
-  public SymTypeConstant deserialize(String serialized) {
-    return deserialize(JsonParser.parse(serialized));
+  public SymTypeConstant deserialize(String serialized, ITypeSymbolsScope enclosingScope) {
+    return deserialize(JsonParser.parse(serialized),enclosingScope);
   }
 
-  public SymTypeConstant deserialize(JsonElement serialized) {
+  public SymTypeConstant deserialize(JsonElement serialized, ITypeSymbolsScope enclosingScope) {
     if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
       JsonObject o = serialized.getAsJsonObject();  //if it has a kind, it is an object
       String constName = o.getStringMember("constName");

@@ -9,3 +9,5 @@ ${tc.signature("artifactScope")}
   node.getImportList().forEach(x -> printer.value(x.toString()));
   printer.endArray();
   addScopeSpanningSymbol(node.getSpanningSymbolOpt());
+  serializeLocalSymbols(node);
+  serializeAdditionalScopeAttributes(node);
