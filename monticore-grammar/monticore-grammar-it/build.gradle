@@ -15,7 +15,6 @@ ext.grammarDir = 'src/main/grammars'
 ext.mc_version = '5.5.0-SNAPSHOT'
 ext.generator_version = '5.5.0-SNAPSHOT'
 ext.junit_version = '4.12'
-ext.cd4a_version = '1.6.0-SNAPSHOT'
 
 configurations {grammar}
 
@@ -23,7 +22,6 @@ dependencies {
   implementation group:'de.monticore', name:'javaDSL',version:'4.3.17-SNAPSHOT'
   implementation group:'de.monticore', name:'monticore-runtime', version:mc_version
   implementation group:'de.monticore', name:'monticore-grammar', version:mc_version
-  implementation group:'de.monticore.lang', name:'cd4analysis', version:cd4a_version
   testImplementation group:'junit', name:'junit', version: junit_version
   grammar group:'de.monticore', name:'monticore-grammar', version: mc_version, classifier:'grammars'
 }
