@@ -6,20 +6,20 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class SymbolProdOverwrittenBySymbolTest extends CocoTest {
+public class ScopeProdOverwrittenByScopeTest extends CocoTest {
 
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
 
   @BeforeClass
   public static void disableFailQuick() {
     LogStub.enableFailQuick(false);
-    checker.addCoCo(new SymbolProdOverwrittenBySymbol());
+    checker.addCoCo(new ScopeProdOverwrittenByScope());
   }
 
   @Test
   public void TestInvalid() {
-    testInvalidGrammar("cocos.invalid.A0274.A0274Sub", SymbolProdOverwrittenBySymbol.ERROR_CODE,
-        String.format(SymbolProdOverwrittenBySymbol.ERROR_MSG_FORMAT, "Foo", "A0274Super", "Foo", "A0274Sub"), checker);
+    testInvalidGrammar("cocos.invalid.A0275.A0275Sub", ScopeProdOverwrittenByScope.ERROR_CODE,
+        String.format(ScopeProdOverwrittenByScope.ERROR_MSG_FORMAT, "Foo", "A0275Super", "Foo", "A0275Sub"), checker);
   }
 
   @Test
