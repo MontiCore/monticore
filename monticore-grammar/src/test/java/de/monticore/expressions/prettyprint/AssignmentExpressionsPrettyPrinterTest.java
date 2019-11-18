@@ -2,7 +2,6 @@ package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.assignmentexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.prettyprint2.AssignmentExpressionsPrettyPrinter;
 import de.monticore.expressions.testassignmentexpressions._parser.TestAssignmentExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;

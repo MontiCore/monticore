@@ -2,7 +2,6 @@ package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.oclexpressions._ast.*;
-import de.monticore.expressions.prettyprint2.OCLExpressionsPrettyPrinter;
 import de.monticore.expressions.testoclexpressions._ast.ASTExtType;
 import de.monticore.expressions.testoclexpressions._parser.TestOCLExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
