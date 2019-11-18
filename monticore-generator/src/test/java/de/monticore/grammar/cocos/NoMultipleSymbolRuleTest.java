@@ -20,7 +20,7 @@ public class NoMultipleSymbolRuleTest extends CocoTest{
   }
 
   @Test
-  public void testUpperCasedAttribute() {
+  public void testMultipleRulesSingleNT() {
     testInvalidGrammar(grammar, NoMultipleSymbolRule.ERROR_CODE, MESSAGE, checker,2);
   }
 }
