@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4151;
+
+grammar A4151 extends mc.grammars.types.TestTypes, mc.grammars.types.TestTypes {
+
+  A = "foo";
+  symbolrule A = random:int;
+
+  symbolrule A = invalid:String;
+
+}
