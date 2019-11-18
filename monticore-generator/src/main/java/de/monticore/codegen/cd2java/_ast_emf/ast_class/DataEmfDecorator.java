@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator.EmfMutatorDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
@@ -38,9 +37,9 @@ public class DataEmfDecorator extends DataDecorator {
 
   @Override
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
-    if (GeneratorHelper.isListType(attribute.printType())) {
+    if (DecorationHelper.isListType(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint(calculateListType(attribute, service.getCDName(), clazzName)));
-    } else if (GeneratorHelper.isOptional(attribute)) {
+    } else if (DecorationHelper.isOptionalType(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     }
   }

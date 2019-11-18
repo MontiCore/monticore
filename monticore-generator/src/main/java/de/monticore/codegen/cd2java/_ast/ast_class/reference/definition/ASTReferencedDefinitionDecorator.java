@@ -4,10 +4,10 @@ package de.monticore.codegen.cd2java._ast.ast_class.reference.definition;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.definition.methoddecorator.ReferencedDefinitionAccessorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -16,9 +16,9 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * is a transforming class for the ast generation
@@ -61,7 +61,7 @@ public class ASTReferencedDefinitionDecorator extends AbstractTransformer<ASTCDC
     ASTMCType symbolType;
     String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) +
         AST_PACKAGE + "." + AST_PREFIX + symbolTableService.getSimpleNameFromSymbolName(referencedSymbol);
-    if (GeneratorHelper.isListType(astcdAttribute.printType())) {
+    if (DecorationHelper.isListType(astcdAttribute.printType())) {
       //if the attribute is a list
       symbolType = getMCTypeFacade().createListTypeOf(referencedNode);
     } else {
