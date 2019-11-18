@@ -26,7 +26,7 @@ public class CombineExpressionsWithLiteralsTest {
 
   private static final String MODEL_PATH = "src/test/resources";
 
-  @Test
+//  @Test
   public void testCD() throws IOException {
     LogStub.init();
     CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
