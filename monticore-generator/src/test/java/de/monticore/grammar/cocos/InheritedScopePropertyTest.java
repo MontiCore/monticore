@@ -13,7 +13,7 @@ public class InheritedScopePropertyTest extends CocoTest {
 
   private final String grammar = "cocos.invalid.A0135.A0135";
   private final String grammar2 = "cocos.invalid.A0135.A0135a";
-
+  private final String grammar3 = "cocos.invalid.A0135.A0135b";
 
   @BeforeClass
   public static void disableFailQuick() {
@@ -21,16 +21,28 @@ public class InheritedScopePropertyTest extends CocoTest {
     checker.addCoCo(new InheritedScopeProperty());
   }
 
+  /**
+   * implements -> from interface
+   */
   @Test
   public void testInvalid() {
     testInvalidGrammar(grammar, InheritedScopeProperty.ERROR_CODE,
-            String.format(InheritedScopeProperty.ERROR_MSG_FORMAT, "A"), checker);
+        String.format(InheritedScopeProperty.ERROR_MSG_FORMAT, "A"), checker);
   }
 
   @Test
   public void testInvalid2() {
     testInvalidGrammar(grammar2, InheritedScopeProperty.ERROR_CODE,
             String.format(InheritedScopeProperty.ERROR_MSG_FORMAT, "A"), checker);
+  }
+
+  /**
+   * extends -> from class
+   */
+  @Test
+  public void testInvalid3() {
+    testInvalidGrammar(grammar3, InheritedScopeProperty.ERROR_CODE,
+        String.format(InheritedScopeProperty.ERROR_MSG_FORMAT, "A"), checker);
   }
 
   @Test

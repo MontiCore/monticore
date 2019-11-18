@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A0135;
+
+grammar A0135b {
+
+  scope C1;
+
+  scope A extends C1;
+
+}
