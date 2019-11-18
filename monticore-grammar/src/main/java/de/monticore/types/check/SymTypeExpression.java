@@ -182,11 +182,5 @@ public abstract class SymTypeExpression {
     return typeSymbolLoader.getLoadedSymbol();
   }
 
-  public void setTypeInfo(TypeSymbol typeInfo) {
-    // TODO: NP: is that correct?
-    typeSymbolLoader.setName(typeInfo.getName());
-    typeSymbolLoader.setEnclosingScope(typeInfo.getEnclosingScope());
-  }
-
   // --------------------------------------------------------------------------
 }

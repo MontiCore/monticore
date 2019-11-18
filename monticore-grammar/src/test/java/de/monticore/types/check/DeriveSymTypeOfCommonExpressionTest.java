@@ -875,7 +875,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, sym);
     SymTypeExpression listIntSymTypeExp = SymTypeExpressionFactory
         .createGenerics("List", scope, _intSymType);
-    listIntSymTypeExp.setTypeInfo(sym);
     FieldSymbol listVar = field("listVar", listIntSymTypeExp);
     add2scope(scope, listVar);
 
@@ -884,14 +883,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
     SymTypeExpression listTSymTypeExp = SymTypeExpressionFactory
         .createGenerics("List", scope,
             Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T", scope)));
-    listTSymTypeExp.setTypeInfo(sym);
     TypeSymbol subsym = type("ArrayList", Lists.newArrayList(), Lists.newArrayList(),
         Lists.newArrayList(listTSymTypeExp), Lists.newArrayList(arrayListT)
     );
     add2scope(scope, subsym);
     SymTypeExpression subsymexp = SymTypeExpressionFactory.
         createGenerics("ArrayList", scope, Lists.newArrayList(_intSymType));
-    subsymexp.setTypeInfo(subsym);
     FieldSymbol arraylistVar = field("arraylistVar", subsymexp);
     add2scope(scope, arraylistVar);
 
@@ -942,7 +939,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, genSup);
     SymTypeExpression genSupType = SymTypeExpressionFactory.
         createGenerics("GenSup", scope, Lists.newArrayList(_StringSymType, _intSymType));
-    genSupType.setTypeInfo(genSup);
     FieldSymbol genSupVar = field("genSupVar", genSupType);
     add2scope(scope, genSupVar);
 
@@ -952,14 +948,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
     SymTypeExpression genTypeSV = SymTypeExpressionFactory.
         createGenerics("GenSup", scope, Lists.newArrayList(SymTypeExpressionFactory.
             createTypeVariable("S", scope), SymTypeExpressionFactory.createTypeVariable("V", scope)));
-    genTypeSV.setTypeInfo(genSup);
     TypeSymbol genSub = type("GenSub", Lists.newArrayList(), Lists.newArrayList(),
         Lists.newArrayList(genTypeSV.deepClone()), Lists.newArrayList(t1, t2)
     );
     add2scope(scope, genSub);
     SymTypeExpression genSubType = SymTypeExpressionFactory.
         createGenerics("GenSub", scope, Lists.newArrayList(_StringSymType, _intSymType));
-    genSubType.setTypeInfo(genSub);
     FieldSymbol genSubVar = field("genSubVar", genSubType);
     add2scope(scope, genSubVar);
 
@@ -969,14 +963,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
     SymTypeExpression genSubTypeSV = SymTypeExpressionFactory.
         createGenerics("GenSub", scope, Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("S", scope),
             SymTypeExpressionFactory.createTypeVariable("V", scope)));
-    genSubTypeSV.setTypeInfo(genSub);
     TypeSymbol genSubSub = type("GenSubSub", Lists.newArrayList(), Lists.newArrayList(),
         Lists.newArrayList(genSubTypeSV.deepClone()), Lists.newArrayList(t2, t1)
     );
     add2scope(scope, genSubSub);
     SymTypeExpression genSubSubType = SymTypeExpressionFactory.
         createGenerics("GenSubSub", scope, Lists.newArrayList(_StringSymType, _intSymType));
-    genSubSubType.setTypeInfo(genSubSub);
     FieldSymbol genSubSubVar = field("genSubSubVar", genSubSubType);
     add2scope(scope, genSubSubVar);
 
@@ -1046,7 +1038,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, fixGen);
     SymTypeExpression fixGenType = SymTypeExpressionFactory.createGenerics("FixGen", scope,
         Lists.newArrayList(_intSymType));
-    fixGenType.setTypeInfo(fixGen);
     FieldSymbol fixGenVar = field("fixGenVar", fixGenType);
     add2scope(scope, fixGenVar);
 
@@ -1060,7 +1051,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, varGenType);
     SymTypeExpression varGenSym = SymTypeExpressionFactory.
         createGenerics("VarGen", scope, Lists.newArrayList(_StringSymType));
-    varGenSym.setTypeInfo(varGenType);
     FieldSymbol varGen = field("varGen", varGenSym);
     add2scope(scope, varGen);
 
@@ -1103,7 +1093,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, sym);
     SymTypeExpression listIntSymTypeExp = SymTypeExpressionFactory
         .createGenerics("List", scope, Lists.newArrayList(_intSymType));
-    listIntSymTypeExp.setTypeInfo(sym);
     FieldSymbol listVar = field("listVar", listIntSymTypeExp);
     add2scope(scope, listVar);
 
@@ -1113,7 +1102,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, moreType1);
     SymTypeExpression listTSymTypeExp = SymTypeExpressionFactory
         .createGenerics("List", scope, Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T", scope)));
-    listTSymTypeExp.setTypeInfo(sym);
     MethodSymbol insert = add(
         method("insert", SymTypeExpressionFactory.createTypeVariable("T", scope)),
         field("x", SymTypeExpressionFactory.createTypeVariable("F", scope))
@@ -1124,7 +1112,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, moreGenType);
     SymTypeExpression moreGenSym = SymTypeExpressionFactory.
         createGenerics("MoreGen", scope, Lists.newArrayList(_intSymType, _longSymType));
-    moreGenSym.setTypeInfo(moreGenType);
     FieldSymbol moreGen = field("moreGen", moreGenSym);
     add2scope(scope, moreGen);
 
@@ -1167,7 +1154,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, sym);
     SymTypeExpression listIntSymTypeExp = SymTypeExpressionFactory
         .createGenerics("List", scope, Lists.newArrayList(_intSymType));
-    listIntSymTypeExp.setTypeInfo(sym);
     FieldSymbol listVar = field("listVar", listIntSymTypeExp);
     add2scope(scope, listVar);
 
@@ -1213,7 +1199,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, supA);
     SymTypeExpression supATExpr = SymTypeExpressionFactory
         .createGenerics("SupA", scope, Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T", scope)));
-    supATExpr.setTypeInfo(supA);
 
     //supertype SupB<T>
     t = typeVariable("T");
@@ -1224,7 +1209,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, supB);
     SymTypeExpression supBTExpr = SymTypeExpressionFactory.
         createGenerics("SupB", scope, Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T", scope)));
-    supBTExpr.setTypeInfo(supB);
 
     //subType SubA<T>
     t = typeVariable("T");
@@ -1233,7 +1217,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, subA);
     SymTypeExpression subATExpr = SymTypeExpressionFactory
         .createGenerics("SubA", scope, Lists.newArrayList(_charSymType));
-    subATExpr.setTypeInfo(subA);
     FieldSymbol sub = field("sub", subATExpr);
     add2scope(scope, sub);
 
@@ -1277,7 +1260,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, supA);
     SymTypeExpression supATExpr = SymTypeExpressionFactory
         .createGenerics("SupA", scope, Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T", scope)));
-    supATExpr.setTypeInfo(supA);
     //supertype SupB<T>
     TypeVarSymbol s = typeVariable("S");
     MethodSymbol testB = method("testB", SymTypeExpressionFactory.createTypeVariable("S", scope));
@@ -1288,7 +1270,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, supB);
     SymTypeExpression supBTExpr = SymTypeExpressionFactory
         .createGenerics("SupB", scope, Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("S", scope)));
-    supBTExpr.setTypeInfo(supB);
 
     //subType SubA<T>
     t = typeVariable("T");
@@ -1299,7 +1280,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, subA);
     SymTypeExpression subATExpr = SymTypeExpressionFactory
         .createGenerics("SubA", scope, Lists.newArrayList(_charSymType, _booleanSymType));
-    subATExpr.setTypeInfo(subA);
     FieldSymbol sub = field("sub", subATExpr);
     add2scope(scope, sub);
 

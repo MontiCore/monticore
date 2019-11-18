@@ -74,10 +74,8 @@ public class DeriveSymTypeOfExpressionTest {
     TypeSymbol genSuperType = type("GenSuper",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(genArgs),scope);
     SymTypeExpression genArg = SymTypeExpressionFactory.createTypeVariable(new TypeSymbolLoader("GenArg",scope));
     SymTypeExpression genSuper = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("GenSuper",scope),genArg);
-    genSuper.setTypeInfo(genSuperType);
     TypeSymbol genSubType = type("GenSub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(genSuper),Lists.newArrayList(genArgs),scope);
     SymTypeExpression genSub = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("GenSub",scope),genArg);
-    genSub.setTypeInfo(genSubType);
     FieldSymbol genSubField = field("genericSub",genSub);
     FieldSymbol genSuperField = field("genericSuper",genSuper);
     add2scope(scope,genSuperType);
