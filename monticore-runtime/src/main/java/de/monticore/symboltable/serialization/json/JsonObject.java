@@ -193,12 +193,12 @@ public class JsonObject implements JsonElement {
    * @param name
    * @return
    */
-  public Optional<JsonArray> getArrayMemberOpt(String name) {
+  public List<JsonElement> getArrayMemberOpt(String name) {
     Optional<JsonElement> result = getMemberOpt(name);
     if (result.isPresent() && result.get().isJsonArray()) {
-      return Optional.of(result.get().getAsJsonArray());
+      return result.get().getAsJsonArray().getValues();
     }
-    return Optional.empty();
+    return new ArrayList<>();
   }
 
   /**
@@ -208,9 +208,9 @@ public class JsonObject implements JsonElement {
    * @return
    */
   public List<JsonElement> getArrayMember(String name) {
-    Optional<JsonArray> result = getArrayMemberOpt(name);
-    if (result.isPresent()) {
-      return result.get().getValues();
+    Optional<JsonElement> result = getMemberOpt(name);
+    if (result.isPresent() && result.get().isJsonArray()) {
+      return result.get().getAsJsonArray().getValues();
     }
     else {
       Log.error("0xA0573 \"" + name + "\" is not a Json Array member of \"" + this + "\"!");

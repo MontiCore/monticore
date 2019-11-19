@@ -1,10 +1,18 @@
 package de.monticore.types.check;
 
 
+import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+
+import java.util.Optional;
+
 public class SymTypeVoid extends SymTypeExpression {
   
   public SymTypeVoid() {
-    setTypeInfo(DefsTypeBasic._void);
+//    typeSymbolLoader = new TypeSymbolLoader(DefsTypeBasic._voidTypeString,
+//        BuiltInJavaTypeSymbolResolvingDelegate.getScope());
+    typeSymbolLoader = new PseudoTypeSymbolLoader(DefsTypeBasic._void);
   }
   
   /**

@@ -110,7 +110,8 @@ public class DecorationHelper extends MCBasicTypesHelper {
   public static String getPlainGetter(ASTCDAttribute ast) {
     String astType = ast.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     StringBuilder sb = new StringBuilder();
-    if (CDTypes.isBoolean(astType)) {
+    // Do not use CDTypes.isBoolean() because only primitive boolean uses GET_PREFIX_BOOLEAN
+    if (astType.equals("boolean")) {
       sb.append(GET_PREFIX_BOOLEAN);
     } else {
       sb.append(GET_PREFIX);

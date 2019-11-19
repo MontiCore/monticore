@@ -45,7 +45,7 @@ public class JsonPrinter {
   
   /**
    * Constructor for de.monticore.symboltable.serialization.JsonPrinter that does not print empty
-   * lists
+   * lists by default. This property can be enabled trough { @link #enableIndentation }
    */
   public JsonPrinter() {
     this(false);
@@ -59,19 +59,26 @@ public class JsonPrinter {
   }
   
   /**
-   * @param enableIndentation the enableIndentation to set
+   * Enables the indentation
    */
   public static void enableIndentation() {
     JsonPrinter.enableIndentation = true;
   }
   
   /**
-   * @param enableIndentation the enableIndentation to set
+   * Disables the indentation
    */
   public static void disableIndentation() {
     JsonPrinter.enableIndentation = false;
   }
-  
+
+  /**
+   *
+   * @return serializeEmptyLists
+   */
+  public boolean isSerializingEmptyLists() {
+    return serializeEmptyLists;
+  }
   /**
    * Prints the begin of an object in Json notation.
    */
@@ -106,7 +113,7 @@ public class JsonPrinter {
   public void endObject() {
     println("");
     print("}");
-    if (0 == nestedListDepth) {
+    if (0 == nestedObjectDepth) {
       isFirstAttribute = true;
     }
     nestedObjectDepth--;
@@ -279,8 +286,7 @@ public class JsonPrinter {
   
   /**
    * Prints a double as Json value
-   * 
-   * @param kind The key of the Json attribute
+   *
    * @param value The double value of the Json attribute
    */
   public void value(double value) {
@@ -289,8 +295,7 @@ public class JsonPrinter {
   
   /**
    * Prints a long as Json value
-   * 
-   * @param kind The key of the Json attribute
+   *
    * @param value The long value of the Json attribute
    */
   public void value(long value) {
@@ -299,8 +304,7 @@ public class JsonPrinter {
   
   /**
    * Prints a float as Json value
-   * 
-   * @param kind The key of the Json attribute
+   *
    * @param value The float value of the Json attribute
    */
   public void value(float value) {
@@ -309,8 +313,7 @@ public class JsonPrinter {
   
   /**
    * Prints a String as int value
-   * 
-   * @param kind The key of the Json attribute
+   *
    * @param value The int value of the Json attribute
    */
   public void value(int value) {
@@ -319,8 +322,7 @@ public class JsonPrinter {
   
   /**
    * Prints a String as boolean value
-   * 
-   * @param kind The key of the Json attribute
+   *
    * @param value The boolean value of the Json attribute
    */
   public void value(boolean value) {
@@ -330,8 +332,7 @@ public class JsonPrinter {
   /**
    * Prints a String as Json value. NOTE: if the parameter value is a serialized String, use the
    * value(JsonPrinter) method instead! Otherwise escaped symbols are double escaped!
-   * 
-   * @param kind The key of the Json attribute
+   *
    * @param value The String value of the Json attribute
    */
   public void value(String value) {
@@ -344,8 +345,7 @@ public class JsonPrinter {
   
   /**
    * Prints a Json attribute that is of an object type and therefore needs separat serialization.
-   * 
-   * @param kind The key of the Json attribute
+   *
    * @param value The JsonPrinter of the value object
    */
   public void value(JsonPrinter value) {
