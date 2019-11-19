@@ -63,8 +63,6 @@ public interface ISymbol {
    */
   void setAccessModifier(AccessModifier accessModifier);
 
-  public Optional<? extends ASTNode> getAstNodeOpt();
-
   public boolean isPresentAstNode();
 
   public ASTNode getAstNode();
@@ -72,11 +70,10 @@ public interface ISymbol {
   /**
    * @return the position of this symbol in the source model. By default, it is the source position
    * of the ast node.
-   * @see #getAstNodeOpt()
    */
   default SourcePosition getSourcePosition() {
-    if (getAstNodeOpt().isPresent()) {
-      return getAstNodeOpt().get().get_SourcePositionStart();
+    if (isPresentAstNode()) {
+      return getAstNode().get_SourcePositionStart();
     } else {
       return getDefaultSourcePosition();
     }

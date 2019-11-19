@@ -59,17 +59,11 @@ public interface IScope {
    */
   void setAstNode(ASTNode node);
 
-  void setAstNodeOpt(Optional<ASTNode> node);
-
   void setAstNodeAbsent();
 
   ASTNode getAstNode();
 
-  Optional<ASTNode> getAstNodeOpt();
-
   boolean isPresentAstNode();
-
-  void setSpanningSymbolOpt(Optional<IScopeSpanningSymbol> symbol);
 
   void setSpanningSymbol(IScopeSpanningSymbol symbol);
 
@@ -78,20 +72,11 @@ public interface IScope {
 
   IScopeSpanningSymbol getSpanningSymbol();
 
-  Optional<IScopeSpanningSymbol> getSpanningSymbolOpt();
-
-  /**
-   * @param name of the scope
-   */
-  void setNameOpt(Optional<String> name);
-
   void setName(String name);
 
   void setNameAbsent();
 
   String getName();
-
-  Optional<String> getNameOpt();
 
   boolean isPresentName();
 
@@ -113,14 +98,19 @@ public interface IScope {
   default boolean checkIfContinueAsSubScope(String symbolName) {
     if (this.isExportingSymbols()) {
       final List<String> nameParts = getNameParts(symbolName).toList();
-
+      
       if (nameParts.size() > 1) {
         final String firstNamePart = nameParts.get(0);
         // A scope that exports symbols usually has a name.
-        return firstNamePart.equals(this.getNameOpt().orElse(""));
+        if (this.isPresentName()) {
+          return firstNamePart.equals(this.getName());
+        }
+        else {
+          return firstNamePart.equals("");
+        }
       }
     }
-
+    
     return false;
   }
 

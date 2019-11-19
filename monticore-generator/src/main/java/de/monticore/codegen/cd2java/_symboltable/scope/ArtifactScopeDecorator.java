@@ -77,7 +77,8 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
         .addAllCDMethods(packageNameMethods)
         .addCDAttribute(importsAttribute)
         .addAllCDMethods(importsMethods)
-        .addCDMethod(createGetNameOptMethod())
+        .addCDMethod(createGetNameMethod())
+        .addCDMethod(createIsPresentNameMethod())
         .addCDMethod(createGetTopLevelSymbolMethod())
         .addCDMethod(createCheckIfContinueAsSubScopeMethod())
         .addCDMethod(createGetFilePathMethod())
@@ -111,9 +112,20 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
     return getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT), "imports");
   }
 
-  protected ASTCDMethod createGetNameOptMethod() {
-    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createOptionalTypeOf(String.class), "getNameOpt");
-    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "GetNameOpt"));
+  protected ASTCDMethod createGetNameMethod() {
+    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
+    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "GetName"));
+    return getNameMethod;
+  }
+
+  /**
+   * Creates the isPresentName method for artifact scopes.
+   * 
+   * @return The isPresentName method.
+   */
+  protected ASTCDMethod createIsPresentNameMethod() {
+    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "isPresentName");
+    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "IsPresentName"));
     return getNameMethod;
   }
 

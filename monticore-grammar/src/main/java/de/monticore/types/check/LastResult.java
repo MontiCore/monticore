@@ -22,15 +22,11 @@ public class LastResult{
     return last.isPresent();
   }
 
-  public void setLastOpt(Optional<SymTypeExpression> last){
-    this.last = last;
-  }
-
-  public Optional<SymTypeExpression> getLastOpt(){
-    return this.last;
-  }
-
   public void setLast(SymTypeExpression last){
     this.last = Optional.of(last);
+  }
+  
+  public void setLastAbsent() {
+    this.last = Optional.empty();
   }
 }

@@ -87,7 +87,7 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
 
   @Test
   public void testMethods() {
-    assertEquals(6, astClass.getCDMethodList().size());
+    assertEquals(4, astClass.getCDMethodList().size());
   }
 
 
@@ -97,15 +97,6 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(NAME_SYMBOL, method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetNameSymbolOptMethod() {
-    ASTCDMethod method = getMethodBy("getNameSymbolOpt", astClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertOptionalOf(NAME_SYMBOL, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 

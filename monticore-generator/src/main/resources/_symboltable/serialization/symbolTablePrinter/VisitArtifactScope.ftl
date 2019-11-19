@@ -8,6 +8,8 @@ ${tc.signature("artifactScope")}
   printer.beginArray(de.monticore.symboltable.serialization.JsonConstants.IMPORTS);
   node.getImportList().forEach(x -> printer.value(x.toString()));
   printer.endArray();
-  addScopeSpanningSymbol(node.getSpanningSymbolOpt());
+  if (node.isPresentSpanningSymbol()) {
+    addScopeSpanningSymbol(node.getSpanningSymbol());
+  }
   serializeLocalSymbols(node);
   serializeAdditionalScopeAttributes(node);

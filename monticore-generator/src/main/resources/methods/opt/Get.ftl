@@ -2,7 +2,7 @@
 ${tc.signature("attribute", "naiveAttributeName")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 if (isPresent${naiveAttributeName}()) {
-return this.get${naiveAttributeName}Opt().get();
+return this.${attribute.getName()}.get();
 }
 Log.error("0xA7003${genHelper.getGeneratedErrorCode(attribute)} ${naiveAttributeName} can't return a value. It is empty.");
 // Normally this statement is not reachable

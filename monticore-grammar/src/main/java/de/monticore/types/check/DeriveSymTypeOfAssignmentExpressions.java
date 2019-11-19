@@ -50,10 +50,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0170 The resulting type cannot be calculated");
     }
   }
@@ -70,10 +70,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0171 The resulting type cannot be calculated");
     }
   }
@@ -90,10 +90,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0172 The resulting type cannot be calculated");
     }
   }
@@ -110,10 +110,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0173 The resulting type cannot be calculated");
     }
   }
@@ -130,10 +130,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0174 The resulting type cannot be calculated");
     }
   }
@@ -150,10 +150,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0175 The resulting type cannot be calculated");
     }
   }
@@ -163,10 +163,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0176 The resulting type cannot be calculated");
     }
   }
@@ -176,10 +176,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0177 The resulting type cannot be calculated");
     }
   }
@@ -189,10 +189,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0178 The resulting type cannot be calculated");
     }
   }
@@ -202,7 +202,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
       Log.error("0xA0179 The resulting type cannot be calculated");
@@ -250,10 +250,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       if (wholeResult.isPresent()) {
         //store the result of the expression in the last result
         Optional<SymTypeExpression> sym = wholeResult;
-        lastResult.setLastOpt(sym);
+        lastResult.setLast(sym.get());
         this.result = sym.get();
       } else {
-        lastResult.setLastOpt(Optional.empty());
+        lastResult.setLastAbsent();
         Log.error("0xA0180 The resulting type cannot be calculated");
       }
     }
@@ -265,10 +265,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0181 The resulting type cannot be calculated");
     }
   }
@@ -279,10 +279,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0182 The resulting type cannot be calculated");
     }
   }
@@ -293,10 +293,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0183 The resulting type cannot be calculated");
     }
   }
@@ -307,10 +307,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0184 The resulting type cannot be calculated");
     }
   }
@@ -321,10 +321,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0185 The resulting type cannot be calculated");
     }
   }
@@ -335,10 +335,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0186 The resulting type cannot be calculated");
     }
   }
@@ -348,10 +348,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0187 The resulting type cannot be calculated");
     }
   }

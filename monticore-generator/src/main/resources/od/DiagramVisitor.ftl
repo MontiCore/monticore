@@ -62,10 +62,10 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
           <#if genHelper.isAstNode(field) || genHelper.isOptionalAstNode(field) >
             <#assign attrGetter = genHelper.getPlainGetter(field)>
             <#if genHelper.isOptional(field)>
-        if (node.${attrGetter}().isPresent()) {
+        if (node.isPresent${genHelper.getNativeAttributeName(field.getName())?cap_first}()) {
      		  pp.print("${field.getName()}");
    			  pp.print(" = ");
-          node.${attrGetter}().get().accept(getRealThis());
+          node.${attrGetter}().accept(getRealThis());
           pp.println(";");
         } else if (printEmptyOptional) {
           pp.println("${field.getName()} = absent;");
@@ -108,8 +108,8 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
           }
         }
         <#elseif genHelper.isOptional(field)>
-        if (node.${genHelper.getPlainGetter(field)}().isPresent()) {
-          printAttribute("${field.getName()}", "\"" + String.valueOf(node.${genHelper.getPlainGetter(field)}().get()) + "\"");
+        if (node.isPresent${genHelper.getNativeAttributeName(field.getName())?cap_first}()) {
+          printAttribute("${field.getName()}", "\"" + String.valueOf(node.${genHelper.getPlainGetter(field)}()) + "\"");
         } else if (printEmptyOptional) {
           pp.println("${field.getName()} = absent;");
         }

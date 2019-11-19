@@ -690,9 +690,7 @@ public class GeneratorHelper {
       sb.append(GET_PREFIX);
     }
     sb.append(StringTransformations.capitalize(getNativeAttributeName(field.getName())));
-    if (isOptional(field)) {
-      sb.append(GET_SUFFIX_OPTINAL);
-    } else if (isListType(astType)) {
+    if (isListType(astType)) {
       //list suffix `s` not added to field name
       sb.append(GET_SUFFIX_LIST);
     }
