@@ -66,17 +66,17 @@ it-gradle:
   only:
     - dev
 
-  #it-maven:
-  #  stage: test2
-  #  dependencies: []
-  #  script:
-  #    - cd monticore-generator/it
-  #    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
-  #    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install -P emf-it-tests"
-  #    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
-  #    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
-  #  except:
-  #    - dev
+it-maven:
+  stage: test2
+  dependencies: []
+  script:
+    - cd monticore-generator/it
+    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install -P emf-it-tests"
+    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
+    - "mvn --settings ../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+  except:
+    - dev
 
   #rules:
   #  - if: '$CI_COMMIT_REF_SLUG == "dev"'
