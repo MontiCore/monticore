@@ -22,7 +22,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a ScopeVisitor class from a grammar
@@ -139,7 +139,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
     Set<String> superSymbolNames = new HashSet<>();
     for (CDDefinitionSymbol cdSymbol : superCDsTransitive) {
       // get AST for symbol
-      ASTCDDefinition astcdDefinition = cdSymbol.getAstNode().get();
+      ASTCDDefinition astcdDefinition = cdSymbol.getAstNode();
       // add all symbol definitions to list
       for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
         if (astcdInterface.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdInterface.getModifier())) {

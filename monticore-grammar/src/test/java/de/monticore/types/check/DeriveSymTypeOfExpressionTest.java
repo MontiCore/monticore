@@ -7,9 +7,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
-import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -73,8 +71,14 @@ public class DeriveSymTypeOfExpressionTest {
     add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",f)));
 
     //testing for generics
-    SymTypeOfGenerics genSuper = SymTypeExpressionFactory.createGenerics("GenSuper",Lists.newArrayList(), TypeSymbolsSymTabMill.typeSymbolBuilder().build());
-    SymTypeOfGenerics genSub = SymTypeExpressionFactory.createGenerics("GenSub",Lists.newArrayList(),TypeSymbolsSymTabMill.typeSymbolBuilder().build());
+    ExpressionsBasisScope genSuperSpannedScope = ExpressionsBasisSymTabMill
+            .expressionsBasisScopeBuilder().build();
+    SymTypeOfGenerics genSuper = SymTypeExpressionFactory.createGenerics("GenSuper",Lists.newArrayList(), TypeSymbolsSymTabMill.typeSymbolBuilder().setSpannedScope(genSuperSpannedScope).build());
+
+
+    ExpressionsBasisScope genSubSpannedScope = ExpressionsBasisSymTabMill
+            .expressionsBasisScopeBuilder().build();
+    SymTypeOfGenerics genSub = SymTypeExpressionFactory.createGenerics("GenSub",Lists.newArrayList(),TypeSymbolsSymTabMill.typeSymbolBuilder().setSpannedScope(genSubSpannedScope).build());
 
     TypeSymbol superType = type("GenSuper");
     TypeSymbol subType = type("GenSub");

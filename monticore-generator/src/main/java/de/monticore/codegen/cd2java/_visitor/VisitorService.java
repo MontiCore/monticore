@@ -6,9 +6,10 @@ import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.facade.CDMethodFacade;
+import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.factories.CDMethodFacade;
-import de.monticore.codegen.cd2java.factories.CDParameterFacade;
+import static de.monticore.cd.facade.CDModifier.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_SUFFIX;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class VisitorService extends AbstractService<VisitorService> {
 
@@ -208,7 +208,7 @@ public class VisitorService extends AbstractService<VisitorService> {
    */
   public ASTCDDefinition calculateCDTypeNamesWithASTPackage(CDDefinitionSymbol input) {
     // transform inherited cd
-    ASTCDDefinition astcdDefinition = input.getAstNode().get().deepClone();
+    ASTCDDefinition astcdDefinition = input.getAstNode().deepClone();
     //set classname to correct Name with path
     String astPath = getASTPackage(input);
     astcdDefinition.getCDClassList().forEach(c -> c.setName(astPath + "." + c.getName()));

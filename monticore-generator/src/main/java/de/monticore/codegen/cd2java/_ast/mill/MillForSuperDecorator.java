@@ -6,7 +6,6 @@ import com.google.common.collect.Maps;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
@@ -25,8 +24,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFI
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.MILL_FOR;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.MILL_SUFFIX;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.*;
 
 public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit, Collection<ASTCDClass>> {
 
@@ -84,15 +82,15 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
     // Add builder-creating methods
     for (CDTypeSymbol cdType : cdsForSuper) {
-      if (!cdType.getAstNode().isPresent()) {
+      if (!cdType.isPresentAstNode()) {
         continue;
       }
-      ASTCDClass clazz = (ASTCDClass) cdType.getAstNode().get();
-      if (GeneratorHelper.isAbstract(clazz) || !GeneratorHelper.getPlainName(clazz).startsWith(AST_PREFIX)) {
+      ASTCDClass clazz = (ASTCDClass) cdType.getAstNode();
+      if (cdType.isIsAbstract() || !cdType.getName().startsWith(AST_PREFIX)) {
         continue;
       }
 
-      String astName = clazz.getName();
+      String astName = cdType.getName();
       String methodName = StringTransformations.uncapitalize(astName.replaceFirst("AST", "")) + BUILDER_SUFFIX;
       ASTCDMethod protectedMethod = null;
 

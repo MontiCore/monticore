@@ -18,10 +18,11 @@ public class MCSimpleGenericTypesNodeIdentHelperTest {
   @Test
   public void testGetIdent() throws IOException {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
-    Optional<ASTMCGenericType> astmcType = parser.parse_StringMCGenericType("List<List<String>>");
+    Optional<ASTMCBasicGenericType> astmcType = parser.parse_StringMCBasicGenericType("List<List<String>>");
     Optional<ASTMCBasicGenericType> astmcType1 = parser.parse_StringMCBasicGenericType("java.util.List<Integer>");
-    Optional<ASTMCGenericType> astmcType2 = parser.parse_StringMCGenericType("Optional<java.util.List<Double>>");
+    Optional<ASTMCBasicGenericType> astmcType2 = parser.parse_StringMCBasicGenericType("Optional<java.util.List<Double>>");
     Optional<ASTMCBasicGenericType> astmcType3 = parser.parse_StringMCBasicGenericType("java.util.Optional<a.b.C>");
+    Optional<ASTMCBasicGenericType> astmcType4 = parser.parse_StringMCBasicGenericType("a.b.c.D<d.e.f.G>");
 
     assertFalse(parser.hasErrors());
     assertTrue(astmcType.isPresent());
@@ -30,9 +31,10 @@ public class MCSimpleGenericTypesNodeIdentHelperTest {
     assertTrue(astmcType3.isPresent());
 
     MCSimpleGenericTypesNodeIdentHelper helper = new MCSimpleGenericTypesNodeIdentHelper();
-    assertEquals("@List!MCListType", helper.getIdent(astmcType.get()));
+    assertEquals("@List!MCBasicGenericType", helper.getIdent(astmcType.get()));
     assertEquals("@java.util.List!MCBasicGenericType", helper.getIdent(astmcType1.get()));
-    assertEquals("@Optional!MCOptionalType", helper.getIdent(astmcType2.get()));
+    assertEquals("@Optional!MCBasicGenericType", helper.getIdent(astmcType2.get()));
     assertEquals("@java.util.Optional!MCBasicGenericType",helper.getIdent(astmcType3.get()));
+    assertEquals("@a.b.c.D!MCBasicGenericType",helper.getIdent(astmcType4.get()));
   }
 }

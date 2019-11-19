@@ -7,8 +7,8 @@ import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -61,7 +61,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     computeStartParserProd(astGrammar);
 
     // remove grammar scope
-    removeCurrentGrammarScope();
+    removeCurrentScope();
 
   }
 
@@ -172,7 +172,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
           RuleComponentSymbol(symbolName);
 
       prodComponent.setUsageName(usageName);
-      ProdSymbolReference symRef = new ProdSymbolReference(ast.getName(),
+      ProdSymbolLoader symRef = new ProdSymbolLoader(ast.getName(),
           getCurrentScope().orElse(null));
       prodComponent.setReferencedProd(symRef);
 
@@ -181,7 +181,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
           .getProdComponent(prodComponent.getName()).orElse(null);
 
       Optional<ProdSymbol> byReference = resolveRule(astGrammar, ast.getName());
-      if (!byReference.isPresent() || !byReference.get().isLexerProd()) {
+      if (!byReference.isPresent() || !byReference.get().isIsLexerProd()) {
 
         if (prevProdComp != null && prevProdComp.getReferencedProd().isPresent()) {
           boolean sameType = prevProdComp.getReferencedProd().get().getName()
@@ -281,7 +281,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
       Optional<RuleComponentSymbol> prevProdComp = currentSymbol
           .getProdComponent(symbolName);
 
-      if (prevProdComp.isPresent() && !prevProdComp.get().isConstantGroup()) {
+      if (prevProdComp.isPresent() && !prevProdComp.get().isIsConstantGroup()) {
         error("0xA4006 The production " + currentSymbol.getName()
             + " must not use the attribute name " + attrName.get() +
             " for constant group and nonterminals.");
@@ -340,7 +340,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     for (ASTGrammarReference ref : astGrammar.getSupergrammarList()) {
       final String superGrammarName = getQualifiedName(ref.getNameList());
 
-      final MCGrammarSymbolReference superGrammar = new MCGrammarSymbolReference(
+      final MCGrammarSymbolLoader superGrammar = new MCGrammarSymbolLoader(
           superGrammarName, getCurrentScope().orElse(null));
 
       grammarSymbol.addSuperGrammar(superGrammar);
@@ -354,28 +354,28 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     // A extends B
     for (ASTRuleReference astSuperProd : superProds) {
-      ProdSymbolReference superProd = new ProdSymbolReference(astSuperProd.getTypeName(),
+      ProdSymbolLoader superProd = new ProdSymbolLoader(astSuperProd.getTypeName(),
           enclosingScope);
       prodSymbol.addSuperProd(superProd);
     }
 
     // A astextends B
     for (ASTMCType astSuperClass : astSuperClasses) {
-      MCProdOrTypeReference superClass = new MCProdOrTypeReference(FullGenericTypesPrinter.printType(astSuperClass),
+      ProdSymbolLoader superClass = new ProdSymbolLoader(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astSuperClass),
           enclosingScope);
       prodSymbol.addAstSuperClass(superClass);
     }
 
     // A implements B
     for (ASTRuleReference astInterface : superInterfaceProds) {
-      ProdSymbolReference superProd = new ProdSymbolReference(astInterface.getTypeName(),
+      ProdSymbolLoader superProd = new ProdSymbolLoader(astInterface.getTypeName(),
           enclosingScope);
       prodSymbol.addSuperInterfaceProd(superProd);
     }
 
     // A astimplements B
     for (ASTMCType astInterface : astSuperInterfaces) {
-      MCProdOrTypeReference superClass = new MCProdOrTypeReference(FullGenericTypesPrinter.printType(astInterface),
+      ProdSymbolLoader superClass = new ProdSymbolLoader(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astInterface),
           enclosingScope);
       prodSymbol.addAstSuperInterface(superClass);
     }
@@ -388,16 +388,16 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     for (ProdSymbol prodSymbol : grammarSymbol.getProdsWithInherited().values()) {
       Collection<AdditionalAttributeSymbol> astAttributes = prodSymbol.getProdAttributes();
       for (RuleComponentSymbol component : prodSymbol.getProdComponents()) {
-        if (component.isNonterminal()) {
-          if (!component.getAstNode().isPresent()) {
+        if (component.isIsNonterminal()) {
+          if (!component.isPresentAstNode()) {
             System.out.println("SS");
           }
-          setComponentMultiplicity(component, component.getAstNode().get());
+          setComponentMultiplicity(component, component.getAstNode());
           Optional<AdditionalAttributeSymbol> attribute = astAttributes.stream()
               .filter(a -> a.getName().equals(component.getName())).findAny();
           if (attribute.isPresent()) {
             Multiplicity multiplicity = multiplicityOfAttributeInAST(
-                (ASTAdditionalAttribute) attribute.get().getAstNode().get());
+                attribute.get().getAstNode());
             component.setIsList(multiplicity == LIST);
             component.setIsOptional(multiplicity == OPTIONAL);
           }
@@ -480,11 +480,12 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
    */
   private void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute) {
     String attributeName = astAttribute.getNameOpt()
-        .orElse(uncapitalize(FullGenericTypesPrinter.printType(astAttribute.getMCType())));
+        .orElse(uncapitalize(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType())));
 
     AdditionalAttributeSymbol astAttributeSymbol = new AdditionalAttributeSymbol(attributeName);
-    MCProdOrTypeReference attributeType = new MCProdOrTypeReference(
-        FullGenericTypesPrinter.printType(astAttribute.getMCType()), mcProdSymbol.getSpannedScope());
+    ProdSymbolLoader attributeType = new ProdSymbolLoader(
+            MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType()),
+            mcProdSymbol.getSpannedScope());
     astAttributeSymbol.setTypeReference(attributeType);
 
     mcProdSymbol.addProdAttribute(astAttributeSymbol);
@@ -501,8 +502,8 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   public final Optional<ProdSymbol> getProdSymbol() {
     if (getCurrentScope().isPresent()) {
       IGrammarScope scope = getCurrentScope().get();
-      if (scope.getSpanningSymbol().isPresent() && scope.getSpanningSymbol().get() instanceof ProdSymbol) {
-        return of((ProdSymbol) scope.getSpanningSymbol().get());
+      if (scope.getSpanningSymbolOpt().isPresent() && scope.getSpanningSymbolOpt().get() instanceof ProdSymbol) {
+        return of((ProdSymbol) scope.getSpanningSymbol());
       }
     }
     return empty();

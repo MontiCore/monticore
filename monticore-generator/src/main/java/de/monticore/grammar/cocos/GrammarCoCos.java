@@ -27,6 +27,7 @@ public class GrammarCoCos {
     checker.addCoCo(new AbstractNTWithoutExtensionOnlyInComponentGrammar());
     checker.addCoCo(new ProdAndExtendedProdUseSameAttrNameForDiffNTs());
     checker.addCoCo(new GrammarNameUpperCase());
+    checker.addCoCo(new GrammarExtensionOnce());
     checker.addCoCo(new AbstractNTNotExtendInterfaceOrExternalNTs());
     checker.addCoCo(new AbstractNTOnlyExtendOrAstextendNTOrClass());
     checker.addCoCo(new AbstractNTOnlyExtendsOneNTOrClass());
@@ -55,7 +56,7 @@ public class GrammarCoCos {
     checker.addCoCo(new InheritedSymbolProperty());
     checker.addCoCo(new InheritedScopeProperty());
     checker.addCoCo(new SymbolRuleWithoutSymbolRef());
-
+    checker.addCoCo(new NoNestedGenericsInAdditionalAttributes());
     // checker.addCoCo(new NoNTInheritanceCycle());
 
     return checker;

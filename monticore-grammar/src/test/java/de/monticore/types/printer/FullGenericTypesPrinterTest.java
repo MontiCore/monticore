@@ -1,12 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.printer;
 
-import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
+import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,12 +45,13 @@ public class FullGenericTypesPrinterTest {
     assertTrue(astmcArrayType.isPresent());
     assertTrue(astmcArrayType.get() instanceof ASTMCArrayType);
 
-    assertEquals("?", FullGenericTypesPrinter.printType(astmcWildcardTypeArgument.get()));
-    assertEquals("? extends List", FullGenericTypesPrinter.printType(astmcWildcardTypeArgument1.get()));
-    assertEquals("? super Stream", FullGenericTypesPrinter.printType(astmcWildcardTypeArgument2.get()));
-    assertEquals("java.util.List<List<String>>.c.d<e,f,g,h>", FullGenericTypesPrinter.printType(astmcMultipleGenericType.get()));
+    MCFullGenericTypesPrettyPrinter printer = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter();
+    assertEquals("?", printer.prettyprint(astmcWildcardTypeArgument.get()));
+    assertEquals("? extends List", printer.prettyprint(astmcWildcardTypeArgument1.get()));
+    assertEquals("? super Stream", printer.prettyprint(astmcWildcardTypeArgument2.get()));
+    assertEquals("java.util.List<List<String>>.c.d<e,f,g,h>", printer.prettyprint(astmcMultipleGenericType.get()));
 //    assertEquals("<a extends b &c &d, e extends f &g>", FullGenericTypesPrinter.printType(astmcTypeParameters.get()));
 //    assertEquals("a extends b &c &d", FullGenericTypesPrinter.printType(astmcTypeVariableDeclaration.get()));
-    assertEquals("String[][][]", FullGenericTypesPrinter.printType(astmcArrayType.get()));
+    assertEquals("String[][][]", printer.prettyprint(astmcArrayType.get()));
   }
 }

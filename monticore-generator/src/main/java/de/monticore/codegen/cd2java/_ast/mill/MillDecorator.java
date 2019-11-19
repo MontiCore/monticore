@@ -22,7 +22,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKA
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * created mill class for a grammar
@@ -150,7 +150,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
     List<ASTCDMethod> superMethods = new ArrayList<>();
     //get super symbols
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
-      Optional<ASTCDDefinition> astNode = superSymbol.getAstNode();
+      Optional<ASTCDDefinition> astNode = superSymbol.getAstNodeOpt();
       if (astNode.isPresent()) {
         //get super cdDefinition
         ASTCDDefinition superDefinition = astNode.get().deepClone();

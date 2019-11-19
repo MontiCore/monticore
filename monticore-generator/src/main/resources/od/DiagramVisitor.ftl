@@ -35,7 +35,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
   }
 
   <#list cd.getTypes() as type>
-    <#if type.isClass()>
+    <#if type.isIsClass()>
       <#assign astName = genHelper.getJavaASTName(type)>
 
       @Override

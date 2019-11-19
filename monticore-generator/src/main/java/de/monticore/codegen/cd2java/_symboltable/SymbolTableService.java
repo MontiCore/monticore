@@ -5,7 +5,7 @@ import de.monticore.cd.CD4AnalysisHelper;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolLoader;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -521,12 +521,12 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (type.getModifierOpt().isPresent() && hasSymbolStereotype(type.getModifierOpt().get())) {
       return Optional.of(type);
     }
-    if (!type.getCDTypeSymbolOpt().isPresent()) {
+    if (!type.getSymbolOpt().isPresent()) {
       return Optional.empty();
     }
-    for (CDTypeSymbolReference superType : type.getCDTypeSymbol().getCdInterfaces()) {
-      if (superType.existsReferencedSymbol() && superType.getReferencedSymbol().getAstNode().isPresent()) {
-        Optional<ASTCDType> result = getTypeWithSymbolInfo(superType.getReferencedSymbol().getAstNode().get());
+    for (CDTypeSymbolLoader superType : type.getSymbol().getCdInterfaceList()) {
+      if (superType.isSymbolLoaded() && superType.getLoadedSymbol().isPresentAstNode()) {
+        Optional<ASTCDType> result = getTypeWithSymbolInfo(superType.getLoadedSymbol().getAstNode());
         if (result.isPresent()) {
           return result;
         }
@@ -539,12 +539,12 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (type.getModifierOpt().isPresent() && hasScopeStereotype(type.getModifierOpt().get())) {
       return Optional.of(type);
     }
-    if (!type.getCDTypeSymbolOpt().isPresent()) {
+    if (!type.isPresentSymbol()) {
       return Optional.empty();
     }
-    for (CDTypeSymbolReference superType : type.getCDTypeSymbol().getCdInterfaces()) {
-      if (superType.existsReferencedSymbol() && superType.getReferencedSymbol().getAstNode().isPresent()) {
-        Optional<ASTCDType> result = getTypeWithScopeInfo(superType.getReferencedSymbol().getAstNode().get());
+    for (CDTypeSymbolLoader superType : type.getSymbol().getCdInterfaceList()) {
+      if (superType.isSymbolLoaded() && superType.getLoadedSymbol().isPresentAstNode()) {
+        Optional<ASTCDType> result = getTypeWithScopeInfo(superType.getLoadedSymbol().getAstNode());
         if (result.isPresent()) {
           return result;
         }
@@ -567,9 +567,9 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     List<ASTCDType> symbolProds = new ArrayList<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
-            && hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
-          symbolProds.add(type.getAstNode().get());
+        if (type.isPresentAstNode() && type.getAstNode().getModifierOpt().isPresent()
+            && hasSymbolStereotype(type.getAstNode().getModifierOpt().get())) {
+          symbolProds.add(type.getAstNode());
         }
       }
     }

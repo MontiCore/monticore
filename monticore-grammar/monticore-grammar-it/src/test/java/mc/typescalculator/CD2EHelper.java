@@ -69,11 +69,13 @@ public class CD2EHelper {
 
       typeSymbol.setName(cdTypeSymbol.getName());
       typeSymbol.addAllSuperTypes(superInterfaces);
-      typeSymbol.addAllFields(fieldSymbols);
+      for (FieldSymbol field : fieldSymbols) {
+        typeSymbol.getSpannedScope().add(field);
+      }
       fieldSymbols.forEach(f -> typeSymbol.getSpannedScope().add(f));
-      typeSymbol.addAllFields(fieldSymbolsFormAssoc);
-      fieldSymbolsFormAssoc.forEach(f -> typeSymbol.getSpannedScope().add(f));
-      typeSymbol.addAllMethods(methodSymbols);
+      for (MethodSymbol method : methodSymbols) {
+        typeSymbol.getSpannedScope().add(method);
+      }
       methodSymbols.forEach(f -> typeSymbol.getSpannedScope().add(f));
       superClass.ifPresent(typeSymbol::addSuperType);
       return typeSymbol;

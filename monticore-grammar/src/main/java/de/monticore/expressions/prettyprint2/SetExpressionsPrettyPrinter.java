@@ -7,14 +7,12 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.expressions.setexpressions._ast.*;
 import de.monticore.expressions.setexpressions._visitor.SetExpressionsVisitor;
 
-public class SetExpressionsPrettyPrinter implements SetExpressionsVisitor {
+public class SetExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter implements SetExpressionsVisitor {
   
   protected SetExpressionsVisitor realThis;
   
-  protected IndentPrinter printer;
-  
   public SetExpressionsPrettyPrinter(IndentPrinter printer) {
-    this.printer = printer;
+    super(printer);
     realThis = this;
   }
   
@@ -69,7 +67,22 @@ public class SetExpressionsPrettyPrinter implements SetExpressionsVisitor {
     node.getSet().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
+  @Override
+  public void handle(ASTUnionExpressionPrefix node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    getPrinter().print("union ");
+    node.getSet().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTIntersectionExpressionPrefix node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    getPrinter().print("intersect ");
+    node.getSet().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
   public IndentPrinter getPrinter() {
     return this.printer;
   }

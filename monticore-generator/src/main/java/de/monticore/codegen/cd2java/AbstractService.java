@@ -5,14 +5,14 @@ import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolLoader;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.se_rwth.commons.JavaNamesHelper;
@@ -37,7 +37,7 @@ public class AbstractService<T extends AbstractService> {
 
 
   public AbstractService(final ASTCDCompilationUnit compilationUnit) {
-    this(compilationUnit.getCDDefinition().getCDDefinitionSymbol());
+    this(compilationUnit.getCDDefinition().getSymbol());
   }
 
   public AbstractService(final CDDefinitionSymbol cdSymbol) {
@@ -323,8 +323,8 @@ public class AbstractService<T extends AbstractService> {
 
   public List<String> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
-    if (cdTypeSymbol.getSuperClass().isPresent()) {
-      String fullName = cdTypeSymbol.getSuperClass().get().getFullName();
+    if (cdTypeSymbol.isPresentSuperClass()) {
+      String fullName = cdTypeSymbol.getSuperClass().getLoadedSymbol().getFullName();
       superSymbolList.add(createASTFullName(fullName));
       CDTypeSymbol superSymbol = resolveCDType(fullName);
       superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
@@ -338,8 +338,8 @@ public class AbstractService<T extends AbstractService> {
 
   public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
-    for (CDTypeSymbolReference cdInterface : cdTypeSymbol.getCdInterfaces()) {
-      String fullName = cdInterface.getFullName();
+    for (CDTypeSymbolLoader cdInterface : cdTypeSymbol.getCdInterfaceList()) {
+      String fullName = cdInterface.getLoadedSymbol().getFullName();
       superSymbolList.add(createASTFullName(fullName));
       CDTypeSymbol superSymbol = resolveCDType(fullName);
       superSymbolList.addAll(getAllSuperInterfacesTransitive(superSymbol));

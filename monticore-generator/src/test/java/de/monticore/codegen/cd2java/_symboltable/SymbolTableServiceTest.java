@@ -9,7 +9,7 @@ import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymTabMill;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.junit.Before;
@@ -43,21 +43,21 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testCDSymbolPresent() {
-    assertTrue(symTabService.getCDSymbol().getAstNode().isPresent());
+    assertTrue(symTabService.getCDSymbol().isPresentAstNode());
   }
 
   @Test
   public void testConstructorsCreateEqualService() {
     SymbolTableService astServiceFromDefinitionSymbol = new SymbolTableService(astcdCompilationUnit.getCDDefinition().getSymbol());
-    assertTrue(astServiceFromDefinitionSymbol.getCDSymbol().getAstNode().isPresent());
-    assertDeepEquals(symTabService.getCDSymbol().getAstNode().get(), astServiceFromDefinitionSymbol.getCDSymbol().getAstNode().get());
+    assertTrue(astServiceFromDefinitionSymbol.getCDSymbol().isPresentAstNode());
+    assertDeepEquals(symTabService.getCDSymbol().getAstNode(), astServiceFromDefinitionSymbol.getCDSymbol().getAstNode());
   }
 
   @Test
   public void testCreateSymbolTableService() {
     SymbolTableService createdSymbolTableService = SymbolTableService.createSymbolTableService(astcdCompilationUnit.getCDDefinition().getSymbol());
-    assertTrue(createdSymbolTableService.getCDSymbol().getAstNode().isPresent());
-    assertDeepEquals(symTabService.getCDSymbol().getAstNode().get(), createdSymbolTableService.getCDSymbol().getAstNode().get());
+    assertTrue(createdSymbolTableService.getCDSymbol().isPresentAstNode());
+    assertDeepEquals(symTabService.getCDSymbol().getAstNode(), createdSymbolTableService.getCDSymbol().getAstNode());
   }
 
   @Test

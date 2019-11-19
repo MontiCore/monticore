@@ -22,19 +22,19 @@ public class StartProdTranslation implements
       TransformationHelper.addStereoType(rootLink.target().getCDDefinition(), MC2CDStereotypes.START_PROD.toString(), startProdRuleFullName);
     }
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class, ASTCDClass.class)) {
-      if (link.source().getSymbol().isStartProd()) {
+      if (link.source().getSymbol().isIsStartProd()) {
         TransformationHelper.addStereoType(link.target(), MC2CDStereotypes.START_PROD.toString());
       }
     }
 
     for (Link<ASTAbstractProd, ASTCDClass> link : rootLink.getLinks(ASTAbstractProd.class, ASTCDClass.class)) {
-      if (link.source().getSymbol().isStartProd()) {
+      if (link.source().getSymbol().isIsStartProd()) {
         TransformationHelper.addStereoType(link.target(), MC2CDStereotypes.START_PROD.toString());
       }
     }
 
     for (Link<ASTInterfaceProd, ASTCDInterface> link : rootLink.getLinks(ASTInterfaceProd.class, ASTCDInterface.class)) {
-      if (link.source().getSymbol().isStartProd()) {
+      if (link.source().getSymbol().isIsStartProd()) {
         TransformationHelper.addStereoType(link.target(), MC2CDStereotypes.START_PROD.toString());
       }
     }

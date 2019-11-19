@@ -10,7 +10,6 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.CDModifier;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
@@ -24,7 +23,7 @@ import org.junit.Test;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 import static org.junit.Assert.*;
 
 public class LanguageDecoratorTest extends DecoratorTestCase {
@@ -115,21 +114,21 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
   @Test
   public void testNameAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("name", languageClass);
-    assertDeepEquals(CDModifier.PRIVATE, astcdAttribute.getModifier());
+    assertDeepEquals(PRIVATE, astcdAttribute.getModifier());
     assertDeepEquals(String.class, astcdAttribute.getMCType());
   }
 
   @Test
   public void testModelLoaderAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("modelLoader", languageClass);
-    assertDeepEquals(CDModifier.PRIVATE, astcdAttribute.getModifier());
+    assertDeepEquals(PRIVATE, astcdAttribute.getModifier());
     assertDeepEquals("AutomatonModelLoader", astcdAttribute.getMCType());
   }
 
   @Test
   public void testFileExtensionAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("fileExtension", languageClass);
-    assertDeepEquals(CDModifier.PRIVATE, astcdAttribute.getModifier());
+    assertDeepEquals(PRIVATE, astcdAttribute.getModifier());
     assertDeepEquals(String.class, astcdAttribute.getMCType());
   }
 

@@ -6,7 +6,7 @@
   <parent>
     <artifactId>monticore</artifactId>
     <groupId>de.monticore</groupId>
-    <version>5.4.0-SNAPSHOT</version>
+    <version>5.5.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   
@@ -137,6 +137,7 @@
             </goals>
             <phase>generate-test-sources</phase>
             <configuration>
+              <script>de/monticore/monticore_emf.groovy</script>
               <grammars>
                 <grammar>${basedir}/target/src/test/grammars</grammar>
                 <grammar>${basedir}/target/src/main/examples</grammar>
@@ -205,6 +206,4 @@
       </plugin>
     </plugins>
   </build>
-  
-
 </project>

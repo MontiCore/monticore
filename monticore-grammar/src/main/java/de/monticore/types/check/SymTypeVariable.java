@@ -4,7 +4,6 @@ package de.monticore.types.check;
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 
 public class SymTypeVariable extends SymTypeExpression {
 
@@ -85,10 +84,4 @@ public class SymTypeVariable extends SymTypeExpression {
 
 
   // --------------------------------------------------------------------------
-
-  // TODO 4: kann entfernt werden
-  @Deprecated
-  public SymTypeVariable() {
-  }
-  
 }

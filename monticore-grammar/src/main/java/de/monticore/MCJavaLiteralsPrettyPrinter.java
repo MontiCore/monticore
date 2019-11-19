@@ -70,16 +70,6 @@ public class MCJavaLiteralsPrettyPrinter extends MCCommonLiteralsPrettyPrinter i
     printer.print(a.getSource());
   }
 
-  /**
-   * This method prettyprints a given node from literal grammar.
-   *
-   * @param a A node from literal grammar.
-   * @return String representation.
-   */
-  public String prettyprint(ASTMCJavaLiteralsNode a) {
-      a.accept(getRealThis());
-    return printer.getContent();
-  }
 
   /**
    * @see MCJavaLiteralsVisitor#setRealThis(MCJavaLiteralsVisitor)

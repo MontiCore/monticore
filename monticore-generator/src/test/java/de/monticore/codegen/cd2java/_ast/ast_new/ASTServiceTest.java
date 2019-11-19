@@ -5,9 +5,9 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
-import de.monticore.codegen.cd2java.factories.CDModifier;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,21 +37,21 @@ public class ASTServiceTest extends DecoratorTestCase {
 
   @Test
   public void testCDSymbolPresent() {
-    assertTrue(astService.getCDSymbol().getAstNode().isPresent());
+    assertTrue(astService.getCDSymbol().isPresentAstNode());
   }
 
   @Test
   public void testConstructorsCreateEqualService() {
     ASTService astServiceFromDefinitionSymbol = new ASTService(astcdCompilationUnit.getCDDefinition().getSymbol());
-    assertTrue(astServiceFromDefinitionSymbol.getCDSymbol().getAstNode().isPresent());
-    assertDeepEquals(astService.getCDSymbol().getAstNode().get(), astServiceFromDefinitionSymbol.getCDSymbol().getAstNode().get());
+    assertTrue(astServiceFromDefinitionSymbol.getCDSymbol().isPresentAstNode());
+    assertDeepEquals(astService.getCDSymbol().getAstNode(), astServiceFromDefinitionSymbol.getCDSymbol().getAstNode());
   }
 
   @Test
   public void testCreateASTService() {
     ASTService createdASTService = ASTService.createASTService(astcdCompilationUnit.getCDDefinition().getSymbol());
-    assertTrue(createdASTService.getCDSymbol().getAstNode().isPresent());
-    assertDeepEquals(astService.getCDSymbol().getAstNode().get(), createdASTService.getCDSymbol().getAstNode().get());
+    assertTrue(createdASTService.getCDSymbol().isPresentAstNode());
+    assertDeepEquals(astService.getCDSymbol().getAstNode(), createdASTService.getCDSymbol().getAstNode());
   }
 
   @Test

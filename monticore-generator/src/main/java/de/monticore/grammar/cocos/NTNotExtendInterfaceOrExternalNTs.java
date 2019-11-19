@@ -32,8 +32,8 @@ public class NTNotExtendInterfaceOrExternalNTs implements GrammarASTClassProdCoC
         Optional<ProdSymbol> ruleSymbol = a.getEnclosingScope().resolveProd(sr.getName());
         if (ruleSymbol.isPresent()) {
           ProdSymbol r = ruleSymbol.get();
-          boolean isInterface = r.isInterface();
-          boolean isExternal = r.isExternal();
+          boolean isInterface = r.isIsInterface();
+          boolean isExternal = r.isIsExternal();
           if (isInterface || isExternal) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(),
                 isInterface ? "interface" : "external", r.getName()),

@@ -6,13 +6,13 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class PrintTypeAstExtensionTests {
           System.out.println(f.getMsg());
         }
 
-        assertEquals(simpleReference.trim(), type.get().printType().trim());
+        assertEquals(simpleReference.trim(), type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
 
 
       } catch (IOException e) {
@@ -63,7 +63,7 @@ public class PrintTypeAstExtensionTests {
     String simpleReference = "de.monticore.types.prettyprint";
     try {
       Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCObjectType(simpleReference);
-      assertEquals(simpleReference.trim(),type.get().printType().trim());
+      assertEquals(simpleReference.trim(),type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -75,7 +75,7 @@ public class PrintTypeAstExtensionTests {
     String simpleReference = "de.monticore.types.prettyprint";
     try {
       Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCQualifiedType(simpleReference);
-      assertEquals(simpleReference.trim(),type.get().printType().trim());
+      assertEquals(simpleReference.trim(),type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -88,7 +88,7 @@ public class PrintTypeAstExtensionTests {
     String simpleReference = "de.monticore.types.Prettyprint";
     try {
       Optional<ASTMCReturnType> type = mcBasicTypesParser.parse_StringMCReturnType(simpleReference);
-      assertEquals(simpleReference.trim(),type.get().printType().trim());
+      assertEquals(simpleReference.trim(),type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -100,21 +100,19 @@ public class PrintTypeAstExtensionTests {
     String simpleReference = "void";
     try {
       Optional<ASTMCReturnType> type = mcBasicTypesParser.parse_StringMCReturnType(simpleReference);
-      assertEquals(simpleReference.trim(),type.get().printType().trim());
+      assertEquals(simpleReference.trim(),type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
-  //TODO RE Fix FullGenTypes
-  @Ignore
   @Test
   public void printTypeMethodTullGenericTypeTest() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
     String simpleReference = "de.monticore<T>.types.prettyprint<S>";
     try {
       Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
-      assertEquals(simpleReference.trim(),type.get().printType().trim());
+      assertEquals(simpleReference.trim(),type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
 
 
     } catch (IOException e) {
@@ -129,7 +127,7 @@ public class PrintTypeAstExtensionTests {
     String simpleReference = "de.monticore<T>.types.prettyprint";
     try {
       Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
-      assertEquals(simpleReference.trim(),type.get().printType().trim());
+      assertEquals(simpleReference.trim(),type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
 
 
     } catch (IOException e) {
@@ -143,7 +141,7 @@ public class PrintTypeAstExtensionTests {
     String simpleReference = "de.monticore.types.prettyprint[]";
     try {
       Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
-      assertEquals(simpleReference.trim(),type.get().printType().trim());
+      assertEquals(simpleReference.trim(),type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
 
 
     } catch (IOException e) {
@@ -158,7 +156,7 @@ public class PrintTypeAstExtensionTests {
     for(String simpleReference:types) {
       try {
         Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
-        assertEquals(simpleReference.trim(), type.get().printType().trim());
+        assertEquals(simpleReference.trim(), type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
 
 
       } catch (IOException e) {
@@ -177,7 +175,7 @@ public class PrintTypeAstExtensionTests {
     for(String simpleReference:collectionTypes) {
       try {
         Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
-        assertEquals(simpleReference.trim(), type.get().printType().trim());
+        assertEquals(simpleReference.trim(), type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
 
 
       } catch (IOException e) {
@@ -193,7 +191,7 @@ public class PrintTypeAstExtensionTests {
     String simpleReference = "de.monticore<T>.types.prettyprint<? extends T>";
     try {
       Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
-      assertEquals(simpleReference.trim(),type.get().printType().trim());
+      assertEquals(simpleReference.trim(),type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
 
 
     } catch (IOException e) {
@@ -213,7 +211,7 @@ public class PrintTypeAstExtensionTests {
         System.out.println(f.getMsg());
       }
 
-      assertEquals(simpleReference.trim(),type.get().printType().trim());
+      assertEquals(simpleReference.trim(),type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
 
 
     } catch (IOException e) {
@@ -229,7 +227,7 @@ public class PrintTypeAstExtensionTests {
     try {
       Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
 
-      assertEquals(simpleReference.trim(),type.get().printType().trim());
+      assertEquals(simpleReference.trim(),type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
 
 
     } catch (IOException e) {
