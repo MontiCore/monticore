@@ -68,7 +68,6 @@ public class AggregationTest {
 //
 
   // check dummy symbol is present in global scope
-  // TODO soll das so? Scopes ohne Namen müssen mit Punkt navigiert werde
   Optional<BarSymbol> barSymbol = globalScope.resolveBar("blubScope1.blubSymbol1");
   
   assertTrue(barSymbol.isPresent());
@@ -88,13 +87,12 @@ public class AggregationTest {
   assertTrue(fooModel.isPresent());
  
   // create symbol table for "foo"
-  FooSymbolTableCreator fooSymbolTableCreator = FooSymTabMill.fooSymbolTableCreatorBuilder().addToScopeStack(globalScope).build();
-  FooScope fooScope = (FooScope) fooSymbolTableCreator.createFromAST(fooModel.get());
+  FooSymbolTableCreatorDelegator fooSymbolTableCreator = FooSymTabMill.fooSymbolTableCreatorDelegatorBuilder().setGlobalScope(globalScope).build();
+  FooScope fooScope = fooSymbolTableCreator.createFromAST(fooModel.get());
   
-  // check Dummy symbol is resolvable
-  // TODO soll das so? Scopes ohne Namen müssen mit Punkt navigiert werde
-  //Optional<Symbol> k = fooScope.resolve(".blubSymbol1", DummyKind.KIND);
-  //assertTrue(k.isPresent());
+  // check symbol is resolvable
+  Optional<BarSymbol> k = fooScope.resolveBar("name");
+  assertTrue(k.isPresent());
 
  }
  
