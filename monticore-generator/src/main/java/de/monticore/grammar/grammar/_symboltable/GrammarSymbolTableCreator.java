@@ -141,6 +141,15 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
       de.monticore.grammar.grammar._symboltable.RuleComponentSymbol symbol = create_KeyTerminal(node);
       initialize_KeyTerminal(symbol, node);
       addToScopeAndLinkWithNode(symbol, node);
+    }else {
+      // must still add the scope to the ASTKeyTerminal, even if it defines no symbol
+      if (getCurrentScope().isPresent()) {
+        node.setEnclosingScope(getCurrentScope().get());
+      }
+      else {
+        Log.error("Could not set enclosing scope of ASTNode \"" + node
+            + "\", because no scope is set yet!");
+      }
     }
   }
 
