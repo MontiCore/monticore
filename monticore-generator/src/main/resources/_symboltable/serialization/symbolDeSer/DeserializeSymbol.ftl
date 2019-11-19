@@ -11,7 +11,7 @@ ${tc.signature("symbolBuilderFullName","symbolBuilderSimpleName", "symTabMill", 
   builder.${genHelper.getPlainSetter(attr)}Absent();
   }
   <#else>
-  builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(symbolJson));
+  builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(symbolJson, enclosingScope));
   </#if>
 </#list>
   ${symbolName} symbol = builder.build();
