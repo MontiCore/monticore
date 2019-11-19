@@ -12,7 +12,7 @@ import de.se_rwth.commons.StringTransformations;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.PACKAGE_SUFFIX;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.*;
 
 public class EmfMandatoryMutatorDecorator extends MandatoryMutatorDecorator {
   protected final ASTService astService;

@@ -4,7 +4,7 @@ package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.types.FullGenericTypesPrinter;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.StringTransformations;
 
@@ -81,7 +81,7 @@ public class NameTranslation implements
         for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
                 ASTCDAttribute.class)) {
             String name = link.source().getNameOpt().orElse(null);
-            String alternativeName = StringTransformations.uncapitalize(FullGenericTypesPrinter.printType(link.source().getMCType()));
+            String alternativeName = StringTransformations.uncapitalize(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(link.source().getMCType()));
             String nameToUse = name != null ? name : alternativeName;
             link.target().setName(nameToUse);
             link.source().setName(nameToUse);

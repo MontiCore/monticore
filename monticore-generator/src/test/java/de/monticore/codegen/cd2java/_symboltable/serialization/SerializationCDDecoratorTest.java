@@ -19,7 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class SerializationCDDecoratorTest extends DecoratorTestCase {
-  private GlobalExtensionManagement glex;
 
   private ASTCDCompilationUnit decoratedASTCompilationUnit;
 
@@ -38,10 +37,10 @@ public class SerializationCDDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     Log.init();
-    this.glex = new GlobalExtensionManagement();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    glex.setGlobalValue("astHelper", new DecorationHelper());
+    glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedASTCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     decoratedScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
     decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");

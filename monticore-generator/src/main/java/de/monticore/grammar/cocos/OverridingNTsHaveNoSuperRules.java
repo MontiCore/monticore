@@ -6,7 +6,7 @@ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTClassProdCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.types.FullGenericTypesPrinter;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class OverridingNTsHaveNoSuperRules implements GrammarASTClassProdCoCo {
         extendedType = a.getSuperRuleList().get(0).getName();
       }
       else{
-        extendedType = FullGenericTypesPrinter.printType(a.getASTSuperClassList().get(0));
+        extendedType = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(a.getASTSuperClassList().get(0));
       }
       for (MCGrammarSymbol s : grammarSymbols) {
         if (s.getProd(a.getName()).isPresent()) {

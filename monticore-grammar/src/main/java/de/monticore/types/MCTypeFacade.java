@@ -8,7 +8,6 @@ import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
-import de.monticore.types.mcsimplegenerictypes._ast.MCSimpleGenericTypesMill;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,11 +89,14 @@ public class MCTypeFacade {
   }
 
   public ASTMCOptionalType createOptionalTypeOf(final ASTMCType type) {
-    return createOptionalTypeOf(MCFullGenericTypesHelper.printType(type));
+    return createOptionalTypeOf(type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
   }
 
   public ASTMCOptionalType createOptionalTypeOf(final ASTMCTypeArgument type) {
-    return createOptionalTypeOf(MCCollectionTypesHelper.printType(type));
+    if (!type.getMCTypeOpt().isPresent()) {
+      return  createOptionalTypeOf("?");
+    }
+    return createOptionalTypeOf(type.getMCTypeOpt().get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
   }
 
   /**
@@ -112,11 +114,14 @@ public class MCTypeFacade {
   }
 
   public ASTMCListType createListTypeOf(final ASTMCType type) {
-    return createListTypeOf(MCCollectionTypesHelper.printType(type));
+    return createListTypeOf(type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
   }
 
   public ASTMCListType createListTypeOf(final ASTMCTypeArgument type) {
-    return createListTypeOf(MCCollectionTypesHelper.printType(type));
+    if (!type.getMCTypeOpt().isPresent()) {
+      return  createListTypeOf("?");
+    }
+    return createListTypeOf(type.getMCTypeOpt().get());
   }
 
   /**
@@ -134,11 +139,14 @@ public class MCTypeFacade {
   }
 
   public ASTMCSetType createSetTypeOf(final ASTMCType type) {
-    return createSetTypeOf(MCCollectionTypesHelper.printType(type));
+    return createSetTypeOf(type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
   }
 
   public ASTMCSetType createSetTypeOf(final ASTMCTypeArgument type) {
-    return createSetTypeOf(MCCollectionTypesHelper.printType(type));
+    if (!type.getMCTypeOpt().isPresent()) {
+      return  createSetTypeOf("?");
+    }
+    return createSetTypeOf(type.getMCTypeOpt().get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
   }
 
   /**
@@ -157,7 +165,7 @@ public class MCTypeFacade {
   }
 
   public ASTMCGenericType createCollectionTypeOf(final ASTMCType type) {
-    return createCollectionTypeOf(MCCollectionTypesHelper.printType(type));
+    return createCollectionTypeOf(type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
   }
 
   /**
@@ -176,18 +184,20 @@ public class MCTypeFacade {
   }
 
   public ASTMCMapType createMapTypeOf(final ASTMCType firstType, final ASTMCType secondType) {
-    return createMapTypeOf(MCCollectionTypesHelper.printType(firstType), MCCollectionTypesHelper.printType(secondType));
+    return createMapTypeOf(firstType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()), secondType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
   }
 
   public ASTMCMapType createMapTypeOf(final ASTMCTypeArgument firstType, final ASTMCTypeArgument secondType) {
-    return createMapTypeOf(MCCollectionTypesHelper.printType(firstType), MCCollectionTypesHelper.printType(secondType));
+    String first = firstType.getMCTypeOpt().isPresent()?firstType.getMCTypeOpt().get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()):"?";
+    String second = secondType.getMCTypeOpt().isPresent()?secondType.getMCTypeOpt().get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()):"?";
+    return createMapTypeOf(first, second);
   }
 
   /**
    * create ASTMCBasicGenericType
    */
   public ASTMCBasicGenericType createBasicGenericTypeOf(final List<String> nameList, List<ASTMCTypeArgument> typeArguments) {
-    return MCSimpleGenericTypesMill.mCBasicGenericTypeBuilder()
+    return MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
         .setNameList(nameList)
         .setMCTypeArgumentList(typeArguments)
         .build();
@@ -242,7 +252,7 @@ public class MCTypeFacade {
   }
 
   public boolean isBooleanType(ASTMCType type) {
-    return MCSimpleGenericTypesHelper.isPrimitive(type) && ((ASTMCPrimitiveType) type).isBoolean();
+    return type instanceof ASTMCPrimitiveType && ((ASTMCPrimitiveType) type).isBoolean();
   }
 
   public ASTMCPrimitiveType createIntType() {

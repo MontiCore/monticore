@@ -4,28 +4,28 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.CDModifier;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.PATH;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -39,15 +39,13 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
-  private MCTypeFacade MCTypeFacade;
+  private de.monticore.types.MCTypeFacade MCTypeFacade;
 
   private static final String AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.AutomatonScope";
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
 
   private static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
-
-  private static final String QUALIFIED_NAMES_CALCULATOR = "de.monticore.symboltable.names.QualifiedNamesCalculator";
 
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
 
@@ -91,7 +89,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertTrue(scopeClass.isEmptyInterfaces());
+    assertEquals(1, scopeClass.sizeInterfaces());
   }
 
   @Test
@@ -150,7 +148,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(3, scopeClass.sizeCDAttributes());
+    assertEquals(2, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -168,15 +166,8 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testQualifiedNamesCalculatorAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("qualifiedNamesCalculator", scopeClass);
-    assertDeepEquals(CDModifier.PRIVATE, astcdAttribute.getModifier());
-    assertDeepEquals(QUALIFIED_NAMES_CALCULATOR, astcdAttribute.getMCType());
-  }
-
-  @Test
   public void testMethodCount() {
-    assertEquals(46, scopeClass.getCDMethodList().size());
+    assertEquals(45, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -199,18 +190,6 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("packageName", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetQualifiedNamesCalculatorMethod() {
-    ASTCDMethod method = getMethodBy("setQualifiedNamesCalculator", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(QUALIFIED_NAMES_CALCULATOR, method.getCDParameter(0).getMCType());
-    assertEquals("qualifiedNamesCalculator", method.getCDParameter(0).getName());
   }
 
   @Test

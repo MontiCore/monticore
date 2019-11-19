@@ -16,8 +16,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a globalScope interface from a grammar
@@ -54,7 +53,7 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
         .setName(globalScopeInterfaceName)
         .setModifier(PUBLIC.build())
         .addInterface(scopeInterfaceType)
-        .addCDMethod(createGetModelPathMethod())
+        .addInterface(getMCTypeFacade().createQualifiedType(I_GLOBAL_SCOPE_TYPE))
         .addCDMethod(createGetLanguageMethod(definitionName))
         .addCDMethod(createCacheMethod())
         .addCDMethod(creatCheckIfContinueAsSubScopeMethod())
@@ -68,11 +67,6 @@ public class GlobalScopeInterfaceDecorator extends AbstractCreator<ASTCDCompilat
   protected ASTCDMethod createCacheMethod() {
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), CALCULATED_MODEL_NAME);
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "cache", parameter);
-  }
-
-  protected ASTCDMethod createGetModelPathMethod() {
-    ASTMCType modelPathType = getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE);
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, modelPathType, "getModelPath");
   }
 
   protected ASTCDMethod createGetLanguageMethod(String definitionName) {

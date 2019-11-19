@@ -5,6 +5,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypeswithoutprimitivestest._parser.MCCollectionTypesWithoutPrimitivesTestParser;
+import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -28,6 +29,8 @@ public class MCollectionTypesCorrectStateTest {
   private ASTMCBasicTypeArgument typeArgumentInt;
 
   private ASTMCBasicTypeArgument typeArgumentString;
+  
+  private MCCollectionTypesPrettyPrinter printer = MCCollectionTypesMill.mcCollectionTypesPrettyPrinter();
 
   @Before
   public void setUp() throws IOException {
@@ -280,14 +283,14 @@ public class MCollectionTypesCorrectStateTest {
   public void mCListTypeSetTypeArgument() {
     listTypeParser.setMCTypeArgument(0, typeArgumentString);
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("String", listTypeParser.getMCTypeArgument().printType(printer));
   }
 
   @Test
   public void mCListTypeSetTypeArgumentList() {
     listTypeParser.setMCTypeArgumentList(Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer",listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -296,7 +299,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mCListTypeClearTypeArguments() {
     listTypeParser.clearMCTypeArguments();
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -305,7 +308,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mCListAddTypeArgument() {
     listTypeParser.addMCTypeArgument(typeArgumentInt);
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     assertEquals("0xA6001 Not allowed to add an element to MCTypeArgumentList of ASTMCListType. " +
         "A MCTypeArgumentList must always have one element.", Log.getFindings().get(0).getMsg());
@@ -316,7 +319,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mCListAddAllTypeArgument() {
     listTypeParser.addAllMCTypeArguments(Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -325,7 +328,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mCListRemoveTypeArgument() {
     listTypeParser.removeMCTypeArgument(typeArgumentInt);
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -334,7 +337,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mCListRemoveAllTypeArgument() {
     listTypeParser.removeAllMCTypeArguments(Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -343,7 +346,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mCListRemoveTypeArgumentIntParam() {
     listTypeParser.removeMCTypeArgument(1);
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -353,14 +356,14 @@ public class MCollectionTypesCorrectStateTest {
     // okay when original type is contained
     listTypeParser.retainAllMCTypeArguments(Lists.newArrayList(listTypeParser.getMCTypeArgument(), typeArgumentString));
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(0, Log.getErrorCount());
 
 
     // not okay if it will conclude in empty list
     listTypeParser.retainAllMCTypeArguments(Lists.newArrayList(typeArgumentString));
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -370,13 +373,13 @@ public class MCollectionTypesCorrectStateTest {
     // okay when original type is contained
     listTypeParser.removeIfMCTypeArgument(x -> false);
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(0, Log.getErrorCount());
 
     // not okay if it will conclude in empty list
     listTypeParser.removeIfMCTypeArgument(x -> true);
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -385,7 +388,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mCListForEachTypeArgumentIntParam() {
     listTypeParser.forEachMCTypeArguments(x -> x = typeArgumentString);
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(0, Log.getErrorCount());
   }
 
@@ -393,7 +396,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mCListAddTypeArgumentIntParam() {
     listTypeParser.addMCTypeArgument(1, typeArgumentInt);
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -402,7 +405,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mCListAddAllTypeArgumentIntParam() {
     listTypeParser.addAllMCTypeArguments(1, Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -411,7 +414,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mCListTypeSetTypeArgumentListIntParam() {
     listTypeParser.setMCTypeArgument(1, typeArgumentInt);
     assertEquals(1, listTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(listTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", listTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -420,14 +423,14 @@ public class MCollectionTypesCorrectStateTest {
   public void mcOptionalTypeSetTypeArgument() {
     optTypeParser.setMCTypeArgument(0, typeArgumentString);
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("String", optTypeParser.getMCTypeArgument().printType(printer));
   }
 
   @Test
   public void mcOptionalTypeSetTypeArgumentList() {
     optTypeParser.setMCTypeArgumentList(Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -436,7 +439,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcOptionalTypeClearTypeArguments() {
     optTypeParser.clearMCTypeArguments();
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -445,7 +448,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcOptionalAddTypeArgument() {
     optTypeParser.addMCTypeArgument(typeArgumentInt);
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -454,7 +457,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcOptionalAddAllTypeArgument() {
     optTypeParser.addAllMCTypeArguments(Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -463,7 +466,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcOptionalRemoveTypeArgument() {
     optTypeParser.removeMCTypeArgument(typeArgumentInt);
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -472,7 +475,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcOptionalRemoveAllTypeArgument() {
     optTypeParser.removeAllMCTypeArguments(Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -481,7 +484,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcOptionalRemoveTypeArgumentIntParam() {
     optTypeParser.removeMCTypeArgument(1);
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -491,14 +494,14 @@ public class MCollectionTypesCorrectStateTest {
     // okay when original type is contained
     optTypeParser.retainAllMCTypeArguments(Lists.newArrayList(optTypeParser.getMCTypeArgument(), typeArgumentString));
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(0, Log.getErrorCount());
 
 
     // not okay if it will conclude in empty list
     optTypeParser.retainAllMCTypeArguments(Lists.newArrayList(typeArgumentString));
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -508,13 +511,13 @@ public class MCollectionTypesCorrectStateTest {
     // okay when original type is contained
     optTypeParser.removeIfMCTypeArgument(x -> false);
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(0, Log.getErrorCount());
 
     // not okay if it will conclude in empty list
     optTypeParser.removeIfMCTypeArgument(x -> true);
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -523,7 +526,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcOptionalForEachTypeArgumentIntParam() {
     optTypeParser.forEachMCTypeArguments(x -> x = typeArgumentString);
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(0, Log.getErrorCount());
   }
 
@@ -531,7 +534,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcOptionalAddTypeArgumentIntParam() {
     optTypeParser.addMCTypeArgument(1, typeArgumentInt);
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -540,7 +543,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcOptionalAddAllTypeArgumentIntParam() {
     optTypeParser.addAllMCTypeArguments(1, Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -549,7 +552,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcOptionalTypeSetTypeArgumentListIntParam() {
     optTypeParser.setMCTypeArgument(1, typeArgumentInt);
     assertEquals(1, optTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(optTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", optTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -558,14 +561,14 @@ public class MCollectionTypesCorrectStateTest {
   public void mcSetTypeSetTypeArgument() {
     setTypeParser.setMCTypeArgument(0, typeArgumentString);
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("String", setTypeParser.getMCTypeArgument().printType(printer));
   }
 
   @Test
   public void mcSetTypeSetTypeArgumentList() {
     setTypeParser.setMCTypeArgumentList(Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -574,7 +577,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcSetTypeClearTypeArguments() {
     setTypeParser.clearMCTypeArguments();
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -583,7 +586,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcSetAddTypeArgument() {
     setTypeParser.addMCTypeArgument(typeArgumentInt);
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -592,7 +595,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcSetAddAllTypeArgument() {
     setTypeParser.addAllMCTypeArguments(Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -601,7 +604,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcSetRemoveTypeArgument() {
     setTypeParser.removeMCTypeArgument(typeArgumentInt);
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -610,7 +613,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcSetRemoveAllTypeArgument() {
     setTypeParser.removeAllMCTypeArguments(Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -619,7 +622,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcSetRemoveTypeArgumentIntParam() {
     setTypeParser.removeMCTypeArgument(1);
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -629,14 +632,14 @@ public class MCollectionTypesCorrectStateTest {
     // okay when original type is contained
     setTypeParser.retainAllMCTypeArguments(Lists.newArrayList(setTypeParser.getMCTypeArgument(), typeArgumentString));
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(0, Log.getErrorCount());
 
 
     // not okay if it will conclude in empty list
     setTypeParser.retainAllMCTypeArguments(Lists.newArrayList(typeArgumentString));
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -646,13 +649,13 @@ public class MCollectionTypesCorrectStateTest {
     // okay when original type is contained
     setTypeParser.removeIfMCTypeArgument(x -> false);
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(0, Log.getErrorCount());
 
     // not okay if it will conclude in empty list
     setTypeParser.removeIfMCTypeArgument(x -> true);
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -661,7 +664,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcSetForEachTypeArgumentIntParam() {
     setTypeParser.forEachMCTypeArguments(x -> x = typeArgumentString);
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(0, Log.getErrorCount());
   }
 
@@ -669,7 +672,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcSetAddTypeArgumentIntParam() {
     setTypeParser.addMCTypeArgument(1, typeArgumentInt);
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -678,7 +681,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcSetAddAllTypeArgumentIntParam() {
     setTypeParser.addAllMCTypeArguments(1, Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -687,7 +690,7 @@ public class MCollectionTypesCorrectStateTest {
   public void mcSetTypeSetTypeArgumentListIntParam() {
     setTypeParser.setMCTypeArgument(1, typeArgumentInt);
     assertEquals(1, setTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(setTypeParser.getMCTypeArgument()));
+    assertEquals("Integer", setTypeParser.getMCTypeArgument().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -696,22 +699,22 @@ public class MCollectionTypesCorrectStateTest {
   public void mcMapTypeSetTypeArgument() {
     mapTypeParser.setMCTypeArgument(0, typeArgumentString);
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
   }
 
   @Test
   public void mcMapTypeSetTypeArgumentList() {
     mapTypeParser.setMCTypeArgumentList(Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("Integer", mapTypeParser.getKey().printType(printer));
+    assertEquals("String", mapTypeParser.getValue().printType(printer));
     assertEquals(0, Log.getErrorCount());
 
     mapTypeParser.setMCTypeArgumentList(Lists.newArrayList(typeArgumentInt, typeArgumentString, typeArgumentInt));
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("Integer", mapTypeParser.getKey().printType(printer));
+    assertEquals("String", mapTypeParser.getValue().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -720,8 +723,8 @@ public class MCollectionTypesCorrectStateTest {
   public void mcMapTypeClearTypeArguments() {
     mapTypeParser.clearMCTypeArguments();
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -730,8 +733,8 @@ public class MCollectionTypesCorrectStateTest {
   public void mcMapAddTypeArgument() {
     mapTypeParser.addMCTypeArgument(typeArgumentInt);
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -740,8 +743,8 @@ public class MCollectionTypesCorrectStateTest {
   public void mcMapAddAllTypeArgument() {
     mapTypeParser.addAllMCTypeArguments(Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -750,8 +753,8 @@ public class MCollectionTypesCorrectStateTest {
   public void mcMapRemoveTypeArgument() {
     mapTypeParser.removeMCTypeArgument(typeArgumentInt);
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -760,8 +763,8 @@ public class MCollectionTypesCorrectStateTest {
   public void mcMapRemoveAllTypeArgument() {
     mapTypeParser.removeAllMCTypeArguments(Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -770,8 +773,8 @@ public class MCollectionTypesCorrectStateTest {
   public void mcMapRemoveTypeArgumentIntParam() {
     mapTypeParser.removeMCTypeArgument(1);
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -781,8 +784,8 @@ public class MCollectionTypesCorrectStateTest {
     // okay when original type is contained
     mapTypeParser.retainAllMCTypeArguments(Lists.newArrayList(mapTypeParser.getKey(), mapTypeParser.getValue(), typeArgumentString));
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     ;
     assertEquals(0, Log.getErrorCount());
 
@@ -790,8 +793,8 @@ public class MCollectionTypesCorrectStateTest {
     // not okay if it will conclude in empty list
     mapTypeParser.retainAllMCTypeArguments(Lists.newArrayList(typeArgumentString));
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -801,15 +804,15 @@ public class MCollectionTypesCorrectStateTest {
     // okay when original type is contained
     mapTypeParser.removeIfMCTypeArgument(x -> false);
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(0, Log.getErrorCount());
 
     // not okay if it will conclude in empty list
     mapTypeParser.removeIfMCTypeArgument(x -> true);
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -818,8 +821,8 @@ public class MCollectionTypesCorrectStateTest {
   public void mcMapForEachTypeArgumentIntParam() {
     mapTypeParser.forEachMCTypeArguments(x -> x = typeArgumentString);
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(0, Log.getErrorCount());
   }
 
@@ -827,8 +830,8 @@ public class MCollectionTypesCorrectStateTest {
   public void mcMapAddTypeArgumentIntParam() {
     mapTypeParser.addMCTypeArgument(1, typeArgumentInt);
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -837,8 +840,8 @@ public class MCollectionTypesCorrectStateTest {
   public void mcMapAddAllTypeArgumentIntParam() {
     mapTypeParser.addAllMCTypeArguments(1, Lists.newArrayList(typeArgumentInt, typeArgumentString));
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }
@@ -847,14 +850,14 @@ public class MCollectionTypesCorrectStateTest {
   public void mcMapTypeSetTypeArgumentListIntParam() {
     mapTypeParser.setMCTypeArgument(1, typeArgumentInt);
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(0, Log.getErrorCount());
 
     mapTypeParser.setMCTypeArgument(3, typeArgumentInt);
     assertEquals(2, mapTypeParser.getMCTypeArgumentList().size());
-    assertEquals("String", CollectionTypesPrinter.printType(mapTypeParser.getKey()));
-    assertEquals("Integer", CollectionTypesPrinter.printType(mapTypeParser.getValue()));
+    assertEquals("String", mapTypeParser.getKey().printType(printer));
+    assertEquals("Integer", mapTypeParser.getValue().printType(printer));
     assertEquals(1, Log.getErrorCount());
     Log.getFindings().clear();
   }

@@ -7,8 +7,8 @@ import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -361,7 +361,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     // A astextends B
     for (ASTMCType astSuperClass : astSuperClasses) {
-      ProdSymbolLoader superClass = new ProdSymbolLoader(FullGenericTypesPrinter.printType(astSuperClass),
+      ProdSymbolLoader superClass = new ProdSymbolLoader(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astSuperClass),
           enclosingScope);
       prodSymbol.addAstSuperClass(superClass);
     }
@@ -375,7 +375,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     // A astimplements B
     for (ASTMCType astInterface : astSuperInterfaces) {
-      ProdSymbolLoader superClass = new ProdSymbolLoader(FullGenericTypesPrinter.printType(astInterface),
+      ProdSymbolLoader superClass = new ProdSymbolLoader(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astInterface),
           enclosingScope);
       prodSymbol.addAstSuperInterface(superClass);
     }
@@ -480,11 +480,12 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
    */
   private void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute) {
     String attributeName = astAttribute.getNameOpt()
-        .orElse(uncapitalize(FullGenericTypesPrinter.printType(astAttribute.getMCType())));
+        .orElse(uncapitalize(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType())));
 
     AdditionalAttributeSymbol astAttributeSymbol = new AdditionalAttributeSymbol(attributeName);
     ProdSymbolLoader attributeType = new ProdSymbolLoader(
-        FullGenericTypesPrinter.printType(astAttribute.getMCType()), mcProdSymbol.getSpannedScope());
+            MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType()),
+            mcProdSymbol.getSpannedScope());
     astAttributeSymbol.setTypeReference(attributeType);
 
     mcProdSymbol.addProdAttribute(astAttributeSymbol);

@@ -76,8 +76,10 @@ public class SpanningScopeTest {
 
     assertTrue(symbolClassSymbol.getModifier().isPresentStereotype());
     assertFalse(symbolClassSymbol.getModifier().getStereotype().isEmptyValues());
-    assertEquals(1, symbolClassSymbol.getModifier().getStereotype().sizeValues());
+    assertEquals(2, symbolClassSymbol.getModifier().getStereotype().sizeValues());
     ASTCDStereoValue symbolStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(0);
     assertEquals("symbol", symbolStereotype.getName());
+    ASTCDStereoValue startProdStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(1);
+    assertEquals("startProd", startProdStereotype.getName());
   }
 }

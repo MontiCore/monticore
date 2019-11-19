@@ -23,7 +23,7 @@ import org.junit.Test;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 import static org.junit.Assert.*;
 
 public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {

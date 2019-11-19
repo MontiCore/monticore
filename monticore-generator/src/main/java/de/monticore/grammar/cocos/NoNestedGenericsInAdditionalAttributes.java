@@ -2,9 +2,9 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -80,7 +80,7 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
     if (astAdditionalAttribute.isPresentName()) {
       attribute += astAdditionalAttribute.getName() + ":";
     }
-    attribute += FullGenericTypesPrinter.printType(astAdditionalAttribute.getMCType());
+    attribute += MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAdditionalAttribute.getMCType());
     if (astAdditionalAttribute.isPresentCard()) {
       ASTCard card = astAdditionalAttribute.getCard();
       if (card.getIteration() == STAR) {
