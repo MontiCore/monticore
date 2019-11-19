@@ -51,10 +51,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0188 The resulting type cannot be calculated");
     }
   }
@@ -68,10 +68,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0189 The resulting type cannot be calculated");
     }
   }
@@ -85,10 +85,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0190 The resulting type cannot be calculated");
     }
   }
@@ -102,10 +102,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0191 The resulting type cannot be calculated");
     }
   }
@@ -119,10 +119,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0192 The resulting type cannot be calculated");
     }
   }
@@ -136,10 +136,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0193 The resulting type cannot be calculated");
     }
   }
@@ -153,10 +153,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0194 The resulting type cannot be calculated");
     }
   }
@@ -170,10 +170,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0195 The resulting type cannot be calculated");
     }
   }
@@ -187,10 +187,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0196 The resulting type cannot be calculated");
     }
   }
@@ -204,10 +204,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0197 The resulting type cannot be calculated");
     }
   }
@@ -221,10 +221,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0198 The resulting type cannot be calculated");
     }
   }
@@ -262,10 +262,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0199 The resulting type cannot be calculated");
     }
   }
@@ -303,10 +303,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0200 The resulting type cannot be calculated");
     }
   }
@@ -333,10 +333,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0201 The resulting type cannot be calculated");
     }
   }
@@ -360,10 +360,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the whole expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0202 The resulting type cannot be calculated");
     }
   }
@@ -421,10 +421,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0204 The resulting type cannot be calculated");
     }
   }
@@ -452,10 +452,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
-      lastResult.setLastOpt(sym);
+      lastResult.setLast(sym.get());
       this.result = sym.get();
     } else {
-      lastResult.setLastOpt(Optional.empty());
+      lastResult.setLastAbsent();
       Log.error("0xA0205 The resulting type cannot be calculated");
     }
   }
@@ -504,7 +504,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         lastResult.setLast(type);
       } else {
         //the inner type has no result and there is no type found
-        lastResult.setLastOpt(Optional.empty());
+        lastResult.setLastAbsent();
         Log.info("package suspected", "CommonExpressionsTypesCalculator");
       }
     }
@@ -561,7 +561,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         } else {
           Optional<SymTypeExpression> wholeResult = Optional.of(SymTypeExpressionFactory.createTypeVoid());
           this.result = wholeResult.get();
-          lastResult.setLastOpt(wholeResult);
+          lastResult.setLast(wholeResult.get());
         }
       } else {
         Log.error("0xA0216 The resulting type cannot be calculated");
@@ -598,10 +598,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         } else {
           Optional<SymTypeExpression> wholeResult = Optional.of(SymTypeExpressionFactory.createTypeVoid());
           this.result = wholeResult.get();
-          lastResult.setLastOpt(wholeResult);
+          lastResult.setLast(wholeResult.get());
         }
       } else {
-        lastResult.setLastOpt(Optional.empty());
+        lastResult.setLastAbsent();
         Log.error("0xA0217 The resulting type cannot be calculated");
       }
     }

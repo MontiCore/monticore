@@ -103,7 +103,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(139, scopeInterface.getCDMethodList().size());
+    assertEquals(137, scopeInterface.getCDMethodList().size());
   }
 
   @Test
@@ -665,28 +665,6 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertListOf(String.class, method.getCDParameter(0).getMCType());
     assertEquals("foo", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testGetBlaOptMethod() {
-    ASTCDMethod method = getMethodBy("getBlaOpt", scopeInterface);
-
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-
-  @Test
-  public void testSetBlaOptMethod() {
-    ASTCDMethod method = getMethodBy("setBlaOpt", scopeInterface);
-
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertOptionalOf(Integer.class, method.getCDParameter(0).getMCType());
-    assertEquals("bla", method.getCDParameter(0).getName());
   }
 
   @Test

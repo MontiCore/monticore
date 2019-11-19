@@ -18,8 +18,16 @@ public class ASTMCMapTypeBuilder extends ASTMCMapTypeBuilderTOP {
       value.setKey(this.key);
       value.setValue(this.value);
     }
-    value.set_SourcePositionEndOpt(this.sourcePositionEnd);
-    value.set_SourcePositionStartOpt(this.sourcePositionStart);
+    if (this.isPresent_SourcePositionEnd()) {
+      value.set_SourcePositionEnd(this.get_SourcePositionEnd());
+    } else {
+      value.set_SourcePositionEndAbsent();
+    }
+    if (this.isPresent_SourcePositionStart()) {
+      value.set_SourcePositionStart(this.get_SourcePositionStart());
+    } else {
+      value.set_SourcePositionStartAbsent();
+    }
     value.set_PreCommentList(this.precomments);
     value.set_PostCommentList(this.postcomments);
 

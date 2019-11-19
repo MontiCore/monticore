@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  if (!super.getNameOpt().isPresent()) {
+  if (!super.isPresentName()) {
     final Optional<de.monticore.symboltable.ISymbol> topLevelSymbol = getTopLevelSymbol();
     if (topLevelSymbol.isPresent()) {
       setName(topLevelSymbol.get().getName());
     }
   }
-  return super.getNameOpt();
+  return this.name.isPresent();

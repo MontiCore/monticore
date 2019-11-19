@@ -144,7 +144,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(18, builderClass.getCDMethodList().size());
+    assertEquals(16, builderClass.getCDMethodList().size());
   }
 
   @Test
@@ -198,16 +198,6 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("getAstNode", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE)
-        , method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetAstNodeOptMethod() {
-    ASTCDMethod method = getMethodBy("getAstNodeOpt", builderClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE_OPT)
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
@@ -285,18 +275,6 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE),
-        method.getCDParameter(0).getMCType());
-    assertEquals("astNode", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetAstNodeOptMethod() {
-    ASTCDMethod method = getMethodBy("setAstNodeOpt", builderClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(mcTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE_OPT),
         method.getCDParameter(0).getMCType());
     assertEquals("astNode", method.getCDParameter(0).getName());
   }

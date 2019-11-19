@@ -50,7 +50,11 @@ public interface IASTNodeIdentHelper {
     } else {
       type = "Scope";
     }
-    return format(maskSpecialChars(scope.getNameOpt().orElse("")), type);
+    if (scope.isPresentName()) {
+      return format(maskSpecialChars(scope.getName()), type);
+    } else {
+      return format(maskSpecialChars(""), type);
+    }
   }
   
 }

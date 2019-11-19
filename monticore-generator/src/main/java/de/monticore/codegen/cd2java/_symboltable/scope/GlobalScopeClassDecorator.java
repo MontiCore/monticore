@@ -90,6 +90,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDAttribute(createModelName2ModelLoaderCacheAttribute(modelLoaderClassName))
         .addAllCDAttributes(resolvingDelegateAttributes.values())
         .addCDMethod(createGetNameMethod())
+        .addCDMethod(createIsPresentNameMethod())
         .addCDMethod(createCacheMethod(definitionName))
         .addCDMethod(createContinueWithModelLoaderMethod(modelLoaderClassName))
         .addAllCDMethods(resolvingDelegateMethods)
@@ -170,10 +171,25 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   protected ASTCDMethod createGetNameMethod() {
-    ASTMCObjectType optOfString = getMCTypeFacade().createOptionalTypeOf(String.class);
-    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, optOfString, "getNameOpt");
-    this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint("return Optional.empty();"));
+    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
+    String generatedErrorCode = DecorationHelper.getGeneratedErrorCode(getNameMethod);
+    this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint(
+        "Log.error(\"0xA6101" + generatedErrorCode 
+        + " Global scopes do not have names.\");\n" 
+        + "    return null;"));
     return getNameMethod;
+  }
+  
+  /**
+   * Creates the isPresent method for global scopes. As these do not have names,
+   * the method return false.
+   * 
+   * @return false
+   */
+  protected ASTCDMethod createIsPresentNameMethod() {
+    ASTCDMethod isPresentNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "isPresentName");
+    this.replaceTemplate(EMPTY_BODY, isPresentNameMethod, new StringHookPoint("return false;"));
+    return isPresentNameMethod;
   }
 
   protected ASTCDMethod createCacheMethod(String definitionName) {

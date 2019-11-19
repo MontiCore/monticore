@@ -48,7 +48,11 @@ protected TypeSymbolBuilder()  {
     TypeSymbol symbol = new TypeSymbol(name);
     symbol.setName(this.name);
     symbol.setEnclosingScope(this.enclosingScope);
-    symbol.setAstNodeOpt(this.astNode);
+    if (isPresentAstNode()) {
+      symbol.setAstNode(this.astNode.get());
+    } else {
+      symbol.setAstNodeAbsent();
+    }
     symbol.setAccessModifier(this.accessModifier);
     symbol.setFullName(this.fullName);
     symbol.setPackageName(this.packageName);

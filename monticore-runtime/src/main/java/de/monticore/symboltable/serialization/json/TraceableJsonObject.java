@@ -45,14 +45,6 @@ public class TraceableJsonObject extends JsonObject {
     return result;
   }
 
-  @Override public Optional<JsonElement> getMemberOpt(String name) {
-    Optional<JsonElement> result = super.getMemberOpt(name);
-    if(result.isPresent()){
-      visitedMembers.add(name);
-    }
-    return result;
-  }
-
   /**
    * This returns a collection of keys of members for which no getter method has been invoked yet.
    * 
