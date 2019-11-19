@@ -74,7 +74,7 @@ it-maven:
     - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
     - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS clean install -P emf-it-tests"
     - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
-    - "mvn --settings ../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
   except:
     - dev
 
