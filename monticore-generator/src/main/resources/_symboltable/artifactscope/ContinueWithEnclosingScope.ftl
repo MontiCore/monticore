@@ -8,7 +8,7 @@ if (!(enclosingScope instanceof ${globalScope})) {
               + "enclosing scope at all.");
       }
     foundSymbols = foundSymbols | result.size() > 0;
-    final Set<String> potentialQualifiedNames = qualifiedNamesCalculator.calculateQualifiedNames(name, packageName, imports);
+    final Set<String> potentialQualifiedNames = calculateQualifiedNames(name, packageName, imports);
 
     for (final String potentialQualifiedName : potentialQualifiedNames) {
   final List<${symbolName}> resolvedFromEnclosing = enclosingScope.resolve${simpleName}Many(foundSymbols,

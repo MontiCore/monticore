@@ -9,6 +9,7 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._symboltable.symbol.symbolloadermutator.MandatoryMutatorSymbolLoaderDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
@@ -34,7 +35,7 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private de.monticore.types.MCTypeFacade MCTypeFacade;
+  private MCTypeFacade mcTypeFacade;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
@@ -48,7 +49,7 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
   public void setUp() {
     Log.init();
     Log.enableFailQuick(false);
-    this.MCTypeFacade = MCTypeFacade.getInstance();
+    this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -57,10 +58,10 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
-
     SymbolLoaderDecorator decorator = new SymbolLoaderDecorator(this.glex,
-            new SymbolTableService(decoratedCompilationUnit),
-            new MethodDecorator(glex));
+        new SymbolTableService(decoratedCompilationUnit),
+        new MethodDecorator(glex),
+        new MandatoryMutatorSymbolLoaderDecorator(glex));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
@@ -126,7 +127,7 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(5, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(7, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -147,6 +148,17 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
   }
 
+  @Test
+  public void testSetNameMethod() {
+    ASTCDMethod method = getMethodBy("setName", symbolClassAutomaton);
+    assertDeepEquals(PUBLIC, method.getModifier());
+
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("name", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+  }
 
   @Test
   public void testLoadSymbolMethod() {
@@ -170,10 +182,22 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
   public void testGetEnclosingScopeNameMethod() {
     ASTCDMethod method = getMethodBy("getEnclosingScope", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
+    assertDeepEquals(mcTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetEnclosingScopeNameMethod() {
+    ASTCDMethod method = getMethodBy("setEnclosingScope", symbolClassAutomaton);
+    assertDeepEquals(PUBLIC, method.getModifier());
+
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("enclosingScope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
   }
 
   @Test

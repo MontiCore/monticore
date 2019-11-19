@@ -16,10 +16,10 @@ ${tc.signature("scopeClass", "scopeRuleAttrList")}
   }
   scope.setExportingSymbols(exportsSymbols);
             <#list scopeRuleAttrList as attr>
-              scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson));
+              scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson,enclosingScope));
             </#list>
 
   addSymbols(scopeJson, scope);
   addAndLinkSubScopes(scopeJson, scope);
-  deserializeAdditionalAttributes(scope,scopeJson);
+  deserializeAdditionalAttributes(scope,scopeJson,enclosingScope);
   return scope;

@@ -8,3 +8,5 @@ ${tc.signature("scopeFullName")}
   if (node.isPresentSpanningSymbol()) {
     addScopeSpanningSymbol(node.getSpanningSymbol());
   }
+  serializeLocalSymbols(node);
+  serializeAdditionalScopeAttributes(node);

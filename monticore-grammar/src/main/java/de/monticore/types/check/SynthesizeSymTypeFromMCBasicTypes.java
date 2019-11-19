@@ -2,6 +2,7 @@ package de.monticore.types.check;
 
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 
 import java.util.Optional;
 
@@ -76,7 +77,8 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
    */
   public void endVisit(ASTMCQualifiedType qType) {
     // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
-    result = Optional.of(SymTypeExpressionFactory.createTypeConstant(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter())));
+    SymTypeExpression tex =
+        SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), qType.getEnclosingScope()));
   }
   
   public void endVisit(ASTMCReturnType rType) {

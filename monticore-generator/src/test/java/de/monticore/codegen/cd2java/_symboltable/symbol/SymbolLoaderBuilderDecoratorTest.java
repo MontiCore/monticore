@@ -31,7 +31,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private de.monticore.types.MCTypeFacade MCTypeFacade;
+  private MCTypeFacade mcTypeFacade;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
@@ -42,7 +42,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     Log.init();
-    this.MCTypeFacade = MCTypeFacade.getInstance();
+    this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -141,7 +141,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
   public void testSetNameMethod() {
     ASTCDMethod method = getMethodBy("setName", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType("AutomatonSymbolLoaderBuilder"), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType("AutomatonSymbolLoaderBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
@@ -161,7 +161,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
   public void testSetEnclosingScopeMethod() {
     ASTCDMethod method = getMethodBy("setEnclosingScope", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType("AutomatonSymbolLoaderBuilder"), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType("AutomatonSymbolLoaderBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
