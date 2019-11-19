@@ -135,6 +135,8 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   public  void visit (ASTKeyTerminal node)  {
+    // only create a symbol for ASTKeyTerminals that have a usage name
+    // only with usage name is shown in AST
     if(node.isPresentUsageName()){
       de.monticore.grammar.grammar._symboltable.RuleComponentSymbol symbol = create_KeyTerminal(node);
       initialize_KeyTerminal(symbol, node);
