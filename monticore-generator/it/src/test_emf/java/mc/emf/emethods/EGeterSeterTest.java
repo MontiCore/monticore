@@ -79,7 +79,7 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
     assertTrue(aut.getStateList().isEmpty());
     
     assign.eUnset(ExpressionPackage.ASTAssignment_Value);
-    assertFalse(assign.getValueOpt().isPresent());
+    assertFalse(assign.isPresentValue());
   }
   
   @Test
