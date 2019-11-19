@@ -69,7 +69,8 @@ it:
   #    when: always
   #  - when: manual
 
-it-experiments-grammar:
+# build experiments and grammar with gradle for def
+it-experiments-grammar-gradle:
   stage: test1
   dependencies: []
   script:
@@ -77,8 +78,20 @@ it-experiments-grammar:
     - "./gradlew build $GRADLE_OPTS"
     - "cd ../../../monticore-grammar/monticore-grammar-it"
     - "./gradlew build $GRADLE_OPTS"
-  #only:
-  #  - dev
+  only:
+    - dev
+
+# build experiments and grammar with maven for all other branches
+it-experiments-grammar-maven:
+  stage: test1
+  dependencies: []
+  script:
+    - cd monticore-generator/it/experiments
+    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
+    - "cd ../../../monticore-grammar/monticore-grammar-it"
+    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
+  except:
+    - dev
 
 trigger-automata:
   stage: test1
