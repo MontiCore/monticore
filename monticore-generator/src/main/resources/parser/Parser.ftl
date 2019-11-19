@@ -17,25 +17,21 @@ ${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarS
 
 <#list genHelper.getParserRulesToGenerate() as parserProd>
   <#list antlrGenerator.createAntlrCode(parserProd) as parserRule>
-      //1
   ${parserRule}
   </#list>
 </#list>
 
 <#list genHelper.getInterfaceRulesToGenerate() as interfaceProd>
   <#list antlrGenerator.createAntlrCodeForInterface(interfaceProd) as interfaceRule>
-    //2
   ${interfaceRule}
   </#list>
 </#list>
  
 <#list genHelper.getLexSymbolsWithInherited() as lexSymbol>
-  //3
   ${genHelper.getLexSymbolName(lexSymbol)} : '${lexSymbol}';
 </#list>
  
 <#list genHelper.getLexerRulesToGenerate() as lexProd>
-  //4
   <#list antlrGenerator.createAntlrCode(lexProd) as lexerRule>
   ${lexerRule}
   </#list>
