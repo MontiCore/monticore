@@ -6,10 +6,12 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
-import de.monticore.antlr4.MCConcreteParser;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.types.typesymbols._symboltable.*;
+import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
+import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsArtifactScope;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -17,17 +19,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class SymTypeExpressionDeSerTest {
   private static TypeSymbolsScope scope = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
 
   protected static final String TEST_SYMBOL_STORE_LOCATION = "target/generated-test-sources/monticore/symbols";
 
-  // setup of objects (unchanged during tests) 
+  // setup of objects (unchanged during tests)
   // these should be the same as those of SymTypeExpressionText
   SymTypeExpression teDouble = createTypeConstant("double");
 
@@ -67,6 +69,7 @@ public class SymTypeExpressionDeSerTest {
   @BeforeClass
   public static void init() {
     Log.enableFailQuick(false);
+    LogStub.init();
 
     scope.add(new TypeSymbol("A"));
     scope.add(new TypeSymbol("B"));
