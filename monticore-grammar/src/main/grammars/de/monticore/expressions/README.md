@@ -1,4 +1,3 @@
-<!-- (c) https://github.com/MontiCore/monticore -->
 # MontiCore - Expression-Language Modules
 
 MC-Expressions are used to formulate mathematical and programmatic 
@@ -27,5 +26,8 @@ You are free to use any of them now.
 There are some expressions you need desperately and that are not covered 
 in the given expression languages? <br/>
 Create a new grammar that extends at least ExpressionsBasis. In this 
-grammar, you can add your own expressions. To include these expressions
-in your language, just extend the new grammar in your language.
+grammar, you can add your own expressions. These expressions must implement
+the interface Expression in the ExpressionsBasis grammar. 
+To include these expressions in your language, just extend the new grammar in your language.
+See [here](monticore-grammar/src/test/grammars/de/monticore/expressions/CombineExpressionsWithLiterals.mc4) 
+for an example.

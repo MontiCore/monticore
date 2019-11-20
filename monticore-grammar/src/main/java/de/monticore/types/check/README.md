@@ -1,4 +1,3 @@
-# MontiCore - The TypeCheck
 
 In MontiCore, the TypeCheck is used to calculate the type of a set of expressions.
 This happens by traversing the AST of an expression, calculating the types of its
@@ -27,15 +26,29 @@ Create a DelegatorVisitor which combines all expression grammars and literal gra
 used by your language. The DelegatorVisitor has to implement the Interface
 ITypesCalculator. Use this Delegator as Derive-Class in the TypeCheck facade. The
 Synthesize-Class depends on the types grammar you use (see above-mentioned classes).
+For an example of the Delegator-Visitor see [here](monticore-grammar/src/test/java/de/monticore/types/check/DeriveSymTypeOfCombineExpressions.java).
 <br/><br/>
 If you want to create a Derive-Class for your expression/literal grammar, you have to
 extend the Derive-Class of the supergrammar and implement the normal visitor of 
 your language. There you can override the traverse methods for your expressions/literals
 so that it calculates the type of the expression/literal (see implementation in one of the
 above-mentioned classes). You can add your visitor to the DelegatorVisitor later on.
+For an example of a Derive-Class see [here](monticore-grammar/src/main/java/de/monticore/types/check/DeriveSymTypeOfCommonExpression.java).
 <br/><br/>
-Writing a CoCo to check the correctness of the results should be easy now that you
-have the TypeCheck facade to use. Just use the correct Derive-Class and the correct
+Writing a CoCo to check the correctness of your type/expression/literal should be easy now that you
+have the TypeCheck facade to use. Just use the correct Derive-Class and/or the correct
 Synthesize-Class as parameters and check if the type of your expression or type is 
-correctly calculated.
+correctly calculated. <br/><br/>
+Example for a CoCo:
+```
+@Override
+public void check(ASTExpression expr){
+    YourDeriveClass deriveClass = new YourDeriveClass(...); //instance of your Derive-Class
+    YourSynthesizeClass synthesizeClass = new YourSynthesizeClass(...); //instance of your Synthesize-Class
+    TypeCheck check = new TypeCheck(synthesizeClass,deriveClass); //instance of the TypeCheck-facade, parameters are your Synthesize-Class and your Derive-Class
+    if("double"!=check.typeOf(expr).print()){ //test if your expression is of the correct type (here: double)
+        Log.error(...); //your specified error message
+    }
+}
+```
 
