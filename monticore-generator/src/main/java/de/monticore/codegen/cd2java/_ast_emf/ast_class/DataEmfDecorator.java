@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator.EmfMutatorDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
@@ -12,6 +11,7 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.StringTransformations;
 
@@ -37,16 +37,17 @@ public class DataEmfDecorator extends DataDecorator {
 
   @Override
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
-    if (GeneratorHelper.isListType(attribute.printType())) {
+    if (DecorationHelper.isListType(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint(calculateListType(attribute, service.getCDName(), clazzName)));
-    } else if (GeneratorHelper.isOptional(attribute)) {
+    } else if (DecorationHelper.isOptionalType(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     }
   }
 
   protected String calculateListType(ASTCDAttribute attribute, String grammarName, String classname) {
     if (attribute.getMCType() instanceof ASTMCBasicGenericType && ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentList().size() == 1) {
-      String simpleAttributeType = ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().get().printType();
+      String simpleAttributeType = ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().get()
+              .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
       DecorationHelper decorationHelper = new DecorationHelper();
       String listType;
       if (decorationHelper.isListAstNode(attribute)) {

@@ -1,8 +1,5 @@
 package de.monticore.statements.prettyprint;
 
-import de.monticore.expressions.assignmentexpressions._ast.ASTIncPrefixExpression;
-import de.monticore.expressions.prettyprint2.AssignmentExpressionsPrettyPrinter;
-import de.monticore.expressions.testassignmentexpressions._parser.TestAssignmentExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcassertstatements._ast.ASTAssertStatement;
 import de.monticore.statements.testmcassertstatements._parser.TestMCAssertStatementsParser;

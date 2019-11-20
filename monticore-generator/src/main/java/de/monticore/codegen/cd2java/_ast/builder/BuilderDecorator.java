@@ -3,11 +3,11 @@ package de.monticore.codegen.cd2java._ast.builder;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.facade.CDModifier;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
 import de.monticore.codegen.cd2java.exception.DecorateException;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -18,10 +18,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * simple and abstract BuilderDecorator, can be used for special builder generations
@@ -66,8 +66,8 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .filter(a -> !service.isInherited(a))
         .collect(Collectors.toList());
     List<ASTCDAttribute> mandatoryAttributes = builderAttributes.stream()
-        .filter(a -> !GeneratorHelper.isListType(a.printType()))
-        .filter(a -> !GeneratorHelper.isOptional(a))
+        .filter(a -> !DecorationHelper.isListType(a.printType()))
+        .filter(a -> !DecorationHelper.isOptionalType(a.printType()))
         .filter(a -> !(a.getMCType() instanceof ASTMCPrimitiveType))
         .filter(a -> !service.isInherited(a))
         .collect(Collectors.toList());
@@ -111,10 +111,10 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   }
 
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
-    if (GeneratorHelper.isListType(attribute.printType())) {
+    if (DecorationHelper.isListType(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
 
-    } else if (GeneratorHelper.isOptional(attribute)) {
+    } else if (DecorationHelper.isOptionalType(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     }
   }

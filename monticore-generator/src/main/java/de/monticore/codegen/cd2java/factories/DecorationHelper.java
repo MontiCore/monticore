@@ -23,7 +23,7 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.Arrays;
 import java.util.List;
 
-import static de.monticore.codegen.GeneratorHelper.AST_PREFIX;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 
 public class DecorationHelper extends MCBasicTypesHelper {
 
@@ -97,6 +97,21 @@ public class DecorationHelper extends MCBasicTypesHelper {
             || "ArrayList".equals(type) || "java.util.ArrayList".equals(type);
   }
 
+  public static boolean isMapType(String type) {
+    int index = type.indexOf('<');
+    if (index != -1) {
+      type = type.substring(0, index);
+    }
+    return "Map".equals(type) || "java.util.Map".equals(type);
+  }
+
+  public static boolean isOptionalType(String type) {
+    int index = type.indexOf('<');
+    if (index != -1) {
+      type = type.substring(0, index);
+    }
+    return "Optional".equals(type) || "java.lang.Optional".equals(type);
+  }
 
   public static boolean isString(String type) {
     return "String".equals(type) || "java.lang.String".equals(type);
