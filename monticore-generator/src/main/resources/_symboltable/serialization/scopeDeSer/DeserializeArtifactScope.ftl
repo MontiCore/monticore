@@ -10,7 +10,16 @@ ${tc.signature("artifactScope", "scopeRuleAttrList")}
   scope.setName(name);
   scope.setExportingSymbols(exportsSymbols);
 <#list scopeRuleAttrList as attr>
+  <#if genHelper.isOptional(attr.getMCType())>
+  ${attr.printType()} _${attr.getName()} = deserialize${attr.getName()?cap_first}(scopeJson,enclosingScope);
+  if (_${attr.getName()}.isPresent()) {
+    scope.${genHelper.getPlainSetter(attr)}(_${attr.getName()}.get());
+  } else {
+    scope.${genHelper.getPlainSetter(attr)}Absent();
+  }
+  <#else>
   scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson,enclosingScope));
+  </#if>
 </#list>
 
   addSymbols(scopeJson, scope);
