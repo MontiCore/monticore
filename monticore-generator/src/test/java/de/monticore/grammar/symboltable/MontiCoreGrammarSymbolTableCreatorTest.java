@@ -11,6 +11,7 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import parser.MCGrammarParser;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -405,5 +406,66 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertFalse(r.isIsInterface());
     assertTrue(r.isIsSymbolDefinition());
   }
-  
+
+  /**
+   * tests that for ASTKey only a symbol is created if the key has a usage name
+   * e.g. key("b") -> no usage name -> no symbol
+   *      b:key("b") -> with usage name -> has symbol
+   */
+  @Test
+  public void testASTKeySymbolCreation() {
+    final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.createUsingEssentialMCLanguage();
+    Optional<MCGrammarSymbol> grammarOpt = globalScope.resolveMCGrammar("de.monticore.KeyAndNext");
+    assertTrue(grammarOpt.isPresent());
+    MCGrammarSymbol grammar = grammarOpt.get();
+    assertNotNull(grammar);
+    assertTrue(grammar.isPresentAstNode());
+
+    // no usage name
+    Optional<ProdSymbol> aProd = grammar.getSpannedScope().resolveProd("A");
+    assertTrue(aProd.isPresent());
+    Optional<RuleComponentSymbol> aBRule= aProd.get().getProdComponent("b");
+    assertTrue(aBRule.isPresent());
+    assertFalse(aBRule.get().isIsList());
+
+    // with usage name
+    Optional<ProdSymbol> bProd = grammar.getSpannedScope().resolveProd("B");
+    assertTrue(bProd.isPresent());
+    Optional<RuleComponentSymbol> bBRule= bProd.get().getProdComponent("b");
+    assertTrue(bBRule.isPresent());
+    assertTrue(bBRule.get().isIsList());
+
+    // no usage name
+    Optional<ProdSymbol> cProd = grammar.getSpannedScope().resolveProd("C");
+    assertTrue(cProd.isPresent());
+    Optional<RuleComponentSymbol> cBRule= cProd.get().getProdComponent("b");
+    assertTrue(cBRule.isPresent());
+    assertFalse(cBRule.get().isIsList());
+
+    // no usage name
+    Optional<ProdSymbol> dProd = grammar.getSpannedScope().resolveProd("D");
+    assertTrue(dProd.isPresent());
+    Optional<RuleComponentSymbol> dBRule= dProd.get().getProdComponent("b");
+    assertTrue(dBRule.isPresent());
+    assertFalse(dBRule.get().isIsList());
+
+    // with usage name
+    Optional<ProdSymbol> eProd = grammar.getSpannedScope().resolveProd("E");
+    assertTrue(eProd.isPresent());
+    Optional<RuleComponentSymbol> eBRule= eProd.get().getProdComponent("b");
+    assertTrue(eBRule.isPresent());
+    assertTrue(eBRule.get().isIsList());
+
+    // no usage name
+    Optional<ProdSymbol> fProd = grammar.getSpannedScope().resolveProd("F");
+    assertTrue(fProd.isPresent());
+    Optional<RuleComponentSymbol> fBRule= fProd.get().getProdComponent("b");
+    assertFalse(fBRule.isPresent());
+
+    // with usage name
+    Optional<ProdSymbol> gProd = grammar.getSpannedScope().resolveProd("G");
+    assertTrue(gProd.isPresent());
+    Optional<RuleComponentSymbol> gBRule= gProd.get().getProdComponent("b");
+    assertTrue(gBRule.isPresent());
+  }
 }
