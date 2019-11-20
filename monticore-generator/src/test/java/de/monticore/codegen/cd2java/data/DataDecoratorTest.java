@@ -111,7 +111,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethods() {
     assertFalse(dataClass.isEmptyCDMethods());
-    assertEquals(54, dataClass.sizeCDMethods());
+    assertEquals(52, dataClass.sizeCDMethods());
   }
 
   @Test

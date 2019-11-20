@@ -132,25 +132,11 @@ public interface ASTNode {
   SourcePosition get_SourcePositionEnd();
   
   /**
-   * Returns the optional end position of this ASTNode
-   *
-   * @return end position of this ASTNode
-   */
-  Optional<SourcePosition> get_SourcePositionEndOpt();
-  
-  /**
    * Sets the end position of this ASTNode
    *
    * @param end end position of this ASTNode
    */
   void set_SourcePositionEnd(SourcePosition end);
-  
-  /**
-   * Sets the optional end position of this ASTNode
-   *
-   * @param end end position of this ASTNode
-   */
-  void set_SourcePositionEndOpt(Optional<SourcePosition> end);
   
   /**
    * Sets the optional end position of this ASTNode absent
@@ -170,25 +156,11 @@ public interface ASTNode {
   SourcePosition get_SourcePositionStart();
   
   /**
-   * Returns the optional end position of this ASTNode
-   *
-   * @return end position of this ASTNode
-   */
-  Optional<SourcePosition> get_SourcePositionStartOpt();
-  
-  /**
    * Sets the start position of this ASTNode
    *
    * @param start start position of this ASTNode
    */
   void set_SourcePositionStart(SourcePosition start);
-  
-  /**
-   * Sets the optional start position of this ASTNode
-   *
-   * @param start start position of this ASTNode
-   */
-  void set_SourcePositionStartOpt(Optional<SourcePosition> start);
   
   /**
    * Sets the optional start position of this ASTNode absent

@@ -6,42 +6,88 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsArtifactScope;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class SymTypeExpressionDeSerTest {
-  //TODO AB: Replace TypSymbol constructors with real values and mill
+  private static TypeSymbolsScope scope = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
 
-  // setup of objects (unchanged during tests) 
+  protected static final String TEST_SYMBOL_STORE_LOCATION = "target/generated-test-sources/monticore/symbols";
+
+  // setup of objects (unchanged during tests)
   // these should be the same as those of SymTypeExpressionText
   SymTypeExpression teDouble = createTypeConstant("double");
+
   SymTypeExpression teInt = createTypeConstant("int");
-  SymTypeExpression teVarA = createTypeVariable("A", null);
-  SymTypeExpression teVarB = createTypeVariable("B", null);
-  SymTypeExpression teP = createTypeObject("de.x.Person", new TypeSymbol("long"));
-  SymTypeExpression teH = createTypeObject("Human", new TypeSymbol("long"));  // on purpose: package missing
+
+  SymTypeExpression teVarA = createTypeVariable("A", scope);
+
+  SymTypeExpression teVarB = createTypeVariable("B", scope);
+
+  SymTypeExpression teP = createTypeObject("de.x.Person", scope);
+
+  SymTypeExpression teH = createTypeObject("Human", scope);  // on purpose: package missing
+
   SymTypeExpression teVoid = createTypeVoid();
+
   SymTypeExpression teNull = createTypeOfNull();
-  SymTypeExpression teArr1 = createTypeArray(1, teH, new TypeSymbol("long"));
-  SymTypeExpression teArr3 = createTypeArray(3, teInt, new TypeSymbol("long"));
-  SymTypeExpression teSet = createGenerics("java.util.Set", Lists.newArrayList(teP), new TypeSymbol("long"));
-  SymTypeExpression teSetA = createGenerics("java.util.Set", Lists.newArrayList(teVarA), new TypeSymbol("long"));
-  SymTypeExpression teMap = createGenerics("Map", Lists.newArrayList(teInt,teP), (TypeSymbol) new TypeSymbol("long")); // no package!
-  SymTypeExpression teFoo = createGenerics("x.Foo", Lists.newArrayList(teP,teDouble,teInt,teH), new TypeSymbol("long"));
-  SymTypeExpression teDeep1 = createGenerics("java.util.Set", Lists.newArrayList(teMap), new TypeSymbol("long"));
-  SymTypeExpression teDeep2 = createGenerics("java.util.Map2", Lists.newArrayList(teInt,teDeep1), new TypeSymbol("long"));
+
+  SymTypeExpression teArr1 = createTypeArray(teH.print(), scope, 1, teH);
+
+  SymTypeExpression teArr3 = createTypeArray(teInt.print(), scope, 3, teInt);
+
+  SymTypeExpression teSet = createGenerics("java.util.Set", scope, Lists.newArrayList(teP));
+
+  SymTypeExpression teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
+
+  SymTypeExpression teMap = createGenerics("Map", scope,
+      Lists.newArrayList(teInt, teP)); // no package!
+
+  SymTypeExpression teFoo = createGenerics("x.Foo", scope,
+      Lists.newArrayList(teP, teDouble, teInt, teH));
+
+  SymTypeExpression teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
+
+  SymTypeExpression teDeep2 = createGenerics("java.util.Map2", scope,
+      Lists.newArrayList(teInt, teDeep1));
 
   @BeforeClass
   public static void init() {
-//    LogStub.init();
     Log.enableFailQuick(false);
+    LogStub.init();
+
+    scope.add(new TypeSymbol("A"));
+    scope.add(new TypeSymbol("B"));
+    scope.add(new TypeSymbol("Human"));
+    scope.add(new TypeSymbol("Map"));
+
+    TypeSymbolsArtifactScope javaUtilAS = new TypeSymbolsArtifactScope("java.util",
+        new ArrayList<>());
+    javaUtilAS.add(new TypeSymbol("Map2"));
+    scope.addSubScope(javaUtilAS);
+
+    TypeSymbolsArtifactScope deXAS = new TypeSymbolsArtifactScope("de.x", new ArrayList<>());
+    deXAS.add(new TypeSymbol("Person"));
+    scope.addSubScope(deXAS);
+
+    TypeSymbolsArtifactScope xAS = new TypeSymbolsArtifactScope("x", new ArrayList<>());
+    xAS.add(new TypeSymbol("Foo"));
+    scope.addSubScope(xAS);
   }
 
   @Test
@@ -63,17 +109,59 @@ public class SymTypeExpressionDeSerTest {
     performRoundTripSerialization(teDeep1);
     performRoundTripSerialization(teDeep2);
   }
-  
+
   protected void performRoundTripSerialization(SymTypeExpression expr) {
     SymTypeExpressionDeSer deser = SymTypeExpressionDeSer.getInstance();
     //first serialize the expression using the deser
     String serialized = deser.serialize(expr);
     // then deserialize it
-    SymTypeExpression deserialized = deser.deserialize(serialized);
+    SymTypeExpression deserialized = deser.deserialize(serialized, scope);
     assertNotNull(deserialized);
     // and assert that the serialized and deserialized symtype expression equals the one before
     assertEquals(expr.print(), deserialized.print());
     assertEquals(expr.printAsJson(), deserialized.printAsJson());
+    TypeSymbol expectedTS = deserialized.getTypeInfo();
+    TypeSymbol actualTS = expr.getTypeInfo();
+    assertEquals(expectedTS.getName(), actualTS.getName());
   }
-  
+
+  @Test
+  public void testRoundtripLoadStore() throws MalformedURLException {
+    performRoundtripLoadStore(teDouble);
+    performRoundtripLoadStore(teInt);
+    performRoundtripLoadStore(teVarA);
+    performRoundtripLoadStore(teVarB);
+    performRoundtripLoadStore(teP);
+    performRoundtripLoadStore(teH);
+    performRoundtripLoadStore(teVoid);
+    performRoundtripLoadStore(teNull);
+    performRoundtripLoadStore(teArr1);
+    performRoundtripLoadStore(teArr3);
+    performRoundtripLoadStore(teSet);
+    performRoundtripLoadStore(teSetA);
+    performRoundtripLoadStore(teMap);
+    performRoundtripLoadStore(teFoo);
+    performRoundtripLoadStore(teDeep1);
+    performRoundtripLoadStore(teDeep2);
+  }
+
+  protected void performRoundtripLoadStore(SymTypeExpression expr) throws MalformedURLException {
+    SymTypeExpressionDeSer deser = SymTypeExpressionDeSer.getInstance();
+    String symbolName = expr.getTypeInfo().getFullName();
+    //first serialize the expression using the deser
+    deser.store(expr, TEST_SYMBOL_STORE_LOCATION);
+    URL url = Paths.get(TEST_SYMBOL_STORE_LOCATION, expr.getTypeInfo().getPackageName(),
+        expr.getTypeInfo().getName()+".symtype").toUri().toURL();
+
+    // then deserialize it
+    SymTypeExpression loaded = deser.load(url, scope);
+    assertNotNull(loaded);
+    // and assert that the serialized and deserialized symtype expression equals the one before
+    assertEquals(expr.print(), loaded.print());
+    assertEquals(expr.printAsJson(), loaded.printAsJson());
+    TypeSymbol expectedTS = loaded.getTypeInfo();
+    TypeSymbol actualTS = expr.getTypeInfo();
+    assertEquals(expectedTS.getName(), actualTS.getName());
+  }
+
 }

@@ -12,8 +12,16 @@ public class TypeSymbol extends TypeSymbolTOP {
     super(name);
   }
 
+  protected List<MethodSymbol> methodList=new ArrayList<>();
 
 
+
+  public void setMethodList(List<MethodSymbol> methodList){
+    this.methodList = methodList;
+    for(MethodSymbol method: methodList){
+      spannedScope.add(method);
+    }
+  }
 
 
 

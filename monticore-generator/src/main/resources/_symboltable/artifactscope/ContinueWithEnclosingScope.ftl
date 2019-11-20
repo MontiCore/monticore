@@ -4,11 +4,11 @@ ${tc.signature("symbolName", "simpleName", "globalScope")}
 
 if (checkIfContinueWithEnclosingScope(foundSymbols) && enclosingScope != null) {
 if (!(enclosingScope instanceof ${globalScope})) {
-      Log.warn("0xA1039 The artifact scope " + getNameOpt().orElse("") + " should have a global scope as enclosing scope or no "
+      Log.warn("0xA1039 The artifact scope " + (isPresentName() ? getName() : "") + " should have a global scope as enclosing scope or no "
               + "enclosing scope at all.");
       }
     foundSymbols = foundSymbols | result.size() > 0;
-    final Set<String> potentialQualifiedNames = qualifiedNamesCalculator.calculateQualifiedNames(name, packageName, imports);
+    final Set<String> potentialQualifiedNames = calculateQualifiedNames(name, packageName, imports);
 
     for (final String potentialQualifiedName : potentialQualifiedNames) {
   final List<${symbolName}> resolvedFromEnclosing = enclosingScope.resolve${simpleName}Many(foundSymbols,

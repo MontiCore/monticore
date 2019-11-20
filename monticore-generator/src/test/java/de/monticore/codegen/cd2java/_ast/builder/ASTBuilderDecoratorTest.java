@@ -70,7 +70,7 @@ public class ASTBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(38, builderClass.getCDMethodList().size());
+    assertEquals(36, builderClass.getCDMethodList().size());
   }
 
   @Test

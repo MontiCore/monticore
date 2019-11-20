@@ -40,7 +40,7 @@ public class OptionalMutatorDecoratorTest {
 
   @Test
   public void testMethods() {
-    assertEquals(3, methods.size());
+    assertEquals(2, methods.size());
   }
 
   @Test
@@ -51,17 +51,6 @@ public class OptionalMutatorDecoratorTest {
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(String.class, parameter.getMCType());
-    assertEquals("a", parameter.getName());
-  }
-
-  @Test
-  public void testGetOptMethod() {
-    ASTCDMethod method = getMethodBy("setAOpt", this.methods);
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertEquals(1, method.getCDParameterList().size());
-    ASTCDParameter parameter = method.getCDParameter(0);
-    assertOptionalOf(String.class, parameter.getMCType());
     assertEquals("a", parameter.getName());
   }
 

@@ -1,0 +1,151 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc;
+
+grammar TestCD4Analysis extends de.monticore.types.MCSimpleGenericTypes, de.monticore.literals.MCCommonLiterals {
+
+  CDCompilationUnit =
+    ("package" package:(Name& || ".")+ ";")?
+    (MCImportStatement)*
+    CDDefinition;
+
+  symbol scope CDDefinition = Modifier? "classdiagram" Name "{"
+  (   CDClass
+    | CDInterface
+    | CDEnum)* "}";
+
+   interface symbol scope CDType = Name;
+
+   interface symbol CDField = Name;
+
+   interface symbol scope CDMethOrConstr = Name;
+
+  CDClass implements CDType = Modifier?  "class" Name
+  ( "extends"  superclass:MCObjectType)?
+  ( TImplements interface:(MCObjectType || ",")+ )? stereotype:CDStereotype?
+  ( "{"
+    ( CDAttribute
+    | CDConstructor
+    | CDMethod )*
+    "}"
+  | ";" );
+
+  // indirect token
+  TImplements = { _input.LT(1).getText().equals("implements") }? Name; // implements is often association or role name (e.g., when creating the abstract syntax of CD4A itself or for the abstract syntax of Java)
+
+  CDInterface implements CDType = Modifier? "interface" Name
+    ( "extends" interface:(MCObjectType || ",")+ )? stereotype:CDStereotype?
+    ( "{"
+      ( CDAttribute
+      | CDMethod )*
+      "}"
+    | ";" );
+
+   CDEnum implements CDType = Modifier? "enum" Name
+    ( TImplements interface:(MCObjectType || ",")+ )?
+    ( "{"
+        (CDEnumConstant || ",")* ";"
+        ( CDConstructor | CDMethod)*
+      "}"
+    | ";" );
+
+  astrule CDEnum = CDAttribute*;
+
+  CDAttribute implements CDField = Modifier? MCType Name ("=" Value)? ";";
+
+  CDEnumConstant implements CDField = Name ( "(" cDEnumParameter:(CDEnumParameter || ",")+ ")" )?;
+
+  CDEnumParameter = Value;
+
+  CDConstructor implements CDMethOrConstr =
+    Modifier
+     Name "(" (CDParameter || ",")* ")"
+    ("throws" exception:(MCQualifiedName || "," )+)?
+    ";";
+
+  CDMethod implements CDMethOrConstr =
+    Modifier
+    MCReturnType
+     Name "(" (CDParameter || ",")* ")"
+    ("throws" exception:(MCQualifiedName || ",")+)?
+    ";";
+
+  CDParameter implements CDField =
+  MCType (Ellipsis:["..."])? Name;
+
+  token TReadOnly = 'r' 'e' 'a' 'd' '-' 'o' 'n' 'l' 'y';
+
+  Modifier = stereotype:CDStereotype?
+    (["abstract"]
+      | ["final"]
+      | ["static"]
+      | ["private"] | [private:"-"]
+      | ["protected"] | [protected:"#"]
+      | ["public"] | [public:"+"]
+      | ["derived"] | [derived:"/"] )*;
+
+  Cardinality = many:["[*]"] | one:["[1]"] | oneToMany:["[1..*]"] | optional:["[0..1]"];
+
+  symbol CDQualifier = "[[" Name "]]" | "[" MCType "]";
+
+
+  /** ASTStereotype represents Stereotypes in a Classdiagram
+    @attribute values List of Values of this Stereotype
+  */
+  CDStereotype = "<<" value:(CDStereoValue || ",")+ ">" ">"
+	// It is not possible to define ">>".
+    // Parsing generic typs like "List<List<String>>" leads to problems.
+    {((_input.LT(-2).getLine()==_input.LT(-1).getLine()) && (_input.LT(-1).getCharPositionInLine()==_input.LT(-2).getCharPositionInLine()+1))}?;
+
+
+  /** ASTStereoValue represents a Value of a Stereotype in a Classdiagram
+      @attribute name  Name of the Stereotype-Value
+  */
+  CDStereoValue = Name ("=" value:String)?;
+
+  /** ASTValue represents a Value
+      @attribute literal  Value
+  */
+  Value = SignedLiteral;
+
+  symbolrule CDField =
+    isPrivate: boolean
+    isDerived: boolean
+    isProtected: boolean
+    isPublic: boolean
+    isFinal: boolean
+    isStatic: boolean
+    isReadOnly: boolean
+    isInitialized: boolean
+    isParameter: boolean
+    type: mc.testcd4analysis._symboltable.CDTypeSymbolLoader
+  ;
+
+  symbolrule CDMethOrConstr =
+    isConstructor: boolean
+    isPrivate: boolean
+    isDerived: boolean
+    isProtected: boolean
+    isPublic: boolean
+    isFinal: boolean
+    isStatic: boolean
+    isAbstract: boolean
+    isEllipsis: boolean
+    returnType: mc.testcd4analysis._symboltable.CDTypeSymbolLoader
+    exceptions: mc.testcd4analysis._symboltable.CDTypeSymbolLoader*
+  ;
+
+  symbolrule CDType =
+    isInterface: boolean
+    isEnum: boolean
+    isClass: boolean
+    isAbstract: boolean
+    isPrivate: boolean
+    isProtected: boolean
+    isPublic: boolean
+    isFinal: boolean
+    cdInterfaces: mc.testcd4analysis._symboltable.CDTypeSymbolLoader*
+    superClass: mc.testcd4analysis._symboltable.CDTypeSymbolLoader?
+  ;
+
+}

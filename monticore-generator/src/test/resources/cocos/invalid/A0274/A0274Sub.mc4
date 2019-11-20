@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A0274;
+
+grammar A0274Sub extends cocos.invalid.A0274.A0274Super {
+
+ symbol Foo;
+
+}

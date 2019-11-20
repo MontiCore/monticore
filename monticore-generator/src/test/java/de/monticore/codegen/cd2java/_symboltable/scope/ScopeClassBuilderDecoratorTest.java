@@ -154,7 +154,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(60, scopeBuilderClass.getCDMethodList().size());
+    assertEquals(54, scopeBuilderClass.getCDMethodList().size());
   }
 
   @Test

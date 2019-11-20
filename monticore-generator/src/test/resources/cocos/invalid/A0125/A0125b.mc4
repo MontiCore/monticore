@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A0125;
+
+grammar A0125b {
+
+  symbol C1;
+
+  symbol A extends C1;
+
+}

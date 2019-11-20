@@ -97,9 +97,8 @@ public class MCCommonUnitTest {
   public void testStereoValue() throws IOException {
     ASTStereoValue ast = parser.parse_StringStereoValue( "bla=\"17\"" ).get();
     assertEquals("bla", ast.getName());
-    Optional<ASTStringLiteral> os = ast.getTextOpt();
-    assertEquals(true, os.isPresent());
-    assertEquals("17", os.get().getValue());
+    assertEquals(true, ast.isPresentText());
+    assertEquals("17", ast.getText().getValue());
     assertEquals("17", ast.getValue());
   }
 
@@ -109,8 +108,7 @@ public class MCCommonUnitTest {
   public void testStereoValue2() throws IOException {
     ASTStereoValue ast = parser.parse_StringStereoValue( "cc" ).get();
     assertEquals("cc", ast.getName());
-    Optional<ASTStringLiteral> os = ast.getTextOpt();
-    assertEquals(false, os.isPresent());
+    assertEquals(false, ast.isPresentText());
     assertEquals("", ast.getValue());
   }
 

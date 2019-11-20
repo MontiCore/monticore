@@ -74,9 +74,8 @@ public class QuestionnaireTreePrinter implements
   
   public void visit(ASTItem node) {
     print("<I"+depth+">" +"  item " + node.getName() +" \""+ node.getQuestion() + "\" ");
-    Optional<String> scale = node.getScaleOpt();
-    if(scale.isPresent()) {
-      print(scale.get());
+    if(node.isPresentScale()) {
+      print(node.getScale());
     }
   }
   
@@ -93,8 +92,14 @@ public class QuestionnaireTreePrinter implements
   }
 
   public void visit(ASTRange node) {
-    String minTitle = node.getMinTitleOpt().orElse("");
-    String maxTitle = node.getMaxTitleOpt().orElse("");
+    String minTitle = "";
+    String maxTitle = "";
+    if (node.isPresentMinTitle()) {
+      minTitle = node.getMinTitle();
+    }
+    if (node.isPresentMaxTitle()) {
+      maxTitle = node.getMaxTitle();
+    }
     print("<R"+depth+">" +"range  [" + minTitle +" "+ node.getMin().getValue() + " .. "
           + node.getMax().getValue() +" "+ maxTitle +"]\n" );
   }

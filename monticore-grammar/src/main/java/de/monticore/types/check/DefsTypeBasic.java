@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
-
 /**
  * DefsTypeBasic offers one Symbol-Infrastructure
  * including Scopes etc. that is used to provide relevant Symbols.
@@ -66,9 +64,8 @@ public class DefsTypeBasic {
   /** create TypeSymbols (some defaults apply)
    */
   public static TypeSymbol type(String name, String fullName) {
-    ExpressionsBasisScope spannedScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     return TypeSymbolsSymTabMill.typeSymbolBuilder()
-            .setSpannedScope(spannedScope)
+            .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
             .setName(name)
             .setFullName(fullName)
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
@@ -79,9 +76,8 @@ public class DefsTypeBasic {
   }
 
   public static TypeSymbol type(String name, List<SymTypeExpression> superTypes){
-    ExpressionsBasisScope spannedScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     return TypeSymbolsSymTabMill.typeSymbolBuilder()
-            .setSpannedScope(spannedScope)
+            .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
             .setName(name)
             .setFullName(name)
             .setSuperTypeList(superTypes)
@@ -101,42 +97,36 @@ public class DefsTypeBasic {
 
   public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
                                 List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList){
-    ExpressionsBasisScope spannedScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
     TypeSymbol t = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(spannedScope)
-        .setName(name)
-        .setFullName(name)
-        .setTypeParameterList(typeVariableList)
-        .setSuperTypeList(superTypeList)
-        .setMethodList(methodList)
-        .setFieldList(fieldList)
-        .build();
-
+          .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
+          .setName(name)
+          .setFullName(name)
+          .setTypeParameterList(typeVariableList)
+          .setSuperTypeList(superTypeList)
+          .setMethodList(methodList)
+          .setFieldList(fieldList)
+          .build();
     return t;
   }
 
   public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
                                 List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList,
                                 ExpressionsBasisScope enclosingScope){
-    ExpressionsBasisScope spannedScope = ExpressionsBasisSymTabMill
-            .expressionsBasisScopeBuilder()
-            .setEnclosingScope(enclosingScope)
-            .build();
     TypeSymbol t = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(spannedScope)
+        .setEnclosingScope(enclosingScope)
+        .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
         .setName(name)
         .setFullName(name)
         .setTypeParameterList(typeVariableList)
         .setSuperTypeList(superTypeList)
         .setMethodList(methodList)
         .setFieldList(fieldList)
-        .setEnclosingScope(enclosingScope)
         .build();
 
-    for(MethodSymbol method: methodList){
-      if(method.getSpannedScope()!=null){
-        spannedScope.addSubScope(method.getSpannedScope());
-      }
+    t.getSpannedScope().setEnclosingScope(enclosingScope);
+
+    for(MethodSymbol method: t.getMethodList()){
+      method.getSpannedScope().setEnclosingScope(t.getSpannedScope());
     }
     return t;
   }
@@ -152,19 +142,11 @@ public class DefsTypeBasic {
   }
   
   public static TypeSymbol add(TypeSymbol t, FieldSymbol f) {
-    //replaced with addFieldSymbol Method
-    //List<FieldSymbol> fieldList = t.getFieldList();
-    //fieldList.add(f);
-    //t.setFieldList(fieldList);
     t.addFieldSymbol(f);
     return t;
   }
   
   public static TypeSymbol add(TypeSymbol t, MethodSymbol m) {
-    //replaced with addmethodSymbol Method
-    //List<MethodSymbol> methodList = t.getMethodList();
-    //methodList.add(m);
-    //t.setMethodList(methodList);
     t.addMethodSymbol(m);
     return t;
   }
@@ -172,15 +154,16 @@ public class DefsTypeBasic {
   /** create MethodSymbols (some defaults apply)
    */
   public static MethodSymbol method(String name, SymTypeExpression returnType) {
-    ExpressionsBasisScope spannedScope = ExpressionsBasisSymTabMill
-            .expressionsBasisScopeBuilder().build();
-    return TypeSymbolsSymTabMill.methodSymbolBuilder()
+    MethodSymbol m = TypeSymbolsSymTabMill.methodSymbolBuilder()
+            .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
             .setName(name)
             .setFullName(name)  // can later be adapted, when fullname of Type is known
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
             .setParameterList(new ArrayList<>())
             .setReturnType(returnType)
             .build();
+    m.setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
+    return m;
   }
   
   public static MethodSymbol add(MethodSymbol m, FieldSymbol f) {
@@ -219,6 +202,15 @@ public class DefsTypeBasic {
     s.setEnclosingScope(p);
     p.add(s);
   }
+
+  /**
+   * add a Method to a Scope (bidirectional)
+   */
+  public static void add2scope(ITypeSymbolsScope p, TypeVarSymbol s) {
+    s.setEnclosingScope(p);
+    p.add(s);
+  }
+
 
   /**
    * It is tedious to allways add name and fullNamee individually:
@@ -317,10 +309,16 @@ public class DefsTypeBasic {
   public static SymTypeOfObject _StringSymType;
   
   public static void set_String() {
-    _String = type("StringType");
-    _StringSymType = new SymTypeOfObject("String", _String);
+    _String = type("String");
+    _StringSymType = new SymTypeOfObject(new TypeSymbolLoader("String", createScopeWithString()));
   }
-  
+
+  public static ITypeSymbolsScope createScopeWithString() {
+    TypeSymbolsScope typeSymbolsScope = new TypeSymbolsScope();
+    typeSymbolsScope.add(_String);
+    return typeSymbolsScope;
+  }
+
   public static void link_String() {
     MethodSymbol m; FieldSymbol f;
     ExpressionsBasisScope scope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
@@ -387,10 +385,17 @@ public class DefsTypeBasic {
     // TODO RE: this function is very incomplete; ersetzen oder komplettieren
     
     completeFullnames(_Object);
-    _ObjectSymType = new SymTypeOfObject("Object", _Object);
+    _ObjectSymType = new SymTypeOfObject(new TypeSymbolLoader("Object", createScopeWithObject()));
   }
-  
-  
+
+  public static ITypeSymbolsScope createScopeWithObject() {
+    TypeSymbolsScope typeSymbolsScope = new TypeSymbolsScope();
+    typeSymbolsScope.add(_Object);
+    return typeSymbolsScope;
+  }
+
+
+
   /*********************************************************************/
   
   /**
@@ -419,29 +424,44 @@ public class DefsTypeBasic {
 
   public static void set_thePrimitives() {
     typeConstants = new HashMap<>();
+    TypeSymbolsScope typeSymbolsScope = new TypeSymbolsScope();
     _int = type("int");
-    _intSymType = new SymTypeConstant("int", _int);
+    typeSymbolsScope.add(_int);
+    _intSymType = new SymTypeConstant(new TypeSymbolLoader("int", typeSymbolsScope));
     typeConstants.put("int", _intSymType);
+
     _boolean = type("boolean");
-    _booleanSymType = new SymTypeConstant("boolean", _boolean);
+    typeSymbolsScope.add(_boolean);
+    _booleanSymType = new SymTypeConstant(new TypeSymbolLoader("boolean", typeSymbolsScope));
     typeConstants.put("boolean", _booleanSymType);
+
     _char = type("char");
-    _charSymType = new SymTypeConstant("char", _char);
+    typeSymbolsScope.add(_char);
+    _charSymType = new SymTypeConstant(new TypeSymbolLoader("char", typeSymbolsScope));
     typeConstants.put("char", _charSymType);
+
     _double = type("double");
-    _doubleSymType = new SymTypeConstant("double", _double);
+    typeSymbolsScope.add(_double);
+    _doubleSymType = new SymTypeConstant(new TypeSymbolLoader("double", typeSymbolsScope));
     typeConstants.put("double", _doubleSymType);
     _float = type("float");
-    _floatSymType = new SymTypeConstant("float", _float);
+    typeSymbolsScope.add(_float);
+    _floatSymType = new SymTypeConstant(new TypeSymbolLoader("float", typeSymbolsScope));
     typeConstants.put("float", _floatSymType);
+
     _long = type("long");
-    _longSymType = new SymTypeConstant("long", _long);
+    typeSymbolsScope.add(_long);
+    _longSymType = new SymTypeConstant(new TypeSymbolLoader("long", typeSymbolsScope));
     typeConstants.put("long", _longSymType);
+
     _byte = type("byte");
-    _byteSymType = new SymTypeConstant("byte", _byte);
+    typeSymbolsScope.add(_byte);
+    _byteSymType = new SymTypeConstant(new TypeSymbolLoader("byte", typeSymbolsScope));
     typeConstants.put("byte", _byteSymType);
+
     _short = type("short");
-    _shortSymType = new SymTypeConstant("short", _short);
+    typeSymbolsScope.add(_short);
+    _shortSymType = new SymTypeConstant(new TypeSymbolLoader("short", typeSymbolsScope));
     typeConstants.put("short", _shortSymType);
   }
   
@@ -455,7 +475,7 @@ public class DefsTypeBasic {
    */
   public static TypeSymbol _void;
   public static SymTypeVoid _voidSymType;
-  public static String _voidTypeString = "voidType";
+  public static final String _voidTypeString = "voidType";
   
   public static void set_Void() {
     _void = type(_voidTypeString);           // the name shouldn't be used
@@ -472,7 +492,7 @@ public class DefsTypeBasic {
    */
   public static TypeSymbol _null;
   public static SymTypeOfNull _nullSymType;
-  public static String _nullTypeString = "nullType";
+  public static final String _nullTypeString = "nullType";
   
   public static void set_Null() {
     _null = type(_nullTypeString);    // and the name shouldn't be used anyway, but it is at DeSer

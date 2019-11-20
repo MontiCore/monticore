@@ -65,23 +65,20 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
     ASTCDAttribute importsAttribute = createImportsAttribute();
     List<ASTCDMethod> importsMethods = methodDecorator.decorate(importsAttribute);
 
-    ASTCDAttribute qualifiedNamesCalculatorAttribute = createQualifiedNamesCalculatorAttribute();
-    List<ASTCDMethod> qualifiedNameCalculatorMethod = methodDecorator.getMutatorDecorator().decorate(qualifiedNamesCalculatorAttribute);
-
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(artifactScopeSimpleName)
         .setModifier(PUBLIC.build())
         .setSuperclass(getMCTypeFacade().createQualifiedType(scopeClassFullName))
+        .addInterface(getMCTypeFacade().createQualifiedType(I_ARTIFACT_SCOPE_TYPE))
         .addAllCDConstructors(createConstructors(artifactScopeSimpleName))
         .addCDAttribute(packageNameAttribute)
         .addAllCDMethods(packageNameMethods)
         .addCDAttribute(importsAttribute)
         .addAllCDMethods(importsMethods)
-        .addCDAttribute(qualifiedNamesCalculatorAttribute)
-        .addAllCDMethods(qualifiedNameCalculatorMethod)
-        .addCDMethod(createGetNameOptMethod())
+        .addCDMethod(createGetNameMethod())
+        .addCDMethod(createIsPresentNameMethod())
         .addCDMethod(createGetTopLevelSymbolMethod())
         .addCDMethod(createCheckIfContinueAsSubScopeMethod())
         .addCDMethod(createGetFilePathMethod())
@@ -115,13 +112,20 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
     return getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT), "imports");
   }
 
-  protected ASTCDAttribute createQualifiedNamesCalculatorAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE, QUALIFIED_NAMES_CALCULATOR, "qualifiedNamesCalculator");
+  protected ASTCDMethod createGetNameMethod() {
+    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
+    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "GetName"));
+    return getNameMethod;
   }
 
-  protected ASTCDMethod createGetNameOptMethod() {
-    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createOptionalTypeOf(String.class), "getNameOpt");
-    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "GetNameOpt"));
+  /**
+   * Creates the isPresentName method for artifact scopes.
+   * 
+   * @return The isPresentName method.
+   */
+  protected ASTCDMethod createIsPresentNameMethod() {
+    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "isPresentName");
+    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "IsPresentName"));
     return getNameMethod;
   }
 

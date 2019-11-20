@@ -13,6 +13,7 @@ public class InheritedSymbolPropertyTest extends CocoTest {
 
   private final String grammar = "cocos.invalid.A0125.A0125";
   private final String grammar2 = "cocos.invalid.A0125.A0125a";
+  private final String grammar3 = "cocos.invalid.A0125.A0125b";
 
 
   @BeforeClass
@@ -21,16 +22,28 @@ public class InheritedSymbolPropertyTest extends CocoTest {
     checker.addCoCo(new InheritedSymbolProperty());
   }
 
+  /**
+   * implements -> from interface
+   */
   @Test
   public void testInvalid() {
     testInvalidGrammar(grammar, InheritedSymbolProperty.ERROR_CODE,
-            String.format(InheritedSymbolProperty.ERROR_MSG_FORMAT, "A"), checker);
+        String.format(InheritedSymbolProperty.ERROR_MSG_FORMAT, "A"), checker);
   }
 
   @Test
   public void testInvalid2() {
     testInvalidGrammar(grammar2, InheritedSymbolProperty.ERROR_CODE,
             String.format(InheritedSymbolProperty.ERROR_MSG_FORMAT, "A"), checker);
+  }
+
+  /**
+   * extends -> from class
+   */
+  @Test
+  public void testInvalid3() {
+    testInvalidGrammar(grammar3, InheritedSymbolProperty.ERROR_CODE,
+        String.format(InheritedSymbolProperty.ERROR_MSG_FORMAT, "A"), checker);
   }
 
   @Test

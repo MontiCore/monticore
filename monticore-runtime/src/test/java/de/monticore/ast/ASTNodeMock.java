@@ -44,21 +44,11 @@ public class ASTNodeMock implements ASTNode {
     return null;
   }
   
-  @Override
-  public Optional<SourcePosition> get_SourcePositionEndOpt() {
-    return Optional.empty();
-  }
-  
   /**
    * @see de.monticore.ast.ASTNode#set_SourcePositionEnd(de.se_rwth.commons.SourcePosition)
    */
   @Override
   public void set_SourcePositionEnd(SourcePosition end) {
-  }
-  
-  @Override
-  public void set_SourcePositionEndOpt(Optional<SourcePosition> end) {
-  
   }
   
   @Override
@@ -79,21 +69,11 @@ public class ASTNodeMock implements ASTNode {
     return null;
   }
   
-  @Override
-  public Optional<SourcePosition> get_SourcePositionStartOpt() {
-    return Optional.empty();
-  }
-  
   /**
    * @see de.monticore.ast.ASTNode#set_SourcePositionStart(de.se_rwth.commons.SourcePosition)
    */
   @Override
   public void set_SourcePositionStart(SourcePosition start) {
-  }
-  
-  @Override
-  public void set_SourcePositionStartOpt(Optional<SourcePosition> start) {
-  
   }
   
   @Override
@@ -176,11 +156,6 @@ public class ASTNodeMock implements ASTNode {
 //  }
 //
 //  @Override
-//  public void setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt) {
-//
-//  }
-//
-//  @Override
 //  public void setEnclosingScopeAbsent() {
 //
 //  }
@@ -191,18 +166,8 @@ public class ASTNodeMock implements ASTNode {
 //  }
 //
 //  @Override
-//  public Optional<? extends Scope> getEnclosingScopeOpt() {
-//    return Optional.empty();
-//  }
-//
-//  @Override
 //  public void setSymbol(Symbol symbol) {
 //    
-//  }
-//
-//  @Override
-//  public void setSymbolOpt(Optional<? extends Symbol> spannedScopeOpt) {
-//
 //  }
 //
 //  @Override
@@ -213,11 +178,6 @@ public class ASTNodeMock implements ASTNode {
 //  @Override
 //  public Symbol  getSymbol() {
 //    return null;
-//  }
-//
-//  @Override
-//  public Optional<? extends Symbol> getSymbolOpt() {
-//    return Optional.empty();
 //  }
 //
 //  @Override
@@ -236,11 +196,6 @@ public class ASTNodeMock implements ASTNode {
 //  }
 //
 //  @Override
-//  public void setSpannedScopeOpt(Optional<? extends Scope> spannedScopeOpt) {
-//
-//  }
-//
-//  @Override
 //  public void setSpannedScopeAbsent() {
 //
 //  }
@@ -248,11 +203,6 @@ public class ASTNodeMock implements ASTNode {
 //  @Override
 //  public Scope getSpannedScope() {
 //    return null;
-//  }
-//
-//  @Override
-//  public Optional<? extends Scope> getSpannedScopeOpt() {
-//    return Optional.empty();
 //  }
 //
 //  @Override

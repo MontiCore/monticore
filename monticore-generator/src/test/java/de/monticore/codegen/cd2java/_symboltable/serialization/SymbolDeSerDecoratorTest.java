@@ -39,7 +39,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private de.monticore.types.MCTypeFacade MCTypeFacade;
+  private de.monticore.types.MCTypeFacade mcTypeFacade;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
@@ -50,7 +50,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     Log.init();
-    this.MCTypeFacade = MCTypeFacade.getInstance();
+    this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -85,7 +85,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
-    assertDeepEquals("de.monticore.symboltable.serialization.IDeSer<de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbol>", symbolDeSer.getInterface(0));
+    assertDeepEquals("de.monticore.symboltable.serialization.IDeSer<de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbol,de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope>", symbolDeSer.getInterface(0));
   }
 
   @Test
@@ -126,15 +126,15 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(AUTOMATON_SYMBOL),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL),
         method.getCDParameter(0).getMCType());
     assertEquals("toSerialize", method.getCDParameter(0).getName());
   }
 
   @Test
   public void testDeserializeStringMethod() {
-    List<ASTCDMethod> methods = getMethodsBy("deserialize", 1, symbolDeSer);
-    ASTMCType astType = this.MCTypeFacade.createStringType();
+    List<ASTCDMethod> methods = getMethodsBy("deserialize", 2, symbolDeSer);
+    ASTMCType astType = this.mcTypeFacade.createStringType();
 
     assertTrue(methods.stream().anyMatch(m -> m.getCDParameter(0).getMCType()
         .deepEquals(astType)));
@@ -146,15 +146,17 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
-    assertEquals(1, method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("serialized", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(1).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(1).getName());
   }
 
   @Test
   public void testDeserializeJsonObjectMethod() {
-    List<ASTCDMethod> methods = getMethodsBy("deserialize", 1, symbolDeSer);
-    ASTMCType astType = this.MCTypeFacade.createQualifiedType("de.monticore.symboltable.serialization.json.JsonObject");
+    List<ASTCDMethod> methods = getMethodsBy("deserialize", 2, symbolDeSer);
+    ASTMCType astType = this.mcTypeFacade.createQualifiedType("de.monticore.symboltable.serialization.json.JsonObject");
 
     assertTrue(methods.stream().anyMatch(m -> m.getCDParameter(0).getMCType()
         .deepEquals(astType)));
@@ -166,9 +168,11 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
-    assertEquals(1, method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("symbolJson", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(1).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(1).getName());
   }
 
   @Test
@@ -178,9 +182,11 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
-    assertEquals(1, method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
     assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
     assertEquals("symbolJson", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(1).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(1).getName());
   }
 
   @Test
@@ -189,11 +195,13 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PROTECTED, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
-    assertEquals(2, method.sizeCDParameters());
+    assertEquals(3, method.sizeCDParameters());
     assertDeepEquals(AUTOMATON_SYMBOL, method.getCDParameter(0).getMCType());
     assertEquals("symbol", method.getCDParameter(0).getName());
     assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(1).getMCType());
     assertEquals("symbolJson", method.getCDParameter(1).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(2).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(2).getName());
   }
 
   /**
@@ -211,7 +219,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesFooSymbol() {
-    assertDeepEquals("de.monticore.symboltable.serialization.IDeSer<de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.FooSymbol>",
+    assertDeepEquals("de.monticore.symboltable.serialization.IDeSer<de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.FooSymbol,de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope>",
         symbolFooDeSer.getInterface(0));
   }
 
@@ -243,9 +251,11 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertBoolean(method.getMCReturnType().getMCType());
 
-    assertEquals(1, method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
     assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
     assertEquals("symbolJson", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(1).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(1).getName());
   }
 
   @Test
@@ -255,9 +265,11 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertListOf(String.class, method.getMCReturnType().getMCType());
 
-    assertEquals(1, method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
     assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
     assertEquals("symbolJson", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(1).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(1).getName());
   }
 
   @Test
@@ -267,9 +279,11 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
 
-    assertEquals(1, method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
     assertDeepEquals("de.monticore.symboltable.serialization.json.JsonObject", method.getCDParameter(0).getMCType());
     assertEquals("symbolJson", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", method.getCDParameter(1).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(1).getName());
   }
 
   @Test

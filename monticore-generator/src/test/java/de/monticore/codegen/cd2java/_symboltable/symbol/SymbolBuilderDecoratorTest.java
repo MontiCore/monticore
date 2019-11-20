@@ -35,7 +35,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass builderClass;
 
-  private MCTypeFacade MCTypeFacade;
+  private MCTypeFacade mcTypeFacade;
 
   private static final String ENCLOSING_SCOPE_TYPE = "de.monticore.codegen.builder.builder._symboltable.IBuilderScope";
 
@@ -49,7 +49,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void setup() {
     LogStub.init();
     LogStub.enableFailQuick(false);
-    this.MCTypeFacade = MCTypeFacade.getInstance();
+    this.mcTypeFacade = MCTypeFacade.getInstance();
 
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "symboltable","cdForBuilder", "Symbol_Builder");
     ASTCDClass cdClass = getClassBy("ASymbol", ast);
@@ -116,7 +116,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void testEnclosingScopeAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("enclosingScope", builderClass);
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(ENCLOSING_SCOPE_TYPE),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(ENCLOSING_SCOPE_TYPE),
         astcdAttribute.getMCType());
   }
 
@@ -124,7 +124,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void testASTNodeAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("astNode", builderClass);
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(A_NODE_TYPE_OPT), astcdAttribute.getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE_OPT), astcdAttribute.getMCType());
   }
 
   @Test
@@ -138,20 +138,20 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void testAccessModifierAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("accessModifier", builderClass);
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(ACCESS_MODIFIER_TYPE), astcdAttribute.getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType(ACCESS_MODIFIER_TYPE), astcdAttribute.getMCType());
   }
 
 
   @Test
   public void testMethods() {
-    assertEquals(18, builderClass.getCDMethodList().size());
+    assertEquals(16, builderClass.getCDMethodList().size());
   }
 
   @Test
   public void testBuildMethod() {
     ASTCDMethod method = getMethodBy("build", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType("ASymbol"), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType("ASymbol"), method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
@@ -187,7 +187,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void testGetEnclosingScopeNameMethod() {
     ASTCDMethod method = getMethodBy("getEnclosingScope", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(ENCLOSING_SCOPE_TYPE)
+    assertDeepEquals(mcTypeFacade.createQualifiedType(ENCLOSING_SCOPE_TYPE)
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
@@ -197,17 +197,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void testGetAstNodeMethod() {
     ASTCDMethod method = getMethodBy("getAstNode", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(A_NODE_TYPE)
-        , method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetAstNodeOptMethod() {
-    ASTCDMethod method = getMethodBy("getAstNodeOpt", builderClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(A_NODE_TYPE_OPT)
+    assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE)
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
@@ -226,7 +216,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void testGetAccessModifierNameMethod() {
     ASTCDMethod method = getMethodBy("getAccessModifier", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(ACCESS_MODIFIER_TYPE)
+    assertDeepEquals(mcTypeFacade.createQualifiedType(ACCESS_MODIFIER_TYPE)
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
@@ -236,7 +226,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void testSetNameMethod() {
     ASTCDMethod method = getMethodBy("setName", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
@@ -247,7 +237,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void testSetFullNameMethod() {
     ASTCDMethod method = getMethodBy("setFullName", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
@@ -258,7 +248,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void testSetPackageNameMethod() {
     ASTCDMethod method = getMethodBy("setPackageName", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
@@ -269,10 +259,10 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void testSetEnclosingScopeMethod() {
     ASTCDMethod method = getMethodBy("setEnclosingScope", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(ENCLOSING_SCOPE_TYPE),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(ENCLOSING_SCOPE_TYPE),
         method.getCDParameter(0).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(0).getName());
   }
@@ -281,22 +271,10 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void testSetAstNodeMethod() {
     ASTCDMethod method = getMethodBy("setAstNode", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(A_NODE_TYPE),
-        method.getCDParameter(0).getMCType());
-    assertEquals("astNode", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetAstNodeOptMethod() {
-    ASTCDMethod method = getMethodBy("setAstNodeOpt", builderClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(A_NODE_TYPE_OPT),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE),
         method.getCDParameter(0).getMCType());
     assertEquals("astNode", method.getCDParameter(0).getName());
   }
@@ -305,7 +283,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void testSetAstNodeAbsentMethod() {
     ASTCDMethod method = getMethodBy("setAstNodeAbsent", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
@@ -314,10 +292,10 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   public void testSetAccessModifierMethod() {
     ASTCDMethod method = getMethodBy("setAccessModifier", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(ACCESS_MODIFIER_TYPE),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(ACCESS_MODIFIER_TYPE),
         method.getCDParameter(0).getMCType());
     assertEquals("accessModifier", method.getCDParameter(0).getName());
   }

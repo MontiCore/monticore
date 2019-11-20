@@ -96,13 +96,13 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMandatoryMethods() {
-    assertEquals(6, astMandClass.getCDMethodList().size());
+    assertEquals(4, astMandClass.getCDMethodList().size());
   }
 
 
   @Test
   public void testOptionalMethods() {
-    assertEquals(6, astOptClass.getCDMethodList().size());
+    assertEquals(4, astOptClass.getCDMethodList().size());
   }
 
 

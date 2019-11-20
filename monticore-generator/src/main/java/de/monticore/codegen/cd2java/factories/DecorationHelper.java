@@ -125,15 +125,14 @@ public class DecorationHelper extends MCBasicTypesHelper {
   public static String getPlainGetter(ASTCDAttribute ast) {
     String astType = ast.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     StringBuilder sb = new StringBuilder();
-    if (CDTypes.isBoolean(astType)) {
+    // Do not use CDTypes.isBoolean() because only primitive boolean uses GET_PREFIX_BOOLEAN
+    if (astType.equals("boolean")) {
       sb.append(GET_PREFIX_BOOLEAN);
     } else {
       sb.append(GET_PREFIX);
     }
     sb.append(StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
-    if (isOptional(ast.getMCType())) {
-      sb.append(GET_SUFFIX_OPTINAL);
-    } else if (isListType(astType)) {
+    if (isListType(astType)) {
       if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
         sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
                 sb.length(), GET_SUFFIX_LIST);
@@ -188,8 +187,6 @@ public class DecorationHelper extends MCBasicTypesHelper {
       } else {
         sb.append(GET_SUFFIX_LIST);
       }
-    } else if (isOptional(ast.getMCType())) {
-      sb.append(GET_SUFFIX_OPTINAL);
     }
     return sb.toString();
   }

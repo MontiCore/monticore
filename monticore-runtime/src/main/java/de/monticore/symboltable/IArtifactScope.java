@@ -1,22 +1,32 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 
-package de.monticore.symboltable.names;
+package de.monticore.symboltable;
 
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import de.monticore.symboltable.ImportStatement;
-
 import static de.se_rwth.commons.Names.getQualifier;
 import static de.se_rwth.commons.Names.getSimpleName;
 import static de.se_rwth.commons.logging.Log.trace;
 
-public class CommonQualifiedNamesCalculator implements QualifiedNamesCalculator {
+/**
+ * Common interface for all artifact scopes
+ */
+public interface IArtifactScope {
 
-  @Override
-  public Set<String> calculateQualifiedNames(String name, String packageName, List<ImportStatement> imports) {
+  /**
+   * Calculates possible qualified names for the <code>simpleName</code>. For this,
+   * it considers the (possible) <code>packageName</code> and the <code>imports</code>
+   * (i.e., import statements).
+   *
+   * @param name  the simple name of the symbol
+   * @param packageName the possible package name
+   * @param imports     the import statements
+   * @return a set of possible qualified names for the <code>simpleName</code>
+   */
+  default public Set<String> calculateQualifiedNames(String name, String packageName, List<ImportStatement> imports) {
     final Set<String> potentialSymbolNames = new LinkedHashSet<>();
 
     // the simple name (in default package)
@@ -38,8 +48,9 @@ public class CommonQualifiedNamesCalculator implements QualifiedNamesCalculator 
       }
     }
     trace("Potential qualified names for \"" + name + "\": " + potentialSymbolNames.toString(),
-            CommonQualifiedNamesCalculator.class.getSimpleName());
+        "IArtifactScope");
 
     return potentialSymbolNames;
   }
+
 }
