@@ -9,8 +9,8 @@ ${tc.signature("cdClass")}
           result.add(${attrGetter}());
         }
       <#elseif genHelper.isOptionalAstNode(attr)>
-        if (${attrGetter}().isPresent()) {
-          result.add(${attrGetter}().get());
+        if (isPresent${genHelper.getNativeAttributeName(attr.getName())?cap_first}()) {
+          result.add(${attrGetter}());
         }
       <#elseif genHelper.isListAstNode(attr)>
         result.addAll(${attrGetter}());

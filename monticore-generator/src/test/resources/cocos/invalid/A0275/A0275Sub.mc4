@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A0275;
+
+grammar A0275Sub extends cocos.invalid.A0275.A0275Super {
+
+ scope Foo;
+
+}

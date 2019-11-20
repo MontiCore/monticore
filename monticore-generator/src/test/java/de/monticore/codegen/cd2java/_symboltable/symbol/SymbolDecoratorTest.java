@@ -204,7 +204,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(21, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(19, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -293,15 +293,6 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
   }
 
-  @Test
-  public void testGetASTNodeOptMethod() {
-    ASTCDMethod method = getMethodBy("getAstNodeOpt", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE_OPT)
-        , method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
 
   @Test
   public void testisPresentASTNodeMethod() {
@@ -381,18 +372,6 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testSetASTNodeOptMethod() {
-    ASTCDMethod method = getMethodBy("setAstNodeOpt", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE_OPT),
-        method.getCDParameter(0).getMCType());
-    assertEquals("astNode", method.getCDParameter(0).getName());
-  }
-
-  @Test
   public void testSetASTNodeAbsentMethod() {
     ASTCDMethod method = getMethodBy("setAstNodeAbsent", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
@@ -467,7 +446,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodsStateSymbol() {
-    assertEquals(19, symbolClassState.getCDMethodList().size());
+    assertEquals(17, symbolClassState.getCDMethodList().size());
   }
 
   @Test(expected = AssertionError.class)
@@ -536,28 +515,6 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertListOf(String.class, method.getCDParameter(0).getMCType());
     assertEquals("foo", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testGetBlaOptMethod() {
-    ASTCDMethod method = getMethodBy("getBlaOpt", symbolClassFoo);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-
-  @Test
-  public void testSetBlaOptMethod() {
-    ASTCDMethod method = getMethodBy("setBlaOpt", symbolClassFoo);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertOptionalOf(Integer.class, method.getCDParameter(0).getMCType());
-    assertEquals("bla", method.getCDParameter(0).getName());
   }
 
   @Test

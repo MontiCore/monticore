@@ -29,15 +29,4 @@ public class EmfOptionalMutatorDecorator extends OptionalMutatorDecorator {
   public void setClassName(String className) {
     this.className = className;
   }
-
-
-  @Override
-  protected ASTCDMethod createSetOptMethod(final ASTCDAttribute attribute) {
-    String packageName = astService.getCDName() + PACKAGE_SUFFIX;
-    String methodName = String.format(SET_OPT, naiveAttributeName);
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, methodName, this.getCDParameterFacade().createParameters(attribute));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.ast_class.Set",
-        packageName, getClassName(), attribute));
-    return method;
-  }
 }

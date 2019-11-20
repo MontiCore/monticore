@@ -2,10 +2,13 @@
 ${tc.signature("attributeName", "referencedProdName", "isOptional")}
 <#if isOptional>
      if(!${attributeName}.isPresent() && ${attributeName?remove_ending("Symbol")}.isPresent() && getEnclosingScope() != null){
-        return getEnclosingScope().resolve${referencedProdName}(${attributeName?remove_ending("Symbol")}.get());
+        getEnclosingScope().resolve${referencedProdName}(${attributeName?remove_ending("Symbol")}.get());
+        return true;
 <#else>
      if(!${attributeName}.isPresent() && ${attributeName?remove_ending("Symbol")} != null && getEnclosingScope() != null){
-        return getEnclosingScope().resolve${referencedProdName}(${attributeName?remove_ending("Symbol")});
+        getEnclosingScope().resolve${referencedProdName}(${attributeName?remove_ending("Symbol")});
+        return true;
 </#if>
      }
-     return ${attributeName};
+     return false;
+     

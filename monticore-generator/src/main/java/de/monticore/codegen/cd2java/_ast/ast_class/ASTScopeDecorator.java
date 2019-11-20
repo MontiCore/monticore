@@ -41,6 +41,9 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
     if (scopeInfo.isPresent()) {
       attributeList.add(createSpannedScopeAttribute(scopeInterfaceType));
       hasSuperScope = !scopeInfo.get().equals(clazz);
+    } else if ((clazz.getModifierOpt().isPresent() && symbolTableService.hasInheritedScopeStereotype(clazz.getModifierOpt().get()))) {
+      // also create spannedScopeAttribute if the scope property is inherited
+      attributeList.add(createSpannedScopeAttribute(scopeInterfaceType));
     }
     //always add enclosingScope for attribute that has a scope
     attributeList.add(createEnclosingScopeAttribute(scopeInterfaceType));

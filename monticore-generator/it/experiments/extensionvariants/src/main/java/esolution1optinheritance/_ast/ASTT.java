@@ -43,7 +43,12 @@ import de.monticore.ast.ASTNode;
    protected  ASTT ( Optional<esolution1optinheritance._ast.ASTS> kkk ,
       esolution1optinheritance._ast.ASTS c )
   {
-    setKkkOpt(kkk);
+     if (kkk.isPresent()) {
+       setKkk(kkk.get());
+     } else {
+       setKkkAbsent();
+     }
+    
     setC(c);
   }
 

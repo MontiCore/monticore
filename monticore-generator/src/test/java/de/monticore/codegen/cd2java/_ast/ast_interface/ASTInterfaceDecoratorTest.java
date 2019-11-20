@@ -65,7 +65,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(7, dataInterface.sizeCDMethods());
+    assertEquals(6, dataInterface.sizeCDMethods());
   }
 
   @Test
@@ -88,16 +88,6 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals("de.monticore.codegen.data.datainterface._symboltable.ASymbol", method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetSymbolOptMethod() {
-    ASTCDMethod method = getMethodBy("getSymbolOpt", dataInterface);
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertOptionalOf("de.monticore.codegen.data.datainterface._symboltable.ASymbol", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
@@ -200,7 +190,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDInterface noNameSymbol = decorator.decorate(interfaceBy, changeInterface);
 
-    assertEquals(7, noNameSymbol.sizeCDMethods());
+    assertEquals(6, noNameSymbol.sizeCDMethods());
 
     ASTCDMethod method = getMethodBy("getName", noNameSymbol);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());

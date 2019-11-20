@@ -48,9 +48,9 @@ public class DeepCloneEqualsTest {
     Optional<ASTCloneNameOptional> ast = parser.parse_StringCloneNameOptional("opt Name");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertTrue(ast.get().getNameOpt().isPresent());
+    assertTrue(ast.get().isPresentName());
     ASTCloneNameOptional astClone = ast.get().deepClone();
-    assertTrue(astClone.getNameOpt().isPresent());
+    assertTrue(astClone.isPresentName());
     assertTrue(ast.get().deepEquals(astClone));
   }
   
@@ -60,9 +60,9 @@ public class DeepCloneEqualsTest {
     Optional<ASTCloneNameOptional> ast = parser.parse_StringCloneNameOptional("opt");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertFalse(ast.get().getNameOpt().isPresent());
+    assertFalse(ast.get().isPresentName());
     ASTCloneNameOptional astClone = ast.get().deepClone();
-    assertFalse(astClone.getNameOpt().isPresent());
+    assertFalse(astClone.isPresentName());
     assertTrue(ast.get().deepEquals(astClone));
   }
   
@@ -94,9 +94,9 @@ public class DeepCloneEqualsTest {
         .parse_StringCloneASTOptional("opt clone Name1 Name2 Name3");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertTrue(ast.get().getCloneASTOpt().isPresent());
+    assertTrue(ast.get().isPresentCloneAST());
     ASTCloneASTOptional astClone = ast.get().deepClone();
-    assertTrue(astClone.getCloneASTOpt().isPresent());
+    assertTrue(astClone.isPresentCloneAST());
     assertTrue(ast.get().deepEquals(astClone));
   }
   
@@ -106,9 +106,9 @@ public class DeepCloneEqualsTest {
     Optional<ASTCloneASTOptional> ast = parser.parse_StringCloneASTOptional("opt");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertFalse(ast.get().getCloneASTOpt().isPresent());
+    assertFalse(ast.get().isPresentCloneAST());
     ASTCloneASTOptional astClone = ast.get().deepClone();
-    assertFalse(astClone.getCloneASTOpt().isPresent());
+    assertFalse(astClone.isPresentCloneAST());
     assertTrue(ast.get().deepEquals(astClone));
   }
 
@@ -138,9 +138,9 @@ public class DeepCloneEqualsTest {
     Optional<ASTCloneStringOptional> ast = parser.parse_StringCloneStringOptional("opt \"String\"");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertTrue(ast.get().getStringLiteralOpt().isPresent());
+    assertTrue(ast.get().isPresentStringLiteral());
     ASTCloneStringOptional astClone = ast.get().deepClone();
-    assertTrue(astClone.getStringLiteralOpt().isPresent());
+    assertTrue(astClone.isPresentStringLiteral());
     assertTrue(ast.get().deepEquals(astClone));
   }
 
@@ -150,9 +150,9 @@ public class DeepCloneEqualsTest {
     Optional<ASTCloneStringOptional> ast = parser.parse_StringCloneStringOptional("opt");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertFalse(ast.get().getStringLiteralOpt().isPresent());
+    assertFalse(ast.get().isPresentStringLiteral());
     ASTCloneStringOptional astClone = ast.get().deepClone();
-    assertFalse(astClone.getStringLiteralOpt().isPresent());
+    assertFalse(astClone.isPresentStringLiteral());
     assertTrue(ast.get().deepEquals(astClone));
   }
 
@@ -182,9 +182,9 @@ public class DeepCloneEqualsTest {
     Optional<ASTCloneIntOptional> ast = parser.parse_StringCloneIntOptional("opt 234");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertTrue(ast.get().getIntLiteralOpt().isPresent());
+    assertTrue(ast.get().isPresentIntLiteral());
     ASTCloneIntOptional astClone = ast.get().deepClone();
-    assertTrue(astClone.getIntLiteralOpt().isPresent());
+    assertTrue(astClone.isPresentIntLiteral());
     assertTrue(ast.get().deepEquals(astClone));
   }
 
@@ -194,9 +194,9 @@ public class DeepCloneEqualsTest {
     Optional<ASTCloneIntOptional> ast = parser.parse_StringCloneIntOptional("opt");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertFalse(ast.get().getIntLiteralOpt().isPresent());
+    assertFalse(ast.get().isPresentIntLiteral());
     ASTCloneIntOptional astClone = ast.get().deepClone();
-    assertFalse(astClone.getIntLiteralOpt().isPresent());
+    assertFalse(astClone.isPresentIntLiteral());
     assertTrue(ast.get().deepEquals(astClone));
   }
 
@@ -226,9 +226,9 @@ public class DeepCloneEqualsTest {
     Optional<ASTCloneStringOptional2> ast = parser.parse_StringCloneStringOptional2("opt \"String\"");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertTrue(ast.get().getStringOpt().isPresent());
+    assertTrue(ast.get().isPresentString());
     ASTCloneStringOptional2 astClone = ast.get().deepClone();
-    assertTrue(astClone.getStringOpt().isPresent());
+    assertTrue(astClone.isPresentString());
     assertTrue(ast.get().deepEquals(astClone));
   }
 
@@ -238,9 +238,9 @@ public class DeepCloneEqualsTest {
     Optional<ASTCloneStringOptional2> ast = parser.parse_StringCloneStringOptional2("opt");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertFalse(ast.get().getStringOpt().isPresent());
+    assertFalse(ast.get().isPresentString());
     ASTCloneStringOptional2 astClone = ast.get().deepClone();
-    assertFalse(astClone.getStringOpt().isPresent());
+    assertFalse(astClone.isPresentString());
     assertTrue(ast.get().deepEquals(astClone));
   }
 
@@ -270,9 +270,9 @@ public class DeepCloneEqualsTest {
     Optional<ASTCloneIntOptional2> ast = parser.parse_StringCloneIntOptional2("opt 234");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertTrue(ast.get().getNum_IntOpt().isPresent());
+    assertTrue(ast.get().isPresentNum_Int());
     ASTCloneIntOptional2 astClone = ast.get().deepClone();
-    assertTrue(astClone.getNum_IntOpt().isPresent());
+    assertTrue(astClone.isPresentNum_Int());
     assertTrue(ast.get().deepEquals(astClone));
   }
 
@@ -282,9 +282,9 @@ public class DeepCloneEqualsTest {
     Optional<ASTCloneIntOptional2> ast = parser.parse_StringCloneIntOptional2("opt");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertFalse(ast.get().getNum_IntOpt().isPresent());
+    assertFalse(ast.get().isPresentNum_Int());
     ASTCloneIntOptional2 astClone = ast.get().deepClone();
-    assertFalse(astClone.getNum_IntOpt().isPresent());
+    assertFalse(astClone.isPresentNum_Int());
     assertTrue(ast.get().deepEquals(astClone));
   }
 
@@ -304,9 +304,9 @@ public class DeepCloneEqualsTest {
     Optional<ASTCloneEnumOptional> ast = parser.parse_StringCloneEnumOptional("opt enum");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertTrue(ast.get().getCloneEnumOpt().isPresent());
+    assertTrue(ast.get().isPresentCloneEnum());
     ASTCloneEnumOptional astClone = ast.get().deepClone();
-    assertTrue(astClone.getCloneEnumOpt().isPresent());
+    assertTrue(astClone.isPresentCloneEnum());
     assertTrue(ast.get().deepEquals(astClone));
   }
 
@@ -316,9 +316,9 @@ public class DeepCloneEqualsTest {
     Optional<ASTCloneEnumOptional> ast = parser.parse_StringCloneEnumOptional("opt");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertFalse(ast.get().getCloneEnumOpt().isPresent());
+    assertFalse(ast.get().isPresentCloneEnum());
     ASTCloneEnumOptional astClone = ast.get().deepClone();
-    assertFalse(astClone.getCloneEnumOpt().isPresent());
+    assertFalse(astClone.isPresentCloneEnum());
     assertTrue(ast.get().deepEquals(astClone));
   }
 }

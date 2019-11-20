@@ -37,7 +37,6 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
     List<ASTCDMethod> methodList = new ArrayList<>();
     naiveAttributeName = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
     methodList.add(createSetMethod(ast));
-    methodList.add(createSetOptMethod(ast));
     methodList.add(createSetAbsentMethod(ast));
     return methodList;
   }
@@ -48,13 +47,6 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, parameter);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Set", ast, naiveAttributeName));
-    return method;
-  }
-
-  protected ASTCDMethod createSetOptMethod(final ASTCDAttribute ast) {
-    String name = String.format(SET_OPT, naiveAttributeName);
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, this.getCDParameterFacade().createParameters(ast));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Set", ast));
     return method;
   }
 
