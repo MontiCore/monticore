@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A0112;
+
+grammar A0112c {
+
+  Foo = "foo";
+
+  enum Bar = "bar";
+
+  enum Bar = "foo";
+
+}
