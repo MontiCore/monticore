@@ -21,7 +21,6 @@ ${tc.signature("artifactScope", "scopeRuleAttrList")}
   scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson,enclosingScope));
   </#if>
 </#list>
-
   addSymbols(scopeJson, scope);
   addAndLinkSubScopes(scopeJson, scope);
   deserializeAdditionalAttributes(scope,scopeJson, enclosingScope);
