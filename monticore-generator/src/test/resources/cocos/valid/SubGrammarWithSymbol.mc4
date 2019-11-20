@@ -8,4 +8,5 @@ grammar SubGrammarWithSymbol extends mc.grammars.types.TestTypes{
 
   SubNonTer = Name "NonTer";
 
+  scope SubScope = Name;
 }
