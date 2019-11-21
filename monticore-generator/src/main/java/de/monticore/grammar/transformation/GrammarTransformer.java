@@ -16,6 +16,7 @@ import java.io.StringReader;
 import java.util.*;
 import java.util.Map.Entry;
 
+import static de.monticore.codegen.mc2cd.TransformationHelper.AST_PREFIX;
 import static de.monticore.codegen.mc2cd.TransformationHelper.simpleName;
 import static de.monticore.grammar.Multiplicity.multiplicityByDuplicates;
 import static de.monticore.grammar.Multiplicity.multiplicityOfAttributeInAST;
@@ -24,16 +25,16 @@ import static de.monticore.grammar.Multiplicity.multiplicityOfAttributeInAST;
  * Static facade for the transformation of MC AST.
  */
 public class GrammarTransformer {
-  
+
   private GrammarTransformer() {
     // noninstantiable
   }
-  
+
   public static void transform(ASTMCGrammar grammar) {
     removeNonTerminalSeparators(grammar);
     uncapitalizeMultivaluedAttributes(grammar);
   }
-  
+
   /**
    * The shortcut NonTerminalSeparator is replaced by the detailed description.
    * Example: List(Element || ',')* ==> (List:Element (',' List:Element)+)
@@ -42,10 +43,10 @@ public class GrammarTransformer {
     Map<ASTNonTerminalSeparator, ASTAlt> map = new HashMap<ASTNonTerminalSeparator, ASTAlt>();
     RuleComponentListFinder componentListTransformer = new RuleComponentListFinder(map);
     ASTTraverser traverser = new ASTTraverser(componentListTransformer);
-    
+
     // execute the search
     traverser.traverse(grammar);
-    
+
     // execute the transformation
     for (Entry<ASTNonTerminalSeparator, ASTAlt> entry : map.entrySet()) {
       Log.debug("Find NonTerminalSeparator", GrammarTransformer.class.getName());
@@ -58,8 +59,7 @@ public class GrammarTransformer {
           parent.getComponentList().remove(ind);
           Log.debug("Added new generated block", GrammarTransformer.class.getName());
           parent.getComponentList().add(ind, block.get());
-        }
-        else {
+        } else {
           Log.error("0xA1009 Can't transform grammar");
         }
       }
@@ -109,7 +109,9 @@ public class GrammarTransformer {
         .filter(attributeInAST -> multiplicityOfAttributeInAST(attributeInAST) == Multiplicity.LIST)
         .forEach(
             attributeInAST -> {
-              String typeName = StringTransformations.uncapitalize(simpleName(attributeInAST.getMCType()));
+              String simpleName = simpleName(attributeInAST.getMCType());
+              String typeName = StringTransformations.uncapitalize(simpleName.startsWith(AST_PREFIX) ?
+                  simpleName.replaceFirst(AST_PREFIX, "") : simpleName);
 
               attributeInAST.setName(attributeInAST.getNameOpt().orElse(typeName));
               Log.debug("Change the name of ast-rule " + astRule.getType()
@@ -129,14 +131,14 @@ public class GrammarTransformer {
     }
     String plusKeywords = (nonTerminalSep.isPlusKeywords()) ? "&" : "";
     String iteration = (nonTerminalSep.getIteration() == ASTConstantsGrammar.STAR) ? "?" : "";
-    
+
     String extendedList = "(%usageName% %nonTerminal% %plusKeywords% (\"%terminal%\" %usageName% %nonTerminal% %plusKeywords%)*)%iterator%";
     extendedList = extendedList.replaceAll("%usageName%", name);
     extendedList = extendedList.replaceAll("%nonTerminal%", nonTerminalSep.getName());
     extendedList = extendedList.replaceAll("%plusKeywords%", plusKeywords);
     extendedList = extendedList.replaceAll("%terminal%", nonTerminalSep.getSeparator());
     extendedList = extendedList.replaceAll("%iterator%", iteration);
-    
+
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTBlock> block = null;
     try {
@@ -145,11 +147,10 @@ public class GrammarTransformer {
       if (parser.hasErrors()) {
         Log.error("0xA0362 RecognitionException during parsing " + extendedList);
       }
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       Log.error("0xA0361 IOException during parsing " + extendedList);
     }
     return block;
   }
-  
+
 }

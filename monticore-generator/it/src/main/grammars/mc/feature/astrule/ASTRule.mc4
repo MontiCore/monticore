@@ -1,0 +1,42 @@
+grammar ASTRule extends mc.grammar.types.ItTestTypes {
+
+  Test = "test" Name;
+
+ A =  Name "<" Test ">";
+  astrule A =
+      y._ast.ASTTest*
+      name:String*;
+
+
+ B =  foo:Name "<" Test ">";
+  astrule B =
+      Test*
+      foo:String*;
+
+ C = foo:Name "<" bla:Test ">";
+  astrule C =
+      bla:Test*
+      foo:String*;
+
+
+ D =  Name* "<" Test* ">";
+  astrule D =
+      y._ast.ASTTest
+      name:String;
+
+
+ E =  foo:Name* "<" Test* ">";
+  astrule E =
+      Test
+      foo:String;
+
+ F = foo:Name* "<" bla:Test* ">";
+  astrule F =
+      bla:Test
+      foo:String;
+
+ C = foo:Name "<" bla:Test ">";
+  astrule C =
+      bla:y._ast.ASTTest*
+      foo:String*;
+}

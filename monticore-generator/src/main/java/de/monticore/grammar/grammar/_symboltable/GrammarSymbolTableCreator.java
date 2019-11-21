@@ -9,6 +9,7 @@ import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -187,7 +188,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     final ProdSymbol currentSymbol = getProdSymbol().orElse(null);
 
     if (currentSymbol != null) {
-      final String symbolName = isNullOrEmpty(usageName) ? ast.getName() : usageName;
+      final String symbolName = isNullOrEmpty(usageName) ? StringTransformations.uncapitalize(ast.getName()) : usageName;
       RuleComponentSymbol prodComponent = new
           RuleComponentSymbol(symbolName);
 
