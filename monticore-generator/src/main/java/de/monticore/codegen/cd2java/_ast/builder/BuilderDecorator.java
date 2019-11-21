@@ -14,6 +14,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCPrimitiveTypeArgument;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,6 +73,12 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .filter(a -> !service.isInherited(a))
         .collect(Collectors.toList());
 
+    List<ASTCDAttribute> inheritedAttributes = domainClass.getCDAttributeList().stream()
+        .map(ASTCDAttribute::deepClone)
+        .filter(a -> !a.getModifier().isFinal())
+        .filter(service::isInherited)
+        .collect(Collectors.toList());
+
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, builderClassName);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + builderClassName + ") this;"));
@@ -95,6 +102,11 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
+    List<ASTCDMethod> inheritedMutatorMethods = inheritedAttributes.stream()
+        .map(mutatorDecorator::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+
     builderAttributes.forEach(this::addAttributeDefaultValues);
 
     return CD4AnalysisMill.cDClassBuilder()
@@ -107,6 +119,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .addCDMethod(isValidMethod)
         .addAllCDMethods(accessorMethods)
         .addAllCDMethods(mutatorMethods)
+        .addAllCDMethods(inheritedMutatorMethods)
         .build();
   }
 

@@ -74,6 +74,11 @@ public final class DecoratorAssert {
     // TODO Alte Fassung: assertDeepEquals(CD_TYPE_FACADE.createIntType(), actual);
   }
 
+  public static void assertFloat(ASTNode actual){
+    assertTrue(actual instanceof ASTMCPrimitiveType);
+    assertTrue(((ASTMCPrimitiveType) actual).isFloat());
+  }
+
   public static void assertVoid(ASTNode acutal) {
     assertDeepEquals(CD_TYPE_FACADE.createVoidType(), acutal);
   }

@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
@@ -122,5 +123,16 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, builderClass, builderClass);
+  }
+
+  @Test
+  public void testInheritedSetterNoGetter(){
+    ASTCDMethod setF = getMethodBy("setF", builderClass);
+    assertTrue(setF.getMCReturnType().isPresentMCType());
+    assertEquals(builderClass.getName(), setF.getMCReturnType().printType());
+    assertDeepEquals(PUBLIC, setF.getModifier());
+    assertEquals(1, setF.getCDParameterList().size());
+
+    assertTrue(builderClass.getCDMethodList().stream().noneMatch(m -> m.getName().equals("getF")));
   }
 }

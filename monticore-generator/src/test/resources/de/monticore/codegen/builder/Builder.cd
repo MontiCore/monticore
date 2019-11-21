@@ -8,5 +8,6 @@ classdiagram Builder {
         protected String s;
         protected Optional<String> opt;
         protected List<String> list;
+        <<inherited>> protected float f;
     }
 }
