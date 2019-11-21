@@ -1,10 +1,8 @@
 package de.monticore.statements.prettyprint;
 
-import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
+import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
-import de.monticore.statements.mcexceptionstatements._ast.ASTMCExceptionStatementsNode;
-import de.monticore.statements.mcexceptionstatements._visitor.MCExceptionStatementsDelegatorVisitor;
 import de.monticore.statements.mcsynchronizedstatements._ast.ASTMCSynchronizedStatementsNode;
 import de.monticore.statements.mcsynchronizedstatements._visitor.MCSynchronizedStatementsDelegatorVisitor;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;

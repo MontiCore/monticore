@@ -1,11 +1,10 @@
 package de.monticore.prettyprint;
 
-import de.monticore.expressions.prettyprint2.AssignmentExpressionsPrettyPrinter;
-import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
-import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
+import de.monticore.expressions.prettyprint.AssignmentExpressionsPrettyPrinter;
+import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
+import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.javalight._ast.ASTJavaLightNode;
 import de.monticore.javalight._visitor.JavaLightDelegatorVisitor;
-import de.monticore.statements.mccommonstatements._ast.ASTMCCommonStatementsNode;
 import de.monticore.statements.prettyprint.MCCommonStatementsPrettyPrinter;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 

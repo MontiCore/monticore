@@ -15,6 +15,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 
@@ -156,9 +157,10 @@ public class AbstractService<T extends AbstractService> {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
     // if not generic returns simple Type like 'int'
     if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentList().size() == 1) {
-      return ((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get().printType();
+      return ((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get()
+              .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     }
-    return astType.printType();
+    return astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
   }
 
   public String getSimpleNativeType(ASTMCType astType) {
@@ -259,7 +261,8 @@ public class AbstractService<T extends AbstractService> {
       return false;
     }
     for (int i = 0; i < method1.getCDParameterList().size(); i++) {
-      if (!method1.getCDParameter(i).getMCType().printType().equals(method2.getCDParameter(i).getMCType().printType())) {
+      if (!method1.getCDParameter(i).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
+              .equals(method2.getCDParameter(i).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))) {
         return false;
       }
     }

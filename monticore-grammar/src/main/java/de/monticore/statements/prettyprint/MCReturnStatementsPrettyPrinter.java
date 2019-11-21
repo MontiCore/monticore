@@ -2,7 +2,7 @@
 
 package de.monticore.statements.prettyprint;
 
-import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
+import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode;

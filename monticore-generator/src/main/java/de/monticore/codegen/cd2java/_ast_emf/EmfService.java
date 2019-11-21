@@ -212,7 +212,8 @@ public class EmfService extends AbstractService {
     Map<String, String> superTypes = new HashMap<>();
     superTypes.put(getSimpleNativeType(astcdClass.printSuperClass()), getPackage(astcdClass.printSuperClass()));
     for (ASTMCObjectType astReferenceType : astcdClass.getInterfaceList()) {
-      superTypes.put(getSimpleNativeType(astReferenceType), getPackage(astReferenceType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())));
+      superTypes.put(getSimpleNativeType(astReferenceType), getPackage(
+              astReferenceType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())));
     }
     return superTypes;
   }
