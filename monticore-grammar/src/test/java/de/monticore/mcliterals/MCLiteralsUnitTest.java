@@ -52,9 +52,7 @@ public class MCLiteralsUnitTest {
     ASTAnyToken t = ast.getAnyToken(0);
     t = ast.getAnyToken(1);
     assertTrue(t.isPresentDecimalToken());
-    assertEquals(t.getDecimalTokenOpt().isPresent(),t.isPresentDecimalToken());
     assertEquals("65", t.getDecimalToken());
-    assertEquals(t.getDecimalTokenOpt().get(),t.getDecimalToken());
     t = ast.getAnyToken(2);
     t = ast.getAnyToken(3);
     assertTrue(t.isPresentDecimalToken());

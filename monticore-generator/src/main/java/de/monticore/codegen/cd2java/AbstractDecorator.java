@@ -2,9 +2,13 @@
 package de.monticore.codegen.cd2java;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.cd2java.factories.*;
+import de.monticore.cd.facade.CDAttributeFacade;
+import de.monticore.cd.facade.CDConstructorFacade;
+import de.monticore.cd.facade.CDMethodFacade;
+import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.types.MCTypeFacade;
 
 public abstract class AbstractDecorator{
 

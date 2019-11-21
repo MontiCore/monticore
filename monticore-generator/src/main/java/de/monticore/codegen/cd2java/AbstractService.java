@@ -5,16 +5,17 @@ import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolReference;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolLoader;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 
@@ -37,7 +38,7 @@ public class AbstractService<T extends AbstractService> {
 
 
   public AbstractService(final ASTCDCompilationUnit compilationUnit) {
-    this(compilationUnit.getCDDefinition().getCDDefinitionSymbol());
+    this(compilationUnit.getCDDefinition().getSymbol());
   }
 
   public AbstractService(final CDDefinitionSymbol cdSymbol) {
@@ -156,9 +157,10 @@ public class AbstractService<T extends AbstractService> {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
     // if not generic returns simple Type like 'int'
     if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentList().size() == 1) {
-      return ((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get().printType();
+      return ((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get()
+              .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     }
-    return astType.printType();
+    return astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
   }
 
   public String getSimpleNativeType(ASTMCType astType) {
@@ -259,7 +261,8 @@ public class AbstractService<T extends AbstractService> {
       return false;
     }
     for (int i = 0; i < method1.getCDParameterList().size(); i++) {
-      if (!method1.getCDParameter(i).getMCType().printType().equals(method2.getCDParameter(i).getMCType().printType())) {
+      if (!method1.getCDParameter(i).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
+              .equals(method2.getCDParameter(i).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))) {
         return false;
       }
     }
@@ -323,8 +326,8 @@ public class AbstractService<T extends AbstractService> {
 
   public List<String> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
-    if (cdTypeSymbol.getSuperClass().isPresent()) {
-      String fullName = cdTypeSymbol.getSuperClass().get().getFullName();
+    if (cdTypeSymbol.isPresentSuperClass()) {
+      String fullName = cdTypeSymbol.getSuperClass().getLoadedSymbol().getFullName();
       superSymbolList.add(createASTFullName(fullName));
       CDTypeSymbol superSymbol = resolveCDType(fullName);
       superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
@@ -338,8 +341,8 @@ public class AbstractService<T extends AbstractService> {
 
   public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
-    for (CDTypeSymbolReference cdInterface : cdTypeSymbol.getCdInterfaces()) {
-      String fullName = cdInterface.getFullName();
+    for (CDTypeSymbolLoader cdInterface : cdTypeSymbol.getCdInterfaceList()) {
+      String fullName = cdInterface.getLoadedSymbol().getFullName();
       superSymbolList.add(createASTFullName(fullName));
       CDTypeSymbol superSymbol = resolveCDType(fullName);
       superSymbolList.addAll(getAllSuperInterfacesTransitive(superSymbol));

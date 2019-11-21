@@ -8,7 +8,7 @@ import de.monticore.umlstereotype._visitor.UMLStereotypeVisitor;
 
 public class UMLStereotypePrettyPrinter implements UMLStereotypeVisitor {
   
-  private IndentPrinter printer = null;
+  private IndentPrinter printer;
   
   public UMLStereotypePrettyPrinter(IndentPrinter printer) {
     this.printer = printer;

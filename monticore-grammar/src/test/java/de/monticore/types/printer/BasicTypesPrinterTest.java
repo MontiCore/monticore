@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.printer;
 
-import de.monticore.types.BasicTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
+import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -34,9 +34,10 @@ public class BasicTypesPrinterTest {
     assertTrue(astmcPrimitiveType.isPresent());
     assertTrue(astmcQualifiedType.isPresent());
 
-    assertEquals("String",BasicTypesPrinter.printReturnType(astmcReturnType.get()));
-    assertEquals("void", BasicTypesPrinter.printVoidType(astmcVoidType.get()));
-    assertEquals("int",BasicTypesPrinter.printType(astmcPrimitiveType.get()));
-    assertEquals("java.util.List", BasicTypesPrinter.printType(astmcQualifiedType.get()));
+    MCBasicTypesPrettyPrinter printer = MCBasicTypesMill.mcBasicTypesPrettyPrinter();
+    assertEquals("String", printer.prettyprint(astmcReturnType.get()));
+    assertEquals("void", printer.prettyprint(astmcVoidType.get()));
+    assertEquals("int", printer.prettyprint(astmcPrimitiveType.get()));
+    assertEquals("java.util.List", printer.prettyprint(astmcQualifiedType.get()));
   }
 }

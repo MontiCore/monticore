@@ -15,10 +15,14 @@ ${tc.signature("attributeList")}
   <#elseif genHelper.isPrimitive(attrType)>
     result.set${methName}(${genHelper.getPlainGetter(attribute)}());
   <#elseif genHelper.isOptional(attribute.getMCType())>
-    <#assign reference = genHelper.getFirstTypeArgumentOfOptional(attrType)>
+    <#assign reference = genHelper.getReferenceTypeFromOptional(attrType)>
     <#assign referenceName = typeName>
     <#if genHelper.isString(reference) || genHelper.isAttributeOfTypeEnum(attribute)>
-    result.set${methName}Opt(get${methName}Opt());
+    if (isPresent${methName}()) {
+      result.set${methName}(get${methName}());
+    } else {
+      result.set${methName}Absent();
+    }
     <#elseif genHelper.isOptionalAstNode(attribute)>
     if (isPresent${methName}()){
       result.set${methName}(get${methName}().deepClone());

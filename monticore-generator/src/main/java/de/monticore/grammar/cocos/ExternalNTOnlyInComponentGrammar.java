@@ -26,26 +26,26 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
   
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = a.getSymbol();
 
     if (!a.isComponent()) {
       List<ProdSymbol> externalProds = grammarSymbol.getProds().stream().
-          filter(ProdSymbol::isExternal).collect(Collectors.toList());
+          filter(ProdSymbol::isIsExternal).collect(Collectors.toList());
       for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
         Collection<ProdSymbol> prodSymbols = symbol.getProds();
         for(ProdSymbol mcProdSymbol : prodSymbols){
-          if (mcProdSymbol.isExternal()) {
+          if (mcProdSymbol.isIsExternal()) {
             externalProds.add(mcProdSymbol);
           }
         }
       }
 
       List<ProdSymbol> prods = grammarSymbol.getProds().stream().
-          filter(prodSymbol -> prodSymbol.isClass() || prodSymbol.isAbstract()).collect(Collectors.toList());
+          filter(prodSymbol -> prodSymbol.isClass() || prodSymbol.isIsAbstract()).collect(Collectors.toList());
       for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
         Collection<ProdSymbol> prodSymbols = symbol.getProds();
         for(ProdSymbol mcProdSymbol : prodSymbols){
-          if (mcProdSymbol.isAbstract() || mcProdSymbol.isClass()) {
+          if (mcProdSymbol.isIsAbstract() || mcProdSymbol.isClass()) {
             prods.add(mcProdSymbol);
           }
         }

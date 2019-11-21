@@ -14,7 +14,7 @@ import java.util.Iterator;
 public class MCCommonStatementsPrettyPrinter implements
         MCCommonStatementsVisitor {
 
-  protected IndentPrinter printer = null;
+  protected IndentPrinter printer;
 
   private MCCommonStatementsVisitor realThis = this;
 

@@ -2,13 +2,14 @@
 
 package de.monticore.generating.templateengine.reporting.commons;
 
-import java.nio.file.Path;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import de.monticore.ast.ASTNode;
+import de.monticore.io.paths.IterablePath;
+import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.ISymbol;
+import de.monticore.symboltable.ISymbolLoader;
+import de.se_rwth.commons.SourcePosition;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -16,15 +17,12 @@ import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.io.paths.IterablePath;
-import de.monticore.symboltable.IScope;
-import de.monticore.symboltable.ISymbol;
-import de.monticore.symboltable.references.ISymbolReference;
-import de.se_rwth.commons.SourcePosition;
+import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * ReportingRepository holds all used formatted ASTNode strings. All string representations for a
@@ -156,7 +154,7 @@ public class ReportingRepository {
    * possible. The structure of the string is
    * 
    * @nodeName!nodeType(x,y) or @nodeName!nodeType(!ID).
-   * @param ASTNode that should be converted into unique String
+   * @param a that should be converted into unique String
    * @return representation of the ASTNode that contains either the position or a unique
    * identification number for the object
    */
@@ -184,11 +182,11 @@ public class ReportingRepository {
    * is possible. The structure of the string is
    * 
    * @symbolName!symbolType(x,y) or @symbolName!symbolType(!ID).
-   * @param symbol The symbol that should be converted into unique String
+   * @param symbolReference The symbol that should be converted into unique String
    * @return representation of the ASTNode that contains either the position or a unique
    * identification number for the object
    */
-  public String getSymbolNameFormatted(ISymbolReference symbolReference) {
+  public String getSymbolNameFormatted(ISymbolLoader symbolReference) {
     String name = astNodeIdentHelper.getIdent(symbolReference);
     return getNameFormatted(symbolReference, name, SourcePosition.getDefaultSourcePosition());
   }
@@ -198,7 +196,7 @@ public class ReportingRepository {
    * possible. The structure of the string is
    * 
    * @symbolName!symbolType(x,y) or @symbolName!symbolType(!ID).
-   * @param symbol The symbol that should be converted into unique String
+   * @param scope The scope that should be converted into unique String
    * @return representation of the ASTNode that contains either the position or a unique
    * identification number for the object
    */

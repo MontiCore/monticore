@@ -4,38 +4,8 @@ package de.monticore.types;
 
 import com.google.common.base.Strings;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class MCBasicTypesHelper {
-  
-  // TODO: Klase kann gelöscht werden, weil sie keine benutzten Funktionen beinhaltet
-  
-  /**
-   * Exactly the ASTMCPrimitiveType is primitive; all others are not.
-   * Please aslo note that Type variables are not regarded as
-   * primitives, because they ma be not primitive
-   * @param type
-   * @return
-   */
-  @Deprecated // because unused
-  public static boolean isPrimitive(ASTMCType type) {
-    return type instanceof ASTMCPrimitiveType;
-  }
-  
-  /**
-   * Separate full qualified String into list of Strings (using "." as separator)
-   * @param s
-   * @return
-   */
-  @Deprecated // because unused
-  public static List<String> createListFromDotSeparatedString(String s) {
-    return Arrays.asList(s.split("\\."));
-  }
-  
   
   /**
    * Map the String with a primitive type, e.g. "int" to its

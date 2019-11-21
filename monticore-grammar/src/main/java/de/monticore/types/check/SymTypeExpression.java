@@ -54,7 +54,7 @@ public abstract class SymTypeExpression {
    */
   public List<MethodSymbol> getMethodList(String methodname){
     //get methods from the typesymbol
-    List<MethodSymbol> methods = typeInfo.getSpannedScope().resolveMethodMany(methodname);
+    List<MethodSymbol> methods = getTypeInfo().getSpannedScope().resolveMethodMany(methodname);
     List<MethodSymbol> methodList = new ArrayList<>();
     //filter methods
     for(MethodSymbol method:methods){
@@ -67,7 +67,7 @@ public abstract class SymTypeExpression {
     }else{
       //compare type arguments of SymTypeExpression(actual type) and its TypeSymbol(type definition)
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
-      List<TypeVarSymbol> typeVariableArguments = typeInfo.deepClone().getTypeParameterList();
+      List<TypeVarSymbol> typeVariableArguments = getTypeInfo().getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");
@@ -123,7 +123,7 @@ public abstract class SymTypeExpression {
    */
   public List<FieldSymbol> getFieldList(String fieldName){
     //get methods from the typesymbol
-    List<FieldSymbol> fields = typeInfo.getSpannedScope().resolveFieldMany(fieldName);
+    List<FieldSymbol> fields = getTypeInfo().getSpannedScope().resolveFieldMany(fieldName);
     List<FieldSymbol> fieldList = new ArrayList<>();
     //filter fields
     for(FieldSymbol field: fields){
@@ -136,7 +136,7 @@ public abstract class SymTypeExpression {
     }else{
       //compare type arguments of SymTypeExpression(actual type) and its TypeSymbol(type definition)
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
-      List<TypeVarSymbol> typeVariableArguments = typeInfo.deepClone().getTypeParameterList();
+      List<TypeVarSymbol> typeVariableArguments = getTypeInfo().getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");
@@ -170,21 +170,17 @@ public abstract class SymTypeExpression {
    * Constraint:
    * We assume that each(!) and really each SymTypeExpression has
    * an associated TypeSymbol, where all available Fields, Methods, etc. can be found.
-   *
+   * <p>
    * These may, however, be empty, e.g. for primitive Types.
-   *
+   * <p>
    * Furthermore, each SymTypeExpression knows this TypeSymbol (i.e. the
    * TypeSymbols are loaded (or created) upon creation of the SymType.
    */
-  protected TypeSymbol typeInfo;
-  
+  protected TypeSymbolLoader typeSymbolLoader;
+
   public TypeSymbol getTypeInfo() {
-      return typeInfo;
+    return typeSymbolLoader.getLoadedSymbol();
   }
-  
-  public void setTypeInfo(TypeSymbol typeInfo) {
-    this.typeInfo = typeInfo;
-  }
-  
+
   // --------------------------------------------------------------------------
 }

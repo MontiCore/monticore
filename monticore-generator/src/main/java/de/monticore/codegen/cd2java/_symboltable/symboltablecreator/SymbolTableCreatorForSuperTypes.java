@@ -17,7 +17,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a SymbolReference class from a grammar
@@ -39,7 +39,7 @@ public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompil
     String ownScopeInterface = symbolTableService.getScopeInterfaceFullName();
     for (CDDefinitionSymbol cdDefinitionSymbol : superCDsTransitive) {
       // only super classes, that have a start prod
-      if (cdDefinitionSymbol.getAstNode().isPresent() && symbolTableService.hasStartProd(cdDefinitionSymbol.getAstNode().get())) {
+      if (cdDefinitionSymbol.isPresentAstNode() && symbolTableService.hasStartProd(cdDefinitionSymbol.getAstNode())) {
         String superSTCForSubSTCName = symbolTableService.getSuperSTCForSubSTCSimpleName(cdDefinitionSymbol);
         String superSTC = symbolTableService.getSymbolTableCreatorFullName(cdDefinitionSymbol);
         String superScopeInterface = symbolTableService.getScopeInterfaceFullName(cdDefinitionSymbol);

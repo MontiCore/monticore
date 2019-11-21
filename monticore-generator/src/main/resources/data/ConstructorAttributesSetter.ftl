@@ -6,7 +6,11 @@ ${tc.signature("attributes")}
   <#if genHelper.isListType(attribute.printType())>
     set${methName?remove_ending("s")}List(${attribute.getName()});
   <#elseif genHelper.isOptional(attribute.getMCType())>
-    set${methName}Opt(${attribute.getName()});
+    if (${attribute.getName()}.isPresent()) {
+      set${methName}(${attribute.getName()}.get());
+    } else {
+      set${methName}Absent();
+    }
   <#else>
     set${methName}(${attribute.getName()});
   </#if>

@@ -5,7 +5,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTModifier;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.symbol.methoddecorator.ReferencedSymbolAccessorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -20,8 +19,8 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 /**
  * is a transforming class for the ast generation
@@ -75,7 +74,7 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
     TransformationHelper.addStereotypeValue(modifier, MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE.toString());
 
     ASTMCOptionalType optionalTypeOfReferencedSymbol = getMCTypeFacade().createOptionalTypeOf(referencedSymbol);
-    if (GeneratorHelper.isListType(attribute.printType())) {
+    if (DecorationHelper.isListType(attribute.printType())) {
       //if the attribute is a list
       ASTMCType attributeType = getMCTypeFacade().createMapTypeOf(getMCTypeFacade().createStringType(), optionalTypeOfReferencedSymbol);
       ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL);
@@ -94,7 +93,7 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
    */
   protected List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol, boolean wasAttributeOptional) {
     ASTCDAttribute methodDecorationAttribute = refSymbolAttribute.deepClone();
-    if (GeneratorHelper.isMapType(refSymbolAttribute.printType())) {
+    if (DecorationHelper.isMapType(refSymbolAttribute.printType())) {
       //have to change type of attribute list instead of map
       //because the inner representation is a map but for users the List methods are only shown
       ASTMCType optionalType = getMCTypeFacade().createOptionalTypeOf(referencedSymbol);

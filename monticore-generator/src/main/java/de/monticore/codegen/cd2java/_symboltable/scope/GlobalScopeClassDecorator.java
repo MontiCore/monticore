@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a globalScope class from a grammar
@@ -90,6 +90,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDAttribute(createModelName2ModelLoaderCacheAttribute(modelLoaderClassName))
         .addAllCDAttributes(resolvingDelegateAttributes.values())
         .addCDMethod(createGetNameMethod())
+        .addCDMethod(createIsPresentNameMethod())
         .addCDMethod(createCacheMethod(definitionName))
         .addCDMethod(createContinueWithModelLoaderMethod(modelLoaderClassName))
         .addAllCDMethods(resolvingDelegateMethods)
@@ -145,9 +146,9 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     Map<String, ASTCDAttribute> symbolAttributes = new HashMap<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
-          Optional<ASTCDAttribute> symbolAttribute = createResolvingDelegateAttribute(type.getAstNode().get(), cdDefinitionSymbol);
+        if (type.isPresentAstNode() && type.getAstNode().getModifierOpt().isPresent()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifierOpt().get())) {
+          Optional<ASTCDAttribute> symbolAttribute = createResolvingDelegateAttribute(type.getAstNode(), cdDefinitionSymbol);
           symbolAttribute.ifPresent(attr -> symbolAttributes.put(attr.getName(), attr));
         }
       }
@@ -170,10 +171,25 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   protected ASTCDMethod createGetNameMethod() {
-    ASTMCObjectType optOfString = getMCTypeFacade().createOptionalTypeOf(String.class);
-    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, optOfString, "getNameOpt");
-    this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint("return Optional.empty();"));
+    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
+    String generatedErrorCode = DecorationHelper.getGeneratedErrorCode(getNameMethod);
+    this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint(
+        "Log.error(\"0xA6101" + generatedErrorCode 
+        + " Global scopes do not have names.\");\n" 
+        + "    return null;"));
     return getNameMethod;
+  }
+  
+  /**
+   * Creates the isPresent method for global scopes. As these do not have names,
+   * the method return false.
+   * 
+   * @return false
+   */
+  protected ASTCDMethod createIsPresentNameMethod() {
+    ASTCDMethod isPresentNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "isPresentName");
+    this.replaceTemplate(EMPTY_BODY, isPresentNameMethod, new StringHookPoint("return false;"));
+    return isPresentNameMethod;
   }
 
   protected ASTCDMethod createCacheMethod(String definitionName) {
@@ -209,10 +225,10 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDAttribute> symbolAlreadyResolvedAttributes = new ArrayList<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       // only types that define a symbol
-      List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes().stream().filter(t -> t.getAstNode().isPresent())
-          .filter(t -> t.getAstNode().get().getModifierOpt().isPresent())
-          .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().get().getModifierOpt().get()))
-          .map(CDTypeSymbolTOP::getAstNode)
+      List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes().stream().filter(t -> t.getAstNodeOpt().isPresent())
+          .filter(t -> t.getAstNode().getModifierOpt().isPresent())
+          .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifierOpt().get()))
+          .map(CDTypeSymbolTOP::getAstNodeOpt)
           .map(Optional::get)
           .collect(Collectors.toList());
       symbolAlreadyResolvedAttributes.addAll(createSymbolAlreadyResolvedAttributes(symbolProds));
@@ -248,8 +264,10 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected List<ASTCDMethod> createEnclosingScopeMethods(String globalScopeName) {
     // create attribute just for method generation purposes
-    ASTCDAttribute enclosingScopeAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED,
-        symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR, this.glex);
+    ASTCDAttribute enclosingScopeAttribute = this.getCDAttributeFacade()
+            .createAttribute(PROTECTED,
+        symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
+    symbolTableService.addAttributeDefaultValues(enclosingScopeAttribute, glex);
 
     methodDecorator.disableTemplates();
     List<ASTCDMethod> enclosingScopeMethods = methodDecorator.decorate(enclosingScopeAttribute);
@@ -312,9 +330,9 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.getAstNode().isPresent() && type.getAstNode().get().getModifierOpt().isPresent()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().get().getModifierOpt().get())) {
-          methodList.add(createResolveAdaptedMethod(type.getAstNode().get(), cdDefinitionSymbol, foundSymbolsParameter, nameParameter,
+        if (type.isPresentAstNode() && type.getAstNode().getModifierOpt().isPresent()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifierOpt().get())) {
+          methodList.add(createResolveAdaptedMethod(type.getAstNode(), cdDefinitionSymbol, foundSymbolsParameter, nameParameter,
               accessModifierParameter));
         }
       }

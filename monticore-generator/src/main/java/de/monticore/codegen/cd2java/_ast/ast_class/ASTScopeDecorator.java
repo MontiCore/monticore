@@ -17,7 +17,7 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SPANNED_SCOPE_VAR;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a list of scope attributes that are used for the AST class
@@ -41,6 +41,9 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
     if (scopeInfo.isPresent()) {
       attributeList.add(createSpannedScopeAttribute(scopeInterfaceType));
       hasSuperScope = !scopeInfo.get().equals(clazz);
+    } else if ((clazz.getModifierOpt().isPresent() && symbolTableService.hasInheritedScopeStereotype(clazz.getModifierOpt().get()))) {
+      // also create spannedScopeAttribute if the scope property is inherited
+      attributeList.add(createSpannedScopeAttribute(scopeInterfaceType));
     }
     //always add enclosingScope for attribute that has a scope
     attributeList.add(createEnclosingScopeAttribute(scopeInterfaceType));

@@ -1,0 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+grammar TestMCExceptionStatements extends de.monticore.statements.MCExceptionStatements, de.monticore.literals.MCCommonLiterals {
+}

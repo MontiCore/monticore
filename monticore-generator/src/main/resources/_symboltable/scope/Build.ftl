@@ -5,7 +5,11 @@ ${tc.signature("scopeClassName")}
   scope.setExportingSymbols(this.exportingSymbols);
 scope.setEnclosingScope(this.enclosingScope);
   scope.setSubScopes(this.subScopes);
-  scope.setAstNodeOpt(this.astNode);
+  if (this.isPresentAstNode()) {
+    scope.setAstNode(this.getAstNode());
+  } else {
+    scope.setAstNodeAbsent();
+  }
   this.name.ifPresent(scope::setName);
   this.subScopes.forEach(s -> s.setEnclosingScope(scope));
   return scope;

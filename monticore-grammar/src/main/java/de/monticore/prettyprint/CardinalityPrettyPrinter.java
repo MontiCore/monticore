@@ -8,7 +8,7 @@ import de.monticore.prettyprint.IndentPrinter;
 
 public class CardinalityPrettyPrinter implements CardinalityVisitor {
   
-  private IndentPrinter printer = null;
+  private IndentPrinter printer;
   
   public CardinalityPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;

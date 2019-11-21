@@ -9,10 +9,13 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.MCCollectionTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+
 import org.apache.commons.lang3.StringUtils;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates all optional getter methods for the referencedDefinition AST
@@ -35,17 +38,31 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
   protected String getNaiveAttributeName(ASTCDAttribute astcdAttribute) {
     return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(astcdAttribute.getName())) + ASTReferencedDefinitionDecorator.DEFINITION;
   }
-
+  
   /**
-   * overwrite only the getOpt method implementation, because the other methods are delegated to this one
+   * Overwrite the get method implementation as it requires additional logic
+   * then a normal getter.
    */
   @Override
-  protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
-    String name = String.format(GET_OPT, StringUtils.capitalize(naiveAttributeName));
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, ast.getMCType().deepClone(), name);
+  protected ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
+    String name = String.format(GET, StringUtils.capitalize(naiveAttributeName));
+    ASTMCType type = MCCollectionTypesHelper.getReferenceTypeFromOptional(ast.getMCType().deepClone()).getMCTypeOpt().get();
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
     String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetDefinitionOpt",
-        ast.getName(), referencedSymbolType));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetDefinition", ast, ast.getName(), referencedSymbolType));
+    return method;
+  }
+  
+  /**
+   * Overwrite the isPresent method implementation as it requires additional
+   * logic then the normal method.
+   */
+  @Override
+  protected ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
+    String name = String.format(IS_PRESENT, StringUtils.capitalize(naiveAttributeName));
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), name);
+    String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.IsPresentDefinition", ast.getName(), referencedSymbolType));
     return method;
   }
 }

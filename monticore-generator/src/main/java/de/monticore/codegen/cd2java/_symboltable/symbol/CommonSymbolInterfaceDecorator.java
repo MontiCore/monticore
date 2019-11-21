@@ -14,7 +14,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_ME
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a CommonSymbolInterface interface from a grammar

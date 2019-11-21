@@ -4,5 +4,20 @@ package mc.feature.keyrule;
 
 grammar KeyRule extends mc.common.Basics {
   A = key("bla1" | "bla2") Name;
+
   B = bla:key("bla1" | "bla2") Name;
+
+  C = key("b") b:["c"];
+
+  D =  key("b") b:Name;
+
+  E =  b:key("b") b:Name;
+
+  F =  key("b");
+
+  G =  b:key("b");
+
+  H =  key("b") {next("c")}? b:Name;
+
+  I =  b:key("b") {next("c")}? b:Name;
 }

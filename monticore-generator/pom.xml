@@ -8,7 +8,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>5.4.0</version>
+    <version>6.0.0</version>
   </parent>
 
   <artifactId>monticore-generator</artifactId>

@@ -3,7 +3,9 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
@@ -13,38 +15,32 @@ import java.util.Map;
 
 public class SymTypeConstant extends SymTypeExpression {
 
-  /**
-   * A typeConstant has a name
-   */
-  protected String constName;
-  
-  public SymTypeConstant(String constName, TypeSymbol typeInfo) {
-    this.constName = constName;
-    this.setTypeInfo(typeInfo);
+  public SymTypeConstant(TypeSymbolLoader typeSymbolLoader) {
+    this.typeSymbolLoader = typeSymbolLoader;
   }
-  
+
   public String getConstName() {
-    return constName;
+    return typeSymbolLoader.getName();
   }
-  
+
   public String getBoxedConstName() {
-    return box(constName);
+    return box(typeSymbolLoader.getName());
   }
-  
+
   public String getBaseOfBoxedName() {
-    String[] parts = box(constName).split("\\.");
+    String[] parts = box(typeSymbolLoader.getName()).split("\\.");
     return parts[parts.length - 1];
   }
-  
+
   public void setConstName(String constName) {
     String c = unbox(constName);
     if (primitiveTypes.contains(constName)) {
-      this.constName = constName;
+      this.typeSymbolLoader.setName(constName);
     } else {
       Log.error("0xD34B2 Only primitive types allowed (" + primitiveTypes.toString() + "), but was:" + constName);
     }
   }
-  
+
   /**
    * print: Umwandlung in einen kompakten String
    */
@@ -52,7 +48,7 @@ public class SymTypeConstant extends SymTypeExpression {
   public String print() {
     return getConstName();
   }
-  
+
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
    */
@@ -65,26 +61,26 @@ public class SymTypeConstant extends SymTypeExpression {
     jp.endObject();
     return jp.getContent();
   }
-  
+
 
   /**
    * List of potential constants
    * (on purpose not implemented as enum)
    */
   public static List<String> primitiveTypes = Arrays
-          .asList("boolean", "byte", "char", "short", "int", "long", "float", "double","void");
-  
+      .asList("boolean", "byte", "char", "short", "int", "long", "float", "double", "void");
+
   /**
    * Map for unboxing const types (e.g. "java.lang.Boolean" -> "boolean")
    */
-  public static Map<String,String> unboxMap;
-  
+  public static Map<String, String> unboxMap;
+
   /**
    * Map for boxing const types (e.g. "boolean" -> "java.lang.Boolean")
    * Results are fully qualified.
    */
-  public static Map<String,String> boxMap;
-  
+  public static Map<String, String> boxMap;
+
 
   /**
    * initializing the maps
@@ -109,22 +105,23 @@ public class SymTypeConstant extends SymTypeExpression {
     unboxMap.put("Float", "float");
     unboxMap.put("Double", "double");
     unboxMap.put("String", "String");
-    
-    boxMap = new HashMap<String,String>();
-    boxMap  .put("boolean","java.lang.Boolean");
-    boxMap  .put("byte",   "java.lang.Byte");
-    boxMap  .put("char",   "java.lang.Character");
-    boxMap  .put("double", "java.lang.Double");
-    boxMap  .put("float",  "java.lang.Float");
-    boxMap  .put("int",    "java.lang.Integer");
-    boxMap  .put("long",   "java.lang.Long");
-    boxMap  .put("short",  "java.lang.Short");
-    boxMap  .put("String", "java.lang.String");
+
+    boxMap = new HashMap<String, String>();
+    boxMap.put("boolean", "java.lang.Boolean");
+    boxMap.put("byte", "java.lang.Byte");
+    boxMap.put("char", "java.lang.Character");
+    boxMap.put("double", "java.lang.Double");
+    boxMap.put("float", "java.lang.Float");
+    boxMap.put("int", "java.lang.Integer");
+    boxMap.put("long", "java.lang.Long");
+    boxMap.put("short", "java.lang.Short");
+    boxMap.put("String", "java.lang.String");
   }
-  
+
   /**
    * unboxing const types (e.g. "java.lang.Boolean" -> "boolean").
    * otherwise return is unchanged
+   *
    * @param boxedName
    * @return
    */
@@ -134,12 +131,13 @@ public class SymTypeConstant extends SymTypeExpression {
     else
       return boxedName;
   }
-  
+
 
   /**
    * Boxing const types (e.g. "boolean" -> "java.lang.Boolean")
    * Results are fully qualified.
    * Otherwise return is unchanged
+   *
    * @param unboxedName
    * @return
    */
@@ -150,50 +148,44 @@ public class SymTypeConstant extends SymTypeExpression {
       return unboxedName;
   }
 
-  
+
   /**
    * Checks whether it is an integer type (incl. byte, long, char)
+   *
    * @return true if the given type is an integral type
    */
   public boolean isIntegralType() {
-    return  "int"  .equals(getConstName()) ||
-            "byte" .equals(getConstName()) ||
-            "short".equals(getConstName()) ||
-            "long" .equals(getConstName()) ||
-            "char" .equals(getConstName()) ;
+    return "int".equals(getConstName()) ||
+        "byte".equals(getConstName()) ||
+        "short".equals(getConstName()) ||
+        "long".equals(getConstName()) ||
+        "char".equals(getConstName());
   }
-  
+
   /**
    * Checks whether it is an integer type (incl. byte, long, char)
+   *
    * @return true if the given type is an integral type
    */
   public boolean isNumericType() {
-    return  "float" .equals(getConstName()) ||
-            "double".equals(getConstName()) ||
-            isIntegralType() ;
+    return "float".equals(getConstName()) ||
+        "double".equals(getConstName()) ||
+        isIntegralType();
   }
-  
+
   /**
    * Am I primitive? (such as "int")
    */
   public boolean isPrimitive() {
     return true;
   }
-  
+
   @Override
   public SymTypeConstant deepClone() {
-    SymTypeConstant clone = new SymTypeConstant(getConstName(), getTypeInfo());
+    SymTypeConstant clone = new SymTypeConstant(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
     return clone;
   }
 
 
   // --------------------------------------------------------------------------
-  
-  @Deprecated
-  public void setName(String name) {
-    this.constName = name; // Nur ein Hack um die Tests am laufen zu halten, die setName nutzen
-  }
-
-  //hier enum attr für primitive types
-
 }

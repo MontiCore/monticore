@@ -26,7 +26,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   /**
    * Focus: Deriving Type of Literals, here:
-   *    literals/MCLiteralsBasis.mc4
+   * literals/MCLiteralsBasis.mc4
    */
 
   @BeforeClass
@@ -36,7 +36,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
   }
 
   @Before
-  public void doBefore(){
+  public void doBefore() {
     LogStub.init();
   }
 
@@ -55,7 +55,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
   // other arguments not used (and therefore deliberately null)
 
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(null,derLit);
+  TypeCheck tc = new TypeCheck(null, derLit);
 
   /*--------------------------------------------------- TESTS ---------------------------------------------------------*/
 
@@ -67,26 +67,26 @@ public class DeriveSymTypeOfCommonExpressionTest {
     // example with two ints
     String s = "3+4";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     // example with double and int
     s = "4.9+12";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("double",tc.typeOf(astex).print());
+    assertEquals("double", tc.typeOf(astex).print());
 
     // example with String
     s = "3 + \"Hallo\"";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("String",tc.typeOf(astex).print());
+    assertEquals("String", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidPlusExpression() throws IOException{
+  public void testInvalidPlusExpression() throws IOException {
     String s = "3+true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0188 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -95,25 +95,25 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test correctness of subtraction
    */
   @Test
-  public void deriveFromMinusExpression() throws IOException{
+  public void deriveFromMinusExpression() throws IOException {
     // example with two ints
     String s = "7-2";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     //example with float and long
     s = "7.9f-3L";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("float",tc.typeOf(astex).print());
+    assertEquals("float", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidMinusExpression() throws IOException{
+  public void testInvalidMinusExpression() throws IOException {
     String s = "3-true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0191 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -122,25 +122,25 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test correctness of multiplication
    */
   @Test
-  public void deriveFromMultExpression() throws IOException{
+  public void deriveFromMultExpression() throws IOException {
     //example with two ints
     String s = "2*19";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     //example with long and char
     s = "\'a\'*3L";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("long",tc.typeOf(astex).print());
+    assertEquals("long", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidMultExpression() throws IOException{
+  public void testInvalidMultExpression() throws IOException {
     String s = "3*true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0189 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -149,7 +149,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test correctness of division
    */
   @Test
-  public void deriveFromDivideExpression() throws IOException{
+  public void deriveFromDivideExpression() throws IOException {
     //example with two ints
     String s = "7/12";
     ASTExpression astex = p.parse_StringExpression(s).get();
@@ -158,16 +158,16 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //example with float and double
     s = "5.4f/3.9";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("double",tc.typeOf(astex).print());
+    assertEquals("double", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidDivideExpression() throws IOException{
+  public void testInvalidDivideExpression() throws IOException {
     String s = "3/true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0190 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -176,25 +176,25 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * tests correctness of modulo
    */
   @Test
-  public void deriveFromModuloExpression() throws IOException{
+  public void deriveFromModuloExpression() throws IOException {
     //example with two ints
     String s = "3%1";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     //example with long and double
     s = "0.8%3L";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("double",tc.typeOf(astex).print());
+    assertEquals("double", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidModuloExpression() throws IOException{
+  public void testInvalidModuloExpression() throws IOException {
     String s = "3%true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0192 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -203,25 +203,25 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test LessEqualExpression
    */
   @Test
-  public void deriveFromLessEqualExpression() throws IOException{
+  public void deriveFromLessEqualExpression() throws IOException {
     //example with two ints
     String s = "4<=9";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     //example with two other numeric types
     s = "2.4f<=3L";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidLessEqualExpression() throws IOException{
+  public void testInvalidLessEqualExpression() throws IOException {
     String s = "3<=true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0193 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -230,25 +230,25 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test GreaterEqualExpression
    */
   @Test
-  public void deriveFromGreaterEqualExpression() throws IOException{
+  public void deriveFromGreaterEqualExpression() throws IOException {
     //example with two ints
     String s = "7>=2";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     //example with two other numeric types
     s = "2.5>=\'d\'";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidGreaterEqualExpression() throws IOException{
+  public void testInvalidGreaterEqualExpression() throws IOException {
     String s = "3>=true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0194 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -257,25 +257,25 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test LessThanExpression
    */
   @Test
-  public void deriveFromLessThanExpression() throws IOException{
+  public void deriveFromLessThanExpression() throws IOException {
     //example with two ints
     String s = "4<9";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     //example with two other numeric types
     s = "2.4f<3L";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidLessThanExpression() throws IOException{
+  public void testInvalidLessThanExpression() throws IOException {
     String s = "3<true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0195 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -284,25 +284,25 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test GreaterThanExpression
    */
   @Test
-  public void deriveFromGreaterThanExpression() throws IOException{
+  public void deriveFromGreaterThanExpression() throws IOException {
     //example with two ints
     String s = "7>2";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     //example with two other numeric types
     s = "2.5>\'d\'";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidGreaterThanExpression() throws IOException{
+  public void testInvalidGreaterThanExpression() throws IOException {
     String s = "3>true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0196 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -310,65 +310,68 @@ public class DeriveSymTypeOfCommonExpressionTest {
   /**
    * initialize basic scope and a few symbols for testing
    */
-  public void init_basic(){
+  public void init_basic() {
     // No enclosing Scope: Search ending here
-    scope = scope(null,true,null,"Phantasy2");
+    scope = scope(null, true, null, "Phantasy2");
 
     TypeSymbol person = DefsTypeBasic.type("Person");
+    add2scope(scope, person);
     TypeSymbol student = DefsTypeBasic.type("Student",
-        Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",person))
+        Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope))
     );
+    add2scope(scope, student);
     TypeSymbol firstsemesterstudent = DefsTypeBasic.type("FirstSemesterStudent",
-        Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",student))
+        Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope))
     );
+    add2scope(scope, firstsemesterstudent);
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
-    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person",person)));
-    add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObject("Person",person)));
-    add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",student)));
-    add2scope(scope, field("student2",SymTypeExpressionFactory.createTypeObject("Student",student)));
-    add2scope(scope, field("firstsemester",SymTypeExpressionFactory.
-        createTypeObject("FirstSemesterStudent",firstsemesterstudent)));
-    add2scope(scope, method("isInt",_booleanSymType));
-    add2scope(scope,add(method("isInt",_booleanSymType),field("maxLength",_intSymType)));
+    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    add2scope(scope, field("firstsemester", SymTypeExpressionFactory.
+        createTypeObject("FirstSemesterStudent", scope)));
+    add2scope(scope, method("isInt", _booleanSymType));
+    add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
 
     derLit.setScope(scope);
-    tc = new TypeCheck(null,derLit);
+    tc = new TypeCheck(null, derLit);
   }
 
   /**
    * test EqualsExpression
    */
   @Test
-  public void deriveFromEqualsExpression() throws IOException{
+  public void deriveFromEqualsExpression() throws IOException {
     //initialize symbol table
     init_basic();
 
     //example with two primitives
     String s = "7==9.5f";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     //example with two objects of the same class
     s = "student1==student2";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     //example with two objects in sub-supertype relation
     s = "person1==student1";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidEqualsExpression() throws IOException{
+  public void testInvalidEqualsExpression() throws IOException {
     init_basic();
 
     String s = "3==true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0197 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
 
@@ -376,9 +379,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //person1 has the type Person, foo is a boolean
     s = "person1==foo";
     astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0197 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -387,35 +390,35 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test NotEqualsExpression
    */
   @Test
-  public void deriveFromNotEqualsExpression() throws IOException{
+  public void deriveFromNotEqualsExpression() throws IOException {
     //initialize symbol table
     init_basic();
 
     //example with two primitives
     String s = "true!=false";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     //example with two objects of the same class
     s = "person1!=person2";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     //example with two objects in sub-supertype relation
     s = "student2!=person2";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidNotEqualsExpression() throws IOException{
+  public void testInvalidNotEqualsExpression() throws IOException {
     init_basic();
 
     String s = "3!=true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0198 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
 
@@ -423,9 +426,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //person1 is a Person, foo is a boolean
     s = "person1!=foo";
     astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0198 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -434,11 +437,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test BooleanAndOpExpression
    */
   @Test
-  public void deriveFromBooleanAndOpExpression() throws IOException{
+  public void deriveFromBooleanAndOpExpression() throws IOException {
     //only possible with two booleans
     String s = "true&&true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     s = "(3<=4&&5>6)";
     astex = p.parse_StringExpression(s).get();
@@ -446,13 +449,13 @@ public class DeriveSymTypeOfCommonExpressionTest {
   }
 
   @Test
-  public void testInvalidAndOpExpression() throws IOException{
+  public void testInvalidAndOpExpression() throws IOException {
     //only possible with two booleans
     String s = "3&&true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0199 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -461,11 +464,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test BooleanOrOpExpression
    */
   @Test
-  public void deriveFromBooleanOrOpExpression() throws IOException{
+  public void deriveFromBooleanOrOpExpression() throws IOException {
     //only possible with two booleans
     String s = "true||false";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     s = "(3<=4.5f||5.3>6)";
     astex = p.parse_StringExpression(s).get();
@@ -473,13 +476,13 @@ public class DeriveSymTypeOfCommonExpressionTest {
   }
 
   @Test
-  public void testInvalidOrOpExpression() throws IOException{
+  public void testInvalidOrOpExpression() throws IOException {
     //only possible with two booleans
     String s = "3||true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0200 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -488,11 +491,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test LogicalNotExpression
    */
   @Test
-  public void deriveFromLogicalNotExpression() throws IOException{
+  public void deriveFromLogicalNotExpression() throws IOException {
     //only possible with boolean as inner expression
     String s = "!true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     s = "!(2.5>=0.3)";
     astex = p.parse_StringExpression(s).get();
@@ -500,13 +503,13 @@ public class DeriveSymTypeOfCommonExpressionTest {
   }
 
   @Test
-  public void testInvalidLogicalNotExpression() throws IOException{
+  public void testInvalidLogicalNotExpression() throws IOException {
     //only possible with a boolean as inner expression
     String s = "!4";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0201 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -515,34 +518,34 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test BracketExpression
    */
   @Test
-  public void deriveFromBracketExpression() throws IOException{
+  public void deriveFromBracketExpression() throws IOException {
     //initialize symbol table
     init_basic();
 
     //test with only a literal in the inner expression
     String s = "(3)";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     //test with a more complex inner expression
     s = "(3+4*(18-7.5))";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("double",tc.typeOf(astex).print());
+    assertEquals("double", tc.typeOf(astex).print());
 
     //test without primitive types in inner expression
     s = "(person1)";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("Person",tc.typeOf(astex).print());
+    assertEquals("Person", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidBracketExpression() throws IOException{
+  public void testInvalidBracketExpression() throws IOException {
     //a cannot be resolved -> a has no type
     String s = "(a)";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("The type of the inner expression cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -551,39 +554,39 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test ConditionalExpression
    */
   @Test
-  public void deriveFromConditionalExpression() throws IOException{
+  public void deriveFromConditionalExpression() throws IOException {
     //initialize symbol table
     init_basic();
 
     //test with two ints as true and false expression
     String s = "3<4?9:10";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     //test with float and long
     s = "3>4?4.5f:10L";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("float",tc.typeOf(astex).print());
+    assertEquals("float", tc.typeOf(astex).print());
 
     //test without primitive types as true and false expression
     s = "3<9?person1:person2";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("Person",tc.typeOf(astex).print());
+    assertEquals("Person", tc.typeOf(astex).print());
 
     //test with two objects in a sub-supertype relation
     s = "3<9?student1:person2";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("Person",tc.typeOf(astex).print());
+    assertEquals("Person", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidConditionalExpression() throws IOException{
+  public void testInvalidConditionalExpression() throws IOException {
     //true and 7 are not of the same type
     String s = "3<4?true:7";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0204 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
 
@@ -591,9 +594,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     LogStub.init();
     s = "3?true:false";
     astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0204 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -602,25 +605,25 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * test BooleanNotExpression
    */
   @Test
-  public void deriveFromBooleanNotExpression() throws IOException{
+  public void deriveFromBooleanNotExpression() throws IOException {
     //test with a int
     String s = "~3";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
     //test with a char
     s = "~\'a\'";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidBooleanNotExpression() throws IOException{
+  public void testInvalidBooleanNotExpression() throws IOException {
     //only possible with an integral type (int, long, char, short, byte)
     String s = "~3.4";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0205 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -629,136 +632,147 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * initialize symboltable including global scope, artifact scopes and scopes with symbols for
    * testing (mostly used for FieldAccessExpressions)
    */
-  public void init_advanced(){
+  public void init_advanced() {
     ExpressionsBasisGlobalScope globalScope = globalScope(new ExpressionsBasisLanguage(), new ModelPath());
-    ExpressionsBasisArtifactScope artifactScope1 = artifactScope(globalScope,Lists.newArrayList(),"");
-    ExpressionsBasisArtifactScope artifactScope2 = artifactScope(globalScope,Lists.newArrayList(),"");
-    ExpressionsBasisArtifactScope artifactScope3 = artifactScope(globalScope,Lists.newArrayList(),"types2");
-    ExpressionsBasisArtifactScope artifactScope4 = artifactScope(artifactScope3,Lists.newArrayList(),"types3");
-    scope = scope(artifactScope1,true,null,"Phantasy2"); // No enclosing Scope: Search ending here
-    ExpressionsBasisScope scope2 = scope(artifactScope2,"types");
-    ExpressionsBasisScope scope3 = scope(artifactScope4,"types2");
+    ExpressionsBasisArtifactScope artifactScope1 = artifactScope(globalScope, Lists.newArrayList(), "");
+    ExpressionsBasisArtifactScope artifactScope2 = artifactScope(globalScope, Lists.newArrayList(), "");
+    ExpressionsBasisArtifactScope artifactScope3 = artifactScope(globalScope, Lists.newArrayList(), "types2");
+    ExpressionsBasisArtifactScope artifactScope4 = artifactScope(artifactScope3, Lists.newArrayList(), "types3");
+    scope = scope(artifactScope1, true, null, "Phantasy2"); // No enclosing Scope: Search ending here
+    ExpressionsBasisScope scope2 = scope(artifactScope2, "types");
+    ExpressionsBasisScope scope3 = scope(artifactScope4, "types2");
     scope3.setEnclosingScope(artifactScope4);
 
     // some FieldSymbols (ie. Variables, Attributes)
     TypeSymbol person = DefsTypeBasic.type("Person");
+    add2scope(scope2, person);
+    add2scope(scope3, person);
+    add2scope(scope, person);
+
     TypeSymbol student = DefsTypeBasic.type("Student",
-        Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",person))
+        Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope))
     );
+    add2scope(scope2, student);
+    add2scope(scope3, student);
+    add2scope(scope, student);
     TypeSymbol firstsemesterstudent = DefsTypeBasic.type("FirstSemesterStudent",
-        Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",student))
+        Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope))
     );
+    add2scope(scope2, firstsemesterstudent);
+    add2scope(scope3, firstsemesterstudent);
+    add2scope(scope, firstsemesterstudent);
+
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
-    add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",person)));
-    add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObject("Person",person)));
-    add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",student)));
-    add2scope(scope, field("student2",SymTypeExpressionFactory.createTypeObject("Student",student)));
+    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("firstsemester",
-        SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",firstsemesterstudent))
+        SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope))
     );
-    add2scope(scope, method("isInt",_booleanSymType));
-    add2scope(scope,add(method("isInt",_booleanSymType),field("maxLength",_intSymType)));
-    FieldSymbol fs = field("variable",_intSymType);
-    MethodSymbol ms = method("store",_doubleSymType);
-    MethodSymbol ms1 = add(method("pay",_voidSymType),
+    add2scope(scope, method("isInt", _booleanSymType));
+    add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
+    FieldSymbol fs = field("variable", _intSymType);
+    MethodSymbol ms = method("store", _doubleSymType);
+    MethodSymbol ms1 = add(method("pay", _voidSymType),
         TypeSymbolsSymTabMill.fieldSymbolBuilder().setName("cost").setType(_intSymType).build()
     );
-    ExpressionsBasisScope testSpannedScope = scope(scope2,"");
+    ExpressionsBasisScope testSpannedScope = scope(scope2, "");
     testSpannedScope.add(fs);
     testSpannedScope.add(ms);
     testSpannedScope.add(ms1);
     TypeSymbol testType = DefsTypeBasic.type("Test");
-    testType = add(add(add(testType,fs),ms),ms1);
+    testType = add(add(add(testType, fs), ms1), ms);
     testType.setSpannedScope(testSpannedScope);
-    add2scope(scope2,testType);
-    add2scope(scope3,testType);
-    add2scope(scope,testType);
+    add2scope(scope2, testType);
+    add2scope(scope3, testType);
+    add2scope(scope, testType);
 
     derLit.setScope(scope);
-    tc = new TypeCheck(null,derLit);
+    tc = new TypeCheck(null, derLit);
   }
 
   /**
    * test FieldAccessExpression
    */
   @Test
-  public void deriveFromFieldAccessExpression() throws IOException{
+  public void deriveFromFieldAccessExpression() throws IOException {
     //initialize symbol table
     init_advanced();
 
     //test for type with only one package
     String s = "types.Test";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("Test",tc.typeOf(astex).print());
+    assertEquals("Test", tc.typeOf(astex).print());
 
     //test for variable of a type with one package
     s = "types.Test.variable";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     //test for type with more than one package
     s = "types2.types3.types2.Test";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("Test",tc.typeOf(astex).print());
+    assertEquals("Test", tc.typeOf(astex).print());
 
     //test for variable of type with more than one package
     s = "types2.types3.types2.Test.variable";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
-    s="Test";
+    s = "Test";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("Test",tc.typeOf(astex).print());
+    assertEquals("Test", tc.typeOf(astex).print());
   }
 
   /**
    * test CallExpression
    */
   @Test
-  public void deriveFromCallExpression() throws IOException{
+  public void deriveFromCallExpression() throws IOException {
     //initialize symbol table
     init_advanced();
 
     //test for method with unqualified name without parameters
     String s = "isInt()";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     //test for method with unqualified name with parameters
     s = "isInt(4)";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     //test for method with qualified name without parameters
     s = "types.Test.store()";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("double",tc.typeOf(astex).print());
+    assertEquals("double", tc.typeOf(astex).print());
 
     //test for method with qualified name with parameters
     s = "types.Test.pay(4)";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("void",tc.typeOf(astex).print());
+    assertEquals("void", tc.typeOf(astex).print());
 
     //test for String method
     s = "\"test\".hashCode()";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     //test for multiple CallExpressions in a row
     s = "\"test\".toString().charAt(1)";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("char",tc.typeOf(astex).print());
+    assertEquals("char", tc.typeOf(astex).print());
   }
 
   @Test
-  public void testInvalidCallExpression() throws IOException{
+  public void testInvalidCallExpression() throws IOException {
     //method isNot() is not in scope -> method cannot be resolved -> method has no return type
     String s = "isNot()";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
+    try {
       tc.typeOf(astex);
-    }catch(RuntimeException e){
+    } catch (RuntimeException e) {
       assertEquals("0xA0217 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
@@ -767,47 +781,48 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * initialize the symbol table for a basic inheritance example
    * we only have one scope and the symbols are all in this scope or in subscopes
    */
-  public void init_inheritance(){
+  public void init_inheritance() {
     // No enclosing Scope: Search ending here
-    scope = scope(null,true,null,"Phantasy2");
+    scope = scope(null, true, null, "Phantasy2");
 
     //inheritance example
     //super
-    MethodSymbol add = add(method("add",_voidSymType),field("element",_StringSymType));
-    FieldSymbol field = field("field",_booleanSymType);
-    TypeSymbol superclass = type("AList",Lists.newArrayList(add),Lists.newArrayList(field),
-        Lists.newArrayList(),Lists.newArrayList()
+    MethodSymbol add = add(method("add", _voidSymType), field("element", _StringSymType));
+    FieldSymbol field = field("field", _booleanSymType);
+    TypeSymbol superclass = type("AList", Lists.newArrayList(add), Lists.newArrayList(field),
+        Lists.newArrayList(), Lists.newArrayList()
     );
-    SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList",superclass);
-    add2scope(scope,superclass);
+    add2scope(scope, superclass);
+    SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList", scope);
 
     //sub
-    TypeSymbol subclass = type("MyList",Lists.newArrayList(),Lists.newArrayList(),
-        Lists.newArrayList(supclass),Lists.newArrayList()
+    TypeSymbol subclass = type("MyList", Lists.newArrayList(), Lists.newArrayList(),
+        Lists.newArrayList(supclass), Lists.newArrayList()
     );
-    SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList",subclass);
-    FieldSymbol myList = field("myList",sub);
-    add2scope(scope,subclass);
-    add2scope(scope,myList);
+    add2scope(scope, subclass);
+
+    SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList", scope);
+    FieldSymbol myList = field("myList", sub);
+    add2scope(scope, myList);
 
     //subsub
-    TypeSymbol subsubclass = type("MyList",Lists.newArrayList(),Lists.newArrayList(),
-        Lists.newArrayList(supclass),Lists.newArrayList()
+    TypeSymbol subsubclass = type("MySubList", Lists.newArrayList(), Lists.newArrayList(),
+        Lists.newArrayList(supclass), Lists.newArrayList()
     );
-    SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList",subsubclass);
-    FieldSymbol mySubList = field("mySubList",subsub);
-    add2scope(scope,subsubclass);
-    add2scope(scope,mySubList);
+    add2scope(scope, subsubclass);
+    SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList", scope);
+    FieldSymbol mySubList = field("mySubList", subsub);
+    add2scope(scope, mySubList);
 
     derLit.setScope(scope);
-    tc = new TypeCheck(null,derLit);
+    tc = new TypeCheck(null, derLit);
   }
 
   /**
    * test if the methods and fields of superclasses can be used by subclasses
    */
   @Test
-  public void testInheritance() throws IOException{
+  public void testInheritance() throws IOException {
     //initialize symbol table
     init_inheritance();
 
@@ -815,197 +830,189 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //test normal inheritance
     String s = "myList.add(\"Hello\")";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("void",tc.typeOf(astex).print());
+    assertEquals("void", tc.typeOf(astex).print());
 
     //test inheritance over two levels
     s = "mySubList.add(\"World\")";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("void",tc.typeOf(astex).print());
+    assertEquals("void", tc.typeOf(astex).print());
 
     //fields
     s = "myList.field";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     s = "mySubList.field";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
   }
 
   /**
    * initialize an empty scope
    */
-  public void init_scope(){
+  public void init_scope() {
     // No enclosing Scope: Search ending here
-    scope = scope(null,true,null,"Phantasy2");
+    scope = scope(null, true, null, "Phantasy2");
   }
 
   /**
    * test the inheritance of a generic type with one type variable
    */
   @Test
-  public void testListAndArrayListInheritance() throws IOException{
+  public void testListAndArrayListInheritance() throws IOException {
     //initialize symboltable
     init_scope();
-
     //one generic parameter, supertype List<T>
     TypeVarSymbol t = typeVariable("T");
-    MethodSymbol addMethod = add(method("add",_booleanSymType),
-        field("x",SymTypeExpressionFactory.createTypeVariable("T"))
+    add2scope(scope, t);
+    MethodSymbol addMethod = add(method("add", _booleanSymType),
+        field("x", SymTypeExpressionFactory.createTypeVariable("T", scope))
     );
-    FieldSymbol nextField = field("next",SymTypeExpressionFactory.createTypeVariable("T"));
-    TypeSymbol sym = type("List",Lists.newArrayList(addMethod),Lists.newArrayList(nextField),
-        Lists.newArrayList(),Lists.newArrayList(t)
+    FieldSymbol nextField = field("next", SymTypeExpressionFactory.createTypeVariable("T", scope));
+    TypeSymbol sym = type("List", Lists.newArrayList(addMethod), Lists.newArrayList(nextField),
+        Lists.newArrayList(), Lists.newArrayList(t)
     );
+    add2scope(scope, sym);
     SymTypeExpression listIntSymTypeExp = SymTypeExpressionFactory
-        .createGenerics("List",Lists.newArrayList(_intSymType),sym);
-    listIntSymTypeExp.setTypeInfo(sym);
-    FieldSymbol listVar = field("listVar",listIntSymTypeExp);
-    add2scope(scope,listVar);
-    add2scope(scope,sym);
+        .createGenerics("List", scope, _intSymType);
+    FieldSymbol listVar = field("listVar", listIntSymTypeExp);
+    add2scope(scope, listVar);
 
     //one generic parameter, subtype ArrayList<T>
     TypeVarSymbol arrayListT = typeVariable("T");
     SymTypeExpression listTSymTypeExp = SymTypeExpressionFactory
-        .createGenerics("List",
-            Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T")),sym
-        );
-    listTSymTypeExp.setTypeInfo(sym);
-    TypeSymbol subsym = type("ArrayList",Lists.newArrayList(),Lists.newArrayList(),
-        Lists.newArrayList(listTSymTypeExp),Lists.newArrayList(arrayListT)
+        .createGenerics("List", scope,
+            Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T", scope)));
+    TypeSymbol subsym = type("ArrayList", Lists.newArrayList(), Lists.newArrayList(),
+        Lists.newArrayList(listTSymTypeExp), Lists.newArrayList(arrayListT)
     );
+    add2scope(scope, subsym);
     SymTypeExpression subsymexp = SymTypeExpressionFactory.
-        createGenerics("ArrayList",Lists.newArrayList(_intSymType),subsym);
-    subsymexp.setTypeInfo(subsym);
-    FieldSymbol arraylistVar = field("arraylistVar",subsymexp);
-    add2scope(scope,arraylistVar);
-    add2scope(scope,subsym);
+        createGenerics("ArrayList", scope, Lists.newArrayList(_intSymType));
+    FieldSymbol arraylistVar = field("arraylistVar", subsymexp);
+    add2scope(scope, arraylistVar);
 
     derLit.setScope(scope);
-    tc = new TypeCheck(null,derLit);
+    tc = new TypeCheck(null, derLit);
 
     //test methods and fields of the supertype
     String s = "listVar.add(2)";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     s = "listVar.next";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     //test inherited methods and fields of the subtype
     s = "arraylistVar.add(3)";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     s = "arraylistVar.next";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
   }
 
   /**
    * test the inheritance of generic types with two type variables
    */
   @Test
-  public void testGenericInheritanceTwoTypeVariables() throws IOException{
+  public void testGenericInheritanceTwoTypeVariables() throws IOException {
     //initialize symboltable
     init_scope();
 
     //two generic parameters, supertype GenSup<S,V>, create SymType GenSup<String,int>
     TypeVarSymbol t1 = typeVariable("S");
     TypeVarSymbol t2 = typeVariable("V");
+    add2scope(scope, t1);
+    add2scope(scope, t2);
     MethodSymbol load = add(method("load",
-        SymTypeExpressionFactory.createTypeVariable("S")),
-        field("x",SymTypeExpressionFactory.createTypeVariable("V"))
+        SymTypeExpressionFactory.createTypeVariable("S", scope)),
+        field("x", SymTypeExpressionFactory.createTypeVariable("V", scope))
     );
-    FieldSymbol f1 = field("f1",SymTypeExpressionFactory.createTypeVariable("S"));
-    FieldSymbol f2 = field("f2",SymTypeExpressionFactory.createTypeVariable("V"));
-    TypeSymbol genSup = type("GenSup",Lists.newArrayList(load),Lists.newArrayList(f1,f2),
-        Lists.newArrayList(),Lists.newArrayList(t1,t2)
+    FieldSymbol f1 = field("f1", SymTypeExpressionFactory.createTypeVariable("S", scope));
+    FieldSymbol f2 = field("f2", SymTypeExpressionFactory.createTypeVariable("V", scope));
+    TypeSymbol genSup = type("GenSup", Lists.newArrayList(load), Lists.newArrayList(f1, f2),
+        Lists.newArrayList(), Lists.newArrayList(t1, t2)
     );
+    add2scope(scope, genSup);
     SymTypeExpression genSupType = SymTypeExpressionFactory.
-        createGenerics("GenSup",Lists.newArrayList(_StringSymType,_intSymType),genSup);
-    genSupType.setTypeInfo(genSup);
-    FieldSymbol genSupVar = field("genSupVar",genSupType);
-    add2scope(scope,genSup);
-    add2scope(scope,genSupVar);
+        createGenerics("GenSup", scope, Lists.newArrayList(_StringSymType, _intSymType));
+    FieldSymbol genSupVar = field("genSupVar", genSupType);
+    add2scope(scope, genSupVar);
 
     //two generic parameters, subtype GenSub<S,V>, create SymType GenSub<String,int>
     t1 = typeVariable("S");
     t2 = typeVariable("V");
     SymTypeExpression genTypeSV = SymTypeExpressionFactory.
-        createGenerics("GenSup",Lists.newArrayList(SymTypeExpressionFactory.
-            createTypeVariable("S"),SymTypeExpressionFactory.createTypeVariable("V")),genSup);
-    genTypeSV.setTypeInfo(genSup);
-    TypeSymbol genSub = type("GenSub",Lists.newArrayList(),Lists.newArrayList(),
-        Lists.newArrayList(genTypeSV.deepClone()),Lists.newArrayList(t1,t2)
+        createGenerics("GenSup", scope, Lists.newArrayList(SymTypeExpressionFactory.
+            createTypeVariable("S", scope), SymTypeExpressionFactory.createTypeVariable("V", scope)));
+    TypeSymbol genSub = type("GenSub", Lists.newArrayList(), Lists.newArrayList(),
+        Lists.newArrayList(genTypeSV.deepClone()), Lists.newArrayList(t1, t2)
     );
+    add2scope(scope, genSub);
     SymTypeExpression genSubType = SymTypeExpressionFactory.
-        createGenerics("GenSub",Lists.newArrayList(_StringSymType,_intSymType),genSub);
-    genSubType.setTypeInfo(genSub);
-    FieldSymbol genSubVar = field("genSubVar",genSubType);
-    add2scope(scope,genSub);
-    add2scope(scope,genSubVar);
+        createGenerics("GenSub", scope, Lists.newArrayList(_StringSymType, _intSymType));
+    FieldSymbol genSubVar = field("genSubVar", genSubType);
+    add2scope(scope, genSubVar);
 
     //two generic parameters, subsubtype GenSubSub<V,S>, create GenSubSub<String,int>
     t1 = typeVariable("S");
     t2 = typeVariable("V");
     SymTypeExpression genSubTypeSV = SymTypeExpressionFactory.
-        createGenerics("GenSub",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("S"),
-            SymTypeExpressionFactory.createTypeVariable("V")),genSub
-        );
-    genSubTypeSV.setTypeInfo(genSub);
-    TypeSymbol genSubSub = type("GenSubSub",Lists.newArrayList(),Lists.newArrayList(),
-        Lists.newArrayList(genSubTypeSV.deepClone()),Lists.newArrayList(t2,t1)
+        createGenerics("GenSub", scope, Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("S", scope),
+            SymTypeExpressionFactory.createTypeVariable("V", scope)));
+    TypeSymbol genSubSub = type("GenSubSub", Lists.newArrayList(), Lists.newArrayList(),
+        Lists.newArrayList(genSubTypeSV.deepClone()), Lists.newArrayList(t2, t1)
     );
+    add2scope(scope, genSubSub);
     SymTypeExpression genSubSubType = SymTypeExpressionFactory.
-        createGenerics("GenSubSub",Lists.newArrayList(_StringSymType,_intSymType),genSubSub);
-    genSubSubType.setTypeInfo(genSubSub);
-    FieldSymbol genSubSubVar = field("genSubSubVar",genSubSubType);
-    add2scope(scope,genSubSub);
-    add2scope(scope,genSubSubVar);
+        createGenerics("GenSubSub", scope, Lists.newArrayList(_StringSymType, _intSymType));
+    FieldSymbol genSubSubVar = field("genSubSubVar", genSubSubType);
+    add2scope(scope, genSubSubVar);
 
     derLit.setScope(scope);
-    tc = new TypeCheck(null,derLit);
+    tc = new TypeCheck(null, derLit);
 
     //supertype: test methods and fields
     String s = "genSupVar.load(3)";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("String",tc.typeOf(astex).print());
+    assertEquals("String", tc.typeOf(astex).print());
 
     s = "genSupVar.f1";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("String",tc.typeOf(astex).print());
+    assertEquals("String", tc.typeOf(astex).print());
 
     s = "genSupVar.f2";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     //subtype: test inherited methods and fields
     s = "genSubVar.load(3)";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("String",tc.typeOf(astex).print());
+    assertEquals("String", tc.typeOf(astex).print());
 
     s = "genSubVar.f1";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("String",tc.typeOf(astex).print());
+    assertEquals("String", tc.typeOf(astex).print());
 
     s = "genSubVar.f2";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     //subsubtype: test inherited methods and fields
-    s="genSubSubVar.load(\"Hello\")";
+    s = "genSubSubVar.load(\"Hello\")";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     s = "genSubSubVar.f1";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     s = "genSubSubVar.f2";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("String",tc.typeOf(astex).print());
+    assertEquals("String", tc.typeOf(astex).print());
   }
 
   /**
@@ -1013,165 +1020,163 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * are inherited correctly
    */
   @Test
-  public void testSubVarSupFix() throws IOException{
+  public void testSubVarSupFix() throws IOException {
     //initialize symboltable
     init_scope();
 
     //subtype with variable generic parameter, supertype with fixed generic parameter
     //supertype with fixed generic parameter FixGen<A> and SymType FixGen<int>
     TypeVarSymbol a = typeVariable("A");
-    MethodSymbol add2 = add(method("add",_booleanSymType),
-        field("a",SymTypeExpressionFactory.createTypeVariable("A"))
+    add2scope(scope, a);
+    MethodSymbol add2 = add(method("add", _booleanSymType),
+        field("a", SymTypeExpressionFactory.createTypeVariable("A", scope))
     );
-    FieldSymbol next2 = field("next",SymTypeExpressionFactory.createTypeVariable("A"));
-    TypeSymbol fixGen = type("FixGen",Lists.newArrayList(add2),Lists.newArrayList(next2),
-        Lists.newArrayList(),Lists.newArrayList(a)
+    FieldSymbol next2 = field("next", SymTypeExpressionFactory.createTypeVariable("A", scope));
+    TypeSymbol fixGen = type("FixGen", Lists.newArrayList(add2), Lists.newArrayList(next2),
+        Lists.newArrayList(), Lists.newArrayList(a)
     );
-    SymTypeExpression fixGenType = SymTypeExpressionFactory.createGenerics("FixGen",
-        Lists.newArrayList(_intSymType),fixGen
-    );
-    fixGenType.setTypeInfo(fixGen);
-    FieldSymbol fixGenVar = field("fixGenVar",fixGenType);
-    add2scope(scope,fixGen);
-    add2scope(scope,fixGenVar);
+    add2scope(scope, fixGen);
+    SymTypeExpression fixGenType = SymTypeExpressionFactory.createGenerics("FixGen", scope,
+        Lists.newArrayList(_intSymType));
+    FieldSymbol fixGenVar = field("fixGenVar", fixGenType);
+    add2scope(scope, fixGenVar);
 
     //subtype with variable generic parameter VarGen<N> which extends FixGen<int>, SymType VarGen<String>
     TypeVarSymbol n = typeVariable("N");
-    MethodSymbol calculate = method("calculate",SymTypeExpressionFactory.createTypeVariable("N"));
-    TypeSymbol varGenType = type("VarGen",Lists.newArrayList(calculate),Lists.newArrayList(),
-        Lists.newArrayList(fixGenType),Lists.newArrayList(n)
+    add2scope(scope, n);
+    MethodSymbol calculate = method("calculate", SymTypeExpressionFactory.createTypeVariable("N", scope));
+    TypeSymbol varGenType = type("VarGen", Lists.newArrayList(calculate), Lists.newArrayList(),
+        Lists.newArrayList(fixGenType), Lists.newArrayList(n)
     );
+    add2scope(scope, varGenType);
     SymTypeExpression varGenSym = SymTypeExpressionFactory.
-        createGenerics("VarGen",Lists.newArrayList(_StringSymType),varGenType);
-    varGenSym.setTypeInfo(varGenType);
-    FieldSymbol varGen = field("varGen",varGenSym);
-    add2scope(scope,varGenType);
-    add2scope(scope,varGen);
+        createGenerics("VarGen", scope, Lists.newArrayList(_StringSymType));
+    FieldSymbol varGen = field("varGen", varGenSym);
+    add2scope(scope, varGen);
 
     derLit.setScope(scope);
-    tc = new TypeCheck(null,derLit);
+    tc = new TypeCheck(null, derLit);
 
     //test own methods first
     String s = "varGen.calculate()";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("String",tc.typeOf(astex).print());
+    assertEquals("String", tc.typeOf(astex).print());
 
     //test inherited methods and fields
-    s="varGen.add(4)";
+    s = "varGen.add(4)";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
-    s="varGen.next";
+    s = "varGen.next";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
   }
 
   /**
    * Test-Case: SubType has more generic parameters than its supertype
    */
   @Test
-  public void testSubTypeWithMoreGenericParameters() throws IOException{
+  public void testSubTypeWithMoreGenericParameters() throws IOException {
     //initialize symboltable
     init_scope();
 
     //one generic parameter, supertype List<T>
     TypeVarSymbol t = typeVariable("T");
-    MethodSymbol addMethod = add(method("add",_booleanSymType),
-        field("x",SymTypeExpressionFactory.createTypeVariable("T"))
+    add2scope(scope, t);
+    MethodSymbol addMethod = add(method("add", _booleanSymType),
+        field("x", SymTypeExpressionFactory.createTypeVariable("T", scope))
     );
-    FieldSymbol nextField = field("next",SymTypeExpressionFactory.createTypeVariable("T"));
-    TypeSymbol sym = type("List",Lists.newArrayList(addMethod),Lists.newArrayList(nextField),
-        Lists.newArrayList(),Lists.newArrayList(t)
+    FieldSymbol nextField = field("next", SymTypeExpressionFactory.createTypeVariable("T", scope));
+    TypeSymbol sym = type("List", Lists.newArrayList(addMethod), Lists.newArrayList(nextField),
+        Lists.newArrayList(), Lists.newArrayList(t)
     );
+    add2scope(scope, sym);
     SymTypeExpression listIntSymTypeExp = SymTypeExpressionFactory
-        .createGenerics("List",Lists.newArrayList(_intSymType),sym);
-    listIntSymTypeExp.setTypeInfo(sym);
-    FieldSymbol listVar = field("listVar",listIntSymTypeExp);
-    add2scope(scope,listVar);
-    add2scope(scope,sym);
+        .createGenerics("List", scope, Lists.newArrayList(_intSymType));
+    FieldSymbol listVar = field("listVar", listIntSymTypeExp);
+    add2scope(scope, listVar);
 
     //two generic parameters, subtype MoreGen<T,F>
     t = typeVariable("T");
     TypeVarSymbol moreType1 = typeVariable("F");
+    add2scope(scope, moreType1);
     SymTypeExpression listTSymTypeExp = SymTypeExpressionFactory
-        .createGenerics("List",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T")),sym);
-    listTSymTypeExp.setTypeInfo(sym);
+        .createGenerics("List", scope, Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T", scope)));
     MethodSymbol insert = add(
-        method("insert",SymTypeExpressionFactory.createTypeVariable("T")),
-        field("x",SymTypeExpressionFactory.createTypeVariable("F"))
+        method("insert", SymTypeExpressionFactory.createTypeVariable("T", scope)),
+        field("x", SymTypeExpressionFactory.createTypeVariable("F", scope))
     );
-    TypeSymbol moreGenType = type("MoreGen",Lists.newArrayList(insert),Lists.newArrayList(),
-        Lists.newArrayList(listTSymTypeExp),Lists.newArrayList(t,moreType1)
+    TypeSymbol moreGenType = type("MoreGen", Lists.newArrayList(insert), Lists.newArrayList(),
+        Lists.newArrayList(listTSymTypeExp), Lists.newArrayList(t, moreType1)
     );
+    add2scope(scope, moreGenType);
     SymTypeExpression moreGenSym = SymTypeExpressionFactory.
-        createGenerics("MoreGen",Lists.newArrayList(_intSymType,_longSymType),moreGenType);
-    moreGenSym.setTypeInfo(moreGenType);
-    FieldSymbol moreGen = field("moreGen",moreGenSym);
-    add2scope(scope,moreGenType);
-    add2scope(scope,moreGen);
+        createGenerics("MoreGen", scope, Lists.newArrayList(_intSymType, _longSymType));
+    FieldSymbol moreGen = field("moreGen", moreGenSym);
+    add2scope(scope, moreGen);
 
     derLit.setScope(scope);
-    tc = new TypeCheck(null,derLit);
+    tc = new TypeCheck(null, derLit);
 
     //test own method
     String s = "moreGen.insert(12L)";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
 
     //test inherited methods and fields
-    s="moreGen.add(12)";
+    s = "moreGen.add(12)";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
-    s="moreGen.next";
+    s = "moreGen.next";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
   }
 
   /**
    * Test-Case: SubType is a normal object type and extends a fixed generic type
    */
   @Test
-  public void testSubTypeWithoutGenericParameter() throws IOException{
+  public void testSubTypeWithoutGenericParameter() throws IOException {
     //initialize symboltable
     init_scope();
 
     //one generic parameter, supertype List<T>
     TypeVarSymbol t = typeVariable("T");
-    MethodSymbol addMethod = add(method("add",_booleanSymType),
-        field("x",SymTypeExpressionFactory.createTypeVariable("T"))
+    add2scope(scope, t);
+    MethodSymbol addMethod = add(method("add", _booleanSymType),
+        field("x", SymTypeExpressionFactory.createTypeVariable("T", scope))
     );
-    FieldSymbol nextField = field("next",SymTypeExpressionFactory.createTypeVariable("T"));
-    TypeSymbol sym = type("List",Lists.newArrayList(addMethod),Lists.newArrayList(nextField),
-        Lists.newArrayList(),Lists.newArrayList(t)
+    FieldSymbol nextField = field("next", SymTypeExpressionFactory.createTypeVariable("T", scope));
+    TypeSymbol sym = type("List", Lists.newArrayList(addMethod), Lists.newArrayList(nextField),
+        Lists.newArrayList(), Lists.newArrayList(t)
     );
+    add2scope(scope, sym);
     SymTypeExpression listIntSymTypeExp = SymTypeExpressionFactory
-        .createGenerics("List",Lists.newArrayList(_intSymType),sym);
-    listIntSymTypeExp.setTypeInfo(sym);
-    FieldSymbol listVar = field("listVar",listIntSymTypeExp);
-    add2scope(scope,listVar);
-    add2scope(scope,sym);
+        .createGenerics("List", scope, Lists.newArrayList(_intSymType));
+    FieldSymbol listVar = field("listVar", listIntSymTypeExp);
+    add2scope(scope, listVar);
 
     //subtype without generic parameter NotGen extends List<int>
-    TypeSymbol notgeneric = type("NotGen",Lists.newArrayList(),Lists.newArrayList(),
-        Lists.newArrayList(listIntSymTypeExp),Lists.newArrayList()
+    TypeSymbol notgeneric = type("NotGen", Lists.newArrayList(), Lists.newArrayList(),
+        Lists.newArrayList(listIntSymTypeExp), Lists.newArrayList()
     );
-    SymTypeExpression notgenericType = SymTypeExpressionFactory.createTypeObject("NotGen",notgeneric);
-    FieldSymbol ng = field("notGen",notgenericType);
-    add2scope(scope,ng);
-    add2scope(scope,notgeneric);
+    add2scope(scope, notgeneric);
+    SymTypeExpression notgenericType = SymTypeExpressionFactory.createTypeObject("NotGen", scope);
+    FieldSymbol ng = field("notGen", notgenericType);
+    add2scope(scope, ng);
 
     derLit.setScope(scope);
-    tc = new TypeCheck(null,derLit);
+    tc = new TypeCheck(null, derLit);
 
     //test inherited methods and fields
-    String s="notGen.add(14)";
+    String s = "notGen.add(14)";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
-    s="notGen.next";
+    s = "notGen.next";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("int",tc.typeOf(astex).print());
+    assertEquals("int", tc.typeOf(astex).print());
   }
 
   /**
@@ -1179,61 +1184,60 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * every type in the example has exactly one type variable
    */
   @Test
-  public void testMultiInheritance() throws IOException{
+  public void testMultiInheritance() throws IOException {
     //initialize symboltable
     init_scope();
 
     //supertype SupA<T>
     TypeVarSymbol t = typeVariable("T");
-    MethodSymbol testA = method("testA",SymTypeExpressionFactory.createTypeVariable("T"));
-    FieldSymbol currentA = field("currentA",SymTypeExpressionFactory.createTypeVariable("T"));
-    TypeSymbol supA = type("SupA",Lists.newArrayList(testA),Lists.newArrayList(currentA),
-        Lists.newArrayList(),Lists.newArrayList(t)
+    add2scope(scope, t);
+    MethodSymbol testA = method("testA", SymTypeExpressionFactory.createTypeVariable("T", scope));
+    FieldSymbol currentA = field("currentA", SymTypeExpressionFactory.createTypeVariable("T", scope));
+    TypeSymbol supA = type("SupA", Lists.newArrayList(testA), Lists.newArrayList(currentA),
+        Lists.newArrayList(), Lists.newArrayList(t)
     );
+    add2scope(scope, supA);
     SymTypeExpression supATExpr = SymTypeExpressionFactory
-        .createGenerics("SupA",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T")),supA);
-    supATExpr.setTypeInfo(supA);
+        .createGenerics("SupA", scope, Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T", scope)));
 
     //supertype SupB<T>
     t = typeVariable("T");
-    MethodSymbol testB = method("testB",SymTypeExpressionFactory.createTypeVariable("T"));
-    FieldSymbol currentB = field("currentB",SymTypeExpressionFactory.createTypeVariable("T"));
-    TypeSymbol supB = type("SupA",Lists.newArrayList(testB),Lists.newArrayList(currentB),
-        Lists.newArrayList(),Lists.newArrayList(t)
-    );
+    MethodSymbol testB = method("testB", SymTypeExpressionFactory.createTypeVariable("T", scope));
+    FieldSymbol currentB = field("currentB", SymTypeExpressionFactory.createTypeVariable("T", scope));
+    TypeSymbol supB = type("SupB", Lists.newArrayList(testB), Lists.newArrayList(currentB),
+        Lists.newArrayList(), Lists.newArrayList(t));
+    add2scope(scope, supB);
     SymTypeExpression supBTExpr = SymTypeExpressionFactory.
-        createGenerics("SupB",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T")),supB);
-    supBTExpr.setTypeInfo(supB);
+        createGenerics("SupB", scope, Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T", scope)));
 
     //subType SubA<T>
     t = typeVariable("T");
-    TypeSymbol subA = type("SubA",Lists.newArrayList(),Lists.newArrayList(),
-        Lists.newArrayList(supATExpr,supBTExpr),Lists.newArrayList(t)
-    );
+    TypeSymbol subA = type("SubA", Lists.newArrayList(), Lists.newArrayList(),
+        Lists.newArrayList(supATExpr, supBTExpr), Lists.newArrayList(t));
+    add2scope(scope, subA);
     SymTypeExpression subATExpr = SymTypeExpressionFactory
-        .createGenerics("SubA",Lists.newArrayList(_charSymType),subA);
-    subATExpr.setTypeInfo(subA);
-    FieldSymbol sub = field("sub",subATExpr);
-    add2scope(scope,sub);
+        .createGenerics("SubA", scope, Lists.newArrayList(_charSymType));
+    FieldSymbol sub = field("sub", subATExpr);
+    add2scope(scope, sub);
 
     derLit.setScope(scope);
-    tc = new TypeCheck(null,derLit);
+    tc = new TypeCheck(null, derLit);
 
     String s = "sub.testA()";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("char",tc.typeOf(astex).print());
+    assertEquals("char", tc.typeOf(astex).print());
 
     s = "sub.currentA";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("char",tc.typeOf(astex).print());
+    assertEquals("char", tc.typeOf(astex).print());
 
     s = "sub.testB()";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("char",tc.typeOf(astex).print());
+    assertEquals("char", tc.typeOf(astex).print());
 
     s = "sub.currentB";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("char",tc.typeOf(astex).print());
+    assertEquals("char", tc.typeOf(astex).print());
   }
 
   /**
@@ -1241,135 +1245,133 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * the supertypes have one type variable and the subtype has two type variables
    */
   @Test
-  public void testMultiInheritanceSubTypeMoreGen() throws IOException{
+  public void testMultiInheritanceSubTypeMoreGen() throws IOException {
     //initialize symboltable
     init_scope();
 
     //supertype SupA<T>
     TypeVarSymbol t = typeVariable("T");
-    MethodSymbol testA = method("testA",SymTypeExpressionFactory.createTypeVariable("T"));
-    FieldSymbol currentA = field("currentA",SymTypeExpressionFactory.createTypeVariable("T"));
-    TypeSymbol supA = type("SupA",Lists.newArrayList(testA),Lists.newArrayList(currentA),
-        Lists.newArrayList(),Lists.newArrayList(t)
+    add2scope(scope, t);
+    MethodSymbol testA = method("testA", SymTypeExpressionFactory.createTypeVariable("T", scope));
+    FieldSymbol currentA = field("currentA", SymTypeExpressionFactory.createTypeVariable("T", scope));
+    TypeSymbol supA = type("SupA", Lists.newArrayList(testA), Lists.newArrayList(currentA),
+        Lists.newArrayList(), Lists.newArrayList(t)
     );
+    add2scope(scope, supA);
     SymTypeExpression supATExpr = SymTypeExpressionFactory
-        .createGenerics("SupA",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T")),supA);
-    supATExpr.setTypeInfo(supA);
-
+        .createGenerics("SupA", scope, Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T", scope)));
     //supertype SupB<T>
     TypeVarSymbol s = typeVariable("S");
-    MethodSymbol testB = method("testB",SymTypeExpressionFactory.createTypeVariable("S"));
-    FieldSymbol currentB = field("currentB",SymTypeExpressionFactory.createTypeVariable("S"));
-    TypeSymbol supB = type("SupA",Lists.newArrayList(testB),Lists.newArrayList(currentB),
-        Lists.newArrayList(),Lists.newArrayList(s)
+    MethodSymbol testB = method("testB", SymTypeExpressionFactory.createTypeVariable("S", scope));
+    FieldSymbol currentB = field("currentB", SymTypeExpressionFactory.createTypeVariable("S", scope));
+    TypeSymbol supB = type("SupB", Lists.newArrayList(testB), Lists.newArrayList(currentB),
+        Lists.newArrayList(), Lists.newArrayList(s)
     );
+    add2scope(scope, supB);
     SymTypeExpression supBTExpr = SymTypeExpressionFactory
-        .createGenerics("SupB",Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("S")),supB);
-    supBTExpr.setTypeInfo(supB);
+        .createGenerics("SupB", scope, Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("S", scope)));
 
     //subType SubA<T>
     t = typeVariable("T");
     s = typeVariable("S");
-    TypeSymbol subA = type("SubA",Lists.newArrayList(),Lists.newArrayList(),
-        Lists.newArrayList(supATExpr,supBTExpr),Lists.newArrayList(s,t)
+    TypeSymbol subA = type("SubA", Lists.newArrayList(), Lists.newArrayList(),
+        Lists.newArrayList(supATExpr, supBTExpr), Lists.newArrayList(s, t)
     );
+    add2scope(scope, subA);
     SymTypeExpression subATExpr = SymTypeExpressionFactory
-        .createGenerics("SubA",Lists.newArrayList(_charSymType,_booleanSymType),subA);
-    subATExpr.setTypeInfo(subA);
-    FieldSymbol sub = field("sub",subATExpr);
-    add2scope(scope,sub);
+        .createGenerics("SubA", scope, Lists.newArrayList(_charSymType, _booleanSymType));
+    FieldSymbol sub = field("sub", subATExpr);
+    add2scope(scope, sub);
 
     derLit.setScope(scope);
-    tc = new TypeCheck(null,derLit);
+    tc = new TypeCheck(null, derLit);
 
     String s1 = "sub.testA()";
     ASTExpression astex = p.parse_StringExpression(s1).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     s1 = "sub.currentA";
     astex = p.parse_StringExpression(s1).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
 
     s1 = "sub.testB()";
     astex = p.parse_StringExpression(s1).get();
-    assertEquals("char",tc.typeOf(astex).print());
+    assertEquals("char", tc.typeOf(astex).print());
 
     s1 = "sub.currentB";
     astex = p.parse_StringExpression(s1).get();
-    assertEquals("char",tc.typeOf(astex).print());
+    assertEquals("char", tc.typeOf(astex).print());
   }
 
   /**
    * test if you can use methods, types and fields of the type or its supertypes in its method scopes
    */
   @Test
-  public void testMethodScope() throws IOException{
+  public void testMethodScope() throws IOException {
     init_scope();
 
     //super
-    MethodSymbol add = add(method("add",_voidSymType),field("element",_StringSymType));
-    FieldSymbol field = field("field",_booleanSymType);
-    TypeSymbol superclass = type("AList",Lists.newArrayList(add),Lists.newArrayList(field),
-        Lists.newArrayList(),Lists.newArrayList()
+    MethodSymbol add = add(method("add", _voidSymType), field("element", _StringSymType));
+    FieldSymbol field = field("field", _booleanSymType);
+    TypeSymbol superclass = type("AList", Lists.newArrayList(add), Lists.newArrayList(field),
+        Lists.newArrayList(), Lists.newArrayList()
     );
-    SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList",superclass);
-    add2scope(scope,superclass);
+    add2scope(scope, superclass);
+    SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList", scope);
 
     //sub
-    TypeSymbol subclass = type("MyList",Lists.newArrayList(),Lists.newArrayList(),
-        Lists.newArrayList(supclass),Lists.newArrayList()
+    TypeSymbol subclass = type("MyList", Lists.newArrayList(), Lists.newArrayList(),
+        Lists.newArrayList(supclass), Lists.newArrayList()
     );
-    SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList",subclass);
-    FieldSymbol myList = field("myList",sub);
-    add2scope(scope,subclass);
-    add2scope(scope,myList);
+    add2scope(scope, subclass);
+
+    SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList", scope);
+    FieldSymbol myList = field("myList", sub);
+    add2scope(scope, myList);
 
     //subsub
-    FieldSymbol myNext = field("myNext",_StringSymType);
-    MethodSymbol myAdd = method("myAdd",_voidSymType);
-    ExpressionsBasisScope methodSpannedScope = scope();
-    myAdd.setSpannedScope(methodSpannedScope);
-    TypeSymbol subsubclass = type("MyList",Lists.newArrayList(myAdd),Lists.newArrayList(myNext),
-        Lists.newArrayList(supclass),Lists.newArrayList(),scope
-    );
-    SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList",subsubclass);
-    FieldSymbol mySubList = field("mySubList",subsub);
-    add2scope(scope,subsubclass);
-    add2scope(scope,mySubList);
+    FieldSymbol myNext = field("myNext", _StringSymType);
+    MethodSymbol myAdd = method("myAdd", _voidSymType);
+    TypeSymbol subsubclass = type("MySubList", Lists.newArrayList(myAdd), Lists.newArrayList(myNext),
+        Lists.newArrayList(supclass), Lists.newArrayList(), scope);
+    add2scope(scope, subsubclass);
+    SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList", scope);
+    FieldSymbol mySubList = field("mySubList", subsub);
+    add2scope(scope, mySubList);
 
     //set scope of method myAdd as standard resolving scope
-    derLit.setScope(methodSpannedScope);
-    tc = new TypeCheck(null,derLit);
+    derLit.setScope((ExpressionsBasisScope)myAdd.getSpannedScope());
+    tc = new TypeCheck(null, derLit);
 
     String s = "mySubList";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    assertEquals("MySubList",tc.typeOf(astex).print());
+    assertEquals("MySubList", tc.typeOf(astex).print());
 
     s = "myAdd()";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("void",tc.typeOf(astex).print());
+    assertEquals("void", tc.typeOf(astex).print());
 
     s = "myNext";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("String",tc.typeOf(astex).print());
+    assertEquals("String", tc.typeOf(astex).print());
 
     s = "add(\"Hello\")";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("void",tc.typeOf(astex).print());
+    assertEquals("void", tc.typeOf(astex).print());
 
     s = "field";
     astex = p.parse_StringExpression(s).get();
-    assertEquals("boolean",tc.typeOf(astex).print());
+    assertEquals("boolean", tc.typeOf(astex).print());
   }
 
   /**
    * create a scope (some defaults apply)
    */
-  public static ExpressionsBasisScope scope(){
+  public static ExpressionsBasisScope scope() {
     return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
   }
 
-  public static ExpressionsBasisScope scope(IExpressionsBasisScope enclosingScope, boolean exportingSymbols, ASTNode astnode, String name){
+  public static ExpressionsBasisScope scope(IExpressionsBasisScope enclosingScope, boolean exportingSymbols, ASTNode astnode, String name) {
     return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
         .setEnclosingScope(enclosingScope)
         .setExportingSymbols(exportingSymbols)
@@ -1378,7 +1380,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
         .build();
   }
 
-  public static ExpressionsBasisScope scope(IExpressionsBasisScope enclosingScope, String name){
+  public static ExpressionsBasisScope scope(IExpressionsBasisScope enclosingScope, String name) {
     return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
         .setEnclosingScope(enclosingScope)
         .setName(name)
@@ -1388,7 +1390,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
   /**
    * create a global scope (some defaults apply)
    */
-  public static ExpressionsBasisGlobalScope globalScope(ExpressionsBasisLanguage expressionsBasisLanguage, ModelPath modelPath){
+  public static ExpressionsBasisGlobalScope globalScope(ExpressionsBasisLanguage expressionsBasisLanguage, ModelPath modelPath) {
     return ExpressionsBasisSymTabMill.expressionsBasisGlobalScopeBuilder()
         .setExpressionsBasisLanguage(expressionsBasisLanguage)
         .setModelPath(modelPath)
@@ -1398,7 +1400,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
   /**
    * create an artifact scope (some defaults apply)
    */
-  public static ExpressionsBasisArtifactScope artifactScope(IExpressionsBasisScope enclosingScope, List<ImportStatement> importList, String packageName){
+  public static ExpressionsBasisArtifactScope artifactScope(IExpressionsBasisScope enclosingScope, List<ImportStatement> importList, String packageName) {
     return ExpressionsBasisSymTabMill.expressionsBasisArtifactScopeBuilder()
         .setEnclosingScope(enclosingScope)
         .setImportList(importList)

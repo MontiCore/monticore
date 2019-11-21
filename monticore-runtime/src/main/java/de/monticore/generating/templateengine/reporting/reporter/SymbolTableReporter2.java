@@ -79,8 +79,8 @@ public class SymbolTableReporter2 extends AReporter {
     printer.indent();
     reportAllFields(scope.getClass(), printer);
     
-    if (scope.getNameOpt().isPresent()) {
-      printer.println("name = \"" + scope.getNameOpt().get() + "\";");
+    if (scope.isPresentName()) {
+      printer.println("name = \"" + scope.getName() + "\";");
     }
     else if (printEmptyOptional) {
       printer.println("name = absent;");
@@ -109,18 +109,18 @@ public class SymbolTableReporter2 extends AReporter {
     printer.println("isShadowingScope = " + scope.isShadowing() + ";");
     printer.println("exportsSymbols = " + scope.isExportingSymbols() + ";");
     
-    if (scope.getAstNodeOpt().isPresent()) {
+    if (scope.isPresentAstNode()) {
       printer.print("astNode = ");
-      printer.print(repository.getASTNodeNameFormatted(scope.getAstNodeOpt().get()));
+      printer.print(repository.getASTNodeNameFormatted(scope.getAstNode()));
       printer.println(";");
     }
     else if (printEmptyOptional) {
       printer.println("astNode = absent;");
     }
     
-    if (scope.getSpanningSymbolOpt().isPresent()) {
+    if (scope.isPresentSpanningSymbol()) {
       printer.print("spanningSymbol = ");
-      reportSymbol(scope.getSpanningSymbolOpt().get(), printer);
+      reportSymbol(scope.getSpanningSymbol(), printer);
       printer.println(";");
     }
     else if (printEmptyOptional) {
@@ -229,9 +229,9 @@ public class SymbolTableReporter2 extends AReporter {
     reportAllFields(sym.getClass(), printer);
     printer.println("name = \"" + sym.getName() + "\";");
     printer.println("kind = \"" + sym.getClass().getName() + "\";");
-    if (sym.getAstNodeOpt().isPresent()) {
+    if (sym.isPresentAstNode()) {
       printer.print("astNode = ");
-      printer.print(repository.getASTNodeNameFormatted(sym.getAstNodeOpt().get()));
+      printer.print(repository.getASTNodeNameFormatted(sym.getAstNode()));
       printer.println(";");
     }
     else if (printEmptyOptional) {

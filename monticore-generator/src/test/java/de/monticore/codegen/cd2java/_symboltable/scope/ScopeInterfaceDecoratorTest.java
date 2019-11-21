@@ -13,22 +13,22 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -37,7 +37,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private MCTypeFacade MCTypeFacade;
+  private de.monticore.types.MCTypeFacade MCTypeFacade;
 
   private ASTCDCompilationUnit decoratedScopeCompilationUnit;
 
@@ -103,7 +103,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(139, scopeInterface.getCDMethodList().size());
+    assertEquals(137, scopeInterface.getCDMethodList().size());
   }
 
   @Test
@@ -665,28 +665,6 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertListOf(String.class, method.getCDParameter(0).getMCType());
     assertEquals("foo", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testGetBlaOptMethod() {
-    ASTCDMethod method = getMethodBy("getBlaOpt", scopeInterface);
-
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-
-  @Test
-  public void testSetBlaOptMethod() {
-    ASTCDMethod method = getMethodBy("setBlaOpt", scopeInterface);
-
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertOptionalOf(Integer.class, method.getCDParameter(0).getMCType());
-    assertEquals("bla", method.getCDParameter(0).getName());
   }
 
   @Test

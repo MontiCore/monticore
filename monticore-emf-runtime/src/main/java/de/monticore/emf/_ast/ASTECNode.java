@@ -56,20 +56,12 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     this.end = Optional.ofNullable(end);
   }
   
-  public Optional<SourcePosition> get_SourcePositionEndOpt() {
-    return end;
-  }
-  
   public boolean isPresent_SourcePositionEnd()   {
-    return get_SourcePositionEndOpt().isPresent();
+    return end.isPresent();
   }
   
   public void set_SourcePositionEndAbsent()   {
     end = Optional.empty();
-  }
-  
-  public void set_SourcePositionEndOpt(Optional<SourcePosition> value)   {
-    this.end = value;
   }
   
   // ----------------------------------------------------------------------
@@ -87,20 +79,12 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     this.start = Optional.ofNullable(start);
   }
   
-  public Optional<SourcePosition> get_SourcePositionStartOpt() {
-    return start;
-  }
-  
   public boolean isPresent_SourcePositionStart()   {
-    return get_SourcePositionStartOpt().isPresent();
+    return start.isPresent();
   }
   
   public void set_SourcePositionStartAbsent()   {
     start = Optional.empty();
-  }
-  
-  public void set_SourcePositionStartOpt(Optional<SourcePosition> value)   {
-    this.start = value;
   }
   
   /**

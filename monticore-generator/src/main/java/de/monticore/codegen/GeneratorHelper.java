@@ -13,15 +13,16 @@ import de.monticore.cd.prettyprint.CDPrettyPrinterDelegator;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolReference;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolLoader;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.MCCollectionTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Joiners;
@@ -40,7 +41,7 @@ import static de.monticore.grammar.Multiplicity.multiplicityByAlternative;
 import static de.monticore.grammar.Multiplicity.multiplicityByIteration;
 import static java.util.Collections.max;
 
-public class GeneratorHelper extends MCCollectionTypesHelper {
+public class GeneratorHelper {
 
   public static final String AST_PREFIX = "AST";
 
@@ -153,8 +154,33 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     return nameAsList.get(nameAsList.size() - 1);
   }
 
-  public static boolean isOptional(ASTCDAttribute attribute) {
+  public static boolean isOptional(ASTCDAttribute attribute)
+  {
     return isOptional(attribute.getMCType());
+  }
+
+  public static boolean isOptional(ASTMCType type) {
+    return isGenericTypeWithOneTypeArgument(type, OPTIONAL);
+  }
+
+  public static boolean isGenericTypeWithOneTypeArgument(ASTMCType type, String simpleRefTypeName) {
+    if (!(type instanceof ASTMCGenericType)) {
+      return false;
+    }
+    ASTMCGenericType simpleRefType = (ASTMCGenericType) type;
+    if (simpleRefType.getMCTypeArgumentList().isEmpty() || simpleRefType.getMCTypeArgumentList().size() != 1) {
+      return false;
+    }
+
+    if (simpleRefType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).split("\\.").length == 1 && simpleRefTypeName.contains(".")) {
+      if (simpleRefTypeName.endsWith("." + simpleRefType.printWithoutTypeArguments())) {
+        return true;
+      }
+    }
+    if (simpleRefType.printWithoutTypeArguments().equals(simpleRefTypeName)) {
+      return true;
+    }
+    return false;
   }
 
   public static boolean isOptional(CDTypeSymbol type) {
@@ -162,44 +188,32 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     if (OPTIONAL.equals(type.getName())) {
       return true;
     }
-    if (!type.getAstNode().isPresent()) {
-      Log.debug(String.format("ASTNode of cd type symbol %s is not set.",
-          type.getName()), LOG_NAME);
-      return false;
-    }
-    ASTNode node = type.getAstNode().get();
-    if (!(node instanceof ASTMCType)) {
-      Log.error(String
-          .format(
-              "0xA5009 Expected the ASTNode of cd type symbol %s to be an ASTType, but it is of kind %s",
-              type.getFullName(), node.getClass().getName()));
-      return false;
-    }
-    return isOptional((ASTMCType) node);
+    return false;
   }
 
   public static boolean isOptional(CDFieldSymbol field) {
-    return isOptional(field.getType());
+    return field.getType().isSymbolLoaded() && isOptional(field.getType().getLoadedSymbol());
   }
 
-  public boolean isAstNode(CDTypeSymbol type) {
+  public static boolean isBoolean(ASTCDAttribute attribute) {
+    return "boolean".equals(attribute.printType());
+  }
+
+  public boolean isAstNode(CDTypeSymbolLoader type) {
     String typeName = type.getName();
     if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
       return false;
     } else {
-      List<String> listName = MCCollectionTypesHelper.createListFromDotSeparatedString(typeName);
+      List<String> listName = Arrays.asList(typeName.split("\\."));
       if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
         return false;
       }
     }
-    if (!(type instanceof CDTypeSymbolReference)) {
-      return type.isClass() || type.isInterface();
-    }
-    CDTypeSymbolReference attrType = (CDTypeSymbolReference) type;
-    if (!attrType.getActualTypeArguments().isEmpty()) {
+
+    if (!type.getActualTypeArguments().isEmpty()) {
       return false;
     }
-    return attrType.existsReferencedSymbol() && !attrType.isEnum();
+    return type.isSymbolLoaded() && !type.getLoadedSymbol().isIsEnum();
   }
 
   public boolean isOptionalAstNode(CDFieldSymbol field) {
@@ -252,7 +266,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
 
   public boolean isEnum(String qualifiedName) {
     Optional<CDTypeSymbol> cdType = resolveCdType(qualifiedName);
-    return cdType.isPresent() && cdType.get().isEnum();
+    return cdType.isPresent() && cdType.get().isIsEnum();
   }
 
   public static Grammar_WithConceptsPrettyPrinter getMcPrettyPrinter() {
@@ -276,11 +290,11 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     return isListAstNode(attribute.getSymbol().getType());
   }
 
-  public boolean isListAstNode(CDTypeSymbolReference type) {
+  public boolean isListAstNode(CDTypeSymbolLoader type) {
     if (!isListType(type.getName())) {
       return false;
     }
-    List<CDTypeSymbolReference> typeArgs = type.getActualTypeArguments();
+    List<CDTypeSymbolLoader> typeArgs = type.getActualTypeArguments();
     if (typeArgs.size() != 1) {
       return false;
     }
@@ -288,18 +302,18 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     return isAstNode(typeArgs.get(0));
   }
 
-  public boolean isList(CDTypeSymbolReference type) {
+  public boolean isList(CDTypeSymbolLoader type) {
     if (!type.getName().equals(JAVA_LIST)) {
       return false;
     }
     return type.getActualTypeArguments().size() == 1;
   }
 
-  public boolean isOptionalAstNode(CDTypeSymbolReference type) {
+  public boolean isOptionalAstNode(CDTypeSymbolLoader type) {
     if (!type.getName().equals(OPTIONAL)) {
       return false;
     }
-    List<CDTypeSymbolReference> typeArgs = type.getActualTypeArguments();
+    List<CDTypeSymbolLoader> typeArgs = type.getActualTypeArguments();
     if (typeArgs.size() != 1) {
       return false;
     }
@@ -319,12 +333,12 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     return name.intern();
   }
 
-  public static boolean isQualified(MCGrammarSymbolReference grammarRef) {
+  public static boolean isQualified(MCGrammarSymbolLoader grammarRef) {
     if (grammarRef.getName().contains(".")) {
       return true;
     }
-    if (grammarRef.existsReferencedSymbol()) {
-      MCGrammarSymbol grammarSymbol = grammarRef.getReferencedSymbol();
+    if (grammarRef.isSymbolLoaded()) {
+      MCGrammarSymbol grammarSymbol = grammarRef.getLoadedSymbol();
       if (!grammarSymbol.getFullName().contains(".")) {
         // The complete name has no package name, therefore the grammarRefName
         // without "." is qualified
@@ -591,8 +605,8 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
     List<ASTProd> superRuleNodes = new ArrayList<>();
     for (ASTRuleReference superRule : ruleReferences) {
       Optional<ProdSymbol> symbol = nodeWithSymbol.getEnclosingScope().resolveProd(superRule.getName());
-      if (symbol.isPresent() && symbol.get().getAstNode().isPresent()) {
-        superRuleNodes.add((ASTProd) symbol.get().getAstNode().get());
+      if (symbol.isPresent() && symbol.get().isPresentAstNode()) {
+        superRuleNodes.add((ASTProd) symbol.get().getAstNode());
       }
     }
     return superRuleNodes;
@@ -652,7 +666,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
   public Optional<String> getSymbolName(String name, MCGrammarSymbol grammarSymbol) {
     String astName = name.substring(name.lastIndexOf("AST") + 3);
     Optional<ProdSymbol> mcProdSymbol = grammarSymbol.getProd(astName);
-    if (mcProdSymbol.isPresent() && mcProdSymbol.get().isSymbolDefinition()) {
+    if (mcProdSymbol.isPresent() && mcProdSymbol.get().isIsSymbolDefinition()) {
       return Optional.of(mcProdSymbol.get().getName());
     }
     return Optional.empty();
@@ -661,7 +675,7 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
   public boolean isScopeClass(String name, MCGrammarSymbol grammarSymbol) {
     String astName = name.substring(name.lastIndexOf("AST") + 3);
     Optional<ProdSymbol> mcProdSymbol = grammarSymbol.getProd(astName);
-    if (mcProdSymbol.isPresent() && mcProdSymbol.get().isScopeSpanning()) {
+    if (mcProdSymbol.isPresent() && mcProdSymbol.get().isIsScopeSpanning()) {
       return true;
     }
     return false;
@@ -676,21 +690,19 @@ public class GeneratorHelper extends MCCollectionTypesHelper {
       sb.append(GET_PREFIX);
     }
     sb.append(StringTransformations.capitalize(getNativeAttributeName(field.getName())));
-    if (isOptional(field)) {
-      sb.append(GET_SUFFIX_OPTINAL);
-    } else if (isListType(astType)) {
+    if (isListType(astType)) {
       //list suffix `s` not added to field name
       sb.append(GET_SUFFIX_LIST);
     }
     return sb.toString();
   }
 
-  public String getAstClassNameForASTLists(CDTypeSymbolReference field) {
-    List<CDTypeSymbolReference> typeArgs = field.getActualTypeArguments();
+  public String getAstClassNameForASTLists(CDTypeSymbolLoader field) {
+    List<CDTypeSymbolLoader> typeArgs = field.getActualTypeArguments();
     if (typeArgs.size() != 1) {
       return AST_NODE_CLASS_NAME;
     }
-    String arg = typeArgs.get(0).getReferencedSymbol().getFullName();
+    String arg = typeArgs.get(0).getLoadedSymbol().getFullName();
     return Joiners.DOT.join(Names.getQualifier(arg).toLowerCase(), AST_PACKAGE_SUFFIX, Names.getSimpleName(arg));
   }
 

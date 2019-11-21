@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.printer;
 
-import de.monticore.types.CollectionTypesPrinter;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
+import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -30,11 +30,12 @@ public class CollectionTypesPrinterTest {
     assertTrue(astmcOptionalType.isPresent());
     assertTrue(astmcMapType.isPresent());
 
-    assertEquals("java.util.List", CollectionTypesPrinter.printType(astmcBasicTypeArgument.get()));
-    assertEquals("int", CollectionTypesPrinter.printType(astmcPrimitiveTypeArgument.get()));
-    assertEquals("List<java.lang.String>",CollectionTypesPrinter.printType(astmcListType.get())); // funktioniert nicht
-    assertEquals("Set<int>",CollectionTypesPrinter.printType(astmcSetType.get()));
-    assertEquals("Optional<Character>", CollectionTypesPrinter.printType(astmcOptionalType.get()));
-    assertEquals("Map<String,String>",CollectionTypesPrinter.printType(astmcMapType.get()));
+    MCCollectionTypesPrettyPrinter printer = MCCollectionTypesMill.mcCollectionTypesPrettyPrinter();
+    assertEquals("java.util.List", printer.prettyprint(astmcBasicTypeArgument.get()));
+    assertEquals("int", printer.prettyprint(astmcPrimitiveTypeArgument.get()));
+    assertEquals("List<java.lang.String>",printer.prettyprint(astmcListType.get())); // funktioniert nicht
+    assertEquals("Set<int>",printer.prettyprint(astmcSetType.get()));
+    assertEquals("Optional<Character>", printer.prettyprint(astmcOptionalType.get()));
+    assertEquals("Map<String,String>",printer.prettyprint(astmcMapType.get()));
   }
 }

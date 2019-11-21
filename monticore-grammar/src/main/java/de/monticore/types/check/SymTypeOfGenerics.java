@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -21,69 +22,24 @@ import java.util.stream.Stream;
 public class SymTypeOfGenerics extends SymTypeExpression {
   
   /**
-   * A SymTypeExpression has
-   *    a name (representing a TypeConstructor) and
-   *    a list of Type Expressions
-   * This is always the full qualified name (i.e. including package)
-   */
-  protected String typeConstructorFullName;
-  
-  /**
    * List of arguments of a type constructor
    */
   protected List<SymTypeExpression> arguments = new LinkedList<>();
-  
-  /**
-   * Symbol corresponding to the type constructors's name (if loaded???)
-   */
-  protected TypeSymbol objTypeConstructorSymbol;
-  
-  
+
   /**
    * Constructor with all parameters that are stored:
    */
-  public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments,
-                           TypeSymbol objTypeConstructorSymbol, TypeSymbol typeInfo) {
-    this.typeConstructorFullName = typeConstructorFullName;
-    this.arguments = arguments;
-    this.objTypeConstructorSymbol = objTypeConstructorSymbol;
-    this.setTypeInfo(typeInfo);
+  public SymTypeOfGenerics(TypeSymbolLoader typeSymbolLoader) {
+    this.typeSymbolLoader = typeSymbolLoader;
   }
-  
-  
-  
-  @Deprecated // TODO: delete, only used by another deprecated method
-  public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments) {
-    this.typeConstructorFullName = typeConstructorFullName;
+
+  public SymTypeOfGenerics(TypeSymbolLoader typeSymbolLoader, List<SymTypeExpression> arguments) {
+    this.typeSymbolLoader = typeSymbolLoader;
     this.arguments = arguments;
   }
 
-
-  // TODO: löschen, denn es besetzt nicht die geerbten Attribute
-  @Deprecated
-  public SymTypeOfGenerics(String typeConstructorFullName, List<SymTypeExpression> arguments,
-                           TypeSymbol objTypeConstructorSymbol) {
-    this.typeConstructorFullName = typeConstructorFullName;
-    this.arguments = arguments;
-    this.objTypeConstructorSymbol = objTypeConstructorSymbol;
-    // missing: this.setTypeInfo(typeInfo);
-  }
-  
-  
   public String getTypeConstructorFullName() {
-    return typeConstructorFullName;
-  }
-  
-  public void setTypeConstructorFullName(String typeConstructorFullName) {
-    this.typeConstructorFullName = typeConstructorFullName;
-  }
-
-  public TypeSymbol getObjTypeConstructorSymbol() {
-    return objTypeConstructorSymbol;
-  }
-  
-  public void setObjTypeConstructorSymbol(TypeSymbol objTypeConstructorSymbol) {
-    this.objTypeConstructorSymbol = objTypeConstructorSymbol;
+    return typeSymbolLoader.getName();
   }
   
   /**
@@ -113,8 +69,6 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       jp.valueJson(exp.printAsJson());
     }
     jp.endArray();
-    //TODO: TypeSymbolDeSer implementieren
-    jp.member("objTypeConstructorSymbol", "TODO");//new TypeSymbolDeSer().serialize(getObjTypeConstructorSymbol()));
     jp.endObject();
     return jp.getContent();
   }
@@ -147,14 +101,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   @Override
   public SymTypeOfGenerics deepClone() {
-    List<SymTypeExpression> typeArguments = new ArrayList<>();
-    for(SymTypeExpression typeArgument : this.getArgumentList()){
-      typeArguments.add(typeArgument.deepClone());
-    }
-
-    SymTypeOfGenerics clone = new SymTypeOfGenerics(this.getTypeConstructorFullName(),typeArguments,
-                                                    this.getObjTypeConstructorSymbol(), this.typeInfo.deepClone());
-    return clone;
+    return new SymTypeOfGenerics(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()), getArgumentList());
   }
 
   // --------------------------------------------------------------------------

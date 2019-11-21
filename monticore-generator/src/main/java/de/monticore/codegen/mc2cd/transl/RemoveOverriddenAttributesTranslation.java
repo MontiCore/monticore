@@ -7,6 +7,7 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.utils.Link;
 
 import java.util.Optional;
@@ -56,7 +57,7 @@ public class RemoveOverriddenAttributesTranslation implements
     if (!usageName.isPresent()) {
       for (ASTAdditionalAttribute attributeInAST : attributesInASTLinkingToSameClass) {
         if (!attributeInAST.getNameOpt().isPresent()) {
-          String name = attributeInAST.getMCType().printType();
+          String name = attributeInAST.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
           if(getName(source).orElse("").equals(name)){
             matchByTypeName= true;
             break;

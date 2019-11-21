@@ -94,10 +94,8 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
   protected enum ASTCNodeMethod {
     // ----------- SourcePosition -----------------------------
     set_SourcePositionEnd("public void set_SourcePositionEnd(SourcePosition end);"),
-    set_SourcePositionEndOpt("public void set_SourcePositionEndOpt(Optional<SourcePosition> end);"),
     set_SourcePositionEndAbsent("public void set_SourcePositionEndAbsent();"),
     set_SourcePositionStart("public void set_SourcePositionStart(SourcePosition start);"),
-    set_SourcePositionStartOpt("public void set_SourcePositionStartOpt(Optional<SourcePosition> Start);"),
     set_SourcePositionStartAbsent("public void set_SourcePositionStartAbsent();"),
     // ----------- PreComments -----------------------------
     clear_PreComments("public void clear_PreComments();"),

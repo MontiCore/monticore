@@ -7,7 +7,7 @@ import de.monticore.completeness._visitor.CompletenessVisitor;
 
 public class CompletenessPrettyPrinter implements CompletenessVisitor {
   
-  private IndentPrinter printer = null;
+  private IndentPrinter printer;
   
   public CompletenessPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;

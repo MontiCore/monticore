@@ -16,8 +16,7 @@ import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.REAL_BUILDER;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAME_VAR;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.*;
 
 public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 

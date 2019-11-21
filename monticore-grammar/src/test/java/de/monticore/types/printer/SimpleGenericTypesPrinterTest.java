@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.printer;
 
-import de.monticore.types.FullGenericTypesPrinter;
-import de.monticore.types.SimpleGenericTypesPrinter;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
+import de.monticore.types.mcsimplegenerictypes._ast.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
+import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -24,7 +24,8 @@ public class SimpleGenericTypesPrinterTest {
     assertTrue(astmcBasicGenericType.isPresent());
     assertTrue(astmcCustomTypeArgument.isPresent());
 
-    assertEquals("List<String>", SimpleGenericTypesPrinter.printType(astmcCustomTypeArgument.get()));
-    assertEquals("java.util.List<List<String>>",SimpleGenericTypesPrinter.printType(astmcBasicGenericType.get()));
+    MCSimpleGenericTypesPrettyPrinter printer = MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter();
+    assertEquals("List<String>", printer.prettyprint(astmcCustomTypeArgument.get()));
+    assertEquals("java.util.List<List<String>>", printer.prettyprint(astmcBasicGenericType.get()));
   }
 }

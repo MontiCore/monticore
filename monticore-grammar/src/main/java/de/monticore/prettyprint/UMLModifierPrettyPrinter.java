@@ -7,7 +7,7 @@ import de.monticore.umlmodifier._visitor.UMLModifierVisitor;
 
 public class UMLModifierPrettyPrinter implements UMLModifierVisitor {
   
-  private IndentPrinter printer = null;
+  private IndentPrinter printer;
   
   public UMLModifierPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;

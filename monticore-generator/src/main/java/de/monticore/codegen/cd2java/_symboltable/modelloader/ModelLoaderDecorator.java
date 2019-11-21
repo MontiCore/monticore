@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates modelLoader class from grammar if the grammar has a start prod
@@ -175,7 +176,9 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   protected ASTCDMethod createShowWarningIfParsedModelsMethod(ASTCDParameter modelNameParam) {
     ASTMCWildcardTypeArgument wildCardWithNoBounds = getMCTypeFacade().createWildCardWithNoBounds();
-    ASTCDParameter listParam = getCDParameterFacade().createParameter(getMCTypeFacade().createListTypeOf(wildCardWithNoBounds), "asts");
+    // TODO die Variable kann gelöscht werden, wenn MCTypeFacade die richtigen Printer nutzt
+    String tmp = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(wildCardWithNoBounds);
+    ASTCDParameter listParam = getCDParameterFacade().createParameter(getMCTypeFacade().createListTypeOf(tmp), "asts");
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED,
         "showWarningIfParsedModels", listParam, modelNameParam);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(

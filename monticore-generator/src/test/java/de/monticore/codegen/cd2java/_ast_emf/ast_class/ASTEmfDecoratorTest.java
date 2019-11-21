@@ -26,10 +26,10 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
 public class ASTEmfDecoratorTest extends DecoratorTestCase {
@@ -101,7 +101,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethodSize() {
     assertFalse(emfClass.getCDMethodList().isEmpty());
-    assertEquals(23, emfClass.getCDMethodList().size());
+    assertEquals(21, emfClass.getCDMethodList().size());
   }
 
   @Test

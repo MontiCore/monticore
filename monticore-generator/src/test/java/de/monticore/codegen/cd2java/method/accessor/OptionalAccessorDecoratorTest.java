@@ -3,8 +3,8 @@ package de.monticore.codegen.cd2java.method.accessor;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
+import de.monticore.cd.facade.CDAttributeFacade;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -18,7 +18,7 @@ import java.util.List;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
@@ -38,7 +38,7 @@ public class OptionalAccessorDecoratorTest {
 
   @Test
   public void testMethods() {
-    assertEquals(3, methods.size());
+    assertEquals(2, methods.size());
   }
 
   @Test
@@ -47,16 +47,6 @@ public class OptionalAccessorDecoratorTest {
     assertTrue(method.getCDParameterList().isEmpty());
     Assert.assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
-    assertDeepEquals(PUBLIC, method.getModifier());
-  }
-
-  @Test
-  public void testGetOptMethod() {
-    ASTCDMethod method = getMethodBy("getAOpt", this.methods);
-    assertTrue(method.getCDParameterList().isEmpty());
-    ASTMCType expectedReturnType = MCTypeFacade.getInstance().createOptionalTypeOf("String");
-    Assert.assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 

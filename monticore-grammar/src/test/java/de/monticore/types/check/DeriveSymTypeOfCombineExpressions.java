@@ -71,8 +71,11 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
    */
   public Optional<SymTypeExpression> calculateType(ASTExpression e){
     e.accept(realThis);
-    Optional<SymTypeExpression> result = lastResult.getLastOpt();
-    lastResult.setLastOpt(Optional.empty());
+    Optional<SymTypeExpression> result = Optional.empty();
+    if (lastResult.isPresentLast()) {
+      result = Optional.ofNullable(lastResult.getLast());
+    }
+    lastResult.setLastAbsent();
     return result;
   }
 
@@ -124,8 +127,11 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
   @Override
   public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
     lit.accept(realThis);
-    Optional<SymTypeExpression> result = lastResult.getLastOpt();
-    lastResult.setLastOpt(Optional.empty());
+    Optional<SymTypeExpression> result = Optional.empty();
+    if (lastResult.isPresentLast()) {
+      result = Optional.ofNullable(lastResult.getLast());
+    }
+    lastResult.setLastAbsent();
     return result;
   }
 }

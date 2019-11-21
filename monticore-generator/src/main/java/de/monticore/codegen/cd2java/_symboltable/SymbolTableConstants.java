@@ -55,11 +55,13 @@ public class SymbolTableConstants {
 
   public static final String I_SCOPE = "de.monticore.symboltable.IScope";
 
+  public static final String I_ARTIFACT_SCOPE_TYPE = "de.monticore.symboltable.IArtifactScope";
+
+  public static final String I_GLOBAL_SCOPE_TYPE = "de.monticore.symboltable.IGlobalScope";
+
   public static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
 
   public static final String I_SYMBOL_LOADER = "de.monticore.symboltable.ISymbolLoader";
-
-  public static final String QUALIFIED_NAMES_CALCULATOR = "de.monticore.symboltable.names.QualifiedNamesCalculator";
 
   public static final String I_MODELING_LANGUAGE = "de.monticore.IModelingLanguage";
 
@@ -150,4 +152,5 @@ public class SymbolTableConstants {
   public static final String CALCULATED_MODEL_NAME = "calculatedModelName";
 
   public static final String DESERIALIZE = "deserialize";
+
 }

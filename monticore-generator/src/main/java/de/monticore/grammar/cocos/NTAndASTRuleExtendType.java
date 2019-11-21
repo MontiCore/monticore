@@ -6,7 +6,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.types.FullGenericTypesPrinter;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -23,26 +23,26 @@ public class NTAndASTRuleExtendType implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = a.getMCGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = a.getSymbol();
     for (ASTASTRule rule : a.getASTRuleList()) {
       if (!rule.getASTSuperClassList().isEmpty()) {
         Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(rule.getType());
         if (ruleSymbol.isPresent()) {
           if (ruleSymbol.get().isClass()) {
-            Optional<ASTProd> prod = ruleSymbol.get().getAstNode();
+            Optional<ASTProd> prod = ruleSymbol.get().getAstNodeOpt();
             if (prod.isPresent()
                     && (!((ASTClassProd) prod.get()).getASTSuperClassList().isEmpty()
                     || !((ASTClassProd) prod.get()).getSuperRuleList().isEmpty())) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rule.getType(),
-                      FullGenericTypesPrinter.printType(rule.getASTSuperClassList().get(0))),
+                      MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(rule.getASTSuperClassList().get(0))),
                       rule.get_SourcePositionStart());
             }
-          } else if (ruleSymbol.get().getAstNode().isPresent()
-                  && ruleSymbol.get().getAstNode().get() instanceof ASTAbstractProd) {
-            ASTAbstractProd prod = (ASTAbstractProd) ruleSymbol.get().getAstNode().get();
+          } else if (ruleSymbol.get().isPresentAstNode()
+                  && ruleSymbol.get().getAstNode() instanceof ASTAbstractProd) {
+            ASTAbstractProd prod = (ASTAbstractProd) ruleSymbol.get().getAstNode();
             if (!prod.getASTSuperClassList().isEmpty() || !prod.getSuperRuleList().isEmpty()) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rule.getType(),
-                      FullGenericTypesPrinter.printType(rule.getASTSuperClassList().get(0))),
+                      MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(rule.getASTSuperClassList().get(0))),
                       rule.get_SourcePositionStart());
             }
           }

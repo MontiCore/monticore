@@ -2,14 +2,14 @@
 package mc.typescalculator;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.LogStub;
+import mc.testcd4analysis._symboltable.TestCD4AnalysisLanguage;
+import mc.testcd4analysis._symboltable.TestCD4AnalysisGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.*;
 import org.junit.Test;
@@ -29,10 +29,10 @@ public class CombineExpressionsWithLiteralsTest {
   @Test
   public void testCD() throws IOException {
     LogStub.init();
-    CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
+    TestCD4AnalysisLanguage cd4AnalysisLanguage = new TestCD4AnalysisLanguage();
     ModelPath modelPath = new ModelPath(Paths.get(MODEL_PATH));
-    CD4AnalysisGlobalScope globalScope =
-            new CD4AnalysisGlobalScope(modelPath, cd4AnalysisLanguage);
+    TestCD4AnalysisGlobalScope globalScope =
+            new TestCD4AnalysisGlobalScope(modelPath, cd4AnalysisLanguage);
 
 
     CD2EAdapter adapter = new CD2EAdapter(globalScope);

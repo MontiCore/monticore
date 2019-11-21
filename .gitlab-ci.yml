@@ -54,7 +54,7 @@ build_branches:
     - dev
     - master
 
-it:
+it-gradle:
   stage: test2
   dependencies: []
   script:
@@ -63,13 +63,28 @@ it:
     - "./gradlew build -PbuildProfile=emf $GRADLE_OPTS"
     - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
     - "./gradlew build $GRADLE_OPTS"
+  only:
+    - dev
+
+it-maven:
+  stage: test2
+  dependencies: []
+  script:
+    - cd monticore-generator/it
+    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS clean install -P emf-it-tests"
+    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
+    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+  except:
+    - dev
 
   #rules:
   #  - if: '$CI_COMMIT_REF_SLUG == "dev"'
   #    when: always
   #  - when: manual
 
-it-experiments-grammar:
+# build experiments and grammar with gradle for def
+it-experiments-grammar-gradle:
   stage: test1
   dependencies: []
   script:
@@ -77,8 +92,20 @@ it-experiments-grammar:
     - "./gradlew build $GRADLE_OPTS"
     - "cd ../../../monticore-grammar/monticore-grammar-it"
     - "./gradlew build $GRADLE_OPTS"
-  #only:
-  #  - dev
+  only:
+    - dev
+
+# build experiments and grammar with maven for all other branches
+it-experiments-grammar-maven:
+  stage: test1
+  dependencies: []
+  script:
+    - cd monticore-generator/it/experiments
+    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+    - "cd ../../../monticore-grammar/monticore-grammar-it"
+    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+  except:
+    - dev
 
 trigger-automata:
   stage: test1

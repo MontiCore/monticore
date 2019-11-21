@@ -23,16 +23,15 @@ public class InheritedScopeProperty implements GrammarASTProdCoCo {
 
   @Override
   public void check(ASTProd a) {
-    ProdSymbol s = a.getProdSymbol();
+    ProdSymbol s = a.getSymbol();
     Set<ProdSymbol> superProds = MCGrammarSymbolTableHelper.getAllSuperProds(s);
-    boolean found = s.isScopeSpanning();
+    boolean found = s.isIsScopeSpanning();
     for (ProdSymbol prod : superProds) {
-      if (found && prod.isScopeSpanning()) {
+      if (found && prod.isIsScopeSpanning()) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()), a.get_SourcePositionStart());
-      } else if (prod.isScopeSpanning()) {
+      } else if (prod.isIsScopeSpanning()) {
         found = true;
       }
     }
   }
-
 }

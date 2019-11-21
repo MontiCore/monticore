@@ -1,18 +1,25 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("scopeClass", "scopeRuleAttrList")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-  Optional<String> name = scopeJson.getStringMemberOpt(de.monticore.symboltable.serialization.JsonConstants.NAME);
-  Optional<Boolean> exportsSymbols = scopeJson.getBooleanMemberOpt(de.monticore.symboltable.serialization.JsonConstants.EXPORTS_SYMBOLS);
-  Optional<Boolean> isShadowingScope = scopeJson.getBooleanMemberOpt(de.monticore.symboltable.serialization.JsonConstants.IS_SHADOWING_SCOPE);
+  boolean isShadowingScope = false;
+  if (scopeJson.hasBooleanMember(de.monticore.symboltable.serialization.JsonConstants.IS_SHADOWING_SCOPE)) {
+    isShadowingScope = scopeJson.getBooleanMember(de.monticore.symboltable.serialization.JsonConstants.IS_SHADOWING_SCOPE);
+  }
+  boolean exportsSymbols = true;
+  if (scopeJson.hasBooleanMember(de.monticore.symboltable.serialization.JsonConstants.EXPORTS_SYMBOLS)) { 
+    exportsSymbols = scopeJson.getBooleanMember(de.monticore.symboltable.serialization.JsonConstants.EXPORTS_SYMBOLS);
+  }  
 
-  ${scopeClass} scope = new ${scopeClass}(isShadowingScope.orElse(false));
-  name.ifPresent(scope::setName);
-  scope.setExportingSymbols(exportsSymbols.orElse(true));
+  ${scopeClass} scope = new ${scopeClass}(isShadowingScope);
+  if (scopeJson.hasStringMember(de.monticore.symboltable.serialization.JsonConstants.NAME)) {
+    scope.setName(scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonConstants.NAME));
+  }
+  scope.setExportingSymbols(exportsSymbols);
             <#list scopeRuleAttrList as attr>
-              scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson));
+              scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson,enclosingScope));
             </#list>
 
   addSymbols(scopeJson, scope);
   addAndLinkSubScopes(scopeJson, scope);
-  deserializeAdditionalAttributes(scope,scopeJson);
+  deserializeAdditionalAttributes(scope,scopeJson,enclosingScope);
   return scope;

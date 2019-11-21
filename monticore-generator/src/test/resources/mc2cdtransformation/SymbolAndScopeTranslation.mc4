@@ -2,7 +2,7 @@
 
 package mc2cdtransformation;
 
-grammar SymbolAndScopeTranslation {
+grammar SymbolAndScopeTranslation extends mc2cdtransformation.symbolTransl.SymbolRule{
 
   interface symbol Type = Name;
 
@@ -10,7 +10,7 @@ grammar SymbolAndScopeTranslation {
 
   CDClass implements CDType = "class" Name;
 
-  symbol SymbolClass = Name;
+  symbol SimpleSymbolClass = Name;
 
   interface scope TypeScope;
 
@@ -18,5 +18,22 @@ grammar SymbolAndScopeTranslation {
 
   CDClassScope implements CDTypeScope = "scopeClass" Name;
 
-  scope ScopeClass = Name;
+  scope SimpleScopeClass = Name;
+
+
+// overwrite
+  SymbolClass = Name;
+  SymbolAbstractClass = Name;
+  SymbolInterface = Name;
+
+// extent bzw. implement
+  symbol scope Foo = Name;
+  ExtentsSymbolClass extends Foo = Name;
+
+  symbol scope AbstractFoo = Name;
+  ExtentsSymbolAbstractClass extends AbstractFoo = Name;
+
+  interface symbol scope InterfaceFoo;
+  ImplementsSymbolInterface implements InterfaceFoo = Name;
+
 }

@@ -10,7 +10,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.PACKAGE_SUFFIX;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.*;
 
 public class EmfOptionalMutatorDecorator extends OptionalMutatorDecorator {
   protected final ASTService astService;
@@ -28,16 +28,5 @@ public class EmfOptionalMutatorDecorator extends OptionalMutatorDecorator {
 
   public void setClassName(String className) {
     this.className = className;
-  }
-
-
-  @Override
-  protected ASTCDMethod createSetOptMethod(final ASTCDAttribute attribute) {
-    String packageName = astService.getCDName() + PACKAGE_SUFFIX;
-    String methodName = String.format(SET_OPT, naiveAttributeName);
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, methodName, this.getCDParameterFacade().createParameters(attribute));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.ast_class.Set",
-        packageName, getClassName(), attribute));
-    return method;
   }
 }

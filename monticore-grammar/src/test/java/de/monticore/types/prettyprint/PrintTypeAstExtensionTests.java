@@ -88,7 +88,7 @@ public class PrintTypeAstExtensionTests {
     String simpleReference = "de.monticore.types.Prettyprint";
     try {
       Optional<ASTMCReturnType> type = mcBasicTypesParser.parse_StringMCReturnType(simpleReference);
-      assertEquals(simpleReference.trim(),type.get().printType().trim());
+      assertEquals(simpleReference.trim(),type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -100,7 +100,7 @@ public class PrintTypeAstExtensionTests {
     String simpleReference = "void";
     try {
       Optional<ASTMCReturnType> type = mcBasicTypesParser.parse_StringMCReturnType(simpleReference);
-      assertEquals(simpleReference.trim(),type.get().printType().trim());
+      assertEquals(simpleReference.trim(),type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
     } catch (IOException e) {
       e.printStackTrace();
     }

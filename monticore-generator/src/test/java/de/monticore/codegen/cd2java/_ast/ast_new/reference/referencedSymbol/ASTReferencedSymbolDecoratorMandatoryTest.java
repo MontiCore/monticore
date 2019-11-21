@@ -12,7 +12,7 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factories.MCTypeFacade;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
 public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase {
@@ -87,7 +87,7 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
 
   @Test
   public void testMethods() {
-    assertEquals(6, astClass.getCDMethodList().size());
+    assertEquals(4, astClass.getCDMethodList().size());
   }
 
 
@@ -97,15 +97,6 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(NAME_SYMBOL, method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetNameSymbolOptMethod() {
-    ASTCDMethod method = getMethodBy("getNameSymbolOpt", astClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertOptionalOf(NAME_SYMBOL, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 

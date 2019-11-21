@@ -5,7 +5,8 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.io.paths.IterablePath;
 
-import static de.monticore.codegen.cd2java.factories.CDModifier.PACKAGE_PRIVATE_ABSTRACT;
+import static de.monticore.cd.facade.CDModifier.*;
+
 import static de.monticore.codegen.mc2cd.TransformationHelper.existsHandwrittenClass;
 import static de.monticore.utils.Names.constructQualifiedName;
 

@@ -8,9 +8,8 @@ import de.monticore.statements.mcsynchronizedstatements._ast.ASTMCSynchronizedSt
 import de.monticore.statements.mcsynchronizedstatements._ast.ASTSynchronizedStatement;
 import de.monticore.statements.mcsynchronizedstatements._visitor.MCSynchronizedStatementsVisitor;
 
-public class MCSynchronizedStatementsPrettyPrinter extends MCCommonStatementsPrettyPrinter implements
-        MCSynchronizedStatementsVisitor {
-
+public class MCSynchronizedStatementsPrettyPrinter extends MCCommonStatementsPrettyPrinter
+    implements MCSynchronizedStatementsVisitor {
 
   private MCSynchronizedStatementsVisitor realThis = this;
 

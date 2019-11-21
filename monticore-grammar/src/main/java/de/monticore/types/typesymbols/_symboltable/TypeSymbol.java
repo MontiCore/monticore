@@ -12,49 +12,23 @@ public class TypeSymbol extends TypeSymbolTOP {
     super(name);
   }
 
-  /**
-   * returns a clone of this
-   */
-  public TypeSymbol deepClone() {
-    TypeSymbol clone = new TypeSymbol(name);
-    clone.setEnclosingScope(this.getEnclosingScope());
-    clone.setFullName(this.getFullName());
-    clone.setAccessModifier(this.getAccessModifier());
-    clone.setSpannedScope(this.getSpannedScope());
-    if (getAstNodeOpt().isPresent()) {
-      clone.setAstNode(this.getAstNode());
-    }
-    List<MethodSymbol> methods = new ArrayList<>();
-    for (MethodSymbol method : this.getMethodList()) {
-      methods.add(method.deepClone());
-    }
-    clone.setMethodList(methods);
+  protected List<MethodSymbol> methodList=new ArrayList<>();
 
-    List<FieldSymbol> fields = new ArrayList<>();
-    for (FieldSymbol field : this.getFieldList()) {
-      fields.add(field.deepClone());
-    }
-    clone.setFieldList(fields);
 
-    List<SymTypeExpression> superTypes = new ArrayList<>();
-    for (SymTypeExpression superType : this.getSuperTypeList()) {
-      superTypes.add(superType.deepClone());
-    }
-    clone.setSuperTypeList(superTypes);
 
-    List<TypeVarSymbol> typeParameters = new ArrayList<>();
-    for (TypeVarSymbol typeParameter : this.getTypeParameterList()) {
-      typeParameters.add(typeParameter.deepClone());
+  public void setMethodList(List<MethodSymbol> methodList){
+    this.methodList = methodList;
+    for(MethodSymbol method: methodList){
+      spannedScope.add(method);
     }
-    clone.setTypeParameterList(typeParameters);
-
-    return clone;
   }
+
+
 
   /**
    * get a list of all the methods the type definition can access
    */
-  @Override
+
   public List<MethodSymbol> getMethodList() {
     if (spannedScope == null || spannedScope.getMethodSymbols() == null || spannedScope.getMethodSymbols().isEmpty()) {
       return Lists.newArrayList();
@@ -72,7 +46,7 @@ public class TypeSymbol extends TypeSymbolTOP {
   /**
    * get a list of all the fields the type definition can access
    */
-  @Override
+
   public List<FieldSymbol> getFieldList() {
     if (spannedScope == null || spannedScope.getFieldSymbols() == null || spannedScope.getFieldSymbols().isEmpty()) {
       return Lists.newArrayList();
@@ -87,4 +61,20 @@ public class TypeSymbol extends TypeSymbolTOP {
     return spannedScope.resolveFieldMany(fieldname);
   }
 
+  public List<TypeVarSymbol> getTypeParameterList() {
+    return spannedScope.getTypeVarSymbols().values();
+  }
+
+
+  public void addTypeVarSymbol(TypeVarSymbol t) {
+    spannedScope.add(t);
+  }
+
+  public void addFieldSymbol(FieldSymbol f) {
+    spannedScope.add(f);
+  }
+
+  public void addMethodSymbol(MethodSymbol m) {
+    spannedScope.add(m);
+  }
 }

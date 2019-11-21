@@ -26,7 +26,7 @@ import org.junit.Test;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -68,7 +68,7 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
 
   @Test
   public void testMethods() {
-    assertEquals(3, astClass.getCDMethodList().size());
+    assertEquals(2, astClass.getCDMethodList().size());
   }
 
   @Test
@@ -77,15 +77,6 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(NAME_DEFINITION, method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetNameDefinitionOptMethod() {
-    ASTCDMethod method = getMethodBy("getNameDefinitionOpt", astClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertOptionalOf(NAME_DEFINITION, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 

@@ -257,7 +257,7 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
 
   astrule BasicDoubleLiteral =
     method public String getSource() {
-      return getPre() + "." + getPost() + "D";
+      return getPre() + "." + getPost();
     }
     method public double getValue() {
       return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
@@ -266,7 +266,7 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
 
   astrule SignedBasicDoubleLiteral =
     method public String getSource() {
-      return (isNegative()?"-":"") + getPre() + "." + getPost() + "D";
+      return (isNegative()?"-":"") + getPre() + "." + getPost();
     }
     method public double getValue() {
       return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());

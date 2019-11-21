@@ -47,7 +47,7 @@ public class SymbolsTest {
   public void testStateSymbol1() throws IOException {
     StateSymbol s1 = new StateSymbol("ping");
     StateSymbol s2 = new StateSymbol("pong");
-    assertEquals(Optional.empty(),s1.getAstNodeOpt());
+    assertFalse(s1.isPresentAstNode());
     assertEquals("ping",s1.getName());
     assertEquals("",s1.getPackageName());
     assertEquals("ping",s1.getFullName());
