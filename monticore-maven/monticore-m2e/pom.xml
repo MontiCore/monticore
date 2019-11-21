@@ -8,7 +8,7 @@
   <parent>
     <groupId>de.monticore.mojo</groupId>
     <artifactId>monticore-maven</artifactId>
-    <version>5.5.0-SNAPSHOT</version>
+    <version>6.0.0</version>
   </parent>
 
   <artifactId>monticore-m2e</artifactId>
