@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * checks whether a grammar contains two or more prods that have the save name.
+ * checks whether a grammar contains two or more prods that have the same name.
  * e.g. grammar A { B = "b"; B = "a";} is not allowed
  * prod names must be unique within a grammar
  */
