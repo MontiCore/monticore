@@ -14,6 +14,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
 import de.se_rwth.commons.logging.Log;
@@ -29,11 +30,10 @@ import static com.google.common.collect.Sets.newLinkedHashSet;
 public class MCGrammarSymbolTableHelper {
   
    public static Optional<ProdSymbol> resolveRule(ASTMCGrammar astNode, String name) {
-    Optional<MCGrammarSymbol> grammarSymbol = astNode.getSymbolOpt();
-    if (!grammarSymbol.isPresent()) {
-      return Optional.empty();
+    if (astNode.isPresentSymbol()) {
+      return astNode.getSymbol().getProdWithInherited(name);
     }
-    return grammarSymbol.get().getProdWithInherited(name);
+    return Optional.empty();
   }
 
   public static Optional<ProdSymbol> resolveRuleInSupersOnly(ASTClassProd astNode, String name) {
@@ -51,7 +51,7 @@ public class MCGrammarSymbolTableHelper {
   public static Optional<MCGrammarSymbol> getMCGrammarSymbol(IGrammarScope scope) {
     boolean exist = true;
     while (exist) {
-      if (scope.getSpanningSymbolOpt().isPresent() && scope.getSpanningSymbol() instanceof MCGrammarSymbol) {
+      if (scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof MCGrammarSymbol) {
         return Optional.of((MCGrammarSymbol) scope.getSpanningSymbol());
       }
       if (scope instanceof Grammar_WithConceptsGlobalScope) {
@@ -65,17 +65,18 @@ public class MCGrammarSymbolTableHelper {
 
     public static Optional<ProdSymbol> getEnclosingRule(ASTRuleComponent astNode) {
     return getAllScopes(astNode.getEnclosingScope()).stream()
-        .map(IScope::getSpanningSymbolOpt)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
+        .filter(IScope::isPresentSpanningSymbol)
+        .map(IScope::getSpanningSymbol)
         .filter(ProdSymbol.class::isInstance)
         .map(ProdSymbol.class::cast)
         .findFirst();
   }
   
   public static Optional<ProdSymbol> getEnclosingRule(RuleComponentSymbol prod) {
-    return prod.getEnclosingScope().getSpanningSymbolOpt().filter(ProdSymbol.class::isInstance)
-        .map(ProdSymbol.class::cast);
+     if (prod.getEnclosingScope().isPresentSpanningSymbol() && prod.getEnclosingScope().getSpanningSymbol() instanceof ProdSymbol) {
+       return Optional.of((ProdSymbol) prod.getEnclosingScope().getSpanningSymbol());
+     }
+    return Optional.empty();
   }
   
   /**
@@ -100,9 +101,9 @@ public class MCGrammarSymbolTableHelper {
     return ImmutableSet.copyOf(allSuperGrammars);
   }
   
-  public static boolean isFragment(Optional<ASTProd> astNode) {
-    return !astNode.isPresent() || !(astNode.get() instanceof ASTLexProd)
-        || ((ASTLexProd) astNode.get()).isFragment();
+  public static boolean isFragment(ASTProd astNode) {
+    return  !(astNode instanceof ASTLexProd)
+        || ((ASTLexProd) astNode).isFragment();
   }
 
   private static Set<IGrammarScope> getAllScopes(IGrammarScope scope) {
@@ -127,13 +128,10 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<Pattern> calculateLexPattern(MCGrammarSymbol grammar,
-      Optional<? extends ASTNode> lexNode) {
+      ASTLexProd lexNode) {
     Optional<Pattern> ret = Optional.empty();
     
-    if (!lexNode.isPresent() || !(lexNode.get() instanceof ASTLexProd)) {
-      return ret;
-    }
-    final String lexString = getLexString(grammar, (ASTLexProd) lexNode.get());
+      final String lexString = getLexString(grammar, lexNode);
     try {
       if ("[[]".equals(lexString)) {
         return Optional.ofNullable(Pattern.compile("[\\[]"));
@@ -186,7 +184,7 @@ public class MCGrammarSymbolTableHelper {
       return "UNKNOWN_TYPE";
     }
     if (symbol.isIsLexerProd()) {
-      return getLexType(symbol.getAstNodeOpt());
+      return getLexType(symbol.getAstNode());
     }
     if (symbol.isIsEnum()) {
       return getQualifiedName(symbol.getAstNode(), symbol, GeneratorHelper.AST_PREFIX, "");
@@ -208,18 +206,15 @@ public class MCGrammarSymbolTableHelper {
       return "null";
     }
   }
-  
-  private static String getLexType(Optional<? extends ASTNode> node) {
-    if (node.isPresent()) {
-      if (node.get() instanceof ASTLexProd) {
-        return HelperGrammar.createConvertType((ASTLexProd) node.get());
-      }
-      if (node.get() instanceof ASTLexActionOrPredicate) {
-        return "String";
-      }
+
+  private static String getLexType(ASTNode node) {
+    if (node instanceof ASTLexProd) {
+      return HelperGrammar.createConvertType((ASTLexProd) node);
+    }
+    if (node instanceof ASTLexActionOrPredicate) {
+      return "String";
     }
     return "UNKNOWN_TYPE";
-    
   }
   
   public static String getQualifiedName(ASTProd astNode, ProdSymbol symbol, String prefix,
@@ -258,7 +253,7 @@ public class MCGrammarSymbolTableHelper {
   public static Optional<String> getConstantGroupName(ASTConstantGroup ast) {
     // setAttributeMinMax(a.getIteration(), att);
     if (ast.isPresentUsageName()) {
-      return ast.getUsageNameOpt();
+      return Optional.of(ast.getUsageName());
     }
     // derive attribute name from constant entry (but only if we have
     // one entry!)

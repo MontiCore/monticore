@@ -11,6 +11,8 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SynthesizeSymTypeFromMCSimpleGenericTypes;
 import de.monticore.types.check.TypeCheck;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 
 import java.util.HashMap;
@@ -33,37 +35,39 @@ public class DeSerMap {
 
   protected static final Map<SymTypeExpression, String> primitiveDataTypes = new HashMap<>();
 
-//  protected static TypeSymbolsGlobalScope primitiveTypeGlobalScope = initializePrimitiveTypesGlobalScope();
+  protected static ITypeSymbolsScope gs = BuiltInJavaTypeSymbolResolvingDelegate.gs;
+
+  // protected static TypeSymbolsGlobalScope primitiveTypeGlobalScope = initializePrimitiveTypesGlobalScope();
 
   static {
     primitiveDataTypes
         .put(SymTypeExpressionFactory.createTypeConstant("boolean"), "getBooleanMember(\"%s\")");
-    primitiveDataTypes.put(SymTypeExpressionFactory.createTypeObject("java.lang.Boolean"),
+    primitiveDataTypes.put(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("java.lang.Boolean", gs)),
         "getBooleanMember(\"%s\")");
 
     primitiveDataTypes
-        .put(SymTypeExpressionFactory.createTypeObject("String"), "getStringMember(\"%s\")");
-    primitiveDataTypes.put(SymTypeExpressionFactory.createTypeObject("java.lang.String"),
+        .put(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("String", gs)), "getStringMember(\"%s\")");
+    primitiveDataTypes.put(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("java.lang.String", gs)),
         "getStringMember(\"%s\")");
 
     primitiveDataTypes.put(SymTypeExpressionFactory.createTypeConstant("double"),
         "getMember(\"%s\").getAsJsonNumber().getNumberAsDouble()");
-    primitiveDataTypes.put(SymTypeExpressionFactory.createTypeObject("java.lang.Double"),
+    primitiveDataTypes.put(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("java.lang.Double", gs)),
         "getMember(\"%s\").getAsJsonNumber().getNumberAsDouble()");
 
     primitiveDataTypes.put(SymTypeExpressionFactory.createTypeConstant("float"),
         "getMember(\"%s\").getAsJsonNumber().getNumberAsFloat()");
-    primitiveDataTypes.put(SymTypeExpressionFactory.createTypeObject("java.lang.Float"),
+    primitiveDataTypes.put(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("java.lang.Float", gs)),
         "getMember(\"%s\").getAsJsonNumber().getNumberAsFloat()");
 
     primitiveDataTypes.put(SymTypeExpressionFactory.createTypeConstant("int"),
         "getMember(\"%s\").getAsJsonNumber().getNumberAsInt()");
-    primitiveDataTypes.put(SymTypeExpressionFactory.createTypeObject("java.lang.Integer"),
+    primitiveDataTypes.put(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("java.lang.Integer", gs)),
         "getMember(\"%s\").getAsJsonNumber().getNumberAsInt()");
 
     primitiveDataTypes.put(SymTypeExpressionFactory.createTypeConstant("long"),
         "getMember(\"%s\").getAsJsonNumber().getNumberAsLong()");
-    primitiveDataTypes.put(SymTypeExpressionFactory.createTypeObject("java.lang.Long"),
+    primitiveDataTypes.put(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("java.lang.Long", gs)),
         "getMember(\"%s\").getAsJsonNumber().getNumberAsLong()");
 
   }
@@ -115,7 +119,7 @@ public class DeSerMap {
       SymTypeExpression actualType,
       TypeSymbolsScope enclosingScope) {
     SymTypeExpression list = SymTypeExpressionFactory
-        .createGenerics("java.util.List", Lists.newArrayList(expectedType), enclosingScope);
+        .createGenerics(new TypeSymbolLoader("java.util.List", enclosingScope), Lists.newArrayList(expectedType));
     //    if (TypeCheck.compatible(list1, actualType) || TypeCheck.compatible(list2, actualType)) {
     if (list.print().equals(actualType.print())) {
       return true;
@@ -126,7 +130,7 @@ public class DeSerMap {
   protected static boolean isOptionalTypeOf(SymTypeExpression expectedType,
       SymTypeExpression actualType, TypeSymbolsScope enclosingScope) {
     SymTypeExpression optional = SymTypeExpressionFactory
-        .createGenerics("java.util.Optional", Lists.newArrayList(expectedType), enclosingScope);
+        .createGenerics(new TypeSymbolLoader("java.util.Optional", enclosingScope), Lists.newArrayList(expectedType));
     //    if (TypeCheck.compatible(optional, actualType)) {
     if (optional.print().equals(actualType.print())) {
       return true;

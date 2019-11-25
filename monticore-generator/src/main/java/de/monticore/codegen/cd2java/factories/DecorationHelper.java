@@ -10,6 +10,7 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypes;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.MCBasicTypesHelper;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
@@ -120,6 +121,10 @@ public class DecorationHelper extends MCBasicTypesHelper {
 
   public boolean isMandatory(ASTCDAttribute astcdAttribute){
     return !isOptional(astcdAttribute.getMCType()) && ! isListType(astcdAttribute.printType()) && !CDTypes.isBoolean(astcdAttribute.printType());
+  }
+
+  public boolean isPrimitive(ASTMCType type){
+    return type instanceof ASTMCPrimitiveType;
   }
 
   public static String getPlainGetter(ASTCDAttribute ast) {

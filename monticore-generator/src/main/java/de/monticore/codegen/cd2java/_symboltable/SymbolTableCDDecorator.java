@@ -223,17 +223,23 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
     for (ASTCDClass cdClass : symTabCD.getCDClassList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(symbolTablePackage));
-      this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifierOpt()));
+      if (cdClass.isPresentModifier()) {
+        this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
+      }
     }
 
     for (ASTCDInterface cdInterface : symTabCD.getCDInterfaceList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(symbolTablePackage));
-      this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifierOpt()));
+      if (cdInterface.isPresentModifier()) {
+        this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
+      }
     }
 
     for (ASTCDEnum cdEnum : symTabCD.getCDEnumList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(symbolTablePackage));
-      this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifierOpt()));
+      if (cdEnum.isPresentModifier()) {
+        this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
+      }
     }
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()

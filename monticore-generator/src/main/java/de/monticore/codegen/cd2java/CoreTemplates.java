@@ -46,10 +46,10 @@ public final class CoreTemplates {
     return new StringHookPoint("package " + String.join(".", packageName) + ";");
   }
 
-  public static HookPoint createAnnotationsHookPoint(final Optional<ASTModifier> modifier) {
+  public static HookPoint createAnnotationsHookPoint(final ASTModifier modifier) {
     String anno = "";
-    if (modifier.isPresent() && modifier.get().isPresentStereotype()) {
-      ASTCDStereotype stereo = modifier.get().getStereotype();
+    if (modifier.isPresentStereotype()) {
+      ASTCDStereotype stereo = modifier.getStereotype();
       for (ASTCDStereoValue stereoValue : stereo.getValueList()) {
         if (MC2CDStereotypes.DEPRECATED.toString().equals(stereoValue.getName())) {
           if (stereoValue.isPresentValue()) {

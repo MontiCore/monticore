@@ -3,22 +3,22 @@ import de.monticore.GroovyTask
 buildscript {
   dependencies {
     classpath 'de.se_rwth.commons:se-commons-groovy:1.7.9'
-    classpath 'de.monticore:monticore-templateclassgenerator:6.0.0'
+    classpath 'de.monticore:monticore-templateclassgenerator:6.1.0-SNAPSHOT'
   }
 }
 
 plugins {
   id 'java'
-  id "monticore" version "6.0.0"
+  id "monticore" version "6.1.0-SNAPSHOT"
 }
 
-ext.mc_version = '6.0.0'
+ext.mc_version = '6.1.0-SNAPSHOT'
 ext.junit_version = '4.12'
 ext.commons_version = '1.7.9'
 ext.javaDSL_version = '4.3.17'
 
 group = 'de.monticore'
-version = '6.0.0'
+version = '6.1.0-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 dependencies {
