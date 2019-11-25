@@ -57,24 +57,20 @@ public class AstRuleTest {
    */
   @Test
   public void testAstSuperClass() {
-    java.util.Optional<ASTMCObjectType> superClasses = astA.getSuperclassOpt();
-    assertTrue(superClasses.isPresent());
-    String name = typeToString(superClasses.get());
+    assertTrue(astA.isPresentSuperclass());
+    String name = typeToString(astA.getSuperclass());
     assertEquals("ASTExternalProd", name);
     
-    superClasses = astC.getSuperclassOpt();
-    assertTrue(superClasses.isPresent());
-    name = typeToString(superClasses.get());
+    assertTrue(astC.isPresentSuperclass());
+    name = typeToString(astC.getSuperclass());
     assertEquals("ASTA", name);
     
-    superClasses = astD.getSuperclassOpt();
-    assertTrue(superClasses.isPresent());
-    name = typeToString(superClasses.get());
+    assertTrue(astD.isPresentSuperclass());
+    name = typeToString(astD.getSuperclass());
     assertEquals("mc2cdtransformation.super._ast.ASTSuperProd", name);
     
-    superClasses = astF.getSuperclassOpt();
-    assertTrue(superClasses.isPresent());
-    name = typeToString(superClasses.get());
+    assertTrue(astF.isPresentSuperclass());
+    name = typeToString(astF.getSuperclass());
     assertEquals("java.util.Observable", name);
   }
   

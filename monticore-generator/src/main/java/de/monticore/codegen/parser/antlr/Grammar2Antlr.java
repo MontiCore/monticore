@@ -507,7 +507,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     if (embeddedJavaCode) {
       boolean isAttribute = ast.isPresentUsageName();
-      boolean isList = ast.getSymbolOpt().isPresent() && ast.getSymbol().isIsList();
+      boolean isList = ast.isPresentSymbol() && ast.getSymbol().isIsList();
       // Add Actions
       if (isAttribute) {
         if (isList) {
@@ -548,7 +548,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     if (embeddedJavaCode) {
       boolean isAttribute = ast.isPresentUsageName();
-      boolean isList = ast.getSymbolOpt().isPresent() && ast.getSymbol().isIsList();
+      boolean isList = ast.isPresentSymbol() && ast.getSymbol().isIsList();
       // Add Actions
       if (isAttribute) {
         if (isList) {
@@ -718,7 +718,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       addToAntlrCode(ParserGeneratorHelper.RIGHTASSOC);
     }
     if (alt.isPresentDeprecatedAnnotation()) {
-      String message = "Deprecated syntax: " + alt.getDeprecatedAnnotation().getMessageOpt().orElse("");
+      String t = alt.getDeprecatedAnnotation().isPresentMessage()?alt.getDeprecatedAnnotation().getMessage():"";
+      String message = "Deprecated syntax: " + t;
       addToAction("de.se_rwth.commons.logging.Log.warn(\"" + message + "\");");
     }
   }
@@ -803,7 +804,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     boolean left = addAlternatives(interfaceRule, alts);
 
     // Append sorted alternatives
-    Collections.sort(alts, (p2, p1) -> new Integer(p1.getPredicatePair().getRuleReference().getPrioOpt().orElse("0")).compareTo(new Integer(p2.getPredicatePair().getRuleReference().getPrioOpt().orElse("0"))));
+    Collections.sort(alts, (p2, p1) ->
+            new Integer(p1.getPredicatePair().getRuleReference().isPresentPrio() ? p1.getPredicatePair().getRuleReference().getPrio() : "0").compareTo(
+                    new Integer(p2.getPredicatePair().getRuleReference().isPresentPrio() ? p2.getPredicatePair().getRuleReference().getPrio() : "0"  )));
+
     for(NodePair entry : alts) {
       addToAntlrCode(del);
 
@@ -958,9 +962,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         term.setName(y);
         term.setUsageName(HelperGrammar.getUsuageName(ast));
 
-        Optional<RuleComponentSymbol> ruleComponent = ast.getSymbolOpt();
-        if (ruleComponent.isPresent()) {
-          RuleComponentSymbol componentSymbol = (RuleComponentSymbol) ruleComponent.get();
+        if (ast.isPresentSymbol()) {
+          RuleComponentSymbol componentSymbol = ast.getSymbol();
           Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper
                   .getEnclosingRule(componentSymbol);
           if (rule.isPresent()) {

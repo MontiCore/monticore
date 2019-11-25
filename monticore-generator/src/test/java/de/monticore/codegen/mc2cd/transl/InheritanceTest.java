@@ -53,9 +53,8 @@ public class InheritanceTest {
    */
   @Test
   public void testExtends() {
-    java.util.Optional<ASTMCObjectType> superClasses = astA.getSuperclassOpt();
-    assertTrue(superClasses.isPresent());
-    String name = typeToString(superClasses.get());
+    assertTrue(astA.isPresentSuperclass());
+    String name = typeToString(astA.getSuperclass());
     assertEquals("mc2cdtransformation.InheritanceGrammar.ASTextendedProd", name);
   }
   
@@ -77,9 +76,8 @@ public class InheritanceTest {
    */
   @Test
   public void testAstextends() {
-    java.util.Optional<ASTMCObjectType> superClasses = astC.getSuperclassOpt();
-    assertTrue(superClasses.isPresent());
-    String name = typeToString(superClasses.get());
+    assertTrue(astC.isPresentSuperclass());
+    String name = typeToString(astC.getSuperclass());
     assertEquals("AstExtendedType", name);
   }
   
@@ -101,9 +99,8 @@ public class InheritanceTest {
    */
   @Test
   public void testAstextendsQualified() {
-    java.util.Optional<ASTMCObjectType> superClasses = astE.getSuperclassOpt();
-    assertTrue(superClasses.isPresent());
-    String name = typeToString(superClasses.get());
+    assertTrue(astE.isPresentSuperclass());
+    String name = typeToString(astE.getSuperclass());
     assertEquals("java.util.Observable", name);
   }
   

@@ -59,8 +59,8 @@ public class DeprecatedTranslation implements
         annotation = astGrammar.getDeprecatedAnnotation();
       }
       ASTModifier mod;
-      if (cdType.getModifierOpt().isPresent()) {
-        mod = cdType.getModifierOpt().get();
+      if (cdType.isPresentModifier()) {
+        mod = cdType.getModifier();
       } else {
         mod = CD4AnalysisMill.modifierBuilder().build();
       }

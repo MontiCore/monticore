@@ -43,18 +43,18 @@ public class ODGenerator {
     final CDDefinitionSymbol cd = odHelper.getCd();
     final String astPackage = GeneratorHelper.getPackageName(odHelper.getPackageName(),
             GeneratorHelper.AST_PACKAGE_SUFFIX);
-    Optional<MCGrammarSymbol> grammarSymbol = grammar.getSymbolOpt();
-    if (!grammarSymbol.isPresent()) {
+    if (!grammar.isPresentSymbol()) {
       return;
     }
-    
+    MCGrammarSymbol grammarSymbol = grammar.getSymbol();
+
     final String visitorPackage = odHelper.getPackageName() + "._od";
     String path = Names.getPathFromPackage(visitorPackage);
     
     // simple visitor for creating the OD
     final Path simpleVisitorFilePath = Paths.get(path, diagramName + "2OD.java");
     generator.generate("od.DiagramVisitor", simpleVisitorFilePath, astClassDiagram,
-        astClassDiagram.getCDDefinition(), astPackage, cd, grammarSymbol.get());
+        astClassDiagram.getCDDefinition(), astPackage, cd, grammarSymbol);
     Log.trace(LOGGER_NAME, "Generated visitor for the creating the OD to the diagram: " + diagramName);
     
   }

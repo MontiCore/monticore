@@ -48,15 +48,14 @@ public class RemoveOverriddenAttributesTranslation implements
     attributesInASTLinkingToSameClass.remove(source);
 
     boolean matchByUsageName = usageName.isPresent() && attributesInASTLinkingToSameClass.stream()
-        .map(ASTAdditionalAttribute::getNameOpt)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
+            .filter(ASTAdditionalAttribute::isPresentName)
+        .map(ASTAdditionalAttribute::getName)
         .anyMatch(usageName.get()::equals);
 
     boolean matchByTypeName = false;
     if (!usageName.isPresent()) {
       for (ASTAdditionalAttribute attributeInAST : attributesInASTLinkingToSameClass) {
-        if (!attributeInAST.getNameOpt().isPresent()) {
+        if (!attributeInAST.isPresentName()) {
           String name = attributeInAST.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
           if(getName(source).orElse("").equals(name)){
             matchByTypeName= true;
@@ -78,15 +77,13 @@ public class RemoveOverriddenAttributesTranslation implements
   }
 
   private boolean isNotInherited(ASTCDAttribute cdAttribute) {
-    Optional<ASTModifier> modifier = cdAttribute.getModifierOpt();
-    if (!modifier.isPresent()) {
+    if (!cdAttribute.isPresentModifier()) {
       return true;
     }
-    Optional<ASTCDStereotype> stereotype = modifier.get().getStereotypeOpt();
-    if (!stereotype.isPresent()) {
+    if (!cdAttribute.getModifier().isPresentStereotype()) {
       return true;
     }
-    return stereotype.get().getValueList().stream()
+    return cdAttribute.getModifier().getStereotype().getValueList().stream()
         .map(ASTCDStereoValue::getName)
         .noneMatch(MC2CDStereotypes.INHERITED.toString()::equals);
   }

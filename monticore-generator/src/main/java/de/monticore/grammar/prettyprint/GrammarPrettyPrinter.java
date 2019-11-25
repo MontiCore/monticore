@@ -782,7 +782,7 @@ public class GrammarPrettyPrinter
     }
     println(" {");
     getPrinter().indent();
-    if (a.getGrammarOptionOpt().isPresent()) {
+    if (a.isPresentGrammarOption()) {
       a.getGrammarOption().accept(getRealThis());
     }
     printList(a.getLexProdList().iterator(), "");
@@ -793,11 +793,11 @@ public class GrammarPrettyPrinter
     printList(a.getAbstractProdList().iterator(), "");
     printList(a.getASTRuleList().iterator(), "");
     printList(a.getConceptList().iterator(), "");
-    if (a.getStartRuleOpt().isPresent()) {
+    if (a.isPresentStartRule()) {
       a.getStartRule().accept(getRealThis());
     }
     printList(a.getSymbolRuleList().iterator(), "");
-    if (a.getScopeRuleOpt().isPresent()) {
+    if (a.isPresentScopeRule()) {
       a.getScopeRule().accept(getRealThis());
     }
 
