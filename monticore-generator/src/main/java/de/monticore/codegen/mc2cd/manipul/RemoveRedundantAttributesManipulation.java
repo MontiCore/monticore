@@ -53,7 +53,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
           .collect(Collectors.toList());
       boolean isRedundant = remainingAttributes
           .stream()
-          .anyMatch(a -> isRedundantPredicate(inspectedAttribute, a));
+          .anyMatch(a -> isRedundant(inspectedAttribute, a));
       if (isRedundant) {
         iterator.remove();
       }
@@ -67,8 +67,8 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
    * @return true if another attribute with the same variable name, the same original type and an
    * equal or higher category exists
    */
-  private static boolean isRedundantPredicate(ASTCDAttribute inspectedAttribute,
-                                              ASTCDAttribute remainingAttribute) {
+  private static boolean isRedundant(ASTCDAttribute inspectedAttribute,
+                                     ASTCDAttribute remainingAttribute) {
     String inspectedName = inspectedAttribute.getName();
     String inspectedType = getOriginalTypeName(inspectedAttribute);
     AttributeCategory inspectedCategory = determineCategory(inspectedAttribute);

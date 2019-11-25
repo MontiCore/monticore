@@ -1,0 +1,70 @@
+package mc.feature.astprod;
+
+grammar OverwriteWithASTRule extends mc.grammar.types.ItTestTypes {
+
+  Test = "test" Name;
+
+ A =  Name "<" Test ">";
+  astrule A =
+      mc.feature.astprod.overwrittenwithastrule._ast.ASTTest*
+      name:String*;
+
+
+ B =  foo:Name "<" Test ">";
+  astrule B =
+      Test*
+      foo:String*;
+
+ C = foo:Name "<" bla:Test ">";
+  astrule C =
+      bla:Test*
+      foo:String*;
+
+
+ D =  Name* "<" Test* ">";
+  astrule D =
+      mc.feature.astprod.overwrittenwithastrule._ast.ASTTest
+      name:String;
+
+
+ E =  foo:Name* "<" Test* ">";
+  astrule E =
+      Test
+      foo:String;
+
+ F = foo:Name* "<" bla:Test* ">";
+  astrule F =
+      bla:Test
+      foo:String;
+
+ G = foo:Name "<" bla:Test ">";
+  astrule G =
+      bla:mc.feature.astprod.overwrittenwithastrule._ast.ASTTest*
+      foo:String*;
+
+ H =  Name* "<" Test ">";
+  astrule H =
+      mc.feature.astprod.overwrittenwithastrule._ast.ASTTest?
+      name:String;
+
+ I =  Name* "<" Test ">";
+  astrule I =
+      Test?
+      name:String;
+
+ J =  Name* "<" Test* ">";
+  astrule J =
+      ASTTest
+      name:String;
+
+ K =  Name* "<" Test+ ">";
+  astrule K =
+      mc.feature.astprod.overwrittenwithastrule._ast.ASTTest?
+      name:String;
+
+ L =  Name* "<" Test+ ">";
+  astrule L =
+      Test?
+      name:String;
+
+}

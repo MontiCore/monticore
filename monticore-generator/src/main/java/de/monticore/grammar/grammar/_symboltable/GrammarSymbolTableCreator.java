@@ -9,7 +9,6 @@ import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
-import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -21,7 +20,6 @@ import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.*;
 import static de.monticore.grammar.HelperGrammar.findImplicitTypes;
 import static de.monticore.grammar.Multiplicity.*;
 import static de.se_rwth.commons.Names.getQualifiedName;
-import static de.se_rwth.commons.StringTransformations.uncapitalize;
 import static de.se_rwth.commons.logging.Log.error;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
@@ -188,7 +186,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     final ProdSymbol currentSymbol = getProdSymbol().orElse(null);
 
     if (currentSymbol != null) {
-      final String symbolName = isNullOrEmpty(usageName) ? StringTransformations.uncapitalize(ast.getName()) : usageName;
+      final String symbolName = isNullOrEmpty(usageName) ? ast.getName() : usageName;
       RuleComponentSymbol prodComponent = new
           RuleComponentSymbol(symbolName);
 
@@ -501,7 +499,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
    */
   private void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute) {
     String attributeName = astAttribute.getNameOpt()
-        .orElse(uncapitalize(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType())));
+        .orElse(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType()));
 
     AdditionalAttributeSymbol astAttributeSymbol = new AdditionalAttributeSymbol(attributeName);
     ProdSymbolLoader attributeType = new ProdSymbolLoader(
