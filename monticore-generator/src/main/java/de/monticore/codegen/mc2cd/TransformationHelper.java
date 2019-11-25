@@ -98,26 +98,23 @@ public final class TransformationHelper {
     List<ASTNode> intermediates = ASTNodes
         .getIntermediates(root, successor);
     for (ASTNode ancestor : Lists.reverse(intermediates)) {
-      if (ancestor instanceof ASTConstantGroup) {
-        return ((ASTConstantGroup) ancestor)
-            .getUsageNameOpt();
+      if (ancestor instanceof ASTConstantGroup && ((ASTConstantGroup) ancestor).isPresentUsageName()) {
+        return Optional.of(((ASTConstantGroup) ancestor).getUsageName());
       }
-      if (ancestor instanceof ASTNonTerminal) {
-        return ((ASTNonTerminal) ancestor)
-            .getUsageNameOpt();
+      if (ancestor instanceof ASTNonTerminal && ((ASTNonTerminal) ancestor).isPresentUsageName()) {
+        return Optional.of(((ASTNonTerminal) ancestor).getUsageName());
       }
       if (ancestor instanceof ASTNonTerminalSeparator) {
-        return ((ASTNonTerminalSeparator) ancestor)
-            .getUsageNameOpt();
+        return Optional.of(((ASTNonTerminalSeparator) ancestor).getUsageName());
       }
-      if (ancestor instanceof ASTTerminal) {
-        return ((ASTTerminal) ancestor).getUsageNameOpt();
+      if (ancestor instanceof ASTTerminal && ((ASTTerminal) ancestor).isPresentUsageName()) {
+        return Optional.of(((ASTTerminal) ancestor).getUsageName());
       }
-      if (ancestor instanceof ASTKeyTerminal) {
-        return ((ASTKeyTerminal) ancestor).getUsageNameOpt();
+      if (ancestor instanceof ASTKeyTerminal && ((ASTKeyTerminal) ancestor).isPresentUsageName()) {
+        return Optional.of(((ASTKeyTerminal) ancestor).getUsageName());
       }
-      if (ancestor instanceof ASTAdditionalAttribute) {
-        return ((ASTAdditionalAttribute) ancestor).getNameOpt();
+      if (ancestor instanceof ASTAdditionalAttribute && ((ASTAdditionalAttribute) ancestor).isPresentName()) {
+        return Optional.of(((ASTAdditionalAttribute) ancestor).getName());
       }
     }
     return Optional.empty();
@@ -139,8 +136,8 @@ public final class TransformationHelper {
     if (node instanceof ASTTerminal) {
       return Optional.of(((ASTTerminal) node).getName());
     }
-    if (node instanceof ASTAdditionalAttribute) {
-      return ((ASTAdditionalAttribute) node).getNameOpt();
+    if (node instanceof ASTAdditionalAttribute && ((ASTAdditionalAttribute) node).isPresentName()) {
+      return Optional.of(((ASTAdditionalAttribute) node).getName());
     }
     return Optional.empty();
   }
@@ -345,7 +342,7 @@ public final class TransformationHelper {
 
   // TODO GV, PN: change it
   public static boolean istPartOfGrammar(ProdSymbol rule) {
-    return rule.getEnclosingScope().getSpanningSymbolOpt().isPresent()
+    return rule.getEnclosingScope().isPresentSpanningSymbol()
         && rule.getEnclosingScope().getSpanningSymbol() instanceof MCGrammarSymbol;
   }
 
@@ -367,26 +364,26 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDType type, String stereotypeName,
                                    String stereotypeValue) {
-    if (!type.getModifierOpt().isPresent()) {
+    if (!type.isPresentModifier()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
-    addStereotypeValue(type.getModifierOpt().get(),
+    addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
   }
 
   public static void addStereoType(ASTCDType type, String stereotypeName) {
-    if (!type.getModifierOpt().isPresent()) {
+    if (!type.isPresentModifier()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
-    addStereotypeValue(type.getModifierOpt().get(),
+    addStereotypeValue(type.getModifier(),
         stereotypeName);
   }
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName) {
-    if (!type.getModifierOpt().isPresent()) {
+    if (!type.isPresentModifier()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
-    addStereotypeValue(type.getModifierOpt().get(),
+    addStereotypeValue(type.getModifier(),
         stereotypeName);
   }
 
@@ -402,10 +399,10 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName,
                                    String stereotypeValue) {
-    if (!type.getModifierOpt().isPresent()) {
+    if (!type.isPresentModifier()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
-    addStereotypeValue(type.getModifierOpt().get(),
+    addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
   }
 

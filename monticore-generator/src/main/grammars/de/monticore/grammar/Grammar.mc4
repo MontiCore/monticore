@@ -321,7 +321,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     isList:boolean
     isOptional:boolean
     subProds:String* 
-    usageName:String
+    usageName:String?
     referencedSymbolName:String?
     ;
 

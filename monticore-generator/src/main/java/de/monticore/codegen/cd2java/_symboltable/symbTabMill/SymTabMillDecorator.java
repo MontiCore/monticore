@@ -178,8 +178,8 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     List<ASTCDMethod> builderMethodList = new ArrayList<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.isPresentAstNode() && type.getAstNode().getModifierOpt().isPresent()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifierOpt().get())) {
+        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           // for prod with symbol property create delegate builder method
           String symbolBuilderFullName = symbolTableService.getSymbolBuilderFullName(type.getAstNode(), cdDefinitionSymbol);
           String symTabMillFullName = symbolTableService.getSymTabMillFullName(cdDefinitionSymbol);

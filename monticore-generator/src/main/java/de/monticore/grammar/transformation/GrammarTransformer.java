@@ -95,9 +95,11 @@ public class GrammarTransformer {
         // .filter(nonTerminal -> !nonTerminal.getUsageName().isPresent())
         .forEach(components::add);
     components.forEach(s -> {
-      s.setUsageName(s.getUsageNameOpt().orElse(StringTransformations.uncapitalize(s.getName())));
-      Log.debug("Change the name of " + classProd.getName()
-          + " list-attribute: " + s.getName(), GrammarTransformer.class.getName());
+      if (!s.isPresentUsageName()) {
+        s.setUsageName(StringTransformations.uncapitalize(s.getName()));
+        Log.debug("Change the name of " + classProd.getName()
+                + " list-attribute: " + s.getName(), GrammarTransformer.class.getName());
+      }
     });
 
   }
@@ -109,12 +111,13 @@ public class GrammarTransformer {
         .filter(attributeInAST -> multiplicityOfAttributeInAST(attributeInAST) == Multiplicity.LIST)
         .forEach(
             attributeInAST -> {
-              String typeName = StringTransformations.uncapitalize(simpleName(attributeInAST.getMCType()));
-
-              attributeInAST.setName(attributeInAST.getNameOpt().orElse(typeName));
-              Log.debug("Change the name of ast-rule " + astRule.getType()
-                      + " list-attribute: " + attributeInAST.getMCType(),
-                  GrammarTransformer.class.getName());
+              if (!attributeInAST.isPresentName()) {
+                String typeName = StringTransformations.uncapitalize(simpleName(attributeInAST.getMCType()));
+                attributeInAST.setName(typeName);
+                Log.debug("Change the name of ast-rule " + astRule.getType()
+                                + " list-attribute: " + attributeInAST.getMCType(),
+                        GrammarTransformer.class.getName());
+              }
             });
   }
 

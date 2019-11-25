@@ -21,8 +21,8 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar node) {
-    Optional<MCGrammarSymbol> g = node.getSymbolOpt();
-    for (ProdSymbol nt : g.get().getProds()) {
+    MCGrammarSymbol g = node.getSymbol();
+    for (ProdSymbol nt : g.getProds()) {
       //check when you extend a class not conservative directly (Subclass extends Superclass = ...)
       if (nt.isClass() && !nt.getSuperProds().isEmpty()
               && !MCGrammarSymbolTableHelper.getAllSuperProds(nt).isEmpty()) {
@@ -31,8 +31,8 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
         }
       }
       //checks when you define a Prod with the same Name as a Prod in a Supergrammar
-      if(!g.get().getSuperGrammarSymbols().isEmpty()){
-        for(MCGrammarSymbol superg : g.get().getSuperGrammarSymbols()){
+      if(!g.getSuperGrammarSymbols().isEmpty()){
+        for(MCGrammarSymbol superg : g.getSuperGrammarSymbols()){
           for(ProdSymbol superNt : superg.getProds()){
             if(nt.getName().equals(superNt.getName())){
               compareComponents(nt, superNt);

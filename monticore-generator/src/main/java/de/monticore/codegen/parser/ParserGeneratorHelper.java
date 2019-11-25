@@ -214,9 +214,10 @@ public class ParserGeneratorHelper {
   }
 
   public static String getConvertFunction(ProdSymbol symbol) {
-    Optional<ASTLexProd> ast = symbol.getAstNodeOpt().filter(ASTLexProd.class::isInstance)
-            .map(ASTLexProd.class::cast);
-    return ast.isPresent()? HelperGrammar.createConvertFunction(ast.get(), getPrettyPrinter()):"";
+    if (symbol.isPresentAstNode() && symbol.isIsLexerProd()) {
+      return HelperGrammar.createConvertFunction((ASTLexProd) symbol.getAstNode(), getPrettyPrinter());
+    }
+    return "";
   }
 
   /**
@@ -226,10 +227,13 @@ public class ParserGeneratorHelper {
    */
   public List<ASTProd> getParserRulesToGenerate() {
     // Iterate over all Rules
-    return grammarSymbol.getProdsWithInherited().values().stream()
-            .filter(r -> (r.isParserProd() || r.isIsEnum())).map(r -> r.getAstNodeOpt())
-            .filter(Optional::isPresent).map(Optional::get).filter(ASTProd.class::isInstance)
-            .map(ASTProd.class::cast).collect(Collectors.toList());
+    List<ASTProd> l = Lists.newArrayList();
+    for (ProdSymbol prod: grammarSymbol.getProdsWithInherited().values()) {
+      if ((prod.isParserProd() || prod.isIsEnum()) && prod.isPresentAstNode()) {
+        l.add(prod.getAstNode());
+      }
+    }
+    return l;
   }
 
   public List<ASTLexProd> getLexerRulesToGenerate() {
@@ -409,8 +413,8 @@ public class ParserGeneratorHelper {
   }
 
   public Optional<ASTAlt> getAlternativeForFollowOption(String prodName) {
-    return astGrammar.getGrammarOptionOpt().isPresent()
-            ? astGrammar.getGrammarOptionOpt().get().getFollowOptionList().stream()
+    return astGrammar.isPresentGrammarOption()
+            ? astGrammar.getGrammarOption().getFollowOptionList().stream()
             .filter(f -> f.getProdName().equals(prodName)).map(ASTFollowOption::getAlt).findFirst()
             : Optional.empty();
   }
@@ -422,9 +426,8 @@ public class ParserGeneratorHelper {
     for (MCGrammarSymbolLoader g : grammarSymbol.getSuperGrammars()) {
       final Optional<ProdSymbol> ruleByName = g.getLoadedSymbol().getProdWithInherited(ast.getName());
       if (ruleByName.isPresent() && ruleByName.get().isClass()) {
-        Optional<ASTProd> astProd = ruleByName.get().getAstNodeOpt();
-        if (astProd.isPresent() && astProd.get() instanceof ASTClassProd) {
-          return ((ASTClassProd)astProd.get()).getAltList();
+        if (ruleByName.get().isPresentAstNode() && ruleByName.get().getAstNode() instanceof ASTClassProd) {
+          return ((ASTClassProd)ruleByName.get().getAstNode()).getAltList();
         }
       }
     }
@@ -498,8 +501,8 @@ public class ParserGeneratorHelper {
     if (!symbol.isPresentAstNode()) {
       return "UNKNOWN_TYPE";
     }
-    if (symbol.isIsLexerProd()) {
-      return getLexType(symbol.getAstNodeOpt());
+    if (symbol.isPresentAstNode() && symbol.isIsLexerProd()) {
+      return getLexType( symbol.getAstNode());
     }
     if (symbol.isIsEnum()) {
 
@@ -522,15 +525,13 @@ public class ParserGeneratorHelper {
     return "null";
   }
 
-  private static String getLexType(Optional<? extends ASTNode> node) {
-    if (node.isPresent()) {
-      if (node.get() instanceof ASTLexProd) {
-        return HelperGrammar.createConvertType((ASTLexProd) node.get());
+  private static String getLexType(ASTNode node) {
+      if (node instanceof ASTLexProd) {
+        return HelperGrammar.createConvertType((ASTLexProd) node);
       }
-      if (node.get() instanceof ASTLexActionOrPredicate) {
+      if (node instanceof ASTLexActionOrPredicate) {
         return "String";
       }
-    }
     return "UNKNOWN_TYPE";
 
   }

@@ -30,9 +30,8 @@ public class OverridingClassProdTest {
    */
   @Test
   public void testOverride() {
-    java.util.Optional<ASTMCObjectType> superClasses = astX.getSuperclassOpt();
-    assertTrue(superClasses.isPresent());
-    String name = typeToString(superClasses.get());
+    assertTrue(astX.isPresentSuperclass());
+    String name = typeToString(astX.getSuperclass());
     assertEquals("mc2cdtransformation.Supergrammar.ASTX", name);
   }
 }

@@ -43,7 +43,7 @@ final class SymbolTableMaintainer {
   }
   
   private void removeOldScope(ASTMCGrammar mcGrammar) {
-    if (!mcGrammar.getSymbolOpt().isPresent()) {
+    if (!mcGrammar.isPresentSymbol()) {
       return;
     }
     Optional<MCGrammarSymbol> s = globalScope.resolveMCGrammar(mcGrammar.getSymbol().getFullName());

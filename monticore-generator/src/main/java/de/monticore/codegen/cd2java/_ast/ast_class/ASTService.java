@@ -105,7 +105,7 @@ public class ASTService extends AbstractService<ASTService> {
    * returns true if the ast defines a symbol and no name attribute and no getName method are already defined
    */
   public boolean isSymbolWithoutName(ASTCDType type) {
-    return type.getModifierOpt().isPresent() && hasSymbolStereotype(type.getModifierOpt().get())
+    return type.isPresentModifier() && hasSymbolStereotype(type.getModifier())
         && type.getCDAttributeList().stream().noneMatch(a -> "name".equals(a.getName()))
         && type.getCDMethodList().stream().noneMatch(m -> "getName".equals(m.getName()));
   }
