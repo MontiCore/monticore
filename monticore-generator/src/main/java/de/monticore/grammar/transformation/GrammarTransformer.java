@@ -79,14 +79,15 @@ public class GrammarTransformer {
         .getSuccessors(astRule, ASTAdditionalAttribute.class)
         .forEach(
             attributeInAST -> {
-              String simpleName = simpleName(attributeInAST.getMCType());
-              String typeName = simpleName.startsWith(AST_PREFIX) ?
-                  simpleName.replaceFirst(AST_PREFIX, "") : simpleName;
-
-              attributeInAST.setName(attributeInAST.getNameOpt().orElse(typeName));
-              Log.debug("Change the name of ast-rule " + astRule.getType()
-                      + " list-attribute: " + attributeInAST.getMCType(),
-                  GrammarTransformer.class.getName());
+              if (!attributeInAST.isPresentName()) {
+                String simpleName = simpleName(attributeInAST.getMCType());
+                String typeName = simpleName.startsWith(AST_PREFIX) ?
+                    simpleName.replaceFirst(AST_PREFIX, "") : simpleName;
+                attributeInAST.setName(typeName);
+                Log.debug("Change the name of ast-rule " + astRule.getType()
+                                + " list-attribute: " + attributeInAST.getMCType(),
+                        GrammarTransformer.class.getName());
+              }
             });
   }
 

@@ -44,7 +44,7 @@ public class RuleComponentSymbol extends RuleComponentSymbolTOP  {
       return "";
     }
     else {
-      return usageName;
+      return usageName.orElse("");
     }
   }
 }

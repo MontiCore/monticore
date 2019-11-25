@@ -2,6 +2,7 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolTOP;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -188,11 +189,11 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
       // only filter for types which define a symbol
       List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes()
           .stream()
-          .filter(t -> t.getAstNodeOpt().isPresent())
-          .filter(t -> t.getAstNodeOpt().get().getModifierOpt().isPresent())
-          .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifierOpt().get()))
-          .map(CDTypeSymbolTOP::getAstNodeOpt)
-          .map(Optional::get)
+          .filter(t -> t.isPresentAstNode())
+          .filter(t -> t.getAstNode().isPresentModifier())
+          .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifier()))
+              .filter(CDTypeSymbol::isPresentAstNode)
+          .map(CDTypeSymbol::getAstNode)
           .collect(Collectors.toList());
       methodList.addAll(createContinueWithEnclosingScopeMethods(symbolProds, cdDefinitionSymbol));
     }

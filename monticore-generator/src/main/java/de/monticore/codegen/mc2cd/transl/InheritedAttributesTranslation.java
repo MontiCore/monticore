@@ -83,9 +83,8 @@ public class InheritedAttributesTranslation implements
       ASTProd astNode) {
     return GeneratorHelper.getAllSuperProds(astNode).stream()
         .distinct()
-        .collect(Collectors.toMap(Function.identity(), astProd -> astProd.getSymbolOpt()
-            .map(ProdSymbol::getProdAttributes)
-            .orElse(Collections.emptyList())));
+        .collect(Collectors.toMap(Function.identity(), prod -> prod.isPresentSymbol()?
+                prod.getSymbol().getProdAttributes():Collections.emptyList()));
   }
 
   /**

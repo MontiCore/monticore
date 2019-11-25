@@ -117,8 +117,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .build();
 
     // add only for scope spanning symbols
-    if (symbolInput.getModifierOpt().isPresent() && (symbolTableService.hasScopeStereotype(symbolInput.getModifierOpt().get())
-        || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifierOpt().get()))) {
+    if (symbolInput.isPresentModifier() && (symbolTableService.hasScopeStereotype(symbolInput.getModifier())
+        || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier()))) {
       ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
       List<ASTCDMethod> spannedScopeMethods = createSpannedScopeMethods(spannedScopeAttribute);
       symbolClass.addCDAttribute(spannedScopeAttribute);

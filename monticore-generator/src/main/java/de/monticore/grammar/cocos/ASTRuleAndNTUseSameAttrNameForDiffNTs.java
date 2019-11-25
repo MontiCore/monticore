@@ -29,7 +29,7 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
   public void check(ASTASTRule a) {
     ProdSymbol symbol = a.getEnclosingScope().resolveProd(a.getType()).get();
     for (ASTAdditionalAttribute attr : a.getAdditionalAttributeList()) {
-      Optional<RuleComponentSymbol> rc = symbol.getProdComponent(attr.getNameOpt().orElse(""));
+      Optional<RuleComponentSymbol> rc = attr.isPresentName()?symbol.getProdComponent(attr.getName()):Optional.empty();
       String typeName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(attr.getMCType());
       if (rc.isPresent()) {
         if (!typeName

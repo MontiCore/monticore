@@ -35,9 +35,11 @@ public class ScopeRuleToCDScopeClass implements UnaryOperator<Link<ASTMCGrammar,
         new Link<>(scopeRule, link.target(), link.parent());
       }
       // super scope rules
-      if (rootLink.source().getSymbolOpt().isPresent()) {
+      if (rootLink.source().isPresentSymbol()) {
         for (MCGrammarSymbol grammarSymbol: rootLink.source().getSymbol().getAllSuperGrammars()) {
-          grammarSymbol.getAstGrammar().get().getScopeRuleOpt().ifPresent(s -> new Link<>(s, link.target(), link.parent()));
+          if (grammarSymbol.getAstGrammar().get().isPresentScopeRule()) {
+            new Link<>(grammarSymbol.getAstGrammar().get().getScopeRule(), link.target(), link.parent());
+          }
         }
       }
     }

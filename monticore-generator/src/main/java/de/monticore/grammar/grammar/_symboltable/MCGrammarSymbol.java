@@ -124,7 +124,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
   }
 
   public Optional<ASTMCGrammar> getAstGrammar() {
-    return getAstNodeOpt().filter(ASTMCGrammar.class::isInstance).map(ASTMCGrammar.class::cast);
+    return this.astNode;
   }
 
   /**
@@ -164,7 +164,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
             nameParts.addFirst(getPackageName());
           }
         } else {
-          if (currentScope.getNameOpt().isPresent()) {
+          if (currentScope.isPresentName()) {
             nameParts.addFirst(currentScope.getName());
           }
           // ...else stop? If one of the enclosing scopes is unnamed,

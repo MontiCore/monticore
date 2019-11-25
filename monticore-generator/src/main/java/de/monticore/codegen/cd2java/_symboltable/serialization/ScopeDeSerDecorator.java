@@ -214,9 +214,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
     // finds all symbols that also define a scope or inherit the scope property
     List<ASTCDType> scopeSpanningSymbolNames = symbolDefiningProds.stream()
-        .filter(c -> c.getModifierOpt().isPresent())
-        .filter(c -> symbolTableService.hasScopeStereotype(c.getModifierOpt().get())
-            || symbolTableService.hasInheritedScopeStereotype(c.getModifierOpt().get()))
+        .filter(c -> c.isPresentModifier())
+        .filter(c -> symbolTableService.hasScopeStereotype(c.getModifier())
+            || symbolTableService.hasInheritedScopeStereotype(c.getModifier()))
         .collect(Collectors.toList());
 
     // maps the simpleSymbol name to the fullSymbolName, to use both in the templates

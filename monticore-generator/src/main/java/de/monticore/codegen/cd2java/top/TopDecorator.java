@@ -60,8 +60,9 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
   }
 
   private void makeAbstract(ASTCDType type) {
-    if (type.getModifierOpt().isPresent()) {
-      makeAbstract(type.getModifierOpt().get());
+    if (type.isPresentModifier()) {
+      makeAbstract(type.getModifier
+              ());
     } else {
       type.setModifier(PACKAGE_PRIVATE_ABSTRACT.build());
     }

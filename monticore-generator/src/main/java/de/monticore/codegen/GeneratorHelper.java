@@ -154,8 +154,7 @@ public class GeneratorHelper {
     return nameAsList.get(nameAsList.size() - 1);
   }
 
-  public static boolean isOptional(ASTCDAttribute attribute)
-  {
+  public static boolean isOptional(ASTCDAttribute attribute) {
     return isOptional(attribute.getMCType());
   }
 
@@ -184,15 +183,24 @@ public class GeneratorHelper {
   }
 
   public static boolean isOptional(CDTypeSymbol type) {
+    return isOptional(type.getName());
+  }
+
+
+  public static boolean isOptional(String type) {
     // TODO proper implementation
-    if (OPTIONAL.equals(type.getName())) {
+    if (OPTIONAL.equals(type)) {
       return true;
     }
     return false;
   }
 
   public static boolean isOptional(CDFieldSymbol field) {
-    return field.getType().isSymbolLoaded() && isOptional(field.getType().getLoadedSymbol());
+    if (field.getType().isSymbolLoaded()) {
+      return isOptional(field.getType().getLoadedSymbol());
+    } else {
+      return isOptional(field.getType().getName());
+    }
   }
 
   public static boolean isBoolean(ASTCDAttribute attribute) {
@@ -382,7 +390,7 @@ public class GeneratorHelper {
     return Joiner.on('.').join(qualifiedGrammarName.toLowerCase(), suffix);
   }
 
-   /**
+  /**
    * TODO: Gets not transformed attribute name according to the original name in
    * MC grammar
    *
@@ -721,7 +729,7 @@ public class GeneratorHelper {
 
   public static String getVisitorPackage(String qualifiedLanguageName) {
     return getPackageName(qualifiedLanguageName.toLowerCase(),
-            VISITOR_PACKAGE_SUFFIX);
+        VISITOR_PACKAGE_SUFFIX);
   }
 
 
