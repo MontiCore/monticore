@@ -608,7 +608,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public List<ASTCDType> getNoSymbolAndScopeDefiningClasses(List<ASTCDClass> astcdClasses) {
     return astcdClasses.stream()
-        .filter(ASTCDClassTOP::isPresentModifier)
+        .filter(ASTCDClass::isPresentModifier)
         .filter(c -> !hasSymbolStereotype(c.getModifier()))
         .filter(c -> !hasScopeStereotype(c.getModifier()))
         .filter(c -> !hasInheritedSymbolStereotype(c.getModifier()))
@@ -617,7 +617,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public List<ASTCDType> getOnlyScopeClasses(ASTCDDefinition astcdDefinition) {
     List<ASTCDType> symbolProds = astcdDefinition.getCDClassList().stream()
-        .filter(ASTCDClassTOP::isPresentModifier)
+        .filter(ASTCDClass::isPresentModifier)
         .filter(c -> hasScopeStereotype(c.getModifier()))
         .filter(c -> !hasSymbolStereotype(c.getModifier()))
         .filter(c -> !hasInheritedSymbolStereotype(c.getModifier()))
