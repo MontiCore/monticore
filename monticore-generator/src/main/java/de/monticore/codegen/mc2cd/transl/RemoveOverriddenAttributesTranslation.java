@@ -3,7 +3,10 @@
 package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDStereoValue;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -43,6 +46,9 @@ public class RemoveOverriddenAttributesTranslation implements
 
   private boolean isOverridden(ASTNode source, Link<?, ASTCDClass> classLink) {
     Optional<String> usageName = getUsageName(classLink.source(), source);
+    if (!usageName.isPresent()) {
+      usageName = getName(source);
+    }
     Set<ASTAdditionalAttribute> attributesInASTLinkingToSameClass = attributesInASTLinkingToSameClass(
         classLink);
     attributesInASTLinkingToSameClass.remove(source);
