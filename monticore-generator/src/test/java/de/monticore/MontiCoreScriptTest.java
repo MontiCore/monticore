@@ -169,7 +169,7 @@ public class MontiCoreScriptTest {
       }
     }
   }
-@Ignore
+
   @Test
   public void testDefaultScriptSimpleArgs() {
     Log.getFindings().clear();

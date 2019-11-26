@@ -6,10 +6,8 @@ package mc.grammar.concepts.visualoutline;
 	This is the base language that contains common elements for both
 	the visual outline description language and the template language
 */
-component grammar ItTestCommon extends mc.grammar.literals.ItTestLiterals {
+component grammar ItTestCommon extends mc.grammar.types.ItTestTypes {
 
- QualifiedName =
-        parts:Name ("." parts:Name)*;
 	/**
 		Figure definition
 		References to either a figure from a bundled package  (e.g.
