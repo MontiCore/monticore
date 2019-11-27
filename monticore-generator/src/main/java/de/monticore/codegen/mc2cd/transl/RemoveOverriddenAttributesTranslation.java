@@ -12,6 +12,7 @@ import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.utils.Link;
+import de.se_rwth.commons.StringTransformations;
 
 import java.util.Optional;
 import java.util.Set;
@@ -47,7 +48,10 @@ public class RemoveOverriddenAttributesTranslation implements
   private boolean isOverridden(ASTNode source, Link<?, ASTCDClass> classLink) {
     Optional<String> usageName = getUsageName(classLink.source(), source);
     if (!usageName.isPresent()) {
-      usageName = getName(source);
+      Optional<String> name = getName(source);
+      if (name.isPresent()) {
+        usageName = Optional.ofNullable(StringTransformations.uncapitalize(name.get()));
+      }
     }
     Set<ASTAdditionalAttribute> attributesInASTLinkingToSameClass = attributesInASTLinkingToSameClass(
         classLink);

@@ -99,7 +99,8 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
       List<ASTMCTypeArgument> argList = ((ASTMCGenericType) cdAttribute.getMCType()).getMCTypeArgumentList();
       if (!argList.isEmpty()) {
-        return Optional.of(argList.get(0).getMCTypeOpt().get().printType(new MCFullGenericTypesPrettyPrinter(new IndentPrinter())));
+        String simpleTypeName = argList.get(0).getMCTypeOpt().get().printType(new MCFullGenericTypesPrettyPrinter(new IndentPrinter()));
+        return Optional.of(simpleTypeName);
       }
     }
     return Optional.empty();

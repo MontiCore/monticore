@@ -11,16 +11,20 @@ import de.monticore.utils.ASTNodes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static de.monticore.codegen.mc2cd.TransformationHelper.getName;
 import static de.monticore.codegen.mc2cd.TransformationHelper.getUsageName;
 import static de.monticore.utils.ASTNodes.getIntermediates;
+import static de.monticore.utils.ASTNodes.getSuccessors;
 import static java.util.Collections.max;
 
 /**
  * Denotes the multiplicity of nonterminals in a MC grammar such as '*', '+', or '?'.
+ *
  */
 public enum Multiplicity {
 
@@ -72,7 +76,7 @@ public enum Multiplicity {
    * Performs the multiplicity calculation for inherited attributes.
    *
    * @param rootNode The grammar symbol of the ast node.
-   * @param astNode  The ast node.
+   * @param astNode The ast node.
    * @return The multiplicity of the ast in the defining grammar.
    */
   private static Multiplicity multiplicityOfASTNodeWithInheritance(ASTNode rootNode, ASTNode astNode) {
@@ -104,7 +108,7 @@ public enum Multiplicity {
     return multiplicityOfASTNode(definingGrammar, astNode);
   }
 
-  private static Multiplicity multiplicityOfASTNode(ASTNode rootNode, ASTNode astNode) {
+  public static Multiplicity multiplicityOfASTNode(ASTNode rootNode, ASTNode astNode) {
     Multiplicity byAlternative = multiplicityByAlternative(rootNode, astNode);
     Multiplicity byDuplicates = multiplicityByDuplicates(rootNode, astNode);
     Multiplicity byIteration = multiplicityByIteration(rootNode, astNode);
@@ -126,40 +130,13 @@ public enum Multiplicity {
   }
 
   public static Multiplicity multiplicityByDuplicates(ASTNode rootNode, ASTNode astNode) {
-    List<ASTAlt> allAlt = getAllAlts(rootNode, astNode);
-    boolean hasDuplicate = hasDuplicateInAtLeastOneAlt(allAlt, rootNode, astNode);
+    boolean hasDuplicate = getAllNodesInRelatedRuleComponents(rootNode, astNode)
+        .anyMatch(sibling -> areDuplicates(rootNode, astNode, sibling));
     if (hasDuplicate) {
       return LIST;
     } else {
       return STANDARD;
     }
-  }
-
-
-  private static List<ASTAlt> getAllAlts(ASTNode rootNode, ASTNode astNode) {
-    List<ASTAlt> ruleComp = getIntermediates(rootNode, astNode).stream()
-        .filter(ASTClassProd.class::isInstance)
-        .map(ASTClassProd.class::cast)
-        .map(ASTClassProd::getAltList)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
-
-    ruleComp.addAll(getIntermediates(rootNode, astNode).stream()
-        .filter(ASTInterfaceProd.class::isInstance)
-        .map(ASTInterfaceProd.class::cast)
-        .map(ASTInterfaceProd::getAltList)
-        .flatMap(List::stream)
-        .collect(Collectors.toList()));
-
-
-    ruleComp.addAll(getIntermediates(rootNode, astNode).stream()
-        .filter(ASTAbstractProd.class::isInstance)
-        .map(ASTAbstractProd.class::cast)
-        .map(ASTAbstractProd::getAltList)
-        .flatMap(List::stream)
-        .collect(Collectors.toList()));
-
-    return ruleComp;
   }
 
   private static boolean areDuplicates(ASTNode rootNode, ASTNode firstNode, ASTNode secondNode) {
@@ -174,23 +151,19 @@ public enum Multiplicity {
     return (bothUsageNamesAbsent && namesMatch) || (!bothUsageNamesAbsent && usageNamesMatch);
   }
 
-  /**
-   * for each alt in that the prods that contain the astNode, check if per alt there is more than one element of that ruleComponent
-   */
-  private static boolean hasDuplicateInAtLeastOneAlt(List<ASTAlt> astAlts,
-                                                     ASTNode rootNode, ASTNode astNode) {
-    for (ASTAlt astAlt : astAlts) {
-      int ruleCompCount = 0;
-      for (ASTRuleComponent astRuleComponent : astAlt.getComponentList()) {
-        if (areDuplicates(rootNode, astNode, astRuleComponent)) {
-          ruleCompCount++;
-        }
-        if (ruleCompCount > 1) {
-          return true;
-        }
-      }
-    }
-    return false;
+  private static Stream<ASTNode> getAllNodesInRelatedRuleComponents(ASTNode rootNode,
+                                                                    ASTNode astNode) {
+    Set<ASTRuleComponent> ancestorRuleComponents = getIntermediates(rootNode, astNode).stream()
+        .filter(ASTRuleComponent.class::isInstance)
+        .map(ASTRuleComponent.class::cast)
+        .collect(Collectors.toSet());
+
+    return getIntermediates(rootNode, astNode).stream()
+        .filter(ASTAlt.class::isInstance)
+        .map(ASTAlt.class::cast)
+        .flatMap(alt -> alt.getComponentList().stream())
+        .filter(ruleComponent -> !ancestorRuleComponents.contains(ruleComponent))
+        .flatMap(ruleComponent -> getSuccessors(ruleComponent, ASTNode.class).stream());
   }
 
   public static Multiplicity multiplicityByIteration(ASTNode rootNode, ASTNode astNode) {

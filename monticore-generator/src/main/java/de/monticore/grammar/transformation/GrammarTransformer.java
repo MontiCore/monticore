@@ -6,6 +6,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.utils.ASTNodes;
 import de.monticore.utils.ASTTraverser;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
@@ -83,7 +84,7 @@ public class GrammarTransformer {
                 String simpleName = simpleName(attributeInAST.getMCType());
                 String typeName = simpleName.startsWith(AST_PREFIX) ?
                     simpleName.replaceFirst(AST_PREFIX, "") : simpleName;
-                attributeInAST.setName(typeName);
+                attributeInAST.setName(StringTransformations.uncapitalize(typeName));
                 Log.debug("Change the name of ast-rule " + astRule.getType()
                                 + " list-attribute: " + attributeInAST.getMCType(),
                         GrammarTransformer.class.getName());
