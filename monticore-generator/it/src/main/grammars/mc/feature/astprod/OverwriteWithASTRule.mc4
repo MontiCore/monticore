@@ -20,12 +20,10 @@ grammar OverwriteWithASTRule extends mc.grammar.types.ItTestTypes {
       bla:Test*
       foo:String*;
 
-
  D =  Name* "<" Test* ">";
   astrule D =
       mc.feature.astprod.overwrittenwithastrule._ast.ASTTest
       name:String;
-
 
  E =  foo:Name* "<" Test* ">";
   astrule E =
@@ -45,7 +43,7 @@ grammar OverwriteWithASTRule extends mc.grammar.types.ItTestTypes {
  H =  Name* "<" Test ">";
   astrule H =
       mc.feature.astprod.overwrittenwithastrule._ast.ASTTest?
-      name:String;
+      name:String?;
 
  I =  Name* "<" Test ">";
   astrule I =
@@ -54,8 +52,8 @@ grammar OverwriteWithASTRule extends mc.grammar.types.ItTestTypes {
 
  J =  Name* "<" Test* ">";
   astrule J =
-      ASTTest
-      name:String;
+      Test max = 1
+      name:String max = 1;
 
  K =  Name* "<" Test+ ">";
   astrule K =
@@ -66,5 +64,10 @@ grammar OverwriteWithASTRule extends mc.grammar.types.ItTestTypes {
   astrule L =
       Test?
       name:String;
+
+ M =  foo:Name* "<" Test* ">";
+  astrule M =
+      mc.feature.astprod.overwrittenwithastrule._ast.ASTTest
+      foo:String;
 
 }
