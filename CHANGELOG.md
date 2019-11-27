@@ -1,7 +1,42 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # Release Notes
 
+
+##  MontiCore 6.0.0
+- Uses CD4Analysis 1.5.0
+- replace get\*opt methods with get\*
+- bugfixing
+
+##  MontiCore 5.4.0.1
+- Uses CD4Analysis 1.4.0
+- add generation of serializers for grammars
+- add SymbolLoader for lazy loading
+- add DeSers for TypeSymbols
+- improved TypeCheck
+- replace getName methods with printType methods
+
+##  MontiCore 5.3.0
+- Uses CD4Analysis 1.3.20.2
+- new Generator based on Decorator-Pattern
+- add Translation classes
+- add grammar it-tests
+- move TypesCalculator to TypeCheck, create derive classes and synthesize classes
+- add TypeSymbols and SymTypeExpression structure
+- added DeSers for SymTypeExpressions
+- added keyword "key" for KeyTerminals 
+
+##  MontiCore 5.2.0
+- add "List"-Suffix to attribute name
+
 ##  MontiCore 5.1.0
+- Remove the dependency to JavaDSL, add JavaLight
+- Uses CD4Analysis 1.3.19
+- added grammar TypeSymbols
+- renamed SymbolDelegateList to SymbolResolvingDelegateList
+- add methods for scoperule-attributes in interfaces
+- add MCTypeVisitor to transform ASTTypes to TypeExpressions
+- add Groovy Plugin
+
 ##  MontiCore 5.0.6
 - The IncGen-reports are stored in the source code directory
 - Removed MutableScope
