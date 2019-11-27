@@ -1,0 +1,13 @@
+package cocos.valid;
+
+grammar ProdExtendsNotExistingProd {
+
+    interface ISub;
+
+    Super = "A";
+
+    Sup extends Super = "a";
+
+    Sub implements ISub = "b";
+
+}
