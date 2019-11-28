@@ -1,0 +1,5 @@
+theme: jekyll-theme-minimal
+title: MontiCore
+description: This is the github page of the MontiCore project
+logo: mc-logo.png
+show_downloads: true
