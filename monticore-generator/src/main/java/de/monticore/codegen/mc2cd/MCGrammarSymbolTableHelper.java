@@ -250,21 +250,21 @@ public class MCGrammarSymbolTableHelper {
     return Optional.empty();
   }
   
-  public static Optional<String> getConstantGroupName(ASTConstantGroup ast) {
+  public static String getConstantGroupName(ASTConstantGroup ast) {
     // setAttributeMinMax(a.getIteration(), att);
     if (ast.isPresentUsageName()) {
-      return Optional.of(ast.getUsageName());
+      return ast.getUsageName();
     }
     // derive attribute name from constant entry (but only if we have
     // one entry!)
     else if (ast.getConstantList().size() == 1) {
-      return Optional.of(HelperGrammar.getAttributeNameForConstant(ast.getConstantList().get(0)));
+      return HelperGrammar.getAttributeNameForConstant(ast.getConstantList().get(0));
     }
     
     Log.error("0xA2345 The name of the constant group could't be ascertained",
         ast.get_SourcePositionStart());
     
-    return Optional.empty();
+    return "";
   }
   
   public void addEnum(String name, String constant) {

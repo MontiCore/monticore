@@ -53,7 +53,7 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
           prodComponent.get().isIsNonterminal() != comp.isIsNonterminal() ||
           prodComponent.get().isIsList() != comp.isIsList() ||
           prodComponent.get().isIsOptional() != comp.isIsOptional() ||
-          !prodComponent.get().getUsageName().equals(comp.getUsageName())) {
+          !prodComponent.get().getName().equals(comp.getName())) {
         Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getName(), comp.getName(),
             p.getSourcePosition()));
       }
