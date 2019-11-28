@@ -27,14 +27,14 @@ public class SubrulesUseInterfaceNTsTest extends CocoTest {
   
   @Test
   public void TestInvalid2() {
-    testInvalidGrammar(grammar + "b", SubrulesUseInterfaceNTs.ERROR_CODE, 
-        String.format(MESSAGE, "B", "C", "A"), checker);
+    testInvalidGrammar(grammar + "b", SubrulesUseInterfaceNTs.ERROR_CODE,
+        String.format(MESSAGE, "B", "c", "A"), checker);
   }
   
   @Test
   public void TestInvalid3() {
-    testInvalidGrammar(grammar + "c", SubrulesUseInterfaceNTs.ERROR_CODE, 
-        String.format(MESSAGE, "D", "E", "A"), checker);
+    testInvalidGrammar(grammar + "c", SubrulesUseInterfaceNTs.ERROR_CODE,
+        String.format(MESSAGE, "D", "e", "A"), checker);
   }
 
   @Test
@@ -46,19 +46,19 @@ public class SubrulesUseInterfaceNTsTest extends CocoTest {
   @Test
   public void TestInvalid5() {
     testInvalidGrammar(grammar + "e", SubrulesUseInterfaceNTs.ERROR_CODE,
-            String.format(MESSAGE, "AImpl", "d*", "A"), checker);
+        String.format(MESSAGE, "AImpl", "d*", "A"), checker);
   }
 
   @Test
   public void TestInvalid6() {
     testInvalidGrammar(grammar + "f", SubrulesUseInterfaceNTs.ERROR_CODE,
-            String.format(MESSAGE, "BImpl", "d*", "B"), checker);
+        String.format(MESSAGE, "BImpl", "d*", "B"), checker);
   }
 
   @Test
   public void TestInvalid7() {
     testInvalidGrammar(grammar + "g", SubrulesUseInterfaceNTs.ERROR_CODE,
-            String.format(MESSAGE, "AImpl", "D?", "A"), checker);
+        String.format(MESSAGE, "AImpl", "d?", "A"), checker);
   }
   
   @Test

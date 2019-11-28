@@ -18,6 +18,7 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -933,7 +934,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
       if (scope.isPresent()) {
         addToAction(attributeConstraints.addActionForNonTerminal(ast));
-        String attributename = HelperGrammar.getUsuageName(ast);
+        String attributename = ast.isPresentUsageName() ? ast.getUsageName() : StringTransformations.uncapitalize(ast.getName());
         if (scope.get().getProdComponent(attributename).isPresent()
                 && scope.get().getProdComponent(attributename).get().isIsList()) {
           addToAction(astActions.getActionForLexerRuleIteratedAttribute(ast));
@@ -1020,7 +1021,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       }
       addToAction(attributeConstraints.addActionForNonTerminal(ast));
       // TODO GV:
-      String attributename = HelperGrammar.getUsuageName(ast);
+      String attributename = ast.isPresentUsageName() ? ast.getUsageName() : StringTransformations.uncapitalize(ast.getName());
       if (scope.isPresent() && scope.get().getProdComponent(attributename).isPresent()
               && scope.get().getProdComponent(attributename).get().isIsList()) {
         addToAction(astActions.getActionForInternalRuleIteratedAttribute(ast));
