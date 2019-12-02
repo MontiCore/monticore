@@ -134,6 +134,9 @@ pages:
     - mv monticore-grammar docs/monticore-grammar
     - mv monticore-runtime docs/monticore-runtime
     - mv *.md docs
+    - cd docs/
+    - ls
+    - cd ..
     - mkdocs build
     - mv site public
   artifacts:
