@@ -15,3 +15,6 @@ nav:
   - Languages: 'Languages.md'
   - Changelog: 'CHANGELOG.md'
 
+pages:
+  - README.md
+
