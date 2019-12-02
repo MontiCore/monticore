@@ -5,8 +5,7 @@ theme:
 repo_url: https://git.rwth-aachen.de/monticore/monticore
 
 nav:
-  - Home: 'index.md'
-  - Introduction: 'README.md'
+  - Home: 'README.md'
   - Grammars:
     - 'General': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
     - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/README.md'
@@ -15,6 +14,4 @@ nav:
   - Languages: 'Languages.md'
   - Changelog: 'CHANGELOG.md'
 
-pages:
-  - README.md
 
