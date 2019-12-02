@@ -130,6 +130,8 @@ pages:
     - pip install mkdocs
   stage: report
   script:
+    - mkdir docs
+    - find . -name '*.md' -exec mv "{}" ./docs \;
     - mkdocs build
     - mv site public
   artifacts:
