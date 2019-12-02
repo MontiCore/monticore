@@ -135,5 +135,5 @@ pages:
     paths:
       - public
   only:
-    - gitlab-pages
+    - gitlab_pages
 
