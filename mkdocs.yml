@@ -6,4 +6,4 @@ repo_url: https://git.rwth-aachen.de/monticore/monticore
 
 nav:
   - Home: 'index.md'
-  - Grammars: 'Grammars.md'
+  - Grammars: 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
