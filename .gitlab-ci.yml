@@ -17,7 +17,6 @@ before_script:
   - chmod +x monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/gradlew
   - chmod +x monticore-grammar/monticore-grammar-it/gradlew
   - export GRADLE_USER_HOME=`pwd`/.gradle
-  - pip install mkdocs
 
 cache:
   paths:
