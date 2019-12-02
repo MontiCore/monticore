@@ -106,9 +106,13 @@ public class EmfService extends AbstractService {
       return "theASTENodePackage.getENode";
     } else if (isPrimitive(attribute.getMCType()) || isString(attribute.getMCType())) {
       return "ecorePackage.getE" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType()));
+    } else if (isObjectType(attribute.getMCType())) {
+      return "ecorePackage.getE" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType())) + "Object";
     } else if (decorationHelper.isSimpleAstNode(attribute) || decorationHelper.isListAstNode(attribute) || decorationHelper.isOptionalAstNode(attribute)) {
       String grammarName = StringTransformations.uncapitalize(getGrammarFromClass(astcdDefinition, attribute));
       return grammarName + ".get" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType()));
+    } else if (DecorationHelper.isMapType(attribute.printType())) {
+      return "ecorePackage.getEMap";
     } else {
       return "this.get" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType()));
     }
@@ -120,6 +124,34 @@ public class EmfService extends AbstractService {
 
   public boolean isString(ASTMCType type) {
     return "String".equals(getSimpleNativeType(type));
+  }
+  
+  /**
+   * Checks whether the given mc type is a java object type.
+   * 
+   * @param type The input type
+   * @return true if the input type is a java object type, false otherwise.
+   */
+  public boolean isObjectType(ASTMCType type) {
+    switch (getSimpleNativeType(type)) {
+      case "Boolean":
+      case "Short":
+      case "Integer":
+      case "Long":
+      case "Character":
+      case "Float":
+      case "Double":
+      case "java.lang.Boolean":
+      case "java.lang.Short":
+      case "java.lang.Integer":
+      case "java.lang.Long":
+      case "java.lang.Character":
+      case "java.lang.Float":
+      case "java.lang.Double":
+        return true;
+      default:
+        return false;
+    }
   }
 
   public ASTMCQualifiedType getEmfAttributeType(ASTCDAttribute astcdAttribute) {
@@ -149,7 +181,8 @@ public class EmfService extends AbstractService {
     DecorationHelper decorationHelper = new DecorationHelper();
     return !decorationHelper.isSimpleAstNode(astcdAttribute) && !decorationHelper.isListAstNode(astcdAttribute) &&
         !decorationHelper.isOptionalAstNode(astcdAttribute) && !isPrimitive(astcdAttribute.getMCType())
-        && !isString(astcdAttribute.getMCType());
+        && !isString(astcdAttribute.getMCType()) && !isObjectType(astcdAttribute.getMCType())
+        && !DecorationHelper.isMapType(astcdAttribute.printType());
   }
 
   public boolean isASTNodeInterface(ASTCDInterface astcdInterface, ASTCDDefinition astcdDefinition) {

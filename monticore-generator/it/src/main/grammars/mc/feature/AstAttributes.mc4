@@ -14,7 +14,7 @@ grammar AstAttributes {
 
       list1: java.util.List<String>
       //list2: java.util.List
-      list3: java.util.List<ASTA>
+      list3: java.util.List<mc.feature.astattributes._ast.ASTA>
       list4: String*
 
       string1: String
