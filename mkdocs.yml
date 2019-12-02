@@ -6,9 +6,12 @@ repo_url: https://git.rwth-aachen.de/monticore/monticore
 
 nav:
   - Home: 'index.md'
+  - Introduction: 'README.md'
   - Grammars:
     - 'General': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
     - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/README.md'
     - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/README.md'
     - 'Types': 'monticore-grammar/src/main/java/de/monticore/types/check/README.md'
-  - Languages: 'Languages.md'
+    - Languages: 'Languages.md'
+    - Changelog: 'CHANGELOG.md'
+
