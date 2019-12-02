@@ -17,6 +17,7 @@ before_script:
   - chmod +x monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/gradlew
   - chmod +x monticore-grammar/monticore-grammar-it/gradlew
   - export GRADLE_USER_HOME=`pwd`/.gradle
+  - pip install mkdocs
 
 cache:
   paths:
@@ -28,6 +29,7 @@ stages:
   - build
   - test1
   - test2
+  - report
 
 build_dev:
   stage: build
@@ -122,3 +124,16 @@ trigger-cd4a:
     branch: develop
   only:
     - dev
+
+pages:
+  image: python:alpine
+  stage: report
+  script:
+    - mkdocs build
+    - mv site public
+  artifacts:
+    paths:
+      - public
+  only:
+    - gitlab-pages
+
