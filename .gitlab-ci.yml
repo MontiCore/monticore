@@ -131,7 +131,9 @@ pages:
   stage: report
   script:
     - mkdir docs
-    - find . -name '*.md' -exec mv "{}" ./docs \;
+    - mv monticore-grammar docs/monticore-grammar
+    - mv monticore-runtime docs/monticore-runtime
+    - mv *.md /docs
     - mkdocs build
     - mv site public
   artifacts:
