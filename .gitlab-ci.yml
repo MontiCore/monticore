@@ -127,6 +127,8 @@ trigger-cd4a:
 
 pages:
   image: python:alpine
+  before_script:
+    - pip install mkdocs
   stage: report
   script:
     - mkdocs build
