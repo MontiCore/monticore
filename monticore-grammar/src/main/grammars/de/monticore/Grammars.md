@@ -177,9 +177,9 @@ various forms of literals.
 
 These can also be used if someone is interested:
 
-* [StringLiterals.mc4](../../../monticore-grammar/src/main/examples/StringLiterals.mc4)
-* [MCHexNumbers.mc4](../../../monticore-grammar/src/main/examples/MCHexNumbers.mc4)
-* [MCNumbers.mc4](../../../monticore-grammar/src/main/examples/MCNumbers.mc4)
+* [StringLiterals.mc4](../../../StringLiterals.mc4)
+* [MCHexNumbers.mc4](../../../examples/MCHexNumbers.mc4)
+* [MCNumbers.mc4](../../../examples/MCNumbers.mc4)
 
 
 
