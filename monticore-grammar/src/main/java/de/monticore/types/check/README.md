@@ -1,4 +1,3 @@
-
 In MontiCore, the TypeCheck is used to calculate the type of a set of expressions.
 This happens by traversing the AST of an expression, calculating the types of its
 sub-expressions and combining them to the type of the main expression.
@@ -40,7 +39,7 @@ have the TypeCheck facade to use. Just use the correct Derive-Class and/or the c
 Synthesize-Class as parameters and check if the type of your expression or type is 
 correctly calculated. <br/><br/>
 Example for a CoCo:
-```
+```java
 @Override
 public void check(ASTExpression expr){
     YourDeriveClass deriveClass = new YourDeriveClass(...); //instance of your Derive-Class
