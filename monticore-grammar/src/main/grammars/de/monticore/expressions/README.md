@@ -7,13 +7,13 @@ pluggable grammar parts are developed.
 ### Given Expression languages in MontiCore
 
 Currently, there are seven expression languages. These are
-* [ExpressionsBasis](monticore-grammar/src/main/grammars/de/monticore/expressions/ExpressionsBasis.mc4) (basis for all of the expression languages, supports names and literals)
-* [AssignmentExpressions](monticore-grammar/src/main/grammars/de/monticore/expressions/AssignmentExpressions.mc4) (extends ExpressionsBasis, basic assignments)
-* [CommonExpressions](monticore-grammar/src/main/grammars/de/monticore/expressions/CommonExpressions.mc4) (extends ExpressionsBasis, common expressions like + and -)
-* [BitExpressions](monticore-grammar/src/main/grammars/de/monticore/expressions/BitExpressions.mc4) (extends ExpressionsBasis, bit expressions like & or <<)
-* [SetExpressions](monticore-grammar/src/main/grammars/de/monticore/expressions/SetExpressions.mc4) (extends ExpressionsBasis, ideal for working with sets)
-* [OCLExpressions](monticore-grammar/src/main/grammars/de/monticore/expressions/OCLExpressions.mc4) (extends ExpressionsBasis, introduces OCL to MontiCore)
-* [JavaClassExpressions](monticore-grammar/src/main/grammars/de/monticore/expressions/JavaClassExpressions.mc4) (extends CommonExpressions, adds Java expressions like new)
+* [ExpressionsBasis](ExpressionsBasis.mc4) (basis for all of the expression languages, supports names and literals)
+* [AssignmentExpressions](AssignmentExpressions.mc4) (extends ExpressionsBasis, basic assignments)
+* [CommonExpressions](CommonExpressions.mc4) (extends ExpressionsBasis, common expressions like + and -)
+* [BitExpressions](BitExpressions.mc4) (extends ExpressionsBasis, bit expressions like & or <<)
+* [SetExpressions](SetExpressions.mc4) (extends ExpressionsBasis, ideal for working with sets)
+* [OCLExpressions](OCLExpressions.mc4) (extends ExpressionsBasis, introduces OCL to MontiCore)
+* [JavaClassExpressions](JavaClassExpressions.mc4) (extends CommonExpressions, adds Java expressions like new)
 
 ### Using Expressions
 
@@ -29,5 +29,5 @@ Create a new grammar that extends at least ExpressionsBasis. In this
 grammar, you can add your own expressions. These expressions must implement
 the interface Expression in the ExpressionsBasis grammar. 
 To include these expressions in your language, just extend the new grammar in your language.
-See [here](monticore-grammar/src/test/grammars/de/monticore/expressions/CombineExpressionsWithLiterals.mc4) 
+See [here](CombineExpressionsWithLiterals.mc4) 
 for an example.
