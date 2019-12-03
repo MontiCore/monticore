@@ -14,7 +14,7 @@ leads to optimal forms of **reuse**.
 
 Here comes a list of language components, mainly defined through a 
 primary grammar, available in the MontiCore core project 
-together with short descriptions and their status ([Status of Grammars](00.org/Explanations/StatusOfGrammars.md)).
+together with short descriptions and their status ([Status of Grammars](../../../../../../00.org/Explanations/StatusOfGrammars.md)).
 
 The list covers the core grammars to be found in the `MontiCore/monticore` 
 project under `monticore-grammar/src/main/grammars/` in packages 
