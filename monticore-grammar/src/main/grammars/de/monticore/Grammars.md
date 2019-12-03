@@ -177,7 +177,7 @@ various forms of literals.
 
 These can also be used if someone is interested:
 
-* [StringLiterals.mc4](../../../StringLiterals.mc4)
+* [StringLiterals.mc4](../../../examples/StringLiterals.mc4)
 * [MCHexNumbers.mc4](../../../examples/MCHexNumbers.mc4)
 * [MCNumbers.mc4](../../../examples/MCNumbers.mc4)
 
