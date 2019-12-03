@@ -29,5 +29,5 @@ Create a new grammar that extends at least ExpressionsBasis. In this
 grammar, you can add your own expressions. These expressions must implement
 the interface Expression in the ExpressionsBasis grammar. 
 To include these expressions in your language, just extend the new grammar in your language.
-See [here](CombineExpressionsWithLiterals.mc4) 
+See [here](../../../../../test/grammars/de/monticore/expressions/CombineExpressionsWithLiterals.mc4) 
 for an example.

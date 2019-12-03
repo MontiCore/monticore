@@ -6,15 +6,15 @@ sub-expressions and combining them to the type of the main expression.
 ### Given Classes in MontiCore
 
 * [TypeCheck](TypeCheck.java) (facade for using the TypeCheck)
-* [DeriveSymTypeOfExpression](DeriveSymTypeOfExpression) (calculate a type for the expressions in ExpressionsBasis)
-* [DeriveSymTypeOfCommonExpressions](DeriveSymTypeOfCommonExpressions) (calculate a type for the expressions in CommonExpressions)
-* [DeriveSymTypeOfAssignmentExpressions](DeriveSymTypeOfAssignmentExpressions) (calculate a type for the expressions in AssignmentExpressions)
-* [DeriveSymTypeOfBitExpressions](DeriveSymTypeOfBitExpressions) (calculate a type for the expressions in BitExpressions)
-* [DeriveSymTypeOfLiterals](DeriveSymTypeOfLiterals) (calculate a type for the literals in LiteralsBasis)
-* [DeriveSymTypeOfMCCommonLiterals](DeriveSymTypeOfMCCommonLiterals) (calculate a type for the literals in MCCommonLiterals)
-* [SynthesizeSymTypeFromMCBasicTypes](SynthesizeSymTypeFromMCBasicTypes) (calculate a type for the types in MCBasicTypes)
-* [SynthesizeSymTypeFromMCCollectionTypes](SynthesizeSymTypeFromMCCollectionTypes) (calculate a type for the types in MCCollectionTypes)
-* [SynthesizeSymTypeFromMCSimpleGenericTypes](SynthesizeSymTypesFromMCSimpleGenericTypes) (calculate a type for the types in MCSimpleGenericTypes)
+* [DeriveSymTypeOfExpression](DeriveSymTypeOfExpression.java) (calculate a type for the expressions in ExpressionsBasis)
+* [DeriveSymTypeOfCommonExpressions](DeriveSymTypeOfCommonExpressions.java) (calculate a type for the expressions in CommonExpressions)
+* [DeriveSymTypeOfAssignmentExpressions](DeriveSymTypeOfAssignmentExpressions.java) (calculate a type for the expressions in AssignmentExpressions)
+* [DeriveSymTypeOfBitExpressions](DeriveSymTypeOfBitExpressions.java) (calculate a type for the expressions in BitExpressions)
+* [DeriveSymTypeOfLiterals](DeriveSymTypeOfLiterals.java) (calculate a type for the literals in LiteralsBasis)
+* [DeriveSymTypeOfMCCommonLiterals](DeriveSymTypeOfMCCommonLiterals.java) (calculate a type for the literals in MCCommonLiterals)
+* [SynthesizeSymTypeFromMCBasicTypes](SynthesizeSymTypeFromMCBasicTypes.java) (calculate a type for the types in MCBasicTypes)
+* [SynthesizeSymTypeFromMCCollectionTypes](SynthesizeSymTypeFromMCCollectionTypes.java) (calculate a type for the types in MCCollectionTypes)
+* [SynthesizeSymTypeFromMCSimpleGenericTypes](SynthesizeSymTypeFromMCSimpleGenericTypes.java) (calculate a type for the types in MCSimpleGenericTypes)
 
 ### I want to write a CoCo for my language that uses the TypeCheck - How?
 
@@ -26,14 +26,14 @@ Create a DelegatorVisitor which combines all expression grammars and literal gra
 used by your language. The DelegatorVisitor has to implement the Interface
 ITypesCalculator. Use this Delegator as Derive-Class in the TypeCheck facade. The
 Synthesize-Class depends on the types grammar you use (see above-mentioned classes).
-For an example of the Delegator-Visitor see [here](../../../../../../main/test/java/de/monticore/types/check/DeriveSymTypeOfCombineExpressions.java).
+For an example of the Delegator-Visitor see [here](../../../../../../test/java/de/monticore/types/check/DeriveSymTypeOfCombineExpressions.java).
 <br/><br/>
 If you want to create a Derive-Class for your expression/literal grammar, you have to
 extend the Derive-Class of the supergrammar and implement the normal visitor of 
 your language. There you can override the traverse methods for your expressions/literals
 so that it calculates the type of the expression/literal (see implementation in one of the
 above-mentioned classes). You can add your visitor to the DelegatorVisitor later on.
-For an example of a Derive-Class see [here](DeriveSymTypeOfCommonExpression.java).
+For an example of a Derive-Class see [here](DeriveSymTypeOfCommonExpressions.java).
 <br/><br/>
 Writing a CoCo to check the correctness of your type/expression/literal should be easy now that you
 have the TypeCheck facade to use. Just use the correct Derive-Class and/or the correct
