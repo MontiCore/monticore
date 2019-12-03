@@ -126,6 +126,7 @@ trigger-cd4a:
 
 pages:
   stage: report
+  dependencies: []
   image: python:alpine
   before_script:
     - pip install mkdocs-bootstrap
