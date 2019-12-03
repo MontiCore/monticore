@@ -59,7 +59,7 @@ that are somewhat simplified, e.g. without general generics.
 
 ### [MCSimpleGenericTypes.mc4](types/MCSimpleGenericTypes.mc4) (stable)
 * This grammar introduces freely defined generic types
-such as Blubb<A>, Bla<B,C>, Foo<Blubb<D>>
+such as `Blubb<A>`, `Bla<B,C>`, `Foo<Blubb<D>>`
 * These generics are covering a wide range of uses for generic types,
 although they don't cover type restrictions on the arguments, like in 
 Java. 
