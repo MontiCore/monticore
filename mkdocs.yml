@@ -1,6 +1,6 @@
 site_name: MontiCore
 theme:
-  name: mkdocs
+  name: bootstrap
 
 repo_url: https://git.rwth-aachen.de/monticore/monticore
 

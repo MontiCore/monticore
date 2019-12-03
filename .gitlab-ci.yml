@@ -127,7 +127,7 @@ stages:
 pages:
   image: python:alpine
   before_script:
-    - pip install mkdocs
+    - pip install mkdocs-bootstrap
   stage: report
   script:
     - mkdir docs
