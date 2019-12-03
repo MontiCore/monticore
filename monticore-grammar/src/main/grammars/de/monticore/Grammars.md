@@ -28,7 +28,7 @@ project under `monticore-grammar/src/main/grammars/` in packages
 
 ## General: List of Grammars in package `de.monticore`
 
-### [MCBasics.mc4](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/MCBasics.mc4)  (stable)
+### [MCBasics.mc4](MCBasics.mc4)  (stable)
 * This grammar defines absolute basics, such as spaces, 
 Java-like comments and Names. 
 It should be useful in many languages.
