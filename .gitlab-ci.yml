@@ -125,10 +125,10 @@ trigger-cd4a:
     - dev
 
 pages:
+  stage: report
   image: python:alpine
   before_script:
     - pip install mkdocs-bootstrap
-  stage: report
   script:
     - mkdir docs
     - mv monticore-grammar docs/monticore-grammar
