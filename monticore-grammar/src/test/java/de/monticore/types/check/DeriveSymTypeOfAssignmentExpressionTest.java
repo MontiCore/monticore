@@ -129,7 +129,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0170 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0170 The resulting type cannot be calculated");
         }
     }
 
@@ -157,7 +157,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0171 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0171 The resulting type cannot be calculated");
         }
     }
 
@@ -185,7 +185,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0172 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0172 The resulting type cannot be calculated");
         }
     }
 
@@ -213,7 +213,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0173 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0173 The resulting type cannot be calculated");
         }
     }
 
@@ -241,7 +241,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0175 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0175 The resulting type cannot be calculated");
         }
     }
 
@@ -270,7 +270,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0174 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0174 The resulting type cannot be calculated");
         }
     }
 
@@ -301,7 +301,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0176 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0176 The resulting type cannot be calculated");
         }
 
         LogStub.init();
@@ -309,7 +309,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3+=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0xA0180 The resulting type cannot be calculated");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated");
     }
 
     /**
@@ -335,7 +335,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0177 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0177 The resulting type cannot be calculated");
         }
 
         LogStub.init();
@@ -343,7 +343,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3-=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0xA0180 The resulting type cannot be calculated");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated");
     }
 
     /**
@@ -369,7 +369,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0178 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0178 The resulting type cannot be calculated");
         }
 
         LogStub.init();
@@ -377,7 +377,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3*=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0xA0180 The resulting type cannot be calculated");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated");
     }
 
     /**
@@ -403,7 +403,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0179 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0179 The resulting type cannot be calculated");
         }
 
         LogStub.init();
@@ -411,7 +411,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3/=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0xA0180 The resulting type cannot be calculated");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated");
     }
 
     /**
@@ -437,7 +437,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0187 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0187 The resulting type cannot be calculated");
         }
 
         LogStub.init();
@@ -445,7 +445,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3%=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0xA0180 The resulting type cannot be calculated");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated");
     }
 
     /**
@@ -475,7 +475,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0181 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0181 The resulting type cannot be calculated");
         }
 
         LogStub.init();
@@ -483,7 +483,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3&=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0xA0180 The resulting type cannot be calculated");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated");
     }
 
     /**
@@ -509,7 +509,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0182 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0182 The resulting type cannot be calculated");
         }
 
         LogStub.init();
@@ -517,7 +517,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3|=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0xA0180 The resulting type cannot be calculated");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated");
     }
 
     /**
@@ -547,7 +547,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0183 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0183 The resulting type cannot be calculated");
         }
 
         LogStub.init();
@@ -555,7 +555,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3^=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0xA0180 The resulting type cannot be calculated");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated");
     }
 
     /**
@@ -581,7 +581,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0185 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0185 The resulting type cannot be calculated");
         }
 
         LogStub.init();
@@ -589,7 +589,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3<<=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0xA0180 The resulting type cannot be calculated");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated");
     }
 
     /**
@@ -615,7 +615,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0184 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0184 The resulting type cannot be calculated");
         }
 
         LogStub.init();
@@ -623,7 +623,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3>>=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0xA0180 The resulting type cannot be calculated");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated");
     }
 
     /**
@@ -649,7 +649,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0186 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0186 The resulting type cannot be calculated");
         }
 
         LogStub.init();
@@ -657,7 +657,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3>>>=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0xA0180 The resulting type cannot be calculated");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated");
     }
 
     /**
@@ -691,7 +691,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0xA0180 The resulting type cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0180 The resulting type cannot be calculated");
         }
 
         LogStub.init();
@@ -699,6 +699,6 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0xA0180 The resulting type cannot be calculated");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated");
     }
 }

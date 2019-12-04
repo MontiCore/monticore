@@ -118,7 +118,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
-      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0209 The resulting type cannot be calculated");
+      assertEquals(Log.getFindings().get(0).getMsg(),"0x"+"A0209 The resulting type cannot be calculated");
     }
   }
 
@@ -146,7 +146,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
-      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0210 The resulting type cannot be calculated");
+      assertEquals(Log.getFindings().get(0).getMsg(),"0x"+"A0210 The resulting type cannot be calculated");
     }
   }
 
@@ -174,7 +174,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
-      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0211 The resulting type cannot be calculated");
+      assertEquals(Log.getFindings().get(0).getMsg(),"0x"+"A0211 The resulting type cannot be calculated");
     }
   }
 
@@ -202,7 +202,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
-      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0213 The resulting type cannot be calculated");
+      assertEquals(Log.getFindings().get(0).getMsg(),"0x"+"A0213 The resulting type cannot be calculated");
     }
   }
 
@@ -230,7 +230,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
-      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0212 The resulting type cannot be calculated");
+      assertEquals(Log.getFindings().get(0).getMsg(),"0x"+"A0212 The resulting type cannot be calculated");
     }
   }
 
@@ -258,7 +258,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
-      assertEquals(Log.getFindings().get(0).getMsg(),"0xA0214 The resulting type cannot be calculated");
+      assertEquals(Log.getFindings().get(0).getMsg(),"0x"+"A0214 The resulting type cannot be calculated");
     }
   }
 }
