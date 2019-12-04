@@ -18,6 +18,7 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -933,9 +934,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
       if (scope.isPresent()) {
         addToAction(attributeConstraints.addActionForNonTerminal(ast));
-        String attributename = HelperGrammar.getUsuageName(ast);
-        if (scope.get().getProdComponent(attributename).isPresent()
-                && scope.get().getProdComponent(attributename).get().isIsList()) {
+        String attributename = ast.isPresentUsageName() ? ast.getUsageName() : StringTransformations.uncapitalize(ast.getName());
+        List<RuleComponentSymbol> rcs = scope.get().getSpannedScope().resolveRuleComponentMany(attributename);
+        if (!rcs.isEmpty()
+                && rcs.get(0).isIsList()) {
           addToAction(astActions.getActionForLexerRuleIteratedAttribute(ast));
         } else {
           addToAction(astActions.getActionForLexerRuleNotIteratedAttribute(ast));
@@ -991,9 +993,12 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    */
   private void addCodeForRuleReference(ASTNonTerminal ast) {
     Optional<ProdSymbol> scope = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
-
+    if (!scope.isPresent()) {
+      // TODO MB: Ist hier wirklich ein Optional nötig?
+      return;
+    }
     boolean isLeftRecursive = false;
-    if (scope.isPresent() && scope.get().getName().equals(ast.getName())
+    if (scope.get().getName().equals(ast.getName())
             && !altList.isEmpty()) {
       // Check if rule is left recursive
       isLeftRecursive = leftRecursionDetector
@@ -1020,9 +1025,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       }
       addToAction(attributeConstraints.addActionForNonTerminal(ast));
       // TODO GV:
-      String attributename = HelperGrammar.getUsuageName(ast);
-      if (scope.isPresent() && scope.get().getProdComponent(attributename).isPresent()
-              && scope.get().getProdComponent(attributename).get().isIsList()) {
+      String attributename = ast.isPresentUsageName() ? ast.getUsageName() : StringTransformations.uncapitalize(ast.getName());
+      List<RuleComponentSymbol> rcs = scope.get().getSpannedScope().resolveRuleComponentMany(attributename);
+      if (!rcs.isEmpty() && rcs.get(0).isIsList()) {
         addToAction(astActions.getActionForInternalRuleIteratedAttribute(ast));
       } else {
         addToAction(astActions.getActionForInternalRuleNotIteratedAttribute(ast));

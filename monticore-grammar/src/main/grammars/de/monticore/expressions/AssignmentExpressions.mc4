@@ -51,7 +51,7 @@ component grammar AssignmentExpressions
 	
   /*=================================================================*/
 
-  interface AssignmentExpression = left:Expression operator:"" right:Expression;
+  interface AssignmentExpression = left:Expression operator:["="] right:Expression;
 
   /*=================================================================*/
 

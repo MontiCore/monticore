@@ -38,28 +38,8 @@ public class ProdSymbol extends ProdSymbolTOP {
     super(name);
   }
 
-  public RuleComponentSymbol addProdComponent(RuleComponentSymbol prodComp) {
-    errorIfNull(prodComp);
-
-    RuleComponentSymbol prevProdComp = getProdComponent(prodComp.getName()).orElse(null);
-
-    if (prevProdComp != null) {
-      // a prod component is a list (*), if at list one of the prod components
-      // is a list
-      prevProdComp.setIsList(prevProdComp.isIsList() || prodComp.isIsList());
-      return prevProdComp;
-    } else {
-      getSpannedScope().add(prodComp);
-    }
-    return prodComp;
-  }
-
   public Collection<RuleComponentSymbol> getProdComponents() {
     return getSpannedScope().getLocalRuleComponentSymbols();
-  }
-
-  public Optional<RuleComponentSymbol> getProdComponent(String componentName) {
-    return getSpannedScope().resolveRuleComponentLocally(componentName);
   }
 
   public void addProdAttribute(AdditionalAttributeSymbol attributeSymbol) {

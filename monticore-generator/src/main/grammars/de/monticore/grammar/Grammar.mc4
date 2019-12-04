@@ -503,7 +503,10 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     (Name  ":")?
     MCType
     Card?;
-    
+
+  symbolrule AdditionalAttribute =
+    type:ProdSymbolLoader;
+
   // ------------------------------------------------------------------------------
   // Lexer
 

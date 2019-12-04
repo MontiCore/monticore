@@ -486,11 +486,11 @@ public class ParserGeneratorHelper {
   }
 
   public static String getParseRuleName(ProdSymbol rule) {
-    return JavaNamesHelper.getNonReservedName(StringTransformations.uncapitalize(rule.getName()));
+    return StringTransformations.uncapitalize(rule.getName());
   }
 
-  public static String getMCParserWrapperName(ProdSymbol rule) {
-    return StringTransformations.capitalize(JavaNamesHelper.getNonReservedName(rule.getName()));
+  public static String getParseRuleNameJavaCompatible(ProdSymbol rule) {
+    return JavaNamesHelper.getNonReservedName(StringTransformations.uncapitalize(rule.getName()));
   }
 
   /**

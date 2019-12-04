@@ -240,7 +240,7 @@ public class MCGrammarSymbolTableHelper {
   public static Optional<String> getConstantName(RuleComponentSymbol compSymbol) {
     if (compSymbol.isIsConstantGroup() && compSymbol.isPresentAstNode()
         && compSymbol.getAstNode() instanceof ASTConstantGroup) {
-      return getConstantGroupName((ASTConstantGroup) compSymbol.getAstNode());
+      return Optional.of(getConstantGroupName((ASTConstantGroup) compSymbol.getAstNode()));
     }
     if (compSymbol.isIsConstant() && compSymbol.isPresentAstNode()
         && compSymbol.getAstNode() instanceof ASTConstant) {
@@ -281,23 +281,7 @@ public class MCGrammarSymbolTableHelper {
       enumValues.add(name.intern());
     }
   }
-  
-  /**
-   *
-   * @param astNode
-   * @param currentSymbol
-   * @return
-   */
-  public static Optional<String> getConstantName(ASTConstantGroup astNode,
-                                                 Optional<ProdSymbol> currentSymbol) {
-    Optional<String> constName = getConstantGroupName(astNode);
-    if (!currentSymbol.isPresent() || !(currentSymbol.get() instanceof ProdSymbol)
-        || !constName.isPresent()) {
-      return constName;
-    }
-    return Optional.of(getConstantGroupName(astNode).get());
-  }
-  
+
   public static Set<ProdSymbol> getAllSuperProds(ProdSymbol prod) {
     Set<ProdSymbol> supersHandled = new LinkedHashSet<>();
     List<ProdSymbol> supersToHandle = new ArrayList<>();

@@ -11,6 +11,7 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -46,12 +47,12 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
   
   private void compareComponents(ProdSymbol prodSymbol, ProdSymbol interfaceSymbol) {
     for (RuleComponentSymbol interfaceComponent : interfaceSymbol.getProdComponents()) {
-      Optional<RuleComponentSymbol> prodComponentOpt = prodSymbol.getProdComponent(interfaceComponent.getName());
-      if (!prodComponentOpt.isPresent()) {
+      List<RuleComponentSymbol> prodComponents = prodSymbol.getSpannedScope().resolveRuleComponentMany(interfaceComponent.getName());
+      if (prodComponents.isEmpty()) {
         logError(prodSymbol, interfaceSymbol, interfaceComponent);
         continue;
       }
-      RuleComponentSymbol prodComponent = prodComponentOpt.get();
+      RuleComponentSymbol prodComponent = prodComponents.get(0);
 
       if (prodComponent.isIsList() != interfaceComponent.isIsList()
          || prodComponent.isIsOptional() != interfaceComponent.isIsOptional()) {

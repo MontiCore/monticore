@@ -6,10 +6,13 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar_withconcepts._ast.Grammar_WithConceptsMill;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.monticore.utils.Names;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -18,7 +21,6 @@ import static com.google.common.collect.Sets.newLinkedHashSet;
 import static de.monticore.grammar.HelperGrammar.findImplicitTypes;
 import static de.monticore.grammar.Multiplicity.*;
 import static de.se_rwth.commons.Names.getQualifiedName;
-import static de.se_rwth.commons.StringTransformations.uncapitalize;
 import static de.se_rwth.commons.logging.Log.error;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
@@ -142,7 +144,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   }
 
   @Override
-  public  void visit (ASTKeyTerminal node)  {
+  public void visit(ASTKeyTerminal node) {
     // only create a symbol for ASTKeyTerminals that have a usage name
     // only with usage name is shown in AST
     if(node.isPresentUsageName()){
@@ -151,8 +153,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
       // must still add the scope to the ASTKeyTerminal, even if it defines no symbol
       if (getCurrentScope().isPresent()) {
         node.setEnclosingScope(getCurrentScope().get());
-      }
-      else {
+      } else {
         Log.error("Could not set enclosing scope of ASTNode \"" + node
             + "\", because no scope is set yet!");
       }
@@ -173,7 +174,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   protected RuleComponentSymbol create_NonTerminal(ASTNonTerminal ast) {
-    final String symbolName = ast.isPresentUsageName() ? ast.getUsageName() : ast.getName();
+    final String symbolName = ast.isPresentUsageName() ? ast.getUsageName() : StringTransformations.uncapitalize(ast.getName());
     return new RuleComponentSymbol(symbolName);
   }
 
@@ -194,6 +195,24 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     }
     ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a));
     ast.setEnclosingScope(getCurrentScope().get());
+  }
+
+  @Override
+  protected AdditionalAttributeSymbol create_AdditionalAttribute(ASTAdditionalAttribute ast) {
+    String symbolName;
+    if (ast.isPresentName()) {
+      symbolName = ast.getName();
+    } else {
+      String typeName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(ast.getMCType());
+      symbolName = StringTransformations.uncapitalize(Names.getSimpleName(typeName));
+    }
+    return new AdditionalAttributeSymbol(symbolName);
+  }
+
+  @Override
+  protected void initialize_AdditionalAttribute(AdditionalAttributeSymbol symbol, ASTAdditionalAttribute ast) {
+    symbol.setType(new ProdSymbolLoader(ast.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()),
+            getCurrentScope().get()));
   }
 
   @Override
@@ -319,9 +338,6 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
       Collection<AdditionalAttributeSymbol> astAttributes = prodSymbol.getProdAttributes();
       for (RuleComponentSymbol component : prodSymbol.getProdComponents()) {
         if (component.isIsNonterminal()) {
-          if (!component.isPresentAstNode()) {
-            System.out.println("SS");
-          }
           setComponentMultiplicity(component, component.getAstNode());
           Optional<AdditionalAttributeSymbol> attribute = astAttributes.stream()
               .filter(a -> a.getName().equals(component.getName())).findAny();
@@ -409,13 +425,13 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
    * @param astAttribute
    */
   private void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute) {
-    String attributeName = astAttribute.isPresentName()?astAttribute.getName()
-        :uncapitalize(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType()));
+    String attributeName = astAttribute.isPresentName() ? astAttribute.getName()
+        : StringTransformations.uncapitalize(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType()));
 
     AdditionalAttributeSymbol astAttributeSymbol = new AdditionalAttributeSymbol(attributeName);
     ProdSymbolLoader attributeType = new ProdSymbolLoader(
-            MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType()),
-            mcProdSymbol.getSpannedScope());
+        MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType()),
+        mcProdSymbol.getSpannedScope());
     astAttributeSymbol.setTypeReference(attributeType);
 
     mcProdSymbol.addProdAttribute(astAttributeSymbol);
