@@ -28,6 +28,7 @@ stages:
   - build
   - test1
   - test2
+  - report
 
 build_dev:
   stage: build
@@ -45,7 +46,7 @@ build_dev:
     paths:
       - "*/target"
     expire_in: 1 week
-    
+
 build_branches:
   stage: build
   script:
@@ -122,3 +123,24 @@ trigger-cd4a:
     branch: develop
   only:
     - dev
+
+pages:
+  stage: report
+  dependencies: []
+  image: python:alpine
+  before_script:
+    - pip install mkdocs-bootstrap
+  script:
+    - mkdir docs
+    - mv monticore-grammar docs/monticore-grammar
+    - mv monticore-runtime docs/monticore-runtime
+    - mv 00.org docs/00.org
+    - mv *.md docs
+    - mkdocs build
+    - mv site public
+  artifacts:
+    paths:
+      - public
+  only:
+    - dev
+

@@ -177,14 +177,14 @@ public class JavaLightPrettyPrinterTest {
 
   @Test
   public void testThrows() throws IOException {
-    Optional<ASTThrows> result = parser.parse_StringR__throws("a.b.c.D, person.A ");
+    Optional<ASTThrows> result = parser.parse_StringThrows("a.b.c.D, person.A ");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTThrows ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
-    result = parser.parse_StringR__throws(output);
+    result = parser.parse_StringThrows(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 

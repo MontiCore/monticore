@@ -2,32 +2,30 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import com.google.common.collect.Iterables;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.AttributeCategory;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
+import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.monticore.utils.ASTNodes;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
-import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.mc2cd.AttributeCategory.determineCategory;
-import static de.monticore.codegen.mc2cd.TransformationHelper.simpleName;
 
 /**
  * Removes duplicate attributes that may result from rules having multiple nonterminals referencing
-
+ * <p>
  * the same rule.
- *
  */
 final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCDCompilationUnit> {
 
@@ -49,10 +47,13 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     Iterator<ASTCDAttribute> iterator = cdAttributes.iterator();
     while (iterator.hasNext()) {
       ASTCDAttribute inspectedAttribute = iterator.next();
-      Iterable<ASTCDAttribute> remainingAttributes = Iterables.filter(cdAttributes,
-          attribute -> !attribute.equals(inspectedAttribute));
-      boolean isRedundant = StreamSupport.stream(remainingAttributes.spliterator(), false)
-          .anyMatch(isRedundantPredicate(inspectedAttribute, remainingAttributes));
+      List<ASTCDAttribute> remainingAttributes = cdAttributes
+          .stream()
+          .filter(attribute -> !attribute.equals(inspectedAttribute))
+          .collect(Collectors.toList());
+      boolean isRedundant = remainingAttributes
+          .stream()
+          .anyMatch(a -> isRedundant(inspectedAttribute, a));
       if (isRedundant) {
         iterator.remove();
       }
@@ -66,22 +67,20 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
    * @return true if another attribute with the same variable name, the same original type and an
    * equal or higher category exists
    */
-  private static Predicate<ASTCDAttribute> isRedundantPredicate(ASTCDAttribute inspectedAttribute,
-      Iterable<ASTCDAttribute> remainingAttributes) {
+  private static boolean isRedundant(ASTCDAttribute inspectedAttribute,
+                                     ASTCDAttribute remainingAttribute) {
     String inspectedName = inspectedAttribute.getName();
     String inspectedType = getOriginalTypeName(inspectedAttribute);
     AttributeCategory inspectedCategory = determineCategory(inspectedAttribute);
 
-    Predicate<ASTCDAttribute> sameName = remainingAttribute ->
-        inspectedName.equalsIgnoreCase(remainingAttribute.getName());
+    boolean sameName = inspectedName.equalsIgnoreCase(remainingAttribute.getName());
 
-    Predicate<ASTCDAttribute> sameType = remainingAttribute ->
-        inspectedType.equals(getOriginalTypeName(remainingAttribute));
+    boolean sameType = inspectedType.equals(getOriginalTypeName(remainingAttribute));
 
-    Predicate<ASTCDAttribute> sameOrHigherCategory = remainingAttribute -> inspectedCategory
+    boolean sameOrHigherCategory = inspectedCategory
         .compareTo(AttributeCategory.determineCategory(remainingAttribute)) < 1;
 
-    return sameName.and(sameType).and(sameOrHigherCategory);
+    return sameName && sameType && sameOrHigherCategory;
   }
 
   private static String getOriginalTypeName(ASTCDAttribute cdAttribute) {
@@ -100,7 +99,8 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
       List<ASTMCTypeArgument> argList = ((ASTMCGenericType) cdAttribute.getMCType()).getMCTypeArgumentList();
       if (!argList.isEmpty()) {
-        return Optional.of(simpleName(argList.get(0).getMCTypeOpt().get()));
+        String simpleTypeName = argList.get(0).getMCTypeOpt().get().printType(new MCFullGenericTypesPrettyPrinter(new IndentPrinter()));
+        return Optional.of(simpleTypeName);
       }
     }
     return Optional.empty();

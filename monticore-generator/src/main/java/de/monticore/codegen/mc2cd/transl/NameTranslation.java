@@ -60,7 +60,7 @@ public class NameTranslation implements
         for (Link<ASTNonTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTNonTerminal.class,
                 ASTCDAttribute.class)) {
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
-            String nameToUse = usageName.isPresent() ? usageName.get() : link.source().getName();
+            String nameToUse = usageName.isPresent() ? usageName.get() : StringTransformations.uncapitalize(link.source().getName());
             link.target().setName(nameToUse);
         }
 

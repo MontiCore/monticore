@@ -6,8 +6,8 @@ Modularization works as follows. 'MCLiteralBasis' defines the root
 non-Terminal 'Literal', but no terminals with literal terms.
 
 Terminal symbols are defined in 
-[MCCommonLiterals](monticore-grammar/src/main/grammars/de/monticore/literals/MCCommonLiterals.mc4) 
-and [MCJavaLiterals](monticore-grammar/src/main/grammars/de/monticore/literals/MCJavaLiterals.mc4).
+[MCCommonLiterals](MCCommonLiterals.mc4) 
+and [MCJavaLiterals](MCJavaLiterals.mc4).
 
 ## Grammar - MCCommonLiterals
 
