@@ -8,6 +8,7 @@ import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class AbstractNTWithoutExtensionOnlyInComponentGrammar implements Grammar
           List<String> checkList = Lists.newArrayList(prodSymbol.getName());
           prodSymbol.getSuperProds().stream().forEach(i -> checkList.add(i.getName()));
           for (String name: checkList) {
-            if (prod.getProdComponent(name).isPresent()) {
+            if (prod.getProdComponent(StringTransformations.uncapitalize(name)).isPresent()) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, name), a.get_SourcePositionStart());
             }
           }

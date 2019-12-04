@@ -9,8 +9,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class AttributeNameForNTDuplicatedTest extends CocoTest {
-  
-  private final String CODE = "xA4077";
+
+  private final String CODE = "0xA4077";
   
   private final String MESSAGE = " The production C must not use the attribute name a for different nonterminals.";
   
@@ -26,7 +26,7 @@ public class AttributeNameForNTDuplicatedTest extends CocoTest {
   @Test
   public void testDuplicatedAttribute() {
     Log.getFindings().clear();
-    testInvalidGrammarKeepFindings(grammar, "0" + CODE, MESSAGE, checker);
+    testInvalidGrammarKeepFindings(grammar, CODE, MESSAGE, checker);
   }
   
   @Test

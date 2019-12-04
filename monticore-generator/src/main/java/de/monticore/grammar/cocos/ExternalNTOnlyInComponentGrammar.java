@@ -6,6 +6,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -64,7 +65,7 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
 
       for (ProdSymbol prodSymbol: externalProds) {
         for (ProdSymbol prod : prods) {
-            if (prod.getProdComponent(prodSymbol.getName()).isPresent()) {
+          if (prod.getProdComponent(StringTransformations.uncapitalize(prodSymbol.getName())).isPresent()) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodSymbol.getName()), a.get_SourcePositionStart());
           }
         }
