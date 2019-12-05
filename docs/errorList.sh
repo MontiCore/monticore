@@ -98,9 +98,11 @@ diff $errorcodes.sort $errorcodes.uniquesort \
 | grep "^-0x" \
 > $errorcodes.doubles
 
-sed -i -n "s/^-/ALERT: this error occurs twice::  /g" $errorcodes.doubles
+sed -i  's/^-/ALERT: this error occurs twice::  /g' $errorcodes.doubles
 
 sed -i '/^-/G' $errorcodes.doubles
+
+cat $errorcodes.doubles
 
 echo "We found  " `cat $errorcodes.doubles | wc -l` " repeated error codes. "
 echo " "
