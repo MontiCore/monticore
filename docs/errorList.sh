@@ -99,7 +99,7 @@ diff $errorcodes.sort $errorcodes.uniquesort \
 > $errorcodes.doubles
 
 cat $errorcodes.doubles \
-| sed "s/^-.*/ALERT: this error occurs twice::  /g <br\/>/"
+| sed "s/^-.*/ALERT: this error occurs twice::  /g/"
 
 echo "We found  " `cat $errorcodes.doubles | wc -l` " repeated error codes. "
 echo " "
