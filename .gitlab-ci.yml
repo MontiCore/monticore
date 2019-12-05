@@ -131,7 +131,7 @@ pages:
   before_script:
     - pip install mkdocs-bootstrap
   script:
-    - sh docs/errorList.sh '../' '../target/site/errorList' >&1 docs/ErrorList.md
+    - sh docs/errorList.sh '../' '../target/site/errorList' > docs/ErrorList.md
     - mv monticore-grammar docs/monticore-grammar
     - mv monticore-runtime docs/monticore-runtime
     - mv 00.org docs/00.org
