@@ -87,7 +87,7 @@ echo " "
 
 cat $errorcodes.sort
 
-echo "## All dublicate error codes"
+echo "## Dublicate error codes"
 echo " ------------------------------------------------"
 echo " List of all error codes THAT OCCUR MORE THAN ONCE"
 echo " "
