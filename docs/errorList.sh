@@ -39,6 +39,7 @@ errorcodes=$tmpdir/errorcodes.txt
 
 rm -rf $errorcodes 	# start fresh
 
+echo "# List of used Error Codes"
 echo " ------------------------------------------------"
 echo " List of java and template files considered:"
 echo " ------------------------------------------------"
@@ -72,6 +73,7 @@ echo " "
 for i in `cat $filelist`
 do
     grep -H "\"0x[A-Z0-9]\{5\}[ \"]" $i >> $errorcodes
+    echo " "
 done
 
 # prepare and sort
@@ -86,7 +88,7 @@ echo " "
 
 cat $errorcodes.sort
 
-echo " "
+echo " ## Dublicate Error Codes"
 echo " ------------------------------------------------"
 echo " List of all error codes THAT OCCUR MORE THAN ONCE"
 echo " "
@@ -94,12 +96,13 @@ echo " ------------------------------------------------"
 echo " "
 sort -u $errorcodes.sort > $errorcodes.uniquesort
 diff $errorcodes.sort $errorcodes.uniquesort \
-| grep "^-" \
+| grep "<" \
 > $errorcodes.doubles
 
 cat $errorcodes.doubles \
-| sed "s/</ALERT: this error occurs twice: /g"
+| sed "s/</ALERT: this error occurs twice::  /g <br/>"
 
+echo " "
 echo "We found  " `cat $errorcodes.doubles | wc -l` " repeated error codes. "
 echo " "
 
