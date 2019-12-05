@@ -89,7 +89,7 @@ sed -i '/^0x/G' $errorcodes.sort
 
 cat $errorcodes.sort
 
-echo "## Dublicate error codes"
+echo "## Duplicate error codes"
 echo " ------------------------------------------------"
 echo " List of all error codes THAT OCCUR MORE THAN ONCE"
 echo " "
