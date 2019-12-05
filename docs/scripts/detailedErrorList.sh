@@ -43,7 +43,7 @@ fulltext=$tmpdir/fulltext.txt
 
 rm -rf $fulltext 	# start fresh
 
-echo "Detailed error list with the corresponding error name"
+echo "## Detailed error list with the corresponding error name"
 echo " ------------------------------------------------"
 echo " List of java and template files considered  :"
 echo " ------------------------------------------------"

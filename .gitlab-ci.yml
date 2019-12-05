@@ -133,6 +133,7 @@ pages:
   script:
     - sh docs/scripts/errorList.sh '../../' '../../target/site/errorList' > docs/ErrorList.md
     - sh docs/scripts/detailedErrorList.sh '../../' '../../target/site/detailedErrorList' > docs/DetailedErrorList.md
+    - sh docs/scripts/findDoubleFileNames.sh '../../' '../../target/site/findDoubleFileNames' > docs/FindDoubleFileNames.md
     - mv monticore-grammar docs/monticore-grammar
     - mv monticore-runtime docs/monticore-runtime
     - mv 00.org docs/00.org

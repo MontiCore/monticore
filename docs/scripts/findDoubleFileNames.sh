@@ -18,7 +18,7 @@
 #
 
 # List of filenames to be included as standard no-go's:
-nogofilenames=findDoubleFileNames.JavaStandardNames.txt
+nogofilenames=`dirname $0`/findDoubleFileNames.JavaStandardNames.txt
 
 # from here we compute the names:
 ### dir=$HOME/workspace/dex
@@ -39,6 +39,7 @@ echo " ------------------------------------------------"
 # get the files from the project
 find . -print \
 | grep -v "/gen/" \
+| grep -v "/target/" \
 > $filelist
 
 # add the no-go's
