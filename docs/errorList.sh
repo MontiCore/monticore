@@ -83,7 +83,7 @@ cat $errorcodes \
 | sed 's/\".*$//g' \
 | sort - > $errorcodes.sort
 
-echo "We found  " `cat $errorcodes.sort | wc -l` " error codes. "
+echo "We found  " `cat $errorcodes.sort | wc -l` " error codes.  "
 echo " "
 
 cat $errorcodes.sort
@@ -100,7 +100,7 @@ diff $errorcodes.sort $errorcodes.uniquesort \
 > $errorcodes.doubles
 
 cat $errorcodes.doubles \
-| sed "s/^-/ALERT: this error occurs twice::  /g <br/>"
+| sed "s/-/ALERT: this error occurs twice::  /g <br/>"
 
 echo " "
 echo "We found  " `cat $errorcodes.doubles | wc -l` " repeated error codes. "
