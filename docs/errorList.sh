@@ -98,9 +98,9 @@ diff $errorcodes.sort $errorcodes.uniquesort \
 | grep "^-0x" \
 > $errorcodes.doubles
 
-sed -i  's/^-/ALERT: this error occurs twice::  /g' $errorcodes.doubles
-
 sed -i '/^-/G' $errorcodes.doubles
+
+sed -i  's/^-/ALERT: this error occurs twice::  /g' $errorcodes.doubles
 
 cat $errorcodes.doubles
 
