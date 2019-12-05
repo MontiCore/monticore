@@ -43,6 +43,7 @@ fulltext=$tmpdir/fulltext.txt
 
 rm -rf $fulltext 	# start fresh
 
+echo "Detailed error list with the corresponding error name"
 echo " ------------------------------------------------"
 echo " List of java and template files considered  :"
 echo " ------------------------------------------------"
@@ -50,11 +51,11 @@ echo " "
 
 find . -print| grep -v ".svn" \
  | grep "\.java" > $filelist.j
-echo "We found  " `cat $filelist.j | wc -l` " java files. "
+echo "We found  " `cat $filelist.j | wc -l` " java files. <br/>"
 
 find . -print | grep -v ".svn" \
 | grep "\.ftl" > $filelist.f
-echo "We found  " `cat $filelist.f | wc -l` " ftl files. "
+echo "We found  " `cat $filelist.f | wc -l` " ftl files. <br/>"
 
 cat $filelist.j $filelist.f > $filelist
 echo "in total: " `cat $filelist | wc -l` 
