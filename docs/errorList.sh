@@ -94,11 +94,11 @@ echo " ------------------------------------------------"
 echo " "
 sort -u $errorcodes.sort > $errorcodes.uniquesort
 diff $errorcodes.sort $errorcodes.uniquesort \
-| grep "<" \
+| grep "^-" \
 > $errorcodes.doubles
 
 cat $errorcodes.doubles \
-| sed "s/</ALERT: this error occurs twice::  /g"
+| sed "s/</ALERT: this error occurs twice: /g"
 
 echo "We found  " `cat $errorcodes.doubles | wc -l` " repeated error codes. "
 echo " "
