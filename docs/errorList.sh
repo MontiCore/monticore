@@ -85,6 +85,8 @@ cat $errorcodes \
 echo "We found  " `cat $errorcodes.sort | wc -l` " error codes. "
 echo " "
 
+sed -i '/^0x/G' $errorcodes.sort
+
 cat $errorcodes.sort
 
 echo "## Dublicate error codes"
