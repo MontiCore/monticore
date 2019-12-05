@@ -102,7 +102,7 @@ cat $errorcodes.doubles \
 | sed "s/^-/ALERT: this error occurs twice::  /g"
 
 cat $errorcodes.doubles \
-| sed "s/$/<bd\/>"
+| sed 's/$/<bd\/>/'
 
 echo "We found  " `cat $errorcodes.doubles | wc -l` " repeated error codes. "
 echo " "
