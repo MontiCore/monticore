@@ -39,7 +39,6 @@ errorcodes=$tmpdir/errorcodes.txt
 
 rm -rf $errorcodes 	# start fresh
 
-echo "# List of used Error Codes"
 echo " ------------------------------------------------"
 echo " List of java and template files considered:"
 echo " ------------------------------------------------"
@@ -54,7 +53,7 @@ find . -print | grep -v ".svn" \
 echo "We found  " `cat $filelist.f | wc -l` " ftl files. "
 
 cat $filelist.j $filelist.f > $filelist
-echo "in total: " `cat $filelist | wc -l` 
+echo "in total: " `cat $filelist | wc -l`
 
 echo " "
 echo " ------------------------------------------------"
@@ -69,11 +68,10 @@ echo " The list is sorted"
 echo " ------------------------------------------------"
 echo " "
 
-# grep the error codes 
+# grep the error codes
 for i in `cat $filelist`
 do
     grep -H "\"0x[A-Z0-9]\{5\}[ \"]" $i >> $errorcodes
-    echo " "
 done
 
 # prepare and sort
@@ -83,12 +81,12 @@ cat $errorcodes \
 | sed 's/\".*$//g' \
 | sort - > $errorcodes.sort
 
-echo "We found  " `cat $errorcodes.sort | wc -l` " error codes.  "
+echo "We found  " `cat $errorcodes.sort | wc -l` " error codes. "
 echo " "
 
 cat $errorcodes.sort
 
-echo " ## Dublicate Error Codes"
+echo " "
 echo " ------------------------------------------------"
 echo " List of all error codes THAT OCCUR MORE THAN ONCE"
 echo " "
@@ -96,16 +94,12 @@ echo " ------------------------------------------------"
 echo " "
 sort -u $errorcodes.sort > $errorcodes.uniquesort
 diff $errorcodes.sort $errorcodes.uniquesort \
-| grep "^-" \
+| grep "<" \
 > $errorcodes.doubles
 
 cat $errorcodes.doubles \
-| sed "s/^0x/ALERT: this error occurs twice: /g"
+| sed "s/</ALERT: this error occurs twice::  /g"
 
-cat $errorcodes.doubles \
-| sed "s/$/\/"
-
-echo " "
 echo "We found  " `cat $errorcodes.doubles | wc -l` " repeated error codes. "
 echo " "
 
