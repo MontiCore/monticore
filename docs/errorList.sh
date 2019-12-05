@@ -39,6 +39,7 @@ errorcodes=$tmpdir/errorcodes.txt
 
 rm -rf $errorcodes 	# start fresh
 
+echo "## Report for dublicate usage of error codes"
 echo " ------------------------------------------------"
 echo " List of java and template files considered:"
 echo " ------------------------------------------------"
@@ -46,7 +47,7 @@ echo " "
 
 find . -print| grep -v ".svn" \
  | grep "\.java" > $filelist.j
-echo "We found  " `cat $filelist.j | wc -l` " java files. "
+echo "We found  " `cat $filelist.j | wc -l` " java files. <br/>"
 
 find . -print | grep -v ".svn" \
 | grep "\.ftl" > $filelist.f
@@ -86,7 +87,7 @@ echo " "
 
 cat $errorcodes.sort
 
-echo " "
+echo "## All dublicate error codes"
 echo " ------------------------------------------------"
 echo " List of all error codes THAT OCCUR MORE THAN ONCE"
 echo " "
@@ -98,7 +99,7 @@ diff $errorcodes.sort $errorcodes.uniquesort \
 > $errorcodes.doubles
 
 cat $errorcodes.doubles \
-| sed "s/</ALERT: this error occurs twice::  /g"
+| sed "s/</ALERT: this error occurs twice::  /g <br/>"
 
 echo "We found  " `cat $errorcodes.doubles | wc -l` " repeated error codes. "
 echo " "
