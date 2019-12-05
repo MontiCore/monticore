@@ -98,7 +98,6 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
 
   /**
    * set the scope of the typescalculator, important for resolving for e.g. NameExpression
-   * @param scope
    */
   public void setScope(IExpressionsBasisScope scope){
     deriveSymTypeOfAssignmentExpressions.setScope(scope);
