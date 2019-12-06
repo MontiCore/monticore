@@ -30,6 +30,7 @@ echo "2"
 ls
 ### tmpdir=$HOME/tmp/
 tmpdir=$2
+mkdir -p $tmpdir
 
 filelist=$tmpdir/doublefiles.txt
 
