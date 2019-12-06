@@ -82,8 +82,9 @@ diff $filelist.2 $filelist.1 \
 # get the original sources:
 for i in `cat $filelist.3`
 do
-  echo $i "    in:"
+  echo $i "    in: <br/>"
   grep "/"$i"\." $filelist.0 | sed 's/^/  /g'
+  echo "<br/>"
 done
 
 
