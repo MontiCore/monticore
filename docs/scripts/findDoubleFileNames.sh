@@ -83,7 +83,7 @@ diff $filelist.2 $filelist.1 \
 for i in `cat $filelist.3`
 do
   echo $i "    in: <br/>"
-  grep "/"$i"\." $filelist.0 | sed 's/^/  /g'
+  grep "/"$i"\." $filelist.0 | sed 's/^/  /g \'
   echo "<br/>"
 done
 
