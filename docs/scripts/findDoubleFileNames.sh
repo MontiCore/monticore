@@ -73,8 +73,8 @@ sort -u $filelist.1 > $filelist.2
 
 # diff now contains the doubles:
 diff $filelist.2 $filelist.1 \
-| grep ">" \
-| sed 's/>//g' \
+| grep '^+[^+]' \
+| sed 's/^+//g' \
 > $filelist.3
 
 # get the original sources:
