@@ -23,8 +23,11 @@ nogofilenames=findDoubleFileNames.JavaStandardNames.txt
 # from here we compute the names:
 ### dir=$HOME/workspace/dex
 dir=$1
+echo "first"
+ls
 cd $dir
-
+echo "second"
+ls
 ### tmpdir=$HOME/tmp/
 tmpdir=$2
 
@@ -35,7 +38,7 @@ rm -f $filelist $filelist.?  # start fresh
 echo " ------------------------------------------------"
 echo " List of double files:"
 echo " ------------------------------------------------"
-
+ls
 # get the files from the project
 find . -print \
 | grep -v "/gen/" \
