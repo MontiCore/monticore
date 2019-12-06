@@ -37,6 +37,7 @@
 # from here we compute the reachable Names:
 ### dir=$HOME/workspace/dex/gtr/src
 dirs=$1
+ls
 
 # extract directory list, space separated
 dirs2=`echo $dirs | sed "s!:! !g"`
