@@ -18,16 +18,13 @@
 #
 
 # List of filenames to be included as standard no-go's:
-nogofilenames=findDoubleFileNames.JavaStandardNames.txt
+nogofilenames=`dirname $0`/findDoubleFileNames.JavaStandardNames.txt
 
 # from here we compute the names:
 ### dir=$HOME/workspace/dex
 dir=$1
-echo "first"
-ls
 cd $dir
-echo "second"
-ls
+
 ### tmpdir=$HOME/tmp/
 tmpdir=$2
 
@@ -38,10 +35,11 @@ rm -f $filelist $filelist.?  # start fresh
 echo " ------------------------------------------------"
 echo " List of double files:"
 echo " ------------------------------------------------"
-ls
+
 # get the files from the project
 find . -print \
 | grep -v "/gen/" \
+| grep -v "/target/" \
 > $filelist
 
 # add the no-go's
