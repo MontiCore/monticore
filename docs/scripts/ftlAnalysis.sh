@@ -61,6 +61,8 @@ echo " ------------------------------------------------"
 # iterate over the given directories & files within
 for dir in $dirs2
 do
+  echo "dir "
+  echo $dir
   cd $dir
   echo "iterate over directory for java-files:" $dir
   for i in `find . -print | grep -v ".svn" | grep java`
