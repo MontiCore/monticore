@@ -78,9 +78,9 @@ The different development statuses of grammars are explained
 * Language to parse Statecharts
 * creates transformation language within SC and sc<->cd4a
 
-### [SysML/P](INSERT LINK HERE) (INSERT STATUS HERE)
+### [SysML/P](https://git.rwth-aachen.de/monticore/sysml/sysml_2) (Example)
 * Author: NJ
-* INSERT DESCRIPTION HERE
+* Project for SysML 2 languages. It is compatible with the general SysML 2 standard.
 
 ### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Beta: In Stabilization)
 * Author: SVa
