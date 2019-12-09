@@ -64,6 +64,7 @@ do
   echo "dir "
   echo $dir
   cd $dir
+  ls
   echo "iterate over directory for java-files:" $dir
   for i in `find . -print | grep -v ".svn" | grep java`
   do
