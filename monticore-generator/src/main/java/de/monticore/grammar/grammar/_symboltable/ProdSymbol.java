@@ -42,19 +42,6 @@ public class ProdSymbol extends ProdSymbolTOP {
     return getSpannedScope().getLocalRuleComponentSymbols();
   }
 
-  public void addProdAttribute(AdditionalAttributeSymbol attributeSymbol) {
-    errorIfNull(attributeSymbol);
-    getSpannedScope().add(attributeSymbol);
-  }
-
-  public Collection<AdditionalAttributeSymbol> getProdAttributes() {
-    return getSpannedScope().getLocalAdditionalAttributeSymbols();
-  }
-
-  public Optional<AdditionalAttributeSymbol> getProdAttribute(String attributeName) {
-    return getSpannedScope().resolveAdditionalAttributeLocally(attributeName);
-  }
-
   public void addSuperProd(ProdSymbolLoader superProdRef) {
     this.superProds.add(errorIfNull(superProdRef));
   }

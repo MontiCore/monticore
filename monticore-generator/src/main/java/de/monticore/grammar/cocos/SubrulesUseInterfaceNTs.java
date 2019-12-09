@@ -11,6 +11,7 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,38 +48,29 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
   
   private void compareComponents(ProdSymbol prodSymbol, ProdSymbol interfaceSymbol) {
     for (RuleComponentSymbol interfaceComponent : interfaceSymbol.getProdComponents()) {
-      List<RuleComponentSymbol> prodComponents = prodSymbol.getSpannedScope().resolveRuleComponentMany(interfaceComponent.getName());
+      List<RuleComponentSymbol> prodComponents = prodSymbol.getSpannedScope().resolveRuleComponentDownMany(interfaceComponent.getName());
       if (prodComponents.isEmpty()) {
         logError(prodSymbol, interfaceSymbol, interfaceComponent);
         continue;
       }
-      RuleComponentSymbol prodComponent = prodComponents.get(0);
-
-      if (prodComponent.isIsList() != interfaceComponent.isIsList()
-         || prodComponent.isIsOptional() != interfaceComponent.isIsOptional()) {
-        logError(prodSymbol, interfaceSymbol, interfaceComponent);
-        continue;
+      boolean found = false;
+      Iterator<RuleComponentSymbol> it = prodComponents.iterator();
+      while (!found && it.hasNext()) {
+        RuleComponentSymbol prodComponent = it.next();
+        if ((prodComponent.isIsList() == interfaceComponent.isIsList()) 
+                && (prodComponent.isIsOptional() == interfaceComponent.isIsOptional())) { 
+          if (prodComponent.isIsTerminal() && interfaceComponent.isIsTerminal()) {
+            found = true;
+          } else if (prodComponent.isIsNonterminal() && interfaceComponent.isIsNonterminal()) {
+            Optional<ProdSymbolLoader> prodComponentRefOpt = prodComponent.getReferencedProd();
+            Optional<ProdSymbolLoader> interfaceComponentRefOpt = interfaceComponent.getReferencedProd();
+            if (prodComponentRefOpt.isPresent() && interfaceComponentRefOpt.isPresent()) {
+              found = prodComponentRefOpt.get().getName().equals(interfaceComponentRefOpt.get().getName());
+            }
+          }
+        }
       }
-
-      if (prodComponent.isIsTerminal() != interfaceComponent.isIsTerminal()) {
-        logError(prodSymbol, interfaceSymbol, interfaceComponent);
-        continue;
-      }
-
-      Optional<ProdSymbolLoader> prodComponentRefOpt = prodComponent.getReferencedProd();
-      Optional<ProdSymbolLoader> interfaceComponentRefOpt = interfaceComponent.getReferencedProd();
-
-      if (prodComponentRefOpt.isPresent() != interfaceComponentRefOpt.isPresent()) {
-        logError(prodSymbol, interfaceSymbol, interfaceComponent);
-        continue;
-      }
-      
-      if (!prodComponentRefOpt.isPresent() && !interfaceComponentRefOpt.isPresent()) {
-        // Two termninals ==> no error?
-        continue;
-      }
-
-      if (!prodComponentRefOpt.get().getName().equals(interfaceComponentRefOpt.get().getName())) {
+      if (!found ){
         logError(prodSymbol, interfaceSymbol, interfaceComponent);
       }
     }

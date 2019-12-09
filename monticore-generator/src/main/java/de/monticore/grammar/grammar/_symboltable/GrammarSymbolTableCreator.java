@@ -2,11 +2,13 @@
 
 package de.monticore.grammar.grammar._symboltable;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multiset;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar_withconcepts._ast.Grammar_WithConceptsMill;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -23,6 +25,7 @@ import static de.monticore.grammar.Multiplicity.*;
 import static de.se_rwth.commons.Names.getQualifiedName;
 import static de.se_rwth.commons.logging.Log.error;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.max;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
@@ -211,8 +214,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   protected void initialize_AdditionalAttribute(AdditionalAttributeSymbol symbol, ASTAdditionalAttribute ast) {
-    symbol.setType(new ProdSymbolLoader(ast.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()),
-            getCurrentScope().get()));
+    symbol.setType(ast.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
   }
 
   @Override
@@ -335,15 +337,25 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
    */
   private void setComponentsCardinality() {
     for (ProdSymbol prodSymbol : grammarSymbol.getProdsWithInherited().values()) {
-      Collection<AdditionalAttributeSymbol> astAttributes = prodSymbol.getProdAttributes();
-      for (RuleComponentSymbol component : prodSymbol.getProdComponents()) {
-        if (component.isIsNonterminal()) {
-          setComponentMultiplicity(component, component.getAstNode());
-          Optional<AdditionalAttributeSymbol> attribute = astAttributes.stream()
-              .filter(a -> a.getName().equals(component.getName())).findAny();
-          if (attribute.isPresent()) {
-            Multiplicity multiplicity = multiplicityOfAttributeInAST(
-                attribute.get().getAstNode());
+      Collection<AdditionalAttributeSymbol> astAttributes = prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols();
+      LinkedListMultimap<String, RuleComponentSymbol> map = prodSymbol.getSpannedScope().getRuleComponentSymbols();
+      for (String compName : prodSymbol.getSpannedScope().getRuleComponentSymbols().keySet()) {
+        Optional<AdditionalAttributeSymbol> attribute = astAttributes.stream()
+                .filter(a -> a.getName().equals(compName)).findAny();
+        Multiplicity multiplicity = STANDARD;
+        if (attribute.isPresent()) {
+          multiplicity = multiplicityOfAttributeInAST(
+                  attribute.get().getAstNode());
+        } else {
+          for (RuleComponentSymbol component : prodSymbol.getSpannedScope().getRuleComponentSymbols().get(compName)) {
+            if (component.isIsNonterminal()) {
+              Multiplicity mult = determineMultiplicity(astGrammar, component.getAstNode());
+              multiplicity = max(Lists.newArrayList(mult, multiplicity));
+            }
+          }
+        }
+        for (RuleComponentSymbol component: prodSymbol.getSpannedScope().getRuleComponentSymbols().get(compName)) {
+          if (component.isIsNonterminal()) {
             component.setIsList(multiplicity == LIST);
             component.setIsOptional(multiplicity == OPTIONAL);
           }
@@ -419,31 +431,16 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     }
   }
 
-
   /**
    * @param mcProdSymbol
    * @param astAttribute
    */
   private void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute) {
-    String attributeName = astAttribute.isPresentName() ? astAttribute.getName()
-        : StringTransformations.uncapitalize(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType()));
-
-    AdditionalAttributeSymbol astAttributeSymbol = new AdditionalAttributeSymbol(attributeName);
-    ProdSymbolLoader attributeType = new ProdSymbolLoader(
-        MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType()),
-        mcProdSymbol.getSpannedScope());
-    astAttributeSymbol.setTypeReference(attributeType);
-
-    mcProdSymbol.addProdAttribute(astAttributeSymbol);
-    //
-    // Optional<MCProdComponentSymbol> mcComponent =
-    // mcProdSymbol.getProdComponent(attributeName);
-    // astAttributeSymbol.setReferencedComponent(mcComponent);
-
-    setLinkBetweenSymbolAndNode(astAttributeSymbol, astAttribute);
-
+    AdditionalAttributeSymbol symbol = create_AdditionalAttribute(astAttribute);
+    initialize_AdditionalAttribute(symbol,astAttribute);
+    mcProdSymbol.getSpannedScope().add(symbol);
+    setLinkBetweenSymbolAndNode(symbol, astAttribute);
   }
-
 
   public final Optional<ProdSymbol> getProdSymbol() {
     if (getCurrentScope().isPresent()) {

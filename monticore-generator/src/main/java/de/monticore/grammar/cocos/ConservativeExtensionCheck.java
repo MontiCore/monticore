@@ -46,7 +46,7 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
 
   private void compareComponents(ProdSymbol p, ProdSymbol superp) {
     for (RuleComponentSymbol comp : superp.getProdComponents()) {
-      List<RuleComponentSymbol> prodComponents = p.getSpannedScope().resolveRuleComponentMany(comp.getName());
+      List<RuleComponentSymbol> prodComponents = p.getSpannedScope().resolveRuleComponentDownMany(comp.getName());
       if (prodComponents.isEmpty()) {
         Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getName(), comp.getName(),
             p.getSourcePosition()));

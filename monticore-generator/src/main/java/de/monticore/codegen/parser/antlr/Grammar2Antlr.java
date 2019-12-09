@@ -935,7 +935,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       if (scope.isPresent()) {
         addToAction(attributeConstraints.addActionForNonTerminal(ast));
         String attributename = ast.isPresentUsageName() ? ast.getUsageName() : StringTransformations.uncapitalize(ast.getName());
-        List<RuleComponentSymbol> rcs = scope.get().getSpannedScope().resolveRuleComponentMany(attributename);
+        List<RuleComponentSymbol> rcs = scope.get().getSpannedScope().resolveRuleComponentDownMany(attributename);
         if (!rcs.isEmpty()
                 && rcs.get(0).isIsList()) {
           addToAction(astActions.getActionForLexerRuleIteratedAttribute(ast));
@@ -1026,7 +1026,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       addToAction(attributeConstraints.addActionForNonTerminal(ast));
       // TODO GV:
       String attributename = ast.isPresentUsageName() ? ast.getUsageName() : StringTransformations.uncapitalize(ast.getName());
-      List<RuleComponentSymbol> rcs = scope.get().getSpannedScope().resolveRuleComponentMany(attributename);
+      List<RuleComponentSymbol> rcs = scope.get().getSpannedScope().resolveRuleComponentDownMany(attributename);
       if (!rcs.isEmpty() && rcs.get(0).isIsList()) {
         addToAction(astActions.getActionForInternalRuleIteratedAttribute(ast));
       } else {
