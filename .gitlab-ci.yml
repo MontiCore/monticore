@@ -144,5 +144,7 @@ pages:
   artifacts:
     paths:
       - public
+  only:
+    - dev
 
 
