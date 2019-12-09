@@ -145,6 +145,6 @@ pages:
     paths:
       - public
   only:
-    - dev
+    - schedules
 
 
