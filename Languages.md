@@ -36,7 +36,7 @@ The different development statuses of grammars are explained
 * Feature diagrams are used to model (software) product lines
 * Feature configurations select a subset of features of a feature model to describe a product of the product line
 
-### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Alpha)
+### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Beta: In Stabilization)
 * Author: LN 
 * Language for textual definition of Graphical User Interfaces of Web Applications
 * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation), [**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
