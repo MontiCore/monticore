@@ -69,9 +69,9 @@ The different development statuses of grammars are explained
 * Grammar to parse Sequence Diagrams
 * Can be used with testing generator to derive test cases
 
-### [SI Units](INSERT LINK HERE) (INSERT STATUS HERE)
+### [SI Units](INSERT LINK HERE) (Alpha)
 * Author: EK, NJ, DS
-* INSERT DESCRIPTION HERE
+* allows a language developer to use physical units in a language
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (90% to MC6)
 * Author: RE
