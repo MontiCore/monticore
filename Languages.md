@@ -64,7 +64,7 @@ The different development statuses of grammars are explained
 * Author: DS
 * Port automata are a certain type of state machines and utilized in component and connector architecture description languages (e.g. MontiArc) for behavior modeling.
 
-### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language) (Not started with MC6 changes)
+### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language) (Beta: In Stabilization) )(50% to MC6)
 * Author: RE
 * Grammar to parse Sequence Diagrams
 * Can be used with testing generator to derive test cases
@@ -73,7 +73,7 @@ The different development statuses of grammars are explained
 * Author: EK, NJ, DS
 * allows a language developer to use physical units in a language
 
-### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (90% to MC6)
+### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (MontiCore stable) (90% to MC6)
 * Author: RE
 * Language to parse Statecharts
 * creates transformation language within SC and sc<->cd4a
