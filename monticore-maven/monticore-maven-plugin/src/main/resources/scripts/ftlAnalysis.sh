@@ -129,6 +129,8 @@ echo " "
 echo " ------------------------------------------------"
 echo " "
 echo " "
+echo "start node"
+echo $2
 
 # compute the transitive closure (and with it the list of 
 # files referenced from the starter
