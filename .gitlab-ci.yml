@@ -51,6 +51,8 @@ build_branches:
   stage: build
   script:
     - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
+  only:
+    - merge_requests
   except:
     - dev
     - master
@@ -76,6 +78,8 @@ it-maven:
     - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS clean install -P emf-it-tests"
     - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
     - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+  only:
+    - merge_requests
   except:
     - dev
 
@@ -105,6 +109,8 @@ it-experiments-grammar-maven:
     - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
     - "cd ../../../monticore-grammar/monticore-grammar-it"
     - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+  only:
+    - merge_requests
   except:
     - dev
 
