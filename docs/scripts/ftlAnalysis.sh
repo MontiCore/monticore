@@ -153,9 +153,6 @@ echo " "
 # nodeexists[n]  1 when the node exists (otherwise it is a dangling pointer)
 #
 
-echo "file"
-cat $relfile
-
 cat $relfile | awk '
   BEGIN { ncount = 0; }
   /start/{ startStr=$2; start=addStr($2); 
@@ -170,6 +167,7 @@ cat $relfile | awk '
         }
 
   END {
+    print "list" strn
     print "Summary: #of node:  " ncount;
     print "         #of arcs:  " lcount; 
     print "StartNode:   " strn[start];
