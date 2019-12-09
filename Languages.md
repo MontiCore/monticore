@@ -42,9 +42,9 @@ The different development statuses of grammars are explained
 * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation), [**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
 * Docuemtation: [**here**](https://git.rwth-aachen.de/macoco/gui-dsl/wikis/home)
 
-### [JSON](INSERT LINK HERE) (INSERT STATUS HERE)
+### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
 * Author: NJ
-* INSERT DESCRIPTION HERE
+* MontiCore language for parsing JSON artifacts.
 
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (5% to MC6)
 * Author: DS 
