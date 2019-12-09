@@ -240,7 +240,8 @@ cat $relfile | awk '
       nums[s] = n;
       strn[n] = s;
     }
-    print "addStr" s
+    print "addStr " s
+    print n
     return n;
   }
 
