@@ -234,15 +234,18 @@ cat $relfile | awk '
   #    and store inverse maping in strn
   function addStr(s)
   {
-    n = nums[s]; 
+    n = 0;
+    if (s in nums) {
+      n = nums[s];
+    }
     if (n==0)
     { n = ++ncount
       nums[s] = n;
-      print "n: " n
+      print "n: " n;
       strn[n] = s;
     }
-    print "addStr: " s
-    print "strn[n]: " str[n]
+    print "addStr: " s;
+    print "strn[n]: " str[n];
     return n;
   }
 
