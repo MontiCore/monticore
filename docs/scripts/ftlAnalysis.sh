@@ -70,7 +70,7 @@ do
     grep "extends *[a-zA-Z.]*Calculator" $i > /dev/null
     if test $? -eq 0
     then
-     echo "java node" $ipkg " <br/>"
+     echo "**java node**" $ipkg " <br/>"
      echo "node" $ipkg >> $relfile
     fi
   done
@@ -92,8 +92,8 @@ do
     # filtert nach strings, die nach filenamen aussehen
     # und fuegt den enthaltenden Dateinamen vorne dazu
     ipkg=`echo $i | sed 's!^./!!g' | sed 's!.ftl!!g' | sed 's!/!.!g'`
-    echo "ftl node" $ipkg " <br/>"
-    echo "node" $ipkg >> $relfile 
+    echo "**ftl node**" $ipkg " <br/>"
+    echo "node" $ipkg >> $relfile
 
     cat $i \
     | grep '"' - \
@@ -176,7 +176,7 @@ cat $relfile | awk '
       if( m[start,i] >= 1 ) 
         x = "      ";
       else
-        x = "UNUSED";
+        x = "**UNUSED**";
       if( nodeexists[i] >= 1 ) 
         dangling = "";
       else
@@ -186,11 +186,11 @@ cat $relfile | awk '
 
     print " ";
     print " ------------------------------------------------";
-    print " The relation: Source --> Target (+ Number of inclusions)";
+    print "### The relation: Source --> Target (+ Number of inclusions)";
     print " ------------------------------------------------";
     print " ";
     for (i in strn) {
-      printf "source %s\n", strn[i];
+      printf "**source** %s\n <br/>", strn[i];
       for (j in strn) {
         if(r[i,j] >= 2) {
           printf "        --> %s (%d) <br/>\n", strn[j], r[i,j];
@@ -206,7 +206,7 @@ cat $relfile | awk '
     print " ------------------------------------------------";
     print " ";
     for (i in strn) {
-      printf "target %s\n <br/>", strn[i];
+      printf "**target** %s\n <br/>", strn[i];
       for (j in strn) {
         if(r[j,i] >= 1) {
           printf "        <-- %s <br/>\n", strn[j];
