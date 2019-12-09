@@ -44,8 +44,6 @@ dirs2=`echo $dirs | sed "s!:! !g"`
 ### startNode="configure.StartAllOutput"
 startNode=$2
 
-echo "start node"
-echo $startNode
 ### relfile=$HOME/akt/relation.txt
 relfile=$3
 
@@ -54,6 +52,8 @@ rootdir=`pwd`
 rm -rf $relfile	# start fresh
 
 echo "start" $startNode >> $relfile
+echo "start node"
+cat $relfile
 
 echo " ------------------------------------------------"
 echo " List of java calculators considered:"
