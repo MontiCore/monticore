@@ -38,8 +38,7 @@ component grammar ItTestTextEditor extends mc.grammar.literals.ItTestLiterals {
 	  	 itsClass:String ")"
 	  ";";
 		
-	//TODO: remove popup (who was the inventor of this keyword?) 	
-	PopupDefinition=	
+	PopupDefinition=
 	  ("popup" | "navigatoritem") (Name)+ "("
 	  	 itsClass:String ")"
 	  ";";

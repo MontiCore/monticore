@@ -435,4 +435,51 @@ public final class TransformationHelper {
     stereoValue.setName(stereotypeName);
     stereoValueList.add(stereoValue);
   }
+  
+  /**
+   * Checks whether the given attribute is a collection type written as String
+   * (e.g., List<...>).
+   * 
+   * @param attribute The input attribute
+   * @return true if the input attribute is a collection type, false otherwise
+   */
+  public static boolean isCollectionType(ASTCDAttribute attribute) {
+    String type = attribute.printType();
+    if (type.startsWith("Collection<") || type.startsWith("List<") || type.startsWith("Set<") || type.startsWith("java.util.Collection<") || type.startsWith("java.util.List<") || type.startsWith("java.util.Set<")) {
+      return true;
+    }
+    return false;
+  }
+  
+  /**
+   * Computes the simple type of an attribute from a collection type.
+   * 
+   * @param attribute The input attribute
+   * @return The simple type contained by a collection
+   */
+  public static String getSimpleTypeFromCollection(ASTCDAttribute attribute) {
+    String simpleType = attribute.printType();
+    if (simpleType.startsWith("Collection<")) {
+      simpleType = simpleType.replaceFirst("Collection<", "");
+      simpleType = simpleType.substring(0, simpleType.length() - 1);
+    }
+    else if (simpleType.startsWith("List<")) {
+      simpleType = simpleType.replaceFirst("List<", "");
+      simpleType = simpleType.substring(0, simpleType.length() - 1);
+    }
+    else if (simpleType.startsWith("Set<")) {
+      simpleType = simpleType.replaceFirst("Set<", "");
+      simpleType = simpleType.substring(0, simpleType.length() - 1);
+    } else if (simpleType.startsWith("java.util.Collection<")) {
+      simpleType = simpleType.replaceFirst("java.util.Collection<", "");
+      simpleType = simpleType.substring(0, simpleType.length() - 1);
+    } else if (simpleType.startsWith("java.util.List<")) {
+      simpleType = simpleType.replaceFirst("java.util.List<", "");
+      simpleType = simpleType.substring(0, simpleType.length() - 1);
+    } else if (simpleType.startsWith("java.util.Set<")) {
+      simpleType = simpleType.replaceFirst("java.util.Set<", "");
+      simpleType = simpleType.substring(0, simpleType.length() - 1);
+    }
+    return Names.getSimpleName(simpleType);
+  }
 }

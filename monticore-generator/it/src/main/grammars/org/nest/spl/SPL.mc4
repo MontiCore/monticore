@@ -63,7 +63,7 @@ grammar SPL extends org.nest.commons.Commons {
          | left:Expr bitXor:["|"] right:Expr
          | left:Expr logicalAnd:["and"] right:Expr
          | left:Expr logicalOr:["or"] right:Expr
-         | base:Expr pow:["**"] exponent:Expr // TODO make right assoc keyword asap
+         | <rightassoc>  base:Expr pow:["**"] exponent:Expr
          | left:Expr (lt:["<"] | le:["<="] | eq:["=="] | ne:["!="] | ne2:["<>"] | ge:[">="] | gt:[">"]) right:Expr
          | FunctionCall
          | BooleanLiteral // true & false;
