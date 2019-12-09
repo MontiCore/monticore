@@ -37,7 +37,6 @@
 # from here we compute the reachable Names:
 ### dir=$HOME/workspace/dex/gtr/src
 dirs=$1
-ls
 
 # extract directory list, space separated
 dirs2=`echo $dirs | sed "s!:! !g"`
@@ -45,6 +44,8 @@ dirs2=`echo $dirs | sed "s!:! !g"`
 ### startNode="configure.StartAllOutput"
 startNode=$2
 
+echo "start node"
+echo $startNode
 ### relfile=$HOME/akt/relation.txt
 relfile=$3
 

@@ -51,9 +51,6 @@ rootdir=`pwd`
 
 rm -rf $relfile	# start fresh
 
-echo "start node"
-echo $2
-
 echo "start" $startNode >> $relfile
 
 echo " ------------------------------------------------"
