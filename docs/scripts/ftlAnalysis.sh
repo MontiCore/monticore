@@ -52,8 +52,6 @@ rootdir=`pwd`
 rm -rf $relfile	# start fresh
 
 echo "start" $startNode >> $relfile
-echo "start node"
-cat $relfile
 
 echo " ------------------------------------------------"
 echo " List of java calculators considered:"
@@ -153,7 +151,10 @@ echo " "
 # target[n]  counts how often a node is target in an edge
 # source[n]  counts how often a node is source in an edge
 # nodeexists[n]  1 when the node exists (otherwise it is a dangling pointer)
-# 
+#
+
+echo "file"
+cat $relfile
 
 cat $relfile | awk '
   BEGIN { ncount = 0; }
