@@ -2,7 +2,7 @@ site_name: MontiCore
 theme:
   name: bootstrap
 
-repo_url: https://git.rwth-aachen.de/monticore/monticore
+repo_url: https://github.com/MontiCore/monticore
 
 nav:
   - Home: 'README.md'
