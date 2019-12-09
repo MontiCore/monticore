@@ -116,8 +116,10 @@ it-experiments-grammar-maven:
     - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
   only:
     - merge_requests
+    - branches
   except:
     - dev
+    - master
 
 trigger-automata:
   stage: test1
