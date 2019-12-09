@@ -5,7 +5,7 @@ package de.monticore.grammar.cocos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolTOP;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class UniqueProdNameInGrammar implements GrammarASTMCGrammarCoCo {
     MCGrammarSymbol grammarSymbol = node.getSymbol();
     List<String> prodNames = grammarSymbol.getProds()
         .stream()
-        .map(ProdSymbolTOP::getName)
+        .map(ProdSymbol::getName)
         .collect(Collectors.toList());
     for (int i = 0; i < prodNames.size(); i++) {
       for (int j = i + 1; j < prodNames.size(); j++) {

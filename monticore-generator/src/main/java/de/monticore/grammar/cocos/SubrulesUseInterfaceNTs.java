@@ -60,7 +60,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
       }
 
       if (prodComponent.isIsTerminal() && interfaceComponent.isIsTerminal()) {
-        if (interfaceComponent.getUsageName().isEmpty()
+        if (!interfaceComponent.isPresentUsageName() || !prodComponent.isPresentUsageName()
           || interfaceComponent.getUsageName().equals(prodComponent.getUsageName())) {
           continue;
         }

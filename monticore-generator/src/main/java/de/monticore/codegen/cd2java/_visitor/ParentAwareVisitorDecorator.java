@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -12,10 +15,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a ParentAwareVisitor class from a grammar
@@ -71,7 +74,7 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     // only add travers method for non abstract classes
     List<ASTCDMethod> traverseMethods = astcdClasses
         .stream()
-        .filter(ASTCDClassTOP::isPresentModifier)
+        .filter(ASTCDClass::isPresentModifier)
         .filter(c -> !c.getModifier().isAbstract())
         .map(c -> visitorService.getVisitorMethod(TRAVERSE, getMCTypeFacade().createQualifiedType(c.getName())))
         .collect(Collectors.toList());

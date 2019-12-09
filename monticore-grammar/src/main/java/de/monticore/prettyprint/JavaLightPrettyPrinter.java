@@ -7,13 +7,8 @@ import de.monticore.javalight._ast.*;
 import de.monticore.javalight._visitor.JavaLightVisitor;
 import de.monticore.statements.prettyprint.MCCommonStatementsPrettyPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 
 import java.util.Iterator;
-
-/*
- * $Id: JavaDSLWriterVisitor.java,v 1.4 2008-07-17 08:34:01 cficek Exp $
- */
 
 public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter implements
     JavaLightVisitor {

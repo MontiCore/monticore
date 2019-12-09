@@ -47,7 +47,6 @@ public class CommentTest extends GeneratorIntegrationsTest {
     
     assertEquals(ASTConstantsFeatureDSL.NONE, ((ASTSpices2) ((ASTAutomaton) ast).getWiredList().get(4)).getSpicelevel());
     
-    // TODO Antlr: Will man das Newline am Ende des Kommentars haben?
     assertEquals("// Test ", ast.get_PreCommentList().get(0).getText());
     assertEquals("/*Second*/", ast.get_PreCommentList().get(1).getText());
     assertEquals("// First Constant 1", ast.getWiredList().get(0).get_PreCommentList().get(0).getText());
