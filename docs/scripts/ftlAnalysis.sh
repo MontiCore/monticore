@@ -73,6 +73,7 @@ do
     ipkg=`echo $i | sed 's!^./!!g' | sed 's!.java!!g' | sed 's!/!.!g'`
     echo $ipkg
     grep "extends *[a-zA-Z.]*Calculator" $i > /dev/null
+    echo $?
     if test $? -eq 0
     then
      echo "java node" $ipkg
