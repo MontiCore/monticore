@@ -157,11 +157,19 @@ public class ReferenceTypeTranslation implements
       if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
         TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
       }
+    } else if (TransformationHelper.isCollectionType(attribute)) {
+      simpleName = TransformationHelper.getSimpleTypeFromCollection(attribute);
+      if (simpleName.startsWith("AST")) {
+        simpleName = simpleName.replaceFirst("AST", "");
+      }
+      mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, simpleName);
+      if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
+        TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
+      }
     }
   }
-
+  
   private boolean isASTType(ProdSymbol mcProdSymbol) {
     return !mcProdSymbol.isIsLexerProd() && !mcProdSymbol.isIsEnum();
   }
-
 }

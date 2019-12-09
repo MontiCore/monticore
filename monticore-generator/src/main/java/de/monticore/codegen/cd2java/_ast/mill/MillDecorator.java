@@ -14,7 +14,6 @@ import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
@@ -40,7 +39,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
     //filter out all classes that are abstract and remove AST prefix
     List<ASTCDClass> classList = compilationUnit.getCDDefinition().deepClone().getCDClassList()
         .stream()
-        .filter(ASTCDClassTOP::isPresentModifier)
+        .filter(ASTCDClass::isPresentModifier)
         .filter(x -> !x.getModifier().isAbstract())
         .collect(Collectors.toList());
 
@@ -156,7 +155,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
         //filter out all abstract classes
         List<ASTCDClass> copiedList = superDefinition.getCDClassList()
             .stream()
-            .filter(ASTCDClassTOP::isPresentModifier)
+            .filter(ASTCDClass::isPresentModifier)
             .filter(x -> !x.getModifier().isAbstract())
             .collect(Collectors.toList());
 

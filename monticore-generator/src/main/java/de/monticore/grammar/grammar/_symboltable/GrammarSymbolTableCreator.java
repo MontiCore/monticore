@@ -410,9 +410,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     // Set start parser rule
     ASTProd firstProduction = null;
     for (ASTProd prod : firstProductions) {
-      // TODO: add a common interface to the MC grammar for all these
-      // productions and remove this hack
-      if ((firstProduction == null)
+       if ((firstProduction == null)
           || (firstProduction.get_SourcePositionStart()
           .compareTo(prod.get_SourcePositionStart()) > 0)) {
         firstProduction = prod;

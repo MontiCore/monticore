@@ -14,7 +14,6 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.symboltable.IScope;
-import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
 import de.se_rwth.commons.logging.Log;
@@ -448,13 +447,9 @@ public class MCGrammarSymbolTableHelper {
    */
   public static boolean isConstGroupIterated(RuleComponentSymbol prodComponent) {
     Preconditions.checkArgument(prodComponent.isIsConstantGroup());
-    if (!prodComponent.isIsList() && prodComponent.getSubProdList().size() <= 1) {
-      return false;
-    }
-    prodComponent.getSubProdList();
     Collection<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-    for (String component : prodComponent.getSubProdList()) {
-      set.add(component);
+    for (RuleComponentSymbol comp: prodComponent.getEnclosingScope().resolveRuleComponentDownMany(prodComponent.getName())) {
+      comp.getSubProdList().stream().forEach((p -> set.add(p)));
     }
     return set.size() > 1;
   }
@@ -484,7 +479,7 @@ public class MCGrammarSymbolTableHelper {
     if (!attrSymbol.isPresentAstNode()) {
       return Optional.empty();
     }
-    return getMax((ASTAdditionalAttribute) attrSymbol.getAstNode());
+    return getMax(attrSymbol.getAstNode());
   }
   
   public static Optional<Integer> getMax(ASTAdditionalAttribute ast) {

@@ -57,8 +57,8 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
       Iterator<RuleComponentSymbol> it = prodComponents.iterator();
       while (!found && it.hasNext()) {
         RuleComponentSymbol prodComponent = it.next();
-        if ((prodComponent.isIsList() == interfaceComponent.isIsList()) 
-                && (prodComponent.isIsOptional() == interfaceComponent.isIsOptional())) { 
+        if ((prodComponent.isIsList() == interfaceComponent.isIsList())
+                && (prodComponent.isIsOptional() == interfaceComponent.isIsOptional())) {
           if (prodComponent.isIsTerminal() && interfaceComponent.isIsTerminal()) {
             found = true;
           } else if (prodComponent.isIsNonterminal() && interfaceComponent.isIsNonterminal()) {
