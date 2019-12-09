@@ -61,19 +61,14 @@ echo " ------------------------------------------------"
 # iterate over the given directories & files within
 for dir in $dirs2
 do
-  echo "dir "
-  echo $dir
   cd $dir
-  ls
   echo "iterate over directory for java-files:" $dir
   for i in `find . -print | grep -v ".svn" | grep java`
   do
     # sucht alle Klassen, die Calculatoren sind und von ftl aufzurufen
     # waeren
     ipkg=`echo $i | sed 's!^./!!g' | sed 's!.java!!g' | sed 's!/!.!g'`
-    echo $ipkg
     grep "extends *[a-zA-Z.]*Calculator" $i > /dev/null
-    echo $?
     if test $? -eq 0
     then
      echo "java node" $ipkg
