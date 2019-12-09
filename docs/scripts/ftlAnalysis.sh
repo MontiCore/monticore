@@ -61,7 +61,7 @@ echo " ------------------------------------------------"
 for dir in $dirs2
 do
   cd $dir
-  echo "iterate over directory for java-files:" $dir
+  echo "iterate over directory for java-files: <br/>" $dir
   for i in `find . -print | grep -v ".svn" | grep java`
   do
     # sucht alle Klassen, die Calculatoren sind und von ftl aufzurufen
@@ -202,7 +202,7 @@ cat $relfile | awk '
     
     print " ";
     print " ------------------------------------------------";
-    print " The inverse relation: Target --> Source";
+    print "### The inverse relation: Target --> Source";
     print " ------------------------------------------------";
     print " ";
     for (i in strn) {
