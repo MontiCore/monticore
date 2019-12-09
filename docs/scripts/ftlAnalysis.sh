@@ -167,7 +167,7 @@ cat $relfile | awk '
         }
 
   END {
-    print "Summary: #of node:  " ncount " <br/>";
+    print "Summary:<br/> #of node:  " ncount " <br/>";
     print "         #of arcs:  " lcount " <br/>";
     print "StartNode:   " strn[start] " <br/>";
     print " ";
