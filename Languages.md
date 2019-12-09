@@ -88,7 +88,7 @@ The different development statuses of grammars are explained
 * The Tagging models can then be used as configuration, e.g. in a code generator.
 * Examples can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging-Examples)
 
-### [XML](INSERT LINK HERE) (INSERT STATUS HERE)
+### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
 * Author: NJ
-* INSERT DESCRIPTION HERE
+* MontiCore language for parsing XML artifacts.
 
