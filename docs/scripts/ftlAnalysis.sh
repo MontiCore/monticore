@@ -52,9 +52,9 @@ rootdir=`pwd`
 rm -rf $relfile	# start fresh
 
 echo "start" $startNode >> $relfile
-
+echo "## ftlAnalysis"
 echo " ------------------------------------------------"
-echo " List of java calculators considered:"
+echo "### List of java calculators considered:"
 echo " ------------------------------------------------"
 
 # iterate over the given directories & files within
@@ -70,7 +70,7 @@ do
     grep "extends *[a-zA-Z.]*Calculator" $i > /dev/null
     if test $? -eq 0
     then
-     echo "java node" $ipkg
+     echo "java node" $ipkg " <br/>"
      echo "node" $ipkg >> $relfile
     fi
   done
@@ -79,7 +79,7 @@ done
 
 
 echo " ------------------------------------------------"
-echo " List of templates considered:"
+echo "### List of templates considered:"
 echo " ------------------------------------------------"
 
 # iterate over the given directories & files within
@@ -92,7 +92,7 @@ do
     # filtert nach strings, die nach filenamen aussehen
     # und fuegt den enthaltenden Dateinamen vorne dazu
     ipkg=`echo $i | sed 's!^./!!g' | sed 's!.ftl!!g' | sed 's!/!.!g'`
-    echo "ftl node" $ipkg
+    echo "ftl node" $ipkg " <br/>"
     echo "node" $ipkg >> $relfile 
 
     cat $i \
@@ -109,7 +109,7 @@ do
 done
 
 echo " ------------------------------------------------"
-echo " List of all nodes with static reachability infos"
+echo "### List of all nodes with static reachability infos"
 echo " "
 echo " UNUSED means, file (ftl/java) is not statically(!) identifyable"
 echo "  to be used when invoking " $startNode
@@ -167,9 +167,9 @@ cat $relfile | awk '
         }
 
   END {
-    print "Summary: #of node:  " ncount;
-    print "         #of arcs:  " lcount; 
-    print "StartNode:   " strn[start];
+    print "Summary: #of node:  " ncount " <br/>";
+    print "         #of arcs:  " lcount " <br/>";
+    print "StartNode:   " strn[start] " <br/>";
     print " ";
     transclosure(m); 
     for (i in strn) {
@@ -181,7 +181,7 @@ cat $relfile | awk '
         dangling = "";
       else
         dangling = "DANGLING REF (was not followed)!";
-      printf "%6s %-50s  (s:%d,t:%d) %s\n", x, strn[i], source[i], target[i], dangling;
+      printf "%6s %-50s  (s:%d,t:%d) %s  <br/>\n", x, strn[i], source[i], target[i], dangling;
     }
 
     print " ";
@@ -193,9 +193,9 @@ cat $relfile | awk '
       printf "source %s\n", strn[i];
       for (j in strn) {
         if(r[i,j] >= 2) {
-          printf "        --> %s (%d)\n", strn[j], r[i,j];
+          printf "        --> %s (%d) <br/>\n", strn[j], r[i,j];
 	} else if (r[i,j] >= 1) {
-          printf "        --> %s\n", strn[j];
+          printf "        --> %s <br/>\n", strn[j];
 	}
       }
     }
@@ -206,10 +206,10 @@ cat $relfile | awk '
     print " ------------------------------------------------";
     print " ";
     for (i in strn) {
-      printf "target %s\n", strn[i];
+      printf "target %s\n <br/>", strn[i];
       for (j in strn) {
         if(r[j,i] >= 1) {
-          printf "        <-- %s\n", strn[j];
+          printf "        <-- %s <br/>\n", strn[j];
 	}
       }
     }
