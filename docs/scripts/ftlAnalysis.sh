@@ -86,7 +86,7 @@ echo " ------------------------------------------------"
 for dir in $dirs2
 do
   cd $dir
-  echo "iterate over directory for ftl-files:" $dir "<br/>""
+  echo "iterate over directory for ftl-files:" $dir "<br/>"
   for i in `find . -print | grep -v ".svn" | grep ftl`
   do
     # filtert nach strings, die nach filenamen aussehen
