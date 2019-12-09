@@ -238,10 +238,11 @@ cat $relfile | awk '
     if (n==0)
     { n = ++ncount
       nums[s] = n;
+      print "n: " n
       strn[n] = s;
     }
-    print "addStr " s
-    print n
+    print "addStr: " s
+    print "strn[n]: " str[n]
     return n;
   }
 
