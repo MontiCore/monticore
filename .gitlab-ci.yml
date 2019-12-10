@@ -4,138 +4,138 @@ image: maven:3.5.4-jdk-8-alpine
 #include:
 #  - template: Code-Quality.gitlab-ci.yml
 
-variables:
-  MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
-  GRADLE_OPTS: ""
-  MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
-
-
-before_script:
-  - chmod +x monticore-gradle/gradlew
-  - chmod +x monticore-generator/it/experiments/gradlew
-  - chmod +x monticore-generator/it/gradlew
-  - chmod +x monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/gradlew
-  - chmod +x monticore-grammar/monticore-grammar-it/gradlew
-  - export GRADLE_USER_HOME=`pwd`/.gradle
-
-cache:
-  paths:
-    - .m2/
-    - .gradle/wrapper
-  key: ${CI_COMMIT_REF_SLUG} # Cache per branch
+#variables:
+#  MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+#  GRADLE_OPTS: ""
+#  MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
+#
+#
+#before_script:
+#  - chmod +x monticore-gradle/gradlew
+#  - chmod +x monticore-generator/it/experiments/gradlew
+#  - chmod +x monticore-generator/it/gradlew
+#  - chmod +x monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/gradlew
+#  - chmod +x monticore-grammar/monticore-grammar-it/gradlew
+#  - export GRADLE_USER_HOME=`pwd`/.gradle
+#
+#cache:
+#  paths:
+#    - .m2/
+#    - .gradle/wrapper
+#  key: ${CI_COMMIT_REF_SLUG} # Cache per branch
 
 stages:
-  - build
-  - test1
-  - test2
+#  - build
+#  - test1
+#  - test2
   - report
 
-build_dev:
-  stage: build
-  script:
-    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -Dpass=$password -Duser=$username -DdeployAtEnd=true"
-    - cd monticore-gradle
-    - "./gradlew build"
-    - "./gradlew publish -PmavenPassword=$password -PmavenUser=$username"
-    - awk -F"," '{ instructions += $12 + $13; covered += $13 } END { print covered, "/", instructions, "methods covered"; print 100*covered/instructions, "% covered" }' ../*/target/site/jacoco/jacoco.csv
-  coverage: '/\d+.\d+ \% covered/'
-  only:
-    - dev
-    - cibuild
-  artifacts:
-    paths:
-      - "*/target"
-    expire_in: 1 week
-
-build_branches:
-  stage: build
-  script:
-    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
-  only:
-    - merge_requests
-    - branches
-  except:
-    - dev
-    - master
-
-it-gradle:
-  stage: test2
-  dependencies: []
-  script:
-    - cd monticore-generator/it
-    - "./gradlew build $GRADLE_OPTS"
-    - "./gradlew build -PbuildProfile=emf $GRADLE_OPTS"
-    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
-    - "./gradlew build $GRADLE_OPTS"
-  only:
-    - dev
-    - master
-
-it-maven:
-  stage: test2
-  dependencies: []
-  script:
-    - cd monticore-generator/it
-    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
-    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS clean install -P emf-it-tests"
-    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
-    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
-  only:
-    - merge_requests
-    - branches
-  except:
-    - dev
-    - master
-
-  #rules:
-  #  - if: '$CI_COMMIT_REF_SLUG == "dev"'
-  #    when: always
-  #  - when: manual
-
-# build experiments and grammar with gradle for def
-it-experiments-grammar-gradle:
-  stage: test1
-  dependencies: []
-  script:
-    - cd monticore-generator/it/experiments
-    - "./gradlew build $GRADLE_OPTS"
-    - "cd ../../../monticore-grammar/monticore-grammar-it"
-    - "./gradlew build $GRADLE_OPTS"
-  only:
-    - dev
-    - master
-
-# build experiments and grammar with maven for all other branches
-it-experiments-grammar-maven:
-  stage: test1
-  dependencies: []
-  script:
-    - cd monticore-generator/it/experiments
-    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
-    - "cd ../../../monticore-grammar/monticore-grammar-it"
-    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
-  only:
-    - merge_requests
-    - branches
-  except:
-    - dev
-    - master
-
-trigger-automata:
-  stage: test1
-  trigger:
-    project: monticore/languages/automaton
-    branch: master
-  only:
-    - dev
-
-trigger-cd4a:
-  stage: test1
-  trigger:
-    project: monticore/cd4analysis/cd4analysis
-    branch: develop
-  only:
-    - dev
+#build_dev:
+#  stage: build
+#  script:
+#    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -Dpass=$password -Duser=$username -DdeployAtEnd=true"
+#    - cd monticore-gradle
+#    - "./gradlew build"
+#    - "./gradlew publish -PmavenPassword=$password -PmavenUser=$username"
+#    - awk -F"," '{ instructions += $12 + $13; covered += $13 } END { print covered, "/", instructions, "methods covered"; print 100*covered/instructions, "% covered" }' ../*/target/site/jacoco/jacoco.csv
+#  coverage: '/\d+.\d+ \% covered/'
+#  only:
+#    - dev
+#    - cibuild
+#  artifacts:
+#    paths:
+#      - "*/target"
+#    expire_in: 1 week
+#
+#build_branches:
+#  stage: build
+#  script:
+#    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
+#  only:
+#    - merge_requests
+#    - branches
+#  except:
+#    - dev
+#    - master
+#
+#it-gradle:
+#  stage: test2
+#  dependencies: []
+#  script:
+#    - cd monticore-generator/it
+#    - "./gradlew build $GRADLE_OPTS"
+#    - "./gradlew build -PbuildProfile=emf $GRADLE_OPTS"
+#    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
+#    - "./gradlew build $GRADLE_OPTS"
+#  only:
+#    - dev
+#    - master
+#
+#it-maven:
+#  stage: test2
+#  dependencies: []
+#  script:
+#    - cd monticore-generator/it
+#    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+#    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS clean install -P emf-it-tests"
+#    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
+#    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+#  only:
+#    - merge_requests
+#    - branches
+#  except:
+#    - dev
+#    - master
+#
+#  #rules:
+#  #  - if: '$CI_COMMIT_REF_SLUG == "dev"'
+#  #    when: always
+#  #  - when: manual
+#
+## build experiments and grammar with gradle for def
+#it-experiments-grammar-gradle:
+#  stage: test1
+#  dependencies: []
+#  script:
+#    - cd monticore-generator/it/experiments
+#    - "./gradlew build $GRADLE_OPTS"
+#    - "cd ../../../monticore-grammar/monticore-grammar-it"
+#    - "./gradlew build $GRADLE_OPTS"
+#  only:
+#    - dev
+#    - master
+#
+## build experiments and grammar with maven for all other branches
+#it-experiments-grammar-maven:
+#  stage: test1
+#  dependencies: []
+#  script:
+#    - cd monticore-generator/it/experiments
+#    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+#    - "cd ../../../monticore-grammar/monticore-grammar-it"
+#    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+#  only:
+#    - merge_requests
+#    - branches
+#  except:
+#    - dev
+#    - master
+#
+#trigger-automata:
+#  stage: test1
+#  trigger:
+#    project: monticore/languages/automaton
+#    branch: master
+#  only:
+#    - dev
+#
+#trigger-cd4a:
+#  stage: test1
+#  trigger:
+#    project: monticore/cd4analysis/cd4analysis
+#    branch: develop
+#  only:
+#    - dev
 
 pages:
   stage: report
@@ -150,7 +150,7 @@ pages:
   artifacts:
     paths:
       - public
-  only:
-    - schedules
+#  only:
+#    - schedules
 
 
