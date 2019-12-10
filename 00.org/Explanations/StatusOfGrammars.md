@@ -42,8 +42,8 @@ keeping the grammar up to date. One might use it as inspiration for their
 own developments.
 
 1. **Deprecated**:
-The grammar should not be used anymore, it is deprecated and a newer
-version of the content exists in another grammar.
+The grammar should not be used anymore, it is deprecated, will be deleted in 
+the future, and a newer version of the content exists in another grammar.
 
 1. **Unclarified**:
 Some of the grammars are just there to be used for example as
