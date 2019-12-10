@@ -36,7 +36,7 @@ The different development statuses of grammars are explained
 * Feature diagrams are used to model (software) product lines
 * Feature configurations select a subset of features of a feature model to describe a product of the product line
 
-### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Alpha)
+### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Beta: In Stabilization)
 * Author: LN 
 * Language for textual definition of Graphical User Interfaces of Web Applications
 * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation), [**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
@@ -56,7 +56,7 @@ The different development statuses of grammars are explained
 * A Java generator can be found [**here**](https://git.rwth-aachen.de/monticore/languages/OCL2Java).
 * A generator for Embedded MontiArc in combination with OCL can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
 
-### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Started updating to MC6, rearranging language to a basic version and several extensions)
+### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
 * Author: SH
 * Language for textual object diagrams.
 
@@ -64,7 +64,7 @@ The different development statuses of grammars are explained
 * Author: DS
 * Port automata are a certain type of state machines and utilized in component and connector architecture description languages (e.g. MontiArc) for behavior modeling.
 
-### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language) (Not started with MC6 changes)
+### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language) (Beta: In Stabilization) )(50% to MC6)
 * Author: RE
 * Grammar to parse Sequence Diagrams
 * Can be used with testing generator to derive test cases
@@ -73,14 +73,14 @@ The different development statuses of grammars are explained
 * Author: EK, NJ, DS
 * allows a language developer to use physical units in a language
 
-### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (90% to MC6)
+### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (MontiCore stable) (90% to MC6)
 * Author: RE
 * Language to parse Statecharts
 * creates transformation language within SC and sc<->cd4a
 
-### [SysML/P](INSERT LINK HERE) (INSERT STATUS HERE)
+### [SysML/P](https://git.rwth-aachen.de/monticore/sysml/sysml_2) (Example)
 * Author: NJ
-* INSERT DESCRIPTION HERE
+* Project for SysML 2 languages. It is compatible with the general SysML 2 standard.
 
 ### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Beta: In Stabilization)
 * Author: SVa
@@ -88,7 +88,7 @@ The different development statuses of grammars are explained
 * The Tagging models can then be used as configuration, e.g. in a code generator.
 * Examples can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging-Examples)
 
-### [XML](INSERT LINK HERE) (INSERT STATUS HERE)
+### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
 * Author: NJ
-* INSERT DESCRIPTION HERE
+* MontiCore language for parsing XML artifacts.
 
