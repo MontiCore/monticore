@@ -20,11 +20,11 @@ The different development statuses of grammars are explained
 
 ## List of Languages 
 
-### [Activity Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
+### [Activity Diagrams](INSERT LINK HERE)(not adressed yet)
 * Author: Not available
 * INSERT DESCRIPTION HERE
 
-### [Class Diagram 4 Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
+### [Class Diagram 4 Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Author: SVa, AGe
 * CD4A is the textual (UML/P) representation of a UML class diagram.
 * Its primary feature are the description and analysis of a class diagram.
@@ -73,7 +73,7 @@ The different development statuses of grammars are explained
 * Author: EK, NJ, DS
 * allows a language developer to use physical units in a language
 
-### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (MontiCore stable) (90% to MC6)
+### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
 * Author: RE
 * Language to parse Statecharts
 * creates transformation language within SC and sc<->cd4a
@@ -91,4 +91,16 @@ The different development statuses of grammars are explained
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
 * Author: NJ
 * MontiCore language for parsing XML artifacts.
+
+### [JavaLight](NN) (Beta: In Stabilization)
+* Author: ?MB, ?KH
+* This is a light Version of the Java language; the grammar describes an intermediate format
+  used as AST (but not for parsing).
+* JavaLight is typically decorated by templates e.g. for method bodies and used for code generation
+
+### [Java](NN) (Alpha: Intention to become stable)
+
+* Author: NN
+* This is the full Java' Language (as Opposed to JavaLight).
+
 
