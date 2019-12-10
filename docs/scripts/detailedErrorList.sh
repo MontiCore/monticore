@@ -49,8 +49,6 @@ echo " List of java and template files considered  :"
 echo " ------------------------------------------------"
 echo " "
 
-sed -i '/\b\/test\/\b/d' $filelist
-
 find . -print| grep -v ".svn" \
  | grep "\.java" \
  | sed '/\b\/test\/\b/d'> $filelist.j
