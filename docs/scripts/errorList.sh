@@ -46,7 +46,6 @@ echo " ------------------------------------------------"
 echo " "
 
 # do not consider classes in test packages
-sed -i '/\b\/test\/\b/d' $filelist
 
 find . -print| grep -v ".svn" \
  | grep "\.java" \
