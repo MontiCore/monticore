@@ -55,7 +55,7 @@ There may also be further unclarfied and example grammars around.
 
 ## Marking the Status of Grammars
 
-A comment of the following form within the grammar also helps:
+A comment of the following form within the grammar defines this status:
 
 1. `/* This is a MontiCore stable grammar.`
     ` * Adaptations -- if any -- are conservative. */`
