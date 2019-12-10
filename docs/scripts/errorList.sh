@@ -26,9 +26,6 @@
 filedir=$1
 tmpdir=$2
 
-echo "errorList:"
-ls
-
 ### For testing purposes only: ###
 ### filedir=$HOME/tmp/sources  ###
 ### filedir=$HOME/dex/  ###
