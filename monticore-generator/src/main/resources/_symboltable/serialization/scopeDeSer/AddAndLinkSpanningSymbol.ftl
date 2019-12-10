@@ -13,8 +13,8 @@ de.monticore.symboltable.serialization.json.JsonObject symbolRef = subScopeJson.
       else {
         Log.error("Spanning symbol of scope "+subScopeJson+" could not be found during deserialization!");
       }
-    }
 </#list>
   } else {
-    Log.error("Unknown kind of scope spanning symbol: "+de.monticore.symboltable.serialization.JsonConstants.SCOPE_SPANNING_SYMBOL);
+    Log.error("Unknown kind of scope spanning symbol: "+spanningSymbolKind);
   }
+}

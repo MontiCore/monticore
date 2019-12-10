@@ -78,7 +78,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         .addAllCDMethods(createSerializationMethodsForSymbolRules(symbolTypes))
         .addAllCDMethods(createSerializationMethodsForScopeRules(scopeTypes, scopeClassFullName,symbolTableService.getScopeClassSimpleName()))
         .build();
-    if (symbolTableService.hasStartProd(symbolCD.getCDDefinition())) {
+    if (symbolTableService.hasStartProd()) {
       symbolTablePrinterClass.addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeFullName, scopeClassFullName));
     }
     return symbolTablePrinterClass;
