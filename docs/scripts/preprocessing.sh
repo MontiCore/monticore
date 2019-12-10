@@ -2,7 +2,7 @@
 # script for all preprocessing steps of the pages job
 # is used to have uniform bases for both gitlab and github pages
 # is used from '.gitlab-ci.yml'(gitlab) and '.travis.yml'(github)
-
+ls
 # execute report scripts and print output to *.md file, to use these in pages
 sh errorList.sh '../../' '../../target/site/errorList' > ../ErrorList.md
 sh detailedErrorList.sh '../../' '../../target/site/detailedErrorList' > ../DetailedErrorList.md
