@@ -8,6 +8,7 @@ sh docs/scripts/errorList.sh '../../' '../../target/site/errorList' > ../ErrorLi
 sh docs/scripts/detailedErrorList.sh '../../' '../../target/site/detailedErrorList' > docs/DetailedErrorList.md
 sh docs/scripts/findDoubleFileNames.sh './' 'target/site/findDoubleFileNames' > docs/FindDoubleFileNames.md
 sh docs/scripts/ftlAnalysis.sh './' 'configure.StartAllOutput' 'target/site/ftlAnalysis' > docs/FtlAnalysis.md
+echo "[INFO] Executed report scripts for pages"
 
 # move all directories that contain *.md files to the docs folder
 # because mkdocs can only find *.md files there
@@ -15,3 +16,4 @@ mv monticore-grammar docs/monticore-grammar
 mv monticore-runtime docs/monticore-runtime
 mv 00.org docs/00.org
 mv *.md docs/
+echo "[INFO] Moved *.md files to 'docs' folder"
