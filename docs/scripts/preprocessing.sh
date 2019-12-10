@@ -4,14 +4,14 @@
 # is used from '.gitlab-ci.yml'(gitlab) and '.travis.yml'(github)
 ls
 # execute report scripts and print output to *.md file, to use these in pages
-sh errorList.sh '../../' '../../target/site/errorList' > ../ErrorList.md
-sh detailedErrorList.sh '../../' '../../target/site/detailedErrorList' > ../DetailedErrorList.md
-sh findDoubleFileNames.sh './' 'target/site/findDoubleFileNames' > ../FindDoubleFileNames.md
-sh ftlAnalysis.sh './' 'configure.StartAllOutput' 'target/site/ftlAnalysis' > ../FtlAnalysis.md
+sh docs/scripts/errorList.sh '../../' '../../target/site/errorList' > ../ErrorList.md
+sh docs/scripts/detailedErrorList.sh '../../' '../../target/site/detailedErrorList' > docs/DetailedErrorList.md
+sh docs/scripts/findDoubleFileNames.sh './' 'target/site/findDoubleFileNames' > docs/FindDoubleFileNames.md
+sh docs/scripts/ftlAnalysis.sh './' 'configure.StartAllOutput' 'target/site/ftlAnalysis' > docs/FtlAnalysis.md
 
 # move all directories that contain *.md files to the docs folder
 # because mkdocs can only find *.md files there
-mv ../../monticore-grammar ../monticore-grammar
-mv ../../monticore-runtime ../monticore-runtime
-mv ../../00.org ../00.org
-mv ../../*.md ../
+mv monticore-grammar docs/monticore-grammar
+mv monticore-runtime docs/monticore-runtime
+mv 00.org docs/00.org
+mv *.md docs/
