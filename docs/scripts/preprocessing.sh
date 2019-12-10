@@ -4,7 +4,7 @@
 # is used from '.gitlab-ci.yml'(gitlab) and '.travis.yml'(github)
 
 # execute report scripts and print output to *.md file, to use these in pages
-sh docs/scripts/errorList.sh '../../' 'target/site/errorList' > ../ErrorList.md
+sh docs/scripts/errorList.sh '../../' 'target/site/errorList' > docs/ErrorList.md
 sh docs/scripts/detailedErrorList.sh '../../' 'target/site/detailedErrorList' > docs/DetailedErrorList.md
 sh docs/scripts/findDoubleFileNames.sh './' 'target/site/findDoubleFileNames' > docs/FindDoubleFileNames.md
 sh docs/scripts/ftlAnalysis.sh './' 'configure.StartAllOutput' 'target/site/ftlAnalysis' > docs/FtlAnalysis.md
