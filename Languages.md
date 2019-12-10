@@ -46,7 +46,7 @@ The different development statuses of grammars are explained
 * Author: NJ
 * MontiCore language for parsing JSON artifacts.
 
-### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (5% to MC6)
+### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
 * Author: DS 
 * MontiArc is an architecture and behavior modeling language and framework that provides an integrated, platform independent structure and behavior modeling language with an extensible code generation framework.
 
@@ -60,7 +60,7 @@ The different development statuses of grammars are explained
 * Author: SH
 * Language for textual object diagrams.
 
-### [Port Automata](https://git.rwth-aachen.de/monticore/montiarc/core) (Not started with MC6 changes)
+### [Port Automata](https://git.rwth-aachen.de/monticore/montiarc/core) (Alpha: Intention to become stable)
 * Author: DS
 * Port automata are a certain type of state machines and utilized in component and connector architecture description languages (e.g. MontiArc) for behavior modeling.
 

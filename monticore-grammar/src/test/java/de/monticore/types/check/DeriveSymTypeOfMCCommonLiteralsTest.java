@@ -70,14 +70,14 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
 
   @Test
   public void deriveTFromLiteral1BasicLong() throws IOException {
-    ASTLiteral lit = MCCommonLiteralsMill.basicLongLiteralBuilder().setDigits("17").setName("L").build();
+    ASTLiteral lit = MCCommonLiteralsMill.basicLongLiteralBuilder().setDigits("17").build();
     assertEquals("long", tc.typeOf(lit).print());
   }
 
 
   @Test
   public void deriveTFromLiteral1BasicFloat() throws IOException {
-    ASTLiteral lit = MCCommonLiteralsMill.basicFloatLiteralBuilder().setPre("10").setPost("03").setName("f").build();
+    ASTLiteral lit = MCCommonLiteralsMill.basicFloatLiteralBuilder().setPre("10").setPost("03").build();
     assertEquals("float", tc.typeOf(lit).print());
   }
 
