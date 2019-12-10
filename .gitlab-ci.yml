@@ -144,7 +144,7 @@ pages:
   before_script:
     - pip install mkdocs-bootstrap
   script:
-    - sh docs/preprocessing.sh
+    - sh docs/scripts/preprocessing.sh
     - mkdocs build
     - mv site public
   artifacts:
