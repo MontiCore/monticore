@@ -144,14 +144,7 @@ pages:
   before_script:
     - pip install mkdocs-bootstrap
   script:
-    - sh docs/scripts/errorList.sh '../../' '../../target/site/errorList' > docs/ErrorList.md
-    - sh docs/scripts/detailedErrorList.sh '../../' '../../target/site/detailedErrorList' > docs/DetailedErrorList.md
-    - sh docs/scripts/findDoubleFileNames.sh './' 'target/site/findDoubleFileNames' > docs/FindDoubleFileNames.md
-    - sh docs/scripts/ftlAnalysis.sh './' 'configure.StartAllOutput' 'target/site/ftlAnalysis' > docs/FtlAnalysis.md
-    - mv monticore-grammar docs/monticore-grammar
-    - mv monticore-runtime docs/monticore-runtime
-    - mv 00.org docs/00.org
-    - mv *.md docs
+    - sh docs/scripts/preprocessing.sh
     - mkdocs build
     - mv site public
   artifacts:
