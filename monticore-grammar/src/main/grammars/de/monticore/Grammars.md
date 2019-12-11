@@ -14,7 +14,8 @@ leads to optimal forms of **reuse**.
 
 Here comes a list of language components, mainly defined through a 
 primary grammar, available in the MontiCore core project 
-together with short descriptions and their status ([Status of Grammars](../../../../../../00.org/Explanations/StatusOfGrammars.md)).
+together with short descriptions and their status 
+([Status of Grammars](../../../../../../00.org/Explanations/StatusOfGrammars.md)).
 
 The list covers the core grammars to be found in the `MontiCore/monticore` 
 project under `monticore-grammar/src/main/grammars/` in packages 
@@ -84,7 +85,7 @@ This modularity of expressions and associated types greatly eases
 the reuse of type structures in languages similar to Java.
 
 
-### [ExpressionsBasis.mc4](expressions/ExpressionsBasis.mc4) (Beta: In Stabilization)
+### [ExpressionsBasis.mc4](expressions/ExpressionsBasis.mc4) (stable)
 * This grammar defines core interfaces for expressions and imports the 
 kinds of symbols necessary.
 * The symbols are taken over from the TypeSymbols grammar (see below).
@@ -180,8 +181,6 @@ These can also be used if someone is interested:
 * [StringLiterals.mc4](../../../examples/StringLiterals.mc4)
 * [MCHexNumbers.mc4](../../../examples/MCHexNumbers.mc4)
 * [MCNumbers.mc4](../../../examples/MCNumbers.mc4)
-
-
 
 
 

@@ -8,15 +8,10 @@ install:
   - pip install mkdocs-bootstrap
 
 script:
-  - mkdir docs
-  - mv monticore-grammar docs/monticore-grammar
-  - mv monticore-runtime docs/monticore-runtime
-  - mv 00.org docs/00.org
-  - mv *.md docs
+  - sh docs/scripts/preprocessing.sh
 
 before_deploy:
   - mkdocs build --verbose --clean --strict # Build a local version of the docs
-
 
 deploy: # Deploy documentation to Github in the gh_pages branch
   provider: pages

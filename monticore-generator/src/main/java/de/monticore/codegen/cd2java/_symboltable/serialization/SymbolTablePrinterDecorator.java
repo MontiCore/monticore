@@ -10,8 +10,11 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -75,7 +78,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         .addAllCDMethods(createSerializationMethodsForSymbolRules(symbolTypes))
         .addAllCDMethods(createSerializationMethodsForScopeRules(scopeTypes, scopeClassFullName,symbolTableService.getScopeClassSimpleName()))
         .build();
-    if (symbolTableService.hasStartProd(symbolCD.getCDDefinition())) {
+    if (symbolTableService.hasStartProd()) {
       symbolTablePrinterClass.addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeFullName, scopeClassFullName));
     }
     return symbolTablePrinterClass;
@@ -88,8 +91,10 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createRealThisMethod(String symbolTablePrinterName) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolTablePrinterName), GET_REAL_THIS);
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return this;"));
+    ASTMCType type = getMCTypeFacade().createQualifiedType(symbolTablePrinterName);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC,type, GET_REAL_THIS);
+    String typeString = type.printType(new MCBasicTypesPrettyPrinter(new IndentPrinter()));
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return ("+typeString+")this;"));
     return method;
   }
 

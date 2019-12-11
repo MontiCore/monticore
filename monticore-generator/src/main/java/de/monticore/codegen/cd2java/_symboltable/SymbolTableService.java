@@ -608,7 +608,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public List<ASTCDType> getNoSymbolAndScopeDefiningClasses(List<ASTCDClass> astcdClasses) {
     return astcdClasses.stream()
-        .filter(ASTCDClassTOP::isPresentModifier)
+        .filter(ASTCDClass::isPresentModifier)
         .filter(c -> !hasSymbolStereotype(c.getModifier()))
         .filter(c -> !hasScopeStereotype(c.getModifier()))
         .filter(c -> !hasInheritedSymbolStereotype(c.getModifier()))
@@ -617,7 +617,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public List<ASTCDType> getOnlyScopeClasses(ASTCDDefinition astcdDefinition) {
     List<ASTCDType> symbolProds = astcdDefinition.getCDClassList().stream()
-        .filter(ASTCDClassTOP::isPresentModifier)
+        .filter(ASTCDClass::isPresentModifier)
         .filter(c -> hasScopeStereotype(c.getModifier()))
         .filter(c -> !hasSymbolStereotype(c.getModifier()))
         .filter(c -> !hasInheritedSymbolStereotype(c.getModifier()))
@@ -653,6 +653,14 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     }
   }
 
+
+  public Optional<String> getStartProd() {
+    if(this.getCDSymbol().isPresentAstNode()){
+      return getStartProd(this.getCDSymbol().getAstNode());
+    }
+    else return Optional.empty();
+  }
+
   public Optional<String> getStartProd(ASTCDDefinition astcdDefinition) {
     if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
       return getStartProdValue(astcdDefinition.getModifier());
@@ -679,6 +687,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       return Optional.of(startProdAstName);
     }
     return Optional.empty();
+  }
+
+  public boolean hasStartProd() {
+    return getStartProd().isPresent();
   }
 
   public boolean hasStartProd(ASTCDDefinition astcdDefinition) {

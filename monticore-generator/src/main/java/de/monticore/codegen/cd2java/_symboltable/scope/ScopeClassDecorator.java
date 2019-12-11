@@ -79,14 +79,14 @@ public class ScopeClassDecorator extends AbstractDecorator {
     // attributes and methods from scope rule
     List<ASTCDAttribute> scopeRuleAttributeList = scopeInput.deepClone().getCDDefinition().getCDClassList()
         .stream()
-        .map(ASTCDClassTOP::getCDAttributeList)
+        .map(ASTCDClass::getCDAttributeList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
     scopeRuleAttributeList.forEach(a -> symbolTableService.addAttributeDefaultValues(a, this.glex));
 
     List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition().getCDClassList()
         .stream()
-        .map(ASTCDClassTOP::getCDMethodList)
+        .map(ASTCDClass::getCDMethodList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
@@ -128,8 +128,8 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
     Optional<ASTMCObjectType> scopeRuleSuperClass = scopeInput.deepClone().getCDDefinition().getCDClassList()
         .stream()
-        .filter(ASTCDClassTOP::isPresentSuperclass)
-        .map(ASTCDClassTOP::getSuperclass)
+        .filter(ASTCDClass::isPresentSuperclass)
+        .map(ASTCDClass::getSuperclass)
         .findFirst();
 
     ASTCDClassBuilder builder = CD4AnalysisMill.cDClassBuilder()
