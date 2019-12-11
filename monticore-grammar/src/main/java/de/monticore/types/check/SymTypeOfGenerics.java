@@ -51,7 +51,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
 
   /**
-   * unboxing const types (e.g. "java.lang.Boolean" -> "boolean").
+   * unboxing generic types (e.g. "java.util.Collection" -> "Collection").
    * otherwise return is unchanged
    *
    * @param type
@@ -78,7 +78,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
 
 
   /**
-   * Boxing const types (e.g. "boolean" -> "java.lang.Boolean")
+   * Boxing generic types (e.g. "Collection" -> "java.util.Collection")
    * Results are fully qualified.
    * Otherwise return is unchanged
    *
@@ -90,9 +90,14 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       List<SymTypeExpression> arguments = type.getArgumentList();
       StringBuffer r = new StringBuffer().append('<');
       for(int i = 0; i<arguments.size();i++){
-        r.append(arguments.get(i).print());
+        if(arguments.get(i).isGenericType()){
+          r.append(unbox((SymTypeOfGenerics) arguments.get(i)));
+        }else{
+          r.append(SymTypeConstant.unbox(arguments.get(i).print()));
+        }
         if(i<arguments.size()-1) { r.append(','); }
       }
+      r.append(">");
       return boxMap.get(type.printTypeWithoutTypeArgument())+r.toString();
     }else {
       return type.print();
