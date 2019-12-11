@@ -93,10 +93,10 @@ The different development statuses of grammars are explained
 * MontiCore language for parsing XML artifacts.
 
 ### [JavaLight](NN) (Beta: In Stabilization)
-* Author: ?MB, ?KH
-* This is a light Version of the Java language; the grammar describes an intermediate format
-  used as AST (but not for parsing).
-* JavaLight is typically decorated by templates e.g. for method bodies and used for code generation
+* Author: MB
+* This is a reduced version of the Java language which primarily provides methods, statements, expressions and literals to model e.g. methods in ast rules
+* It is used to integrate simple Java-like parts in modeling languages but not to parse complete Java implementations
+
 
 ### [Java](NN) (Alpha: Intention to become stable)
 
