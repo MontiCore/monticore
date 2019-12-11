@@ -23,6 +23,10 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
 
   private DeriveSymTypeOfExpression deriveSymTypeOfExpression;
 
+  private DeriveSymTypeOfJavaClassExpressions deriveSymTypeOfJavaClassExpressions;
+
+  private DeriveSymTypeOfSetExpressions deriveSymTypeOfSetExpressions;
+
   private DeriveSymTypeOfLiterals deriveSymTypeOfLiterals;
 
   private DeriveSymTypeOfMCCommonLiterals deriveSymTypeOfMCCommonLiterals;
@@ -54,6 +58,16 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
     deriveSymTypeOfExpression.setScope(scope);
     deriveSymTypeOfExpression.setLastResult(lastResult);
     setExpressionsBasisVisitor(deriveSymTypeOfExpression);
+
+    deriveSymTypeOfJavaClassExpressions = new DeriveSymTypeOfJavaClassExpressions();
+    deriveSymTypeOfJavaClassExpressions.setScope(scope);
+    deriveSymTypeOfJavaClassExpressions.setLastResult(lastResult);
+    setJavaClassExpressionsVisitor(deriveSymTypeOfJavaClassExpressions);
+
+    deriveSymTypeOfSetExpressions = new DeriveSymTypeOfSetExpressions();
+    deriveSymTypeOfSetExpressions.setScope(scope);
+    deriveSymTypeOfSetExpressions.setLastResult(lastResult);
+    setSetExpressionsVisitor(deriveSymTypeOfSetExpressions);
 
     deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
     setMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
@@ -94,6 +108,8 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
     deriveSymTypeOfExpression.setLastResult(lastResult);
     deriveSymTypeOfLiterals.setResult(lastResult);
     deriveSymTypeOfBitExpressions.setLastResult(lastResult);
+    deriveSymTypeOfJavaClassExpressions.setLastResult(lastResult);
+    deriveSymTypeOfSetExpressions.setLastResult(lastResult);
   }
 
   /**
@@ -104,6 +120,8 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
     deriveSymTypeOfExpression.setScope(scope);
     deriveSymTypeOfCommonExpressions.setScope(scope);
     deriveSymTypeOfBitExpressions.setScope(scope);
+    deriveSymTypeOfJavaClassExpressions.setScope(scope);
+    deriveSymTypeOfSetExpressions.setScope(scope);
   }
 
   /**
@@ -117,6 +135,8 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
     deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
     deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
     deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
+    deriveSymTypeOfJavaClassExpressions = new DeriveSymTypeOfJavaClassExpressions();
+    deriveSymTypeOfSetExpressions = new DeriveSymTypeOfSetExpressions();
     setLastResult(lastResult);
   }
 

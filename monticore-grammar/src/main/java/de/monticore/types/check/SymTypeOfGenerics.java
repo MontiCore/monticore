@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.collect.Lists;
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
@@ -20,6 +21,83 @@ import java.util.stream.Stream;
  * MC-Type grammars.
  */
 public class SymTypeOfGenerics extends SymTypeExpression {
+
+  /**
+   * Map for unboxing generic types (e.g. "java.util.Collection" -> "Collection")
+   */
+  public static Map<String, String> unboxMap;
+
+  /**
+   * Map for boxing generic types (e.g. "Collection" -> "java.util.Collection")
+   * Results are fully qualified.
+   */
+  public static Map<String, String> boxMap;
+
+  /**
+   * initializing the maps
+   */
+  static {
+    unboxMap = new HashMap<>();
+    unboxMap.put("java.util.Collection", "Collection");
+    unboxMap.put("java.util.Set", "Set");
+    unboxMap.put("java.util.List", "List");
+    unboxMap.put("java.util.Map","Map");
+
+    boxMap = new HashMap<>();
+    boxMap.put("Collection", "java.util.Collection");
+    boxMap.put("Set", "java.util.Set");
+    boxMap.put("List", "java.util.List");
+    boxMap.put("Map","java.util.Map");
+  }
+
+  /**
+   * unboxing const types (e.g. "java.lang.Boolean" -> "boolean").
+   * otherwise return is unchanged
+   *
+   * @param type
+   * @return
+   */
+  public static String unbox(SymTypeOfGenerics type) {
+    if (unboxMap.containsKey(type.printTypeWithoutTypeArgument())) {
+      List<SymTypeExpression> arguments = type.getArgumentList();
+      StringBuffer r = new StringBuffer().append('<');
+      for(int i = 0; i<arguments.size();i++){
+        if(arguments.get(i).isGenericType()){
+          r.append(unbox((SymTypeOfGenerics) arguments.get(i)));
+        }else{
+          r.append(SymTypeConstant.unbox(arguments.get(i).print()));
+        }
+        if(i<arguments.size()-1) { r.append(','); }
+      }
+      r.append(">");
+      return unboxMap.get(type.printTypeWithoutTypeArgument())+r.toString();
+    }else {
+      return type.print();
+    }
+  }
+
+
+  /**
+   * Boxing const types (e.g. "boolean" -> "java.lang.Boolean")
+   * Results are fully qualified.
+   * Otherwise return is unchanged
+   *
+   * @param type
+   * @return
+   */
+  public static String box(SymTypeOfGenerics type) {
+    if (boxMap.containsKey(type.printTypeWithoutTypeArgument())) {
+      List<SymTypeExpression> arguments = type.getArgumentList();
+      StringBuffer r = new StringBuffer().append('<');
+      for(int i = 0; i<arguments.size();i++){
+        r.append(arguments.get(i).print());
+        if(i<arguments.size()-1) { r.append(','); }
+      }
+      return boxMap.get(type.printTypeWithoutTypeArgument())+r.toString();
+    }else {
+      return type.print();
+    }
+  }
   
   /**
    * List of arguments of a type constructor
@@ -53,6 +131,10 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       if(i<arguments.size()-1) { r.append(','); }
     }
     return r.append('>').toString();
+  }
+
+  public String printTypeWithoutTypeArgument(){
+    return this.getFullName();
   }
   
   /**
