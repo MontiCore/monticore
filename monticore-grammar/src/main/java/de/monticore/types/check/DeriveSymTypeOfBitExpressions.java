@@ -11,7 +11,8 @@ import java.util.Optional;
 import static de.monticore.types.check.SymTypeConstant.unbox;
 
 /**
- *  Visitor for BitExpressions
+ * This Visitor can calculate a SymTypeExpression (type) for the expressions in BitExpressions
+ * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
 public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression implements BitExpressionsVisitor {
 

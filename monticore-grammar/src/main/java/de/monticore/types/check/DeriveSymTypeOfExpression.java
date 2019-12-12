@@ -13,7 +13,8 @@ import java.util.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
 
 /**
- * Visitor for ExpressionsBasis
+ * This Visitor can calculate a SymTypeExpression (type) for the expressions in ExpressionsBasis
+ * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
 public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 

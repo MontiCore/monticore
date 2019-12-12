@@ -17,7 +17,8 @@ import static de.monticore.types.check.SymTypeConstant.unbox;
 import static de.monticore.types.check.TypeCheck.isSubtypeOf;
 
 /**
- * Visitor for SetExpressions
+ * This Visitor can calculate a SymTypeExpression (type) for the expressions in SetExpressions
+ * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
 public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression implements SetExpressionsVisitor {
 

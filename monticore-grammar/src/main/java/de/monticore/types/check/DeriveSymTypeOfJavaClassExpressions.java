@@ -8,7 +8,8 @@ import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * ordner, grammatiken, beschreibung visitor und spaeter delegatorvisitor, referenz auf grammatik
+ * This Visitor can calculate a SymTypeExpression (type) for the expressions in JavaClassExpressions
+ * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
 public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonExpressions implements JavaClassExpressionsVisitor {
 
@@ -84,6 +85,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     //TODO: test that castResult is a type
     //TODO: traverse method for external ExtType
+    //castResult is the type in the brackets -> (ArrayList) list
     node.getExtType().accept(realThis);
     if(lastResult.isPresentLast()){
       castResult = lastResult.getLast();
