@@ -100,7 +100,7 @@ echo " "
 echo " ------------------------------------------------"
 echo " "
 sort -u $errorcodes.sort > $errorcodes.uniquesort
-diff $errorcodes.sort $errorcodes.uniquesort \
+diff -u $errorcodes.sort $errorcodes.uniquesort \
 | grep "^-0x" \
 > $errorcodes.doubles
 
