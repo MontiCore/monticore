@@ -29,22 +29,29 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   public void traverse(ASTThisExpression node) {
     //no primitive type and only type allowed --> check that Expression is no field or method
     //traverse the inner expression, check that it is a type (how?); this type is the result
+    lastResult.setLastAbsent();
+    Log.error("0x0300 the result of the ThisExpression cannot be calculated");
   }
 
   @Override
   public void traverse(ASTArrayExpression node) {
-
+    lastResult.setLastAbsent();
+    Log.error("0x0301 the result of the ArrayExpression cannot be calculated");
   }
 
   @Override
   public void traverse(ASTClassExpression node) {
     //only type allowed --> check that Expression is no field or method
     //traverse the inner expression, check that it is a type (how?); the result is the type "Class"
+    lastResult.setLastAbsent();
+    Log.error("0x0302 the result of the ClassExpression cannot be calculated");
   }
 
   @Override
   public void traverse(ASTSuperExpression node) {
-    //TODO: find out what ".super" returns
+    //TODO ND: find out what ".super" returns
+    lastResult.setLastAbsent();
+    Log.error("0x0303 the result of the SuperExpression cannot be calculated");
   }
 
   @Override
@@ -57,6 +64,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     if(lastResult.isPresentLast()){
       innerResult = lastResult.getLast();
     }else{
+      lastResult.setLastAbsent();
       Log.error("0xA0269 the type of the inner result of the TypeCast cannot be calculated");
     }
 
@@ -65,6 +73,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     if(lastResult.isPresentLast()){
       castResult = lastResult.getLast();
     }else{
+      lastResult.setLastAbsent();
       Log.error("0x0270 the cast type of the TypeCast cannot be calculated");
     }
 
@@ -91,6 +100,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     if(lastResult.isPresentLast()){
       leftResult = lastResult.getLast();
     }else{
+      lastResult.setLastAbsent();
       Log.error("0xA0265 the left type of the InstanceofExpression cannot be calculated");
     }
 
@@ -99,6 +109,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     if(lastResult.isPresentLast()){
       rightResult = lastResult.getLast();
     }else{
+      lastResult.setLastAbsent();
       Log.error("0xA0266 the right type of the InstanceofExpression cannot be calculated");
     }
 
@@ -133,15 +144,19 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
             wholeResult = SymTypeExpressionFactory.createTypeObject(typeSymbol.getName(),scope);
             //TODO: what if typesymbol is generic
           }else {
+            lastResult.setLastAbsent();
             Log.error("0xA0261 the spanning symbol of the enclosing scope has to be a type symbol");
           }
         }else {
+          lastResult.setLastAbsent();
           Log.error("0xA0268 the enclosing scope of the actual scope must not be null");
         }
       }else {
+        lastResult.setLastAbsent();
         Log.error("0xA0262 the spanning symbol of the scope has to be either a method symbol or a type symbol");
       }
     }else{
+      lastResult.setLastAbsent();
       Log.error("0xA0263 the scope has to be spanned by a symbol");
     }
     if(null!=wholeResult){
@@ -162,8 +177,10 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         //if the scope is spanned by a type, search for the supertype and return it
         TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
         if(typeSymbol.getSuperTypeList().size()>1){
+          lastResult.setLastAbsent();
           Log.error("0xA0252 In Java there cannot be more than one super class");
         }else if(typeSymbol.getSuperTypeList().isEmpty()){
+          lastResult.setLastAbsent();
           Log.error("0xA0253 No supertype could be found");
         }else{
           wholeResult = typeSymbol.getSuperType(0);
@@ -175,22 +192,28 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
           if(innerSpanningSymbol instanceof TypeSymbol){
             TypeSymbol typeSymbol = (TypeSymbol) innerSpanningSymbol;
             if(typeSymbol.getSuperTypeList().size()>1){
+              lastResult.setLastAbsent();
               Log.error("0xA0254 In Java there cannot be more than one super class");
             }else if(typeSymbol.getSuperTypeList().isEmpty()){
+              lastResult.setLastAbsent();
               Log.error("0xA0255 No supertype could be found");
             }else{
               wholeResult = typeSymbol.getSuperType(0);
             }
           }else{
+            lastResult.setLastAbsent();
             Log.error("0xA0258 the spanning symbol of the enclosing scope has to be a type symbol");
           }
         }else{
+          lastResult.setLastAbsent();
           Log.error("0xA0259 there has to be an enclosing scope present");
         }
       }else{
+        lastResult.setLastAbsent();
         Log.error("0xA0256 the scope must either be spanned by a type or a method");
       }
     }else{
+      lastResult.setLastAbsent();
       Log.error("0xA0257 the scope has to be spanned by a symbol");
     }
     if(wholeResult!=null){
@@ -204,11 +227,13 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
   @Override
   public void traverse(ASTGenericInvocationExpression node) {
-
+    lastResult.setLastAbsent();
+    Log.error("0x0304 the result of the GenericInvocationExpression cannot be calculated");
   }
 
   @Override
   public void traverse(ASTPrimaryGenericInvocationExpression node) {
-
+    lastResult.setLastAbsent();
+    Log.error("0x0305 the result of the PrimaryGenericInvocationExpression cannot be calculated");
   }
 }
