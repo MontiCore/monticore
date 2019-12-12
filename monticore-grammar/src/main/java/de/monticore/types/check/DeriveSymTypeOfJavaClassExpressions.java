@@ -30,13 +30,13 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     //no primitive type and only type allowed --> check that Expression is no field or method
     //traverse the inner expression, check that it is a type (how?); this type is the result
     lastResult.setLastAbsent();
-    Log.error("0x0300 the result of the ThisExpression cannot be calculated");
+    Log.error("0xA0300 the result of the ThisExpression cannot be calculated");
   }
 
   @Override
   public void traverse(ASTArrayExpression node) {
     lastResult.setLastAbsent();
-    Log.error("0x0301 the result of the ArrayExpression cannot be calculated");
+    Log.error("0xA0301 the result of the ArrayExpression cannot be calculated");
   }
 
   @Override
@@ -44,14 +44,14 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     //only type allowed --> check that Expression is no field or method
     //traverse the inner expression, check that it is a type (how?); the result is the type "Class"
     lastResult.setLastAbsent();
-    Log.error("0x0302 the result of the ClassExpression cannot be calculated");
+    Log.error("0xA0302 the result of the ClassExpression cannot be calculated");
   }
 
   @Override
   public void traverse(ASTSuperExpression node) {
     //TODO ND: find out what ".super" returns
     lastResult.setLastAbsent();
-    Log.error("0x0303 the result of the SuperExpression cannot be calculated");
+    Log.error("0xA0303 the result of the SuperExpression cannot be calculated");
   }
 
   @Override
@@ -74,7 +74,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       castResult = lastResult.getLast();
     }else{
       lastResult.setLastAbsent();
-      Log.error("0x0270 the cast type of the TypeCast cannot be calculated");
+      Log.error("0xA0270 the cast type of the TypeCast cannot be calculated");
     }
 
     if(TypeCheck.compatible(castResult,innerResult)){
@@ -228,12 +228,12 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   @Override
   public void traverse(ASTGenericInvocationExpression node) {
     lastResult.setLastAbsent();
-    Log.error("0x0304 the result of the GenericInvocationExpression cannot be calculated");
+    Log.error("0xA0304 the result of the GenericInvocationExpression cannot be calculated");
   }
 
   @Override
   public void traverse(ASTPrimaryGenericInvocationExpression node) {
     lastResult.setLastAbsent();
-    Log.error("0x0305 the result of the PrimaryGenericInvocationExpression cannot be calculated");
+    Log.error("0xA0305 the result of the PrimaryGenericInvocationExpression cannot be calculated");
   }
 }
