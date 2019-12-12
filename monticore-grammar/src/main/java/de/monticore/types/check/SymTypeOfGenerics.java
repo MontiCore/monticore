@@ -38,13 +38,13 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   static {
     unboxMap = new HashMap<>();
-    unboxMap.put("java.util.Collection", "Collection");
+    unboxMap.put("java.util.Optional", "Optional");
     unboxMap.put("java.util.Set", "Set");
     unboxMap.put("java.util.List", "List");
     unboxMap.put("java.util.Map","Map");
 
     boxMap = new HashMap<>();
-    boxMap.put("Collection", "java.util.Collection");
+    boxMap.put("Optional", "java.util.Optional");
     boxMap.put("Set", "java.util.Set");
     boxMap.put("List", "java.util.List");
     boxMap.put("Map","java.util.Map");
