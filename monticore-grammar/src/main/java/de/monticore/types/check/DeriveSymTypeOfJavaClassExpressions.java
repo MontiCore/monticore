@@ -7,6 +7,9 @@ import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
+/**
+ * ordner, grammatiken, beschreibung visitor und spaeter delegatorvisitor, referenz auf grammatik
+ */
 public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonExpressions implements JavaClassExpressionsVisitor {
 
   private JavaClassExpressionsVisitor realThis;
@@ -27,58 +30,69 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
   @Override
   public void traverse(ASTThisExpression node) {
+    //TODO:#2465 -> vervollstaendigen
     //no primitive type and only type allowed --> check that Expression is no field or method
     //traverse the inner expression, check that it is a type (how?); this type is the result
+    //can be calculated
     lastResult.setLastAbsent();
     Log.error("0xA0300 the result of the ThisExpression cannot be calculated");
   }
 
   @Override
   public void traverse(ASTArrayExpression node) {
+    //TODO:#2465 -> vervollstaendigen
+    //can be calculated
     lastResult.setLastAbsent();
     Log.error("0xA0301 the result of the ArrayExpression cannot be calculated");
   }
 
   @Override
   public void traverse(ASTClassExpression node) {
+    //TODO:#2465 -> vervollstaendigen
     //only type allowed --> check that Expression is no field or method
     //traverse the inner expression, check that it is a type (how?); the result is the type "Class"
+    //can be calculated
     lastResult.setLastAbsent();
     Log.error("0xA0302 the result of the ClassExpression cannot be calculated");
   }
 
   @Override
   public void traverse(ASTSuperExpression node) {
-    //TODO ND: find out what ".super" returns
+    //TODO:#2465 -> vervollstaendigen
+    //TODO: return the super type of the prior qualified name
+    //can be calculated
     lastResult.setLastAbsent();
     Log.error("0xA0303 the result of the SuperExpression cannot be calculated");
   }
 
   @Override
   public void traverse(ASTTypeCastExpression node) {
+    //innerResult is the SymTypeExpression of the type that will be casted into another type
     SymTypeExpression innerResult = null;
+    //castResult is the SymTypeExpression of the type the innerResult will be casted to
     SymTypeExpression castResult = null;
+    //wholeResult will be the result of the whole expression
     SymTypeExpression wholeResult = null;
 
+    //TODO: test that innerResult is not a type
     node.getExpression().accept(realThis);
     if(lastResult.isPresentLast()){
       innerResult = lastResult.getLast();
     }else{
-      lastResult.setLastAbsent();
       Log.error("0xA0269 the type of the inner result of the TypeCast cannot be calculated");
     }
 
+    //TODO: test that castResult is a type
     //TODO: traverse method for external ExtType
     node.getExtType().accept(realThis);
     if(lastResult.isPresentLast()){
       castResult = lastResult.getLast();
     }else{
-      lastResult.setLastAbsent();
       Log.error("0xA0270 the cast type of the TypeCast cannot be calculated");
     }
 
     if(TypeCheck.compatible(castResult,innerResult)){
-      wholeResult = SymTypeExpressionFactory.createTypeConstant("boolean");
+      wholeResult = castResult.deepClone();
     }
 
     if(null!=wholeResult){
@@ -96,20 +110,22 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     SymTypeExpression rightResult = null;
     SymTypeExpression wholeResult = null;
 
+    //calculate left type: expression that is to be checked for a specific type
+    //TODO: test that the left expression is not a type
     node.getExpression().accept(realThis);
     if(lastResult.isPresentLast()){
       leftResult = lastResult.getLast();
     }else{
-      lastResult.setLastAbsent();
       Log.error("0xA0265 the left type of the InstanceofExpression cannot be calculated");
     }
 
+    //calculate right type: type that the expression should be an instance of
     //TODO: traverse method for external exttype
+    //TODO: test that right expression is a type
     node.getExtType().accept(realThis);
     if(lastResult.isPresentLast()){
       rightResult = lastResult.getLast();
     }else{
-      lastResult.setLastAbsent();
       Log.error("0xA0266 the right type of the InstanceofExpression cannot be calculated");
     }
 
@@ -227,12 +243,14 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
   @Override
   public void traverse(ASTGenericInvocationExpression node) {
+    //TODO:#2465 -> vervollstaendigen
     lastResult.setLastAbsent();
     Log.error("0xA0304 the result of the GenericInvocationExpression cannot be calculated");
   }
 
   @Override
   public void traverse(ASTPrimaryGenericInvocationExpression node) {
+    //TODO:#2465 -> vervollstaendigen
     lastResult.setLastAbsent();
     Log.error("0xA0305 the result of the PrimaryGenericInvocationExpression cannot be calculated");
   }

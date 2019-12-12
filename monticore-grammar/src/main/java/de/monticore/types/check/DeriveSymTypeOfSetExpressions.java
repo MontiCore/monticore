@@ -16,6 +16,9 @@ import java.util.Optional;
 import static de.monticore.types.check.SymTypeConstant.unbox;
 import static de.monticore.types.check.TypeCheck.isSubtypeOf;
 
+/**
+ * Visitor for SetExpressions
+ */
 public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression implements SetExpressionsVisitor {
 
   private SetExpressionsVisitor realThis;
@@ -45,7 +48,6 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(lastResult.isPresentLast()){
       elemResult = lastResult.getLast();
     }else{
-      lastResult.setLastAbsent();
       Log.error("0xA0280 the result of the left expression of the isin cannot be calculated");
     }
     //set
@@ -53,7 +55,6 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(lastResult.isPresentLast()){
       setResult = lastResult.getLast();
     }else{
-      lastResult.setLastAbsent();
       Log.error("0xA0281 the result of the right expression of the isin cannot be calculated");
     }
     List<String> collections = Lists.newArrayList("Collection","List","Set","java.util.Collection","java.util.List","java.util.Set");
@@ -84,7 +85,6 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(lastResult.isPresentLast()){
       elemResult = lastResult.getLast();
     }else{
-      lastResult.setLastAbsent();
       Log.error("0xA0283 the result of the left expression of the in cannot be calculated");
     }
     //set
@@ -92,7 +92,6 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(lastResult.isPresentLast()){
       setResult = lastResult.getLast();
     }else{
-      lastResult.setLastAbsent();
       Log.error("0xA0284 the result of the right expression of the in cannot be calculated");
     }
     List<String> collections = Lists.newArrayList("Collection","List","Set","java.util.Collection","java.util.List","java.util.Set");
@@ -148,7 +147,6 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(lastResult.isPresentLast()){
       leftResult = lastResult.getLast();
     }else{
-      lastResult.setLastAbsent();
       Log.error("0xA0288 the left expression cannot be calculated");
     }
     //set
@@ -156,7 +154,6 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(lastResult.isPresentLast()){
       rightResult = lastResult.getLast();
     }else{
-      lastResult.setLastAbsent();
       Log.error("0xA0289 the right expression cannot be calculated");
     }
     List<String> collections = Lists.newArrayList("Collection","List","Set","java.util.Collection","java.util.List","java.util.Set");
