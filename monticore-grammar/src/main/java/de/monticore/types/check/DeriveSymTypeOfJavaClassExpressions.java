@@ -1,11 +1,20 @@
 package de.monticore.types.check;
 
+import de.monticore.expressions.commonexpressions._ast.ExpressionsBasisMillForCommonExpressions;
+import de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisMill;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor;
+import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
+import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
+import de.monticore.expressions.setexpressions._ast.ExpressionsBasisMillForSetExpressions;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.IScopeSpanningSymbol;
+import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Optional;
 
 /**
  * ordner, grammatiken, beschreibung visitor und spaeter delegatorvisitor, referenz auf grammatik
@@ -42,8 +51,74 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   public void traverse(ASTArrayExpression node) {
     //TODO:#2465 -> vervollstaendigen
     //can be calculated
-    lastResult.setLastAbsent();
-    Log.error("0xA0301 the result of the ArrayExpression cannot be calculated");
+    //TODO ND: neu schreiben, Notizen sind schon vorhanden
+    SymTypeExpression indexResult = null;
+    SymTypeExpression arrayTypeResult = null;
+    SymTypeExpression wholeResult = null;
+
+    //has to be a type
+    node.getExpression().accept(realThis);
+    if(lastResult.isPresentLast()){
+      arrayTypeResult = lastResult.getLast();
+    }else{
+      Log.error("0xA0315 the outer type of the array in the ArrayExpression cannot be calculated");
+    }
+
+    //cannot be a type and has to be a integer value
+    node.getIndexExpression().accept(realThis);
+    if (lastResult.isPresentLast()) {
+      if (!scope.resolveType(
+          new ExpressionsBasisPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression()).equals("")?
+              new CommonExpressionsPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression()):
+              new ExpressionsBasisPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression()))
+          .isPresent()) {
+        indexResult = lastResult.getLast();
+      }else{
+        lastResult.setLastAbsent();
+        Log.error("0xA0316 the inner expression of the array int the ArrayExpression cannot be a type");
+      }
+    }else{
+      Log.error("0xA0317 the inner type of the array in the ArrayExpression cannot be calculated");
+    }
+
+    String toResolve = new ExpressionsBasisPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression()).equals("")?
+        new CommonExpressionsPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression()):
+        new ExpressionsBasisPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression());
+
+    Optional<TypeSymbol> type = scope.resolveType(toResolve);
+    Optional<MethodSymbol> method = scope.resolveMethod(toResolve);
+    Optional<FieldSymbol> field = scope.resolveField(toResolve);
+
+    //in which order?
+    //TODO: check that indexResult is an integer
+    if(type.isPresent()){
+      if(arrayTypeResult instanceof SymTypeArray){
+        //recursiveness
+        wholeResult = SymTypeExpressionFactory.createTypeArray(arrayTypeResult.typeSymbolLoader.getName(),scope,((SymTypeArray) arrayTypeResult).getDim()+1,indexResult);
+      }else {
+        //not recursive
+        wholeResult = SymTypeExpressionFactory.createTypeArray(arrayTypeResult.typeSymbolLoader.getName(), scope, 1, indexResult.deepClone());
+      }
+    }else if(method.isPresent()){
+      //example: method foo() has return type int[] -> foo()[3] --> returns int
+      MethodSymbol sym = method.get();
+      if(sym.getReturnType() instanceof SymTypeArray){
+//        wholeResult = /*get the correct SymTypeExpression -> SymTypeConstant, SymTypeOfObject, SymTypeOfGenerics??*/;
+      }
+    }else if(field.isPresent()){
+      //example: int[] bar -> bar[3] returns int
+      FieldSymbol sym = field.get();
+      if(sym.getType() instanceof SymTypeArray){
+//        wholeResult = /*get the correct SymTypeExpression -> SymTypeConstant, SymTypeOfObject, SymTypeOfGenerics??*/;
+      }
+    }
+    if(wholeResult!=null){
+      lastResult.setLast(wholeResult);
+      result = wholeResult;
+    }else {
+      lastResult.setLastAbsent();
+      Log.error("0xA0301 the result of the ArrayExpression cannot be calculated");
+    }
   }
 
   @Override
@@ -52,8 +127,24 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     //only type allowed --> check that Expression is no field or method
     //traverse the inner expression, check that it is a type (how?); the result is the type "Class"
     //can be calculated
-    lastResult.setLastAbsent();
-    Log.error("0xA0302 the result of the ClassExpression cannot be calculated");
+    SymTypeExpression wholeResult = null;
+    SymTypeExpression innerResult = null;
+
+    //TODO: traverse method for external return type -> synthesizer
+    node.getExtReturnType().accept(realThis);
+    if(lastResult.isPresentLast()){
+//      if(scope.resolveType(/*PrettyPrinter for MCSimpleGenericTypes that can also print MCBasicTypes and MCCollectionTypes*/).isPresent()){
+        innerResult = lastResult.getLast();
+        wholeResult = SymTypeExpressionFactory.createGenerics("Class",scope,innerResult);
+//      }
+    }
+    if(wholeResult!=null){
+      lastResult.setLast(wholeResult);
+      result = wholeResult;
+    }else {
+      lastResult.setLastAbsent();
+      Log.error("0xA0302 the result of the ClassExpression cannot be calculated");
+    }
   }
 
   @Override
@@ -78,6 +169,10 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     node.getExpression().accept(realThis);
     if(lastResult.isPresentLast()){
       innerResult = lastResult.getLast();
+//      if(scope.resolveType(/* print the name of the expression*/).isPresent()){
+        lastResult.setLastAbsent();
+        Log.error("0xA0310 the inner expression of the TypeCastExpression cannot be a type");
+//      }
     }else{
       Log.error("0xA0269 the type of the inner result of the TypeCast cannot be calculated");
     }
@@ -87,11 +182,15 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     node.getExtType().accept(realThis);
     if(lastResult.isPresentLast()){
       castResult = lastResult.getLast();
-    }else{
+//      if(!scope.resolveType(/* print the name of the expression*/).isPresent()){
+        lastResult.setLastAbsent();
+        Log.error("0xA0311 the cast expression of the TypeCastExpression must be a type");
+      }
+//    }else{
       Log.error("0xA0270 the cast type of the TypeCast cannot be calculated");
-    }
+//    }
 
-    if(TypeCheck.compatible(castResult,innerResult)){
+    if(TypeCheck.compatible(castResult,innerResult)||TypeCheck.compatible(innerResult,castResult)){
       wholeResult = castResult.deepClone();
     }
 
@@ -115,9 +214,12 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     node.getExpression().accept(realThis);
     if(lastResult.isPresentLast()){
       leftResult = lastResult.getLast();
-    }else{
+//      if(scope.resolveType(/*print the type of the expression*/).isPresent()){
+        Log.error("0xA0312 the left type of the InstanceofExpression cannot be a type");
+      }
+//    }else{
       Log.error("0xA0265 the left type of the InstanceofExpression cannot be calculated");
-    }
+//    }
 
     //calculate right type: type that the expression should be an instance of
     //TODO: traverse method for external exttype
@@ -125,13 +227,14 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     node.getExtType().accept(realThis);
     if(lastResult.isPresentLast()){
       rightResult = lastResult.getLast();
-    }else{
+//      if(!scope.resolveType(/*print the name of the expression*/).isPresent()){
+        Log.error("0xA0313 the right type of the InstanceofExpression must be a type");
+      }
+//    }else{
       Log.error("0xA0266 the right type of the InstanceofExpression cannot be calculated");
-    }
+//    }
 
-    if(TypeCheck.compatible(rightResult,leftResult)){
-      wholeResult = SymTypeExpressionFactory.createTypeConstant("boolean");
-    }
+    wholeResult = SymTypeExpressionFactory.createTypeConstant("boolean");
 
     if(null!=wholeResult){
       lastResult.setLast(wholeResult);

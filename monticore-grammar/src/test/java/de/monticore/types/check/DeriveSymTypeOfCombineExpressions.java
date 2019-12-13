@@ -33,6 +33,8 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
 
   private DeriveSymTypeOfMCCommonLiterals commonLiteralsTypesCalculator;
 
+  private SynthesizeSymTypeFromMCSimpleGenericTypes symTypeFromMCSimpleGenericTypes;
+
   private LastResult lastResult = new LastResult();
 
 
