@@ -54,6 +54,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
         .setName(odName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(visitorFullName))
+        .addCDConstructor(createConstructor(odName))
         .addCDAttribute(createRealThisAttribute(visitorFullName))
         .addCDAttribute(createIndentPrinterAttribute())
         .addCDAttribute(createReportingRepositoryAttribute())
@@ -68,7 +69,6 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
         .addAllCDMethods(printEmptyOptionalMethods)
         .addAllCDMethods(printEmptyListMethods)
         .build();
-
   }
 
   protected ASTCDConstructor createConstructor(String odName) {
