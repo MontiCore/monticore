@@ -1,15 +1,21 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.cd2java._od;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -74,18 +80,19 @@ public class ODDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
   }
 
-//  @Test
-//  public void testGeneratedCode() {
-//    GeneratorSetup generatorSetup = new GeneratorSetup();
-//    generatorSetup.setGlex(glex);
-//    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-//    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, odClass, odClass);
-//    // test parsing
-//    ParserConfiguration configuration = new ParserConfiguration();
-//    JavaParser parser = new JavaParser(configuration);
-//    ParseResult parseResult = parser.parse(sb.toString());
-//    Assert.assertTrue(parseResult.isSuccessful());
-//  }
+  @Test
+  public void testGeneratedCode() {
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, odClass, odClass);
+    System.out.println(sb.toString());
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
+  }
 
   @Test
   public void testCompilationUnitNotChanged() {

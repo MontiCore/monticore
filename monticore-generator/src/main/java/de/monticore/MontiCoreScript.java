@@ -39,6 +39,9 @@ import de.monticore.codegen.cd2java._cocos.CoCoCheckerDecorator;
 import de.monticore.codegen.cd2java._cocos.CoCoDecorator;
 import de.monticore.codegen.cd2java._cocos.CoCoInterfaceDecorator;
 import de.monticore.codegen.cd2java._cocos.CoCoService;
+import de.monticore.codegen.cd2java._od.ODCDDecorator;
+import de.monticore.codegen.cd2java._od.ODDecorator;
+import de.monticore.codegen.cd2java._od.ODService;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -587,10 +590,31 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CoCoInterfaceDecorator coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex, coCoService, astService);
     CoCoDecorator coCoDecorator = new CoCoDecorator(glex, coCoCheckerDecorator, coCoInterfaceDecorator);
 
-    ASTCDCompilationUnit visitorCompilationUnit = coCoDecorator.decorate(cd);
+    ASTCDCompilationUnit cocoCompilationUnit = coCoDecorator.decorate(cd);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
-    return topDecorator.decorate(visitorCompilationUnit);
+    return topDecorator.decorate(cocoCompilationUnit);
+  }
+
+  public ASTCDCompilationUnit decorateForODPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+                                                   ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
+    return decorateWithOD(preparedCD, glex, handCodedPath);
+  }
+
+  private ASTCDCompilationUnit decorateWithOD(ASTCDCompilationUnit cd, GlobalExtensionManagement glex,
+                                              IterablePath handCodedPath) {
+    ODService odService = new ODService(cd);
+    VisitorService visitorService = new VisitorService(cd);
+    MethodDecorator methodDecorator = new MethodDecorator(glex);
+
+    ODDecorator odDecorator = new ODDecorator(glex, methodDecorator, odService, visitorService);
+
+    ODCDDecorator odcdDecorator = new ODCDDecorator(glex, odDecorator);
+    ASTCDCompilationUnit odCompilationUnit = odcdDecorator.decorate(cd);
+
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(odCompilationUnit);
   }
 
   public ASTCDCompilationUnit addListSuffixToAttributeName(ASTCDCompilationUnit originalCD) {

@@ -39,7 +39,6 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
     this.methodDecorator = methodDecorator;
   }
 
-
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     String odName = odService.getODName(input.getCDDefinition());
@@ -69,6 +68,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
         .addAllCDMethods(printEmptyOptionalMethods)
         .addAllCDMethods(printEmptyListMethods)
         .build();
+
   }
 
   protected ASTCDConstructor createConstructor(String odName) {
@@ -115,7 +115,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       String astFullName = odService.getASTPackage() + "." + astcdClass.getName();
       ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getMCTypeFacade().createQualifiedType(astFullName));
-      replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint("TODO"));
+      replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint("_od.Handle", astcdClass, astFullName));
       handleMethodList.add(handleMethod);
     }
     return handleMethodList;
