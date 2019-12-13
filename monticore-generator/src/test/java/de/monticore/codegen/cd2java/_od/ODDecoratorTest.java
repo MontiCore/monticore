@@ -276,7 +276,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
   public void testPrintObjectDiagramMethodMethod() {
     ASTCDMethod method = getMethodBy("printObjectDiagram", odClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertEquals(2, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());

@@ -141,7 +141,8 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
     ASTCDParameter nameParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "modelName");
     String languageInterfaceName = odService.getLanguageInterfaceName();
     ASTCDParameter valueParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(languageInterfaceName), "node");
-    ASTCDMethod printAttributeMethod = getCDMethodFacade().createMethod(PUBLIC, "printObjectDiagram", nameParam, valueParam);
+    ASTCDMethod printAttributeMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(),
+        "printObjectDiagram", nameParam, valueParam);
     replaceTemplate(EMPTY_BODY, printAttributeMethod, new TemplateHookPoint("_od.PrintObjectDiagram"));
     return printAttributeMethod;
   }
