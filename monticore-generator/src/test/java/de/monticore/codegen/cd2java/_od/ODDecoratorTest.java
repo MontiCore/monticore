@@ -101,7 +101,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassName() {
-    assertEquals("AutomatonOD", odClass.getName());
+    assertEquals("Automaton2OD", odClass.getName());
   }
 
   @Test
@@ -123,7 +123,6 @@ public class ODDecoratorTest extends DecoratorTestCase {
   public void testInterfaceCount() {
     assertEquals(1, odClass.sizeInterfaces());
   }
-
 
   @Test
   public void testImplementsVisitorInterface() {
