@@ -30,9 +30,9 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
   protected MethodDecorator methodDecorator;
 
   public ODDecorator(final GlobalExtensionManagement glex,
+                     final MethodDecorator methodDecorator,
                      final ODService odService,
-                     final VisitorService visitorService,
-                     final MethodDecorator methodDecorator) {
+                     final VisitorService visitorService) {
     super(glex);
     this.odService = odService;
     this.visitorService = visitorService;
@@ -54,6 +54,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
     return CD4CodeMill.cDClassBuilder()
         .setName(odName)
         .setModifier(PUBLIC.build())
+        .addInterface(getMCTypeFacade().createQualifiedType(visitorFullName))
         .addCDAttribute(createRealThisAttribute(visitorFullName))
         .addCDAttribute(createIndentPrinterAttribute())
         .addCDAttribute(createReportingRepositoryAttribute())
@@ -110,12 +111,14 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
   }
 
   protected List<ASTCDMethod> createHandleMethods(ASTCDDefinition astcdDefinition) {
-    List<ASTCDMethod> handleMethods = new ArrayList<>();
+    List<ASTCDMethod> handleMethodList = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
-      ASTCDMethod visitorMethod = visitorService.getVisitorMethod(HANDLE, getMCTypeFacade().createQualifiedType(astcdClass.getName()));
-      replaceTemplate(EMPTY_BODY, visitorMethod, new TemplateHookPoint("TODO"));
+      String astFullName = odService.getASTPackage() + "." + astcdClass.getName();
+      ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getMCTypeFacade().createQualifiedType(astFullName));
+      replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint("TODO"));
+      handleMethodList.add(handleMethod);
     }
-    return handleMethods;
+    return handleMethodList;
   }
 
   protected ASTCDMethod createPrintAttributeMethod() {
