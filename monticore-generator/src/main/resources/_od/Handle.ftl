@@ -40,7 +40,7 @@ ${tc.signature("cdClass", "classFullName")}
     pp.println(";");
   }
     <#elseif genHelper.isListAstNode(attr)>
-        <#assign astChildTypeName = genHelper.getAstClassNameForASTLists(attr)>
+    <#assign astChildTypeName = genHelper.getNativeTypeName(attr.getMCType())>
   {
     Iterator<${astChildTypeName}> iter_${attr.getName()} = node.${attrGetter}().iterator();
     boolean isEmpty = true;

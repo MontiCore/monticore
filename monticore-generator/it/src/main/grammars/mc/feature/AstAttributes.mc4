@@ -8,20 +8,24 @@ grammar AstAttributes {
    B="bar";
 
    TransformationStructure = B;
-   astrule TransformationStructure =
+    astrule TransformationStructure =
 
-      map1:java.util.Map<String, String >
+      map1:java.util.Map<String, java.util.List<String> >
+      map2:java.util.Map<String, java.util.List<String> >
+      map3:java.util.Map<String, java.util.List<String> >
+      map4:java.util.Map<String, java.util.List<String> >
 
       list1: java.util.List<String>
-      //list2: java.util.List
-      list3: java.util.List<mc.feature.astattributes._ast.ASTA>
-      list4: String*
+      list2: java.util.List
+      list3: java.util.List<java.util.List<String> >
+      list4: java.util.List<java.util.List<String> >
+        list5: java.util.List<A>
 
       string1: String
       string2: java.lang.String
 
       bool1: boolean
-      // TODO bool2: Boolean
+      bool2: Boolean
       int1: int
       int2: Integer
 
