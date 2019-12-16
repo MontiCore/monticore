@@ -38,7 +38,7 @@ public class DataEmfDecorator extends DataDecorator {
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
     if (getDecorationHelper().isListType(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint(calculateListType(attribute, service.getCDName(), clazzName)));
-    } else if (getDecorationHelper().isOptionalType(attribute.printType())) {
+    } else if (getDecorationHelper().isOptional(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     }
   }

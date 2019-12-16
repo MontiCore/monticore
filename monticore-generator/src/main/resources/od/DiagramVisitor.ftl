@@ -80,7 +80,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
             </#if>
           <#elseif genHelper.isListAstNode(field)>
             <#assign attrGetter = genHelper.getPlainGetter(field)>
-            <#assign astChildTypeName = genHelper.getAstClassNameForASTLists(field.getType())>
+            <#assign astChildTypeName = genHelper.getNativeTypeName(field.getType())>
         {
         Iterator<${astChildTypeName}> iter_${field.getName()} = node.${attrGetter}().iterator();
         boolean isEmpty = true;

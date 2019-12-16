@@ -8,7 +8,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolLoader;
-import de.monticore.cd.cd4analysis._symboltable.CDTypes;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -20,7 +19,6 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.StringTransformations;
@@ -54,7 +52,6 @@ public class DecorationHelper extends MCBasicTypesHelper {
 
   public static final String SET_PREFIX = "set";
 
-
   public String getGeneratedErrorCode(ASTNode node) {
     // Use the string representation
     int hashCode = Math.abs(node.toString().hashCode());
@@ -63,6 +60,10 @@ public class DecorationHelper extends MCBasicTypesHelper {
         .substring(errorCodeSuffix.length() - 3));
   }
 
+  /**
+   * methods which check if the Type is of a special kind
+   * e.g. Optional, List, ASTNode, Map
+   */
   public boolean isAstNode(ASTCDAttribute attr) {
     if (attr.getModifier().isPresentStereotype()) {
       return attr.getModifier().getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(MC2CDStereotypes.AST_TYPE.toString()));
@@ -82,29 +83,6 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return isListType(attribute.printType()) && isAstNode(attribute);
   }
 
-  public boolean hasOnlyAstAttributes(ASTCDClass type) {
-    for (ASTCDAttribute attr : type.getCDAttributeList()) {
-      if (!isAstNode(attr)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public String getAstClassNameForASTLists(ASTCDAttribute attr) {
-    if (attr.getMCType() instanceof ASTMCBasicGenericType && ((ASTMCBasicGenericType) attr.getMCType()).sizeMCTypeArguments() == 1) {
-      return MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(((ASTMCBasicGenericType) attr.getMCType()).getMCTypeArgumentList().get(0));
-    }
-    return "";
-  }
-
-  public String getNativeAttributeName(String attributeName) {
-    if (!attributeName.startsWith(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED)) {
-      return attributeName;
-    }
-    return attributeName.substring(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED.length());
-  }
-
   public boolean isListType(String type) {
     int index = type.indexOf('<');
     if (index != -1) {
@@ -112,15 +90,6 @@ public class DecorationHelper extends MCBasicTypesHelper {
     }
     return "List".equals(type) || "java.util.List".equals(type)
         || "ArrayList".equals(type) || "java.util.ArrayList".equals(type);
-  }
-
-  public void addAttributeDefaultValues(ASTCDAttribute attribute, GlobalExtensionManagement glex) {
-    if (isListType(attribute.printType())) {
-      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
-
-    } else if (isOptional(attribute.getMCType())) {
-      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
-    }
   }
 
   public boolean isMapType(String type) {
@@ -131,7 +100,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return "Map".equals(type) || "java.util.Map".equals(type);
   }
 
-  public boolean isOptionalType(String type) {
+  public boolean isOptional(String type) {
     int index = type.indexOf('<');
     if (index != -1) {
       type = type.substring(0, index);
@@ -139,19 +108,136 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return "Optional".equals(type) || "java.lang.Optional".equals(type);
   }
 
+  public boolean isOptional(ASTMCType type) {
+    if (type instanceof ASTMCOptionalType) {
+      return true;
+    } else if (type instanceof ASTMCGenericType) {
+      String simpleType = ((ASTMCGenericType) type).printWithoutTypeArguments();
+      return "Optional".equals(Names.getSimpleName(simpleType));
+    }
+    return false;
+  }
+
   public boolean isString(String type) {
     return "String".equals(type) || "java.lang.String".equals(type);
   }
 
-
-  public boolean isMandatory(ASTCDAttribute astcdAttribute){
-    return !isOptional(astcdAttribute.getMCType()) && ! isListType(astcdAttribute.printType()) && !CDTypes.isBoolean(astcdAttribute.printType());
-  }
-
-  public boolean isPrimitive(ASTMCType type){
+  public boolean isPrimitive(ASTMCType type) {
     return type instanceof ASTMCPrimitiveType;
   }
 
+  /**
+   * if mcType is not generic -> returns simply printed type
+   * if mcType is generic -> returns only printed type argument
+   */
+  public String getNativeTypeName(ASTMCType astType) {
+    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
+    // if not generic returns simple Type like 'int'
+    if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentList().size() == 1) {
+      return ((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get()
+          .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+    }
+    return astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+  }
+
+  public String getSimpleNativeType(ASTMCType astType) {
+    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
+    // if not generic returns simple Type like 'int'
+    String nativeAttributeType = getNativeTypeName(astType);
+    return getSimpleNativeType(nativeAttributeType);
+  }
+
+  public String getSimpleNativeType(String nativeAttributeType) {
+    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
+    // if not generic returns simple Type like 'int'
+    if (nativeAttributeType.contains(".")) {
+      nativeAttributeType = nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".") + 1);
+    }
+    if (nativeAttributeType.contains(">")) {
+      nativeAttributeType = nativeAttributeType.replaceAll(">", "");
+    }
+    return nativeAttributeType;
+  }
+
+  /**
+   * adds default declaration to an attribute, by replacing the VALUE template
+   * important for Optional and List types
+   */
+  public void addAttributeDefaultValues(ASTCDAttribute attribute, GlobalExtensionManagement glex) {
+    if (isListType(attribute.printType())) {
+      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
+
+    } else if (isOptional(attribute.getMCType())) {
+      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
+    }
+  }
+
+  /**
+   * gets attribute Name without the 'r__' prefix
+   * this prefix get all attribute names which are also keywords in java e.g. 'final', 'static'
+   * remove this prefix to still get setters and getters without the 'r__' prefix
+   */
+  public String getNativeAttributeName(String attributeName) {
+    if (!attributeName.startsWith(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED)) {
+      return attributeName;
+    }
+    return attributeName.substring(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED.length());
+  }
+
+  // TODO Alternative für folgende Methoden finden
+  public ASTMCTypeArgument getReferenceTypeFromOptional(ASTMCType type) {
+    Preconditions.checkArgument(isOptional(type));
+    return ((ASTMCGenericType) type).getMCTypeArgumentList().get(0);
+  }
+
+  /**
+   * methods only used in templates
+   */
+  public boolean hasOnlyAstAttributes(ASTCDClass type) {
+    for (ASTCDAttribute attr : type.getCDAttributeList()) {
+      if (!isAstNode(attr)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public boolean isAttributeOfTypeEnum(ASTCDAttribute attr) {
+    if (!attr.isPresentSymbol()) {
+      return false;
+    }
+    CDTypeSymbolLoader attrType = attr.getSymbol().getType();
+
+    List<CDTypeSymbolLoader> typeArgs = attrType.getActualTypeArguments();
+    if (typeArgs.size() > 1) {
+      return false;
+    }
+
+    String typeName = typeArgs.isEmpty()
+        ? attrType.getName()
+        : typeArgs.get(0).getName();
+    if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
+      return false;
+    }
+
+    List<String> listName = Arrays.asList(typeName.split("\\."));
+    if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
+      return false;
+    }
+
+    if (typeArgs.isEmpty()) {
+      return attrType.isSymbolLoaded() && attrType.getLoadedSymbol().isIsEnum();
+    }
+
+    CDTypeSymbolLoader typeArgument = typeArgs
+        .get(0);
+    return typeArgument.isSymbolLoaded() && typeArgument.getLoadedSymbol().isIsEnum();
+  }
+
+  /**
+   * methods return correct getters or setters for a special attribut
+   * needed in templates
+   */
   public String getPlainGetter(ASTCDAttribute ast) {
     String astType = ast.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     StringBuilder sb = new StringBuilder();
@@ -173,39 +259,6 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return sb.toString();
   }
 
-  public boolean isAttributeOfTypeEnum(ASTCDAttribute attr) {
-    if (!attr.isPresentSymbol()) {
-      return false;
-    }
-    CDTypeSymbolLoader attrType = attr.getSymbol().getType();
-
-    List<CDTypeSymbolLoader> typeArgs = attrType.getActualTypeArguments();
-    if (typeArgs.size() > 1) {
-      return false;
-    }
-
-    String typeName = typeArgs.isEmpty()
-        ? attrType.getName()
-        : typeArgs.get(0).getName();
-    if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
-      return false;
-    }
-
-    List<String> listName =  Arrays.asList(typeName.split("\\."));
-    if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
-      return false;
-    }
-
-    if (typeArgs.isEmpty()) {
-      return attrType.isSymbolLoaded() && attrType.getLoadedSymbol().isIsEnum();
-    }
-
-    CDTypeSymbolLoader typeArgument =  typeArgs
-        .get(0);
-    return typeArgument.isSymbolLoaded() && typeArgument.getLoadedSymbol().isIsEnum();
-  }
-
-
   public String getPlainSetter(ASTCDAttribute ast) {
     StringBuilder sb = new StringBuilder(SET_PREFIX).append(
         StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
@@ -221,61 +274,11 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return sb.toString();
   }
 
-  public String getDefaultValue(ASTCDAttribute attribute) {
-    if (isAstNode(attribute)) {
-      return "null";
-    }
-    if (isOptional(attribute.getMCType())) {
-      return "Optional.empty()";
-    }
-    String typeName = attribute.printType();
-    switch (typeName) {
-      case "boolean":
-        return "false";
-      case "int":
-        return "0";
-      case "short":
-        return "(short) 0";
-      case "long":
-        return "0";
-      case "float":
-        return "0.0f";
-      case "double":
-        return "0.0";
-      case "char":
-        return "'\u0000'";
-      default:
-        return "null";
-    }
-  }
-
-  public boolean isOptional(ASTMCType type) {
-    if (type instanceof ASTMCOptionalType) {
-      return true;
-    } else if (type instanceof ASTMCGenericType) {
-      String simpleType = ((ASTMCGenericType) type).printWithoutTypeArguments();
-      return "Optional".equals(Names.getSimpleName(simpleType));
-    }
-    return false;
-  }
-
-  // TODO Alternative für folgende Methoden finden
-  public ASTMCTypeArgument getReferenceTypeFromOptional(ASTMCType type) {
-    Preconditions.checkArgument(isOptional(type));
-    return ((ASTMCGenericType) type).getMCTypeArgumentList().get(0);
-  }
-
+  /**
+   * only needed for templates, so that no instance of the PrettyPrinter has to be created in the template
+   */
   public String printType(ASTMCType type) {
     return type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
-  }
-
-  //for InitializePackageContents template
-  public String determineListInteger(ASTMCType astType) {
-    if (isListType(astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))) {
-      return "-1";
-    } else {
-      return "1";
-    }
   }
 
 }

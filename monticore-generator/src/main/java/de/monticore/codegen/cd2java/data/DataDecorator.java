@@ -73,7 +73,7 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     if (getDecorationHelper().isListType(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
 
-    } else if (getDecorationHelper().isOptionalType(attribute.printType())) {
+    } else if (getDecorationHelper().isOptional(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     }
   }

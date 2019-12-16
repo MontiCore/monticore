@@ -6,10 +6,8 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
-import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.StringTransformations;
 
@@ -20,7 +18,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 
-public class EmfService extends AbstractService {
+public class EmfService extends AbstractService<EmfService> {
 
   protected static final String ABSTRACT = "IS_ABSTRACT";
 
@@ -41,12 +39,12 @@ public class EmfService extends AbstractService {
   }
 
   @Override
-  protected ASTService createService(CDDefinitionSymbol cdSymbol) {
+  protected EmfService createService(CDDefinitionSymbol cdSymbol) {
     return createEmfService(cdSymbol);
   }
 
-  public static ASTService createEmfService(CDDefinitionSymbol cdSymbol) {
-    return new ASTService(cdSymbol);
+  public static EmfService createEmfService(CDDefinitionSymbol cdSymbol) {
+    return new EmfService(cdSymbol);
   }
 
   /**
@@ -78,7 +76,7 @@ public class EmfService extends AbstractService {
    * (only by checking if the attribute name ends with 'Ext')
    */
   public boolean isExternal(ASTCDAttribute attribute) {
-    return getNativeTypeName(attribute.getMCType()).endsWith("Ext");
+    return getDecorationHelper().getNativeTypeName(attribute.getMCType()).endsWith("Ext");
   }
 
   /**
@@ -102,7 +100,7 @@ public class EmfService extends AbstractService {
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
         if (isEDataType(astcdAttribute)) {
-          eDataTypeMap.add(getNativeTypeName(astcdAttribute.getMCType()));
+          eDataTypeMap.add(getDecorationHelper().getNativeTypeName(astcdAttribute.getMCType()));
         }
       }
     }
@@ -149,41 +147,8 @@ public class EmfService extends AbstractService {
         .collect(Collectors.toList());
   }
 
-  /**
-   * if mcType is not generic -> returns simply printed type
-   * if mcType is generic -> returns only printed type argument
-   */
-  public String getNativeTypeName(ASTMCType astType) {
-    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
-    // if not generic returns simple Type like 'int'
-    if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentList().size() == 1) {
-      return ((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get()
-          .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
-    }
-    return astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
-  }
-
-  public String getSimpleNativeType(ASTMCType astType) {
-    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
-    // if not generic returns simple Type like 'int'
-    String nativeAttributeType = getNativeTypeName(astType);
-    return getSimpleNativeType(nativeAttributeType);
-  }
-
-  public String getSimpleNativeType(String nativeAttributeType) {
-    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
-    // if not generic returns simple Type like 'int'
-    if (nativeAttributeType.contains(".")) {
-      nativeAttributeType = nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".") + 1);
-    }
-    if (nativeAttributeType.contains(">")) {
-      nativeAttributeType = nativeAttributeType.replaceAll(">", "");
-    }
-    return nativeAttributeType;
-  }
-
   public String getGrammarFromClass(ASTCDDefinition astcdDefinition, ASTCDAttribute astcdAttribute) {
-    String simpleNativeAttributeType = getSimpleNativeType(astcdAttribute.getMCType());
+    String simpleNativeAttributeType = getDecorationHelper().getSimpleNativeType(astcdAttribute.getMCType());
     if (astcdDefinition.getCDClassList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
       return "this";
     } else {
@@ -232,17 +197,17 @@ public class EmfService extends AbstractService {
     if (isExternal(attribute)) {
       return "theASTENodePackage.getENode";
     } else if (getDecorationHelper().isPrimitive(attribute.getMCType()) || getDecorationHelper().isString(attribute.printType())) {
-      return "ecorePackage.getE" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType()));
+      return "ecorePackage.getE" + StringTransformations.capitalize(getDecorationHelper().getSimpleNativeType(attribute.getMCType()));
     } else if (isObjectType(attribute.getMCType())) {
-      return "ecorePackage.getE" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType())) + "Object";
+      return "ecorePackage.getE" + StringTransformations.capitalize(getDecorationHelper().getSimpleNativeType(attribute.getMCType())) + "Object";
     } else if (getDecorationHelper().isSimpleAstNode(attribute) || getDecorationHelper().isListAstNode(attribute)
         || getDecorationHelper().isOptionalAstNode(attribute)) {
       String grammarName = StringTransformations.uncapitalize(getGrammarFromClass(astcdDefinition, attribute));
-      return grammarName + ".get" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType()));
+      return grammarName + ".get" + StringTransformations.capitalize(getDecorationHelper().getSimpleNativeType(attribute.getMCType()));
     } else if (getDecorationHelper().isMapType(attribute.printType())) {
       return "ecorePackage.getEMap";
     } else {
-      return "this.get" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType()));
+      return "this.get" + StringTransformations.capitalize(getDecorationHelper().getSimpleNativeType(attribute.getMCType()));
     }
   }
 
@@ -253,7 +218,7 @@ public class EmfService extends AbstractService {
    * @return true if the input type is a java object type, false otherwise.
    */
   private boolean isObjectType(ASTMCType type) {
-    switch (getSimpleNativeType(type)) {
+    switch (getDecorationHelper().getSimpleNativeType(type)) {
       case "Boolean":
       case "Short":
       case "Integer":
@@ -276,5 +241,33 @@ public class EmfService extends AbstractService {
 
   public String getPackage(String typeName) {
     return typeName.contains(".") ? typeName.substring(0, typeName.lastIndexOf(".")) : "this";
+  }
+
+  public String getDefaultValue(ASTCDAttribute attribute) {
+    if (getDecorationHelper().isAstNode(attribute)) {
+      return "null";
+    }
+    if (getDecorationHelper().isOptional(attribute.getMCType())) {
+      return "Optional.empty()";
+    }
+    String typeName = attribute.printType();
+    switch (typeName) {
+      case "boolean":
+        return "false";
+      case "int":
+        return "0";
+      case "short":
+        return "(short) 0";
+      case "long":
+        return "0";
+      case "float":
+        return "0.0f";
+      case "double":
+        return "0.0";
+      case "char":
+        return "'\u0000'";
+      default:
+        return "null";
+    }
   }
 }
