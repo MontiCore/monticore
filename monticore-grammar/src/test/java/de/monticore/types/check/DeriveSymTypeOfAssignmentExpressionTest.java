@@ -691,7 +691,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0169 The resulting type of the RegularAssignment (=) cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0180 The resulting type of the RegularAssignment (=) cannot be calculated");
         }
 
         LogStub.init();
