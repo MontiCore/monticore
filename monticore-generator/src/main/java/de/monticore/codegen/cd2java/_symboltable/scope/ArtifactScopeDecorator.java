@@ -6,7 +6,6 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -207,7 +206,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
     if (!isArtifactScopeTop()) {
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new StringHookPoint("visitor.handle(this);"));
     } else {
-      String errorCode = DecorationHelper.getGeneratedErrorCode(acceptMethod);
+      String errorCode = getDecorationHelper().getGeneratedErrorCode(acceptMethod);
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(
           "_symboltable.AcceptTop", artifactScopeName, errorCode));
     }

@@ -7,7 +7,6 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -21,6 +20,8 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
@@ -28,7 +29,6 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTER
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 import static de.monticore.codegen.cd2java.data.ListSuffixDecorator.LIST_SUFFIX_S;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a Scope class from a grammar
@@ -82,7 +82,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .map(ASTCDClass::getCDAttributeList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
-    scopeRuleAttributeList.forEach(a -> symbolTableService.addAttributeDefaultValues(a, this.glex));
+    scopeRuleAttributeList.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
     List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition().getCDClassList()
         .stream()
@@ -212,7 +212,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
     ASTCDMethod ownAcceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
     if (isScopeTop()) {
-      String errorCode = DecorationHelper.getGeneratedErrorCode(ownAcceptMethod);
+      String errorCode = getDecorationHelper().getGeneratedErrorCode(ownAcceptMethod);
       this.replaceTemplate(EMPTY_BODY, ownAcceptMethod, new TemplateHookPoint(TEMPLATE_PATH + "AcceptOwn", scopeClassName, errorCode));
     } else {
       this.replaceTemplate(EMPTY_BODY, ownAcceptMethod, new StringHookPoint("visitor.handle(this);"));
@@ -223,7 +223,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
       String superScopeVisitor = visitorService.getScopeVisitorFullName(cdDefinitionSymbol);
       ASTCDParameter superVisitorParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(superScopeVisitor), VISITOR_PREFIX);
       ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, superVisitorParameter);
-      String errorCode = DecorationHelper.getGeneratedErrorCode(acceptMethod);
+      String errorCode = getDecorationHelper().getGeneratedErrorCode(acceptMethod);
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(TEMPLATE_PATH + "Accept", ownScopeVisitor, scopeClassName, superScopeVisitor, errorCode));
       acceptMethods.add(acceptMethod);
     }
@@ -332,7 +332,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
   protected ASTCDAttribute createEnclosingScopeAttribute() {
     ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
-    symbolTableService.addAttributeDefaultValues(attribute, glex);
+    getDecorationHelper().addAttributeDefaultValues(attribute, glex);
     return attribute;
   }
 
@@ -353,7 +353,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
   protected ASTCDAttribute createSpanningSymbolAttribute() {
     ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED,
         getMCTypeFacade().createOptionalTypeOf(I_SCOPE_SPANNING_SYMBOL), "spanningSymbol");
-    symbolTableService.addAttributeDefaultValues(attribute, glex);
+    getDecorationHelper().addAttributeDefaultValues(attribute, glex);
     return attribute;
   }
 
@@ -390,21 +390,21 @@ public class ScopeClassDecorator extends AbstractDecorator {
   protected ASTCDAttribute createNameAttribute() {
     ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createOptionalTypeOf(String.class),
         NAME_VAR);
-    symbolTableService.addAttributeDefaultValues(attribute, glex);
+    getDecorationHelper().addAttributeDefaultValues(attribute, glex);
     return attribute;
   }
 
   protected ASTCDAttribute createASTNodeAttribute() {
     ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().
         createOptionalTypeOf(AST_INTERFACE), AST_NODE_VAR);
-    symbolTableService.addAttributeDefaultValues(attribute, glex);
+    getDecorationHelper().addAttributeDefaultValues(attribute, glex);
     return attribute;
   }
 
   protected ASTCDAttribute createSubScopesAttribute(ASTMCQualifiedType scopeInterfaceType) {
     ASTCDAttribute attribute =  this.getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createListTypeOf(scopeInterfaceType),
         "subScopes");
-    symbolTableService.addAttributeDefaultValues(attribute, glex);
+    getDecorationHelper().addAttributeDefaultValues(attribute, glex);
     return attribute;
   }
 

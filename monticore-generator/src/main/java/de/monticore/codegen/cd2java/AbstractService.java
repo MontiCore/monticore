@@ -8,10 +8,7 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolLoader;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
@@ -26,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 
@@ -36,6 +32,7 @@ public class AbstractService<T extends AbstractService> {
 
   private final MCTypeFacade mcTypeFacade;
 
+  private final DecorationHelper decorationHelper;
 
   public AbstractService(final ASTCDCompilationUnit compilationUnit) {
     this(compilationUnit.getCDDefinition().getSymbol());
@@ -44,10 +41,15 @@ public class AbstractService<T extends AbstractService> {
   public AbstractService(final CDDefinitionSymbol cdSymbol) {
     this.cdSymbol = cdSymbol;
     this.mcTypeFacade = MCTypeFacade.getInstance();
+    this.decorationHelper = DecorationHelper.getInstance();
   }
 
   public CDDefinitionSymbol getCDSymbol() {
     return this.cdSymbol;
+  }
+
+  public DecorationHelper getDecorationHelper() {
+    return decorationHelper;
   }
 
   protected MCTypeFacade getMCTypeFacade() {
@@ -356,14 +358,4 @@ public class AbstractService<T extends AbstractService> {
     String astName = simpleName.substring(simpleName.lastIndexOf(".") + 1);
     return packageName + "." + AST_PACKAGE + "." + astName;
   }
-
-  public void addAttributeDefaultValues(ASTCDAttribute attribute, GlobalExtensionManagement glex) {
-    if (DecorationHelper.isListType(attribute.printType())) {
-      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
-
-    } else if (DecorationHelper.isOptional(attribute.getMCType())) {
-      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
-    }
-  }
-
 }

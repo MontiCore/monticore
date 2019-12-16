@@ -7,7 +7,6 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -83,7 +82,7 @@ public class EmfService extends AbstractService {
 
   //for InitializePackageContents template
   public String determineListInteger(ASTMCType astType) {
-    if (DecorationHelper.isListType(astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))) {
+    if (getDecorationHelper().isListType(astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))) {
       return "-1";
     } else {
       return "1";
@@ -101,17 +100,17 @@ public class EmfService extends AbstractService {
 
   //for InitializePackageContents template
   public String determineGetEmfMethod(ASTCDAttribute attribute, ASTCDDefinition astcdDefinition) {
-    DecorationHelper decorationHelper = new DecorationHelper();
     if (isExternal(attribute)) {
       return "theASTENodePackage.getENode";
     } else if (isPrimitive(attribute.getMCType()) || isString(attribute.getMCType())) {
       return "ecorePackage.getE" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType()));
     } else if (isObjectType(attribute.getMCType())) {
       return "ecorePackage.getE" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType())) + "Object";
-    } else if (decorationHelper.isSimpleAstNode(attribute) || decorationHelper.isListAstNode(attribute) || decorationHelper.isOptionalAstNode(attribute)) {
+    } else if (getDecorationHelper().isSimpleAstNode(attribute) || getDecorationHelper().isListAstNode(attribute)
+        || getDecorationHelper().isOptionalAstNode(attribute)) {
       String grammarName = StringTransformations.uncapitalize(getGrammarFromClass(astcdDefinition, attribute));
       return grammarName + ".get" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType()));
-    } else if (DecorationHelper.isMapType(attribute.printType())) {
+    } else if (getDecorationHelper().isMapType(attribute.printType())) {
       return "ecorePackage.getEMap";
     } else {
       return "this.get" + StringTransformations.capitalize(getSimpleNativeType(attribute.getMCType()));
@@ -125,10 +124,10 @@ public class EmfService extends AbstractService {
   public boolean isString(ASTMCType type) {
     return "String".equals(getSimpleNativeType(type));
   }
-  
+
   /**
    * Checks whether the given mc type is a java object type.
-   * 
+   *
    * @param type The input type
    * @return true if the input type is a java object type, false otherwise.
    */
@@ -155,9 +154,8 @@ public class EmfService extends AbstractService {
   }
 
   public ASTMCQualifiedType getEmfAttributeType(ASTCDAttribute astcdAttribute) {
-    DecorationHelper decorationHelper = new DecorationHelper();
-    if (decorationHelper.isAstNode(astcdAttribute) || decorationHelper.isOptionalAstNode(astcdAttribute)
-        || decorationHelper.isListAstNode(astcdAttribute)) {
+    if (getDecorationHelper().isAstNode(astcdAttribute) || getDecorationHelper().isOptionalAstNode(astcdAttribute)
+        || getDecorationHelper().isListAstNode(astcdAttribute)) {
       return MCTypeFacade.getInstance().createQualifiedType(E_REFERENCE_TYPE);
     } else {
       return MCTypeFacade.getInstance().createQualifiedType(E_ATTRIBUTE_TYPE);
@@ -178,11 +176,10 @@ public class EmfService extends AbstractService {
   }
 
   public boolean isEDataType(ASTCDAttribute astcdAttribute) {
-    DecorationHelper decorationHelper = new DecorationHelper();
-    return !decorationHelper.isSimpleAstNode(astcdAttribute) && !decorationHelper.isListAstNode(astcdAttribute) &&
-        !decorationHelper.isOptionalAstNode(astcdAttribute) && !isPrimitive(astcdAttribute.getMCType())
+    return !getDecorationHelper().isSimpleAstNode(astcdAttribute) && !getDecorationHelper().isListAstNode(astcdAttribute) &&
+        !getDecorationHelper().isOptionalAstNode(astcdAttribute) && !isPrimitive(astcdAttribute.getMCType())
         && !isString(astcdAttribute.getMCType()) && !isObjectType(astcdAttribute.getMCType())
-        && !DecorationHelper.isMapType(astcdAttribute.printType());
+        && !getDecorationHelper().isMapType(astcdAttribute.printType());
   }
 
   public boolean isASTNodeInterface(ASTCDInterface astcdInterface, ASTCDDefinition astcdDefinition) {

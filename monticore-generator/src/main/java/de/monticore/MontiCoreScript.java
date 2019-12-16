@@ -10,6 +10,7 @@ import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CDGenerator;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.*;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
@@ -60,7 +61,6 @@ import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
@@ -727,7 +727,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                              File outputDirectory, IterablePath handcodedPath) {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new AbstractService(oldCD));
-    glex.setGlobalValue("astHelper", new DecorationHelper());
+    glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();
@@ -743,7 +743,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                 File outputDirectory, IterablePath handcodedPath) {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new EmfService(oldCD));
-    glex.setGlobalValue("astHelper", new DecorationHelper());
+    glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();

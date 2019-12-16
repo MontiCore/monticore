@@ -7,7 +7,6 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
 import de.monticore.codegen.cd2java.exception.DecorateException;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -66,8 +65,8 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .filter(a -> !service.isInherited(a))
         .collect(Collectors.toList());
     List<ASTCDAttribute> mandatoryAttributes = builderAttributes.stream()
-        .filter(a -> !DecorationHelper.isListType(a.printType()))
-        .filter(a -> !DecorationHelper.isOptionalType(a.printType()))
+        .filter(a -> !getDecorationHelper().isListType(a.printType()))
+        .filter(a -> !getDecorationHelper().isOptionalType(a.printType()))
         .filter(a -> !(a.getMCType() instanceof ASTMCPrimitiveType))
         .filter(a -> !service.isInherited(a))
         .collect(Collectors.toList());
@@ -111,10 +110,10 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   }
 
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
-    if (DecorationHelper.isListType(attribute.printType())) {
+    if (getDecorationHelper().isListType(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
 
-    } else if (DecorationHelper.isOptionalType(attribute.printType())) {
+    } else if (getDecorationHelper().isOptionalType(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     }
   }

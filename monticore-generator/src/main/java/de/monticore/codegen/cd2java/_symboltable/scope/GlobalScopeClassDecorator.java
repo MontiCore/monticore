@@ -5,7 +5,6 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -170,7 +169,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDMethod createGetNameMethod() {
     ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
-    String generatedErrorCode = DecorationHelper.getGeneratedErrorCode(getNameMethod);
+    String generatedErrorCode = getDecorationHelper().getGeneratedErrorCode(getNameMethod);
     this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint(
         "Log.error(\"0xA6101" + generatedErrorCode 
         + " Global scopes do not have names.\");\n" 
@@ -265,13 +264,13 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDAttribute enclosingScopeAttribute = this.getCDAttributeFacade()
             .createAttribute(PROTECTED,
         symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
-    symbolTableService.addAttributeDefaultValues(enclosingScopeAttribute, glex);
+    getDecorationHelper().addAttributeDefaultValues(enclosingScopeAttribute, glex);
 
     methodDecorator.disableTemplates();
     List<ASTCDMethod> enclosingScopeMethods = methodDecorator.decorate(enclosingScopeAttribute);
     methodDecorator.enableTemplates();
     for (ASTCDMethod enclosingScopeMethod : enclosingScopeMethods) {
-      String generatedErrorCode = DecorationHelper.getGeneratedErrorCode(enclosingScopeMethod);
+      String generatedErrorCode = getDecorationHelper().getGeneratedErrorCode(enclosingScopeMethod);
       // add return null if method has return type
       if (enclosingScopeMethod.getMCReturnType().isPresentMCType()) {
         this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(

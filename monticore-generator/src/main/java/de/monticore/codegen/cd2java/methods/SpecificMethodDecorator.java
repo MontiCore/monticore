@@ -4,7 +4,6 @@ package de.monticore.codegen.cd2java.methods;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.List;
@@ -50,12 +49,9 @@ abstract class SpecificMethodDecorator extends AbstractCreator<ASTCDAttribute, L
   private AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> determineMethodDecoratorStrategy(final ASTCDAttribute ast) {
     if (getMCTypeFacade().isBooleanType(ast.getMCType())) {
       return mandatoryMethodDecorator;
-    }
-    //TODO: helper durch OO-Ansatz ersetzen (und vereinheitlichen)
-    else if (DecorationHelper.isListType(ast.printType())) {
+    } else if (getDecorationHelper().isListType(ast.printType())) {
       return listMethodDecorator;
-    }
-    else if (DecorationHelper.isOptional(ast.getMCType())) {
+    } else if (getDecorationHelper().isOptional(ast.getMCType())) {
       return optionalMethodDecorator;
     }
     return mandatoryMethodDecorator;

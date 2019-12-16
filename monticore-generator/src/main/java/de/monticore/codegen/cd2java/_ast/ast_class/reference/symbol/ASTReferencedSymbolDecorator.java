@@ -8,7 +8,6 @@ import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.symbol.methoddecorator.ReferencedSymbolAccessorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -74,7 +73,7 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
     TransformationHelper.addStereotypeValue(modifier, MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE.toString());
 
     ASTMCOptionalType optionalTypeOfReferencedSymbol = getMCTypeFacade().createOptionalTypeOf(referencedSymbol);
-    if (DecorationHelper.isListType(attribute.printType())) {
+    if (getDecorationHelper().isListType(attribute.printType())) {
       //if the attribute is a list
       ASTMCType attributeType = getMCTypeFacade().createMapTypeOf(getMCTypeFacade().createStringType(), optionalTypeOfReferencedSymbol);
       ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL);
@@ -93,7 +92,7 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
    */
   protected List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol, boolean wasAttributeOptional) {
     ASTCDAttribute methodDecorationAttribute = refSymbolAttribute.deepClone();
-    if (DecorationHelper.isMapType(refSymbolAttribute.printType())) {
+    if (getDecorationHelper().isMapType(refSymbolAttribute.printType())) {
       //have to change type of attribute list instead of map
       //because the inner representation is a map but for users the List methods are only shown
       ASTMCType optionalType = getMCTypeFacade().createOptionalTypeOf(referencedSymbol);
@@ -109,7 +108,7 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
   }
 
   protected boolean wasAttributeOptional(ASTCDAttribute originalAttribute) {
-    return DecorationHelper.isOptional(originalAttribute.getMCType());
+    return getDecorationHelper().isOptional(originalAttribute.getMCType());
   }
 
 }
