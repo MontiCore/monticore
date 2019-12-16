@@ -67,7 +67,6 @@ import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
-import de.monticore.codegen.cd2java.od.ODGenerator;
 import de.monticore.codegen.cd2java.top.TopDecorator;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
@@ -779,12 +778,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     //set originalDefinition, because information is needed in template
     generator.setOriginalDefinition(oldCD.getCDDefinition().deepClone());
     generator.generate(decoratedCD);
-  }
-
-  public void generateODs(GlobalExtensionManagement glex, CD4AnalysisGlobalScope globalScope,
-                          Grammar_WithConceptsGlobalScope mcScope,
-                          ASTCDCompilationUnit astClassDiagram, ASTMCGrammar grammar, File outputDirectory) {
-    ODGenerator.generate(glex, astClassDiagram, grammar, globalScope, mcScope, outputDirectory);
   }
 
   private void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
