@@ -3,6 +3,7 @@
 package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.utils.Link;
@@ -15,8 +16,6 @@ import java.util.function.UnaryOperator;
  */
 public class DeprecatedTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
-
-  private static final String DEPRECATED = "@Deprecated";
 
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
@@ -66,10 +65,10 @@ public class DeprecatedTranslation implements
         mod = CD4AnalysisMill.modifierBuilder().build();
       }
       if (annotation.isPresentMessage()) {
-        TransformationHelper.addStereoType(cdType, DEPRECATED,
+        TransformationHelper.addStereoType(cdType, MC2CDStereotypes.DEPRECATED.toString(),
             annotation.getMessage());
       } else {
-        TransformationHelper.addStereoType(cdType, DEPRECATED);
+        TransformationHelper.addStereoType(cdType, MC2CDStereotypes.DEPRECATED.toString());
       }
     }
   }
