@@ -3,8 +3,8 @@
 package de.monticore.codegen.parser.antlr;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
@@ -76,17 +76,17 @@ public class AttributeCardinalityConstraint {
               + "de.se_rwth.commons.logging.Log.error(message);\nsetErrors(true);}\n";
           ret.append("\n" + message);
         }
-        
-        if (max.isPresent() && max.get() != GeneratorHelper.STAR) {
+
+        if (max.isPresent() && max.get() != TransformationHelper.STAR) {
 
           String runtimemessage = "\"0xA7018" + getGeneratedErrorCode(ast) + " Invalid maximal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
-          
+
           runtimemessage = runtimemessage.replaceAll("%attributename%", usageName);
           runtimemessage = runtimemessage.replaceAll("%rulename%", ast.getName());
           runtimemessage = runtimemessage.replaceAll("%value%", getCounterName(usageName));
           runtimemessage = runtimemessage.replaceAll("%reference%",
               ParserGeneratorHelper.formatAttributeValue(max));
-          
+
           String message = "if (!checkMax("
               + getCounterName(usageName)
               + ","

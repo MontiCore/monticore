@@ -5,8 +5,8 @@ package de.monticore.codegen.parser;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.PredicatePair;
@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 
 /**
  * This is a helper class for the parser generation
@@ -41,8 +42,6 @@ public class ParserGeneratorHelper {
   public static final String MONTICOREANYTHING = "MONTICOREANYTHING";
 
   public static final String RIGHTASSOC = "<assoc=right>";
-
-  public static final String ANTLR_CONCEPT = "antlr";
 
   private static Grammar_WithConceptsPrettyPrinter prettyPrinter;
 
@@ -299,65 +298,6 @@ public class ParserGeneratorHelper {
   // ----------------------------------------------------
 
   /**
-   * The result is true iff ASTTerminal is iterated
-   *
-   * @param ast ASTConstantGroup to be evaluated
-   * @return true iff ASTConstantGroup is iterated
-   */
-  public static boolean isIterated(ASTTerminal ast) {
-    return ast.getIteration() == ASTConstantsGrammar.PLUS || ast
-            .getIteration() == ASTConstantsGrammar.STAR;
-  }
-
-  /**
-   * The result is true iff ASTOrGroup is iterated
-   *
-   * @param ast ASTOrGroup to be evaluated
-   * @return true iff ASTOrGroup is iterated
-   */
-  public static boolean isIterated(ASTBlock ast) {
-    return ast.getIteration() == ASTConstantsGrammar.PLUS || ast
-            .getIteration() == ASTConstantsGrammar.STAR;
-  }
-
-  /**
-   * Returns the name of a rule
-   *
-   * @param ast rule
-   * @return Name of a rule
-   */
-  public static String getRuleName(ASTClassProd ast) {
-    return ast.getName();
-  }
-
-  /**
-   * Creates usage name from a NtSym usually from its attribute or creates name
-   *
-   * @param ast
-   * @return
-   */
-
-  public static String getUsuageName(ASTNonTerminal ast) {
-    // Use Nonterminal name as attribute name starting with lower case latter
-    if (ast.isPresentUsageName()) {
-      return ast.getUsageName();
-    }
-    else {
-      return StringTransformations.uncapitalize(ast.getName());
-    }
-  }
-
-  public static boolean isIterated(ASTNonTerminal ast) {
-    return ast.getIteration() == ASTConstantsGrammar.PLUS || ast
-            .getIteration() == ASTConstantsGrammar.STAR;
-  }
-
-  public static String getTypeNameForEnum(String surroundtype, ASTConstantGroup ast) {
-    return new StringBuilder("[enum.").append(surroundtype).append(".")
-            .append(ast.getUsageName()).toString();
-  }
-
-  /**
    * Printable representation of iteration
    *
    * @param i Value from AST
@@ -375,32 +315,6 @@ public class ParserGeneratorHelper {
         return "";
     }
   }
-
-  public static String getDefinedType(ASTClassProd rule) {
-    return rule.getName();
-  }
-
-  /**
-   * Returns Human-Readable, antlr conformed name for a rulename
-   *
-   * @param ast rule name
-   * @return Human-Readable, antlr conformed rule name
-   */
-  public static String getRuleNameForAntlr(ASTNonTerminal ast) {
-    return getRuleNameForAntlr(ast.getName());
-  }
-
-  /**
-   * Returns Human-Readable, antlr conformed name for a rulename
-   *
-   * @param rulename rule name
-   * @return Human-Readable, antlr conformed rule name
-   */
-  public static String getRuleNameForAntlr(String rulename) {
-    return JavaNamesHelper.getNonReservedName(rulename
-            .toLowerCase());
-  }
-
 
   public String getTmpVarNameForAntlrCode(ASTNonTerminal node) {
     Optional<ProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
@@ -511,7 +425,7 @@ public class ParserGeneratorHelper {
       // return getConstantType();
     }
     return MCGrammarSymbolTableHelper.getQualifiedName(symbol.getAstNode(), symbol,
-            GeneratorHelper.AST_PREFIX, "");
+        AST_PREFIX, "");
   }
 
   public static String getDefaultValue(ProdSymbol symbol) {
@@ -539,8 +453,7 @@ public class ParserGeneratorHelper {
   public static String formatAttributeValue(Optional<Integer> value) {
     if (!value.isPresent()) {
       return "undef";
-    }
-    else if (value.get() == GeneratorHelper.STAR) {
+    } else if (value.get() == TransformationHelper.STAR) {
       return "*";
     }
     return Integer.toString(value.get());

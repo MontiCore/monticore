@@ -46,6 +46,8 @@ public final class TransformationHelper {
 
   public static final String LIST_SUFFIX = "s";
 
+  public static final int STAR = -1;
+
   private static List<String> reservedCdNames = Arrays.asList(
       // CD4A
       "derived",
