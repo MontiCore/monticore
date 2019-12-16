@@ -126,7 +126,7 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     Set<String> eDataTypes = emfService.getEDataTypes(astcdDefinition);
     return eDataTypes.stream()
         .map(x -> getCDAttributeFacade().createAttribute(PUBLIC, E_DATA_TYPE,
-            StringTransformations.uncapitalize(emfService.getSimpleNativeType(x))))
+            StringTransformations.uncapitalize(getDecorationHelper().getSimpleNativeType(x))))
         .collect(Collectors.toList());
   }
 

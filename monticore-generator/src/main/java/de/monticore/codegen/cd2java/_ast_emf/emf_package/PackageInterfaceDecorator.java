@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.FACTORY_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.NODE_FACTORY_SUFFIX;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
-import static de.monticore.cd.facade.CDModifier.*;
 
 public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
@@ -158,7 +158,7 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
 
     for (String eDataType : eDataTypes) {
       ASTCDAttribute eDataTypeAttribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getMCTypeFacade().createIntType(),
-          emfService.getSimpleNativeType(eDataType));
+          getDecorationHelper().getSimpleNativeType(eDataType));
       this.replaceTemplate(VALUE, eDataTypeAttribute, new StringHookPoint("= " + startIndex));
       astcdAttributes.add(eDataTypeAttribute);
       startIndex++;

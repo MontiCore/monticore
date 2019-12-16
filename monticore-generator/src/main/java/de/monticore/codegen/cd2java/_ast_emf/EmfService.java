@@ -243,6 +243,9 @@ public class EmfService extends AbstractService<EmfService> {
     return typeName.contains(".") ? typeName.substring(0, typeName.lastIndexOf(".")) : "this";
   }
 
+  /**
+   * default values for return types in templates
+   */
   public String getDefaultValue(ASTCDAttribute attribute) {
     if (getDecorationHelper().isAstNode(attribute)) {
       return "null";
