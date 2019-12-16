@@ -203,8 +203,7 @@ public class AbstractService<T extends AbstractService> {
     return false;
   }
 
-  protected List<String> getStereotypeValues(ASTModifier modifier,
-                                             MC2CDStereotypes stereotype) {
+  protected List<String> getStereotypeValues(ASTModifier modifier, MC2CDStereotypes stereotype) {
     List<String> values = Lists.newArrayList();
     if (modifier.isPresentStereotype()) {
       modifier.getStereotype().getValueList().stream()
@@ -344,6 +343,4 @@ public class AbstractService<T extends AbstractService> {
     String astName = simpleName.substring(simpleName.lastIndexOf(".") + 1);
     return packageName + "." + AST_PACKAGE + "." + astName;
   }
-
-
 }
