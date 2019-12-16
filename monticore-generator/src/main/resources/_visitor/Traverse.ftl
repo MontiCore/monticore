@@ -9,7 +9,7 @@ ${tc.signature("cdClass")}
 <#assign service = glex.getGlobalVar("service")>
 
 <#list cdClass.getCDAttributeList() as attr>
-  <#assign attrName = service.getNativeAttributeName(attr.getName())>
+  <#assign attrName = genHelper.getNativeAttributeName(attr.getName())>
   <#if genHelper.isSimpleAstNode(attr) || genHelper.isOptionalAstNode(attr) >
     <#assign attrGetter = "get"+ attrName?cap_first>
     <#if genHelper.isOptional(attr.getMCType())>

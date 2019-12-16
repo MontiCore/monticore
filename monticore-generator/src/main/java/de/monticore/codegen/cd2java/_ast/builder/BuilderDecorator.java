@@ -62,13 +62,13 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     List<ASTCDAttribute> builderAttributes = domainClass.getCDAttributeList().stream()
         .map(ASTCDAttribute::deepClone)
         .filter(a -> !a.getModifier().isFinal())
-        .filter(a -> !service.isInherited(a))
+        .filter(a -> !service.isInheritedAttribute(a))
         .collect(Collectors.toList());
     List<ASTCDAttribute> mandatoryAttributes = builderAttributes.stream()
         .filter(a -> !getDecorationHelper().isListType(a.printType()))
         .filter(a -> !getDecorationHelper().isOptionalType(a.printType()))
         .filter(a -> !(a.getMCType() instanceof ASTMCPrimitiveType))
-        .filter(a -> !service.isInherited(a))
+        .filter(a -> !service.isInheritedAttribute(a))
         .collect(Collectors.toList());
 
 

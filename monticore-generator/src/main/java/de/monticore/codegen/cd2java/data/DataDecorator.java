@@ -52,7 +52,7 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     //remove inherited attributes, because these are already defined in superclass
     List<ASTCDAttribute> ownAttributes = originalClass.deepClone().getCDAttributeList()
         .stream()
-        .filter(a -> !service.isInherited(a))
+        .filter(a -> !service.isInheritedAttribute(a))
         .collect(Collectors.toList());
 
     changedClass.addAllCDMethods(getAllDataMethods(originalClass, originalClass.getCDAttributeList()));
