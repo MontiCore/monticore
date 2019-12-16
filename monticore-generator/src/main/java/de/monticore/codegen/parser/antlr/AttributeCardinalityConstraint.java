@@ -2,6 +2,7 @@
 
 package de.monticore.codegen.parser.antlr;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
@@ -56,8 +57,8 @@ public class AttributeCardinalityConstraint {
       Optional<Integer> max = MCGrammarSymbolTableHelper.getMax(att);
       if (min.isPresent() || max.isPresent()) {
         if (min.isPresent()) {
-          
-          String runtimemessage = "\"0xA7017" + de.monticore.codegen.GeneratorHelper.getGeneratedErrorCode(ast) + " Invalid minimal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
+
+          String runtimemessage = "\"0xA7017" + getGeneratedErrorCode(ast) + " Invalid minimal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
           
           runtimemessage = runtimemessage.replaceAll("%attributename%", usageName);
           runtimemessage = runtimemessage.replaceAll("%rulename%", ast.getName());
@@ -77,8 +78,8 @@ public class AttributeCardinalityConstraint {
         }
         
         if (max.isPresent() && max.get() != GeneratorHelper.STAR) {
-          
-          String runtimemessage = "\"0xA7018" + de.monticore.codegen.GeneratorHelper.getGeneratedErrorCode(ast) + " Invalid maximal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
+
+          String runtimemessage = "\"0xA7018" + getGeneratedErrorCode(ast) + " Invalid maximal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
           
           runtimemessage = runtimemessage.replaceAll("%attributename%", usageName);
           runtimemessage = runtimemessage.replaceAll("%rulename%", ast.getName());
@@ -120,9 +121,26 @@ public class AttributeCardinalityConstraint {
     }
     return ret.toString();
   }
-  
+
   private static String getCounterName(String name) {
     return "_mccounter" + name;
   }
-  
+
+  /**
+   * Generates an error code suffix in format "_ddd" where d is a decimal. If
+   * there is an ast-name then always the same error code will be generated.
+   *
+   * @param ast
+   * @return generated error code suffix in format "xddd" where d is a decimal.
+   */
+  private String getGeneratedErrorCode(ASTNode ast) {
+    int hashCode = 0;
+    // If there is an ast-name then always generate the same error code.
+
+    hashCode = Math.abs(ast.toString().hashCode());
+
+    String errorCodeSuffix = String.valueOf(hashCode);
+    return "x" + (hashCode < 1000 ? errorCodeSuffix : errorCodeSuffix
+        .substring(errorCodeSuffix.length() - 3));
+  }
 }

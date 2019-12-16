@@ -78,7 +78,7 @@ while (grammarIterator.hasNext()) {
 for (astGrammar in getParsedGrammars()) {
   // make sure to use the right report manager again
   Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
-  reportGrammarCd(astGrammar, cdScope, mcScope, report)
+  reportGrammarCd(astGrammar, report)
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
 

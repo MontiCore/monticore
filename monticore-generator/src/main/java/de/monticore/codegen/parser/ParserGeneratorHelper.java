@@ -553,4 +553,19 @@ public class ParserGeneratorHelper {
   public boolean isJava() {
     return this.isJava;
   }
+
+  public static String getDotPackageName(String packageName) {
+    if (packageName.isEmpty() || packageName.endsWith(".")) {
+      return packageName;
+    }
+    return packageName + ".";
+  }
+
+  public static String getPackageName(ASTMCGrammar astGrammar, String suffix) {
+    String qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
+        ? astGrammar.getName()
+        : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
+        astGrammar.getName());
+    return Joiner.on('.').join(qualifiedGrammarName.toLowerCase(), suffix);
+  }
 }

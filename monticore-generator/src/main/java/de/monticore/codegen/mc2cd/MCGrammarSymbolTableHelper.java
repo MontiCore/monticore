@@ -14,7 +14,6 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.symboltable.IScope;
-import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
 import de.se_rwth.commons.logging.Log;
@@ -28,8 +27,10 @@ import java.util.stream.Stream;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 
 public class MCGrammarSymbolTableHelper {
-  
-   public static Optional<ProdSymbol> resolveRule(ASTMCGrammar astNode, String name) {
+
+  public static final String AST_DOT_PACKAGE_SUFFIX_DOT = "._ast.";
+
+  public static Optional<ProdSymbol> resolveRule(ASTMCGrammar astNode, String name) {
     if (astNode.isPresentSymbol()) {
       return astNode.getSymbol().getProdWithInherited(name);
     }
@@ -227,7 +228,7 @@ public class MCGrammarSymbolTableHelper {
       String string = (grammarSymbol.isPresent()
           ? grammarSymbol.get().getFullName().toLowerCase()
           : "")
-          + GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + prefix +
+          + AST_DOT_PACKAGE_SUFFIX_DOT + prefix +
           StringTransformations.capitalize(symbol.getName() + suffix);
       
       if (string.startsWith(".")) {

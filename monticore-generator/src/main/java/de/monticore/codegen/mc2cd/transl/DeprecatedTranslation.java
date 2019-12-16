@@ -3,7 +3,6 @@
 package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.utils.Link;
@@ -15,14 +14,16 @@ import java.util.function.UnaryOperator;
  * classes / extended interfaces of the target nodes accordingly.
  */
 public class DeprecatedTranslation implements
-        UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
+    UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
+
+  private static final String DEPRECATED = "@Deprecated";
 
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
-          Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
+      Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(
-            ASTClassProd.class, ASTCDClass.class)) {
+        ASTClassProd.class, ASTCDClass.class)) {
       translateProd(link.source(), link.target(), rootLink.source());
     }
 
@@ -65,10 +66,10 @@ public class DeprecatedTranslation implements
         mod = CD4AnalysisMill.modifierBuilder().build();
       }
       if (annotation.isPresentMessage()) {
-        TransformationHelper.addStereoType(cdType, GeneratorHelper.DEPRECATED,
-                annotation.getMessage());
+        TransformationHelper.addStereoType(cdType, DEPRECATED,
+            annotation.getMessage());
       } else {
-        TransformationHelper.addStereoType(cdType, GeneratorHelper.DEPRECATED);
+        TransformationHelper.addStereoType(cdType, DEPRECATED);
       }
     }
   }
