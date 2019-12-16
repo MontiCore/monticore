@@ -350,7 +350,7 @@ public class AbstractService<T extends AbstractService> {
     return superSymbolList;
   }
 
-  public String createASTFullName(String simpleName) {
+  private String createASTFullName(String simpleName) {
     String packageName = simpleName.substring(0, simpleName.lastIndexOf("."));
     packageName = packageName.toLowerCase();
     String astName = simpleName.substring(simpleName.lastIndexOf(".") + 1);

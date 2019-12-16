@@ -75,7 +75,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return true;
   }
 
-  public static String getAstClassNameForASTLists(ASTCDAttribute attr) {
+  public String getAstClassNameForASTLists(ASTCDAttribute attr) {
     if (attr.getMCType() instanceof ASTMCBasicGenericType && ((ASTMCBasicGenericType) attr.getMCType()).sizeMCTypeArguments() == 1) {
       return MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(((ASTMCBasicGenericType) attr.getMCType()).getMCTypeArgumentList().get(0));
     }
@@ -119,6 +119,11 @@ public class DecorationHelper extends MCBasicTypesHelper {
   }
 
 
+//  public static boolean isString(ASTMCType type) {
+//    MCSimpleGenericTypesPrettyPrinter prettyPrinter = MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter();
+//    return isString(type.printType(prettyPrinter));
+//  }
+
   public boolean isMandatory(ASTCDAttribute astcdAttribute){
     return !isOptional(astcdAttribute.getMCType()) && ! isListType(astcdAttribute.printType()) && !CDTypes.isBoolean(astcdAttribute.printType());
   }
@@ -127,7 +132,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return type instanceof ASTMCPrimitiveType;
   }
 
-  public static String getPlainGetter(ASTCDAttribute ast) {
+  public String getPlainGetter(ASTCDAttribute ast) {
     String astType = ast.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     StringBuilder sb = new StringBuilder();
     // Do not use CDTypes.isBoolean() because only primitive boolean uses GET_PREFIX_BOOLEAN
@@ -181,7 +186,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
   }
 
 
-  public static String getPlainSetter(ASTCDAttribute ast) {
+  public String getPlainSetter(ASTCDAttribute ast) {
     StringBuilder sb = new StringBuilder(SET_PREFIX).append(
             StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
     String astType = ast.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
