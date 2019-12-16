@@ -309,7 +309,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3+=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated because the inner left expression is no field");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0169 The resulting type cannot be calculated because the inner left expression is no field");
     }
 
     /**
@@ -343,7 +343,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3-=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated because the inner left expression is no field");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0169 The resulting type cannot be calculated because the inner left expression is no field");
     }
 
     /**
@@ -377,7 +377,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3*=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated because the inner left expression is no field");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0169 The resulting type cannot be calculated because the inner left expression is no field");
     }
 
     /**
@@ -411,7 +411,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3/=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated because the inner left expression is no field");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0169 The resulting type cannot be calculated because the inner left expression is no field");
     }
 
     /**
@@ -445,7 +445,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3%=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated because the inner left expression is no field");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0169 The resulting type cannot be calculated because the inner left expression is no field");
     }
 
     /**
@@ -483,7 +483,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3&=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated because the inner left expression is no field");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0169 The resulting type cannot be calculated because the inner left expression is no field");
     }
 
     /**
@@ -517,7 +517,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3|=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated because the inner left expression is no field");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0169 The resulting type cannot be calculated because the inner left expression is no field");
     }
 
     /**
@@ -555,7 +555,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3^=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated because the inner left expression is no field");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0169 The resulting type cannot be calculated because the inner left expression is no field");
     }
 
     /**
@@ -589,7 +589,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3<<=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated because the inner left expression is no field");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0169 The resulting type cannot be calculated because the inner left expression is no field");
     }
 
     /**
@@ -623,7 +623,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3>>=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated because the inner left expression is no field");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0169 The resulting type cannot be calculated because the inner left expression is no field");
     }
 
     /**
@@ -657,7 +657,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3>>>=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated because the inner left expression is no field");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0169 The resulting type cannot be calculated because the inner left expression is no field");
     }
 
     /**
@@ -691,7 +691,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0180 The resulting type of the RegularAssignment (=) cannot be calculated");
+            assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0169 The resulting type of the RegularAssignment (=) cannot be calculated");
         }
 
         LogStub.init();
@@ -699,6 +699,6 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
         s = "3=4";
         astex = p.parse_StringExpression(s).get();
         tc.typeOf(astex);
-        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0180 The resulting type cannot be calculated because the inner left expression is no field");
+        assertEquals(Log.getFindings().get(2).getMsg(), "0x"+"A0169 The resulting type cannot be calculated because the inner left expression is no field");
     }
 }
