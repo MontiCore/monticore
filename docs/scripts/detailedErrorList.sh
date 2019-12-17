@@ -135,7 +135,7 @@ cat $fulltext | awk '
   
   # finalize collection and output
   END {
-    print "Summary: <br/>" #of errors: " ecount;
+    print "Summary: <br/> #of errors: " ecount;
     print "";
     print "         #of files:  " ncount;
     print "";
