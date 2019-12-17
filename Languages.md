@@ -97,9 +97,9 @@ The different development statuses of grammars are explained
 * This is a reduced version of the Java language which primarily provides methods, statements and expressions 
 * JavaLight is meant to be used to integrate simplified Java-like parts in modeling languages but not 
   to parse complete Java implementations
-** One main usage of JavaLight is in the Grammar-language to model e.g. Java methods there
+  * One main usage of JavaLight is in the Grammar-language to model e.g. Java methods there
 * JavaLight is parameterized with:
-** Literals: through the Literal interface nontzerminal, 
+  * Literals: through the Literal interface nontzerminal, 
    users are free to choose the literals they need
 
 
