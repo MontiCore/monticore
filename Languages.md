@@ -94,9 +94,13 @@ The different development statuses of grammars are explained
 
 ### [JavaLight](NN) (Beta: In Stabilization)
 * Author: MB
-* This is a reduced version of the Java language which primarily provides methods, statements and expressions to model e.g. methods in ast rules
-* JavaLight does not predefine which literals are used but only integrates the literal interface, users are free to choose the literals they need
-* It is used to integrate simple Java-like parts in modeling languages but not to parse complete Java implementations
+* This is a reduced version of the Java language which primarily provides methods, statements and expressions 
+* JavaLight is meant to be used to integrate simplified Java-like parts in modeling languages but not 
+  to parse complete Java implementations
+  * One main usage of JavaLight is in the Grammar-language to model e.g. Java methods there
+* JavaLight is parameterized with:
+  * Literals: through the Literal interface nontzerminal, 
+   users are free to choose the literals they need
 
 
 ### [Java](NN) (Alpha: Intention to become stable)

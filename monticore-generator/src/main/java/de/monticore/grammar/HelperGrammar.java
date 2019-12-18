@@ -160,7 +160,7 @@ public class HelperGrammar {
           || "float".equals(variable) || "double".equals(variable)
           || "long".equals(variable) || "byte".equals(variable) || "short".equals(variable)) {
         return variable;
-      } else if (variable.equals("card")) {
+      } else if ("card".equals(variable)) {
         return "int";
       } else {
         Log.warn(

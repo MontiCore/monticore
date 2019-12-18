@@ -11,9 +11,11 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 public class MandatoryMutatorSymbolLoaderDecorator extends MandatoryMutatorDecorator {
+
   public MandatoryMutatorSymbolLoaderDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
+
   @Override
   protected ASTCDMethod createSetter(final ASTCDAttribute ast) {
     String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName())));
@@ -21,4 +23,5 @@ public class MandatoryMutatorSymbolLoaderDecorator extends MandatoryMutatorDecor
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.symbolloader.Set", ast));
     return method;
   }
+
 }
