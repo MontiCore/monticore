@@ -6,6 +6,7 @@ import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpress
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
+import de.monticore.expressions.prettyprint.ExpressionsPrettyPrinterDelegator;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -213,12 +214,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
   @Override
   public void traverse(ASTRegularAssignmentExpression expr) {
     //there has to be a variable on the left side of an assignmentexpression
-    ExpressionsBasisPrettyPrinter expressionsBasisPrettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
-    CommonExpressionsPrettyPrinter commonExpressionsPrettyPrinter = new CommonExpressionsPrettyPrinter(new IndentPrinter());
-    String toResolve = expressionsBasisPrettyPrinter
-        .prettyprint(expr.getLeft()).equals("")
-        ? commonExpressionsPrettyPrinter.prettyprint(expr.getLeft())
-        : expressionsBasisPrettyPrinter.prettyprint(expr.getLeft());
+    String toResolve = new ExpressionsPrettyPrinterDelegator(new IndentPrinter()).prettyprint(expr.getLeft());
     Optional<FieldSymbol> leftEx = scope.resolveField(toResolve);
     if (!leftEx.isPresent()) {
       lastResult.setLastAbsent();

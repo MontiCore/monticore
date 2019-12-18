@@ -4,7 +4,6 @@ package de.monticore.types.check;
 import com.google.common.collect.Lists;
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 
 import java.util.*;

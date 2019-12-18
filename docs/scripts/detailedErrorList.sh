@@ -135,8 +135,8 @@ cat $fulltext | awk '
   
   # finalize collection and output
   END {
-    print "Summary: #of errors: " ecount;
-    print "         #of files:  " ncount;
+    print "Summary: "<br/>" #of errors: " ecount "<br/>";
+    print "         #of files:  " ncount "<br/>";
     for (i in arr) {
        ## printf "%s :: %s\n", i, arr[i];
        # extracting the readable information 

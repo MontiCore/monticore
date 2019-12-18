@@ -36,12 +36,10 @@ public class SymbolProdOverwrittenBySymbol implements GrammarASTMCGrammarCoCo {
         if (!prod.isIsEnum()) {
           // finds a prod with the same name in the super grammar if one is present
           Optional<ProdSymbol> superProd = superGrammar.getProd(prod.getName());
-          if (superProd.isPresent()) {
+          if (superProd.isPresent() && superProd.get().isIsSymbolDefinition() && prod.isIsSymbolDefinition()) {
             // log error if both prod define a symbol themselves
-            if (superProd.get().isIsSymbolDefinition() && prod.isIsSymbolDefinition()) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, superProd.get().getName(), superGrammar.getName(),
                   prod.getName(), grammarSymbol.getName()));
-            }
           }
         }
       }
