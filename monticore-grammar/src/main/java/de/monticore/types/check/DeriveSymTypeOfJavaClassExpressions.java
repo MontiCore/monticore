@@ -1,14 +1,10 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
-import de.monticore.expressions.commonexpressions._ast.ExpressionsBasisMillForCommonExpressions;
-import de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor;
-import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
-import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
-import de.monticore.expressions.setexpressions._ast.ExpressionsBasisMillForSetExpressions;
+import de.monticore.expressions.prettyprint.ExpressionsPrettyPrinterDelegator;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
@@ -60,9 +56,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     //check recursively until there is no enclosing scope
     //while the enclosing scope is a type, it is possible that the .this can be calculated
-    String toResolve = new ExpressionsBasisPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression()).equals("")?
-        new CommonExpressionsPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression()):
-        new ExpressionsBasisPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression());
+    String toResolve = new ExpressionsPrettyPrinterDelegator(new IndentPrinter()).prettyprint(node.getExpression());
     if(scope.resolveType(toResolve).isPresent()) {
       IExpressionsBasisScope testScope = scope;
       while (testScope.isPresentSpanningSymbol()) {
@@ -108,9 +102,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     node.getIndexExpression().accept(realThis);
     if (lastResult.isPresentLast()) {
       if (!scope.resolveType(
-          new ExpressionsBasisPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression()).equals("")?
-              new CommonExpressionsPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression()):
-              new ExpressionsBasisPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression()))
+          new ExpressionsPrettyPrinterDelegator(new IndentPrinter()).prettyprint(node.getExpression()))
           .isPresent()) {
         indexResult = lastResult.getLast();
       }else{
@@ -122,9 +114,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
 
     if(indexResult.isPrimitive() && ((SymTypeConstant)indexResult).isIntegralType()){
-      String toResolve = new ExpressionsBasisPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression()).equals("")?
-          new CommonExpressionsPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression()):
-          new ExpressionsBasisPrettyPrinter(new IndentPrinter()).prettyprint(node.getExpression());
+      String toResolve = new ExpressionsPrettyPrinterDelegator(new IndentPrinter()).prettyprint(node.getExpression());
 
       Optional<TypeSymbol> type = scope.resolveType(toResolve);
       Optional<MethodSymbol> method = scope.resolveMethod(toResolve);
@@ -210,10 +200,10 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     //TODO: traverse method for external return type -> synthesizer that must be given to this class when initialising the TypeCheck or (perhaps better) that can be added to the Delegator
     node.getExtReturnType().accept(realThis);
     if(lastResult.isPresentLast()){
-      if(scope.resolveType(/*PrettyPrinter for MCSimpleGenericTypes that can also print MCBasicTypes and MCCollectionTypes*/).isPresent()){
+//      if(scope.resolveType(/*PrettyPrinter for MCSimpleGenericTypes that can also print MCBasicTypes and MCCollectionTypes*/).isPresent()){
         innerResult = lastResult.getLast();
         wholeResult = SymTypeExpressionFactory.createGenerics("Class",scope,innerResult);
-      }
+//      }
     }
     if(wholeResult!=null){
       lastResult.setLast(wholeResult);
@@ -246,23 +236,23 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     node.getExpression().accept(realThis);
     if(lastResult.isPresentLast()){
       innerResult = lastResult.getLast();
-      if(scope.resolveType(/* print the name of the expression*/).isPresent()){
+//      if(scope.resolveType(/* print the name of the expression*/).isPresent()){
         lastResult.setLastAbsent();
         Log.error("0xA0310 the inner expression of the TypeCastExpression cannot be a type");
       }
-    }else{
+//    }else{
       Log.error("0xA0269 the type of the inner result of the TypeCast cannot be calculated");
-    }
+//    }
 
     //TODO: test that castResult is a type
     //TODO: traverse method for external ExtType
     node.getExtType().accept(realThis);
     if(lastResult.isPresentLast()){
       castResult = lastResult.getLast();
-      if(!scope.resolveType(/* print the name of the expression*/).isPresent()){
+//      if(!scope.resolveType(/* print the name of the expression*/).isPresent()){
         lastResult.setLastAbsent();
         Log.error("0xA0311 the cast expression of the TypeCastExpression must be a type");
-      }
+//      }
     }else{
       Log.error("0xA0270 the cast type of the TypeCast cannot be calculated");
     }
@@ -291,9 +281,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     node.getExpression().accept(realThis);
     if(lastResult.isPresentLast()){
       leftResult = lastResult.getLast();
-      if(scope.resolveType(/*print the type of the expression*/).isPresent()){
+//      if(scope.resolveType(/*print the type of the expression*/).isPresent()){
         Log.error("0xA0312 the left type of the InstanceofExpression cannot be a type");
-      }
+//      }
     }else{
       Log.error("0xA0265 the left type of the InstanceofExpression cannot be calculated");
     }
@@ -304,9 +294,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     node.getExtType().accept(realThis);
     if(lastResult.isPresentLast()){
       rightResult = lastResult.getLast();
-      if(!scope.resolveType(/*print the name of the type*/).isPresent()){
+//      if(!scope.resolveType(/*print the name of the type*/).isPresent()){
         Log.error("0xA0313 the right type of the InstanceofExpression must be a type");
-      }
+//      }
     }else{
       Log.error("0xA0266 the right type of the InstanceofExpression cannot be calculated");
     }
