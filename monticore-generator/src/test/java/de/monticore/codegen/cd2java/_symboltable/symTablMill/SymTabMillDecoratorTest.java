@@ -192,7 +192,7 @@ public class SymTabMillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(31, symTabMill.getCDMethodList().size());
+    assertEquals(32, symTabMill.getCDMethodList().size());
   }
 
   @Test

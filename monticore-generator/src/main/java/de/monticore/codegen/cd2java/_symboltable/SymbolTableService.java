@@ -211,16 +211,31 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    * symbol reference class names e.g. AutomatonSymbolReference
    */
 
-  public String getSymbolReferenceClassFullName(ASTCDType astcdType, CDDefinitionSymbol cdSymbol) {
+  public String getSymbolLoaderFullName(ASTCDType astcdType, CDDefinitionSymbol cdSymbol) {
     return getPackage(cdSymbol) + "." + getSymbolLoaderSimpleName(astcdType);
   }
 
-  public String getSymbolReferenceClassFullName(ASTCDType astcdType) {
-    return getSymbolReferenceClassFullName(astcdType, getCDSymbol());
+  public String getSymbolLoaderFullName(ASTCDType astcdType) {
+    return getSymbolLoaderFullName(astcdType, getCDSymbol());
   }
 
   public String getSymbolLoaderSimpleName(ASTCDType astcdType) {
     return getSymbolSimpleName(astcdType) + LOADER_SUFFIX;
+  }
+
+  /**
+   * symbol builder class name e.g. AutomatonSymbolLoaderBuilder
+   */
+  public String getSymbolLoaderBuilderSimpleName(ASTCDType astcdType) {
+    return getSymbolLoaderSimpleName(astcdType) + BUILDER_SUFFIX;
+  }
+
+  public String getSymbolLoaderBuilderFullName(ASTCDType astcdType, CDDefinitionSymbol cdDefinitionSymbol) {
+    return getSymbolLoaderFullName(astcdType, cdDefinitionSymbol) + BUILDER_SUFFIX;
+  }
+
+  public String getSymbolLoaderBuilderFullName(ASTCDType astcdType) {
+    return getSymbolLoaderBuilderFullName(astcdType, getCDSymbol());
   }
 
   /**
