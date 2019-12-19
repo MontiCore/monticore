@@ -39,6 +39,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected static final String TEMPLATE_PATH = "_symboltable.globalscope.";
 
+  protected static final String ERROR_CODE = "0xA6100";
+
   public GlobalScopeClassDecorator(final GlobalExtensionManagement glex,
                                    final SymbolTableService symbolTableService,
                                    final MethodDecorator methodDecorator) {
@@ -171,16 +173,16 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
     String generatedErrorCode = getDecorationHelper().getGeneratedErrorCode(getNameMethod);
     this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint(
-        "Log.error(\"0xA6101" + generatedErrorCode 
-        + " Global scopes do not have names.\");\n" 
-        + "    return null;"));
+        "Log.error(\"0xA6101" + generatedErrorCode
+            + " Global scopes do not have names.\");\n"
+            + "    return null;"));
     return getNameMethod;
   }
-  
+
   /**
    * Creates the isPresent method for global scopes. As these do not have names,
    * the method return false.
-   * 
+   *
    * @return false
    */
   protected ASTCDMethod createIsPresentNameMethod() {
@@ -225,7 +227,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
       List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes().stream().filter(t -> t.isPresentAstNode())
           .filter(t -> t.getAstNode().isPresentModifier())
           .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifier()))
-              .filter(CDTypeSymbol::isPresentAstNode)
+          .filter(CDTypeSymbol::isPresentAstNode)
           .map(CDTypeSymbol::getAstNode)
           .collect(Collectors.toList());
       symbolAlreadyResolvedAttributes.addAll(createSymbolAlreadyResolvedAttributes(symbolProds));
@@ -274,13 +276,13 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
       // add return null if method has return type
       if (enclosingScopeMethod.getMCReturnType().isPresentMCType()) {
         this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(
-            "Log.error(\"0xA6100" + generatedErrorCode + " GlobalScope " + globalScopeName +
+            "Log.error(\"" + ERROR_CODE + generatedErrorCode + " GlobalScope " + globalScopeName +
                 " has no EnclosingScope, so you cannot call method" + enclosingScopeMethod.getName() + ".\");\n" +
                 "    return null;"));
       } else {
         // no return if method is void type
         this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(
-            "Log.error(\"0xA6100" + generatedErrorCode + " GlobalScope " + globalScopeName +
+            "Log.error(\"" + ERROR_CODE + generatedErrorCode + " GlobalScope " + globalScopeName +
                 " has no EnclosingScope, so you cannot call method" + enclosingScopeMethod.getName() + ".\");"));
       }
     }

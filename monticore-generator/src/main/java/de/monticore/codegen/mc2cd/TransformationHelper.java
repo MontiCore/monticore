@@ -174,7 +174,7 @@ public final class TransformationHelper {
     try {
       optType = parser.parse_StringMCGenericType(typeName + "<" + generics + ">");
     } catch (IOException e) {
-      Log.error("0xA4036 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
+      Log.error("0xA4103 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
     }
     return optType.get();
   }
@@ -185,7 +185,7 @@ public final class TransformationHelper {
     try {
       optType = parser.parse_StringMCType(typeName);
     } catch (IOException e) {
-      Log.error("0xA4036 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
+      Log.error("0xA4104 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
     }
     return optType.get();
   }
@@ -196,7 +196,7 @@ public final class TransformationHelper {
     try {
       optType = parser.parse_StringMCReturnType(typeName);
     } catch (IOException e) {
-      Log.error("0xA4036 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
+      Log.error("0xA4105 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
     }
     return optType.get();
   }
@@ -207,7 +207,7 @@ public final class TransformationHelper {
     try {
       optType = parser.parse_StringMCObjectType(typeName);
     } catch (IOException e) {
-      Log.error("0xA4036 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
+      Log.error("0xA4106 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
     }
     return optType.get();
   }
