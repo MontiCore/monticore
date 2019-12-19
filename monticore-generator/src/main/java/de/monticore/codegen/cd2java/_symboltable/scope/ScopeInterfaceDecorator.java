@@ -102,8 +102,8 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
     scopeRuleAttributeMethods.forEach(m -> m.getModifier().setAbstract(true));
 
-    List<CDDefinitionSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
-    List<ASTMCQualifiedType> superScopeInterfaces = superCDsTransitive
+    List<CDDefinitionSymbol> superCDsDirect = symbolTableService.getSuperCDsDirect();
+    List<ASTMCQualifiedType> superScopeInterfaces = superCDsDirect
         .stream()
         .map(symbolTableService::getScopeInterfaceType)
         .collect(Collectors.toList());
