@@ -189,6 +189,15 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
           this.replaceTemplate(EMPTY_BODY, builderMethod, new StringHookPoint("return " + symTabMillFullName + "." + symbolBuilderSimpleName + "();"));
           builderMethodList.add(builderMethod);
+
+          // create corresponding builder for SymbolLoader
+          String symbolLoaderBuilderFullName = symbolTableService.getSymbolLoaderBuilderFullName(type.getAstNode(), cdDefinitionSymbol);
+          String symbolLoaderBuilderSimpleName = StringTransformations.uncapitalize(symbolTableService.getSymbolLoaderBuilderSimpleName(type.getAstNode()));
+          ASTCDMethod builderLoaderMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC,
+                  getMCTypeFacade().createQualifiedType(symbolLoaderBuilderFullName), symbolLoaderBuilderSimpleName);
+
+          this.replaceTemplate(EMPTY_BODY, builderLoaderMethod, new StringHookPoint("return " + symTabMillFullName + "." + symbolLoaderBuilderSimpleName + "();"));
+          builderMethodList.add(builderLoaderMethod);
         }
       }
     }
