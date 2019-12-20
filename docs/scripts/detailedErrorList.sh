@@ -137,7 +137,7 @@ cat $fulltext | awk '
   END {
     print "Summary: <br/> #of errors: " ecount;
     print "";
-    print "         #of files:  " ncount;
+    print "#of files:  " ncount;
     print "";
     for (i in arr) {
        ## printf "%s :: %s\n", i, arr[i];
