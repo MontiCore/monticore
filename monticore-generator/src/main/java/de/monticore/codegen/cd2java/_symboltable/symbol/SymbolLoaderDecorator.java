@@ -91,7 +91,7 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
 
   protected ASTCDAttribute createLoadedSymbolAttribute(String symbolType) {
     ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createOptionalTypeOf(symbolType), "loadedSymbol");
-    symbolTableService.addAttributeDefaultValues(attribute, glex);
+    getDecorationHelper().addAttributeDefaultValues(attribute, glex);
     return attribute;
   }
 

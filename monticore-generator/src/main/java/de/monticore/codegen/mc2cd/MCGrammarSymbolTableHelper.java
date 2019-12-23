@@ -7,14 +7,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.RegExpBuilder;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.symboltable.IScope;
-import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
 import de.se_rwth.commons.logging.Log;
@@ -26,8 +24,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Sets.newLinkedHashSet;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 
 public class MCGrammarSymbolTableHelper {
+
+  public static final String AST_DOT_PACKAGE_SUFFIX_DOT = "._ast.";
 
   public static Optional<ProdSymbol> resolveRule(ASTMCGrammar astNode, String name) {
     if (astNode.isPresentSymbol()) {
@@ -185,12 +186,12 @@ public class MCGrammarSymbolTableHelper {
       return getLexType(symbol.getAstNode());
     }
     if (symbol.isIsEnum()) {
-      return getQualifiedName(symbol.getAstNode(), symbol, GeneratorHelper.AST_PREFIX, "");
+      return getQualifiedName(symbol.getAstNode(), symbol, AST_PREFIX, "");
       // return "int";
       // TODO GV:
       // return getConstantType();
     }
-    return getQualifiedName(symbol.getAstNode(), symbol, GeneratorHelper.AST_PREFIX, "");
+    return getQualifiedName(symbol.getAstNode(), symbol, AST_PREFIX, "");
   }
 
   public static String getDefaultValue(ProdSymbol symbol) {
@@ -222,7 +223,7 @@ public class MCGrammarSymbolTableHelper {
       String string = (grammarSymbol.isPresent()
           ? grammarSymbol.get().getFullName().toLowerCase()
           : "")
-          + GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + prefix +
+          + AST_DOT_PACKAGE_SUFFIX_DOT + prefix +
           StringTransformations.capitalize(symbol.getName() + suffix);
 
       if (string.startsWith(".")) {
@@ -481,7 +482,7 @@ public class MCGrammarSymbolTableHelper {
       return true;
     }
     Optional<Integer> max = getMax(ast);
-    return max.isPresent() && (max.get() == GeneratorHelper.STAR || max.get() > 1);
+    return max.isPresent() && (max.get() == TransformationHelper.STAR || max.get() > 1);
   }
 
   public static Optional<Integer> getMax(AdditionalAttributeSymbol attrSymbol) {
@@ -496,8 +497,9 @@ public class MCGrammarSymbolTableHelper {
         && ast.getCard().isPresentMax()) {
       String max = ast.getCard().getMax();
       if ("*".equals(max)) {
-        return Optional.of(GeneratorHelper.STAR);
-      } else {
+        return Optional.of(TransformationHelper.STAR);
+      }
+      else {
         try {
           int x = Integer.parseInt(max);
           return Optional.of(x);

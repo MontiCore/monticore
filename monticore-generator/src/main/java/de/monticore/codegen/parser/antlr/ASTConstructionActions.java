@@ -2,7 +2,7 @@
 
 package de.monticore.codegen.parser.antlr;
 
-import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
@@ -257,7 +257,7 @@ public class ASTConstructionActions {
 
     // Replace templates
     String usageName = StringTransformations.capitalize(a.getUsageName());
-    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName+ GeneratorHelper.GET_SUFFIX_LIST));
+    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName + DecorationHelper.GET_SUFFIX_LIST));
     tmp = tmp.replaceAll("%text%", a.getName());
 
     return tmp;
@@ -273,7 +273,7 @@ public class ASTConstructionActions {
 
     // Replace templates
     String usageName = StringTransformations.capitalize(a.getUsageName());
-    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName+ GeneratorHelper.GET_SUFFIX_LIST));
+    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName + DecorationHelper.GET_SUFFIX_LIST));
     tmp = tmp.replaceAll("%text%", "_input.LT(-1).getText()");
 
     return tmp;
