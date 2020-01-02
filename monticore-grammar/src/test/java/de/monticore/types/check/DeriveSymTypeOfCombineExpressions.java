@@ -3,8 +3,10 @@ package de.monticore.types.check;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
+import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.Optional;
 
@@ -35,40 +37,49 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
 
   private SynthesizeSymTypeFromMCSimpleGenericTypes symTypeFromMCSimpleGenericTypes;
 
+  private IDerivePrettyPrinter prettyPrinter;
+
   private LastResult lastResult = new LastResult();
 
 
-  public DeriveSymTypeOfCombineExpressions(IExpressionsBasisScope scope){
+  public DeriveSymTypeOfCombineExpressions(IExpressionsBasisScope scope, IDerivePrettyPrinter prettyPrinter){
     this.realThis=this;
+    this.prettyPrinter = new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter());
 
     deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfCommonExpressions();
     deriveSymTypeOfCommonExpressions.setScope(scope);
     deriveSymTypeOfCommonExpressions.setLastResult(lastResult);
+    deriveSymTypeOfCommonExpressions.setPrettyPrinter(prettyPrinter);
     setCommonExpressionsVisitor(deriveSymTypeOfCommonExpressions);
 
     deriveSymTypeOfAssignmentExpressions = new DeriveSymTypeOfAssignmentExpressions();
     deriveSymTypeOfAssignmentExpressions.setScope(scope);
     deriveSymTypeOfAssignmentExpressions.setLastResult(lastResult);
+    deriveSymTypeOfAssignmentExpressions.setPrettyPrinter(prettyPrinter);
     setAssignmentExpressionsVisitor(deriveSymTypeOfAssignmentExpressions);
 
     deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
     deriveSymTypeOfBitExpressions.setScope(scope);
     deriveSymTypeOfBitExpressions.setLastResult(lastResult);
+    deriveSymTypeOfBitExpressions.setPrettyPrinter(prettyPrinter);
     setBitExpressionsVisitor(deriveSymTypeOfBitExpressions);
 
     deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
     deriveSymTypeOfExpression.setScope(scope);
     deriveSymTypeOfExpression.setLastResult(lastResult);
+    deriveSymTypeOfExpression.setPrettyPrinter(prettyPrinter);
     setExpressionsBasisVisitor(deriveSymTypeOfExpression);
 
     deriveSymTypeOfJavaClassExpressions = new DeriveSymTypeOfJavaClassExpressions();
     deriveSymTypeOfJavaClassExpressions.setScope(scope);
     deriveSymTypeOfJavaClassExpressions.setLastResult(lastResult);
+    deriveSymTypeOfJavaClassExpressions.setPrettyPrinter(prettyPrinter);
     setJavaClassExpressionsVisitor(deriveSymTypeOfJavaClassExpressions);
 
     deriveSymTypeOfSetExpressions = new DeriveSymTypeOfSetExpressions();
     deriveSymTypeOfSetExpressions.setScope(scope);
     deriveSymTypeOfSetExpressions.setLastResult(lastResult);
+    deriveSymTypeOfSetExpressions.setPrettyPrinter(prettyPrinter);
     setSetExpressionsVisitor(deriveSymTypeOfSetExpressions);
 
     deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
@@ -91,7 +102,7 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
     if (lastResult.isPresentLast()) {
       result = Optional.ofNullable(lastResult.getLast());
     }
-    lastResult.setLastAbsent();
+    lastResult.reset();
     return result;
   }
 
@@ -152,7 +163,7 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
     if (lastResult.isPresentLast()) {
       result = Optional.ofNullable(lastResult.getLast());
     }
-    lastResult.setLastAbsent();
+    lastResult.reset();
     return result;
   }
 }

@@ -19,6 +19,8 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   protected IExpressionsBasisScope scope;
 
+  protected IDerivePrettyPrinter prettyPrinter;
+
   protected SymTypeExpression result;
 
   protected LastResult lastResult;
@@ -52,7 +54,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       lastResult.setLast(result);
     } else {
       //No type found --> error
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0207 The resulting type of the LiteralExpression cannot be calculated");
     }
   }
@@ -76,16 +78,18 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
         res = createTypeExpression(var.getType().print(), var.getEnclosingScope());
       }
       this.result = res;
+      lastResult.setField();
       lastResult.setLast(res);
     } else if (optType.isPresent()) {
       //no variable found, test if name is type
       TypeSymbol type = optType.get();
       SymTypeExpression res = createTypeExpression(type.getName(), expr.getEnclosingScope());
       this.result = res;
+      lastResult.setType();
       lastResult.setLast(res);
     }else{
      //name not found --> package or nothing
-     lastResult.setLastAbsent();
+     lastResult.reset();
       Log.info("package suspected", "ExpressionBasisTypesCalculator");
     }
   }
@@ -96,5 +100,9 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   public void setLastResult(LastResult lastResult) {
     this.lastResult = lastResult;
+  }
+
+  public void setPrettyPrinter(IDerivePrettyPrinter prettyPrinter){
+    this.prettyPrinter = prettyPrinter;
   }
 }

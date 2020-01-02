@@ -1,14 +1,24 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.combineexpressionswithliterals._ast.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
+import de.monticore.expressions.javaclassexpressions._ast.ASTArrayExpression;
+import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.testmccommon._ast.ASTA;
+import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import groovyjarjarantlr.collections.impl.ASTArray;
+import org.codehaus.groovy.ast.expr.ArrayExpression;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -92,7 +102,8 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
+  DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(),
+      new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
 
   // other arguments not used (and therefore deliberately null)
 
@@ -111,7 +122,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol p = type("AB",Lists.newArrayList(get),Lists.newArrayList(),Lists.newArrayList(sup),Lists.newArrayList(),scope);
     add2scope(scope,p);
 
-    //use the spannedscope of the type
+    //use the spanned scope of the type
     derLit.setScope((ExpressionsBasisScope)p.getSpannedScope());
     tc = new TypeCheck(null, derLit);
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
@@ -120,7 +131,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertTrue(a.isPresent());
     assertEquals("A",tc.typeOf(a.get()).print());
 
-    //use the spannedscope of the method
+    //use the spanned scope of the method
     derLit.setScope((ExpressionsBasisScope)get.getSpannedScope());
     tc = new TypeCheck(null, derLit);
 
@@ -133,7 +144,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol p = type("AB",Lists.newArrayList(get),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     add2scope(scope,p);
 
-    //use the spannedscope of the type
+    //use the spanned scope of the type
     derLit.setScope((ExpressionsBasisScope)p.getSpannedScope());
     tc = new TypeCheck(null, derLit);
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
@@ -142,11 +153,72 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertTrue(a.isPresent());
     assertEquals("AB",tc.typeOf(a.get()).print());
 
-    //use the spannedscope of the method
+    //use the spanned scope of the method
     derLit.setScope((ExpressionsBasisScope)get.getSpannedScope());
     tc = new TypeCheck(null, derLit);
 
     assertEquals("AB",tc.typeOf(a.get()).print());
+  }
+
+  @Test
+  public void deriveFromArrayExpressionTest() throws IOException{
+    TypeSymbol intArray = type("int[]",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    add2scope(scope,intArray);
+
+    SymTypeArray arrType = SymTypeExpressionFactory.createTypeArray("int",scope,1,_intSymType);
+    FieldSymbol a = field("a",arrType);
+    add2scope(scope,a);
+
+    MethodSymbol get = method("get",arrType);
+    add2scope(scope,get);
+
+    SymTypeArray arrarrType = SymTypeExpressionFactory.createTypeArray("int",scope,2,_intSymType);
+    FieldSymbol b = field("b",arrarrType);
+    add2scope(scope,b);
+
+    MethodSymbol test = method("test",arrarrType);
+    add2scope(scope,test);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+
+
+    Optional<ASTExpression> arr1 = p.parse_StringExpression("b[3]");
+    Optional<ASTExpression> arr2 = p.parse_StringExpression("a[3]");
+    Optional<ASTExpression> arr3 = p.parse_StringExpression("get()[3]");
+    Optional<ASTExpression> arr4 = p.parse_StringExpression("test()[3]");
+    Optional<ASTExpression> arr5 = p.parse_StringExpression("b[3][4]");
+    Optional<ASTExpression> arr6 = p.parse_StringExpression("test()[3][4]");
+
+    assertTrue(arr1.isPresent());
+    assertTrue(arr2.isPresent());
+    assertTrue(arr3.isPresent());
+    assertTrue(arr4.isPresent());
+    assertTrue(arr5.isPresent());
+    assertTrue(arr6.isPresent());
+
+    assertEquals("int[]",tc.typeOf(arr1.get()).print());
+    assertEquals("int",tc.typeOf(arr2.get()).print());
+    assertEquals("int",tc.typeOf(arr3.get()).print());
+    assertEquals("int[]",tc.typeOf(arr4.get()).print());
+    assertEquals("int",tc.typeOf(arr5.get()).print());
+    assertEquals("int",tc.typeOf(arr6.get()).print());
+  }
+
+  @Test (expected = RuntimeException.class)
+  public void failDeriveSymTypeOfArrayExpression() throws IOException {
+    //assert that a type will throw an error -> no int[4]
+    TypeSymbol test = type("Test",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    add2scope(scope,test);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null, derLit);
+
+    Optional<ASTExpression> arr1 = p.parse_StringExpression("Test[4]");
+
+    assertTrue(arr1.isPresent());
+
+    tc.typeOf(arr1.get());
   }
 
 }
