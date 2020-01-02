@@ -194,10 +194,10 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       if(spanningSymbol instanceof TypeSymbol){
         //if the scope is spanned by a type, search for the supertype and return it
         TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
-        if(typeSymbol.getSuperTypeList().size()>1){
+        if(typeSymbol.getSuperClassesOnly().size()>1){
           lastResult.setLastAbsent();
           Log.error("0xA0252 In Java there cannot be more than one super class");
-        }else if(typeSymbol.getSuperTypeList().isEmpty()){
+        }else if(typeSymbol.getSuperClassesOnly().isEmpty()){
           lastResult.setLastAbsent();
           Log.error("0xA0253 No supertype could be found");
         }else{
@@ -209,14 +209,14 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
           IScopeSpanningSymbol innerSpanningSymbol = scope.getEnclosingScope().getSpanningSymbol();
           if(innerSpanningSymbol instanceof TypeSymbol){
             TypeSymbol typeSymbol = (TypeSymbol) innerSpanningSymbol;
-            if(typeSymbol.getSuperTypeList().size()>1){
+            if(typeSymbol.getSuperClassesOnly().size()>1){
               lastResult.setLastAbsent();
               Log.error("0xA0254 In Java there cannot be more than one super class");
-            }else if(typeSymbol.getSuperTypeList().isEmpty()){
+            }else if(typeSymbol.getSuperClassesOnly().isEmpty()){
               lastResult.setLastAbsent();
               Log.error("0xA0255 No supertype could be found");
             }else{
-              wholeResult = typeSymbol.getSuperType(0);
+              wholeResult = typeSymbol.getSuperClassesOnly().get(0);
             }
           }else{
             lastResult.setLastAbsent();
