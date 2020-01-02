@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package de.monticore.expressions;
-
-public  interface CombineExpressionsInheritanceVisitor extends de.monticore.expressions.CombineExpressionsVisitor, de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsInheritanceVisitor,de.monticore.expressions.commonexpressions._visitor.CommonExpressionsInheritanceVisitor,de.monticore.expressions.bitexpressions._visitor.BitExpressionsInheritanceVisitor,de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsInheritanceVisitor,de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsInheritanceVisitor,de.monticore.expressions.setexpressions._visitor.SetExpressionsInheritanceVisitor, de.monticore.expressions.oclexpressions._visitor.OCLExpressionsVisitor{
-
-
-}
