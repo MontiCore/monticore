@@ -37,7 +37,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   public void traverse(ASTThisExpression node) {
     //no primitive type and only type allowed --> check that Expression is no field or method
     //JAVA: can only be used in nested classes to get an instance of the enclosing class
-    //traverse the inner expression, check that it is a type; this type is the current class is a nested class
+    //traverse the inner expression, check that it is a type; this type is the current class and is a nested class
     //can be calculated
     SymTypeExpression innerResult = null;
     SymTypeExpression wholeResult = null;
@@ -127,11 +127,11 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   private SymTypeExpression getCorrectResultArrayExpression(SymTypeExpression indexResult, SymTypeExpression arrayTypeResult, SymTypeArray arrayResult) {
     SymTypeExpression wholeResult;
     if(arrayResult.getDim()>1){
-      //case 1: A[][] bar -> bar[3] returns the type A[]
+      //case 1: A[][] bar -> bar[3] returns the type A[] -> decrease the dimension of the array by 1
       wholeResult = SymTypeExpressionFactory.createTypeArray(arrayTypeResult.typeSymbolLoader.getName(),scope,arrayResult.getDim()-1,indexResult);
     }else {
       //case 2: A[] bar -> bar[3] returns the type A
-      //determine whether it has to be a constant, generic or object
+      //determine whether the result has to be a constant, generic or object
       if(arrayResult.getTypeInfo().getTypeParameterList().isEmpty()){
         //if the return type is a primitive
         if(SymTypeConstant.unboxMap.containsKey(arrayResult.getTypeInfo().getName())){
