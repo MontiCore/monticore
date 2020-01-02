@@ -108,7 +108,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
       node.getValue().accept(getRealThis());
     }
     if (!result.isPresent()) {
-      Log.error("0xE9FDA Internal Error: Missing SymType argument 1 for Map type. "
+      Log.error("0xE9FDB Internal Error: Missing SymType argument 1 for Map type. "
           + " Probably TypeCheck mis-configured.");
     }
     SymTypeExpression argument2 = result.get();

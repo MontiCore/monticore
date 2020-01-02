@@ -5,7 +5,6 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -39,6 +38,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected static final String ADAPTED_RESOLVING_DELEGATE = "adapted%sResolvingDelegate";
 
   protected static final String TEMPLATE_PATH = "_symboltable.globalscope.";
+
+  protected static final String ERROR_CODE = "0xA6100";
 
   public GlobalScopeClassDecorator(final GlobalExtensionManagement glex,
                                    final SymbolTableService symbolTableService,
@@ -170,18 +171,18 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDMethod createGetNameMethod() {
     ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
-    String generatedErrorCode = DecorationHelper.getGeneratedErrorCode(getNameMethod);
+    String generatedErrorCode = getDecorationHelper().getGeneratedErrorCode(getNameMethod);
     this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint(
-        "Log.error(\"0xA6101" + generatedErrorCode 
-        + " Global scopes do not have names.\");\n" 
-        + "    return null;"));
+        "Log.error(\"0xA6101" + generatedErrorCode
+            + " Global scopes do not have names.\");\n"
+            + "    return null;"));
     return getNameMethod;
   }
-  
+
   /**
    * Creates the isPresent method for global scopes. As these do not have names,
    * the method return false.
-   * 
+   *
    * @return false
    */
   protected ASTCDMethod createIsPresentNameMethod() {
@@ -226,7 +227,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
       List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes().stream().filter(t -> t.isPresentAstNode())
           .filter(t -> t.getAstNode().isPresentModifier())
           .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifier()))
-              .filter(CDTypeSymbol::isPresentAstNode)
+          .filter(CDTypeSymbol::isPresentAstNode)
           .map(CDTypeSymbol::getAstNode)
           .collect(Collectors.toList());
       symbolAlreadyResolvedAttributes.addAll(createSymbolAlreadyResolvedAttributes(symbolProds));
@@ -265,23 +266,23 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDAttribute enclosingScopeAttribute = this.getCDAttributeFacade()
             .createAttribute(PROTECTED,
         symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
-    symbolTableService.addAttributeDefaultValues(enclosingScopeAttribute, glex);
+    getDecorationHelper().addAttributeDefaultValues(enclosingScopeAttribute, glex);
 
     methodDecorator.disableTemplates();
     List<ASTCDMethod> enclosingScopeMethods = methodDecorator.decorate(enclosingScopeAttribute);
     methodDecorator.enableTemplates();
     for (ASTCDMethod enclosingScopeMethod : enclosingScopeMethods) {
-      String generatedErrorCode = DecorationHelper.getGeneratedErrorCode(enclosingScopeMethod);
+      String generatedErrorCode = getDecorationHelper().getGeneratedErrorCode(enclosingScopeMethod);
       // add return null if method has return type
       if (enclosingScopeMethod.getMCReturnType().isPresentMCType()) {
         this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(
-            "Log.error(\"0xA6100" + generatedErrorCode + " GlobalScope " + globalScopeName +
+            "Log.error(\"" + ERROR_CODE + generatedErrorCode + " GlobalScope " + globalScopeName +
                 " has no EnclosingScope, so you cannot call method" + enclosingScopeMethod.getName() + ".\");\n" +
                 "    return null;"));
       } else {
         // no return if method is void type
         this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(
-            "Log.error(\"0xA6100" + generatedErrorCode + " GlobalScope " + globalScopeName +
+            "Log.error(\"" + ERROR_CODE + generatedErrorCode + " GlobalScope " + globalScopeName +
                 " has no EnclosingScope, so you cannot call method" + enclosingScopeMethod.getName() + ".\");"));
       }
     }

@@ -9,7 +9,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -141,9 +140,7 @@ public class MontiCoreScriptTest {
     CD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
     cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(), cd4AGlobalScope);
     assertNotNull(cdCompilationUnit);
-    GeneratorHelper genHelper = new GeneratorHelper(cdCompilationUnit, cd4AGlobalScope);
-    assertEquals("de.monticore.statechart.statechart._ast", GeneratorHelper.getPackageName(
-        genHelper.getPackageName(), GeneratorHelper.AST_PACKAGE_SUFFIX));
+    assertEquals("de.monticore.statechart", String.join(".", cdCompilationUnit.getPackageList()));
     assertNotNull(cdCompilationUnit.getCDDefinition());
     ASTCDDefinition cdDefinition = cdCompilationUnit.getCDDefinition();
     assertEquals(8, cdDefinition.getCDClassList().size());

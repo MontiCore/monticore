@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.GeneratorTest;
 import de.monticore.codegen.parser.ParserGeneratorTest;
 import de.se_rwth.commons.Names;
@@ -25,6 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 
 /**
  * Test for the MontiCore generator. Generates ast files for the example
@@ -215,7 +216,7 @@ public class AstGeneratorTest extends GeneratorTest {
     String garmmarPath = grammar.endsWith(GRAMMAR_EXTENSION)
         ? grammar.substring(0, grammar.indexOf(GRAMMAR_EXTENSION))
         : grammar;
-    return Paths.get(OUTPUT_FOLDER, garmmarPath.toLowerCase(), GeneratorHelper.AST_PACKAGE_SUFFIX);
+    return Paths.get(OUTPUT_FOLDER, garmmarPath.toLowerCase(), AST_PACKAGE);
   }
 
   /**

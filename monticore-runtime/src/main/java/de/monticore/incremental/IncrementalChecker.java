@@ -436,7 +436,7 @@ public class IncrementalChecker {
     }
     if (reportDir == null) {
       throw new IllegalArgumentException(
-              "0xA4064 Report directory for checking incremental regeneration must not be null.");
+              "0xA4111 Report directory for checking incremental regeneration must not be null.");
     }
     List<Path> inputOutputReportsFiles = getAllInputOutputReports(outputDirectory);
     Map<String, InputOutputStory> result = new HashMap<String, InputOutputStory>();

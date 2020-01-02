@@ -33,6 +33,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     super(cdSymbol);
   }
 
+  /**
+   * overwrite methods of AbstractService to add the correct '_symboltbale' package for Symboltable generation
+   */
+
   @Override
   public String getSubPackage() {
     return SYMBOL_TABLE_PACKAGE;
@@ -211,16 +215,31 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    * symbol reference class names e.g. AutomatonSymbolReference
    */
 
-  public String getSymbolReferenceClassFullName(ASTCDType astcdType, CDDefinitionSymbol cdSymbol) {
+  public String getSymbolLoaderFullName(ASTCDType astcdType, CDDefinitionSymbol cdSymbol) {
     return getPackage(cdSymbol) + "." + getSymbolLoaderSimpleName(astcdType);
   }
 
-  public String getSymbolReferenceClassFullName(ASTCDType astcdType) {
-    return getSymbolReferenceClassFullName(astcdType, getCDSymbol());
+  public String getSymbolLoaderFullName(ASTCDType astcdType) {
+    return getSymbolLoaderFullName(astcdType, getCDSymbol());
   }
 
   public String getSymbolLoaderSimpleName(ASTCDType astcdType) {
     return getSymbolSimpleName(astcdType) + LOADER_SUFFIX;
+  }
+
+  /**
+   * symbol builder class name e.g. AutomatonSymbolLoaderBuilder
+   */
+  public String getSymbolLoaderBuilderSimpleName(ASTCDType astcdType) {
+    return getSymbolLoaderSimpleName(astcdType) + BUILDER_SUFFIX;
+  }
+
+  public String getSymbolLoaderBuilderFullName(ASTCDType astcdType, CDDefinitionSymbol cdDefinitionSymbol) {
+    return getSymbolLoaderFullName(astcdType, cdDefinitionSymbol) + BUILDER_SUFFIX;
+  }
+
+  public String getSymbolLoaderBuilderFullName(ASTCDType astcdType) {
+    return getSymbolLoaderBuilderFullName(astcdType, getCDSymbol());
   }
 
   /**
@@ -636,7 +655,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return !astcdDefinition.isEmptyCDClasss() ||
         (!astcdDefinition.isEmptyCDInterfaces() &&
             !(astcdDefinition.sizeCDInterfaces() == 1
-                && astcdDefinition.getCDInterface(0).getName().equals(getSimleLanguageInterfaceName())));
+                && astcdDefinition.getCDInterface(0).getName().equals(getSimpleLanguageInterfaceName())));
   }
 
   public String removeASTPrefix(ASTCDType clazz) {
@@ -652,7 +671,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       return clazzName;
     }
   }
-
 
   public Optional<String> getStartProd() {
     if(this.getCDSymbol().isPresentAstNode()){
@@ -688,6 +706,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     }
     return Optional.empty();
   }
+
+  /**
+   * methods which determine if a special stereotype is present
+   */
 
   public boolean hasStartProd() {
     return getStartProd().isPresent();

@@ -10,11 +10,11 @@ import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator.EmfMutatorDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -38,7 +38,7 @@ public class DataEmfDecoratorTest extends DecoratorTestCase {
 
     ASTCDClass clazz = getClassBy("ASTAutomaton", compilationUnit);
     this.glex.setGlobalValue("service", new AbstractService(compilationUnit));
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
     MethodDecorator methodDecorator = new MethodDecorator(glex);

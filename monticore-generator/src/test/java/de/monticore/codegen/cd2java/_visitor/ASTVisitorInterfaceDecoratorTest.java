@@ -8,8 +8,8 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -64,11 +64,11 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
 
-    this.glex.setGlobalValue("genHelper", new DecorationHelper());
+    this.glex.setGlobalValue("genHelper", DecorationHelper.getInstance());
     ASTVisitorDecorator decorator = new ASTVisitorDecorator(this.glex,
         new VisitorService(decoratedCompilationUnit));
     this.visitorInterface = decorator.decorate(decoratedCompilationUnit);
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
   }
 
   @Test

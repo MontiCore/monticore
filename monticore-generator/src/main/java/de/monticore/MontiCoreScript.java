@@ -7,9 +7,9 @@ import com.google.common.io.Resources;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._symboltable.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CDGenerator;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.*;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
@@ -63,7 +63,6 @@ import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
@@ -163,7 +162,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           Charset.forName("UTF-8")).read();
       run(script, configuration);
     } catch (IOException e) {
-      Log.error("0xA1015 Failed to default MontiCore script.", e);
+      Log.error("0xA1012 Failed to default EMF MontiCore script.", e);
     }
   }
 
@@ -287,7 +286,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                              IterablePath handcodedPath, File outputDirectory) {
     Log.errorIfNull(
         grammar,
-        "0xA4038 Parser generation can't be processed: the reference to the grammar ast is null");
+        "0xA4107 Parser generation can't be processed: the reference to the grammar ast is null");
     ParserGenerator.generateFullParser(glex, grammar, symbolTable, handcodedPath, outputDirectory);
   }
 
@@ -303,7 +302,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                              IterablePath handcodedPath, File outputDirectory, boolean embeddedJavaCode, Languages lang) {
     Log.errorIfNull(
         grammar,
-        "0xA4038 Parser generation can't be processed: the reference to the grammar ast is null");
+        "0xA4108 Parser generation can't be processed: the reference to the grammar ast is null");
     ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, outputDirectory, embeddedJavaCode, lang);
   }
 
@@ -441,8 +440,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astCd           - the top node of the Cd4Analysis AST
    * @param outputDirectory - output directory
    */
-  public void reportGrammarCd(ASTMCGrammar astCd, CD4AnalysisGlobalScope globalScope,
-                              Grammar_WithConceptsGlobalScope mcScope, File outputDirectory) {
+  public void reportGrammarCd(ASTMCGrammar astCd, File outputDirectory) {
     ASTCDCompilationUnit cd = getCDOfParsedGrammar(astCd);
     // we also store the class diagram fully qualified such that we can later on
     // resolve it properly for the generation of sub languages
@@ -455,8 +453,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTCDCompilationUnit astCdForReporting = cd.deepClone();
     // No star imports in reporting CDs
     astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
-    GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
-
+    new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
   }
 
 
@@ -750,7 +747,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                              File outputDirectory, IterablePath handcodedPath) {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new AbstractService(oldCD));
-    glex.setGlobalValue("astHelper", new DecorationHelper());
+    glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();
@@ -766,7 +763,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                 File outputDirectory, IterablePath handcodedPath) {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new EmfService(oldCD));
-    glex.setGlobalValue("astHelper", new DecorationHelper());
+    glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();

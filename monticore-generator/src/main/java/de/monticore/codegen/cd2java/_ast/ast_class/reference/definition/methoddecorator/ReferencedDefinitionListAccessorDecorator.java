@@ -5,7 +5,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.definition.ASTReferencedDefinitionDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -32,7 +31,7 @@ public class ReferencedDefinitionListAccessorDecorator extends ListAccessorDecor
    */
   @Override
   public String getCapitalizedAttributeNameWithS(ASTCDAttribute attribute) {
-    return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(attribute.getName())) + ASTReferencedDefinitionDecorator.DEFINITION;
+    return StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName())) + ASTReferencedDefinitionDecorator.DEFINITION;
   }
 
   /**

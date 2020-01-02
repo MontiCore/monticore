@@ -5,10 +5,10 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -35,7 +35,7 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     LogStub.init();
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
     this.referenceDecorator = new ASTReferenceDecorator(this.glex, new SymbolTableService(ast));
     ASTCDClass mandclazz = getClassBy("ASTBarMand", ast);
