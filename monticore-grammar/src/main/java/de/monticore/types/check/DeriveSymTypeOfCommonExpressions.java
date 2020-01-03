@@ -792,5 +792,4 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
   public void setLastResult(LastResult lastResult) {
     this.lastResult = lastResult;
   }
-
 }
