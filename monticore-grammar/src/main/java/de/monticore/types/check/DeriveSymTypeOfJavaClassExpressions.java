@@ -13,7 +13,8 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 
 /**
- * ordner, grammatiken, beschreibung visitor und spaeter delegatorvisitor, referenz auf grammatik
+ * This Visitor can calculate a SymTypeExpression (type) for the expressions in JavaClassExpressions
+ * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
 public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonExpressions implements JavaClassExpressionsVisitor {
 
@@ -35,6 +36,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
   @Override
   public void traverse(ASTThisExpression node) {
+    //TODO:#2465 -> vervollstaendigen
     //no primitive type and only type allowed --> check that Expression is no field or method
     //JAVA: can only be used in nested classes to get an instance of the enclosing class
     //traverse the inner expression, check that it is a type; this type is the current class and is a nested class
@@ -210,6 +212,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     //TODO: test that castResult is a type
     //TODO: traverse method for external ExtType
+    //castResult is the type in the brackets -> (ArrayList) list
     node.getExtType().accept(realThis);
     if(lastResult.isPresentLast()){
       castResult = lastResult.getLast();
@@ -340,10 +343,10 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       if(spanningSymbol instanceof TypeSymbol){
         //if the scope is spanned by a type, search for the supertype and return it
         TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
-        if(typeSymbol.getSuperTypeList().size()>1){
+        if(typeSymbol.getSuperClassesOnly().size()>1){
           lastResult.reset();
           Log.error("0xA0252 In Java there cannot be more than one super class");
-        }else if(typeSymbol.getSuperTypeList().isEmpty()){
+        }else if(typeSymbol.getSuperClassesOnly().isEmpty()){
           lastResult.reset();
           Log.error("0xA0253 No supertype could be found");
         }else{
@@ -355,14 +358,14 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
           IScopeSpanningSymbol innerSpanningSymbol = scope.getEnclosingScope().getSpanningSymbol();
           if(innerSpanningSymbol instanceof TypeSymbol){
             TypeSymbol typeSymbol = (TypeSymbol) innerSpanningSymbol;
-            if(typeSymbol.getSuperTypeList().size()>1){
+            if(typeSymbol.getSuperClassesOnly().size()>1){
               lastResult.reset();
               Log.error("0xA0254 In Java there cannot be more than one super class");
-            }else if(typeSymbol.getSuperTypeList().isEmpty()){
+            }else if(typeSymbol.getSuperClassesOnly().isEmpty()){
               lastResult.reset();
               Log.error("0xA0255 No supertype could be found");
             }else{
-              wholeResult = typeSymbol.getSuperType(0);
+              wholeResult = typeSymbol.getSuperClassesOnly().get(0);
             }
           }else{
             lastResult.reset();
