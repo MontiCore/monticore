@@ -230,7 +230,7 @@ public class Reporting extends Slf4jLog {
    */
   public static boolean on(String modelName) {
     if (modelName == null || modelName.isEmpty()) {
-      Log.error("0xA4052 Must specify valid model name for reporting.");
+      Log.error("0xA4109 Must specify valid model name for reporting.");
     }
     if (!isInitialized()) {
       Log.warn("0xA4053 You must initialize reporting before enabling it.");

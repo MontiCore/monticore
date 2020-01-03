@@ -10,14 +10,14 @@ import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.types.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -25,10 +25,10 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.DecoratorAssert.*;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.*;
 
 public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
@@ -63,7 +63,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
 

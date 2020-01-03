@@ -3,6 +3,9 @@ package de.monticore.codegen.cd2java._symboltable;
 
 public class SymbolTableConstants {
 
+  private SymbolTableConstants() {
+  }
+
   /**
    * packages
    */

@@ -44,5 +44,6 @@ constants${grammarName} = createEEnum(Constants${grammarName});
 </#list>
 
 <#list service.getEDataTypes(definition) as dataType>
-  ${service.getSimpleNativeType(dataType)?uncap_first} = createEDataType(${service.getSimpleNativeType(dataType)});
+    <#assign simpleType = genHelper.getSimpleNativeType(dataType)>
+    ${simpleType?uncap_first} = createEDataType(${simpleType});
 </#list>

@@ -6,9 +6,9 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -38,7 +38,7 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     astcdDefinition = ast.getCDDefinition();
 
     this.glex.setGlobalValue("service", new AbstractService(ast));
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     PackageInterfaceDecorator decorator = new PackageInterfaceDecorator(this.glex, new EmfService(ast));
     packageInterface = decorator.decorate(ast);
   }

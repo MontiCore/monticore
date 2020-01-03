@@ -12,7 +12,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;

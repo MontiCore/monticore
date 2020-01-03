@@ -6,8 +6,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerAction;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserAction;
@@ -140,7 +140,7 @@ public class MCGrammarInfo {
   
 
   private Collection<String> addLeftRecursiveRuleForProd(ASTClassProd ast) {
-    List<ASTProd> superProds = GeneratorHelper.getAllSuperProds(ast);
+    List<ASTProd> superProds = TransformationHelper.getAllSuperProds(ast);
     Collection<String> names = new ArrayList<>();
     superProds.forEach(s -> names.add(s.getName()));
     DirectLeftRecursionDetector detector = new DirectLeftRecursionDetector();

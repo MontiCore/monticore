@@ -222,7 +222,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     Optional<FieldSymbol> leftEx = scope.resolveField(toResolve);
     if (!leftEx.isPresent()) {
       lastResult.setLastAbsent();
-      Log.error("0xA0180 The resulting type cannot be calculated because the inner left expression is no field");
+      Log.error("0xA0169 The resulting type cannot be calculated because the inner left expression is no field");
     }
     //the regular assignment expression covers all assignment expressions --> differentiate between these
     if (expr.getOperator() == ASTConstantsAssignmentExpressions.PLUSEQUALS) {

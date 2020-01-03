@@ -94,7 +94,7 @@ public class FileReaderWriter {
       content = FileUtils.readFileToString(sourcePath.toFile(), this.charset);
     }
     catch (IOException e) {
-      Log.error("0xA1024 IOException occured.", e);
+      Log.error("0xA1027 IOException occured.", e);
       Log.debug("IOException while trying to read the content of " + sourcePath
           + ".", e, this.getClass().getName());
     }

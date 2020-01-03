@@ -70,7 +70,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .map(ASTCDClass::getCDAttributeList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
-    scopeRuleAttributeList.forEach(a -> symbolTableService.addAttributeDefaultValues(a, this.glex));
+    scopeRuleAttributeList.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
     return CD4CodeMill.cDClassBuilder()
         .setName(scopeDeSerName)

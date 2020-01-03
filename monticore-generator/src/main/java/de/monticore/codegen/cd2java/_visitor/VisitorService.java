@@ -9,13 +9,13 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.codegen.cd2java.AbstractService;
-import static de.monticore.cd.facade.CDModifier.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_SUFFIX;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
@@ -29,6 +29,10 @@ public class VisitorService extends AbstractService<VisitorService> {
   public VisitorService(CDDefinitionSymbol cdSymbol) {
     super(cdSymbol);
   }
+
+  /**
+   * overwrite methods of AbstractService to add the correct '_visitor' package for Visitor generation
+   */
 
   @Override
   public String getSubPackage() {
@@ -44,8 +48,8 @@ public class VisitorService extends AbstractService<VisitorService> {
     return new VisitorService(cdSymbol);
   }
 
-  /*
-  simple visitor name e.g. AutomataVisitor
+  /**
+   * simple visitor name e.g. AutomataVisitor
    */
 
   public String getVisitorSimpleName() {
@@ -71,8 +75,9 @@ public class VisitorService extends AbstractService<VisitorService> {
   public ASTMCQualifiedType getVisitorType() {
     return getVisitorType(getCDSymbol());
   }
-    /*
-  inheritance visitor name e.g. AutomataInheritanceVisitor
+
+  /**
+   * inheritance visitor name e.g. AutomataInheritanceVisitor
    */
 
   public String getInheritanceVisitorSimpleName() {
@@ -91,8 +96,8 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getInheritanceVisitorFullName(getCDSymbol());
   }
 
-  /*
-  parent aware visitor name e.g. AutomataParentAwareVisitor
+  /**
+   * parent aware visitor name e.g. AutomataParentAwareVisitor
    */
 
   public String getParentAwareVisitorSimpleName() {
@@ -111,8 +116,8 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getPackage(cdDefinitionSymbol) + "." + getParentAwareVisitorSimpleName(cdDefinitionSymbol);
   }
 
-      /*
-  delegator visitor name e.g. AutomataDelegatorVisitor
+  /**
+   * delegator visitor name e.g. AutomataDelegatorVisitor
    */
 
   public String getDelegatorVisitorSimpleName() {
@@ -132,8 +137,8 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getPackage(cdDefinitionSymbol) + "." + getDelegatorVisitorSimpleName(cdDefinitionSymbol);
   }
 
-      /*
-  scope visitor name e.g. AutomataScopeVisitor
+  /**
+   * scope visitor name e.g. AutomataScopeVisitor
    */
 
   public String getScopeVisitorSimpleName() {
@@ -152,8 +157,8 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getScopeVisitorFullName(getCDSymbol());
   }
 
-  /*
-  symbol visitor name e.g. AutomataSymbolVisitor
+  /**
+   * symbol visitor name e.g. AutomataSymbolVisitor
    */
 
   public String getSymbolVisitorSimpleName() {
@@ -172,8 +177,8 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getPackage(cdSymbol) + "." + getSymbolVisitorSimpleName(cdSymbol);
   }
 
-  /*
-  other helpful methods
+  /**
+   * other helpful methods
    */
 
   public List<ASTMCQualifiedType> getAllVisitorTypesInHierarchy() {

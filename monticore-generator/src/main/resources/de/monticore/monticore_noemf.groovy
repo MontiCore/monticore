@@ -73,7 +73,7 @@ while (grammarIterator.hasNext()) {
 for (astGrammar in getParsedGrammars()) {
   // make sure to use the right report manager again
   Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
-  reportGrammarCd(astGrammar, cdScope, mcScope, report)
+  reportGrammarCd(astGrammar, report)
 
   // get already created base class diagramms
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
@@ -99,12 +99,13 @@ for (astGrammar in getParsedGrammars()) {
   decoratedCoCoCD = decorateForCoCoPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath)
 
+  // decorate and generate CD for the '_od' package
+  decoratedODCD = decorateForODPackage(glex, cdScope, astClassDiagram, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedODCD, out, handcodedPath)
+
   // decorate and generate CD for the '_ast' package
   decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
-
-  // generate for the '_od' package
-  generateODs(glex, cdScope, mcScope, astClassDiagram, astGrammar, out)
 
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 

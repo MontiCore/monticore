@@ -24,7 +24,7 @@ ${tc.signature("allAttributes", "simpleClassName")}
     if (this.${attrName}.size() != comp.${attrName}.size()) {
       return false;
     } else {
-      <#assign astChildTypeName = genHelper.getAstClassNameForASTLists(attribute)>
+      <#assign astChildTypeName = genHelper.getNativeTypeName(attribute.getMCType())>
       if (forceSameOrder) {
         Iterator<${astChildTypeName}> it1 = this.${attrName}.iterator();
         Iterator<${astChildTypeName}> it2 = comp.${attrName}.iterator();
