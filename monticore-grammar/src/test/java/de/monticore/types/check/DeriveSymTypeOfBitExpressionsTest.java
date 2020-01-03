@@ -112,16 +112,12 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidLeftShiftExpression() throws IOException{
     //only possible with integral types
     String s = "3<<4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertEquals(Log.getFindings().get(0).getMsg(),"0x"+"A0209 The resulting type of the LeftShiftExpression (<<) cannot be calculated");
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -140,16 +136,12 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("long",tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected=RuntimeException.class)
   public void testInvalidRightShiftExpression() throws IOException{
     //only possible with integral types
     String s = "3>>4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertEquals(Log.getFindings().get(0).getMsg(),"0x"+"A0210 The resulting type of the RightShiftExpression (>>) cannot be calculated");
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -168,16 +160,12 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidLogicalRightExpression() throws IOException{
     //only possible with integral types
     String s = "3>>>4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertEquals(Log.getFindings().get(0).getMsg(),"0x"+"A0211 The resulting type of the LogicalRightShiftExpression (>>>) cannot be calculated");
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -196,16 +184,12 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("long",tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidBinaryOrOpExpression() throws IOException{
     //only possible with integral types
     String s = "3|4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertEquals(Log.getFindings().get(0).getMsg(),"0x"+"A0213 The resulting type of the BinaryOrExpression (|) cannot be calculated");
-    }
+   tc.typeOf(astex);
   }
 
   /**
@@ -224,16 +208,12 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("long",tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidBinaryAndExpression() throws IOException{
     //only possible with integral types
     String s = "3&4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertEquals(Log.getFindings().get(0).getMsg(),"0x"+"A0212 The resulting type of the BinaryAndExpression (&) cannot be calculated");
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -252,15 +232,11 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("boolean",tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidBinaryXorExpression() throws IOException{
     //only possible with integral types
     String s = "3^4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertEquals(Log.getFindings().get(0).getMsg(),"0x"+"A0214 The resulting type of the BinaryXorExpression (^) cannot be calculated");
-    }
+    tc.typeOf(astex);
   }
 }
