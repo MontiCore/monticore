@@ -97,7 +97,7 @@ public class DefsTypeBasic {
 
   public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
                                 List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList){
-    TypeSymbol t = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    return TypeSymbolsSymTabMill.typeSymbolBuilder()
           .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
           .setName(name)
           .setFullName(name)
@@ -106,7 +106,6 @@ public class DefsTypeBasic {
           .setMethodList(methodList)
           .setFieldList(fieldList)
           .build();
-    return t;
   }
 
   public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
@@ -504,17 +503,5 @@ public class DefsTypeBasic {
   // TODO: diese Klasse etwas testen
 
   // TODO: diese Objekte realisieren
-  
-  public static TypeSymbol _list;
-  public static SymTypeExpression _listSymType;
-
-  public static TypeSymbol _set;
-  public static SymTypeExpression _setTypeSymbol;
-
-  public static TypeSymbol _map;
-  public static SymTypeExpression _mapTypeSymbol;
-
-  public static TypeSymbol _optional;
-  public static SymTypeExpression _optionalTypeSymbol;
   
 }

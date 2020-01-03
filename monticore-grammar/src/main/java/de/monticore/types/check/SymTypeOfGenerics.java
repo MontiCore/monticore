@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import com.google.common.collect.Lists;
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
@@ -59,14 +58,16 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public static String unbox(SymTypeOfGenerics type) {
     if (unboxMap.containsKey(type.printTypeWithoutTypeArgument())) {
       List<SymTypeExpression> arguments = type.getArgumentList();
-      StringBuffer r = new StringBuffer().append('<');
+      StringBuilder r = new StringBuilder().append('<');
       for(int i = 0; i<arguments.size();i++){
         if(arguments.get(i).isGenericType()){
           r.append(unbox((SymTypeOfGenerics) arguments.get(i)));
         }else{
           r.append(SymTypeConstant.unbox(arguments.get(i).print()));
         }
-        if(i<arguments.size()-1) { r.append(','); }
+        if(i<arguments.size()-1) {
+          r.append(',');
+        }
       }
       r.append(">");
       return unboxMap.get(type.printTypeWithoutTypeArgument())+r.toString();
@@ -87,14 +88,16 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public static String box(SymTypeOfGenerics type) {
     if (boxMap.containsKey(type.printTypeWithoutTypeArgument())) {
       List<SymTypeExpression> arguments = type.getArgumentList();
-      StringBuffer r = new StringBuffer().append('<');
+      StringBuilder r = new StringBuilder().append('<');
       for(int i = 0; i<arguments.size();i++){
         if(arguments.get(i).isGenericType()){
           r.append(unbox((SymTypeOfGenerics) arguments.get(i)));
         }else{
           r.append(SymTypeConstant.unbox(arguments.get(i).print()));
         }
-        if(i<arguments.size()-1) { r.append(','); }
+        if(i<arguments.size()-1) {
+          r.append(',');
+        }
       }
       r.append(">");
       return boxMap.get(type.printTypeWithoutTypeArgument())+r.toString();

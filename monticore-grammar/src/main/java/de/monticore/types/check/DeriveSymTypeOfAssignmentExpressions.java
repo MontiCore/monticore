@@ -509,10 +509,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
    * test if the expression is of numeric type (double, float, long, int, char, short, byte)
    */
   private boolean isNumericType(SymTypeExpression ex) {
-    return (unbox(ex.print()).equals("double") || unbox(ex.print()).equals("float") ||
-        unbox(ex.print()).equals("long") || unbox(ex.print()).equals("int") ||
-        unbox(ex.print()).equals("char") || unbox(ex.print()).equals("short") ||
-        unbox(ex.print()).equals("byte")
+    return ("double".equals(unbox(ex.print())) || "float".equals(unbox(ex.print())) ||
+        "long".equals(unbox(ex.print())) || "int".equals(unbox(ex.print())) ||
+        "char".equals(unbox(ex.print())) || "short".equals(unbox(ex.print())) ||
+        "byte".equals(unbox(ex.print()))
     );
   }
 

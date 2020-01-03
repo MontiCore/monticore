@@ -42,15 +42,15 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   @Override
   public void traverse(ASTLiteralExpression expr) {
-    SymTypeExpression result = null;
+    SymTypeExpression wholeResult = null;
     //get the type of the literal
     expr.getLiteral().accept(getRealThis());
     if (lastResult.isPresentLast()) {
-      result = lastResult.getLast();
+      wholeResult = lastResult.getLast();
     }
-    if (result != null) {
-      this.result = result;
-      lastResult.setLast(result);
+    if (wholeResult != null) {
+      this.result = wholeResult;
+      lastResult.setLast(wholeResult);
     } else {
       //No type found --> error
       lastResult.setLastAbsent();
