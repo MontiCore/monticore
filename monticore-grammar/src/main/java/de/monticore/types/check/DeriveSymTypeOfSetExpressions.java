@@ -17,7 +17,8 @@ import static de.monticore.types.check.SymTypeConstant.unbox;
 import static de.monticore.types.check.TypeCheck.isSubtypeOf;
 
 /**
- * Visitor for SetExpressions
+ * This Visitor can calculate a SymTypeExpression (type) for the expressions in SetExpressions
+ * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
 public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression implements SetExpressionsVisitor {
 
@@ -39,6 +40,8 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
 
   @Override
   public void traverse(ASTIsInExpression node) {
+    //e isin E checks whether e is an Element in Set E and can only be calculated if e is a subtype or the same type as the set type
+
     SymTypeExpression elemResult = null;
     SymTypeExpression setResult = null;
     SymTypeExpression wholeResult = null;
@@ -57,8 +60,14 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     }else{
       Log.error("0xA0281 the result of the right expression of the isin cannot be calculated");
     }
-    List<String> collections = Lists.newArrayList("Collection","List","Set","java.util.Collection","java.util.List","java.util.Set");
-    if(setResult.isGenericType()&&collections.contains(((SymTypeOfGenerics)setResult).printTypeWithoutTypeArgument())){
+    List<String> collections = Lists.newArrayList("List","Set");
+    boolean correct = false;
+    for(String s: collections) {
+      if (setResult.isGenericType() && setResult.getTypeInfo().getName().equals(s)) {
+        correct = true;
+      }
+    }
+    if(correct){
       SymTypeOfGenerics genericResult = (SymTypeOfGenerics) setResult;
       if(unbox(elemResult.print()).equals(unbox(genericResult.getArgument(0).print()))||isSubtypeOf(elemResult,genericResult.getArgument(0))){
         wholeResult = SymTypeExpressionFactory.createTypeConstant("boolean");
@@ -76,6 +85,8 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
 
   @Override
   public void traverse(ASTSetInExpression node) {
+    //e in E checks whether e is an Element in Set E and can only be calculated if e is a subtype or the same type as the set type
+
     SymTypeExpression elemResult = null;
     SymTypeExpression setResult = null;
     SymTypeExpression wholeResult = null;
@@ -94,8 +105,14 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     }else{
       Log.error("0xA0284 the result of the right expression of the in cannot be calculated");
     }
-    List<String> collections = Lists.newArrayList("Collection","List","Set","java.util.Collection","java.util.List","java.util.Set");
-    if(setResult.isGenericType()&&collections.contains(((SymTypeOfGenerics)setResult).printTypeWithoutTypeArgument())){
+    List<String> collections = Lists.newArrayList("List","Set");
+    boolean correct = false;
+    for(String s: collections) {
+      if (setResult.isGenericType() && setResult.getTypeInfo().getName().equals(s)) {
+        correct = true;
+      }
+    }
+    if(correct){
       SymTypeOfGenerics genericResult = (SymTypeOfGenerics) setResult;
       if(unbox(elemResult.print()).equals(unbox(genericResult.getArgument(0).print()))||isSubtypeOf(elemResult,genericResult.getArgument(0))){
         wholeResult = genericResult.getArgument(0).deepClone();
@@ -113,6 +130,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
 
   @Override
   public void traverse(ASTUnionExpressionInfix node) {
+    //union of two sets -> both sets need to have the same type or their types need to be sub/super types
     Optional<SymTypeExpression> wholeResult = calculateUnionAndIntersectionInfix(node.getLeft(),node.getRight());
 
     if(wholeResult.isPresent()){
@@ -126,6 +144,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
 
   @Override
   public void traverse(ASTIntersectionExpressionInfix node) {
+    //intersection of two sets -> both sets need to have the same type or their types need to be sub/super types
     Optional<SymTypeExpression> wholeResult = calculateUnionAndIntersectionInfix(node.getLeft(),node.getRight());
 
     if(wholeResult.isPresent()){
@@ -156,12 +175,12 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     }else{
       Log.error("0xA0289 the right expression cannot be calculated");
     }
-    List<String> collections = Lists.newArrayList("Collection","List","Set","java.util.Collection","java.util.List","java.util.Set");
+    List<String> collections = Lists.newArrayList("List","Set");
     if(rightResult.isGenericType()&&leftResult.isGenericType()){
       SymTypeOfGenerics leftGeneric = (SymTypeOfGenerics) leftResult;
       SymTypeOfGenerics rightGeneric = (SymTypeOfGenerics) rightResult;
-      String left = leftGeneric.printTypeWithoutTypeArgument();
-      String right = rightGeneric.printTypeWithoutTypeArgument();
+      String left = leftGeneric.getTypeInfo().getName();
+      String right = rightGeneric.getTypeInfo().getName();
       if(collections.contains(left) && unbox(left).equals(unbox(right))) {
         if(unbox(leftGeneric.getArgument(0).print()).equals(unbox(rightGeneric.getArgument(0).print()))) {
           wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,scope),leftGeneric.getArgument(0).deepClone()));

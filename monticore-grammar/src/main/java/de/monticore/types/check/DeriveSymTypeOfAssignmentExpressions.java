@@ -14,9 +14,9 @@ import static de.monticore.types.check.TypeCheck.compatible;
 import static de.monticore.types.check.TypeCheck.isSubtypeOf;
 
 /**
- * Visitor for AssignmentExpressions
+ * This Visitor can calculate a SymTypeExpression (type) for the expressions in AssignmentExpressions
+ * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
-
 public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpression implements AssignmentExpressionsVisitor {
 
   private AssignmentExpressionsVisitor realThis;

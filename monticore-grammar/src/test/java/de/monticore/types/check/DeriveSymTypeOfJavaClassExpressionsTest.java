@@ -117,9 +117,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   public void deriveFromPrimarySuperExpression() throws IOException {
     TypeSymbol supType = type("A",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     SymTypeExpression sup = SymTypeExpressionFactory.createTypeObject("A",scope);
+    supType.setClass(true);
+    add2scope(scope,supType);
 
     MethodSymbol get = method("get",_voidSymType);
     TypeSymbol p = type("AB",Lists.newArrayList(get),Lists.newArrayList(),Lists.newArrayList(sup),Lists.newArrayList(),scope);
+    p.setClass(true);
     add2scope(scope,p);
 
     //use the spanned scope of the type
