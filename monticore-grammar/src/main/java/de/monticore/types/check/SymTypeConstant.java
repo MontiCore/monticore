@@ -102,7 +102,6 @@ public class SymTypeConstant extends SymTypeExpression {
     unboxMap.put("Long", "long");
     unboxMap.put("Float", "float");
     unboxMap.put("Double", "double");
-    unboxMap.put("String", "String");
 
     boxMap = new HashMap<String, String>();
     boxMap.put("boolean", "java.lang.Boolean");
