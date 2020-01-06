@@ -35,8 +35,6 @@ rm -f $filelist $filelist.?  # start fresh
 
 echo "## Duplicate File Names"
 echo " ------------------------------------------------"
-echo " List of double files:"
-echo " ------------------------------------------------"
 
 # get the files from the project
 find . -print \
@@ -104,6 +102,8 @@ do
   grep "/"$i"\." $filelist.java.0 | sed 's/$/<br\/>/g'
   echo "<br/>"
 done
+
+echo " ------------------------------------------------"
 
 echo "#### List of double ftl files"
 for i in `cat $filelist.ftl.4`
