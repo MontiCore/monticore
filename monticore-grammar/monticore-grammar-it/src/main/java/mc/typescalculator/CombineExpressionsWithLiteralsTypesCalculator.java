@@ -62,7 +62,6 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
     commonExpressionTypesCalculator.setLastResult(lastResult);
     setMCCommonLiteralsVisitor(commonLiteralsTypesCalculator);
-    this.commonLiteralsTypesCalculator=commonLiteralsTypesCalculator;
 
     setLastResult(lastResult);
   }
@@ -73,7 +72,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     if (lastResult.isPresentLast()) {
       last = Optional.ofNullable(lastResult.getLast());
     }
-    lastResult.setLastAbsent();
+    lastResult.reset();
     return last;
   }
 
@@ -84,7 +83,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     if (lastResult.isPresentLast()) {
       last = Optional.ofNullable(lastResult.getLast());
     }
-    lastResult.setLastAbsent();
+    lastResult.reset();
     return last;
   }
 
@@ -119,5 +118,12 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     expressionsBasisTypesCalculator.setLastResult(lastResult);
     deriveSymTypeOfLiterals.setResult(lastResult);
     commonLiteralsTypesCalculator.setResult(lastResult);
+  }
+
+  public void setPrettyPrinter(IDerivePrettyPrinter prettyPrinter){
+    assignmentExpressionTypesCalculator.setPrettyPrinter(prettyPrinter);
+    commonExpressionTypesCalculator.setPrettyPrinter(prettyPrinter);
+    deriveSymTypeOfBitExpressions.setPrettyPrinter(prettyPrinter);
+    expressionsBasisTypesCalculator.setPrettyPrinter(prettyPrinter);
   }
 }

@@ -78,7 +78,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLast(wholeResult);
       result = wholeResult;
     }else{
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0282 the result of the IsInExpression cannot be calculated");
     }
   }
@@ -123,7 +123,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLast(wholeResult);
       result = wholeResult;
     }else{
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0285 the result of the SetInExpression cannot be calculated");
     }
   }
@@ -137,7 +137,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLast(wholeResult.get());
       result = wholeResult.get();
     }else{
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0286 The result of the UnionExpressionInfix cannot be calculated");
     }
   }
@@ -151,7 +151,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLast(wholeResult.get());
       result = wholeResult.get();
     }else{
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0287 the result of the IntersectionExpressionInfix cannot be calculated");
     }
   }
