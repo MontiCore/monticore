@@ -49,9 +49,9 @@ find . -print \
 cat $nogofilenames >> $filelist
 
 # filter java and template files
-cat $filelist | grep "java$" >> $filelist.java.0
+cat $filelist | grep ".java$" >> $filelist.java.0
 
-cat $filelist | grep "ftl$" >> $filelist.ftl.0
+cat $filelist | grep ".ftl$" >> $filelist.ftl.0
 
 # sed:
 #  get rid of extensions .java,.ftl
@@ -100,7 +100,7 @@ sort -u $filelist.ftl.3 > $filelist.ftl.4
 echo "#### List of double java files"
 for i in `cat $filelist.java.4`
 do
-  echo $i ".java    in: <br/>"
+  echo $i " in: <br/>"
   grep "/"$i"\." $filelist.java.0 | sed 's/$/<br\/>/g'
   echo "<br/>"
 done
@@ -108,7 +108,7 @@ done
 echo "#### List of double ftl files"
 for i in `cat $filelist.ftl.4`
 do
-  echo $i ".ftl    in: <br/>"
+  echo $i " in: <br/>"
   grep "/"$i"\." $filelist.ftl.0 | sed 's/$/<br\/>/g'
   echo "<br/>"
 done
