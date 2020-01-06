@@ -67,14 +67,14 @@ cat $filelist.ftl.0 \
 | sort -u \
 | sed 's!.*/!!g' \
 | sort \
-> $filelist.1
+> $filelist.ftl.1
 
 cat $filelist.java.0 \
 | sed 's!.java!!g' \
 | sort -u \
 | sed 's!.*/!!g' \
 | sort \
-> $filelist.1
+> $filelist.java.1
 
 # removing doubles
 sort -u $filelist.java.1 > $filelist.java.2
