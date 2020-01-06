@@ -51,6 +51,7 @@ cat $nogofilenames >> $filelist
 # filter java and template files
 cat $filelist | grep "java$" >> $filelist.java.0
 
+echo "java files"
 cat $filelist.java.0
 
 cat $filelist | grep "ftl$" >> $filelist.ftl.0
