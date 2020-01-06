@@ -77,7 +77,6 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     SymTypeExpression tex = SymTypeExpressionFactory.createGenerics(
         new TypeSymbolLoader(genericType.printWithoutTypeArguments(), genericType.getEnclosingScope()), arguments);
     result = Optional.of(tex);
-
   }
 
   /**
