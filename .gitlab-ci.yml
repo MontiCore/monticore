@@ -25,9 +25,9 @@ image: maven:3.5.4-jdk-8-alpine
 #  key: ${CI_COMMIT_REF_SLUG} # Cache per branch
 
 stages:
-  - build
-  - test1
-  - test2
+#  - build
+  #  - test1
+  #  - test2
   - report
 
 #build_dev:
