@@ -199,8 +199,8 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
 
       //only defined on integral type - integral type
       if(leftResult.isIntegralType()&&rightResult.isIntegralType()){
-        if(unbox(rightResult.print()).equals("long")){
-          if(unbox(leftResult.print()).equals("long")){
+        if("long".equals(unbox(rightResult.print()))){
+          if("long".equals(unbox(leftResult.print()))){
             return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
           }else{
             return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));

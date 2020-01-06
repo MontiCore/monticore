@@ -246,7 +246,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
 
     Optional<SymTypeExpression> wholeResult = Optional.empty();
-    if (leftResult.print().equals("boolean") && rightResult.print().equals("boolean")) {
+    if ("boolean".equals(leftResult.print()) && "boolean".equals(rightResult.print())) {
       wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
     }
     if (wholeResult.isPresent()) {
@@ -286,7 +286,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
 
     Optional<SymTypeExpression> wholeResult = Optional.empty();
-    if (leftResult.print().equals("boolean") && rightResult.print().equals("boolean")) {
+    if ("boolean".equals(leftResult.print()) && "boolean".equals(rightResult.print())) {
       wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
     }
     if (wholeResult.isPresent()) {
@@ -315,7 +315,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       Log.error("0xA0235 The type of the inner expression of the LogicalNotExpression (!) cannot be calculated");
     }
     Optional<SymTypeExpression> wholeResult = Optional.empty();
-    if (innerResult.print().equals("boolean")) {
+    if ("boolean".equals(innerResult.print())) {
       wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
     }
     if (wholeResult.isPresent()) {
@@ -392,7 +392,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     //condition has to be boolean
-    if (conditionResult.print().equals("boolean")) {
+    if ("boolean".equals(conditionResult.print())) {
       //check if "then" and "else" are either from the same type or are in sub-supertype relation
       if (trueResult.print().equals(falseResult.print())) {
         wholeResult = Optional.of(trueResult);
@@ -510,7 +510,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       innerResult = lastResult.getLast();
       //resolve methods with name of the inner expression
       List<MethodSymbol> methodlist = innerResult.getMethodList(expr.getName());
-//      List<MethodSymbol> methodlist = innerResult.getMethod(expr.getName());
       //count how many methods can be found with the correct arguments and return type
       List<MethodSymbol> fittingMethods = new ArrayList<>();
       for (MethodSymbol method : methodlist) {
@@ -532,7 +531,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         }
       }
       //there can only be one method with the correct arguments and return type
-      if (fittingMethods.size() != 0) {
+      if (!fittingMethods.isEmpty()) {
         if (fittingMethods.size() > 1) {
           SymTypeExpression returnType = fittingMethods.get(0).getReturnType();
           for (MethodSymbol method : fittingMethods) {
@@ -655,7 +654,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
     //Option one: they are both numeric types or they are both booleans
     if (isNumericType(leftResult) && isNumericType(rightResult)
-        || leftResult.print().equals("boolean") && rightResult.print().equals("boolean")) {
+        || "boolean".equals(leftResult.print()) && "boolean".equals(rightResult.print())) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
     }
     //Option two: none of them is a primitive type and they are either the same type or in a super/sub type relation
@@ -751,7 +750,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       Log.error("0xA0251 The type of the right expression could not be calculated");
     }
     //if one part of the expression is a String then the whole expression is a String
-    if (unbox(leftResult.print()).equals("String") || unbox(rightResult.print()).equals("String")) {
+    if ("String".equals(unbox(leftResult.print())) || "String".equals(unbox(rightResult.print()))) {
       return Optional.of(SymTypeExpressionFactory.createTypeObject("String", leftType.getEnclosingScope()));
     }
     //no String in the expression -> use the normal calculation for the basic arithmetic operators
@@ -762,10 +761,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
    * test if the expression is of numeric type (double, float, long, int, char, short, byte)
    */
   private boolean isNumericType(SymTypeExpression ex) {
-    return (unbox(ex.print()).equals("double") || unbox(ex.print()).equals("float") ||
-        unbox(ex.print()).equals("long") || unbox(ex.print()).equals("int") ||
-        unbox(ex.print()).equals("char") || unbox(ex.print()).equals("short") ||
-        unbox(ex.print()).equals("byte")
+    return ("double".equals(unbox(ex.print())) || "float".equals(unbox(ex.print())) ||
+        "long".equals(unbox(ex.print())) || "int".equals(unbox(ex.print())) ||
+        "char".equals(unbox(ex.print())) || "short".equals(unbox(ex.print())) ||
+        "byte".equals(unbox(ex.print()))
     );
   }
 
@@ -773,7 +772,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
    * test if the expression is a primitive type
    */
   private boolean isPrimitiveType(SymTypeExpression ex) {
-    return isNumericType(ex) || unbox(ex.print()).equals("boolean");
+    return isNumericType(ex) || "boolean".equals(unbox(ex.print()));
   }
 
   /**
