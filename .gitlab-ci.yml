@@ -150,7 +150,7 @@ pages:
   artifacts:
     paths:
       - public
-  only:
-    - schedules
+#  only:
+#    - schedules
 
 
