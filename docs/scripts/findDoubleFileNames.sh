@@ -95,7 +95,7 @@ sort -u $filelist.java.3 > $filelist.java.4
 sort -u $filelist.ftl.3 > $filelist.ftl.4
 
 # get the original sources:
-echo "#### List of double java files"
+echo "### List of double java files"
 for i in `cat $filelist.java.4`
 do
   echo $i " in: <br/>"
@@ -105,7 +105,7 @@ done
 
 echo " ------------------------------------------------"
 
-echo "#### List of double ftl files"
+echo "### List of double ftl files"
 for i in `cat $filelist.ftl.4`
 do
   echo $i " in: <br/>"
