@@ -42,6 +42,7 @@ echo " ------------------------------------------------"
 find . -print \
 | grep -v "/gen/" \
 | grep -v "/target/" \
+| grep -v "/monticore-generator/it/" \
 > $filelist
 
 # add the no-go's
