@@ -93,19 +93,22 @@ diff -u $filelist.ftl.2 $filelist.ftl.1 \
 | sed 's/^+//g' \
 > $filelist.ftl.3
 
+sort -u $filelist.java.3 > $filelist.java.4
+sort -u $filelist.ftl.3 > $filelist.ftl.4
+
 # get the original sources:
 echo "#### List of double java files"
-for i in `cat $filelist.java.3`
+for i in `cat $filelist.java.4`
 do
-  echo $i "    in: <br/>"
+  echo $i ".java    in: <br/>"
   grep "/"$i"\." $filelist.java.0 | sed 's/$/<br\/>/g'
   echo "<br/>"
 done
 
 echo "#### List of double ftl files"
-for i in `cat $filelist.ftl.3`
+for i in `cat $filelist.ftl.4`
 do
-  echo $i "    in: <br/>"
+  echo $i ".ftl    in: <br/>"
   grep "/"$i"\." $filelist.ftl.0 | sed 's/$/<br\/>/g'
   echo "<br/>"
 done
