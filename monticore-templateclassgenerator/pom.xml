@@ -73,7 +73,7 @@
               <attach>false</attach>
               <archive>
                 <manifest>
-                  <mainClass>de.monticore.templateclassgenerator.TemplateClassGenerator</mainClass>
+                  <mainClass>de.monticore.templateclassgenerator.TemplateClassLauncher</mainClass>
                 </manifest>
               </archive>
               <descriptorRefs>

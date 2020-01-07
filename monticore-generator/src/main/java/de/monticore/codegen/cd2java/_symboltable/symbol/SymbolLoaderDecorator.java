@@ -103,7 +103,7 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolType),
         "getLoadedSymbol");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
-        TEMPLATE_PATH + "GetSymbol", symbolLoaderName, Names.getSimpleName(symbolType)));
+        TEMPLATE_PATH + "GetLoadedSymbol", symbolLoaderName, Names.getSimpleName(symbolType)));
     return method;
   }
 
