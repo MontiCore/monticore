@@ -16,7 +16,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class FloatLiteralsTest {
+public class FloatCommonLiteralsTest {
 
   @BeforeClass
   public static void init() {

@@ -10,14 +10,14 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class IntLiteralsTest {
-  
+public class IntJavaLiteralsTest {
+
   private void checkIntLiteral(int i, String s) throws IOException {
-    ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral(s);
+    ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
     assertTrue(lit instanceof ASTIntLiteral);
     assertEquals(i, ((ASTIntLiteral) lit).getValue());
   }
-  
+
   @Test
   public void testIntLiterals() {
     try {
