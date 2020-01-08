@@ -17,5 +17,5 @@ grammar CombineExpressionsWithLiterals extends
 
     ExtReturnType = MCReturnType;
 
-    ExtTypeArguments = "<" (MCTypeArgument || ",")* ">";
+    ExtTypeArguments = "<" (MCTypeArgument || ",")+ ">";
 }
