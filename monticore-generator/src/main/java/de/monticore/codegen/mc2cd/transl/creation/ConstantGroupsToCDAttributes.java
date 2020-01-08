@@ -3,7 +3,6 @@ package de.monticore.codegen.mc2cd.transl.creation;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.codegen.mc2cd.transl.CreateConstantAttributeTranslation;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
@@ -41,11 +40,10 @@ public class ConstantGroupsToCDAttributes implements UnaryOperator<Link<ASTMCGra
         .resolveProd(link.source().getName());
     if (!typeProd.isPresent()) {
       Log.debug("Unknown type of the grammar rule "
-              + link.source().getName() + " in the grammar "
-              + MCGrammarSymbolTableHelper.getMCGrammarSymbol(link.source().getEnclosingScope()).get()
-              .getFullName()
-              + "\n Check if this a kind of rule A:B=... ",
-          CreateConstantAttributeTranslation.class.getName());
+          + link.source().getName() + " in the grammar "
+          + MCGrammarSymbolTableHelper.getMCGrammarSymbol(link.source().getEnclosingScope()).get()
+          .getFullName()
+          + "\n Check if this a kind of rule A:B=... ", ConstantGroupsToCDAttributes.class.getName());
       return;
     }
 
