@@ -26,6 +26,7 @@ dependencies {
   grammar group:'de.monticore', name:'monticore-grammar', version: mc_version, classifier:'grammars'
 }
 
+// has to be placed directly under the dependency definition, since otherwise the grammar configurations are not found
 repositories {
   mavenLocal()
   maven {
