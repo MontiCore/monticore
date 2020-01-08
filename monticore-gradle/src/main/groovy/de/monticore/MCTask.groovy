@@ -35,7 +35,7 @@ public class MCTask extends DefaultTask {
   MCTask() {
     // set the task group name, in which all instances of MCTask will appear
     group = 'MC'
-    // already add the files from the in grammar specified configuration to the config files
+    // always add the files from the configuration 'grammar' to the config files
     grammarConfigFiles.setFrom(project.configurations.getByName("grammar").getFiles())
   }
 
@@ -43,6 +43,8 @@ public class MCTask extends DefaultTask {
 
   final DirectoryProperty outputDir = project.objects.directoryProperty()
 
+  // this attributes enables to defines super grammars for a grammar build task
+  // is super grammar gets updated the task itself is rebuild as well
   final ConfigurableFileCollection superGrammars = project.objects.fileCollection()
 
   final ConfigurableFileCollection grammarConfigFiles = project.objects.fileCollection()
@@ -174,7 +176,7 @@ public class MCTask extends DefaultTask {
 
     if (!inputs.getFileChanges(grammar).isEmpty()) {
       // execute MontiCore if task is out of date
-      logger.info("Rebuild because " + grammar.get().getAsFile().getName()+ " itself has changed.")
+      logger.info("Rebuild because " + grammar.get().getAsFile().getName() + " itself has changed.")
       rebuildGrammar()
     } else if (!inputs.getFileChanges(superGrammars).isEmpty()) {
       // rebuild if superGrammars got updated
@@ -185,21 +187,14 @@ public class MCTask extends DefaultTask {
 
   void rebuildGrammar() {
     List<String> mp = new ArrayList()
-
     logger.info("out of date: " + grammar.get().getAsFile().getName())
-
     // if not disabled put grammar configuration on model path
     if (addGrammarConfig) {
-      project.configurations.getByName("grammar").each {
-        mp.add it
-      }
+      project.configurations.getByName("grammar").each { mp.add it }
     }
-
     // if specified by the user put further configurations on model path
     for (c in includeConfigs) {
-      project.configurations.getByName(c).each {
-        mp.add it
-      }
+      project.configurations.getByName(c).each { mp.add it }
     }
 
     mp.addAll(modelPath)
