@@ -15,52 +15,64 @@ import java.lang.reflect.InvocationTargetException
 import java.util.stream.Collectors
 
 public class GroovyTask extends DefaultTask {
-  @Optional @InputFile
+
   File model
   
-  @OutputDirectory
   File outputDir
   
-  @Input @Optional
   List<File> handcodedPath = []
   
-  @Input @Optional
   List<File> modelPath = []
   
-  @Input @Optional
   List<File> templatePath = []
   
-  @Input @Optional
   List<String> includeConfigs = []
   
-  @Input
   String script
   
-  @Input
   String baseClass
   
-  @Input @Optional
   Map<String,String> arguments = [:]
-  
+
+  boolean help = false
+
+  @Optional @InputFile
+  File getModel() {
+    return model
+  }
+
+  @OutputDirectory
+  File getOutputDir() {
+    return outputDir
+  }
+
+  @Input
+  String getScript() {
+    return script
+  }
+
+  @Input
+  String getBaseClass() {
+    return baseClass
+  }
+
   @Input @Optional
+  Map<String, String> getArguments() {
+    return arguments
+  }
+  
   public void handcodedPath(File... paths){
     handcodedPath.addAll(paths)
   }
   
-  @Input @Optional
   public void modelPath(File... paths){
     modelPath.addAll(paths)
   }
   
-  @Input @Optional
   public void templatePath(File... paths){
     templatePath.addAll(paths)
   }
   
-  @Input @Optional
-  boolean help = false
-  
-  @Input @Optional
   public void includeConfigs(String... configurations){
     includeConfigs.addAll(configurations)
   }
@@ -70,6 +82,31 @@ public class GroovyTask extends DefaultTask {
   
   @Input @Optional
   String group = "MC"
+
+  @InputFile @Optional
+  List<File> getHandcodedPath() {
+    return handcodedPath
+  }
+
+  @InputFile @Optional
+  List<File> getModelPath() {
+    return modelPath
+  }
+
+  @InputFile @Optional
+  List<File> getTemplatePath() {
+    return templatePath
+  }
+
+  @InputFile @Optional
+  List<String> getIncludeConfigs() {
+    return includeConfigs
+  }
+
+  @Input
+  boolean getHelp() {
+    return help
+  }
   
   // TODO handcodedPath, templatePath
   @TaskAction
