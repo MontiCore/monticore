@@ -1,16 +1,10 @@
-/* (c) https://github.com/MontiCore/monticore */
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.codegen.mc2cd.transl.creation;
 
-package de.monticore.codegen.mc2cd.transl;
-
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.GrammarMill;
+import de.monticore.codegen.mc2cd.transl.CreateConstantAttributeTranslation;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
@@ -20,38 +14,41 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
-public class CreateConstantAttributeTranslation implements
-    UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
-  
+public class ConstantGroupsToCDAttributes implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
   @Override
-  public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
-      Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-    
-    for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(
-        ASTClassProd.class,
+  public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
+    for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
         ASTCDClass.class)) {
-      createConstantAttributes(link);
+      createAttributeFromConstantGroup(link);
     }
-    
+
+    for (Link<ASTInterfaceProd, ASTCDInterface> link : rootLink.getLinks(ASTInterfaceProd.class,
+        ASTCDInterface.class)) {
+      createAttributeFromConstantGroup(link);
+    }
+
+    for (Link<ASTAbstractProd, ASTCDClass> link : rootLink.getLinks(ASTAbstractProd.class,
+        ASTCDClass.class)) {
+      createAttributeFromConstantGroup(link);
+    }
     return rootLink;
   }
-  
-  // TODO SO <- GV : please change and move to the ConstantTypeTranslation
-  private void createConstantAttributes(Link<ASTClassProd, ASTCDClass> link) {
+
+  private void createAttributeFromConstantGroup(Link<? extends ASTProd, ? extends ASTCDType> link) {
     Optional<ProdSymbol> typeProd = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(link.source().getEnclosingScope()).get()
         .getSpannedScope()
         .resolveProd(link.source().getName());
     if (!typeProd.isPresent()) {
       Log.debug("Unknown type of the grammar rule "
-          + link.source().getName() + " in the grammar "
-          + MCGrammarSymbolTableHelper.getMCGrammarSymbol(link.source().getEnclosingScope()).get()
+              + link.source().getName() + " in the grammar "
+              + MCGrammarSymbolTableHelper.getMCGrammarSymbol(link.source().getEnclosingScope()).get()
               .getFullName()
-          + "\n Check if this a kind of rule A:B=... ",
+              + "\n Check if this a kind of rule A:B=... ",
           CreateConstantAttributeTranslation.class.getName());
       return;
     }
-    
+
     ProdSymbol prodSymbol = typeProd.get();
     for (RuleComponentSymbol prodComponent : prodSymbol.getProdComponents()) {
       if (prodComponent.isIsConstantGroup() && prodComponent.isPresentAstNode()
@@ -63,10 +60,10 @@ public class CreateConstantAttributeTranslation implements
             .setName(MCGrammarSymbolTableHelper.getConstantName(prodComponent).orElse(""));
         int constantType = iterated ? ASTConstantsMCBasicTypes.INT : ASTConstantsMCBasicTypes.BOOLEAN;
         cdAttribute.setMCType(
-                GrammarMill.mCPrimitiveTypeBuilder().setPrimitive(constantType).build());
+            GrammarMill.mCPrimitiveTypeBuilder().setPrimitive(constantType).build());
         link.target().getCDAttributeList().add(cdAttribute);
       }
     }
   }
-  
 }
+

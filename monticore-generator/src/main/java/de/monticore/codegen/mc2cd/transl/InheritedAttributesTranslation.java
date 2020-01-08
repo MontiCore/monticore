@@ -12,6 +12,7 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.utils.ASTNodes;
 import de.monticore.utils.Link;
 
 import java.util.*;
@@ -37,7 +38,7 @@ public class InheritedAttributesTranslation implements
   }
   
   private void handleInheritedNonTerminals(Link<ASTClassProd, ASTCDClass> link) {
-    for (Entry<ASTProd, List<ASTNonTerminal>> entry : TransformationHelper.getInheritedNonTerminals(link.source())
+    for (Entry<ASTProd, List<ASTNonTerminal>> entry : getInheritedNonTerminals(link.source())
         .entrySet()) {
       for (ASTNonTerminal nonTerminal : entry.getValue()) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
@@ -103,5 +104,10 @@ public class InheritedAttributesTranslation implements
     return allSuperRules;
   }
 
-  
+  public static Map<ASTProd, List<ASTNonTerminal>> getInheritedNonTerminals(ASTProd sourceNode) {
+    return TransformationHelper.getAllSuperProds(sourceNode).stream()
+        .distinct()
+        .collect(Collectors.toMap(Function.identity(),
+            astProd -> ASTNodes.getSuccessors(astProd, ASTNonTerminal.class)));
+  }
 }

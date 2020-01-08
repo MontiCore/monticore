@@ -13,7 +13,6 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCPrimitiveTypeArgument;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,7 +74,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     List<ASTCDAttribute> inheritedAttributes = domainClass.getCDAttributeList().stream()
         .map(ASTCDAttribute::deepClone)
         .filter(a -> !a.getModifier().isFinal())
-        .filter(service::isInherited)
+        .filter(service::isInheritedAttribute)
         .collect(Collectors.toList());
 
 

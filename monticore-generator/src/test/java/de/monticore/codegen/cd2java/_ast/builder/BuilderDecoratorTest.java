@@ -12,12 +12,13 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -129,7 +130,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
   public void testInheritedSetterNoGetter(){
     ASTCDMethod setF = getMethodBy("setF", builderClass);
     assertTrue(setF.getMCReturnType().isPresentMCType());
-    assertEquals(builderClass.getName(), setF.getMCReturnType().printType());
+    assertEquals(builderClass.getName(), setF.getMCReturnType().printType(new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())));
     assertDeepEquals(PUBLIC, setF.getModifier());
     assertEquals(1, setF.getCDParameterList().size());
 
