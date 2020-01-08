@@ -1,7 +1,6 @@
 package de.monticore.codegen.mc2cd.scopeTransl;
 
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTGrammarMethod;
@@ -9,6 +8,8 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethodParameter;
 import de.monticore.grammar.grammar._ast.ASTScopeRule;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
+import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mccommonstatements._ast.ASTBlockStatement;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.utils.Link;
@@ -57,7 +58,7 @@ public class ScopeRuleMethodTranslation implements UnaryOperator<Link<ASTMCGramm
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
       for (ASTBlockStatement action : ((ASTAction) method.getBody()).getBlockStatementList()) {
-        code.append(GeneratorHelper.getMcPrettyPrinter().prettyprint(action));
+        code.append(new Grammar_WithConceptsPrettyPrinter(new IndentPrinter()).prettyprint(action));
       }
       addMethodBodyStereotype(cdMethod.getModifier(), code);
     }

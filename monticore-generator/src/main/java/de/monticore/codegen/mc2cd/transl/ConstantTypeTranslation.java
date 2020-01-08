@@ -9,7 +9,6 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.GrammarMill;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesNodeFactory;
 import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;

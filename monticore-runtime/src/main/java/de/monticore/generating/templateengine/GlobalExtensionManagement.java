@@ -198,7 +198,7 @@ public class GlobalExtensionManagement {
       return BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
     }
     catch (TemplateModelException e) {
-      Log.error("0xA0123 Internal Error on global value for \"" + name + "\"");
+      Log.error("0xA0121 Internal Error on global value for \"" + name + "\"");
     }
     return null;
   }

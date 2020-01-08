@@ -2,11 +2,10 @@
 
 package de.monticore.types.check;
 
-import de.monticore.mcbasics._ast.MCBasicsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
-import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
@@ -25,9 +24,6 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject
  */
 public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymTypeFromMCCollectionTypes
     implements MCSimpleGenericTypesVisitor {
-
-  public SynthesizeSymTypeFromMCSimpleGenericTypes() {
-  }
 
   /**
    * Using the visitor functionality to calculate the SymType Expression
@@ -81,7 +77,6 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     SymTypeExpression tex = SymTypeExpressionFactory.createGenerics(
         new TypeSymbolLoader(genericType.printWithoutTypeArguments(), genericType.getEnclosingScope()), arguments);
     result = Optional.of(tex);
-
   }
 
   /**

@@ -9,6 +9,7 @@ import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -20,7 +21,6 @@ import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.*;
 import static de.monticore.grammar.HelperGrammar.findImplicitTypes;
 import static de.monticore.grammar.Multiplicity.*;
 import static de.se_rwth.commons.Names.getQualifiedName;
-import static de.se_rwth.commons.StringTransformations.uncapitalize;
 import static de.se_rwth.commons.logging.Log.error;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
@@ -28,7 +28,7 @@ import static java.util.Optional.of;
 
 public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
-  private String packageName = "";
+  private static final String SET_SCOPE_ERROR = "Could not set enclosing scope of ASTNode \"%s\", because no scope is set yet!";
 
   private MCGrammarSymbol grammarSymbol;
 
@@ -44,7 +44,6 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   public void initialize_MCGrammar(MCGrammarSymbol symbol, ASTMCGrammar astGrammar) {
-    this.packageName = getQualifiedName(astGrammar.getPackageList());
     this.astGrammar = astGrammar;
     this.grammarSymbol = symbol;
 
@@ -115,17 +114,19 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   protected RuleComponentSymbol create_Terminal(ASTTerminal ast) {
-    final String symbolName = ast.getUsageNameOpt().orElse(ast.getName());
+
+    final String symbolName = ast.isPresentUsageName() ? ast.getUsageName() : ast.getName();
     return new RuleComponentSymbol(symbolName);
   }
 
   @Override
   public void initialize_Terminal(RuleComponentSymbol prodComponent, ASTTerminal ast) {
-    final String usageName = ast.getUsageNameOpt().orElse(null);
     Optional<ProdSymbol> currentSymbol = getProdSymbol();
 
     if (currentSymbol.isPresent()) {
-      prodComponent.setUsageName(usageName);
+      if (ast.isPresentUsageName()) {
+        prodComponent.setUsageName(ast.getUsageName());
+      }
       prodComponent.setIsTerminal(true);
       setComponentMultiplicity(prodComponent, ast);
       prodComponent = currentSymbol.get().addProdComponent(prodComponent);
@@ -134,38 +135,37 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   }
 
   @Override
-  public  void visit (ASTKeyTerminal node)  {
+  public void visit(ASTKeyTerminal node) {
     // only create a symbol for ASTKeyTerminals that have a usage name
     // only with usage name is shown in AST
-    if(node.isPresentUsageName()){
+    if (node.isPresentUsageName()) {
       de.monticore.grammar.grammar._symboltable.RuleComponentSymbol symbol = create_KeyTerminal(node);
       initialize_KeyTerminal(symbol, node);
       addToScopeAndLinkWithNode(symbol, node);
-    }else {
+    } else {
       // must still add the scope to the ASTKeyTerminal, even if it defines no symbol
       if (getCurrentScope().isPresent()) {
         node.setEnclosingScope(getCurrentScope().get());
-      }
-      else {
-        Log.error("Could not set enclosing scope of ASTNode \"" + node
-            + "\", because no scope is set yet!");
+      } else {
+        Log.error(String.format(SET_SCOPE_ERROR, node));
       }
     }
   }
 
   @Override
   protected RuleComponentSymbol create_KeyTerminal(ASTKeyTerminal ast) {
-    final String symbolName = ast.getUsageNameOpt().orElse(ast.getName());
+    final String symbolName = ast.isPresentUsageName() ? ast.getUsageName() : ast.getName();
     return new RuleComponentSymbol(symbolName);
   }
 
   @Override
   public void initialize_KeyTerminal(RuleComponentSymbol prodComponent, ASTKeyTerminal ast) {
-    final String usageName = ast.getUsageNameOpt().orElse(null);
     Optional<ProdSymbol> currentSymbol = getProdSymbol();
 
     if (currentSymbol.isPresent()) {
-      prodComponent.setUsageName(usageName);
+      if (ast.isPresentUsageName()) {
+        prodComponent.setUsageName(ast.getUsageName());
+      }
       prodComponent.setIsTerminal(true);
       setComponentMultiplicity(prodComponent, ast);
       prodComponent = currentSymbol.get().addProdComponent(prodComponent);
@@ -183,33 +183,30 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   public void visit(ASTNonTerminal ast) {
-    final String usageName = ast.getUsageNameOpt().orElse(null);
     final ProdSymbol currentSymbol = getProdSymbol().orElse(null);
 
     if (currentSymbol != null) {
-      final String symbolName = isNullOrEmpty(usageName) ? ast.getName() : usageName;
+      final String symbolName = !ast.isPresentUsageName() ? StringTransformations.uncapitalize(ast.getName()) : ast.getUsageName();
       RuleComponentSymbol prodComponent = new
           RuleComponentSymbol(symbolName);
 
-      prodComponent.setUsageName(usageName);
+      if (ast.isPresentUsageName()) {
+        prodComponent.setUsageName(ast.getUsageName());
+      }
       ProdSymbolLoader symRef = new ProdSymbolLoader(ast.getName(),
           getCurrentScope().orElse(null));
       prodComponent.setReferencedProd(symRef);
-
-
-      RuleComponentSymbol prevProdComp = currentSymbol
-          .getProdComponent(prodComponent.getName()).orElse(null);
+      Optional<RuleComponentSymbol> previousComp = currentSymbol.getProdComponent(prodComponent.getName());
 
       Optional<ProdSymbol> byReference = resolveRule(astGrammar, ast.getName());
       if (!byReference.isPresent() || !byReference.get().isIsLexerProd()) {
-
-        if (prevProdComp != null && prevProdComp.getReferencedProd().isPresent()) {
-          boolean sameType = prevProdComp.getReferencedProd().get().getName()
+        if (previousComp.isPresent() && previousComp.get().getReferencedProd().isPresent()) {
+          boolean sameType = previousComp.get().getReferencedProd().get().getName()
               .equals(ast.getName());
           if (!sameType) {
-            boolean subType = isSubType(prevProdComp.getReferencedProd().get(),
+            boolean subType = isSubType(previousComp.get().getReferencedProd().get(),
                 symRef)
-                || isSubType(symRef, prevProdComp.getReferencedProd().get());
+                || isSubType(symRef, previousComp.get().getReferencedProd().get());
             if (!subType) {
               error("0xA4077 The production " + currentSymbol.getName()
                   + " must not use the attribute name " + symbolName +
@@ -218,11 +215,20 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
           }
         }
       }
-      prodComponent = currentSymbol.addProdComponent(prodComponent);
-      setLinkBetweenSymbolAndNode(prodComponent, ast);
+      if (previousComp.isPresent() && previousComp.get().isIsList()) {
+        setLinkBetweenSymbolAndNode(previousComp.get(), ast);
+      } else {
+        prodComponent = currentSymbol.addProdComponent(prodComponent);
+        setLinkBetweenSymbolAndNode(prodComponent, ast);
+        setComponentMultiplicity(prodComponent, ast);
 
-      prodComponent.setIsNonterminal(true);
-      prodComponent.setReferencedSymbolName(ast.getReferencedSymbolOpt().orElse(""));
+        prodComponent.setIsNonterminal(true);
+        if (ast.isPresentReferencedSymbol()) {
+          prodComponent.setReferencedSymbolName(ast.getReferencedSymbol());
+        } else {
+          prodComponent.setReferencedSymbolName("");
+        }
+      }
     }
   }
 
@@ -245,8 +251,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     if (getCurrentScope().isPresent()) {
       ast.setEnclosingScope(getCurrentScope().get());
     } else {
-      Log.error("Could not set enclosing scope of ASTNode \"" + ast
-          + "\", because no scope is set yet!");
+      Log.error(String.format(SET_SCOPE_ERROR, ast));
     }
   }
 
@@ -256,8 +261,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     if (getCurrentScope().isPresent()) {
       ast.setEnclosingScope(getCurrentScope().get());
     } else {
-      Log.error("Could not set enclosing scope of ASTNode \"" + ast
-          + "\", because no scope is set yet!");
+      Log.error(String.format(SET_SCOPE_ERROR, ast));
     }
   }
 
@@ -287,7 +291,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     Optional<String> attrName = getConstantName(astNode,
         getProdSymbol());
 
-    final String usageName = astNode.getUsageNameOpt().orElse(null);
+    final String usageName = astNode.isPresentUsageName() ? astNode.getUsageName() : astNode.getName();
     final ProdSymbol currentSymbol = getProdSymbol().orElse(null);
 
     if (currentSymbol != null && attrName.isPresent()) {
@@ -314,7 +318,8 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(prodComponent, astNode);
       }
       for (ASTConstant c : astNode.getConstantList()) {
-        prodComponent.addSubProdComponent(c.getHumanNameOpt().orElse(c.getName()));
+        String name = c.isPresentHumanName() ? c.getHumanName() : c.getName();
+        prodComponent.addSubProdComponent(name);
       }
     }
   }
@@ -439,7 +444,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   }
 
   private void computeStartParserProd(ASTMCGrammar astGrammar) {
-    if (astGrammar.getStartRuleOpt().isPresent()) {
+    if (astGrammar.isPresentStartRule()) {
       String name = astGrammar.getStartRule().getName();
       Optional<ProdSymbol> prod = grammarSymbol.getProdWithInherited(name);
       if (!prod.isPresent()) {
@@ -499,13 +504,13 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
    * @param astAttribute
    */
   private void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute) {
-    String attributeName = astAttribute.getNameOpt()
-        .orElse(uncapitalize(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType())));
+    String attributeName = astAttribute.isPresentName() ? astAttribute.getName()
+        : StringTransformations.uncapitalize(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType()));
 
     AdditionalAttributeSymbol astAttributeSymbol = new AdditionalAttributeSymbol(attributeName);
     ProdSymbolLoader attributeType = new ProdSymbolLoader(
-            MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType()),
-            mcProdSymbol.getSpannedScope());
+        MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAttribute.getMCType()),
+        mcProdSymbol.getSpannedScope());
     astAttributeSymbol.setTypeReference(attributeType);
 
     mcProdSymbol.addProdAttribute(astAttributeSymbol);
@@ -522,7 +527,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   public final Optional<ProdSymbol> getProdSymbol() {
     if (getCurrentScope().isPresent()) {
       IGrammarScope scope = getCurrentScope().get();
-      if (scope.getSpanningSymbolOpt().isPresent() && scope.getSpanningSymbolOpt().get() instanceof ProdSymbol) {
+      if (scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof ProdSymbol) {
         return of((ProdSymbol) scope.getSpanningSymbol());
       }
     }

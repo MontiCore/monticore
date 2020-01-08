@@ -2,11 +2,10 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolTOP;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -18,11 +17,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.PRIVATE;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a artifactScope class from a grammar
@@ -100,7 +100,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
         getMCTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceFullName()), ENCLOSING_SCOPE_VAR);
     ASTCDConstructor constructorWithEnclosingScope = getCDConstructorFacade().createConstructor(PUBLIC.build(),
         artifactScopeName, enclosingScopeParam, packageNameParam, importsParam);
-    this.replaceTemplate(EMPTY_BODY, constructorWithEnclosingScope, new TemplateHookPoint(TEMPLATE_PATH + "Constructor"));
+    this.replaceTemplate(EMPTY_BODY, constructorWithEnclosingScope, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorArtifactScope"));
     return new ArrayList<>(Arrays.asList(constructor, constructorWithEnclosingScope));
   }
 
@@ -188,11 +188,11 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
       // only filter for types which define a symbol
       List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes()
           .stream()
-          .filter(t -> t.getAstNodeOpt().isPresent())
-          .filter(t -> t.getAstNodeOpt().get().getModifierOpt().isPresent())
-          .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifierOpt().get()))
-          .map(CDTypeSymbolTOP::getAstNodeOpt)
-          .map(Optional::get)
+          .filter(t -> t.isPresentAstNode())
+          .filter(t -> t.getAstNode().isPresentModifier())
+          .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifier()))
+              .filter(CDTypeSymbol::isPresentAstNode)
+          .map(CDTypeSymbol::getAstNode)
           .collect(Collectors.toList());
       methodList.addAll(createContinueWithEnclosingScopeMethods(symbolProds, cdDefinitionSymbol));
     }
@@ -206,7 +206,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
     if (!isArtifactScopeTop()) {
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new StringHookPoint("visitor.handle(this);"));
     } else {
-      String errorCode = DecorationHelper.getGeneratedErrorCode(acceptMethod);
+      String errorCode = getDecorationHelper().getGeneratedErrorCode(acceptMethod);
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(
           "_symboltable.AcceptTop", artifactScopeName, errorCode));
     }

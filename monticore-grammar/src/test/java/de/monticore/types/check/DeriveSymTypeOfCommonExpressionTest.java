@@ -5,7 +5,9 @@ import de.monticore.ast.ASTNode;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
+import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
@@ -50,7 +52,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
   // This is an auxiliary
   DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill
       .expressionsBasisScopeBuilder()
-      .build());
+      .build(),
+      new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
 
   // other arguments not used (and therefore deliberately null)
 
@@ -87,7 +90,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0188 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0188 The resulting type of the PlusExpression (+) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -114,7 +117,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0191 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0191 The resulting type of the MinusExpression (-) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -141,7 +144,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0189 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0189 The resulting type of the MultExpression (*) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -168,7 +171,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0190 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0190 The resulting type of the DivideExpression (/) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -195,7 +198,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0192 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0192 The resulting type of the ModuloExpression (%) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -222,7 +225,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0193 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0193 The resulting type of the LessEqualExpression (<=) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -249,7 +252,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0194 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0194 The resulting type of the GreaterEqualExpression (>=) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -276,7 +279,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0195 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0195 The resulting type of the LessThanExpression (<) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -303,7 +306,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0196 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0196 The resulting type of the GreaterThanExpression (>) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -372,7 +375,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0197 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0197 The resulting type of the EqualsExpression (==) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
 
     LogStub.init();
@@ -382,7 +385,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0197 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0197 The resulting type of the EqualsExpression (==) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -419,7 +422,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0198 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0198 The resulting type of the NotEqualsExpression (!=) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
 
     LogStub.init();
@@ -429,7 +432,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0198 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0198 The resulting type of the NotEqualsExpression (!=) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -456,7 +459,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0199 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0199 The resulting type of the BooleanAndOpExpression (&&) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -483,7 +486,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0200 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0200 The resulting type of the BooleanOrOpExpression (||) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -510,7 +513,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0201 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0201 The resulting type of the LogicalNotExpression (!) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -546,7 +549,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("The type of the inner expression cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0xA0236 The type of the inner expression of the BracketExpression (\"()\") cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -587,7 +590,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0204 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0204 The resulting type of the ConditionalExpression cannot be calculated", Log.getFindings().get(0).getMsg());
     }
 
     //3 is not a boolean condition
@@ -597,7 +600,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0204 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0204 The resulting type of the ConditionalExpression cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -624,7 +627,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0205 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0205 The resulting type of the BooleanNotExpression (~) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 
@@ -773,7 +776,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try {
       tc.typeOf(astex);
     } catch (RuntimeException e) {
-      assertEquals("0xA0217 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+      assertEquals("0x"+"A0217 The resulting type of the CallExpression cannot be calculated", Log.getFindings().get(0).getMsg());
     }
   }
 

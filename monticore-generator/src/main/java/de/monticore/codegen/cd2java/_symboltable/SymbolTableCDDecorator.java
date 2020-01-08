@@ -221,25 +221,35 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       symTabCD.addAllCDClasss(createSymbolTableCreatorForSuperTypes(astCD));
     }
 
-    for (ASTCDClass cdClass : symTabCD.getCDClassList()) {
-      this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(symbolTablePackage));
-      this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifierOpt()));
-    }
-
-    for (ASTCDInterface cdInterface : symTabCD.getCDInterfaceList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(symbolTablePackage));
-      this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifierOpt()));
-    }
-
-    for (ASTCDEnum cdEnum : symTabCD.getCDEnumList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(symbolTablePackage));
-      this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifierOpt()));
-    }
+    addPackageAndAnnotation(symTabCD, symbolTablePackage);
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()
         .setPackageList(symbolTablePackage)
         .setCDDefinition(symTabCD)
         .build();
+  }
+
+  protected void addPackageAndAnnotation(ASTCDDefinition symTabCD, List<String> symbolTablePackage) {
+    for (ASTCDClass cdClass : symTabCD.getCDClassList()) {
+      this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(symbolTablePackage));
+      if (cdClass.isPresentModifier()) {
+        this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
+      }
+    }
+
+    for (ASTCDInterface cdInterface : symTabCD.getCDInterfaceList()) {
+      this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(symbolTablePackage));
+      if (cdInterface.isPresentModifier()) {
+        this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
+      }
+    }
+
+    for (ASTCDEnum cdEnum : symTabCD.getCDEnumList()) {
+      this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(symbolTablePackage));
+      if (cdEnum.isPresentModifier()) {
+        this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
+      }
+    }
   }
 
   protected List<ASTCDClass> createSymbolClasses(List<ASTCDClass> symbolClases, List<String> symbolTablePackage) {

@@ -26,6 +26,9 @@ public class ASTService extends AbstractService<ASTService> {
     super(cdSymbol);
   }
 
+  /**
+   * overwrite methods of AbstractService to add the correct '_ast' package for ast generation
+   */
   @Override
   public String getSubPackage() {
     return ASTConstants.AST_PACKAGE;
@@ -105,7 +108,7 @@ public class ASTService extends AbstractService<ASTService> {
    * returns true if the ast defines a symbol and no name attribute and no getName method are already defined
    */
   public boolean isSymbolWithoutName(ASTCDType type) {
-    return type.getModifierOpt().isPresent() && hasSymbolStereotype(type.getModifierOpt().get())
+    return type.isPresentModifier() && hasSymbolStereotype(type.getModifier())
         && type.getCDAttributeList().stream().noneMatch(a -> "name".equals(a.getName()))
         && type.getCDMethodList().stream().noneMatch(m -> "getName".equals(m.getName()));
   }

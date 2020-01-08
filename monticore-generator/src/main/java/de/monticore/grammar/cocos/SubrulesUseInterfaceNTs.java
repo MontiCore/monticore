@@ -26,14 +26,15 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar a) {
-    Optional<MCGrammarSymbol> symbol = a.getSymbolOpt();
-    if (!symbol.isPresent()) {
+    if (!a.isPresentSymbol()) {
       Log.error(
-          "0xA5001 The CoCo 'SubrulesUseInterfaceNTs' can't be checked: There is no grammar symbol for the grammar "
-              + a.getName(),
-          a.get_SourcePositionStart());
+              "0xA5001 The CoCo 'SubrulesUseInterfaceNTs' can't be checked: There is no grammar symbol for the grammar "
+                      + a.getName(),
+              a.get_SourcePositionStart());
     }
-    for (ProdSymbol prodSymbol : symbol.get().getProds()) {
+
+    MCGrammarSymbol symbol = a.getSymbol();
+     for (ProdSymbol prodSymbol : symbol.getProds()) {
       if (!prodSymbol.isIsInterface()) {
         for (ProdSymbol interfaceSymbol : MCGrammarSymbolTableHelper
             .getAllSuperInterfaces(prodSymbol)) {
@@ -59,7 +60,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
       }
 
       if (prodComponent.isIsTerminal() && interfaceComponent.isIsTerminal()) {
-        if (interfaceComponent.getUsageName().isEmpty()
+        if (!interfaceComponent.isPresentUsageName() || !prodComponent.isPresentUsageName()
           || interfaceComponent.getUsageName().equals(prodComponent.getUsageName())) {
           continue;
         }

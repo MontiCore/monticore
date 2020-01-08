@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates modelLoader class from grammar if the grammar has a start prod
@@ -71,7 +71,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected ASTCDConstructor createConstructor(String modelLoaderName, String languageName) {
     ASTCDParameter language = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(languageName), "language");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), modelLoaderName, language);
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "Constructor"));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorModelLoader"));
     return constructor;
   }
 

@@ -218,9 +218,9 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDParameter symbolParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(symbolFullName), SYMBOL_VAR);
     // initialize_$ method
     methodList.add(createSymbolInitialize_Method(simpleName, astParam, symbolParam));
-    if (symbolClass.getModifierOpt().isPresent()) {
-      boolean isScopeSpanningSymbol = symbolTableService.hasScopeStereotype(symbolClass.getModifierOpt().get()) ||
-          symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifierOpt().get());
+    if (symbolClass.isPresentModifier()) {
+      boolean isScopeSpanningSymbol = symbolTableService.hasScopeStereotype(symbolClass.getModifier()) ||
+          symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifier());
       // addToScopeAndLinkWithNode method
       methodList.add(createSymbolAddToScopeAndLinkWithNodeMethod(scopeInterface, astParam, symbolParam, isScopeSpanningSymbol));
 
@@ -245,8 +245,8 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected ASTCDMethod createSymbolEndVisitMethod(String astFullName, ASTCDType symbolClass) {
     ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(astFullName));
-    if (symbolClass.getModifierOpt().isPresent() && (symbolTableService.hasScopeStereotype(symbolClass.getModifierOpt().get())
-        || symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifierOpt().get()))) {
+    if (symbolClass.isPresentModifier() && (symbolTableService.hasScopeStereotype(symbolClass.getModifier())
+        || symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifier()))) {
       this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint("removeCurrentScope();"));
     }
     return endVisitMethod;
@@ -368,8 +368,8 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.isPresentAstNode() && type.getAstNode().getModifierOpt().isPresent()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifierOpt().get())) {
+        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           String symbolFullName = symbolTableService.getSymbolFullName(type.getAstNode(), cdDefinitionSymbol);
           ASTCDParameter symbolParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(symbolFullName), SYMBOL_VAR);
           ASTCDMethod addToScopeMethod = getCDMethodFacade().createMethod(PUBLIC, "addToScope", symbolParam);

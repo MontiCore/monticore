@@ -9,7 +9,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.StringTransformations;
 
@@ -19,10 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a ScopeDeSer class from a grammar
@@ -68,10 +67,10 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     // list of all scope rule attributes
     List<ASTCDAttribute> scopeRuleAttributeList = scopeInput.deepClone().getCDDefinition().getCDClassList()
         .stream()
-        .map(ASTCDClassTOP::getCDAttributeList)
+        .map(ASTCDClass::getCDAttributeList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
-    scopeRuleAttributeList.forEach(a -> symbolTableService.addAttributeDefaultValues(a, this.glex));
+    scopeRuleAttributeList.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
     return CD4CodeMill.cDClassBuilder()
         .setName(scopeDeSerName)
@@ -166,7 +165,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   protected ASTCDMethod createDeserializeJsonObjectMethod(String scopeInterfaceName, String simpleName,
                                                           ASTCDParameter jsonParam) {
     ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterfaceName), DESERIALIZE, jsonParam, enclosingScopeParameter);
-    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "DeserializeJsonObject", simpleName));
+    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "DeserializeJsonObjectScope", simpleName));
     return deserializeMethod;
   }
 
@@ -214,9 +213,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
     // finds all symbols that also define a scope or inherit the scope property
     List<ASTCDType> scopeSpanningSymbolNames = symbolDefiningProds.stream()
-        .filter(c -> c.getModifierOpt().isPresent())
-        .filter(c -> symbolTableService.hasScopeStereotype(c.getModifierOpt().get())
-            || symbolTableService.hasInheritedScopeStereotype(c.getModifierOpt().get()))
+        .filter(c -> c.isPresentModifier())
+        .filter(c -> symbolTableService.hasScopeStereotype(c.getModifier())
+            || symbolTableService.hasInheritedScopeStereotype(c.getModifier()))
         .collect(Collectors.toList());
 
     // maps the simpleSymbol name to the fullSymbolName, to use both in the templates
@@ -232,7 +231,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     ASTCDParameter scopeClassParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeClassName), SCOPE_VAR);
 
     ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PROTECTED, "addAndLinkSpanningSymbol", jsonParam, scopeInterfaceParam, scopeClassParam);
-    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "AddAndLinkSpanningSymbol", symbolMap));
+    if(!symbolMap.isEmpty()){
+      this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(TEMPLATE_PATH + "AddAndLinkSpanningSymbol", symbolMap));
+    }
     return deserializeMethod;
   }
 

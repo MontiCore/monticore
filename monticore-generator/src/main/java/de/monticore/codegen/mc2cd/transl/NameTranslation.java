@@ -60,7 +60,7 @@ public class NameTranslation implements
         for (Link<ASTNonTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTNonTerminal.class,
                 ASTCDAttribute.class)) {
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
-            String nameToUse = usageName.isPresent() ? usageName.get() : link.source().getName();
+            String nameToUse = usageName.isPresent() ? usageName.get() : StringTransformations.uncapitalize(link.source().getName());
             link.target().setName(nameToUse);
         }
 
@@ -80,11 +80,10 @@ public class NameTranslation implements
 
         for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
                 ASTCDAttribute.class)) {
-            String name = link.source().getNameOpt().orElse(null);
             String alternativeName = StringTransformations.uncapitalize(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(link.source().getMCType()));
-            String nameToUse = name != null ? name : alternativeName;
-            link.target().setName(nameToUse);
-            link.source().setName(nameToUse);
+            String name = link.source().isPresentName()?link.source().getName():alternativeName;
+            link.target().setName(name);
+            link.source().setName(name);
         }
 
         for (Link<ASTConstant, ASTCDAttribute> link : rootLink.getLinks(ASTConstant.class,

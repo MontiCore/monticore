@@ -6,14 +6,12 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.utils.Link;
 
 import java.util.*;
@@ -39,7 +37,7 @@ public class InheritedAttributesTranslation implements
   }
   
   private void handleInheritedNonTerminals(Link<ASTClassProd, ASTCDClass> link) {
-    for (Entry<ASTProd, List<ASTNonTerminal>> entry : GeneratorHelper.getInheritedNonTerminals(link.source())
+    for (Entry<ASTProd, List<ASTNonTerminal>> entry : TransformationHelper.getInheritedNonTerminals(link.source())
         .entrySet()) {
       for (ASTNonTerminal nonTerminal : entry.getValue()) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
@@ -81,11 +79,10 @@ public class InheritedAttributesTranslation implements
   
   private Map<ASTProd, Collection<AdditionalAttributeSymbol>> getInheritedAttributeInASTs(
       ASTProd astNode) {
-    return GeneratorHelper.getAllSuperProds(astNode).stream()
+    return TransformationHelper.getAllSuperProds(astNode).stream()
         .distinct()
-        .collect(Collectors.toMap(Function.identity(), astProd -> astProd.getSymbolOpt()
-            .map(ProdSymbol::getProdAttributes)
-            .orElse(Collections.emptyList())));
+        .collect(Collectors.toMap(Function.identity(), prod -> prod.isPresentSymbol() ?
+            prod.getSymbol().getProdAttributes() : Collections.emptyList()));
   }
 
   /**
@@ -94,7 +91,7 @@ public class InheritedAttributesTranslation implements
    * extended transitively by other interfaces)
    */
   private List<ASTInterfaceProd> getAllInterfacesWithoutImplementation(ASTProd astNode) {
-    List<ASTInterfaceProd> directInterfaces = GeneratorHelper.getDirectSuperProds(astNode).stream()
+    List<ASTInterfaceProd> directInterfaces = TransformationHelper.getDirectSuperProds(astNode).stream()
         .filter(ASTInterfaceProd.class::isInstance)
         .map(ASTInterfaceProd.class::cast)
         .collect(Collectors.toList());

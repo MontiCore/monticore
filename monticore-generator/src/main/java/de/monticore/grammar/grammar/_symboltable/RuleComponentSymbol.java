@@ -32,19 +32,17 @@ public class RuleComponentSymbol extends RuleComponentSymbolTOP  {
     return ofNullable(referencedProd);
   }
 
-
   public void addSubProdComponent(String constantName) {
     getSubProdList().add(constantName);
   }
 
-// TODO mache usageName optional
   @Override
   public String getUsageName() {
     if (usageName == null) {
       return "";
     }
     else {
-      return usageName;
+      return usageName.orElse("");
     }
   }
 }

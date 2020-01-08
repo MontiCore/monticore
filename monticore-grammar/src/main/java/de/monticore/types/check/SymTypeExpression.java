@@ -1,11 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import com.google.common.collect.Lists;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * SymTypeExpression is the superclass for all typeexpressions, such as

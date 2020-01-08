@@ -81,7 +81,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     RuleComponentSymbol prodComp = entryActionProd.getProdComponent("entry").orElse(null);
     assertNotNull(prodComp);
     assertEquals("entry", prodComp.getName());
-    assertEquals("", prodComp.getUsageName());
+    assertFalse(prodComp.isPresentUsageName());
     assertEquals("de.monticore.statechart.Statechart.EntryAction.entry", prodComp.getFullName());
     assertEquals("de.monticore.statechart", prodComp.getPackageName());
     assertTrue(prodComp.isIsTerminal());
@@ -100,7 +100,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     prodComp = entryActionProd.getProdComponent(":").orElse(null);
     assertNotNull(prodComp);
     assertEquals(":", prodComp.getName());
-    assertEquals("", prodComp.getUsageName());
+    assertFalse(prodComp.isPresentUsageName());
     assertTrue(prodComp.isIsTerminal());
     assertFalse(prodComp.isIsList());
     assertFalse(prodComp.isIsOptional());
@@ -109,6 +109,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     prodComp = entryActionProd.getProdComponent("block").orElse(null);
     assertNotNull(prodComp);
     assertEquals("block", prodComp.getName());
+    assertTrue(prodComp.isPresentUsageName());
     assertEquals("block", prodComp.getUsageName());
     assertTrue(prodComp.isIsNonterminal());
     assertTrue(prodComp.isPresentAstNode());
@@ -157,6 +158,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertEquals("de.monticore.statechart.Statechart.State.initial",
         initialComponent.getFullName());
     assertEquals("initial", initialComponent.getName());
+    assertTrue(prodComp.isPresentUsageName());
     assertEquals("initial", initialComponent.getUsageName());
     
     ProdSymbol classBody = grammar.getProd("Classbody").orElse(null);
@@ -172,6 +174,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertEquals("Code", codeProd.getName());
     assertEquals(2, codeProd.getProdComponents().size());
     prodComp = codeProd.getProdComponent("body").get();
+    assertTrue(prodComp.isPresentUsageName());
     assertEquals("body", prodComp.getUsageName());
     assertTrue(prodComp.getReferencedProd().isPresent());
     assertTrue(prodComp.getReferencedProd().get().isSymbolLoaded());

@@ -30,7 +30,7 @@ public class CorrectnessTest  {
    */
   @Test
   public void testEmptyTemplate() {
-    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/EmptyTemplate.java").toFile().exists());
+    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/EmptyTemplateA.java").toFile().exists());
     
     boolean hasCorrectGenerate = false;
     boolean hasCorrectToString = false;
@@ -60,7 +60,7 @@ public class CorrectnessTest  {
    */
   @Test
   public void testTemplateWithoutResult() {
-    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/TemplateWithoutResult.java").toFile().exists());
+    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/TemplateWithoutResultA.java").toFile().exists());
 
     boolean hasCorrectGenerate = false;
     boolean hasCorrectToString = false;
@@ -88,7 +88,7 @@ public class CorrectnessTest  {
    */
   @Test
   public void testTemplateWithoutSignature() {
-    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/TemplateWithoutSignature.java").toFile().exists());
+    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/TemplateWithoutSignatureA.java").toFile().exists());
 
     boolean hasCorrectGenerate = false;
     boolean hasCorrectToString = false;
@@ -117,7 +117,7 @@ public class CorrectnessTest  {
    */
   @Test
   public void testTemplateWithResult() {
-    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/TemplateWithResult.java").toFile().exists());
+    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/TemplateWithResultA.java").toFile().exists());
 
     boolean hasCorrectGenerate = false;
     boolean hasCorrectToString = false;

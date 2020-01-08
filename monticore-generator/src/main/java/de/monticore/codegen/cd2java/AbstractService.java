@@ -8,15 +8,9 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolLoader;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.MCTypeFacade;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
-import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 
 import java.util.ArrayList;
@@ -26,7 +20,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 
@@ -36,6 +29,7 @@ public class AbstractService<T extends AbstractService> {
 
   private final MCTypeFacade mcTypeFacade;
 
+  private final DecorationHelper decorationHelper;
 
   public AbstractService(final ASTCDCompilationUnit compilationUnit) {
     this(compilationUnit.getCDDefinition().getSymbol());
@@ -44,10 +38,15 @@ public class AbstractService<T extends AbstractService> {
   public AbstractService(final CDDefinitionSymbol cdSymbol) {
     this.cdSymbol = cdSymbol;
     this.mcTypeFacade = MCTypeFacade.getInstance();
+    this.decorationHelper = DecorationHelper.getInstance();
   }
 
   public CDDefinitionSymbol getCDSymbol() {
     return this.cdSymbol;
+  }
+
+  public DecorationHelper getDecorationHelper() {
+    return decorationHelper;
   }
 
   protected MCTypeFacade getMCTypeFacade() {
@@ -60,6 +59,9 @@ public class AbstractService<T extends AbstractService> {
         .collect(Collectors.toList());
   }
 
+  /**
+   * different methods for getting a list od super ClassDiagrams
+   */
   public List<CDDefinitionSymbol> getSuperCDsDirect() {
     return getSuperCDsDirect(getCDSymbol());
   }
@@ -95,6 +97,42 @@ public class AbstractService<T extends AbstractService> {
     return resolvedCds;
   }
 
+  /**
+   * methods for super CDTypes (CDClass and CDInterface)
+   */
+  public List<String> getAllSuperClassesTransitive(ASTCDClass astcdClass) {
+    return getAllSuperClassesTransitive(astcdClass.getSymbol());
+  }
+
+  public List<String> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
+    List<String> superSymbolList = new ArrayList<>();
+    if (cdTypeSymbol.isPresentSuperClass()) {
+      String fullName = cdTypeSymbol.getSuperClass().getLoadedSymbol().getFullName();
+      superSymbolList.add(createASTFullName(fullName));
+      CDTypeSymbol superSymbol = resolveCDType(fullName);
+      superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
+    }
+    return superSymbolList;
+  }
+
+  public List<String> getAllSuperInterfacesTransitive(ASTCDClass astcdClass) {
+    return getAllSuperInterfacesTransitive(astcdClass.getSymbol());
+  }
+
+  public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
+    List<String> superSymbolList = new ArrayList<>();
+    for (CDTypeSymbolLoader cdInterface : cdTypeSymbol.getCdInterfaceList()) {
+      String fullName = cdInterface.getLoadedSymbol().getFullName();
+      superSymbolList.add(createASTFullName(fullName));
+      CDTypeSymbol superSymbol = resolveCDType(fullName);
+      superSymbolList.addAll(getAllSuperInterfacesTransitive(superSymbol));
+    }
+    return superSymbolList;
+  }
+
+  /**
+   * use symboltabe to resolve for ClassDiagrams or CDTypes
+   */
   public CDDefinitionSymbol resolveCD(String qualifiedName) {
     return getCDSymbol().getEnclosingScope().<CDDefinitionSymbol>resolveCDDefinition(qualifiedName)
         .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
@@ -105,6 +143,9 @@ public class AbstractService<T extends AbstractService> {
         .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
   }
 
+  /**
+   * getters for attributes of the ClassDiagram
+   */
   public String getCDName() {
     return getCDSymbol().getName();
   }
@@ -136,50 +177,53 @@ public class AbstractService<T extends AbstractService> {
     return Names.getQualifiedName(getBasePackage(), getCDName());
   }
 
+  /**
+   * get Collection of Services from the Super ClassDiagrams
+   */
   public Collection<T> getServicesOfSuperCDs() {
     return getSuperCDsTransitive().stream()
         .map(this::createService)
         .collect(Collectors.toList());
   }
 
+  /**
+   * method should be overwritten in SubClasses of the AbstractService to return the correct type
+   */
   protected T createService(CDDefinitionSymbol cdSymbol) {
     return (T) new AbstractService(cdSymbol);
   }
 
-  public String getNativeAttributeName(String attributeName) {
-    if (!attributeName.startsWith(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED)) {
-      return attributeName;
+  /**
+   * helper methods to find and get the stereotype of a modifier
+   */
+  public boolean hasStereotype(ASTModifier modifier, MC2CDStereotypes stereotype) {
+    if (modifier.isPresentStereotype()) {
+      return modifier.getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(stereotype.toString()));
     }
-    return attributeName.substring(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED.length());
+    return false;
   }
 
-  public String getNativeTypeName(ASTMCType astType) {
-    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
-    // if not generic returns simple Type like 'int'
-    if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentList().size() == 1) {
-      return ((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get()
-              .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+  protected List<String> getStereotypeValues(ASTModifier modifier, MC2CDStereotypes stereotype) {
+    List<String> values = Lists.newArrayList();
+    if (modifier.isPresentStereotype()) {
+      modifier.getStereotype().getValueList().stream()
+          .filter(value -> value.getName().equals(stereotype.toString()))
+          .filter(ASTCDStereoValue::isPresentValue)
+          .forEach(value -> values.add(value.getValue()));
     }
-    return astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+    return values;
   }
 
-  public String getSimpleNativeType(ASTMCType astType) {
-    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
-    // if not generic returns simple Type like 'int'
-    String nativeAttributeType = getNativeTypeName(astType);
-    return getSimpleNativeType(nativeAttributeType);
+  /**
+   * methods for determination and access to special stereotypes
+   */
+
+  public boolean hasScopeStereotype(ASTModifier modifier) {
+    return hasStereotype(modifier, MC2CDStereotypes.SCOPE);
   }
 
-  public String getSimpleNativeType(String nativeAttributeType) {
-    // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns ASTState
-    // if not generic returns simple Type like 'int'
-    if (nativeAttributeType.contains(".")) {
-      nativeAttributeType = nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".") + 1);
-    }
-    if (nativeAttributeType.contains(">")) {
-      nativeAttributeType = nativeAttributeType.replaceAll(">", "");
-    }
-    return nativeAttributeType;
+  public boolean hasSymbolStereotype(ASTModifier modifier) {
+    return hasStereotype(modifier, MC2CDStereotypes.SYMBOL);
   }
 
   public boolean isMethodBodyPresent(ASTCDMethod method) {
@@ -198,7 +242,7 @@ public class AbstractService<T extends AbstractService> {
     return "";
   }
 
-  public boolean isInherited(ASTCDAttribute attribute) {
+  public boolean isInheritedAttribute(ASTCDAttribute attribute) {
     return hasStereotype(attribute.getModifier(), MC2CDStereotypes.INHERITED);
   }
 
@@ -206,26 +250,9 @@ public class AbstractService<T extends AbstractService> {
     return getStereotypeValues(attribute.getModifier(), MC2CDStereotypes.INHERITED).get(0);
   }
 
-  public boolean hasStereotype(ASTModifier modifier, MC2CDStereotypes stereotype) {
-    if (modifier.isPresentStereotype()) {
-      return modifier.getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(stereotype.toString()));
-    }
-    return false;
-  }
-
-  protected List<String> getStereotypeValues(ASTModifier modifier,
-                                             MC2CDStereotypes stereotype) {
-    List<String> values = Lists.newArrayList();
-    if (modifier.isPresentStereotype()) {
-      modifier.getStereotype().getValueList().stream()
-          .filter(value -> value.getName().equals(stereotype.toString()))
-          .filter(ASTCDStereoValue::isPresentValue)
-          .forEach(value -> values.add(value.getValue()));
-    }
-    return values;
-  }
-
-
+  /**
+   * checking for duplicate classes and methods
+   */
   public boolean isClassOverwritten(ASTCDClass astcdClass, List<ASTCDClass> classList) {
     //if there is a Class with the same name in the current CompilationUnit, then the methods are only generated once
     return classList.stream().anyMatch(x -> x.getName().endsWith(astcdClass.getName()));
@@ -262,36 +289,17 @@ public class AbstractService<T extends AbstractService> {
     }
     for (int i = 0; i < method1.getCDParameterList().size(); i++) {
       if (!method1.getCDParameter(i).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
-              .equals(method2.getCDParameter(i).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))) {
+          .equals(method2.getCDParameter(i).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))) {
         return false;
       }
     }
     return true;
   }
 
-  public String getGrammarFromClass(ASTCDDefinition astcdDefinition, ASTCDAttribute astcdAttribute) {
-    String simpleNativeAttributeType = getSimpleNativeType(astcdAttribute.getMCType());
-    if (astcdDefinition.getCDClassList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
-      return "this";
-    } else {
-      List<CDDefinitionSymbol> superCDs = getSuperCDsTransitive(resolveCD(astcdDefinition.getName()));
-      for (CDDefinitionSymbol superCD : superCDs) {
-        if (superCD.getTypes().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
-          return superCD.getName() + "PackageImpl";
-        }
-      }
-    }
-    return "this";
-  }
-
-  public boolean hasScopeStereotype(ASTModifier modifier) {
-    return hasStereotype(modifier, MC2CDStereotypes.SCOPE);
-  }
-
-  public boolean hasSymbolStereotype(ASTModifier modifier) {
-    return hasStereotype(modifier, MC2CDStereotypes.SYMBOL);
-  }
-
+  /**
+   * Determines whether a enum is the Literals Enum e.g. AutomataLiterals
+   * Sometimes the enum for Literals, which is always generated has to be excluded
+   */
   public boolean isLiteralsEnum(ASTCDEnum astcdEnum, String definitionName) {
     String enumName = astcdEnum.getName();
     // remove package
@@ -301,14 +309,20 @@ public class AbstractService<T extends AbstractService> {
     return enumName.equals(definitionName + LITERALS_SUFFIX);
   }
 
+  /**
+   * methods return Name of the LanguageInterface for this.cdSymbol e.g. ASTAutomataNode
+   */
   public String getLanguageInterfaceName() {
     return getASTPackage() + "." + AST_PREFIX + getCDName() + NODE_SUFFIX;
   }
 
-  public String getSimleLanguageInterfaceName() {
+  public String getSimpleLanguageInterfaceName() {
     return AST_PREFIX + getCDName() + NODE_SUFFIX;
   }
 
+  /**
+   * returns package with the '_ast' part
+   */
   public String getASTPackage() {
     return getASTPackage(getCDSymbol());
   }
@@ -320,50 +334,13 @@ public class AbstractService<T extends AbstractService> {
     return String.join(".", getBasePackage(cdSymbol), cdSymbol.getName(), AST_PACKAGE).toLowerCase();
   }
 
-  public List<String> getAllSuperClassesTransitive(ASTCDClass astcdClass) {
-    return getAllSuperClassesTransitive(astcdClass.getSymbol());
-  }
-
-  public List<String> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
-    List<String> superSymbolList = new ArrayList<>();
-    if (cdTypeSymbol.isPresentSuperClass()) {
-      String fullName = cdTypeSymbol.getSuperClass().getLoadedSymbol().getFullName();
-      superSymbolList.add(createASTFullName(fullName));
-      CDTypeSymbol superSymbol = resolveCDType(fullName);
-      superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
-    }
-    return superSymbolList;
-  }
-
-  public List<String> getAllSuperInterfacesTransitive(ASTCDClass astcdClass) {
-    return getAllSuperInterfacesTransitive(astcdClass.getSymbol());
-  }
-
-  public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
-    List<String> superSymbolList = new ArrayList<>();
-    for (CDTypeSymbolLoader cdInterface : cdTypeSymbol.getCdInterfaceList()) {
-      String fullName = cdInterface.getLoadedSymbol().getFullName();
-      superSymbolList.add(createASTFullName(fullName));
-      CDTypeSymbol superSymbol = resolveCDType(fullName);
-      superSymbolList.addAll(getAllSuperInterfacesTransitive(superSymbol));
-    }
-    return superSymbolList;
-  }
-
+  /**
+   * adds the '_ast' package to a fullName to create an valid AST-package
+   */
   public String createASTFullName(String simpleName) {
     String packageName = simpleName.substring(0, simpleName.lastIndexOf("."));
     packageName = packageName.toLowerCase();
     String astName = simpleName.substring(simpleName.lastIndexOf(".") + 1);
     return packageName + "." + AST_PACKAGE + "." + astName;
   }
-
-  public void addAttributeDefaultValues(ASTCDAttribute attribute, GlobalExtensionManagement glex) {
-    if (DecorationHelper.isListType(attribute.printType())) {
-      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
-
-    } else if (DecorationHelper.isOptional(attribute.getMCType())) {
-      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
-    }
-  }
-
 }

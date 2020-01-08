@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types.check.DefsTypeBasic;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;

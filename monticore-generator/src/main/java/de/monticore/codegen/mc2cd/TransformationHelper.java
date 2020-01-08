@@ -24,16 +24,15 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.utils.ASTNodes;
+import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -46,6 +45,17 @@ public final class TransformationHelper {
   public static final String AST_PREFIX = "AST";
 
   public static final String LIST_SUFFIX = "s";
+
+  public static final int STAR = -1;
+
+  private static List<String> reservedCdNames = Arrays.asList(
+      // CD4A
+      "derived",
+      "association",
+      "composition",
+      // Common.mc4
+      "local",
+      "readonly");
 
   private TransformationHelper() {
     // noninstantiable
@@ -98,26 +108,23 @@ public final class TransformationHelper {
     List<ASTNode> intermediates = ASTNodes
         .getIntermediates(root, successor);
     for (ASTNode ancestor : Lists.reverse(intermediates)) {
-      if (ancestor instanceof ASTConstantGroup) {
-        return ((ASTConstantGroup) ancestor)
-            .getUsageNameOpt();
+      if (ancestor instanceof ASTConstantGroup && ((ASTConstantGroup) ancestor).isPresentUsageName()) {
+        return Optional.of(((ASTConstantGroup) ancestor).getUsageName());
       }
-      if (ancestor instanceof ASTNonTerminal) {
-        return ((ASTNonTerminal) ancestor)
-            .getUsageNameOpt();
+      if (ancestor instanceof ASTNonTerminal && ((ASTNonTerminal) ancestor).isPresentUsageName()) {
+        return Optional.of(((ASTNonTerminal) ancestor).getUsageName());
       }
       if (ancestor instanceof ASTNonTerminalSeparator) {
-        return ((ASTNonTerminalSeparator) ancestor)
-            .getUsageNameOpt();
+        return Optional.of(((ASTNonTerminalSeparator) ancestor).getUsageName());
       }
-      if (ancestor instanceof ASTTerminal) {
-        return ((ASTTerminal) ancestor).getUsageNameOpt();
+      if (ancestor instanceof ASTTerminal && ((ASTTerminal) ancestor).isPresentUsageName()) {
+        return Optional.of(((ASTTerminal) ancestor).getUsageName());
       }
-      if (ancestor instanceof ASTKeyTerminal) {
-        return ((ASTKeyTerminal) ancestor).getUsageNameOpt();
+      if (ancestor instanceof ASTKeyTerminal && ((ASTKeyTerminal) ancestor).isPresentUsageName()) {
+        return Optional.of(((ASTKeyTerminal) ancestor).getUsageName());
       }
-      if (ancestor instanceof ASTAdditionalAttribute) {
-        return ((ASTAdditionalAttribute) ancestor).getNameOpt();
+      if (ancestor instanceof ASTAdditionalAttribute && ((ASTAdditionalAttribute) ancestor).isPresentName()) {
+        return Optional.of(((ASTAdditionalAttribute) ancestor).getName());
       }
     }
     return Optional.empty();
@@ -139,8 +146,8 @@ public final class TransformationHelper {
     if (node instanceof ASTTerminal) {
       return Optional.of(((ASTTerminal) node).getName());
     }
-    if (node instanceof ASTAdditionalAttribute) {
-      return ((ASTAdditionalAttribute) node).getNameOpt();
+    if (node instanceof ASTAdditionalAttribute && ((ASTAdditionalAttribute) node).isPresentName()) {
+      return Optional.of(((ASTAdditionalAttribute) node).getName());
     }
     return Optional.empty();
   }
@@ -167,7 +174,7 @@ public final class TransformationHelper {
     try {
       optType = parser.parse_StringMCGenericType(typeName + "<" + generics + ">");
     } catch (IOException e) {
-      Log.error("0xA4036 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
+      Log.error("0xA4103 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
     }
     return optType.get();
   }
@@ -178,7 +185,7 @@ public final class TransformationHelper {
     try {
       optType = parser.parse_StringMCType(typeName);
     } catch (IOException e) {
-      Log.error("0xA4036 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
+      Log.error("0xA4104 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
     }
     return optType.get();
   }
@@ -189,7 +196,7 @@ public final class TransformationHelper {
     try {
       optType = parser.parse_StringMCReturnType(typeName);
     } catch (IOException e) {
-      Log.error("0xA4036 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
+      Log.error("0xA4105 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
     }
     return optType.get();
   }
@@ -200,7 +207,7 @@ public final class TransformationHelper {
     try {
       optType = parser.parse_StringMCObjectType(typeName);
     } catch (IOException e) {
-      Log.error("0xA4036 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
+      Log.error("0xA4106 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
     }
     return optType.get();
   }
@@ -335,8 +342,8 @@ public final class TransformationHelper {
       return Optional.empty();
     }
     Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(node,
-            simpleName
-                    .substring(AST_PREFIX.length()));
+        simpleName
+            .substring(AST_PREFIX.length()));
     if (ruleSymbol.isPresent() && istPartOfGrammar(ruleSymbol.get())) {
       return ruleSymbol;
     }
@@ -345,7 +352,7 @@ public final class TransformationHelper {
 
   // TODO GV, PN: change it
   public static boolean istPartOfGrammar(ProdSymbol rule) {
-    return rule.getEnclosingScope().getSpanningSymbolOpt().isPresent()
+    return rule.getEnclosingScope().isPresentSpanningSymbol()
         && rule.getEnclosingScope().getSpanningSymbol() instanceof MCGrammarSymbol;
   }
 
@@ -367,26 +374,26 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDType type, String stereotypeName,
                                    String stereotypeValue) {
-    if (!type.getModifierOpt().isPresent()) {
+    if (!type.isPresentModifier()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
-    addStereotypeValue(type.getModifierOpt().get(),
+    addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
   }
 
   public static void addStereoType(ASTCDType type, String stereotypeName) {
-    if (!type.getModifierOpt().isPresent()) {
+    if (!type.isPresentModifier()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
-    addStereotypeValue(type.getModifierOpt().get(),
+    addStereotypeValue(type.getModifier(),
         stereotypeName);
   }
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName) {
-    if (!type.getModifierOpt().isPresent()) {
+    if (!type.isPresentModifier()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
-    addStereotypeValue(type.getModifierOpt().get(),
+    addStereotypeValue(type.getModifier(),
         stereotypeName);
   }
 
@@ -402,10 +409,10 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName,
                                    String stereotypeValue) {
-    if (!type.getModifierOpt().isPresent()) {
+    if (!type.isPresentModifier()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
-    addStereotypeValue(type.getModifierOpt().get(),
+    addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
   }
 
@@ -437,5 +444,119 @@ public final class TransformationHelper {
         .createASTCDStereoValue();
     stereoValue.setName(stereotypeName);
     stereoValueList.add(stereoValue);
+  }
+
+  /**
+   * Checks whether the given attribute is a collection type written as String
+   * (e.g., List<...>).
+   *
+   * @param attribute The input attribute
+   * @return true if the input attribute is a collection type, false otherwise
+   */
+  public static boolean isCollectionType(ASTCDAttribute attribute) {
+    String type = attribute.printType();
+    if (type.startsWith("Collection<") || type.startsWith("List<") || type.startsWith("Set<") || type.startsWith("java.util.Collection<") || type.startsWith("java.util.List<") || type.startsWith("java.util.Set<")) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Computes the simple type of an attribute from a collection type.
+   *
+   * @param attribute The input attribute
+   * @return The simple type contained by a collection
+   */
+  public static String getSimpleTypeFromCollection(ASTCDAttribute attribute) {
+    String simpleType = attribute.printType();
+    if (simpleType.startsWith("Collection<")) {
+      simpleType = simpleType.replaceFirst("Collection<", "");
+      simpleType = simpleType.substring(0, simpleType.length() - 1);
+    } else if (simpleType.startsWith("List<")) {
+      simpleType = simpleType.replaceFirst("List<", "");
+      simpleType = simpleType.substring(0, simpleType.length() - 1);
+    } else if (simpleType.startsWith("Set<")) {
+      simpleType = simpleType.replaceFirst("Set<", "");
+      simpleType = simpleType.substring(0, simpleType.length() - 1);
+    } else if (simpleType.startsWith("java.util.Collection<")) {
+      simpleType = simpleType.replaceFirst("java.util.Collection<", "");
+      simpleType = simpleType.substring(0, simpleType.length() - 1);
+    } else if (simpleType.startsWith("java.util.List<")) {
+      simpleType = simpleType.replaceFirst("java.util.List<", "");
+      simpleType = simpleType.substring(0, simpleType.length() - 1);
+    } else if (simpleType.startsWith("java.util.Set<")) {
+      simpleType = simpleType.replaceFirst("java.util.Set<", "");
+      simpleType = simpleType.substring(0, simpleType.length() - 1);
+    }
+    return Names.getSimpleName(simpleType);
+  }
+
+  public static String getJavaAndCdConformName(String name) {
+    Log.errorIfNull(name);
+    return getCdLanguageConformName(getJavaConformName(name));
+  }
+
+  public static String getCdLanguageConformName(String name) {
+    if (reservedCdNames.contains(name)) {
+      return (JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED + name).intern();
+    }
+    return name.intern();
+  }
+
+  public static String getJavaConformName(String name) {
+    return JavaNamesHelper.javaAttribute(name);
+  }
+
+  public static Map<ASTProd, List<ASTNonTerminal>> getInheritedNonTerminals(ASTProd sourceNode) {
+    return getAllSuperProds(sourceNode).stream()
+        .distinct()
+        .collect(Collectors.toMap(Function.identity(),
+            astProd -> ASTNodes.getSuccessors(astProd, ASTNonTerminal.class)));
+  }
+
+
+  /**
+   * @return the super productions defined in all super grammars (including
+   * transitive super grammars)
+   */
+  public static List<ASTProd> getAllSuperProds(ASTProd astNode) {
+    List<ASTProd> directSuperRules = getDirectSuperProds(astNode);
+    List<ASTProd> allSuperRules = new ArrayList<>();
+    for (ASTProd superRule : directSuperRules) {
+      allSuperRules.addAll(getAllSuperProds(superRule));
+    }
+    allSuperRules.addAll(directSuperRules);
+    return allSuperRules;
+  }
+
+  /**
+   * @return the super productions defined in direct super grammars
+   */
+  public static List<ASTProd> getDirectSuperProds(ASTProd astNode) {
+    if (astNode instanceof ASTClassProd) {
+      List<ASTProd> directSuperProds = resolveRuleReferences(
+          ((ASTClassProd) astNode).getSuperRuleList(), astNode);
+      directSuperProds.addAll(
+          resolveRuleReferences(((ASTClassProd) astNode).getSuperInterfaceRuleList(), astNode));
+      return directSuperProds;
+    } else if (astNode instanceof ASTInterfaceProd) {
+      return resolveRuleReferences(((ASTInterfaceProd) astNode).getSuperInterfaceRuleList(), astNode);
+    }
+    return Collections.emptyList();
+  }
+
+  /**
+   * @return the production definitions of B & C in "A extends B, C"
+   */
+  public static List<ASTProd> resolveRuleReferences(List<ASTRuleReference> ruleReferences,
+                                                    ASTProd nodeWithSymbol) {
+    List<ASTProd> superRuleNodes = new ArrayList<>();
+    for (ASTRuleReference superRule : ruleReferences) {
+      Optional<ProdSymbol> symbol = nodeWithSymbol.getEnclosingScope().resolveProd(superRule.getName());
+      if (symbol.isPresent() && symbol.get().isPresentAstNode()) {
+        superRuleNodes.add(symbol.get().getAstNode());
+      }
+    }
+    return superRuleNodes;
   }
 }

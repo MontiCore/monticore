@@ -22,7 +22,12 @@ public class EnumTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCo
     for (Link<ASTEnumProd, ASTCDEnum> link : rootLink
         .getLinks(ASTEnumProd.class, ASTCDEnum.class)) {
       for (ASTConstant constant : link.source().getConstantList()) {
-        String name = constant.getHumanNameOpt().orElse(constant.getName());
+        String name;
+        if (constant.isPresentHumanName()) {
+          name = constant.getHumanName();
+        } else {
+           name = constant.getName();
+        }
         final String goodName = LexNamer.createGoodName(name);
         ASTCDEnumConstant enumConstant = CD4AnalysisNodeFactory.createASTCDEnumConstant();
         enumConstant.setName(goodName);

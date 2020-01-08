@@ -9,7 +9,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -20,8 +19,10 @@ import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -139,9 +140,7 @@ public class MontiCoreScriptTest {
     CD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
     cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(), cd4AGlobalScope);
     assertNotNull(cdCompilationUnit);
-    GeneratorHelper genHelper = new GeneratorHelper(cdCompilationUnit, cd4AGlobalScope);
-    assertEquals("de.monticore.statechart.statechart._ast", GeneratorHelper.getPackageName(
-        genHelper.getPackageName(), GeneratorHelper.AST_PACKAGE_SUFFIX));
+    assertEquals("de.monticore.statechart", String.join(".", cdCompilationUnit.getPackageList()));
     assertNotNull(cdCompilationUnit.getCDDefinition());
     ASTCDDefinition cdDefinition = cdCompilationUnit.getCDDefinition();
     assertEquals(8, cdDefinition.getCDClassList().size());
@@ -436,6 +435,7 @@ public class MontiCoreScriptTest {
     assertEquals("StatechartSymbolTablePrinter", serializationPackageCD.getCDDefinition().getCDClass(0).getName());
     assertEquals("StatechartScopeDeSer", serializationPackageCD.getCDDefinition().getCDClass(1).getName());
     assertTrue(serializationPackageCD.getCDDefinition().isEmptyCDInterfaces());
+    assertTrue(serializationPackageCD.getCDDefinition().isEmptyCDEnums());
   }
 
   @Test
@@ -533,5 +533,31 @@ public class MontiCoreScriptTest {
 
     assertEquals(1, astEmfPackageCD.getCDDefinition().sizeCDEnums());
     assertEquals("StatechartLiterals", astEmfPackageCD.getCDDefinition().getCDEnum(0).getName());
+  }
+
+  @Test
+  public void testDecorateForODPackage() {
+    MontiCoreScript mc = new MontiCoreScript();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    mc.createSymbolsFromAST(symbolTable, grammar);
+    CD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
+    CD4AnalysisGlobalScope cd4AGlobalScopeSymbolCD = mc.createCD4AGlobalScope(modelPath);
+    CD4AnalysisGlobalScope cd4AGlobalScopeScopeCD = mc.createCD4AGlobalScope(modelPath);
+
+    ASTCDCompilationUnit cd = mc.deriveCD(grammar, glex, cd4AGlobalScope);
+    ASTCDCompilationUnit symbolCD = mc.deriveSymbolCD(grammar, cd4AGlobalScopeSymbolCD);
+    ASTCDCompilationUnit scopeCD = mc.deriveScopeCD(grammar, cd4AGlobalScopeScopeCD);
+    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+
+    ASTCDCompilationUnit odPackage = mc.decorateForODPackage(glex, cd4AGlobalScope, cd, handcodedPath);
+
+    assertNotNull(odPackage);
+    assertNotNull(odPackage.getCDDefinition());
+    assertEquals("Statechart", odPackage.getCDDefinition().getName());
+    assertEquals(1, odPackage.getCDDefinition().sizeCDClasss());
+    assertEquals("Statechart2OD", odPackage.getCDDefinition().getCDClass(0).getName());
+    assertTrue(odPackage.getCDDefinition().isEmptyCDInterfaces());
+    assertTrue(odPackage.getCDDefinition().isEmptyCDEnums());
   }
 }

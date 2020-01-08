@@ -34,6 +34,8 @@ public class SymTypeExpressionTest {
 
   SymTypeExpression teVarA = createTypeVariable("A", scope);
 
+  SymTypeExpression teIntA = createTypeObject("java.lang.Integer",scope);
+
   SymTypeExpression teVarB = createTypeVariable("B", scope);
 
   SymTypeExpression teP = createTypeObject("de.x.Person", scope);
@@ -54,6 +56,10 @@ public class SymTypeExpressionTest {
   SymTypeExpression teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
 
   SymTypeExpression teMap = createGenerics("Map", scope, Lists.newArrayList(teInt, teP)); // no package!
+
+  SymTypeExpression teMapA = createGenerics("java.util.Map",scope,Lists.newArrayList(teIntA,teP));
+
+  SymTypeExpression teSetB = createGenerics("java.util.Set",scope,Lists.newArrayList(teMapA));
 
   SymTypeExpression teFoo = createGenerics("x.Foo", scope,  Lists.newArrayList(teP, teDouble, teInt, teH));
 
@@ -240,6 +246,13 @@ public class SymTypeExpressionTest {
     assertEquals("Human", ((SymTypeOfObject) (teH)).getBaseName());
     assertEquals("Map", ((SymTypeOfGenerics) (teMap)).getBaseName());
     assertEquals("Set", ((SymTypeOfGenerics) (teSet)).getBaseName());
+  }
+
+  @Test
+  public void unboxTest(){
+    assertEquals("Set<Map<int,de.x.Person>>",SymTypeOfGenerics.unbox((SymTypeOfGenerics)teSetB));
+    assertEquals("Set<de.x.Person>",SymTypeOfGenerics.unbox((SymTypeOfGenerics)teSet));
+    assertEquals("Set<A>",SymTypeOfGenerics.unbox((SymTypeOfGenerics)teSetA));
   }
 
 }

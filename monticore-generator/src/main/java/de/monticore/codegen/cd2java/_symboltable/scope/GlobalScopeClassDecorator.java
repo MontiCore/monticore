@@ -3,15 +3,12 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolTOP;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
@@ -20,10 +17,10 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a globalScope class from a grammar
@@ -41,6 +38,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected static final String ADAPTED_RESOLVING_DELEGATE = "adapted%sResolvingDelegate";
 
   protected static final String TEMPLATE_PATH = "_symboltable.globalscope.";
+
+  protected static final String ERROR_CODE = "0xA6100";
 
   public GlobalScopeClassDecorator(final GlobalExtensionManagement glex,
                                    final SymbolTableService symbolTableService,
@@ -146,8 +145,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     Map<String, ASTCDAttribute> symbolAttributes = new HashMap<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.isPresentAstNode() && type.getAstNode().getModifierOpt().isPresent()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifierOpt().get())) {
+        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           Optional<ASTCDAttribute> symbolAttribute = createResolvingDelegateAttribute(type.getAstNode(), cdDefinitionSymbol);
           symbolAttribute.ifPresent(attr -> symbolAttributes.put(attr.getName(), attr));
         }
@@ -172,18 +171,18 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDMethod createGetNameMethod() {
     ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
-    String generatedErrorCode = DecorationHelper.getGeneratedErrorCode(getNameMethod);
+    String generatedErrorCode = getDecorationHelper().getGeneratedErrorCode(getNameMethod);
     this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint(
-        "Log.error(\"0xA6101" + generatedErrorCode 
-        + " Global scopes do not have names.\");\n" 
-        + "    return null;"));
+        "Log.error(\"0xA6101" + generatedErrorCode
+            + " Global scopes do not have names.\");\n"
+            + "    return null;"));
     return getNameMethod;
   }
-  
+
   /**
    * Creates the isPresent method for global scopes. As these do not have names,
    * the method return false.
-   * 
+   *
    * @return false
    */
   protected ASTCDMethod createIsPresentNameMethod() {
@@ -225,11 +224,11 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDAttribute> symbolAlreadyResolvedAttributes = new ArrayList<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       // only types that define a symbol
-      List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes().stream().filter(t -> t.getAstNodeOpt().isPresent())
-          .filter(t -> t.getAstNode().getModifierOpt().isPresent())
-          .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifierOpt().get()))
-          .map(CDTypeSymbolTOP::getAstNodeOpt)
-          .map(Optional::get)
+      List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes().stream().filter(t -> t.isPresentAstNode())
+          .filter(t -> t.getAstNode().isPresentModifier())
+          .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifier()))
+          .filter(CDTypeSymbol::isPresentAstNode)
+          .map(CDTypeSymbol::getAstNode)
           .collect(Collectors.toList());
       symbolAlreadyResolvedAttributes.addAll(createSymbolAlreadyResolvedAttributes(symbolProds));
     }
@@ -267,23 +266,23 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDAttribute enclosingScopeAttribute = this.getCDAttributeFacade()
             .createAttribute(PROTECTED,
         symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
-    symbolTableService.addAttributeDefaultValues(enclosingScopeAttribute, glex);
+    getDecorationHelper().addAttributeDefaultValues(enclosingScopeAttribute, glex);
 
     methodDecorator.disableTemplates();
     List<ASTCDMethod> enclosingScopeMethods = methodDecorator.decorate(enclosingScopeAttribute);
     methodDecorator.enableTemplates();
     for (ASTCDMethod enclosingScopeMethod : enclosingScopeMethods) {
-      String generatedErrorCode = DecorationHelper.getGeneratedErrorCode(enclosingScopeMethod);
+      String generatedErrorCode = getDecorationHelper().getGeneratedErrorCode(enclosingScopeMethod);
       // add return null if method has return type
       if (enclosingScopeMethod.getMCReturnType().isPresentMCType()) {
         this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(
-            "Log.error(\"0xA6100" + generatedErrorCode + " GlobalScope " + globalScopeName +
+            "Log.error(\"" + ERROR_CODE + generatedErrorCode + " GlobalScope " + globalScopeName +
                 " has no EnclosingScope, so you cannot call method" + enclosingScopeMethod.getName() + ".\");\n" +
                 "    return null;"));
       } else {
         // no return if method is void type
         this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(
-            "Log.error(\"0xA6100" + generatedErrorCode + " GlobalScope " + globalScopeName +
+            "Log.error(\"" + ERROR_CODE + generatedErrorCode + " GlobalScope " + globalScopeName +
                 " has no EnclosingScope, so you cannot call method" + enclosingScopeMethod.getName() + ".\");"));
       }
     }
@@ -330,8 +329,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.isPresentAstNode() && type.getAstNode().getModifierOpt().isPresent()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifierOpt().get())) {
+        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           methodList.add(createResolveAdaptedMethod(type.getAstNode(), cdDefinitionSymbol, foundSymbolsParameter, nameParameter,
               accessModifierParameter));
         }

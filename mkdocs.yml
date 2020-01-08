@@ -1,0 +1,19 @@
+site_name: MontiCore
+theme:
+  name: bootstrap
+
+repo_url: https://github.com/MontiCore/monticore/
+
+nav:
+  - Home: 'README.md'
+  - Grammars:
+    - 'General': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
+    - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/README.md'
+    - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/README.md'
+    - 'Types': 'monticore-grammar/src/main/java/de/monticore/types/check/README.md'
+  - Languages: 'Languages.md'
+  - Changelog: 'CHANGELOG.md'
+  - License: '00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md'
+  - Reports: 'Reports.md'
+
+

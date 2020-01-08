@@ -38,6 +38,7 @@ public class ParserGeneratorTest extends AstDependentGeneratorTest {
     LogStub.enableFailQuick(false);
   }
 
+  @Test
   public void testCommon() {
     astTest.testCommon();
     testCorrect("mc/grammars/common/TestCommon.mc4", doCompile);

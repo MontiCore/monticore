@@ -8,7 +8,6 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -19,12 +18,13 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.MILL_FOR;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.MILL_SUFFIX;
-import static de.monticore.cd.facade.CDModifier.*;
 
 public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit, Collection<ASTCDClass>> {
 
@@ -42,7 +42,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     //filter out all classes that are abstract and remove AST prefix
     astcdDefinition.setCDClassList(astcdDefinition.getCDClassList()
         .stream()
-        .filter(ASTCDClassTOP::isPresentModifier)
+        .filter(ASTCDClass::isPresentModifier)
         .filter(x -> !x.getModifier().isAbstract())
         .collect(Collectors.toList()));
 
@@ -103,7 +103,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       } else {
         ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(service.getASTPackage(superSymbol) + "." + astName + BUILDER_SUFFIX);
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
-        this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("Log.error(\"0xA7009" + DecorationHelper
+        this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("Log.error(\"0xA7009" + getDecorationHelper()
             .getGeneratedErrorCode(clazz) + " Overridden production " + clazz.getName() + " is not reachable\");\nreturn null;\n"));
       }
       builderMethodsList.add(protectedMethod);
