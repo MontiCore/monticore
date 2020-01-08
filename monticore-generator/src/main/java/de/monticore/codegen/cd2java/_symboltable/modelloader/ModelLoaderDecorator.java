@@ -71,7 +71,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected ASTCDConstructor createConstructor(String modelLoaderName, String languageName) {
     ASTCDParameter language = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(languageName), "language");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), modelLoaderName, language);
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "Constructor"));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorModelLoader"));
     return constructor;
   }
 

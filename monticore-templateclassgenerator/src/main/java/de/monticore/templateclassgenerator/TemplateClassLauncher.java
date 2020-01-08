@@ -9,10 +9,9 @@ import java.nio.charset.Charset;
 
 /**
  * Main class for launching TCG with jar.
- *
  */
-public class TemplateClassGenerator {
-  
+public class TemplateClassLauncher {
+
   public static void main(String[] args) {
     if (args.length % 2 == 1 || args.length > 4) {
       System.out
@@ -20,14 +19,14 @@ public class TemplateClassGenerator {
               "TemplateClassGenerator CLI Usage: java -jar monticore-templateclassgenerator.jar <templatepath> <out>");
       return;
     }
-    
+
     CLIArguments arguments = CLIArguments.forArguments(args);
     TemplateClassGeneratorConfiguration config = TemplateClassGeneratorConfiguration
         .fromArguments(arguments);
     TemplateClassGeneratorScript script = new TemplateClassGeneratorScript();
     
     try {
-      ClassLoader l = TemplateClassGenerator.class.getClassLoader();
+      ClassLoader l = TemplateClassLauncher.class.getClassLoader();
       String scriptPath = Resources.asCharSource(
           l.getResource("de/monticore/templateclassgenerator/templateclassgenerator.groovy"),
           Charset.forName("UTF-8")).read();

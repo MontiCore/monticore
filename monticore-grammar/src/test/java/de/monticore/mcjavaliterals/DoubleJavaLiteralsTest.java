@@ -13,7 +13,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class DoubleLiteralsTest {
+public class DoubleJavaLiteralsTest {
 
   @BeforeClass
   public static void init() {
@@ -22,7 +22,7 @@ public class DoubleLiteralsTest {
   }
 
   private void checkDoubleLiteral(double d, String s) throws IOException {
-    ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral(s);
+    ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
     assertTrue(lit instanceof ASTDoubleLiteral);
     assertEquals(d, ((ASTDoubleLiteral) lit).getValue(), 0);
   }

@@ -226,7 +226,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
       ASTCDParameter superVisitorParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(superScopeVisitor), VISITOR_PREFIX);
       ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, superVisitorParameter);
       String errorCode = getDecorationHelper().getGeneratedErrorCode(acceptMethod);
-      this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(TEMPLATE_PATH + "Accept", ownScopeVisitor, scopeClassName, superScopeVisitor, errorCode));
+      this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(TEMPLATE_PATH + "AcceptScope", ownScopeVisitor, scopeClassName, superScopeVisitor, errorCode));
       acceptMethods.add(acceptMethod);
     }
 

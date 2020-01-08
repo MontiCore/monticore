@@ -35,7 +35,7 @@ public final class VisitorConstants {
 
   public static final String TRAVERSE = "traverse";
 
-  public static final String HANDLE_INHERITANCE_TEMPLATE = "_visitor.inheritance.Handle";
+  public static final String HANDLE_INHERITANCE_TEMPLATE = "_visitor.inheritance.HandleInheritance";
 
   public static final String HANDLE_TEMPLATE = "_visitor.Handle";
 

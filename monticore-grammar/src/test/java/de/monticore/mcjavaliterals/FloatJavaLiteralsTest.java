@@ -2,8 +2,8 @@
 
 package de.monticore.mcjavaliterals;
 
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTFloatLiteral;
+import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
@@ -13,7 +13,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class FloatLiteralsTest {
+public class FloatJavaLiteralsTest {
 
   @BeforeClass
   public static void init() {
@@ -22,7 +22,7 @@ public class FloatLiteralsTest {
   }
 
   private void checkFloatLiteral(float f, String s) throws IOException {
-    ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral(s);
+    ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
     assertTrue(lit instanceof ASTFloatLiteral);
     assertEquals(f, ((ASTFloatLiteral) lit).getValue(), 0);
     assertTrue(true);

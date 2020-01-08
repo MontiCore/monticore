@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
-import static de.monticore.cd.facade.CDModifier.*;
 
 public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
   public EmfNodeFactoryDecorator(GlobalExtensionManagement glex, NodeFactoryService nodeFactoryService) {
@@ -82,7 +82,7 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
   protected ASTCDMethod addGetFactoryMethod(ASTMCType factoryType, String grammarName, String factoryClassName) {
     ASTCDMethod getFactoryMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, factoryType, GET_FACTORY_METHOD);
     this.replaceTemplate(EMPTY_BODY, getFactoryMethod,
-        new TemplateHookPoint("_ast_emf.factory.GetFactory", factoryClassName, grammarName));
+        new TemplateHookPoint("_ast_emf.factory.GetEmfFactory", factoryClassName, grammarName));
     return getFactoryMethod;
   }
 

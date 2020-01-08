@@ -15,26 +15,25 @@ import java.util.Optional;
  * parses a given input string to an AST. The AST is printed via prettyprint and
  * parsed again. The resulting ASTs are compared. The TypeTestHelper is a
  * singleton.
- *
  */
-public class MCLiteralsTestHelper {
+public class MCJavaLiteralsTestHelper {
 
-  private static MCLiteralsTestHelper instance;
+  private static MCJavaLiteralsTestHelper instance;
 
   /**
    * We have a singleton.
    */
-  private MCLiteralsTestHelper() {
+  private MCJavaLiteralsTestHelper() {
   }
-  
+
   /**
    * Returns the singleton instance.
-   * 
+   *
    * @return The instance.
    */
-  public static MCLiteralsTestHelper getInstance() {
+  public static MCJavaLiteralsTestHelper getInstance() {
     if (instance == null) {
-      instance = new MCLiteralsTestHelper();
+      instance = new MCJavaLiteralsTestHelper();
     }
     return instance;
   }
