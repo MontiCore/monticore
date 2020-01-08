@@ -28,7 +28,7 @@ import static java.util.Optional.of;
 
 public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
-  private String packageName = "";
+  private static final String SET_SCOPE_ERROR = "Could not set enclosing scope of ASTNode \"%s\", because no scope is set yet!";
 
   private MCGrammarSymbol grammarSymbol;
 
@@ -44,7 +44,6 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   public void initialize_MCGrammar(MCGrammarSymbol symbol, ASTMCGrammar astGrammar) {
-    this.packageName = getQualifiedName(astGrammar.getPackageList());
     this.astGrammar = astGrammar;
     this.grammarSymbol = symbol;
 
@@ -148,8 +147,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
       if (getCurrentScope().isPresent()) {
         node.setEnclosingScope(getCurrentScope().get());
       } else {
-        Log.error("Could not set enclosing scope of ASTNode \"" + node
-            + "\", because no scope is set yet!");
+        Log.error(String.format(SET_SCOPE_ERROR, node));
       }
     }
   }
@@ -253,8 +251,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     if (getCurrentScope().isPresent()) {
       ast.setEnclosingScope(getCurrentScope().get());
     } else {
-      Log.error("Could not set enclosing scope of ASTNode \"" + ast
-          + "\", because no scope is set yet!");
+      Log.error(String.format(SET_SCOPE_ERROR, ast));
     }
   }
 
@@ -264,8 +261,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     if (getCurrentScope().isPresent()) {
       ast.setEnclosingScope(getCurrentScope().get());
     } else {
-      Log.error("Could not set enclosing scope of ASTNode \"" + ast
-          + "\", because no scope is set yet!");
+      Log.error(String.format(SET_SCOPE_ERROR, ast));
     }
   }
 

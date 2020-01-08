@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java.data;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractTransformer;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class ListSuffixDecorator extends AbstractTransformer<ASTCDCompilationUni
 
   protected void addSToListAttributes(List<ASTCDAttribute> attributeList) {
     for (ASTCDAttribute astcdAttribute : attributeList) {
-      if (DecorationHelper.isListType(astcdAttribute.printType())) {
+      if (getDecorationHelper().isListType(astcdAttribute.printType())) {
         astcdAttribute.setName(getAttributeNameWithListSuffix(astcdAttribute));
       }
     }

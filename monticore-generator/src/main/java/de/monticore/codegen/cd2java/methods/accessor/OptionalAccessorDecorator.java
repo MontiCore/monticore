@@ -4,7 +4,6 @@ package de.monticore.codegen.cd2java.methods.accessor;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -41,13 +40,13 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
   }
 
   protected String getNaiveAttributeName(ASTCDAttribute astcdAttribute) {
-    return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(astcdAttribute.getName()));
+    return StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(astcdAttribute.getName()));
   }
 
 
   protected ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
     String name = String.format(GET, naiveAttributeName);
-    ASTMCType type = DecorationHelper.getReferenceTypeFromOptional(ast.getMCType().deepClone()).getMCTypeOpt().get();
+    ASTMCType type = getDecorationHelper().getReferenceTypeFromOptional(ast.getMCType().deepClone()).getMCTypeOpt().get();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get", ast, naiveAttributeName));
     return method;

@@ -11,7 +11,8 @@ import java.util.Optional;
 import static de.monticore.types.check.SymTypeConstant.unbox;
 
 /**
- *  Visitor for BitExpressions
+ * This Visitor can calculate a SymTypeExpression (type) for the expressions in BitExpressions
+ * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
 public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression implements BitExpressionsVisitor {
 
@@ -43,7 +44,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     }else{
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0209 The resulting type of the LeftShiftExpression (<<) cannot be calculated");
     }
   }
@@ -56,7 +57,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     }else{
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0210 The resulting type of the RightShiftExpression (>>) cannot be calculated");
     }
   }
@@ -69,7 +70,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     }else{
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0211 The resulting type of the LogicalRightShiftExpression (>>>) cannot be calculated");
     }
   }
@@ -82,7 +83,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     }else{
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0212 The resulting type of the BinaryAndExpression (&) cannot be calculated");
     }
   }
@@ -95,7 +96,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     }else{
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0213 The resulting type of the BinaryOrExpression (|) cannot be calculated");
     }
   }
@@ -108,7 +109,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     }else{
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0214 The resulting type of the BinaryXorExpression (^) cannot be calculated");
     }
   }
@@ -198,8 +199,8 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
 
       //only defined on integral type - integral type
       if(leftResult.isIntegralType()&&rightResult.isIntegralType()){
-        if(unbox(rightResult.print()).equals("long")){
-          if(unbox(leftResult.print()).equals("long")){
+        if("long".equals(unbox(rightResult.print()))){
+          if("long".equals(unbox(leftResult.print()))){
             return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
           }else{
             return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));

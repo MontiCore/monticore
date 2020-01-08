@@ -584,7 +584,7 @@ public class TemplateController {
       return BeansWrapper.getDefaultInstance().unwrap(data.get(name));
     }
     catch (TemplateModelException e) {
-      Log.error("0xA0124 Could not find value for \"" + name + "\" in template \"" + templatename
+      Log.error("0xA0139 Could not find value for \"" + name + "\" in template \"" + templatename
           + "\"", e);
     }
     return null;

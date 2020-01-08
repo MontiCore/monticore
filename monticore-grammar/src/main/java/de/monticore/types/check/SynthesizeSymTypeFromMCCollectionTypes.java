@@ -2,12 +2,14 @@ package de.monticore.types.check;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
-import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -18,8 +20,6 @@ import java.util.Optional;
 public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFromMCBasicTypes
     implements MCCollectionTypesVisitor {
 
-  public SynthesizeSymTypeFromMCCollectionTypes() {
-  }
 
   /**
    * Using the visitor functionality to calculate the SymType Expression
@@ -108,7 +108,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
       node.getValue().accept(getRealThis());
     }
     if (!result.isPresent()) {
-      Log.error("0xE9FDA Internal Error: Missing SymType argument 1 for Map type. "
+      Log.error("0xE9FDB Internal Error: Missing SymType argument 1 for Map type. "
           + " Probably TypeCheck mis-configured.");
     }
     SymTypeExpression argument2 = result.get();

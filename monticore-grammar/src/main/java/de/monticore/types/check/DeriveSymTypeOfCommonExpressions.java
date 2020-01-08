@@ -21,7 +21,8 @@ import static de.monticore.types.check.TypeCheck.compatible;
 import static de.monticore.types.check.TypeCheck.isSubtypeOf;
 
 /**
- * Visitor for CommonExpressions
+ * This Visitor can calculate a SymTypeExpression (type) for the expressions in CommonExpressions
+ * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
 public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression implements CommonExpressionsVisitor {
 
@@ -53,7 +54,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0188 The resulting type of the PlusExpression (+) cannot be calculated");
     }
   }
@@ -69,7 +70,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0189 The resulting type of the MultExpression (*) cannot be calculated");
     }
   }
@@ -85,7 +86,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0190 The resulting type of the DivideExpression (/) cannot be calculated");
     }
   }
@@ -101,7 +102,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0191 The resulting type of the MinusExpression (-) cannot be calculated");
     }
   }
@@ -117,7 +118,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0192 The resulting type of the ModuloExpression (%) cannot be calculated");
     }
   }
@@ -133,7 +134,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0193 The resulting type of the LessEqualExpression (<=) cannot be calculated");
     }
   }
@@ -149,7 +150,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0194 The resulting type of the GreaterEqualExpression (>=) cannot be calculated");
     }
   }
@@ -165,7 +166,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0195 The resulting type of the LessThanExpression (<) cannot be calculated");
     }
   }
@@ -181,7 +182,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0196 The resulting type of the GreaterThanExpression (>) cannot be calculated");
     }
   }
@@ -197,7 +198,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0197 The resulting type of the EqualsExpression (==) cannot be calculated");
     }
   }
@@ -213,7 +214,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0198 The resulting type of the NotEqualsExpression (!=) cannot be calculated");
     }
   }
@@ -245,7 +246,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
 
     Optional<SymTypeExpression> wholeResult = Optional.empty();
-    if (leftResult.print().equals("boolean") && rightResult.print().equals("boolean")) {
+    if ("boolean".equals(leftResult.print()) && "boolean".equals(rightResult.print())) {
       wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
     }
     if (wholeResult.isPresent()) {
@@ -253,7 +254,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0199 The resulting type of the BooleanAndOpExpression (&&) cannot be calculated");
     }
   }
@@ -285,7 +286,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
 
     Optional<SymTypeExpression> wholeResult = Optional.empty();
-    if (leftResult.print().equals("boolean") && rightResult.print().equals("boolean")) {
+    if ("boolean".equals(leftResult.print()) && "boolean".equals(rightResult.print())) {
       wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
     }
     if (wholeResult.isPresent()) {
@@ -293,7 +294,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0200 The resulting type of the BooleanOrOpExpression (||) cannot be calculated");
     }
   }
@@ -314,7 +315,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       Log.error("0xA0235 The type of the inner expression of the LogicalNotExpression (!) cannot be calculated");
     }
     Optional<SymTypeExpression> wholeResult = Optional.empty();
-    if (innerResult.print().equals("boolean")) {
+    if ("boolean".equals(innerResult.print())) {
       wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
     }
     if (wholeResult.isPresent()) {
@@ -322,7 +323,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0201 The resulting type of the LogicalNotExpression (!) cannot be calculated");
     }
   }
@@ -348,7 +349,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0202 The resulting type of the BracketExpression (\"()\") cannot be calculated");
     }
   }
@@ -391,7 +392,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     //condition has to be boolean
-    if (conditionResult.print().equals("boolean")) {
+    if ("boolean".equals(conditionResult.print())) {
       //check if "then" and "else" are either from the same type or are in sub-supertype relation
       if (trueResult.print().equals(falseResult.print())) {
         wholeResult = Optional.of(trueResult);
@@ -408,7 +409,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0204 The resulting type of the ConditionalExpression cannot be calculated");
     }
   }
@@ -438,7 +439,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       lastResult.setLast(wholeResult.get());
       this.result = wholeResult.get();
     } else {
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0205 The resulting type of the BooleanNotExpression (~) cannot be calculated");
     }
   }
@@ -468,12 +469,14 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         FieldSymbol var = fieldSymbols.get(0);
         SymTypeExpression type = var.getType();
         this.result = type;
+        lastResult.setField();
         lastResult.setLast(type);
       } else if (typeSymbolOpt.isPresent()) {
         //no variable found, test type
         TypeSymbol typeSymbol = typeSymbolOpt.get();
         SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeObject(typeSymbol.getFullName(), expr.getEnclosingScope());
         this.result = wholeResult;
+        lastResult.setType();
         lastResult.setLast(wholeResult);
       }
     } else {
@@ -484,10 +487,11 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         TypeSymbol typeSymbol = typeSymbolOpt.get();
         SymTypeExpression type = SymTypeExpressionFactory.createTypeObject(typeSymbol.getFullName(), typeSymbol.getEnclosingScope());
         this.result = type;
+        lastResult.setMethod();
         lastResult.setLast(type);
       } else {
         //the inner type has no result and there is no type found
-        lastResult.setLastAbsent();
+        lastResult.reset();
         Log.info("package suspected", "CommonExpressionsTypesCalculator");
       }
     }
@@ -506,7 +510,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       innerResult = lastResult.getLast();
       //resolve methods with name of the inner expression
       List<MethodSymbol> methodlist = innerResult.getMethodList(expr.getName());
-//      List<MethodSymbol> methodlist = innerResult.getMethod(expr.getName());
       //count how many methods can be found with the correct arguments and return type
       List<MethodSymbol> fittingMethods = new ArrayList<>();
       for (MethodSymbol method : methodlist) {
@@ -528,7 +531,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         }
       }
       //there can only be one method with the correct arguments and return type
-      if (fittingMethods.size() != 0) {
+      if (!fittingMethods.isEmpty()) {
         if (fittingMethods.size() > 1) {
           SymTypeExpression returnType = fittingMethods.get(0).getReturnType();
           for (MethodSymbol method : fittingMethods) {
@@ -540,6 +543,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         if (!"void".equals(fittingMethods.get(0).getReturnType().print())) {
           SymTypeExpression result = fittingMethods.get(0).getReturnType();
           this.result = result;
+          lastResult.setMethod();
           lastResult.setLast(result);
         } else {
           Optional<SymTypeExpression> wholeResult = Optional.of(SymTypeExpressionFactory.createTypeVoid());
@@ -577,6 +581,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         if (!"void".equals(fittingMethods.get(0).getReturnType().print())) {
           SymTypeExpression result = fittingMethods.get(0).getReturnType();
           this.result = result;
+          lastResult.setMethod();
           lastResult.setLast(result);
         } else {
           Optional<SymTypeExpression> wholeResult = Optional.of(SymTypeExpressionFactory.createTypeVoid());
@@ -584,7 +589,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
           lastResult.setLast(wholeResult.get());
         }
       } else {
-        lastResult.setLastAbsent();
+        lastResult.reset();
         Log.error("0xA0217 The resulting type of the CallExpression cannot be calculated");
       }
     }
@@ -649,7 +654,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
     //Option one: they are both numeric types or they are both booleans
     if (isNumericType(leftResult) && isNumericType(rightResult)
-        || leftResult.print().equals("boolean") && rightResult.print().equals("boolean")) {
+        || "boolean".equals(leftResult.print()) && "boolean".equals(rightResult.print())) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
     }
     //Option two: none of them is a primitive type and they are either the same type or in a super/sub type relation
@@ -745,7 +750,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       Log.error("0xA0251 The type of the right expression could not be calculated");
     }
     //if one part of the expression is a String then the whole expression is a String
-    if (unbox(leftResult.print()).equals("String") || unbox(rightResult.print()).equals("String")) {
+    if ("String".equals(unbox(leftResult.print())) || "String".equals(unbox(rightResult.print()))) {
       return Optional.of(SymTypeExpressionFactory.createTypeObject("String", leftType.getEnclosingScope()));
     }
     //no String in the expression -> use the normal calculation for the basic arithmetic operators
@@ -756,10 +761,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
    * test if the expression is of numeric type (double, float, long, int, char, short, byte)
    */
   private boolean isNumericType(SymTypeExpression ex) {
-    return (unbox(ex.print()).equals("double") || unbox(ex.print()).equals("float") ||
-        unbox(ex.print()).equals("long") || unbox(ex.print()).equals("int") ||
-        unbox(ex.print()).equals("char") || unbox(ex.print()).equals("short") ||
-        unbox(ex.print()).equals("byte")
+    return ("double".equals(unbox(ex.print())) || "float".equals(unbox(ex.print())) ||
+        "long".equals(unbox(ex.print())) || "int".equals(unbox(ex.print())) ||
+        "char".equals(unbox(ex.print())) || "short".equals(unbox(ex.print())) ||
+        "byte".equals(unbox(ex.print()))
     );
   }
 
@@ -767,7 +772,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
    * test if the expression is a primitive type
    */
   private boolean isPrimitiveType(SymTypeExpression ex) {
-    return isNumericType(ex) || unbox(ex.print()).equals("boolean");
+    return isNumericType(ex) || "boolean".equals(unbox(ex.print()));
   }
 
   /**
@@ -787,5 +792,4 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
   public void setLastResult(LastResult lastResult) {
     this.lastResult = lastResult;
   }
-
 }

@@ -10,9 +10,9 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -71,11 +71,11 @@ public class ODDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
 
-    this.glex.setGlobalValue("genHelper", new DecorationHelper());
+    this.glex.setGlobalValue("genHelper", DecorationHelper.getInstance());
     ODDecorator decorator = new ODDecorator(this.glex, new MethodDecorator(glex), new ODService(decoratedCompilationUnit),
         new VisitorService(decoratedCompilationUnit));
     this.odClass = decorator.decorate(decoratedCompilationUnit);
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("service", new ODService(decoratedCompilationUnit));
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
   }

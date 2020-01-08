@@ -26,6 +26,9 @@ public class ASTService extends AbstractService<ASTService> {
     super(cdSymbol);
   }
 
+  /**
+   * overwrite methods of AbstractService to add the correct '_ast' package for ast generation
+   */
   @Override
   public String getSubPackage() {
     return ASTConstants.AST_PACKAGE;

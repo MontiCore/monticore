@@ -13,11 +13,14 @@ import java.util.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
 
 /**
- * Visitor for ExpressionsBasis
+ * This Visitor can calculate a SymTypeExpression (type) for the expressions in ExpressionsBasis
+ * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
 public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   protected IExpressionsBasisScope scope;
+
+  protected IDerivePrettyPrinter prettyPrinter;
 
   protected SymTypeExpression result;
 
@@ -41,18 +44,18 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   @Override
   public void traverse(ASTLiteralExpression expr) {
-    SymTypeExpression result = null;
+    SymTypeExpression wholeResult = null;
     //get the type of the literal
     expr.getLiteral().accept(getRealThis());
     if (lastResult.isPresentLast()) {
-      result = lastResult.getLast();
+      wholeResult = lastResult.getLast();
     }
-    if (result != null) {
-      this.result = result;
-      lastResult.setLast(result);
+    if (wholeResult != null) {
+      this.result = wholeResult;
+      lastResult.setLast(wholeResult);
     } else {
       //No type found --> error
-      lastResult.setLastAbsent();
+      lastResult.reset();
       Log.error("0xA0207 The resulting type of the LiteralExpression cannot be calculated");
     }
   }
@@ -76,16 +79,18 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
         res = createTypeExpression(var.getType().print(), var.getEnclosingScope());
       }
       this.result = res;
+      lastResult.setField();
       lastResult.setLast(res);
     } else if (optType.isPresent()) {
       //no variable found, test if name is type
       TypeSymbol type = optType.get();
       SymTypeExpression res = createTypeExpression(type.getName(), expr.getEnclosingScope());
       this.result = res;
+      lastResult.setType();
       lastResult.setLast(res);
     }else{
      //name not found --> package or nothing
-     lastResult.setLastAbsent();
+     lastResult.reset();
       Log.info("package suspected", "ExpressionBasisTypesCalculator");
     }
   }
@@ -96,5 +101,9 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   public void setLastResult(LastResult lastResult) {
     this.lastResult = lastResult;
+  }
+
+  public void setPrettyPrinter(IDerivePrettyPrinter prettyPrinter){
+    this.prettyPrinter = prettyPrinter;
   }
 }

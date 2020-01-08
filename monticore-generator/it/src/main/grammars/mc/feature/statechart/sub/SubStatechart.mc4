@@ -2,7 +2,7 @@
 
 package mc.feature.statechart.sub;
 
-grammar SubStatechart extends de.monticore.statechart.Statechart {
+grammar SubStatechart extends mc.feature.statechart.Statechart {
 
   First = "Hello";
   Second = "Bye";

@@ -3,11 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
-
-import java.util.Optional;
 
 /**
  * An objectType is a full qualified class name.

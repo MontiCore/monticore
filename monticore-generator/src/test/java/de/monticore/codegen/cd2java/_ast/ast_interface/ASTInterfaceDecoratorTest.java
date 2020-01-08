@@ -7,13 +7,13 @@ import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -24,7 +24,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.*;
@@ -41,7 +42,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "data", "DataInterface");
     this.glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     SymbolTableService symbolTableService = new SymbolTableService(astcdCompilationUnit);
     ASTCDInterface interfaceBy = getInterfaceBy("ASTA", astcdCompilationUnit);
     ASTInterfaceDecorator decorator = new ASTInterfaceDecorator(this.glex, new ASTService(astcdCompilationUnit)
@@ -175,7 +176,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "data", "DataInterface");
     glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
-    glex.setGlobalValue("astHelper", new DecorationHelper());
+    glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     SymbolTableService symbolTableService = new SymbolTableService(astcdCompilationUnit);
     ASTService mockService = Mockito.spy(new ASTService(astcdCompilationUnit));
     ASTCDInterface interfaceBy = getInterfaceBy("ASTA", astcdCompilationUnit);
