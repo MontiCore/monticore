@@ -18,10 +18,10 @@ repositories {
 }
 
 dependencies {
-  compile gradleApi()
-  compile localGroovy()
-  compile group: 'de.monticore', name: 'monticore-cli', version: "$version"
-  compile group: 'de.monticore', name: 'monticore-generator', version: "$version"
+  implementation gradleApi()
+  implementation localGroovy()
+  implementation group: 'de.monticore', name: 'monticore-cli', version: "$version"
+  implementation group: 'de.monticore', name: 'monticore-generator', version: "$version"
 }
 
 gradlePlugin.plugins {
