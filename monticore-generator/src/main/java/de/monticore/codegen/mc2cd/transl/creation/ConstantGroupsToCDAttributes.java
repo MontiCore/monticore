@@ -6,7 +6,6 @@ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.logging.Log;
 
@@ -51,15 +50,10 @@ public class ConstantGroupsToCDAttributes implements UnaryOperator<Link<ASTMCGra
     for (RuleComponentSymbol prodComponent : prodSymbol.getProdComponents()) {
       if (prodComponent.isIsConstantGroup() && prodComponent.isPresentAstNode()
           && prodComponent.getAstNode() instanceof ASTConstantGroup) {
-        boolean iterated = MCGrammarSymbolTableHelper.isConstGroupIterated(prodComponent);
-        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory
-            .createASTCDAttribute();
-        cdAttribute
-            .setName(MCGrammarSymbolTableHelper.getConstantName(prodComponent).orElse(""));
-        int constantType = iterated ? ASTConstantsMCBasicTypes.INT : ASTConstantsMCBasicTypes.BOOLEAN;
-        cdAttribute.setMCType(
-            GrammarMill.mCPrimitiveTypeBuilder().setPrimitive(constantType).build());
+        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
         link.target().getCDAttributeList().add(cdAttribute);
+        ASTConstantGroup astConstantGroup = (ASTConstantGroup) prodComponent.getAstNode();
+        new Link<>(astConstantGroup, cdAttribute, link);
       }
     }
   }

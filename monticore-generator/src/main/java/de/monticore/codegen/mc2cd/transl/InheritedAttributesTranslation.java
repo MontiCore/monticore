@@ -23,31 +23,31 @@ import java.util.stream.Collectors;
 
 public class InheritedAttributesTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
-  
+
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-    
+
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
         ASTCDClass.class)) {
-      handleInheritedNonTerminals(link);
+      handleInheritedRuleComponents(link);
       handleInheritedAttributeInASTs(link);
     }
 
     return rootLink;
   }
-  
-  private void handleInheritedNonTerminals(Link<ASTClassProd, ASTCDClass> link) {
-    for (Entry<ASTProd, List<ASTNonTerminal>> entry : getInheritedNonTerminals(link.source())
+
+  private void handleInheritedRuleComponents(Link<ASTClassProd, ASTCDClass> link) {
+    for (Entry<ASTProd, List<ASTRuleComponent>> entry : getInheritedRuleComponents(link.source())
         .entrySet()) {
-      for (ASTNonTerminal nonTerminal : entry.getValue()) {
+      for (ASTRuleComponent ruleComponent : entry.getValue()) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
         link.target().getCDAttributeList().add(cdAttribute);
-        new Link<>(nonTerminal, cdAttribute, link);
+        new Link<>(ruleComponent, cdAttribute, link);
       }
     }
   }
-  
+
   private void handleInheritedAttributeInASTs(Link<ASTClassProd, ASTCDClass> link) {
     for (Entry<ASTProd, Collection<AdditionalAttributeSymbol>> entry : getInheritedAttributeInASTs(
         link.source()).entrySet()) {
@@ -64,11 +64,11 @@ public class InheritedAttributesTranslation implements
   private ASTCDAttribute createCDAttribute(ASTProd inheritingNode, ASTProd definingNode) {
     List<ASTInterfaceProd> interfacesWithoutImplementation = getAllInterfacesWithoutImplementation(
         inheritingNode);
-    
+
     String superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(definingNode.getEnclosingScope())
         .map(MCGrammarSymbol::getFullName)
         .orElse("");
-    
+
     ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
     if (!interfacesWithoutImplementation.contains(definingNode)) {
       TransformationHelper.addStereoType(
@@ -77,7 +77,7 @@ public class InheritedAttributesTranslation implements
     return cdAttribute;
   }
 
-  
+
   private Map<ASTProd, Collection<AdditionalAttributeSymbol>> getInheritedAttributeInASTs(
       ASTProd astNode) {
     return TransformationHelper.getAllSuperProds(astNode).stream()
@@ -87,7 +87,7 @@ public class InheritedAttributesTranslation implements
   }
 
   /**
-  * @return a list of interfaces that aren't already implemented by another
+   * @return a list of interfaces that aren't already implemented by another
    * class higher up in the type hierarchy. (the list includes interfaces
    * extended transitively by other interfaces)
    */
@@ -104,10 +104,10 @@ public class InheritedAttributesTranslation implements
     return allSuperRules;
   }
 
-  public static Map<ASTProd, List<ASTNonTerminal>> getInheritedNonTerminals(ASTProd sourceNode) {
+  private Map<ASTProd, List<ASTRuleComponent>> getInheritedRuleComponents(ASTProd sourceNode) {
     return TransformationHelper.getAllSuperProds(sourceNode).stream()
         .distinct()
         .collect(Collectors.toMap(Function.identity(),
-            astProd -> ASTNodes.getSuccessors(astProd, ASTNonTerminal.class)));
+            astProd -> ASTNodes.getSuccessors(astProd, ASTRuleComponent.class)));
   }
 }
