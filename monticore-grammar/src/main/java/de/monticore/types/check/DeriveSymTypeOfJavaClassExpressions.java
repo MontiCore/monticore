@@ -6,7 +6,6 @@ import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisS
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor;
 import de.monticore.symboltable.IScopeSpanningSymbol;
-import de.monticore.types.typesymbols._ast.ASTTypeVar;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
@@ -54,7 +53,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       Log.error("0xA0318 the result of the inner expression of the ThisExpression cannot be calculated");
     }
 
-    //check recursively until there is no enclosing scope
+    //check recursively until there is no enclosing scope or the spanningsymbol of the scope is a type
     //while the enclosing scope is not null, it is possible that the expression can be calculated
     if(lastResult.isType()) {
       IExpressionsBasisScope testScope = scope;
@@ -163,7 +162,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     //traverse the inner expression, check that it is a type (how?); the result is the type "Class"
     //can be calculated
     SymTypeExpression wholeResult = null;
-    SymTypeExpression innerResult = null;
+    SymTypeExpression innerResult;
 
     //TODO: traverse method for external return type -> synthesizer that must be given to this class when initialising the TypeCheck or (perhaps better) that can be added to the Delegator
     node.getExtReturnType().accept(getRealThis());
@@ -572,6 +571,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       }
     }else{
       //2) Name present -> ExtTypeArguments and Arguments can be present(optional) -> method super.<ExtTypeArguments>Name(Arguments)
+      //if no arguments present then there cannot be ExtTypeArguments present -> field in super class
+      //if arguments present then there can be ExtTypeArguments present, but they do not have to be present -> method with or without type variables
       //get the result of the ExtTypeArguments and Arguments if present -> then test the arguments with the method and fill in the actual types if there are any typevariables
       //similar to PrimaryGenericInvocationExpression
     }
@@ -586,15 +587,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   }
 
   private boolean testArguments(List<MethodSymbol> methods, List<ASTExpression> parameters){
-    List<SymTypeExpression> symTypeExpressions = Lists.newArrayList();
-    for(int i = 0;i<parameters.size();i++){
-      parameters.get(i).accept(getRealThis());
-      if(lastResult.isPresentLast()){
-        symTypeExpressions.add(lastResult.getLast());
-      }else{
-        Log.error(/*TODO*/"the result of the "+i+". parameter cannot be calculated");
-      }
-    }
+    List<SymTypeExpression> symTypeExpressions = calculateArguments(parameters);
 
     boolean isCorrect = false;
 
@@ -642,15 +635,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   }
 
   private Optional<MethodSymbol> testArgumentsAndReturnReturnType(List<MethodSymbol> methods ,List<ASTExpression> parameters){
-    List<SymTypeExpression> symTypeExpressions = Lists.newArrayList();
-    for(int i = 0;i<parameters.size();i++){
-      parameters.get(i).accept(getRealThis());
-      if(lastResult.isPresentLast()){
-        symTypeExpressions.add(lastResult.getLast());
-      }else{
-        Log.error(/*TODO*/"the result of the "+i+". parameter cannot be calculated");
-      }
-    }
+    List<SymTypeExpression> symTypeExpressions = calculateArguments(parameters);
 
     outer:for(MethodSymbol method: methods){
       if(method.getParameterList().size() != symTypeExpressions.size()) {
@@ -691,5 +676,18 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       return Optional.of(method);
     }
     return Optional.empty();
+  }
+
+  public List<SymTypeExpression> calculateArguments(List<ASTExpression> parameters){
+    List<SymTypeExpression> symTypeExpressions = Lists.newArrayList();
+    for(int i = 0;i<parameters.size();i++){
+      parameters.get(i).accept(getRealThis());
+      if(lastResult.isPresentLast()){
+        symTypeExpressions.add(lastResult.getLast());
+      }else{
+        Log.error(/*TODO*/"the result of the "+i+". parameter cannot be calculated");
+      }
+    }
+    return symTypeExpressions;
   }
 }
