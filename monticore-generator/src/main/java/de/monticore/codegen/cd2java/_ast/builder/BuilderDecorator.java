@@ -71,6 +71,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .filter(a -> !service.isInheritedAttribute(a))
         .collect(Collectors.toList());
 
+    // additionally add only setter methods with correct builder return type for inherited attributes
     List<ASTCDAttribute> inheritedAttributes = domainClass.getCDAttributeList().stream()
         .map(ASTCDAttribute::deepClone)
         .filter(a -> !a.getModifier().isFinal())

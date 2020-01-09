@@ -27,27 +27,70 @@ public class InheritedAttributesTranslation implements
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
         ASTCDClass.class)) {
-      handleInheritedRuleComponents(link);
+      handleInheritedNonTerminals(link);
+      handleInheritedConstantGroup(link);
+      handleInheritedTerminals(link);
+      handleInheritedKeyTerminals(link);
       handleInheritedAttributeInASTs(link);
     }
-
     return rootLink;
   }
 
-  private void handleInheritedRuleComponents(Link<ASTClassProd, ASTCDClass> link) {
-    for (Entry<ASTProd, List<ASTRuleComponent>> entry : getInheritedRuleComponents(link.source())
+  /**
+   * handleInherited method for each RuleComponent type
+   */
+  private void handleInheritedNonTerminals(Link<ASTClassProd, ASTCDClass> link) {
+    for (Entry<ASTProd, List<ASTNonTerminal>> entry : getInheritedNonTerminal(link.source())
         .entrySet()) {
-      for (ASTRuleComponent ruleComponent : entry.getValue()) {
-        ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
-        link.target().getCDAttributeList().add(cdAttribute);
-        new Link<>(ruleComponent, cdAttribute, link);
-      }
+      handleInheritedRuleComponents(link, entry.getKey(), entry.getValue());
     }
   }
 
+  private void handleInheritedConstantGroup(Link<ASTClassProd, ASTCDClass> link) {
+    for (Entry<ASTProd, List<ASTConstantGroup>> entry : getInheritedConstantGroup(link.source())
+        .entrySet()) {
+      handleInheritedRuleComponents(link, entry.getKey(), entry.getValue());
+    }
+  }
+
+  private void handleInheritedTerminals(Link<ASTClassProd, ASTCDClass> link) {
+    for (Entry<ASTProd, List<ASTTerminal>> entry : getInheritedTerminal(link.source())
+        .entrySet()) {
+      // only attributes for terminals with a usage name
+      List<ASTTerminal> terminalWithUsageName = entry.getValue()
+          .stream()
+          .filter(ASTTerminal::isPresentUsageName)
+          .collect(Collectors.toList());
+      handleInheritedRuleComponents(link, entry.getKey(), terminalWithUsageName);
+    }
+  }
+
+  private void handleInheritedKeyTerminals(Link<ASTClassProd, ASTCDClass> link) {
+    for (Entry<ASTProd, List<ASTKeyTerminal>> entry : getInheritedKeyTerminal(link.source())
+        .entrySet()) {
+      // only attributes for keyTerminals with a usage name
+      List<ASTKeyTerminal> keyTerminalWithUsageName = entry.getValue()
+          .stream()
+          .filter(ASTKeyTerminal::isPresentUsageName)
+          .collect(Collectors.toList());
+      handleInheritedRuleComponents(link, entry.getKey(), keyTerminalWithUsageName);
+    }
+  }
+
+  private void handleInheritedRuleComponents(Link<ASTClassProd, ASTCDClass> link, ASTProd astProd,
+                                             List<? extends ASTRuleComponent> ruleComponents) {
+    for (ASTRuleComponent ruleComponent : ruleComponents) {
+      ASTCDAttribute cdAttribute = createCDAttribute(link.source(), astProd);
+      link.target().getCDAttributeList().add(cdAttribute);
+      new Link<>(ruleComponent, cdAttribute, link);
+    }
+  }
+
+  /**
+   * handleInherited method for astrules
+   */
   private void handleInheritedAttributeInASTs(Link<ASTClassProd, ASTCDClass> link) {
     for (Entry<ASTProd, Collection<AdditionalAttributeSymbol>> entry : getInheritedAttributeInASTs(
         link.source()).entrySet()) {
@@ -61,6 +104,53 @@ public class InheritedAttributesTranslation implements
     }
   }
 
+  /**
+   * Methods to get special RuleComponent Types for a Prod
+   */
+
+  private Map<ASTProd, List<ASTNonTerminal>> getInheritedNonTerminal(ASTProd sourceNode) {
+    return TransformationHelper.getAllSuperProds(sourceNode).stream()
+        .distinct()
+        .collect(Collectors.toMap(Function.identity(),
+            astProd -> ASTNodes.getSuccessors(astProd, ASTNonTerminal.class)));
+  }
+
+  private Map<ASTProd, List<ASTConstantGroup>> getInheritedConstantGroup(ASTProd sourceNode) {
+    return TransformationHelper.getAllSuperProds(sourceNode).stream()
+        .distinct()
+        .collect(Collectors.toMap(Function.identity(),
+            astProd -> ASTNodes.getSuccessors(astProd, ASTConstantGroup.class)));
+  }
+
+  private Map<ASTProd, List<ASTTerminal>> getInheritedTerminal(ASTProd sourceNode) {
+    return TransformationHelper.getAllSuperProds(sourceNode).stream()
+        .distinct()
+        .collect(Collectors.toMap(Function.identity(),
+            astProd -> ASTNodes.getSuccessors(astProd, ASTTerminal.class)));
+  }
+
+  private Map<ASTProd, List<ASTKeyTerminal>> getInheritedKeyTerminal(ASTProd sourceNode) {
+    return TransformationHelper.getAllSuperProds(sourceNode).stream()
+        .distinct()
+        .collect(Collectors.toMap(Function.identity(),
+            astProd -> ASTNodes.getSuccessors(astProd, ASTKeyTerminal.class)));
+  }
+
+  /**
+   * all attributes from a astrule for a Prod
+   */
+  private Map<ASTProd, Collection<AdditionalAttributeSymbol>> getInheritedAttributeInASTs(
+      ASTProd astNode) {
+    return TransformationHelper.getAllSuperProds(astNode).stream()
+        .distinct()
+        .collect(Collectors.toMap(Function.identity(), prod -> prod.isPresentSymbol() ?
+            prod.getSymbol().getProdAttributes() : Collections.emptyList()));
+  }
+
+
+  /**
+   * create Attribute with a inherited flag
+   */
   private ASTCDAttribute createCDAttribute(ASTProd inheritingNode, ASTProd definingNode) {
     List<ASTInterfaceProd> interfacesWithoutImplementation = getAllInterfacesWithoutImplementation(
         inheritingNode);
@@ -78,14 +168,6 @@ public class InheritedAttributesTranslation implements
   }
 
 
-  private Map<ASTProd, Collection<AdditionalAttributeSymbol>> getInheritedAttributeInASTs(
-      ASTProd astNode) {
-    return TransformationHelper.getAllSuperProds(astNode).stream()
-        .distinct()
-        .collect(Collectors.toMap(Function.identity(), prod -> prod.isPresentSymbol() ?
-            prod.getSymbol().getProdAttributes() : Collections.emptyList()));
-  }
-
   /**
    * @return a list of interfaces that aren't already implemented by another
    * class higher up in the type hierarchy. (the list includes interfaces
@@ -102,12 +184,5 @@ public class InheritedAttributesTranslation implements
     }
     allSuperRules.addAll(directInterfaces);
     return allSuperRules;
-  }
-
-  private Map<ASTProd, List<ASTRuleComponent>> getInheritedRuleComponents(ASTProd sourceNode) {
-    return TransformationHelper.getAllSuperProds(sourceNode).stream()
-        .distinct()
-        .collect(Collectors.toMap(Function.identity(),
-            astProd -> ASTNodes.getSuccessors(astProd, ASTRuleComponent.class)));
   }
 }
