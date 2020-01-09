@@ -155,7 +155,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
   }
 
-  private void calculatePlusAssignment(ASTRegularAssignmentExpression expr) {
+  private void calculatePlusAssignment(ASTAssignmentExpression expr) {
     Optional<SymTypeExpression> wholeResult = calculateTypeArithmeticWithString(expr.getLeft(), expr.getRight());
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
@@ -168,7 +168,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
   }
 
-  private void calculateMinusAssignment(ASTRegularAssignmentExpression expr) {
+  private void calculateMinusAssignment(ASTAssignmentExpression expr) {
     Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(), expr.getRight());
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
@@ -181,7 +181,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
   }
 
-  private void calculateMultAssignment(ASTRegularAssignmentExpression expr) {
+  private void calculateMultAssignment(ASTAssignmentExpression expr) {
     Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(), expr.getRight());
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
@@ -194,7 +194,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
   }
 
-  private void calculateDivideAssignment(ASTRegularAssignmentExpression expr) {
+  private void calculateDivideAssignment(ASTAssignmentExpression expr) {
     Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(), expr.getRight());
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
@@ -208,7 +208,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
   }
 
   @Override
-  public void traverse(ASTRegularAssignmentExpression expr) {
+  public void traverse(ASTAssignmentExpression expr) {
     //there has to be a variable on the left side of an assignmentexpression
     String toResolve = prettyPrinter.prettyprint(expr.getLeft());
     Optional<FieldSymbol> leftEx = scope.resolveField(toResolve);
@@ -253,7 +253,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
   }
 
-  private void calculateAndAssigment(ASTRegularAssignmentExpression expr) {
+  private void calculateAndAssigment(ASTAssignmentExpression expr) {
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
     Optional<SymTypeExpression> wholeResult = calculateTypeBinaryOperations(expr.getLeft(), expr.getRight());
     if (wholeResult.isPresent()) {
@@ -267,7 +267,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
   }
 
-  private void calculateOrAssignment(ASTRegularAssignmentExpression expr) {
+  private void calculateOrAssignment(ASTAssignmentExpression expr) {
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
     Optional<SymTypeExpression> wholeResult = calculateTypeBinaryOperations(expr.getLeft(), expr.getRight());
     if (wholeResult.isPresent()) {
@@ -281,7 +281,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
   }
 
-  private void calculateBinaryXorAssignment(ASTRegularAssignmentExpression expr) {
+  private void calculateBinaryXorAssignment(ASTAssignmentExpression expr) {
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
     Optional<SymTypeExpression> wholeResult = calculateTypeBinaryOperations(expr.getLeft(), expr.getRight());
     if (wholeResult.isPresent()) {
@@ -295,7 +295,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
   }
 
-  private void calculateDoubleRightAssignment(ASTRegularAssignmentExpression expr) {
+  private void calculateDoubleRightAssignment(ASTAssignmentExpression expr) {
     //definiert auf Ganzzahl - Ganzzahl
     Optional<SymTypeExpression> wholeResult = calculateTypeBitOperation(expr.getLeft(), expr.getRight());
     if (wholeResult.isPresent()) {
@@ -309,7 +309,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
   }
 
-  private void calculateDoubleLeftAssignment(ASTRegularAssignmentExpression expr) {
+  private void calculateDoubleLeftAssignment(ASTAssignmentExpression expr) {
     //definiert auf Ganzzahl - Ganzzahl
     Optional<SymTypeExpression> wholeResult = calculateTypeBitOperation(expr.getLeft(), expr.getRight());
     if (wholeResult.isPresent()) {
@@ -323,7 +323,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
   }
 
-  private void calculateLogicalRightAssignment(ASTRegularAssignmentExpression expr) {
+  private void calculateLogicalRightAssignment(ASTAssignmentExpression expr) {
     //definiert auf Ganzzahl - Ganzzahl
     Optional<SymTypeExpression> wholeResult = calculateTypeBitOperation(expr.getLeft(), expr.getRight());
     if (wholeResult.isPresent()) {
@@ -337,7 +337,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
   }
 
-  private void calculateModuloAssignment(ASTRegularAssignmentExpression expr) {
+  private void calculateModuloAssignment(ASTAssignmentExpression expr) {
     Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(), expr.getRight());
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result

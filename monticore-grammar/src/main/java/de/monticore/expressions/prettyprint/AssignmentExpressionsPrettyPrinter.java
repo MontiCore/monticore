@@ -69,7 +69,7 @@ public class AssignmentExpressionsPrettyPrinter extends ExpressionsBasisPrettyPr
   }
 
   @Override
-  public void handle(ASTRegularAssignmentExpression node) {
+  public void handle(ASTAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
     // ["="|"+="|"-="|"*="|"/="|"&="|"|="|"^="|">>="|">>>="|"<<="|"%="]
