@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class TypeCheckTest {
 
-  TypeCheck tc = new TypeCheck(null, new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter())));
+  TypeCheck tc = new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter())));
   CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
   @Test
@@ -66,7 +66,7 @@ public class TypeCheckTest {
     add2scope(scope, person);
     add2scope(scope, student);
     add2scope(scope, firstsemesterstudent);
-    DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(scope, new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+    DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(scope, new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
     tc = new TypeCheck(null, derLit);
 
     //non-primitives
@@ -127,7 +127,7 @@ public class TypeCheckTest {
     add2scope(scope, person);
     add2scope(scope, student);
     add2scope(scope, firstsemesterstudent);
-    DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(scope, new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+    DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(scope, new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
     tc = new TypeCheck(null, derLit);
 
     //non-primitives

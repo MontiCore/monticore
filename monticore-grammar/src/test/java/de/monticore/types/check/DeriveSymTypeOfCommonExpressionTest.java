@@ -50,7 +50,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisSymTabMill
       .expressionsBasisScopeBuilder()
       .build(),
       new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));

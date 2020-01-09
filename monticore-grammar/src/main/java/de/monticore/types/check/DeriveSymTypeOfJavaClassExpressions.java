@@ -56,19 +56,17 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     //check recursively until there is no enclosing scope or the spanningsymbol of the scope is a type
     //while the enclosing scope is not null, it is possible that the expression can be calculated
     if(lastResult.isType()) {
-      IExpressionsBasisScope testScope = scope;
-      while (testScope.isPresentSpanningSymbol()) {
-        if(testScope.getSpanningSymbol() instanceof TypeSymbol) {
-          TypeSymbol sym = (TypeSymbol) testScope.getSpanningSymbol();
-          if (sym.getName().equals(innerResult.print())) {
-            wholeResult = innerResult;
+      if(scope.getEnclosingScope()!=null){
+        IExpressionsBasisScope testScope = scope;
+        while (testScope!=null) {
+          if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof TypeSymbol) {
+            TypeSymbol sym = (TypeSymbol) testScope.getSpanningSymbol();
+            if (sym.getName().equals(innerResult.print())) {
+              wholeResult = innerResult;
+              break;
+            }
           }
-        }
-        if (testScope.getEnclosingScope() != null) {
           testScope = testScope.getEnclosingScope();
-        }
-        else {
-          break;
         }
       }
     }
