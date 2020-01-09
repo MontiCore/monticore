@@ -210,11 +210,13 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
   @Override
   public void traverse(ASTRegularAssignmentExpression expr) {
     //there has to be a variable on the left side of an assignmentexpression
-    String toResolve = prettyPrinter.prettyprint(expr.getLeft());
-    Optional<FieldSymbol> leftEx = scope.resolveField(toResolve);
-    if (!leftEx.isPresent()) {
-      lastResult.reset();
-      Log.error("0xA0180 The resulting type cannot be calculated because the inner left expression is no field");
+    expr.getLeft().accept(getRealThis());
+    if(lastResult.isPresentLast()){
+      if(!lastResult.isField()){
+        Log.error("0xA0180 The resulting type cannot be calculated because the inner left expression is no field");
+      }
+    }else{
+      Log.error("0xA0325 the type of the left expression cannot be calculated");
     }
     //the regular assignment expression covers all assignment expressions --> differentiate between these
     if (expr.getOperator() == ASTConstantsAssignmentExpressions.PLUSEQUALS) {

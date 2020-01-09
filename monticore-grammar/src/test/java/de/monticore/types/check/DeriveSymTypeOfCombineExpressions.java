@@ -44,7 +44,7 @@ public class DeriveSymTypeOfCombineExpressions extends CombineExpressionsWithLit
 
   public DeriveSymTypeOfCombineExpressions(IExpressionsBasisScope scope, IDerivePrettyPrinter prettyPrinter){
     this.realThis=this;
-    this.prettyPrinter = new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter());
+    this.prettyPrinter = prettyPrinter;
 
     deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfCommonExpressions();
     deriveSymTypeOfCommonExpressions.setScope(scope);
