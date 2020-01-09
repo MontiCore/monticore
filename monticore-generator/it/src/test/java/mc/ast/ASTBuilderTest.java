@@ -50,8 +50,6 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
     List<String> selection = Lists.newArrayList();
     String table = "tableAttr";
 
-    // TODO: Die Builder müssen alle alle Setter überschreiben.
-
    mc.feature.javasql.javasql.javasql._ast.ASTSelectStatement javasqlStatement = JavaSQLMill.selectStatementBuilder().
             setDistinct(distinct).
             setSelectionList(selection).
