@@ -12,6 +12,7 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.utils.ASTNodes;
 import de.monticore.utils.Link;
 
@@ -29,11 +30,15 @@ public class InheritedAttributesTranslation implements
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
         ASTCDClass.class)) {
+      //inherited
       handleInheritedNonTerminals(link);
       handleInheritedConstantGroup(link);
       handleInheritedTerminals(link);
       handleInheritedKeyTerminals(link);
       handleInheritedAttributeInASTs(link);
+      //overwritten
+      Optional<ASTProd> overwrittenProdIfNoNewRightSide = getOverwrittenProdIfNoNewRightSide(link.source());
+      overwrittenProdIfNoNewRightSide.ifPresent(astProd -> handleOverwrittenRuleComponents(link, astProd));
     }
     return rootLink;
   }
@@ -136,6 +141,7 @@ public class InheritedAttributesTranslation implements
             astProd -> ASTNodes.getSuccessors(astProd, ASTKeyTerminal.class)));
   }
 
+
   /**
    * all attributes from a astrule for a Prod
    */
@@ -146,7 +152,6 @@ public class InheritedAttributesTranslation implements
         .collect(Collectors.toMap(Function.identity(), prod -> prod.isPresentSymbol() ?
             prod.getSymbol().getProdAttributes() : Collections.emptyList()));
   }
-
 
   /**
    * create Attribute with a inherited flag
@@ -167,6 +172,43 @@ public class InheritedAttributesTranslation implements
     return cdAttribute;
   }
 
+  /**
+   * handleOverwritten method for each RuleComponent type
+   */
+  private void handleOverwrittenRuleComponents(Link<ASTClassProd, ASTCDClass> link, ASTProd superProd) {
+    handleInheritedRuleComponents(link, superProd, ASTNodes.getSuccessors(superProd, ASTNonTerminal.class));
+    handleInheritedRuleComponents(link, superProd, ASTNodes.getSuccessors(superProd, ASTConstantGroup.class));
+    List<ASTTerminal> overwrittenTerminals = ASTNodes.getSuccessors(superProd, ASTTerminal.class)
+        .stream()
+        .filter(ASTTerminal::isPresentUsageName)
+        .collect(Collectors.toList());
+    handleInheritedRuleComponents(link, superProd, overwrittenTerminals);
+    List<ASTTerminal> overwrittenKeyTerminals = ASTNodes.getSuccessors(superProd, ASTTerminal.class)
+        .stream()
+        .filter(ASTTerminal::isPresentUsageName)
+        .collect(Collectors.toList());
+    handleInheritedRuleComponents(link, superProd, overwrittenKeyTerminals);
+  }
+
+  /**
+   * checks if the Prod is overwriting a Prod of the super grammar with the same name
+   * and does not change the implementation by not adding a right hand side
+   * e.g. Prod Foo
+   * grammar A { Foo = Name;}
+   * grammar B extends A {interface Bar; Foo implements Bar;}
+   */
+  private Optional<ASTProd> getOverwrittenProdIfNoNewRightSide(ASTClassProd astProd) {
+    Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper
+        .resolveRuleInSupersOnly(
+            astProd,
+            astProd.getName());
+    if (ruleSymbol.isPresent() && !ruleSymbol.get().isIsExternal()
+        && ruleSymbol.get().isPresentAstNode()
+        && ASTNodes.getSuccessors(astProd, ASTRuleComponent.class).isEmpty()) {
+      return Optional.of(ruleSymbol.get().getAstNode());
+    }
+    return Optional.empty();
+  }
 
   /**
    * @return a list of interfaces that aren't already implemented by another
