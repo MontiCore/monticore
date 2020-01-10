@@ -8,7 +8,7 @@ edit_uri: ""
 nav:
   - Home: 'README.md'
   - 'Introduction':
-    - 'Getting Started': 'Getting Started.md'
+    - 'Getting Started': 'GettingStarted.md'
     - 'FAQ': 'FAQ.md'
   - Grammars:
     - 'General': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
