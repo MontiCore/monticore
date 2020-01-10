@@ -7,7 +7,8 @@ edit_uri: ""
 
 nav:
   - Home: 'README.md'
-  - 'Getting Started': 'GettingStarted.md'
+  - 'Introduction':
+    - 'Getting Started': 'Getting Started'
     - 'FAQ': 'FAQ.md'
   - Grammars:
     - 'General': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
@@ -15,9 +16,10 @@ nav:
     - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/README.md'
     - 'Types': 'monticore-grammar/src/main/java/de/monticore/types/check/README.md'
   - Languages: 'MCLanguages.md'
-  - Changelog: 'CHANGELOG.md'
-  - License: '00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md'
-  - Reports: 'Reports.md'
-  - Publications: 'Publications.md'
+  - 'More Information':
+    - Changelog: 'CHANGELOG.md'
+    - License: '00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md'
+    - Reports: 'Reports.md'
+    - Publications: 'Publications.md'
 
 
