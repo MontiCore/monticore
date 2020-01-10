@@ -24,8 +24,9 @@ MontiCore supports different environments. For a quick peek, the command line ve
 
 ### In a nutshell
 
-|Prerequisites | Install the Java Development Kit (JDK) 8.|
+| | |
 |---|---|
+|Prerequisites | Install the Java Development Kit (JDK) 8.|
 |Installation | Download the MontiCore distribution file, unzip it, and change to the extracted directory.|
 |Running MontiCore | Execute MontiCore on the provided language definition ‹Automaton.mc4›.|
 |Compiling the Product | Compile all the generated and supplied handwritten Java source files.|
