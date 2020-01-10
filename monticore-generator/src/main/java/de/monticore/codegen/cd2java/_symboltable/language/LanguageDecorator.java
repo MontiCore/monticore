@@ -90,7 +90,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     ASTCDParameter fileEnding = getCDParameterFacade().createParameter(String.class, "fileEnding");
 
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), languageClassName, langName, fileEnding);
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "Constructor"));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorLanguage"));
     return constructor;
   }
 

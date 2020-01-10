@@ -2,7 +2,7 @@
 
 package de.monticore.mccommonliterals;
 
-import de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral;
+import de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
@@ -16,8 +16,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class LongLiteralsTest {
-
+public class DoubleCommonLiteralsTest {
 
   @BeforeClass
   public static void init() {
@@ -25,30 +24,28 @@ public class LongLiteralsTest {
     Log.enableFailQuick(false);
   }
 
-  private void checkLongLiteral(long l, String s) throws IOException {
+  private void checkDoubleLiteral(double d, String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
     assertTrue(lit.isPresent());
-    assertTrue(lit.get() instanceof ASTBasicLongLiteral);
-    assertEquals(l, ((ASTBasicLongLiteral) lit.get()).getValue());
+    assertTrue(lit.get() instanceof ASTBasicDoubleLiteral);
+    assertEquals(d, ((ASTBasicDoubleLiteral) lit.get()).getValue(), 0);
   }
 
   private void checkFalse(String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
-    Optional<ASTBasicLongLiteral> lit = parser.parseBasicLongLiteral(new StringReader(s));
+    Optional<ASTBasicDoubleLiteral> lit = parser.parseBasicDoubleLiteral(new StringReader(s));
     assertTrue(!lit.isPresent());
   }
 
   @Test
-  public void testLongLiterals() {
+  public void testDoubleLiterals() {
     try {
       // decimal number
-      checkLongLiteral(0L, "0L");
-      checkLongLiteral(123L, "123L");
-      checkLongLiteral(10L, "10L");
-      checkLongLiteral(5L, "5L");
-      checkLongLiteral(5L, "05L");
-
+      checkDoubleLiteral(0.0, "0.0");
+      checkDoubleLiteral(0.0, "0.0");
+      checkDoubleLiteral(3.0, "3.0");
+      checkDoubleLiteral(3.0, "3.0");
     }
     catch (IOException e) {
       fail(e.getMessage());
@@ -56,17 +53,14 @@ public class LongLiteralsTest {
   }
 
   @Test
-  public void testFalse() {
+  public void testFalseDoubleLiterals() {
     try {
-      // hexadezimal number
-      checkFalse("0x12L");
-      checkFalse("0XeffL");
-      checkFalse("0x1234567890L");
-      checkFalse("0xabcdefL");
-      checkFalse("0x0L");
-      checkFalse("0xaL");
-      checkFalse("0xC0FFEEL");
-      checkFalse("0x005fL");
+      // decimal number
+      checkFalse(".0d");
+      checkFalse("0.d");
+      checkFalse("5d");
+      checkFalse("009e2d");
+
     }
     catch (IOException e) {
       fail(e.getMessage());

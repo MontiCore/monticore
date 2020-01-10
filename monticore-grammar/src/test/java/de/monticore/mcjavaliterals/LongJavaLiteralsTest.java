@@ -13,7 +13,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class LongLiteralsTest {
+public class LongJavaLiteralsTest {
 
 
   @BeforeClass
@@ -23,7 +23,7 @@ public class LongLiteralsTest {
   }
 
   private void checkLongLiteral(long l, String s) throws IOException {
-    ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral(s);
+    ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
     assertTrue(lit instanceof ASTLongLiteral);
     assertEquals(l, ((ASTLongLiteral) lit).getValue());
     

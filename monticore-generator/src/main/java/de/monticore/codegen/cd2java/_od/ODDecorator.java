@@ -76,7 +76,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
     ASTCDParameter reportingParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(REPORTING_REPOSITORY),
         "reporting");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), odName, printerParam, reportingParam);
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("_od.Constructor"));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("_od.ConstructorOD"));
     return constructor;
   }
 
@@ -115,7 +115,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       String astFullName = odService.getASTPackage() + "." + astcdClass.getName();
       ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getMCTypeFacade().createQualifiedType(astFullName));
-      replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint("_od.Handle", astcdClass, astFullName));
+      replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint("_od.HandleOD", astcdClass, astFullName));
       handleMethodList.add(handleMethod);
     }
     return handleMethodList;
