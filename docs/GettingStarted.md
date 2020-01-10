@@ -17,7 +17,7 @@ compiler for compiling the generated Java source files; see [here](https://stack
 3.  Also make sure that the PATH variable is set such that the Java compiler is available.
  JDK installations on UNIX systems do this automatically. On Windows systems the ‹bin› directory of 
  the JDK installation needs to be appended to the PATH variable, e.g. ‹%PATH%;%JAVA_HOME%\bin› 
- (see also [here](https://stackoverflow.com/questions/2079635/how-can-i-set-the-path-variable-for-javac-so-i-can-manually-compile-my-java-wor).
+ (see also [here](https://stackoverflow.com/questions/2079635/how-can-i-set-the-path-variable-for-javac-so-i-can-manually-compile-my-java-wor)).
 
 ### Command Line
 MontiCore supports different environments. For a quick peek, the command line version can be tried out with an exemplary automaton DSL using the following instructions:
@@ -168,7 +168,7 @@ MontiCore will be launched and the following steps will be executed:
 log file located in the respectively specified output directory 
 (e.g. ‹out/monticore.YYYY-MM-DD-HHmmss.log› by default). 
 It contains more verbose and developer-oriented, technical output than the CLI output.
-*  Please report any unknown issues to [this address](bugreport@monticore.de). 
+*  Please report any unknown issues to <bugreport@monticore.de>. 
 Please include the processed grammar, model, and the log file.
 
 ## Downloads
