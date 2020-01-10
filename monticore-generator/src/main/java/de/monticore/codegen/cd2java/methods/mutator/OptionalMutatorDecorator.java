@@ -20,8 +20,6 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
 
   protected static final String SET = "set%s";
 
-  protected static final String SET_OPT = "set%sOpt";
-
   protected static final String SET_ABSENT = "set%sAbsent";
 
   protected String naiveAttributeName;

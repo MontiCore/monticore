@@ -6,6 +6,7 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
+import de.monticore.codegen.cd2java._ast.builder.inheritedmethods.InheritedBuilderMutatorMethodDecorator;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -101,8 +102,9 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
+    InheritedBuilderMutatorMethodDecorator inheritedMutatorDecorator = new InheritedBuilderMutatorMethodDecorator(glex, builderType);
     List<ASTCDMethod> inheritedMutatorMethods = inheritedAttributes.stream()
-        .map(mutatorDecorator::decorate)
+        .map(inheritedMutatorDecorator::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
