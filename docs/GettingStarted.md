@@ -1,0 +1,157 @@
+# MontiCore - Getting Started
+In the following you will learn how to get started with MontiCore. Before you start please make sure that Java is installed on your system as described in the prerequisites. Now that your system is ready you have three options to get started. Just choose one of the following guides:
+*  Command Line
+*  Eclipse
+*  IntelliJ
+## Prerequisites
+1.  Install the Java 8 JDK.
+2.  Make sure the environment variable JAVA_HOME points to the installed JDK, NOT the JRE (e.g. ‹/usr/lib/jvm/java-8-openjdk› on UNIX or ‹C:\Program Files\Java\jdk1.8.0_51› on Windows). You will need this in order to run the Java compiler for compiling the generated Java source files; see here for more information.
+3.  Also make sure that the PATH variable is set such that the Java compiler is available. JDK installations on UNIX systems do this automatically. On Windows systems the ‹bin› directory of the JDK installation needs to be appended to the PATH variable, e.g. ‹%PATH%;%JAVA_HOME%\bin› (see also here).
+
+### Command Line
+MontiCore supports different environments. For a quick peek, the command line version can be tried out with an exemplary automaton DSL using the following instructions:
+
+### In a nutshell
+
+|Prerequisites | Install the Java Development Kit (JDK) 8.|
+|---|---|
+|Installation | Download the MontiCore distribution file, unzip it, and change to the extracted directory.|
+|Running MontiCore | Execute MontiCore on the provided language definition ‹Automaton.mc4›.|
+|Compiling the Product | Compile all the generated and supplied handwritten Java source files.|
+|Running the Product | Execute the automaton tool on an example model ‹example/PingPong.aut›.|
+
+### Detailed description
+
+#### Installation
+1.  Download the MontiCore zip distribution file.
+2.  Unzip the distribution. It will unzip a directory called ‹mc-workspace› containing the executable MontiCore CLI (short for command line interface) JAR along with a directory ‹src› containing handwritten automaton DSL infrastructure, a directory ‹hwc› containing handwritten code that will be incorporated into the generated code, and a directory ‹example› containing an example automaton model.
+
+#### Run MontiCore
+1.  Open a command line interface and change to the unzipped directory ‹mc-workspace›).
+2.  The distribution contains the sources of an automaton DSL consisting of the automaton grammar and handwritten Java files in the directory ‹src›. Execute the following command in order to generate the language infrastructure of the specified automaton DSL:
+
+**java -jar monticore-cli.jar Automaton.mc4 -hcp hwc/**
+
+The only required argument ‹Automaton.mc4› denotes the input grammar for MontiCore to process and generate the language infrastructure for. The second argument denotes the path to look for handwritten code that is to be incorporated into the generated infrastructure.
+MontiCore will be launched and the following steps will be executed:
+
+1.  The specified grammar will be parsed and processed by MontiCore.
+2.  Java source files for the corresponding DSL infrastructure will be generated into the default output directory ‹out›. This infrastructure consists of:
+    1.  out/automaton/_ast containing the abstract syntax representation of the automaton DSL.
+    2.  out/automaton/_cocos containing infrastructure for context conditions of the automaton DSL.
+    3.  out/automaton/_od containing infrastructure for printing object diagrams of the automaton DSL.
+    4.  out/automaton/_parser containing the generated parsers which are based on ANTLR.
+    5.  out/automaton/_symboltable containing infrastructure for the symbol table of the automaton DSL.
+    6.  out/automaton/_visitor containing infrastructure for visitors of the automaton DSL.
+    7.  out/reports/Automaton containing reports created during the processing of the automaton grammar.
+3.  The output directory will also contain a log file of the executed generation process ‹monticore.YYYY-MM-DD-HHmmss.log›.
+#### Compile and run
+1.  Compiling the automaton DSL
+*  Execute the command:
+**javac -cp monticore-cli.jar -sourcepath "src/;out/;hwc/" src/automaton/AutomatonTool.java**
+**Please note:** on Unix systems paths are separated using ":" (colon) instead of semicolons.
+This will compile all generated classes located in ‹out/› and all handwritten classes located in ‹src/› and ‹hwc/›. Please note that the structure of the handwritten classes follows (though not necessarily) the package layout of the generated code, i.e. there are the following sub directories (Java packages):
+    1.  **src/automaton** contains the top level language realization for using the generated DSL infrastructure. In this case the class ‹src/automaton/AutomatonTool.java› constitutes a main class executable for processing automaton models with the automaton DSL (inspect the class and see below for how to execute it).
+    2.  **src/automaton/cocos** contains infrastructure for context condition of the automaton DSL.
+    3.  **src/automaton/prettyprint** contains an exemplary use of the generated visitor infrastructure for processing the parsed model. Here: for pretty printing.
+    4.  **src/automaton/visitors contains** an exemplary analysis using the visitor infrastructure. The exemplary analysis counts the states contained in the parsed automaton model.
+    5.  **hwc/automaton/_ast** contains an exemplary usage of the handwritten code integration mechanism for modifying the AST for the automaton DSL.
+    6.  **hwc/automaton/_symboltable** contains handwritten extensions of the generated symbol table infrastructure.
+2.  Running the automaton DSL tool
+    *  Execute the command:
+
+**java -cp "src/;out/;hwc/;monticore-cli.jar" automaton.AutomatonTool example/PingPong.aut**
+
+**Please note:** on Unix systems paths are separated using ":" (colon) instead of semicolons.
+This will run the automaton DSL tool. The argument ‹example/PingPong.aut› is passed to the automaton DSL tool as input file. Examine the output on the command line which shows the processing of the example automaton model.
+
+Experiment
+The shipped example automaton DSL (all sources contained in ‹mc-workspace/src› and ‹mc-workspace/hwc›) can be used as a starting point. It can easily be altered to specify your own DSL by adjusting the grammar and the handwritten Java sources and rerunning MontiCore as described above.
+
+### Eclipse
+For getting started with MontiCore using Eclipse do the following:
+
+#### Setting up Eclipse
+1.  Download and install Eclipse (or use an existing one)
+2.  Open Eclipse
+3.  Install needed Plugins
+    *  Help > Install new Software
+    *  Make sure the M2E (Maven 2 Eclipse) Plugin is installed
+    *  M2E can be found here
+    *  Install the following MontiCore M2E Extension found here:
+    *  Install MontiCore 5 (or higher) extension
+4. Make sure to confire Eclipse to use a JDK instead of an JRE
+    *  Window > Preferences > Java > Installed JREs
+
+#### Importing the Example
+1.  Download and unzip the Automaton Example
+2.  Select
+    *  File
+    *  Import...
+    *  Maven
+    *  Existing Maven Projects
+    *  Click next
+    *  Click on the Browse.. button and use the folder holding the pom.xml
+
+#### Running MontiCore
+1.  Right click on the project
+2.  Run as > Maven install
+3.  Add ‹../target/generated-sources/monticore/sourcecode› to your build path
+    *    Right click on the folder > Build Path > Use as Source Folder
+
+MontiCore will be launched and the following steps will be executed:
+
+1.  The specified grammar will be parsed and processed by MontiCore.
+2.  Java source files for the corresponding DSL infrastructure will be generated into the default output directory ‹../target/generated-sources/monticore/sourcecode›. This infrastructure consists of:
+    1.  **/automaton/_ast** containing the abstract syntax representation of the automaton DSL.
+    2.  **/automaton/_cocos** containing infrastructure for context conditions of the automaton DSL.
+    3.  **/automaton/_od** containing infrastructure for printing object diagrams of the automaton DSL.
+    4.  **/automaton/_parser** containing the generated parsers which are based on ANTLR.
+    5.  **/automaton/_symboltable** containing infrastructure for the symbol table of the automaton DSL.
+    6.  **/automaton/_visitor** containing infrastructure for visitors of the automaton DSL.
+    7.  **/reports/Automaton** containing reports created during the processing of the automaton grammar.
+3.  The output directory will also contain a log file of the executed generation process ‹monticore.YYYY-MM-DD-HHmmss.log›.
+
+### IntelliJ
+For getting started with MontiCore using IntelliJ do the following:
+
+#### Setting up IntelliJ IDEA
+1. Download and install IntelliJ IDEA (or use your existing installation)
+    *  Hint for Students: You get the Ultimate version of IntelliJ for free
+2. Open IntelliJ IDEA
+
+#### Importing the Example
+1.  Download and unzip the Automaton Example
+2.  Select
+    * File
+    * Open
+    * Select the folder holding the pom.xml
+
+#### Running MontiCore
+From the Maven Projects Menu on the right select
+
+1.  Automaton
+2.  Lifecycle
+3.  install (double click)
+
+MontiCore will be launched and the following steps will be executed:
+
+1.  The specified grammar will be parsed and processed by MontiCore.
+2.  Java source files for the corresponding DSL infrastructure will be generated into the default output directory ‹../target/generated-sources/monticore/sourcecode›. This infrastructure consists of:
+    1.  **/automaton/_ast** containing the abstract syntax representation of the automaton DSL.
+    2.  **/automaton/_cocos** containing infrastructure for context conditions of the automaton DSL.
+    3.  **/automaton/_od** containing infrastructure for printing object diagrams of the automaton DSL.
+    4.  **/automaton/_parser** containing the generated parsers which are based on ANTLR.
+    5.  **/automaton/_symboltable** containing infrastructure for the symbol table of the automaton DSL.
+    6.  **/automaton/_visitor** containing infrastructure for visitors of the automaton DSL.
+    7.  **/reports/Automaton** containing reports created during the processing of the automaton grammar.
+3.  The output directory will also contain a log file of the executed generation process ‹monticore.YYYY-MM-DD-HHmmss.log›.
+
+### Troubleshooting
+*  If an error occurs and you cannot solve the problem you may take a look into the MontiCore log file located in the respectively specified output directory (e.g. ‹out/monticore.YYYY-MM-DD-HHmmss.log› by default). It contains more verbose and developer-oriented, technical output than the CLI output.
+*  Please report any unknown issues to this address. Please include the processed grammar, model, and the log file.
+
+### Downloads
+*  MontiCore zip with automaton DSL example
+*  Executable MontiCore Java archive (without example)
+ 	
