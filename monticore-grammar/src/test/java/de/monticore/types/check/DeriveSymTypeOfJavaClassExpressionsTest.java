@@ -23,8 +23,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class DeriveSymTypeOfJavaClassExpressionsTest {
 
@@ -94,14 +93,9 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   // (may be any other Parser that understands CommonExpressions)
   CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
-  // This is the core Visitor under Test (but rather empty)
-  DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
-
   // This is an auxiliary
   DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(),
       new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
-
-  // other arguments not used (and therefore deliberately null)
 
   // This is the TypeChecker under Test:
   TypeCheck tc = new TypeCheck(null, derLit);
@@ -213,11 +207,31 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("Outer",tc.typeOf(this1.get()).print());
   }
 
-  @Test
-  public void failDeriveFromThisExpression() throws IOException{
+  @Test(expected = RuntimeException.class)
+  public void failDeriveFromThisExpression1() throws IOException{
     //.this in enclosing class
+    TypeSymbol fail = type("Fail",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    add2scope(scope,fail);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> this1 = p.parse_StringExpression("Fail.this");
+
+    assertTrue(this1.isPresent());
+
+    tc.typeOf(this1.get());
     //.this without a type -> field or literal
-    //more examples?
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void failDeriveFromThisExpression2() throws IOException{
+    //.this without a type
+    Optional<ASTExpression> this1 = p.parse_StringExpression("person1.this");
+
+    assertTrue(this1.isPresent());
+
+    tc.typeOf(this1.get());
   }
 
   @Test
@@ -281,6 +295,23 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     tc.typeOf(arr1.get());
   }
 
+  @Test (expected = RuntimeException.class)
+  public void failDeriveSymTypeOfArrayExpression2() throws IOException{
+    //no integral type in the brackets
+    SymTypeArray arrType = SymTypeExpressionFactory.createTypeArray("int",scope,1,_intSymType);
+    FieldSymbol a = field("a",arrType);
+    add2scope(scope,a);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> arr1 = p.parse_StringExpression("a[7.5]");
+
+    assertTrue(arr1.isPresent());
+
+    tc.typeOf(arr1.get());
+  }
+
   @Test
   public void deriveSymTypeOfClassExpression() throws IOException{
     Optional<ASTExpression> class1 = p.parse_StringExpression("String.class");
@@ -300,6 +331,17 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   }
 
   @Test
+  public void failDeriveSymTypeOfClassExpression() throws IOException{
+    //test that types must have a name
+    Optional<ASTExpression> class1 = p.parse_StringExpression("3.class");
+
+    assertFalse(class1.isPresent());
+
+    Optional<ASTExpression> class2 = p.parse_StringExpression("\"Hallo\".class");
+    assertFalse(class2.isPresent());
+  }
+
+  @Test
   public void deriveSymTypeOfInstanceofExpression() throws IOException{
     Optional<ASTExpression> inst1 = p.parse_StringExpression("person1 instanceof Person");
     Optional<ASTExpression> inst2 = p.parse_StringExpression("person2 instanceof Student");
@@ -312,6 +354,8 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("boolean",tc.typeOf(inst1.get()).print());
     assertEquals("boolean",tc.typeOf(inst2.get()).print());
     assertEquals("boolean",tc.typeOf(inst3.get()).print());
+
+    //soll wirklich auch person1 instanceof String keinen Fehler geben?
   }
 
   @Test

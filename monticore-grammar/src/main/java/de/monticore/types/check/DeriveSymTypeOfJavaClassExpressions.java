@@ -38,7 +38,6 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
   @Override
   public void traverse(ASTThisExpression node) {
-    //TODO:#2465 -> vervollstaendigen
     //no primitive type and only type allowed --> check that Expression is no field or method
     //JAVA: can only be used in nested classes to get an instance of the enclosing class
     //traverse the inner expression, check that it is a type; this type is the current class and is a nested class
@@ -162,7 +161,6 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     SymTypeExpression wholeResult = null;
     SymTypeExpression innerResult;
 
-    //TODO: traverse method for external return type -> synthesizer that must be given to this class when initialising the TypeCheck or (perhaps better) that can be added to the Delegator
     node.getExtReturnType().accept(getRealThis());
     if(lastResult.isPresentLast()){
       innerResult = lastResult.getLast();
@@ -216,7 +214,6 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     //wholeResult will be the result of the whole expression
     SymTypeExpression wholeResult = null;
 
-    //TODO: test that innerResult is not a type
     node.getExpression().accept(getRealThis());
     if(lastResult.isPresentLast()){
       innerResult = lastResult.getLast();
@@ -228,7 +225,6 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       Log.error("0xA0269 the type of the inner result of the TypeCast cannot be calculated");
     }
 
-    //TODO: traverse method for external ExtType
     //castResult is the type in the brackets -> (ArrayList) list
     node.getExtType().accept(getRealThis());
     if(lastResult.isPresentLast()){
@@ -259,7 +255,6 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     SymTypeExpression wholeResult = null;
 
     //calculate left type: expression that is to be checked for a specific type
-    //TODO: test that the left expression is not a type
     node.getExpression().accept(getRealThis());
     if(lastResult.isPresentLast()){
       leftResult = lastResult.getLast();
@@ -271,7 +266,6 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
 
     //calculate right type: type that the expression should be an instance of
-    //TODO: traverse method for external exttype
     node.getExtType().accept(getRealThis());
     if(lastResult.isPresentLast()){
       rightResult = lastResult.getLast();

@@ -6,6 +6,7 @@ import de.monticore.expressions.combineexpressionswithliterals._parser.CombineEx
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
+import de.monticore.expressions.testoclexpressions._ast.ASTExtType;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ImportStatement;
@@ -83,15 +84,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("String", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidPlusExpression() throws IOException {
     String s = "3+true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0188 The resulting type of the PlusExpression (+) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -110,15 +107,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("float", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidMinusExpression() throws IOException {
     String s = "3-true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0191 The resulting type of the MinusExpression (-) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -137,15 +130,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("long", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidMultExpression() throws IOException {
     String s = "3*true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0189 The resulting type of the MultExpression (*) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -164,15 +153,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("double", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidDivideExpression() throws IOException {
     String s = "3/true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0190 The resulting type of the DivideExpression (/) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -191,15 +176,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("double", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidModuloExpression() throws IOException {
     String s = "3%true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0192 The resulting type of the ModuloExpression (%) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -218,15 +199,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidLessEqualExpression() throws IOException {
     String s = "3<=true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0193 The resulting type of the LessEqualExpression (<=) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -245,15 +222,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidGreaterEqualExpression() throws IOException {
     String s = "3>=true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0194 The resulting type of the GreaterEqualExpression (>=) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -272,15 +245,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidLessThanExpression() throws IOException {
     String s = "3<true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0195 The resulting type of the LessThanExpression (<) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -299,15 +268,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidGreaterThanExpression() throws IOException {
     String s = "3>true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0196 The resulting type of the GreaterThanExpression (>) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -366,27 +331,23 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidEqualsExpression() throws IOException {
     init_basic();
 
     String s = "3==true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0197 The resulting type of the EqualsExpression (==) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
+  }
 
-    LogStub.init();
+  @Test(expected = RuntimeException.class)
+  public void testInvalidEqualsExpression2() throws IOException{
+    init_basic();
+
     //person1 has the type Person, foo is a boolean
-    s = "person1==foo";
-    astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0197 The resulting type of the EqualsExpression (==) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    String s = "person1==foo";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
   }
 
   /**
@@ -413,17 +374,13 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidNotEqualsExpression() throws IOException {
     init_basic();
 
     String s = "3!=true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0198 The resulting type of the NotEqualsExpression (!=) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
 
     LogStub.init();
     //person1 is a Person, foo is a boolean
@@ -434,6 +391,15 @@ public class DeriveSymTypeOfCommonExpressionTest {
     } catch (RuntimeException e) {
       assertEquals("0x"+"A0198 The resulting type of the NotEqualsExpression (!=) cannot be calculated", Log.getFindings().get(0).getMsg());
     }
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void testInvalidNotEqualsExpression2() throws IOException{
+    init_basic();
+    //person1 is a Person, foo is a boolean
+    String s = "person1!=foo";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
   }
 
   /**
@@ -451,16 +417,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidAndOpExpression() throws IOException {
     //only possible with two booleans
     String s = "3&&true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0199 The resulting type of the BooleanAndOpExpression (&&) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -478,16 +440,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidOrOpExpression() throws IOException {
     //only possible with two booleans
     String s = "3||true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0200 The resulting type of the BooleanOrOpExpression (||) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -505,16 +463,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidLogicalNotExpression() throws IOException {
     //only possible with a boolean as inner expression
     String s = "!4";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0201 The resulting type of the LogicalNotExpression (!) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -541,16 +495,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("Person", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidBracketExpression() throws IOException {
     //a cannot be resolved -> a has no type
     String s = "(a)";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0236 The type of the inner expression of the BracketExpression (\"()\") cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -582,16 +532,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("Person", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidConditionalExpression() throws IOException {
     //true and 7 are not of the same type
     String s = "3<4?true:7";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0204 The resulting type of the ConditionalExpression cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
 
     //3 is not a boolean condition
     LogStub.init();
@@ -604,6 +550,13 @@ public class DeriveSymTypeOfCommonExpressionTest {
     }
   }
 
+  @Test(expected = RuntimeException.class)
+  public void testInvalidConditionalExpression2() throws IOException {
+    //3 is not a boolean condition
+    String s = "3?true:false";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    tc.typeOf(astex);
+  }
   /**
    * test BooleanNotExpression
    */
@@ -619,16 +572,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("int", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidBooleanNotExpression() throws IOException {
     //only possible with an integral type (int, long, char, short, byte)
     String s = "~3.4";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0205 The resulting type of the BooleanNotExpression (~) cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
@@ -768,16 +717,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("char", tc.typeOf(astex).print());
   }
 
-  @Test
+  @Test(expected = RuntimeException.class)
   public void testInvalidCallExpression() throws IOException {
     //method isNot() is not in scope -> method cannot be resolved -> method has no return type
     String s = "isNot()";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0x"+"A0217 The resulting type of the CallExpression cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
+    tc.typeOf(astex);
   }
 
   /**
