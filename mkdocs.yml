@@ -7,19 +7,19 @@ edit_uri: ""
 
 nav:
   - Home: 'README.md'
-  - 'Introduction':
-    - 'Getting Started': 'GettingStarted.md'
-    - 'FAQ': 'FAQ.md'
+  - 'Getting Started': 'GettingStarted.md'
   - Grammars:
-    - 'General': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
-    - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/README.md'
-    - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/README.md'
-    - 'Types': 'monticore-grammar/src/main/java/de/monticore/types/check/README.md'
-  - Languages: 'MCLanguages.md'
+      - 'General': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
+      - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/README.md'
+      - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/README.md'
+      - 'Types': 'monticore-grammar/src/main/java/de/monticore/types/check/README.md'
+      - Languages: 'MCLanguages.md'
   - 'More Information':
-    - Changelog: 'CHANGELOG.md'
-    - License: '00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md'
-    - Reports: 'Reports.md'
-    - Publications: 'Publications.md'
+      - Changelog: 'CHANGELOG.md'
+      - License: '00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md'
+      - Reports: 'Reports.md'
+      - 'FAQ': 'FAQ.md'
+  - Publications: 'Publications.md'
+
 
 
