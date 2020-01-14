@@ -1,6 +1,6 @@
 site_name: MontiCore
 theme:
-  name: bootstrap
+  name: cinder
 
 repo_url: https://github.com/MontiCore/monticore/
 edit_uri: ""
@@ -14,12 +14,12 @@ nav:
       - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/README.md'
       - 'Types': 'monticore-grammar/src/main/java/de/monticore/types/check/README.md'
       - Languages: 'MCLanguages.md'
+  - Publications: 'Publications.md'
   - 'More Information':
       - Changelog: 'CHANGELOG.md'
       - License: '00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md'
       - Reports: 'Reports.md'
       - 'FAQ': 'FAQ.md'
-  - Publications: 'Publications.md'
 
 
 
