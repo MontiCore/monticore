@@ -1,6 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-[![Build Status](https://travis-ci.org/MontiCore/monticore.svg?branch=master)](https://travis-ci.org/MontiCore/monticore)
-
+![mc-logo](mc-logo.png)
 
 # MontiCore - Language Workbench And Tool Framework 
 
