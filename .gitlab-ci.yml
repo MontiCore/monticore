@@ -145,6 +145,7 @@ pages:
     - pip install mkdocs
     - pip install mkdocs-material
   script:
+    - mkdocs --version
     - sh docs/scripts/preprocessing.sh
     - mkdocs build
     - mv site public
