@@ -2,9 +2,13 @@ site_name: MontiCore
 theme:
   name: 'material'
   favicon: 'img/favicon.ico'
+  logo:
+    icon: 'computer'
 
 repo_url: https://github.com/MontiCore/monticore/
 edit_uri: ""
+
+copyright: '(c) https://github.com/MontiCore/monticore'
 
 nav:
   - Home: 'README.md'
