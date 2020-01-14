@@ -1,7 +1,7 @@
 site_name: MontiCore
 theme:
   name: 'material'
-  logo: 'mc-logo.png'
+  favicon: 'img/favicon.ico'
 
 repo_url: https://github.com/MontiCore/monticore/
 edit_uri: ""
