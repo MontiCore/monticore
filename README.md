@@ -1,5 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-![mc-logo](mc-logo.png)
+<div style="text-align:center"><img src="mc-logo.png" /></div>
 
 # MontiCore - Language Workbench And Tool Framework 
 
