@@ -1,6 +1,5 @@
 site_name: MontiCore
-theme:
-  name: cinder
+theme: cinder
 
 repo_url: https://github.com/MontiCore/monticore/
 edit_uri: ""
