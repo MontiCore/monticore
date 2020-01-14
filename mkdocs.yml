@@ -1,8 +1,7 @@
 site_name: MontiCore
 theme:
   name: 'material'
-  extra_css:
-    - 'stylesheets/extra.css'
+  extra_css: 'stylesheets/extra.css'
   favicon: 'img/favicon.ico'
   logo:
     icon: 'computer'
