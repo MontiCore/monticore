@@ -4,11 +4,8 @@ theme:
   favicon: 'img/favicon.ico'
   logo:
     icon: 'computer'
-  palette:
-    primary: 'grey'
-    accent: 'indigo'
-  feature:
-    tabs: true
+  extra_css:
+    - 'stylesheets/color.css'
 
 repo_url: https://github.com/MontiCore/monticore/
 edit_uri: ""
