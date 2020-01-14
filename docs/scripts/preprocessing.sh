@@ -16,4 +16,5 @@ mv monticore-grammar docs/monticore-grammar
 mv monticore-runtime docs/monticore-runtime
 mv 00.org docs/00.org
 mv *.md docs/
+mv *.png docs/
 echo "[INFO] Moved *.md files to 'docs' folder"
