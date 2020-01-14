@@ -4,6 +4,9 @@ theme:
   favicon: 'img/favicon.ico'
   logo:
     icon: 'computer'
+  palette:
+    primary: 'black'
+    accent: 'indigo'
 
 repo_url: https://github.com/MontiCore/monticore/
 edit_uri: ""
