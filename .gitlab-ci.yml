@@ -142,6 +142,7 @@ pages:
   dependencies: []
   image: python:alpine
   before_script:
+    - pip install mkdocs
     - pip install mkdocs-cinder
   script:
     - sh docs/scripts/preprocessing.sh
