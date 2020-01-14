@@ -142,7 +142,7 @@ pages:
   dependencies: []
   image: python:alpine
   before_script:
-    - pip install mkdocs-bootstrap
+    - pip install mkdocs-cinder
   script:
     - sh docs/scripts/preprocessing.sh
     - mkdocs build
