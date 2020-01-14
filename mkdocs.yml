@@ -1,13 +1,15 @@
 site_name: MontiCore
 theme:
   name: 'material'
-  extra_css: 'stylesheets/extra.css'
   favicon: 'img/favicon.ico'
   logo:
     icon: 'computer'
 
 repo_url: https://github.com/MontiCore/monticore/
 edit_uri: ""
+
+extra_css:
+  - 'stylesheets/extra.css'
 
 copyright: '(c) https://github.com/MontiCore/monticore'
 
