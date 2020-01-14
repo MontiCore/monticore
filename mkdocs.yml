@@ -1,6 +1,9 @@
 site_name: MontiCore
-theme: cinder
+theme:
+  name: 'material'
 
+repo_url: https://github.com/MontiCore/monticore/
+edit_uri: ""
 
 nav:
   - Home: 'README.md'

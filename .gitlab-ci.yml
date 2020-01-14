@@ -143,7 +143,7 @@ pages:
   image: python:alpine
   before_script:
     - pip install mkdocs
-    - pip install mkdocs-cinder
+    - pip install mkdocs-material
   script:
     - sh docs/scripts/preprocessing.sh
     - mkdocs build
