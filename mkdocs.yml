@@ -5,7 +5,7 @@ theme:
   logo:
     icon: 'computer'
   palette:
-    primary: 'black'
+    primary: 'grey'
     accent: 'indigo'
 
 repo_url: https://github.com/MontiCore/monticore/
