@@ -5,7 +5,7 @@ theme:
   logo:
     icon: 'computer'
   extra_css:
-    - 'stylesheets/color.css'
+    - 'stylesheets/extra.css'
 
 repo_url: https://github.com/MontiCore/monticore/
 edit_uri: ""
