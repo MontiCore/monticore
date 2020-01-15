@@ -2,6 +2,7 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor;
@@ -154,7 +155,6 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
   @Override
   public void traverse(ASTClassExpression node) {
-    //TODO:#2465 -> vervollstaendigen
     //only type allowed --> check that Expression is no field or method
     //traverse the inner expression, check that it is a type (how?); the result is the type "Class"
     //can be calculated
@@ -288,44 +288,21 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   @Override
   public void traverse(ASTPrimaryThisExpression node) {
     SymTypeExpression wholeResult = null;
-    if(scope.isPresentSpanningSymbol()){
-      IScopeSpanningSymbol spanningSymbol = scope.getSpanningSymbol();
-      if(spanningSymbol instanceof TypeSymbol){
-        TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
-        if(typeSymbol.getTypeParameterList().isEmpty()){
-          wholeResult = SymTypeExpressionFactory.createTypeObject(typeSymbol.getName(),scope);
-        }else{
-          wholeResult = getResultOfPrimaryThisExpression(typeSymbol);
-        }
-      }else if(spanningSymbol instanceof MethodSymbol) {
-        //if the scope is spanned by a method, the enclosing scope must be the scope spanned by the type
-        if (null != scope.getEnclosingScope()) {
-          IScopeSpanningSymbol innerSpanningSymbol = scope.getEnclosingScope().getSpanningSymbol();
-          if (innerSpanningSymbol instanceof TypeSymbol) {
-            TypeSymbol typeSymbol = (TypeSymbol) innerSpanningSymbol;
-            wholeResult = getResultOfPrimaryThisExpression(typeSymbol);
-          }else {
-            lastResult.reset();
-            Log.error("0xA0261 the spanning symbol of the enclosing scope has to be a type symbol");
-          }
-        }else {
-          lastResult.reset();
-          Log.error("0xA0268 the enclosing scope of the actual scope must not be null");
-        }
-      }else {
-        lastResult.reset();
-        Log.error("0xA0262 the spanning symbol of the scope has to be either a method symbol or a type symbol");
+    IExpressionsBasisScope testScope = scope;
+    while(testScope!=null) {
+      if (testScope.isPresentSpanningSymbol() && testScope.getSpanningSymbol() instanceof TypeSymbol) {
+        TypeSymbol typeSymbol = (TypeSymbol) testScope.getSpanningSymbol();
+        wholeResult=getResultOfPrimaryThisExpression(typeSymbol);
+        break;
       }
-    }else{
-      lastResult.reset();
-      Log.error("0xA0263 the scope has to be spanned by a symbol");
+      testScope=testScope.getEnclosingScope();
     }
     if(null!=wholeResult){
       lastResult.setLast(wholeResult);
       result = wholeResult;
     }else{
       lastResult.reset();
-      Log.error("0x0264 the resulting type of the PrimaryThisExpression cannot be calculated");
+      Log.error("0xA0264 the resulting type of the PrimaryThisExpression cannot be calculated");
     }
   }
 
@@ -353,51 +330,18 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   @Override
   public void traverse(ASTPrimarySuperExpression node) {
     SymTypeExpression wholeResult=null;
-    if(scope.isPresentSpanningSymbol()){
-      IScopeSpanningSymbol spanningSymbol = scope.getSpanningSymbol();
-      if(spanningSymbol instanceof TypeSymbol){
-        //if the scope is spanned by a type, search for the supertype and return it
-        TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
-        if(typeSymbol.getSuperClassesOnly().size()>1){
-          lastResult.reset();
-          Log.error("0xA0252 In Java there cannot be more than one super class");
-        }else if(typeSymbol.getSuperClassesOnly().isEmpty()){
-          lastResult.reset();
-          Log.error("0xA0253 No supertype could be found");
+    IExpressionsBasisScope testScope = scope;
+    while(testScope!=null) {
+      if (testScope.isPresentSpanningSymbol() && testScope.getSpanningSymbol() instanceof TypeSymbol) {
+        TypeSymbol typeSymbol = (TypeSymbol) testScope.getSpanningSymbol();
+        if(typeSymbol.getSuperClassesOnly().size()==1){
+          wholeResult=typeSymbol.getSuperClassesOnly().get(0);
+          break;
         }else{
-          wholeResult = typeSymbol.getSuperType(0);
+          Log.error("0xA0261 for super to work there has to be exactly one superclass");
         }
-      }else if(spanningSymbol instanceof MethodSymbol){
-        //if the scope is spanned by a method, the enclosing scope must be the scope spanned by the type
-        if(null!=scope.getEnclosingScope()){
-          IScopeSpanningSymbol innerSpanningSymbol = scope.getEnclosingScope().getSpanningSymbol();
-          if(innerSpanningSymbol instanceof TypeSymbol){
-            //search for the supertype of the type and return it
-            TypeSymbol typeSymbol = (TypeSymbol) innerSpanningSymbol;
-            if(typeSymbol.getSuperClassesOnly().size()>1){
-              lastResult.reset();
-              Log.error("0xA0254 In Java there cannot be more than one super class");
-            }else if(typeSymbol.getSuperClassesOnly().isEmpty()){
-              lastResult.reset();
-              Log.error("0xA0255 No supertype could be found");
-            }else{
-              wholeResult = typeSymbol.getSuperClassesOnly().get(0);
-            }
-          }else{
-            lastResult.reset();
-            Log.error("0xA0258 the spanning symbol of the enclosing scope has to be a type symbol");
-          }
-        }else{
-          lastResult.reset();
-          Log.error("0xA0259 there has to be an enclosing scope present");
-        }
-      }else{
-        lastResult.reset();
-        Log.error("0xA0256 the scope must either be spanned by a type or a method");
       }
-    }else{
-      lastResult.reset();
-      Log.error("0xA0257 the scope has to be spanned by a symbol");
+      testScope=testScope.getEnclosingScope();
     }
     if(wholeResult!=null){
       lastResult.setLast(wholeResult);
@@ -439,6 +383,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   @Override
   public void traverse(ASTPrimaryGenericInvocationExpression node) {
     //TODO:#2465 -> vervollstaendigen
+    //wahrscheinlich alles in GenericInvocationSuffix und SuperSuffix auch hier mitbehandeln
+    //dann wird keine traverse-Methode fuer diese Faelle gebraucht
 
     //expressions of the type <String>c() or <String>super.<Integer>c() plus Arguments in the brackets
 
