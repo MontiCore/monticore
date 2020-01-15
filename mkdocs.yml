@@ -21,7 +21,7 @@ nav:
       - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/README.md'
       - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/README.md'
       - 'Types': 'monticore-grammar/src/main/java/de/monticore/types/check/README.md'
-      - Languages: 'MCLanguages.md'
+  - Languages: 'MCLanguages.md'
   - Publications: 'Publications.md'
   - 'More Information':
       - Changelog: 'CHANGELOG.md'
