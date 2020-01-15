@@ -354,51 +354,21 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("boolean",tc.typeOf(inst1.get()).print());
     assertEquals("boolean",tc.typeOf(inst2.get()).print());
     assertEquals("boolean",tc.typeOf(inst3.get()).print());
-
-    //soll wirklich auch person1 instanceof String keinen Fehler geben?
   }
 
   @Test
-  public void deriveSymTypeOfTypeCastExpression(){
-    ASTMCQualifiedType person = CombineExpressionsWithLiteralsMill.mCQualifiedTypeBuilder()
-        .setMCQualifiedName(CombineExpressionsWithLiteralsMill.mCQualifiedNameBuilder().setPartList(Lists.newArrayList("Person"))
-            .build())
-        .build();
+  public void deriveSymTypeOfTypeCastExpression() throws IOException {
+    Optional<ASTExpression> cast1 = p.parse_StringExpression("(Person) student1");
+    Optional<ASTExpression> cast2 = p.parse_StringExpression("(Person) person1");
+    Optional<ASTExpression> cast3 = p.parse_StringExpression("(Student) person1");
 
-    ASTMCQualifiedType student = CombineExpressionsWithLiteralsMill.mCQualifiedTypeBuilder()
-        .setMCQualifiedName(CombineExpressionsWithLiteralsMill.mCQualifiedNameBuilder().setPartList(Lists.newArrayList("Student"))
-            .build())
-        .build();
+    assertTrue(cast1.isPresent());
+    assertTrue(cast2.isPresent());
+    assertTrue(cast3.isPresent());
 
-    //schlaegt im Moment fehl, weil man keinen ExpressionsBasisScope als EnclosingScope eines Typs setzen kann
-    //--> im ganzen TypeCheck TypeSymbolsScope benutzen
-    person.setEnclosingScope(scope);
-    student.setEnclosingScope(scope);
-
-    ASTTypeCastExpression cast1 = CombineExpressionsWithLiteralsMill.typeCastExpressionBuilder()
-        .setExtType(CombineExpressionsWithLiteralsMill.extTypeBuilder()
-            .setMCType(person)
-            .build())
-        .setExpression(CombineExpressionsWithLiteralsMill.nameExpressionBuilder().setName("student1").build())
-        .build();
-    ASTTypeCastExpression cast2 = CombineExpressionsWithLiteralsMill.typeCastExpressionBuilder()
-        .setExtType(CombineExpressionsWithLiteralsMill.extTypeBuilder()
-            .setMCType(person)
-            .build())
-        .setExpression(CombineExpressionsWithLiteralsMill.nameExpressionBuilder().setName("person1").build())
-        .build();
-
-    ASTTypeCastExpression cast3 = CombineExpressionsWithLiteralsMill.typeCastExpressionBuilder()
-        .setExtType(CombineExpressionsWithLiteralsMill.extTypeBuilder()
-            .setMCType(student)
-            .build())
-        .setExpression(CombineExpressionsWithLiteralsMill.nameExpressionBuilder().setName("person1").build())
-        .build();
-
-    assertEquals("Person",tc.typeOf(cast1).print());
-    assertEquals("Person",tc.typeOf(cast2).print());
-    //schlaegt fehl, weil statt dem TypeSymbolsScope der ExpressionsBasisScope benutzt wird --> aendern?
-//    assertEquals("Student",tc.typeOf(cast3).print());
+    assertEquals("Person",tc.typeOf(cast1.get()).print());
+    assertEquals("Person",tc.typeOf(cast2.get()).print());
+    assertEquals("Student",tc.typeOf(cast3.get()).print());
   }
 
 }
