@@ -52,19 +52,4 @@ public class ASTTest {
     assertTrue(p.containsChild(s));
   }
   
-  @Test
-  public void testFileNameInSourcePosition() {
-    String grammarToTest = "src/test/resources/mc/grammar/SimpleGrammarWithConcept.mc4";
-    
-    Path model = Paths.get(new File(
-        grammarToTest).getAbsolutePath());
-    
-    MontiCoreScript mc = new MontiCoreScript();
-    Optional<ASTMCGrammar> ast = mc.parseGrammar(model);
-    assertTrue(ast.isPresent());
-    ASTMCGrammar clonedAst = ast.get().deepClone();
-    assertTrue(clonedAst.get_SourcePositionStart().getFileName().isPresent());
-    assertEquals("SimpleGrammarWithConcept.mc4", FilenameUtils.getName(clonedAst.get_SourcePositionStart().getFileName().get()));
-  }
-  
 }

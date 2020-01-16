@@ -1,11 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.deepclone;
 
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import mc.feature.deepclone.deepclone._ast.*;
 import mc.feature.deepclone.deepclone._parser.DeepCloneParser;
+import mc.feature.deepclone.deepclone3._ast.ASTA;
+import mc.feature.deepclone.deepclone3._parser.DeepClone3Parser;
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -320,5 +327,22 @@ public class DeepCloneEqualsTest {
     ASTCloneEnumOptional astClone = ast.get().deepClone();
     assertFalse(astClone.isPresentCloneEnum());
     assertTrue(ast.get().deepEquals(astClone));
+  }
+
+  @Test
+  public void testFileNameInSourcePosition() throws IOException {
+    String grammarToTest = "src/main/grammars/mc/feature/deepclone/DeepClone3.mc4";
+
+    Path model = Paths.get(new File(
+        grammarToTest).getAbsolutePath());
+
+    DeepClone3Parser parser = new DeepClone3Parser();
+    //hier muss doch MontiCoreScript benutzt werden oder? Oder wie kann sonst ASTMCGrammar und nicht ASTA geparsed weren?
+    Optional<ASTMCGrammar> ast = parser.parse(model.toString());
+
+    assertTrue(ast.isPresent());
+    ASTMCGrammar clonedAst = ast.get().deepClone();
+    assertTrue(clonedAst.get_SourcePositionStart().getFileName().isPresent());
+    assertEquals("DeepClone3.mc4", FilenameUtils.getName(clonedAst.get_SourcePositionStart().getFileName().get()));
   }
 }

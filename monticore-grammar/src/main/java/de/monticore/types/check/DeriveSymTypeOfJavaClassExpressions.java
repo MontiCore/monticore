@@ -56,13 +56,15 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     //check recursively until there is no enclosing scope or the spanningsymbol of the scope is a type
     //while the enclosing scope is not null, it is possible that the expression can be calculated
+    int count = 0;
     if(lastResult.isType()) {
       if(scope.getEnclosingScope()!=null){
         IExpressionsBasisScope testScope = scope;
         while (testScope!=null) {
           if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof TypeSymbol) {
+            count++;
             TypeSymbol sym = (TypeSymbol) testScope.getSpanningSymbol();
-            if (sym.getName().equals(innerResult.print())) {
+            if (sym.getName().equals(innerResult.getTypeInfo().getName())&&count>1) {
               wholeResult = innerResult;
               break;
             }
@@ -181,6 +183,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     //the expression before the super has to be a nested type
     //search for the enclosing type, get its super class and execute the supersuffix
 
+
     SymTypeExpression beforeSuperType = null;
     SymTypeExpression wholeResult = null;
 
@@ -195,30 +198,47 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       Log.error(/*TODO*/"The result of the expression before the .super cannot be calculated");
     }
 
-    List<SymTypeExpression> superClasses = beforeSuperType.getTypeInfo().getSuperClassesOnly();
-    if(superClasses.size()==1){
-      SymTypeExpression superClass = superClasses.get(0);
-      if(null != node.getSuperSuffix().getName() || !"".equals(node.getSuperSuffix().getName())){
-        ASTSuperSuffix superSuffix = node.getSuperSuffix();
-        if(null!=superSuffix.getArguments()){
-          //case 1 -> Expression.super.<TypeArgument>Method(Args)
-          List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getExtTypeArgumentList());
-          List<MethodSymbol> methods = superClass.getTypeInfo().getSpannedScope().resolveMethodMany(superSuffix.getName());
-          if(!methods.isEmpty() && null!=superSuffix.getArguments()){
-            //check if the methods fit and return the right returntype
-            ASTArguments args = superSuffix.getArguments();
-            wholeResult = checkMethodsAndReplaceTypeVariables(methods,args,typeArgsList);
+    int count = 0;
+    boolean isOuterType = false;
+    IExpressionsBasisScope testScope = scope;
+    while (testScope!=null) {
+      if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof TypeSymbol) {
+        count++;
+        TypeSymbol sym = (TypeSymbol) testScope.getSpanningSymbol();
+        if (sym.getName().equals(beforeSuperType.getTypeInfo().getName())&&count>1) {
+          isOuterType = true;
+          break;
+        }
+      }
+      testScope = testScope.getEnclosingScope();
+    }
+
+    if(isOuterType) {
+      List<SymTypeExpression> superClasses = beforeSuperType.getTypeInfo().getSuperClassesOnly();
+      if (superClasses.size() == 1) {
+        SymTypeExpression superClass = superClasses.get(0);
+        if (null != node.getSuperSuffix().getName() || !"".equals(node.getSuperSuffix().getName())) {
+          ASTSuperSuffix superSuffix = node.getSuperSuffix();
+          if (null != superSuffix.getArguments()) {
+            //case 1 -> Expression.super.<TypeArgument>Method(Args)
+            List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getExtTypeArgumentList());
+            List<MethodSymbol> methods = superClass.getTypeInfo().getSpannedScope().resolveMethodMany(superSuffix.getName());
+            if (!methods.isEmpty() && null != superSuffix.getArguments()) {
+              //check if the methods fit and return the right returntype
+              ASTArguments args = superSuffix.getArguments();
+              wholeResult = checkMethodsAndReplaceTypeVariables(methods, args, typeArgsList);
+            }
           }
-        }else{
-          //case 2 -> Expression.super.Field
-          Optional<FieldSymbol> field = superClass.getTypeInfo().getSpannedScope().resolveField(superSuffix.getName());
-          if(field.isPresent()){
-            wholeResult = field.get().getType();
+          else {
+            //case 2 -> Expression.super.Field
+            Optional<FieldSymbol> field = superClass.getTypeInfo().getSpannedScope().resolveField(superSuffix.getName());
+            if (field.isPresent()) {
+              wholeResult = field.get().getType();
+            }
           }
         }
       }
     }
-
     if(wholeResult!=null){
       lastResult.setLast(wholeResult);
       result = wholeResult;
@@ -282,9 +302,11 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     if(lastResult.isPresentLast()){
       leftResult = lastResult.getLast();
       if(lastResult.isType()){
+        lastResult.reset();
         Log.error("0xA0312 the left type of the InstanceofExpression cannot be a type");
       }
     }else{
+      lastResult.reset();
       Log.error("0xA0265 the left type of the InstanceofExpression cannot be calculated");
     }
 
