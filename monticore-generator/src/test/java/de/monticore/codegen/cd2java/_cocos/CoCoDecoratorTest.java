@@ -18,9 +18,11 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,10 +50,11 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
     CoCoService coCoService = new CoCoService(ast);
     VisitorService visitorService = new VisitorService(ast);
     ASTService astService = new ASTService(ast);
+    IterablePath targetPath = Mockito.mock(IterablePath.class);
 
     CoCoCheckerDecorator coCoCheckerDecorator = new CoCoCheckerDecorator(glex, methodDecorator, coCoService, visitorService);
     CoCoInterfaceDecorator coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex, coCoService, astService);
-    CoCoDecorator coCoDecorator = new CoCoDecorator(glex, coCoCheckerDecorator, coCoInterfaceDecorator);
+    CoCoDecorator coCoDecorator = new CoCoDecorator(glex, targetPath, coCoCheckerDecorator, coCoInterfaceDecorator);
     this.ast = coCoDecorator.decorate(ast);
   }
 
