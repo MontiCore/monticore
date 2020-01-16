@@ -31,7 +31,8 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.*;
 
-public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
+public class
+SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass symTabCreatorClass;
 
@@ -174,7 +175,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(37, symTabCreatorClass.getCDMethodList().size());
+    assertEquals(38, symTabCreatorClass.getCDMethodList().size());
   }
 
   @Test
