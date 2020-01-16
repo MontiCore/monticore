@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 import de.monticore.symboltable.serialization.json.*;
+import static de.monticore.symboltable.serialization.JsonTokenKind.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
@@ -23,6 +22,32 @@ public class JsonParser {
    * @return
    */
   public static JsonElement parse(String s) {
+    for (JsonToken t : JsonLexer.read(s)) {
+      switch (t.getKind()) {
+          case BEGIN_ARRAY:
+            return parseJsonArray(reader);
+          case BEGIN_OBJECT:
+            return parseJsonObject(reader);
+          case BOOLEAN:
+            return JsonElementFactory.createJsonBoolean(reader.nextBoolean());
+          case END_DOCUMENT:
+          case NULL:
+            reader.nextNull();
+            return JsonElementFactory.createJsonNull();
+          case NUMBER:
+            return JsonElementFactory.createJsonNumber(reader.nextString());
+          case STRING:
+            return JsonElementFactory.createJsonString(reader.nextString());
+          case END_ARRAY:
+          case END_OBJECT:
+          case NAME:
+          default:
+            Log.error(
+                "0xA0564 Invalid JSON token \"" + token
+                    + "\". The serialized object is not well-formed!");
+      }
+
+    }
     JsonReader reader = new JsonReader(new StringReader(s));
     return parseJson(reader);
   }
@@ -53,6 +78,7 @@ public class JsonParser {
 
   /**
    * Parses any JsonElement with the passed JsonReader
+   *
    * @param reader
    * @return
    */
@@ -80,18 +106,21 @@ public class JsonParser {
           case NAME:
           default:
             Log.error(
-                "0xA0564 Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
+                "0xA0564 Invalid JSON token \"" + token
+                    + "\". The serialized object is not well-formed!");
         }
       }
     }
     catch (IOException e) {
-      Log.error("0xA0565: An error occured while parsing malformed JSON "+wrapExceptionMessage(e));
+      Log.error(
+          "0xA0565: An error occured while parsing malformed JSON " + wrapExceptionMessage(e));
     }
     return null;
   }
 
   /**
    * Parses a Json Object with the passed JsonReader
+   *
    * @param reader
    * @return
    */
@@ -118,19 +147,22 @@ public class JsonParser {
           case END_OBJECT:
           default:
             Log.error(
-                " 0xA0566 Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
+                " 0xA0566 Invalid JSON token \"" + token
+                    + "\". The serialized object is not well-formed!");
         }
       }
       reader.endObject();
     }
     catch (IOException e) {
-      Log.error("0xA0567: An error occured while parsing malformed JSON "+wrapExceptionMessage(e));
+      Log.error(
+          "0xA0567: An error occured while parsing malformed JSON " + wrapExceptionMessage(e));
     }
     return result;
   }
 
   /**
    * Parses a Json array by using the passed JsonReader
+   *
    * @param reader
    * @return
    */
@@ -169,13 +201,15 @@ public class JsonParser {
           case NAME:
           default:
             Log.error(
-                "0xA0568 Invalid JSON token \"" + token + "\". The serialized object is not well-formed!");
+                "0xA0568 Invalid JSON token \"" + token
+                    + "\". The serialized object is not well-formed!");
         }
       }
       reader.endArray();
     }
     catch (IOException e) {
-      Log.error("0xA0569: An error occured while parsing malformed JSON "+wrapExceptionMessage(e));
+      Log.error(
+          "0xA0569: An error occured while parsing malformed JSON " + wrapExceptionMessage(e));
     }
     return result;
   }
@@ -195,6 +229,7 @@ public class JsonParser {
 
   /**
    * Disables object member tracing.
+   *
    * @see JsonParser#enableObjectMemberTracing()
    */
   public static void disableObjectMemberTracing() {
@@ -206,8 +241,8 @@ public class JsonParser {
     enableObjectMemberTracing();
   }
 
-  private static String wrapExceptionMessage(IOException e){
-    return e.getMessage().replace("Use JsonReader.setLenient(true) to accept malformed JSON ","");
+  private static String wrapExceptionMessage(IOException e) {
+    return e.getMessage().replace("Use JsonReader.setLenient(true) to accept malformed JSON ", "");
   }
 
 }
