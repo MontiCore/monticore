@@ -49,7 +49,7 @@ component grammar JavaClassExpressions
   external ExtReturnType;
 
   // Type arguments
-  external ExtTypeArguments;
+  external ExtTypeArgument;
 
   /*=================================================================*/
 
@@ -80,7 +80,7 @@ component grammar JavaClassExpressions
     = ExtReturnType "." "class";
    
   PrimaryGenericInvocationExpression implements Expression <370>
-    = ExtTypeArguments GenericInvocationSuffix;
+    = "<"(ExtTypeArgument||",")+">" GenericInvocationSuffix;
 
   GenericInvocationSuffix
     =   ["super"] SuperSuffix
@@ -90,7 +90,7 @@ component grammar JavaClassExpressions
     
   SuperSuffix
     =   Arguments
-    |   "." ExtTypeArguments? Name Arguments?
+    |   "." ("<"(ExtTypeArgument||",")+">")? Name Arguments?
     ;
     
   /*=================================================================*/
