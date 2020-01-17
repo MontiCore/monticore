@@ -659,6 +659,11 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   }
 
   @Test
+  public void failDeriveSymTypeOfPrimaryGenericInvocationExpression() throws IOException{
+    //3 other cases in pgie
+  }
+
+  @Test
   public void deriveSymTypeOfGenericInvocationExpression() throws IOException {
     //build symbol table for the test
     TypeVarSymbol t = typeVariable("t");
