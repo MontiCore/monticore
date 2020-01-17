@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("scopeInterface", "artifactScope")}
+${tc.signature("scopeInterface")}
 ${scopeInterface} optCurrentScope = enclosingScope;
 while (optCurrentScope != null) {
 final ${scopeInterface} currentScope = optCurrentScope;
@@ -8,8 +8,8 @@ final ${scopeInterface} currentScope = optCurrentScope;
       // package name. This check is important, since the package name of the
       // enclosing symbol might be set manually.
       return currentScope.getSpanningSymbol().getPackageName();
-    } else if (currentScope instanceof ${artifactScope}) {
-      return ((${artifactScope}) currentScope).getPackageName();
+    } else if (currentScope instanceof IArtifactScope) {
+      return ((IArtifactScope) currentScope).getPackageName();
     }
 optCurrentScope = currentScope.getEnclosingScope();
   }
