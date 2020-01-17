@@ -90,7 +90,7 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
     setMCCommonLiteralsVisitor(commonLiteralsTypesCalculator);
     commonLiteralsTypesCalculator.setResult(lastResult);
 
-    symTypeFromMCSimpleGenericTypes = new SynthesizeSymTypeFromMCSimpleGenericTypes();
+    symTypeFromMCSimpleGenericTypes = new SynthesizeSymTypeFromMCSimpleGenericTypes(scope);
 
     deriveSymTypeOfCombineExpressions = new DeriveSymTypeOfCombineExpressions(symTypeFromMCSimpleGenericTypes);
     deriveSymTypeOfCombineExpressions.setLastResult(lastResult);
@@ -142,6 +142,7 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
     deriveSymTypeOfBitExpressions.setScope(scope);
     deriveSymTypeOfJavaClassExpressions.setScope(scope);
     deriveSymTypeOfSetExpressions.setScope(scope);
+    symTypeFromMCSimpleGenericTypes.setScope(scope);
   }
 
   /**

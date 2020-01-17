@@ -2,6 +2,8 @@
 
 package de.monticore.types.check;
 
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
@@ -28,6 +30,10 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
   /**
    * Using the visitor functionality to calculate the SymType Expression
    */
+
+  public SynthesizeSymTypeFromMCSimpleGenericTypes(IExpressionsBasisScope scope){
+    super(scope);
+  }
 
   // ----------------------------------------------------------  realThis start
   // setRealThis, getRealThis are necessary to make the visitor compositional
@@ -75,7 +81,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     }
 
     SymTypeExpression tex = SymTypeExpressionFactory.createGenerics(
-        new TypeSymbolLoader(genericType.printWithoutTypeArguments(), genericType.getEnclosingScope()), arguments);
+        new TypeSymbolLoader(genericType.printWithoutTypeArguments(), scope), arguments);
     result = Optional.of(tex);
   }
 
@@ -98,12 +104,12 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     // type could also be a boxed Primitive or an Type Variable!
     // We need the SymbolTable to distinguish this stuff
     // PS: that also applies to other Visitors.
-    result = Optional.of(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), qType.getEnclosingScope())));
+    result = Optional.of(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), scope)));
   }
 
   @Override
   public void endVisit(ASTMCQualifiedName qName) {
-    SymTypeOfObject oType = createTypeObject(new TypeSymbolLoader(qName.getQName(), qName.getEnclosingScope()));
+    SymTypeOfObject oType = createTypeObject(new TypeSymbolLoader(qName.getQName(), scope));
     result = Optional.of(oType);
   }
 

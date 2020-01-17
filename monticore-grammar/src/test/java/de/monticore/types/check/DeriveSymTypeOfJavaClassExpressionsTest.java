@@ -1,18 +1,16 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
-import de.monticore.expressions.combineexpressionswithliterals._ast.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
-import de.monticore.expressions.javaclassexpressions._ast.ASTTypeCastExpression;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -131,6 +129,14 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("A",tc.typeOf(a.get()).print());
   }
 
+  @Test(expected = RuntimeException.class)
+  public void failDeriveFromPrimarySuperExpression() throws IOException{
+    //use the current scope -> there is no type spanning any enclosing scope
+    Optional<ASTExpression> a = p.parse_StringExpression("super");
+    assertTrue(a.isPresent());
+    tc.typeOf(a.get());
+  }
+
   @Test
   public void deriveFromPrimaryThisExpression() throws IOException {
     MethodSymbol get = method("get",_voidSymType);
@@ -151,6 +157,14 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     tc = new TypeCheck(null, derLit);
 
     assertEquals("AB",tc.typeOf(a.get()).print());
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void failDeriveFromPrimaryThisExpression() throws IOException{
+    //use the current scope -> there is no type spanning any enclosing scope
+    Optional<ASTExpression> a = p.parse_StringExpression("this");
+    assertTrue(a.isPresent());
+    tc.typeOf(a.get());
   }
 
   @Test
@@ -200,7 +214,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("Outer",tc.typeOf(this1.get()).print());
 
     //test 2&3: Outer.this and Inner.this in methodInnerInner()
-    derLit.setScope((ExpressionsBasisScope)methodInnerInner.getSpannedScope());
+    derLit = new DeriveSymTypeOfCombineExpressionsDelegator((ExpressionsBasisScope) methodInnerInner.getSpannedScope(),new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
     tc = new TypeCheck(null, derLit);
 
     assertEquals("Inner",tc.typeOf(this2.get()).print());
@@ -354,51 +368,327 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("boolean",tc.typeOf(inst1.get()).print());
     assertEquals("boolean",tc.typeOf(inst2.get()).print());
     assertEquals("boolean",tc.typeOf(inst3.get()).print());
-
-    //soll wirklich auch person1 instanceof String keinen Fehler geben?
   }
 
   @Test
-  public void deriveSymTypeOfTypeCastExpression(){
-    ASTMCQualifiedType person = CombineExpressionsWithLiteralsMill.mCQualifiedTypeBuilder()
-        .setMCQualifiedName(CombineExpressionsWithLiteralsMill.mCQualifiedNameBuilder().setPartList(Lists.newArrayList("Person"))
-            .build())
-        .build();
+  public void failDeriveSymTypeOfInstanceOfExpression() throws IOException{
+    //the expression is a type
+    Optional<ASTExpression> inst1 = p.parse_StringExpression("Student instanceof Person");
 
-    ASTMCQualifiedType student = CombineExpressionsWithLiteralsMill.mCQualifiedTypeBuilder()
-        .setMCQualifiedName(CombineExpressionsWithLiteralsMill.mCQualifiedNameBuilder().setPartList(Lists.newArrayList("Student"))
-            .build())
-        .build();
+    assertTrue(inst1.isPresent());
 
-    //schlaegt im Moment fehl, weil man keinen ExpressionsBasisScope als EnclosingScope eines Typs setzen kann
-    //--> im ganzen TypeCheck TypeSymbolsScope benutzen
-    person.setEnclosingScope(scope);
-    student.setEnclosingScope(scope);
+    tc.typeOf(inst1.get());
+    assertFalse(LogStub.getFindings().isEmpty());
+    assertEquals("0xA0312 the left type of the InstanceofExpression cannot be a type",LogStub.getFindings().get(0).getMsg());
+  }
 
-    ASTTypeCastExpression cast1 = CombineExpressionsWithLiteralsMill.typeCastExpressionBuilder()
-        .setExtType(CombineExpressionsWithLiteralsMill.extTypeBuilder()
-            .setMCType(person)
-            .build())
-        .setExpression(CombineExpressionsWithLiteralsMill.nameExpressionBuilder().setName("student1").build())
-        .build();
-    ASTTypeCastExpression cast2 = CombineExpressionsWithLiteralsMill.typeCastExpressionBuilder()
-        .setExtType(CombineExpressionsWithLiteralsMill.extTypeBuilder()
-            .setMCType(person)
-            .build())
-        .setExpression(CombineExpressionsWithLiteralsMill.nameExpressionBuilder().setName("person1").build())
-        .build();
+  @Test
+  public void deriveSymTypeOfTypeCastExpression() throws IOException {
+    Optional<ASTExpression> cast1 = p.parse_StringExpression("(Person) student1");
+    Optional<ASTExpression> cast2 = p.parse_StringExpression("(Person) person1");
+    Optional<ASTExpression> cast3 = p.parse_StringExpression("(Student) person1");
 
-    ASTTypeCastExpression cast3 = CombineExpressionsWithLiteralsMill.typeCastExpressionBuilder()
-        .setExtType(CombineExpressionsWithLiteralsMill.extTypeBuilder()
-            .setMCType(student)
-            .build())
-        .setExpression(CombineExpressionsWithLiteralsMill.nameExpressionBuilder().setName("person1").build())
-        .build();
+    assertTrue(cast1.isPresent());
+    assertTrue(cast2.isPresent());
+    assertTrue(cast3.isPresent());
 
-    assertEquals("Person",tc.typeOf(cast1).print());
-    assertEquals("Person",tc.typeOf(cast2).print());
-    //schlaegt fehl, weil statt dem TypeSymbolsScope der ExpressionsBasisScope benutzt wird --> aendern?
-//    assertEquals("Student",tc.typeOf(cast3).print());
+    assertEquals("Person",tc.typeOf(cast1.get()).print());
+    assertEquals("Person",tc.typeOf(cast2.get()).print());
+    assertEquals("Student",tc.typeOf(cast3.get()).print());
+  }
+
+  @Test
+  public void failDeriveSymTypeOfTypeCastExpression() throws IOException{
+    //the expression is a type
+    Optional<ASTExpression> cast1 = p.parse_StringExpression("(Student)Person");
+
+    assertTrue(cast1.isPresent());
+
+    tc.typeOf(cast1.get());
+    assertFalse(LogStub.getFindings().isEmpty());
+    assertEquals("0xA0310 the inner expression of the TypeCastExpression cannot be a type",LogStub.getFindings().get(0).getMsg());
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void failDeriveSymTypeOfTypeCastExpression2() throws IOException{
+    //there exists no sub/super type relation between the expression and the type
+    Optional<ASTExpression> cast1 = p.parse_StringExpression("(String)person1");
+
+    assertTrue(cast1.isPresent());
+
+    tc.typeOf(cast1.get());
+  }
+
+  @Test
+  public void deriveSymTypeOfSuperExpression() throws IOException {
+    /*
+     * example for this test:
+     * class SuperOuter{
+     *    public int test(){
+     *      return 3;
+     *    }
+     * }
+     *
+     *
+     *
+     * class Outer extends SuperOuter{
+     *   class Inner{
+     *     public void methodInner(){
+     *       Outer outer = Outer.this;
+     *     }
+     *     class Innerinner{
+     *       public void methodInnerInner(){
+     *         Outer outer = Outer.this;
+     *         Inner inner = Inner.this;
+     *       }
+     *     }
+     *   }
+     * }
+     *
+     * one class SuperOuter
+     * one class Outer that extends SuperOuter with an inner class Inner with a method methodInner
+     * -> try reaching the get()-Method of SuperOuter from this method
+     * the class Inner contains an inner class InnerInner with a method methodInnerInner
+     * -> try reaching the get()-Method of SuperOuter from this method
+     * */
+    //build infrastructure for previous comment
+    MethodSymbol test = method("test",_intSymType);
+    TypeSymbol superOuter = type("SuperOuter",Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    superOuter.setClass(true);
+    SymTypeExpression superOuterType = SymTypeExpressionFactory.createTypeObject("SuperOuter",scope);
+    add2scope(scope,superOuter);
+
+    TypeSymbol outer = type("Outer",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(superOuterType),Lists.newArrayList(),scope);
+    add2scope(scope,outer);
+    MethodSymbol methodInner = method("methodInner",_voidSymType);
+    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)outer.getSpannedScope());
+    add2scope(outer.getEnclosingScope(),inner);
+    MethodSymbol methodInnerInner = method("methodInnerInner",_voidSymType);
+    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)inner.getSpannedScope());
+    add2scope(inner.getSpannedScope(),innerinner);
+
+    Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.test()");
+
+    derLit.setScope((ExpressionsBasisScope) methodInner.getSpannedScope());
+    tc = new TypeCheck(null,derLit);
+
+    assertTrue(super1.isPresent());
+
+    assertEquals("int",tc.typeOf(super1.get()).print());
+
+    derLit = new DeriveSymTypeOfCombineExpressionsDelegator((ExpressionsBasisScope)methodInnerInner.getSpannedScope(),new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+    tc = new TypeCheck(null,derLit);
+
+    assertEquals("int",tc.typeOf(super1.get()).print());
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void failDeriveFromSuperExpression1() throws IOException{
+    //.super in enclosing class
+    TypeSymbol fail = type("Fail",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    add2scope(scope,fail);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> this1 = p.parse_StringExpression("Fail.super.get()");
+
+    assertTrue(this1.isPresent());
+
+    tc.typeOf(this1.get());
+    //.this without a type -> field or literal
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void failDeriveFromSuperExpression2() throws IOException{
+    //.super without a type
+    Optional<ASTExpression> this1 = p.parse_StringExpression("person1.super.get()");
+
+    assertTrue(this1.isPresent());
+
+    tc.typeOf(this1.get());
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void failDeriveFromSuperExpression3() throws IOException{
+    //.super with more than one super type
+    //first super type
+    MethodSymbol test = method("test",_intSymType);
+    TypeSymbol superOuter = type("SuperOuter",Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    superOuter.setClass(true);
+    SymTypeExpression superOuterType = SymTypeExpressionFactory.createTypeObject("SuperOuter",scope);
+    add2scope(scope,superOuter);
+
+    //second super type
+    TypeSymbol superOuterTwo = type("SuperOuterTwo",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    superOuterTwo.setClass(true);
+    SymTypeExpression superOuterTwoType = SymTypeExpressionFactory.createTypeObject("SuperOuterTwo",scope);
+    add2scope(scope,superOuterTwo);
+
+    TypeSymbol outer = type("Outer",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(superOuterType, superOuterTwoType),Lists.newArrayList(),scope);
+    add2scope(scope,outer);
+    MethodSymbol methodInner = method("methodInner",_voidSymType);
+    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)outer.getSpannedScope());
+    add2scope(outer.getEnclosingScope(),inner);
+    MethodSymbol methodInnerInner = method("methodInnerInner",_voidSymType);
+    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)inner.getSpannedScope());
+    add2scope(inner.getSpannedScope(),innerinner);
+
+    derLit.setScope((ExpressionsBasisScope) methodInner.getSpannedScope());
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.test()");
+
+    assertTrue(super1.isPresent());
+
+    tc.typeOf(super1.get());
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void failDeriveFromSuperExpression4() throws IOException{
+    //.super without a super type
+    TypeSymbol outer = type("Outer",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    add2scope(scope,outer);
+    MethodSymbol methodInner = method("methodInner",_voidSymType);
+    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)outer.getSpannedScope());
+    add2scope(outer.getEnclosingScope(),inner);
+    MethodSymbol methodInnerInner = method("methodInnerInner",_voidSymType);
+    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)inner.getSpannedScope());
+    add2scope(inner.getSpannedScope(),innerinner);
+
+    derLit.setScope((ExpressionsBasisScope) methodInner.getSpannedScope());
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.test()");
+
+    assertTrue(super1.isPresent());
+
+    tc.typeOf(super1.get());
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void failDeriveFromSuperExpression5() throws IOException{
+    //.super with a super type but a wrong method
+    MethodSymbol test = method("test",_intSymType);
+    TypeSymbol superOuter = type("SuperOuter",Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    superOuter.setClass(true);
+    SymTypeExpression superOuterType = SymTypeExpressionFactory.createTypeObject("SuperOuter",scope);
+    add2scope(scope,superOuter);
+
+    TypeSymbol outer = type("Outer",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(superOuterType),Lists.newArrayList(),scope);
+    add2scope(scope,outer);
+    MethodSymbol methodInner = method("methodInner",_voidSymType);
+    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)outer.getSpannedScope());
+    add2scope(outer.getEnclosingScope(),inner);
+    MethodSymbol methodInnerInner = method("methodInnerInner",_voidSymType);
+    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)inner.getSpannedScope());
+    add2scope(inner.getSpannedScope(),innerinner);
+
+    //SuperOuter does not have a method "get"
+    Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.get()");
+
+    derLit.setScope((ExpressionsBasisScope) methodInner.getSpannedScope());
+    tc = new TypeCheck(null,derLit);
+
+    assertTrue(super1.isPresent());
+
+    tc.typeOf(super1.get());
+  }
+
+
+  @Test
+  public void deriveSymTypeOfPrimaryGenericInvocationExpression() throws IOException {
+    //build symbol table for the test
+    //type variables for the methods
+    TypeVarSymbol t = typeVariable("T");
+    TypeVarSymbol s = typeVariable("S");
+    SymTypeExpression tType = SymTypeExpressionFactory.createTypeVariable("T",scope);
+    SymTypeExpression sType = SymTypeExpressionFactory.createTypeVariable("S",scope);
+    add2scope(scope,t);
+    add2scope(scope,s);
+    //type ASuper with constructor
+    MethodSymbol asuperconstr = method("ASuper",_intSymType);
+    asuperconstr.setTypeVariableList(Lists.newArrayList(t));
+    TypeSymbol aSuper = type("ASuper",Lists.newArrayList(asuperconstr),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    aSuper.setClass(true);
+    SymTypeExpression aSuperType = SymTypeExpressionFactory.createTypeObject("ASuper",scope);
+    asuperconstr.setReturnType(aSuperType);
+    add2scope(scope,aSuper);
+
+    //type A with constructor and methods test,get and set
+    MethodSymbol test = method("test",_intSymType);
+    test.setTypeVariableList(Lists.newArrayList(t));
+    MethodSymbol get = method("get",tType);
+    get.setTypeVariableList(Lists.newArrayList(t));
+    MethodSymbol aconstr = method("A",_intSymType);
+    aconstr.setTypeVariableList(Lists.newArrayList(t));
+    MethodSymbol set = add(add(method("set",_StringSymType),field("s",sType)),field("t",tType));
+    set.setTypeVariableList(Lists.newArrayList(t,s));
+    TypeSymbol a = type("A",Lists.newArrayList(test,aconstr,get,set),Lists.newArrayList(),Lists.newArrayList(aSuperType),Lists.newArrayList(),scope);
+    SymTypeExpression aType = SymTypeExpressionFactory.createTypeObject("A",scope);
+    aconstr.setReturnType(aType);
+    add2scope(scope, a);
+
+    derLit.setScope((ExpressionsBasisScope) a.getSpannedScope());
+    tc = new TypeCheck(null,derLit);
+
+    //basic test
+    Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>test()");
+    assertTrue(pgie1.isPresent());
+    assertEquals("int",tc.typeOf(pgie1.get()).print());
+
+    //test with variable return type of method
+    Optional<ASTExpression> pgie2 = p.parse_StringExpression("<int>get()");
+    assertTrue(pgie2.isPresent());
+    assertEquals("int",tc.typeOf(pgie2.get()).print());
+
+    //test with more than one type variable and with args in method
+    Optional<ASTExpression> pgie3 = p.parse_StringExpression("<int,double>set(3.2,4)");
+    assertTrue(pgie3.isPresent());
+    assertEquals("String",tc.typeOf(pgie3.get()).print());
+
+    //test with super()
+    Optional<ASTExpression> pgie4 = p.parse_StringExpression("<int>super()");
+    assertTrue(pgie4.isPresent());
+    assertEquals("ASuper",tc.typeOf(pgie4.get()).print());
+
+    //test with this()
+    Optional<ASTExpression> pgie5 = p.parse_StringExpression("<int>this()");
+    assertTrue(pgie5.isPresent());
+    assertEquals("A",tc.typeOf(pgie5.get()).print());
+  }
+
+  @Test
+  public void failDeriveSymTypeOfPrimaryGenericInvocationExpression() throws IOException {
+    //3 other cases in pgie
+  }
+
+  @Test
+  public void deriveSymTypeOfGenericInvocationExpression() throws IOException {
+    //build symbol table for the test
+    TypeVarSymbol t = typeVariable("t");
+    add2scope(scope,t);
+    MethodSymbol test = method("test",_charSymType);
+    test.setTypeVariableList(Lists.newArrayList(t));
+    TypeSymbol a = type("A",Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    SymTypeExpression aType = SymTypeExpressionFactory.createTypeObject("A",scope);
+    FieldSymbol aField = field("a",aType);
+    add2scope(scope,aField);
+    add2scope(scope,a);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> gie1 = p.parse_StringExpression("a.<int>test()");
+    assertTrue(gie1.isPresent());
+    assertEquals("char",tc.typeOf(gie1.get()).print());
+    //test variable.<TypeArg>method() with and without args
+  }
+
+  @Test
+  public void failDeriveSymTypeOfGenericInvocationExpression() throws IOException{
+    //other 5 cases possible with pgie
+    //before . cannot be a type
   }
 
 }

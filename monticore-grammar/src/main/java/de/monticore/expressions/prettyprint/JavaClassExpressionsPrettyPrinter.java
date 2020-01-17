@@ -33,8 +33,15 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     if (node.isPresentName()) {
       getPrinter().print(".");
-      if (node.isPresentExtTypeArguments()) {
-        node.getExtTypeArguments().accept(getRealThis());
+      if (!node.getExtTypeArgumentList().isEmpty()) {
+        getPrinter().print("<");
+        for(int i = 0; i<node.getExtTypeArgumentList().size();i++){
+          node.getExtTypeArgument(i).accept(getRealThis());
+          if(i!=node.getExtTypeArgumentList().size()-1){
+            getPrinter().print(",");
+          }
+        }
+        getPrinter().print(">");
       }
       getPrinter().print(node.getName());
       if (node.isPresentArguments()) {
@@ -107,7 +114,14 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
   @Override
   public void handle(ASTPrimaryGenericInvocationExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExtTypeArguments().accept(getRealThis());
+    getPrinter().print("<");
+    for(int i = 0;i<node.getExtTypeArgumentList().size();i++){
+      node.getExtTypeArgument(i).accept(getRealThis());
+      if(i!=node.getExtTypeArgumentList().size()-1){
+        getPrinter().print(",");
+      }
+    }
+    getPrinter().print(">");
     getPrinter().print(" ");
     node.getGenericInvocationSuffix().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
