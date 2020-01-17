@@ -659,7 +659,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   }
 
   @Test
-  public void failDeriveSymTypeOfPrimaryGenericInvocationExpression() throws IOException{
+  public void failDeriveSymTypeOfPrimaryGenericInvocationExpression() throws IOException {
     //3 other cases in pgie
   }
 
