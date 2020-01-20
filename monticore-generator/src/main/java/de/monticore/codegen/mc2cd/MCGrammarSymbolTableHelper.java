@@ -233,17 +233,17 @@ public class MCGrammarSymbolTableHelper {
     }
   }
 
-  public static Optional<String> getConstantName(RuleComponentSymbol compSymbol) {
+  public static String getConstantName(RuleComponentSymbol compSymbol) {
     if (compSymbol.isIsConstantGroup() && compSymbol.isPresentAstNode()
         && compSymbol.getAstNode() instanceof ASTConstantGroup) {
-      return getConstantGroupName((ASTConstantGroup) compSymbol.getAstNode());
+      return getConstantGroupName((ASTConstantGroup) compSymbol.getAstNode()).orElse("");
     }
     if (compSymbol.isIsConstant() && compSymbol.isPresentAstNode()
         && compSymbol.getAstNode() instanceof ASTConstant) {
-      return Optional.of(
-          HelperGrammar.getAttributeNameForConstant((ASTConstant) compSymbol.getAstNode()));
+      return
+          HelperGrammar.getAttributeNameForConstant((ASTConstant) compSymbol.getAstNode());
     }
-    return Optional.empty();
+    return "";
   }
 
   public static Optional<String> getConstantGroupName(ASTConstantGroup ast) {

@@ -12,6 +12,8 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -122,5 +124,16 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, builderClass, builderClass);
+  }
+
+  @Test
+  public void testInheritedSetterNoGetter(){
+    ASTCDMethod setF = getMethodBy("setF", builderClass);
+    assertTrue(setF.getMCReturnType().isPresentMCType());
+    assertEquals(builderClass.getName(), setF.getMCReturnType().printType(new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())));
+    assertDeepEquals(PUBLIC, setF.getModifier());
+    assertEquals(1, setF.getCDParameterList().size());
+
+    assertTrue(builderClass.getCDMethodList().stream().noneMatch(m -> m.getName().equals("getF")));
   }
 }

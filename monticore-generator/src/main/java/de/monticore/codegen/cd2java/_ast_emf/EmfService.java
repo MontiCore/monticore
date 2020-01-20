@@ -99,7 +99,7 @@ public class EmfService extends AbstractService<EmfService> {
     Set<String> eDataTypeMap = new HashSet<>();
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
-        if (isEDataType(astcdAttribute)) {
+        if (isEDataType(astcdAttribute) && !isInheritedAttribute(astcdAttribute)) {
           eDataTypeMap.add(getDecorationHelper().getNativeTypeName(astcdAttribute.getMCType()));
         }
       }
