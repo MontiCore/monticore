@@ -114,7 +114,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreator, enclosingScope);
     this.replaceTemplate(EMPTY_BODY, constructor, new
         StringHookPoint("this." + SCOPE_STACK_VAR + " = Log.errorIfNull(("
-            + dequeType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ")" + SCOPE_STACK_VAR + ");"));
+        + dequeType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ")" + SCOPE_STACK_VAR + ");"));
     return constructor;
   }
 
@@ -274,7 +274,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
                                                                     ASTCDParameter symbolParam, boolean isScopeSpanningSymbol,
                                                                     ASTModifier symbolClassModifier) {
     boolean isShadowing = symbolTableService.hasShadowingStereotype(symbolClassModifier);
-    boolean isNonExporting = symbolTableService.hasShadowingStereotype(symbolClassModifier);
+    boolean isNonExporting = symbolTableService.hasNonExportingStereotype(symbolClassModifier);
     boolean isOrdered = symbolTableService.hasOrderedStereotype(symbolClassModifier);
     ASTCDMethod addToScopeAnLinkWithNode = getCDMethodFacade().createMethod(PUBLIC, "addToScopeAndLinkWithNode", symbolParam, astParam);
     this.replaceTemplate(EMPTY_BODY, addToScopeAnLinkWithNode, new TemplateHookPoint(
@@ -304,11 +304,11 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       methodList.add(createScopeVisitMethod(astFullName, scopeInterface, simpleName));
 
       // endVisit method
-      methodList.add(createScopeEndVisitMethod(astFullName, scopeInterface, simpleName));
+      methodList.add(createScopeEndVisitMethod(astFullName));
       ASTCDParameter astParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(astFullName), "ast");
 
       // create_$ method
-      methodList.add(createScopeCreate_Method(scopeInterface, simpleName, astParam));
+      methodList.add(createScopeCreate_Method(scopeInterface, simpleName, astParam, scopeClass.getModifier()));
 
       // initialize_$ method
       ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterface), SCOPE_VAR);
@@ -327,16 +327,21 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     return visitMethod;
   }
 
-  protected ASTCDMethod createScopeEndVisitMethod(String astFullName, String scopeInterface, String simpleName) {
+  protected ASTCDMethod createScopeEndVisitMethod(String astFullName) {
     ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(astFullName));
     this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint("removeCurrentScope();"));
     return endVisitMethod;
   }
 
-  protected ASTCDMethod createScopeCreate_Method(String scopeInterface, String simpleName, ASTCDParameter astParam) {
+  protected ASTCDMethod createScopeCreate_Method(String scopeInterface, String simpleName, ASTCDParameter astParam,
+                                                 ASTModifier scopeModifier) {
+    boolean isShadowing = symbolTableService.hasShadowingStereotype(scopeModifier);
+    boolean isNonExporting = symbolTableService.hasNonExportingStereotype(scopeModifier);
+    boolean isOrdered = symbolTableService.hasOrderedStereotype(scopeModifier);
     ASTCDMethod createSymbolMethod = getCDMethodFacade().createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(scopeInterface),
         "create_" + simpleName, astParam);
-    this.replaceTemplate(EMPTY_BODY, createSymbolMethod, new StringHookPoint("return createScope(false);"));
+    this.replaceTemplate(EMPTY_BODY, createSymbolMethod, new TemplateHookPoint(TEMPLATE_PATH + "CreateSpecialScope",
+        scopeInterface, isShadowing, isNonExporting, isOrdered));
     return createSymbolMethod;
   }
 
