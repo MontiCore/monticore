@@ -207,25 +207,25 @@ public class SymbolAndScopeTranslationTest {
 
   @Test
   public void testNoShadowingScopeClass() {
-    ASTCDClass astType = getClassBy("ASTScopeNoShadowing", symbolCD);
+    ASTCDClass astType = getClassBy("ASTScopeShadowing", symbolCD);
     assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValueList().size());
     assertEquals("scope", astType.getModifier().getStereotype().getValue(0).getName());
     assertFalse(astType.getModifier().getStereotype().getValue(0).isPresentValue());
-    assertEquals("no_shadowing", astType.getModifier().getStereotype().getValue(1).getName());
+    assertEquals("shadowing", astType.getModifier().getStereotype().getValue(1).getName());
     assertFalse(astType.getModifier().getStereotype().getValue(1).isPresentValue());
   }
 
   @Test
   public void testNoExportingScopeClass() {
-    ASTCDClass astType = getClassBy("ASTScopeNoExporting", symbolCD);
+    ASTCDClass astType = getClassBy("ASTScopeNonExporting", symbolCD);
     assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValueList().size());
     assertEquals("scope", astType.getModifier().getStereotype().getValue(0).getName());
     assertFalse(astType.getModifier().getStereotype().getValue(0).isPresentValue());
-    assertEquals("no_exporting", astType.getModifier().getStereotype().getValue(1).getName());
+    assertEquals("non_exporting", astType.getModifier().getStereotype().getValue(1).getName());
     assertFalse(astType.getModifier().getStereotype().getValue(1).isPresentValue());
   }
 

@@ -63,11 +63,11 @@ public enum MC2CDStereotypes {
   /**
    * To mark class as scope
    */
-  NO_SHADOWING("no_shadowing"),
+  SHADOWING("shadowing"),
   /**
    * To mark class as scope
    */
-  NO_EXPORTING("no_exporting"),
+  NON_EXPORTING("non_exporting"),
   /**
    * To mark class as scope
    */

@@ -1024,16 +1024,16 @@ public class GrammarPrettyPrinter
     }
     if (node.isGenScope()) {
       getPrinter().print(" scope ");
-      if (node.isOrdered() || node.isNo_shadowing() || node.isNo_exporting()) {
+      if (node.isOrdered() || node.isShadowing() || node.isNon_exporting()) {
         getPrinter().print("(");
         if (node.isOrdered()) {
           getPrinter().print(" ordered ");
         }
-        if (node.isNo_shadowing()) {
-          getPrinter().print(" no_shadowing ");
+        if (node.isShadowing()) {
+          getPrinter().print(" shadowing ");
         }
-        if (node.isNo_exporting()) {
-          getPrinter().print(" no_exporting ");
+        if (node.isNon_exporting()) {
+          getPrinter().print(" non_exporting ");
         }
         getPrinter().print(")");
       }

@@ -748,6 +748,18 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return hasStereotype(modifier, MC2CDStereotypes.START_PROD);
   }
 
+  public boolean hasShadowingStereotype(ASTModifier modifier) {
+    return hasStereotype(modifier, MC2CDStereotypes.SHADOWING);
+  }
+
+  public boolean hasNonExportingStereotype(ASTModifier modifier) {
+    return hasStereotype(modifier, MC2CDStereotypes.NON_EXPORTING);
+  }
+
+  public boolean hasOrderedStereotype(ASTModifier modifier) {
+    return hasStereotype(modifier, MC2CDStereotypes.ORDERED);
+  }
+
   public Optional<String> getStartProdValue(ASTModifier modifier) {
     List<String> stereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.START_PROD);
     if (!stereotypeValues.isEmpty()) {

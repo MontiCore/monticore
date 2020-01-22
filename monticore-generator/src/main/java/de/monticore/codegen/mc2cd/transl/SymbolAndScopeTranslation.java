@@ -83,13 +83,13 @@ public class SymbolAndScopeTranslation implements
         TransformationHelper.addStereoType(cdType,
             MC2CDStereotypes.SCOPE.toString());
         //a scope can have more features
-        if (symbolDefinition.isNo_shadowing()) {
+        if (symbolDefinition.isShadowing()) {
           TransformationHelper.addStereoType(cdType,
-              MC2CDStereotypes.NO_SHADOWING.toString());
+              MC2CDStereotypes.SHADOWING.toString());
         }
-        if (symbolDefinition.isNo_exporting()) {
+        if (symbolDefinition.isNon_exporting()) {
           TransformationHelper.addStereoType(cdType,
-              MC2CDStereotypes.NO_EXPORTING.toString());
+              MC2CDStereotypes.NON_EXPORTING.toString());
         }
         if (symbolDefinition.isOrdered()) {
           TransformationHelper.addStereoType(cdType,
