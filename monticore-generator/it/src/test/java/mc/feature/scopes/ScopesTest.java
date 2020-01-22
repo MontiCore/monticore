@@ -28,8 +28,7 @@ public class ScopesTest {
 
 
   @Before
-  public void testResolvingFilter() throws IOException {
-
+  public void setUp() throws IOException {
     SupAutomatonParser supAutomatonParser = new SupAutomatonParser();
     Optional<ASTSup> astSup = supAutomatonParser.parse("src/test/resources/mc/feature/scopes/SupAutomatonModel.aut");
     assertFalse(supAutomatonParser.hasErrors());
