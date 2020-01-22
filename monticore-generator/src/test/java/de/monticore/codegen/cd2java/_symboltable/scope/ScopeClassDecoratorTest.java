@@ -176,7 +176,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(18, scopeClass.sizeCDAttributes());
+    assertEquals(19, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -272,6 +272,13 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testOrderedAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("ordered", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertBoolean(astcdAttribute.getMCType());
+  }
+
+  @Test
   public void testNameAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("name", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
@@ -302,7 +309,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(89, scopeClass.getCDMethodList().size());
+    assertEquals(91, scopeClass.getCDMethodList().size());
   }
 
   @Test

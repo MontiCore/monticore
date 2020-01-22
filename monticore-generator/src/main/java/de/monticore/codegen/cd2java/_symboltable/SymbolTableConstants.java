@@ -112,6 +112,8 @@ public class SymbolTableConstants {
 
   public static final String SHADOWING_VAR = "shadowing";
 
+  public static final String ORDERED_VAR = "ordered";
+
   public static final String MODEL_PATH_VAR = "modelPath";
 
   public static final String MODEL_LOADER_VAR = "modelLoader";

@@ -275,9 +275,11 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
                                                                     ASTModifier symbolClassModifier) {
     boolean isShadowing = symbolTableService.hasShadowingStereotype(symbolClassModifier);
     boolean isNonExporting = symbolTableService.hasShadowingStereotype(symbolClassModifier);
+    boolean isOrdered = symbolTableService.hasOrderedStereotype(symbolClassModifier);
     ASTCDMethod addToScopeAnLinkWithNode = getCDMethodFacade().createMethod(PUBLIC, "addToScopeAndLinkWithNode", symbolParam, astParam);
     this.replaceTemplate(EMPTY_BODY, addToScopeAnLinkWithNode, new TemplateHookPoint(
-        TEMPLATE_PATH + "AddToScopeAndLinkWithNode", scopeInterface, isScopeSpanningSymbol, isShadowing, isNonExporting));
+        TEMPLATE_PATH + "AddToScopeAndLinkWithNode", scopeInterface, isScopeSpanningSymbol, isShadowing,
+        isNonExporting, isOrdered));
     return addToScopeAnLinkWithNode;
   }
 
