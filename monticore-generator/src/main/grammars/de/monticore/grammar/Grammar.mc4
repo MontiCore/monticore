@@ -556,7 +556,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
 
   SymbolDefinition =
     (genSymbol:["symbol"] ("("symbolName:Name ")")? ) |
-    genScope:["scope"] ("(" (["no_shadowing"] | ["exporting"] | ["ordered"])+ ")")?;
+    genScope:["scope"] ("(" (["no_shadowing"] | ["no_exporting"] | ["ordered"])+ ")")?;
 
   /** An SymbolRule contains additional information for the class generation
   process

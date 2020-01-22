@@ -82,6 +82,19 @@ public class SymbolAndScopeTranslation implements
       if (symbolDefinition.isGenScope()) {
         TransformationHelper.addStereoType(cdType,
             MC2CDStereotypes.SCOPE.toString());
+        //a scope can have more features
+        if (symbolDefinition.isNo_shadowing()) {
+          TransformationHelper.addStereoType(cdType,
+              MC2CDStereotypes.NO_SHADOWING.toString());
+        }
+        if (symbolDefinition.isNo_exporting()) {
+          TransformationHelper.addStereoType(cdType,
+              MC2CDStereotypes.NO_EXPORTING.toString());
+        }
+        if (symbolDefinition.isOrdered()) {
+          TransformationHelper.addStereoType(cdType,
+              MC2CDStereotypes.ORDERED.toString());
+        }
       }
     }
   }

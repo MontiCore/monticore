@@ -204,4 +204,40 @@ public class SymbolAndScopeTranslationTest {
     assertEquals("scope", astType.getModifier().getStereotype().getValue(0).getName());
     assertFalse(astType.getModifier().getStereotype().getValue(0).isPresentValue());
   }
+
+  @Test
+  public void testNoShadowingScopeClass() {
+    ASTCDClass astType = getClassBy("ASTScopeNoShadowing", symbolCD);
+    assertTrue(astType.isPresentModifier());
+    assertTrue(astType.getModifier().isPresentStereotype());
+    assertEquals(2, astType.getModifier().getStereotype().getValueList().size());
+    assertEquals("scope", astType.getModifier().getStereotype().getValue(0).getName());
+    assertFalse(astType.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals("no_shadowing", astType.getModifier().getStereotype().getValue(1).getName());
+    assertFalse(astType.getModifier().getStereotype().getValue(1).isPresentValue());
+  }
+
+  @Test
+  public void testNoExportingScopeClass() {
+    ASTCDClass astType = getClassBy("ASTScopeNoExporting", symbolCD);
+    assertTrue(astType.isPresentModifier());
+    assertTrue(astType.getModifier().isPresentStereotype());
+    assertEquals(2, astType.getModifier().getStereotype().getValueList().size());
+    assertEquals("scope", astType.getModifier().getStereotype().getValue(0).getName());
+    assertFalse(astType.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals("no_exporting", astType.getModifier().getStereotype().getValue(1).getName());
+    assertFalse(astType.getModifier().getStereotype().getValue(1).isPresentValue());
+  }
+
+  @Test
+  public void testOrderedScopeClass() {
+    ASTCDClass astType = getClassBy("ASTScopeOrdered", symbolCD);
+    assertTrue(astType.isPresentModifier());
+    assertTrue(astType.getModifier().isPresentStereotype());
+    assertEquals(2, astType.getModifier().getStereotype().getValueList().size());
+    assertEquals("scope", astType.getModifier().getStereotype().getValue(0).getName());
+    assertFalse(astType.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals("ordered", astType.getModifier().getStereotype().getValue(1).getName());
+    assertFalse(astType.getModifier().getStereotype().getValue(1).isPresentValue());
+  }
 }

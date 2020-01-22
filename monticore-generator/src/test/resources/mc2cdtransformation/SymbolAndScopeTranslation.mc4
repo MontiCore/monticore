@@ -36,4 +36,11 @@ grammar SymbolAndScopeTranslation extends mc2cdtransformation.symbolTransl.Symbo
   interface symbol scope InterfaceFoo;
   ImplementsSymbolInterface implements InterfaceFoo = Name;
 
+  scope (no_shadowing) ScopeNoShadowing = Name;
+
+  scope (no_exporting) ScopeNoExporting = Name;
+
+  scope (ordered) ScopeOrdered = Name;
+
+
 }

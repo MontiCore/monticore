@@ -1024,7 +1024,7 @@ public class GrammarPrettyPrinter
     }
     if (node.isGenScope()) {
       getPrinter().print(" scope ");
-      if (node.isOrdered() || node.isNo_shadowing() || node.isExporting()) {
+      if (node.isOrdered() || node.isNo_shadowing() || node.isNo_exporting()) {
         getPrinter().print("(");
         if (node.isOrdered()) {
           getPrinter().print(" ordered ");
@@ -1032,11 +1032,11 @@ public class GrammarPrettyPrinter
         if (node.isNo_shadowing()) {
           getPrinter().print(" no_shadowing ");
         }
-        if (node.isExporting()) {
-          getPrinter().print(" exporting ");
+        if (node.isNo_exporting()) {
+          getPrinter().print(" no_exporting ");
         }
         getPrinter().print(")");
-     }
+      }
     }
   }
 
