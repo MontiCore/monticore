@@ -711,13 +711,84 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
   @Test
   public void failDeriveSymTypeOfPrimaryGenericInvocationExpression() throws IOException {
-    //3 other cases in pgie
+    //<TypeArg>super.method()
+    MethodSymbol help = method("help",_doubleSymType);
+    TypeSymbol sup = type("Sup",Lists.newArrayList(help),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    sup.setClass(true);
+    add2scope(scope,sup);
+    SymTypeExpression supType = SymTypeExpressionFactory.createTypeObject("Sup",scope);
+    TypeSymbol sub = type("Sub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(supType),Lists.newArrayList(),scope);
+    add2scope(scope,sub);
+
+    derLit.setScope((ExpressionsBasisScope) sub.getSpannedScope());
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>super.help()");
+
+    assertTrue(pgie1.isPresent());
+
+    try {
+      tc.typeOf(pgie1.get());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0285"));
+    }
+  }
+
+  @Test
+  public void failDeriveSymTypeOfPrimaryGenericInvocationExpression2() throws IOException {
+    //<TypeArg>super.<TypeArg>method(arg)
+    MethodSymbol help = add(method("help",_doubleSymType),field("x",_intSymType));
+    help.setTypeVariableList(Lists.newArrayList(typeVariable("T")));
+    TypeSymbol sup = type("Sup",Lists.newArrayList(help),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    sup.setClass(true);
+    add2scope(scope,sup);
+    SymTypeExpression supType = SymTypeExpressionFactory.createTypeObject("Sup",scope);
+    TypeSymbol sub = type("Sub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(supType),Lists.newArrayList(),scope);
+    add2scope(scope,sub);
+
+    derLit.setScope((ExpressionsBasisScope) sub.getSpannedScope());
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>super.<double>help(2)");
+
+    assertTrue(pgie1.isPresent());
+
+    try {
+      tc.typeOf(pgie1.get());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0285"));
+    }
+  }
+
+  @Test
+  public void failDeriveSymTypeOfPrimaryGenericInvocationExpression3() throws IOException {
+    //<TypeArg>super.field
+    FieldSymbol test = field("test",_booleanSymType);
+    TypeSymbol sup = type("Sup",Lists.newArrayList(),Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),scope);
+    sup.setClass(true);
+    add2scope(scope,sup);
+    SymTypeExpression supType = SymTypeExpressionFactory.createTypeObject("Sup",scope);
+    TypeSymbol sub = type("Sub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(supType),Lists.newArrayList(),scope);
+    add2scope(scope,sub);
+
+    derLit.setScope((ExpressionsBasisScope) sub.getSpannedScope());
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>super.test");
+
+    assertTrue(pgie1.isPresent());
+
+    try {
+      tc.typeOf(pgie1.get());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0285"));
+    }
   }
 
   @Test
   public void deriveSymTypeOfGenericInvocationExpression() throws IOException {
     //build symbol table for the test
-    TypeVarSymbol t = typeVariable("t");
+    TypeVarSymbol t = typeVariable("T");
     add2scope(scope,t);
     MethodSymbol test = method("test",_charSymType);
     test.setTypeVariableList(Lists.newArrayList(t));
@@ -738,8 +809,87 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
   @Test
   public void failDeriveSymTypeOfGenericInvocationExpression() throws IOException{
-    //other 5 cases possible with pgie
-    //before . cannot be a type
+    //a.<int>this()
+    TypeVarSymbol t = typeVariable("T");
+    add2scope(scope,t);
+    MethodSymbol constr = method("A",_charSymType);
+    constr.setTypeVariableList(Lists.newArrayList(t));
+    TypeSymbol a = type("A",Lists.newArrayList(constr),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    SymTypeExpression aType = SymTypeExpressionFactory.createTypeObject("A",scope);
+    constr.setReturnType(aType);
+    FieldSymbol aField = field("a",aType);
+    add2scope(scope,aField);
+    add2scope(scope,a);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> gie1 = p.parse_StringExpression("a.<int>this()");
+
+    assertTrue(gie1.isPresent());
+
+    try{
+      tc.typeOf(gie1.get());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0282"));
+    }
+  }
+
+  @Test
+  public void failDeriveSymTypeOfGenericInvocationExpression2() throws IOException{
+    //a.<int>super()
+    TypeVarSymbol t = typeVariable("T");
+    add2scope(scope,t);
+    MethodSymbol constr = method("ASuper",_charSymType);
+    constr.setTypeVariableList(Lists.newArrayList(t));
+    TypeSymbol asuper = type("ASuper",Lists.newArrayList(constr),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    SymTypeExpression asupertype = SymTypeExpressionFactory.createTypeObject("ASuper",scope);
+    constr.setReturnType(asupertype);
+    add2scope(scope,asuper);
+    TypeSymbol a = type("A",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(asupertype),Lists.newArrayList(),scope);
+    SymTypeExpression aType = SymTypeExpressionFactory.createTypeObject("A",scope);
+    FieldSymbol aField = field("a",aType);
+    add2scope(scope,aField);
+    add2scope(scope,a);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> gie1 = p.parse_StringExpression("a.<int>super()");
+
+    assertTrue(gie1.isPresent());
+
+    try{
+      tc.typeOf(gie1.get());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0282"));
+    }
+  }
+
+  @Test
+  public void failDeriveSymTypeOfGenericInvocationExpression3() throws IOException{
+    //Type.<int>test()
+    //possible with static but cannot be calculated now
+    //build symbol table for the test
+    TypeVarSymbol t = typeVariable("T");
+    add2scope(scope,t);
+    MethodSymbol test = method("test",_charSymType);
+    test.setTypeVariableList(Lists.newArrayList(t));
+    TypeSymbol a = type("A",Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    add2scope(scope,a);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> gie1 = p.parse_StringExpression("A.<int>test()");
+
+    assertTrue(gie1.isPresent());
+
+    try{
+      tc.typeOf(gie1.get());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0296"));
+    }
   }
 
 }

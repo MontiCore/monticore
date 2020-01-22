@@ -396,6 +396,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     node.getExpression().accept(getRealThis());
     if(lastResult.isPresentLast()){
+      if(lastResult.isType()){
+        Log.error("0xA0296 "+prettyPrinter.prettyprint(node.getExpression())+" cannot be a type");
+      }
       expressionResult = lastResult.getLast();
     }else{
       Log.error("0xA0281 The resulting type of "+prettyPrinter.prettyprint(node.getExpression())+" cannot be calculated");
@@ -409,13 +412,13 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
 
     //search in the scope of the type that before the "." for a method that has the right name
-    List<MethodSymbol> methods = expressionResult.getTypeInfo().getSpannedScope()
-        .resolveMethodMany(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getName());
-
-    if(!methods.isEmpty() && null!=node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getArguments()){
-      //check if the methods fit and return the right returntype
-      ASTArguments args = node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getArguments();
-      wholeResult = checkMethodsAndReplaceTypeVariables(methods,args,typeArgsList);
+    if(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().isPresentName()) {
+      List<MethodSymbol> methods = expressionResult.getTypeInfo().getSpannedScope().resolveMethodMany(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getName());
+      if (!methods.isEmpty() && null != node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getArguments()) {
+        //check if the methods fit and return the right returntype
+        ASTArguments args = node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getArguments();
+        wholeResult = checkMethodsAndReplaceTypeVariables(methods, args, typeArgsList);
+      }
     }
 
     if(wholeResult!=null){
@@ -541,13 +544,15 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         //can only be accessed solely -> there cannot be a lastresult
         //search for the nearest enclosingscope spanned by a typesymbol
         TypeSymbol typeSymbol = searchForTypeSymbolSpanningEnclosingScope(scope);
-        //get the constructors of the typesymbol
-        List<MethodSymbol> methods = typeSymbol.getSpannedScope().resolveMethodMany(typeSymbol.getName());
-        if(!methods.isEmpty() && null!=node.getGenericInvocationSuffix().getArguments()){
-          //check if the constructors fit and return the right returntype
-          ASTArguments args = node.getGenericInvocationSuffix().getArguments();
-          List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getExtTypeArgumentList());
-          wholeResult = checkMethodsAndReplaceTypeVariables(methods,args,typeArgsList);
+        if(typeSymbol!=null) {
+          //get the constructors of the typesymbol
+          List<MethodSymbol> methods = typeSymbol.getSpannedScope().resolveMethodMany(typeSymbol.getName());
+          if (!methods.isEmpty() && null != node.getGenericInvocationSuffix().getArguments()) {
+            //check if the constructors fit and return the right returntype
+            ASTArguments args = node.getGenericInvocationSuffix().getArguments();
+            List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getExtTypeArgumentList());
+            wholeResult = checkMethodsAndReplaceTypeVariables(methods, args, typeArgsList);
+          }
         }
       }
     }else{
@@ -557,7 +562,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         //search for the nearest enclosingscope spanned by a typesymbol
         TypeSymbol subType = searchForTypeSymbolSpanningEnclosingScope(scope);
         //get the superclass of this typesymbol and search for its fitting constructor
-        if(subType.getSuperClassesOnly().size()==1){
+        if(subType!=null&&subType.getSuperClassesOnly().size()==1){
           SymTypeExpression superClass = subType.getSuperClassesOnly().get(0);
           List<MethodSymbol> methods = superClass.getTypeInfo().getSpannedScope().resolveMethodMany(superClass.getTypeInfo().getName());
           if(!methods.isEmpty() && superSuffix.isPresentArguments()){
