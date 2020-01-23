@@ -67,6 +67,4 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
     typeVariable: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
   ;
 
-
-
 }
