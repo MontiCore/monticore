@@ -52,27 +52,8 @@ public class SymbolAndScopeTranslation implements
   protected void addSymbolStereotypes(ASTProd grammarProd, ASTCDType cdType) {
     for (ASTSymbolDefinition symbolDefinition : grammarProd.getSymbolDefinitionList()) {
       if (symbolDefinition.isGenSymbol()) {
-        final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-            .getMCGrammarSymbol(grammarProd.getEnclosingScope());
-        if (symbolDefinition.isPresentSymbolName()
-            && grammarSymbol.isPresent()) {
-          //extra information into stereotype value if a symboltype is already defined in the grammar
-          String symbolName = symbolDefinition.getSymbolName();
-          String qualifiedName;
-          Optional<ProdSymbol> symbolType = grammarProd.getEnclosingScope().resolveProd(symbolName);
-          if (symbolType.isPresent()) {
-            String packageName = symbolType.get().getFullName().substring(0, symbolType.get().getFullName().lastIndexOf(".")).toLowerCase();
-            qualifiedName = packageName + "." + SYMBOL_TABLE_PACKAGE + "." + symbolName;
-          } else {
-            qualifiedName = grammarSymbol.get().getFullName().toLowerCase() + "." +
-                SYMBOL_TABLE_PACKAGE + "." + symbolName;
-          }
-          TransformationHelper.addStereoType(cdType,
-              MC2CDStereotypes.SYMBOL.toString(), qualifiedName + SYMBOL_SUFFIX);
-        } else {
           TransformationHelper.addStereoType(cdType,
               MC2CDStereotypes.SYMBOL.toString());
-        }
       }
     }
   }

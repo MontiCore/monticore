@@ -1018,9 +1018,6 @@ public class GrammarPrettyPrinter
   public void handle(ASTSymbolDefinition node) {
     if (node.isGenSymbol()) {
       getPrinter().print(" symbol ");
-      if (node.isPresentSymbolName()) {
-        getPrinter().print(node.getSymbolName() + " ");
-      }
     }
     if (node.isGenScope()) {
       getPrinter().print(" scope ");
