@@ -99,42 +99,228 @@ public class BuiltInJavaTypesTest {
   }
 
   @Test
-  public void BuiltInWrapperTypes(){
+  public void testBuiltInIntWrapper(){
     Optional<TypeSymbol> intsymtype = gs.resolveType("java.lang.Integer");
-    Optional<TypeSymbol> doublesymtype = gs.resolveType("java.lang.Double");
-    Optional<TypeSymbol> floatsymtype = gs.resolveType("java.lang.Float");
-    Optional<TypeSymbol> longsymtype = gs.resolveType("java.lang.Long");
-    Optional<TypeSymbol> charsymtype = gs.resolveType("java.lang.Character");
-    Optional<TypeSymbol> shortsymtype = gs.resolveType("java.lang.Short");
-    Optional<TypeSymbol> bytesymtype = gs.resolveType("java.lang.Byte");
-    Optional<TypeSymbol> booleansymtype = gs.resolveType("java.lang.Boolean");
-
     assertTrue(intsymtype.isPresent());
+
+    //java.lang.Integer extends java.lang.Number and has no type parameters
+    assertEquals(1,intsymtype.get().getSuperTypeList().size());
+    assertEquals("Number",intsymtype.get().getSuperTypeList().get(0).print());
+    assertTrue(intsymtype.get().getTypeParameterList().isEmpty());
+
+    //test some methods
+    assertFalse(intsymtype.get().getMethodList().isEmpty());
+    ITypeSymbolsScope intspannedscope = intsymtype.get().getSpannedScope();
+    Optional<MethodSymbol> parseInt = intspannedscope.resolveMethod("parseInt");
+    Optional<MethodSymbol> sum = intspannedscope.resolveMethod("sum");
+
+    assertTrue(parseInt.isPresent());
+    assertTrue(sum.isPresent());
+
+    //test one method and its parameters specifically
+    ITypeSymbolsScope parseIntSpannedScope = parseInt.get().getSpannedScope();
+    Optional<FieldSymbol> s = parseIntSpannedScope.resolveField("s");
+
+    assertTrue(s.isPresent());
+    assertEquals("String",s.get().getType().print());
+    assertEquals("int",parseInt.get().getReturnType().print());
+  }
+
+  @Test
+  public void testBuiltInDoubleWrapper(){
+    Optional<TypeSymbol> doublesymtype = gs.resolveType("java.lang.Double");
     assertTrue(doublesymtype.isPresent());
+
+    //java.lang.Double extends java.lang.Number and has no type parameters
+    assertEquals(1,doublesymtype.get().getSuperTypeList().size());
+    assertEquals("Number",doublesymtype.get().getSuperTypeList().get(0).print());
+    assertTrue(doublesymtype.get().getTypeParameterList().isEmpty());
+
+    //test some methods
+    assertFalse(doublesymtype.get().getMethodList().isEmpty());
+    ITypeSymbolsScope doubleSpannedScope = doublesymtype.get().getSpannedScope();
+    Optional<MethodSymbol> parseDouble = doubleSpannedScope.resolveMethod("parseDouble");
+    Optional<MethodSymbol> sum = doubleSpannedScope.resolveMethod("sum");
+
+    assertTrue(parseDouble.isPresent());
+    assertTrue(sum.isPresent());
+
+    //test one method and its parameters specifically
+    ITypeSymbolsScope parseDoubleSpannedScope = parseDouble.get().getSpannedScope();
+    Optional<FieldSymbol> s = parseDoubleSpannedScope.resolveField("s");
+
+    assertTrue(s.isPresent());
+    assertEquals("String",s.get().getType().print());
+    assertEquals("double",parseDouble.get().getReturnType().print());
+  }
+
+  @Test
+  public void testBuiltInFloatWrapper(){
+    Optional<TypeSymbol> floatsymtype = gs.resolveType("java.lang.Float");
     assertTrue(floatsymtype.isPresent());
+
+    //java.lang.Float extends java.lang.Number and has no type parameters
+    assertEquals(1,floatsymtype.get().getSuperTypeList().size());
+    assertEquals("Number",floatsymtype.get().getSuperTypeList().get(0).print());
+    assertTrue(floatsymtype.get().getTypeParameterList().isEmpty());
+
+    //test some methods
+    assertFalse(floatsymtype.get().getMethodList().isEmpty());
+    ITypeSymbolsScope floatspannedscope = floatsymtype.get().getSpannedScope();
+    Optional<MethodSymbol> parseFloat = floatspannedscope.resolveMethod("parseFloat");
+    Optional<MethodSymbol> sum = floatspannedscope.resolveMethod("sum");
+
+    assertTrue(parseFloat.isPresent());
+    assertTrue(sum.isPresent());
+
+    //test one method and its parameters specifically
+    ITypeSymbolsScope parseFloatSpannedScope = parseFloat.get().getSpannedScope();
+    Optional<FieldSymbol> s = parseFloatSpannedScope.resolveField("s");
+
+    assertTrue(s.isPresent());
+    assertEquals("String",s.get().getType().print());
+    assertEquals("float",parseFloat.get().getReturnType().print());
+  }
+
+  @Test
+  public void testBuiltInLongWrapper(){
+    Optional<TypeSymbol> longsymtype = gs.resolveType("java.lang.Long");
     assertTrue(longsymtype.isPresent());
+
+    //java.lang.Long extends java.lang.Number and has no type parameters
+    assertEquals(1,longsymtype.get().getSuperTypeList().size());
+    assertEquals("Number",longsymtype.get().getSuperTypeList().get(0).print());
+    assertTrue(longsymtype.get().getTypeParameterList().isEmpty());
+
+    //test some methods
+    assertFalse(longsymtype.get().getMethodList().isEmpty());
+    ITypeSymbolsScope longspannedscope = longsymtype.get().getSpannedScope();
+    Optional<MethodSymbol> parseLong = longspannedscope.resolveMethod("parseLong");
+    Optional<MethodSymbol> sum = longspannedscope.resolveMethod("sum");
+
+    assertTrue(parseLong.isPresent());
+    assertTrue(sum.isPresent());
+
+    //test one method and its parameters specifically
+    ITypeSymbolsScope parseLongSpannedScope = parseLong.get().getSpannedScope();
+    Optional<FieldSymbol> s = parseLongSpannedScope.resolveField("s");
+
+    assertTrue(s.isPresent());
+    assertEquals("String",s.get().getType().print());
+    assertEquals("long",parseLong.get().getReturnType().print());
+  }
+
+  @Test
+  public void testBuiltInCharWrapper(){
+    Optional<TypeSymbol> charsymtype = gs.resolveType("java.lang.Character");
     assertTrue(charsymtype.isPresent());
+
+    //java.lang.Character directly extends java.lang.Object and has no type parameters
+    assertEquals(1,charsymtype.get().getSuperTypeList().size());
+    assertEquals("Object",charsymtype.get().getSuperTypeList().get(0).print());
+    assertTrue(charsymtype.get().getTypeParameterList().isEmpty());
+
+    //test some methods
+    assertFalse(charsymtype.get().getMethodList().isEmpty());
+    ITypeSymbolsScope charspannedscope = charsymtype.get().getSpannedScope();
+    Optional<MethodSymbol> valueOf = charspannedscope.resolveMethod("valueOf");
+    Optional<MethodSymbol> isTitleCase = charspannedscope.resolveMethod("isTitleCase");
+
+    assertTrue(valueOf.isPresent());
+    assertTrue(isTitleCase.isPresent());
+
+    ITypeSymbolsScope valueOfSpannedScope = valueOf.get().getSpannedScope();
+    Optional<FieldSymbol> c = valueOfSpannedScope.resolveField("c");
+    assertTrue(c.isPresent());
+    assertEquals("char",c.get().getType().print());
+    assertEquals("Character",valueOf.get().getReturnType().print());
+  }
+
+  @Test
+  public void testBuiltInShortWrapper(){
+    Optional<TypeSymbol> shortsymtype = gs.resolveType("java.lang.Short");
     assertTrue(shortsymtype.isPresent());
+
+    //java.lang.Short extends java.lang.Number and has no type parameters
+    assertEquals(1,shortsymtype.get().getSuperTypeList().size());
+    assertEquals("Number",shortsymtype.get().getSuperTypeList().get(0).print());
+    assertTrue(shortsymtype.get().getTypeParameterList().isEmpty());
+
+    //test some methods
+    assertFalse(shortsymtype.get().getMethodList().isEmpty());
+    ITypeSymbolsScope shortspannedscope = shortsymtype.get().getSpannedScope();
+    Optional<MethodSymbol> parseShort = shortspannedscope.resolveMethod("parseShort");
+    Optional<MethodSymbol> valueOf = shortspannedscope.resolveMethod("valueOf");
+
+    assertTrue(parseShort.isPresent());
+    assertTrue(valueOf.isPresent());
+
+    //test one method and its parameters specifically
+    ITypeSymbolsScope parseShortSpannedScope = parseShort.get().getSpannedScope();
+    Optional<FieldSymbol> s = parseShortSpannedScope.resolveField("s");
+
+    assertTrue(s.isPresent());
+    assertEquals("String",s.get().getType().print());
+    assertEquals("short",parseShort.get().getReturnType().print());
+  }
+
+  @Test
+  public void testBuiltInByteWrapper(){
+    Optional<TypeSymbol> bytesymtype = gs.resolveType("java.lang.Byte");
     assertTrue(bytesymtype.isPresent());
+
+    //java.lang.Byte extends java.lang.Number and has no type parameters
+    assertEquals(1,bytesymtype.get().getSuperTypeList().size());
+    assertEquals("Number",bytesymtype.get().getSuperTypeList().get(0).print());
+    assertTrue(bytesymtype.get().getTypeParameterList().isEmpty());
+
+    //test some methods
+    assertFalse(bytesymtype.get().getMethodList().isEmpty());
+    ITypeSymbolsScope bytespannedscope = bytesymtype.get().getSpannedScope();
+    Optional<MethodSymbol> parseByte = bytespannedscope.resolveMethod("parseByte");
+    Optional<MethodSymbol> valueOf = bytespannedscope.resolveMethod("valueOf");
+
+    assertTrue(parseByte.isPresent());
+    assertTrue(valueOf.isPresent());
+
+    //test one method and its parameters specifically
+    ITypeSymbolsScope parseByteSpannedScope = parseByte.get().getSpannedScope();
+    Optional<FieldSymbol> s = parseByteSpannedScope.resolveField("s");
+
+    assertTrue(s.isPresent());
+    assertEquals("String",s.get().getType().print());
+    assertEquals("byte",parseByte.get().getReturnType().print());
+  }
+
+  @Test
+  public void testBuiltInBooleanWrapper(){
+    Optional<TypeSymbol> booleansymtype = gs.resolveType("java.lang.Boolean");
     assertTrue(booleansymtype.isPresent());
 
-    //check that the wrapper classes do have methods and super types
-    assertFalse(intsymtype.get().getMethodList().isEmpty());
-    assertEquals("Number",intsymtype.get().getSuperTypeList().get(0).print());
-    assertFalse(doublesymtype.get().getMethodList().isEmpty());
-    assertEquals("Number",doublesymtype.get().getSuperTypeList().get(0).print());
-    assertFalse(floatsymtype.get().getMethodList().isEmpty());
-    assertEquals("Number",floatsymtype.get().getSuperTypeList().get(0).print());
-    assertFalse(longsymtype.get().getMethodList().isEmpty());
-    assertEquals("Number",longsymtype.get().getSuperTypeList().get(0).print());
-    assertFalse(charsymtype.get().getMethodList().isEmpty());
-    assertEquals("Object",charsymtype.get().getSuperTypeList().get(0).print());
-    assertFalse(shortsymtype.get().getMethodList().isEmpty());
-    assertEquals("Number",shortsymtype.get().getSuperTypeList().get(0).print());
-    assertFalse(bytesymtype.get().getMethodList().isEmpty());
-    assertEquals("Number",bytesymtype.get().getSuperTypeList().get(0).print());
-    assertFalse(booleansymtype.get().getMethodList().isEmpty());
+    //java.lang.Character directly extends java.lang.Object
+    assertEquals(1,booleansymtype.get().getSuperTypeList().size());
     assertEquals("Object",booleansymtype.get().getSuperTypeList().get(0).print());
+    assertTrue(booleansymtype.get().getTypeParameterList().isEmpty());
+
+    //test some methods
+    assertFalse(booleansymtype.get().getMethodList().isEmpty());
+    ITypeSymbolsScope booleanspannedscope = booleansymtype.get().getSpannedScope();
+    Optional<MethodSymbol> booleanValue = booleanspannedscope.resolveMethod("booleanValue");
+    Optional<MethodSymbol> compare = booleanspannedscope.resolveMethod("compare");
+
+    assertTrue(booleanValue.isPresent());
+    assertTrue(compare.isPresent());
+
+    //test one method and its parameters specifically
+    ITypeSymbolsScope compareSpannedScope = compare.get().getSpannedScope();
+    Optional<FieldSymbol> x = compareSpannedScope.resolveField("x");
+    Optional<FieldSymbol> y = compareSpannedScope.resolveField("y");
+
+    assertTrue(x.isPresent());
+    assertTrue(y.isPresent());
+    assertEquals("boolean",x.get().getType().print());
+    assertEquals("boolean",y.get().getType().print());
+    assertEquals("int",compare.get().getReturnType().print());
   }
 
   @Test
