@@ -121,7 +121,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   /**
    * Creates the isPresentName method for artifact scopes.
-   * 
+   *
    * @return The isPresentName method.
    */
   protected ASTCDMethod createIsPresentNameMethod() {
@@ -131,7 +131,9 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
   }
 
   protected ASTCDMethod createGetTopLevelSymbolMethod(List<ASTCDType> symbolProds) {
-    List<String> symbolNames = symbolProds
+    ArrayList<ASTCDType> symbolProdsWithSuper = new ArrayList<>(symbolProds);
+    symbolProdsWithSuper.addAll(getSuperSymbols());
+    List<String> symbolNames = symbolProdsWithSuper
         .stream()
         .map(ASTCDType::getName)
         .map(symbolTableService::removeASTPrefix)
@@ -197,7 +199,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
           .filter(t -> t.isPresentAstNode())
           .filter(t -> t.getAstNode().isPresentModifier())
           .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifier()))
-              .filter(CDTypeSymbol::isPresentAstNode)
+          .filter(CDTypeSymbol::isPresentAstNode)
           .map(CDTypeSymbol::getAstNode)
           .collect(Collectors.toList());
       methodList.addAll(createContinueWithEnclosingScopeMethods(symbolProds, cdDefinitionSymbol));
@@ -228,4 +230,17 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
     isArtifactScopeTop = artifactScopeTop;
   }
 
+
+  public List<ASTCDType> getSuperSymbols() {
+    List<ASTCDType> symbolAttributes = new ArrayList<>();
+    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+          symbolAttributes.add(type.getAstNode());
+        }
+      }
+    }
+    return symbolAttributes;
+  }
 }
