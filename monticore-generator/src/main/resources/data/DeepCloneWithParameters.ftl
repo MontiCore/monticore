@@ -5,17 +5,17 @@ ${tc.signature("attributeList")}
     super.deepClone(result);
 
 <#list attributeList as attribute>
-<#if attribute.isPresentModifier() && !service.isReferencedSymbolAttribute(attribute) && !service.isInherited(attribute)>
-  <#assign attributeName = attribute.getName()>
-  <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
-  <#assign attrType = attribute.getMCType()>
-  <#assign typeName = genHelper.printType(attribute.getMCType())>
-  <#if genHelper.isSimpleAstNode(attribute)>
-    result.set${methName}(get${methName}().deepClone());
-  <#elseif genHelper.isPrimitive(attrType)>
-    result.set${methName}(${genHelper.getPlainGetter(attribute)}());
-  <#elseif genHelper.isOptional(attribute.getMCType())>
-    <#assign reference = genHelper.getReferenceTypeFromOptional(attrType)>
+<#if attribute.isPresentModifier() && !service.isReferencedSymbolAttribute(attribute) && !service.isInheritedAttribute(attribute)>
+    <#assign attributeName = attribute.getName()>
+    <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
+    <#assign attrType = attribute.getMCType()>
+    <#assign typeName = genHelper.printType(attribute.getMCType())>
+    <#if genHelper.isSimpleAstNode(attribute)>
+      result.set${methName}(get${methName}().deepClone());
+    <#elseif genHelper.isPrimitive(attrType)>
+      result.set${methName}(${genHelper.getPlainGetter(attribute)}());
+    <#elseif genHelper.isOptional(attribute.getMCType())>
+        <#assign reference = genHelper.getReferenceTypeFromOptional(attrType)>
     <#assign referenceName = typeName>
     <#if genHelper.isString(reference) || genHelper.isAttributeOfTypeEnum(attribute)>
     if (isPresent${methName}()) {

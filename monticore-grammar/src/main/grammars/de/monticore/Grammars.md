@@ -85,7 +85,7 @@ This modularity of expressions and associated types greatly eases
 the reuse of type structures in languages similar to Java.
 
 
-### [ExpressionsBasis.mc4](expressions/ExpressionsBasis.mc4) (Beta: In Stabilization)
+### [ExpressionsBasis.mc4](expressions/ExpressionsBasis.mc4) (stable)
 * This grammar defines core interfaces for expressions and imports the 
 kinds of symbols necessary.
 * The symbols are taken over from the TypeSymbols grammar (see below).

@@ -20,11 +20,11 @@ The different development statuses of grammars are explained
 
 ## List of Languages 
 
-### [Activity Diagrams](INSERT LINK HERE) (INSERT STATUS HERE)
+### [Activity Diagrams](INSERT LINK HERE)(not adressed yet)
 * Author: Not available
 * INSERT DESCRIPTION HERE
 
-### [Class Diagram 4 Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
+### [Class Diagram 4 Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Author: SVa, AGe
 * CD4A is the textual (UML/P) representation of a UML class diagram.
 * Its primary feature are the description and analysis of a class diagram.
@@ -46,7 +46,7 @@ The different development statuses of grammars are explained
 * Author: NJ
 * MontiCore language for parsing JSON artifacts.
 
-### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (5% to MC6)
+### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
 * Author: DS 
 * MontiArc is an architecture and behavior modeling language and framework that provides an integrated, platform independent structure and behavior modeling language with an extensible code generation framework.
 
@@ -60,11 +60,11 @@ The different development statuses of grammars are explained
 * Author: SH
 * Language for textual object diagrams.
 
-### [Port Automata](https://git.rwth-aachen.de/monticore/montiarc/core) (Not started with MC6 changes)
+### [Port Automata](https://git.rwth-aachen.de/monticore/montiarc/core) (Alpha: Intention to become stable)
 * Author: DS
 * Port automata are a certain type of state machines and utilized in component and connector architecture description languages (e.g. MontiArc) for behavior modeling.
 
-### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language) (Not started with MC6 changes)
+### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language) (Beta: In Stabilization) )(50% to MC6)
 * Author: RE
 * Grammar to parse Sequence Diagrams
 * Can be used with testing generator to derive test cases
@@ -73,7 +73,7 @@ The different development statuses of grammars are explained
 * Author: EK, NJ, DS
 * allows a language developer to use physical units in a language
 
-### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (90% to MC6)
+### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
 * Author: RE
 * Language to parse Statecharts
 * creates transformation language within SC and sc<->cd4a
@@ -91,4 +91,21 @@ The different development statuses of grammars are explained
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
 * Author: NJ
 * MontiCore language for parsing XML artifacts.
+
+### [JavaLight](NN) (Beta: In Stabilization)
+* Author: MB
+* This is a reduced version of the Java language which primarily provides methods, statements and expressions 
+* JavaLight is meant to be used to integrate simplified Java-like parts in modeling languages but not 
+  to parse complete Java implementations
+  * One main usage of JavaLight is in the Grammar-language to model e.g. Java methods there
+* JavaLight is parameterized with:
+  * Literals: through the Literal interface nontzerminal, 
+   users are free to choose the literals they need
+
+
+### [Java](NN) (Alpha: Intention to become stable)
+
+* Author: NN
+* This is the full Java' Language (as Opposed to JavaLight).
+
 

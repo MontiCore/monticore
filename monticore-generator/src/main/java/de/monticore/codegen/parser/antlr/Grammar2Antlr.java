@@ -314,7 +314,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     startCodeSection(ast);
 
     boolean iterated = false;
-    if (ast.isPresentSymbol() && ast.getSymbol() instanceof RuleComponentSymbol) {
+    if (ast.isPresentSymbol()) {
       iterated = MCGrammarSymbolTableHelper
               .isConstGroupIterated((RuleComponentSymbol) ast.getSymbol());
     }

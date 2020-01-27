@@ -95,7 +95,7 @@ public class GeneratorEngine {
       writer.write(sb.toString());
     }
     catch (IOException e) {
-      Log.error("0xA4060 Template " + templateName + " cannot write the content");   
+      Log.error("0xA4110 Template " + templateName + " cannot write the content");
     }
   }
   

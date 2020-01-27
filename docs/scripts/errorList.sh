@@ -45,12 +45,16 @@ echo " List of java and template files considered:"
 echo " ------------------------------------------------"
 echo " "
 
+# do not consider classes in test packages
+
 find . -print| grep -v ".svn" \
- | grep "\.java" > $filelist.j
+ | grep "\.java" \
+ | sed '/\b\/test\/\b/d'> $filelist.j
 echo "We found  " `cat $filelist.j | wc -l` " java files. <br/>"
 
 find . -print | grep -v ".svn" \
-| grep "\.ftl" > $filelist.f
+| grep "\.ftl" \
+| sed '/\b\/test\/\b/d'> $filelist.f
 echo "We found  " `cat $filelist.f | wc -l` " ftl files. "
 
 cat $filelist.j $filelist.f > $filelist
@@ -85,9 +89,9 @@ cat $errorcodes \
 echo "We found  " `cat $errorcodes.sort | wc -l` " error codes. "
 echo " "
 
-sed -i '/^0x/G' $errorcodes.sort
+cat $errorcodes.sort \
+| sed '/^0x/G'
 
-cat $errorcodes.sort
 
 echo "## Duplicate error codes"
 echo " ------------------------------------------------"
@@ -96,7 +100,7 @@ echo " "
 echo " ------------------------------------------------"
 echo " "
 sort -u $errorcodes.sort > $errorcodes.uniquesort
-diff $errorcodes.sort $errorcodes.uniquesort \
+diff -u $errorcodes.sort $errorcodes.uniquesort \
 | grep "^-0x" \
 > $errorcodes.doubles
 

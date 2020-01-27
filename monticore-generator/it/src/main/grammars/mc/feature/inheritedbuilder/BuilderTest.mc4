@@ -1,0 +1,9 @@
+package mc.feature.inheritedbuilder;
+
+grammar BuilderTest extends mc.common.Basics {
+
+    Sup = Name;
+
+    Sub extends Sup = "bla" Name;
+
+}

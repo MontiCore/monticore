@@ -11,6 +11,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SynthesizeSymTypeFromMCSimpleGenericTypes;
 import de.monticore.types.check.TypeCheck;
+import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
@@ -35,7 +36,7 @@ public class DeSerMap {
 
   protected static final Map<SymTypeExpression, String> primitiveDataTypes = new HashMap<>();
 
-  protected static ITypeSymbolsScope gs = BuiltInJavaTypeSymbolResolvingDelegate.gs;
+  protected static ITypeSymbolsScope gs = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
 
   // protected static TypeSymbolsGlobalScope primitiveTypeGlobalScope = initializePrimitiveTypesGlobalScope();
 

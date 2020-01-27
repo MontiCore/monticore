@@ -477,7 +477,7 @@ public final class GenerateMojo extends AbstractMojo {
         new MontiCoreScript().run(script, configuration);
       }
       catch (IOException e) {
-        throw new MojoFailureException("0xA4089 Failed to load the specified script.", e);
+        throw new MojoFailureException("0xA4117 Failed to load the specified script.", e);
       }
     }
     

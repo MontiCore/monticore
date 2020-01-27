@@ -3,7 +3,7 @@
 package de.monticore.grammar;
 
 import com.google.common.collect.Lists;
-import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.se_rwth.commons.JavaNamesHelper;
@@ -46,7 +46,7 @@ public class HelperGrammar {
       //      // latter
       name = a.getName();
     }
-    return name + GeneratorHelper.GET_SUFFIX_LIST;
+    return name + DecorationHelper.GET_SUFFIX_LIST;
   }
 
   /**
@@ -160,7 +160,7 @@ public class HelperGrammar {
           || "float".equals(variable) || "double".equals(variable)
           || "long".equals(variable) || "byte".equals(variable) || "short".equals(variable)) {
         return variable;
-      } else if (variable.equals("card")) {
+      } else if ("card".equals(variable)) {
         return "int";
       } else {
         Log.warn(

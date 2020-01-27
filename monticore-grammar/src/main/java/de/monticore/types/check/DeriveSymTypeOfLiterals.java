@@ -5,8 +5,6 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Optional;
-
 /**
  * Visitor for Derivation of SymType from Literals
  * (Function 2b)

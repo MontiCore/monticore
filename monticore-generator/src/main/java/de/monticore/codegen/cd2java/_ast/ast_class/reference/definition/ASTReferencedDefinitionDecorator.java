@@ -7,7 +7,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.definition.methoddecorator.ReferencedDefinitionAccessorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -61,7 +60,7 @@ public class ASTReferencedDefinitionDecorator extends AbstractTransformer<ASTCDC
     ASTMCType symbolType;
     String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) +
         AST_PACKAGE + "." + AST_PREFIX + symbolTableService.getSimpleNameFromSymbolName(referencedSymbol);
-    if (DecorationHelper.isListType(astcdAttribute.printType())) {
+    if (getDecorationHelper().isListType(astcdAttribute.printType())) {
       //if the attribute is a list
       symbolType = getMCTypeFacade().createListTypeOf(referencedNode);
     } else {

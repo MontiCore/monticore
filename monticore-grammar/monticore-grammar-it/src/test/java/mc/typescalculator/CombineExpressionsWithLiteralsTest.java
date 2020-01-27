@@ -4,6 +4,7 @@ package mc.typescalculator;
 import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
@@ -12,6 +13,7 @@ import mc.testcd4analysis._symboltable.TestCD4AnalysisLanguage;
 import mc.testcd4analysis._symboltable.TestCD4AnalysisGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.*;
+import mc.typescalculator.combineexpressionswithliterals.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -44,6 +46,7 @@ public class CombineExpressionsWithLiteralsTest {
     globalScope1.addAdaptedMethodSymbolResolvingDelegate(adapter);
 
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(globalScope1);
+    calc.setPrettyPrinter(new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
 
     Optional<TypeSymbol> classB = globalScope1.resolveType("mc.typescalculator.TestCD.B");
     assertTrue(classB.isPresent());
@@ -64,6 +67,7 @@ public class CombineExpressionsWithLiteralsTest {
 
 
     CombineExpressionsWithLiteralsTypesCalculator calc2 = new CombineExpressionsWithLiteralsTypesCalculator(art);
+    calc2.setPrettyPrinter(new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
     Optional<ASTExpression> expr2 = p.parse_StringExpression("s+=s");
     assertTrue(expr2.isPresent());
     Optional<SymTypeExpression> j2 = calc2.calculateType(expr2.get());

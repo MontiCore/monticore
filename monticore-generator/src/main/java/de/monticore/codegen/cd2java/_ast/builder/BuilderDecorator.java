@@ -6,8 +6,8 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
+import de.monticore.codegen.cd2java._ast.builder.inheritedmethods.InheritedBuilderMutatorMethodDecorator;
 import de.monticore.codegen.cd2java.exception.DecorateException;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -63,13 +63,20 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     List<ASTCDAttribute> builderAttributes = domainClass.getCDAttributeList().stream()
         .map(ASTCDAttribute::deepClone)
         .filter(a -> !a.getModifier().isFinal())
-        .filter(a -> !service.isInherited(a))
+        .filter(a -> !service.isInheritedAttribute(a))
         .collect(Collectors.toList());
     List<ASTCDAttribute> mandatoryAttributes = builderAttributes.stream()
-        .filter(a -> !DecorationHelper.isListType(a.printType()))
-        .filter(a -> !DecorationHelper.isOptionalType(a.printType()))
+        .filter(a -> !getDecorationHelper().isListType(a.printType()))
+        .filter(a -> !getDecorationHelper().isOptional(a.printType()))
         .filter(a -> !(a.getMCType() instanceof ASTMCPrimitiveType))
-        .filter(a -> !service.isInherited(a))
+        .filter(a -> !service.isInheritedAttribute(a))
+        .collect(Collectors.toList());
+
+    // additionally add only setter methods with correct builder return type for inherited attributes
+    List<ASTCDAttribute> inheritedAttributes = domainClass.getCDAttributeList().stream()
+        .map(ASTCDAttribute::deepClone)
+        .filter(a -> !a.getModifier().isFinal())
+        .filter(service::isInheritedAttribute)
         .collect(Collectors.toList());
 
 
@@ -95,6 +102,12 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
+    InheritedBuilderMutatorMethodDecorator inheritedMutatorDecorator = new InheritedBuilderMutatorMethodDecorator(glex, builderType);
+    List<ASTCDMethod> inheritedMutatorMethods = inheritedAttributes.stream()
+        .map(inheritedMutatorDecorator::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+
     builderAttributes.forEach(this::addAttributeDefaultValues);
 
     return CD4AnalysisMill.cDClassBuilder()
@@ -107,14 +120,15 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .addCDMethod(isValidMethod)
         .addAllCDMethods(accessorMethods)
         .addAllCDMethods(mutatorMethods)
+        .addAllCDMethods(inheritedMutatorMethods)
         .build();
   }
 
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
-    if (DecorationHelper.isListType(attribute.printType())) {
+    if (getDecorationHelper().isListType(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
 
-    } else if (DecorationHelper.isOptionalType(attribute.printType())) {
+    } else if (getDecorationHelper().isOptional(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     }
   }

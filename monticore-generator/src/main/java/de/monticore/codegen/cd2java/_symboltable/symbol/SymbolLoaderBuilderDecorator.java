@@ -11,12 +11,13 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import java.util.List;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.REAL_BUILDER;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAME_VAR;
-import static de.monticore.cd.facade.CDModifier.*;
 
 public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
@@ -83,7 +84,7 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
 
   protected ASTCDMethod createBuildMethod(String symbolLoader) {
     ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolLoader), "build");
-    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(TEMPLATE_PATH + "Build", symbolLoader));
+    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(TEMPLATE_PATH + "BuildSymbolLoader", symbolLoader));
     return buildMethod;
   }
 }

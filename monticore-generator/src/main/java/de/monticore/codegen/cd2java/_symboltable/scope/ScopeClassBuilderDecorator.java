@@ -47,7 +47,7 @@ public class ScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass, ASTC
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(TEMPLATE_PATH + "Build", scopeClass.getName())));
+        new TemplateHookPoint(TEMPLATE_PATH + "BuildScope", scopeClass.getName())));
 
     // add '= true' template to exportingSymbols attribute
     Optional<ASTCDAttribute> exportingSymbolsAttribute = scopeBuilder.getCDAttributeList()

@@ -3,7 +3,6 @@
 package de.monticore.codegen.parser;
 
 import com.google.common.base.Joiner;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.antlr.AntlrTool;
 import de.monticore.codegen.parser.antlr.Grammar2Antlr;
@@ -154,12 +153,12 @@ public class ParserGenerator {
     final GeneratorEngine generator = new GeneratorEngine(setup);
     // Generate wrapper
     String parserWrapperSuffix = TransformationHelper.existsHandwrittenClass(handcodedPath,
-            GeneratorHelper.getDotPackageName(
-                    GeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)) + astGrammar.getName()
-                    + PARSER_WRAPPER) ? GeneratorSetup.GENERATED_CLASS_SUFFIX : "";
+        ParserGeneratorHelper.getDotPackageName(
+            ParserGeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)) + astGrammar.getName()
+            + PARSER_WRAPPER) ? GeneratorSetup.GENERATED_CLASS_SUFFIX : "";
     final Path path = Paths.get(
-            Names.getPathFromPackage(GeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)),
-            astGrammar.getName() + "Parser" + parserWrapperSuffix + ".java");
+        Names.getPathFromPackage(ParserGeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)),
+        astGrammar.getName() + "Parser" + parserWrapperSuffix + ".java");
     generator.generate("parser.MCParser", path, astGrammar, astGrammar,
             parserWrapperSuffix, grammarSymbol.getProdsWithInherited().values());
   }

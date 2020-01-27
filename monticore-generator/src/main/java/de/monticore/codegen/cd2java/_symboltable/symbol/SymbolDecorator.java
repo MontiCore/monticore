@@ -4,7 +4,6 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -66,13 +65,11 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   @Override
   public ASTCDClass decorate(ASTCDClass symbolInput) {
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
-    String artifactScope = symbolTableService.getArtifactScopeFullName();
-    String globalScopeInterface = symbolTableService.getGlobalScopeInterfaceFullName();
-    String symbolName = symbolTableService.getNameWithSymbolSuffix(symbolInput);
+     String symbolName = symbolTableService.getNameWithSymbolSuffix(symbolInput);
 
     // uses symbol rule methods and attributes
     List<ASTCDAttribute> symbolRuleAttributes = symbolInput.deepClone().getCDAttributeList();
-    symbolRuleAttributes.forEach(a -> symbolTableService.addAttributeDefaultValues(a, this.glex));
+    symbolRuleAttributes.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
     List<ASTCDMethod> symbolRuleAttributeMethods = symbolRuleAttributes
         .stream()
         .map(methodDecorator::decorate)
@@ -112,8 +109,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .addAllCDMethods(symbolMethods)
         .addAllCDMethods(symbolNameMethods)
         .addCDMethod(createAcceptMethod(symbolName))
-        .addCDMethod(createDeterminePackageName(scopeInterface, artifactScope))
-        .addCDMethod(createDetermineFullName(scopeInterface, artifactScope, globalScopeInterface))
+        .addCDMethod(createDeterminePackageName(scopeInterface))
+        .addCDMethod(createDetermineFullName(scopeInterface))
         .build();
 
     // add only for scope spanning symbols
@@ -138,7 +135,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
     ASTMCOptionalType optionalTypeOfASTNode = getMCTypeFacade().createOptionalTypeOf(symbolTableService.getASTPackage() + "." + AST_PREFIX + astClassName);
     ASTCDAttribute node = this.getCDAttributeFacade().createAttribute(PROTECTED, optionalTypeOfASTNode, AST_NODE_VAR);
-    symbolTableService.addAttributeDefaultValues(node, glex);
+    getDecorationHelper().addAttributeDefaultValues(node, glex);
 
     ASTCDAttribute accessModifier = this.getCDAttributeFacade().createAttribute(PROTECTED, ACCESS_MODIFIER, "accessModifier");
     this.replaceTemplate(VALUE, accessModifier, new StringHookPoint("= " + ACCESS_MODIFIER_ALL_INCLUSION));
@@ -190,28 +187,28 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     if (!isSymbolTop()) {
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new StringHookPoint("visitor.handle(this);"));
     } else {
-      String errorCode = DecorationHelper.getGeneratedErrorCode(acceptMethod);
+      String errorCode = getDecorationHelper().getGeneratedErrorCode(acceptMethod);
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(
           "_symboltable.AcceptTop", symbolName, errorCode));
     }
     return acceptMethod;
   }
 
-  protected ASTCDMethod createDeterminePackageName(String scopeInterface, String artifactScope) {
+  protected ASTCDMethod createDeterminePackageName(String scopeInterface) {
     ASTMCType stringType = getMCTypeFacade().createStringType();
 
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, stringType, "determinePackageName");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "DeterminePackageName",
-        scopeInterface, artifactScope));
+        scopeInterface));
     return method;
   }
 
-  protected ASTCDMethod createDetermineFullName(String scopeInterface, String artifactScope, String globalScope) {
+  protected ASTCDMethod createDetermineFullName(String scopeInterface) {
     ASTMCType stringType = getMCTypeFacade().createStringType();
 
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, stringType, "determineFullName");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "DetermineFullName",
-        scopeInterface, artifactScope, globalScope));
+        scopeInterface));
     return method;
   }
 

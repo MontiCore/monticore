@@ -50,11 +50,13 @@ echo " ------------------------------------------------"
 echo " "
 
 find . -print| grep -v ".svn" \
- | grep "\.java" > $filelist.j
+ | grep "\.java" \
+ | sed '/\b\/test\/\b/d'> $filelist.j
 echo "We found  " `cat $filelist.j | wc -l` " java files. <br/>"
 
 find . -print | grep -v ".svn" \
-| grep "\.ftl" > $filelist.f
+| grep "\.ftl" \
+| sed '/\b\/test\/\b/d' > $filelist.f
 echo "We found  " `cat $filelist.f | wc -l` " ftl files. <br/>"
 
 cat $filelist.j $filelist.f > $filelist
@@ -133,8 +135,10 @@ cat $fulltext | awk '
   
   # finalize collection and output
   END {
-    print "Summary: #of errors: " ecount;
-    print "         #of files:  " ncount;
+    print "Summary: <br/> #of errors: " ecount;
+    print "";
+    print "#of files:  " ncount;
+    print "";
     for (i in arr) {
        ## printf "%s :: %s\n", i, arr[i];
        # extracting the readable information 

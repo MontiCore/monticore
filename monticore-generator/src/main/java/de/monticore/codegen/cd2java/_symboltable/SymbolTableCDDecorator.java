@@ -221,6 +221,15 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       symTabCD.addAllCDClasss(createSymbolTableCreatorForSuperTypes(astCD));
     }
 
+    addPackageAndAnnotation(symTabCD, symbolTablePackage);
+
+    return CD4AnalysisMill.cDCompilationUnitBuilder()
+        .setPackageList(symbolTablePackage)
+        .setCDDefinition(symTabCD)
+        .build();
+  }
+
+  protected void addPackageAndAnnotation(ASTCDDefinition symTabCD, List<String> symbolTablePackage) {
     for (ASTCDClass cdClass : symTabCD.getCDClassList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(symbolTablePackage));
       if (cdClass.isPresentModifier()) {
@@ -241,11 +250,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
       }
     }
-
-    return CD4AnalysisMill.cDCompilationUnitBuilder()
-        .setPackageList(symbolTablePackage)
-        .setCDDefinition(symTabCD)
-        .build();
   }
 
   protected List<ASTCDClass> createSymbolClasses(List<ASTCDClass> symbolClases, List<String> symbolTablePackage) {

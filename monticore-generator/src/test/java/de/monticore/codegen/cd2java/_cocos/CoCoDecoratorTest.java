@@ -10,17 +10,19 @@ import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +40,7 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
   public void setup() {
     LogStub.init();
     LogStub.enableFailQuick(false);
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "cocos", "CoCos");
     this.glex.setGlobalValue("service", new AbstractService(ast));
@@ -48,10 +50,11 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
     CoCoService coCoService = new CoCoService(ast);
     VisitorService visitorService = new VisitorService(ast);
     ASTService astService = new ASTService(ast);
+    IterablePath targetPath = Mockito.mock(IterablePath.class);
 
     CoCoCheckerDecorator coCoCheckerDecorator = new CoCoCheckerDecorator(glex, methodDecorator, coCoService, visitorService);
     CoCoInterfaceDecorator coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex, coCoService, astService);
-    CoCoDecorator coCoDecorator = new CoCoDecorator(glex, coCoCheckerDecorator, coCoInterfaceDecorator);
+    CoCoDecorator coCoDecorator = new CoCoDecorator(glex, targetPath, coCoCheckerDecorator, coCoInterfaceDecorator);
     this.ast = coCoDecorator.decorate(ast);
   }
 
