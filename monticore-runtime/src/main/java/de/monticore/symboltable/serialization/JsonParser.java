@@ -4,8 +4,6 @@ package de.monticore.symboltable.serialization;
 import de.monticore.symboltable.serialization.json.*;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Queue;
-
 /**
  * Parses serialized JSON Strings into an intermediate JSON data structure. This data structure can
  * then be used, e.g., to build Java objects with their builders.
@@ -33,7 +31,7 @@ public class JsonParser {
   public static JsonObject parseJsonObject(String json) {
     JsonLexer lexer = new JsonLexer(json);
     JsonToken t = lexer.poll();
-    if (null == t ||JsonTokenKind.BEGIN_OBJECT != t.getKind()) {
+    if (null == t || JsonTokenKind.BEGIN_OBJECT != t.getKind()) {
       Log.error("0xA0589 Json objects must begin with a '{'!");
       return null;
     }
@@ -59,6 +57,7 @@ public class JsonParser {
 
   /**
    * parses any json using the passed lexer.
+   *
    * @param lexer
    * @return
    */
@@ -87,7 +86,8 @@ public class JsonParser {
         default:
           Log.error(
               "0xA0564 Invalid JSON token \"" + t
-                  + "\". The serialized object is not well-formed! Discarding :"+lexer.getRemainder());
+                  + "\". The serialized object is not well-formed! Discarding :" + lexer
+                  .getRemainder());
           return null;
       }
     }
@@ -118,7 +118,8 @@ public class JsonParser {
           }
           JsonElement memberValue = parseJson(lexer);  //then parse any value
           result.putMember(memberName, memberValue); // and add the member to result
-          JsonToken next = pollNextNonWhiteSpace(lexer); //either object end is reached or a comma must follow
+          JsonToken next = pollNextNonWhiteSpace(
+              lexer); //either object end is reached or a comma must follow
           if (null == next) {
             Log.error(
                 " 0xA0580 Invalid JSON structure. Unexpected end of object!");
@@ -129,7 +130,8 @@ public class JsonParser {
           if (JsonTokenKind.COMMA != next.getKind()) {
             Log.error(" 0xA0581 Invalid JSON structure. Missing comma in object!");
           }
-          JsonToken next2 = peekNextNonWhiteSpace(lexer); //peek if next token is end of object after comma.
+          JsonToken next2 = peekNextNonWhiteSpace(
+              lexer); //peek if next token is end of object after comma.
           if (null == next2 || JsonTokenKind.END_OBJECT == next2.getKind()) {
             Log.error(
                 " 0xA0582 Invalid JSON structure. Unexpected end of object after comma!");
@@ -148,7 +150,8 @@ public class JsonParser {
         default:
           Log.error(
               " 0xA0583 Invalid JSON structure \"" + t
-                  + "\". The serialized object is not well-formed! Ignoring remainder: "+lexer.getRemainder());
+                  + "\". The serialized object is not well-formed! Ignoring remainder: " + lexer
+                  .getRemainder());
           return null;
       }
     }
@@ -192,7 +195,8 @@ public class JsonParser {
                 " 0xA0586 Invalid JSON token. Missing comma in array!");
           }
           //else it is a comma that has been consumed already
-          JsonToken next2 = peekNextNonWhiteSpace(lexer); //peek if next token is end of array after comma.
+          JsonToken next2 = peekNextNonWhiteSpace(
+              lexer); //peek if next token is end of array after comma.
           if (null == next2 || JsonTokenKind.END_ARRAY == next2.getKind()) {
             Log.error(
                 " 0xA0587 Invalid JSON token. Unexpected end of array after comma!");
@@ -244,12 +248,16 @@ public class JsonParser {
   }
 
   /**
-   * reads all whitespace tokens until the next non-whitespace token
+   * reads all whitespace tokens until the next non-whitespace token.
+   * This is returned, but not consumed. If the method is called when the lexer has already reached
+   * the end of the document, it returns "null". If the end of the document occurs during
+   * consumption of whitespaces, a whitespace token is returned.
+   *
    * @param lexer
    * @return
    */
   protected static JsonToken peekNextNonWhiteSpace(JsonLexer lexer) {
-    if(!lexer.hasNext()){
+    if (!lexer.hasNext()) {
       return null;
     }
     JsonToken t = lexer.peek();
@@ -258,8 +266,18 @@ public class JsonParser {
     }
     return t;
   }
+
+  /**
+   * reads all whitespace tokens until the next non-whitespace token.
+   * This is returned and consumed. If the method is called when the lexer has already reached the
+   * end of the document, it returns "null". If the end of the document occurs during consumption
+   * of whitespaces, a whitespace token is returned.
+   *
+   * @param lexer
+   * @return
+   */
   protected static JsonToken pollNextNonWhiteSpace(JsonLexer lexer) {
-    if(!lexer.hasNext()){
+    if (!lexer.hasNext()) {
       return null;
     }
     JsonToken t = lexer.poll();
