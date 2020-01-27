@@ -6,6 +6,7 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
+import de.monticore.codegen.cd2java._ast.builder.inheritedmethods.InheritedBuilderMutatorMethodDecorator;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -71,6 +72,13 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .filter(a -> !service.isInheritedAttribute(a))
         .collect(Collectors.toList());
 
+    // additionally add only setter methods with correct builder return type for inherited attributes
+    List<ASTCDAttribute> inheritedAttributes = domainClass.getCDAttributeList().stream()
+        .map(ASTCDAttribute::deepClone)
+        .filter(a -> !a.getModifier().isFinal())
+        .filter(service::isInheritedAttribute)
+        .collect(Collectors.toList());
+
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, builderClassName);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + builderClassName + ") this;"));
@@ -94,6 +102,12 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
+    InheritedBuilderMutatorMethodDecorator inheritedMutatorDecorator = new InheritedBuilderMutatorMethodDecorator(glex, builderType);
+    List<ASTCDMethod> inheritedMutatorMethods = inheritedAttributes.stream()
+        .map(inheritedMutatorDecorator::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+
     builderAttributes.forEach(this::addAttributeDefaultValues);
 
     return CD4AnalysisMill.cDClassBuilder()
@@ -106,6 +120,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .addCDMethod(isValidMethod)
         .addAllCDMethods(accessorMethods)
         .addAllCDMethods(mutatorMethods)
+        .addAllCDMethods(inheritedMutatorMethods)
         .build();
   }
 

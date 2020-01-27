@@ -15,8 +15,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ASTBuilderTest extends GeneratorIntegrationsTest {
   
@@ -51,8 +50,6 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
     List<String> selection = Lists.newArrayList();
     String table = "tableAttr";
 
- /* TODO: Die Builder müssen alle alle Setter überschreiben.
-
    mc.feature.javasql.javasql.javasql._ast.ASTSelectStatement javasqlStatement = JavaSQLMill.selectStatementBuilder().
             setDistinct(distinct).
             setSelectionList(selection).
@@ -71,19 +68,20 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
     assertTrue(javasqlStatement.deepEquals(javasqlStatement1));
 
     mc.feature.javasql.sql.sql._ast.ASTSelectStatement sqlStatement = SQLMill.selectStatementBuilder().
-            setDistinct(distinct).
-            setSelectionList(selection).
-            setTable(table).
-            build();
+        setDistinct(distinct).
+        setSelectionList(selection).
+        setTable(table).
+        build();
 
     mc.feature.javasql.sql.sql._ast.ASTSelectStatement sqlStatement1 = SQLNodeFactory.createASTSelectStatement();
+    sqlStatement1.setDistinct(distinct);
+    sqlStatement1.setSelectionList(selection);
+    sqlStatement1.setTable(table);
 
     assertTrue(sqlStatement.deepEquals(sqlStatement1));
 
     assertTrue(sqlStatement.getClass().isAssignableFrom(javasqlStatement.getClass()));
     assertFalse(javasqlStatement.getClass().isAssignableFrom(sqlStatement.getClass()));
-    */
-    
   }
   
 }

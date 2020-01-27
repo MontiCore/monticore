@@ -51,14 +51,14 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(lastResult.isPresentLast()){
       elemResult = lastResult.getLast();
     }else{
-      Log.error("0xA0280 the result of the left expression of the isin cannot be calculated");
+      Log.error("0xA0286 The resulting type of "+prettyPrinter.prettyprint(node.getElem())+" cannot be calculated");
     }
     //set
     node.getSet().accept(realThis);
     if(lastResult.isPresentLast()){
       setResult = lastResult.getLast();
     }else{
-      Log.error("0xA0281 the result of the right expression of the isin cannot be calculated");
+      Log.error("0xA0287 The resulting type of "+prettyPrinter.prettyprint(node.getSet())+" cannot be calculated");
     }
     List<String> collections = Lists.newArrayList("List","Set");
     boolean correct = false;
@@ -79,7 +79,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       result = wholeResult;
     }else{
       lastResult.reset();
-      Log.error("0xA0282 the result of the IsInExpression cannot be calculated");
+      Log.error("0xA0288 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
     }
   }
 
@@ -96,14 +96,14 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(lastResult.isPresentLast()){
       elemResult = lastResult.getLast();
     }else{
-      Log.error("0xA0283 the result of the left expression of the in cannot be calculated");
+      Log.error("0xA0289 The resulting type of "+prettyPrinter.prettyprint(node.getElem())+" cannot be calculated");
     }
     //set
     node.getSet().accept(realThis);
     if(lastResult.isPresentLast()){
       setResult = lastResult.getLast();
     }else{
-      Log.error("0xA0284 the result of the right expression of the in cannot be calculated");
+      Log.error("0xA0290 The resulting type of "+prettyPrinter.prettyprint(node.getSet())+" cannot be calculated");
     }
     List<String> collections = Lists.newArrayList("List","Set");
     boolean correct = false;
@@ -124,7 +124,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       result = wholeResult;
     }else{
       lastResult.reset();
-      Log.error("0xA0285 the result of the SetInExpression cannot be calculated");
+      Log.error("0xA0291 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
     }
   }
 
@@ -138,7 +138,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0286 The result of the UnionExpressionInfix cannot be calculated");
+      Log.error("0xA0292 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
     }
   }
 
@@ -152,7 +152,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0287 the result of the IntersectionExpressionInfix cannot be calculated");
+      Log.error("0xA0293 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
     }
   }
 
@@ -166,14 +166,14 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(lastResult.isPresentLast()){
       leftResult = lastResult.getLast();
     }else{
-      Log.error("0xA0288 the left expression cannot be calculated");
+      Log.error("0xA0294 The resulting type of "+prettyPrinter.prettyprint(leftExpr)+" cannot be calculated");
     }
     //set
     rightExpr.accept(realThis);
     if(lastResult.isPresentLast()){
       rightResult = lastResult.getLast();
     }else{
-      Log.error("0xA0289 the right expression cannot be calculated");
+      Log.error("0xA0295 The resulting type of "+prettyPrinter.prettyprint(rightExpr)+" cannot be calculated");
     }
     List<String> collections = Lists.newArrayList("List","Set");
     if(rightResult.isGenericType()&&leftResult.isGenericType()){

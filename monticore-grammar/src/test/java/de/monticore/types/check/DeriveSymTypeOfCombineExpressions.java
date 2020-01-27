@@ -3,7 +3,7 @@ package de.monticore.types.check;
 import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTExtReturnType;
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTExtType;
-import de.monticore.expressions.combineexpressionswithliterals._ast.ASTExtTypeArguments;
+import de.monticore.expressions.combineexpressionswithliterals._ast.ASTExtTypeArgument;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsVisitor;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 
@@ -34,10 +34,18 @@ public class DeriveSymTypeOfCombineExpressions implements CombineExpressionsWith
 
   @Override
   public void traverse(ASTExtType type){
+    SymTypeExpression wholeResult = null;
     type.getMCType().accept(synthesizer);
     Optional<SymTypeExpression> result = synthesizer.getResult();
-    result.ifPresent(lastResult::setLast);
-    lastResult.setType();
+    if(result.isPresent()){
+      wholeResult=result.get();
+    }
+    if(wholeResult!=null){
+      lastResult.setLast(wholeResult);
+      lastResult.setType();
+    }else{
+      lastResult.reset();
+    }
   }
 
   @Override
@@ -54,21 +62,26 @@ public class DeriveSymTypeOfCombineExpressions implements CombineExpressionsWith
     if(wholeResult!=null){
       lastResult.setLast(wholeResult);
       lastResult.setType();
+    }else{
+      lastResult.reset();
     }
   }
 
   @Override
-  public void traverse(ASTExtTypeArguments typeArguments){
-    List<SymTypeExpression> wholeResult = Lists.newArrayList();
-    for(ASTMCTypeArgument typeArgument:typeArguments.getMCTypeArgumentList()){
-      if(typeArgument.getMCTypeOpt().isPresent()) {
-        typeArgument.getMCTypeOpt().get().accept(synthesizer);
-        if (synthesizer.getResult().isPresent()) {
-          wholeResult.add(synthesizer.getResult().get());
-        }
+  public void traverse(ASTExtTypeArgument typeArgument){
+    SymTypeExpression wholeResult = null;
+    if(typeArgument.getMCTypeArgument().getMCTypeOpt().isPresent()){
+      typeArgument.getMCTypeArgument().getMCTypeOpt().get().accept(synthesizer);
+      if(synthesizer.getResult().isPresent()){
+        wholeResult = synthesizer.getResult().get();
       }
     }
-    //TODO: wie macht man es hier?
+    if(wholeResult!=null){
+      lastResult.setLast(wholeResult);
+      lastResult.setType();
+    }else{
+      lastResult.reset();
+    }
   }
 
   public void setLastResult(LastResult lastResult) {

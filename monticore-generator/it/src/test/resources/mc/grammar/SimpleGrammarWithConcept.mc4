@@ -3,12 +3,6 @@
 package mc.grammar;
 
 grammar SimpleGrammarWithConcept {
-
-  concept antlr {
-    parserjava {
-      boolean first = true;
-    }
-  }
   
   A = "Hello";   
   

@@ -64,6 +64,10 @@ public class LastResult{
     this.method=false;
   }
 
+  public void unsetType(){
+    this.type=false;
+  }
+
   public boolean isField() {
     return field;
   }

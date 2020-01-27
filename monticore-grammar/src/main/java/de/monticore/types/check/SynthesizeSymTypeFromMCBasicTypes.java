@@ -1,5 +1,7 @@
 package de.monticore.types.check;
 
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
@@ -23,6 +25,12 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
   // (the Vistors are then composed using theRealThis Pattern)
   //
   MCBasicTypesVisitor realThis = this;
+
+  protected IExpressionsBasisScope scope;
+
+  public SynthesizeSymTypeFromMCBasicTypes(IExpressionsBasisScope scope){
+    this.scope = scope;
+  }
   
   @Override
   public void setRealThis(MCBasicTypesVisitor realThis) {
@@ -78,11 +86,15 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
   public void endVisit(ASTMCQualifiedType qType) {
     // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
     result = Optional.of(
-        SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), qType.getEnclosingScope())));
+        SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), scope)));
   }
   
   public void endVisit(ASTMCReturnType rType) {
     // result is pushed upward (no change)
+  }
+
+  protected void setScope(IExpressionsBasisScope scope){
+    this.scope=scope;
   }
   
 }
