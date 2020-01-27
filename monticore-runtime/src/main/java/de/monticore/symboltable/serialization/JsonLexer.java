@@ -4,199 +4,260 @@ package de.monticore.symboltable.serialization;
 
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import static de.monticore.symboltable.serialization.JsonToken.*;
+import static de.monticore.symboltable.serialization.JsonTokenKind.NUMBER;
+import static de.monticore.symboltable.serialization.JsonTokenKind.STRING;
 
-import static de.monticore.symboltable.serialization.JsonTokenKind.*;
-
+/**
+ * This class is responsible to tokenize a String that encoded as JSON. The length of the input,
+ * thus, is limited by the maximum length of a String.
+ */
 public class JsonLexer {
 
-  protected static JsonLexer instance = null;
+  protected String json;
 
-  public static List<JsonToken> read(String json){
-    return read(json, true);
-  }
+  //current position within the input string
+  protected int pos = 0;
 
-  public static List<JsonToken> read(String json, boolean filterWhiteSpaces) {
-    if (null == instance) {
-      instance = new JsonLexer();
-    }
-    List<JsonToken> tokens = instance.readJson(json);
-    if (filterWhiteSpaces) {
-      return tokens
-          .stream()
-          .filter(t -> t.getKind() != WHITESPACE)
-          .collect(Collectors.toList());
-    }
-    return tokens;
-  }
+  //currently peeked token, or null is not token has been peeked
+  protected JsonToken peeked;
 
-  public static void setInstance(JsonLexer instance) {
-    JsonLexer.instance = instance;
-  }
+  protected NumberParser numbers;
 
-  public List<JsonToken> readJson(String json) {
-    //find longest match
-    List<JsonToken> result = new ArrayList<>();
-
-    String current = json; //in this string, iteratively cut off the matched front
-    while (!current.isEmpty()) {
-      String[] matches = getMatches(current); //longest match for each token kind
-      int indexOfLongestMatch = findLongestMatchIndex(matches); //longest match of all token kinds
-      if (matches[indexOfLongestMatch].isEmpty()) {
-        Log.error("0xTODO No match found during lexing of: '" + current + "'");
-        return new ArrayList<>();
-      }
-      result.add(createToken(matches, indexOfLongestMatch));
-      current = current.substring(matches[indexOfLongestMatch].length());
-    }
-    return result;
-  }
+  protected boolean outputWhiteSpace;
 
   /**
-   * String regex = ""
-   * + "\""                   //start with '"'
-   * + "("                    //begin iteration of characters
-   * + "[^\\\"\\\\]"          //every character except '"' or "\"
-   * + "|\\\\u[0-9A-Fa-f]{4}" //or unicode escape sequence
-   * + "|\\\\[bfnrt\"/\\\\]"  // or other escape sequence
-   * + ")*"                   //end iteration of characters
-   * + "\"";                  //end with '"'
-   *
-   * @param json
-   * @return
-   */
-  protected String matchString(String json) {
-
-    return matchRegexPrefix(json, "\"([^\\\"\\\\]|\\\\u[0-9A-Fa-f]{4}|\\\\[bfnrt\"/\\\\])*\"");
-  }
-
-  protected String matchNumber(String json) {
-    return matchRegexPrefix(json, "-?(0|[1-9]([0-9]))(.([0-9])+)?((e|E)(-|\\+)?[0-9]+)?");
-  }
-
-  protected String matchBoolean(String json) {
-    return matchRegexPrefix(json, "true|false");
-  }
-
-  protected String matchBeginArray(String json) {
-    return matchRegexPrefix(json, "\\[");
-  }
-
-  protected String matchEndArray(String json) {
-    return matchRegexPrefix(json, "\\]");
-  }
-
-  protected String matchBeginObject(String json) {
-    return matchRegexPrefix(json, "\\{");
-  }
-
-  protected String matchEndObject(String json) {
-    return matchRegexPrefix(json, "\\}");
-  }
-
-  protected String matchNull(String json) {
-    return matchRegexPrefix(json, "null");
-  }
-
-  protected String matchComma(String json) {
-    return matchRegexPrefix(json, ",");
-  }
-
-  protected String matchColon(String json) {
-    return matchRegexPrefix(json, ":");
-  }
-
-  protected String matchWhitespace(String json) {
-    return matchRegexPrefix(json, "(\\s)*");
-  }
-
-  protected String[] getMatches(String current) {
-    String[] matches = new String[values().length];
-    matches[STRING.ordinal()] = matchString(current);
-    matches[NUMBER.ordinal()] = matchNumber(current);
-    matches[BOOLEAN.ordinal()] = matchBoolean(current);
-    matches[BEGIN_ARRAY.ordinal()] = matchBeginArray(current);
-    matches[END_ARRAY.ordinal()] = matchEndArray(current);
-    matches[BEGIN_OBJECT.ordinal()] = matchBeginObject(current);
-    matches[END_OBJECT.ordinal()] = matchEndObject(current);
-    matches[COMMA.ordinal()] = matchComma(current);
-    matches[COLON.ordinal()] = matchColon(current);
-    matches[NULL.ordinal()] = matchNull(current);
-    matches[WHITESPACE.ordinal()] = matchWhitespace(current);
-    return matches;
-  }
-
-  protected int findLongestMatchIndex(String[] matches) {
-    int indexOfLongestMatch = 0;
-    for (int i = 0; i < matches.length; i++) {
-      if (matches[i].length() > matches[indexOfLongestMatch].length()) {
-        indexOfLongestMatch = i;
-      }
-    }
-    //TODO check and warn ambiguous lexing here?
-    return indexOfLongestMatch;
-  }
-
-  protected JsonToken createToken(String[] matches, int indexOfLongestMatch) {
-    if (indexOfLongestMatch == STRING.ordinal()) {
-      return new JsonToken(STRING, matches[indexOfLongestMatch]);
-    }
-    if (indexOfLongestMatch == NUMBER.ordinal()) {
-      return new JsonToken(NUMBER, matches[indexOfLongestMatch]);
-    }
-    if (indexOfLongestMatch == BOOLEAN.ordinal()) {
-      return new JsonToken(BOOLEAN, matches[indexOfLongestMatch]);
-    }
-    if (indexOfLongestMatch == BEGIN_ARRAY.ordinal()) {
-      return new JsonToken(BEGIN_ARRAY);
-    }
-    if (indexOfLongestMatch == END_ARRAY.ordinal()) {
-      return new JsonToken(END_ARRAY);
-    }
-    if (indexOfLongestMatch == BEGIN_OBJECT.ordinal()) {
-      return new JsonToken(BEGIN_OBJECT);
-    }
-    if (indexOfLongestMatch == END_OBJECT.ordinal()) {
-      return new JsonToken(END_OBJECT);
-    }
-    if (indexOfLongestMatch == COMMA.ordinal()) {
-      return new JsonToken(COMMA);
-    }
-    if (indexOfLongestMatch == COLON.ordinal()) {
-      return new JsonToken(COLON);
-    }
-    if (indexOfLongestMatch == NULL.ordinal()) {
-      return new JsonToken(NULL);
-    }
-    if (indexOfLongestMatch == WHITESPACE.ordinal()) {
-      return new JsonToken(WHITESPACE);
-    }
-    else {
-      Log.error("0xTODO Unknown kind of token in '" + matches[indexOfLongestMatch] + "'");
-      return null;
-    }
-  }
-
-  /**
-   * Returns the longest match for the passed regex in the passed input that is a prefix of the input.
-   * Returns an empty String if not match is possible at all.
+   * The lexer tokenizes the passed input String. If the passed boolean is true, the lexer outputs
+   * whitespace tokens, if it is false all whitespace tokens are omitted.
    *
    * @param input
-   * @param regex
+   */
+  public JsonLexer(String input, boolean outputWhiteSpace) {
+    json = input;
+    peeked = null;
+    numbers = new NumberParser();
+    this.outputWhiteSpace = outputWhiteSpace;
+  }
+
+  /**
+   * The lexer tokenizes the passed input String. It does not output whitespace tokens
+   *
+   * @param input
+   */
+  public JsonLexer(String input) {
+    this(input, false);
+  }
+
+  /**
+   * returns truee, iff the end of the String lexed so far is not reached.
    * @return
    */
-  protected String matchRegexPrefix(String input, String regex) {
-    Matcher matcher = Pattern.compile(regex).matcher(input);
-    if (matcher.find()) {
-      if (0 == matcher.start()) {
-        return matcher.group();
+  public boolean hasNext() {
+    return peek() != null;
+  }
+
+  /**
+   * Returns the part of the input that has not been lexed yet (e.g., for prin
+   * @return
+   */
+  public String getRemainder() {
+    return json;
+  }
+
+  /**
+   * reads the next token of the input, without consuming it. In Json, each kind of token can be
+   * identified by its first character.
+   * @return
+   */
+  public JsonToken peek() {
+    if (null != peeked) {
+      return peeked;
+    }
+    if (pos >= json.length()) {
+      return null;
+    }
+    char first = json.charAt(pos);
+    if (first == '[') {
+      pos++;
+      peeked = BEGIN_ARRAY;
+      return BEGIN_ARRAY;
+    }
+    if (first == ']') {
+      pos++;
+      peeked = END_ARRAY;
+      return END_ARRAY;
+    }
+    if (first == '{') {
+      pos++;
+      peeked = BEGIN_OBJECT;
+      return BEGIN_OBJECT;
+    }
+    if (first == '}') {
+      pos++;
+      peeked = END_OBJECT;
+      return END_OBJECT;
+    }
+    if (first == ':') {
+      pos++;
+      peeked = COLON;
+      return COLON;
+    }
+    if (first == ',') {
+      pos++;
+      peeked = COMMA;
+      return COMMA;
+    }
+    if (first == 't' && la(1) == 'r' && la(2) == 'u' && la(3) == 'e') {
+      pos += 4;
+      peeked = BOOLEAN_TRUE;
+      return BOOLEAN_TRUE;
+    }
+    if (first == 'f' && la(1) == 'a' && la(2) == 'l' && la(3) == 's'
+        && la(4) == 'e') {
+      pos += 5;
+      peeked = BOOLEAN_FALSE;
+      return BOOLEAN_FALSE;
+    }
+    if (first == 'n' && la(1) == 'u' && la(2) == 'l' && la(3) == 'l') {
+      pos += 4;
+      peeked = NULL;
+      return NULL;
+    }
+    if (first == '"') {
+      return checkString();
+    }
+    if (WHITESPACE_CHARACTERS.indexOf(first) > -1) {
+      while (pos < json.length() && WHITESPACE_CHARACTERS.indexOf(json.charAt(pos)) > -1) {
+        pos++;
+      }
+      if(outputWhiteSpace){
+        peeked = WHITESPACE;
+        return WHITESPACE;
+      }
+      else{
+        return peek();
       }
     }
-    return "";
+    if ("-0123456789".indexOf(first) > -1) {
+      return checkNumber();
+    }
+    peeked = null;
+    Log.error("0xA0591 Unexpected end during lexing!");
+    return null;
   }
+
+  /**
+   * Returns the character at the i-th position from the current position of the input.
+   *
+   * @param i
+   * @return
+   */
+  protected char la(int i) {
+    return json.charAt(pos + i);
+  }
+
+  /**
+   * returns the next token and removes it
+   *
+   * @return
+   */
+  public JsonToken poll() {
+    JsonToken current = peek();
+    if (null == current) {
+      Log.error("0xA0592 unexpected end of model during lexing!");
+      return null;
+    }
+    else {
+      peeked = null;
+      return current;
+    }
+  }
+
+  /**
+   * try to read a number starting at the current location
+   * @return
+   */
+  protected JsonToken checkNumber() {
+    numbers.reset();
+    while (pos < json.length()
+        && "0123456789eE-+.".indexOf(json.charAt(pos)) > -1
+        && !numbers.hasError()) {
+      numbers.step(json.charAt(pos));
+      pos++;
+    }
+    if (numbers.isInFinalState()) {
+      peeked = new JsonToken(NUMBER, numbers.getResult());
+    }
+    else {
+      Log.error("0xA0593 Invalid number!");
+    }
+    return peeked;
+  }
+
+  /**
+   * checks, if the current input is a valid JSON String, i.e. if it is conform to the regex:
+   *    String regex = ""
+   *    + "\""                   //start with '"'
+   *    + "("                    //begin iteration of characters
+   *    + "[^\\\"\\\\]"          //every character except '"' or "\"
+   *    + "|\\\\u[0-9A-Fa-f]{4}" //or unicode escape sequence
+   *    + "|\\\\[bfnrt\"/\\\\]"  // or other escape sequence
+   *    + ")*"                   //end iteration of characters
+   *    + "\"";                  //end with '"'
+   * @return
+   */
+  protected JsonToken checkString() {
+    int beginPos = pos;
+    StringBuilder result = new StringBuilder();
+    pos++; //skip first quotes
+    while (pos < json.length()) {
+      char c = json.charAt(pos);
+      //check if valid escape sequence
+      if (c == '\\') {
+        result.append('\\');
+        pos++;
+        c = json.charAt(pos);
+        result.append(c);
+        // if backslash and u occurs, 4 digits must follow
+        if (c == 'u') {
+          if ((DIGITS.indexOf(la(1)) != -1 && DIGITS.indexOf(la(2)) != -1
+              && DIGITS.indexOf(la(3)) != -1 && DIGITS.indexOf(la(4)) != -1)) {
+            result.append(la(1));
+            result.append(la(2));
+            result.append(la(3));
+            result.append(la(4));
+          }
+          else {
+            Log.error(
+                "0xA0594 Invalid escape sequence in String during lexing! 'u' must be followed by four digits");
+          }
+          pos = pos + 5;
+        }
+        // else, check whether other allowed escaped character
+        else if ("\\\"bfnrt".indexOf(c) != -1) {
+          pos++;
+        }
+        else{
+          Log.error("0xA0595 Invalid escape sequence in String during lexing! An escaped '"+c+"' is not allowed");
+        }
+      }
+      //else these are unescaped quotes, the string ends here and is valid
+      else if (c == '\"') {
+        pos++;
+        peeked = new JsonToken(STRING, result.toString());
+        return peeked;
+      }
+      else{
+        //random valid character
+        result.append(c);
+        pos++;
+      }
+    }
+    return null;
+  }
+
+  protected static final String WHITESPACE_CHARACTERS = " \t\n\f\r";
+
+  protected static final String DIGITS = "0123456789";
 
 }
