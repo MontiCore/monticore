@@ -1,9 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  if (getSubScopes().size() == 1) {
-    if(getSubScopes().get(0).isPresentSpanningSymbol()) {
-      ISymbol scopeSpanningSymbol = getSubScopes().get(0).getSpanningSymbol();
-      return Optional.of(scopeSpanningSymbol);
-    }
+${tc.signature("symbolNameList")}
+  List<de.monticore.symboltable.ISymbol> topSymbolList = new ArrayList<>();
+  <#list symbolNameList as symbolName>
+    topSymbolList.addAll(get${symbolName}Symbols().values());
+  </#list>
+  if (topSymbolList.size() == 1) {
+    return Optional.of(topSymbolList.get(0));
   }
-  // there is no top level symbol, if more than one sub scope exists.
+  // there is no top level symbol, if more than one symbol exists.
   return Optional.empty();
