@@ -236,7 +236,7 @@ public class MCGrammarSymbolTableHelper {
   public static String getConstantName(RuleComponentSymbol compSymbol) {
     if (compSymbol.isIsConstantGroup() && compSymbol.isPresentAstNode()
         && compSymbol.getAstNode() instanceof ASTConstantGroup) {
-      return Optional.of(getConstantGroupName((ASTConstantGroup) compSymbol.getAstNode()));
+      return getConstantGroupName((ASTConstantGroup) compSymbol.getAstNode());
     }
     if (compSymbol.isIsConstant() && compSymbol.isPresentAstNode()
         && compSymbol.getAstNode() instanceof ASTConstant) {
