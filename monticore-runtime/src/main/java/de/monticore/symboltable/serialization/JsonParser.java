@@ -250,7 +250,6 @@ public class JsonParser {
    */
   protected static JsonToken peekNextNonWhiteSpace(JsonLexer lexer) {
     if(!lexer.hasNext()){
-      //TODO throw an error?
       return null;
     }
     JsonToken t = lexer.peek();
@@ -261,7 +260,6 @@ public class JsonParser {
   }
   protected static JsonToken pollNextNonWhiteSpace(JsonLexer lexer) {
     if(!lexer.hasNext()){
-      //TODO throw an error?
       return null;
     }
     JsonToken t = lexer.poll();

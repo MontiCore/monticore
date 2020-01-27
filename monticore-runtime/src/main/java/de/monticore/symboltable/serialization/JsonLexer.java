@@ -24,32 +24,20 @@ public class JsonLexer {
 
   protected NumberParser numbers;
 
-  protected boolean outputWhiteSpace;
-
   /**
-   * The lexer tokenizes the passed input String. If the passed boolean is true, the lexer outputs
-   * whitespace tokens, if it is false all whitespace tokens are omitted.
-   *
-   * @param input
-   */
-  public JsonLexer(String input, boolean outputWhiteSpace) {
-    json = input;
-    peeked = null;
-    numbers = new NumberParser();
-    this.outputWhiteSpace = outputWhiteSpace;
-  }
-
-  /**
-   * The lexer tokenizes the passed input String. It does not output whitespace tokens
+   * The lexer tokenizes the passed input String.
    *
    * @param input
    */
   public JsonLexer(String input) {
-    this(input, false);
+    json = input;
+    peeked = null;
+    numbers = new NumberParser();
   }
 
   /**
    * returns truee, iff the end of the String lexed so far is not reached.
+   *
    * @return
    */
   public boolean hasNext() {
@@ -58,6 +46,7 @@ public class JsonLexer {
 
   /**
    * Returns the part of the input that has not been lexed yet (e.g., for prin
+   *
    * @return
    */
   public String getRemainder() {
@@ -67,6 +56,7 @@ public class JsonLexer {
   /**
    * reads the next token of the input, without consuming it. In Json, each kind of token can be
    * identified by its first character.
+   *
    * @return
    */
   public JsonToken peek() {
@@ -130,13 +120,8 @@ public class JsonLexer {
       while (pos < json.length() && WHITESPACE_CHARACTERS.indexOf(json.charAt(pos)) > -1) {
         pos++;
       }
-      if(outputWhiteSpace){
-        peeked = WHITESPACE;
-        return WHITESPACE;
-      }
-      else{
-        return peek();
-      }
+      peeked = WHITESPACE;
+      return WHITESPACE;
     }
     if ("-0123456789".indexOf(first) > -1) {
       return checkNumber();
@@ -175,6 +160,7 @@ public class JsonLexer {
 
   /**
    * try to read a number starting at the current location
+   *
    * @return
    */
   protected JsonToken checkNumber() {
@@ -196,14 +182,15 @@ public class JsonLexer {
 
   /**
    * checks, if the current input is a valid JSON String, i.e. if it is conform to the regex:
-   *    String regex = ""
-   *    + "\""                   //start with '"'
-   *    + "("                    //begin iteration of characters
-   *    + "[^\\\"\\\\]"          //every character except '"' or "\"
-   *    + "|\\\\u[0-9A-Fa-f]{4}" //or unicode escape sequence
-   *    + "|\\\\[bfnrt\"/\\\\]"  // or other escape sequence
-   *    + ")*"                   //end iteration of characters
-   *    + "\"";                  //end with '"'
+   * String regex = ""
+   * + "\""                   //start with '"'
+   * + "("                    //begin iteration of characters
+   * + "[^\\\"\\\\]"          //every character except '"' or "\"
+   * + "|\\\\u[0-9A-Fa-f]{4}" //or unicode escape sequence
+   * + "|\\\\[bfnrt\"/\\\\]"  // or other escape sequence
+   * + ")*"                   //end iteration of characters
+   * + "\"";                  //end with '"'
+   *
    * @return
    */
   protected JsonToken checkString() {
@@ -237,8 +224,9 @@ public class JsonLexer {
         else if ("\\\"bfnrt".indexOf(c) != -1) {
           pos++;
         }
-        else{
-          Log.error("0xA0595 Invalid escape sequence in String during lexing! An escaped '"+c+"' is not allowed");
+        else {
+          Log.error("0xA0595 Invalid escape sequence in String during lexing! An escaped '" + c
+              + "' is not allowed");
         }
       }
       //else these are unescaped quotes, the string ends here and is valid
@@ -247,7 +235,7 @@ public class JsonLexer {
         peeked = new JsonToken(STRING, result.toString());
         return peeked;
       }
-      else{
+      else {
         //random valid character
         result.append(c);
         pos++;

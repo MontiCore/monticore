@@ -3,8 +3,6 @@ package de.monticore.symboltable.serialization;
 
 import org.junit.Test;
 
-import java.util.Queue;
-
 import static de.monticore.symboltable.serialization.JsonTokenKind.*;
 import static org.junit.Assert.assertEquals;
 
@@ -123,4 +121,5 @@ public class JsonLexerTest {
     }
     assertEquals(false, lexer.hasNext());
   }
+
 }
