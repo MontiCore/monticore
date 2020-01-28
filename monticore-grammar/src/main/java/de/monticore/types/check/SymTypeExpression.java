@@ -64,9 +64,7 @@ public abstract class SymTypeExpression {
         methodList.add(method.deepClone());
       }
     }
-    if(!isGenericType()){
-      return methodList;
-    }else{
+    if(isGenericType()){
       //compare type arguments of SymTypeExpression(actual type) and its TypeSymbol(type definition)
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
       List<TypeVarSymbol> typeVariableArguments = getTypeInfo().getTypeParameterList();
@@ -116,8 +114,8 @@ public abstract class SymTypeExpression {
           }
         }
       }
-      return methodList;
     }
+    return methodList;
   }
 
   /**
