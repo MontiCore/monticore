@@ -38,7 +38,7 @@ public class ProdSymbol extends ProdSymbolTOP {
     super(name);
   }
 
-  public Collection<RuleComponentSymbol> getProdComponents() {
+  public List<RuleComponentSymbol> getProdComponents() {
     return getSpannedScope().getLocalRuleComponentSymbols();
   }
 
