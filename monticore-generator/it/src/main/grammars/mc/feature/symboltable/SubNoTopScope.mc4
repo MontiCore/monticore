@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.symboltable;
+
+grammar SubNoTopScope extends mc.feature.symboltable.NoTopScope {
+
+  // inherits the FooSymbol from super grammar NoTopScope
+  // only defines a symbol and NO SCOPE!
+  // special case, because most of our languages have a start prod which is a scope spanning symbol
+  symbol SubFoo = "subFoo" Name "{" Bar* "}";
+
+}
