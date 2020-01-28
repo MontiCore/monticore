@@ -15,7 +15,7 @@ public class StateNameStartsWithCapitalLetter implements SM2ASTStateCoCo {
     if (!startsWithUpperCase) {
       // Issue warning...
       Log.warn(
-          String.format("0xAUT02 State name '%s' should start with a capital letter.", stateName),
+          String.format("0xAUT01 State name '%s' should start with a capital letter.", stateName),
           state.get_SourcePositionStart());
     }
   }

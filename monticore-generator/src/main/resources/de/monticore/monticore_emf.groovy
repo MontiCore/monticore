@@ -74,7 +74,7 @@ while (grammarIterator.hasNext()) {
 for (astGrammar in getParsedGrammars()) {
   // make sure to use the right report manager again
   Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
-  reportGrammarCd(astGrammar, cdScope, mcScope, report)
+  reportGrammarCd(astGrammar, report)
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
 
@@ -97,7 +97,9 @@ for (astGrammar in getParsedGrammars()) {
   decoratedCoCoCD = decorateForCoCoPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath)
 
-  generateODs(glex, cdScope, mcScope, astClassDiagram, astGrammar, out)
+  // decorate and generate CD for the '_od' package
+  decoratedODCD = decorateForODPackage(glex, cdScope, astClassDiagram, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedODCD, out, handcodedPath)
 
   // M7: decorate Class Diagram AST
   decoratedASTClassDiagramm = decorateEmfForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)

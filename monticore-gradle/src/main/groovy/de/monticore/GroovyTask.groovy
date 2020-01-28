@@ -9,148 +9,190 @@ import de.se_rwth.commons.groovy.GroovyInterpreter
 import de.se_rwth.commons.groovy.GroovyRunner
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.*
-import org.gradle.api.tasks.incremental.IncrementalTaskInputs
+import org.gradle.work.InputChanges
 
 import java.lang.reflect.InvocationTargetException
 import java.util.stream.Collectors
 
 public class GroovyTask extends DefaultTask {
-  @Optional @InputFile
+
+  GroovyTask() {
+    // set the task group name, in which all instances of MCTask will appear
+    group = 'MC'
+  }
+
   File model
-  
-  @OutputDirectory
+
   File outputDir
-  
-  @Input @Optional
+
   List<File> handcodedPath = []
-  
-  @Input @Optional
+
   List<File> modelPath = []
-  
-  @Input @Optional
+
   List<File> templatePath = []
-  
-  @Input @Optional
+
   List<String> includeConfigs = []
   
-  @Input
   String script
   
-  @Input
   String baseClass
   
-  @Input @Optional
   Map<String,String> arguments = [:]
-  
+
+  Iterable<File> classpath;
+
+  boolean help = false
+
+  @InputFiles @Optional
+  Iterable<File> getClasspath() {
+    return classpath
+  }
+
+  @Optional @InputFile
+  File getModel() {
+    return model
+  }
+
+  @OutputDirectory
+  File getOutputDir() {
+    return outputDir
+  }
+
+  @Input
+  String getScript() {
+    return script
+  }
+
+  @Input
+  String getBaseClass() {
+    return baseClass
+  }
+
   @Input @Optional
+  Map<String, String> getArguments() {
+    return arguments
+  }
+  
   public void handcodedPath(File... paths){
     handcodedPath.addAll(paths)
   }
-  
-  @Input @Optional
+
   public void modelPath(File... paths){
     modelPath.addAll(paths)
   }
-  
-  @Input @Optional
+
   public void templatePath(File... paths){
     templatePath.addAll(paths)
   }
   
-  @Input @Optional
-  boolean help = false
-  
-  @Input @Optional
   public void includeConfigs(String... configurations){
     includeConfigs.addAll(configurations)
   }
-  
+
   @InputFiles @Optional
-  Iterable<File> classpath;
-  
-  @Input @Optional
-  String group = "MC"
+  List<File> getHandcodedPath() {
+    return handcodedPath
+  }
+
+  @InputFiles @Optional
+  List<File> getModelPath() {
+    return modelPath
+  }
+
+  @InputFiles @Optional
+  List<File> getTemplatePath() {
+    return templatePath
+  }
+
+  @InputFiles @Optional
+  List<String> getIncludeConfigs() {
+    return includeConfigs
+  }
+
+  @Input
+  boolean getHelp() {
+    return help
+  }
   
   // TODO handcodedPath, templatePath
   @TaskAction
-  void execute(IncrementalTaskInputs inputs) {
-    
+  void execute(InputChanges inputs) {
     ClassLoader l = project.buildscript.classLoader
-    Class<? extends Script> baseClass = null;
-    String script = null;
+    Class<? extends Script> baseClass = null
+    String script = null
   
     // 1st we try to load the Groovy script
     try {
       // first per class loader
-      URL r = l.getResource(getScript().toString());
+      URL r = l.getResource(getScript())
       if (r == null) {
         // otherwise from file system
-        r = fromBasePath(getScript()).toURI().toURL();
+        r = fromBasePath(getScript()).toURI().toURL()
       }
-      Scanner scr = new Scanner(r.openStream());
-      script = scr.useDelimiter("\\A").next();
-      scr.close();
+      Scanner scr = new Scanner(r.openStream())
+      script = scr.useDelimiter("\\A").next()
+      scr.close()
     }
     catch (IOException e) {
-      throw new RuntimeException("Failed to load the specified script " + getScript(), e);
+      throw new RuntimeException("Failed to load the specified script " + getScript(), e)
     }
   
-    // 2nd we check the base class parameter; try to load base class if
+    // 2nd we check the base class parameter try to load base class if
     // specified
     try {
       if (getBaseClass() != null && !getBaseClass().isEmpty()) {
-        baseClass = (Class<? extends Script>) l.loadClass(getBaseClass().toString());
+        baseClass = (Class<? extends Script>) l.loadClass(getBaseClass().toString())
       }
     }
     catch (ClassNotFoundException e) {
-      throw new RuntimeException("Failed to load the script base class $baseClass.", e);
+      throw new RuntimeException("Failed to load the script base class $baseClass.", e)
     }
   
     // 3rd prepare the configuration instance
-    Configuration configuration = null;
+    Configuration configuration = null
     // a bit of debug
     if (logger.isDebugEnabled()) {
-      logger.debug("Configuration content:");
-      logger.debug("  modelPath " + getModelPath());
-      getArguments().forEach({ key, value -> logger.debug("  " + key + " " + value) });
+      logger.debug("Configuration content:")
+      logger.debug("  modelPath " + getModelPath())
+      getArguments().forEach({ key, value -> logger.debug("  " + key + " " + value) })
     }
   
-    ImmutableMultimap.Builder<String, String> arguments2 = ImmutableListMultimap.builder();
+    ImmutableMultimap.Builder<String, String> arguments2 = ImmutableListMultimap.builder()
     // add all generic arguments
     getArguments()
-            .forEach({ key, value -> arguments2.putAll(key, Arrays.asList(value.split(";"))) });
+            .forEach({ key, value -> arguments2.putAll(key, Arrays.asList(value.split(";"))) })
     // add the models parameter
-    File model = getModel();
+    File model = getModel()
     if (model != null) {
       arguments2.put("model", model.getPath())
     }
     // add the modelPath parameter
-    List<File> combinedModelPath = doCreateModelPath();
+    List<File> combinedModelPath = doCreateModelPath()
     if (!combinedModelPath.isEmpty()) {
       arguments2.putAll("modelPath", combinedModelPath.stream().collect(
-              Collectors.mapping({ p -> p.getPath() }, Collectors.toList())));
+              Collectors.mapping({ p -> p.getPath() }, Collectors.toList())))
     }
     // add the outputDirectory parameter
-    File outputDirectory = getOutputDir();
+    File outputDirectory = getOutputDir()
     if (outputDirectory != null) {
-      arguments2.putAll("outputDirectory", fromBasePath(outputDirectory).getPath());
+      arguments2.putAll("outputDirectory", fromBasePath(outputDirectory).getPath())
     }
   
-    configuration = ConfigurationPropertiesMapContributor.fromSplitMap(arguments2.build());
+    configuration = ConfigurationPropertiesMapContributor.fromSplitMap(arguments2.build())
   
     // 4th we run the script
-    GroovyInterpreter.Builder builder = GroovyInterpreter.newInterpreter();
+    GroovyInterpreter.Builder builder = GroovyInterpreter.newInterpreter()
     if (baseClass != null) {
-      builder.withScriptBaseClass(baseClass);
+      builder.withScriptBaseClass(baseClass)
       // now we check if the base class can be used as Groovy runner by checking
-      // our interface; if this is the case we use the runner and terminate the
-      // execution; otherwise execution will continue and use the manual Groovy
+      // our interface if this is the case we use the runner and terminate the
+      // execution otherwise execution will continue and use the manual Groovy
       // invocation
       if (GroovyRunner.class.isAssignableFrom(baseClass)) {
-        logger.info("Given base class " + baseClass.getName() + " is used as Groovy runner.");
+        logger.info("Given base class " + baseClass.getName() + " is used as Groovy runner.")
         try {
-          GroovyRunner runner = (GroovyRunner) baseClass.getConstructor().newInstance();
-          runner.run(script, configuration);
+          GroovyRunner runner = (GroovyRunner) baseClass.getConstructor().newInstance()
+          runner.run(script, configuration)
         }
         catch (InstantiationException
         | IllegalAccessException
@@ -160,21 +202,21 @@ public class GroovyTask extends DefaultTask {
         | SecurityException e) {
           throw new RuntimeException(
                   "Failed to instantiate the script base class as Groovy runner. The base class Groovy runner must supply a public default no-args constructor.",
-                  e);
+                  e)
         }
-        return;
+        return
       }
       else {
         logger.info(
                 "Given base class " + baseClass.getName()
-                        + " is not a Groovy runner; using default runner.");
+                        + " is not a Groovy runner; using default runner.")
       }
     }
   
     // inject any configuration parameters as variables and execute the script
-    builder.addVariable("_configuration", configuration);
-    configuration.getAllValues().forEach({ key, value -> builder.addVariable(key, value) });
-    builder.build().evaluate(script);
+    builder.addVariable("_configuration", configuration)
+    configuration.getAllValues().forEach({ key, value -> builder.addVariable(key, value) })
+    builder.build().evaluate(script)
   
   }
   
@@ -188,7 +230,7 @@ public class GroovyTask extends DefaultTask {
   }
   
   protected File fromBasePath(String filePath) {
-    File file = new File(filePath);
+    File file = new File(filePath)
     return !file.isAbsolute()
             ? new File(project.getProjectDir(), filePath)
             : file

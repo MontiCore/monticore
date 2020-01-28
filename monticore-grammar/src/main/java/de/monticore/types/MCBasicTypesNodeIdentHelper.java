@@ -34,9 +34,10 @@ public class MCBasicTypesNodeIdentHelper extends ASTNodeIdentHelper {
   public String getIdent(ASTMCReturnType a){
     if(a.isPresentMCType()){
       return getIdent(a.getMCType());
-    }else{
+    } else if (a.isPresentMCVoidType()) {
       return getIdent(a.getMCVoidType());
     }
+    return "";
   }
 
   public String getIdent(ASTMCVoidType a){

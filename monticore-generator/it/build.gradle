@@ -21,12 +21,19 @@ configurations {grammar}
 dependencies {
   implementation group:'de.monticore', name:'javaDSL', version:'4.3.17-SNAPSHOT'
   implementation group:'de.monticore', name:'monticore-runtime', version:grammar_version
-  implementation group:'de.monticore', name:'monticore-grammar', version:grammar_version
   implementation group:'de.monticore', name:'monticore-generator', version:mc_version
   testImplementation group:'junit', name:'junit', version:junit_version
   grammar group:'de.monticore', name:'monticore-grammar', version:grammar_version, classifier:"grammars"
 }
 
+repositories {
+  mavenLocal()
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+}
 
 if (!hasProperty('buildProfile')) ext.buildProfile = 'default'  // chooses the profile
 
@@ -38,15 +45,6 @@ tasks.withType(JavaCompile) {
 
 compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }
-}
-
-repositories {
-  mavenLocal()
-  maven {
-    credentials.username mavenUser
-    credentials.password mavenPassword
-    url repo
-  }
 }
 
 test {

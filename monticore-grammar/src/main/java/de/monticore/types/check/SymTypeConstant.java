@@ -3,8 +3,6 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 
@@ -104,7 +102,6 @@ public class SymTypeConstant extends SymTypeExpression {
     unboxMap.put("Long", "long");
     unboxMap.put("Float", "float");
     unboxMap.put("Double", "double");
-    unboxMap.put("String", "String");
 
     boxMap = new HashMap<String, String>();
     boxMap.put("boolean", "java.lang.Boolean");

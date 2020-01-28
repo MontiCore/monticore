@@ -294,7 +294,10 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       // visit method
       methodList.add(createScopeVisitMethod(astFullName, scopeInterface, simpleName));
 
+      // endVisit method
+      methodList.add(createScopeEndVisitMethod(astFullName, scopeInterface, simpleName));
       ASTCDParameter astParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(astFullName), "ast");
+
       // create_$ method
       methodList.add(createScopeCreate_Method(scopeInterface, simpleName, astParam));
 
@@ -313,6 +316,12 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(
         TEMPLATE_PATH + "VisitScope", scopeInterface, simpleName));
     return visitMethod;
+  }
+
+  protected ASTCDMethod createScopeEndVisitMethod(String astFullName, String scopeInterface, String simpleName) {
+    ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(astFullName));
+    this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint("removeCurrentScope();"));
+    return endVisitMethod;
   }
 
   protected ASTCDMethod createScopeCreate_Method(String scopeInterface, String simpleName, ASTCDParameter astParam) {

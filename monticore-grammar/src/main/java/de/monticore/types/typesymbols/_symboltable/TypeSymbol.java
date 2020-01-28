@@ -5,14 +5,24 @@ import de.monticore.types.check.SymTypeExpression;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TypeSymbol extends TypeSymbolTOP {
 
   public TypeSymbol(String name) {
     super(name);
+    isClass = false;
+    isInterface = false;
+    isEnum = false;
+    isAbstract = false;
   }
 
   protected List<MethodSymbol> methodList=new ArrayList<>();
+
+  private boolean isClass;
+  private boolean isInterface;
+  private boolean isEnum;
+  private boolean isAbstract;
 
 
 
@@ -21,6 +31,12 @@ public class TypeSymbol extends TypeSymbolTOP {
     for(MethodSymbol method: methodList){
       spannedScope.add(method);
     }
+  }
+
+  public List<SymTypeExpression> getSuperClassesOnly(){
+    return superTypes.stream()
+        .filter(type -> type.getTypeInfo().isClass)
+        .collect(Collectors.toList());
   }
 
 
@@ -76,5 +92,37 @@ public class TypeSymbol extends TypeSymbolTOP {
 
   public void addMethodSymbol(MethodSymbol m) {
     spannedScope.add(m);
+  }
+
+  public boolean isClass() {
+    return isClass;
+  }
+
+  public void setClass(boolean aClass) {
+    isClass = aClass;
+  }
+
+  public boolean isInterface() {
+    return isInterface;
+  }
+
+  public void setInterface(boolean anInterface) {
+    isInterface = anInterface;
+  }
+
+  public boolean isEnum() {
+    return isEnum;
+  }
+
+  public void setEnum(boolean anEnum) {
+    isEnum = anEnum;
+  }
+
+  public boolean isAbstract() {
+    return isAbstract;
+  }
+
+  public void setAbstract(boolean anAbstract) {
+    isAbstract = anAbstract;
   }
 }

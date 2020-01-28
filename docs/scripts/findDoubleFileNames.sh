@@ -35,22 +35,21 @@ rm -f $filelist $filelist.?  # start fresh
 
 echo "## Duplicate File Names"
 echo " ------------------------------------------------"
-echo " List of double files:"
-echo " ------------------------------------------------"
 
 # get the files from the project
 find . -print \
 | grep -v "/gen/" \
 | grep -v "/target/" \
+| grep -v "/monticore-generator/it/" \
 > $filelist
 
 # add the no-go's
 cat $nogofilenames >> $filelist
 
 # filter java and template files
-cat $filelist | grep "java$" >> $filelist.0
+cat $filelist | grep "\.java$" >> $filelist.java.0
 
-cat $filelist | grep "ftl$" >> $filelist.0
+cat $filelist | grep "\.ftl$" >> $filelist.ftl.0
 
 # sed:
 #  get rid of extensions .java,.ftl
@@ -62,31 +61,57 @@ cat $filelist | grep "ftl$" >> $filelist.0
 #  get rid of packages (just the basename remains)
 # sort 
 #  sort filenames again (but keep doubles)
-cat $filelist.0 \
-| sed 's!.java!!g' \
+cat $filelist.ftl.0 \
 | sed 's!.ftl!!g' \
 | sort -u \
 | sed 's!.*/!!g' \
 | sort \
-> $filelist.1
+> $filelist.ftl.1
+
+cat $filelist.java.0 \
+| sed 's!.java!!g' \
+| sort -u \
+| sed 's!.*/!!g' \
+| sort \
+> $filelist.java.1
 
 # removing doubles
-sort -u $filelist.1 > $filelist.2
+sort -u $filelist.java.1 > $filelist.java.2
+sort -u $filelist.ftl.1 > $filelist.ftl.2
 
 # diff now contains the doubles:
-diff $filelist.2 $filelist.1 \
+diff -u $filelist.java.2 $filelist.java.1 \
 | grep '^+[^+]' \
 | sed 's/^+//g' \
-> $filelist.3
+> $filelist.java.3
+
+# diff now contains the doubles:
+diff -u $filelist.ftl.2 $filelist.ftl.1 \
+| grep '^+[^+]' \
+| sed 's/^+//g' \
+> $filelist.ftl.3
+
+sort -u $filelist.java.3 > $filelist.java.4
+sort -u $filelist.ftl.3 > $filelist.ftl.4
 
 # get the original sources:
-for i in `cat $filelist.3`
+echo "### List of double java files"
+for i in `cat $filelist.java.4`
 do
-  echo $i "    in: <br/>"
-  grep "/"$i"\." $filelist.0 | sed 's/$/<br\/>/g'
+  echo $i " in: <br/>"
+  grep "/"$i"\." $filelist.java.0 | sed 's/$/<br\/>/g'
   echo "<br/>"
 done
 
+echo " ------------------------------------------------"
+
+echo "### List of double ftl files"
+for i in `cat $filelist.ftl.4`
+do
+  echo $i " in: <br/>"
+  grep "/"$i"\." $filelist.ftl.0 | sed 's/$/<br\/>/g'
+  echo "<br/>"
+done
 
 echo
 echo "(EOF)"

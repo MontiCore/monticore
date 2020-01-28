@@ -7,10 +7,10 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -31,7 +31,8 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.*;
 
-public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
+public class
+SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass symTabCreatorClass;
 
@@ -71,7 +72,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
     this.glex = new GlobalExtensionManagement();
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
@@ -174,7 +175,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(37, symTabCreatorClass.getCDMethodList().size());
+    assertEquals(38, symTabCreatorClass.getCDMethodList().size());
   }
 
   @Test
@@ -676,7 +677,7 @@ public class SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
     Log.init();
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
-    glex.setGlobalValue("astHelper", new DecorationHelper());
+    glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     glex.setGlobalValue("service", new AbstractService(cd));

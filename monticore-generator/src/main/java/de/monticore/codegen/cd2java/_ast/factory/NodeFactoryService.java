@@ -19,6 +19,10 @@ public class NodeFactoryService extends AbstractService<NodeFactoryService> {
     super(cdSymbol);
   }
 
+  /**
+   * overwrite methods of AbstractService to add the correct '_ast' package for NodeFactory generation
+   */
+
   @Override
   public String getSubPackage() {
     return ASTConstants.AST_PACKAGE;

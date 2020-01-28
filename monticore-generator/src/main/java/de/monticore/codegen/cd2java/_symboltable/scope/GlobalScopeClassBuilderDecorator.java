@@ -49,7 +49,7 @@ public class GlobalScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(TEMPLATE_PATH + "Build", scopeClass.getName(), symbolTableService.getCDName())));
+        new TemplateHookPoint(TEMPLATE_PATH + "BuildGlobalScope", scopeClass.getName(), symbolTableService.getCDName())));
 
     return scopeBuilder;
   }

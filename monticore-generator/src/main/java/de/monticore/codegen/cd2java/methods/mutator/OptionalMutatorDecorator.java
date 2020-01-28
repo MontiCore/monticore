@@ -5,7 +5,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -14,14 +13,12 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.cd.facade.CDModifier.*;
 
 public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> {
 
   protected static final String SET = "set%s";
-
-  protected static final String SET_OPT = "set%sOpt";
 
   protected static final String SET_ABSENT = "set%sAbsent";
 
@@ -33,9 +30,8 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
-    //todo find better util than the DecorationHelper
     List<ASTCDMethod> methodList = new ArrayList<>();
-    naiveAttributeName = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
+    naiveAttributeName = StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName()));
     methodList.add(createSetMethod(ast));
     methodList.add(createSetAbsentMethod(ast));
     return methodList;
@@ -43,7 +39,7 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
 
   protected ASTCDMethod createSetMethod(final ASTCDAttribute ast) {
     String name = String.format(SET, naiveAttributeName);
-    ASTMCType parameterType = DecorationHelper.getReferenceTypeFromOptional(ast.getMCType()).getMCTypeOpt().get().deepClone();
+    ASTMCType parameterType = getDecorationHelper().getReferenceTypeFromOptional(ast.getMCType()).getMCTypeOpt().get().deepClone();
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, parameter);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Set", ast, naiveAttributeName));

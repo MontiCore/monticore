@@ -83,6 +83,10 @@ public enum Multiplicity {
     // multiplicity by inheritance is only relevant for nonterminals and can
     // cause errors otherwise; cast rootNode to ASTMCGrammar for further use
     // switch to default behavior without inheritance otherwise
+    if (astNode instanceof ASTConstantGroup) {
+      // constant groups are always standard iteration
+      return STANDARD;
+    }
     if (!(rootNode instanceof ASTMCGrammar) || !(astNode instanceof ASTNonTerminal)) {
       return multiplicityOfASTNode(rootNode, astNode);
     }

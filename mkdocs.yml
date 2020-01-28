@@ -2,7 +2,8 @@ site_name: MontiCore
 theme:
   name: bootstrap
 
-repo_url: https://github.com/MontiCore/monticore
+repo_url: https://github.com/MontiCore/monticore/
+edit_uri: ""
 
 nav:
   - Home: 'README.md'

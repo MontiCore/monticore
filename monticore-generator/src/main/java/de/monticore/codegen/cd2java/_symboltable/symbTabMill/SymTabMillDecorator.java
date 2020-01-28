@@ -16,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.*;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.LOADER_SUFFIX;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a SymTabMill class from a grammar
@@ -167,7 +167,7 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
 
       ASTCDMethod builderMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, builderType, builderName);
-      this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint(TEMPLATE_PATH + "BuilderMethod", astcdAttribute.getName()));
+      this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint(TEMPLATE_PATH + "SymTabBuilderMethod", astcdAttribute.getName()));
       builderMethodList.add(builderMethod);
     }
     return builderMethodList;
@@ -189,6 +189,15 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
           this.replaceTemplate(EMPTY_BODY, builderMethod, new StringHookPoint("return " + symTabMillFullName + "." + symbolBuilderSimpleName + "();"));
           builderMethodList.add(builderMethod);
+
+          // create corresponding builder for SymbolLoader
+          String symbolLoaderBuilderFullName = symbolTableService.getSymbolLoaderBuilderFullName(type.getAstNode(), cdDefinitionSymbol);
+          String symbolLoaderBuilderSimpleName = StringTransformations.uncapitalize(symbolTableService.getSymbolLoaderBuilderSimpleName(type.getAstNode()));
+          ASTCDMethod builderLoaderMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC,
+                  getMCTypeFacade().createQualifiedType(symbolLoaderBuilderFullName), symbolLoaderBuilderSimpleName);
+
+          this.replaceTemplate(EMPTY_BODY, builderLoaderMethod, new StringHookPoint("return " + symTabMillFullName + "." + symbolLoaderBuilderSimpleName + "();"));
+          builderMethodList.add(builderLoaderMethod);
         }
       }
     }

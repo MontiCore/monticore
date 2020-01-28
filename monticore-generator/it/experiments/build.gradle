@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 import de.monticore.MCTask
 plugins {
-  id "monticore" version "5.4.0" // MontiCore Plugin
+  id "monticore" version "6.1.0-SNAPSHOT" // MontiCore Plugin
 }
 allprojects {
   group = 'de.monticore'
-  version = '5.4.0'
+  version = '6.1.0-SNAPSHOT'
 }
 
 subprojects {
@@ -14,18 +14,9 @@ subprojects {
   
   buildDir = file("$projectDir/target")
   
-  repositories {
-    mavenLocal()
-    maven {
-      credentials.username mavenUser
-      credentials.password mavenPassword
-      url repo
-    }
-  }
-  
   ext.grammarDir = 'src/main/grammars'
-  ext.grammar_version = '5.4.0'
-  ext.mc_version = '5.4.0'
+  ext.grammar_version = '6.1.0-SNAPSHOT'
+  ext.mc_version = '6.1.0-SNAPSHOT'
   ext.junit_version = '4.12'
   ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
   
@@ -35,6 +26,15 @@ subprojects {
     testImplementation group:'junit', name:'junit', version:junit_version
     grammar group:'de.monticore', name:'monticore-grammar', version:grammar_version, classifier:"grammars"
     grammar group:'de.monticore', name:'monticore-runtime', version:grammar_version
+  }
+
+  repositories {
+    mavenLocal()
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url repo
+    }
   }
   
   sourceSets {

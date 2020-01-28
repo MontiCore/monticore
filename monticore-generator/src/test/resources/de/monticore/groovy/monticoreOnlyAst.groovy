@@ -28,7 +28,7 @@ while (grammarIterator.hasNext()) {
 
     // Writes Class Diagram AST to the CD-file (*.cd)
     storeInCdFile(astClassDiagramWithST, out)
-    
+
     getCDOfParsedGrammar(astGrammar)
 
     // M7: decorate Class Diagram AST
@@ -39,10 +39,12 @@ while (grammarIterator.hasNext()) {
     decoratedCoCoCD = decorateForCoCoPackage(glex, cdScope, astClassDiagram, handcodedPath)
     generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath)
 
-    generateODs(glex, cd4AScope, mcScope, astClassDiagramWithST, astGrammar, out)
+    // decorate and generate CD for the '_od' package
+    decoratedODCD = decorateForODPackage(glex, cdScope, astClassDiagram, handcodedPath)
+    generateFromCD(glex, astClassDiagram, decoratedODCD, out, handcodedPath)
 
-    decoratedASTClassDiagramm = decorateForASTPackage(glex,cd4AScope, astClassDiagramWithST, handcodedPath)
-    generateFromCD(glex,astClassDiagramWithST, decoratedASTClassDiagramm, out, handcodedPath)
+    decoratedASTClassDiagramm = decorateForASTPackage(glex, cd4AScope, astClassDiagramWithST, handcodedPath)
+    generateFromCD(glex, astClassDiagramWithST, decoratedASTClassDiagramm, out, handcodedPath)
 
   }
 }
