@@ -44,9 +44,6 @@ public class JsonPrinterSecurityTest {
     
     // use JSONPrinter to produce json stirng
     String s = printFoo(bar);
-    System.out.println(s);
-    System.out.println("============================================");
-    // use JsonParser to produce JsonObject form seriailized stnirg
     JsonObject o = JsonParser.parseJsonObject(s);
     
     assertEquals("Bar", getName(o));
