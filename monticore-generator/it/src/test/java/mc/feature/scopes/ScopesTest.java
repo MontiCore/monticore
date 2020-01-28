@@ -2,6 +2,7 @@
 package mc.feature.scopes;
 
 import de.monticore.io.paths.ModelPath;
+import de.se_rwth.commons.logging.Log;
 import mc.feature.scopes.supautomaton._ast.ASTSup;
 import mc.feature.scopes.supautomaton._parser.SupAutomatonParser;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonGlobalScope;
@@ -29,6 +30,8 @@ public class ScopesTest {
 
   @Before
   public void setUp() throws IOException {
+    Log.init();
+    Log.enableFailQuick(false);
     SupAutomatonParser supAutomatonParser = new SupAutomatonParser();
     Optional<ASTSup> astSup = supAutomatonParser.parse("src/test/resources/mc/feature/scopes/SupAutomatonModel.aut");
     assertFalse(supAutomatonParser.hasErrors());
