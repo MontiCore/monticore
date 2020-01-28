@@ -56,7 +56,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     } else {
       //No type found --> error
       lastResult.reset();
-      Log.error("0xA0207 The resulting type of the LiteralExpression cannot be calculated");
+      Log.error("0xA0250 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
     }
   }
 
