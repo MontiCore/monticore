@@ -4,6 +4,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,6 +20,8 @@ public class SymbolAndScopeTranslationTest {
 
   @Before
   public void setUp() {
+    Log.init();
+    Log.enableFailQuick(false);
     symbolCD = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/SymbolAndScopeTranslation.mc4")).get();
   }

@@ -2,6 +2,7 @@
 package mc.feature.scopes;
 
 import de.monticore.io.paths.ModelPath;
+import de.se_rwth.commons.logging.Log;
 import mc.feature.scopes.scopeattributes._ast.ASTStartProd;
 import mc.feature.scopes.scopeattributes._parser.ScopeAttributesParser;
 import mc.feature.scopes.scopeattributes._symboltable.*;
@@ -25,6 +26,8 @@ public class ScopeAttributesTest {
 
   @Before
   public void setUp() throws IOException {
+    Log.init();
+    Log.enableFailQuick(false);
     ScopeAttributesParser scopeAttributesParser = new ScopeAttributesParser();
     Optional<ASTStartProd> astSup = scopeAttributesParser.parse("src/test/resources/mc/feature/scopes/ScopeAttributesModel.sc");
     assertFalse(scopeAttributesParser.hasErrors());
