@@ -11,7 +11,6 @@ import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeArtifactSc
 import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeGlobalScope;
 import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeLanguage;
 import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeSymbolTableCreatorDelegator;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -31,11 +30,13 @@ public class NoTopScopeTest {
 
   @Test
   public void testGetTopLevelSymbol() throws IOException {
+    // parse model
     NoTopScopeParser scopeAttributesParser = new NoTopScopeParser();
     Optional<ASTFoo> astSup = scopeAttributesParser.parse("src/test/resources/mc/feature/symboltable/NoTopScope.st");
     assertFalse(scopeAttributesParser.hasErrors());
     assertTrue(astSup.isPresent());
 
+    // create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/symboltable"));
     NoTopScopeLanguage lang = new NoTopScopeLanguage();
     NoTopScopeGlobalScope globalScope = new NoTopScopeGlobalScope(modelPath, lang);
@@ -56,11 +57,13 @@ public class NoTopScopeTest {
 
   @Test
   public void testGetTopLevelSymbolWithInherited() throws IOException {
+    // parse model
     SubNoTopScopeParser scopeAttributesParser = new SubNoTopScopeParser();
     Optional<ASTSubFoo> astSup = scopeAttributesParser.parse("src/test/resources/mc/feature/symboltable/SubNoTopScope.st");
     assertFalse(scopeAttributesParser.hasErrors());
     assertTrue(astSup.isPresent());
 
+    // create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/symboltable"));
     SubNoTopScopeLanguage lang = new SubNoTopScopeLanguage();
     SubNoTopScopeGlobalScope globalScope = new SubNoTopScopeGlobalScope(modelPath, lang);
