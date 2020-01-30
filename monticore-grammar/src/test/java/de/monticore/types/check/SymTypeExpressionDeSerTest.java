@@ -147,7 +147,6 @@ public class SymTypeExpressionDeSerTest {
 
   protected void performRoundtripLoadStore(SymTypeExpression expr) throws MalformedURLException {
     SymTypeExpressionDeSer deser = SymTypeExpressionDeSer.getInstance();
-    String symbolName = expr.getTypeInfo().getFullName();
     //first serialize the expression using the deser
     deser.store(expr, TEST_SYMBOL_STORE_LOCATION);
     URL url = Paths.get(TEST_SYMBOL_STORE_LOCATION, expr.getTypeInfo().getPackageName(),
