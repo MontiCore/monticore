@@ -187,7 +187,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     if (!isSymbolTop()) {
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new StringHookPoint("visitor.handle(this);"));
     } else {
-      String errorCode = getDecorationHelper().getGeneratedErrorCode(acceptMethod);
+      String errorCode = getDecorationHelper().getGeneratedErrorCode(symbolName);
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(
           "_symboltable.AcceptTop", symbolName, errorCode));
     }

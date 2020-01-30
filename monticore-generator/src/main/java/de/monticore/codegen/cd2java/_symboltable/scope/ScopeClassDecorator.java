@@ -219,7 +219,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
     ASTCDMethod ownAcceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
     if (isScopeTop()) {
-      String errorCode = getDecorationHelper().getGeneratedErrorCode(ownAcceptMethod);
+      String errorCode = getDecorationHelper().getGeneratedErrorCode(scopeClassName);
       this.replaceTemplate(EMPTY_BODY, ownAcceptMethod, new TemplateHookPoint(TEMPLATE_PATH + "AcceptOwn", scopeClassName, errorCode));
     } else {
       this.replaceTemplate(EMPTY_BODY, ownAcceptMethod, new StringHookPoint("visitor.handle(this);"));
@@ -230,7 +230,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
       String superScopeVisitor = visitorService.getScopeVisitorFullName(cdDefinitionSymbol);
       ASTCDParameter superVisitorParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(superScopeVisitor), VISITOR_PREFIX);
       ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, superVisitorParameter);
-      String errorCode = getDecorationHelper().getGeneratedErrorCode(acceptMethod);
+      String errorCode = getDecorationHelper().getGeneratedErrorCode(scopeClassName + cdDefinitionSymbol.getFullName());
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(TEMPLATE_PATH + "AcceptScope", ownScopeVisitor, scopeClassName, superScopeVisitor, errorCode));
       acceptMethods.add(acceptMethod);
     }

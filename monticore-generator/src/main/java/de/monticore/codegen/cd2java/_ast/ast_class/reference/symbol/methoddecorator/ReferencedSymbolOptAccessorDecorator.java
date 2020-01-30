@@ -39,7 +39,7 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
     //create correct Name A for resolveA method
     String simpleSymbolName = symbolTableService.getSimpleNameFromSymbolName(symbolTableService.getReferencedSymbolTypeName(ast));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetSymbol",
-        ast, ast.getName(), simpleSymbolName, isOptionalAttribute(ast)));
+        ast.getName(), simpleSymbolName, isOptionalAttribute(ast)));
     return method;
   }
   

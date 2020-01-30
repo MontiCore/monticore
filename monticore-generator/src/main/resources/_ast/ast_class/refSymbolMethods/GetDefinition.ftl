@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("ast", "attributeName", "referencedSymbolType")}
+${tc.signature("attributeName", "referencedSymbolType")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
     if (${attributeName}Symbol.isPresent() && ${attributeName}Symbol.get().isPresentAstNode()) {
       return ${attributeName}Symbol.get().getAstNode();
@@ -9,6 +9,6 @@ ${tc.signature("ast", "attributeName", "referencedSymbolType")}
         return symbol.getAstNode();
       }
     }
-    Log.error("0xA7003${genHelper.getGeneratedErrorCode(ast)} ${attributeName}Definition can't return a value. It is empty.");
+    Log.error("0xA7003${genHelper.getGeneratedErrorCode(attributeName+referencedSymbolType)} ${attributeName}Definition can't return a value. It is empty.");
     // Normally this statement is not reachable
     throw new IllegalStateException();

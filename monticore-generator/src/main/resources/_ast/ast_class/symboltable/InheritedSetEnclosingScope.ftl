@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("method", "inheritedScopeType", "originalScopeType")}
+${tc.signature("errorCode", "inheritedScopeType", "originalScopeType")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   if (enclosingScope instanceof ${originalScopeType}){
     this.enclosingScope = (${originalScopeType}) enclosingScope;

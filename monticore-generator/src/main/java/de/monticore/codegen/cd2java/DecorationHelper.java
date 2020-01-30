@@ -52,9 +52,9 @@ public class DecorationHelper extends MCBasicTypesHelper {
 
   public static final String SET_PREFIX = "set";
 
-  public String getGeneratedErrorCode(ASTNode node) {
+  public String getGeneratedErrorCode(String name) {
     // Use the string representation
-    int hashCode = Math.abs(node.toString().hashCode());
+    int hashCode = Math.abs(name.hashCode());
     String errorCodeSuffix = String.valueOf(hashCode);
     return "x" + (hashCode < 1000 ? errorCodeSuffix : errorCodeSuffix
         .substring(errorCodeSuffix.length() - 3));
