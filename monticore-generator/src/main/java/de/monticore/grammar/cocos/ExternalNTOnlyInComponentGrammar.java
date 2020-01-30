@@ -65,7 +65,7 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
 
       for (ProdSymbol prodSymbol: externalProds) {
         for (ProdSymbol prod : prods) {
-          if (prod.getProdComponent(StringTransformations.uncapitalize(prodSymbol.getName())).isPresent()) {
+          if (!prod.getSpannedScope().resolveRuleComponentMany(StringTransformations.uncapitalize(prodSymbol.getName())).isEmpty()) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodSymbol.getName()), a.get_SourcePositionStart());
           }
         }

@@ -45,7 +45,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       this.result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0209 The resulting type of the LeftShiftExpression (<<) cannot be calculated");
+      Log.error("0xA0200 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
     }
   }
 
@@ -58,7 +58,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       this.result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0210 The resulting type of the RightShiftExpression (>>) cannot be calculated");
+      Log.error("0xA0201 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
     }
   }
 
@@ -71,7 +71,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       this.result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0211 The resulting type of the LogicalRightShiftExpression (>>>) cannot be calculated");
+      Log.error("0xA0202 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
     }
   }
 
@@ -84,7 +84,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       this.result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0212 The resulting type of the BinaryAndExpression (&) cannot be calculated");
+      Log.error("0xA0203 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
     }
   }
 
@@ -97,7 +97,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       this.result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0213 The resulting type of the BinaryOrExpression (|) cannot be calculated");
+      Log.error("0xA0204 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
     }
   }
 
@@ -110,7 +110,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       this.result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0214 The resulting type of the BinaryXorExpression (^) cannot be calculated");
+      Log.error("0xA0205 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
     }
   }
 
@@ -126,7 +126,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       //store the type of the left expression in a variable for later use
       leftResult = lastResult.getLast();
     }else{
-      Log.error("0xA0227 The type of the left expression could not be calculated");
+      Log.error("0xA0206 The resulting type of "+prettyPrinter.prettyprint(left)+" cannot be calculated");
     }
 
     right.accept(getRealThis());
@@ -134,7 +134,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       //store the type of the right expression in a variable for later use
       rightResult = lastResult.getLast();
     }else{
-      Log.error("0xA0228 The type of the right expression could not be calculated");
+      Log.error("0xA0207 The resulting type of "+prettyPrinter.prettyprint(right)+" cannot be calculated");
     }
     
     if(leftResult.isPrimitive()&&rightResult.isPrimitive()){
@@ -162,7 +162,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       //store the type of the left expression in a variable for later use
       leftResult = lastResult.getLast();
     }else{
-      Log.error("0xA0229 The type of the left expression could not be calculated");
+      Log.error("0xA0208 The resulting type of "+prettyPrinter.prettyprint(left)+" cannot be calculated");
     }
 
     right.accept(getRealThis());
@@ -170,7 +170,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       //store the type of the right expression in a variable for later use
       rightResult = lastResult.getLast();
     }else{
-      Log.error("0xA0230 The type of the right expression could not be calculated");
+      Log.error("0xA0209 The resulting type of "+prettyPrinter.prettyprint(right)+" cannot be calculated");
     }
     
     if(leftResult.isPrimitive()&&rightResult.isPrimitive()) {

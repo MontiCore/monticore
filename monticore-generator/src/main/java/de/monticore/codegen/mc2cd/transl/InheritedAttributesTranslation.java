@@ -150,7 +150,7 @@ public class InheritedAttributesTranslation implements
     return TransformationHelper.getAllSuperProds(astNode).stream()
         .distinct()
         .collect(Collectors.toMap(Function.identity(), prod -> prod.isPresentSymbol() ?
-            prod.getSymbol().getProdAttributes() : Collections.emptyList()));
+            prod.getSymbol().getSpannedScope().getLocalAdditionalAttributeSymbols() : Collections.emptyList()));
   }
 
   /**

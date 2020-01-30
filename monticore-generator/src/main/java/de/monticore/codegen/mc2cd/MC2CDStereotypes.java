@@ -59,7 +59,19 @@ public enum MC2CDStereotypes {
   /**
    * shows if a prod is the start prod in a grammar
    */
-  COMPONENT("component");
+  COMPONENT("component"),
+  /**
+   * To mark class as scope
+   */
+  SHADOWING("shadowing"),
+  /**
+   * To mark class as scope
+   */
+  NON_EXPORTING("non_exporting"),
+  /**
+   * To mark class as scope
+   */
+  ORDERED("ordered");
 
   private final String stereotype;
 

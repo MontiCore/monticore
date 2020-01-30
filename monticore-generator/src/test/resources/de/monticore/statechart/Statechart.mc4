@@ -16,7 +16,7 @@ component grammar Statechart extends mc.grammars.lexicals.TestLexicals {
     ( ("{ options{}" (entryAction:EntryAction)? (exitAction:ExitAction)? (state:State | transition:Transition)* "}") | ";") ;
  
   Transition = from:Name "->" to:Name 
-    				(":" (event:Name ( "(" (arguments:(Argument || ",")+) ")" )? )?
+    				(":" (event:Name ( "(" ((Argument || ",")+) ")" )? )?
   					 ("[" guard: Expression "]")?
   					 ("/" action: BlockStatement)? ";" 
   				| ";");

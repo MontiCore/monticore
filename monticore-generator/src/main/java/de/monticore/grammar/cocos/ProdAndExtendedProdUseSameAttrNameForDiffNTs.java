@@ -27,50 +27,47 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
 
   @Override
   public void check(ASTNonTerminal a) {
-    if (a.isPresentUsageName()) {
+    if (a.isPresentUsageName() && a.isPresentSymbol()) {
       String attributename = a.getUsageName();
-      Optional<RuleComponentSymbol> componentSymbol = a.getEnclosingScope()
-          .resolveRuleComponent(attributename);
-      if (componentSymbol.isPresent()) {
-        Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(a);
-        if (rule.isPresent() && rule.get().getAstNode() instanceof ASTClassProd) {
-          ASTClassProd prod = (ASTClassProd) rule.get().getAstNode();
-          if (!prod.getSuperRuleList().isEmpty()) {
-            ASTRuleReference type = prod.getSuperRuleList().get(0);
-            String typename = type.getTypeName();
-            Optional<ProdSymbol> ruleSymbol = type.getEnclosingScope().getEnclosingScope()
-                .resolveProd(typename);
-            if (ruleSymbol.isPresent()) {
-              Optional<RuleComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
-                  .resolveRuleComponent(attributename);
-              if (rcs.isPresent()) {
-                if (rcs.get().isIsLexerNonterminal()) {
-                  logError(prod, ruleSymbol.get(), attributename, componentSymbol.get(),
-                      "production that is a lexical nonTerminal", a);
-                } else if (rcs.get().isIsConstant()) {
-                  logError(prod, ruleSymbol.get(), attributename, componentSymbol.get(),
-                      "production that is not a constant", a);
-                } else if (rcs.get().isIsConstantGroup()) {
-                  logError(prod, ruleSymbol.get(), attributename, componentSymbol.get(),
-                      "production that is not a constant group", a);
-                } else if (rcs.get().isIsTerminal() && !"".equals(rcs.get().getUsageName())) {
-                  logError(prod, ruleSymbol.get(), attributename, componentSymbol.get(),
-                      "production that is a terminal named " + rcs.get().getUsageName(), a);
-                } else if (rcs.get().isIsNonterminal() && rcs.get().getReferencedProd().isPresent()
-                    && !rcs.get().getReferencedProd().get().getName().equals(componentSymbol.get().getReferencedProd().get().getName())) {
-                  logError(prod, ruleSymbol.get(), attributename,
-                      componentSymbol.get(), "nonterminal " + rcs.get().getReferencedProd().get().getName(), a);
-                }
-              } else {
-                //try to find NonTerminal with same Name, but with capitalised start -> will both become the same attribute
-                rcs = ruleSymbol.get().getSpannedScope().resolveRuleComponent(StringTransformations.capitalize(attributename));
-                if (rcs.isPresent() && rcs.get().isIsNonterminal() && rcs.get().getReferencedProd().isPresent()
-                    && !rcs.get().getReferencedProd().get().getName().equals(componentSymbol.get().getReferencedProd().get().getName())) {
-                  // logs error when e.g. State = F; A extends State = f:R;
-                  // because F form State will evaluate to attributeName with small f
-                  logError(prod, ruleSymbol.get(), attributename,
-                      componentSymbol.get(), "nonterminal " + rcs.get().getReferencedProd().get().getName(), a);
-                }
+      RuleComponentSymbol componentSymbol = a.getSymbol();
+      Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(a);
+      if (rule.isPresent() && rule.get().getAstNode() instanceof ASTClassProd) {
+        ASTClassProd prod = (ASTClassProd) rule.get().getAstNode();
+        if (!prod.getSuperRuleList().isEmpty()) {
+          ASTRuleReference type = prod.getSuperRuleList().get(0);
+          String typename = type.getTypeName();
+          Optional<ProdSymbol> ruleSymbol = type.getEnclosingScope().getEnclosingScope()
+                  .resolveProd(typename);
+          if (ruleSymbol.isPresent()) {
+            Optional<RuleComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
+                    .resolveRuleComponent(attributename);
+            if (rcs.isPresent()) {
+              if (rcs.get().isIsLexerNonterminal()) {
+                logError(prod, ruleSymbol.get(), attributename, componentSymbol,
+                        "production that is a lexical nonTerminal", a);
+              } else if (rcs.get().isIsConstant()) {
+                logError(prod, ruleSymbol.get(), attributename, componentSymbol,
+                        "production that is not a constant", a);
+              } else if (rcs.get().isIsConstantGroup()) {
+                logError(prod, ruleSymbol.get(), attributename, componentSymbol,
+                        "production that is not a constant group", a);
+              } else if (rcs.get().isIsTerminal()) {
+                logError(prod, ruleSymbol.get(), attributename, componentSymbol,
+                        "production that is a terminal named " + rcs.get().getName(), a);
+              } else if (rcs.get().isIsNonterminal() && rcs.get().getReferencedProd().isPresent()
+                      && !rcs.get().getReferencedProd().get().getName().equals(componentSymbol.getReferencedProd().get().getName())) {
+                logError(prod, ruleSymbol.get(), attributename,
+                        componentSymbol, "nonterminal " + rcs.get().getReferencedProd().get().getName(), a);
+              }
+            } else {
+              //try to find NonTerminal with same Name, but with capitalised start -> will both become the same attribute
+              rcs = ruleSymbol.get().getSpannedScope().resolveRuleComponent(StringTransformations.capitalize(attributename));
+              if (rcs.isPresent() && rcs.get().isIsNonterminal() && rcs.get().getReferencedProd().isPresent()
+                      && !rcs.get().getReferencedProd().get().getName().equals(componentSymbol.getReferencedProd().get().getName())) {
+                // logs error when e.g. State = F; A extends State = f:R;
+                // because F form State will evaluate to attributeName with small f
+                logError(prod, ruleSymbol.get(), attributename,
+                        componentSymbol, "nonterminal " + rcs.get().getReferencedProd().get().getName(), a);
               }
             }
           }

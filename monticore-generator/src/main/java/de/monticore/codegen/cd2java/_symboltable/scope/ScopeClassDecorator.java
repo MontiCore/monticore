@@ -117,10 +117,13 @@ public class ScopeClassDecorator extends AbstractDecorator {
     List<ASTCDMethod> spanningSymbolMethods = createSpanningSymbolMethods(spanningSymbolAttribute);
 
     ASTCDAttribute shadowingAttribute = createShadowingAttribute();
-    List<ASTCDMethod> shadowingSymbolMethods = methodDecorator.decorate(shadowingAttribute);
+    List<ASTCDMethod> shadowingMethods = methodDecorator.decorate(shadowingAttribute);
 
     ASTCDAttribute exportSymbolsAttribute = createExportSymbolsAttribute();
-    List<ASTCDMethod> exportSymbolsSymbolMethods = methodDecorator.decorate(exportSymbolsAttribute);
+    List<ASTCDMethod> exportSymbolsMethods = methodDecorator.decorate(exportSymbolsAttribute);
+
+    ASTCDAttribute orderedAttribute = createOrderedAttribute();
+    List<ASTCDMethod> orderedMethods = methodDecorator.decorate(orderedAttribute);
 
     ASTCDAttribute nameAttribute = createNameAttribute();
     List<ASTCDMethod> nameMethods = methodDecorator.decorate(nameAttribute);
@@ -152,9 +155,11 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .addCDAttribute(spanningSymbolAttribute)
         .addAllCDMethods(spanningSymbolMethods)
         .addCDAttribute(shadowingAttribute)
-        .addAllCDMethods(shadowingSymbolMethods)
+        .addAllCDMethods(shadowingMethods)
         .addCDAttribute(exportSymbolsAttribute)
-        .addAllCDMethods(exportSymbolsSymbolMethods)
+        .addAllCDMethods(exportSymbolsMethods)
+        .addCDAttribute(orderedAttribute)
+        .addAllCDMethods(orderedMethods)
         .addCDAttribute(nameAttribute)
         .addAllCDMethods(nameMethods)
         .addCDAttribute(astNodeAttribute)
@@ -387,6 +392,10 @@ public class ScopeClassDecorator extends AbstractDecorator {
     ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createBooleanType(), "exportingSymbols");
     this.replaceTemplate(VALUE, attribute, new StringHookPoint("= true"));
     return attribute;
+  }
+
+  protected ASTCDAttribute createOrderedAttribute() {
+    return this.getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createBooleanType(), ORDERED_VAR);
   }
 
   protected ASTCDAttribute createNameAttribute() {
