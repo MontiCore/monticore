@@ -11,6 +11,7 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
