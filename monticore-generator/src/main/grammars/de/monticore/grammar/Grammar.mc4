@@ -32,7 +32,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     ("package" package:(Name& || ".")+ ";")?
   	(importStatement:MCImportStatement)*
 
-    DeprecatedAnnotation? (["component"])? "grammar" Name
+    DeprecatedAnnotation? (["component"])? key("grammar") Name
       ("extends" supergrammar:(GrammarReference || ",")+ )?
       "{"
          (
@@ -321,8 +321,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     isList:boolean
     isOptional:boolean
     subProds:String* 
-    usageName:String?
-    referencedSymbolName:String?
+    referencedType:Name?
     ;
 
   /** A NonTerminalSeparator is a shortcut for the description of list structures
@@ -504,7 +503,10 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     (Name  ":")?
     MCType
     Card?;
-    
+
+  symbolrule AdditionalAttribute =
+    type:String;
+
   // ------------------------------------------------------------------------------
   // Lexer
 
