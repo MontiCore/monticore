@@ -30,15 +30,6 @@ public class SymTypeConstant extends SymTypeExpression {
     return parts[parts.length - 1];
   }
 
-  public void setConstName(String constName) {
-    String c = unbox(constName);
-    if (primitiveTypes.contains(constName)) {
-      this.typeSymbolLoader.setName(constName);
-    } else {
-      Log.error("0xD34B2 Only primitive types allowed (" + primitiveTypes.toString() + "), but was:" + constName);
-    }
-  }
-
   /**
    * print: Umwandlung in einen kompakten String
    */

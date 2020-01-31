@@ -137,7 +137,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       //determine whether the result has to be a constant, generic or object
       if(arrayResult.getTypeInfo().getTypeParameterList().isEmpty()){
         //if the return type is a primitive
-        if(SymTypeConstant.unboxMap.containsKey(arrayResult.getTypeInfo().getName())){
+        if(SymTypeConstant.boxMap.containsKey(arrayResult.getTypeInfo().getName())){
           wholeResult = SymTypeExpressionFactory.createTypeConstant(arrayResult.getTypeInfo().getName());
         }else {
           //if the return type is an object
@@ -150,7 +150,31 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
           typeArgs.add(SymTypeExpressionFactory.createTypeVariable(s.getName(),scope));
         }
         wholeResult = SymTypeExpressionFactory.createGenerics(arrayResult.getTypeInfo().getName(), scope, typeArgs);
+        wholeResult = replaceTypeVariables(wholeResult,typeArgs,((SymTypeOfGenerics)arrayResult.getArgument()).getArgumentList());
       }
+    }
+    return wholeResult;
+  }
+
+  private SymTypeExpression replaceTypeVariables(SymTypeExpression wholeResult, List<SymTypeExpression> typeArgs, List<SymTypeExpression> argumentList) {
+    Map<SymTypeExpression,SymTypeExpression> map = Maps.newHashMap();
+    if(typeArgs.size()!=argumentList.size()){
+      Log.error("0xA0297 different amount of type variables and type arguments");
+    }else{
+      for(int i = 0;i<typeArgs.size();i++){
+        map.put(typeArgs.get(i),argumentList.get(i));
+      }
+
+      List<SymTypeExpression> oldArgs = ((SymTypeOfGenerics) wholeResult).getArgumentList();
+      List<SymTypeExpression> newArgs = Lists.newArrayList();
+      for(int i = 0;i<oldArgs.size();i++){
+        if(map.containsKey(oldArgs.get(i))){
+          newArgs.add(map.get(oldArgs.get(i)));
+        }else{
+          newArgs.add(oldArgs.get(i));
+        }
+      }
+      ((SymTypeOfGenerics) wholeResult).setArgumentList(newArgs);
     }
     return wholeResult;
   }
@@ -218,7 +242,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         SymTypeExpression superClass = superClasses.get(0);
         if (null != node.getSuperSuffix().getName() || !"".equals(node.getSuperSuffix().getName())) {
           ASTSuperSuffix superSuffix = node.getSuperSuffix();
-          if (null != superSuffix.getArguments()) {
+          if (superSuffix.isPresentArguments()) {
             //case 1 -> Expression.super.<TypeArgument>Method(Args)
             List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getExtTypeArgumentList());
             List<MethodSymbol> methods = superClass.getTypeInfo().getSpannedScope().resolveMethodMany(superSuffix.getName());

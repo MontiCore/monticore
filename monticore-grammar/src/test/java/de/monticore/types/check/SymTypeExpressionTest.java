@@ -20,7 +20,7 @@ import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.monticore.types.check.DefsTypeBasic.add2scope;
+import static de.monticore.types.check.DefsTypeBasic.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static org.junit.Assert.*;
 
@@ -56,13 +56,17 @@ public class SymTypeExpressionTest {
 
   SymTypeExpression teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
 
+  SymTypeExpression teSetC = createGenerics("Set",scope,Lists.newArrayList(teInt));
+
   SymTypeExpression teMap = createGenerics("Map", scope, Lists.newArrayList(teInt, teP)); // no package!
+
+  SymTypeExpression teFoo = createGenerics("x.Foo", scope,  Lists.newArrayList(teP, teDouble, teInt, teH));
+
+  SymTypeExpression teMap2 = createGenerics("Map",scope,Lists.newArrayList(teSetC,teFoo));
 
   SymTypeExpression teMapA = createGenerics("java.util.Map",scope,Lists.newArrayList(teIntA,teP));
 
   SymTypeExpression teSetB = createGenerics("java.util.Set",scope,Lists.newArrayList(teMapA));
-
-  SymTypeExpression teFoo = createGenerics("x.Foo", scope,  Lists.newArrayList(teP, teDouble, teInt, teH));
 
   SymTypeExpression teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
 
@@ -256,6 +260,8 @@ public class SymTypeExpressionTest {
     assertEquals("Set<Map<int,de.x.Person>>",SymTypeOfGenerics.unbox((SymTypeOfGenerics)teSetB));
     assertEquals("Set<de.x.Person>",SymTypeOfGenerics.unbox((SymTypeOfGenerics)teSet));
     assertEquals("Set<A>",SymTypeOfGenerics.unbox((SymTypeOfGenerics)teSetA));
+    assertEquals("Map<int,de.x.Person>",SymTypeOfGenerics.unbox((SymTypeOfGenerics)teMap));
+    assertEquals("Map<Set<int>,x.Foo<de.x.Person,double,int,Human>>",SymTypeOfGenerics.unbox((SymTypeOfGenerics)teMap2));
   }
 
   @Test
@@ -263,6 +269,8 @@ public class SymTypeExpressionTest {
     assertEquals("java.util.Set<java.util.Map<java.lang.Integer,de.x.Person>>", SymTypeOfGenerics.box((SymTypeOfGenerics) teSetB));
     assertEquals("java.util.Set<de.x.Person>", SymTypeOfGenerics.box((SymTypeOfGenerics) teSet));
     assertEquals("java.util.Set<A>", SymTypeOfGenerics.box((SymTypeOfGenerics) teSetA));
+    assertEquals("java.util.Map<java.lang.Integer,de.x.Person>", SymTypeOfGenerics.box((SymTypeOfGenerics)teMap));
+    assertEquals("java.util.Map<java.util.Set<java.lang.Integer>,x.Foo<de.x.Person,java.lang.Double,java.lang.Integer,Human>>",SymTypeOfGenerics.box((SymTypeOfGenerics)teMap2));
   }
 
   @Test
@@ -547,7 +555,14 @@ public class SymTypeExpressionTest {
     //removeIfArgument
     teFoo2.removeIfArgument(SymTypeExpression::isPrimitive);
     assertEquals(2,teFoo2.sizeArguments());
+  }
 
+  @Test
+  public void symTypeArrayTest(){
+    SymTypeArray array = SymTypeExpressionFactory.createTypeArray(new TypeSymbolLoader("int",scope),1,_intSymType);
+    assertEquals("int[]",array.print());
+    array.setDim(2);
+    assertEquals("int[][]",array.print());
   }
 
 }

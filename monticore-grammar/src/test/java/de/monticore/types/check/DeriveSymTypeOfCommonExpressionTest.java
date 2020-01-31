@@ -697,6 +697,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
     testSpannedScope.add(ms1);
     TypeSymbol testType = DefsTypeBasic.type("Test");
     testType = add(add(add(testType, fs), ms1), ms);
+
+    TypeSymbol testInnerType = type("TestInnerType",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)testType.getSpannedScope());
+    add2scope(testType.getSpannedScope(),testInnerType);
+    FieldSymbol testVariable = field("testVariable",_shortSymType);
+    add2scope(testSpannedScope,testVariable);
+
     testType.setSpannedScope(testSpannedScope);
     add2scope(scope2, testType);
     add2scope(scope3, testType);
@@ -737,6 +743,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s = "Test";
     astex = p.parse_StringExpression(s).get();
     assertEquals("Test", tc.typeOf(astex).print());
+
+    //test for variable in inner type
+    s="types2.types3.types2.Test.TestInnerType.testVariable";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("short",tc.typeOf(astex).print());
   }
 
   /**

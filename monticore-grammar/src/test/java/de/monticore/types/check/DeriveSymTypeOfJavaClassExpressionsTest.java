@@ -266,9 +266,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
   @Test
   public void deriveFromArrayExpressionTest() throws IOException{
-    TypeSymbol intArray = type("int[]",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
-    add2scope(scope,intArray);
-
     SymTypeArray arrType = SymTypeExpressionFactory.createTypeArray("int",scope,1,_intSymType);
     FieldSymbol a = field("a",arrType);
     add2scope(scope,a);
@@ -283,6 +280,15 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     MethodSymbol test = method("test",arrarrType);
     add2scope(scope,test);
 
+    TypeVarSymbol t = typeVariable("T");
+    add2scope(scope,t);
+    TypeSymbol list = type("List",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(t),scope);
+    add2scope(scope,list);
+    SymTypeExpression generic = SymTypeExpressionFactory.createGenerics("List",scope,_intSymType);
+    SymTypeArray genarrType = SymTypeExpressionFactory.createTypeArray("List",scope,1,generic);
+    FieldSymbol c = field("c",genarrType);
+    add2scope(scope,c);
+
     derLit.setScope(scope);
     tc = new TypeCheck(null,derLit);
 
@@ -293,6 +299,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> arr4 = p.parse_StringExpression("test()[3]");
     Optional<ASTExpression> arr5 = p.parse_StringExpression("b[3][4]");
     Optional<ASTExpression> arr6 = p.parse_StringExpression("test()[3][4]");
+    Optional<ASTExpression> arr7 = p.parse_StringExpression("c[1]");
 
     assertTrue(arr1.isPresent());
     assertTrue(arr2.isPresent());
@@ -300,6 +307,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertTrue(arr4.isPresent());
     assertTrue(arr5.isPresent());
     assertTrue(arr6.isPresent());
+    assertTrue(arr7.isPresent());
 
     assertEquals("int[]",tc.typeOf(arr1.get()).print());
     assertEquals("int",tc.typeOf(arr2.get()).print());
@@ -307,6 +315,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("int[]",tc.typeOf(arr4.get()).print());
     assertEquals("int",tc.typeOf(arr5.get()).print());
     assertEquals("int",tc.typeOf(arr6.get()).print());
+    assertEquals("List<int>",tc.typeOf(arr7.get()).print());
   }
 
   @Test 
@@ -347,6 +356,27 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
       tc.typeOf(arr1.get());
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0257"));
+    }
+  }
+
+  @Test
+  public void failDeriveSymTypeOfArrayExpression3() throws IOException{
+    //type in the array brackets
+    SymTypeArray arrType = SymTypeExpressionFactory.createTypeArray("int",scope,1,_intSymType);
+    FieldSymbol a = field("a",arrType);
+    add2scope(scope,a);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> arr1 = p.parse_StringExpression("a[Person]");
+
+    assertTrue(arr1.isPresent());
+
+    try{
+      tc.typeOf(arr1.get());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0253"));
     }
   }
 
@@ -456,6 +486,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     /*
      * example for this test:
      * class SuperOuter{
+     *    int field;
      *    public int test(){
      *      return 3;
      *    }
@@ -485,7 +516,8 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
      * */
     //build infrastructure for previous comment
     MethodSymbol test = method("test",_intSymType);
-    TypeSymbol superOuter = type("SuperOuter",Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    FieldSymbol field = field("field",_intSymType);
+    TypeSymbol superOuter = type("SuperOuter",Lists.newArrayList(test),Lists.newArrayList(field),Lists.newArrayList(),Lists.newArrayList(),scope);
     superOuter.setClass(true);
     SymTypeExpression superOuterType = SymTypeExpressionFactory.createTypeObject("SuperOuter",scope);
     add2scope(scope,superOuter);
@@ -500,13 +532,16 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(inner.getSpannedScope(),innerinner);
 
     Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.test()");
+    Optional<ASTExpression> super2 = p.parse_StringExpression("Outer.super.field");
 
     derLit.setScope((ExpressionsBasisScope) methodInner.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     assertTrue(super1.isPresent());
+    assertTrue(super2.isPresent());
 
     assertEquals("int",tc.typeOf(super1.get()).print());
+    assertEquals("int",tc.typeOf(super2.get()).print());
 
     derLit = new DeriveSymTypeOfCombineExpressionsDelegator((ExpressionsBasisScope)methodInnerInner.getSpannedScope(),new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
     tc = new TypeCheck(null,derLit);

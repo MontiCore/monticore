@@ -55,24 +55,24 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * @param type
    * @return
    */
-  public static String unbox(SymTypeOfGenerics type) {
-    if (unboxMap.containsKey(type.printTypeWithoutTypeArgument())) {
-      List<SymTypeExpression> arguments = type.getArgumentList();
-      StringBuilder r = new StringBuilder().append('<');
-      for(int i = 0; i<arguments.size();i++){
-        if(arguments.get(i).isGenericType()){
-          r.append(unbox((SymTypeOfGenerics) arguments.get(i)));
-        }else{
-          r.append(SymTypeConstant.unbox(arguments.get(i).print()));
-        }
-        if(i<arguments.size()-1) {
-          r.append(',');
-        }
+  public static String unbox(SymTypeOfGenerics type){
+    List<SymTypeExpression> arguments = type.getArgumentList();
+    StringBuilder r = new StringBuilder().append('<');
+    for(int i = 0; i<arguments.size();i++){
+      if(arguments.get(i).isGenericType()){
+        r.append(unbox((SymTypeOfGenerics) arguments.get(i)));
+      }else{
+        r.append(SymTypeConstant.unbox(arguments.get(i).print()));
       }
-      r.append(">");
+      if(i<arguments.size()-1) {
+        r.append(',');
+      }
+    }
+    r.append(">");
+    if(unboxMap.containsKey(type.printTypeWithoutTypeArgument())){
       return unboxMap.get(type.printTypeWithoutTypeArgument())+r.toString();
-    }else {
-      return type.print();
+    }else{
+      return type.printTypeWithoutTypeArgument()+r.toString();
     }
   }
 
@@ -85,24 +85,24 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * @param type
    * @return
    */
-  public static String box(SymTypeOfGenerics type) {
-    if (boxMap.containsKey(type.printTypeWithoutTypeArgument())) {
-      List<SymTypeExpression> arguments = type.getArgumentList();
-      StringBuilder r = new StringBuilder().append('<');
-      for(int i = 0; i<arguments.size();i++){
-        if(arguments.get(i).isGenericType()){
-          r.append(unbox((SymTypeOfGenerics) arguments.get(i)));
-        }else{
-          r.append(SymTypeConstant.unbox(arguments.get(i).print()));
-        }
-        if(i<arguments.size()-1) {
-          r.append(',');
-        }
+  public static String box(SymTypeOfGenerics type){
+    List<SymTypeExpression> arguments = type.getArgumentList();
+    StringBuilder r = new StringBuilder().append('<');
+    for(int i = 0; i<arguments.size();i++){
+      if(arguments.get(i).isGenericType()){
+        r.append(box((SymTypeOfGenerics) arguments.get(i)));
+      }else{
+        r.append(SymTypeConstant.box(arguments.get(i).print()));
       }
-      r.append(">");
+      if(i<arguments.size()-1) {
+        r.append(',');
+      }
+    }
+    r.append(">");
+    if (boxMap.containsKey(type.printTypeWithoutTypeArgument())) {
       return boxMap.get(type.printTypeWithoutTypeArgument())+r.toString();
-    }else {
-      return type.print();
+    }else{
+      return type.printTypeWithoutTypeArgument()+r.toString();
     }
   }
   
