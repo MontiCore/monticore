@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java.methods.accessor;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -20,8 +21,6 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
 
   protected static final String GET = "get%s";
 
-  protected static final String GET_OPT = "get%sOpt";
-
   protected static final String IS_PRESENT = "isPresent%s";
 
   protected String naiveAttributeName;
@@ -32,7 +31,6 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
-    //todo find better util than the DecorationHelper
     naiveAttributeName = getNaiveAttributeName(ast);
     ASTCDMethod get = createGetMethod(ast);
     ASTCDMethod isPresent = createIsPresentMethod(ast);
@@ -43,12 +41,12 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
     return StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(astcdAttribute.getName()));
   }
 
-
   protected ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
     String name = String.format(GET, naiveAttributeName);
     ASTMCType type = getDecorationHelper().getReferenceTypeFromOptional(ast.getMCType().deepClone()).getMCTypeOpt().get();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get", ast, naiveAttributeName));
+    String generatedErrorCode = DecorationHelper.getInstance().getGeneratedErrorCode(ast.getName() + ast.printType());
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get", ast, naiveAttributeName, generatedErrorCode));
     return method;
   }
 
