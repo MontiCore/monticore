@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4090;
+
+grammar A4090g extends mc.grammars.types.TestLiterals{
+
+  A = "a";
+  B = who:Num_Int who:A;
+
+}

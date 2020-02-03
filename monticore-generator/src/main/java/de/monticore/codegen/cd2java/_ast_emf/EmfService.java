@@ -98,10 +98,19 @@ public class EmfService extends AbstractService<EmfService> {
   public Set<String> getEDataTypes(ASTCDDefinition astcdDefinition) {
     Set<String> eDataTypeMap = new HashSet<>();
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
-      for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
-        if (isEDataType(astcdAttribute) && !isInheritedAttribute(astcdAttribute)) {
-          eDataTypeMap.add(getDecorationHelper().getNativeTypeName(astcdAttribute.getMCType()));
-        }
+      eDataTypeMap.addAll(getEDataTypes(astcdClass));
+    }
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+      eDataTypeMap.addAll(getEDataTypes(astcdInterface));
+    }
+    return eDataTypeMap;
+  }
+
+  public Set<String> getEDataTypes(ASTCDType astcdType) {
+    Set<String> eDataTypeMap = new HashSet<>();
+    for (ASTCDAttribute astcdAttribute : astcdType.getCDAttributeList()) {
+      if (isEDataType(astcdAttribute) && !isInheritedAttribute(astcdAttribute)) {
+        eDataTypeMap.add(getDecorationHelper().getNativeTypeName(astcdAttribute.getMCType()));
       }
     }
     return eDataTypeMap;

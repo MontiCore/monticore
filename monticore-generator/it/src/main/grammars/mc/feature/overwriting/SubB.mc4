@@ -1,0 +1,6 @@
+grammar SubB extends mc.feature.overwriting.SuperA {
+  E implements I;
+
+  interface I = Name*;
+
+}
