@@ -6,6 +6,7 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsArtifactScope;
@@ -31,39 +32,39 @@ public class SymTypeExpressionDeSerTest {
 
   // setup of objects (unchanged during tests)
   // these should be the same as those of SymTypeExpressionText
-  SymTypeExpression teDouble = createTypeConstant("double");
+  SymTypeConstant teDouble = createTypeConstant("double");
 
-  SymTypeExpression teInt = createTypeConstant("int");
+  SymTypeConstant teInt = createTypeConstant("int");
 
-  SymTypeExpression teVarA = createTypeVariable("A", scope);
+  SymTypeVariable teVarA = createTypeVariable("A", scope);
 
-  SymTypeExpression teVarB = createTypeVariable("B", scope);
+  SymTypeVariable teVarB = createTypeVariable("B", scope);
 
-  SymTypeExpression teP = createTypeObject("de.x.Person", scope);
+  SymTypeOfObject teP = createTypeObject("de.x.Person", scope);
 
-  SymTypeExpression teH = createTypeObject("Human", scope);  // on purpose: package missing
+  SymTypeOfObject teH = createTypeObject("Human", scope);  // on purpose: package missing
 
-  SymTypeExpression teVoid = createTypeVoid();
+  SymTypeVoid teVoid = createTypeVoid();
 
-  SymTypeExpression teNull = createTypeOfNull();
+  SymTypeOfNull teNull = createTypeOfNull();
 
-  SymTypeExpression teArr1 = createTypeArray(teH.print(), scope, 1, teH);
+  SymTypeArray teArr1 = createTypeArray(teH.print(), scope, 1, teH);
 
-  SymTypeExpression teArr3 = createTypeArray(teInt.print(), scope, 3, teInt);
+  SymTypeArray teArr3 = createTypeArray(teInt.print(), scope, 3, teInt);
 
-  SymTypeExpression teSet = createGenerics("java.util.Set", scope, Lists.newArrayList(teP));
+  SymTypeOfGenerics teSet = createGenerics("java.util.Set", scope, Lists.newArrayList(teP));
 
-  SymTypeExpression teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
+  SymTypeOfGenerics teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
 
-  SymTypeExpression teMap = createGenerics("Map", scope,
+  SymTypeOfGenerics teMap = createGenerics("Map", scope,
       Lists.newArrayList(teInt, teP)); // no package!
 
-  SymTypeExpression teFoo = createGenerics("x.Foo", scope,
+  SymTypeOfGenerics teFoo = createGenerics("x.Foo", scope,
       Lists.newArrayList(teP, teDouble, teInt, teH));
 
-  SymTypeExpression teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
+  SymTypeOfGenerics teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
 
-  SymTypeExpression teDeep2 = createGenerics("java.util.Map2", scope,
+  SymTypeOfGenerics teDeep2 = createGenerics("java.util.Map2", scope,
       Lists.newArrayList(teInt, teDeep1));
 
   @BeforeClass
@@ -108,6 +109,21 @@ public class SymTypeExpressionDeSerTest {
     performRoundTripSerialization(teFoo);
     performRoundTripSerialization(teDeep1);
     performRoundTripSerialization(teDeep2);
+
+    performRoundTripSerializationSymTypeConstant(teDouble);
+    performRoundTripSerializationSymTypeConstant(teInt);
+    performRoundTripSerializationSymTypeVariable(teVarA);
+    performRoundTripSerializationSymTypeVariable(teVarB);
+    performRoundTripSerializationSymTypeOfObject(teP);
+    performRoundTripSerializationSymTypeOfObject(teH);
+    performRoundTripSerializationSymTypeArray(teArr1);
+    performRoundTripSerializationSymTypeArray(teArr3);
+    performRoundTripSerializationSymTypeOfGenerics(teSet);
+    performRoundTripSerializationSymTypeOfGenerics(teSetA);
+    performRoundTripSerializationSymTypeOfGenerics(teMap);
+    performRoundTripSerializationSymTypeOfGenerics(teFoo);
+    performRoundTripSerializationSymTypeOfGenerics(teDeep1);
+    performRoundTripSerializationSymTypeOfGenerics(teDeep2);
   }
 
   protected void performRoundTripSerialization(SymTypeExpression expr) {
@@ -124,6 +140,83 @@ public class SymTypeExpressionDeSerTest {
     TypeSymbol actualTS = expr.getTypeInfo();
     assertEquals(expectedTS.getName(), actualTS.getName());
   }
+
+  protected void performRoundTripSerializationSymTypeOfGenerics(SymTypeOfGenerics expr){
+    SymTypeOfGenericsDeSer deser = new SymTypeOfGenericsDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized,scope);
+    assertNotNull(deserialized);
+
+    assertEquals(expr.print(),deserialized.print());
+    assertEquals(expr.printAsJson(),deserialized.printAsJson());
+    TypeSymbol expectedTS = deserialized.getTypeInfo();
+    TypeSymbol actualTS = deserialized.getTypeInfo();
+    assertEquals(expectedTS.getName(),actualTS.getName());
+  }
+
+  protected void performRoundTripSerializationSymTypeOfObject(SymTypeOfObject expr){
+    SymTypeOfObjectDeSer deser = new SymTypeOfObjectDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized,scope);
+    assertNotNull(deserialized);
+
+    assertEquals(expr.print(),deserialized.print());
+    assertEquals(expr.printAsJson(),deserialized.printAsJson());
+    TypeSymbol expectedTS = deserialized.getTypeInfo();
+    TypeSymbol actualTS = deserialized.getTypeInfo();
+    assertEquals(expectedTS.getName(),actualTS.getName());
+  }
+
+  protected void performRoundTripSerializationSymTypeVariable(SymTypeVariable expr){
+    SymTypeVariableDeSer deser = new SymTypeVariableDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized,scope);
+    assertNotNull(deserialized);
+
+    assertEquals(expr.print(),deserialized.print());
+    assertEquals(expr.printAsJson(),deserialized.printAsJson());
+    TypeSymbol expectedTS = deserialized.getTypeInfo();
+    TypeSymbol actualTS = deserialized.getTypeInfo();
+    assertEquals(expectedTS.getName(),actualTS.getName());
+  }
+
+  protected void performRoundTripSerializationSymTypeArray(SymTypeArray expr){
+    SymTypeArrayDeSer deser = new SymTypeArrayDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized,scope);
+    assertNotNull(deserialized);
+
+    assertEquals(expr.print(),deserialized.print());
+    assertEquals(expr.printAsJson(),deserialized.printAsJson());
+    TypeSymbol expectedTS = deserialized.getTypeInfo();
+    TypeSymbol actualTS = deserialized.getTypeInfo();
+    assertEquals(expectedTS.getName(),actualTS.getName());
+  }
+
+  protected void performRoundTripSerializationSymTypeConstant(SymTypeConstant expr){
+    SymTypeConstantDeSer deser = new SymTypeConstantDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized,scope);
+    assertNotNull(deserialized);
+
+    assertEquals(expr.print(),deserialized.print());
+    assertEquals(expr.printAsJson(),deserialized.printAsJson());
+    TypeSymbol expectedTS = deserialized.getTypeInfo();
+    TypeSymbol actualTS = deserialized.getTypeInfo();
+    assertEquals(expectedTS.getName(),actualTS.getName());
+  }
+
+
 
   @Test
   public void testRoundtripLoadStore() throws MalformedURLException {
