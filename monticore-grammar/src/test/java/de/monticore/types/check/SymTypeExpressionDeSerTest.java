@@ -16,14 +16,14 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class SymTypeExpressionDeSerTest {
   private static TypeSymbolsScope scope = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
@@ -70,7 +70,6 @@ public class SymTypeExpressionDeSerTest {
   @BeforeClass
   public static void init() {
     Log.enableFailQuick(false);
-    LogStub.init();
 
     scope.add(new TypeSymbol("A"));
     scope.add(new TypeSymbol("B"));
@@ -254,6 +253,38 @@ public class SymTypeExpressionDeSerTest {
     TypeSymbol expectedTS = loaded.getTypeInfo();
     TypeSymbol actualTS = expr.getTypeInfo();
     assertEquals(expectedTS.getName(), actualTS.getName());
+  }
+
+  @Test
+  public void testInvalidJsonForSerializingReturnsError(){
+    String invalidJsonForSerializing = "\"Foo\":\"bar\"";
+    String invalidJsonForSerializing2 = "{\n\t\"symTypeExpression\": {\n\t\t\"foo\":\"bar\", \n\t\t\"foo2\":\"bar2\"\n\t}\n}";
+
+    SymTypeExpressionDeSer.getInstance().deserialize(invalidJsonForSerializing, scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F3"));
+
+    SymTypeExpressionDeSer.getInstance().deserialize(invalidJsonForSerializing2,scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823FE"));
+
+    SymTypeOfGenericsDeSer symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
+    symTypeOfGenericsDeSer.deserialize(invalidJsonForSerializing, scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F6"));
+
+    SymTypeArrayDeSer symTypeArrayDeSer = new SymTypeArrayDeSer();
+    symTypeArrayDeSer.deserialize(invalidJsonForSerializing,scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F2"));
+
+    SymTypeOfObjectDeSer symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
+    symTypeOfObjectDeSer.deserialize(invalidJsonForSerializing,scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F4"));
+
+    SymTypeVariableDeSer symTypeVariableDeSer = new SymTypeVariableDeSer();
+    symTypeVariableDeSer.deserialize(invalidJsonForSerializing,scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F5"));
+
+    SymTypeConstantDeSer symTypeConstantDeser = new SymTypeConstantDeSer();
+    symTypeConstantDeser.deserialize(invalidJsonForSerializing,scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F1"));
   }
 
 }
