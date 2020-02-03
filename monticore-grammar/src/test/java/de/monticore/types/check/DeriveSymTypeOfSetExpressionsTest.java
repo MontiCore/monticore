@@ -289,21 +289,21 @@ public class DeriveSymTypeOfSetExpressionsTest {
     FieldSymbol setintfield = field("setint",setint);
     add2scope(scope,setintfield);
 
-    SymTypeExpression setdouble = SymTypeExpressionFactory.createGenerics(loader,_doubleSymType);
-    setdouble.typeSymbolLoader = loader;
-    FieldSymbol setdoublefield = field("setdouble",setdouble);
-    add2scope(scope,setdoublefield);
+    SymTypeExpression setchar = SymTypeExpressionFactory.createGenerics(loader,_charSymType);
+    setchar.typeSymbolLoader = loader;
+    FieldSymbol setcharfield = field("setchar",setchar);
+    add2scope(scope,setcharfield);
 
     derLit.setScope(scope);
     tc = new TypeCheck(null, derLit);
 
-    //TEST 1: Set<int> intersect Set<int>
-    ASTExpression a = p.parse_StringExpression("setint intersect setint").get();
-    assertEquals("Set<int>",tc.typeOf(a).print());
+    //TEST 1: Set<double> intersect Set<double>
+    ASTExpression a = p.parse_StringExpression("setchar intersect setchar").get();
+    assertEquals("Set<char>",tc.typeOf(a).print());
 
-    //TEST 2: Set<int> intersect Set<double> -> int subtype of double
-    ASTExpression b = p.parse_StringExpression("setint intersect setdouble").get();
-    assertEquals("Set<double>",tc.typeOf(b).print());
+    //TEST 2: Set<double> intersect Set<int> -> int subtype of double
+    ASTExpression b = p.parse_StringExpression("setint intersect setchar").get();
+    assertEquals("Set<int>",tc.typeOf(b).print());
   }
 
   @Test

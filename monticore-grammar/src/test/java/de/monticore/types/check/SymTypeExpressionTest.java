@@ -8,20 +8,21 @@ import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
+import de.monticore.types.typesymbols._symboltable.*;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static de.monticore.types.check.DefsTypeBasic.add2scope;
+import static de.monticore.types.check.DefsTypeBasic.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class SymTypeExpressionTest {
 
@@ -55,13 +56,17 @@ public class SymTypeExpressionTest {
 
   SymTypeExpression teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
 
+  SymTypeExpression teSetC = createGenerics("Set",scope,Lists.newArrayList(teInt));
+
   SymTypeExpression teMap = createGenerics("Map", scope, Lists.newArrayList(teInt, teP)); // no package!
+
+  SymTypeExpression teFoo = createGenerics("x.Foo", scope,  Lists.newArrayList(teP, teDouble, teInt, teH));
+
+  SymTypeExpression teMap2 = createGenerics("Map",scope,Lists.newArrayList(teSetC,teFoo));
 
   SymTypeExpression teMapA = createGenerics("java.util.Map",scope,Lists.newArrayList(teIntA,teP));
 
   SymTypeExpression teSetB = createGenerics("java.util.Set",scope,Lists.newArrayList(teMapA));
-
-  SymTypeExpression teFoo = createGenerics("x.Foo", scope,  Lists.newArrayList(teP, teDouble, teInt, teH));
 
   SymTypeExpression teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
 
@@ -69,7 +74,9 @@ public class SymTypeExpressionTest {
 
   @BeforeClass
   public static void setUpScope(){
+    LogStub.init();
     scope.add(new TypeSymbol("long"));
+    scope.add(new TypeSymbol("Human"));
   }
 
   @Test
@@ -253,6 +260,309 @@ public class SymTypeExpressionTest {
     assertEquals("Set<Map<int,de.x.Person>>",SymTypeOfGenerics.unbox((SymTypeOfGenerics)teSetB));
     assertEquals("Set<de.x.Person>",SymTypeOfGenerics.unbox((SymTypeOfGenerics)teSet));
     assertEquals("Set<A>",SymTypeOfGenerics.unbox((SymTypeOfGenerics)teSetA));
+    assertEquals("Map<int,de.x.Person>",SymTypeOfGenerics.unbox((SymTypeOfGenerics)teMap));
+    assertEquals("Map<Set<int>,x.Foo<de.x.Person,double,int,Human>>",SymTypeOfGenerics.unbox((SymTypeOfGenerics)teMap2));
+  }
+
+  @Test
+  public void boxTest() {
+    assertEquals("java.util.Set<java.util.Map<java.lang.Integer,de.x.Person>>", SymTypeOfGenerics.box((SymTypeOfGenerics) teSetB));
+    assertEquals("java.util.Set<de.x.Person>", SymTypeOfGenerics.box((SymTypeOfGenerics) teSet));
+    assertEquals("java.util.Set<A>", SymTypeOfGenerics.box((SymTypeOfGenerics) teSetA));
+    assertEquals("java.util.Map<java.lang.Integer,de.x.Person>", SymTypeOfGenerics.box((SymTypeOfGenerics)teMap));
+    assertEquals("java.util.Map<java.util.Set<java.lang.Integer>,x.Foo<de.x.Person,java.lang.Double,java.lang.Integer,Human>>",SymTypeOfGenerics.box((SymTypeOfGenerics)teMap2));
+  }
+
+  @Test
+  public void deepCloneTest(){
+    //SymTypeVoid
+    assertTrue(teVoid.deepClone() instanceof SymTypeVoid);
+    assertEquals(teVoid.getTypeInfo(),teVoid.deepClone().getTypeInfo());
+    assertEquals(teVoid.print(),teVoid.deepClone().print());
+
+    //SymTypeOfNull
+    assertTrue(teNull.deepClone() instanceof SymTypeOfNull);
+    assertEquals(teNull.getTypeInfo(),teNull.deepClone().getTypeInfo());
+    assertEquals(teNull.print(),teNull.deepClone().print());
+
+    //SymTypeVariable
+    assertTrue(teVarA.deepClone() instanceof SymTypeVariable);
+    assertFalse(teVarA.deepClone().isPrimitive());
+    assertTrue(teVarA.deepClone().isTypeVariable());
+    assertEquals(teVarA.print(),teVarA.deepClone().print());
+
+    //SymTypeConstant
+    assertTrue(teInt.deepClone() instanceof SymTypeConstant);
+    assertEquals(teInt.getTypeInfo(), teInt.deepClone().getTypeInfo());
+    assertTrue(teInt.deepClone().isPrimitive());
+    assertEquals(teInt.print(),teInt.deepClone().print());
+
+    //SymTypeOfObject
+    assertTrue(teH.deepClone() instanceof SymTypeOfObject);
+    assertEquals(teH.print(),teH.deepClone().print());
+
+    //SymTypeArray
+    assertTrue(teArr1.deepClone() instanceof SymTypeArray);
+    assertEquals(teArr1.print(),teArr1.deepClone().print());
+    assertEquals(((SymTypeArray)teArr1).getDim(),((SymTypeArray)teArr1.deepClone()).getDim());
+    assertEquals(((SymTypeArray)teArr1).getArgument().print(),((SymTypeArray)teArr1.deepClone()).getArgument().print());
+
+    //SymTypeOfGenerics
+    assertTrue(teDeep1.deepClone() instanceof SymTypeOfGenerics);
+    assertTrue(teDeep1.deepClone().isGenericType());
+    assertEquals(teDeep1.print(),teDeep1.deepClone().print());
+  }
+
+  @Test
+  public void testSymTypeExpressionFactory(){
+    SymTypeVoid tVoid = SymTypeExpressionFactory.createTypeVoid();
+    assertEquals("void",tVoid.print());
+
+    SymTypeOfNull tNull = SymTypeExpressionFactory.createTypeOfNull();
+    assertEquals("nullType",tNull.print());
+
+    SymTypeConstant tInt = SymTypeExpressionFactory.createTypeConstant("int");
+    assertEquals("int",tInt.print());
+    assertTrue(tInt.isIntegralType());
+
+    SymTypeOfGenerics tA = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("A",scope));
+    assertEquals("A<>",tA.print());
+    assertTrue(tA.isEmptyArguments());
+
+    SymTypeOfGenerics tB = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("B",scope),Lists.newArrayList(teArr1,teIntA));
+    assertEquals("B<Human[],java.lang.Integer>",tB.print());
+    assertEquals(2,tB.sizeArguments());
+
+    SymTypeOfGenerics tC = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("C",scope),teDeep1,teDeep2);
+    assertEquals("C<java.util.Set<Map<int,de.x.Person>>,java.util.Map2<int,java.util.Set<Map<int,de.x.Person>>>>",tC.print());
+    assertEquals(2,tC.sizeArguments());
+
+    SymTypeOfGenerics tD = SymTypeExpressionFactory.createGenerics("D",scope);
+    assertEquals("D<>",tD.print());
+    assertTrue(tD.isEmptyArguments());
+
+    SymTypeOfGenerics tE = SymTypeExpressionFactory.createGenerics("E",scope,Lists.newArrayList(teDouble,teMap));
+    assertEquals("E<double,Map<int,de.x.Person>>",tE.print());
+    assertEquals(2,tE.sizeArguments());
+
+    SymTypeOfGenerics tF = SymTypeExpressionFactory.createGenerics("F",scope,teH,teP);
+    assertEquals("F<Human,de.x.Person>",tF.print());
+    assertEquals(2,tF.sizeArguments());
+
+    SymTypeArray tHuman = SymTypeExpressionFactory.createTypeArray(new TypeSymbolLoader("Human",scope),1,teH);
+    assertEquals("Human[]",tHuman.print());
+    assertEquals(1,tHuman.getDim());
+    assertEquals("Human",tHuman.getArgument().print());
+
+    SymTypeArray tPerson = SymTypeExpressionFactory.createTypeArray("de.x.Person",scope,2,teP);
+    assertEquals("de.x.Person[][]",tPerson.print());
+    assertEquals(2,tPerson.getDim());
+    assertEquals("de.x.Person",tPerson.getArgument().print());
+
+    SymTypeOfObject tG = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("G",scope));
+    assertEquals("G",tG.print());
+
+    SymTypeOfObject tH = SymTypeExpressionFactory.createTypeObject("H",scope);
+    assertEquals("H",tH.print());
+
+    SymTypeVariable tT = SymTypeExpressionFactory.createTypeVariable(new TypeSymbolLoader("T",scope));
+    assertEquals("T",tT.print());
+
+    SymTypeVariable tS = SymTypeExpressionFactory.createTypeVariable("S",scope);
+    assertEquals("S",tS.print());
+
+    SymTypeExpression tExpr = SymTypeExpressionFactory.createTypeExpression("void",scope);
+    assertTrue(tExpr instanceof SymTypeVoid);
+    assertEquals("void",tExpr.print());
+  }
+
+  @Test
+  public void testGenericArguments(){
+    SymTypeExpression teFoo = createGenerics("x.Foo", scope,  Lists.newArrayList(teP, teDouble, teInt, teH));
+    assertTrue(teFoo.isGenericType());
+    SymTypeOfGenerics teFoo2 = (SymTypeOfGenerics) teFoo;
+    //getArgumentList & getArgument
+    assertEquals(4, teFoo2.getArgumentList().size());
+    assertEquals(teP,teFoo2.getArgument(0));
+    assertEquals(teDouble,teFoo2.getArgument(1));
+    assertEquals(teInt,teFoo2.getArgument(2));
+    assertEquals(teH,teFoo2.getArgument(3));
+    List<SymTypeExpression> arguments = teFoo2.getArgumentList();
+
+    //toArrayArguments
+    Object[] args = teFoo2.toArrayArguments();
+    assertEquals(teP,args[0]);
+    assertEquals(teDouble,args[1]);
+    assertEquals(teInt,args[2]);
+    assertEquals(teH,args[3]);
+
+    //toArrayArguments2
+    SymTypeExpression[] symArgs = teFoo2.toArrayArguments(new SymTypeExpression[4]);
+    assertEquals(teP,symArgs[0]);
+    assertEquals(teDouble,symArgs[1]);
+    assertEquals(teInt,symArgs[2]);
+    assertEquals(teH,symArgs[3]);
+
+    //subListArguments
+    List<SymTypeExpression> subList = teFoo2.subListArguments(1,3);
+    assertEquals(2,subList.size());
+    assertEquals(teDouble,subList.get(0));
+    assertEquals(teInt,subList.get(1));
+
+    //containsArgument
+    assertTrue(teFoo2.containsArgument(teDouble));
+    assertFalse(teFoo2.containsArgument(teDeep1));
+
+    //containsAllArguments
+    assertTrue(teFoo2.containsAllArguments(subList));
+
+    //indexOfArgument
+    assertEquals(0,teFoo2.indexOfArgument(teP));
+
+    //lastIndexOfArgument
+    assertEquals(0,teFoo2.lastIndexOfArgument(teP));
+
+    //equalsArguments
+    assertTrue(teFoo2.equalsArguments(teFoo2.getArgumentList()));
+    assertFalse(teFoo2.equalsArguments(subList));
+
+    //listIteratorArguments
+    Iterator<SymTypeExpression> it = teFoo2.listIteratorArguments();
+    int i = 0;
+    while(it.hasNext()){
+      assertEquals(symArgs[i],it.next());
+      ++i;
+    }
+    assertEquals(4,i);
+
+    //listIteratorArguments
+    Iterator<SymTypeExpression> it3 = teFoo2.listIteratorArguments(1);
+    i=0;
+    while(it3.hasNext()){
+      assertEquals(symArgs[i+1],it3.next());
+      ++i;
+    }
+    assertEquals(3,i);
+
+    //iteratorArguments
+    Iterator<SymTypeExpression> it2 = teFoo2.iteratorArguments();
+    i = 0;
+    while(it2.hasNext()){
+      assertEquals(symArgs[i],it2.next());
+      ++i;
+    }
+    assertEquals(4,i);
+
+    //spliteratorArguments
+    Spliterator<SymTypeExpression> split = teFoo2.spliteratorArguments();
+    assertEquals(4,split.getExactSizeIfKnown());
+    split.forEachRemaining(SymTypeExpression::print);
+
+    //sizeArguments
+    assertEquals(4,teFoo2.sizeArguments());
+
+    //streamArguments
+    Stream<SymTypeExpression> stream =teFoo2.streamArguments();
+    List<SymTypeExpression> list = stream.filter(SymTypeExpression::isPrimitive)
+          .collect(Collectors.toList());
+    assertEquals(2,list.size());
+    assertEquals(teDouble,list.get(0));
+    assertEquals(teInt,list.get(1));
+
+    //parallelStreamArguments
+    Stream<SymTypeExpression> parStream = teFoo2.parallelStreamArguments();
+    List<SymTypeExpression> parList = parStream.filter(SymTypeExpression::isPrimitive)
+        .collect(Collectors.toList());
+    assertEquals(2,parList.size());
+    assertEquals(teDouble,parList.get(0));
+    assertEquals(teInt,parList.get(1));
+
+    //hashCodeArguments
+    assertEquals(teFoo2.getArgumentList().hashCode(),teFoo2.hashCodeArguments());
+
+    //forEachArguments
+    teFoo2.forEachArguments(SymTypeExpression::deepClone);
+    assertEquals(teP,teFoo2.getArgument(0));
+
+    //setArgument
+    teFoo2.setArgument(2,teDeep2);
+    assertEquals(teDeep2,teFoo2.getArgument(2));
+
+    //addArgument
+    teFoo2.addArgument(teSetA);
+    assertEquals(5, teFoo2.sizeArguments());
+    assertEquals(teSetA,teFoo2.getArgument(4));
+    teFoo2.addArgument(3,teArr3);
+    assertEquals(6,teFoo2.sizeArguments());
+    assertEquals(teArr3,teFoo2.getArgument(3));
+
+    //removeArgument
+    teFoo2.removeArgument(teArr3);
+    assertFalse(teFoo2.containsArgument(teArr3));
+    assertEquals(5,teFoo2.sizeArguments());
+    teFoo2.removeArgument(4);
+    assertFalse(teFoo2.containsArgument(teSetA));
+    assertEquals(4,teFoo2.sizeArguments());
+
+    //clearArguments, isEmptyArguments
+    assertFalse(teFoo2.isEmptyArguments());
+    teFoo2.clearArguments();
+    assertEquals(0,teFoo2.sizeArguments());
+    assertTrue(teFoo2.isEmptyArguments());
+
+    //setArgumentList
+    arguments = Lists.newArrayList(teP,teDouble,teInt,teH);
+    teFoo2.setArgumentList(arguments);
+    assertEquals(4, teFoo2.sizeArguments());
+    assertEquals(teP,teFoo2.getArgument(0));
+    assertEquals(teDouble,teFoo2.getArgument(1));
+    assertEquals(teInt,teFoo2.getArgument(2));
+    assertEquals(teH,teFoo2.getArgument(3));
+
+    //sortArguments
+    teFoo2.sortArguments((arg1,arg2) -> arg1.hashCode()+arg2.hashCode());
+    assertEquals(4,teFoo2.sizeArguments());
+
+    //addAllArguments
+    teFoo2.setArgumentList(Lists.newArrayList());
+    assertTrue(teFoo2.isEmptyArguments());
+    arguments = Lists.newArrayList(teP,teDouble,teInt,teH);
+    teFoo2.addAllArguments(arguments);
+    assertEquals(4, teFoo2.getArgumentList().size());
+    assertEquals(teP,teFoo2.getArgument(0));
+    assertEquals(teDouble,teFoo2.getArgument(1));
+    assertEquals(teInt,teFoo2.getArgument(2));
+    assertEquals(teH,teFoo2.getArgument(3));
+
+    //retainAllArguments
+    subList = Lists.newArrayList(teP,teH);
+    teFoo2.retainAllArguments(subList);
+    assertEquals(2,teFoo2.sizeArguments());
+    assertEquals(teP,teFoo2.getArgument(0));
+    assertEquals(teH,teFoo2.getArgument(1));
+
+    //removeAllArguments
+    teFoo2.removeAllArguments(subList);
+    assertTrue(teFoo2.isEmptyArguments());
+
+    //replaceAllArguments
+    arguments = Lists.newArrayList(teP,teDouble,teInt,teH);
+    teFoo2.setArgumentList(arguments);
+    teFoo2.replaceAllArguments(SymTypeExpression::deepClone);
+    assertEquals(4,teFoo2.sizeArguments());
+    assertTrue(teFoo2.equalsArguments(arguments));
+
+    //removeIfArgument
+    teFoo2.removeIfArgument(SymTypeExpression::isPrimitive);
+    assertEquals(2,teFoo2.sizeArguments());
+  }
+
+  @Test
+  public void symTypeArrayTest(){
+    SymTypeArray array = SymTypeExpressionFactory.createTypeArray(new TypeSymbolLoader("int",scope),1,_intSymType);
+    assertEquals("int[]",array.print());
+    array.setDim(2);
+    assertEquals("int[][]",array.print());
   }
 
 }

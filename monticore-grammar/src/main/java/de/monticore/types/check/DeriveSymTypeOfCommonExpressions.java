@@ -17,8 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeConstant.unbox;
-import static de.monticore.types.check.TypeCheck.compatible;
-import static de.monticore.types.check.TypeCheck.isSubtypeOf;
+import static de.monticore.types.check.TypeCheck.*;
 
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in CommonExpressions
@@ -541,7 +540,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
             }
           }
         }
-        if (!"void".equals(fittingMethods.get(0).getReturnType().print())) {
+        if (!isVoid(fittingMethods.get(0).getReturnType())) {
           SymTypeExpression result = fittingMethods.get(0).getReturnType();
           this.result = result;
           lastResult.setMethod();
