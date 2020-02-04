@@ -30,7 +30,7 @@ The different development statuses of grammars are explained
 * Its primary feature are the description and analysis of a class diagram.
 * CD4Code is an extension which allows for function signatures and implementations with the [JavaDSL](https://git.rwth-aachen.de/monticore/javaDSL).
 
-### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (alpha)
+### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
 * Author: AB, DS
 * Language for textual feature models and feature configurations
 * Feature diagrams are used to model (software) product lines
