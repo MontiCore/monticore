@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("astcdClass")}
-<#assign genHelper = glex.getGlobalVar("astHelper")>
+<#assign service = glex.getGlobalVar("service")>
 <#if astcdClass.getName()?ends_with("TOP")>
   <#assign plainName = astcdClass.getName()?remove_ending("TOP")>
     // We allow a down cast here, because the subclass ${plainName} must exist
@@ -10,7 +10,7 @@ ${tc.signature("astcdClass")}
     if (this instanceof ${plainName}) {
       visitor.handle((${plainName}) this);
     } else {
-      throw new UnsupportedOperationException("0xA7010${genHelper.getGeneratedErrorCode(astcdClass.getName())} Only handwritten class ${plainName} is supported for the visitor");
+      throw new UnsupportedOperationException("0xA7010${service.getGeneratedErrorCode(astcdClass.getName())} Only handwritten class ${plainName} is supported for the visitor");
     }
 <#else>
       visitor.handle(this);

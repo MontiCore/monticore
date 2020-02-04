@@ -72,7 +72,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
 
     this.glex.setGlobalValue("genHelper", DecorationHelper.getInstance());
-    ODDecorator decorator = new ODDecorator(this.glex, new MethodDecorator(glex), new ODService(decoratedCompilationUnit),
+    ODDecorator decorator = new ODDecorator(this.glex, new MethodDecorator(glex, new ODService(decoratedCompilationUnit)), new ODService(decoratedCompilationUnit),
         new VisitorService(decoratedCompilationUnit));
     this.odClass = decorator.decorate(decoratedCompilationUnit);
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());

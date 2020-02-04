@@ -52,14 +52,6 @@ public class DecorationHelper extends MCBasicTypesHelper {
 
   public static final String SET_PREFIX = "set";
 
-  public String getGeneratedErrorCode(String name) {
-    // Use the string representation
-    int hashCode = Math.abs(name.hashCode());
-    String errorCodeSuffix = String.valueOf(hashCode);
-    return "x" + (hashCode < 1000 ? errorCodeSuffix : errorCodeSuffix
-        .substring(errorCodeSuffix.length() - 3));
-  }
-
   /**
    * methods which check if the Type is of a special kind
    * e.g. Optional, List, ASTNode, Map

@@ -58,7 +58,7 @@ public class CommonSymbolInterfaceDecoratorTest extends DecoratorTestCase {
 
 
     CommonSymbolInterfaceDecorator decorator = new CommonSymbolInterfaceDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit), new VisitorService(decoratedCompilationUnit),
-        new MethodDecorator(glex));
+        new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
     //creates ScopeSpanningSymbol
     this.commonSymbolInterface = decorator.decorate(decoratedCompilationUnit);
   }

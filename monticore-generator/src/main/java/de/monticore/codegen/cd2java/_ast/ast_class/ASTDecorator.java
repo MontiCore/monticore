@@ -106,7 +106,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
 
         methodDecorator.disableTemplates();
         List<ASTCDMethod> methods = methodDecorator.getMutatorDecorator().decorate(attribute);
-        String generatedErrorCode = DecorationHelper.getInstance().getGeneratedErrorCode(clazz.getName() + attribute.getName());
+        String generatedErrorCode = astService.getGeneratedErrorCode(clazz.getName() + attribute.getName());
         methods.forEach(m ->
             this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetEnclosingScope", generatedErrorCode,
                 MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameter(0).getMCType()), scopeInterfaceType)));
@@ -137,7 +137,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
       ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
 
       ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC, ASTConstants.ACCEPT_METHOD, superVisitorParameter);
-      String errorCode = getDecorationHelper().getGeneratedErrorCode(astClass.getName()+
+      String errorCode = astService.getGeneratedErrorCode(astClass.getName()+
               superVisitorType.printType(new MCFullGenericTypesPrettyPrinter(new IndentPrinter())));
       this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("_ast.ast_class.AcceptSuper",
           this.visitorService.getVisitorFullName(), errorCode, astClass.getName(),

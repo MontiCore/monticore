@@ -343,4 +343,13 @@ public class AbstractService<T extends AbstractService> {
     String astName = simpleName.substring(simpleName.lastIndexOf(".") + 1);
     return packageName + "." + AST_PACKAGE + "." + astName;
   }
+
+  public String getGeneratedErrorCode(String name) {
+    // Use the string representation
+    String codeString = getPackage() + getCDSymbol() + name;
+    int hashCode = Math.abs(codeString.hashCode());
+    String errorCodeSuffix = String.valueOf(hashCode);
+    return "x" + (hashCode < 1000 ? errorCodeSuffix : errorCodeSuffix
+        .substring(errorCodeSuffix.length() - 3));
+  }
 }

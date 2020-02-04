@@ -103,8 +103,9 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       } else {
         ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(service.getASTPackage(superSymbol) + "." + astName + BUILDER_SUFFIX);
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
-        this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("Log.error(\"0xA7009" + getDecorationHelper()
-            .getGeneratedErrorCode(clazz.getName() + cdType.getFullName()) + " Overridden production " + clazz.getName() + " is not reachable\");\nreturn null;\n"));
+        this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("Log.error(\"0xA7009" +
+            service.getGeneratedErrorCode(clazz.getName() + cdType.getFullName()) + " Overridden production " +
+            clazz.getName() + " is not reachable\");\nreturn null;\n"));
       }
       builderMethodsList.add(protectedMethod);
     }

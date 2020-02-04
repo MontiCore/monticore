@@ -47,7 +47,7 @@ public class ASTBuilderDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
-    AccessorDecorator methodDecorator = new AccessorDecorator(glex);
+    AccessorDecorator methodDecorator = new AccessorDecorator(glex, new ASTService(decoratedCompilationUnit));
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator, new ASTService(decoratedCompilationUnit));
     ASTBuilderDecorator builderASTNodeDecorator = new ASTBuilderDecorator(glex, builderDecorator);
     this.builderClass = builderASTNodeDecorator.decorate(cdClass);

@@ -23,7 +23,7 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
 
 
   public ReferencedSymbolOptAccessorDecorator(final GlobalExtensionManagement glex, final SymbolTableService symbolTableService) {
-    super(glex);
+    super(glex, symbolTableService);
     this.symbolTableService = symbolTableService;
   }
 

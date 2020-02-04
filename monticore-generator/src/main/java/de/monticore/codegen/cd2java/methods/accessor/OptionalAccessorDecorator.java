@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java.methods.accessor;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -25,8 +26,12 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
 
   protected String naiveAttributeName;
 
-  public OptionalAccessorDecorator(final GlobalExtensionManagement glex) {
+  protected final AbstractService service;
+
+  public OptionalAccessorDecorator(final GlobalExtensionManagement glex,
+                                   final AbstractService service) {
     super(glex);
+    this.service= service;
   }
 
   @Override
@@ -45,7 +50,7 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
     String name = String.format(GET, naiveAttributeName);
     ASTMCType type = getDecorationHelper().getReferenceTypeFromOptional(ast.getMCType().deepClone()).getMCTypeOpt().get();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
-    String generatedErrorCode = DecorationHelper.getInstance().getGeneratedErrorCode(ast.getName() + ast.printType());
+    String generatedErrorCode = service.getGeneratedErrorCode(ast.getName() + ast.printType());
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get", ast, naiveAttributeName, generatedErrorCode));
     return method;
   }
