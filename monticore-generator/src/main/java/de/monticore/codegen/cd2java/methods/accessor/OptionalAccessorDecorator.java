@@ -31,7 +31,7 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
   public OptionalAccessorDecorator(final GlobalExtensionManagement glex,
                                    final AbstractService service) {
     super(glex);
-    this.service= service;
+    this.service = service;
   }
 
   @Override

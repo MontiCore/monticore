@@ -13,10 +13,7 @@ import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.Names;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -344,9 +341,14 @@ public class AbstractService<T extends AbstractService> {
     return packageName + "." + AST_PACKAGE + "." + astName;
   }
 
+  private int count = 0;
+
   public String getGeneratedErrorCode(String name) {
     // Use the string representation
-    String codeString = getPackage() + getCDSymbol() + name;
+    // also use a count to make sure no double codes can appear
+    // because sometimes there is not enough information for a unique string
+    String codeString = getPackage() + getCDSymbol() + name + count;
+    count++;
     int hashCode = Math.abs(codeString.hashCode());
     String errorCodeSuffix = String.valueOf(hashCode);
     return "x" + (hashCode < 1000 ? errorCodeSuffix : errorCodeSuffix
