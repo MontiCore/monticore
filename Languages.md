@@ -51,7 +51,7 @@ The different development statuses of grammars are explained
 * MontiArc is an architecture and behavior modeling language and framework that provides an integrated, platform independent structure and behavior modeling language with an extensible code generation framework.
 * [Port Automata](https://git.rwth-aachen.de/monticore/montiarc/core) are a certain type of state machines and utilized in component and connector architecture description languages (e.g. MontiArc) for behavior modeling. (Alpha: Intention to become stable)
 
-### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Beta: In Stabilization)
+### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
 * Author: SVa
 * OCL/P is the textual representation of the UML OCL standard, adapted with Java-like syntax.
 * A Java generator can be found [**here**](https://git.rwth-aachen.de/monticore/languages/OCL2Java).
@@ -79,7 +79,7 @@ The different development statuses of grammars are explained
 * Author: NJ
 * Project for SysML 2 languages. It is compatible with the general SysML 2 standard.
 
-### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Beta: In Stabilization)
+### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
 * Author: SVa
 * The Tagging language offers the possibility to enrich existing models of any DSLs.
 * The Tagging models can then be used as configuration, e.g. in a code generator.
