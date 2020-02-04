@@ -9,8 +9,10 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -74,10 +76,12 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
   }
 
   protected ASTCDMethod addSetRealThisMethods(ASTMCType visitorType) {
-    ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, "realThis");
+    ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, REAL_THIS);
     ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
+    String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
+        new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())) + SET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(
-        "    throw new UnsupportedOperationException(\"0xA7011x709 The setter for realThis is " +
+        "    throw new UnsupportedOperationException(\"0xA7012" + generatedErrorCode + " The setter for realThis is " +
             "not implemented. You might want to implement a wrapper class to allow setting/getting realThis.\");\n"));
     return getRealThisMethod;
   }
@@ -113,7 +117,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
     List<ASTCDMethod> methodList = new ArrayList<>();
     methodList.addAll(createVisitorMethods(symbolsNameList, scopeType));
-    if(symbolTableService.hasProd(astcdDefinition)){
+    if (symbolTableService.hasProd(astcdDefinition)) {
       methodList.addAll(createVisitorMethods(symbolsNameList, artifactScopeType));
     }
     return methodList;
@@ -148,7 +152,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
       }
       for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
         if (astcdClass.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdClass.getModifier())) {
-          superSymbolNames.add(symbolTableService.getSymbolFullName(astcdClass,cdSymbol));
+          superSymbolNames.add(symbolTableService.getSymbolFullName(astcdClass, cdSymbol));
         }
       }
     }

@@ -351,7 +351,6 @@ public class AbstractService<T extends AbstractService> {
     count++;
     int hashCode = Math.abs(codeString.hashCode());
     String errorCodeSuffix = String.valueOf(hashCode);
-    return "x" + (hashCode < 1000 ? errorCodeSuffix : errorCodeSuffix
-        .substring(errorCodeSuffix.length() - 3));
+    return "x" + errorCodeSuffix;
   }
 }

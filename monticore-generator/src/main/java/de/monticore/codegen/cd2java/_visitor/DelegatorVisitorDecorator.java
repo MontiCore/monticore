@@ -8,10 +8,12 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
@@ -111,11 +113,12 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
         .filter(s -> s.contains("."))
         .map(s -> s = s.substring(s.lastIndexOf(".") + 1))
         .collect(Collectors.toList());
-
+    String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())) +
+        delegatorVisitorSimpleName + simpleVisitorType);
     ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new TemplateHookPoint(
         SET_REAL_THIS_DELEGATOR_TEMPLATE, delegatorVisitorSimpleName, simpleVisitorType,
-        superVisitorNames));
+        superVisitorNames, generatedErrorCode ));
     return getRealThisMethod;
   }
 
