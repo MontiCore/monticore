@@ -12,7 +12,6 @@ import java.util.function.UnaryOperator;
  * This class can be viewed as a special syntactic translation, whereas other translations are of
  * semantic nature. It only concerns itself with mirroring the MC AST structure over to the CD AST
  * and building the corresponding Link structure as it goes along.
- *
  */
 public class CDASTCreator implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
 
@@ -21,16 +20,17 @@ public class CDASTCreator implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompi
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
     return new GrammarToCDDefinition()
-            .andThen(new ClassProdsToCDClasses())
-            .andThen(new AbstractProdsToCDClasses())
-            .andThen(new InterfaceProdsToCDInterfaces())
-            .andThen(new EnumProdsToCDEnums())
-            .andThen(new ExternalProdsToCDInterfaces())
-            .andThen(new ASTRulesToCDClassesAndCDInterfaces())
-            .andThen(new AttributeInASTsToCDAttributes())
-            .andThen(new NonTerminalsToCDAttributes())
-            .andThen(new TerminalsToCDAttributes())
-            .andThen(new KeyTerminalsToCDAttributes())
-            .apply(rootLink);
+        .andThen(new ClassProdsToCDClasses())
+        .andThen(new AbstractProdsToCDClasses())
+        .andThen(new InterfaceProdsToCDInterfaces())
+        .andThen(new EnumProdsToCDEnums())
+        .andThen(new ExternalProdsToCDInterfaces())
+        .andThen(new ASTRulesToCDClassesAndCDInterfaces())
+        .andThen(new AttributeInASTsToCDAttributes())
+        .andThen(new NonTerminalsToCDAttributes())
+        .andThen(new TerminalsToCDAttributes())
+        .andThen(new KeyTerminalsToCDAttributes())
+        .andThen(new ConstantGroupsToCDAttributes())
+        .apply(rootLink);
   }
 }

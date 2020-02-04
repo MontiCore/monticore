@@ -1,0 +1,5 @@
+package mc.feature.overwriting;
+
+component grammar SuperA extends mc.common.Basics {
+  E = Name*;
+}

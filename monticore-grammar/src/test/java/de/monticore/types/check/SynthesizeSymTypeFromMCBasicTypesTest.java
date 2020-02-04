@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
@@ -34,7 +35,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   // Parer used for convenience:
   MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromMCSimpleGenericTypes(),null);
+  TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromMCBasicTypes(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build()),null);
   
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
   

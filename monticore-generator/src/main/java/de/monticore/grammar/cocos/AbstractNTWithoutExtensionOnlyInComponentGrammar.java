@@ -87,7 +87,7 @@ public class AbstractNTWithoutExtensionOnlyInComponentGrammar implements Grammar
           List<String> checkList = Lists.newArrayList(prodSymbol.getName());
           prodSymbol.getSuperProds().stream().forEach(i -> checkList.add(i.getName()));
           for (String name: checkList) {
-            if (prod.getProdComponent(StringTransformations.uncapitalize(name)).isPresent()) {
+            if (!prod.getSpannedScope().resolveRuleComponentMany(StringTransformations.uncapitalize(name)).isEmpty()) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, name), a.get_SourcePositionStart());
             }
           }

@@ -40,7 +40,7 @@ public class LastResult{
   }
 
   public void reset(){
-    last = Optional.empty();
+    setLastAbsent();
     type = false;
     method = false;
     type = false;
@@ -62,6 +62,10 @@ public class LastResult{
     this.field = true;
     this.type=false;
     this.method=false;
+  }
+
+  public void unsetType(){
+    this.type=false;
   }
 
   public boolean isField() {

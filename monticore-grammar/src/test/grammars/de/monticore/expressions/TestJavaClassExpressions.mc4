@@ -10,5 +10,5 @@ grammar TestJavaClassExpressions
 
    ExtReturnType = MCReturnType;
 
-   ExtTypeArguments = MCTypeArgument;
+   ExtTypeArgument = MCTypeArgument;
 }

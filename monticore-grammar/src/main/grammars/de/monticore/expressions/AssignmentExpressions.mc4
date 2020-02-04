@@ -51,11 +51,7 @@ component grammar AssignmentExpressions
 	
   /*=================================================================*/
 
-  interface AssignmentExpression = left:Expression operator:"" right:Expression;
-
-  /*=================================================================*/
-
-  RegularAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+  AssignmentExpression implements Expression <60> = <rightassoc>
 	left:Expression operator:["="|"+="|"-="|"*="|"/="|"&="|"|="|"^="|">>="|">>>="|"<<="|"%="]  right:Expression;
 
 }

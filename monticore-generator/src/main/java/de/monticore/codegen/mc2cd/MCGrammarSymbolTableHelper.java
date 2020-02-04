@@ -233,34 +233,34 @@ public class MCGrammarSymbolTableHelper {
     }
   }
 
-  public static Optional<String> getConstantName(RuleComponentSymbol compSymbol) {
+  public static String getConstantName(RuleComponentSymbol compSymbol) {
     if (compSymbol.isIsConstantGroup() && compSymbol.isPresentAstNode()
         && compSymbol.getAstNode() instanceof ASTConstantGroup) {
       return getConstantGroupName((ASTConstantGroup) compSymbol.getAstNode());
     }
     if (compSymbol.isIsConstant() && compSymbol.isPresentAstNode()
         && compSymbol.getAstNode() instanceof ASTConstant) {
-      return Optional.of(
-          HelperGrammar.getAttributeNameForConstant((ASTConstant) compSymbol.getAstNode()));
+      return
+          HelperGrammar.getAttributeNameForConstant((ASTConstant) compSymbol.getAstNode());
     }
-    return Optional.empty();
+    return "";
   }
-
-  public static Optional<String> getConstantGroupName(ASTConstantGroup ast) {
+  
+  public static String getConstantGroupName(ASTConstantGroup ast) {
     // setAttributeMinMax(a.getIteration(), att);
     if (ast.isPresentUsageName()) {
-      return Optional.of(ast.getUsageName());
+      return ast.getUsageName();
     }
     // derive attribute name from constant entry (but only if we have
     // one entry!)
     else if (ast.getConstantList().size() == 1) {
-      return Optional.of(HelperGrammar.getAttributeNameForConstant(ast.getConstantList().get(0)));
+      return HelperGrammar.getAttributeNameForConstant(ast.getConstantList().get(0));
     }
 
     Log.error("0xA2345 The name of the constant group could't be ascertained",
         ast.get_SourcePositionStart());
-
-    return Optional.empty();
+    
+    return "";
   }
 
   public void addEnum(String name, String constant) {
@@ -276,20 +276,6 @@ public class MCGrammarSymbolTableHelper {
     if (!enumValues.contains(name.intern())) {
       enumValues.add(name.intern());
     }
-  }
-
-  /**
-   * @param astNode
-   * @param currentSymbol
-   * @return
-   */
-  public static Optional<String> getConstantName(ASTConstantGroup astNode,
-                                                 Optional<ProdSymbol> currentSymbol) {
-    Optional<String> constName = getConstantGroupName(astNode);
-    if (!currentSymbol.isPresent() || !constName.isPresent()) {
-      return constName;
-    }
-    return Optional.of(getConstantGroupName(astNode).get());
   }
 
   public static Set<ProdSymbol> getAllSuperProds(ProdSymbol prod) {
@@ -454,13 +440,9 @@ public class MCGrammarSymbolTableHelper {
    */
   public static boolean isConstGroupIterated(RuleComponentSymbol prodComponent) {
     Preconditions.checkArgument(prodComponent.isIsConstantGroup());
-    if (!prodComponent.isIsList() && prodComponent.getSubProdList().size() <= 1) {
-      return false;
-    }
-    prodComponent.getSubProdList();
     Collection<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-    for (String component : prodComponent.getSubProdList()) {
-      set.add(component);
+    for (RuleComponentSymbol comp: prodComponent.getEnclosingScope().resolveRuleComponentDownMany(prodComponent.getName())) {
+      comp.getSubProdList().stream().forEach((p -> set.add(p)));
     }
     return set.size() > 1;
   }
@@ -489,7 +471,7 @@ public class MCGrammarSymbolTableHelper {
     if (!attrSymbol.isPresentAstNode()) {
       return Optional.empty();
     }
-    return getMax((ASTAdditionalAttribute) attrSymbol.getAstNode());
+    return getMax(attrSymbol.getAstNode());
   }
 
   public static Optional<Integer> getMax(ASTAdditionalAttribute ast) {

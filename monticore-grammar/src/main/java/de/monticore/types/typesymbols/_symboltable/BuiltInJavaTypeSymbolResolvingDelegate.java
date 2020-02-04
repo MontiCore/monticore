@@ -4,11 +4,14 @@ package de.monticore.types.typesymbols._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.antlr4.MCConcreteParser;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeVariable;
 import de.se_rwth.commons.logging.Log;
+import javassist.bytecode.stackmap.TypeData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,164 +44,273 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolv
         new ArrayList<>());
     gs.addSubScope(javautil);
 
+    //some SymTypeExpressions to use for methods and fields
+
+    //java.lang
+    final SymTypeExpression objectSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Object",javalang));
+    final SymTypeExpression intWrapperSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Integer",javalang));
+    final SymTypeExpression doubleWrapperSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Double",javalang));
+    final SymTypeExpression floatWrapperSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Float",javalang));
+    final SymTypeExpression longWrapperSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Long",javalang));
+    final SymTypeExpression charWrapperSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Character",javalang));
+    final SymTypeExpression byteWrapperSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Byte",javalang));
+    final SymTypeExpression shortWrapperSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Short",javalang));
+    final SymTypeExpression booleanWrapperSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Boolean",javalang));
+    final SymTypeExpression stringSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("String",javalang));
+    final SymTypeExpression numberSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Number",javalang));
+
+
+    //java.util
+    //TypeSymbolLoader for the Generics -> enclosingScopes have to be set later on when the type symbol is created
+    TypeSymbolLoader eVarSymbolCollectionLoader = new TypeSymbolLoader("E",gs);
+    TypeSymbolLoader eVarSymbolListLoader = new TypeSymbolLoader("E",gs);
+    TypeSymbolLoader eVarSymbolSetLoader = new TypeSymbolLoader("E",gs);
+    TypeSymbolLoader tVarSymbolOptionalLoader = new TypeSymbolLoader("T",gs);
+    TypeSymbolLoader kVarSymbolMapLoader = new TypeSymbolLoader("K",gs);
+    TypeSymbolLoader vVarSymbolMapLoader = new TypeSymbolLoader("V",gs);
+
+    SymTypeExpression listSymType = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("List",javautil),SymTypeExpressionFactory.createTypeVariable(eVarSymbolListLoader));
+    SymTypeExpression setSymType = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Set",javautil),SymTypeExpressionFactory.createTypeVariable(eVarSymbolSetLoader));
+    SymTypeExpression optionalSymType = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Optional",javautil),SymTypeExpressionFactory.createTypeVariable(tVarSymbolOptionalLoader));
+    SymTypeExpression mapSymType = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Map",javautil),SymTypeExpressionFactory.createTypeVariable(kVarSymbolMapLoader),SymTypeExpressionFactory.createGenerics(vVarSymbolMapLoader));
+    SymTypeExpression collectionSymType = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Collection",javautil),SymTypeExpressionFactory.createTypeVariable(eVarSymbolCollectionLoader));
+
+    //primitives
+    final SymTypeExpression intSymType = SymTypeExpressionFactory.createTypeConstant("int");
+    final SymTypeExpression doubleSymType = SymTypeExpressionFactory.createTypeConstant("double");
+    final SymTypeExpression floatSymType = SymTypeExpressionFactory.createTypeConstant("float");
+    final SymTypeExpression longSymType = SymTypeExpressionFactory.createTypeConstant("long");
+    final SymTypeExpression charSymType = SymTypeExpressionFactory.createTypeConstant("char");
+    final SymTypeExpression shortSymType = SymTypeExpressionFactory.createTypeConstant("short");
+    final SymTypeExpression byteSymType = SymTypeExpressionFactory.createTypeConstant("byte");
+    final SymTypeExpression booleanSymType = SymTypeExpressionFactory.createTypeConstant("boolean");
+
+    //other
+    final SymTypeExpression voidSymType = SymTypeExpressionFactory.createTypeVoid();
+    final SymTypeExpression nullSymType = SymTypeExpressionFactory.createTypeOfNull();
+
+
+
     //class Object
-    TypeSymbol object = type("Object");
-    SymTypeExpression objectSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Object",javalang));
     //methods
-    MethodSymbol hashCode = method("hashCode", SymTypeExpressionFactory.createTypeConstant("int"));
-    MethodSymbol equals = add(method("equals",SymTypeExpressionFactory.createTypeConstant("boolean")),
+    MethodSymbol hashCode = methodSymbol("hashCode", intSymType);
+    MethodSymbol equals = addFieldToMethod(methodSymbol("equals",booleanSymType),
         field("obj",objectSymType));
-    MethodSymbol toString = method("toString",SymTypeExpressionFactory.createTypeObject("String",object.getSpannedScope()));
-    object.setMethodList(Lists.newArrayList(hashCode,equals,toString));
+    MethodSymbol toString = methodSymbol("toString",stringSymType);
+    TypeSymbol object = typeSymbol("Object",Lists.newArrayList(hashCode,equals,toString),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),javalang);
     //add to scope
     javalang.add(object);
+
+    //Number
+    //methods
+    MethodSymbol intValue = methodSymbol("intValue",intSymType);
+    MethodSymbol longValue = methodSymbol("longValue",longSymType);
+    MethodSymbol floatValue = methodSymbol("floatValue",floatSymType);
+    MethodSymbol doubleValue = methodSymbol("doubleValue",doubleSymType);
+    MethodSymbol byteValue = methodSymbol("byteValue",byteSymType);
+    MethodSymbol shortValue = methodSymbol("shortValue",shortSymType);
+    TypeSymbol number = typeSymbol("Number",Lists.newArrayList(intValue,longValue,floatValue,doubleValue,byteValue,shortValue),Lists.newArrayList(),Lists.newArrayList(objectSymType),Lists.newArrayList(),javalang);
+
+    //add to scope
+    javalang.add(number);
 
 
     //primitive types
     //String
-    TypeSymbol string = type("String");
-    SymTypeExpression stringSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("String",javalang));
     //methods
-    MethodSymbol length = method("length",SymTypeExpressionFactory.createTypeConstant("int"));
-    MethodSymbol isEmpty = method("isEmpty", SymTypeExpressionFactory.createTypeConstant("boolean"));
-    MethodSymbol charAt = add(method("charAt",SymTypeExpressionFactory.createTypeConstant("char")),
-        field("index",SymTypeExpressionFactory.createTypeConstant("int")));
-    MethodSymbol compareTo = add(method("compareTo",SymTypeExpressionFactory.createTypeConstant("int")),
+    MethodSymbol length = methodSymbol("length",intSymType);
+    MethodSymbol isEmpty = methodSymbol("isEmpty", booleanSymType);
+    MethodSymbol charAt = addFieldToMethod(methodSymbol("charAt",charSymType),
+        field("index",intSymType));
+    MethodSymbol compareTo = addFieldToMethod(methodSymbol("compareTo",intSymType),
         field("anotherString",stringSymType));
-    MethodSymbol startsWith = add(method("startsWith",SymTypeExpressionFactory.createTypeConstant("boolean")),
+    MethodSymbol startsWith = addFieldToMethod(methodSymbol("startsWith",booleanSymType),
         field("prefix",stringSymType));
-    MethodSymbol endsWith = add(method("endsWith",SymTypeExpressionFactory.createTypeConstant("boolean")),
+    MethodSymbol endsWith = addFieldToMethod(methodSymbol("endsWith",booleanSymType),
         field("suffix",stringSymType));
-    MethodSymbol indexOf = add(method("indexOf",SymTypeExpressionFactory.createTypeConstant("int")),
-        field("ch",SymTypeExpressionFactory.createTypeConstant("int")));
-    MethodSymbol substring = add(add(method("substring",stringSymType),field("beginIndex",SymTypeExpressionFactory.createTypeConstant("int"))),
-        field("endIndex",SymTypeExpressionFactory.createTypeConstant("int")));
-    MethodSymbol concat = add(method("concat",stringSymType),field("str",stringSymType));
-    MethodSymbol replace = add(add(method("replace",stringSymType),
-        field("oldChar",SymTypeExpressionFactory.createTypeConstant("char"))),
-        field("newChar",SymTypeExpressionFactory.createTypeConstant("char")));
-    MethodSymbol contains = add(method("contains",SymTypeExpressionFactory.createTypeConstant("boolean")),
+    MethodSymbol indexOf = addFieldToMethod(methodSymbol("indexOf",intSymType),
+        field("ch",intSymType));
+    MethodSymbol substring = addFieldToMethod(addFieldToMethod(methodSymbol("substring",stringSymType),field("beginIndex",intSymType)),
+        field("endIndex",intSymType));
+    MethodSymbol concat = addFieldToMethod(methodSymbol("concat",stringSymType),field("str",stringSymType));
+    MethodSymbol replace = addFieldToMethod(addFieldToMethod(methodSymbol("replace",stringSymType),
+        field("oldChar",charSymType)),
+        field("newChar",charSymType));
+    MethodSymbol contains = addFieldToMethod(methodSymbol("contains",booleanSymType),
         field("s",stringSymType));
-    MethodSymbol toLowerCase = method("toLowerCase",stringSymType);
-    MethodSymbol toUpperCase = method("toUpperCase",stringSymType);
-    MethodSymbol valueOf = add(method("valueOf",stringSymType),field("obj",objectSymType));
-    MethodSymbol matches = add(method("matches",SymTypeExpressionFactory.createTypeConstant("boolean")),
+    MethodSymbol toLowerCase = methodSymbol("toLowerCase",stringSymType);
+    MethodSymbol toUpperCase = methodSymbol("toUpperCase",stringSymType);
+    MethodSymbol valueOf = addFieldToMethod(methodSymbol("valueOf",stringSymType),field("obj",objectSymType));
+    MethodSymbol matches = addFieldToMethod(methodSymbol("matches",booleanSymType),
         field("regex",stringSymType));
-    string.setMethodList(Lists.newArrayList(equals,hashCode,length,isEmpty,charAt,compareTo,startsWith,
-        endsWith,indexOf,substring,concat,replace,contains,toLowerCase,toUpperCase,concat,valueOf,matches));
+
+    TypeSymbol string = typeSymbol("String",Lists.newArrayList(equals.deepClone(),hashCode.deepClone(),length,isEmpty,charAt,compareTo,startsWith,endsWith,indexOf,substring,concat,replace,contains,toLowerCase,toUpperCase,valueOf,matches),Lists.newArrayList(),Lists.newArrayList(objectSymType),Lists.newArrayList(),javalang);
 
     //add to scope
     javalang.add(string);
-    gs.add(string);
 
     //Boolean
-    TypeSymbol bool = type("Boolean");
-    SymTypeExpression booleanSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Boolean",javalang));
-    MethodSymbol booleanValue = method("booleanValue",SymTypeExpressionFactory.createTypeConstant("boolean"));
-    MethodSymbol boolValueOf = add(method("valueOf",booleanSymType),field("b",
-        SymTypeExpressionFactory.createTypeConstant("boolean")));
-    MethodSymbol compare = add(add(method("compare",SymTypeExpressionFactory.createTypeConstant("int")),
-        field("x",SymTypeExpressionFactory.createTypeConstant("boolean"))),
-        field("y",SymTypeExpressionFactory.createTypeConstant("boolean")));
-    bool.setMethodList(Lists.newArrayList(booleanValue,boolValueOf,compare,toString,hashCode,equals));
+    MethodSymbol booleanValue = methodSymbol("booleanValue",booleanSymType);
+    MethodSymbol boolValueOf = addFieldToMethod(methodSymbol("valueOf",booleanWrapperSymType),field("b",
+        booleanSymType));
+    MethodSymbol compare = addFieldToMethod(addFieldToMethod(methodSymbol("compare",intSymType),
+        field("x",booleanSymType)),
+        field("y",booleanSymType));
+    TypeSymbol bool = typeSymbol("Boolean",Lists.newArrayList(booleanValue,boolValueOf,compare,toString.deepClone(),hashCode.deepClone(),equals.deepClone()),Lists.newArrayList(),Lists.newArrayList(objectSymType),Lists.newArrayList(),javalang);
 
     javalang.add(bool);
-    gs.add(new TypeSymbol("boolean"));
+    gs.add(typeSymbol("boolean",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),gs));
 
     //Integer
-    TypeSymbol integer = type("Integer");
-    SymTypeExpression integerSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Integer",javalang));
-    MethodSymbol parseInt = add(method("parseInt",SymTypeExpressionFactory.createTypeConstant("int")),
+    MethodSymbol parseInt = addFieldToMethod(methodSymbol("parseInt",intSymType),
         field("s",stringSymType));
-    MethodSymbol intValueOf = add(method("valueOf",integerSymType),field("s",stringSymType));
-    MethodSymbol sum = add(add(method("sum",SymTypeExpressionFactory.createTypeConstant("int")),
-        field("a",SymTypeExpressionFactory.createTypeConstant("int"))),
-        field("b",SymTypeExpressionFactory.createTypeConstant("int")));
-    integer.setMethodList(Lists.newArrayList(parseInt,intValueOf,sum,equals,hashCode,toString));
+    MethodSymbol intValueOf = addFieldToMethod(methodSymbol("valueOf",intWrapperSymType),field("s",stringSymType));
+    MethodSymbol sum = addFieldToMethod(addFieldToMethod(methodSymbol("sum",intSymType),
+        field("a",intSymType)),
+        field("b",intSymType));
+    TypeSymbol integer = typeSymbol("Integer",Lists.newArrayList(parseInt,intValueOf,sum,equals.deepClone(),hashCode.deepClone(),toString.deepClone()),Lists.newArrayList(),Lists.newArrayList(numberSymType),Lists.newArrayList(),javalang);
 
     javalang.add(integer);
-    gs.add(new TypeSymbol("int"));
+    gs.add(typeSymbol("int",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),gs));
 
     //Float
-    TypeSymbol floatType = type("Float");
-    SymTypeExpression floatSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Float",javalang));
-    MethodSymbol floatValueOf = add(method("valueOf",floatSymType),field("s",stringSymType));
-    MethodSymbol parseFloat = add(method("parseFloat",SymTypeExpressionFactory.createTypeConstant("float")),
+    MethodSymbol floatValueOf = addFieldToMethod(methodSymbol("valueOf",floatWrapperSymType),field("s",stringSymType));
+    MethodSymbol parseFloat = addFieldToMethod(methodSymbol("parseFloat",floatSymType),
         field("s",stringSymType));
-    MethodSymbol isInfinite = method("isInfinite",SymTypeExpressionFactory.createTypeConstant("boolean"));
-    MethodSymbol sumFloat = add(add(method("sum",SymTypeExpressionFactory.createTypeConstant("float")),
-        field("a",SymTypeExpressionFactory.createTypeConstant("float"))),
-        field("b",SymTypeExpressionFactory.createTypeConstant("float")));
-    floatType.setMethodList(Lists.newArrayList(floatValueOf,parseFloat,isInfinite,sumFloat,equals,hashCode,toString));
+    MethodSymbol isInfinite = methodSymbol("isInfinite",booleanSymType);
+    MethodSymbol sumFloat = addFieldToMethod(addFieldToMethod(methodSymbol("sum",floatSymType),
+        field("a",floatSymType)),
+        field("b",floatSymType));
+    TypeSymbol floatType = typeSymbol("Float",Lists.newArrayList(floatValueOf,parseFloat,isInfinite,sumFloat,equals.deepClone(),hashCode.deepClone(),toString.deepClone()),Lists.newArrayList(),Lists.newArrayList(numberSymType),Lists.newArrayList(),javalang);
 
     javalang.add(floatType);
-    gs.add(new TypeSymbol("float"));
+    gs.add(typeSymbol("float",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),gs));
 
     //Double
-    TypeSymbol doubleType = type("Double");
-    SymTypeExpression doubleSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Double",javalang));
-    MethodSymbol doubleValueOf = add(method("valueOf",doubleSymType),field("s",stringSymType));
-    MethodSymbol parseDouble = add(method("parseDouble",SymTypeExpressionFactory.createTypeConstant("double")),
+    MethodSymbol doubleValueOf = addFieldToMethod(methodSymbol("valueOf",doubleWrapperSymType),field("s",stringSymType));
+    MethodSymbol parseDouble = addFieldToMethod(methodSymbol("parseDouble",doubleSymType),
         field("s",stringSymType));
-    MethodSymbol sumDouble = add(add(method("sum",SymTypeExpressionFactory.createTypeConstant("double")),
-        field("a",SymTypeExpressionFactory.createTypeConstant("double"))),
-        field("b",SymTypeExpressionFactory.createTypeConstant("double")));
-    doubleType.setMethodList(Lists.newArrayList(doubleValueOf,parseDouble,isInfinite,sumDouble,equals,hashCode,toString));
+    MethodSymbol sumDouble = addFieldToMethod(addFieldToMethod(methodSymbol("sum",doubleSymType),
+        field("a",doubleSymType)),
+        field("b",doubleSymType));
+    TypeSymbol doubleType = typeSymbol("Double",Lists.newArrayList(doubleValueOf,parseDouble,sumDouble,isInfinite,equals.deepClone(),hashCode.deepClone(),toString.deepClone()),Lists.newArrayList(),Lists.newArrayList(numberSymType),Lists.newArrayList(),javalang);
 
     javalang.add(doubleType);
-    gs.add(new TypeSymbol("double"));
+    gs.add(typeSymbol("double",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),gs));
 
     //Long
-    TypeSymbol longType = type("Long");
-    SymTypeExpression longSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Long",javalang));
-    MethodSymbol parseLong = add(method("parseLong",SymTypeExpressionFactory.createTypeConstant("long")),
+    MethodSymbol parseLong = addFieldToMethod(methodSymbol("parseLong",longSymType),
         field("s",stringSymType));
-    MethodSymbol longValueOf = add(method("valueOf",longSymType),field("s",stringSymType));
-    MethodSymbol sumLong = add(add(method("sum",SymTypeExpressionFactory.createTypeConstant("long")),
-        field("a",SymTypeExpressionFactory.createTypeConstant("long"))),
-        field("b",SymTypeExpressionFactory.createTypeConstant("long")));
-    longType.setMethodList(Lists.newArrayList(parseLong,longValueOf,sumLong,equals,hashCode,toString));
+    MethodSymbol longValueOf = addFieldToMethod(methodSymbol("valueOf",longWrapperSymType),field("s",stringSymType));
+    MethodSymbol sumLong = addFieldToMethod(addFieldToMethod(methodSymbol("sum",longSymType),
+        field("a",longSymType)),
+        field("b",longSymType));
+    TypeSymbol longType = typeSymbol("Long",Lists.newArrayList(parseLong,longValueOf,sumLong,equals.deepClone(),hashCode.deepClone(),toString.deepClone()),Lists.newArrayList(),Lists.newArrayList(numberSymType),Lists.newArrayList(),javalang);
 
     javalang.add(longType);
-    gs.add(new TypeSymbol("long"));
+    gs.add(typeSymbol("long",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),gs));
 
     //Byte
-    TypeSymbol byteType = type("Byte");
-    SymTypeExpression byteSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Byte",javalang));
-    MethodSymbol parseByte = add(method("parseByte",SymTypeExpressionFactory.createTypeConstant("byte")),
+    MethodSymbol parseByte = addFieldToMethod(methodSymbol("parseByte",byteSymType),
         field("s",stringSymType));
-    MethodSymbol byteValueOf = add(method("valueOf",byteSymType),field("s",stringSymType));
-    byteType.setMethodList(Lists.newArrayList(parseByte,byteValueOf,equals,hashCode,toString));
+    MethodSymbol byteValueOf = addFieldToMethod(methodSymbol("valueOf",byteWrapperSymType),field("s",stringSymType));
+    TypeSymbol byteType = typeSymbol("Byte",Lists.newArrayList(parseByte,byteValueOf,equals.deepClone(),hashCode.deepClone(),toString.deepClone()),Lists.newArrayList(),Lists.newArrayList(numberSymType),Lists.newArrayList(),javalang);
 
     javalang.add(byteType);
-    gs.add(new TypeSymbol("byte"));
+    gs.add(typeSymbol("byte",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),gs));
 
     //Short
-    TypeSymbol shortType = type("Short");
-    SymTypeExpression shortSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Short",javalang));
-    MethodSymbol parseShort = add(method("parseShort",SymTypeExpressionFactory.createTypeConstant("short")),
+    MethodSymbol parseShort = addFieldToMethod(methodSymbol("parseShort",shortSymType),
         field("s",stringSymType));
-    MethodSymbol shortValueOf = add(method("valueOf",shortSymType),field("s",stringSymType));
-    shortType.setMethodList(Lists.newArrayList(parseShort,shortValueOf,equals,hashCode,toString));
+    MethodSymbol shortValueOf = addFieldToMethod(methodSymbol("valueOf",shortWrapperSymType),field("s",stringSymType));
+    TypeSymbol shortType = typeSymbol("Short",Lists.newArrayList(parseShort,shortValueOf,equals.deepClone(),hashCode.deepClone(),toString.deepClone()),Lists.newArrayList(),Lists.newArrayList(numberSymType),Lists.newArrayList(),javalang);
 
     javalang.add(shortType);
-    gs.add(new TypeSymbol("short"));
+    gs.add(typeSymbol("short",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),gs));
 
-    TypeSymbol character = type("Character");
-    SymTypeExpression characterSymType = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("Character",javalang));
-    MethodSymbol characterValueOf = add(method("valueOf",characterSymType),field("s",stringSymType));
-    character.setMethodList(Lists.newArrayList(characterValueOf,equals,hashCode,toString));
+    //char/Character
+    MethodSymbol characterValueOf = addFieldToMethod(methodSymbol("valueOf",charWrapperSymType),field("c",charSymType));
+    MethodSymbol isTitleCase = addFieldToMethod(methodSymbol("isTitleCase",booleanSymType),field("ch",charSymType));
+    TypeSymbol character = typeSymbol("Character",Lists.newArrayList(characterValueOf,isTitleCase,equals.deepClone(),hashCode.deepClone(),toString.deepClone()),Lists.newArrayList(),Lists.newArrayList(objectSymType),Lists.newArrayList(),javalang);
 
     javalang.add(character);
-    gs.add(new TypeSymbol("char"));
+    gs.add(typeSymbol("char",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),gs));
 
     //Collection types
-    javautil.add(new TypeSymbol("List"));
-    javautil.add(new TypeSymbol("Optional"));
-    javautil.add(new TypeSymbol("Map"));
-    javautil.add(new TypeSymbol("Set"));
 
-    gs.add(new TypeSymbol("char"));
+    //Collection
+    MethodSymbol size = methodSymbol("size",intSymType);
+    MethodSymbol containsList = addFieldToMethod(methodSymbol("contains",booleanSymType),field("o",objectSymType));
+    MethodSymbol add = addFieldToMethod(methodSymbol("add",booleanSymType),field("e",SymTypeExpressionFactory.createTypeVariable(eVarSymbolCollectionLoader)));
+    MethodSymbol remove = addFieldToMethod(methodSymbol("remove",booleanSymType),field("o",objectSymType));
+    MethodSymbol containsAll = addFieldToMethod(methodSymbol("containsAll",booleanSymType),field("c",collectionSymType));
+    MethodSymbol addAll = addFieldToMethod(methodSymbol("addAll",booleanSymType),field("c",collectionSymType));
+    MethodSymbol removeAll = addFieldToMethod(methodSymbol("removeAll",booleanSymType),field("c",collectionSymType));
+    MethodSymbol retainAll = addFieldToMethod(methodSymbol("retainAll",booleanSymType),field("c",collectionSymType));
+    MethodSymbol clear = methodSymbol("clear",voidSymType);
+
+    TypeSymbol collection = typeSymbol("Collection",Lists.newArrayList(isEmpty.deepClone(),containsList,size,add,remove,containsAll,addAll,removeAll,retainAll,clear,equals.deepClone(),hashCode.deepClone()),Lists.newArrayList(),Lists.newArrayList(objectSymType),Lists.newArrayList(typeVariable("E")),javautil);
+    eVarSymbolCollectionLoader.setEnclosingScope(collection.getSpannedScope());
+    javautil.add(collection);
+
+    //List
+    SymTypeExpression eListSymType = SymTypeExpressionFactory.createTypeVariable(eVarSymbolListLoader);
+    SymTypeExpression collectionSymTypeForList = SymTypeExpressionFactory.createGenerics("Collection",javautil,eListSymType);
+    MethodSymbol addList = addFieldToMethod(methodSymbol("add",booleanSymType),field("e",eListSymType));
+    MethodSymbol containsAllList = addFieldToMethod(methodSymbol("containsAll",booleanSymType),field("c",collectionSymTypeForList));
+    MethodSymbol addAllList = addFieldToMethod(methodSymbol("addAll",booleanSymType),field("c",collectionSymTypeForList));
+    MethodSymbol removeAllList = addFieldToMethod(methodSymbol("removeAll",booleanSymType),field("c",collectionSymTypeForList));
+    MethodSymbol retainAllList = addFieldToMethod(methodSymbol("retainAll",booleanSymType),field("c",collectionSymTypeForList));
+    MethodSymbol get = addFieldToMethod(methodSymbol("get",eListSymType),field("index",intSymType));
+    MethodSymbol setList = addFieldToMethod(addFieldToMethod(methodSymbol("set",eListSymType),field("index",intSymType)),field("element",eListSymType));
+    MethodSymbol addList2 = addFieldToMethod(addFieldToMethod(methodSymbol("add",voidSymType),field("index",intSymType)),field("element",eListSymType));
+    MethodSymbol removeList2 = addFieldToMethod(methodSymbol("remove",eListSymType),field("index",intSymType));
+    MethodSymbol indexOfList = addFieldToMethod(methodSymbol("indexOf",intSymType),field("o",objectSymType));
+
+    TypeSymbol list = typeSymbol("List",Lists.newArrayList(size.deepClone(),isEmpty.deepClone(),containsList.deepClone(),clear.deepClone(),remove.deepClone(),addList,containsAllList,addAllList,removeAllList,retainAllList,get,setList,removeList2,indexOfList,addList2),Lists.newArrayList(),Lists.newArrayList(collectionSymTypeForList),Lists.newArrayList(typeVariable("E")),javautil);
+    eVarSymbolListLoader.setEnclosingScope(list.getSpannedScope());
+    javautil.add(list);
+
+    //Optional
+    SymTypeExpression tOptionalSymType = SymTypeExpressionFactory.createTypeVariable(tVarSymbolOptionalLoader);
+    MethodSymbol empty = methodSymbol("empty",optionalSymType);
+    MethodSymbol of = addFieldToMethod(methodSymbol("of",optionalSymType),field("t",tOptionalSymType));
+    MethodSymbol ofNullable = addFieldToMethod(methodSymbol("ofNullable",optionalSymType),field("t",tOptionalSymType));
+    MethodSymbol getOptional = methodSymbol("get",tOptionalSymType);
+    MethodSymbol isPresent = methodSymbol("isPresent",booleanSymType);
+
+    TypeSymbol optional = typeSymbol("Optional",Lists.newArrayList(equals.deepClone(),hashCode.deepClone(),toString.deepClone(),empty,of,ofNullable,getOptional,isPresent),Lists.newArrayList(),Lists.newArrayList(objectSymType),Lists.newArrayList(typeVariable("T")),javautil);
+    tVarSymbolOptionalLoader.setEnclosingScope(optional.getSpannedScope());
+    javautil.add(optional);
+
+    //Map
+    SymTypeExpression kMapSymType = SymTypeExpressionFactory.createTypeVariable(kVarSymbolMapLoader);
+    SymTypeExpression vMapSymType = SymTypeExpressionFactory.createTypeVariable(vVarSymbolMapLoader);
+    MethodSymbol containsKey = addFieldToMethod(methodSymbol("containsKey",booleanSymType),field("key",objectSymType));
+    MethodSymbol containsValue = addFieldToMethod(methodSymbol("containsValue",booleanSymType),field("value",objectSymType));
+    MethodSymbol getMap = addFieldToMethod(methodSymbol("get",vMapSymType),field("key",objectSymType));
+    MethodSymbol put = addFieldToMethod(addFieldToMethod(methodSymbol("put",vMapSymType),field("key",kMapSymType)),field("value",vMapSymType));
+    MethodSymbol removeMap = addFieldToMethod(methodSymbol("remove",vMapSymType),field("key",objectSymType));
+    MethodSymbol keySet = methodSymbol("keySet",SymTypeExpressionFactory.createGenerics("Set",javautil,kMapSymType));
+    MethodSymbol values = methodSymbol("values",SymTypeExpressionFactory.createGenerics("Collection",javautil,vMapSymType));
+    MethodSymbol replaceMap = addFieldToMethod(addFieldToMethod(methodSymbol("replace",vMapSymType),field("key",kMapSymType)),field("value",vMapSymType));
+
+    TypeSymbol map = typeSymbol("Map",Lists.newArrayList(size.deepClone(),isEmpty.deepClone(),containsKey,containsValue,getMap,put,removeMap,keySet,values,replaceMap),Lists.newArrayList(),Lists.newArrayList(objectSymType),Lists.newArrayList(typeVariable("K"),typeVariable("V")),javautil);
+    kVarSymbolMapLoader.setEnclosingScope(map.getSpannedScope());
+    vVarSymbolMapLoader.setEnclosingScope(map.getSpannedScope());
+    javautil.add(map);
+
+    //Set
+    SymTypeExpression eSetSymType = SymTypeExpressionFactory.createTypeVariable(eVarSymbolSetLoader);
+    SymTypeExpression collectionForSet = SymTypeExpressionFactory.createGenerics("Collection",javautil,eSetSymType);
+    MethodSymbol addSet = addFieldToMethod(methodSymbol("add",booleanSymType),field("element",eSetSymType));
+    MethodSymbol addAllSet = addFieldToMethod(methodSymbol("addAll",booleanSymType),field("c",collectionForSet));
+    MethodSymbol retainAllSet = addFieldToMethod(methodSymbol("retainAll",booleanSymType),field("c",collectionForSet));
+    MethodSymbol removeAllSet = addFieldToMethod(methodSymbol("removeAll",booleanSymType),field("c",collectionForSet));
+
+    TypeSymbol set = typeSymbol("Set",Lists.newArrayList(size.deepClone(),isEmpty.deepClone(),containsList.deepClone(),addSet,addAllSet,retainAllSet,removeAllSet,equals.deepClone(),hashCode.deepClone()),Lists.newArrayList(),Lists.newArrayList(collectionForSet),Lists.newArrayList(typeVariable("E")),javautil);
+    eVarSymbolSetLoader.setEnclosingScope(set.getSpannedScope());
+    javautil.add(set);
 
     //TODO complete me with other built in types
 
@@ -214,6 +326,46 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolv
 
   public static TypeSymbolsScope getScope(){
     return gs;
+  }
+
+  public static MethodSymbol methodSymbol(String name, SymTypeExpression returnType){
+    MethodSymbol m = TypeSymbolsSymTabMill.methodSymbolBuilder()
+        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+        .setName(name)
+        .setFullName(name)  // can later be adapted, when fullname of Type is known
+        .setAccessModifier(AccessModifier.ALL_INCLUSION)
+        .setParameterList(new ArrayList<>())
+        .setReturnType(returnType)
+        .build();
+    m.setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build());
+    return m;
+  }
+
+  public static TypeSymbol typeSymbol(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList, List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList, ITypeSymbolsScope enclosingScope){
+    TypeSymbol t = TypeSymbolsSymTabMill.typeSymbolBuilder()
+        .setEnclosingScope(enclosingScope)
+        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+        .setName(name)
+        .setFullName(name)
+        .setTypeParameterList(typeVariableList)
+        .setSuperTypeList(superTypeList)
+        .setMethodList(methodList)
+        .setFieldList(fieldList)
+        .build();
+
+    t.getSpannedScope().setEnclosingScope(enclosingScope);
+
+    for(MethodSymbol method: t.getMethodList()){
+      method.getSpannedScope().setEnclosingScope(t.getSpannedScope());
+    }
+    return t;
+  }
+
+  public static MethodSymbol addFieldToMethod(MethodSymbol m, FieldSymbol f){
+    m.getSpannedScope().add(f);
+    m.addParameter(f);
+    f.setEnclosingScope(m.getSpannedScope());
+    return m;
   }
 
 }

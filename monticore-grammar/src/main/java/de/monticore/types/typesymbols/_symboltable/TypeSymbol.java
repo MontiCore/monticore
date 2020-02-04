@@ -35,7 +35,7 @@ public class TypeSymbol extends TypeSymbolTOP {
 
   public List<SymTypeExpression> getSuperClassesOnly(){
     return superTypes.stream()
-        .filter(type -> type.getTypeInfo().isAbstract || type.getTypeInfo().isClass)
+        .filter(type -> type.getTypeInfo().isClass)
         .collect(Collectors.toList());
   }
 

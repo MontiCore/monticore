@@ -84,7 +84,7 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
 
 <#list definition.getCDInterfaceList() as cdInterface>
     <#list cdInterface.getCDAttributeList() as attribute>
-        <#if !service.isInheritedAttribute(attribute)>
+        <#if !service.isInheritedAttribute(attribute) >
             <#assign get = service.determineGetEmfMethod(attribute, definition)>
             <#assign isList = service.determineListInteger(attribute.getMCType())>
             <#if genHelper.isSimpleAstNode(attribute) || genHelper.isListAstNode(attribute) ||genHelper.isOptionalAstNode(attribute)>

@@ -8,7 +8,6 @@ import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSy
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -89,11 +88,8 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   // (may be any other Parser that understands CommonExpressions)
   CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
-  // This is the core Visitor under Test (but rather empty)
-  DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
-
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
 
   // other arguments not used (and therefore deliberately null)
 
@@ -128,10 +124,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //only possible with numeric types
     String s = "\"Hello\"++";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0170 The resulting type of the IncSuffixExpression cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0170"));
     }
   }
 
@@ -156,10 +152,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //only possible with numeric types
     String s = "\"Hello\"--";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0171 The resulting type of the DecSuffixExpression cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0171"));
     }
   }
 
@@ -184,10 +180,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //only possible with numeric types
     String s = "++\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0172 The resulting type of the IncPrefixExpression cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0172"));
     }
   }
 
@@ -212,10 +208,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //only possible with numeric types
     String s = "--\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0173 The resulting type of the DecPrefixExpression cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0173"));
     }
   }
 
@@ -240,10 +236,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //only possible with numeric types
     String s = "-\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0175 The resulting type of the MinusPrefixExpression cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0175"));
     }
   }
 
@@ -269,10 +265,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //only possible with numeric types
     String s = "+\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0174 The resulting type of the PlusPrefixExpression cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0174"));
     }
   }
 
@@ -300,10 +296,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int + (int) String returns a casting error
     String s = "varint+=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0176 The resulting type of the PlusAssignment (+=) cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0176"));
     }
   }
 
@@ -327,10 +323,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int - (int) String returns a casting error
     String s = "varint-=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0177 The resulting type of the MinusAssignment (-=) cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0177"));
     }
   }
 
@@ -354,10 +350,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int * (int) String returns a casting error
     String s = "varint*=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0178 The resulting type of the MultAssignment (*=) cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0178"));
     }
   }
 
@@ -381,10 +377,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int / (int) String returns a casting error
     String s = "varint/=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0179 The resulting type of the DivideAssignment (/=) cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0179"));
     }
   }
 
@@ -408,10 +404,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int % (int) String returns a casting error
     String s = "varint%=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0187 The resulting type of the ModuloAssignment (%=) cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0189"));
     }
   }
 
@@ -439,10 +435,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int & (int) String returns a casting error
     String s = "varint&=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0181 The resulting type of the AndAssignment (&=) cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0183"));
     }
   }
 
@@ -466,10 +462,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int | (int) String returns a casting error
     String s = "varint|=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0182 The resulting type of the OrAssignment (|=) cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0184"));
     }
   }
 
@@ -497,12 +493,11 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int ^ (int) String returns a casting error
     String s = "varint^=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0183 The resulting type of the BinaryXorAssignment (^=) cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0185"));
     }
-
   }
 
   /**
@@ -525,10 +520,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int << (int) String returns a casting error
     String s = "varint<<=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0185 The resulting type of the DoubleLeftAssignment (<<=) cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0187"));
     }
   }
 
@@ -552,10 +547,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int >> (int) String returns a casting error
     String s = "varint>>=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0184 The resulting type of the DoubleRightAssignment (>>=) cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0186"));
     }
   }
 
@@ -579,10 +574,10 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int >>> (int) String returns a casting error
     String s = "varint>>>=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0186 The resulting type of the LogicalRightAssignment (>>>=) cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0188"));
     }
   }
 
@@ -614,10 +609,22 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = (int) String returns a casting error
     String s = "varint=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals(Log.getFindings().get(0).getMsg(), "0x"+"A0180 The resulting type of the RegularAssignment (=) cannot be calculated");
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0182"));
+    }
+  }
+
+  @Test
+  public void testInvalidRegularAssignmentExpression2() throws IOException{
+    //test with no field on the left side of the assignment
+    String s = "3=4";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0180"));
     }
   }
 }

@@ -33,7 +33,7 @@ public class AttributeCardinalityConstraint {
     StringBuilder ret = new StringBuilder();
     Optional<ProdSymbol> prodSymbol = symbolTable.getProdWithInherited(ast.getName());
     if (prodSymbol.isPresent()) {
-      for (AdditionalAttributeSymbol att : prodSymbol.get().getProdAttributes()) {
+      for (AdditionalAttributeSymbol att : prodSymbol.get().getSpannedScope().getLocalAdditionalAttributeSymbols()) {
         String usageName = att.getName();
         if (MCGrammarSymbolTableHelper.getMax(att).isPresent()
             || MCGrammarSymbolTableHelper.getMin(att).isPresent()) {
@@ -50,7 +50,7 @@ public class AttributeCardinalityConstraint {
     if (!prodSymbol.isPresent()) {
       return ret.toString();
     }
-    for (AdditionalAttributeSymbol att : prodSymbol.get().getProdAttributes()) {
+    for (AdditionalAttributeSymbol att : prodSymbol.get().getSpannedScope().getLocalAdditionalAttributeSymbols()) {
       
       String usageName = att.getName();
       Optional<Integer> min = MCGrammarSymbolTableHelper.getMin(att);
@@ -114,7 +114,7 @@ public class AttributeCardinalityConstraint {
       return ret.toString();
     }
     
-    Optional<AdditionalAttributeSymbol> att = rule.get().getProdAttribute(usageName);
+    Optional<AdditionalAttributeSymbol> att = rule.get().getSpannedScope().resolveAdditionalAttributeLocally(usageName);
     if (att.isPresent() && (MCGrammarSymbolTableHelper.getMax(att.get()).isPresent()
         || MCGrammarSymbolTableHelper.getMin(att.get()).isPresent())) {
       ret.append(getCounterName(usageName) + "++;\n");

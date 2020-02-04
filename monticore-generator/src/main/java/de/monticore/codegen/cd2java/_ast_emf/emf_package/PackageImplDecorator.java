@@ -70,8 +70,8 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         .addAllCDAttributes(eAttributes)
         .addCDAttribute(createISCreatedAttribute())
         .addCDAttribute(createIsInitializedAttribute())
-        .addCDAttribute(createIsIntitedAttribute())
-        .addCDConstructor(createContructor(packageImplName, definitionName))
+        .addCDAttribute(createIsInitedAttribute())
+        .addCDConstructor(createConstructor(packageImplName, definitionName))
         .addCDMethod(createInitMethod(packageName))
         .addAllCDMethods(eClassMethods)
         .addAllCDMethods(constantsEEnumMethod)
@@ -146,11 +146,11 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
 
-  protected ASTCDAttribute createIsIntitedAttribute() {
+  protected ASTCDAttribute createIsInitedAttribute() {
     return getCDAttributeFacade().createAttribute(PRIVATE_STATIC, getMCTypeFacade().createBooleanType(), IS_INITED);
   }
 
-  protected ASTCDConstructor createContructor(String packageImplName, String definitionName) {
+  protected ASTCDConstructor createConstructor(String packageImplName, String definitionName) {
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PRIVATE, packageImplName);
     replaceTemplate(EMPTY_BODY, constructor,
         new StringHookPoint("super(" + ENS_URI + "," + definitionName + NODE_FACTORY_SUFFIX + "." + GET_FACTORY_METHOD + "());"));

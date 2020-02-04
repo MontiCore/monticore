@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -505,13 +504,6 @@ public final class TransformationHelper {
 
   public static String getJavaConformName(String name) {
     return JavaNamesHelper.javaAttribute(name);
-  }
-
-  public static Map<ASTProd, List<ASTNonTerminal>> getInheritedNonTerminals(ASTProd sourceNode) {
-    return getAllSuperProds(sourceNode).stream()
-        .distinct()
-        .collect(Collectors.toMap(Function.identity(),
-            astProd -> ASTNodes.getSuccessors(astProd, ASTNonTerminal.class)));
   }
 
 

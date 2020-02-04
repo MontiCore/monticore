@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4047;
+
+grammar A4047h extends de.monticore.MCBasics {
+  Foo = "abc";
+  E = Foo*;
+}

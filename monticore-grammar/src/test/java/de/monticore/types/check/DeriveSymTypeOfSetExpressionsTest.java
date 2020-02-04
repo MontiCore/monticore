@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfSetExpressionsTest {
 
@@ -93,7 +94,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
 
   // other arguments not used (and therefore deliberately null)
 
@@ -126,7 +127,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     assertEquals("double",tc.typeOf(b).print());
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testInvalidSetInExpression() throws IOException{
     //TEST 1: Error: double in Set<int>
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
@@ -143,7 +144,11 @@ public class DeriveSymTypeOfSetExpressionsTest {
     tc = new TypeCheck(null, derLit);
 
     ASTExpression a = p.parse_StringExpression("number in setint").get();
-    tc.typeOf(a);
+    try{
+      tc.typeOf(a);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0291"));
+    }
   }
 
   @Test
@@ -170,7 +175,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     assertEquals("boolean",tc.typeOf(b).print());
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testInvalidIsInExpression() throws IOException{
     //TEST 1: Error: double isin Set<int>
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
@@ -187,7 +192,11 @@ public class DeriveSymTypeOfSetExpressionsTest {
     tc = new TypeCheck(null, derLit);
 
     ASTExpression a = p.parse_StringExpression("number isin setint").get();
-    tc.typeOf(a);
+    try{
+      tc.typeOf(a);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0288"));
+    }
   }
 
   @Test
@@ -218,7 +227,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     assertEquals("Set<double>",tc.typeOf(b).print());
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testInvalidUnionInfixExpression() throws IOException{
     //TEST 1: Error: no SetType union SetType
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
@@ -235,10 +244,14 @@ public class DeriveSymTypeOfSetExpressionsTest {
     tc = new TypeCheck(null, derLit);
 
     ASTExpression a = p.parse_StringExpression("number union setint").get();
-    tc.typeOf(a);
+    try{
+      tc.typeOf(a);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0292"));
+    }
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testInvalidUnionInfixExpression2() throws IOException{
     //TEST 2: Error: set<boolean> union set<int>
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
@@ -258,7 +271,11 @@ public class DeriveSymTypeOfSetExpressionsTest {
     tc = new TypeCheck(null, derLit);
 
     ASTExpression a = p.parse_StringExpression("setbool union setint").get();
-    tc.typeOf(a);
+    try{
+      tc.typeOf(a);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0292"));
+    }
   }
 
   @Test
@@ -272,24 +289,24 @@ public class DeriveSymTypeOfSetExpressionsTest {
     FieldSymbol setintfield = field("setint",setint);
     add2scope(scope,setintfield);
 
-    SymTypeExpression setdouble = SymTypeExpressionFactory.createGenerics(loader,_doubleSymType);
-    setdouble.typeSymbolLoader = loader;
-    FieldSymbol setdoublefield = field("setdouble",setdouble);
-    add2scope(scope,setdoublefield);
+    SymTypeExpression setchar = SymTypeExpressionFactory.createGenerics(loader,_charSymType);
+    setchar.typeSymbolLoader = loader;
+    FieldSymbol setcharfield = field("setchar",setchar);
+    add2scope(scope,setcharfield);
 
     derLit.setScope(scope);
     tc = new TypeCheck(null, derLit);
 
-    //TEST 1: Set<int> intersect Set<int>
-    ASTExpression a = p.parse_StringExpression("setint intersect setint").get();
-    assertEquals("Set<int>",tc.typeOf(a).print());
+    //TEST 1: Set<double> intersect Set<double>
+    ASTExpression a = p.parse_StringExpression("setchar intersect setchar").get();
+    assertEquals("Set<char>",tc.typeOf(a).print());
 
-    //TEST 2: Set<int> intersect Set<double> -> int subtype of double
-    ASTExpression b = p.parse_StringExpression("setint intersect setdouble").get();
-    assertEquals("Set<double>",tc.typeOf(b).print());
+    //TEST 2: Set<double> intersect Set<int> -> int subtype of double
+    ASTExpression b = p.parse_StringExpression("setint intersect setchar").get();
+    assertEquals("Set<int>",tc.typeOf(b).print());
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testInvalidIntersectionInfixExpression() throws IOException{
     //TEST 1: Error: no SetType intersect SetType
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
@@ -306,10 +323,14 @@ public class DeriveSymTypeOfSetExpressionsTest {
     tc = new TypeCheck(null, derLit);
 
     ASTExpression a = p.parse_StringExpression("number intersect setint").get();
-    tc.typeOf(a);
+    try{
+      tc.typeOf(a);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0293"));
+    }
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testInvalidIntersectionInfixExpression2() throws IOException{
     //TEST 2: Error: set<boolean> intersect set<int>
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
@@ -329,6 +350,10 @@ public class DeriveSymTypeOfSetExpressionsTest {
     tc = new TypeCheck(null, derLit);
 
     ASTExpression a = p.parse_StringExpression("setbool intersect setint").get();
-    tc.typeOf(a);
+    try{
+      tc.typeOf(a);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0293"));
+    }
   }
 }

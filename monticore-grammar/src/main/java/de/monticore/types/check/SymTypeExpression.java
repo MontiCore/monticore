@@ -64,15 +64,13 @@ public abstract class SymTypeExpression {
         methodList.add(method.deepClone());
       }
     }
-    if(!isGenericType()){
-      return methodList;
-    }else{
+    if(isGenericType()){
       //compare type arguments of SymTypeExpression(actual type) and its TypeSymbol(type definition)
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
       List<TypeVarSymbol> typeVariableArguments = getTypeInfo().getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
-        Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");
+        Log.error("0xA0300 Different number of type arguments in TypeSymbol and SymTypeExpression");
       }
       for(int i=0;i<typeVariableArguments.size();i++){
         //put the type arguments in a map TypeVarSymbol -> SymTypeExpression
@@ -112,12 +110,14 @@ public abstract class SymTypeExpression {
             }
             if(equal){
               methodList.remove(methodList.get(j));
+            }else{
+              Log.error("0xA0298 The types of the return type and the parameters of the methods have to be the same");
             }
           }
         }
       }
-      return methodList;
     }
+    return methodList;
   }
 
   /**
@@ -141,7 +141,7 @@ public abstract class SymTypeExpression {
       List<TypeVarSymbol> typeVariableArguments = getTypeInfo().getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
-        Log.error("Different number of type arguments in TypeSymbol and SymTypeExpression");
+        Log.error("0xA0301 Different number of type arguments in TypeSymbol and SymTypeExpression");
       }
       for(int i=0;i<typeVariableArguments.size();i++){
         //put the type arguments in a map TypeVarSymbol -> SymTypeExpression
@@ -162,6 +162,8 @@ public abstract class SymTypeExpression {
       for(int j = i+1;j<fieldList.size();j++){
         if(fieldList.get(i).getType().print().equals(fieldList.get(j).getType().print())){
           fieldList.remove(fieldList.get(j));
+        }else{
+          Log.error("0xA0299 The types of the fields have to be same");
         }
       }
     }

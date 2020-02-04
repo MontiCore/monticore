@@ -1,11 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.deepclone;
 
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import mc.feature.deepclone.deepclone._ast.*;
 import mc.feature.deepclone.deepclone._parser.DeepCloneParser;
+import mc.feature.deepclone.deepclone3._ast.ASTA;
+import mc.feature.deepclone.deepclone3._parser.DeepClone3Parser;
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import static org.junit.Assert.*;

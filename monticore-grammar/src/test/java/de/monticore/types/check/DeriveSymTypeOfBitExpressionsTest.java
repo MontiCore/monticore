@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfBitExpressionsTest {
 
@@ -87,7 +88,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
 
   // other arguments not used (and therefore deliberately null)
 
@@ -112,12 +113,16 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testInvalidLeftShiftExpression() throws IOException{
     //only possible with integral types
     String s = "3<<4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    tc.typeOf(astex);
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0200"));
+    }
   }
 
   /**
@@ -136,12 +141,16 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("long",tc.typeOf(astex).print());
   }
 
-  @Test(expected=RuntimeException.class)
+  @Test
   public void testInvalidRightShiftExpression() throws IOException{
     //only possible with integral types
     String s = "3>>4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    tc.typeOf(astex);
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0201"));
+    }
   }
 
   /**
@@ -160,12 +169,16 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("int",tc.typeOf(astex).print());
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testInvalidLogicalRightExpression() throws IOException{
     //only possible with integral types
     String s = "3>>>4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    tc.typeOf(astex);
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0202"));
+    }
   }
 
   /**
@@ -184,12 +197,16 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("long",tc.typeOf(astex).print());
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testInvalidBinaryOrOpExpression() throws IOException{
     //only possible with integral types
     String s = "3|4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-   tc.typeOf(astex);
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0204"));
+    }
   }
 
   /**
@@ -208,12 +225,16 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("long",tc.typeOf(astex).print());
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testInvalidBinaryAndExpression() throws IOException{
     //only possible with integral types
     String s = "3&4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    tc.typeOf(astex);
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0203"));
+    }
   }
 
   /**
@@ -232,11 +253,15 @@ public class DeriveSymTypeOfBitExpressionsTest {
     assertEquals("boolean",tc.typeOf(astex).print());
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testInvalidBinaryXorExpression() throws IOException{
     //only possible with integral types
     String s = "3^4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    tc.typeOf(astex);
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0205"));
+    }
   }
 }
