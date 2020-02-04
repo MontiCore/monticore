@@ -697,6 +697,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
     testSpannedScope.add(ms1);
     TypeSymbol testType = DefsTypeBasic.type("Test");
     testType = add(add(add(testType, fs), ms1), ms);
+
+    TypeSymbol testInnerType = type("TestInnerType",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)testType.getSpannedScope());
+    add2scope(testType.getSpannedScope(),testInnerType);
+    FieldSymbol testVariable = field("testVariable",_shortSymType);
+    add2scope(testSpannedScope,testVariable);
+
     testType.setSpannedScope(testSpannedScope);
     add2scope(scope2, testType);
     add2scope(scope3, testType);
@@ -737,6 +743,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s = "Test";
     astex = p.parse_StringExpression(s).get();
     assertEquals("Test", tc.typeOf(astex).print());
+
+    //test for variable in inner type
+    s="types2.types3.types2.Test.TestInnerType.testVariable";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("short",tc.typeOf(astex).print());
   }
 
   /**
@@ -946,7 +957,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     );
     FieldSymbol f1 = field("f1", SymTypeExpressionFactory.createTypeVariable("S", scope));
     FieldSymbol f2 = field("f2", SymTypeExpressionFactory.createTypeVariable("V", scope));
-    TypeSymbol genSup = type("GenSup", Lists.newArrayList(load), Lists.newArrayList(f1, f2),
+    TypeSymbol genSup = type("GenSup", Lists.newArrayList(load,load.deepClone()), Lists.newArrayList(f1, f2),
         Lists.newArrayList(), Lists.newArrayList(t1, t2)
     );
     add2scope(scope, genSup);
@@ -961,7 +972,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     SymTypeExpression genTypeSV = SymTypeExpressionFactory.
         createGenerics("GenSup", scope, Lists.newArrayList(SymTypeExpressionFactory.
             createTypeVariable("S", scope), SymTypeExpressionFactory.createTypeVariable("V", scope)));
-    TypeSymbol genSub = type("GenSub", Lists.newArrayList(), Lists.newArrayList(),
+    TypeSymbol genSub = type("GenSub", Lists.newArrayList(), Lists.newArrayList(f1.deepClone()),
         Lists.newArrayList(genTypeSV.deepClone()), Lists.newArrayList(t1, t2)
     );
     add2scope(scope, genSub);
@@ -984,6 +995,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
         createGenerics("GenSubSub", scope, Lists.newArrayList(_StringSymType, _intSymType));
     FieldSymbol genSubSubVar = field("genSubSubVar", genSubSubType);
     add2scope(scope, genSubSubVar);
+
 
     derLit.setScope(scope);
     tc = new TypeCheck(null, derLit);

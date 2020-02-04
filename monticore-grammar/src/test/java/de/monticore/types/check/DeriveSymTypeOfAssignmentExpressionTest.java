@@ -615,4 +615,16 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0182"));
     }
   }
+
+  @Test
+  public void testInvalidRegularAssignmentExpression2() throws IOException{
+    //test with no field on the left side of the assignment
+    String s = "3=4";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0180"));
+    }
+  }
 }

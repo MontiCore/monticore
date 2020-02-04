@@ -35,7 +35,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   // Parer used for convenience:
   MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromMCSimpleGenericTypes(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build()),null);
+  TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromMCBasicTypes(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build()),null);
   
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
   

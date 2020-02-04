@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class SubrulesUseInterfaceNTsTest extends CocoTest {
   
-  private final String MESSAGE = " The production %s must use the terminal %s from interface %s.";
+  private final String MESSAGE = " The production %s must use the Component %s from interface %s.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4047.A4047";
   
@@ -63,10 +63,15 @@ public class SubrulesUseInterfaceNTsTest extends CocoTest {
     testInvalidGrammar(grammar + "g", SubrulesUseInterfaceNTs.ERROR_CODE,
         String.format(MESSAGE, "AImpl", "d?", "A"), checker);
   }
-  
+
   @Test
   public void testCorrect() {
     testValidGrammar("cocos.valid.ImplementInterfaceNTs", checker);
+  }
+
+  @Test
+  public void testCorrectWithOverwriting() {
+    testValidGrammar(grammar + "i", checker);
   }
 
 }
