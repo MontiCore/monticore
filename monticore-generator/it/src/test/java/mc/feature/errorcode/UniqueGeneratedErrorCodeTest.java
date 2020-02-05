@@ -1,9 +1,11 @@
 package mc.feature.errorcode;
 
-import de.se_rwth.commons.logging.Log;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -25,9 +27,9 @@ public class UniqueGeneratedErrorCodeTest {
 
   @Test
   public void testOnlyUniqueGeneratedErrorCodes() {
-    final File[] files = new File("target/generated-sources/monticore/sourcecode/mc/examples/automaton/automaton").listFiles();
+    final File[] files = new File(
+        "target/generated-sources/monticore/sourcecode/mc/examples/automaton/automaton").listFiles();
     assertNotNull(files);
-    Log.debug("here", "hallo");
     checkFileList(files);
   }
 
@@ -35,9 +37,7 @@ public class UniqueGeneratedErrorCodeTest {
     for (final File file : files) {
       if (file.listFiles() != null) {
         checkFileList(file.listFiles());
-        Log.debug("no file", "hallo");
       } else {
-        Log.debug("file:",file.getName());
         try {
           final BufferedReader reader = new BufferedReader(new FileReader(file));
           final StringBuilder contents = new StringBuilder();
@@ -50,7 +50,6 @@ public class UniqueGeneratedErrorCodeTest {
           if (m.find()) {
             for (int i = 1; i < m.groupCount(); i = i + 2) {
               String code = m.group(i) + m.group(i + 1);
-              Log.debug("code:",code);
               assertFalse(errorCodes.contains(code));
               errorCodes.add(code);
             }
