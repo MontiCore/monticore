@@ -15,4 +15,8 @@ component grammar Supergrammar {
   K implements G = "OO";
   
   N;
+
+  C = foo:(X || ",")+;
+
+  H = X (X | ",")+;
 }
