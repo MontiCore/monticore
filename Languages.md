@@ -30,13 +30,13 @@ The different development statuses of grammars are explained
 * Its primary feature are the description and analysis of a class diagram.
 * CD4Code is an extension which allows for function signatures and implementations with the [JavaDSL](https://git.rwth-aachen.de/monticore/javaDSL).
 
-### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (alpha)
+### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
 * Author: AB, DS
 * Language for textual feature models and feature configurations
 * Feature diagrams are used to model (software) product lines
 * Feature configurations select a subset of features of a feature model to describe a product of the product line
 
-### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Beta: In Stabilization)
+### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Alpha: Intention to become stable)
 * Author: LN 
 * Language for textual definition of Graphical User Interfaces of Web Applications
 * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation), [**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
@@ -49,8 +49,9 @@ The different development statuses of grammars are explained
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
 * Author: DS 
 * MontiArc is an architecture and behavior modeling language and framework that provides an integrated, platform independent structure and behavior modeling language with an extensible code generation framework.
+* [Port Automata](https://git.rwth-aachen.de/monticore/montiarc/core) are a certain type of state machines and utilized in component and connector architecture description languages (e.g. MontiArc) for behavior modeling. (Alpha: Intention to become stable)
 
-### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Beta: In Stabilization)
+### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
 * Author: SVa
 * OCL/P is the textual representation of the UML OCL standard, adapted with Java-like syntax.
 * A Java generator can be found [**here**](https://git.rwth-aachen.de/monticore/languages/OCL2Java).
@@ -59,10 +60,6 @@ The different development statuses of grammars are explained
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
 * Author: SH
 * Language for textual object diagrams.
-
-### [Port Automata](https://git.rwth-aachen.de/monticore/montiarc/core) (Alpha: Intention to become stable)
-* Author: DS
-* Port automata are a certain type of state machines and utilized in component and connector architecture description languages (e.g. MontiArc) for behavior modeling.
 
 ### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language) (Beta: In Stabilization) )(50% to MC6)
 * Author: RE
@@ -78,11 +75,11 @@ The different development statuses of grammars are explained
 * Language to parse Statecharts
 * creates transformation language within SC and sc<->cd4a
 
-### [SysML/P](https://git.rwth-aachen.de/monticore/sysml/sysml_2) (Example)
+### [SysML/P](https://git.rwth-aachen.de/monticore/sysml/sysml_2) (Alpha: Intention to become stable)
 * Author: NJ
 * Project for SysML 2 languages. It is compatible with the general SysML 2 standard.
 
-### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Beta: In Stabilization)
+### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
 * Author: SVa
 * The Tagging language offers the possibility to enrich existing models of any DSLs.
 * The Tagging models can then be used as configuration, e.g. in a code generator.
