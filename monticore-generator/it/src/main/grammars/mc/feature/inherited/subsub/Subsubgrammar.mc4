@@ -5,6 +5,7 @@ package mc.feature.inherited.subsub;
 grammar Subsubgrammar extends mc.feature.inherited.sub.Subgrammar {
 
   N = D;
+
   P extends X = D;
   
   S = X*;
