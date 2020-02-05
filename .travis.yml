@@ -5,7 +5,8 @@ python: 3.6 # Set the version of Python to use
 branches: dev # Set the branch to build from
 
 install:
-  - pip install mkdocs-bootstrap
+  - pip install mkdocs
+  - pip install mkdocs-material
 
 script:
   - sh docs/scripts/preprocessing.sh
