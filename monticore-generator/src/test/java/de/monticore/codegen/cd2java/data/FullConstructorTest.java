@@ -47,7 +47,7 @@ public class FullConstructorTest extends DecoratorTestCase {
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "data", "SupData");
     this.glex.setGlobalValue("service", new AbstractService(ast));
 
-    DataDecorator dataDecorator = new DataDecorator(this.glex, new MethodDecorator(glex), new ASTService(ast), new DataDecoratorUtil());
+    DataDecorator dataDecorator = new DataDecorator(this.glex, new MethodDecorator(glex, new ASTService(ast)), new ASTService(ast), new DataDecoratorUtil());
     ASTCDClass clazz = getClassBy("SupB", ast);
     ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
         .setModifier(clazz.getModifier())

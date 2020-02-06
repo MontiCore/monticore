@@ -50,7 +50,8 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex), new SymbolTableService(decoratedCompilationUnit));
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex,
+        new SymbolTableService(decoratedCompilationUnit)), new SymbolTableService(decoratedCompilationUnit));
 
     ScopeClassBuilderDecorator decorator = new ScopeClassBuilderDecorator(this.glex, builderDecorator);
 

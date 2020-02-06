@@ -35,7 +35,7 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDInterface clazz = getInterfaceBy("ASTA", cd);
     this.glex.setGlobalValue("service", new AbstractService(cd));
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, new ASTService(cd));
     InterfaceDecorator dataDecorator = new InterfaceDecorator(this.glex, new DataDecoratorUtil(), methodDecorator, new ASTService(cd));
     ASTCDInterface changeInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(clazz.getName())
         .setModifier(clazz.getModifier())

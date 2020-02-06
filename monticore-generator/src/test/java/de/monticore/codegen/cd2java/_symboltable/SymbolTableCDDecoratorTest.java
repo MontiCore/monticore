@@ -77,8 +77,8 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     SymbolTableService symbolTableService = new SymbolTableService(decoratedASTCompilationUnit);
     VisitorService visitorService = new VisitorService(decoratedASTCompilationUnit);
     ParserService parserService = new ParserService(decoratedASTCompilationUnit);
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
-    AccessorDecorator accessorDecorator = new AccessorDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, symbolTableService);
+    AccessorDecorator accessorDecorator = new AccessorDecorator(glex, symbolTableService);
 
     SymbolDecorator symbolDecorator = new SymbolDecorator(glex, symbolTableService, visitorService, methodDecorator);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, accessorDecorator, symbolTableService);

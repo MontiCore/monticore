@@ -53,7 +53,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     this.decorator = new ModelLoaderDecorator(this.glex,
-        new SymbolTableService(decoratedCompilationUnit), new AccessorDecorator(glex));
+        new SymbolTableService(decoratedCompilationUnit), new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     Optional<ASTCDClass> astcdClass = decorator.decorate(decoratedCompilationUnit);
     assertTrue(astcdClass.isPresent());

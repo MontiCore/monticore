@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("delegatorVisitorName", "simpleVisitorName", "inheritedVisitorSimpleNames")}
+${tc.signature("delegatorVisitorName", "simpleVisitorName", "inheritedVisitorSimpleNames", "generatedErrorCode")}
 if (this.realThis != realThis) {
   if (!(realThis instanceof ${delegatorVisitorName})) {
-  Log.error("0xA7111x046 realThis of ${delegatorVisitorName} must be ${delegatorVisitorName} itself.");
+  Log.error("0xA7111${generatedErrorCode} realThis of ${delegatorVisitorName} must be ${delegatorVisitorName} itself.");
   }
   this.realThis = (${delegatorVisitorName}) realThis;
   // register the known delegates to the realThis (and therby also set their new realThis)

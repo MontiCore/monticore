@@ -511,12 +511,16 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
     ASTCDParameter subScopeParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterface), "subScope");
     ASTCDMethod addSubScope = getCDMethodFacade().createMethod(PUBLIC, "addSubScope", subScopeParameter);
+    String generatedErrorCode = symbolTableService.getGeneratedErrorCode(scopeInterface + addSubScope.getName());
     this.replaceTemplate(EMPTY_BODY, addSubScope,
-        new StringHookPoint("Log.error(\"0xA7013x558 The method \\\"addSubScope\\\" of interface \\\"" + scopeInterface + "\\\" is not implemented.\");"));
+        new StringHookPoint("Log.error(\"0xA7014" + generatedErrorCode + " The method \\\"addSubScope\\\" of " +
+            "interface \\\"" + scopeInterface + "\\\" is not implemented.\");"));
 
     ASTCDMethod removeSubScope = getCDMethodFacade().createMethod(PUBLIC, "removeSubScope", subScopeParameter);
+    generatedErrorCode = symbolTableService.getGeneratedErrorCode(scopeInterface + removeSubScope.getName());
     this.replaceTemplate(EMPTY_BODY, removeSubScope,
-        new StringHookPoint("Log.error(\"0xA7013x558 The method \\\"removeSubScope\\\" of interface \\\"" + scopeInterface + "\\\" is not implemented.\");"));
+        new StringHookPoint("Log.error(\"0xA7013" + generatedErrorCode + " The method \\\"removeSubScope\\\"" +
+            " of interface \\\"" + scopeInterface + "\\\" is not implemented.\");"));
 
     return new ArrayList<>(Arrays.asList(getSubScopes, addSubScope, removeSubScope));
   }

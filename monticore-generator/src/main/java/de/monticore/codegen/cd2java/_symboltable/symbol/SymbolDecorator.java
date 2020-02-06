@@ -65,7 +65,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   @Override
   public ASTCDClass decorate(ASTCDClass symbolInput) {
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
-     String symbolName = symbolTableService.getNameWithSymbolSuffix(symbolInput);
+    String symbolName = symbolTableService.getNameWithSymbolSuffix(symbolInput);
 
     // uses symbol rule methods and attributes
     List<ASTCDAttribute> symbolRuleAttributes = symbolInput.deepClone().getCDAttributeList();
@@ -187,7 +187,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     if (!isSymbolTop()) {
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new StringHookPoint("visitor.handle(this);"));
     } else {
-      String errorCode = getDecorationHelper().getGeneratedErrorCode(acceptMethod);
+      String errorCode = symbolTableService.getGeneratedErrorCode(symbolName + ACCEPT_METHOD);
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(
           "_symboltable.AcceptTop", symbolName, errorCode));
     }

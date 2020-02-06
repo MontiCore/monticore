@@ -7,7 +7,9 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,10 +87,12 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDMethod addSetRealThisMethods(ASTMCType visitorType) {
-    ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, "realThis");
+    ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, REAL_THIS);
     ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
+    String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
+        new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())) + SET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint(
-        "    throw new UnsupportedOperationException(\"0xA7011x709 The setter for realThis is " +
+        "    throw new UnsupportedOperationException(\"0xA7011"+generatedErrorCode+" The setter for realThis is " +
             "not implemented. You might want to implement a wrapper class to allow setting/getting realThis.\");\n"));
     return setRealThis;
   }

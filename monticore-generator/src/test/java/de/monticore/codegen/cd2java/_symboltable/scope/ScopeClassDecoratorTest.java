@@ -85,7 +85,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
     ScopeClassDecorator decorator = new ScopeClassDecorator(this.glex, new SymbolTableService(astcdCompilationUnit),
         new VisitorService(decoratedSymbolCompilationUnit),
-        new MethodDecorator(glex));
+        new MethodDecorator(glex, new SymbolTableService(decoratedScopeCompilationUnit)));
 
     //creates normal Symbol
     this.scopeClass = decorator.decorate(decoratedScopeCompilationUnit, decoratedSymbolCompilationUnit);

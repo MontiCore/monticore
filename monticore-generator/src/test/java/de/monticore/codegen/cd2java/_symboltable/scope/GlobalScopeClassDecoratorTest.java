@@ -66,7 +66,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     GlobalScopeClassDecorator decorator = new GlobalScopeClassDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
-        new MethodDecorator(glex));
+        new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     this.scopeClass = decorator.decorate(decoratedCompilationUnit);
   }

@@ -118,8 +118,12 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
     ASTCDMethod createSymbolTableFromAST = getCDMethodFacade().createMethod(PUBLIC, "createSymbolTableFromAST",
         astParam, modelNameParam, enclosingScopeParam);
+    String generatedErrorCode = symbolTableService.getGeneratedErrorCode(modelLoader + createSymbolTableFromAST.getName());
+    String generatedErrorCode2 = symbolTableService.getGeneratedErrorCode(modelLoader + createSymbolTableFromAST.getName() + 2);
+
     this.replaceTemplate(EMPTY_BODY, createSymbolTableFromAST, new TemplateHookPoint(
-        TEMPLATE_PATH + "CreateSymbolTableFromAST", symbolTableCreatorDelegator, modelLoader, scopeInterface, artifactScope));
+        TEMPLATE_PATH + "CreateSymbolTableFromAST", symbolTableCreatorDelegator, modelLoader,
+        scopeInterface, artifactScope, generatedErrorCode, generatedErrorCode2));
     return createSymbolTableFromAST;
   }
 

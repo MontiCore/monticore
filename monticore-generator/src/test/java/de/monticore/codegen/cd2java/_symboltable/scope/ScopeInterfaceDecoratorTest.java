@@ -68,7 +68,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
 
     ScopeInterfaceDecorator decorator = new ScopeInterfaceDecorator(this.glex, new SymbolTableService(astcdCompilationUnit),
-        new VisitorService(astcdCompilationUnit), new MethodDecorator(glex));
+        new VisitorService(astcdCompilationUnit), new MethodDecorator(glex, new SymbolTableService(astcdCompilationUnit)));
 
     //creates normal Symbol
     this.scopeInterface = decorator.decorate(decoratedScopeCompilationUnit, symbolCd);

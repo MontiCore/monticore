@@ -139,8 +139,9 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDParameter rootNodeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(astStartProd), "rootNode");
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC,
         getMCTypeFacade().createQualifiedType(artifactScopeFullName), "createFromAST", rootNodeParam);
+    String generatedErrorCode = symbolTableService.getGeneratedErrorCode(astStartProd + symbolTableCreator + createFromAST.getName());
     this.replaceTemplate(EMPTY_BODY, createFromAST, new TemplateHookPoint(
-        TEMPLATE_PATH + "CreateFromAST", artifactScopeFullName, symbolTableCreator));
+        TEMPLATE_PATH + "CreateFromAST", artifactScopeFullName, symbolTableCreator, generatedErrorCode));
     return createFromAST;
   }
 

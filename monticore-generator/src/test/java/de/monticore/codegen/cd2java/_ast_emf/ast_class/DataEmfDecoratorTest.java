@@ -41,7 +41,7 @@ public class DataEmfDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, new ASTService(compilationUnit));
     EmfMutatorDecorator emfMutatorDecorator= new EmfMutatorDecorator(glex, new ASTService(compilationUnit));
 
     DataEmfDecorator dataEmfDecorator = new DataEmfDecorator(this.glex, methodDecorator, new ASTService(compilationUnit),
