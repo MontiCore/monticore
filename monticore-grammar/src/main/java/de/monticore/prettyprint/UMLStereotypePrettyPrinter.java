@@ -7,6 +7,8 @@ import de.monticore.umlstereotype._ast.ASTUMLStereotypeNode;
 import de.monticore.umlstereotype._visitor.UMLStereotypeVisitor;
 
 public class UMLStereotypePrettyPrinter implements UMLStereotypeVisitor {
+
+  private UMLStereotypeVisitor realThis = this;
   
   private IndentPrinter printer;
   
@@ -43,4 +45,15 @@ public class UMLStereotypePrettyPrinter implements UMLStereotypeVisitor {
     node.accept(getRealThis());
     return getPrinter().getContent();
   }
+
+  @Override
+  public void setRealThis(UMLStereotypeVisitor realThis) {
+    this.realThis = realThis;
+  }
+
+  @Override
+  public UMLStereotypeVisitor getRealThis() {
+    return realThis;
+  }
+
 }
