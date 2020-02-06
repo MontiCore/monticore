@@ -11,6 +11,10 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 
+/**
+ * prototype for the CoCo of your language. Because of the use of externals, it can only be #
+ * implemented as a prototype in the language extending JavaClassExpressions.
+ */
 public class NoClassExpressionForGenerics implements JavaClassExpressionsASTClassExpressionCoCo {
 
   public static final String ERROR_CODE = "0xA0302";
