@@ -47,7 +47,7 @@ public class LanguageBuilderDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     LanguageBuilderDecorator decorator = new LanguageBuilderDecorator(this.glex,
-        new BuilderDecorator(glex, new AccessorDecorator(glex), new SymbolTableService(decoratedCompilationUnit)));
+        new BuilderDecorator(glex, new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)), new SymbolTableService(decoratedCompilationUnit)));
     ASTCDClass cdClass = getClassBy("ALanguage", decoratedCompilationUnit);
     //creates normal Symbol
     this.builderClass = decorator.decorate(cdClass);

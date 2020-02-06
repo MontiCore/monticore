@@ -58,7 +58,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
 
 
-    AccessorDecorator methodDecorator = new AccessorDecorator(glex);
+    AccessorDecorator methodDecorator = new AccessorDecorator(glex, new SymbolTableService(ast));
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator, new SymbolTableService(ast));
     SymbolBuilderDecorator astNodeBuilderDecorator = new SymbolBuilderDecorator(glex, builderDecorator);
     this.builderClass = astNodeBuilderDecorator.decorate(cdClass);

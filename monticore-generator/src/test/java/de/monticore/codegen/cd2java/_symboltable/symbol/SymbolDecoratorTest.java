@@ -69,7 +69,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
 
     SymbolDecorator decorator = new SymbolDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit), new VisitorService(decoratedCompilationUnit),
-        new MethodDecorator(glex));
+        new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
@@ -80,7 +80,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
     //creates normal Symbol with top class
     SymbolDecorator mockDecorator = Mockito.spy(new SymbolDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit), new VisitorService(decoratedCompilationUnit),
-        new MethodDecorator(glex)));
+        new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit))));
     Mockito.doReturn(true).when(mockDecorator).isSymbolTop();
     ASTCDClass stateClass = getClassBy("State", decoratedCompilationUnit);
     this.symbolClassState = mockDecorator.decorate(stateClass);

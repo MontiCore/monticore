@@ -50,7 +50,7 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     LanguageDecorator decorator = new LanguageDecorator(this.glex,
-        new SymbolTableService(decoratedCompilationUnit), new ParserService(decoratedCompilationUnit), new AccessorDecorator(glex));
+        new SymbolTableService(decoratedCompilationUnit), new ParserService(decoratedCompilationUnit), new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     //creates normal Symbol
     decorator.setLanguageTop(false);

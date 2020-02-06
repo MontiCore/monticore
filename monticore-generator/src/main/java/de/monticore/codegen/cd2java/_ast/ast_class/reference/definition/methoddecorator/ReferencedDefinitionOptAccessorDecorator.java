@@ -24,7 +24,7 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
 
   public ReferencedDefinitionOptAccessorDecorator(final GlobalExtensionManagement glex,
                                                   final SymbolTableService symbolTableService) {
-    super(glex);
+    super(glex, symbolTableService);
     this.symbolTableService = symbolTableService;
   }
 
@@ -46,7 +46,7 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
     ASTMCType type = getDecorationHelper().getReferenceTypeFromOptional(ast.getMCType().deepClone()).getMCTypeOpt().get();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
     String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetDefinition", ast, ast.getName(), referencedSymbolType));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetDefinition", ast.getName(), referencedSymbolType));
     return method;
   }
   

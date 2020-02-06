@@ -88,7 +88,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMethods(languageMethods)
         .addCDAttribute(createModelName2ModelLoaderCacheAttribute(modelLoaderClassName))
         .addAllCDAttributes(resolvingDelegateAttributes.values())
-        .addCDMethod(createGetNameMethod())
+        .addCDMethod(createGetNameMethod(globalScopeName))
         .addCDMethod(createIsPresentNameMethod())
         .addCDMethod(createCacheMethod(definitionName))
         .addCDMethod(createContinueWithModelLoaderMethod(modelLoaderClassName))
@@ -169,9 +169,9 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return Optional.empty();
   }
 
-  protected ASTCDMethod createGetNameMethod() {
+  protected ASTCDMethod createGetNameMethod(String globalScopeName) {
     ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
-    String generatedErrorCode = getDecorationHelper().getGeneratedErrorCode(getNameMethod);
+    String generatedErrorCode = symbolTableService.getGeneratedErrorCode(globalScopeName);
     this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint(
         "Log.error(\"0xA6101" + generatedErrorCode
             + " Global scopes do not have names.\");\n"
@@ -264,15 +264,15 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected List<ASTCDMethod> createEnclosingScopeMethods(String globalScopeName) {
     // create attribute just for method generation purposes
     ASTCDAttribute enclosingScopeAttribute = this.getCDAttributeFacade()
-            .createAttribute(PROTECTED,
-        symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
+        .createAttribute(PROTECTED,
+            symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
     getDecorationHelper().addAttributeDefaultValues(enclosingScopeAttribute, glex);
 
     methodDecorator.disableTemplates();
     List<ASTCDMethod> enclosingScopeMethods = methodDecorator.decorate(enclosingScopeAttribute);
     methodDecorator.enableTemplates();
     for (ASTCDMethod enclosingScopeMethod : enclosingScopeMethods) {
-      String generatedErrorCode = getDecorationHelper().getGeneratedErrorCode(enclosingScopeMethod);
+      String generatedErrorCode = symbolTableService.getGeneratedErrorCode(globalScopeName + enclosingScopeAttribute.printType());
       // add return null if method has return type
       if (enclosingScopeMethod.getMCReturnType().isPresentMCType()) {
         this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(

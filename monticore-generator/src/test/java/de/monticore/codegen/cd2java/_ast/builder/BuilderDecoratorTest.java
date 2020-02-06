@@ -46,7 +46,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
 
     originalClass = getClassBy("A", ast);
 
-    AccessorDecorator methodDecorator = new AccessorDecorator(glex);
+    AccessorDecorator methodDecorator = new AccessorDecorator(glex, new ASTService(ast));
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator, new ASTService(ast));
     this.builderClass = builderDecorator.decorate(originalClass);
   }

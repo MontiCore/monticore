@@ -43,7 +43,7 @@ public class LiteralsEnumDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit= decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
-    EnumDecorator decorator = new EnumDecorator(this.glex, new AccessorDecorator(glex), new ASTService(decoratedCompilationUnit));
+    EnumDecorator decorator = new EnumDecorator(this.glex, new AccessorDecorator(glex, new ASTService(decoratedCompilationUnit)), new ASTService(decoratedCompilationUnit));
     this.cdEnum = decorator.decorate(getEnumBy("AutomatonLiterals", decoratedCompilationUnit));
   }
 

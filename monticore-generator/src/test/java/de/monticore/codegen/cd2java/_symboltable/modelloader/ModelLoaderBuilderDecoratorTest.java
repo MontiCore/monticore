@@ -45,7 +45,7 @@ public class ModelLoaderBuilderDecoratorTest extends DecoratorTestCase {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "cdForBuilder", "ModelLoader_Builder");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex), new SymbolTableService(decoratedCompilationUnit));
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)), new SymbolTableService(decoratedCompilationUnit));
     ASTCDClass cdClass = getClassBy("AModelLoader", decoratedCompilationUnit);
 
     ModelLoaderBuilderDecorator decorator = new ModelLoaderBuilderDecorator(this.glex, builderDecorator);

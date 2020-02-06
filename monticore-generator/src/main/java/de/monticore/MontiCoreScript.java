@@ -471,8 +471,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
     ParserService parserService = new ParserService(cd);
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
-    AccessorDecorator accessorDecorator = new AccessorDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, symbolTableService);
+    AccessorDecorator accessorDecorator = new AccessorDecorator(glex, symbolTableService);
 
     SymbolDecorator symbolDecorator = new SymbolDecorator(glex, symbolTableService, visitorService, methodDecorator);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, accessorDecorator, symbolTableService);
@@ -580,7 +580,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTService astService = new ASTService(cd);
     VisitorService visitorService = new VisitorService(cd);
     CoCoService coCoService = new CoCoService(cd);
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, coCoService);
 
     CoCoCheckerDecorator coCoCheckerDecorator = new CoCoCheckerDecorator(glex, methodDecorator, coCoService, visitorService);
     CoCoInterfaceDecorator coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex, coCoService, astService);
@@ -602,7 +602,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                               IterablePath handCodedPath) {
     ODService odService = new ODService(cd);
     VisitorService visitorService = new VisitorService(cd);
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, odService);
 
     ODDecorator odDecorator = new ODDecorator(glex, methodDecorator, odService, visitorService);
 
@@ -654,7 +654,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     VisitorService visitorService = new VisitorService(cd);
     NodeFactoryService nodeFactoryService = new NodeFactoryService(cd);
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, astService);
 
     DataDecoratorUtil decoratorUtil = new DataDecoratorUtil();
 
@@ -669,7 +669,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
 
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex), astService);
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), astService);
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
 
     NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex, nodeFactoryService);
@@ -680,7 +680,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
 
-    EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex), astService);
+    EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex, astService), astService);
 
     ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService, astSymbolDecorator, astScopeDecorator, methodDecorator);
     InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, decoratorUtil, methodDecorator, astService);
@@ -701,7 +701,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     VisitorService visitorService = new VisitorService(cd);
     NodeFactoryService nodeFactoryService = new NodeFactoryService(cd);
     EmfService emfService = new EmfService(cd);
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, emfService);
     EmfMutatorDecorator emfMutatorDecorator = new EmfMutatorDecorator(glex, astService);
     DataEmfDecorator dataEmfDecorator = new DataEmfDecorator(glex, methodDecorator, astService, new DataDecoratorUtil(), emfMutatorDecorator);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
@@ -713,7 +713,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
 
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex), astService);
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, emfService), astService);
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
 
     EmfNodeFactoryDecorator nodeFactoryDecorator = new EmfNodeFactoryDecorator(glex, nodeFactoryService);
@@ -724,7 +724,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
 
-    EmfEnumDecorator emfEnumDecorator = new EmfEnumDecorator(glex, new AccessorDecorator(glex), astService);
+    EmfEnumDecorator emfEnumDecorator = new EmfEnumDecorator(glex, new AccessorDecorator(glex, emfService), astService);
 
     ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService,
         astSymbolDecorator, astScopeDecorator, methodDecorator);
