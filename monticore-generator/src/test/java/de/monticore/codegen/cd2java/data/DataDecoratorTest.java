@@ -40,7 +40,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(cd));
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex,new ASTService(cd));
     DataDecorator dataDecorator = new DataDecorator(this.glex, methodDecorator, new ASTService(cd), new DataDecoratorUtil());
     ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
         .setModifier(clazz.getModifier())
@@ -256,7 +256,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
 
     ASTCDClass clazz = getClassBy("ASTAutomaton", cd);
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, new ASTService(cd));
     DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator, new ASTService(cd), new DataDecoratorUtil());
     ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
         .setModifier(clazz.getModifier())

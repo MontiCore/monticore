@@ -45,12 +45,13 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "cocos", "CoCos");
     this.glex.setGlobalValue("service", new AbstractService(ast));
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
 
     CoCoService coCoService = new CoCoService(ast);
     VisitorService visitorService = new VisitorService(ast);
     ASTService astService = new ASTService(ast);
     IterablePath targetPath = Mockito.mock(IterablePath.class);
+
+    MethodDecorator methodDecorator = new MethodDecorator(glex, coCoService);
 
     CoCoCheckerDecorator coCoCheckerDecorator = new CoCoCheckerDecorator(glex, methodDecorator, coCoService, visitorService);
     CoCoInterfaceDecorator coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex, coCoService, astService);

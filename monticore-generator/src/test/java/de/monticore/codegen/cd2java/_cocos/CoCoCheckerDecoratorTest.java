@@ -73,7 +73,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, new CoCoService(ast));
     CoCoCheckerDecorator coCoCheckerDecorator = new CoCoCheckerDecorator(glex, methodDecorator, new CoCoService(ast), new VisitorService(ast));
     this.cocoChecker = coCoCheckerDecorator.decorate(ast);
   }

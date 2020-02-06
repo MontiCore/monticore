@@ -49,10 +49,10 @@ public class ASTFullEmfDecoratorTest extends DecoratorTestCase {
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex,  symbolTableService);
     EmfMutatorDecorator emfMutatorDecorator= new EmfMutatorDecorator(glex, astService);
-    DataEmfDecorator dataEmfDecorator = new DataEmfDecorator(glex, new MethodDecorator(glex),
+    DataEmfDecorator dataEmfDecorator = new DataEmfDecorator(glex, new MethodDecorator(glex, astService),
         new ASTService(decoratedCompilationUnit), new DataDecoratorUtil(), emfMutatorDecorator);
     ASTEmfDecorator astEmfDecorator = new ASTEmfDecorator(glex, astService, visitorService, nodeFactoryService,
-        astSymbolDecorator, astScopeDecorator, new MethodDecorator(glex), symbolTableService, new EmfService(decoratedCompilationUnit));
+        astSymbolDecorator, astScopeDecorator, new MethodDecorator(glex, astService), symbolTableService, new EmfService(decoratedCompilationUnit));
     ASTReferenceDecorator astReferencedSymbolDecorator = new ASTReferenceDecorator(glex, symbolTableService);
     ASTFullEmfDecorator fullDecorator = new ASTFullEmfDecorator(dataEmfDecorator, astEmfDecorator, astReferencedSymbolDecorator);
     ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())

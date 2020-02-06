@@ -79,7 +79,8 @@ SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     SymbolTableCreatorDecorator decorator = new SymbolTableCreatorDecorator(this.glex,
-        new SymbolTableService(decoratedCompilationUnit), new VisitorService(decoratedCompilationUnit), new MethodDecorator(glex));
+        new SymbolTableService(decoratedCompilationUnit), new VisitorService(decoratedCompilationUnit),
+        new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     //creates normal Symbol
     Optional<ASTCDClass> optSymTabCreator = decorator.decorate(decoratedCompilationUnit);
@@ -686,7 +687,7 @@ SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
     Mockito.doReturn(Optional.empty()).when(mockService).getStartProdASTFullName(Mockito.any(ASTCDDefinition.class));
 
     SymbolTableCreatorDecorator decorator = new SymbolTableCreatorDecorator(glex,
-        mockService, new VisitorService(cd), new MethodDecorator(glex));
+        mockService, new VisitorService(cd), new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     //create non present SymbolTableCreator
     Optional<ASTCDClass> optSymTabCreator = decorator.decorate(cd);

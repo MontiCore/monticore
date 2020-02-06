@@ -59,7 +59,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     SymbolTableService symbolTableService = new SymbolTableService(ast);
     ASTDecorator decorator = new ASTDecorator(this.glex, new ASTService(ast), new VisitorService(ast), new NodeFactoryService(ast),
-        new ASTSymbolDecorator(glex, symbolTableService), new ASTScopeDecorator(glex, symbolTableService), new MethodDecorator(glex),
+        new ASTSymbolDecorator(glex, symbolTableService), new ASTScopeDecorator(glex, symbolTableService), new MethodDecorator(glex, symbolTableService),
         new SymbolTableService(ast));
     ASTCDClass clazz = getClassBy("A", ast);
     ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())

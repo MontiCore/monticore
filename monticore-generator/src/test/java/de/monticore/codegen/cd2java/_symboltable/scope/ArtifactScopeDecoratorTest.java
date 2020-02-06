@@ -70,7 +70,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
     ArtifactScopeDecorator decorator = new ArtifactScopeDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit),new VisitorService(decoratedCompilationUnit),
-        new MethodDecorator(glex));
+        new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     //creates normal Symbol
     this.scopeClass = decorator.decorate(decoratedCompilationUnit);

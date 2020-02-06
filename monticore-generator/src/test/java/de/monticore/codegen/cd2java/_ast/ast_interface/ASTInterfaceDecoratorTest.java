@@ -47,7 +47,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDInterface interfaceBy = getInterfaceBy("ASTA", astcdCompilationUnit);
     ASTInterfaceDecorator decorator = new ASTInterfaceDecorator(this.glex, new ASTService(astcdCompilationUnit)
         , new VisitorService(astcdCompilationUnit), new ASTSymbolDecorator(this.glex, symbolTableService),
-        new ASTScopeDecorator(this.glex, symbolTableService), new MethodDecorator(this.glex));
+        new ASTScopeDecorator(this.glex, symbolTableService), new MethodDecorator(this.glex, symbolTableService));
     ASTCDInterface changeInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(interfaceBy.getName())
         .setModifier(interfaceBy.getModifier())
         .build();
@@ -182,7 +182,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDInterface interfaceBy = getInterfaceBy("ASTA", astcdCompilationUnit);
     ASTInterfaceDecorator decorator = new ASTInterfaceDecorator(glex, mockService
         , new VisitorService(astcdCompilationUnit), new ASTSymbolDecorator(glex, symbolTableService),
-        new ASTScopeDecorator(glex, symbolTableService), new MethodDecorator(glex));
+        new ASTScopeDecorator(glex, symbolTableService), new MethodDecorator(glex, symbolTableService));
     ASTCDInterface changeInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(interfaceBy.getName())
         .setModifier(interfaceBy.getModifier())
         .build();

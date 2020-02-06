@@ -60,7 +60,7 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
 
     SymbolLoaderDecorator decorator = new SymbolLoaderDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit),
-        new MethodDecorator(glex),
+        new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)),
         new MandatoryMutatorSymbolLoaderDecorator(glex));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);

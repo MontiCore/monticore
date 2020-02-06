@@ -59,9 +59,9 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
 
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex), new SymbolTableService(decoratedCompilationUnit));
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)), new SymbolTableService(decoratedCompilationUnit));
     ArtifactScopeBuilderDecorator decorator = new ArtifactScopeBuilderDecorator(this.glex,
-        new SymbolTableService(decoratedCompilationUnit), builderDecorator, new AccessorDecorator(glex));
+        new SymbolTableService(decoratedCompilationUnit), builderDecorator, new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     //creates normal Symbol
     this.scopeClass = decorator.decorate(cdClass);

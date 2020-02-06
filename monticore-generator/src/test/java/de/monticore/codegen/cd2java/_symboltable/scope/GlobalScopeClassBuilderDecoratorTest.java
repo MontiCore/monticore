@@ -47,7 +47,7 @@ public class GlobalScopeClassBuilderDecoratorTest extends DecoratorTestCase {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable","cdForBuilder", "GlobalScope_Builder");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex), new SymbolTableService(decoratedCompilationUnit));
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)), new SymbolTableService(decoratedCompilationUnit));
     ASTCDClass cdClass = getClassBy("AGlobalScope", decoratedCompilationUnit);
 
     GlobalScopeClassBuilderDecorator decorator = new GlobalScopeClassBuilderDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),

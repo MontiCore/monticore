@@ -53,7 +53,7 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     SymbolTableCreatorDelegatorBuilderDecorator decorator = new SymbolTableCreatorDelegatorBuilderDecorator(this.glex,
-        new BuilderDecorator(glex, new AccessorDecorator(glex), symbolTableService));
+        new BuilderDecorator(glex, new AccessorDecorator(glex, symbolTableService), symbolTableService));
     ASTCDClass cdClass = getClassBy("ASymbolTableCreatorDelegator", decoratedCompilationUnit);
 
     builderClass = decorator.decorate(cdClass);
