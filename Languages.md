@@ -15,7 +15,7 @@ of various languages (including grammars and tools) developed with
 MontiCore. For each language, the list includes a short description 
 of the language and its development status.
 
-The different development statuses of grammars are explained 
+The different development stati for grammars are explained 
 [**here**](00.org/Explanations/StatusOfGrammars.md).
 
 ## List of Languages 
