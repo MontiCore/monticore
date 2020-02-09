@@ -48,7 +48,7 @@ The different development stati for grammars are explained
 * CD4Code is more often used as tool-internal intermediate structure that allows to
   map any kind of source models to a class/attribute/method/association based
   intermediate structure, before it is printed e.g. as Java code.
-* More details can be found [**here**](XXX: Add explanation for CD4A)
+* More details can be found [**here**](https://XXX: Add explanation for CD4A)
 
 ### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
 * Author: AB, DS
