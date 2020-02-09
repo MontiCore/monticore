@@ -3,32 +3,50 @@
 # MontiCore Languages - an Overview
 
 [MontiCore](http://www.monticore.de) is a language workbench. It uses 
-grammars to describe DSLs. The extended 
-grammar format allows to compose grammars, to inherit, extend, embed
-and aggregate grammars (see the reference manual for details).
+grammars to describe DSLs. MontiCore uses an extended 
+grammar format that allows to compose grammars, to inherit, extend, embed
+and aggregate grammars (see the
+[**reference manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf)
+for details).
 
-A list of grammars available in the MontiCore core project can be found 
+There are two levels of grammars: In this list you find mainly grammars for 
+complete (but also reusable and adaptable) languages.
+A list of grammar components with individual reusable
+nonterminals is available in the MontiCore core project and found 
 [**here**](monticore-grammar/src/main/grammars/de/monticore/Grammars.md).
 
-The following presents a list of links to the development projects 
-of various languages (including grammars and tools) developed with 
-MontiCore. For each language, the list includes a short description 
-of the language and its development status.
+The following list presents links to the language development projects, their
+main grammars, and a short description 
+of the language, available language tools and its development status.
 
 The different development stati for grammars are explained 
 [**here**](00.org/Explanations/StatusOfGrammars.md).
 
 ## List of Languages 
 
+<!--
 ### [Activity Diagrams](INSERT LINK HERE) (not adressed yet)
-* Author: Not available
-* INSERT DESCRIPTION HERE
+* TO be added
+-->
 
 ### [Class Diagram 4 Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Author: SVa, AGe
-* CD4A is the textual (UML/P) representation of a UML class diagram.
-* Its primary feature are the description and analysis of a class diagram.
-* CD4Code is an extension which allows for function signatures and implementations with the [JavaDSL](https://git.rwth-aachen.de/monticore/javaDSL).
+* Project: https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis
+* Main grammars: 
+** [de/monticore/cd/CD4Analysis.mc4](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/src/main/grammars/de/monticore/cd/CD4Analysis.mc4)
+** [de/monticore/cd/CD4Code.mc4](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/src/main/grammars/de/monticore/cd/CD4Code.mc4)
+* CD4A is the textual representation of a UML class diagram (describing the 
+  [UML/P](http://mbse.se-rwth.de/) variant).
+* CD4A covers classes, interfaces, inheritance, attributes with types, visibilities,
+  and all kinds of associations and composition, including qualified and ordered
+  associations. It focusses data modelling and thus omits method signatures.
+* CD4Code is an extension which includes method signatures.
+* CD4A primary use is data modelling with various applications for 
+  data structure, database and transport code generation.
+* CD4Code is more often used as tool-internal intermediate structure that allows to
+  map any kind of source models to a class/attribute/method/association based
+  intermediate structure, before it is printed e.g. as Java code.
+* More details can be found [**here**](XXX: Add explanation for CD4A)
 
 ### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
 * Author: AB, DS
