@@ -20,7 +20,7 @@ The different development stati for grammars are explained
 
 ## List of Languages 
 
-### [Activity Diagrams](INSERT LINK HERE)(not adressed yet)
+### [Activity Diagrams](INSERT LINK HERE) (not adressed yet)
 * Author: Not available
 * INSERT DESCRIPTION HERE
 
