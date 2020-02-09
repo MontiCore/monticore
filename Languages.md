@@ -29,7 +29,7 @@ The different development stati for grammars are explained
 * TO be added
 -->
 
-### [Class Diagram 4 Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
+### [Class Diagram 4Analysis and 4Code](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Responsible: SVa, AGe
 * Project: https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis
 * Main grammars: 
@@ -37,12 +37,14 @@ The different development stati for grammars are explained
   * [de/monticore/cd/CD4Code.mc4](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Code.mc4)
 * CD4A is the textual representation of a UML class diagram (describing the 
   [UML/P](http://mbse.se-rwth.de/) variant).
-* CD4A covers classes, interfaces, inheritance, attributes with types, visibilities,
-  and all kinds of associations and composition, including qualified and ordered
-  associations. It focusses data modelling and thus omits method signatures.
-* CD4Code is an extension which includes method signatures.
+* CD4A covers **classes, interfaces, inheritance, attributes with types, 
+  visibilities**,
+  and all kinds of **associations** and **composition**, including **qualified**
+  and **ordered
+  associations**. It focusses data modelling and thus omits method signatures.
 * CD4A primary use is data modelling with various applications for 
   data structure, database and transport code generation.
+* CD4Code is an extension which includes method signatures.
 * CD4Code is more often used as tool-internal intermediate structure that allows to
   map any kind of source models to a class/attribute/method/association based
   intermediate structure, before it is printed e.g. as Java code.
