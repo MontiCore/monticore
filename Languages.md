@@ -33,8 +33,8 @@ The different development stati for grammars are explained
 * Author: SVa, AGe
 * Project: https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis
 * Main grammars: 
-** [de/monticore/cd/CD4Analysis.mc4](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/src/main/grammars/de/monticore/cd/CD4Analysis.mc4)
-** [de/monticore/cd/CD4Code.mc4](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/src/main/grammars/de/monticore/cd/CD4Code.mc4)
+  ** [de/monticore/cd/CD4Analysis.mc4](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Analysis.mc4)
+  ** [de/monticore/cd/CD4Code.mc4](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Code.mc4)
 * CD4A is the textual representation of a UML class diagram (describing the 
   [UML/P](http://mbse.se-rwth.de/) variant).
 * CD4A covers classes, interfaces, inheritance, attributes with types, visibilities,
