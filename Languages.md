@@ -50,7 +50,7 @@ The different development stati for grammars are explained
 * More details can be found [**here**](https://XXX: Add explanation for CD4A)
 
 ### [Class Diagram for Code (CD4Code)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
-* is a conservative extension of CD4A (details: see there).
+* Responsible: SVa, AGe
 * Project: https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis
 * Main grammars (+CD4A): 
   * [de/monticore/cd/CD4Code.mc4](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Code.mc4)
