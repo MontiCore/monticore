@@ -29,26 +29,38 @@ The different development stati for grammars are explained
 * TO be added
 -->
 
-### [Class Diagram 4Analysis and 4Code](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
+### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Responsible: SVa, AGe
 * Project: https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis
-* Main grammars: 
+* Main grammars:
   * [de/monticore/cd/CD4Analysis.mc4](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Analysis.mc4)
-  * [de/monticore/cd/CD4Code.mc4](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Code.mc4)
-* CD4A is the textual representation of a UML class diagram (describing the 
+* CD4A is the textual representation of a UML class diagram (describing the
   [UML/P](http://mbse.se-rwth.de/) variant).
-* CD4A covers **classes, interfaces, inheritance, attributes with types, 
+* CD4A covers **classes, interfaces, inheritance, attributes with types,
   visibilities**,
   and all kinds of **associations** and **composition**, including **qualified**
   and **ordered
-  associations**. It focusses data modelling and thus omits method signatures.
-* CD4A primary use is data modelling with various applications for 
-  data structure, database and transport code generation.
-* CD4Code is an extension which includes method signatures.
-* CD4Code is more often used as tool-internal intermediate structure that allows to
+  associations**. 
+* It focusses on the analysis phase in typical data-driven projects
+  and is therefore mainly for data modelling.
+* Consequently, it omits method signatures and complex generics.
+* CD4A primary use is data modelling and has various possibilities for
+  generation of data structures, database tables as well as 
+  transport infrastructures.
+* More details can be found [**here**](https://XXX: Add explanation for CD4A)
+
+### [Class Diagram for Code (CD4Code)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
+* is a conservative extension of CD4A (details: see there).
+* Project: https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis
+* Main grammars (+CD4A): 
+  * [de/monticore/cd/CD4Code.mc4](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Code.mc4)
+* CD4Code is a conservative extension of CD4A, 
+  which includes method signatures.
+* CD4Code is often used as tool-internal intermediate AST that allows to
   map any kind of source models to a class/attribute/method/association based
   intermediate structure, before it is printed e.g. as Java code.
 * More details can be found [**here**](https://XXX: Add explanation for CD4A)
+
 
 ### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
 * Author: AB, DS
