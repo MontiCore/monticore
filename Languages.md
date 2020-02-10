@@ -69,7 +69,7 @@ MontiCore projects are hosted at
 * Responsible: SVa, AGe
 * Project: `monticore/cd4analysis/cd4analysis`
 * Main grammars (+CD4A): 
-  * [`de.monticore.cd.CD4Code](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Code.mc4)
+  * [`de.monticore.cd.CD4Code`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Code.mc4)
 * CD4Code is a conservative extension of CD4A, 
   which includes method signatures.
 * CD4Code is often used as tool-internal intermediate AST that allows to
