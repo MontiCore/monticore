@@ -44,7 +44,12 @@ public class InterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
     changedInput.addAllCDMethods(methodListWithoutDuplicates);
 
     changedInput.getCDAttributeList().clear();
+    // make other methods abstract (for referenced symbol methods)
     changedInput.getCDMethodList().forEach(x->x.getModifier().setAbstract(true));
+    // only then add the normal methods (e.g. for astrule methods with implementation)
+    changedInput.addAllCDMethods(originalInput.getCDMethodList());
+
+    changedInput.addAllInterfaces(originalInput.getInterfaceList());
     return changedInput;
   }
 }
