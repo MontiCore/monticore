@@ -82,10 +82,12 @@ public class ExpressionsBasisScope extends ExpressionsBasisScopeTOP {
     if(this.isPresentSpanningSymbol()){
       IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
       if(spanningSymbol instanceof TypeSymbol){
-
+        TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
+        for(SymTypeExpression superType : typeSymbol.getSuperTypeList()){
+          result.addAll(superType.getInnerTypeList(name));
+        }
       }
     }
-
     return result;
   }
 

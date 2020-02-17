@@ -1488,6 +1488,48 @@ public class DeriveSymTypeOfCommonExpressionTest {
     }
   }
 
+  @Test
+  public void testSubClassesDoNotKnowStaticMethodsOfSuperClasses() throws IOException{
+    init_static_example();
+
+    Optional<ASTExpression> sMethod = p.parse_StringExpression("C.test()");
+    assertTrue(sMethod.isPresent());
+
+    try{
+      tc.typeOf(sMethod.get());
+    }catch(RuntimeException e){
+      //TODO
+    }
+  }
+
+  @Test
+  public void testSubClassesDoNotKnowStaticTypesOfSuperClasses() throws IOException{
+    init_static_example();
+
+    Optional<ASTExpression> sType = p.parse_StringExpression("C.D");
+    assertTrue(sType.isPresent());
+
+    try{
+      tc.typeOf(sType.get());
+    }catch(RuntimeException e){
+      //TODO
+    }
+  }
+
+  @Test
+  public void testSubClassesDoNotKnowStaticFieldsOfSuperClasses() throws IOException{
+    init_static_example();
+
+    Optional<ASTExpression> sField = p.parse_StringExpression("C.field");
+    assertTrue(sField.isPresent());
+
+    try{
+      tc.typeOf(sField.get());
+    }catch(RuntimeException e){
+      //TODO
+    }
+  }
+
   /**
    * create a scope (some defaults apply)
    */

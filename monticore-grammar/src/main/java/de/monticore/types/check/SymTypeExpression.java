@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.collect.Lists;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
@@ -184,6 +185,22 @@ public abstract class SymTypeExpression {
 
   public TypeSymbol getTypeInfo() {
     return typeSymbolLoader.getLoadedSymbol();
+  }
+
+  public List<TypeSymbol> getInnerTypeList(String name) {
+    List<TypeSymbol> types = getTypeInfo().getSpannedScope().resolveTypeMany(name);
+    List<TypeSymbol> typeSymbols = Lists.newArrayList();
+
+    for(TypeSymbol type:types){
+      if(name!=null && name.equals(type.getName())){
+        typeSymbols.add(type);
+      }
+    }
+    if(!isGenericType()){
+      //check recursively for more inner types, replace every type variable in methods and fields
+      //watch for new type variables declared in inner types and their uses
+    }
+    return typeSymbols;
   }
 
   // --------------------------------------------------------------------------
