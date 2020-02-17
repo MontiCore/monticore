@@ -565,4 +565,18 @@ public class SymTypeExpressionTest {
     assertEquals("int[][]",array.print());
   }
 
+  @Test
+  public void symTypeConstantTest(){
+    SymTypeConstant intType = SymTypeExpressionFactory.createTypeConstant("int");
+    assertEquals("int",intType.print());
+    intType.setConstName("double");
+    assertEquals("double",intType.print());
+    intType.setConstName("int");
+
+    assertEquals("java.lang.Integer",intType.getBoxedConstName());
+    assertEquals("Integer",intType.getBaseOfBoxedName());
+    assertTrue(intType.isIntegralType());
+    assertTrue(intType.isNumericType());
+  }
+
 }
