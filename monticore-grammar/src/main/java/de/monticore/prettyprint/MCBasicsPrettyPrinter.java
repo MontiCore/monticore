@@ -10,7 +10,6 @@ import de.monticore.mcbasics._visitor.MCBasicsVisitor;
  * ownVisit-methods are called when a node is traversed, the endVisit methods are called when the
  * whole subtree of a node has been traversed. The ownVisit-Methods stop the automatic traversal
  * order and allow to explictly visit subtrees by calling getVisitor().startVisit(ASTNode)
- * 
  */
 public class MCBasicsPrettyPrinter implements MCBasicsVisitor {
 
@@ -40,4 +39,5 @@ public class MCBasicsPrettyPrinter implements MCBasicsVisitor {
   public MCBasicsVisitor getRealThis() {
     return realThis;
   }
+
 }

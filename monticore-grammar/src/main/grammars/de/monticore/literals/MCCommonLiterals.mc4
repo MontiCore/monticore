@@ -4,7 +4,8 @@ package de.monticore.literals;
 /* Beta-version: This is intended to become a MontiCore stable grammar. */
 
 /**
- * This grammar defines Java compliant literals. The scope of this grammar is to
+ * This grammar defines Java compliant literals.
+ * The scope of this grammar is to
  * ease the reuse of literals structures in Java-like sublanguages, e.g., by 
  * grammar inheritance or grammar embedment.
  * The grammar contains literals from Java, e.g., Boolean, Char, String, ....

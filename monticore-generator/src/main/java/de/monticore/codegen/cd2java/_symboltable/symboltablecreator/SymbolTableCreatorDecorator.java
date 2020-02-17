@@ -230,8 +230,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       methodList.add(createSymbolSetLinkBetweenSymbolAndNodeMethod(astParam, symbolParam, isScopeSpanningSymbol));
       if (isScopeSpanningSymbol) {
         // setLinkBetweenSpannedScopeAndNode method
-        String scopeClassFullName = symbolTableService.getScopeClassFullName();
-        methodList.add(createSymbolSetLinkBetweenSpannedScopeAndNodeMethod(scopeInterface, scopeClassFullName, astParam));
+        methodList.add(createSymbolSetLinkBetweenSpannedScopeAndNodeMethod(scopeInterface, astParam));
       }
     }
     return methodList;
@@ -261,13 +260,13 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     return createSymbolMethod;
   }
 
-  protected ASTCDMethod createSymbolSetLinkBetweenSpannedScopeAndNodeMethod(String scopeInterface, String scopeClassFullName,
+  protected ASTCDMethod createSymbolSetLinkBetweenSpannedScopeAndNodeMethod(String scopeInterface,
                                                                             ASTCDParameter astParam) {
     ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterface), SCOPE_VAR);
     // setLinkBetweenSpannedScopeAndNode method
     ASTCDMethod setLinkBetweenSpannedScopeAndNode = getCDMethodFacade().createMethod(PUBLIC, "setLinkBetweenSpannedScopeAndNode", scopeParam, astParam);
     this.replaceTemplate(EMPTY_BODY, setLinkBetweenSpannedScopeAndNode, new TemplateHookPoint(
-        TEMPLATE_PATH + "SetLinkBetweenSpannedScopeAndNode", scopeClassFullName));
+        TEMPLATE_PATH + "SetLinkBetweenSpannedScopeAndNode"));
     return setLinkBetweenSpannedScopeAndNode;
   }
 
@@ -316,7 +315,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       methodList.add(createScopeInitialize_Method(simpleName, scopeClass, astParam, scopeParam));
 
       // setLinkBetweenSpannedScopeAndNode method
-      methodList.add(createScopeSetLinkBetweenSpannedScopeAndNodeMethod(scopeInterface, astParam, scopeParam));
+      methodList.add(createScopeSetLinkBetweenSpannedScopeAndNodeMethod(astParam, scopeParam));
     }
     return methodList;
   }
@@ -356,12 +355,12 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     return initializeMethod;
   }
 
-  protected ASTCDMethod createScopeSetLinkBetweenSpannedScopeAndNodeMethod(String scopeInterface, ASTCDParameter astParam,
+  protected ASTCDMethod createScopeSetLinkBetweenSpannedScopeAndNodeMethod(ASTCDParameter astParam,
                                                                            ASTCDParameter scopeParam) {
     ASTCDMethod setLinkBetweenSpannedScopeAndNode = getCDMethodFacade().createMethod(PUBLIC,
         "setLinkBetweenSpannedScopeAndNode", scopeParam, astParam);
     this.replaceTemplate(EMPTY_BODY, setLinkBetweenSpannedScopeAndNode, new TemplateHookPoint(
-        TEMPLATE_PATH + "SetLinkBetweenSpannedScopeAndNodeScope", scopeInterface));
+        TEMPLATE_PATH + "SetLinkBetweenSpannedScopeAndNodeScope"));
     return setLinkBetweenSpannedScopeAndNode;
   }
 
