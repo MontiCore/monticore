@@ -30,6 +30,9 @@ public class MethodSymbol extends MethodSymbolTOP {
     for(FieldSymbol parameter: this.getParameterList()){
       parameterClone.add(parameter.deepClone());
     }
+    for(TypeVarSymbol typeVariable:this.getTypeVariableList()){
+      clone.addTypeVariable(typeVariable);
+    }
     clone.setParameterList(parameterClone);
     return clone;
   }

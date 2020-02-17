@@ -246,7 +246,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
           if (superSuffix.isPresentArguments()) {
             //case 1 -> Expression.super.<TypeArgument>Method(Args)
             List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getExtTypeArgumentList());
-            List<MethodSymbol> methods = superClass.getTypeInfo().getSpannedScope().resolveMethodMany(superSuffix.getName());
+            List<MethodSymbol> methods = superClass.getMethodList(superSuffix.getName());
             if (!methods.isEmpty() && null != superSuffix.getArguments()) {
               //check if the methods fit and return the right returntype
               ASTArguments args = superSuffix.getArguments();
@@ -255,9 +255,11 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
           }
           else {
             //case 2 -> Expression.super.Field
-            Optional<FieldSymbol> field = superClass.getTypeInfo().getSpannedScope().resolveField(superSuffix.getName());
-            if (field.isPresent()) {
-              wholeResult = field.get().getType();
+            List<FieldSymbol> fields = superClass.getFieldList(superSuffix.getName());
+            if (fields.size()==1) {
+              wholeResult = fields.get(0).getType();
+            }else{
+              Log.error("0xA0304 there cannot be more than one field with the same name");
             }
           }
         }
@@ -439,7 +441,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     //search in the scope of the type that before the "." for a method that has the right name
     if(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().isPresentName()) {
-      List<MethodSymbol> methods = expressionResult.getTypeInfo().getSpannedScope().resolveMethodMany(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getName());
+      List<MethodSymbol> methods = expressionResult.getMethodList(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getName());
       //if the last result is a type then the method has to be static to be accessible
       if(isType){
         methods = filterStaticMethods(methods);
@@ -598,7 +600,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         //get the superclass of this typesymbol and search for its fitting constructor
         if(subType!=null&&subType.getSuperClassesOnly().size()==1){
           SymTypeExpression superClass = subType.getSuperClassesOnly().get(0);
-          List<MethodSymbol> methods = superClass.getTypeInfo().getSpannedScope().resolveMethodMany(superClass.getTypeInfo().getName());
+          List<MethodSymbol> methods = superClass.getMethodList(superClass.getTypeInfo().getName());
           if(!methods.isEmpty() && superSuffix.isPresentArguments()){
             //check if the constructors fit and return the right returntype
             ASTArguments args = superSuffix.getArguments();
