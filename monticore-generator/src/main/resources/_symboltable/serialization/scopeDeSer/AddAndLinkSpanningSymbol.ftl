@@ -9,7 +9,7 @@ de.monticore.symboltable.serialization.json.JsonObject symbolRef = subScopeJson.
     ${elifStmnt} (spanningSymbolKind.equals(${symbolName?uncap_first}DeSer.getSerializedKind())) {
       Optional<${scopeSpanningSymbolList[symbolName]}> spanningSymbol = scope.resolve${symbolName?remove_ending("Symbol")}Locally(spanningSymbolName);
       if (spanningSymbol.isPresent()) {
-        subScope.setSpanningSymbol(spanningSymbol.get());
+        spanningSymbol.get().setSpannedScope(subScope);
       }
       else {
         Log.error("Spanning symbol of scope "+subScopeJson+" could not be found during deserialization!");
