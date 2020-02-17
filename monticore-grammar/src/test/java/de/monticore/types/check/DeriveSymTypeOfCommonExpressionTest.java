@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static org.junit.Assert.assertEquals;
@@ -1387,6 +1388,104 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s = "field";
     astex = p.parse_StringExpression(s).get();
     assertEquals("boolean", tc.typeOf(astex).print());
+  }
+
+  public void init_static_example(){
+    //types A and B
+    scope = scope();
+    MethodSymbol atest = method("test",_voidSymType);
+    atest.setIsStatic(true);
+    FieldSymbol afield = field("field",_intSymType);
+    afield.setIsStatic(true);
+    TypeSymbol a = type("A",Lists.newArrayList(atest),Lists.newArrayList(afield),Lists.newArrayList(),Lists.newArrayList(),scope);
+    TypeSymbol aD = type("D",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope) a.getSpannedScope());
+    aD.setIsStatic(true);
+    a.getSpannedScope().add(aD);
+
+    add2scope(scope,a);
+
+    MethodSymbol btest = method("test",_voidSymType);
+    FieldSymbol bfield = field("field",_intSymType);
+    TypeSymbol b = type("B",Lists.newArrayList(btest),Lists.newArrayList(bfield),Lists.newArrayList(),Lists.newArrayList(),scope);
+    TypeSymbol bD = type("D",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope) b.getSpannedScope());
+    b.getSpannedScope().add(bD);
+
+    add2scope(scope,b);
+    //A has static method test, static field field, static type D
+    //B has normal method test, normal field field, normal type D
+    //type C extends A and has no method, field or type
+    SymTypeExpression aSymType = SymTypeExpressionFactory.createTypeObject("A",scope);
+    TypeSymbol c = type("C",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(aSymType),Lists.newArrayList(),scope);
+    add2scope(scope,c);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+  }
+
+  @Test
+  public void testStaticType() throws IOException {
+    init_static_example();
+
+    Optional<ASTExpression> sType = p.parse_StringExpression("A.D");
+    assertTrue(sType.isPresent());
+    assertEquals("D",tc.typeOf(sType.get()).print());
+  }
+
+  @Test
+  public void testInvalidStaticType() throws IOException {
+    init_static_example();
+
+    Optional<ASTExpression> sType = p.parse_StringExpression("B.D");
+    assertTrue(sType.isPresent());
+    try{
+      tc.typeOf(sType.get());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0303"));
+    }
+  }
+
+  @Test
+  public void testStaticField() throws IOException {
+    init_static_example();
+
+    Optional<ASTExpression> sField = p.parse_StringExpression("A.field");
+    assertTrue(sField.isPresent());
+    assertEquals("int",tc.typeOf(sField.get()).print());
+  }
+
+  @Test
+  public void testInvalidStaticField() throws IOException {
+    init_static_example();
+
+    Optional<ASTExpression> sField = p.parse_StringExpression("B.field");
+    assertTrue(sField.isPresent());
+    try{
+      tc.typeOf(sField.get());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0237"));
+    }
+  }
+
+  @Test
+  public void testStaticMethod() throws IOException {
+    init_static_example();
+
+    Optional<ASTExpression> sMethod = p.parse_StringExpression("A.test()");
+    assertTrue(sMethod.isPresent());
+    assertEquals("void",tc.typeOf(sMethod.get()).print());
+  }
+
+  @Test
+  public void testInvalidStaticMethod() throws IOException {
+    init_static_example();
+
+    Optional<ASTExpression> sMethod = p.parse_StringExpression("B.test()");
+    assertTrue(sMethod.isPresent());
+    try{
+      tc.typeOf(sMethod.get());
+    }catch (RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0239"));
+    }
   }
 
   /**

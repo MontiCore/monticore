@@ -12,6 +12,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static de.monticore.types.check.TypeCheck.compatible;
 
@@ -417,11 +418,12 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     //expressions of type A.B.<String>c() or A.B.<Integer>super.<String>c() plus Arguments in the brackets
     SymTypeExpression expressionResult = null;
     SymTypeExpression wholeResult = null;
+    boolean isType = false;
 
     node.getExpression().accept(getRealThis());
     if(lastResult.isPresentLast()){
       if(lastResult.isType()){
-        Log.error("0xA0296 "+prettyPrinter.prettyprint(node.getExpression())+" cannot be a type");
+       isType = true;
       }
       expressionResult = lastResult.getLast();
     }else{
@@ -438,6 +440,10 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     //search in the scope of the type that before the "." for a method that has the right name
     if(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().isPresentName()) {
       List<MethodSymbol> methods = expressionResult.getTypeInfo().getSpannedScope().resolveMethodMany(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getName());
+      //if the last result is a type then the method has to be static to be accessible
+      if(isType){
+        methods = filterStaticMethods(methods);
+      }
       if (!methods.isEmpty() && null != node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getArguments()) {
         //check if the methods fit and return the right returntype
         ASTArguments args = node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getArguments();
@@ -452,6 +458,10 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       lastResult.reset();
       Log.error("0xA0282 the result of the GenericInvocationExpression cannot be calculated");
     }
+  }
+
+  private List<MethodSymbol> filterStaticMethods(List<MethodSymbol> methods) {
+    return methods.stream().filter(MethodSymbolTOP::isIsStatic).collect(Collectors.toList());
   }
 
 

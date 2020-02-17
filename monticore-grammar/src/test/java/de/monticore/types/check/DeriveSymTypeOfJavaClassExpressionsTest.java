@@ -927,4 +927,14 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     }
   }
 
+  @Test
+  public void testGenericInvocationExpressionStatic(){
+
+  }
+
+  @Test
+  public void testInvalidGenericInvocationExpressionStatic(){
+
+  }
+
 }

@@ -18,6 +18,7 @@ public class MethodSymbol extends MethodSymbolTOP {
     clone.setReturnType(this.getReturnType().deepClone());
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
+    clone.setIsStatic(this.isStatic);
     if(isPresentAstNode()) {
       clone.setAstNode(this.getAstNode());
     }
