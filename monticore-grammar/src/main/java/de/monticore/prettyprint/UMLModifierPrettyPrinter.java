@@ -6,13 +6,15 @@ import de.monticore.umlmodifier._ast.ASTUMLModifierNode;
 import de.monticore.umlmodifier._visitor.UMLModifierVisitor;
 
 public class UMLModifierPrettyPrinter implements UMLModifierVisitor {
-  
+
+  private UMLModifierVisitor realThis= this;
+
   private IndentPrinter printer;
-  
+
   public UMLModifierPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;
   }
-  
+
   @Override
   public void handle(ASTModifier a) {
     // print stereotypes
@@ -48,15 +50,25 @@ public class UMLModifierPrettyPrinter implements UMLModifierVisitor {
       getPrinter().print("static ");
     }
   }
-  
+
   public IndentPrinter getPrinter() {
     return this.printer;
   }
-  
+
   public String prettyprint(ASTUMLModifierNode node) {
     getPrinter().clearBuffer();
     node.accept(getRealThis());
     return getPrinter().getContent();
   }
-  
+
+  @Override
+  public void setRealThis(UMLModifierVisitor realThis) {
+    this.realThis = realThis;
+  }
+
+  @Override
+  public UMLModifierVisitor getRealThis() {
+    return realThis;
+  }
+
 }
