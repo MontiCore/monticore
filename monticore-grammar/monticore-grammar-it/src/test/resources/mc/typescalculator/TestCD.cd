@@ -6,23 +6,23 @@ import mc.common.Basics;
 classdiagram TestCD{
 
   class B{
-    Double a;
-    C x;
-    D z;
+    static Double a;
+    static C x;
+    static D z;
   }
 
   interface C{
-    G f;
+    static G f;
   }
 
   class D implements mc.typescalculator.TestCD.C{
-    Integer s;
-    G f;
-    B y;
+    static Integer s;
+    static G f;
+    static B y;
   }
 
   class G{
-    String toString();
+    static String toString();
   }
 
   class Integer{
