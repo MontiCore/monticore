@@ -8,4 +8,3 @@ ${tc.signature("attrType", "attrName", "jsonParamName", "typeMap")}
     result.add(${jsonParamName}.${typeMap});
 }
 return result;
-BuildersTest
