@@ -458,7 +458,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       //look for this type in our scope
       TypeSymbol innerResultType = innerResult.getTypeInfo();
       //search for a method, field or type in the scope of the type of the inner expression
-      List<FieldSymbol> fieldSymbols = innerResult.getFieldList(expr.getName());
+      List<FieldSymbol> fieldSymbols = innerResult.getFieldList(expr.getName(),lastResult.isType());
       Optional<TypeSymbol> typeSymbolOpt = innerResultType.getSpannedScope().resolveType(expr.getName());
       if (!fieldSymbols.isEmpty()) {
         //cannot be a method, test variable first
@@ -492,6 +492,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
           lastResult.reset();
           Log.error("0xA0303 the type "+typeSymbol.getName()+" must be static to be accessible in a type");
         }
+      }else{
+        lastResult.reset();
+        Log.error("0xA0306 the result of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
       }
     } else {
       //inner type has no result --> try to resolve a type
@@ -527,7 +530,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (lastResult.isPresentLast()) {
       innerResult = lastResult.getLast();
       //resolve methods with name of the inner expression
-      List<MethodSymbol> methodlist = innerResult.getMethodList(expr.getName());
+      List<MethodSymbol> methodlist = innerResult.getMethodList(expr.getName(),lastResult.isType());
       //count how many methods can be found with the correct arguments and return type
       List<MethodSymbol> fittingMethods = new ArrayList<>();
       for (MethodSymbol method : methodlist) {

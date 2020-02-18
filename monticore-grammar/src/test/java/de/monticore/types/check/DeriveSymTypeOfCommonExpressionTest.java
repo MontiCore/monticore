@@ -1498,21 +1498,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try{
       tc.typeOf(sMethod.get());
     }catch(RuntimeException e){
-      //TODO
-    }
-  }
-
-  @Test
-  public void testSubClassesDoNotKnowStaticTypesOfSuperClasses() throws IOException{
-    init_static_example();
-
-    Optional<ASTExpression> sType = p.parse_StringExpression("C.D");
-    assertTrue(sType.isPresent());
-
-    try{
-      tc.typeOf(sType.get());
-    }catch(RuntimeException e){
-      //TODO
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0239"));
     }
   }
 
@@ -1526,8 +1512,18 @@ public class DeriveSymTypeOfCommonExpressionTest {
     try{
       tc.typeOf(sField.get());
     }catch(RuntimeException e){
-      //TODO
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0306"));
     }
+  }
+
+  //TODO: the same for types
+  @Test
+  public void testSubClassesDoNotKnowStaticTypesOfSuperClasses() throws IOException{
+    init_static_example();
+
+    Optional<ASTExpression> sType = p.parse_StringExpression("C.D");
+    assertTrue(sType.isPresent());
+    //TODO
   }
 
   /**

@@ -441,7 +441,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     //search in the scope of the type that before the "." for a method that has the right name
     if(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().isPresentName()) {
-      List<MethodSymbol> methods = expressionResult.getMethodList(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getName());
+      List<MethodSymbol> methods = expressionResult.getMethodList(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getName(),isType);
       //if the last result is a type then the method has to be static to be accessible
       if(isType){
         methods = filterStaticMethods(methods);

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * SymTypeExpression is the superclass for all typeexpressions, such as
@@ -57,11 +58,28 @@ public abstract class SymTypeExpression {
    */
   public List<MethodSymbol> getMethodList(String methodname){
     //get methods from the typesymbol
-    List<MethodSymbol> methods = getTypeInfo().getSpannedScope().resolveMethodMany(methodname);
+    List<MethodSymbol> methods = getCorrectMethods(methodname,false);
+    return transformMethodList(methodname,methods);
+  }
+
+  protected List<MethodSymbol> getCorrectMethods(String methodName, boolean outerIsType){
+    List<MethodSymbol> methods = getTypeInfo().getSpannedScope().resolveMethodMany(methodName);
+    if(outerIsType){
+      List<MethodSymbol> methodsWithoutStatic = methods.stream().filter(m -> !m.isIsStatic()).collect(Collectors.toList());
+      List<MethodSymbol> localStaticMethods = getTypeInfo().getSpannedScope().getLocalMethodSymbols()
+          .stream().filter(MethodSymbolTOP::isIsStatic).collect(Collectors.toList());
+      methodsWithoutStatic.addAll(localStaticMethods);
+      return methodsWithoutStatic;
+    }else{
+      return methods;
+    }
+  }
+
+  protected List<MethodSymbol> transformMethodList(String methodName, List<MethodSymbol> methods){
     List<MethodSymbol> methodList = new ArrayList<>();
     //filter methods
     for(MethodSymbol method:methods){
-      if(method.getName().equals(methodname)){
+      if(method.getName().equals(methodName)){
         methodList.add(method.deepClone());
       }
     }
@@ -121,12 +139,39 @@ public abstract class SymTypeExpression {
     return methodList;
   }
 
+  public List<MethodSymbol> getMethodList(String methodName, boolean outerIsType){
+    List<MethodSymbol> methods = getCorrectMethods(methodName,outerIsType);
+    return transformMethodList(methodName,methods);
+  }
+
   /**
    * returns the list of fields the SymTypeExpression can access and filters these for a field with specific name
    */
   public List<FieldSymbol> getFieldList(String fieldName){
     //get methods from the typesymbol
+    List<FieldSymbol> fields = getCorrectFields(fieldName,false);
+    return transformFieldList(fieldName,fields);
+  }
+
+  public List<FieldSymbol> getFieldList(String fieldName, boolean outerIsType){
+    List<FieldSymbol> fields = getCorrectFields(fieldName,outerIsType);
+    return transformFieldList(fieldName,fields);
+  }
+
+  protected List<FieldSymbol> getCorrectFields(String fieldName, boolean outerIsType){
     List<FieldSymbol> fields = getTypeInfo().getSpannedScope().resolveFieldMany(fieldName);
+    if(outerIsType){
+      List<FieldSymbol> fieldsWithoutStatic = fields.stream().filter(f->!f.isIsStatic()).collect(Collectors.toList());
+      List<FieldSymbol> localStaticFields = getTypeInfo().getSpannedScope().getLocalFieldSymbols()
+          .stream().filter(FieldSymbolTOP::isIsStatic).collect(Collectors.toList());
+      fieldsWithoutStatic.addAll(localStaticFields);
+      return fieldsWithoutStatic;
+    }else{
+      return fields;
+    }
+  }
+
+  protected List<FieldSymbol> transformFieldList(String fieldName, List<FieldSymbol> fields){
     List<FieldSymbol> fieldList = new ArrayList<>();
     //filter fields
     for(FieldSymbol field: fields){
