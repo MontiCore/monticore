@@ -53,7 +53,7 @@ public abstract class SymTypeExpression {
   public abstract SymTypeExpression deepClone();
 
   /**
-   * gets the list of methods the SymTypeExpression can access and filters these for a method with specific name
+   * returns the list of methods the SymTypeExpression can access and filters these for a method with specific name
    */
   public List<MethodSymbol> getMethodList(String methodname){
     //get methods from the typesymbol
@@ -122,7 +122,7 @@ public abstract class SymTypeExpression {
   }
 
   /**
-   * gets the list of fields the SymTypeExpression can access and filters these for a field with specific name
+   * returns the list of fields the SymTypeExpression can access and filters these for a field with specific name
    */
   public List<FieldSymbol> getFieldList(String fieldName){
     //get methods from the typesymbol
