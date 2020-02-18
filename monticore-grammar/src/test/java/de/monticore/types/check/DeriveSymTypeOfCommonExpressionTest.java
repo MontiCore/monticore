@@ -688,26 +688,28 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, method("isInt", _booleanSymType));
     add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
     FieldSymbol fs = field("variable", _intSymType);
+    fs.setIsStatic(true);
     MethodSymbol ms = method("store", _doubleSymType);
-    MethodSymbol ms1 = add(method("pay", _voidSymType),
-        TypeSymbolsSymTabMill.fieldSymbolBuilder().setName("cost").setType(_intSymType).build()
-    );
-    ExpressionsBasisScope testSpannedScope = scope(scope2, "");
-    testSpannedScope.add(fs);
-    testSpannedScope.add(ms);
-    testSpannedScope.add(ms1);
-    TypeSymbol testType = DefsTypeBasic.type("Test");
-    testType = add(add(add(testType, fs), ms1), ms);
+    ms.setIsStatic(true);
+    MethodSymbol ms1 = add(method("pay", _voidSymType), field("cost",_intSymType));
+    ms1.setIsStatic(true);
+    TypeSymbol testType = type("Test",Lists.newArrayList(ms,ms1),Lists.newArrayList(fs),Lists.newArrayList(),Lists.newArrayList(),scope);
+    TypeSymbol testType2 = type("Test",Lists.newArrayList(ms,ms1),Lists.newArrayList(fs),Lists.newArrayList(),Lists.newArrayList(),scope2);
+    TypeSymbol testType3 = type("Test",Lists.newArrayList(ms,ms1),Lists.newArrayList(fs),Lists.newArrayList(),Lists.newArrayList(),scope3);
+    ExpressionsBasisScope testScope = (ExpressionsBasisScope) testType3.getSpannedScope();
 
-    TypeSymbol testInnerType = type("TestInnerType",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)testType.getSpannedScope());
-    add2scope(testType.getSpannedScope(),testInnerType);
     FieldSymbol testVariable = field("testVariable",_shortSymType);
-    add2scope(testSpannedScope,testVariable);
+    testVariable.setIsStatic(true);
+    TypeSymbol testInnerType = type("TestInnerType",Lists.newArrayList(),Lists.newArrayList(testVariable),Lists.newArrayList(),Lists.newArrayList(),testScope);
+    testInnerType.setIsStatic(true);
+    add2scope(testScope,testInnerType);
+    add2scope(testInnerType.getSpannedScope(),testVariable);
 
-    testType.setSpannedScope(testSpannedScope);
-    add2scope(scope2, testType);
-    add2scope(scope3, testType);
-    add2scope(scope, testType);
+    testType3.setSpannedScope(testScope);
+
+    add2scope(scope2, testType2);
+    add2scope(scope3, testType3);
+    add2scope(scope,testType);
 
     derLit.setScope(scope);
     tc = new TypeCheck(null, derLit);

@@ -468,13 +468,16 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
           fieldSymbols = filterStaticFieldSymbols(fieldSymbols);
         }
         if (fieldSymbols.size() != 1) {
+          lastResult.reset();
           Log.error("0xA0237 There cannot be more than one attribute with the same name in your field");
         }
-        FieldSymbol var = fieldSymbols.get(0);
-        SymTypeExpression type = var.getType();
-        this.result = type;
-        lastResult.setField();
-        lastResult.setLast(type);
+        if(!fieldSymbols.isEmpty()) {
+          FieldSymbol var = fieldSymbols.get(0);
+          SymTypeExpression type = var.getType();
+          this.result = type;
+          lastResult.setField();
+          lastResult.setLast(type);
+        }
       } else if (typeSymbolOpt.isPresent()) {
         //no variable found, test type
         TypeSymbol typeSymbol = typeSymbolOpt.get();
@@ -484,7 +487,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
           match = false;
         }
         if(match){
-          SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getFullName(), expr.getEnclosingScope());
+          SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getFullName(), typeSymbol.getEnclosingScope());
           this.result = wholeResult;
           lastResult.setType();
           lastResult.setLast(wholeResult);
@@ -504,7 +507,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         TypeSymbol typeSymbol = typeSymbolOpt.get();
         SymTypeExpression type = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getFullName(), typeSymbol.getEnclosingScope());
         this.result = type;
-        lastResult.setMethod();
+        lastResult.setType();
         lastResult.setLast(type);
       } else {
         //the inner type has no result and there is no type found

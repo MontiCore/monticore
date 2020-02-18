@@ -55,6 +55,7 @@ public abstract class SymTypeExpression {
 
   /**
    * returns the list of methods the SymTypeExpression can access and filters these for a method with specific name
+   * the last calculated type in the type check was no type
    */
   public List<MethodSymbol> getMethodList(String methodname){
     //get methods from the typesymbol
@@ -62,6 +63,15 @@ public abstract class SymTypeExpression {
     return transformMethodList(methodname,methods);
   }
 
+  /**
+   * return the correct methods for the two situations:
+   * 1) the last calculated type in the type check was a type, then filter for non-static methods and
+   * add the static methods of this type
+   * 2) the last calculated type in the type check was an instance, then just resolve for methods
+   * @param methodName name of the method we search for
+   * @param outerIsType true if last result of type check was type, false if it was an instance
+   * @return the correct methods for the specific case
+   */
   protected List<MethodSymbol> getCorrectMethods(String methodName, boolean outerIsType){
     List<MethodSymbol> methods = getTypeInfo().getSpannedScope().resolveMethodMany(methodName);
     if(outerIsType){
@@ -75,6 +85,12 @@ public abstract class SymTypeExpression {
     }
   }
 
+  /**
+   * transforms the methods by replacing their type variables with the actual type arguments
+   * @param methodName name of the method we search for
+   * @param methods methods that need to be transformed
+   * @return transformed methods
+   */
   protected List<MethodSymbol> transformMethodList(String methodName, List<MethodSymbol> methods){
     List<MethodSymbol> methodList = new ArrayList<>();
     //filter methods
@@ -139,6 +155,12 @@ public abstract class SymTypeExpression {
     return methodList;
   }
 
+  /**
+   * returns the correct methods in both cases: 1) the last result was a type, 2) the last result was an instance
+   * @param methodName name of the method we search for
+   * @param outerIsType true if the last result was a type, false if it was an instance
+   * @return the correct methods for the specific case
+   */
   public List<MethodSymbol> getMethodList(String methodName, boolean outerIsType){
     List<MethodSymbol> methods = getCorrectMethods(methodName,outerIsType);
     return transformMethodList(methodName,methods);
@@ -153,11 +175,26 @@ public abstract class SymTypeExpression {
     return transformFieldList(fieldName,fields);
   }
 
+  /**
+   * returns the correct fields in both cases: 1) the last result was a type, 2) the last result was an instance
+   * @param fieldName name of the field we search for
+   * @param outerIsType true if the last result was a type, false if it was an instance
+   * @return the correct fields for the specific case
+   */
   public List<FieldSymbol> getFieldList(String fieldName, boolean outerIsType){
     List<FieldSymbol> fields = getCorrectFields(fieldName,outerIsType);
     return transformFieldList(fieldName,fields);
   }
 
+  /**
+   * return the correct fields for the two situations:
+   * 1) the last calculated type in the type check was a type, then filter for non-static fields and
+   * add the static fields of this type
+   * 2) the last calculated type in the type check was an instance, then just resolve for fields
+   * @param fieldName name of the field we search for
+   * @param outerIsType true if last result of type check was type, false if it was an instance
+   * @return the correct fields for the specific case
+   */
   protected List<FieldSymbol> getCorrectFields(String fieldName, boolean outerIsType){
     List<FieldSymbol> fields = getTypeInfo().getSpannedScope().resolveFieldMany(fieldName);
     if(outerIsType){
@@ -171,6 +208,12 @@ public abstract class SymTypeExpression {
     }
   }
 
+  /**
+   * transforms the fields by replacing their type variables with the actual type arguments
+   * @param fieldName name of the field we search for
+   * @param fields fields that need to be transformed
+   * @return transformed fields
+   */
   protected List<FieldSymbol> transformFieldList(String fieldName, List<FieldSymbol> fields){
     List<FieldSymbol> fieldList = new ArrayList<>();
     //filter fields
