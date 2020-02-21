@@ -1,12 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
-package automaton.cocos;
+package automata.cocos;
 
-import automaton._ast.ASTState;
-import automaton._cocos.AutomatonASTStateCoCo;
+import automata._ast.ASTState;
+import automata._cocos.AutomataASTStateCoCo;
 import de.se_rwth.commons.logging.Log;
 
-public class StateNameStartsWithCapitalLetter
-			implements AutomatonASTStateCoCo {
+public class StateNameStartsWithCapitalLetter implements AutomataASTStateCoCo {
   
   @Override
   public void check(ASTState state) {

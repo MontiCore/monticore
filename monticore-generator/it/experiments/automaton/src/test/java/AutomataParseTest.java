@@ -5,16 +5,15 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import automata._ast.ASTAutomaton;
+import automata._ast.ASTState;
+import automata._parser.AutomataParser;
 import org.junit.Test;
-
-import automaton._ast.ASTAutomaton;
-import automaton._ast.ASTState;
-import automaton._parser.AutomatonParser;
 
 /**
  * Main class for the some Demonstration to Parse
  */
-public class AutomatonParseTest {
+public class AutomataParseTest {
   
   /**
    * @throws IOException 
@@ -24,7 +23,7 @@ public class AutomatonParseTest {
   public void testParseMethods() throws IOException {
 
     String filename = "src/test/resources/example/PingPong.aut";
-    AutomatonParser p = new AutomatonParser();
+    AutomataParser p = new AutomataParser();
     
     // parse from a file
     Optional<ASTAutomaton> at = p.parse(filename);

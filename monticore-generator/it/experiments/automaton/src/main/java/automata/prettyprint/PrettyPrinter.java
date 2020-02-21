@@ -1,18 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
-package automaton.prettyprint;
+package automata.prettyprint;
 
-import automaton._ast.ASTAutomaton;
-import automaton._ast.ASTState;
-import automaton._ast.ASTTransition;
-import automaton._visitor.AutomatonVisitor;
-
+import automata._ast.ASTAutomaton;
+import automata._ast.ASTState;
+import automata._ast.ASTTransition;
+import automata._visitor.AutomataVisitor;
 /**
  * Pretty prints automatons. Use {@link #print(ASTAutomaton)} to start a pretty
  * print and get the result by using {@link #getResult()}.
  *
 
  */
-public class PrettyPrinter implements AutomatonVisitor {
+public class PrettyPrinter implements AutomataVisitor {
   private String result = "";
   
   private int indention = 0;

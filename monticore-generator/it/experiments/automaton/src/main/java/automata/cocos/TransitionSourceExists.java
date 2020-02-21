@@ -1,21 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
-package automaton.cocos;
+package automata.cocos;
 
-import automaton._ast.ASTTransition;
-import automaton._cocos.AutomatonASTTransitionCoCo;
-import automaton._symboltable.IAutomatonScope;
-import automaton._symboltable.StateSymbol;
+import automata._ast.ASTTransition;
+import automata._cocos.AutomataASTTransitionCoCo;
+import automata._symboltable.IAutomataScope;
+import automata._symboltable.StateSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
-public class TransitionSourceExists
-                implements AutomatonASTTransitionCoCo {
+public class TransitionSourceExists implements AutomataASTTransitionCoCo {
 
   @Override
   public void check(ASTTransition node) {
   
-    IAutomatonScope enclosingScope = node.getEnclosingScope();
+    IAutomataScope enclosingScope = node.getEnclosingScope();
     Optional<StateSymbol> sourceState =
         enclosingScope.resolveState(node.getFrom());
 

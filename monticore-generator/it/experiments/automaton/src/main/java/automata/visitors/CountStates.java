@@ -1,15 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
-package automaton.visitors;
+package automata.visitors;
 
-import automaton._ast.ASTState;
-import automaton._visitor.AutomatonVisitor;
+import automata._ast.ASTState;
+import automata._visitor.AutomataVisitor;
 
 /**
  * Counts the states of an automaton.
  *
-
  */
-public class CountStates implements AutomatonVisitor {
+public class CountStates implements AutomataVisitor {
   private int count = 0;
   
   @Override

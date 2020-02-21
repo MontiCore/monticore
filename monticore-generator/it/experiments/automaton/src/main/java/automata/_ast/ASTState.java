@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package automaton._ast;
+package automata._ast;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
-package automaton;
+package automata;
 
-import automaton._ast.ASTAutomaton;
-import automaton._cocos.AutomatonCoCoChecker;
-import automaton._parser.AutomatonParser;
-import automaton._symboltable.*;
-import automaton.cocos.AtLeastOneInitialAndFinalState;
-import automaton.cocos.StateNameStartsWithCapitalLetter;
-import automaton.cocos.TransitionSourceExists;
-import automaton.prettyprint.PrettyPrinter;
-import automaton.visitors.CountStates;
+import automata._ast.ASTAutomaton;
+import automata._cocos.AutomataCoCoChecker;
+import automata._parser.AutomataParser;
+import automata._symboltable.*;
+import automata.cocos.AtLeastOneInitialAndFinalState;
+import automata.cocos.StateNameStartsWithCapitalLetter;
+import automata.cocos.TransitionSourceExists;
+import automata.prettyprint.PrettyPrinter;
+import automata.visitors.CountStates;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
@@ -21,7 +21,7 @@ import java.util.Optional;
  * Main class for the Automaton DSL tool.
  *
  */
-public class AutomatonTool {
+public class AutomataTool {
   
   /**
    * Use the single argument for specifying the single input automaton file.
@@ -38,33 +38,33 @@ public class AutomatonTool {
       Log.error("Please specify only one single path to the input model.");
       return;
     }
-    Log.info("Automaton DSL Tool", AutomatonTool.class.getName());
-    Log.info("------------------", AutomatonTool.class.getName());
+    Log.info("Automaton DSL Tool", AutomataTool.class.getName());
+    Log.info("------------------", AutomataTool.class.getName());
     String model = args[0];
     
     // setup the language infrastructure
-    AutomatonLanguage lang = new AutomatonLanguage();
+    AutomataLanguage lang = new AutomataLanguage();
     
     // parse the model and create the AST representation
     ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", AutomatonTool.class.getName());
+    Log.info(model + " parsed successfully!", AutomataTool.class.getName());
     
     // setup the symbol table
-    AutomatonArtifactScope modelTopScope = createSymbolTable(lang, ast);
+    AutomataArtifactScope modelTopScope = createSymbolTable(lang, ast);
     
     // can be used for resolving names in the model
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
     if (aSymbol.isPresent()) {
       Log.info("Resolved state symbol \"Ping\"; FQN = "
       	       + aSymbol.get().toString(),
-          AutomatonTool.class.getName());
+          AutomataTool.class.getName());
     } else {
       Log.info("This automaton does not contain a state called \"Ping\";",
-          AutomatonTool.class.getName());
+          AutomataTool.class.getName());
     }
     
     // setup context condition insfrastructure
-    AutomatonCoCoChecker checker = new AutomatonCoCoChecker();
+    AutomataCoCoChecker checker = new AutomataCoCoChecker();
 
     // add a custom set of context conditions
     checker.addCoCo(new StateNameStartsWithCapitalLetter());
@@ -79,12 +79,12 @@ public class AutomatonTool {
     // analyze the model with a visitor
     CountStates cs = new CountStates();
     cs.handle(ast);
-    Log.info("The model contains " + cs.getCount() + " states.", AutomatonTool.class.getName());
+    Log.info("The model contains " + cs.getCount() + " states.", AutomataTool.class.getName());
     
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
     pp.handle(ast);
-    Log.info("Pretty printing the parsed automaton into console:", AutomatonTool.class.getName());
+    Log.info("Pretty printing the parsed automaton into console:", AutomataTool.class.getName());
     System.out.println(pp.getResult());
   }
   
@@ -96,7 +96,7 @@ public class AutomatonTool {
    */
   public static ASTAutomaton parse(String model) {
     try {
-      AutomatonParser parser = new AutomatonParser() ;
+      AutomataParser parser = new AutomataParser() ;
       Optional<ASTAutomaton> optAutomaton = parser.parse(model);
       
       if (!parser.hasErrors() && optAutomaton.isPresent()) {
@@ -118,11 +118,11 @@ public class AutomatonTool {
    * @param ast
    * @return
    */
-  public static AutomatonArtifactScope createSymbolTable(AutomatonLanguage lang, ASTAutomaton ast) {
+  public static AutomataArtifactScope createSymbolTable(AutomataLanguage lang, ASTAutomaton ast) {
     
-    AutomatonGlobalScope globalScope = new AutomatonGlobalScope(new ModelPath(), lang);
+    AutomataGlobalScope globalScope = new AutomataGlobalScope(new ModelPath(), lang);
     
-    AutomatonSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(
+    AutomataSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(
          globalScope);
     return symbolTable.createFromAST(ast);
   }

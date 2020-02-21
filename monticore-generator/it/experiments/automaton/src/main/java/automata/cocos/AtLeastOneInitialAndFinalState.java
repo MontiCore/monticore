@@ -1,12 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
-package automaton.cocos;
+package automata.cocos;
 
-import automaton._ast.ASTAutomaton;
-import automaton._ast.ASTState;
-import automaton._cocos.AutomatonASTAutomatonCoCo;
+
+import automata._ast.ASTAutomaton;
+import automata._ast.ASTState;
+import automata._cocos.AutomataASTAutomatonCoCo;
 import de.se_rwth.commons.logging.Log;
 
-public class AtLeastOneInitialAndFinalState implements AutomatonASTAutomatonCoCo {
+public class AtLeastOneInitialAndFinalState implements AutomataASTAutomatonCoCo {
   
   @Override
   public void check(ASTAutomaton automaton) {

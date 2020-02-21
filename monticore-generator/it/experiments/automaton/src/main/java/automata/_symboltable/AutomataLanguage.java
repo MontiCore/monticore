@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package automaton._symboltable;
+package automata._symboltable;
 
 import com.google.common.collect.ImmutableSet;
 import de.se_rwth.commons.Names;
@@ -7,11 +7,11 @@ import de.se_rwth.commons.Names;
 import java.util.Collections;
 import java.util.Set;
 
-public class AutomatonLanguage extends AutomatonLanguageTOP {
+public class AutomataLanguage extends AutomataLanguageTOP {
   public static final String FILE_ENDING = "aut";
   
-  public AutomatonLanguage() {
-    super("Automaton Language", FILE_ENDING);
+  public AutomataLanguage() {
+    super("Automata Language", FILE_ENDING);
 
   }
   
@@ -27,7 +27,7 @@ public class AutomatonLanguage extends AutomatonLanguageTOP {
   
 
   @Override
-  protected AutomatonModelLoader provideModelLoader() {
-    return new AutomatonModelLoader(this);
+  protected AutomataModelLoader provideModelLoader() {
+    return new AutomataModelLoader(this);
   }
 }
