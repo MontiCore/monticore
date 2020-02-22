@@ -16,6 +16,30 @@ components, conservative extension and composition mechanisms and an
 optimal integration of hand-written code into the generated tools. Its 
 grammar languages are rather comfortable. 
 
+## A Teaser for MontiCore
+
+To show a little of MontiCore's capabilities, the following (incomplete) 
+grammar might help:
+
+    grammar MyStatemachine
+              extends Expressions, Types, SetExpressions {
+    
+      Transition = from:State ":" Expression? "->" to:State
+    
+      LogicalNotExpr implements Expression <190> =
+            "!" Expression;
+    
+      PlusExpr implements Expression <170> =
+            left:Expression operator:("+" | "-") right:Expression;
+    
+      scope LetExpr implements Expression <100> =
+            "let" (VarDeclaration || ";")+
+            "in" Expression;
+      
+      symbol VarDeclaration = Type? Name "=" Expression
+    }
+
+  
 ## Information about MontiCore
 
 * [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
