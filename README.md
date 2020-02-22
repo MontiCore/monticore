@@ -21,14 +21,32 @@ grammar languages are rather comfortable.
 To show a little of MontiCore's capabilities, the following (incomplete) 
 grammar might help:
 
-    grammar MyStatemachine extends Expressions, Types, SetExpressions {
-      Transition                                 = from:State ":" Expression? "->" to:State
-      LogicalNotExpr implements Expression <190> = "!" Expression;
-      PlusExpr       implements Expression <170> = left:Expression operator:("+" | "-") right:Expression;
-      scope LetExpr  implements Expression <100> =
+    grammar MyStatemachine extends Statemachine, Types, SetExpressions {
+      Transition                           = from:State ":" Expression? "->" to:State
+      LogicalNotExpr implements Expression = "!" Expression;
+      PlusExpr       implements Expression = left:Expression operator:("+" | "-") right:Expression;
+      scope LetExpr  implements Expression =
             "let" (VarDeclaration || ";")+ "in" Expression;
-      symbol VarDeclaration                      = Type? Name "=" Expression
+      symbol VarDeclaration                = Type? Name "=" Expression
     }
+
+There grammar builds an extended version of Statemachines reusing
+existing grammar components, here `Statemachine`, `Types`, and `SetExpressions`.
+The grammar has 5 productions introducing 4 new nonterminals and overwriting `Transition` 
+(which is inherited from `Statemachine`). `Transition` becomes an optional `Expression?` as 
+firing condition. `LogicalNotExpr`, `PlusExpr`, and `LetExpr` extend the already existing
+`Expression` nonterminal and add new forms of expressions.
+
+`LetExpr` introduces a new local variable, which is visible only in that `scope` (indicated by keyword).
+`VarDeclaration` defines the new form of `symbol`.
+Heavy infrastructure exists to manage definition of names, visibility, etc.
+
+* Please note that in both cases (extension and overwriting) existing nonterminals, we do not 
+touch nor copy/paste the predefined grammars, but achieve a black-box reuse.
+* Please also note that `PlusExpr` is a left-recursive extension.
+
+
+The form of Transitions is overwritten by the
 
   
 ## Information about MontiCore
