@@ -21,7 +21,7 @@ grammar languages are rather comfortable.
 To show a little of MontiCore's capabilities, the following (incomplete) 
 grammar might help:
 
-    grammar MyStatemachine extends Statemachine, Types, SetExpressions {
+    grammar MyStatemachine extends Statemachine, Types, SetExpressions {              // grammar mc4
       Transition                           = from:State ":" Expression? "->" to:State
       LogicalNotExpr implements Expression = "!" Expression;
       PlusExpr       implements Expression = left:Expression operator:("+" | "-") right:Expression;
@@ -30,8 +30,8 @@ grammar might help:
       symbol VarDeclaration                = Type? Name "=" Expression
     }
 
-The grammar language has a variety of mechanisms to define new nonterminals using constants "!", 
-brackets "(..)", optionals "?", lists "*", repetitions "(..||..)+", etc. 
+The grammar language has a variety of mechanisms to define new nonterminals using constants `!`, 
+brackets `(..)`, optionals `?`, lists `*`, repetitions `(..||..)+`, etc. 
 The grammar builds an extended version of Statemachines reusing
 existing grammar components, here `Statemachine`, `Types`, and `SetExpressions`.
 The grammar has 5 productions introducing 4 new nonterminals and overwriting `Transition` 
@@ -45,22 +45,24 @@ Heavy infrastructure exists to manage definition of names, visibility, etc.
 
 We now can write statemachines like:
 
-    statemachine PingPong {
+    statemachine PingPong {                                                   // statemachine
       state Ping, Pong;
       Ping : (speed > 14km/h && !missedBall) -> Pong
     }
+
+MontiCore provides versions of expressions that use SI units like `14.2 m/s^2`, but also Java 
+expressions like `2_000_000` and other variants. 
 
 * Please note that in both cases (extension and overwriting) existing nonterminals, we do not 
 touch nor copy/paste the predefined grammars, but achieve a out-of-the-box reuse.
 * Out-of-the-box reuse also includes reuse of predefined typechecks, code generation, etc. 
   They only need to be extended to the added variants.
-* Please also note that `PlusExpr` is mutually left-recursivei (Yes, that works in MontiCore 6).
+* Please also note that `PlusExpr` is mutually left-recursive (Yes, that works in MontiCore 6).
 
+## More Information about MontiCore
 
-The form of Transitions is overwritten by the
-
-  
-## Information about MontiCore
+* [**MontiCore Online Demonstrator**]().
+   (TODO: needs to be released)
 
 * [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
    The reference Manual describes how to use MontiCore as a out-of-the-box 
