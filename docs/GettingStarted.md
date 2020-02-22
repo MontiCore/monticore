@@ -191,3 +191,10 @@ Please include the processed grammar, model, and the log file.
 *  [MontiCore zip with automata DSL example](http://www.monticore.de/gettingstarted/monticore-cli-6.0.0.zip)
 *  [Executable MontiCore Java archive (without example)](http://www.monticore.de/gettingstarted/monticore-cli-6.0.0.zip)
  	
+## Further Information
+
+* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
+
+* [MontiCore project](README.md) - MontiCore
+
+

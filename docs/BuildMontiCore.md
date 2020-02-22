@@ -75,6 +75,8 @@ lasting tasks.
 
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 
-* [Changelog](CHANGELOG.md) - Release Notes
+* [FAQ](00.org/Explanations/FAQ.md) - FAQ
+
+* [Changelog](00.org/Explanations/CHANGELOG.md) - Release Notes
 
 * [MontiCore project](README.md) - MontiCore 

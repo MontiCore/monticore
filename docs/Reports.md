@@ -7,3 +7,11 @@ The special reports are:
 * [A detailed error List with the corresponding error name](DetailedErrorList.md)
 * [Duplicate file names](FindDoubleFileNames.md)
 * [Ftl Analysis](FtlAnalysis.md)
+
+## Further Information
+
+* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
+
+* [MontiCore project](README.md) - MontiCore
+
+

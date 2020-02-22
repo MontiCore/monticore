@@ -41,3 +41,11 @@ The following list contains a usable subset of these language (components) devel
 Less well elaborated, but also available are the following components. E.g. checking of context conditions or the type system is not complete or the language has not been migrated to recent version of the MontiCore language workbench.
 
 * **C++** and its sublanguages for expressions, statements and definitions (but no generics, no defines, cocos are incomplete)
+
+## Further Information
+
+* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
+
+* [MontiCore project](README.md) - MontiCore
+
+

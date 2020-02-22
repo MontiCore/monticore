@@ -154,3 +154,10 @@ MontiCore projects are hosted at
 * This is the full Java' Language (as Opposed to JavaLight).
 
 
+## Further Information
+
+* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
+
+* [MontiCore project](README.md) - MontiCore
+
+

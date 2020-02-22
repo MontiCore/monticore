@@ -81,7 +81,7 @@ Please also note that `PlusExpr` is mutually left-recursive (Yes, that works in 
    several sets of *literals*, *expressions* and *types*, which are relatively 
    freely composable.
 
-* [**List of languages**](Languages.md).
+* [**List of languages**](docs/Languages.md).
    This is a list of languages that can be used out of the box. Some of them
    are in development, others rather stable. Several of these languages
    are inspired by the UML/P (see [*[Rum16,Rum17]*](http://mbse.se-rwth.de/).
@@ -152,8 +152,13 @@ by executing the following configuration:
 
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 
-* [Build MontiCore](00.org/BuildMontiCore.md) - How to Build MontiCore
+* [Build MontiCore](docs/BuildMontiCore.md) - How to Build MontiCore
 
-* [Changelog](CHANGELOG.md) - Release Notes
+* [Getting Started](docs/GettingStarted.md) - How to Build MontiCore
+
+* [Changelog](00.org/Explanations/CHANGELOG.md) - Release Notes
+
+* [FAQ](00.org/Explanations/FAQ.md) - FAQ 
 
 * [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) - MontiCore 3-Level License
+
