@@ -21,22 +21,13 @@ grammar languages are rather comfortable.
 To show a little of MontiCore's capabilities, the following (incomplete) 
 grammar might help:
 
-    grammar MyStatemachine
-              extends Expressions, Types, SetExpressions {
-    
-      Transition = from:State ":" Expression? "->" to:State
-    
-      LogicalNotExpr implements Expression <190> =
-            "!" Expression;
-    
-      PlusExpr implements Expression <170> =
-            left:Expression operator:("+" | "-") right:Expression;
-    
-      scope LetExpr implements Expression <100> =
-            "let" (VarDeclaration || ";")+
-            "in" Expression;
-      
-      symbol VarDeclaration = Type? Name "=" Expression
+    grammar MyStatemachine extends Expressions, Types, SetExpressions {
+      Transition                                 = from:State ":" Expression? "->" to:State
+      LogicalNotExpr implements Expression <190> = "!" Expression;
+      PlusExpr       implements Expression <170> = left:Expression operator:("+" | "-") right:Expression;
+      scope LetExpr  implements Expression <100> =
+            "let" (VarDeclaration || ";")+ "in" Expression;
+      symbol VarDeclaration                      = Type? Name "=" Expression
     }
 
   
