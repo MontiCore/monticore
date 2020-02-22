@@ -1,7 +1,7 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 <center><div style="text-align:center" ><img src="mc-logo.png" /></div></center>
 
-# MontiCore - Language Workbench And Tool Framework 
+# MontiCore - Language Workbench And Development Tool Framework 
 
 [MontiCore](http://www.monticore.de) is a language workbench for an efficient 
 development of domain-specific languages (DSLs). It processes an extended 
