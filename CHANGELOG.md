@@ -118,3 +118,10 @@
 - Removed deprecated enum **ParserExecution**
 - Removed deprecated method **getParserTarget**
 - Removed deprecated method **setParserTarget**
+
+## Further Information
+
+* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
+
+* [MontiCore project](README.md) - MontiCore
+

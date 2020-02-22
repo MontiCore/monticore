@@ -43,6 +43,9 @@ firing condition. `LogicalNotExpr`, `PlusExpr`, and `LetExpr` extend the already
 `VarDeclaration` defines the new form of `symbol`.
 Heavy infrastructure exists to manage definition of names, visibility, etc.
 
+MontiCore compiles the above grammar with eight lines into `TODO-XXX` classes with in 
+total `TODO-XXX` lines that define the complete frontend and a larger part of the backend of
+a statemachine processor.
 We now can write statemachines like:
 
     statemachine PingPong {                                                   // statemachine
@@ -51,13 +54,14 @@ We now can write statemachines like:
     }
 
 MontiCore provides versions of expressions that use SI units like `14.2 m/s^2`, but also Java 
-expressions like `2_000_000` and other variants. 
+expressions like `2_000_000` and other variants including appropriate type checks.  
+We include these forms of expressions by importing their grammars.
 
-* Please note that in both cases (extension and overwriting) existing nonterminals, we do not 
+Please note that in both cases (extension and overwriting) existing nonterminals, we do not 
 touch nor copy/paste the predefined grammars, but achieve a out-of-the-box reuse.
-* Out-of-the-box reuse also includes reuse of predefined typechecks, code generation, etc. 
-  They only need to be extended to the added variants.
-* Please also note that `PlusExpr` is mutually left-recursive (Yes, that works in MontiCore 6).
+Out-of-the-box reuse also includes reuse of predefined typechecks, code generation, etc. 
+They only need to be extended to the added variants.
+Please also note that `PlusExpr` is mutually left-recursive (Yes, that works in MontiCore 6).
 
 ## More Information about MontiCore
 
@@ -85,7 +89,7 @@ touch nor copy/paste the predefined grammars, but achieve a out-of-the-box reuse
    components.
 
 
-## License overview (informal description) 
+## MontiCore 3-Level License on files (informal description)
 
 Summary: This project is freely available software; you can redistribute 
 the MontiCore language workbench according to the following rules.
@@ -94,43 +98,23 @@ The MontiCore Languag Workbench deals with three levels of code
 (MontiCore, tool derivates, product code). Each with different 
 licenses: 
 
-* Product code: when you use a MontiCore tool derivate to generate 
+* *Product code*: when you use a MontiCore tool derivate to generate 
 code, the generated code is absolutely free for each form of use 
 including commercial use without any license. 
 
-* Tool derivate: when you derive a tool using the MontiCore language 
+* *Tool derivate*: when you derive a tool using the MontiCore language 
 workbench, then you mention that it is a MontiCore derivate. There is 
 no other restriction. (BSD 3 Clause license) 
 
-* MontiCore adaptations: you may also freely adapt MontiCore itself, 
+* *MontiCore adaptations*: you may also freely adapt MontiCore itself, 
 but then you have to mention MontiCore AND the resulting code is to be 
 pushed back into this LPGL repository (LGPL license). 
 
 As a consequence using MontiCore during development is rather flexible 
 and the final products do not have any restriction.
 
- 
-## MontiCore 3-Level License on files (informal description)
-
-The MontiCore language workbench contains three kinds of artifacts: 
-
-* Java-files that are executed in the MontiCore LWB. They are under 
-LGPL licence.
-
-* Java-files that belong to the runtime environment (RTE) and are thus 
-copied to the generated code. They are under BSD 3 Clause license.
-
-* Templates executed during generation. They are also under BSD 3 
-Clause license, because parts of them are copied to the generated code. 
-
-This approach achieves the goals described above.
-
-Please note that tool builders design their own templates and RTE to 
-generate the final product. 
- 
 If questions appear e.g. on building an interpreter, please contact 
 monticore@se-rwth.de. 
-
 
 ## General disclaimer
 
@@ -164,44 +148,11 @@ by executing the following configuration:
 
     git config --global core.autocrlf input
     
-## Build MontiCore
-
-MontiCore is currently partially still built using maven, but partially 
-already migrated to gradle. It is recommended to use the MontiCore internal gradle
-wrapper (`gradlew`).
-
-Please note that from the top level build script, not everything is built and 
-all tests executed. It is a deliberate decision, to exclude some of the longer 
-lasting tasks.
-
-* build the productive code (including the unit tests, ~8 min)
-`mvn install`
-  * skipping the unit tests: `mvn install -Dmaven.test.skip=true`
-* run integration tests (which are not included in the unit tests, ~30 min)   
-  * Integration tests of the generator: 
-    * maven (deprecated): `mvn install -f monticore-generator/it/pom.xml` or 
-    * gradle: in `monticore-generator/it/` call `gradlew build`
-  * EMF Integration tests of the generator: 
-    * maven (deprecated): `mvn install -f monticore-generator/it/pom.xml -P emf-it-tests` or 
-    * gradle: in `monticore-generator/it/` call `gradlew build -PbuildProfile=emf`
-  * Experiments (from the Reference Manual) as integration tests:
-    * maven (deprecated): `mvn install -f monticore-generator/it/experiments/pom.xml` or
-    * gradle: in `monticore-generator/it/experiments/` call `gradlew build`
-  * Grammar integration tests:
-     * in `monticore-grammar/monticore-grammar-it` call `gradlew build`
-  * TemplateClassGenerator integration tests 
-    * maven (deprecated): `mvn install -f /monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/pom.xml` or 
-    * gradle: in `/monticore-templateclassgenerator/it/monticore-templateclassgenerator-it` call `gradlew build`
-* clean:
-  * call `mvn clean`
-  * cleaning integration tests:
-    * using maven (deprecated): `mvn clean` (including the `-f` argument, see above) 
-    * using gradle `gradlew clean` within the corresponding directory (see above)
-
-  
 ## Further Information
 
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
+
+* [Build MontiCore](00.org/BuildMontiCore.md) - How to Build MontiCore
 
 * [Changelog](CHANGELOG.md) - Release Notes
 
