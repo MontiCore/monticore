@@ -63,7 +63,7 @@ We now can write statemachines like:
 MontiCore provides versions of expressions that use SI
 units like `14.2 m/s^2`, but also Java 
 expressions like `2_000_000` and other variants including
-appropriate type checks.  
+appropriate type checks.
 We include these forms of expressions by importing their grammars.
 
 Please note that in both cases (extension and
