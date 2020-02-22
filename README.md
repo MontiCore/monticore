@@ -30,7 +30,9 @@ grammar might help:
       symbol VarDeclaration                = Type? Name "=" Expression
     }
 
-There grammar builds an extended version of Statemachines reusing
+The grammar language has a variety of mechanisms to define new nonterminals using constants "!", 
+brackets "(..)", optionals "?", lists "*", repetitions "(..||..)+", etc. 
+The grammar builds an extended version of Statemachines reusing
 existing grammar components, here `Statemachine`, `Types`, and `SetExpressions`.
 The grammar has 5 productions introducing 4 new nonterminals and overwriting `Transition` 
 (which is inherited from `Statemachine`). `Transition` becomes an optional `Expression?` as 
@@ -41,9 +43,18 @@ firing condition. `LogicalNotExpr`, `PlusExpr`, and `LetExpr` extend the already
 `VarDeclaration` defines the new form of `symbol`.
 Heavy infrastructure exists to manage definition of names, visibility, etc.
 
+We now can write statemachines like:
+
+    statemachine PingPong {
+      state Ping, Pong;
+      Ping : (speed > 14km/h && !missedBall) -> Pong
+    }
+
 * Please note that in both cases (extension and overwriting) existing nonterminals, we do not 
-touch nor copy/paste the predefined grammars, but achieve a black-box reuse.
-* Please also note that `PlusExpr` is a left-recursive extension.
+touch nor copy/paste the predefined grammars, but achieve a out-of-the-box reuse.
+* Out-of-the-box reuse also includes reuse of predefined typechecks, code generation, etc. 
+  They only need to be extended to the added variants.
+* Please also note that `PlusExpr` is mutually left-recursivei (Yes, that works in MontiCore 6).
 
 
 The form of Transitions is overwritten by the
