@@ -30,21 +30,28 @@ grammar might help:
       symbol VarDeclaration                = Type? Name "=" Expression
     }
 
-The grammar language has a variety of mechanisms to define new nonterminals using constants `!`, 
+The grammar language has a variety of mechanisms to define
+new nonterminals using constants `!`, 
 brackets `(..)`, optionals `?`, lists `*`, repetitions `(..||..)+`, etc. 
 The grammar builds an extended version of Statemachines reusing
 existing grammar components, here `Statemachine`, `Types`, and `SetExpressions`.
-The grammar has 5 productions introducing 4 new nonterminals and overwriting `Transition` 
-(which is inherited from `Statemachine`). `Transition` becomes an optional `Expression?` as 
-firing condition. `LogicalNotExpr`, `PlusExpr`, and `LetExpr` extend the already existing
+The grammar has 5 productions introducing 4 new nonterminals
+and overwriting `Transition` 
+(which is inherited from `Statemachine`).
+`Transition` becomes an optional `Expression?` as 
+firing condition.
+`LogicalNotExpr`, `PlusExpr`, and `LetExpr` extend the already existing
 `Expression` nonterminal and add new forms of expressions.
 
-`LetExpr` introduces a new local variable, which is visible only in that `scope` (indicated by keyword).
+`LetExpr` introduces a new local variable, which is
+visible only in that `scope` (indicated by keyword).
 `VarDeclaration` defines the new form of `symbol`.
 Heavy infrastructure exists to manage definition of names, visibility, etc.
 
-MontiCore compiles the above grammar with eight lines into `TODO-XXX` classes with in 
-total `TODO-XXX` lines that define the complete frontend and a larger part of the backend of
+MontiCore compiles the above grammar with eight
+lines into `TODO-XXX` classes with in 
+total `TODO-XXX` lines that define the complete
+frontend and a larger part of the backend of
 a statemachine processor.
 We now can write statemachines like:
 
@@ -53,15 +60,21 @@ We now can write statemachines like:
       Ping : (speed > 14km/h && !missedBall) -> Pong
     }
 
-MontiCore provides versions of expressions that use SI units like `14.2 m/s^2`, but also Java 
-expressions like `2_000_000` and other variants including appropriate type checks.  
+MontiCore provides versions of expressions that use SI
+units like `14.2 m/s^2`, but also Java 
+expressions like `2_000_000` and other variants including
+appropriate type checks.  
 We include these forms of expressions by importing their grammars.
 
-Please note that in both cases (extension and overwriting) existing nonterminals, we do not 
-touch nor copy/paste the predefined grammars, but achieve a out-of-the-box reuse.
-Out-of-the-box reuse also includes reuse of predefined typechecks, code generation, etc. 
+Please note that in both cases (extension and
+overwriting) existing nonterminals, we do not 
+touch nor copy/paste the predefined grammars,
+but achieve a out-of-the-box reuse.
+Out-of-the-box reuse also includes reuse of
+predefined typechecks, code generation, etc. 
 They only need to be extended to the added variants.
-Please also note that `PlusExpr` is mutually left-recursive (Yes, that works in MontiCore 6).
+Please also note that `PlusExpr` is mutually left-recursive
+(Yes, that works in MontiCore 6).
 
 ## More Information about MontiCore
 
