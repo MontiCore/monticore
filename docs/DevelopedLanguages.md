@@ -112,13 +112,10 @@ development. See language definition and usage method in
     definitions (but no generic types, no defines)
 
 * **MontiCore** itself uses a family of DSLs for the definition of 
-    DSLs, i.e., their grammars. 
-    [**MontiCore Reference Manual**](http://www.monticore.de/)
+    DSLs, i.e., their grammars. [HR17](https://www.se-rwth.de/publications/)
 
 
 ## Further Languages and Information 
-
-## More Information about MontiCore
 
 * [**MontiCore Online Demonstrator**]().
    (TODO: needs to be released)
