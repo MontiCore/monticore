@@ -125,27 +125,76 @@ modelling language.
 
 
 ### [SetExpressions.mc4](expressions/SetExpressions.mc4) (Beta: In Stabilization)
-* This grammar defines set expressions like union, intersection etc.
+* This grammar defines set expressions like {..|..}, set union, intersection etc.
 these operations are typical for a logic with set operations, like 
 UML's OCL.
 
 
 ### [OCLExpressions.mc4](expressions/OCLExpressions.mc4) (Alpha: Needs restructuring)
 * This grammar defines a expressions typical to UMLs OCL .
-* This grammar will be restructured especially for the non expression part.
+* This grammar will be restructured. Especially the non expression 
+  part of the OCL will be separated.
 
 
 
 ## Literals: List of Grammars in package `de.monticore.literals`
+
+Literals are the basic elements of expressions, such as numbers, strings, 
+truth values:
 
 ### [MCLiteralsBasis.mc4](literals/MCLiteralsBasis.mc4) (stable)
 * This grammar defines core interface for literals.
 * Several conservative extensions to this grammar realize
 various forms of literals.
 
-### [MCCommonLiterals.mc4](literals/MCCommonLiterals.mc4) (Beta: In Stabilization)
+### [MCCommonLiterals.mc4](literals/MCCommonLiterals.mc4) (stable)
+* This grammar defines the typical literals for an expression language, such as 
+  characters: 'c', Strings "text", booleans: "true", "null", or numbers 10, 
+  -23, 48l, 23.1f.
+* Strings and characters use the Java-like escapes like "\n".
+* Each defined nonterminal is extended by a conversion function `getValue()`
+  of appropriate type and a retrieve function `getSource()` for a text representation
+  of the literal.
 
 ### [MCJavaLiterals.mc4](literals/MCJavaLiterals.mc4) (Beta: In Stabilization)
+* This grammar defines Java compliant literals and builds on MCCommonLiterals.
+* The scope of this grammar is to
+  ease the reuse of literals structures in Java-like sublanguages.
+* The grammar contains literals from Java, e.g., Boolean, Char, String, ....
+* Please note that Java (and this grammar) 
+  has an extended syntax e.g. for integers using underscores
+  or other kinds of encodings. They parse e.g. 999_999, 0x3F2A, or 0b10100.
+* Like above `getValue()` and `getSource()` allow to retrive the content
+  as value resp. as text string.
+
+
+
+## Statements: List of Grammars in package `de.monticore.statements`
+
+Statements are the constructive part of programs: They allow to 
+change variables, call functions, send messages etc.
+The following hierarchy of statement definitions should allow
+the developers to choose needed forms of statements and extend it 
+by their own additional needs. The provided list of statements
+is inspired by Java (actually subset of Java):
+
+### [MCStatementsBasis.mc4](statements/MCStatementsBasis.mc4) (stable)
+* This grammar defines the core interface for statements.
+* A hierarchy of conservative extensions to this grammar is provided below.
+
+### [MCAssertStatements.mc4](statements/MCAssertStatements.mc4) (stable)
+
+### [MCCommonStatements.mc4](statements/MCCommonStatements.mc4) (stable)
+
+### [MCExceptionStatements.mc4](statements/MCExceptionStatements.mc4) (stable)
+
+### [MCSynchronizedStatements.mc4](statements/MCSynchronizedStatements.mc4) (stable)
+
+### [MCLowLevelStatements.mc4](statements/MCLowLevelStatements.mc4) (stable)
+
+### [MCReturnStatements.mc4](statements/MCReturnStatements.mc4) (stable)
+
+### [MCFullJavaStatements.mc4](statements/MCFullJavaStatements.mc4) (stable)
 
 
 
@@ -157,18 +206,6 @@ various forms of literals.
 * [UMLModifier.mc4](UMLModifier.mc4) (Beta: In Stabilization)
 * [UMLStereotype.mc4](UMLStereotype.mc4) (Beta: In Stabilization)
 * [JavaLight.mc4](JavaLight.mc4) 
-
-### Statements: List of Grammars in package `de.monticore.statements`
-
-* [MCAssertStatements.mc4](statements/MCAssertStatements.mc4)
-* [MCCommonStatements.mc4](statements/MCCommonStatements.mc4)
-* [MCExceptionStatements.mc4](statements/MCExceptionStatements.mc4)
-* [MCFullJavaStatements.mc4](statements/MCFullJavaStatements.mc4)
-* [MCLowLevelStatements.mc4](statements/MCLowLevelStatements.mc4)
-* [MCReturnStatements.mc4](statements/MCReturnStatements.mc4)
-* [MCStatementsBasis.mc4](statements/MCStatementsBasis.mc4)
-* [MCSynchronizedStatements.mc4](statements/MCSynchronizedStatements.mc4)
-
 
 ### Alpha: also to become stable (one phase later)
 
