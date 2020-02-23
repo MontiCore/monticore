@@ -1,9 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore;
 
+* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
 /**
- * Grammar for common elements of the UML/P-Language-Family
- */
+ * This grammar defines completeness information in UML
+ * like "...", "(c)", but also "(...,c)"
+ *
+*/
 component grammar Completeness {
          
     /** ASTCompleteness represents the completeness in
@@ -25,7 +30,7 @@ component grammar Completeness {
         //with ident "c"
      [complete:"(c)"] 
 	  //separate brackets to avoid
-          //lexer-symbol clash with SD/SC
+          //lexer-symbol clash 
      | ("(" [incomplete:"..."] {noSpace()}? ")" {noSpace()}?)
      | [incomplete:"(...,...)"]
      | [complete:"(c,c)"]
