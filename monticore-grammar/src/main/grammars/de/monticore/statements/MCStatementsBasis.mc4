@@ -5,7 +5,7 @@ package de.monticore.statements;
  * Adaptations -- if any -- are conservative. */
 
 /**
- * This grammar defines core interface for statements.
+ * This grammar defines the core interface for statements.
  * A hierarchy of conservative extensions to this grammar realize
  * these interfaces in various forms.
  *

@@ -183,18 +183,35 @@ is inspired by Java (actually subset of Java):
 * A hierarchy of conservative extensions to this grammar is provided below.
 
 ### [MCAssertStatements.mc4](statements/MCAssertStatements.mc4) (stable)
+* This grammar defines exactly the assert statement as known from Java.
+* It can be used independently of other Java statements.
 
-### [MCCommonStatements.mc4](statements/MCCommonStatements.mc4) (stable)
+### [MCCommonStatements.mc4](statements/MCCommonStatements.mc4) (Beta: In Stabilization)
+* This grammar defines typical statements, such as method calls
+  (which are actually expressions),
+  assignment of variables, if, for, while, switch statements, and blocks.
+* This embodies a complete structured statement language, however does not
+  provide return, assert, exceptions, and low-level constructs like break.
 
 ### [MCExceptionStatements.mc4](statements/MCExceptionStatements.mc4) (stable)
+* This grammar defines the exception statements.
+* This includes Java try with catch and finally, as well as throw.
 
 ### [MCSynchronizedStatements.mc4](statements/MCSynchronizedStatements.mc4) (stable)
+* This grammar defines the Java-like synchronized statement.
 
-### [MCLowLevelStatements.mc4](statements/MCLowLevelStatements.mc4) (stable)
+### [MCLowLevelStatements.mc4](statements/MCLowLevelStatements.mc4) (Beta: In Stabilization)
+* This grammar defines three low-level statements that Java provides.
+* It contains the break and continue statements and the possibility to label a statement.
 
 ### [MCReturnStatements.mc4](statements/MCReturnStatements.mc4) (stable)
+* This grammar defines the Java-like return statement.
 
 ### [MCFullJavaStatements.mc4](statements/MCFullJavaStatements.mc4) (stable)
+* This grammar defines the all Java statements.
+* This is neither a generalized approximation nor a restricted overapproximation,
+  but exact.
+
 
 
 

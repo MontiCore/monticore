@@ -1,8 +1,41 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.statements;
 
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * This grammar defines the exception statements.
+ * This includes Java try with catch and finally, as well as throw.
+ *
+ * This grammar is part of a hierarchy of statements, namely
+ * * statements/MCStatementsBasis.mc4
+ * * -- statements/MCAssertStatements.mc4
+ * * -- statements/MCCommonStatements.mc4
+ * * -- -- statements/MCExceptionStatements.mc4
+ * * -- -- statements/MCSynchronizedStatements.mc4
+ * * -- statements/MCLowLevelStatements.mc4
+ * * -- statements/MCReturnStatements.mc4
+ *
+ * and the composition of all statement grammmars to full Java:
+ * * -- -- statements/MCFullJavaStatements.mc4
+ *
+*/
+
 component grammar MCExceptionStatements extends de.monticore.statements.MCCommonStatements {
+
+// TODO, waere das nicht sauberer:
+//
+// TryStatement implements MCStatement
+//     =   "try" TryVariableDecl?
+//	   core:MCJavaBlock
+//	   CatchClause*
+// 	   ("finally" finally:MCJavaBlock)?
+//     ;
+// 
+// TryVariableDecl = "(" (Resource || ";")+ ";"? ")"
+// 
+// und rausnehmen von ExceptionHandler, CatchExceptionsHandler, FinallyBlockOnlyHandler
+// 	TryStatementWithResources
 
 TryStatement implements MCStatement
     =   "try" MCJavaBlock ExceptionHandler
@@ -19,13 +52,21 @@ FinallyBlockOnlyHandler implements ExceptionHandler
     ;
 
 TryStatementWithResources implements MCStatement
-    =   "try" "(" (Resource || ";")+ ";"? ")" MCJavaBlock CatchClause* ("finally" finallyBlock:MCJavaBlock)?
+    =   "try" "(" (Resource || ";")+ ";"? ")"
+        MCJavaBlock
+	CatchClause*
+	("finally" finallyBlock:MCJavaBlock)?
     ;
 
+// TODO: ist das nicht einfach eine lokale VariableDeclaration?
+// Dann wiederverwenden (auch wenn nur wenige Arten von Klassen hier einsetzbar sind)
+//   --> das sind sowieso CoCos!
+// und: hier wird eine Variable eingeführt! --> Symbol!
 Resource
     =   PrimitiveModifier* MCType DeclaratorId "=" Expression
     ;
 
+// TODO: CatchType -> CatchTypeList
 CatchClause
     =   "catch" "(" PrimitiveModifier* CatchType Name ")" MCJavaBlock
     ;
