@@ -118,7 +118,7 @@ MontiCore projects are hosted at
 * Grammar to parse Sequence Diagrams
 * Can be used with testing generator to derive test cases
 
-### [SI Units](INSERT LINK HERE) (Alpha)
+### [SI Units](https://git.rwth-aachen.de/monticore/monticore/blob/SIUnitLiterals2/monticore-grammar/src/main/grammars/de/monticore/siunit/SIUnit.mc4) (Alpha)
 * Author: EK, NJ, DS
 * allows a language developer to use physical units in a language
 
