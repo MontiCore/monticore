@@ -37,6 +37,7 @@ development. See language definition and usage method in
     * **UML/P Sequence Diagrams** for interaction
     * **Activity Diagrams** for workflows and requirements 
         (an extension to the books)
+<p>
 
 * **Delta-MontiArc** [[HRRS12,HKR+11,HRRS11]](http://mbse.se-rwth.de/) 
  is a DSL for expressing deltas on MontiArc component definitions, 
