@@ -43,7 +43,7 @@ development. See language definition and usage method in
  is a DSL for expressing deltas on MontiArc component definitions, 
  which allows to model software product lines in a bottom up way.
 
-* **MontiArcHV** [[HRR+11]]http://mbse.se-rwth.de/) 
+* **MontiArcHV** [[HRR+11]](http://mbse.se-rwth.de/) 
  allows specifying component variability fully integrated within the 
  component hierarchy located at  variation points in component definitions.
 
@@ -83,7 +83,7 @@ development. See language definition and usage method in
 
 * **RBAC** for Role-Based Access Control in enterprise information systems.
 
-* **MontiWis** [RR13,Rei16]
+* **MontiWis** [[RR13,Rei16]]
     is a family of DSLs for the model-based, generative 
     development of web information systems among others based on 
     class diagrams, activity diagrams and views.
@@ -100,21 +100,21 @@ development. See language definition and usage method in
     contains a DSL for defining road scenarios with moving vehicles 
     as well a obstacles suited for laser, lidar, radar and camera 
     sensors. This languages are part of the Darpa Urban Challenge 2007.
-    [BR12b,BR12,Ber10,BR09](https://www.se-rwth.de/publications/).
+    [[BR12b,BR12,Ber10,BR09]](https://www.se-rwth.de/publications/).
 
 * **ProcEd** a Web-based Editing Solution for Domain Specific 
     Process-Engineering
-    [BGR09](https://www.se-rwth.de/publications/).
+    [[BGR09]](https://www.se-rwth.de/publications/).
 
 * **MontiWeb** a modular development approach for 
     Web Information Systems (which was later succeded by MontiWIS)
-    [DRRS09](https://www.se-rwth.de/publications/).
+    [[DRRS09]](https://www.se-rwth.de/publications/).
 
 * **C++** and its sublanguages for expressions, statements and 
     definitions (but no generic types, no defines)
 
 * **MontiCore** itself uses a family of DSLs for the definition of 
-    DSLs, i.e., their grammars. [HR17](https://www.se-rwth.de/publications/)
+    DSLs, i.e., their grammars. [[HR17]](https://www.se-rwth.de/publications/)
 
 
 ## Further Languages and Information 
