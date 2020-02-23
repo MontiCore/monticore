@@ -5,7 +5,7 @@ package de.monticore.statements;
  * Adaptations -- if any -- are conservative. */
 
 /**
- * This grammar defines thhe assert statement as known from Java
+ * This grammar defines the assert statement as known from Java
  *   assert Constraint : Message ;
  * It can be used independently of other Java statements,
  * but also can be left out if its applications would not make sense.
