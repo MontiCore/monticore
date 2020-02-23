@@ -165,6 +165,8 @@ by executing the following configuration:
 
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 
+* [MontiCore Reference Languages](docs/DevelopedLanguages.md) - Languages Built Using MontiCore
+
 * [Build MontiCore](docs/BuildMontiCore.md) - How to Build MontiCore
 
 * [Getting Started](docs/GettingStarted.md) - How to Build MontiCore
