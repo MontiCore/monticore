@@ -5,17 +5,19 @@
 [MontiCore](http://www.monticore.de) is a language workbench. It uses 
 grammars as primary mechanism to describe DSLs. The extended 
 grammar format allows to **compose language components** by
-(1) inheriting, (2) extending, (3) embedding 
-and (4) aggregating grammars (see the reference manual for details).
+(1) **inheriting**, (2) **extending**, (3) **embedding** 
+and (4) **aggregating** grammars (see the reference manual for details).
 From the grammars a lot of infrastructructure is generated, that is as well
-composable, can be **extended with handwrittten code** and most imprtandly, these
+**composable**, can be **extended with handwrittten code**
+and most importandly, these
 extensions and the grammar composition are compatible, which
 leads to optimal forms of **reuse**.
 
-Here comes a list of language components, mainly defined through a 
-primary grammar, available in the MontiCore core project 
+The following is a list of language components, mainly defined through a 
+primary grammar plus associated Java- and Template-Files, 
+available in the *MontiCore* core project 
 together with short descriptions and their status 
-([Status of Grammars](../../../../../../00.org/Explanations/StatusOfGrammars.md)).
+([Status of Grammars](00.org/Explanations/StatusOfGrammars.md)).
 
 The list covers the core grammars to be found in the `MontiCore/monticore` 
 project under `monticore-grammar/src/main/grammars/` in packages 
