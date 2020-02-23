@@ -182,10 +182,6 @@ is inspired by Java (actually subset of Java):
 * This grammar defines the core interface for statements.
 * A hierarchy of conservative extensions to this grammar is provided below.
 
-### [MCAssertStatements.mc4](statements/MCAssertStatements.mc4) (stable)
-* This grammar defines exactly the assert statement as known from Java.
-* It can be used independently of other Java statements.
-
 ### [MCCommonStatements.mc4](statements/MCCommonStatements.mc4) (Beta: In Stabilization)
 * This grammar defines typical statements, such as method calls
   (which are actually expressions),
@@ -193,7 +189,11 @@ is inspired by Java (actually subset of Java):
 * This embodies a complete structured statement language, however does not
   provide return, assert, exceptions, and low-level constructs like break.
 
-### [MCExceptionStatements.mc4](statements/MCExceptionStatements.mc4) (stable)
+### [MCAssertStatements.mc4](statements/MCAssertStatements.mc4) (stable)
+* This grammar defines exactly the assert statement as known from Java.
+* It can be used independently of other Java statements.
+
+### [MCExceptionStatements.mc4](statements/MCExceptionStatements.mc4) (Beta: In Stabilization)
 * This grammar defines the exception statements.
 * This includes Java try with catch and finally, as well as throw.
 
@@ -208,7 +208,7 @@ is inspired by Java (actually subset of Java):
 * This grammar defines the Java-like return statement.
 
 ### [MCFullJavaStatements.mc4](statements/MCFullJavaStatements.mc4) (stable)
-* This grammar defines the all Java statements.
+* This grammar defines all Java statements.
 * This is neither a generalized approximation nor a restricted overapproximation,
   but exact.
 
