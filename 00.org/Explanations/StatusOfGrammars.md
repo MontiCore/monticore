@@ -63,6 +63,11 @@ A comment of the following form within the grammar defines this status:
 2. `/* Alpha-version: This is intended to become a MontiCore stable grammar. */`
    (but sometimes also omitted)
 
+## Further Information
+
+* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
+
+* [MontiCore project](README.md) - MontiCore
 
 
 

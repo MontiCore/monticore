@@ -1,6 +1,34 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.statements;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+/**
+ * This grammar defines the core interface for statements.
+ * A hierarchy of conservative extensions to this grammar realize
+ * these interfaces in various forms.
+ *
+ * The language developer may choose the subset of statements
+ * of interest 
+ *
+ * This modularity of statements greatly eases
+ * the reuse of statements in languages similar to Java
+ *
+ *
+ * This grammar is part of a hierarchy of statements, namely
+ * * statements/MCStatementsBasis.mc4
+ * * -- statements/MCAssertStatements.mc4
+ * * -- statements/MCCommonStatements.mc4
+ * * -- -- statements/MCExceptionStatements.mc4
+ * * -- -- statements/MCSynchronizedStatements.mc4
+ * * -- statements/MCLowLevelStatements.mc4
+ * * -- statements/MCReturnStatements.mc4
+ *
+ * and the composition of all statement grammmars to full Java:
+ * * -- -- statements/MCFullJavaStatements.mc4
+ *
+*/
 
 component grammar MCStatementsBasis  {
 

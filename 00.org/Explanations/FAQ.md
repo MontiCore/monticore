@@ -32,3 +32,11 @@ Change the UTF8 encoding by clicking on Window -> Preferences. Then, select the 
 
 8. **Changes I made on one module are not reflected in another module.**
 Remember that all Maven modules are independent units. By default, they are not directly imported into each other. Instead, Maven resolves dependencies between projects by selecting packages (e.g.jar files) produced by these modules from your local Maven dependency repository. To make the latest version of a module available through this repository, you have to explicitly install it. If you execute an install on an aggregating POM-project, all child modules will be built with the current state of their depending projects as Maven always builds a hierarchy of modules in order of their mutual dependencies. However, if you are working in Eclipse, the workbench can import modules live. This feature is called "Workspace resolution" and is enabled by default for Eclipse automatic project builders. Nevertheless, if you build a module using a Run Configuration you have to explicitly activate "Resolve Workspaces artifacts".
+
+## Further Information
+
+* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
+
+* [MontiCore project](README.md) - MontiCore
+
+

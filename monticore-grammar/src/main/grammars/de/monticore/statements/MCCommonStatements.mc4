@@ -1,6 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.statements;
+
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * This grammar defines typical statements, such as 
+ * method calls (which are actually expressions),
+ * assignment of variables, if, for, while, switch statements, and blocks.
+ *
+ * This embodies a complete structured statement language, however does not
+ * provide return, assert, exceptions, and low-level constructs like break.
+ *
+ * This grammar is part of a hierarchy of statements, namely
+ * * statements/MCStatementsBasis.mc4
+ * * -- statements/MCAssertStatements.mc4
+ * * -- statements/MCCommonStatements.mc4
+ * * -- -- statements/MCExceptionStatements.mc4
+ * * -- -- statements/MCSynchronizedStatements.mc4
+ * * -- statements/MCLowLevelStatements.mc4
+ * * -- statements/MCReturnStatements.mc4
+ *
+ * and the composition of all statement grammmars to full Java:
+ * * -- -- statements/MCFullJavaStatements.mc4
+ *
+*/
 
 component grammar MCCommonStatements extends de.monticore.statements.MCStatementsBasis,
                                              de.monticore.types.MCBasicTypes,
@@ -10,20 +33,27 @@ MCJavaBlock implements MCStatement
     =   "{" BlockStatement* "}"
     ;
 
+// TODO: LocalVar Decl. hier rausziehen
 BlockStatement
     = LocalVariableDeclaration
     | MCStatement
     ;
 
+// TODO: Modifier sind die nicht schon woanders definiert oder sollten
+// extern definiert werden? (dann liesen sie sich wiederverwenden)
 // Modifiers
 interface MCModifier ;
 
+// rename PrimitiveModifier zB zu JavaModifier?
 PrimitiveModifier implements MCModifier =
         Modifier:["private" | "public" | "protected" | "static" | "transient"
         | "final" | "abstract" | "native" | "threadsafe" | "synchronized"
         | "const" | "volatile" | "strictfp"]
         ;
 
+// TODO: VariableDeclaration rausziehen in extra Grammatik (clashed mit LetIn-)
+// aber hier ein Assignement Statement einbauen
+// Ausserdem ist unschoen dass dies von "ForInit" erbt
 LocalVariableDeclaration implements ForInit
     =   PrimitiveModifier* MCType (VariableDeclarator || ",")+
     ;
@@ -32,6 +62,7 @@ VariableDeclarator
     =   DeclaratorId ("=" VariableInititializerOrExpression)?
     ;
 
+// TODO: Variable wird deklariert! --> Symbol nutzen
 DeclaratorId
     =   Name (dim:"[" "]")*
     ;
@@ -61,6 +92,7 @@ CommonForControl implements ForControl
 
 interface ForInit ;
 
+// TODO: ForInit fuehrt eine Variable ein --> symbol
 ForInitByExpressions implements ForInit
     =   (Expression || ",")+
     ;
@@ -81,7 +113,6 @@ EmptyStatement implements MCStatement
     =   ";"
     ;
 
-// TODO: Bleibt das hier?
 ExpressionStatement implements MCStatement
     =   Expression ";"
     ;
@@ -89,6 +120,8 @@ ExpressionStatement implements MCStatement
 /** Matches cases then statements, both of which are mandatory.
  *  To handle empty cases at the end, we add switchLabel* to statement.
  */
+// TODO: Warum hier BlockStatement statt MCStatement?
+// besser waere wohl überall MCStatement zu nutzen
 SwitchBlockStatementGroup
     =   SwitchLabel+ BlockStatement+
     ;
