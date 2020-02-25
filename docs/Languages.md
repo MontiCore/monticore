@@ -141,7 +141,7 @@ MontiCore projects are hosted at
 * Author: NJ
 * MontiCore language for parsing XML artifacts.
 
-### [JavaLight](NN) (Beta: In Stabilization)
+### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (Beta: In Stabilization)
 * Author: MB
 * This is a reduced version of the Java language which primarily provides methods, statements and expressions 
 * JavaLight is meant to be used to integrate simplified Java-like parts in modeling languages but not 
