@@ -67,7 +67,7 @@ A comment of the following form within the grammar defines this status:
 
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 
-* [MontiCore project](README.md) - MontiCore
+* [MontiCore project](../../README.md) - MontiCore
 
 
 

@@ -135,7 +135,7 @@ development. See language definition and usage method in
    several sets of *literals*, *expressions* and *types*, which are relatively 
    freely composable.
 
-* [**List of languages**](docs/Languages.md).
+* [**List of languages**](Languages.md).
    This is a list of newer MontiCore 6
    languages that can be used out of the box. Some of them
    are in development, others rather stable. 

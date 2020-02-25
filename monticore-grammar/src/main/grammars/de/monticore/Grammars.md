@@ -17,7 +17,7 @@ The following is a list of language components, mainly defined through a
 primary grammar plus associated Java- and Template-Files, 
 available in the *MontiCore* core project 
 together with short descriptions and their status 
-([Status of Grammars](00.org/Explanations/StatusOfGrammars.md)).
+([Status of Grammars](../../../../../../00.org/Explanations/StatusOfGrammars.md)).
 
 The list covers the core grammars to be found in the `MontiCore/monticore` 
 project under `monticore-grammar/src/main/grammars/` in packages 

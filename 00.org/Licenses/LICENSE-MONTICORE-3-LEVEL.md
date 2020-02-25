@@ -79,6 +79,6 @@ The MontiCore 3 Level license is built on:
 
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 
-* [MontiCore project](README.md) - MontiCore
+* [MontiCore project](../../README.md) - MontiCore
 
 

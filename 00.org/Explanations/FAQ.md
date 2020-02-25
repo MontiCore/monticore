@@ -37,6 +37,6 @@ Remember that all Maven modules are independent units. By default, they are not 
 
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 
-* [MontiCore project](README.md) - MontiCore
+* [MontiCore project](../../README.md) - MontiCore
 
 
