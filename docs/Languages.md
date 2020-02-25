@@ -148,13 +148,13 @@ MontiCore projects are hosted at
   to parse complete Java implementations
   * One main usage of JavaLight is in the Grammar-language to model e.g. Java methods there
 * JavaLight is parameterized with:
-  * Literals: through the Literal interface nontzerminal, 
+  * Literals: through the Literal interface nonterminal, 
    users are free to choose the literals they need
 
 
-### [Java](NN) (Alpha: Intention to become stable)
+### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) (30% to MC6)
 
-* Author: NN
+* Author: MB
 * This is the full Java' Language (as Opposed to JavaLight).
 
 
