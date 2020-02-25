@@ -9,4 +9,8 @@ public class TestSymTabMillGlobalScope extends TestSymTabMillGlobalScopeTOP {
     super(modelPath,language);
   }
 
+  @Override public TestSymTabMillGlobalScope getRealThis() {
+    return this;
+  }
+
 }
