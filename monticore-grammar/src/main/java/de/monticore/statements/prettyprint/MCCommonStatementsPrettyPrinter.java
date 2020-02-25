@@ -84,7 +84,7 @@ public class MCCommonStatementsPrettyPrinter implements
   @Override
   public void handle(ASTLocalVariableDeclaration a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    printSeparated(a.getPrimitiveModifierList().iterator(), " ");
+    printSeparated(a.getJavaModifierList().iterator(), " ");
     getPrinter().print(" ");
     a.getMCType().accept(getRealThis());
     getPrinter().print(" ");
@@ -93,22 +93,11 @@ public class MCCommonStatementsPrettyPrinter implements
   }
 
   @Override
-  public void handle(ASTBlockStatement a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    if (a.isPresentLocalVariableDeclaration()) {
-      a.getLocalVariableDeclaration().accept(getRealThis());
-    }
-    if (a.isPresentMCStatement()) {
-      a.getMCStatement().accept(getRealThis());
-    }
-  }
-
-  @Override
   public void handle(ASTMCJavaBlock a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println("{");
     getPrinter().indent();
-    printSeparated(a.getBlockStatementList().iterator(), "");
+    a.getBlockStatementList().stream().forEach(m -> m.accept(getRealThis()));
     getPrinter().unindent();
     getPrinter().println("}");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
@@ -186,7 +175,7 @@ public class MCCommonStatementsPrettyPrinter implements
 
 
   @Override
-  public void handle(ASTPrimitiveModifier a) {
+  public void handle(ASTJavaModifier a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print(" " + printModifier(a.getModifier()) + " ");
     CommentPrettyPrinter.printPostComments(a, getPrinter());

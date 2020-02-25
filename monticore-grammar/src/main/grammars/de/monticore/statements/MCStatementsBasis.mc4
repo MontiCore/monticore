@@ -32,6 +32,10 @@ package de.monticore.statements;
 
 component grammar MCStatementsBasis  {
 
-interface MCStatement ;
+interface BlockStatement;
+
+interface MCStatement extends BlockStatement;
+
+interface MCModifier ;
 
 }

@@ -5,6 +5,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 import de.monticore.statements.mccommonstatements._ast.ASTMCCommonStatementsNode;
 import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsDelegatorVisitor;
+import de.monticore.statements.mcstatementsbasis._ast.ASTMCStatementsBasisNode;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
 public class MCCommonStatementsPrettyPrinterDelegator extends MCCommonStatementsDelegatorVisitor {

@@ -135,14 +135,14 @@ public class MCExceptionStatementsPrettyPrinterTest {
 
   @Test
   public void testCatchType() throws IOException {
-    Optional<ASTCatchType> result = parser.parse_StringCatchType(" a.b.c | d.e.G ");
+    Optional<ASTCatchTypeList> result = parser.parse_StringCatchTypeList(" a.b.c | d.e.G ");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    ASTCatchType ast = result.get();
+    ASTCatchTypeList ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
-    result = parser.parse_StringCatchType(output);
+    result = parser.parse_StringCatchTypeList(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 

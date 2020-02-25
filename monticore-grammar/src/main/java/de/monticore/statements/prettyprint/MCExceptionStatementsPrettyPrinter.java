@@ -79,7 +79,7 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
   @Override
   public void handle(ASTResource a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getPrimitiveModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
+    a.getJavaModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
     a.getMCType().accept(getRealThis());
     getPrinter().print(" ");
     a.getDeclaratorId().accept(getRealThis());
@@ -102,8 +102,8 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
   public void handle(ASTCatchClause a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("catch (");
-    a.getPrimitiveModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
-    a.getCatchType().accept(getRealThis());
+    a.getJavaModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
+    a.getCatchTypeList().accept(getRealThis());
     getPrinter().print(" ");
     getPrinter().print(a.getName());
     getPrinter().print(") ");
@@ -112,7 +112,7 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
   }
 
   @Override
-  public void handle(ASTCatchType a) {
+  public void handle(ASTCatchTypeList a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     String sep = "";
     for (ASTMCQualifiedName q: a.getMCQualifiedNameList()) {

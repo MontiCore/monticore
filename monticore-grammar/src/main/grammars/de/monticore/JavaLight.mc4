@@ -28,14 +28,7 @@ external ExtTypeParameters;
 
 // Type declarations
 interface TypeDeclaration extends ClassMemberDeclaration,
-        InterfaceMemberDeclaration, AnnotationTypeElementDeclaration;
-
-ExtendedBlockStatement extends BlockStatement
-    = LocalVariableDeclaration
-    | MCStatement
-    | TypeDeclaration
-    ;
-
+        InterfaceMemberDeclaration, AnnotationTypeElementDeclaration, BlockStatement;
 
 EmptyDeclaration implements TypeDeclaration
     =   ";"
@@ -103,11 +96,11 @@ FormalParameterListing
     ;
 
 FormalParameter
-    =   PrimitiveModifier* MCType DeclaratorId
+    =   JavaModifier* MCType DeclaratorId
     ;
 
 LastFormalParameter
-    =   PrimitiveModifier* MCType "..." DeclaratorId
+    =   JavaModifier* MCType "..." DeclaratorId
     ;
 
 // ANNOTATIONS

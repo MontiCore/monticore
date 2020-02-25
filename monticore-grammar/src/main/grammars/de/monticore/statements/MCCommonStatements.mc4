@@ -33,36 +33,23 @@ MCJavaBlock implements MCStatement
     =   "{" BlockStatement* "}"
     ;
 
-// TODO: LocalVar Decl. hier rausziehen
-BlockStatement
-    = LocalVariableDeclaration
-    | MCStatement
+// TODO: VariableDeclaration rausziehen in extra Grammatik (clashed mit LetIn-)
+LocalVariableDeclaration implements BlockStatement
+    =   JavaModifier* MCType (VariableDeclarator || ",")+
     ;
 
-// TODO: Modifier sind die nicht schon woanders definiert oder sollten
-// extern definiert werden? (dann liesen sie sich wiederverwenden)
-// Modifiers
-interface MCModifier ;
-
-// rename PrimitiveModifier zB zu JavaModifier?
-PrimitiveModifier implements MCModifier =
+JavaModifier implements MCModifier =
         Modifier:["private" | "public" | "protected" | "static" | "transient"
         | "final" | "abstract" | "native" | "threadsafe" | "synchronized"
         | "const" | "volatile" | "strictfp"]
         ;
-
-// TODO: VariableDeclaration rausziehen in extra Grammatik (clashed mit LetIn-)
-// aber hier ein Assignement Statement einbauen
-// Ausserdem ist unschoen dass dies von "ForInit" erbt
-LocalVariableDeclaration implements ForInit
-    =   PrimitiveModifier* MCType (VariableDeclarator || ",")+
-    ;
 
 VariableDeclarator
     =   DeclaratorId ("=" VariableInititializerOrExpression)?
     ;
 
 // TODO: Variable wird deklariert! --> Symbol nutzen
+// MB -> BR: Das ist zur Zeit in einem anderen Branch in Arbeit
 DeclaratorId
     =   Name (dim:"[" "]")*
     ;
@@ -90,10 +77,11 @@ CommonForControl implements ForControl
     =   ForInit? ";" condition:Expression? ";" (Expression || ",")*
     ;
 
-interface ForInit ;
+ForInit
+    = ForInitByExpressions | LocalVariableDeclaration
+    ;
 
-// TODO: ForInit fuehrt eine Variable ein --> symbol
-ForInitByExpressions implements ForInit
+ForInitByExpressions
     =   (Expression || ",")+
     ;
 
@@ -120,8 +108,6 @@ ExpressionStatement implements MCStatement
 /** Matches cases then statements, both of which are mandatory.
  *  To handle empty cases at the end, we add switchLabel* to statement.
  */
-// TODO: Warum hier BlockStatement statt MCStatement?
-// besser waere wohl überall MCStatement zu nutzen
 SwitchBlockStatementGroup
     =   SwitchLabel+ BlockStatement+
     ;

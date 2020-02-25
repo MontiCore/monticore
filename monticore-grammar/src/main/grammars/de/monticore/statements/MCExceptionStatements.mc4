@@ -24,6 +24,9 @@ package de.monticore.statements;
 component grammar MCExceptionStatements extends de.monticore.statements.MCCommonStatements {
 
 // TODO, waere das nicht sauberer:
+// MB ->BR: Die Implementierung ist analog zur Java-Spezifikation. Wenn wir das ändern, müssen wir
+// mit zusätzlichen Cocos arbeiten, um nicht von der Java-Spec abzuweichen. Ich würde das also so
+// lassen
 //
 // TryStatement implements MCStatement
 //     =   "try" TryVariableDecl?
@@ -59,19 +62,20 @@ TryStatementWithResources implements MCStatement
     ;
 
 // TODO: ist das nicht einfach eine lokale VariableDeclaration?
+// MB -> BR: Im Gegenzug zur LocalVariableDeclaration kann man hier keine Listen angeben
 // Dann wiederverwenden (auch wenn nur wenige Arten von Klassen hier einsetzbar sind)
 //   --> das sind sowieso CoCos!
 // und: hier wird eine Variable eingeführt! --> Symbol!
+// MB -> BR: Das ist zur Zeit in einem anderen Branch in Arbeit
 Resource
-    =   PrimitiveModifier* MCType DeclaratorId "=" Expression
+    =   JavaModifier* MCType DeclaratorId "=" Expression
     ;
 
-// TODO: CatchType -> CatchTypeList
 CatchClause
-    =   "catch" "(" PrimitiveModifier* CatchType Name ")" MCJavaBlock
+    =   "catch" "(" JavaModifier* CatchTypeList Name ")" MCJavaBlock
     ;
 
-CatchType
+CatchTypeList
     =   (MCQualifiedName || "|")+
     ;
 
