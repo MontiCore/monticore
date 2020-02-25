@@ -118,8 +118,8 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
 
   protected ASTCDMethod createGetSymbolTableCreatorMethod() {
     String symbolTableCreatorDelegatorFullName = symbolTableService.getSymbolTableCreatorDelegatorFullName();
-    String globalScopeInterfaceFullName = symbolTableService.getGlobalScopeInterfaceFullName();
-    ASTCDParameter enclosingScope = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(globalScopeInterfaceFullName), ENCLOSING_SCOPE_VAR);
+    String globalScopeFullName = symbolTableService.getGlobalScopeFullName();
+    ASTCDParameter enclosingScope = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(globalScopeFullName), ENCLOSING_SCOPE_VAR);
 
     ASTCDMethod getSymbolTableCreatorMethod = getCDMethodFacade().createMethod(PUBLIC,
         getMCTypeFacade().createQualifiedType(symbolTableCreatorDelegatorFullName), "getSymbolTableCreator", enclosingScope);

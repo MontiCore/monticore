@@ -44,11 +44,11 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     if (startProdAstFullName.isPresent()) {
       String astFullName = startProdAstFullName.get();
       String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
-      String globalScopeInterfaceName = symbolTableService.getGlobalScopeInterfaceFullName();
+      String globalScopeName = symbolTableService.getGlobalScopeFullName();
       String languageClassName = symbolTableService.getLanguageClassFullName();
 
       ASTMCGenericType iModelLoader = getMCTypeFacade().createBasicGenericTypeOf(
-          I_MODEL_LOADER, astFullName, globalScopeInterfaceName);
+          I_MODEL_LOADER, astFullName, globalScopeName);
 
 
       ASTCDAttribute modelingLanguageAttribute = createModelingLanguageAttribute(languageClassName);
@@ -61,7 +61,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
           .addCDAttribute(modelingLanguageAttribute)
           .addAllCDMethods(modelingLanguageMethods)
           .addCDAttribute(createAStProviderAttribute(astFullName))
-          .addAllCDMethods(createModelLoaderMethod(astFullName, globalScopeInterfaceName, modelLoaderClassName))
+          .addAllCDMethods(createModelLoaderMethod(astFullName, globalScopeName, modelLoaderClassName))
           .build();
       return Optional.ofNullable(modelLoaderClass);
     }

@@ -86,7 +86,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSuperInterfaces() {
     assertDeepEquals("de.monticore.modelloader.IModelLoader<de.monticore.codegen.ast.automaton._ast.ASTAutomaton" +
-        ",de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope>", modelLoaderClass.getInterface(0));
+        ",de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope>", modelLoaderClass.getInterface(0));
   }
 
   @Test
@@ -158,7 +158,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
     assertEquals("modelName", method.getCDParameter(1).getName());
 
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope", method.getCDParameter(2).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameter(2).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(2).getName());
   }
 
@@ -178,7 +178,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.io.paths.ModelPath", method.getCDParameter(1).getMCType());
     assertEquals("modelPath", method.getCDParameter(1).getName());
 
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope", method.getCDParameter(2).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameter(2).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(2).getName());
   }
 
