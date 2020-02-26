@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-description = 'Experiments: automata'
+description = 'Experiments: automaton'
 
 task generate (type: MCTask) {
   grammar = file "$projectDir/$grammarDir/Automata.mc4"
