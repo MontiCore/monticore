@@ -29,7 +29,6 @@ public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
     AutomatonWithSTInfo3Scope automatonWithSTInfo3Scope;
     AutomatonWithSTInfo3ScopeBuilder automatonWithSTInfo3ScopeBuilder;
     AutomatonWithSTInfo3SymTabMill automatonWithSTInfo3SymTabMill;
-    IAutomatonWithSTInfo3GlobalScope iAutomatonWithSTInfo3GlobalScope;
     IAutomatonWithSTInfo3Scope iAutomatonWithSTInfo3Scope;
     ICommonAutomatonWithSTInfo3Symbol iCommonAutomatonWithSTInfo3Symbol;
     StateSymbol stateSymbol = new StateSymbol("S");
