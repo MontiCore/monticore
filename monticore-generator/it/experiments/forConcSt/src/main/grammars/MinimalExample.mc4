@@ -65,10 +65,10 @@ grammar MinimalExample extends de.monticore.MCBasics {
   // token results can be converted
   // here NUMBER becomes type float
     token NUMBER = ('0'..'9')* '.' ('0'..'9')* 'f': float;
-    A2 = b:NUMBER c:NUMBER*;
+    A2 = b:NUMBER "," c:NUMBER*;
 
   // while Name is stored as a String
-    A1 = b:Name c:Name;
+    A1 = b:Name "," c:Name;
 
 // ----------------------- listing/LexicalsAdaptedTypes2.x
 
