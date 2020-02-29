@@ -19,7 +19,7 @@ grammar MinimalExample extends de.monticore.MCBasics {
 
 // token can be structured using fragments
   token NUM_INT =
-    ('0'..'9')+ (EXPONENT)? (SUFFIX)? ;
+    ('0'..'9')+ EXPONENT? SUFFIX? ;
 
   fragment token SUFFIX =
     'f'|'F'|'d'|'D' ;

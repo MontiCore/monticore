@@ -21,7 +21,7 @@ public class UniqueProdNameInGrammar implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA0112";
 
-  public static final String ERROR_MSG_FORMAT = " Grammar '%s' contains two Prods named '%s'. Prod names must be unique within a grammar.";
+  public static final String ERROR_MSG_FORMAT = " Grammar '%s' contains two productions named '%s'. Production names must be unique within a grammar.";
 
   @Override
   public void check(ASTMCGrammar node) {
