@@ -32,7 +32,22 @@ package de.monticore.statements;
 
 component grammar MCStatementsBasis  {
 
+/** 
+ * BlockStatements are typically the staments possible within blocks, such as
+ * { ... block ... }
+ * These BlockStatements contain all usuall statements plus the possibility
+ * to define local variables, such as:  int a = 7;
+*/
+
 interface BlockStatement;
+
+/**
+ * MCStatement is the basic interface for all kinds of statements,
+ * which are defined in sub-grammars.
+ * It is explicitly meant for extension.
+ * Like in Java, ordinary MCStatements do not allow to introduce new 
+ * local variables (this is only part of the BlockStatements)
+*/ 
 
 interface MCStatement extends BlockStatement;
 
