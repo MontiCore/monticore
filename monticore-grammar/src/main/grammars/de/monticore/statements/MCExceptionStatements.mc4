@@ -28,17 +28,36 @@ component grammar MCExceptionStatements extends de.monticore.statements.MCCommon
 // mit zusätzlichen Cocos arbeiten, um nicht von der Java-Spec abzuweichen. Ich würde das also so
 // lassen
 //
-// TryStatement implements MCStatement
-//     =   "try" TryVariableDecl?
+// TODO
+// BR -> MB: 1.3.20: Müssen wir uns strukturell an die Java-Grammatik halten?
+// Ich sehe das nicht unbedingt so. Allerdings ist tatsächlich ein kleiner Unterschied:
+// Java verlangt entweder wenigstens eine Resource oder einen catch-Block anzugeben; 
+// meine Vereinfachung nicht.
+//
+// Wenn man dies einbaut wirds etwas komplexer, aber auch der Name "Resource" ist zum Beispiel unschön.
+// wie wäre es mit folgender Lösung:
+//
+// TryStatement1 implements MCStatement
+//     =   "try" 
+//	   core:MCJavaBlock
+//	   CatchClause+
+// 	   ("finally" finally:MCJavaBlock)?
+//     ;
+// TryStatement2 implements MCStatement
+//     =   "try" "(" (Resource || ";")+ ";"? ")"
 //	   core:MCJavaBlock
 //	   CatchClause*
 // 	   ("finally" finally:MCJavaBlock)?
 //     ;
 // 
-// TryVariableDecl = "(" (Resource || ";")+ ";"? ")"
+// + umbennenen von Resource in was passendes, zB TryLocalVariableDeclaration
 // 
 // und rausnehmen von ExceptionHandler, CatchExceptionsHandler, FinallyBlockOnlyHandler
 // 	TryStatementWithResources
+
+/* The Nonterminals could be simplified, but are left in this form,
+   because this is compatible to the Java original.
+*/
 
 TryStatement implements MCStatement
     =   "try" MCJavaBlock ExceptionHandler
@@ -51,7 +70,7 @@ CatchExceptionsHandler implements ExceptionHandler
     ;
 
 FinallyBlockOnlyHandler implements ExceptionHandler
-    =   ("finally" MCJavaBlock)
+    =   "finally" MCJavaBlock
     ;
 
 TryStatementWithResources implements MCStatement
@@ -67,6 +86,9 @@ TryStatementWithResources implements MCStatement
 //   --> das sind sowieso CoCos!
 // und: hier wird eine Variable eingeführt! --> Symbol!
 // MB -> BR: Das ist zur Zeit in einem anderen Branch in Arbeit
+
+// TODO: BR -> MB: 1.3.20: 
+// Umbenennen in TryLocalVariableDeclaration
 Resource
     =   JavaModifier* MCType DeclaratorId "=" Expression
     ;

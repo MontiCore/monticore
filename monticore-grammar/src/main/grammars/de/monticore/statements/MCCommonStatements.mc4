@@ -33,7 +33,9 @@ MCJavaBlock implements MCStatement
     =   "{" BlockStatement* "}"
     ;
 
-// TODO: VariableDeclaration rausziehen in extra Grammatik (clashed mit LetIn-)
+// TODO: Das Nichtterminal VariableDeclaration 
+//       rausziehen in extra Grammatik (clashed mit LetIn- 
+// das dieses NT dann nicht braucht)
 LocalVariableDeclaration implements BlockStatement
     =   JavaModifier* MCType (VariableDeclarator || ",")+
     ;
