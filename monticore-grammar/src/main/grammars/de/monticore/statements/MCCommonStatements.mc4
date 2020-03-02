@@ -30,10 +30,10 @@ component grammar MCCommonStatements extends de.monticore.statements.MCStatement
                                              de.monticore.expressions.ExpressionsBasis {
 
 MCJavaBlock implements MCStatement
-    =   "{" BlockStatement* "}"
+    =   "{" MCBlockStatement* "}"
     ;
 
-LocalVariableDeclaration implements BlockStatement
+LocalVariableDeclaration implements MCBlockStatement
     =   JavaModifier* MCType (VariableDeclarator || ",")+
     ;
 
@@ -108,7 +108,7 @@ ExpressionStatement implements MCStatement
  *  To handle empty cases at the end, we add switchLabel* to statement.
  */
 SwitchBlockStatementGroup
-    =   SwitchLabel+ BlockStatement+
+    =   SwitchLabel+ MCBlockStatement+
     ;
 
 interface SwitchLabel ;

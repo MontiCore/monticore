@@ -2,7 +2,7 @@ package de.monticore.statements.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mccommonstatements._ast.*;
-import de.monticore.statements.mcstatementsbasis._ast.ASTBlockStatement;
+import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -51,15 +51,15 @@ public class MCCommonStatementsPrettyPrinterTest {
 
   @Test
   public void testBlockStatement() throws IOException {
-    Optional<ASTBlockStatement> result = parser.parse_StringBlockStatement("private Integer foo = a");
+    Optional<ASTMCBlockStatement> result = parser.parse_StringMCBlockStatement("private Integer foo = a");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    ASTBlockStatement ast = result.get();
+    ASTMCBlockStatement ast = result.get();
 
     ast.accept(prettyPrinter);
     String output = prettyPrinter.getPrinter().getContent();
 
-    result = parser.parse_StringBlockStatement(output);
+    result = parser.parse_StringMCBlockStatement(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 

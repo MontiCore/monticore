@@ -28,7 +28,7 @@ external ExtTypeParameters;
 
 // Type declarations
 interface TypeDeclaration extends ClassMemberDeclaration,
-        InterfaceMemberDeclaration, AnnotationTypeElementDeclaration, BlockStatement;
+        InterfaceMemberDeclaration, AnnotationTypeElementDeclaration, MCBlockStatement;
 
 EmptyDeclaration implements TypeDeclaration
     =   ";"

@@ -97,7 +97,7 @@ public class MCCommonStatementsPrettyPrinter implements
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println("{");
     getPrinter().indent();
-    a.getBlockStatementList().stream().forEach(m -> m.accept(getRealThis()));
+    a.getMCBlockStatementList().stream().forEach(m -> m.accept(getRealThis()));
     getPrinter().unindent();
     getPrinter().println("}");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
