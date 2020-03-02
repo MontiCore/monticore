@@ -12,7 +12,7 @@ fileTree(grammarDir).each {
   }
 }
 
-generateAutomaton2.dependsOn generateInvAutomaton
-generateAutomaton3.dependsOn generateInvAutomaton, generateExpression
-generateHierarchicalAutomaton.dependsOn generateAutomaton1
-generateHierInvAutomaton.dependsOn generateAutomaton3
+generateAutomata2.dependsOn generateInvAutomata
+generateAutomata3.dependsOn generateInvAutomata, generateExpression
+generateHierarchicalAutomata.dependsOn generateAutomata1
+generateHierInvAutomata.dependsOn generateAutomata3

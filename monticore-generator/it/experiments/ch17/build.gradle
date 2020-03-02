@@ -14,5 +14,5 @@ fileTree(grammarDir).each {
   }
 }
 
-generateHAutomaton.dependsOn generateSAutomaton
-generateIAutomaton.dependsOn generateIAutomatonComp
+generateHAutomata.dependsOn generateSAutomata
+generateIAutomata.dependsOn generateIAutomataComp

@@ -5,6 +5,7 @@ import automata._ast.ASTAutomaton;
 import automata._cocos.AutomataCoCoChecker;
 import automata._parser.AutomataParser;
 import automata._symboltable.*;
+import automata._symboltable.serialization.AutomataScopeDeSer;
 import automata.cocos.AtLeastOneInitialAndFinalState;
 import automata.cocos.StateNameStartsWithCapitalLetter;
 import automata.cocos.TransitionSourceExists;
@@ -22,7 +23,9 @@ import java.util.Optional;
  *
  */
 public class AutomataTool {
-  
+
+  public static final String DEFAULT_SYMBOL_LOCATION = "target";
+
   /**
    * Use the single argument for specifying the single input automaton file.
    *
@@ -44,7 +47,8 @@ public class AutomataTool {
     
     // setup the language infrastructure
     AutomataLanguage lang = new AutomataLanguage();
-    
+    AutomataScopeDeSer deser = new AutomataScopeDeSer();
+
     // parse the model and create the AST representation
     ASTAutomaton ast = parse(model);
     Log.info(model + " parsed successfully!", AutomataTool.class.getName());
@@ -75,7 +79,10 @@ public class AutomataTool {
     checker.checkAll(ast);
     
     // Now we know the model is well-formed
-    
+
+    // store artifact scope
+    deser.store(modelTopScope,lang, DEFAULT_SYMBOL_LOCATION);
+
     // analyze the model with a visitor
     CountStates cs = new CountStates();
     cs.handle(ast);

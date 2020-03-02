@@ -12,4 +12,4 @@ fileTree(grammarDir).each {
   }
 }
 
-generateAutomaton16.dependsOn generateAutomaton15
+generateAutomata16.dependsOn generateAutomata15
