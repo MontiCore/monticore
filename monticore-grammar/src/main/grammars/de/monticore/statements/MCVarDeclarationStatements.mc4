@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.statements;
+
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
+component grammar MCVarDeclarationStatements extends de.monticore.statements.MCStatementsBasis,
+                                                     de.monticore.types.MCBasicTypes,
+                                                     de.monticore.expressions.ExpressionsBasis {
+
+LocalVariableDeclaration implements MCBlockStatement
+    =   MCModifier* MCType (VariableDeclarator || ",")+
+    ;
+
+VariableDeclarator
+    =   DeclaratorId ("=" VariableInititializerOrExpression)?
+    ;
+
+// TODO: Variable wird deklariert! --> Symbol nutzen
+// MB -> BR: Das ist zur Zeit in einem anderen Branch in Arbeit
+DeclaratorId
+    =   Name (dim:"[" "]")*
+    ;
+
+interface VariableInitializer;
+
+VariableInititializerOrExpression
+	= VariableInitializer | Expression;
+
+ArrayInitializer implements VariableInitializer
+    =   "{" (VariableInititializerOrExpression || ",")* (",")? "}"
+    ;
+
+}

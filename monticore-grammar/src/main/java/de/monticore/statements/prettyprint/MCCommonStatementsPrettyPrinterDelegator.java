@@ -6,6 +6,7 @@ import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 import de.monticore.statements.mccommonstatements._ast.ASTMCCommonStatementsNode;
 import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsDelegatorVisitor;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCStatementsBasisNode;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTMCVarDeclarationStatementsNode;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
 public class MCCommonStatementsPrettyPrinterDelegator extends MCCommonStatementsDelegatorVisitor {
@@ -20,6 +21,7 @@ public class MCCommonStatementsPrettyPrinterDelegator extends MCCommonStatements
     setExpressionsBasisVisitor(new ExpressionsBasisPrettyPrinter(printer));
     setMCBasicTypesVisitor(new MCBasicTypesPrettyPrinter(printer));
     setMCCommonStatementsVisitor(new MCCommonStatementsPrettyPrinter(printer));
+    setMCVarDeclarationStatementsVisitor(new MCVarDeclarationStatementsPrettyPrinter(printer));
     setMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
   }
 
@@ -28,6 +30,12 @@ public class MCCommonStatementsPrettyPrinterDelegator extends MCCommonStatements
   }
 
   public String prettyprint(ASTMCCommonStatementsNode a) {
+    getPrinter().clearBuffer();
+    a.accept(getRealThis());
+    return getPrinter().getContent();
+  }
+
+  public String prettyprint(ASTMCVarDeclarationStatementsNode a) {
     getPrinter().clearBuffer();
     a.accept(getRealThis());
     return getPrinter().getContent();

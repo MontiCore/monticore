@@ -25,16 +25,10 @@ package de.monticore.statements;
  *
 */
 
-component grammar MCCommonStatements extends de.monticore.statements.MCStatementsBasis,
-                                             de.monticore.types.MCBasicTypes,
-                                             de.monticore.expressions.ExpressionsBasis {
+component grammar MCCommonStatements extends de.monticore.statements.MCVarDeclarationStatements {
 
 MCJavaBlock implements MCStatement
     =   "{" MCBlockStatement* "}"
-    ;
-
-LocalVariableDeclaration implements MCBlockStatement
-    =   JavaModifier* MCType (VariableDeclarator || ",")+
     ;
 
 JavaModifier implements MCModifier =
@@ -43,24 +37,6 @@ JavaModifier implements MCModifier =
         | "const" | "volatile" | "strictfp"]
         ;
 
-VariableDeclarator
-    =   DeclaratorId ("=" VariableInititializerOrExpression)?
-    ;
-
-// TODO: Variable wird deklariert! --> Symbol nutzen
-// MB -> BR: Das ist zur Zeit in einem anderen Branch in Arbeit
-DeclaratorId
-    =   Name (dim:"[" "]")*
-    ;
-
-interface VariableInitializer;
-
-VariableInititializerOrExpression
-	= VariableInitializer | Expression;
-
-ArrayInitializer implements VariableInitializer
-    =   "{" (VariableInititializerOrExpression || ",")* (",")? "}"
-    ;
 
 IfStatement implements MCStatement
     =   "if" "(" condition:Expression ")" thenStatement:MCStatement ("else" elseStatement:MCStatement)?

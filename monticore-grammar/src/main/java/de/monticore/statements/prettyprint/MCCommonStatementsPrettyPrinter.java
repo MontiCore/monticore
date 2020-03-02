@@ -40,58 +40,6 @@ public class MCCommonStatementsPrettyPrinter implements
     }
   }
 
-  protected void printMCTypeList(Iterator<? extends ASTMCType> iter, String separator) {
-    // print by iterate through all items
-    String sep = "";
-    while (iter.hasNext()) {
-      getPrinter().print(sep);
-      iter.next().accept(getRealThis());
-      sep = separator;
-    }
-  }
-
-  @Override
-  public void handle(ASTVariableDeclarator a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getDeclaratorId().accept(getRealThis());
-    if (a.isPresentVariableInititializerOrExpression()) {
-      getPrinter().print(" = ");
-      a.getVariableInititializerOrExpression().accept(getRealThis());
-    }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTDeclaratorId a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    printNode(a.getName());
-    for (int i = 0; i < a.getDimList().size(); i++) {
-      getPrinter().print("[]");
-    }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTArrayInitializer a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    getPrinter().print("{");
-    printSeparated(a.getVariableInititializerOrExpressionList().iterator(), ", ");
-    getPrinter().print("}");
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-
-  @Override
-  public void handle(ASTLocalVariableDeclaration a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    printSeparated(a.getJavaModifierList().iterator(), " ");
-    getPrinter().print(" ");
-    a.getMCType().accept(getRealThis());
-    getPrinter().print(" ");
-    printSeparated(a.getVariableDeclaratorList().iterator(), ", ");
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
   @Override
   public void handle(ASTMCJavaBlock a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
@@ -227,16 +175,6 @@ public class MCCommonStatementsPrettyPrinter implements
     printNode(a.getEnumConstantName());
     getPrinter().println(":");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTVariableInititializerOrExpression a) {
-    if (a.isPresentVariableInitializer()) {
-      a.getVariableInitializer().accept(getRealThis());
-    }
-    if (a.isPresentExpression()) {
-      a.getExpression().accept(getRealThis());
-    }
   }
 
   @Override

@@ -20,6 +20,7 @@ public class MCSynchronizedStatementsPrettyPrinterDelegator extends MCSynchroniz
     setMCBasicTypesVisitor(new MCBasicTypesPrettyPrinter(printer));
     setMCCommonStatementsVisitor(new MCCommonStatementsPrettyPrinter(printer));
     setMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
+    setMCVarDeclarationStatementsVisitor(new MCVarDeclarationStatementsPrettyPrinter(printer));
     setMCSynchronizedStatementsVisitor(new MCSynchronizedStatementsPrettyPrinter(printer));
   }
 

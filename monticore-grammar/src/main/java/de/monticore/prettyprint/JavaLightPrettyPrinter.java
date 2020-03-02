@@ -5,6 +5,7 @@ package de.monticore.prettyprint;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.javalight._ast.*;
 import de.monticore.javalight._visitor.JavaLightVisitor;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.statements.prettyprint.MCCommonStatementsPrettyPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 
@@ -80,7 +81,12 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     a.getMCModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
     a.getMCType().accept(getRealThis());
     getPrinter().print(" ");
-    printSeparated(a.getVariableDeclaratorList().iterator(), ", ");
+    String sep = "";
+    for (ASTVariableDeclarator v: a.getVariableDeclaratorList()) {
+      getPrinter().print(sep);
+      sep = ", ";
+      v.accept(getRealThis());
+    }
     getPrinter().println(";");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -171,7 +177,12 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     a.getMCModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
     a.getMCType().accept(getRealThis());
     getPrinter().print(" ");
-    printSeparated(a.getVariableDeclaratorList().iterator(), ", ");
+    String sep = "";
+    for (ASTVariableDeclarator v: a.getVariableDeclaratorList()) {
+      getPrinter().print(sep);
+      sep = ", ";
+      v.accept(getRealThis());
+    }
     getPrinter().println(";");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
