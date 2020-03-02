@@ -152,26 +152,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /**
-   * global scope interface names e.g. IAutomataGlobalScope
-   */
-
-  public String getGlobalScopeInterfaceFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getGlobalScopeInterfaceSimpleName(cdSymbol);
-  }
-
-  public String getGlobalScopeInterfaceFullName() {
-    return getGlobalScopeInterfaceFullName(getCDSymbol());
-  }
-
-  public String getGlobalScopeInterfaceSimpleName(CDDefinitionSymbol cdSymbol) {
-    return INTERFACE_PREFIX + cdSymbol.getName() + GLOBAL_SUFFIX + SCOPE_SUFFIX;
-  }
-
-  public String getGlobalScopeInterfaceSimpleName() {
-    return getGlobalScopeInterfaceSimpleName(getCDSymbol());
-  }
-
-  /**
    * language class names e.g. AutomataLanguage
    */
 
