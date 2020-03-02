@@ -30,7 +30,7 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass astListClass;
 
-  private ASTReferenceDecorator referenceDecorator;
+  private ASTReferenceDecorator<ASTCDClass> referenceDecorator;
 
   @Before
   public void setup() {

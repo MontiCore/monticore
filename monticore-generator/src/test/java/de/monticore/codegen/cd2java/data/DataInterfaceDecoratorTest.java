@@ -57,7 +57,7 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(49, dataInterface.sizeCDMethods());
+    assertEquals(51, dataInterface.sizeCDMethods());
   }
 
   @Test

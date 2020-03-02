@@ -1,10 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class.reference.symbol;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTModifier;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.symbol.methoddecorator.ReferencedSymbolAccessorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -26,7 +23,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
  * adds the symbol reference attributes and the corresponding getters -> uses the symbol reference attribute created in ASTReferencedSymbolDecorator
  */
 
-public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass> {
+public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractTransformer<T> {
 
   protected static final String SYMBOL = "Symbol";
 
@@ -36,7 +33,8 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
 
   protected final SymbolTableService symbolTableService;
 
-  public ASTReferencedSymbolDecorator(final GlobalExtensionManagement glex, final ReferencedSymbolAccessorDecorator accessorDecorator,
+  public ASTReferencedSymbolDecorator(final GlobalExtensionManagement glex,
+                                      final ReferencedSymbolAccessorDecorator accessorDecorator,
                                       final SymbolTableService symbolTableService) {
     super(glex);
     this.accessorDecorator = accessorDecorator;
@@ -44,7 +42,7 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
   }
 
   @Override
-  public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
+  public T decorate(final T originalClass, T changedClass) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : originalClass.getCDAttributeList()) {
@@ -58,8 +56,8 @@ public class ASTReferencedSymbolDecorator extends AbstractTransformer<ASTCDClass
         methodList.addAll(getRefSymbolMethods(refSymbolAttribute, referencedSymbolType, wasAttributeOptional));
       }
     }
-    changedClass.addAllCDMethods(methodList);
-    changedClass.addAllCDAttributes(attributeList);
+    changedClass.getCDMethodList().addAll(methodList);
+    changedClass.getCDAttributeList().addAll(attributeList);
     return changedClass;
   }
 

@@ -49,7 +49,7 @@ public class ASTReferencedDefinitionDecoratorMandatoryTest extends DecoratorTest
     this.glex.setGlobalValue("service", new AbstractService(ast));
 
     SymbolTableService symbolTableService = new SymbolTableService(ast);
-    ASTReferencedDefinitionDecorator decorator = new ASTReferencedDefinitionDecorator(this.glex, new ReferencedDefinitionAccessorDecorator(glex, symbolTableService), symbolTableService);
+    ASTReferencedDefinitionDecorator<ASTCDClass> decorator = new ASTReferencedDefinitionDecorator(this.glex, new ReferencedDefinitionAccessorDecorator(glex, symbolTableService), symbolTableService);
     ASTCDClass clazz = getClassBy("ASTBarMand", ast);
     ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
         .setModifier(clazz.getModifier())
