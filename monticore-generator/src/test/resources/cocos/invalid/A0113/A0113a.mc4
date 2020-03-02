@@ -2,6 +2,6 @@ package cocos.invalid.A0113;
 
 grammar A0113a {
 
-    Sup implements ISuper = "a";
+    Sup implements Super = "a";
 
 }

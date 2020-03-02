@@ -23,55 +23,36 @@ package de.monticore.statements;
 
 component grammar MCExceptionStatements extends de.monticore.statements.MCCommonStatements {
 
-// TODO, waere das nicht sauberer:
-//
-// TryStatement implements MCStatement
-//     =   "try" TryVariableDecl?
-//	   core:MCJavaBlock
-//	   CatchClause*
-// 	   ("finally" finally:MCJavaBlock)?
-//     ;
-// 
-// TryVariableDecl = "(" (Resource || ";")+ ";"? ")"
-// 
-// und rausnehmen von ExceptionHandler, CatchExceptionsHandler, FinallyBlockOnlyHandler
-// 	TryStatementWithResources
+TryStatement1 implements MCStatement
+    =   "try"
+	   core:MCJavaBlock
+	   CatchClause+
+ 	   ("finally" finally:MCJavaBlock)?
+     ;
 
-TryStatement implements MCStatement
-    =   "try" MCJavaBlock ExceptionHandler
+TryStatement2 implements MCStatement
+    =   "try"
+	   core:MCJavaBlock
+	   CatchClause*
+ 	   ("finally" finally:MCJavaBlock)
+     ;
+
+TryStatement3 implements MCStatement
+    =   "try" "(" (TryLocalVariableDeclaration || ";")+ ";"? ")"
+    core:MCJavaBlock
+	  CatchClause*
+ 	  ("finally" finally:MCJavaBlock)?
     ;
 
-interface ExceptionHandler ;
-
-CatchExceptionsHandler implements ExceptionHandler
-    =   CatchClause+ ("finally" MCJavaBlock)?
+TryLocalVariableDeclaration
+    =   JavaModifier* MCType DeclaratorId "=" Expression
     ;
 
-FinallyBlockOnlyHandler implements ExceptionHandler
-    =   ("finally" MCJavaBlock)
-    ;
-
-TryStatementWithResources implements MCStatement
-    =   "try" "(" (Resource || ";")+ ";"? ")"
-        MCJavaBlock
-	CatchClause*
-	("finally" finallyBlock:MCJavaBlock)?
-    ;
-
-// TODO: ist das nicht einfach eine lokale VariableDeclaration?
-// Dann wiederverwenden (auch wenn nur wenige Arten von Klassen hier einsetzbar sind)
-//   --> das sind sowieso CoCos!
-// und: hier wird eine Variable eingeführt! --> Symbol!
-Resource
-    =   PrimitiveModifier* MCType DeclaratorId "=" Expression
-    ;
-
-// TODO: CatchType -> CatchTypeList
 CatchClause
-    =   "catch" "(" PrimitiveModifier* CatchType Name ")" MCJavaBlock
+    =   "catch" "(" JavaModifier* CatchTypeList Name ")" MCJavaBlock
     ;
 
-CatchType
+CatchTypeList
     =   (MCQualifiedName || "|")+
     ;
 
