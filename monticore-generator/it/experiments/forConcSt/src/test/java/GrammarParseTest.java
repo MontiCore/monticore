@@ -14,7 +14,7 @@ public class GrammarParseTest {
   public static void main(String[] args) {
 
     Optional<ASTMCGrammar> ast = Optional.empty();
-    String filename = "automaton/Automaton.mc4";
+    String filename = "automaton/Automata.mc4";
     Grammar_WithConceptsParser p =
             new Grammar_WithConceptsParser();
 

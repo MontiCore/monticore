@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import automaton._ast.*;
+import automata._ast.*;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Before;
@@ -27,7 +27,7 @@ public class BuildersTest {
   // (which should be included upon generation)
   @Test
   public void testMyTransitionBuilder() throws IOException {
-    ASTTransition transition = AutomatonMill
+    ASTTransition transition = AutomataMill
         .transitionBuilder()
         .setFrom("setByGenBuilder")
         .setInput("xxxx")
@@ -42,7 +42,7 @@ public class BuildersTest {
   // setters: the setters of the superclass loose typeinformation
   @Test
   public void testMyTransitionBuilderInSubNT() throws IOException {
-    ASTActTransitionBuilder b = AutomatonMill.actTransitionBuilder();
+    ASTActTransitionBuilder b = AutomataMill.actTransitionBuilder();
     b.setFrom("setByGenBuilder");
     b.setAction("Boom");
     b.setInput("xxxx");
@@ -54,7 +54,7 @@ public class BuildersTest {
 
   @Test
   public void testHWCClassGeneratedBuilder() throws IOException {
-    ASTAutomaton aut = AutomatonMill
+    ASTAutomaton aut = AutomataMill
         .automatonBuilder()
         .setName("setByGeneratedBuilder").build();
     assertEquals("setByGeneratedBuilder", aut.getName());
@@ -64,7 +64,7 @@ public class BuildersTest {
   // (which should be included upon generation)
   @Test
   public void testHWCClassHWCBuilder() throws IOException {
-    ASTState state = AutomatonMill
+    ASTState state = AutomataMill
         .stateBuilder()
         .setName("x2")
         .setFinal(true)
@@ -77,7 +77,7 @@ public class BuildersTest {
   // Yes: here it works
   @Test
   public void testHWCClassHWCBuilderInSubNT() throws IOException {
-    ASTActStateBuilder b = AutomatonMill.actStateBuilder();
+    ASTActStateBuilder b = AutomataMill.actStateBuilder();
     b.setName("x2");
     b.setFinal(true);
     b.setEntry("Blubb");
@@ -90,9 +90,9 @@ public class BuildersTest {
 
   @Test
   public void testGetFunctions() throws IOException {
-    // XXX BUG SOLL: ASTStateBuilder sb = AutomatonMill
+    // XXX BUG SOLL: ASTStateBuilder sb = AutomataMill
     // nachfolgende Zeile dafür raus:
-    ASTStateBuilderTOP sb = AutomatonMill
+    ASTStateBuilderTOP sb = AutomataMill
         .stateBuilder()
         .setName("x2")
         .setFinal(true)

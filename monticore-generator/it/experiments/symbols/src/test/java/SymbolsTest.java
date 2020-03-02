@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import automaton._ast.ASTAutomaton;
-import automaton._parser.AutomatonParser;
-import automaton._symboltable.StateSymbol;
+import automata._ast.ASTAutomaton;
+import automata._parser.AutomataParser;
+import automata._symboltable.StateSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 public class SymbolsTest {
   
   // setup the language infrastructure
-  AutomatonParser parser = new AutomatonParser() ;
+  AutomataParser parser = new AutomataParser() ;
 
   @BeforeClass
   public static void init() {

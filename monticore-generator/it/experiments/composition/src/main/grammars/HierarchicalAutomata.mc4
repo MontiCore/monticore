@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar HierarchicalAutomata extends Automata1 {
+
+  // keep the old start
+  start Automaton; 
+
+  // redefine a nonterminal
+  State =  "state" Name
+    ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )*
+    ( ";" | "{" (State | Transition)* "}" );
+
+}
