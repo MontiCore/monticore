@@ -118,7 +118,7 @@ MontiCore projects are hosted at
 * Grammar to parse Sequence Diagrams
 * Can be used with testing generator to derive test cases
 
-### [SI Units](https://git.rwth-aachen.de/monticore/monticore/blob/SIUnitLiterals2/monticore-grammar/src/main/grammars/de/monticore/siunit/SIUnit.mc4) (Alpha)
+### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Alpha)
 * Author: EK, NJ, DS
 * allows a language developer to use physical units in a language
 
@@ -141,20 +141,20 @@ MontiCore projects are hosted at
 * Author: NJ
 * MontiCore language for parsing XML artifacts.
 
-### [JavaLight](NN) (Beta: In Stabilization)
+### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (Beta: In Stabilization)
 * Author: MB
 * This is a reduced version of the Java language which primarily provides methods, statements and expressions 
 * JavaLight is meant to be used to integrate simplified Java-like parts in modeling languages but not 
   to parse complete Java implementations
   * One main usage of JavaLight is in the Grammar-language to model e.g. Java methods there
 * JavaLight is parameterized with:
-  * Literals: through the Literal interface nontzerminal, 
+  * Literals: through the Literal interface nonterminal, 
    users are free to choose the literals they need
 
 
-### [Java](NN) (Alpha: Intention to become stable)
+### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) (30% to MC6)
 
-* Author: NN
+* Author: MB
 * This is the full Java' Language (as Opposed to JavaLight).
 
 

@@ -21,7 +21,7 @@ public class ScopeProdOverwrittenByScope implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA0275";
 
-  public static final String ERROR_MSG_FORMAT = " The Prod %s from grammar %s is a scope and overwritten by the prod %s of grammar %s that also defines a scope." +
+  public static final String ERROR_MSG_FORMAT = "Production %s from grammar %s is a scope and overwritten by the prod %s of grammar %s that also defines a scope." +
       "Remove the second scope definition, because the scope property is inherited anyway.";
 
   @Override
