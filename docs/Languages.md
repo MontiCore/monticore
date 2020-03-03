@@ -22,7 +22,7 @@ Language components are currently organized in two levels:
 In this list you find mainly grammars for 
 **complete (but also reusable and adaptable) languages**.
 A list of
-[**grammar components**](monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+[**grammar components**](../monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 with individual reusable nonterminals is also available in
 the MontiCore core project.
 
@@ -30,7 +30,7 @@ The following list presents links to the language development projects, their
 main grammars, and a short description 
 of the language, available language tools and its development status.
 The different development stati for grammars are explained 
-[**here**](00.org/Explanations/StatusOfGrammars.md).
+[**here**](../00.org/Explanations/StatusOfGrammars.md).
 
 
 The list covers the language grammars to be found in the several 
@@ -162,6 +162,6 @@ MontiCore projects are hosted at
 
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 
-* [MontiCore project](README.md) - MontiCore
+* [MontiCore project](../README.md) - MontiCore
 
 

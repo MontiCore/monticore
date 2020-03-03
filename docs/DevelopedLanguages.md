@@ -127,7 +127,7 @@ development. See language definition and usage method in
    *language workbench*), but also as grey box *tooling framework*.
    It thus also gives an overview over a number of core mechanisms of MontiCore.
 
-* [**List of core grammars**](monticore-grammar/src/main/grammars/de/monticore/Grammars.md).
+* [**List of core grammars**](../monticore-grammar/src/main/grammars/de/monticore/Grammars.md).
    MontiCore concentrates on reuse. It therefore offers a set of
    predefined *language components*, usually identified through an appropriate 
    *component grammar* allowing to define your own language as a
@@ -146,5 +146,5 @@ development. See language definition and usage method in
 
 * see also [**our topic list**](https://www.se-rwth.de/topics/) 
 
-* [MontiCore project](README.md) - MontiCore
+* [MontiCore project](../README.md) - MontiCore
 
