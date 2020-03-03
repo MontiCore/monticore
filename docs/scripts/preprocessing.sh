@@ -12,11 +12,11 @@
 
 # move all directories that contain *.md files to the docs folder
 # because mkdocs can only find *.md files there
+mkdir docs/docs
+mv docs/*.md docs/docs
 mv monticore-grammar docs/monticore-grammar
 mv monticore-runtime docs/monticore-runtime
 mv 00.org docs/00.org
-mkdir docs/docs
-mv docs/*.md docs/docs
 mv *.md docs/
 mv *.png docs/
 echo "[INFO] Moved *.md files to 'docs' folder"
