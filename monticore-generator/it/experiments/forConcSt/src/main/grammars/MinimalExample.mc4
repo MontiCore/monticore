@@ -12,7 +12,7 @@ grammar MinimalExample extends de.monticore.MCBasics {
 // ----------------------- zwei Token
   token SimpleName = ('a'..'z'|'A'..'Z')+ ;
 
-  token SimpleString = '\"' ('a'..'z'|'A'..'Z')* '\"';
+  token SimpleString = '"' ('a'..'z'|'A'..'Z')* '"';
 
 
 // ----------------------- Token Fragments
