@@ -123,7 +123,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals, de.mon
     "start" Name ";";
 
   DeprecatedAnnotation =
-    "@" {cmpToken(1, "Deprecated")}? Name ( "(" message:String ")" )?;
+    "@" key("Deprecated") {noSpace()}? ( "(" message:String ")" )?;
 
   // ------------------------------------------------------------------------------
   // Productions
