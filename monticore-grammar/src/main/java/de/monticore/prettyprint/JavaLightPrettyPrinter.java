@@ -206,7 +206,7 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
       getPrinter().print("[] ");
     }
     getPrinter().print(" = ");
-    a.getVariableInititializerOrExpression().accept(getRealThis());
+    a.getVariableInit().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
@@ -317,7 +317,7 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
       getPrinter().print("[]");
     }
     getPrinter().print(" ");
-    a.getArrayInitializer().accept(getRealThis());
+    a.getArrayInit().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 

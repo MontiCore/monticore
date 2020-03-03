@@ -12,7 +12,7 @@ LocalVariableDeclaration implements MCBlockStatement
     ;
 
 VariableDeclarator
-    =   DeclaratorId ("=" VariableInititializerOrExpression)?
+    =   DeclaratorId ("=" VariableInit)?
     ;
 
 // TODO: Variable wird deklariert! --> Symbol nutzen
@@ -21,13 +21,13 @@ DeclaratorId
     =   Name (dim:"[" "]")*
     ;
 
-interface VariableInitializer;
+interface VariableInit;
 
-VariableInititializerOrExpression
-	= VariableInitializer | Expression;
+SimpleInit implements VariableInit =
+                    Expression;
 
-ArrayInitializer implements VariableInitializer
-    =   "{" (VariableInititializerOrExpression || ",")* (",")? "}"
-    ;
+ArrayInit implements VariableInit
+     =   "{" (VariableInit || ",")* (",")? "}"
+     ;
 
 }
