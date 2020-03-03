@@ -15,6 +15,7 @@
 mv monticore-grammar docs/monticore-grammar
 mv monticore-runtime docs/monticore-runtime
 mv 00.org docs/00.org
+mkdir docs/docs
 mv docs/*.md docs/docs
 mv *.md docs/
 mv *.png docs/
