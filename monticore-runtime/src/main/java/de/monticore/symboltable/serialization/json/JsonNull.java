@@ -12,7 +12,7 @@ public class JsonNull implements JsonElement {
   }
   
   /**
-   * @see automata._symboltable.serialization.json.JsonElement#isJsonNull()
+   * @see de.monticore.symboltable.serialization.json.JsonElement#isJsonNull()
    */
   @Override
   public boolean isJsonNull() {
@@ -20,13 +20,13 @@ public class JsonNull implements JsonElement {
   }
   
   /**
-   * @see automata._symboltable.serialization.json.JsonElement#getAsJsonNull()
+   * @see de.monticore.symboltable.serialization.json.JsonElement#getAsJsonNull()
    */
   @Override
   public JsonNull getAsJsonNull() {
     return this;
   }
-  
+
   @Override
   public String toString() {
     return "null";

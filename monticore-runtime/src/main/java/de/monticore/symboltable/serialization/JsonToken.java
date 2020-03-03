@@ -24,6 +24,7 @@ public class JsonToken {
 
   public static final JsonToken NULL = new JsonToken(JsonTokenKind.NULL);
 
+  // for performance reasons, forget the exact whitespace characters after lexing
   public static final JsonToken WHITESPACE = new JsonToken(JsonTokenKind.WHITESPACE);
 
   public static final JsonToken BOOLEAN_TRUE = new JsonToken(JsonTokenKind.BOOLEAN, "true");
