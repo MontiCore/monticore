@@ -94,6 +94,11 @@ MontiCore projects are hosted at
 * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation), [**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
 * Docuemtation: [**here**](https://git.rwth-aachen.de/macoco/gui-dsl/wikis/home)
 
+### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/tree/dev/monticore-grammar) (MontiCore Stable)
+* Author: MB 
+* Language for MontiCore Grammars
+* TODO
+
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
 * Author: NJ
 * MontiCore language for parsing JSON artifacts.
