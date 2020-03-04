@@ -1,15 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore;
 
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
 /**
- * Grammar for common elements of the UML/P-Language-Family
- */
+ * This grammar defines completeness information in UML
+ * like "...", "(c)", but also "(...,c)"
+ *
+*/
 component grammar Completeness {
-         
+
     /** ASTCompleteness represents the completeness in
         several kinds of diagrams of the UML/P;
         Syntax: (left-completeness, right-completeness)
-        
+
 	For example:
           CD: Diagramm: left: Types,      right: Assoziations
               Types:    left: Attributes, right: Methods
@@ -23,12 +28,12 @@ component grammar Completeness {
   Completeness =
         //the following complex lexer symbol construction is to prevent clash
         //with ident "c"
-     [complete:"(c)"] 
+     [complete:"(c)"]
 	  //separate brackets to avoid
-          //lexer-symbol clash with SD/SC
+          //lexer-symbol clash
      | ("(" [incomplete:"..."] {noSpace()}? ")" {noSpace()}?)
      | [incomplete:"(...,...)"]
      | [complete:"(c,c)"]
-     | [rightComplete:"(...,c)"] 
+     | [rightComplete:"(...,c)"]
      | [leftComplete:"(c,...)"];
 }

@@ -6,8 +6,8 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import hierautomaton._ast.ASTStateMachine;
-import hierautomaton._parser.HierAutomatonParser;
+import hierautomata._ast.ASTStateMachine;
+import hierautomata._parser.HierAutomataParser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,7 +33,7 @@ public class HookTest {
   public static void init() throws IOException {
     // replace log by a sideffect free variant
     LogStub.init();
-    HierAutomatonParser parser = new HierAutomatonParser() ;
+    HierAutomataParser parser = new HierAutomataParser() ;
     String model = "src/test/resources/example/HierarchyPingPong.aut";
     Optional<ASTStateMachine> optStateMachine = parser.parse(model);
 

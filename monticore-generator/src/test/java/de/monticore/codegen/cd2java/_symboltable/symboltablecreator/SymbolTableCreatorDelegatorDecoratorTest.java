@@ -40,7 +40,7 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
 
   private SymbolTableCreatorDelegatorDecorator decorator;
 
-  private static final String I_AUTOMATON_GLOBAL_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonGlobalScope";
+  private static final String AUTOMATON_GLOBAL_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonGlobalScope";
 
   private static final String AUTOMATON_SYMBOL_TABLE_CREATOR = "AutomatonSymbolTableCreator";
 
@@ -110,7 +110,7 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
     assertEquals("AutomatonSymbolTableCreatorDelegator", cdConstructor.getName());
 
     assertEquals(1, cdConstructor.sizeCDParameters());
-    assertDeepEquals(I_AUTOMATON_GLOBAL_SCOPE, cdConstructor.getCDParameter(0).getMCType());
+    assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, cdConstructor.getCDParameter(0).getMCType());
     assertEquals("globalScope", cdConstructor.getCDParameter(0).getName());
 
 
@@ -140,7 +140,7 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
   public void testGlobalScopeAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("globalScope", symTabCreator);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals(I_AUTOMATON_GLOBAL_SCOPE, astcdAttribute.getMCType());
+    assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, astcdAttribute.getMCType());
   }
 
   @Test

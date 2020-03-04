@@ -21,7 +21,7 @@ public class SymbolProdOverwrittenBySymbol implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA0274";
 
-  public static final String ERROR_MSG_FORMAT = " The Prod %s from grammar %s is a symbol and overwritten by the prod %s of grammar %s that also defines a symbol." +
+  public static final String ERROR_MSG_FORMAT = "Production %s from grammar %s is a symbol and overwritten by the prod %s of grammar %s that also defines a symbol." +
       "Remove the second symbol definition, because the symbol property is inherited anyway.";
 
   @Override

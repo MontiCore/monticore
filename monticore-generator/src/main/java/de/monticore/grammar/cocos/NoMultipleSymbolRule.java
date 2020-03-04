@@ -14,7 +14,7 @@ public class NoMultipleSymbolRule implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA4151";
 
-  public static final String ERROR_MSG_FORMAT = " A symbolRule must not exist twice for a single Nonterminal. Violation by %s";
+  public static final String ERROR_MSG_FORMAT = " A symbolRule must not exist twice for a single nonterminal. Violation by %s";
 
   @Override
   public void check(ASTMCGrammar g) {

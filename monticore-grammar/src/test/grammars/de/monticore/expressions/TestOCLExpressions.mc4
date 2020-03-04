@@ -5,6 +5,8 @@ grammar TestOCLExpressions
           extends de.monticore.expressions.OCLExpressions, de.monticore.literals.MCCommonLiterals,
            de.monticore.types.MCCollectionTypes,de.monticore.expressions.AssignmentExpressions  {
 	    start Expression;
+
+      // Dies stimmt nicht! TODO
       EDeclaration = Expression;
       ExtType = MCType;
 }

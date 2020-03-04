@@ -12,14 +12,14 @@ grammar MinimalExample extends de.monticore.MCBasics {
 // ----------------------- zwei Token
   token SimpleName = ('a'..'z'|'A'..'Z')+ ;
 
-  token SimpleString = '\"' ('a'..'z'|'A'..'Z')* '\"';
+  token SimpleString = '"' ('a'..'z'|'A'..'Z')* '"';
 
 
 // ----------------------- Token Fragments
 
 // token can be structured using fragments
   token NUM_INT =
-    ('0'..'9')+ (EXPONENT)? (SUFFIX)? ;
+    ('0'..'9')+ EXPONENT? SUFFIX? ;
 
   fragment token SUFFIX =
     'f'|'F'|'d'|'D' ;
@@ -65,10 +65,10 @@ grammar MinimalExample extends de.monticore.MCBasics {
   // token results can be converted
   // here NUMBER becomes type float
     token NUMBER = ('0'..'9')* '.' ('0'..'9')* 'f': float;
-    A2 = b:NUMBER c:NUMBER*;
+    A2 = b:NUMBER "," c:NUMBER*;
 
   // while Name is stored as a String
-    A1 = b:Name c:Name;
+    A1 = b:Name "," c:Name;
 
 // ----------------------- listing/LexicalsAdaptedTypes2.x
 

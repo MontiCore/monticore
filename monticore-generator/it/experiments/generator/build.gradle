@@ -2,8 +2,8 @@
 description = 'Experiments: generator'
 
 task generate (type: MCTask) {
-  grammar = file "$projectDir/$grammarDir/HierAutomaton.mc4"
+  grammar = file "$projectDir/$grammarDir/HierAutomata.mc4"
   outputDir = file outDir
-  def uptoDate = incCheck("HierAutomaton.mc4")
+  def uptoDate = incCheck("HierAutomata.mc4")
   outputs.upToDateWhen { uptoDate }
 }

@@ -46,8 +46,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final ScopeInterfaceDecorator scopeInterfaceDecorator;
 
-  protected final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator;
-
   protected final GlobalScopeClassDecorator globalScopeClassDecorator;
 
   protected final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator;
@@ -92,7 +90,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final ScopeClassDecorator scopeClassDecorator,
                                 final ScopeClassBuilderDecorator scopeClassBuilderDecorator,
                                 final ScopeInterfaceDecorator scopeInterfaceDecorator,
-                                final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator,
                                 final GlobalScopeClassDecorator globalScopeClassDecorator,
                                 final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator,
                                 final ArtifactScopeDecorator artifactScopeDecorator,
@@ -117,7 +114,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     this.scopeClassDecorator = scopeClassDecorator;
     this.scopeClassBuilderDecorator = scopeClassBuilderDecorator;
     this.scopeInterfaceDecorator = scopeInterfaceDecorator;
-    this.globalScopeInterfaceDecorator = globalScopeInterfaceDecorator;
     this.globalScopeClassDecorator = globalScopeClassDecorator;
     this.globalScopeClassBuilderDecorator = globalScopeClassBuilderDecorator;
     this.artifactScopeDecorator = artifactScopeDecorator;
@@ -171,8 +167,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
     if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
       // global scope
-      symTabCD.addCDInterface(createGlobalScopeInterface(astCD, symbolTablePackage));
-      ASTCDClass globalScopeClass = createGlobalScopeClass(astCD);
+      ASTCDClass globalScopeClass = createGlobalScopeClass(astCD, symbolTablePackage);
       symTabCD.addCDClass(globalScopeClass);
       symTabCD.addCDClass(createGlobalScopeClassBuilder(globalScopeClass));
 
@@ -306,14 +301,10 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     return scopeInterfaceDecorator.decorate(scopeCD, symbolCD);
   }
 
-  protected ASTCDInterface createGlobalScopeInterface(ASTCDCompilationUnit compilationUnit, List<String> symbolTablePackage) {
+  protected ASTCDClass createGlobalScopeClass(ASTCDCompilationUnit compilationUnit, List<String> symbolTablePackage) {
     boolean isGlobalScopeTop = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(symbolTablePackage, symbolTableService.getGlobalScopeInterfaceSimpleName()));
-    globalScopeInterfaceDecorator.setGlobalScopeTop(isGlobalScopeTop);
-    return globalScopeInterfaceDecorator.decorate(compilationUnit);
-  }
-
-  protected ASTCDClass createGlobalScopeClass(ASTCDCompilationUnit compilationUnit) {
+        constructQualifiedName(symbolTablePackage, symbolTableService.getGlobalScopeSimpleName()));
+    globalScopeClassDecorator.setGlobalScopeTop(isGlobalScopeTop);
     return globalScopeClassDecorator.decorate(compilationUnit);
   }
 

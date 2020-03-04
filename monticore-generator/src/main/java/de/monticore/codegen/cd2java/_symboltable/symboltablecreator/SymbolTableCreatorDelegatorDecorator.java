@@ -50,7 +50,7 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
       String symbolTableCreatorDelegatorName = symbolTableService.getSymbolTableCreatorDelegatorSimpleName();
       String symbolTableCreatorName = symbolTableService.getSymbolTableCreatorSimpleName();
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();
-      String globalScopeName = symbolTableService.getGlobalScopeInterfaceFullName();
+      String globalScopeName = symbolTableService.getGlobalScopeFullName();
       String simpleName = symbolTableService.getCDName();
       String artifactScopeName = symbolTableService.getArtifactScopeFullName();
       String delegatorVisitorName = visitorService.getDelegatorVisitorFullName();

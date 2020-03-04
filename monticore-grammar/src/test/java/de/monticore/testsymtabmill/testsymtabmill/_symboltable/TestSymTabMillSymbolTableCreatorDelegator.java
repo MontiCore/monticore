@@ -3,7 +3,7 @@ package de.monticore.testsymtabmill.testsymtabmill._symboltable;
 
 public class TestSymTabMillSymbolTableCreatorDelegator extends TestSymTabMillSymbolTableCreatorDelegatorTOP {
 
-  public TestSymTabMillSymbolTableCreatorDelegator(ITestSymTabMillGlobalScope globalScope){
+  public TestSymTabMillSymbolTableCreatorDelegator(TestSymTabMillGlobalScope globalScope){
     super(globalScope);
   }
 

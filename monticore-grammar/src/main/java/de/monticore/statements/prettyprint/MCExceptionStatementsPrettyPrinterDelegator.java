@@ -20,6 +20,7 @@ public class MCExceptionStatementsPrettyPrinterDelegator extends MCExceptionStat
     setMCBasicTypesVisitor(new MCBasicTypesPrettyPrinter(printer));
     setMCCommonStatementsVisitor(new MCCommonStatementsPrettyPrinter(printer));
     setMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
+    setMCVarDeclarationStatementsVisitor(new MCVarDeclarationStatementsPrettyPrinter(printer));
     setMCExceptionStatementsVisitor(new MCExceptionStatementsPrettyPrinter(printer));
   }
 

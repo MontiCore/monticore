@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class ProdExtendsNotExistingProdTest extends CocoTest {
 
-  private final String MESSAGE = " The production Sup extends or implements a non-existing production";
+  private final String MESSAGE = " The production Sup extends or implements the non-existing production Super";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A0113.A0113";
 

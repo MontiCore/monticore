@@ -33,15 +33,15 @@ public class MCExceptionStatementsPrettyPrinterTest {
   }
 
   @Test
-  public void testTryStatement() throws IOException {
-    Optional<ASTTryStatement> result = parser.parse_StringTryStatement(" try { private Integer foo = a } finally { public String foo = a }");
+  public void testTryStatement2() throws IOException {
+    Optional<ASTTryStatement2> result = parser.parse_StringTryStatement2(" try { private Integer foo = a } finally { public String foo = a }");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    ASTTryStatement ast = result.get();
+    ASTTryStatement2 ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
-    result = parser.parse_StringTryStatement(output);
+    result = parser.parse_StringTryStatement2(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
@@ -49,49 +49,34 @@ public class MCExceptionStatementsPrettyPrinterTest {
   }
 
   @Test
-  public void testCatchExceptionsHandler() throws IOException {
-    Optional<ASTCatchExceptionsHandler> result = parser.parse_StringCatchExceptionsHandler("catch (private static a.b.c | d.e.G foo) { public String foo = a }");
+  public void testTryStatement1() throws IOException {
+    Optional<ASTTryStatement1> result = parser.parse_StringTryStatement1(" try { private Integer foo = a } catch (private static a.b.c | d.e.G foo) { public String foo = a }");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    ASTCatchExceptionsHandler ast = result.get();
+    ASTTryStatement1 ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
-    result = parser.parse_StringCatchExceptionsHandler(output);
+    result = parser.parse_StringTryStatement1(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
   }
 
-  @Test
-  public void testFinallyBlockOnlyHandler() throws IOException {
-    Optional<ASTFinallyBlockOnlyHandler> result = parser.parse_StringFinallyBlockOnlyHandler("finally { public String foo = a }");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTFinallyBlockOnlyHandler ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringFinallyBlockOnlyHandler(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
 
   @Test
-  public void testTryStatementWithResources() throws IOException {
-    Optional<ASTTryStatementWithResources> result = parser.parse_StringTryStatementWithResources("try ( public Integer a = foo; ) " +
+  public void testTryStatements() throws IOException {
+    Optional<ASTTryStatement3> result = parser.parse_StringTryStatement3("try ( public Integer a = foo; ) " +
         "{ public String foo = a } " +
         "catch (private static a.b.c | d.e.G foo) { public String foo = a }");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    ASTTryStatementWithResources ast = result.get();
+    ASTTryStatement3 ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
-    result = parser.parse_StringTryStatementWithResources(output);
+    result = parser.parse_StringTryStatement3(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
@@ -100,15 +85,15 @@ public class MCExceptionStatementsPrettyPrinterTest {
 
 
   @Test
-  public void testResource() throws IOException {
-    Optional<ASTResource> result = parser.parse_StringResource("public Integer a = foo");
+  public void testTryvariableDeclaration() throws IOException {
+    Optional<ASTTryLocalVariableDeclaration> result = parser.parse_StringTryLocalVariableDeclaration("public Integer a = foo");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    ASTResource ast = result.get();
+    ASTTryLocalVariableDeclaration ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
-    result = parser.parse_StringResource(output);
+    result = parser.parse_StringTryLocalVariableDeclaration(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
@@ -135,14 +120,14 @@ public class MCExceptionStatementsPrettyPrinterTest {
 
   @Test
   public void testCatchType() throws IOException {
-    Optional<ASTCatchType> result = parser.parse_StringCatchType(" a.b.c | d.e.G ");
+    Optional<ASTCatchTypeList> result = parser.parse_StringCatchTypeList(" a.b.c | d.e.G ");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    ASTCatchType ast = result.get();
+    ASTCatchTypeList ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
-    result = parser.parse_StringCatchType(output);
+    result = parser.parse_StringCatchTypeList(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
