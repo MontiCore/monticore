@@ -34,7 +34,7 @@ public class TypeCheck {
    * Synthesizing the SymTypeExpression from an AST Type.
    * May also be of a subclass;
    */
-  protected SynthesizeSymTypeFromMCBasicTypes synthesizeSymType;
+  protected ISynthesize iSynthesize;
   
   /**
    * Configuration: Visitor for Function 2b:
@@ -49,9 +49,9 @@ public class TypeCheck {
    * @param  iTypesCalculator defines, which AST Literals are handled
    *                               through the Expression type recognition
    */
-  public TypeCheck(SynthesizeSymTypeFromMCBasicTypes synthesizeSymType,
+  public TypeCheck(ISynthesize synthesizeSymType,
                    ITypesCalculator iTypesCalculator) {
-    this.synthesizeSymType = synthesizeSymType;
+    this.iSynthesize = synthesizeSymType;
     this.iTypesCalculator = iTypesCalculator;
   }
   
@@ -65,9 +65,9 @@ public class TypeCheck {
    * (SynthesizeSymType.*Types.*Test)
    */
   public SymTypeExpression symTypeFromAST(ASTMCType astMCType) {
-    synthesizeSymType.init();
-    astMCType.accept(synthesizeSymType);
-    Optional<SymTypeExpression> result = synthesizeSymType.getResult();
+    iSynthesize.init();
+    astMCType.accept(iSynthesize);
+    Optional<SymTypeExpression> result = iSynthesize.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD4 Internal Error: No SymType for: "
               + astMCType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ". Probably TypeCheck mis-configured.");
@@ -91,9 +91,9 @@ public class TypeCheck {
    * (SynthesizeSymType.*Types.*Test)
    */
   public SymTypeExpression symTypeFromAST(ASTMCReturnType astMCReturnType) {
-    synthesizeSymType.init();
-    astMCReturnType.accept(synthesizeSymType);
-    Optional<SymTypeExpression> result = synthesizeSymType.getResult();
+    iSynthesize.init();
+    astMCReturnType.accept(iSynthesize);
+    Optional<SymTypeExpression> result = iSynthesize.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD5 Internal Error: No SymType for return type: "
               + astMCReturnType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())

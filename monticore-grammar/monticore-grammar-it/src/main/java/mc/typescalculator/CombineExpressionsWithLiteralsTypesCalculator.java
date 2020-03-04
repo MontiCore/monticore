@@ -16,8 +16,6 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
   private CombineExpressionsWithLiteralsDelegatorVisitor realThis;
 
-  private Map<ASTNode, SymTypeExpression> types;
-
   private DeriveSymTypeOfAssignmentExpressions assignmentExpressionTypesCalculator;
 
   private DeriveSymTypeOfCommonExpressions commonExpressionTypesCalculator;

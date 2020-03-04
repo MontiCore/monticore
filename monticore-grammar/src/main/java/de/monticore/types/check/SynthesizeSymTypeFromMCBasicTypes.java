@@ -13,7 +13,7 @@ import java.util.Optional;
  * i.e. for
  *    types/MCBasicTypes.mc4
  */
-public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
+public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, ISynthesize {
   
   /**
    * Using the visitor functionality to calculate the SymType Expression
@@ -48,14 +48,18 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
    * Storage in the Visitor: result of the last endVisit.
    * This attribute is synthesized upward.
    */
-  public Optional<SymTypeExpression> result;
+  public LastResult lastResult;
   
   public Optional<SymTypeExpression> getResult() {
-    return result;
+    return Optional.of(lastResult.getLast());
   }
   
   public void init() {
-    result = Optional.empty();
+    lastResult = new LastResult();
+  }
+
+  public void setLastResult(LastResult lastResult){
+    this.lastResult = lastResult;
   }
   
   // ---------------------------------------------------------- Visting Methods
@@ -68,11 +72,11 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
   public void endVisit(ASTMCPrimitiveType primitiveType) {
     SymTypeConstant typeConstant =
             SymTypeExpressionFactory.createTypeConstant(primitiveType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
-    result = Optional.of(typeConstant);
+    lastResult.setLast(typeConstant);
   }
   
   public void endVisit(ASTMCVoidType voidType) {
-    result = Optional.of(SymTypeExpressionFactory.createTypeVoid());
+    lastResult.setLast(SymTypeExpressionFactory.createTypeVoid());
   }
   
   /**
@@ -85,7 +89,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
    */
   public void endVisit(ASTMCQualifiedType qType) {
     // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
-    result = Optional.of(
+    lastResult.setLast(
         SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), scope)));
   }
   

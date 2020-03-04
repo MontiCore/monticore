@@ -25,7 +25,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject
  * types/MCSimpleGenericTypes.mc4
  */
 public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymTypeFromMCCollectionTypes
-    implements MCSimpleGenericTypesVisitor {
+    implements MCSimpleGenericTypesVisitor, ISynthesize {
 
   /**
    * Using the visitor functionality to calculate the SymType Expression
@@ -73,16 +73,16 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
         arg.accept(getRealThis());
       }
 
-      if (!result.isPresent()) {
+      if (!lastResult.isPresentLast()) {
         Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
             + " Probably TypeCheck mis-configured.");
       }
-      arguments.add(result.get());
+      arguments.add(lastResult.getLast());
     }
 
     SymTypeExpression tex = SymTypeExpressionFactory.createGenerics(
         new TypeSymbolLoader(genericType.printWithoutTypeArguments(), scope), arguments);
-    result = Optional.of(tex);
+    lastResult.setLast(tex);
   }
 
   /**
@@ -104,13 +104,13 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     // type could also be a boxed Primitive or an Type Variable!
     // We need the SymbolTable to distinguish this stuff
     // PS: that also applies to other Visitors.
-    result = Optional.of(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), scope)));
+    lastResult.setLast(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), scope)));
   }
 
   @Override
   public void endVisit(ASTMCQualifiedName qName) {
     SymTypeOfObject oType = createTypeObject(new TypeSymbolLoader(qName.getQName(), scope));
-    result = Optional.of(oType);
+    lastResult.setLast(oType);
   }
 
 }

@@ -1,0 +1,10 @@
+package mc.typescalculator;
+
+component grammar MyOwnExpressionGrammar
+    extends de.monticore.expressions.ExpressionsBasis{
+
+    PowerExpression implements Expression<181>
+        = left: Expression
+          operator:"*" "*" {noSpace()}? {_aNode.setOperator("**");}
+          right: Expression;
+}
