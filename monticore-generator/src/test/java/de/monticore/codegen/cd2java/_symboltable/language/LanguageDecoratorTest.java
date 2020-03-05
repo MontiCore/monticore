@@ -77,7 +77,7 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfaces() {
-    assertDeepEquals("de.monticore.IModelingLanguage<AutomatonModelLoader>", languageClass.getInterface(0));
+    assertDeepEquals("de.monticore.IModelingLanguage", languageClass.getInterface(0));
   }
 
   @Test

@@ -21,9 +21,9 @@ import java.util.Optional;
  */
 public final class ParserBasedAstProvider<T extends ASTNode> implements AstProvider<T> {
 
-  private final IModelingLanguage<?> modelingLanguage;
+  private final IModelingLanguage modelingLanguage;
 
-  public ParserBasedAstProvider(IModelingLanguage<?> modelingLanguage) {
+  public ParserBasedAstProvider(IModelingLanguage modelingLanguage) {
     this.modelingLanguage = modelingLanguage;
   }
 
