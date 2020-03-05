@@ -463,7 +463,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   }
 
   private List<MethodSymbol> filterStaticMethods(List<MethodSymbol> methods) {
-    return methods.stream().filter(MethodSymbolTOP::isIsStatic).collect(Collectors.toList());
+    return methods.stream().filter(MethodSymbol::isIsStatic).collect(Collectors.toList());
   }
 
 

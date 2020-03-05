@@ -6,8 +6,8 @@ import mc.common.Basics;
 classdiagram TestCD{
 
   class B{
-    static Double a;
-    static C x;
+    Double a;
+    C x;
     static D z;
   }
 
@@ -16,7 +16,7 @@ classdiagram TestCD{
   }
 
   class D implements mc.typescalculator.TestCD.C{
-    static Integer s;
+    Integer s;
     static G f;
     static B y;
   }

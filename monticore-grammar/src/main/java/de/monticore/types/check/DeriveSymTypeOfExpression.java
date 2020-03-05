@@ -70,13 +70,13 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       FieldSymbol var = optVar.get();
       SymTypeExpression res;
       if (var.getType() instanceof SymTypeOfGenerics) {
-        res = createGenerics(((SymTypeOfGenerics) var.getType()).getTypeConstructorFullName(), var.getEnclosingScope(),
+        res = createGenerics(((SymTypeOfGenerics) var.getType()).getTypeConstructorFullName(), var.getType().getTypeInfo().getEnclosingScope(),
             ((SymTypeOfGenerics) var.getType()).getArgumentList());
       } else if (var.getType() instanceof SymTypeArray) {
-        res = createTypeArray(((SymTypeArray) var.getType()).getArgument().getTypeInfo().getName(), var.getEnclosingScope(),
+        res = createTypeArray(((SymTypeArray) var.getType()).getArgument().getTypeInfo().getName(), var.getType().getTypeInfo().getEnclosingScope(),
             ((SymTypeArray) var.getType()).getDim(),((SymTypeArray) var.getType()).getArgument());
       } else {
-        res = createTypeExpression(var.getType().print(), var.getEnclosingScope());
+        res = createTypeExpression(var.getType().print(), var.getType().getTypeInfo().getEnclosingScope());
       }
       this.result = res;
       lastResult.setField();

@@ -77,7 +77,7 @@ public abstract class SymTypeExpression {
     if(outerIsType){
       List<MethodSymbol> methodsWithoutStatic = methods.stream().filter(m -> !m.isIsStatic()).collect(Collectors.toList());
       List<MethodSymbol> localStaticMethods = getTypeInfo().getSpannedScope().getLocalMethodSymbols()
-          .stream().filter(MethodSymbolTOP::isIsStatic).collect(Collectors.toList());
+          .stream().filter(MethodSymbol::isIsStatic).collect(Collectors.toList());
       methodsWithoutStatic.addAll(localStaticMethods);
       return methodsWithoutStatic;
     }else{
@@ -200,7 +200,7 @@ public abstract class SymTypeExpression {
     if(outerIsType){
       List<FieldSymbol> fieldsWithoutStatic = fields.stream().filter(f->!f.isIsStatic()).collect(Collectors.toList());
       List<FieldSymbol> localStaticFields = getTypeInfo().getSpannedScope().getLocalFieldSymbols()
-          .stream().filter(FieldSymbolTOP::isIsStatic).collect(Collectors.toList());
+          .stream().filter(FieldSymbol::isIsStatic).collect(Collectors.toList());
       fieldsWithoutStatic.addAll(localStaticFields);
       return fieldsWithoutStatic;
     }else{

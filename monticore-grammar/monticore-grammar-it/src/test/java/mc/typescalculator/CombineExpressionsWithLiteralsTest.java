@@ -7,7 +7,9 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcd4analysis._symboltable.TestCD4AnalysisLanguage;
 import mc.testcd4analysis._symboltable.TestCD4AnalysisGlobalScope;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static de.monticore.types.check.DefsTypeBasic.field;
 import static de.monticore.types.check.SymTypeConstant.unbox;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -45,15 +48,21 @@ public class CombineExpressionsWithLiteralsTest {
     globalScope1.addAdaptedTypeSymbolResolvingDelegate(adapter);
     globalScope1.addAdaptedMethodSymbolResolvingDelegate(adapter);
 
-    CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(globalScope1);
-    calc.setPrettyPrinter(new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+    Optional<TypeSymbol> classD = globalScope1.resolveType("mc.typescalculator.TestCD.D");
+    assertTrue(classD.isPresent());
 
     Optional<TypeSymbol> classB = globalScope1.resolveType("mc.typescalculator.TestCD.B");
     assertTrue(classB.isPresent());
 
+    globalScope1.add(field("d", SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("D",classD.get().getEnclosingScope()))));
+    globalScope1.add(field("b",SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("B",classB.get().getEnclosingScope()))));
+
+    CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(globalScope1);
+    calc.setPrettyPrinter(new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
-    Optional<ASTExpression> expr = p.parse_StringExpression("mc.typescalculator.TestCD.D.s+=mc.typescalculator.TestCD.D.s");
+    Optional<ASTExpression> expr = p.parse_StringExpression("d.s+=d.s");
     CombineExpressionsWithLiteralsSymbolTableCreatorDelegator del = new CombineExpressionsWithLiteralsSymbolTableCreatorDelegator(globalScope1);
 
     assertTrue(expr.isPresent());
@@ -75,19 +84,19 @@ public class CombineExpressionsWithLiteralsTest {
     assertEquals("int",j2.get().print());
 
 
-    Optional<ASTExpression> exprC = p.parse_StringExpression("mc.typescalculator.TestCD.D.f = mc.typescalculator.TestCD.C.f");
+    Optional<ASTExpression> exprC = p.parse_StringExpression("d.f = mc.typescalculator.TestCD.C.f");
     assertTrue(exprC.isPresent());
     j = calc.calculateType(exprC.get());
     assertTrue(j.isPresent());
     assertEquals("G",j.get().print());
 
-    Optional<ASTExpression> exprD = p.parse_StringExpression("(mc.typescalculator.TestCD.B.a)++");
+    Optional<ASTExpression> exprD = p.parse_StringExpression("(b.a)++");
     assertTrue(exprD.isPresent());
     Optional<SymTypeExpression> j3 = calc.calculateType(exprD.get());
     assertTrue(j3.isPresent());
     assertEquals("double",j3.get().print());
 
-    Optional<ASTExpression> exprB = p.parse_StringExpression("mc.typescalculator.TestCD.B.x = mc.typescalculator.TestCD.B.z");
+    Optional<ASTExpression> exprB = p.parse_StringExpression("b.x = mc.typescalculator.TestCD.B.z");
 
     assertTrue(exprB.isPresent());
 

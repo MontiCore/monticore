@@ -518,7 +518,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
   }
 
   private List<FieldSymbol> filterStaticFieldSymbols(List<FieldSymbol> fieldSymbols) {
-    return fieldSymbols.stream().filter(FieldSymbolTOP::isIsStatic).collect(Collectors.toList());
+    return fieldSymbols.stream().filter(FieldSymbol::isIsStatic).collect(Collectors.toList());
   }
 
   /**
@@ -619,7 +619,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
   }
 
   private List<MethodSymbol> filterStaticMethodSymbols(List<MethodSymbol> fittingMethods) {
-      return fittingMethods.stream().filter(MethodSymbolTOP::isIsStatic).collect(Collectors.toList());
+      return fittingMethods.stream().filter(MethodSymbol::isIsStatic).collect(Collectors.toList());
   }
 
   /**

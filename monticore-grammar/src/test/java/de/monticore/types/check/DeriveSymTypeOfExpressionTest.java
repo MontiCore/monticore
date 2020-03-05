@@ -57,9 +57,12 @@ public class DeriveSymTypeOfExpressionTest {
 
     // some FieldSymbols (ie. Variables, Attributes)
     TypeSymbol p = new TypeSymbol("Person");
+    add2scope(scope,p);
     TypeSymbol s = new TypeSymbol("Student");
+    add2scope(scope,s);
     s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
     TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
+    add2scope(scope,f);
     f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
