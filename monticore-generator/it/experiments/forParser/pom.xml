@@ -28,7 +28,6 @@
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-grammar</artifactId>
-      <version>6.0.0</version>
     </dependency>
 
     <dependency>
@@ -40,7 +39,6 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-grammar</artifactId>
       <classifier>${grammars.classifier}</classifier>
-      <version>6.0.0</version>
       <scope>provided</scope>
     </dependency>
 
