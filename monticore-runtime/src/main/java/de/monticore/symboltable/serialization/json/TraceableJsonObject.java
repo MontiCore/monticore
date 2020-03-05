@@ -4,7 +4,6 @@ package de.monticore.symboltable.serialization.json;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -25,7 +24,7 @@ public class TraceableJsonObject extends JsonObject {
   }
   
   /**
-   * @see de.monticore.symboltable.serialization.json.JsonObject#setAttributes(java.util.Map)
+   * @see de.monticore.symboltable.serialization.json.JsonObject#setMembers(java.util.Map)
    */
   @Override
   public void setMembers(Map<String, JsonElement> members) {

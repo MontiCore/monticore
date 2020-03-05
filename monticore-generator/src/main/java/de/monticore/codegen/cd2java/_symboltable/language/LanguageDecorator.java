@@ -52,8 +52,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     String languageClassName = symbolTableService.getLanguageClassSimpleName();
     String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
-    ASTMCObjectType iModelingLanguage = getMCTypeFacade().createBasicGenericTypeOf(
-        I_MODELING_LANGUAGE, modelLoaderClassName);
+    ASTMCObjectType iModelingLanguage = getMCTypeFacade().createQualifiedType(I_MODELING_LANGUAGE);
 
     List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
     symbolDefiningProds.addAll(symbolTableService.getSymbolDefiningSuperProds());
