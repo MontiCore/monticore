@@ -392,6 +392,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     //soll es so funktionieren wie in Java? Dann duerfte man naemlich keine Generics akzeptieren
     //hier sind erst einmal Generics mit dabei, s. Testfall #3
+    //falls man einschränken möchte, kann man die CoCo NoClassExpressionForGenerics
 
     assertEquals("Class<String>",tc.typeOf(class1.get()).print());
     assertEquals("Class<Integer>",tc.typeOf(class2.get()).print());

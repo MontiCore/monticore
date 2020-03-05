@@ -48,7 +48,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
    * Storage in the Visitor: result of the last endVisit.
    * This attribute is synthesized upward.
    */
-  public LastResult lastResult;
+  public LastResult lastResult = new LastResult();
   
   public Optional<SymTypeExpression> getResult() {
     return Optional.of(lastResult.getLast());
