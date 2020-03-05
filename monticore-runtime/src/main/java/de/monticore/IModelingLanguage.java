@@ -5,7 +5,7 @@ package de.monticore;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.modelloader.IModelLoader;
 
-public interface IModelingLanguage<M extends IModelLoader<?,?>> {
+public interface IModelingLanguage {
   
   /**
    * @return the name of the modeling language, e.g., "MontiCore Grammar Language"
@@ -21,9 +21,6 @@ public interface IModelingLanguage<M extends IModelLoader<?,?>> {
    * @return the parser for models of this language
    */
   MCConcreteParser getParser();
-
-
-//  M getModelLoader();
 
   /**
    * @return the file extension for stored symbol tables, e.g., ".cdsym"
