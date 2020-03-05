@@ -8,5 +8,6 @@ classdiagram DataInterface {
         protected String s;
         protected Optional<String> opt;
         protected List<String> list;
+        <<referencedSymbol = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol">> protected String foo;
     }
 }

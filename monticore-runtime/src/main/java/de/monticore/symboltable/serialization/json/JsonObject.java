@@ -102,12 +102,6 @@ public class JsonObject implements JsonElement {
    * @see java.util.Map#put(java.lang.Object, java.lang.Object)
    */
   public JsonElement putMember(String name, JsonElement value) {
-    if (null == name) {
-      Log.error(
-          "0xA0571 Cannot add a member with an empty name to the current Json object \"" + this
-              + "\"");
-      return null;
-    }
     if (null == value) {
       Log.error(
           "0xA0571 Cannot add the member \"" + name + "\" to the current Json object \"" + this

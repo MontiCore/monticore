@@ -1,9 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore;
 
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
 /**
  * Grammar for common elements of the UML/P-Language-Family
- */
+ *
+ * The grammar contains the modifiers that UML provides.
+ * This includes "public" "private", "protected", "final", "abstract", "local",
+ * "derived", "readonly", and "static", but also the
+ * compact syntactic versions "+", "#", "-", "/" and "?" (for readonly).
+ *
+ * UML modifiers are not identical to Java modifiers (e.g. "native" or
+ * "threadsafe" are missing.)
+*/
+
 component grammar UMLModifier extends de.monticore.UMLStereotype {
 
     /** ASTModifier represents a Modifier for Classes, Interfaces, Methods,

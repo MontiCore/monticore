@@ -2,6 +2,11 @@ package de.monticore.statements.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mccommonstatements._ast.*;
+import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTArrayInit;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTDeclaratorId;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -50,14 +55,15 @@ public class MCCommonStatementsPrettyPrinterTest {
 
   @Test
   public void testBlockStatement() throws IOException {
-    Optional<ASTBlockStatement> result = parser.parse_StringBlockStatement("private Integer foo = a");
+    Optional<ASTMCBlockStatement> result = parser.parse_StringMCBlockStatement("private Integer foo = a");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    ASTBlockStatement ast = result.get();
+    ASTMCBlockStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    ast.accept(prettyPrinter);
+    String output = prettyPrinter.getPrinter().getContent();
 
-    result = parser.parse_StringBlockStatement(output);
+    result = parser.parse_StringMCBlockStatement(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
@@ -114,14 +120,14 @@ public class MCCommonStatementsPrettyPrinterTest {
 
   @Test
   public void testArrayInitializer() throws IOException {
-    Optional<ASTArrayInitializer> result = parser.parse_StringArrayInitializer("{a, b, foo}");
+    Optional<ASTArrayInit> result = parser.parse_StringArrayInit("{a, b, foo}");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    ASTArrayInitializer ast = result.get();
+    ASTArrayInit ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
-    result = parser.parse_StringArrayInitializer(output);
+    result = parser.parse_StringArrayInit(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 

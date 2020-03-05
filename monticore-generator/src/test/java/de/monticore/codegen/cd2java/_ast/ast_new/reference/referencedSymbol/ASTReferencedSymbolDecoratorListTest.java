@@ -43,7 +43,7 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
     this.glex.setGlobalValue("service", new AbstractService(ast));
 
-    ASTReferenceDecorator decorator = new ASTReferenceDecorator(this.glex, new SymbolTableService(ast));
+    ASTReferenceDecorator<ASTCDClass> decorator = new ASTReferenceDecorator(this.glex, new SymbolTableService(ast));
     originalClass= getClassBy("ASTBarList", ast);
     ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(originalClass.getName())
         .setModifier(originalClass.getModifier())

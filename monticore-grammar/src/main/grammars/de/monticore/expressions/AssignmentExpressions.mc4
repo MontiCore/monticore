@@ -52,6 +52,9 @@ component grammar AssignmentExpressions
   /*=================================================================*/
 
   AssignmentExpression implements Expression <60> = <rightassoc>
-	left:Expression operator:["="|"+="|"-="|"*="|"/="|"&="|"|="|"^="|">>="|">>>="|"<<="|"%="]  right:Expression;
+	left:Expression
+	operator: [ "=" | "+=" | "-=" | "*=" | "/=" | "&=" | "|="
+	            | "^=" | ">>=" | ">>>=" | "<<=" | "%=" ]  
+        right:Expression;
 
 }

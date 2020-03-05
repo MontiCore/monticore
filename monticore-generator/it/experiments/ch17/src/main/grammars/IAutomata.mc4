@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar IAutomata extends IAutomataComp {
+  start Automaton;
+
+  // use this production as Invariant in Automata
+  Invariant = LogicExpr | ["-"] ;
+
+  interface LogicExpr;
+  Truth implements LogicExpr = tt:["true"] | "false" ;
+  Not   implements LogicExpr = "!" LogicExpr ;
+  Var   implements LogicExpr = Name ;
+}

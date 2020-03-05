@@ -30,6 +30,10 @@ public class SymTypeConstant extends SymTypeExpression {
     return parts[parts.length - 1];
   }
 
+  public void setConstName(String constName){
+    typeSymbolLoader.setName(constName);
+  }
+
   /**
    * print: Umwandlung in einen kompakten String
    */

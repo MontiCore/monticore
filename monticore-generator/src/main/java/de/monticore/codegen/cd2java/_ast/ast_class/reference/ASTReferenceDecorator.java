@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._ast.ast_class.reference;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDType;
 import de.monticore.codegen.cd2java.CompositeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.definition.ASTReferencedDefinitionDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.definition.methoddecorator.ReferencedDefinitionAccessorDecorator;
@@ -15,14 +16,15 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
  * if you use the referenceDefinition decorator you also need the referenceSymbol decorator
  * the other way around is no problem
  */
-public class ASTReferenceDecorator extends CompositeDecorator<ASTCDClass> {
+public class ASTReferenceDecorator<T extends ASTCDType> extends CompositeDecorator<T> {
 
   public ASTReferenceDecorator(GlobalExtensionManagement glex, SymbolTableService symbolTableService) {
     this(new ASTReferencedSymbolDecorator(glex, new ReferencedSymbolAccessorDecorator(glex, symbolTableService), symbolTableService),
         new ASTReferencedDefinitionDecorator(glex, new ReferencedDefinitionAccessorDecorator(glex, symbolTableService), symbolTableService));
   }
 
-  public ASTReferenceDecorator(ASTReferencedSymbolDecorator referencedSymbolDecorator, ASTReferencedDefinitionDecorator referencedDefinitionDecorator) {
+  public ASTReferenceDecorator(ASTReferencedSymbolDecorator referencedSymbolDecorator,
+                               ASTReferencedDefinitionDecorator referencedDefinitionDecorator) {
     super(referencedSymbolDecorator, referencedDefinitionDecorator);
   }
 }

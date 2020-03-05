@@ -185,7 +185,7 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbolTableCreatorDelegator", method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope", method.getCDParameter(0).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameter(0).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(0).getName());
   }
 
