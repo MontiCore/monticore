@@ -26,7 +26,7 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
   
   public static final String ERROR_CODE = "0xA4097";
   
-  public static final String ERROR_MSG_FORMAT = " It is not allowed to extend the rule %s with the external class %s.";
+  public static final String ERROR_MSG_FORMAT = " It is forbidden to extend the rule %s with the external class %s.";
   
   @Override
   public void check(ASTMCGrammar a) {
