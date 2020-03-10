@@ -18,6 +18,7 @@ public class MethodSymbol extends MethodSymbolTOP {
     clone.setReturnType(this.getReturnType().deepClone());
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
+    clone.setIsStatic(this.isStatic);
     if(isPresentAstNode()) {
       clone.setAstNode(this.getAstNode());
     }
@@ -28,6 +29,9 @@ public class MethodSymbol extends MethodSymbolTOP {
     List<FieldSymbol> parameterClone = Lists.newArrayList();
     for(FieldSymbol parameter: this.getParameterList()){
       parameterClone.add(parameter.deepClone());
+    }
+    for(TypeVarSymbol typeVariable:this.getTypeVariableList()){
+      clone.addTypeVariable(typeVariable);
     }
     clone.setParameterList(parameterClone);
     return clone;

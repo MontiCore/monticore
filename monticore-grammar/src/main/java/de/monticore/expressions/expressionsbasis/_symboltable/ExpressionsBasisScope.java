@@ -75,17 +75,19 @@ public class ExpressionsBasisScope extends ExpressionsBasisScopeTOP {
     return result;
   }
 
-  //TODO: resolve inner types
   @Override
   public List<TypeSymbol> resolveTypeLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate predicate){
     List<TypeSymbol> result = super.resolveTypeLocallyMany(foundSymbols,name,modifier,predicate);
-    if(this.isPresentSpanningSymbol()){
-      IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
-      if(spanningSymbol instanceof TypeSymbol){
-
-      }
-    }
-
+//    TODO ND: uncomment when adding inner types
+//    if(this.isPresentSpanningSymbol()){
+//      IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
+//      if(spanningSymbol instanceof TypeSymbol){
+//        TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
+//        for(SymTypeExpression superType : typeSymbol.getSuperTypeList()){
+//          result.addAll(superType.getInnerTypeList(name));
+//        }
+//      }
+//    }
     return result;
   }
 

@@ -904,7 +904,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   @Test
   public void failDeriveSymTypeOfGenericInvocationExpression3() throws IOException{
     //Type.<int>test()
-    //possible with static but cannot be calculated now
     //build symbol table for the test
     TypeVarSymbol t = typeVariable("T");
     add2scope(scope,t);
@@ -923,8 +922,30 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     try{
       tc.typeOf(gie1.get());
     }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0296"));
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0282"));
     }
+  }
+
+  @Test
+  public void testGenericInvocationExpressionStatic() throws IOException {
+    //Type.<int>test()
+    //build symbol table for the test
+    TypeVarSymbol t = typeVariable("T");
+    add2scope(scope,t);
+    MethodSymbol test = method("test",_charSymType);
+    test.setTypeVariableList(Lists.newArrayList(t));
+    test.setIsStatic(true);
+    TypeSymbol a = type("A",Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    add2scope(scope,a);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+
+    Optional<ASTExpression> gie1 = p.parse_StringExpression("A.<int>test()");
+
+    assertTrue(gie1.isPresent());
+
+    assertEquals("char",tc.typeOf(gie1.get()).print());
   }
 
 }
