@@ -19,7 +19,7 @@ public class InheritedScopeProperty implements GrammarASTProdCoCo {
 
   public static final String ERROR_CODE = "0xA0135";
 
-  public static final String ERROR_MSG_FORMAT = " The rule %s inherits scope property from more than one class.";
+  public static final String ERROR_MSG_FORMAT = " The rule %s inherits scope properties from more than one class.";
 
   @Override
   public void check(ASTProd a) {

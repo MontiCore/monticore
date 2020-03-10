@@ -11,7 +11,7 @@ public class ProdExtendsNotExistingProd implements GrammarASTProdCoCo {
 
   public static final String ERROR_CODE = "0xA0113";
 
-  public static final String ERROR_MSG_FORMAT = " The production %s extends or implements the non-existing production %s";
+  public static final String ERROR_MSG_FORMAT = " The production %s extends or implements the non-existent production %s";
 
   @Override
   public void check(ASTProd node) {
