@@ -90,7 +90,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDAttribute getRealThisAttribute(String delegatorVisitorSimpleName) {
     ASTCDAttribute realThisAttribute = getCDAttributeFacade().createAttribute(PRIVATE, delegatorVisitorSimpleName, REAL_THIS);
-    this.replaceTemplate(VALUE, realThisAttribute, new StringHookPoint("= (" + delegatorVisitorSimpleName + ") this;"));
+    this.replaceTemplate(VALUE, realThisAttribute, new StringHookPoint("= (" + delegatorVisitorSimpleName + ") this"));
     return realThisAttribute;
   }
 

@@ -26,6 +26,8 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
   protected final VisitorService visitorService;
 
+  protected boolean isTop;
+
   public ASTVisitorDecorator(final GlobalExtensionManagement glex,
                              final VisitorService visitorService) {
     super(glex);
@@ -81,8 +83,14 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   }
 
   protected ASTCDMethod addGetRealThisMethods(ASTMCType visitorType) {
+    String hookPoint;
+    if (!isTop()) {
+      hookPoint = "return this;";
+    } else {
+      hookPoint = "return (" + visitorService.getVisitorSimpleName() + ")this;";
+    }
     ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
-    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return this;"));
+    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(hookPoint));
     return getRealThisMethod;
   }
 
@@ -156,5 +164,13 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, astType);
     this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TRAVERSE_TEMPLATE, astcdClass));
     return traverseMethod;
+  }
+
+  public boolean isTop() {
+    return isTop;
+  }
+
+  public void setTop(boolean top) {
+    isTop = top;
   }
 }

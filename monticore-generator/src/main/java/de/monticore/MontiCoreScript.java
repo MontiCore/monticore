@@ -560,7 +560,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(glex, visitorService);
     InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(glex, visitorService);
 
-    CDVisitorDecorator decorator = new CDVisitorDecorator(glex,
+    CDVisitorDecorator decorator = new CDVisitorDecorator(glex,handCodedPath, visitorService,
         astVisitorDecorator, symbolVisitorDecorator, scopeVisitorDecorator,
         delegatorVisitorDecorator, inheritanceVisitorDecorator, parentAwareVisitorDecorator);
 

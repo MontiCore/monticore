@@ -35,6 +35,8 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
   protected final SymbolTableService symbolTableService;
 
+  protected boolean isTop;
+
   public ScopeVisitorDecorator(final GlobalExtensionManagement glex,
                                final VisitorService visitorService,
                                final SymbolTableService symbolTableService) {
@@ -70,8 +72,14 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
   }
 
   protected ASTCDMethod addGetRealThisMethods(ASTMCType visitorType) {
+    String hookPoint;
+    if (!isTop()) {
+      hookPoint = "return this;";
+    } else {
+      hookPoint = "return (" + visitorService.getScopeVisitorSimpleName() + ")this;";
+    }
     ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
-    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return this;"));
+    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(hookPoint));
     return getRealThisMethod;
   }
 
@@ -159,5 +167,11 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
     return superSymbolNames;
   }
 
+  public boolean isTop() {
+    return isTop;
+  }
 
+  public void setTop(boolean top) {
+    isTop = top;
+  }
 }
