@@ -11,7 +11,6 @@ import hierautomata._parser.HierAutomataParser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,9 +20,8 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
-@Ignore
 public class HookTest {
-    
+  
   // setup the language infrastructure
   static ASTStateMachine ast;
   static GlobalExtensionManagement glex;
@@ -195,14 +193,14 @@ public class HookTest {
   @Test
   public void testDefineReplaceCode1() throws IOException {
     // Using Code Hooks (with Memory)
-    CodeHookPoint chp = new CodeHookPoint() { 
-        int i = 0; 
+    CodeHookPoint chp = new CodeHookPoint() {
+        int i = 0;
         public String processValue(TemplateController tc, ASTNode ast)
           {  i++;  return "C" + i; }
         // unused in this test
         public String processValue(TemplateController tc, List<Object> args)
 	{  i++;  return "D" + i; }
-        public String processValue(TemplateController tc, ASTNode ast, 
+        public String processValue(TemplateController tc, ASTNode ast,
 							  List<Object> args)
 	{  i++;  return "E" + i; }
     };
@@ -222,14 +220,14 @@ public class HookTest {
   @Test
   public void testDefineReplaceCode2() throws IOException {
     // Using Code Hooks (with ast access)
-    CodeHookPoint chp = new CodeHookPoint() { 
-        int i = 0; 
+    CodeHookPoint chp = new CodeHookPoint() {
+        int i = 0;
         public String processValue(TemplateController tc, ASTNode ast)
           {  i++; return ((ASTStateMachine)ast).getName() + i;}
         // unused in this test
         public String processValue(TemplateController tc, List<Object> args)
 	{  i++; return "ERROR " + i; }
-        public String processValue(TemplateController tc, ASTNode ast, 
+        public String processValue(TemplateController tc, ASTNode ast,
 							  List<Object> args)
 	{  i++; return "ERROR2 " + i; }
     };
@@ -246,11 +244,6 @@ public class HookTest {
 
 
   // --------------------------------------------------------------------
-// TODO BUG XXX MB:
-// MB: Das funktioniert jetzt, ist also erledigt
-// test geht nicht, weil zB ${glex.defineHookPoint(tc,"NameHook",ast,18)}
-// nicht möglich ist und deshalb keine Argumente weiter gereicht werden können
-// das wäre aber hilfreich
   @Test
   public void testReplaceCodeWithArgs11() throws IOException {
     // Using Code Hooks (with explicit extra arguments)
@@ -303,7 +296,7 @@ public class HookTest {
   // --------------------------------------------------------------------
   @Test
   public void testHooksInTemplates1() throws IOException {
-    // Templates A -> B -> C+D 
+    // Templates A -> B -> C+D
     StringBuilder res = ge.generate("tpl4/A.ftl", ast);
 
     // System.out.println("****RES::\n" + res + "\n****--------");
@@ -336,7 +329,7 @@ public class HookTest {
   // --------------------------------------------------------------------
   @Test
   public void testHooksInTemplates2c() throws IOException {
-    // Templates A -> B -> C+D 
+    // Templates A -> B -> C+D
     glex.bindHookPoint("P", new TemplateHookPoint("tpl4/F.ftl"));
     StringBuilder res = ge.generate("tpl4/A.ftl", ast);
 
@@ -366,7 +359,7 @@ public class HookTest {
   // --------------------------------------------------------------------
   @Test
   public void testHooksInTemplates3() throws IOException {
-    // Templates A -> B=E  
+    // Templates A -> B=E
     glex.replaceTemplate("tpl4.B", new TemplateHookPoint("tpl4.E"));
     StringBuilder res = ge.generate("tpl4/A.ftl", ast);
 
@@ -445,6 +438,24 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("\n\nFH1:FH2:18:FH2\n\n", res.toString());
+  }
+  
+  // --------------------------------------------------------------------
+  @Test
+  public void testDefaults() throws IOException {
+    // Using String Hook
+    StringHookPoint chp = new StringHookPoint("HookPoint filled") ;
+    
+    // the hook in Define3 itself has also one argument
+    glex.bindHookPoint("NameHook", chp);
+    StringBuilder res = ge.generate("tpl4/Define4.ftl", ast);
+    
+    // System.out.println("****RES::\n" + res + "\n****--------");
+    // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
+    // Stringvergleich: --------------------
+    System.out.println(res.toString());
+    assertEquals("[]", Log.getFindings().toString());
+    assertEquals("\nHookPoint filled\n" + "Hook empty\n", res.toString());
   }
 
   // --------------------------------------------------------------------
