@@ -11,9 +11,11 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,23 +42,21 @@ public class CDVisitorDecoratorTest extends DecoratorTestCase {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
 
-    this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
+    IterablePath targetPath = Mockito.mock(IterablePath.class);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    this.glex.setGlobalValue("service", visitorService);
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
-    ASTVisitorDecorator astVisitorDecorator = new ASTVisitorDecorator(this.glex,
-        new VisitorService(decoratedCompilationUnit));
+    ASTVisitorDecorator astVisitorDecorator = new ASTVisitorDecorator(this.glex, visitorService);
     SymbolVisitorDecorator symbolVisitorDecorator = new SymbolVisitorDecorator(this.glex,
-        new VisitorService(decoratedCompilationUnit), new SymbolTableService(decoratedCompilationUnit));
+        visitorService, new SymbolTableService(decoratedCompilationUnit));
     ScopeVisitorDecorator scopeVisitorDecorator = new ScopeVisitorDecorator(this.glex,
-        new VisitorService(decoratedCompilationUnit), new SymbolTableService(decoratedCompilationUnit));
-    DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(this.glex,
-        new VisitorService(decoratedCompilationUnit));
-    ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(this.glex,
-        new VisitorService(decoratedCompilationUnit));
-    InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(this.glex,
-        new VisitorService(decoratedCompilationUnit));
+        visitorService, new SymbolTableService(decoratedCompilationUnit));
+    DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(this.glex, visitorService);
+    ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(this.glex, visitorService);
+    InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(this.glex, visitorService);
 
-    CDVisitorDecorator decorator = new CDVisitorDecorator(this.glex,
+    CDVisitorDecorator decorator = new CDVisitorDecorator(this.glex, targetPath, visitorService,
         astVisitorDecorator, symbolVisitorDecorator, scopeVisitorDecorator,
         delegatorVisitorDecorator, inheritanceVisitorDecorator, parentAwareVisitorDecorator);
 
