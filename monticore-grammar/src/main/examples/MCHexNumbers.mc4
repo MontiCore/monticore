@@ -3,8 +3,8 @@
 /**
  * This grammar defines several additional literals for Numbers,
  * which are common in computing, such as hexadecimals.
- * The scope of this grammar is to
- * ease the reuse of literals structures in Java-like sublanguages, e.g., by
+ * The scope of this grammar is to ease the reuse of literals 
+ * in Java-like sublanguages, e.g., by
  * grammar inheritance or grammar embedding.
 */
 
