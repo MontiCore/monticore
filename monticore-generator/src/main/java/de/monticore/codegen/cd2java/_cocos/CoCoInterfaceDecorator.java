@@ -44,8 +44,11 @@ public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, Lis
   }
 
   protected ASTCDInterface createCoCoInterface(ASTCDType type) {
+    ASTModifier modifier = type.isPresentModifier() ?
+        cocoService.createModifierPublicModifier(type.getModifier()):
+        PUBLIC.build();
     return CD4AnalysisMill.cDInterfaceBuilder()
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .setName(this.cocoService.getCoCoSimpleTypeName(type))
         .addCDMethod(createCheckMethod(type))
         .build();

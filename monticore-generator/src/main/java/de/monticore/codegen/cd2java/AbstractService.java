@@ -6,6 +6,7 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolLoader;
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
@@ -17,6 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 
@@ -246,6 +248,40 @@ public class AbstractService<T extends AbstractService> {
   public String getInheritedGrammarName(ASTCDAttribute attribute) {
     return getStereotypeValues(attribute.getModifier(), MC2CDStereotypes.INHERITED).get(0);
   }
+
+  public boolean hasDeprecatedStereotype(ASTModifier modifier) {
+    return hasStereotype(modifier, MC2CDStereotypes.DEPRECATED);
+  }
+
+  public void addDeprecatedStereotype(ASTModifier modifier) {
+    if (!modifier.isPresentStereotype()) {
+      modifier.setStereotype(CD4AnalysisNodeFactory
+          .createASTCDStereotype());
+    }
+    List<ASTCDStereoValue> stereoValueList = modifier.getStereotype()
+        .getValueList();
+    ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory
+        .createASTCDStereoValue();
+    stereoValue.setName(MC2CDStereotypes.DEPRECATED.toString());
+    stereoValueList.add(stereoValue);
+  }
+
+  /**
+   * method checks if the given modifier is deprecated
+   * is deprecated -> new public modifier with deprecation stereotype returned
+   * is NOT deprecated -> new normal public modifier defined
+   * @param givenModifier is the modifier which determines if the new modifier should be deprecated or not
+   * @return
+   */
+  public ASTModifier createModifierPublicModifier(ASTModifier givenModifier) {
+    ASTModifier newASTModifier = PUBLIC.build();
+    if (hasDeprecatedStereotype(givenModifier)) {
+      addDeprecatedStereotype(newASTModifier);
+      return newASTModifier;
+    }
+    return newASTModifier;
+  }
+
 
   /**
    * checking for duplicate classes and methods

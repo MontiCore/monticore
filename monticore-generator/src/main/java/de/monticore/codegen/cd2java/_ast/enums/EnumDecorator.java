@@ -37,6 +37,9 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
 
   @Override
   public ASTCDEnum decorate(final ASTCDEnum input) {
+    ASTModifier modifier = input.isPresentModifier() ?
+        astService.createModifierPublicModifier(input.getModifier()):
+        PUBLIC.build();
     String enumName = input.getName();
     String constantClassName = astService.getASTConstantClassFullName();
     ASTCDAttribute intValueAttribute = getIntValueAttribute();
@@ -49,6 +52,7 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
     }
     return CD4AnalysisMill.cDEnumBuilder()
         .setName(enumName)
+        .setModifier(modifier)
         .addAllCDEnumConstants(constants)
         .addCDConstructor(getLiteralsConstructor(enumName))
         .addCDAttribute(intValueAttribute)

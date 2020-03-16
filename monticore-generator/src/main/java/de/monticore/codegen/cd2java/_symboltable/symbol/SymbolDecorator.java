@@ -66,6 +66,9 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   public ASTCDClass decorate(ASTCDClass symbolInput) {
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
     String symbolName = symbolTableService.getNameWithSymbolSuffix(symbolInput);
+    ASTModifier modifier = symbolInput.isPresentModifier() ?
+        symbolTableService.createModifierPublicModifier(symbolInput.getModifier()):
+        PUBLIC.build();
 
     // uses symbol rule methods and attributes
     List<ASTCDAttribute> symbolRuleAttributes = symbolInput.deepClone().getCDAttributeList();
@@ -97,7 +100,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
     ASTCDClass symbolClass = CD4AnalysisMill.cDClassBuilder()
         .setName(symbolName)
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .addInterface(getMCTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName()))
         .addAllInterfaces(symbolInput.getInterfaceList())
         .addCDConstructor(constructor)

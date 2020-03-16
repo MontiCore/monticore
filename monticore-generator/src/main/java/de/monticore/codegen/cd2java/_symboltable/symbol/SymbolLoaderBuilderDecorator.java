@@ -40,6 +40,9 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
     String symbolLoaderName = symbolTableService.getSymbolLoaderSimpleName(input);
     String symbolLoaderBuilderName = symbolLoaderName + BUILDER_SUFFIX;
     String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
+    ASTModifier modifier = input.isPresentModifier() ?
+        symbolTableService.createModifierPublicModifier(input.getModifier()):
+        PUBLIC.build();
 
     BuilderMutatorMethodDecorator builderMutatorMethodDecorator = new BuilderMutatorMethodDecorator(glex,
         getMCTypeFacade().createQualifiedType(symbolLoaderBuilderName));
@@ -53,7 +56,7 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(symbolLoaderBuilderName)
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .addCDConstructor(createDefaultConstructor(symbolLoaderBuilderName))
         .addCDAttribute(createRealThisAttribute(symbolLoaderBuilderName))
         .addCDAttribute(nameAttribute)
