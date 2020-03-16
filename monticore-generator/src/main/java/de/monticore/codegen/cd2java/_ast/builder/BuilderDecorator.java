@@ -55,9 +55,10 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
     // make the builder abstract for a abstract AST class
     ASTModifier modifier = domainClass.isPresentModifier() ?
-        service.createModifierPublicModifier(domainClass.getModifier()):
-        PUBLIC.build();    if (domainClass.isPresentModifier() && domainClass.getModifier().isAbstract()) {
-      modifier = PUBLIC_ABSTRACT.build();
+        service.createModifierPublicModifier(domainClass.getModifier()) :
+        PUBLIC.build();
+    if (domainClass.isPresentModifier() && domainClass.getModifier().isAbstract()) {
+      modifier.setAbstract(true);
     }
 
     ASTCDAttribute realThisAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED, builderType, REAL_BUILDER);
@@ -84,7 +85,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, builderClassName);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + builderClassName + ") this;"));
 
-    ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier, domainType, BUILD_METHOD);
+    ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier.deepClone(), domainType, BUILD_METHOD);
     if (isPrintBuildMethodTemplate()) {
       this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes));
     }
