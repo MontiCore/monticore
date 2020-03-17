@@ -253,7 +253,16 @@ public class AbstractService<T extends AbstractService> {
     return hasStereotype(modifier, MC2CDStereotypes.DEPRECATED);
   }
 
-  public void addDeprecatedStereotype(ASTModifier modifier) {
+  public Optional<String> getDeprecatedStereotypeValue(ASTModifier modifier) {
+    List<String> stereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.DEPRECATED);
+    if (stereotypeValues.size() >= 1) {
+      return Optional.of(stereotypeValues.get(0));
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  public void addDeprecatedStereotype(ASTModifier modifier, Optional<String> deprecatedValue) {
     if (!modifier.isPresentStereotype()) {
       modifier.setStereotype(CD4AnalysisNodeFactory
           .createASTCDStereotype());
@@ -263,6 +272,9 @@ public class AbstractService<T extends AbstractService> {
     ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory
         .createASTCDStereoValue();
     stereoValue.setName(MC2CDStereotypes.DEPRECATED.toString());
+    if (deprecatedValue.isPresent()) {
+      stereoValue.setValue(deprecatedValue.get());
+    }
     stereoValueList.add(stereoValue);
   }
 
@@ -270,13 +282,14 @@ public class AbstractService<T extends AbstractService> {
    * method checks if the given modifier is deprecated
    * is deprecated -> new public modifier with deprecation stereotype returned
    * is NOT deprecated -> new normal public modifier defined
+   *
    * @param givenModifier is the modifier which determines if the new modifier should be deprecated or not
    * @return
    */
   public ASTModifier createModifierPublicModifier(ASTModifier givenModifier) {
     ASTModifier newASTModifier = PUBLIC.build();
     if (hasDeprecatedStereotype(givenModifier)) {
-      addDeprecatedStereotype(newASTModifier);
+      addDeprecatedStereotype(newASTModifier, getDeprecatedStereotypeValue(givenModifier));
       return newASTModifier;
     }
     return newASTModifier;
