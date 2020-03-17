@@ -36,7 +36,8 @@ public final class CoreTemplates {
 
   public static final String ANNOTATIONS = "core.Annotations";
 
-  private CoreTemplates() {}
+  private CoreTemplates() {
+  }
 
   public static HookPoint createPackageHookPoint(final String... packageName) {
     return createPackageHookPoint(Arrays.asList(packageName));
@@ -56,7 +57,7 @@ public final class CoreTemplates {
             // Append tag for java api
             anno = "/**\n * @deprecated " + stereoValue.getValue() + "\n **/\n";
           }
-          anno += MC2CDStereotypes.DEPRECATED.toString();
+          anno += "@Deprecated";
         }
       }
     }
