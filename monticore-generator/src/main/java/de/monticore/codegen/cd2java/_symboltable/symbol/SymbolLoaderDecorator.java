@@ -44,6 +44,9 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
     String symbolFullName = symbolTableService.getSymbolFullName(symbolInput);
     String scopeInterfaceType = symbolTableService.getScopeInterfaceFullName();
     String simpleName = symbolInput.getName();
+    ASTModifier modifier = symbolInput.isPresentModifier() ?
+        symbolTableService.createModifierPublicModifier(symbolInput.getModifier()):
+        PUBLIC.build();
 
     ASTCDAttribute loadedSymbolAttribute = createLoadedSymbolAttribute(symbolFullName);
     ASTCDMethod loadedSymbolMethod = createLoadedSymbolMethod(symbolFullName, symbolLoaderSimpleName);
@@ -58,7 +61,7 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(symbolLoaderSimpleName)
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .addInterface(getMCTypeFacade().createQualifiedType(I_SYMBOL_LOADER))
         .addCDConstructor(createConstructor(symbolLoaderSimpleName, scopeInterfaceType))
         .addCDAttribute(loadedSymbolAttribute)

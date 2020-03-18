@@ -54,9 +54,11 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(builderClassName);
 
     // make the builder abstract for a abstract AST class
-    CDModifier modifier = PUBLIC;
+    ASTModifier modifier = domainClass.isPresentModifier() ?
+        service.createModifierPublicModifier(domainClass.getModifier()) :
+        PUBLIC.build();
     if (domainClass.isPresentModifier() && domainClass.getModifier().isAbstract()) {
-      modifier = PUBLIC_ABSTRACT;
+      modifier.setAbstract(true);
     }
 
     ASTCDAttribute realThisAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED, builderType, REAL_BUILDER);
@@ -83,7 +85,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, builderClassName);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + builderClassName + ") this;"));
 
-    ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier, domainType, BUILD_METHOD);
+    ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier.deepClone(), domainType, BUILD_METHOD);
     if (isPrintBuildMethodTemplate()) {
       this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes));
     }
@@ -111,7 +113,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     builderAttributes.forEach(this::addAttributeDefaultValues);
 
     return CD4AnalysisMill.cDClassBuilder()
-        .setModifier(modifier.build())
+        .setModifier(modifier)
         .setName(builderClassName)
         .addCDAttribute(realThisAttribute)
         .addAllCDAttributes(builderAttributes)

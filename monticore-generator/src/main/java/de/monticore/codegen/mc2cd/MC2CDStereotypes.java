@@ -27,7 +27,7 @@ public enum MC2CDStereotypes {
   /**
    * To mark class as deprecated
    */
-  DEPRECATED("@Deprecated"),
+  DEPRECATED("deprecated"),
   /**
    * To mark class as symbol
    */
