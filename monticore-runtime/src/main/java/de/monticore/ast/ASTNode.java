@@ -15,6 +15,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -22,6 +23,8 @@ import de.se_rwth.commons.logging.Log;
  * Foundation interface for all AST-classes
  */
 public interface ASTNode {
+
+  IScope getEnclosingScope();
   
   /**
    * Performs a deep clone of this ASTNode and all of its successors

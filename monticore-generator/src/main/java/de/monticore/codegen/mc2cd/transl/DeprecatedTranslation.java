@@ -49,7 +49,7 @@ public class DeprecatedTranslation implements
     return rootLink;
   }
 
-  private void translateProd(ASTProd prod, ASTCDType cdType,
+  protected void translateProd(ASTProd prod, ASTCDType cdType,
                              ASTMCGrammar astGrammar) {
     if (prod.isPresentDeprecatedAnnotation() || astGrammar.isPresentDeprecatedAnnotation()) {
       ASTDeprecatedAnnotation annotation;

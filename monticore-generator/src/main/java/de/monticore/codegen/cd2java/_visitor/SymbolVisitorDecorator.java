@@ -12,6 +12,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
+import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
 
@@ -28,6 +29,8 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   protected final VisitorService visitorService;
 
   protected final SymbolTableService symbolTableService;
+
+  protected boolean isTop;
 
   public SymbolVisitorDecorator(final GlobalExtensionManagement glex,
                                 final VisitorService visitorService,
@@ -107,7 +110,13 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected ASTCDMethod addGetRealThisMethods(ASTMCType visitorType) {
     ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
-    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return this;"));
+    String hookPoint;
+    if (!isTop()) {
+      hookPoint = "return this;";
+    } else {
+      hookPoint = "return (" + visitorService.getSymbolVisitorSimpleName() + ")this;";
+    }
+    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(hookPoint));
     return getRealThisMethod;
   }
 
@@ -122,4 +131,11 @@ public class SymbolVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     return setRealThis;
   }
 
+  public boolean isTop() {
+    return isTop;
+  }
+
+  public void setTop(boolean top) {
+    isTop = top;
+  }
 }

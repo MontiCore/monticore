@@ -55,8 +55,6 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   private static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
 
-  private static final String SYMBOL_INTERFACE = "de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol";
-
   @Before
   public void setUp() {
     Log.init();
@@ -88,14 +86,12 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCountAutomatonSymbol() {
-    assertEquals(2, symbolTablePrinter.sizeInterfaces());
+    assertEquals(1, symbolTablePrinter.sizeInterfaces());
   }
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
-    assertDeepEquals("de.monticore.codegen.symboltable.automaton._visitor.AutomatonSymbolVisitor", symbolTablePrinter.getInterface(0));
-    assertDeepEquals("de.monticore.codegen.symboltable.automaton._visitor.AutomatonScopeVisitor", symbolTablePrinter.getInterface(1));
-
+    assertDeepEquals("de.monticore.codegen.symboltable.automaton._visitor.AutomatonScopeVisitor", symbolTablePrinter.getInterface(0));
   }
 
   @Test

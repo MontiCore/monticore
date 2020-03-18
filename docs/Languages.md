@@ -92,12 +92,13 @@ MontiCore projects are hosted at
 * Author: LN 
 * Language for textual definition of Graphical User Interfaces of Web Applications
 * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation), [**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
-* Docuemtation: [**here**](https://git.rwth-aachen.de/macoco/gui-dsl/wikis/home)
+* Documentation: [**here**](https://git.rwth-aachen.de/macoco/gui-dsl/wikis/home)
 
-### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/tree/dev/monticore-grammar) (MontiCore Stable)
+### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-generator) (MontiCore Stable)
 * Author: MB 
 * Language for MontiCore Grammars
-* TODO
+* A MontiCore grammar defines the concrete and the abstract syntax of a language.
+* Examples: All languages on this page are examples of MontiCore grammars.
 
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
 * Author: NJ

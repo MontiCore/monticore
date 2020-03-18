@@ -5,8 +5,8 @@ package de.monticore.symboltable.serialization;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * This realizes a DFA to check whether a char sequence is a valid json number, i.e. if it
- * conforms to the regex:
+ * This class is used by the JsonLexer. It realizes a DFA to check whether a char sequence is a
+ * valid json number, i.e. if it conforms to the regex:
  * "-?(0|([1-9][0-9]*))(\\.[0-9]+)?((e|E)(-|\\+)?[0-9]+)?"
  */
 public class NumberParser {

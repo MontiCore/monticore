@@ -9,6 +9,7 @@ import de.monticore.ast.ASTNode;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import de.monticore.symboltable.IScope;
 
 /**
  * Mock for ASTCNode.
@@ -37,6 +38,10 @@ public class ASTCNodeMock extends ASTCNode {
    */
   @Override
   public void remove_Child(ASTNode child) {
+  }
+
+  @Override public IScope getEnclosingScope() {
+    return null;
   }
 
   /**

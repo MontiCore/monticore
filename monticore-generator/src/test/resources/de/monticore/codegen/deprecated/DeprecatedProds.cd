@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.deprecated;
+
+classdiagram DeprecatedProds {
+
+    <<deprecated="CommentA", symbol>> public class A {
+    }
+
+    <<deprecated="CommentI", symbol>> public interface I {
+    }
+
+    <<deprecated>> public enum E {
+        FINAL;
+    }
+}

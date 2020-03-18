@@ -29,6 +29,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   interface scope symbol Type = Name ;
   symbolrule Type =
     superTypes: de.monticore.types.check.SymTypeExpression*
+    isStatic:boolean
   ;
 
   /*=================================================================*/
@@ -50,6 +51,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   interface symbol Field = Name ;
   symbolrule  Field =
     type: de.monticore.types.check.SymTypeExpression
+    isStatic:boolean
   ;
 
   /*=================================================================*/
@@ -64,6 +66,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   symbolrule Method =
     parameter: de.monticore.types.typesymbols._symboltable.FieldSymbol*
     returnType: de.monticore.types.check.SymTypeExpression
+    isStatic:boolean
   ;
 
 }

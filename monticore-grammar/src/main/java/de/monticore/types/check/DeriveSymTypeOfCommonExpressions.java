@@ -1,20 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.collect.Lists;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.MethodSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypeConstant.unbox;
 import static de.monticore.types.check.TypeCheck.*;
@@ -458,26 +458,46 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       //look for this type in our scope
       TypeSymbol innerResultType = innerResult.getTypeInfo();
       //search for a method, field or type in the scope of the type of the inner expression
-      List<FieldSymbol> fieldSymbols = innerResult.getFieldList(expr.getName());
+      List<FieldSymbol> fieldSymbols = innerResult.getFieldList(expr.getName(),lastResult.isType());
       Optional<TypeSymbol> typeSymbolOpt = innerResultType.getSpannedScope().resolveType(expr.getName());
       if (!fieldSymbols.isEmpty()) {
         //cannot be a method, test variable first
         //durch AST-Umbau kann ASTFieldAccessExpression keine Methode sein
+        //if the last result is a type then filter for static field symbols
+        if(lastResult.isType()){
+          fieldSymbols = filterStaticFieldSymbols(fieldSymbols);
+        }
         if (fieldSymbols.size() != 1) {
+          lastResult.reset();
           Log.error("0xA0237 There cannot be more than one attribute with the same name in your field");
         }
-        FieldSymbol var = fieldSymbols.get(0);
-        SymTypeExpression type = var.getType();
-        this.result = type;
-        lastResult.setField();
-        lastResult.setLast(type);
+        if(!fieldSymbols.isEmpty()) {
+          FieldSymbol var = fieldSymbols.get(0);
+          SymTypeExpression type = var.getType();
+          this.result = type;
+          lastResult.setField();
+          lastResult.setLast(type);
+        }
       } else if (typeSymbolOpt.isPresent()) {
         //no variable found, test type
         TypeSymbol typeSymbol = typeSymbolOpt.get();
-        SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeObject(typeSymbol.getFullName(), expr.getEnclosingScope());
-        this.result = wholeResult;
-        lastResult.setType();
-        lastResult.setLast(wholeResult);
+        boolean match = true;
+        //if the last result is a type and the type is not static then it is not accessible
+        if(lastResult.isType()&&!typeSymbol.isIsStatic()){
+          match = false;
+        }
+        if(match){
+          SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getFullName(), typeSymbol.getEnclosingScope());
+          this.result = wholeResult;
+          lastResult.setType();
+          lastResult.setLast(wholeResult);
+        }else{
+          lastResult.reset();
+          Log.error("0xA0303 the type "+typeSymbol.getName()+" must be static to be accessible in a type");
+        }
+      }else{
+        lastResult.reset();
+        Log.error("0xA0306 the result of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
       }
     } else {
       //inner type has no result --> try to resolve a type
@@ -485,9 +505,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       Optional<TypeSymbol> typeSymbolOpt = scope.resolveType(toResolve);
       if (typeSymbolOpt.isPresent()) {
         TypeSymbol typeSymbol = typeSymbolOpt.get();
-        SymTypeExpression type = SymTypeExpressionFactory.createTypeObject(typeSymbol.getFullName(), typeSymbol.getEnclosingScope());
+        SymTypeExpression type = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getFullName(), typeSymbol.getEnclosingScope());
         this.result = type;
-        lastResult.setMethod();
+        lastResult.setType();
         lastResult.setLast(type);
       } else {
         //the inner type has no result and there is no type found
@@ -495,6 +515,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         Log.info("package suspected", "CommonExpressionsTypesCalculator");
       }
     }
+  }
+
+  private List<FieldSymbol> filterStaticFieldSymbols(List<FieldSymbol> fieldSymbols) {
+    return fieldSymbols.stream().filter(FieldSymbol::isIsStatic).collect(Collectors.toList());
   }
 
   /**
@@ -509,7 +533,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (lastResult.isPresentLast()) {
       innerResult = lastResult.getLast();
       //resolve methods with name of the inner expression
-      List<MethodSymbol> methodlist = innerResult.getMethodList(expr.getName());
+      List<MethodSymbol> methodlist = innerResult.getMethodList(expr.getName(),lastResult.isType());
       //count how many methods can be found with the correct arguments and return type
       List<MethodSymbol> fittingMethods = new ArrayList<>();
       for (MethodSymbol method : methodlist) {
@@ -530,6 +554,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
           }
         }
       }
+      //if the last result is static then filter for static methods
+      if(lastResult.isType()){
+        fittingMethods = filterStaticMethodSymbols(fittingMethods);
+      }
       //there can only be one method with the correct arguments and return type
       if (!fittingMethods.isEmpty()) {
         if (fittingMethods.size() > 1) {
@@ -540,17 +568,12 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
             }
           }
         }
-        if (!isVoid(fittingMethods.get(0).getReturnType())) {
-          SymTypeExpression result = fittingMethods.get(0).getReturnType();
-          this.result = result;
-          lastResult.setMethod();
-          lastResult.setLast(result);
-        } else {
-          Optional<SymTypeExpression> wholeResult = Optional.of(SymTypeExpressionFactory.createTypeVoid());
-          this.result = wholeResult.get();
-          lastResult.setLast(wholeResult.get());
-        }
+        SymTypeExpression result = fittingMethods.get(0).getReturnType();
+        this.result = result;
+        lastResult.setMethod();
+        lastResult.setLast(result);
       } else {
+        lastResult.reset();
         Log.error("0xA0239 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
       }
     } else {
@@ -593,6 +616,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         Log.error("0xA0240 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
       }
     }
+  }
+
+  private List<MethodSymbol> filterStaticMethodSymbols(List<MethodSymbol> fittingMethods) {
+      return fittingMethods.stream().filter(MethodSymbol::isIsStatic).collect(Collectors.toList());
   }
 
   /**

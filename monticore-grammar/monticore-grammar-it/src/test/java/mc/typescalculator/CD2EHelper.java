@@ -90,7 +90,7 @@ public class CD2EHelper {
 
       // add attribute type
       SymTypeExpression type = createSymTypeExpressionFormCDTypeSymbolReference(cdFieldSymbol.getType());
-
+      fieldSymbol.setIsStatic(cdFieldSymbol.isIsStatic());
       fieldSymbol.setType(type);
       return fieldSymbol;
     }
@@ -111,6 +111,7 @@ public class CD2EHelper {
       List<FieldSymbol> parameters = cdMethOrConstrSymbol.getSpannedScope().getLocalCDFieldSymbols().stream()
           .map(this::createFieldSymbolFormCDFieldSymbol)
           .collect(Collectors.toList());
+      methodSymbol.setIsStatic(cdMethOrConstrSymbol.isIsStatic());
 
       methodSymbol.setReturnType(returnType);
       methodSymbol.setParameterList(parameters);

@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Json Objects contain members in form of key-value pairs. The key is a (unique) String, and the
+ * Json Objects contain members in form of name-value pairs. The name is a (unique) String, and the
  * value any JsonElement.
  */
 public class JsonObject implements JsonElement {
@@ -74,12 +74,12 @@ public class JsonObject implements JsonElement {
   }
 
   /**
-   * @param key
+   * @param name
    * @return
    * @see java.util.Map#containsKey(java.lang.Object)
    */
-  public boolean hasMember(String key) {
-    return this.members.containsKey(key);
+  public boolean hasMember(String name) {
+    return this.members.containsKey(name);
   }
 
   /**
