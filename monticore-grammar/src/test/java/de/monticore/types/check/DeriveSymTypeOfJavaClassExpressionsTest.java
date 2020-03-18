@@ -935,7 +935,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeVarSymbol t = typeVariable("T");
     add2scope(scope,t);
     MethodSymbol test = method("test",_charSymType);
-    test.setTypeVariableList(Lists.newArrayList(t));
+    test.getSpannedScope().add(t);
     test.setIsStatic(true);
     TypeSymbol a = type("A",Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     add2scope(scope,a);
