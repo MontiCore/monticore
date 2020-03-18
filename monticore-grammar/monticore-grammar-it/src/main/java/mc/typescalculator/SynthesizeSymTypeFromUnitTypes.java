@@ -1,12 +1,13 @@
 package mc.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SynthesizeSymTypeFromMCBasicTypes;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import mc.typescalculator.unittypes._ast.ASTMinuteType;
 import mc.typescalculator.unittypes._visitor.UnitTypesVisitor;
 
-public class SynthesizeSymTypeFromUnitTypes extends SynthesizeSymTypeFromMCBasicTypes implements UnitTypesVisitor {
+public class SynthesizeSymTypeFromUnitTypes extends SynthesizeSymTypeFromMCBasicTypes implements UnitTypesVisitor, ISynthesize {
 
   private UnitTypesVisitor realThis;
 

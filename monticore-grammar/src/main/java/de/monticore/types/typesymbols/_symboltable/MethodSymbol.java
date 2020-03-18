@@ -2,7 +2,9 @@ package de.monticore.types.typesymbols._symboltable;
 
 import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MethodSymbol extends MethodSymbolTOP {
 
@@ -33,4 +35,28 @@ public class MethodSymbol extends MethodSymbolTOP {
     return clone;
   }
 
+  public List<TypeVarSymbol> getTypeVariableList(){
+    if (spannedScope == null) {
+      return Lists.newArrayList();
+    }
+    return spannedScope.getLocalTypeVarSymbols();
+  }
+
+  public List<TypeVarSymbol> getAllAccessibleTypeVariables(){
+    List<TypeVarSymbol> typeVarSymbolList = getTypeVariableList();
+    typeVarSymbolList.addAll(getTypeVariablesOfEnclosingType());
+    return typeVarSymbolList;
+  }
+
+  public List<TypeVarSymbol> getTypeVariablesOfEnclosingType(){
+    List<TypeVarSymbol> typeVarSymbolList = new ArrayList<>();
+    ITypeSymbolsScope scope = spannedScope;
+    while(scope.getEnclosingScope()!=null){
+      scope = scope.getEnclosingScope();
+      if(scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof TypeSymbol){
+        typeVarSymbolList.addAll(((TypeSymbol)(scope.getSpanningSymbol())).getTypeParameterList());
+      }
+    }
+    return typeVarSymbolList;
+  }
 }

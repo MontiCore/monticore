@@ -167,6 +167,7 @@ public class DefsTypeBasic {
   
   public static MethodSymbol add(MethodSymbol m, FieldSymbol f) {
     m.getParameterList().add(f);
+    m.getSpannedScope().add(f);
     return m;
   }
   

@@ -490,11 +490,11 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       //that replaces this type variable
       Map<String,SymTypeExpression> transformMap = Maps.newHashMap();
       for(int j = 0;j<method.getTypeVariableList().size();j++){
-        transformMap.put(method.getTypeVariable(j).getName(),typeArgsList.get(j));
+        transformMap.put(method.getTypeVariableList().get(j).getName(),typeArgsList.get(j));
       }
 
       for(int j = 0;j<method.getParameterList().size();j++){
-        FieldSymbol param = method.getParameter(j);
+        FieldSymbol param = method.getParameterList().get(j);
         if(param.getType().isTypeVariable()){
           if(!transformMap.containsKey(param.getType().print())){
             //there is a typevariable that cannot be resolved to the correct type -> wrong method

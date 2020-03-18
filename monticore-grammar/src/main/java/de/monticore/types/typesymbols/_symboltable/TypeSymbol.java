@@ -46,10 +46,10 @@ public class TypeSymbol extends TypeSymbolTOP {
    */
 
   public List<MethodSymbol> getMethodList() {
-    if (spannedScope == null || spannedScope.getMethodSymbols() == null || spannedScope.getMethodSymbols().isEmpty()) {
+    if (spannedScope == null) {
       return Lists.newArrayList();
     }
-    return spannedScope.getMethodSymbols().values();
+    return spannedScope.getLocalMethodSymbols();
   }
 
   /**
@@ -64,10 +64,10 @@ public class TypeSymbol extends TypeSymbolTOP {
    */
 
   public List<FieldSymbol> getFieldList() {
-    if (spannedScope == null || spannedScope.getFieldSymbols() == null || spannedScope.getFieldSymbols().isEmpty()) {
+    if (spannedScope == null) {
       return Lists.newArrayList();
     }
-    return spannedScope.getFieldSymbols().values();
+    return spannedScope.getLocalFieldSymbols();
   }
 
   /**
@@ -78,7 +78,10 @@ public class TypeSymbol extends TypeSymbolTOP {
   }
 
   public List<TypeVarSymbol> getTypeParameterList() {
-    return spannedScope.getTypeVarSymbols().values();
+    if(spannedScope==null){
+      return Lists.newArrayList();
+    }
+    return spannedScope.getLocalTypeVarSymbols();
   }
 
 

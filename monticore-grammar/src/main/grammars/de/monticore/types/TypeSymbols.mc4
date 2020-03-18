@@ -64,7 +64,6 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   symbolrule Method =
     parameter: de.monticore.types.typesymbols._symboltable.FieldSymbol*
     returnType: de.monticore.types.check.SymTypeExpression
-    typeVariable: de.monticore.types.typesymbols._symboltable.TypeVarSymbol*
   ;
 
 }

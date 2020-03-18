@@ -18,7 +18,7 @@ public class PlusExpressionReturnsInt implements CommonExpressionsASTPlusExpress
     TypeCheck typeCheck = new TypeCheck(null, new DeriveSymTypeOfMyOwnLanguage());
 
     SymTypeExpression result = typeCheck.typeOf(node);
-    if(!result.print().equals("int")){
+    if(!TypeCheck.isInt(result)){
       Log.error(String.format(ERROR_CODE+ERROR_MSG_FORMAT,result.print()));
     }
   }
