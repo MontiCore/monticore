@@ -3,6 +3,5 @@ package mc.typescalculator;
 grammar UnitTypes extends de.monticore.types.MCBasicTypes{
 
     MinuteType implements MCType =
-            { next("min") }?
-            unit:Name;
+            unit:key("min");
 }

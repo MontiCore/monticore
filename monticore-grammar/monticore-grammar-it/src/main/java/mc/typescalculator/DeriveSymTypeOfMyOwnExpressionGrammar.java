@@ -1,10 +1,10 @@
 package mc.typescalculator;
 
 import de.monticore.types.check.DeriveSymTypeOfExpression;
+import de.monticore.types.check.SymTypeConstant;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeExpressionFactory;
 import mc.typescalculator.myownexpressiongrammar._visitor.MyOwnExpressionGrammarVisitor;
-import mc.typescalculator.myownexpressiongrammar._ast.ASTPowerExpression;
+import mc.typescalculator.myownexpressiongrammar._ast.ASTAbsoluteExpression;
 import de.se_rwth.commons.logging.Log;
 
 public class DeriveSymTypeOfMyOwnExpressionGrammar
@@ -23,45 +23,22 @@ public class DeriveSymTypeOfMyOwnExpressionGrammar
   }
 
   @Override
-  public void traverse(ASTPowerExpression expr){
-    SymTypeExpression base = null;
-    SymTypeExpression exponent = null;
+  public void traverse(ASTAbsoluteExpression expr){
+    SymTypeExpression inner = null;
     SymTypeExpression result = null;
 
-    expr.getLeft().accept(getRealThis());
+    expr.getExpression().accept(getRealThis());
     if(lastResult.isPresentLast()){
-      base = lastResult.getLast();
+      inner = lastResult.getLast();
     }else{
-      Log.error("0xB0001 the left result " +
+      Log.error("0xB0001 the inner result " +
           "cannot be calculated");
     }
 
-    expr.getRight().accept(getRealThis());
-    if(lastResult.isPresentLast()){
-      exponent = lastResult.getLast();
-    }else{
-      Log.error("0xB0002 the right result" +
-          "cannot be calculated");
-    }
-
-    //assuming there are only int and double
-    //there are more possibilities with float, long, char,...
-    if("double".equals(base.print())){
-      if("int".equals(exponent.print())
-          || "double".equals(exponent.print())) {
-        result = SymTypeExpressionFactory
-            .createTypeConstant("double");
-      }
-    }
-
-    if("int".equals(base.print())){
-      if("double".equals(exponent.print())){
-        result = SymTypeExpressionFactory
-            .createTypeConstant("double");
-      }else if("int".equals(exponent.print())){
-        result = SymTypeExpressionFactory
-            .createTypeConstant("int");
-      }
+    //absolute amount is only possible for numeric types
+   if(inner.isPrimitive()
+       &&((SymTypeConstant)inner).isNumericType()){
+      result = inner.deepClone();
     }
 
     if(result!=null){
