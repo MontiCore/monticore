@@ -11,6 +11,7 @@ import hierautomata._parser.HierAutomataParser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
