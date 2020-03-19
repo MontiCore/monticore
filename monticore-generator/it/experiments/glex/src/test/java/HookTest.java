@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
+@Ignore
 public class HookTest {
   
   // setup the language infrastructure
