@@ -9,6 +9,11 @@ import java.util.stream.Collectors;
 
 public class TypeSymbol extends TypeSymbolTOP {
 
+  private boolean isClass;
+  private boolean isInterface;
+  private boolean isEnum;
+  private boolean isAbstract;
+
   public TypeSymbol(String name) {
     super(name);
     isClass = false;
@@ -17,39 +22,20 @@ public class TypeSymbol extends TypeSymbolTOP {
     isAbstract = false;
   }
 
-  protected List<MethodSymbol> methodList=new ArrayList<>();
-
-  private boolean isClass;
-  private boolean isInterface;
-  private boolean isEnum;
-  private boolean isAbstract;
-
-
-
-  public void setMethodList(List<MethodSymbol> methodList){
-    this.methodList = methodList;
-    for(MethodSymbol method: methodList){
-      spannedScope.add(method);
-    }
-  }
-
   public List<SymTypeExpression> getSuperClassesOnly(){
     return superTypes.stream()
         .filter(type -> type.getTypeInfo().isClass)
         .collect(Collectors.toList());
   }
 
-
-
   /**
    * get a list of all the methods the type definition can access
    */
-
   public List<MethodSymbol> getMethodList() {
-    if (spannedScope == null || spannedScope.getMethodSymbols() == null || spannedScope.getMethodSymbols().isEmpty()) {
+    if (spannedScope == null) {
       return Lists.newArrayList();
     }
-    return spannedScope.getMethodSymbols().values();
+    return spannedScope.getLocalMethodSymbols();
   }
 
   /**
@@ -62,12 +48,11 @@ public class TypeSymbol extends TypeSymbolTOP {
   /**
    * get a list of all the fields the type definition can access
    */
-
   public List<FieldSymbol> getFieldList() {
-    if (spannedScope == null || spannedScope.getFieldSymbols() == null || spannedScope.getFieldSymbols().isEmpty()) {
+    if (spannedScope == null) {
       return Lists.newArrayList();
     }
-    return spannedScope.getFieldSymbols().values();
+    return spannedScope.getLocalFieldSymbols();
   }
 
   /**
@@ -78,7 +63,10 @@ public class TypeSymbol extends TypeSymbolTOP {
   }
 
   public List<TypeVarSymbol> getTypeParameterList() {
-    return spannedScope.getTypeVarSymbols().values();
+    if(spannedScope==null){
+      return Lists.newArrayList();
+    }
+    return spannedScope.getLocalTypeVarSymbols();
   }
 
 

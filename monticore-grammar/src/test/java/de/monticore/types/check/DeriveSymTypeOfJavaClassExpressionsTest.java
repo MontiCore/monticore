@@ -392,6 +392,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     //soll es so funktionieren wie in Java? Dann duerfte man naemlich keine Generics akzeptieren
     //hier sind erst einmal Generics mit dabei, s. Testfall #3
+    //falls man einschränken möchte, kann man die CoCo NoClassExpressionForGenerics
 
     assertEquals("Class<String>",tc.typeOf(class1.get()).print());
     assertEquals("Class<Integer>",tc.typeOf(class2.get()).print());
@@ -694,7 +695,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,s);
     //type ASuper with constructor
     MethodSymbol asuperconstr = method("ASuper",_intSymType);
-    asuperconstr.setTypeVariableList(Lists.newArrayList(t));
+    asuperconstr.getSpannedScope().add(t);
     TypeSymbol aSuper = type("ASuper",Lists.newArrayList(asuperconstr),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     aSuper.setClass(true);
     SymTypeExpression aSuperType = SymTypeExpressionFactory.createTypeObject("ASuper",scope);
@@ -703,13 +704,14 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     //type A with constructor and methods test,get and set
     MethodSymbol test = method("test",_intSymType);
-    test.setTypeVariableList(Lists.newArrayList(t));
+    test.getSpannedScope().add(t);
     MethodSymbol get = method("get",tType);
-    get.setTypeVariableList(Lists.newArrayList(t));
+    get.getSpannedScope().add(t);
     MethodSymbol aconstr = method("A",_intSymType);
-    aconstr.setTypeVariableList(Lists.newArrayList(t));
+    aconstr.getSpannedScope().add(t);
     MethodSymbol set = add(add(method("set",_StringSymType),field("s",sType)),field("t",tType));
-    set.setTypeVariableList(Lists.newArrayList(t,s));
+    set.getSpannedScope().add(t);
+    set.getSpannedScope().add(s);
     TypeSymbol a = type("A",Lists.newArrayList(test,aconstr,get,set),Lists.newArrayList(),Lists.newArrayList(aSuperType),Lists.newArrayList(),scope);
     SymTypeExpression aType = SymTypeExpressionFactory.createTypeObject("A",scope);
     aconstr.setReturnType(aType);
@@ -773,7 +775,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   public void failDeriveSymTypeOfPrimaryGenericInvocationExpression2() throws IOException {
     //<TypeArg>super.<TypeArg>method(arg)
     MethodSymbol help = add(method("help",_doubleSymType),field("x",_intSymType));
-    help.setTypeVariableList(Lists.newArrayList(typeVariable("T")));
+    help.getSpannedScope().add(typeVariable("T"));
     TypeSymbol sup = type("Sup",Lists.newArrayList(help),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     sup.setClass(true);
     add2scope(scope,sup);
@@ -826,7 +828,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeVarSymbol t = typeVariable("T");
     add2scope(scope,t);
     MethodSymbol test = method("test",_charSymType);
-    test.setTypeVariableList(Lists.newArrayList(t));
+    test.getSpannedScope().add(t);
     TypeSymbol a = type("A",Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     SymTypeExpression aType = SymTypeExpressionFactory.createTypeObject("A",scope);
     FieldSymbol aField = field("a",aType);
@@ -848,7 +850,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeVarSymbol t = typeVariable("T");
     add2scope(scope,t);
     MethodSymbol constr = method("A",_charSymType);
-    constr.setTypeVariableList(Lists.newArrayList(t));
+    constr.getSpannedScope().add(t);
     TypeSymbol a = type("A",Lists.newArrayList(constr),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     SymTypeExpression aType = SymTypeExpressionFactory.createTypeObject("A",scope);
     constr.setReturnType(aType);
@@ -876,7 +878,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeVarSymbol t = typeVariable("T");
     add2scope(scope,t);
     MethodSymbol constr = method("ASuper",_charSymType);
-    constr.setTypeVariableList(Lists.newArrayList(t));
+    constr.getSpannedScope().add(t);
     TypeSymbol asuper = type("ASuper",Lists.newArrayList(constr),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     SymTypeExpression asupertype = SymTypeExpressionFactory.createTypeObject("ASuper",scope);
     constr.setReturnType(asupertype);
@@ -908,7 +910,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeVarSymbol t = typeVariable("T");
     add2scope(scope,t);
     MethodSymbol test = method("test",_charSymType);
-    test.setTypeVariableList(Lists.newArrayList(t));
+    test.getSpannedScope().add(t);
     TypeSymbol a = type("A",Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     add2scope(scope,a);
 
@@ -933,7 +935,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeVarSymbol t = typeVariable("T");
     add2scope(scope,t);
     MethodSymbol test = method("test",_charSymType);
-    test.setTypeVariableList(Lists.newArrayList(t));
+    test.getSpannedScope().add(t);
     test.setIsStatic(true);
     TypeSymbol a = type("A",Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     add2scope(scope,a);

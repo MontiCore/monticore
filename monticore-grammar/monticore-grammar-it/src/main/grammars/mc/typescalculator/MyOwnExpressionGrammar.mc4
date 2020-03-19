@@ -1,0 +1,8 @@
+package mc.typescalculator;
+
+component grammar MyOwnExpressionGrammar
+    extends de.monticore.expressions.ExpressionsBasis{
+
+     AbsoluteExpression implements Expression<201>
+        = "|" Expression "|";
+}

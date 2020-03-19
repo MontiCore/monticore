@@ -525,5 +525,4 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
     return Optional.empty();
   }
-
 }

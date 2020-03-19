@@ -1,0 +1,11 @@
+package mc.typescalculator;
+
+grammar MyOwnLanguage extends
+         de.monticore.expressions.CommonExpressions,
+         de.monticore.literals.MCCommonLiterals,
+         mc.typescalculator.MyOwnExpressionGrammar,
+         de.monticore.types.MCCollectionTypes,
+         mc.typescalculator.UnitTypes {
+
+    start Expression;
+}

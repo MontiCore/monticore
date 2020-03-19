@@ -18,5 +18,5 @@ public class MethodSymbolDeSer extends MethodSymbolDeSerTOP {
   protected java.util.List<de.monticore.types.typesymbols._symboltable.FieldSymbol> deserializeParameter(JsonObject symbolJson, ITypeSymbolsScope enclosingScope) {
     return ListDeSer.of(new FieldSymbolDeSer()).deserialize(symbolJson.getMember("parameter"), enclosingScope);
   }
-  
+
 }

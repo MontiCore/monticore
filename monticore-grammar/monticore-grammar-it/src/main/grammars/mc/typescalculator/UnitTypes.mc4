@@ -1,0 +1,7 @@
+package mc.typescalculator;
+
+grammar UnitTypes extends de.monticore.types.MCBasicTypes{
+
+    MinuteType implements MCType =
+            unit:key("min");
+}
