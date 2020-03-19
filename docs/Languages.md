@@ -129,7 +129,7 @@ MontiCore projects are hosted at
 * allows a language developer to use physical units in a language
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
-* Author: RE
+* Author: RE supported by KH with two Hiwis 
 * Language to parse Statecharts
 * creates transformation language within SC and sc<->cd4a
 
