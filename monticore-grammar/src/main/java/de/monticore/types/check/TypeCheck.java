@@ -54,6 +54,23 @@ public class TypeCheck {
     this.iSynthesize = synthesizeSymType;
     this.iTypesCalculator = iTypesCalculator;
   }
+
+  /**
+   *
+   * @param synthesizeSymType defines, which AST Types are mapped (and how)
+   */
+  public TypeCheck(ISynthesize synthesizeSymType){
+    this.iSynthesize = synthesizeSymType;
+  }
+
+  /**
+   *
+   * @param iTypesCalculator defines, which AST Literals are handled
+   *                               through the Expression type recognition
+   */
+  public TypeCheck(ITypesCalculator iTypesCalculator){
+    this.iTypesCalculator = iTypesCalculator;
+  }
   
   /*************************************************************************/
   
