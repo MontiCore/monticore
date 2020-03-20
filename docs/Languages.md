@@ -51,7 +51,7 @@ MontiCore projects are hosted at
 
 ### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Responsible: SVa, AGe
-* Project: `monticore/cd4analysis/cd4analysis`
+* Project: [`monticore/cd4analysis/cd4analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis)
 * Main grammars:
   * [`de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Analysis.mc4)
 * CD4A is the textual representation of a UML class diagram (describing the
@@ -67,11 +67,11 @@ MontiCore projects are hosted at
 * CD4A primary use is data modelling and has various possibilities for
   generation of data structures, database tables as well as 
   transport infrastructures.
-* More details can be found [**here**](https://XXX:Add-explanation)
+* More details can be found [**here**](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md)
 
 ### [Class Diagram for Code (CD4Code)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Responsible: SVa, AGe
-* Project: `monticore/cd4analysis/cd4analysis`
+* Project: [`monticore/cd4analysis/cd4analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis)
 * Main grammars (+CD4A): 
   * [`de.monticore.cd.CD4Code`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Code.mc4)
 * CD4Code is a conservative extension of CD4A, 
@@ -79,7 +79,7 @@ MontiCore projects are hosted at
 * CD4Code is often used as tool-internal intermediate AST that allows to
   map any kind of source models to a class/attribute/method/association based
   intermediate structure, before it is printed e.g. as Java code.
-* More details can be found [**here**](https://XXX:Add-explanation)
+* More details can be found [**here**](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md) (subpart *CD4Code*)
 
 
 ### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
