@@ -111,9 +111,14 @@ MontiCore projects are hosted at
 
 ### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
 * Author: SVa
+* Project: [`monticore/languages/OCL`](https://git.rwth-aachen.de/monticore/languages/OCL)
+* Main grammars:
+  * [`ocl.monticoreocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.mc4)
 * OCL/P is the textual representation of the UML OCL standard, adapted with Java-like syntax.
+* It's main goal is the usage in combination with other languages like CD4A or Object Diagrams.
 * A Java generator can be found [**here**](https://git.rwth-aachen.de/monticore/languages/OCL2Java).
 * A generator for Embedded MontiArc in combination with OCL can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
+* More details can be found [**here**](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/OCL.md)
 
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
 * Author: SH
@@ -139,9 +144,13 @@ MontiCore projects are hosted at
 
 ### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
 * Author: SVa
+* Project: [`monticore/EmbeddedMontiArc/languages/Tagging`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging)
+* Main grammars:
+  * [`ocl.monticore.lang.Tagging`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.mc4)
 * The Tagging language offers the possibility to enrich existing models of any DSLs.
 * The Tagging models can then be used as configuration, e.g. in a code generator.
 * Examples can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging-Examples)
+* More details can be found [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/Tagging.md)
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
 * Author: NJ
