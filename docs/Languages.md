@@ -137,15 +137,10 @@ MontiCore projects are hosted at
 <!-- Status: ok, BR 20.03.22 -->
   
 
-./monticore-generator/src/main/grammars/de/monticore/grammar/Grammar.mc4
-./monticore-generator/src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4
-vt 
-
-
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
 * Caretaker: NJ
 * MontiCore language for parsing JSON artifacts.
-<!-- Status: TODO: Teaser Erstellen -->
+<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
@@ -157,22 +152,24 @@ vt
     are a certain type of state machines and utilized in component and 
     connector architecture description languages (e.g. MontiArc) for 
     behavior modeling. (Alpha: Intention to become stable)
+<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
 ### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
 * Caretaker: SVa
-* Project: [`monticore/languages/OCL`](https://git.rwth-aachen.de/monticore/languages/OCL)
-* Main grammars:
-  * [`ocl.monticoreocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.mc4)
 * OCL/P is the textual representation of the UML OCL standard, adapted 
   with Java-like syntax.
-* It's main goal is the usage in combination with other languages like 
-  CD4A or Object Diagrams.
-* A Java generator can be found 
-  [**here**](https://git.rwth-aachen.de/monticore/languages/OCL2Java).
-* A generator for Embedded MontiArc in combination with OCL can be found 
-  [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
-* [**More details**](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/OCL.md)
+  It's main goal is the usage in combination with other languages like 
+  CD4A or Object Diagrams as an integrated part of that languages.
+* OCL/P comes with a generator.
+* OCL/P comes with an 
+  [OCL to Java generator](https://git.rwth-aachen.de/monticore/languages/OCL2Java)
+  and a second generator for OCL in combination with 
+  [*Embedded MontiArc*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
+* [Main grammar `ocl.monticoreocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.mc4)
+  and 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/OCL.md)
+<!-- Status: ok, BR 20.03.22 -->
 
 
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
