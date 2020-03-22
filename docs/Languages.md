@@ -65,8 +65,9 @@ MontiCore projects are hosted at
   CD4A primary use is therefore **data modelling**. It has various 
   possibilities for generation of data structures, database tables as well as 
   data transport infrastructures in cloud and distributed systems.
-* [Main grammar artifact `de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Analysis.mc4),
-  ([*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md))
+* [Main grammar `de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Analysis.mc4)
+  and 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md)
 <!-- Status: ok, BR 20.03.22 -->
 
 
@@ -80,8 +81,10 @@ MontiCore projects are hosted at
   intermediate structure, before it is printed e.g. as Java code. 
   A typical path is e.g. Statechart -> State pattern encoded in CD4Code 
   -> Decoration by monitoring methods -> Java code.
-* [**More details**](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md) 
-  (section *CD4Code*)
+* Main grammar [`de.monticore.cd.CD4Code`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Code.mc4)
+  and 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md) 
+  (see Section *CD4Code*)
 <!-- Status: ok, BR 20.03.22 -->
 
 
