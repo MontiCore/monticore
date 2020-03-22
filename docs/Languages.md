@@ -32,7 +32,6 @@ of the language, available language tools and its development status.
 The different development stati for grammars are explained 
 [**here**](../00.org/Explanations/StatusOfGrammars.md).
 
-
 The list covers the language grammars to be found in the several 
 `MontiCore` projects, such as `cd4analysis/cd4analysis`
 usually in folders like `src/main/grammars/` organized in packages 
@@ -43,6 +42,7 @@ MontiCore projects are hosted at
     and partially also at
 * [`https://github.com/MontiCore/`](https://github.com/MontiCore/monticore)
 
+
 ## List of Languages 
 
 <!--
@@ -50,10 +50,9 @@ MontiCore projects are hosted at
 * TO be added
 -->
 
+
 ### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Responsible: SVa, AGe
-* Main grammars:
-  * [`de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Analysis.mc4)
 * CD4A is the textual representation to describe UML class diagrams 
   (it uses the [UML/P](http://mbse.se-rwth.de/) variant).
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
@@ -67,7 +66,8 @@ MontiCore projects are hosted at
   possibilities for generation of data structures, database tables as well as 
   data transport infrastructures in cloud and distributed systems.
 * [**More details**](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md)
-<!-- Status: ok -->
+<!-- Status: ok, BR 20.03.22 -->
+
 
 ### [Class Diagram for Code (CD4Code)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Responsible: SVa, AGe
@@ -79,7 +79,9 @@ MontiCore projects are hosted at
   intermediate structure, before it is printed e.g. as Java code. 
   A typical path is e.g. Statechart -> State pattern encoded in CD4Code 
   -> Decoration by monitoring methods -> Java code.
-* [**More details**](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md) (subpart *CD4Code*)
+* [**More details**](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md) 
+  (section *CD4Code*)
+<!-- Status: ok, BR 20.03.22 -->
 
 
 ### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
@@ -88,6 +90,8 @@ MontiCore projects are hosted at
 * Feature diagrams are used to model (software) product lines
 * Feature configurations select a subset of features of a feature model 
   to describe a product of the product line
+<!-- Status: TODO: Teaser Erstellen -->
+
 
 ### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Alpha: Intention to become stable)
 * Author: LN 
@@ -95,6 +99,8 @@ MontiCore projects are hosted at
 * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation), 
        [**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
 * Documentation: [**here**](https://git.rwth-aachen.de/macoco/gui-dsl/wikis/home)
+<!-- Status: TODO: Teaser Erstellen -->
+
 
 ### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-generator) (MontiCore Stable)
 * Author: MB 
@@ -103,9 +109,12 @@ MontiCore projects are hosted at
     of a language.
 * Examples: All languages on this page are examples of MontiCore grammars.
 
+
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
 * Author: NJ
 * MontiCore language for parsing JSON artifacts.
+<!-- Status: TODO: Teaser Erstellen -->
+
 
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
 * Author: DS 
@@ -116,6 +125,7 @@ MontiCore projects are hosted at
     are a certain type of state machines and utilized in component and 
     connector architecture description languages (e.g. MontiArc) for 
     behavior modeling. (Alpha: Intention to become stable)
+
 
 ### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) 
     (Alpha: Intention to become stable)
@@ -132,6 +142,7 @@ MontiCore projects are hosted at
 * A generator for Embedded MontiArc in combination with OCL can be found 
   [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
 * [**More details**](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/OCL.md)
+
 
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
 * Author: SH
