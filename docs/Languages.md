@@ -94,7 +94,7 @@ MontiCore projects are hosted at
 * Feature diagrams are used to model (software) product lines
 * Feature configurations select a subset of features of a feature model 
   to describe a product of the product line
-<!-- Status: TODO: Teaser Erstellen -->
+<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
 ### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Alpha: Intention to become stable)
@@ -103,7 +103,7 @@ MontiCore projects are hosted at
 * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation), 
        [**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
 * Documentation: [**here**](https://git.rwth-aachen.de/macoco/gui-dsl/wikis/home)
-<!-- Status: TODO: Teaser Erstellen -->
+<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
 ### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-generator) (MontiCore Stable)
@@ -112,8 +112,34 @@ MontiCore projects are hosted at
   *meta language*, but also used as ordinary language.
 * Its main use currently: A MontiCore grammar defines the 
   **concrete syntax** and the **abstract syntax** of a textual language.
-  Examples: All languages on this page are defined using MontiCore grammars.
-* 
+  Examples: All languages on this page are defined using MontiCore grammars
+  and thus conform to this Grammar.
+* Main features: Define **nonterminals** and their **productions** in EBNF, 
+  **lexical token** as regular expressions. 
+* Extensions:
+  * **Abstract**, **interface** and **external productions** allow to
+    define extensible component grammars (object-oriented grammar style).
+  * Inherited productions can be redefined (overwritten) as well
+    as conservatively extended.
+  * **Symbols definition** places can be introduced and 
+    **symbol referencing places** defined, such that for standard cases
+    automatically symbol tables can be added.
+  * Additional attributes and methods can be added to the abstract syntax only.
+  * Various elements, such as **semantic predicates** and **actions**
+    can be defined in the same style as the underlying ANTLR.
+* Main grammars 
+  [`de.monticore.grammar.Grammar`](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/grammars/de/monticore/grammar/Grammar.mc4)
+  defines the language with some open parameters and
+  [`de.monticore.grammar.Grammar_WithConcepts`](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4)
+  binds the external, imported expressions, method bodies, etc.
+* [*Detailed description*](http://monticore.de/MontiCore_Reference-Manual.2017.pdf)
+  in the MontiCore Reference Manual.
+<!-- Status: ok, BR 20.03.22 -->
+  
+
+./monticore-generator/src/main/grammars/de/monticore/grammar/Grammar.mc4
+./monticore-generator/src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4
+vt 
 
 
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
