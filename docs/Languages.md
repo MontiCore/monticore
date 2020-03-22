@@ -161,7 +161,13 @@ MontiCore projects are hosted at
   with Java-like syntax.
   It's main goal is the usage in combination with other languages like 
   CD4A or Object Diagrams as an integrated part of that languages.
-* OCL/P comes with a generator.
+* OCL/P allows to define **invariants** and **pre/post conditions** in 
+  the known OCL style. Furthermore, it offers a large set **expressions**
+  to model constraints. These expressions include **Java expressions**,
+  **set operations**, **list operations** etc., completely covering the 
+  OCL standard concepts, but extend it e.g. by **set comprehensions** 
+  known from Haskell, a **typesafe cast** or a 
+  **transitive closure operator**.
 * OCL/P comes with an 
   [OCL to Java generator](https://git.rwth-aachen.de/monticore/languages/OCL2Java)
   and a second generator for OCL in combination with 
@@ -175,24 +181,34 @@ MontiCore projects are hosted at
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
 * Caretaker: SH
 * Language for textual object diagrams.
+<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+
 
 ### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (Beta: In Stabilization) )(50% to MC6)
 * Caretaker: RE
 * Grammar to parse Sequence Diagrams
 * Can be used with testing generator to derive test cases
+<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Alpha: Intention to become stable)
 * Caretaker: EK, NJ, DS
 * allows a language developer to use physical units in a language
+<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
 * Caretaker: RE supported by KH with two Hiwis 
 * Language to parse Statecharts
 * creates transformation language within SC and sc<->cd4a
+<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+
 
 ### [SysML/P](https://git.rwth-aachen.de/monticore/sysml/sysml_2) (Alpha: Intention to become stable)
 * Caretaker: NJ
 * Project for SysML 2 languages. It is compatible with the general SysML 2 standard.
+<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+
 
 ### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
 * Caretaker: SVa
@@ -203,10 +219,14 @@ MontiCore projects are hosted at
 * The Tagging models can then be used as configuration, e.g. in a code generator.
 * [**Examples can be found here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging-Examples)
 * [**More details**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/Tagging.md)
+XXX
+
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
 * Caretaker: NJ
 * MontiCore language for parsing XML artifacts.
+<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+
 
 ### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (Beta: In Stabilization)
 * Caretaker: MB
@@ -220,11 +240,12 @@ MontiCore projects are hosted at
 * JavaLight is parameterized with:
   * Literals: through the Literal interface nonterminal, 
    users are free to choose the literals they need
-
+XXX
 
 ### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) (30% to MC6)
 * Caretaker: MB
 * This is the full Java' Language (as Opposed to JavaLight).
+<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
 ## Further Information
