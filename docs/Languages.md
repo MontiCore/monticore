@@ -66,7 +66,7 @@ MontiCore projects are hosted at
   possibilities for generation of data structures, database tables as well as 
   data transport infrastructures in cloud and distributed systems.
 * [Main grammar artifact `de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Analysis.mc4),
-  ([*details*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md))
+  ([*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md))
 <!-- Status: ok, BR 20.03.22 -->
 
 
