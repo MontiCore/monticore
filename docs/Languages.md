@@ -65,7 +65,8 @@ MontiCore projects are hosted at
   CD4A primary use is therefore **data modelling**. It has various 
   possibilities for generation of data structures, database tables as well as 
   data transport infrastructures in cloud and distributed systems.
-* [**More details**](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md)
+* [Main grammar artifact `de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Analysis.mc4),
+  ([*details*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md))
 <!-- Status: ok, BR 20.03.22 -->
 
 
@@ -109,7 +110,7 @@ MontiCore projects are hosted at
 * Its main use currently: A MontiCore grammar defines the 
   **concrete syntax** and the **abstract syntax** of a textual language.
   Examples: All languages on this page are defined using MontiCore grammars.
-* XXX
+* 
 
 
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
