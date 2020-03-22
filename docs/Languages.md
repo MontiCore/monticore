@@ -85,7 +85,7 @@ MontiCore projects are hosted at
 
 
 ### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
-* Author: AB, DS
+* Caretaker: AB, DS
 * Language for textual feature models and feature configurations
 * Feature diagrams are used to model (software) product lines
 * Feature configurations select a subset of features of a feature model 
@@ -94,7 +94,7 @@ MontiCore projects are hosted at
 
 
 ### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Alpha: Intention to become stable)
-* Author: LN 
+* Caretaker: LN 
 * Language for textual definition of Graphical User Interfaces of Web Applications
 * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation), 
        [**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
@@ -103,21 +103,23 @@ MontiCore projects are hosted at
 
 
 ### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-generator) (MontiCore Stable)
-* Author: MB 
-* Language for MontiCore Grammars
-* A MontiCore grammar defines the concrete and the abstract syntax 
-    of a language.
-* Examples: All languages on this page are examples of MontiCore grammars.
+* Caretaker: MB 
+* Language for MontiCore Grammars itself. It can be understood as 
+  *meta language*, but also used as ordinary language.
+* Its main use currently: A MontiCore grammar defines the 
+  **concrete syntax** and the **abstract syntax** of a textual language.
+  Examples: All languages on this page are defined using MontiCore grammars.
+* XXX
 
 
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
-* Author: NJ
+* Caretaker: NJ
 * MontiCore language for parsing JSON artifacts.
 <!-- Status: TODO: Teaser Erstellen -->
 
 
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
-* Author: DS 
+* Caretaker: DS 
 * MontiArc is an architecture and behavior modeling language and framework 
     that provides an integrated, platform independent structure and behavior 
     modeling language with an extensible code generation framework.
@@ -127,9 +129,8 @@ MontiCore projects are hosted at
     behavior modeling. (Alpha: Intention to become stable)
 
 
-### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) 
-    (Alpha: Intention to become stable)
-* Author: SVa
+### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
+* Caretaker: SVa
 * Project: [`monticore/languages/OCL`](https://git.rwth-aachen.de/monticore/languages/OCL)
 * Main grammars:
   * [`ocl.monticoreocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.mc4)
@@ -145,32 +146,29 @@ MontiCore projects are hosted at
 
 
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
-* Author: SH
+* Caretaker: SH
 * Language for textual object diagrams.
 
 ### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (Beta: In Stabilization) )(50% to MC6)
-* Author: RE
+* Caretaker: RE
 * Grammar to parse Sequence Diagrams
 * Can be used with testing generator to derive test cases
 
-### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) 
-    (Alpha)
-* Author: EK, NJ, DS
+### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Alpha: Intention to become stable)
+* Caretaker: EK, NJ, DS
 * allows a language developer to use physical units in a language
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
-* Author: RE supported by KH with two Hiwis 
+* Caretaker: RE supported by KH with two Hiwis 
 * Language to parse Statecharts
 * creates transformation language within SC and sc<->cd4a
 
-### [SysML/P](https://git.rwth-aachen.de/monticore/sysml/sysml_2) 
-    (Alpha: Intention to become stable)
-* Author: NJ
+### [SysML/P](https://git.rwth-aachen.de/monticore/sysml/sysml_2) (Alpha: Intention to become stable)
+* Caretaker: NJ
 * Project for SysML 2 languages. It is compatible with the general SysML 2 standard.
 
-### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) 
-    (Alpha: Intention to become stable)
-* Author: SVa
+### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
+* Caretaker: SVa
 * Project: [`monticore/EmbeddedMontiArc/languages/Tagging`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging)
 * Main grammars:
   * [`ocl.monticore.lang.Tagging`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.mc4)
@@ -180,11 +178,11 @@ MontiCore projects are hosted at
 * [**More details**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/Tagging.md)
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
-* Author: NJ
+* Caretaker: NJ
 * MontiCore language for parsing XML artifacts.
 
 ### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (Beta: In Stabilization)
-* Author: MB
+* Caretaker: MB
 * This is a reduced version of the Java language which primarily provides 
     methods, statements and expressions 
 * JavaLight is meant to be used to integrate simplified Java-like parts 
@@ -198,7 +196,7 @@ MontiCore projects are hosted at
 
 
 ### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) (30% to MC6)
-* Author: MB
+* Caretaker: MB
 * This is the full Java' Language (as Opposed to JavaLight).
 
 
