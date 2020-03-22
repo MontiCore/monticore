@@ -52,34 +52,33 @@ MontiCore projects are hosted at
 
 ### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Responsible: SVa, AGe
-* Project: [`monticore/cd4analysis/cd4analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis)
 * Main grammars:
   * [`de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Analysis.mc4)
-* CD4A is the textual representation of a UML class diagram (describing the
-  [UML/P](http://mbse.se-rwth.de/) variant).
+* CD4A is the textual representation to describe UML class diagrams 
+  (it uses the [UML/P](http://mbse.se-rwth.de/) variant).
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
   visibilities**,
   and all kinds of **associations** and **composition**, including **qualified**
-  and **ordered
-  associations**. 
-* It focusses on the analysis phase in typical data-driven projects
-  and is therefore mainly for data modelling.
-* Consequently, it omits method signatures and complex generics.
-* CD4A primary use is data modelling and has various possibilities for
-  generation of data structures, database tables as well as 
-  transport infrastructures.
+  and **ordered associations**. 
+* It focusses on the analysis phase in typical data-driven development 
+  projects and is therefore mainly for data modelling.
+  Consequently, it omits method signatures and complex generics.
+  CD4A primary use is therefore **data modelling**. It has various 
+  possibilities for generation of data structures, database tables as well as 
+  data transport infrastructures in cloud and distributed systems.
 * [**More details**](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md)
+<!-- Status: ok -->
 
 ### [Class Diagram for Code (CD4Code)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Responsible: SVa, AGe
-* Project: [`monticore/cd4analysis/cd4analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis)
-* Main grammars (+CD4A): 
-  * [`de.monticore.cd.CD4Code`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Code.mc4)
-* CD4Code is a conservative extension of CD4A, 
+* CD4Code describes **UML class diagrams**.
+* CD4Code is a conservative extension of **CD4A**, 
   which includes method signatures.
 * CD4Code is often used as tool-internal intermediate AST that allows to
   map any kind of source models to a class/attribute/method/association based
-  intermediate structure, before it is printed e.g. as Java code.
+  intermediate structure, before it is printed e.g. as Java code. 
+  A typical path is e.g. Statechart -> State pattern encoded in CD4Code 
+  -> Decoration by monitoring methods -> Java code.
 * [**More details**](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md) (subpart *CD4Code*)
 
 
