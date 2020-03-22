@@ -50,9 +50,7 @@ MontiCore projects are hosted at
 * TO be added
 -->
 
-### [Class Diagram For Analysis 
-   (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) 
-   (Beta: In Stabilization)
+### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Responsible: SVa, AGe
 * Project: [`monticore/cd4analysis/cd4analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis)
 * Main grammars:
@@ -106,13 +104,11 @@ MontiCore projects are hosted at
     of a language.
 * Examples: All languages on this page are examples of MontiCore grammars.
 
-### [JSON](https://git.rwth-aachen.de/monticore/languages/json) 
-    (Beta: In Stabilization)
+### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
 * Author: NJ
 * MontiCore language for parsing JSON artifacts.
 
-### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) 
-    (Beta: In Stabilization)
+### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
 * Author: DS 
 * MontiArc is an architecture and behavior modeling language and framework 
     that provides an integrated, platform independent structure and behavior 
@@ -138,13 +134,11 @@ MontiCore projects are hosted at
   [**here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
 * [**More details**](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/OCL.md)
 
-### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) 
-    (Beta: In Stabilization)
+### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
 * Author: SH
 * Language for textual object diagrams.
 
-### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language) 
-    (Beta: In Stabilization) )(50% to MC6)
+### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (Beta: In Stabilization) )(50% to MC6)
 * Author: RE
 * Grammar to parse Sequence Diagrams
 * Can be used with testing generator to derive test cases
@@ -154,8 +148,7 @@ MontiCore projects are hosted at
 * Author: EK, NJ, DS
 * allows a language developer to use physical units in a language
 
-### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) 
-    (Beta: In Stabilization) (90% to MC6)
+### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
 * Author: RE supported by KH with two Hiwis 
 * Language to parse Statecharts
 * creates transformation language within SC and sc<->cd4a
@@ -180,8 +173,7 @@ MontiCore projects are hosted at
 * Author: NJ
 * MontiCore language for parsing XML artifacts.
 
-### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) 
-    (Beta: In Stabilization)
+### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (Beta: In Stabilization)
 * Author: MB
 * This is a reduced version of the Java language which primarily provides 
     methods, statements and expressions 
@@ -195,8 +187,7 @@ MontiCore projects are hosted at
    users are free to choose the literals they need
 
 
-### [Java](https://git.rwth-aachen.de/monticore/javaDSL) 
-    (Beta: In Stabilization) (30% to MC6)
+### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) (30% to MC6)
 * Author: MB
 * This is the full Java' Language (as Opposed to JavaLight).
 
