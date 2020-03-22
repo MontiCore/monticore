@@ -265,9 +265,10 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     @attribute name Name of the rule
     @attribute superrule Rule reference to a super rule
     @attribute superInterfaceRule Rule reference to a super interface rule
-    @attribute aSTSuperClass Rule reference to a super rule (used for abstract syntax only)
-    @attribute aSTSuperInterfacerule Rule reference to a super rule (used for abstract
-                                   syntax only)
+    @attribute aSTSuperClass Rule reference to a super rule
+               (used for abstract syntax only)
+    @attribute aSTSuperInterfacerule Rule reference to a super rule
+               (used for abstract syntax only)
     @attribute action Action executed priot to the rule body
     @attribute alts List of alternatives representing the body of the rule
   */
