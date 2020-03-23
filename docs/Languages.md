@@ -212,14 +212,36 @@ MontiCore projects are hosted at
 
 ### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
 * Caretaker: SVa
-* The Tagging language offers the possibility to enrich existing models of any DSLs.
-* The Tagging models can then be used as configuration, e.g. in a code generator.
-* [**Examples can be found here**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging-Examples)
-XXX
-* [Main grammar `ocl.monticore.lang.Tagging`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.mc4)
-  and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/Tagging.md)
-<!-- Status: ok, BR 20.03.22 -->
+* **Tags** are known e.g. from the UML and SysML and mainly used to add
+  extra information to a model element. 
+  Normally tags (and **stereotypes**) are inserted within the models,
+  which over time polutes the models, especially when different sets of
+  tags are needed for different technical platforms.
+* MontiCore offers a solution that **separates a model and its tags into
+  distinct artifacts**. Several independent tagging artifacts
+  can be added without any need to adapt the core model.
+  This allows fo reuse even of fixed library models.
+* The tagging artifacts are dependent on two factors:
+  * First, **tags** can be added to named elements of the base model.
+    It is of great help that we have an elegant symbol mechanism included 
+    in the MontiCore generator.
+  * Second, the set of allowed tags can be constrained, a by an explicit
+    definition of allowed **tag types** and **tag values** and an explicit 
+    declaration on which **kinds of symbols** a tag may be attached to.
+  Consequently tagging is not a single language, but a method to 
+  **automatically and schematicall derive** languages:
+  # A tagging schema language TSL (dependent on the available symbol types
+    of the base grammar)
+  # a tagging language TL (dependent on the tag schema models written in TSL)
+* Because tagging models can e.g. be used as configuration techniques 
+  in a code generator, appropriate infrastructure is generated as well.
+* Some [**tagging language examples**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging-Examples)
+* Although concrete languages (and their grammars) are themselves generated,
+  there is a 
+  [main grammar `ocl.monticore.lang.Tagging`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.mc4),
+  where the tagging langue is derived from.
+  See also [*detailed description*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/Tagging.md)
+<!-- Status: TODO SV: Check 20.03.23 -->
 
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
