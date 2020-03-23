@@ -19,7 +19,7 @@ However, language components are often identified with their main
 component grammar.
 
 Language components are currently organized in two levels:
-In this list you find mainly grammars for 
+In this list you mainly find grammars for 
 **complete (but also reusable and adaptable) languages**.
 A list of
 [**grammar components**](../monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
