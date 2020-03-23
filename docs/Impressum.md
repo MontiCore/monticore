@@ -4,11 +4,11 @@ According to German law, each website needs to have an "impressum",
 declaring among other things who is responsible for the content.
 A few things are currently unclear:
 
-#. Is a website only github in toto, or each group
+1. Is a website only github in toto, or each group
 withing github, or each project?
-#. What if the project is open source, do then all (German)
+1. What if the project is open source, do then all (German)
   contributors have to add an impressum?
-#. If the webpage is from outside Germany (like github),
+1. If the webpage is from outside Germany (like github),
   does German law then apply at all?
 
 Although a lot of things are unclear and the 
