@@ -17,8 +17,8 @@ safe side and add our Impressum below.
 Please note that this is an open source project 
 and each contributor may change any artifact of the project
 -- even this text -- so we do not claim any responsibility 
-or credits for the project, even so we are currently the 
-__curators__.
+or credits for the project, even so we are currently having the 
+role of the __curators__.
   
 ---------------------
 
