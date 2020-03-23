@@ -35,7 +35,7 @@ component grammar MCBasics {
     (' ' | 
     '\t' |
     '\r' |
-    '\n' ) :{_channel = HIDDEN;};
+    '\n' ) : ->skip;
     
   /*=================================================================*/
 
@@ -53,13 +53,7 @@ component grammar MCBasics {
       Comments are ignored by the parser.
   */
   token ML_COMMENT =
-    "/*" ({_input.LA(2) != '/'}?'*' |
-     NEWLINE |
-      ~('*' |
-      '\n' |
-      '\r' )
-    )*
-    "*/" : -> skip
+    "/*" .*? "*/"  : -> skip
     {storeComment();};
 
 }

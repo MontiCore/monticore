@@ -41,7 +41,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     ("package" package:(Name& || ".")+ ";")?
     (importStatement:MCImportStatement)*
 
-    DeprecatedAnnotation? (["component"])? key("grammar") Name
+    DeprecatedAnnotation? ["component"]? key("grammar") Name
       ("extends" supergrammar:(GrammarReference || ",")+ )?
       "{"
          (
@@ -183,8 +183,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     @attribute Block Block used if other than standard mapping shall be used
   */
   LexProd implements Prod =
-    DeprecatedAnnotation? (["fragment"] | ["comment"]  )*
-    ("token") Name
+    DeprecatedAnnotation? (["fragment"] | ["comment"])*
+    "token" Name
     (
       (
         LexOption ("{" initAction:Action "}")? // Statements
@@ -334,7 +334,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     @attribute Components List of the rule components of this alternative
   */
   Alt =
-    ([rightAssoc:"<rightassoc>"])? DeprecatedAnnotation? component:RuleComponent* ;
+    [rightAssoc:"<rightassoc>"]? DeprecatedAnnotation? component:RuleComponent* ;
 
 
   /**
@@ -367,7 +367,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   */
   NonTerminalSeparator implements RuleComponent =
     (usageName:Name&  ":")?
-    "(" Name (plusKeywords:["&"])? "||" separator:String ")" iteration:["*"|"+"];
+    "(" Name plusKeywords:["&"]? "||" separator:String ")" iteration:["*"|"+"];
 
 
 
@@ -388,7 +388,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
       ":"
     )?
     alt:(Alt || "|")+ ")"
-    (iteration:["?"|"*"|"+"])?;
+    iteration:["?"|"*"|"+"]?;
 
 
   /**
@@ -434,7 +434,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   Terminal implements RuleComponent, ITerminal =
     (usageName:Name&  ":")?
     name:String
-    (iteration:["?"|"*"|"+"])?;
+    iteration:["?"|"*"|"+"]?;
 
   /**
     Use KeyTerminal instead of Terminal if you don't want this to be a keyword
@@ -442,7 +442,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   KeyTerminal implements RuleComponent, ITerminal =
     (usageName:Name&  ":")?
     "key" "(" (String || "|")+ ")"
-    (iteration:["?"|"*"|"+"])?;
+    iteration:["?"|"*"|"+"]?;
 
   /**
     Constants are constant string but lead to an attribute
@@ -458,7 +458,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   ConstantGroup implements RuleComponent =
      (usageName:Name&  ":")?
      "[" Constant ("|" Constant )* "]"
-     (iteration:["?"|"*"|"+"])? ;
+     iteration:["?"|"*"|"+"]? ;
 
 
   /**
@@ -531,8 +531,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   GrammarMethod=
       "method"
       (["public"] | ["private"] | ["protected"])?
-      (["final"])?
-      (["static"])?
+      ["final"]?
+      ["static"]?
       MCReturnType Name
       "(" (MethodParameter || ",")* ")"
       ("throws" exception:(MCType || ",")+)?
@@ -566,12 +566,12 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   // Lexer
 
   LexAlt =
-    (lexComponent:LexComponent)*;
+    lexComponent:LexComponent*;
 
   interface LexComponent;
 
   LexBlock implements LexComponent =
-    (negate:["~"])? "("
+    negate:["~"]? "("
     (
       (
         option:LexOption ("init" "{" initAction:Action "}")? // Statements
@@ -584,10 +584,10 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
      (iteration:["?"|"*"|"+"])?;
 
   LexCharRange implements LexComponent =
-     (negate:["~"])? lowerChar:Char ".." upperChar:Char;
+     negate:["~"]? lowerChar:Char ".." upperChar:Char;
 
   LexChar implements LexComponent =
-    (negate:["~"])? Char ;
+    negate:["~"]? Char ;
 
   LexAnyChar implements LexComponent =
     ".";
@@ -603,7 +603,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     Name ;
 
   LexSimpleIteration implements LexComponent =
-    (LexNonTerminal | LexString | LexChar | LexAnyChar) iteration:["?"|"*"|"+"] (question:["?"])?;
+    (LexNonTerminal | LexString | LexChar | LexAnyChar) iteration:["?"|"*"|"+"] question:["?"]?;
 
   LexOption =
     "options" "{" iD:Name "=" value:Name ";" "}";
