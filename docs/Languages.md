@@ -252,17 +252,21 @@ MontiCore projects are hosted at
 
 ### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (Beta: In Stabilization)
 * Caretaker: MB
-* This is a reduced version of the Java language which primarily provides 
-    methods, statements and expressions 
-* JavaLight is meant to be used to integrate simplified Java-like parts 
-    in modeling languages but not 
-  to parse complete Java implementations
-  * One main usage of JavaLight is in the Grammar-language to model e.g. 
-    Java methods there
-* JavaLight is parameterized with:
-  * Literals: through the Literal interface nonterminal, 
-   users are free to choose the literals they need
-XXX
+* This is a reduced version of the **Java language**.
+  JavaLight is meant to be used to integrate simplified Java-like parts 
+  in modeling languages but not to parse complete Java implementations.
+* It provides Java's **attribute** and **method definitions**, 
+  **statements** and **expressions**, but 
+  does not provide class or interface definitions and
+  also no wildcards in the type system.
+* One main usage of JavaLight is in the Grammar-language to model e.g. 
+  Java methods. 
+* [Main grammar `de.monticore.JavaLight`]((https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
+  and 
+  [*detailed description*](to Be Defined).
+<!-- Status: TODO: Detailed description erstellen und verlinken-->
+
+
 
 ### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) (30% to MC6)
 * Caretaker: MB
