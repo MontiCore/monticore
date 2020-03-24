@@ -98,12 +98,27 @@ MontiCore projects are hosted at
 
 
 ### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Alpha: Intention to become stable)
-* Caretaker: LN 
-* Language for textual definition of Graphical User Interfaces of Web Applications
-* Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation), 
-       [**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
-* Documentation: [**here**](https://git.rwth-aachen.de/macoco/gui-dsl/wikis/home)
+* Caretaker: LN
+* Language for textual definition of Graphical User Interfaces of Web
+Applications
+* GUI DSL covers GUI elements and relevant configuration, which include
+**layout elements, widgets**, their **style definition** and **references to
+data sources**.
+* Language is mainly used to describe **GUI of Web Applications**. The models of
+the language represent graphical views or their parts, omitting smaller details
+of style definition and simplifying connection between graphical elements and
+data sources.
+* Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation),
+[**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
+* [Main grammar `GUIDSL`](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.mc4)
+includes definitions of MontiGem visualisation components, which are based on
+abstract concepts, described in
+[core grammar `GUIDSLCore`](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/src/main/grammars/GUIDSLCore.mc4).
+[*Detailed description*](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/GUIDSL.md)
+and
+[*documentation*](https://git.rwth-aachen.de/macoco/gui-dsl/wikis/home).
 <!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+<!-- Status: TODO AGe: mit Lukas Netz abstimmen und aktualisieren -->
 
 
 ### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-generator) (MontiCore Stable)
