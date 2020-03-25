@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("superSymTabCreators", "symTabCreatorName", "simpleName")}
+${tc.signature("symTabMill", "superSymTabCreators", "symTabCreatorName", "simpleName")}
   this.scopeStack.push(globalScope);
   this.globalScope = globalScope;
 <#list superSymTabCreators?keys as name>
@@ -7,5 +7,5 @@ ${tc.signature("superSymTabCreators", "symTabCreatorName", "simpleName")}
   set${name}Visitor(${name?uncap_first}SymbolTableCreator);
 
 </#list>
-  symbolTable = new ${symTabCreatorName}(scopeStack);
+  symbolTable = ${symTabMill}.${symTabCreatorName?uncap_first}Builder().setScopeStack(scopeStack).build();
   set${simpleName}Visitor(symbolTable);

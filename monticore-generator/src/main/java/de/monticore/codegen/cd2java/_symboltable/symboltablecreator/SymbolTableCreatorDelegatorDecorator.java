@@ -74,6 +74,7 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
   protected ASTCDConstructor createConstructor(String symTabCreatorDelegator, String globalScope,
                                                String symbolTableCreator, String simpleName) {
     List<CDDefinitionSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
+    String symTabMillFullName = symbolTableService.getSymTabMillFullName();
     Map<String, String> superSymTabCreator = new HashMap<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : superCDsTransitive) {
       if (cdDefinitionSymbol.isPresentAstNode() && symbolTableService.hasStartProd(cdDefinitionSymbol.getAstNode())) {
@@ -83,7 +84,7 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
     ASTCDParameter globalScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(globalScope), "globalScope");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreatorDelegator, globalScopeParam);
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorSymbolTableCreatorDelegator",
-        superSymTabCreator, symbolTableCreator, simpleName));
+        symTabMillFullName, superSymTabCreator, symbolTableCreator, simpleName));
     return constructor;
   }
 

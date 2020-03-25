@@ -23,6 +23,7 @@ import java.util.*;
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
@@ -57,6 +58,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       String symbolTableCreator = symbolTableService.getSymbolTableCreatorSimpleName();
       String visitorName = visitorService.getVisitorFullName();
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();
+      String symTabMillFullName = symbolTableService.getSymTabMillFullName();
       ASTMCBasicGenericType dequeType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, scopeInterface);
       ASTMCWildcardTypeArgument wildCardTypeArgument = getMCTypeFacade().createWildCardWithUpperBoundType(scopeInterface);
       ASTMCBasicGenericType dequeWildcardType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, wildCardTypeArgument);
@@ -85,7 +87,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
           .addAllCDMethods(realThisMethods)
           .addCDAttribute(firstCreatedScopeAttribute)
           .addAllCDMethods(firstCreatedScopeMethod)
-          .addCDMethod(createCreateFromASTMethod(astFullName, symbolTableCreator))
+          .addCDMethod(createCreateFromASTMethod(astFullName, symbolTableCreator, symTabMillFullName))
           .addCDMethod(createPutOnStackMethod(scopeInterface))
           .addAllCDMethods(createCurrentScopeMethods(scopeInterface))
           .addCDMethod(createSetScopeStackMethod(dequeType, simpleName))
@@ -134,14 +136,15 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     return scopeStack;
   }
 
-  protected ASTCDMethod createCreateFromASTMethod(String astStartProd, String symbolTableCreator) {
+  protected ASTCDMethod createCreateFromASTMethod(String astStartProd, String symbolTableCreator, String symTabMillFullName) {
+    String artifactScope = symbolTableService.getArtifactScopeSimpleName();
     String artifactScopeFullName = symbolTableService.getArtifactScopeFullName();
     ASTCDParameter rootNodeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(astStartProd), "rootNode");
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC,
         getMCTypeFacade().createQualifiedType(artifactScopeFullName), "createFromAST", rootNodeParam);
     String generatedErrorCode = symbolTableService.getGeneratedErrorCode(astStartProd + symbolTableCreator + createFromAST.getName());
     this.replaceTemplate(EMPTY_BODY, createFromAST, new TemplateHookPoint(
-        TEMPLATE_PATH + "CreateFromAST", artifactScopeFullName, symbolTableCreator, generatedErrorCode));
+        TEMPLATE_PATH + "CreateFromAST", symTabMillFullName, artifactScope, symbolTableCreator, generatedErrorCode));
     return createFromAST;
   }
 
@@ -254,9 +257,11 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
   }
 
   protected ASTCDMethod createSymbolCreate_Method(String symbolFullName, String simpleName, ASTCDParameter astParam) {
+    String symTabMillFullName = symbolTableService.getSymTabMillFullName();
     ASTCDMethod createSymbolMethod = getCDMethodFacade().createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(symbolFullName),
         "create_" + simpleName, astParam);
-    this.replaceTemplate(EMPTY_BODY, createSymbolMethod, new StringHookPoint("return new " + symbolFullName + "(ast.getName());"));
+    this.replaceTemplate(EMPTY_BODY, createSymbolMethod, new StringHookPoint("return " + symTabMillFullName +
+        "." + StringTransformations.uncapitalize(simpleName) + SYMBOL_SUFFIX + BUILDER_SUFFIX + "().setName(ast.getName()).build();"));
     return createSymbolMethod;
   }
 
