@@ -241,7 +241,7 @@ and
   [`de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/sysml/sysml_2/-/tree/master/sysml2-language/src/main/grammars/de/monticore/lang/sysml)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/sysml/sysml_2/-/blob/master/sysml2-language/sysml2.md)
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+<!-- Status: Teaser erstellt -->
 
 
 ### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
