@@ -278,8 +278,8 @@ and
   Java methods. 
 * [Main grammar `de.monticore.JavaLight`]((https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
   and 
-  [*detailed description*](to Be Defined).
-<!-- Status: TODO: Detailed description erstellen und verlinken-->
+  [*detailed description*](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/JavaLight.md).
+<!-- Status: TODO: Symbole definieren und Beschreibung anpassen (Entwicklung im Branch) -->
 
 
 
