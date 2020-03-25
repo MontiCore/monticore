@@ -18,7 +18,6 @@ import de.monticore.io.FileReaderWriterMock;
 /**
  * A simple unit test invoking a template which uses the new template logger.
  *
- * @since 4.0.1
  */
 public class TemplateLoggerTest {
   
