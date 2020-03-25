@@ -20,8 +20,6 @@ import java.util.Optional;
 
 /**
  * Main class for the Automaton DSL tool.
- *
- * @author (last commit) $Author$
  */
 public class AutomataTool {
   
