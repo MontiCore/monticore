@@ -157,7 +157,8 @@ and
 * The MontiCore language for parsing JSON artifacts
 * The JSON grammar adheres to the common **standard** and allows parsing 
   arbitrary JSON artifacts for further processing
-* [Main grammar `de.monticore.lang.JSON`](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4)
+* Main grammar 
+  [`de.monticore.lang.JSON`](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/json.md)
 <!-- Status: Teaser erstellt -->
