@@ -267,9 +267,15 @@ and
 
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
-* Caretaker: NJ
-* MontiCore language for parsing XML artifacts.
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+* Responsible: NJ
+* The MontiCore language for parsing XML artifacts
+* The XML grammar adheres to the common **standard** and allows parsing 
+  arbitrary XML artifacts for further processing
+* Main grammar 
+  [`de.monticore.lang.XML`](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/src/main/grammars/de/monticore/lang/XML.mc4)
+  and 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/xml.md)
+<!-- Status: Teaser erstellt -->
 
 
 ### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (Beta: In Stabilization)
