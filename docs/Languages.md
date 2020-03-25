@@ -98,12 +98,27 @@ MontiCore projects are hosted at
 
 
 ### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Alpha: Intention to become stable)
-* Caretaker: LN 
-* Language for textual definition of Graphical User Interfaces of Web Applications
-* Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation), 
-       [**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
-* Documentation: [**here**](https://git.rwth-aachen.de/macoco/gui-dsl/wikis/home)
+* Caretaker: LN
+* Language for textual definition of Graphical User Interfaces of Web
+Applications
+* GUI DSL covers GUI elements and relevant configuration, which include
+**layout elements, widgets**, their **style definition** and **references to
+data sources**.
+* Language is mainly used to describe **GUI of Web Applications**. The models of
+the language represent graphical views or their parts, omitting smaller details
+of style definition and simplifying connection between graphical elements and
+data sources.
+* Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation),
+[**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
+* [Main grammar `GUIDSL`](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.mc4)
+includes definitions of MontiGem visualisation components, which are based on
+abstract concepts, described in
+[core grammar `GUIDSLCore`](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/src/main/grammars/GUIDSLCore.mc4).
+[*Detailed description*](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/GUIDSL.md)
+and
+[*documentation*](https://git.rwth-aachen.de/macoco/gui-dsl/wikis/home).
 <!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+<!-- Status: TODO AGe: mit Lukas Netz abstimmen und aktualisieren -->
 
 
 ### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-generator) (MontiCore Stable)
@@ -138,9 +153,15 @@ MontiCore projects are hosted at
   
 
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
-* Caretaker: NJ
-* MontiCore language for parsing JSON artifacts.
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+* Responsible: NJ
+* The MontiCore language for parsing JSON artifacts
+* The JSON grammar adheres to the common **standard** and allows parsing 
+  arbitrary JSON artifacts for further processing
+* Main grammar 
+  [`de.monticore.lang.JSON`](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4)
+  and 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/json.md)
+<!-- Status: Teaser erstellt -->
 
 
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
@@ -172,7 +193,8 @@ MontiCore projects are hosted at
   [OCL to Java generator](https://git.rwth-aachen.de/monticore/languages/OCL2Java)
   and a second generator for OCL in combination with 
   [*Embedded MontiArc*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
-* [Main grammar `ocl.monticoreocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.mc4)
+* Main grammar 
+  [`ocl.monticoreocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/OCL.md)
 <!-- Status: ok, BR 20.03.22 -->
@@ -245,9 +267,15 @@ MontiCore projects are hosted at
 
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
-* Caretaker: NJ
-* MontiCore language for parsing XML artifacts.
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+* Responsible: NJ
+* The MontiCore language for parsing XML artifacts
+* The XML grammar adheres to the common **standard** and allows parsing 
+  arbitrary XML artifacts for further processing
+* Main grammar 
+  [`de.monticore.lang.XML`](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/src/main/grammars/de/monticore/lang/XML.mc4)
+  and 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/xml.md)
+<!-- Status: Teaser erstellt -->
 
 
 ### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (Beta: In Stabilization)
@@ -263,8 +291,8 @@ MontiCore projects are hosted at
   Java methods. 
 * [Main grammar `de.monticore.JavaLight`]((https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
   and 
-  [*detailed description*](to Be Defined).
-<!-- Status: TODO: Detailed description erstellen und verlinken-->
+  [*detailed description*](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/JavaLight.md).
+<!-- Status: TODO: Symbole definieren und Beschreibung anpassen (Entwicklung im Branch) -->
 
 
 

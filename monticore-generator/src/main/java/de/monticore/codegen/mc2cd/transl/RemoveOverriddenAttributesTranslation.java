@@ -9,6 +9,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDStereoValue;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
+import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.monticore.utils.Link;
@@ -32,7 +33,7 @@ public class RemoveOverriddenAttributesTranslation implements
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-    for (Link<ASTNode, ASTCDClass> classLink : rootLink.getLinks(ASTNode.class,
+    for (Link<ASTClassProd, ASTCDClass> classLink : rootLink.getLinks(ASTClassProd.class,
         ASTCDClass.class)) {
 
       for (Link<ASTNode, ASTCDAttribute> link : classLink.getLinks(ASTNode.class, ASTCDAttribute.class)) {
