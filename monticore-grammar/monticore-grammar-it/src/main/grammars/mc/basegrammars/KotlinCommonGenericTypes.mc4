@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.basegrammars;
+
+grammar KotlinCommonGenericTypes extends de.monticore.types.MCCollectionTypes {
+
+  MCArrayGenericType implements MCGenericType <200> =
+        {next("Array")}? Name "<" mCTypeArgument:MCTypeArgument ">";
+
+  astrule MCArrayGenericType =
+     mCTypeArgument:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
+     name:String*
+  ;
+}
