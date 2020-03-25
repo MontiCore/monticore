@@ -153,9 +153,14 @@ and
   
 
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
-* Caretaker: NJ
-* MontiCore language for parsing JSON artifacts.
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+* Responsible: NJ
+* The MontiCore language for parsing JSON artifacts
+* The JSON grammar adheres to the common **standard** and allows parsing 
+  arbitrary JSON artifacts for further processing
+* [Main grammar `de.monticore.lang.JSON`](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4)
+  and 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/json.md)
+<!-- Status: Teaser erstellt -->
 
 
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
