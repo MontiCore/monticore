@@ -226,10 +226,22 @@ and
 <!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
-### [SysML/P](https://git.rwth-aachen.de/monticore/sysml/sysml_2) (Alpha: Intention to become stable)
+### [SysML_2](https://git.rwth-aachen.de/monticore/sysml/sysml_2/-/tree/master/sysml2-language) (Alpha: Intention to become stable)
 * Caretaker: NJ
-* Project for SysML 2 languages. It is compatible with the general SysML 2 standard.
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+* Project for the SysML 2 language famlily. It will be compatible with the 
+  general upcoming SysML 2 specification.
+
+* MontiCore's SysML 2 is a language familiy that comes with a textual 
+  representation to describe SysML 2 diagrams with respect to the standard. 
+
+* SysML 2 covers **ADs**, **BDDs**, **IBDs**, **PackageDiagrams**, 
+  **ParametricDiagrams**, **RequirementDiagrams**, **SDs**, **SMDs**, 
+  **UseCaseDiagrams**, and general **SysMLBasics**
+* Main grammars
+  [`de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/sysml/sysml_2/-/tree/master/sysml2-language/src/main/grammars/de/monticore/lang/sysml)
+  and 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/sysml/sysml_2/-/blob/master/sysml2-language/sysml2.md)
+<!-- Status: Teaser erstellt -->
 
 
 ### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
