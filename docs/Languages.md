@@ -192,7 +192,8 @@ and
   [OCL to Java generator](https://git.rwth-aachen.de/monticore/languages/OCL2Java)
   and a second generator for OCL in combination with 
   [*Embedded MontiArc*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
-* [Main grammar `ocl.monticoreocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.mc4)
+* Main grammar 
+  [`ocl.monticoreocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/OCL.md)
 <!-- Status: ok, BR 20.03.22 -->
