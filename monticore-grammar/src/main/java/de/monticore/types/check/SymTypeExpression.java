@@ -2,6 +2,9 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisMill;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
@@ -53,11 +56,14 @@ public abstract class SymTypeExpression {
 
   public abstract SymTypeExpression deepClone();
 
+  protected List<MethodSymbol> methodList = new ArrayList<>();
+
   /**
    * returns the list of methods the SymTypeExpression can access and filters these for a method with specific name
    * the last calculated type in the type check was no type
    */
   public List<MethodSymbol> getMethodList(String methodname){
+    methodList.clear();
     //get methods from the typesymbol
     List<MethodSymbol> methods = getCorrectMethods(methodname,false);
     return transformMethodList(methodname,methods);
@@ -92,11 +98,27 @@ public abstract class SymTypeExpression {
    * @return transformed methods
    */
   protected List<MethodSymbol> transformMethodList(String methodName, List<MethodSymbol> methods){
-    List<MethodSymbol> methodList = new ArrayList<>();
+    List<MethodSymbol> matchingMethods = new ArrayList<>();
+    for(MethodSymbol method: methods){
+      List<FieldSymbol> fieldSymbols = new ArrayList<>();
+      for(FieldSymbol parameter: method.getParameterList()){
+        fieldSymbols.add(parameter.deepClone());
+      }
+      MethodSymbol copiedMethodSymbol = method.deepClone();
+      ExpressionsBasisScope scope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+      for(FieldSymbol parameter: fieldSymbols){
+        scope.add(parameter);
+      }
+      for(TypeVarSymbol typeVar: method.getTypeVariableList()){
+        scope.add(typeVar);
+      }
+      copiedMethodSymbol.setSpannedScope(scope);
+      this.methodList.add(copiedMethodSymbol);
+    }
     //filter methods
-    for(MethodSymbol method:methods){
+    for(MethodSymbol method:methodList){
       if(method.getName().equals(methodName)){
-        methodList.add(method.deepClone());
+        matchingMethods.add(method.deepClone());
       }
     }
     if(isGenericType()){
@@ -113,7 +135,7 @@ public abstract class SymTypeExpression {
       }
       //every method in methodList: replace typevariables in parameters or return type with its
       // actual symtypeexpression
-      for(MethodSymbol method: methodList) {
+      for(MethodSymbol method: matchingMethods) {
         //return type
         for (TypeVarSymbol typeVariableArgument : typeVariableArguments) {
           if (method.getReturnType().print().equals(typeVariableArgument.getName())&&method.getReturnType().isTypeVariable()) {
@@ -132,19 +154,19 @@ public abstract class SymTypeExpression {
       }
       //if there are two methods with the same parameters and return type remove the second method
       // in the list because it is a method from a super type and is overridden by the first method
-      for(int i = 0;i<methodList.size()-1;i++){
-        for(int j = i+1;j<methodList.size();j++){
-          if(methodList.get(i).getReturnType().print().equals(methodList.get(j).getReturnType().print())&&
-              methodList.get(i).getParameterList().size()==methodList.get(j).getParameterList().size()){
+      for(int i = 0;i<matchingMethods.size()-1;i++){
+        for(int j = i+1;j<matchingMethods.size();j++){
+          if(matchingMethods.get(i).getReturnType().print().equals(matchingMethods.get(j).getReturnType().print())&&
+              matchingMethods.get(i).getParameterList().size()==matchingMethods.get(j).getParameterList().size()){
             boolean equal = true;
-            for(int k = 0;k<methodList.get(i).getParameterList().size();k++){
-              if(!methodList.get(i).getParameterList().get(k).getType().print().equals(
-                  methodList.get(j).getParameterList().get(k).getType().print())){
+            for(int k = 0;k<matchingMethods.get(i).getParameterList().size();k++){
+              if(!matchingMethods.get(i).getParameterList().get(k).getType().print().equals(
+                  matchingMethods.get(j).getParameterList().get(k).getType().print())){
                 equal = false;
               }
             }
             if(equal){
-              methodList.remove(methodList.get(j));
+              matchingMethods.remove(matchingMethods.get(j));
             }else{
               Log.error("0xA0298 The types of the return type and the parameters of the methods have to be the same");
             }
@@ -152,7 +174,7 @@ public abstract class SymTypeExpression {
         }
       }
     }
-    return methodList;
+    return matchingMethods;
   }
 
   /**
@@ -162,6 +184,7 @@ public abstract class SymTypeExpression {
    * @return the correct methods for the specific case
    */
   public List<MethodSymbol> getMethodList(String methodName, boolean outerIsType){
+    methodList.clear();
     List<MethodSymbol> methods = getCorrectMethods(methodName,outerIsType);
     return transformMethodList(methodName,methods);
   }
