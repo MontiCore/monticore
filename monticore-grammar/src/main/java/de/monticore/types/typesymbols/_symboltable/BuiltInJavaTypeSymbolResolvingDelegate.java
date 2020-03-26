@@ -361,6 +361,7 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolv
   }
 
   public static MethodSymbol addFieldToMethod(MethodSymbol m, FieldSymbol f){
+    f.setIsParameter(true);
     m.getSpannedScope().add(f);
     f.setEnclosingScope(m.getSpannedScope());
     return m;

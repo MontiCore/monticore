@@ -52,7 +52,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   symbolrule  Field =
     type: de.monticore.types.check.SymTypeExpression
     isStatic:boolean
-    parameter:boolean
+    isParameter:boolean
   ;
 
   /*=================================================================*/
