@@ -193,9 +193,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       Optional<ASTCDClass> modelLoader = createModelLoader(astCD);
       if (modelLoader.isPresent()) {
         symTabCD.addCDClass(modelLoader.get());
-        if (!isComponent) {
           symTabCD.addCDClass(createModelLoaderBuilder(modelLoader.get()));
-        }
       }
 
       // symbol table creator

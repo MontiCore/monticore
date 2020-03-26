@@ -260,8 +260,9 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     String symTabMillFullName = symbolTableService.getSymTabMillFullName();
     ASTCDMethod createSymbolMethod = getCDMethodFacade().createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(symbolFullName),
         "create_" + simpleName, astParam);
+    String symbolSimpleName = Names.getSimpleName(symbolFullName);
     this.replaceTemplate(EMPTY_BODY, createSymbolMethod, new StringHookPoint("return " + symTabMillFullName +
-        "." + StringTransformations.uncapitalize(simpleName) + SYMBOL_SUFFIX + BUILDER_SUFFIX + "().setName(ast.getName()).build();"));
+        "." + StringTransformations.uncapitalize(symbolSimpleName) + BUILDER_SUFFIX + "().setName(ast.getName()).build();"));
     return createSymbolMethod;
   }
 

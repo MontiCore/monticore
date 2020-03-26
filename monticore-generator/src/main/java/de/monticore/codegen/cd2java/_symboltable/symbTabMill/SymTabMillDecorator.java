@@ -93,13 +93,13 @@ public class SymTabMillDecorator extends AbstractCreator<ASTCDCompilationUnit, A
           ASTCDAttribute millLanguageAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, languageName);
           millAttributeList.add(millLanguageAttribute);
         }
-
+      }
 
         String modelLoaderName = StringTransformations.uncapitalize(symbolTableService.getModelLoaderClassSimpleName());
         ASTCDAttribute millModelLoaderAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, modelLoaderName);
         millAttributeList.add(millModelLoaderAttribute);
 
-      }
+
 
       String symTabCreatorName = StringTransformations.uncapitalize(symbolTableService.getSymbolTableCreatorSimpleName());
       ASTCDAttribute millSymTabCreatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, symTabMill, symTabCreatorName);

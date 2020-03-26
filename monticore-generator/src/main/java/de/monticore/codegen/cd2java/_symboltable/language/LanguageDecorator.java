@@ -78,7 +78,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
         .addAllCDMethods(nameMethods)
         .addAllCDMethods(fileExtensionMethods)
         .addCDMethod(createGetSymbolTableCreatorMethod(symTabMillFullName))
-        .addCDMethod(createProvideModelLoaderMethod(modelLoaderClassName))
+        .addCDMethod(createProvideModelLoaderMethod(modelLoaderClassName, symTabMillFullName))
         .addAllCDMethods(createCalculateModelNameMethods(symbolDefiningProds))
         .build();
     Optional<ASTCDMethod> getParserMethod = createGetParserMethod(input.getCDDefinition());
@@ -129,14 +129,14 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     return getSymbolTableCreatorMethod;
   }
 
-  protected ASTCDMethod createProvideModelLoaderMethod(String modelLoaderName) {
+  protected ASTCDMethod createProvideModelLoaderMethod(String modelLoaderName, String symTabMillFullName) {
     ASTCDMethod provideModelLoaderMethod = getCDMethodFacade().createMethod(PROTECTED,
         getMCTypeFacade().createQualifiedType(modelLoaderName), "provideModelLoader");
     if (isLanguageTop()) {
       provideModelLoaderMethod.getModifier().setAbstract(true);
     } else {
-      this.replaceTemplate(EMPTY_BODY, provideModelLoaderMethod, new StringHookPoint("return new " + modelLoaderName + "(this);"));
-    }
+      this.replaceTemplate(EMPTY_BODY, provideModelLoaderMethod, new StringHookPoint("return " + symTabMillFullName + "." +
+          StringTransformations.uncapitalize(modelLoaderName) + "Builder().setModelingLanguage(this).build();"));    }
     return provideModelLoaderMethod;
   }
 
