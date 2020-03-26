@@ -175,7 +175,7 @@ and
     for modeling of archutectural diagrams
     * [IOAutomata](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/documentation/languages/automata-fe/src/main/grammars/IOAutomata.mc4)
     for component behavior description
-    * [MontiARc] (https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/documentation/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
+    * [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/documentation/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
     combining architectural diagrams with automata behavior descriptions.
 <!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
