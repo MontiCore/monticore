@@ -14,6 +14,7 @@
 # because mkdocs can only find *.md files there
 mkdir docs/docs
 mv docs/*.md docs/docs
+mv docs/further_docs docs/docs/further_docs
 mv monticore-grammar docs/monticore-grammar
 mv monticore-runtime docs/monticore-runtime
 mv 00.org docs/00.org
