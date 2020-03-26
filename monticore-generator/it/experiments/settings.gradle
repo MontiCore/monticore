@@ -36,3 +36,5 @@ include(':visit_L_inherit')
 project(':automaton_experiments').projectDir = file('automaton')
 project(':S01_intro').projectDir = file('S01.intro')
 project(':visit_L_inherit').projectDir = file('visit.L.inherit')
+include 'templates'
+

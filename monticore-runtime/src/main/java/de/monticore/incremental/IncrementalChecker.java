@@ -43,7 +43,6 @@ import de.se_rwth.commons.logging.Log;
  * {@link InputOutputFilesReporter} processing can be skipped or not, i.e., the
  * realization of incremental model processing.
  *
- * @since 4.1.5
  */
 public class IncrementalChecker {
 

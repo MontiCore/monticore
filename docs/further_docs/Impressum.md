@@ -1,5 +1,25 @@
 # Impressum
 
+According to German law, each website needs to have an "impressum",
+declaring among other things who is responsible for the content.
+A few things are currently unclear:
+
+1. Is only github (in total) a website or each group
+withing github, or each project?
+1. What if the project is open source, do then all (German)
+  contributors have to add an impressum?
+1. If the webpage is hosted outside Germany (like github),
+  does German law then apply at all?
+
+Although a lot of things are unclear and the 
+text below doesn't totally fit, we have opted to be on the 
+safe side and add our Impressum below.
+Please note that this is an open source project 
+and each contributor may change any artifact of the project
+-- even this text -- so we do not claim any responsibility 
+or credits for the project, even so we are currently having the 
+role of the __curators__.
+  
 ---------------------
 
 ### Herausgeberin
