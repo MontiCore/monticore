@@ -48,6 +48,7 @@ public class LongCommonLiteralsTest {
       checkLongLiteral(10L, "10L");
       checkLongLiteral(5L, "5L");
       checkLongLiteral(5L, "05L");
+      checkLongLiteral(5L, "05L");
 
     }
     catch (IOException e) {
@@ -67,6 +68,7 @@ public class LongCommonLiteralsTest {
       checkFalse("0xaL");
       checkFalse("0xC0FFEEL");
       checkFalse("0x005fL");
+      checkFalse("0 L");
     }
     catch (IOException e) {
       fail(e.getMessage());

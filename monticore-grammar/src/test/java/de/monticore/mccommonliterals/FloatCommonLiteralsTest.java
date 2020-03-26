@@ -69,6 +69,9 @@ public class FloatCommonLiteralsTest {
       checkFalse(".11e+12F");
       checkFalse("29.18e08F");
       checkFalse("0029.0008e-00008F");
+      checkFalse("0. 0f");
+      checkFalse("0 .0f");
+      checkFalse("23.4 f");
 
       // hexadezimal number
       checkFalse("0x5.p1f");

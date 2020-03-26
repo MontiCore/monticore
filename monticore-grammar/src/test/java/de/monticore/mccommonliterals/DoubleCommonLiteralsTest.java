@@ -60,7 +60,8 @@ public class DoubleCommonLiteralsTest {
       checkFalse("0.d");
       checkFalse("5d");
       checkFalse("009e2d");
-
+      checkFalse("0 .0");
+      checkFalse("0.0 d");
     }
     catch (IOException e) {
       fail(e.getMessage());

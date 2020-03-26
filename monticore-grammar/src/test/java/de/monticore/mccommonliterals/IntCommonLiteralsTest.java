@@ -3,6 +3,8 @@
 package de.monticore.mccommonliterals;
 
 import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
+import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
+import de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
@@ -32,9 +34,23 @@ public class IntCommonLiteralsTest {
     assertEquals(i, ((ASTNatLiteral) lit.get()).getValue());
   }
 
+  private void checkSignedIntLiteral(int i, String s) throws IOException {
+    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
+    Optional<ASTSignedNatLiteral> lit = parser.parseSignedNatLiteral(new StringReader(s));
+    assertTrue(lit.isPresent());
+    assertTrue(lit.get() instanceof ASTSignedNatLiteral);
+    assertEquals(i, ((ASTSignedNatLiteral) lit.get()).getValue());
+  }
+
   private void checkFalse(String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTNatLiteral> lit = parser.parseNatLiteral(new StringReader(s));
+    assertTrue(!lit.isPresent());
+  }
+
+  private void checkSignedFalse(String s) throws IOException {
+    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
+    Optional<ASTSignedNatLiteral> lit = parser.parseSignedNatLiteral(new StringReader(s));
     assertTrue(!lit.isPresent());
   }
 
@@ -76,4 +92,40 @@ public class IntCommonLiteralsTest {
       fail(e.getMessage());
     }
   }
+
+  @Test
+  public void testSignedIntLiterals() {
+    try {
+      // decimal number
+      checkSignedIntLiteral(0, "0");
+      checkSignedIntLiteral(-123, "-123");
+      checkSignedIntLiteral(-10, "-10");
+      checkSignedIntLiteral(-5, "-5");
+
+      // number with leading 0
+      checkSignedIntLiteral(-2, "-02");
+      checkSignedIntLiteral(-7, "-07");
+      checkSignedIntLiteral(0, "00");
+      checkSignedIntLiteral(-76543210, "-076543210");
+      checkSignedIntLiteral(-17, "-00017");
+    }
+    catch (IOException e) {
+      fail(e.getMessage());
+    }
+  }
+
+  @Test
+  public void testSignedFalse() {
+    try {
+      // hexadezimal number
+      checkFalse("0x12");
+      checkFalse("- 2");
+      checkFalse("- 02");
+    }
+    catch (IOException e) {
+      fail(e.getMessage());
+    }
+  }
+
+
 }
