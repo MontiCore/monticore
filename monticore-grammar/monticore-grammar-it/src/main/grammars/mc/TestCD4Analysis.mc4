@@ -93,7 +93,7 @@ grammar TestCD4Analysis extends de.monticore.types.MCSimpleGenericTypes, de.mont
     @attribute values List of Values of this Stereotype
   */
   CDStereotype = "<<" value:(CDStereoValue || ",")+ ">" ">"
-	// It is not possible to define ">>".
+  // It is not possible to define ">>".
     // Parsing generic typs like "List<List<String>>" leads to problems.
     {((_input.LT(-2).getLine()==_input.LT(-1).getLine()) && (_input.LT(-1).getCharPositionInLine()==_input.LT(-2).getCharPositionInLine()+1))}?;
 

@@ -8,7 +8,7 @@
 */
 
 component grammar MCHexNumbers extends
-		MCNumbers, de.monticore.MCBasics {
+    MCNumbers, de.monticore.MCBasics {
 
   /*========================================================================*/
   /*== Hexadecimal =========================================================*/

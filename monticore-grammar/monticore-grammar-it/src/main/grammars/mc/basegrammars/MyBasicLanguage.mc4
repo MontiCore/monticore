@@ -2,9 +2,9 @@
 package mc.basegrammars;
 
 component grammar MyBasicLanguage extends
-			de.monticore.expressions.ExpressionsBasis,
-			de.monticore.types.MCBasicTypes,
-			de.monticore.statements.MCStatementsBasis {
+      de.monticore.expressions.ExpressionsBasis,
+      de.monticore.types.MCBasicTypes,
+      de.monticore.statements.MCStatementsBasis {
     MyLanguage = "myLang" "{" (MyDefinition | Expression)* "}";
     MyDefinition = MCType Name " = " MCStatement;
 }

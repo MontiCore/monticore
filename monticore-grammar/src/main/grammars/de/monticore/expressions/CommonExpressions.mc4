@@ -51,9 +51,9 @@ component grammar CommonExpressions
   *
   */
   CallExpression implements Expression <240> =
-	Expression Arguments;
+  Expression Arguments;
 
-	astrule CallExpression = Name;
+  astrule CallExpression = Name;
 
   /*=================================================================*/
 
@@ -65,65 +65,65 @@ component grammar CommonExpressions
    *  This is to be resolved via SymbolTable
    */
   FieldAccessExpression implements Expression <290> =
-  	Expression "." Name;
+    Expression "." Name;
 
   /*=================================================================*/
 
   BooleanNotExpression implements Expression <200> =
-	"~"  Expression;
+  "~"  Expression;
 
   LogicalNotExpression implements Expression <190> =
-	"!" Expression;
+  "!" Expression;
 
   /*=================================================================*/
 
   MultExpression implements Expression <180>, InfixExpression =
-	left:Expression operator:"*" right:Expression;
+  left:Expression operator:"*" right:Expression;
 
   DivideExpression implements Expression <180>, InfixExpression =
-	left:Expression operator:"/" right:Expression;
+  left:Expression operator:"/" right:Expression;
 
   ModuloExpression implements Expression <180>, InfixExpression =
-	left:Expression operator:"%" right:Expression;
+  left:Expression operator:"%" right:Expression;
     
   PlusExpression implements Expression <170>, InfixExpression =
-	left:Expression operator:"+" right:Expression;
+  left:Expression operator:"+" right:Expression;
         
   MinusExpression implements Expression <170>, InfixExpression =
-	left:Expression operator:"-" right:Expression;
+  left:Expression operator:"-" right:Expression;
 
   /*=================================================================*/
 
   LessEqualExpression implements Expression <150>, InfixExpression =
-	left:Expression operator:"<=" right:Expression;
-	
+  left:Expression operator:"<=" right:Expression;
+
   GreaterEqualExpression implements Expression <150>, InfixExpression =
-	left:Expression operator:">=" right:Expression;
-	
+  left:Expression operator:">=" right:Expression;
+
   LessThanExpression implements Expression <150>, InfixExpression =
-	left:Expression operator:"<" right:Expression;
-	
+  left:Expression operator:"<" right:Expression;
+
   GreaterThanExpression implements Expression <150>, InfixExpression =
-	left:Expression operator:">" right:Expression;
-	        
+  left:Expression operator:">" right:Expression;
+
   EqualsExpression implements Expression <130>, InfixExpression =
-	left:Expression operator:"==" right:Expression;
-	
+  left:Expression operator:"==" right:Expression;
+
   NotEqualsExpression implements Expression <130>, InfixExpression =
-	left:Expression operator:"!=" right:Expression;
-	        
+  left:Expression operator:"!=" right:Expression;
+
   /*=================================================================*/
 
   BooleanAndOpExpression implements Expression <120>, InfixExpression =
-	left:Expression operator:"&&" right:Expression;
-	
+  left:Expression operator:"&&" right:Expression;
+
   BooleanOrOpExpression implements Expression <117>, InfixExpression =
-	left:Expression operator:"||" right:Expression;
-	
+  left:Expression operator:"||" right:Expression;
+
   /*=================================================================*/
 
   ConditionalExpression implements Expression <114> =
-	condition:Expression "?" trueExpression:Expression ":" falseExpression:Expression;
+  condition:Expression "?" trueExpression:Expression ":" falseExpression:Expression;
 
   /*=================================================================*/
 

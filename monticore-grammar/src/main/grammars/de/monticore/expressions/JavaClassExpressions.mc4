@@ -54,26 +54,26 @@ component grammar JavaClassExpressions
   /*=================================================================*/
 
   PrimaryThisExpression implements Expression <320>
-	= "this";
+  = "this";
 
   ThisExpression implements Expression <280> =
-	Expression "." "this";
+  Expression "." "this";
 
   ArrayExpression implements Expression <250> =
-	Expression "[" indexExpression:Expression "]";
+  Expression "[" indexExpression:Expression "]";
 
   SuperExpression implements Expression <270> =
-	Expression "." "super" SuperSuffix;
-	
+  Expression "." "super" SuperSuffix;
+
   GenericInvocationExpression implements Expression <260> =
-	Expression "." PrimaryGenericInvocationExpression;
-	
+  Expression "." PrimaryGenericInvocationExpression;
+
   TypeCastExpression implements Expression <230> =
-	"(" ExtType ")" Expression;
+  "(" ExtType ")" Expression;
         
   PrimarySuperExpression implements Expression <330>
-	= "super";
-	
+  = "super";
+
   /*=================================================================*/
 
   ClassExpression implements Expression <360>
@@ -96,7 +96,7 @@ component grammar JavaClassExpressions
   /*=================================================================*/
 
   InstanceofExpression implements Expression <140>
-	= Expression "instanceof" ExtType;
+  = Expression "instanceof" ExtType;
 
 
 }

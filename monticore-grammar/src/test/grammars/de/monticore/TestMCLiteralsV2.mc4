@@ -3,10 +3,10 @@
 package de.monticore;
 
 grammar TestMCLiteralsV2 extends
-	MCNumbers,
-	// de.monticore.MCLiteralsV2,
-	StringLiterals
-	{
+  MCNumbers,
+  // de.monticore.MCLiteralsV2,
+  StringLiterals
+  {
 
  DecimalList = "["  (Decimal | ",")* "]" ;
  IntegerList = "["  (Integer | ",")* "]" ;

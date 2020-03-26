@@ -13,7 +13,7 @@ package de.monticore.literals;
 */
 
 component grammar MCCommonLiterals extends de.monticore.MCBasics,
-			           de.monticore.literals.MCLiteralsBasis {
+                 de.monticore.literals.MCLiteralsBasis {
 
 
   /*========================================================================*/

@@ -4,6 +4,6 @@ package de.monticore.testsymtabmill;
 
 grammar TestSymTabMill extends de.monticore.MCBasics {
 
-	symbol scope A = "B" Name;
+  symbol scope A = "B" Name;
 
 }

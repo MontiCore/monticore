@@ -122,7 +122,7 @@ ElementValuePair
 interface ElementValue;
 
 ElementValueOrExpr implements AnnotationArguments
-	= ElementValue | Expression;
+    = ElementValue | Expression;
 
 ElementValueArrayInitializer implements ElementValue
     =   "{" (ElementValueOrExpr || ",")* (",")? "}"
@@ -151,7 +151,7 @@ DefaultValue
     ;
 
 CreatorExpression implements Expression <235> =
-	"new" Creator;
+    "new" Creator;
 
 interface Creator ;
 
