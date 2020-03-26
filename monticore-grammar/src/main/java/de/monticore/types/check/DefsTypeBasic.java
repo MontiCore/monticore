@@ -158,7 +158,6 @@ public class DefsTypeBasic {
             .setName(name)
             .setFullName(name)  // can later be adapted, when fullname of Type is known
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setParameterList(new ArrayList<>())
             .setReturnType(returnType)
             .build();
     m.setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
@@ -166,7 +165,7 @@ public class DefsTypeBasic {
   }
   
   public static MethodSymbol add(MethodSymbol m, FieldSymbol f) {
-    m.getParameterList().add(f);
+    f.setIsParameter(true);
     m.getSpannedScope().add(f);
     return m;
   }

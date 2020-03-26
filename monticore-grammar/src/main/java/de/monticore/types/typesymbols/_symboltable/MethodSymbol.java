@@ -32,7 +32,6 @@ public class MethodSymbol extends MethodSymbolTOP {
     for(FieldSymbol parameter: this.getParameterList()){
       parameterClone.add(parameter.deepClone());
     }
-    clone.setParameterList(parameterClone);
     return clone;
   }
 
@@ -59,5 +58,12 @@ public class MethodSymbol extends MethodSymbolTOP {
       }
     }
     return typeVarSymbolList;
+  }
+
+  public List<FieldSymbol> getParameterList(){
+    return spannedScope.getLocalFieldSymbols()
+        .stream()
+        .filter(FieldSymbol::isIsParameter)
+        .collect(Collectors.toList());
   }
 }

@@ -112,9 +112,9 @@ public class CD2EHelper {
           .map(this::createFieldSymbolFormCDFieldSymbol)
           .collect(Collectors.toList());
       methodSymbol.setIsStatic(cdMethOrConstrSymbol.isIsStatic());
+      parameters.forEach(symbol -> methodSymbol.getSpannedScope().add(symbol));
 
       methodSymbol.setReturnType(returnType);
-      methodSymbol.setParameterList(parameters);
       return methodSymbol;
     }
   }
