@@ -172,9 +172,9 @@ and
 * The Documentation [MontiArc.md](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/documentation/MontiArc.md)
 * The MontiArc language family contains the following grammar
     * [Arc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/documentation/languages/arc-fe/src/main/grammars/Arc.mc4) 
-    for modeling of archutectural diagrams
+    for modeling architectural diagrams.
     * [IOAutomata](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/documentation/languages/automata-fe/src/main/grammars/IOAutomata.mc4)
-    for component behavior description
+    for component behavior description.
     * [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/documentation/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
     combining architectural diagrams with automata behavior descriptions.
 <!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
