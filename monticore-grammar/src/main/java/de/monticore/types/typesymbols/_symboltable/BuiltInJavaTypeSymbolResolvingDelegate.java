@@ -334,7 +334,6 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolv
         .setName(name)
         .setFullName(name)  // can later be adapted, when fullname of Type is known
         .setAccessModifier(AccessModifier.ALL_INCLUSION)
-        .setParameterList(new ArrayList<>())
         .setReturnType(returnType)
         .build();
     m.setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build());
@@ -362,8 +361,8 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolv
   }
 
   public static MethodSymbol addFieldToMethod(MethodSymbol m, FieldSymbol f){
+    f.setIsParameter(true);
     m.getSpannedScope().add(f);
-    m.addParameter(f);
     f.setEnclosingScope(m.getSpannedScope());
     return m;
   }

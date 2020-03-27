@@ -182,7 +182,7 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("getSymbolTableCreator", languageClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbolTableCreatorDelegator", method.getMCReturnType().getMCType());
+    assertDeepEquals("AutomatonSymbolTableCreatorDelegator", method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameter(0).getMCType());
