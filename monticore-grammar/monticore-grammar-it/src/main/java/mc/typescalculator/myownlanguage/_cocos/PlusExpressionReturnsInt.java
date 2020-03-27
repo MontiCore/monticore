@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator.myownlanguage._cocos;
 
 import de.monticore.expressions.commonexpressions._ast.ASTPlusExpression;

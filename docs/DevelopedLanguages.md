@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Languages and Language Components that have been developed with MontiCore
 
 The MontiCore language workbench has been under development already 

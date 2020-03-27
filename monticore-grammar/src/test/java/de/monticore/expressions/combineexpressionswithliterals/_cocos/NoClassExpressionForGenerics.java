@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.combineexpressionswithliterals._cocos;
 
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTExtReturnType;

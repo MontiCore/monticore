@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.symbolTransl;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;

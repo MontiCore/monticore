@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
 import de.monticore.types.check.DeriveSymTypeOfExpression;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;

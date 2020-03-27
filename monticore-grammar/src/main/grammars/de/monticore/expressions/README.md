@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # MontiCore - Expression-Language Modules
 
 MC-Expressions are used to formulate mathematical and programmatic 

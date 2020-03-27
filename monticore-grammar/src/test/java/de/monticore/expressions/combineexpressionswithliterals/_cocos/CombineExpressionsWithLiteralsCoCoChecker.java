@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.combineexpressionswithliterals._cocos;
 
 public class CombineExpressionsWithLiteralsCoCoChecker extends CombineExpressionsWithLiteralsCoCoCheckerTOP {

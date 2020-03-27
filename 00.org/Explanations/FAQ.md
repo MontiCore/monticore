@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # FAQ for MontiCore
 ### Using Maven
 1. Eclipse shows me an error stating that my project configuration is not up-to-date.

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.builtInTypes;
 
 import de.monticore.antlr4.MCConcreteParser;

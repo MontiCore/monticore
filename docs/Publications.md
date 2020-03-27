@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 <!DOCTYPE html>
 <!-- file is only redirecting the monticore orginisation pagesto the se publication page https://www.se-rwth.de/topics/MontiCore.php-->
 <meta charset="utf-8">

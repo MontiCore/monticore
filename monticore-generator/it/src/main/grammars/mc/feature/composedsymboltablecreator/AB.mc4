@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.composedsymboltablecreator;
 
 grammar AB extends mc.feature.composedsymboltablecreator.A, mc.feature.composedsymboltablecreator.B {

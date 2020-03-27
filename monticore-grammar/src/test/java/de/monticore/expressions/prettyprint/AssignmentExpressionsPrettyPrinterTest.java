@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.assignmentexpressions._ast.*;

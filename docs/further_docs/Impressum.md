@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Impressum
 
 According to German law, each website needs to have an "impressum",

@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 # script for all preprocessing steps of the pages job
 # is used to have uniform bases for both gitlab and github pages
 # is used from '.gitlab-ci.yml'(gitlab) and '.travis.yml'(github)

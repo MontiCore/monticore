@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.testcd4analysis._symboltable;
 
 import de.monticore.prettyprint.IndentPrinter;
