@@ -325,6 +325,10 @@ public class TypeCheck {
   public static boolean isVoid(SymTypeExpression type){
     return "void".equals(unbox(type.print()));
   }
+
+  public static boolean isString(SymTypeExpression type){
+    return "String".equals(type.print());
+  }
   
   
 }

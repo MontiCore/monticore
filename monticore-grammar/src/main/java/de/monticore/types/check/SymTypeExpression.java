@@ -2,7 +2,6 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
-import de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.typesymbols._symboltable.*;

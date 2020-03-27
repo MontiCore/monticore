@@ -51,14 +51,14 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(lastResult.isPresentLast()){
       elemResult = lastResult.getLast();
     }else{
-      Log.error("0xA0286 The resulting type of "+prettyPrinter.prettyprint(node.getElem())+" cannot be calculated");
+      Log.error("0xA0286"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getElem())));
     }
     //set
     node.getSet().accept(realThis);
     if(lastResult.isPresentLast()){
       setResult = lastResult.getLast();
     }else{
-      Log.error("0xA0287 The resulting type of "+prettyPrinter.prettyprint(node.getSet())+" cannot be calculated");
+      Log.error("0xA0287"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getSet())));
     }
     List<String> collections = Lists.newArrayList("List","Set");
     boolean correct = false;
@@ -79,7 +79,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       result = wholeResult;
     }else{
       lastResult.reset();
-      Log.error("0xA0288 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
+      Log.error("0xA0288"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
 
@@ -96,14 +96,14 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(lastResult.isPresentLast()){
       elemResult = lastResult.getLast();
     }else{
-      Log.error("0xA0289 The resulting type of "+prettyPrinter.prettyprint(node.getElem())+" cannot be calculated");
+      Log.error("0xA0289"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getElem())));
     }
     //set
     node.getSet().accept(realThis);
     if(lastResult.isPresentLast()){
       setResult = lastResult.getLast();
     }else{
-      Log.error("0xA0290 The resulting type of "+prettyPrinter.prettyprint(node.getSet())+" cannot be calculated");
+      Log.error("0xA0290"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getSet())));
     }
     List<String> collections = Lists.newArrayList("List","Set");
     boolean correct = false;
@@ -124,7 +124,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       result = wholeResult;
     }else{
       lastResult.reset();
-      Log.error("0xA0291 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
+      Log.error("0xA0291"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
 
@@ -138,7 +138,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0292 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
+      Log.error("0xA0292"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
 
@@ -152,7 +152,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0293 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
+      Log.error("0xA0293"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
 
@@ -166,14 +166,14 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(lastResult.isPresentLast()){
       leftResult = lastResult.getLast();
     }else{
-      Log.error("0xA0294 The resulting type of "+prettyPrinter.prettyprint(leftExpr)+" cannot be calculated");
+      Log.error("0xA0294"+String.format(ERROR_MSG,prettyPrinter.prettyprint(leftExpr)));
     }
     //set
     rightExpr.accept(realThis);
     if(lastResult.isPresentLast()){
       rightResult = lastResult.getLast();
     }else{
-      Log.error("0xA0295 The resulting type of "+prettyPrinter.prettyprint(rightExpr)+" cannot be calculated");
+      Log.error("0xA0295"+String.format(ERROR_MSG,prettyPrinter.prettyprint(rightExpr)));
     }
     List<String> collections = Lists.newArrayList("List","Set");
     if(rightResult.isGenericType()&&leftResult.isGenericType()){

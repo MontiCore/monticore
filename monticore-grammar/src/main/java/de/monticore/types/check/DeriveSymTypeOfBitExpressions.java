@@ -9,6 +9,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeConstant.unbox;
+import static de.monticore.types.check.TypeCheck.*;
 
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in BitExpressions
@@ -45,7 +46,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       this.result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0200 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
+      Log.error("0xA0200"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
 
@@ -58,7 +59,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       this.result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0201 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
+      Log.error("0xA0201"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
 
@@ -71,7 +72,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       this.result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0202 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
+      Log.error("0xA0202"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
 
@@ -84,7 +85,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       this.result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0203 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
+      Log.error("0xA0203"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
 
@@ -97,7 +98,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       this.result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0204 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
+      Log.error("0xA0204"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
 
@@ -110,7 +111,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       this.result = wholeResult.get();
     }else{
       lastResult.reset();
-      Log.error("0xA0205 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
+      Log.error("0xA0205"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
 
@@ -126,7 +127,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       //store the type of the left expression in a variable for later use
       leftResult = lastResult.getLast();
     }else{
-      Log.error("0xA0206 The resulting type of "+prettyPrinter.prettyprint(left)+" cannot be calculated");
+      Log.error("0xA0206"+String.format(ERROR_MSG,prettyPrinter.prettyprint(left)));
     }
 
     right.accept(getRealThis());
@@ -134,7 +135,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       //store the type of the right expression in a variable for later use
       rightResult = lastResult.getLast();
     }else{
-      Log.error("0xA0207 The resulting type of "+prettyPrinter.prettyprint(right)+" cannot be calculated");
+      Log.error("0xA0207"+String.format(ERROR_MSG,prettyPrinter.prettyprint(right)));
     }
     
     if(leftResult.isPrimitive()&&rightResult.isPrimitive()){
@@ -162,7 +163,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       //store the type of the left expression in a variable for later use
       leftResult = lastResult.getLast();
     }else{
-      Log.error("0xA0208 The resulting type of "+prettyPrinter.prettyprint(left)+" cannot be calculated");
+      Log.error("0xA0208"+String.format(ERROR_MSG,prettyPrinter.prettyprint(left)));
     }
 
     right.accept(getRealThis());
@@ -170,7 +171,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       //store the type of the right expression in a variable for later use
       rightResult = lastResult.getLast();
     }else{
-      Log.error("0xA0209 The resulting type of "+prettyPrinter.prettyprint(right)+" cannot be calculated");
+      Log.error("0xA0209"+String.format(ERROR_MSG,prettyPrinter.prettyprint(right)));
     }
     
     if(leftResult.isPrimitive()&&rightResult.isPrimitive()) {
@@ -178,7 +179,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       SymTypeConstant rightEx = (SymTypeConstant) rightResult;
 
       //only defined on boolean - boolean and integral type - integral type
-      if ("boolean".equals(unbox(leftResult.print())) && "boolean".equals(unbox(rightResult.print()))) {
+      if (isBoolean(leftResult) && isBoolean(rightResult)) {
         return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
       }else if (leftEx.isIntegralType()&&rightEx.isIntegralType()) {
         return getBinaryNumericPromotion(leftResult,rightResult);
@@ -199,12 +200,8 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
 
       //only defined on integral type - integral type
       if(leftResult.isIntegralType()&&rightResult.isIntegralType()){
-        if("long".equals(unbox(rightResult.print()))){
-          if("long".equals(unbox(leftResult.print()))){
-            return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
-          }else{
-            return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
-          }
+        if(isLong(rightResult) && isLong(leftResult)){
+          return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
         }else{
           return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
         }
@@ -222,17 +219,12 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     if(left.isPrimitive() && right.isPrimitive()) {
       SymTypeConstant leftResult = (SymTypeConstant) left;
       SymTypeConstant rightResult = (SymTypeConstant) right;
-      if (("long".equals(unbox(leftResult.print())) && rightResult.isIntegralType()) ||
-          ("long".equals(unbox(rightResult.print())) && rightResult.isIntegralType())) {
+      if ((isLong(leftResult) && rightResult.isIntegralType()) ||
+          (isLong(rightResult) && leftResult.isIntegralType())) {
         return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
         //no part of the expression is a long -> if both parts are integral types then the result is a int
       }else{
-        if (
-            ("int".equals(unbox(leftResult.print())) || "char".equals(unbox(leftResult.print())) ||
-            "short".equals(unbox(leftResult.print())) || "byte".equals(unbox(leftResult.print()))) &&
-            ("int".equals(unbox(rightResult.print())) || "char".equals(unbox(rightResult.print())) ||
-                "short".equals(unbox(rightResult.print())) || "byte".equals(unbox(rightResult.print())))
-        ) {
+        if (leftResult.isIntegralType()&&rightResult.isIntegralType()) {
           return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
         }
       }
