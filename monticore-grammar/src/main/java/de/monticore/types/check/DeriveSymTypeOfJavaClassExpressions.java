@@ -51,7 +51,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     if(lastResult.isPresentLast()){
       innerResult = lastResult.getLast();
     }else{
-      Log.error("0xA0251 The resulting type of "+prettyPrinter.prettyprint(node.getExpression())+" cannot be calculated");
+      Log.error("0xA0251"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getExpression())));
     }
 
     //check recursively until there is no enclosing scope or the spanningsymbol of the scope is a type
@@ -79,7 +79,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       result = wholeResult;
     }else {
       lastResult.reset();
-      Log.error("0xA0252 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
+      Log.error("0xA0252"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
 
@@ -99,7 +99,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         Log.error("0xA0253 the inner expression of the array in the ArrayExpression cannot be a type");
       }
     }else{
-      Log.error("0xA0254 The resulting type of "+prettyPrinter.prettyprint(node.getIndexExpression())+" cannot be calculated");
+      Log.error("0xA0254"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getIndexExpression())));
     }
 
     node.getExpression().accept(getRealThis());
@@ -109,7 +109,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       }
       arrayTypeResult = lastResult.getLast();
     }else{
-      Log.error("0xA0256 The resulting type of "+prettyPrinter.prettyprint(node.getExpression())+" cannot be calculated");
+      Log.error("0xA0256"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getExpression())));
     }
 
     //the type of the index has to be an integral type
@@ -124,7 +124,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       result = wholeResult;
     }else {
       lastResult.reset();
-      Log.error("0xA0257 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
+      Log.error("0xA0257"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
 
@@ -198,7 +198,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       result = wholeResult;
     }else {
       lastResult.reset();
-      Log.error("0xA0258 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
+      Log.error("0xA0258"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
 
@@ -219,7 +219,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         Log.error("0xA0259 the first expression of the SuperExpression has to be a type");
       }
     }else{
-      Log.error("0xA0260 The resulting type of "+prettyPrinter.prettyprint(node.getExpression())+" cannot be calculated");
+      Log.error("0xA0260"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getExpression())));
     }
 
     int count = 0;
@@ -270,7 +270,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       result = wholeResult;
     }else {
       lastResult.reset();
-      Log.error("0xA0261 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
+      Log.error("0xA0261"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
 
@@ -291,7 +291,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         Log.error("0xA0262 the inner expression of the TypeCastExpression cannot be a type");
       }
     }else{
-      Log.error("0xA0263 The resulting type of "+prettyPrinter.prettyprint(node.getExpression())+" cannot be calculated");
+      Log.error("0xA0263"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getExpression())));
     }
 
     //castResult is the type in the brackets -> (ArrayList) list
@@ -317,14 +317,11 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
   @Override
   public void traverse(ASTInstanceofExpression node) {
-    SymTypeExpression leftResult = null;
-    SymTypeExpression rightResult = null;
     SymTypeExpression wholeResult = null;
 
     //calculate left type: expression that is to be checked for a specific type
     node.getExpression().accept(getRealThis());
     if(lastResult.isPresentLast()){
-      leftResult = lastResult.getLast();
       if(lastResult.isType()){
         lastResult.reset();
         Log.error("0xA0267 the left type of the InstanceofExpression cannot be a type");
@@ -337,9 +334,12 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     //calculate right type: type that the expression should be an instance of
     node.getExtType().accept(getRealThis());
     if(lastResult.isPresentLast()){
-      rightResult = lastResult.getLast();
-      Log.error("0xA0269 the right type of the InstanceofExpression must be a type");
+      if(!lastResult.isType()) {
+        lastResult.reset();
+        Log.error("0xA0269 the right type of the InstanceofExpression must be a type");
+      }
     }else{
+      lastResult.reset();
       Log.error("0xA0270 the right type of the InstanceofExpression cannot be calculated");
     }
 
@@ -358,7 +358,6 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   public void traverse(ASTPrimaryThisExpression node) {
     //search for the nearest TypeSymbol and return its Type
     SymTypeExpression wholeResult = null;
-    IExpressionsBasisScope testScope = scope;
     TypeSymbol typeSymbol=searchForTypeSymbolSpanningEnclosingScope(scope);
     if(typeSymbol!=null) {
       wholeResult = getResultOfPrimaryThisExpression(typeSymbol);
@@ -368,7 +367,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       result = wholeResult;
     }else{
       lastResult.reset();
-      Log.error("0xA0272 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
+      Log.error("0xA0272"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
 
@@ -411,7 +410,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       result = wholeResult;
     }else{
       lastResult.reset();
-      Log.error("0xA0280 The resulting type of "+prettyPrinter.prettyprint(node)+" cannot be calculated");
+      Log.error("0xA0280"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
 
@@ -429,7 +428,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       }
       expressionResult = lastResult.getLast();
     }else{
-      Log.error("0xA0281 The resulting type of "+prettyPrinter.prettyprint(node.getExpression())+" cannot be calculated");
+      Log.error("0xA0281"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getExpression())));
     }
 
     //the only case where you can calculate a result is Expression.<TypeArguments>method()
@@ -542,7 +541,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
           argList.add(lastResult.getLast());
         }
       }else{
-        Log.error("0xA0284 The resulting type of the argument "+prettyPrinter.prettyprint(args.getExpression(i))+" cannot be calculated");
+        Log.error("0xA0284"+String.format(ERROR_MSG,prettyPrinter.prettyprint(args.getExpression(i))));
       }
     }
     return argList;

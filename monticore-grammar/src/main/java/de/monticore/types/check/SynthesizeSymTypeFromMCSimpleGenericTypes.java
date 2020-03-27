@@ -2,7 +2,6 @@
 
 package de.monticore.types.check;
 
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -15,7 +14,6 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 

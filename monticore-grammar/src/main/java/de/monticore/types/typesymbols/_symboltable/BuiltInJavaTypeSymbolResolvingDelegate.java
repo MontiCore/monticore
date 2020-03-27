@@ -4,14 +4,11 @@ package de.monticore.types.typesymbols._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.antlr4.MCConcreteParser;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeVariable;
 import de.se_rwth.commons.logging.Log;
-import javassist.bytecode.stackmap.TypeData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,10 +66,7 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolv
     TypeSymbolLoader kVarSymbolMapLoader = new TypeSymbolLoader("K",gs);
     TypeSymbolLoader vVarSymbolMapLoader = new TypeSymbolLoader("V",gs);
 
-    SymTypeExpression listSymType = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("List",javautil),SymTypeExpressionFactory.createTypeVariable(eVarSymbolListLoader));
-    SymTypeExpression setSymType = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Set",javautil),SymTypeExpressionFactory.createTypeVariable(eVarSymbolSetLoader));
     SymTypeExpression optionalSymType = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Optional",javautil),SymTypeExpressionFactory.createTypeVariable(tVarSymbolOptionalLoader));
-    SymTypeExpression mapSymType = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Map",javautil),SymTypeExpressionFactory.createTypeVariable(kVarSymbolMapLoader),SymTypeExpressionFactory.createGenerics(vVarSymbolMapLoader));
     SymTypeExpression collectionSymType = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Collection",javautil),SymTypeExpressionFactory.createTypeVariable(eVarSymbolCollectionLoader));
 
     //primitives
@@ -87,7 +81,6 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolv
 
     //other
     final SymTypeExpression voidSymType = SymTypeExpressionFactory.createTypeVoid();
-    final SymTypeExpression nullSymType = SymTypeExpressionFactory.createTypeOfNull();
 
 
 

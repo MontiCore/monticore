@@ -28,8 +28,7 @@ package de.monticore.expressions;
  *
 */
 
-component grammar ExpressionsBasis extends de.monticore.MCBasics,
-                                   de.monticore.types.TypeSymbols,
+component grammar ExpressionsBasis extends de.monticore.types.TypeSymbols,
                                    de.monticore.literals.MCLiteralsBasis {
 
   /*=================================================================*/

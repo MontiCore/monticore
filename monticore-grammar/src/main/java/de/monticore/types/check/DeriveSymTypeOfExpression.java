@@ -28,6 +28,8 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   private ExpressionsBasisVisitor realThis;
 
+  protected static final String ERROR_MSG = " The expression %s cannot be calculated.";
+
   @Override
   public void setRealThis(ExpressionsBasisVisitor realThis) {
     this.realThis = realThis;
@@ -56,7 +58,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     } else {
       //No type found --> error
       lastResult.reset();
-      Log.error("0xA0250 The resulting type of "+prettyPrinter.prettyprint(expr)+" cannot be calculated");
+      Log.error("0xA0250"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
 

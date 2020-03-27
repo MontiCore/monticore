@@ -3,7 +3,6 @@ package de.monticore.types.typesymbols._symboltable;
 import com.google.common.collect.Lists;
 import de.monticore.types.check.SymTypeExpression;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
