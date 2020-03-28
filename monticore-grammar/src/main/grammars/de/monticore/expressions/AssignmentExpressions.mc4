@@ -30,31 +30,31 @@ component grammar AssignmentExpressions
   /*=================================================================*/
 
   IncSuffixExpression implements Expression <220> =
-  Expression "++";
+    Expression "++";
         
   DecSuffixExpression implements Expression <220> =
-  Expression "--";
+    Expression "--";
         
   PlusPrefixExpression implements Expression <210> =
-  "+" Expression;
+    "+" Expression;
 
   MinusPrefixExpression implements Expression <210> =
-  "-" Expression;
+    "-" Expression;
 
   /*=================================================================*/
 
   IncPrefixExpression implements Expression <210> =
-  "++" Expression;
+    "++" Expression;
 
   DecPrefixExpression implements Expression <210> =
-  "--" Expression;
+    "--" Expression;
 
   /*=================================================================*/
 
   AssignmentExpression implements Expression <60> = <rightassoc>
-  left:Expression
-  operator: [ "=" | "+=" | "-=" | "*=" | "/=" | "&=" | "|="
+    left:Expression
+    operator: [ "=" | "+=" | "-=" | "*=" | "/=" | "&=" | "|="
               | "^=" | ">>=" | ">>>=" | "<<=" | "%=" ]
-        right:Expression;
+    right:Expression;
 
 }

@@ -15,7 +15,7 @@ component grammar Completeness {
         several kinds of diagrams of the UML/P;
         Syntax: (left-completeness, right-completeness)
 
-  For example:
+        For example:
           CD: Diagramm: left: Types,      right: Assoziations
               Types:    left: Attributes, right: Methods
         @attribute incomplete    true if left and right side are
@@ -26,11 +26,11 @@ component grammar Completeness {
         @attribute leftComplete  true if only left is complete (c,...)
     */
   Completeness =
-        //the following complex lexer symbol construction is to prevent clash
-        //with ident "c"
+          // the following complex lexer symbol construction is to prevent clash
+          // with ident "c"
      [complete:"(c)"]
-    //separate brackets to avoid
-          //lexer-symbol clash
+          // separate brackets to avoid
+          // lexer-symbol clash
      | ("(" [incomplete:"..."] {noSpace()}? ")" {noSpace()}?)
      | [incomplete:"(...,...)"]
      | [complete:"(c,c)"]

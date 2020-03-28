@@ -37,7 +37,7 @@ component grammar StringLiterals extends de.monticore.MCBasics {
         with '"'.
         @attribute source String-representation (including '"').
         @attribute content decoded String-representation (no '"' and escapes
-    are decoded).
+                   are decoded).
     */
   StringLiteral =
     source:StringToken;
@@ -49,7 +49,7 @@ component grammar StringLiterals extends de.monticore.MCBasics {
     method public String getValue() {
       if(content == null) {
         content =
-    de.monticore.MCLiteralsDecoder.decodeString(getSource());
+            de.monticore.MCLiteralsDecoder.decodeString(getSource());
       }
       return content;
     };
