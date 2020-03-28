@@ -60,7 +60,7 @@ public class AutomataTool {
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
     if (aSymbol.isPresent()) {
       Log.info("Resolved state symbol \"Ping\"; FQN = "
-      	       + aSymbol.get().toString(),
+               + aSymbol.get().toString(),
           AutomataTool.class.getName());
     } else {
       Log.info("This automaton does not contain a state called \"Ping\";",

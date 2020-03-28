@@ -13,8 +13,8 @@ import java.util.*;
 
  */
 public class Automata16PrettyPrinter
-		extends Automata15PrettyPrinter
-		implements Automata16Visitor {
+                extends Automata15PrettyPrinter
+                implements Automata16Visitor {
 
   @Override
   public void visit(ASTAutomaton node) {

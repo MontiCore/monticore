@@ -11,7 +11,7 @@ import expression._visitor.*;
  * 
  */
 public class Automata3PrettyPrinter
-			extends Automata3DelegatorVisitor {
+                        extends Automata3DelegatorVisitor {
 
  // ----------------------------------------------------------
   protected IndentPrinter out;

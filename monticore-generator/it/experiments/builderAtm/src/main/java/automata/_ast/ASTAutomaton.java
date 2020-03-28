@@ -10,7 +10,7 @@ public class ASTAutomaton extends ASTAutomatonTOP implements  ASTAutomataNode
   }
 
   protected ASTAutomaton(String name, List<ASTState> states,
-    		 List<ASTTransition> transitions)  
+                         List<ASTTransition> transitions)  
   {
     setName(name);
     setStateList(states);

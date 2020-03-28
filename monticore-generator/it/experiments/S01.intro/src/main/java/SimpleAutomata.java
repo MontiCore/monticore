@@ -27,11 +27,11 @@ public class SimpleAutomata {
        System.out.println(item);
        switch(state) {
          case 1: switch(item) {
-	 	   case 'a': state = 2; break;
-	 	 }; break;
+                   case 'a': state = 2; break;
+                 }; break;
          case 2: switch(item) {
-	 	   case 'b': state = 1; break;
-	 	 }; break;
+                   case 'b': state = 1; break;
+                 }; break;
        }
     }
     return state == 2;

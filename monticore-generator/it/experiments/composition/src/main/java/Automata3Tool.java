@@ -60,13 +60,13 @@ public class Automata3Tool {
     // Log.info("=== 3: Automaton3ComposedVisit =============", "Automaton3Tool");
     // Automaton3ComposedVisit acompov = new Automaton3ComposedVisit();
     // acompov.set_invautomaton__visitor_InvAutomatonVisitor(
-    // 			new InvAutomatonCheapVisit());
+    //                  new InvAutomatonCheapVisit());
     // acompov.set_expression__visitor_ExpressionVisitor(
-    //  		new ExpressionCheapVisit());
+    //                  new ExpressionCheapVisit());
     // // necessary to complete the composition, but only used for
     // // the newly define nonterminal Invariant
     // acompov.set_automaton3__visitor_Automaton3Visitor(
-    //  		new Automaton3CheapVisit());
+    //                  new Automaton3CheapVisit());
     // ast.accept(acompov);
 
     // Example, how to use a composed visitor on the model

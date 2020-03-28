@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 component grammar InvAutomata
-			extends de.monticore.MCBasics {
+                        extends de.monticore.MCBasics {
   
   Automaton =
     "automaton" Name "{" (State | Transition)* "}" ;

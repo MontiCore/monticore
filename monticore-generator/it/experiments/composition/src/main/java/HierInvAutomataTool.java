@@ -41,8 +41,7 @@ public class HierInvAutomataTool {
 
     // Example, how to use a monolithic visitor on the model
     Log.info("=== 2: HierInvAutomatonCheapVisit =============", "HierIAT");
-   HierInvAutomataCheapVisit acv1 =
-   					new HierInvAutomataCheapVisit();
+   HierInvAutomataCheapVisit acv1 = new HierInvAutomataCheapVisit();
    ast.accept(acv1);
    // acv1.setVerbosity();
    // Log.info("=== 3: HierInvAutomatonCheapVisit.verbose() ===", "HierIAT");

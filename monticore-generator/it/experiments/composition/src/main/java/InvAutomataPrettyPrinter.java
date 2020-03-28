@@ -10,7 +10,7 @@ import invautomata._visitor.*;
 
  */
 public class InvAutomataPrettyPrinter
-				implements InvAutomataVisitor {
+                        implements InvAutomataVisitor {
 
   // ----------------------------------------------------------
   // setRealThis, getRealThis are necessary to make the visitor compositional

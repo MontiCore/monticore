@@ -11,15 +11,15 @@ public class StateNameStartsWithCapitalLetter implements AutomataASTStateCoCo {
   public void check(ASTState state) {
     String stateName = state.getName();
     boolean startsWithUpperCase =
-    		Character.isUpperCase(stateName.charAt(0));
+                Character.isUpperCase(stateName.charAt(0));
     
     if (!startsWithUpperCase) {
       // Issue warning...
       Log.warn(
           String.format(
-	    "0xAUT02 State name '%s' is not capitalized.",
-	    stateName),
-	  state.get_SourcePositionStart());
+            "0xAUT02 State name '%s' is not capitalized.",
+            stateName),
+          state.get_SourcePositionStart());
     }
   }
   
