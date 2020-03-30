@@ -21,11 +21,9 @@ public class ExistingMyFieldType implements MyDSLASTMyFieldCoCo {
   
   @Override
   public void check(ASTMyField field) {
-    checkArgument(field.getEnclosingScope().isPresent());
-    
-    Scope enclosingScope = field.getEnclosingScope().get();
-    Optional<MyElementSymbol> typeElement = enclosingScope.resolve(field.getType(), MyElementSymbol.KIND);
-    
+    IMyDSLScope enclosingScope = field.getEnclosingScope();
+    Optional<MyElementSymbol> typeElement = enclosingScope.resolveMyElement(field.getType());
+
     if (!typeElement.isPresent()) {
       // Issue error...
       Log.error(String.format(ERROR_MSG_FORMAT, field.getType(), field.getName()),
