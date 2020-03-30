@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package point.in.packagename;
+
+// grammar used to checked if points are within a packeagename the package is wrong
+grammar PackagePathTest extends mc.grammars.lexicals.TestLexicals {
+
+    Test = Name;
+
+}
