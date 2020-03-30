@@ -11,6 +11,7 @@ import automata._symboltable.serialization.AutomataScopeDeSer;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
@@ -19,6 +20,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +60,8 @@ public class AutomataTool {
     deser.store(modelTopScope,lang, DEFAULT_SYMBOL_LOCATION);
   
     GeneratorSetup s = new GeneratorSetup();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    s.setGlex(glex);
     s.setOutputDirectory(new File("target/statepattern"));
     GeneratorEngine ge = new GeneratorEngine(s);
 
@@ -73,26 +77,46 @@ public class AutomataTool {
         .collect(Collectors.toList())
         .get(0);
 
-    //get all transitions of the statechart
-    List<ASTTransition> transitions = ast.getTransitionList();
-    //get unique transition names -> some transitions inputs are used multiple times in the model
-    List<String> transitionNames = transitions.stream().map(ASTTransition::getInput).distinct().collect(Collectors.toList());
 
     String modelName = ast.getName();
+    glex.setGlobalValue("modelName",modelName);
+
+    //get all transitions of the statechart
+    List<ASTTransition> transitions = ast.getTransitionList();
+
+    List<ASTTransition> transitionsWithoutDuplicateNames = handleDuplicateNames(transitions,new ArrayList<>());
+
+    List<ASTState> states = ast.getStateList();
+
     //generate the class for the whole statechart
-    ge.generate("Statechart.ftl", Paths.get(ast.getName() +".java"), ast,modelName,initialState.getName(), transitionNames);
+    ge.generate("Statechart.ftl", Paths.get(modelName +".java"), ast,initialState, transitionsWithoutDuplicateNames, states);
+    //generate the factory class for the states
+    ge.generate("StatechartFactory.ftl",Paths.get(modelName+"Factory.java"),ast, states);
     //generate the abstract class for the states
-    ge.generate("AbstractState.ftl", Paths.get("AbstractState.java"), ast, transitionNames,modelName);
-    for(ASTState state : ast.getStateList()) {
+    ge.generate("AbstractState.ftl", Paths.get("AbstractState.java"), ast, transitionsWithoutDuplicateNames);
+    for(ASTState state : states) {
       //get the transitions that have this state as their source state
       List<ASTTransition> existingTransitions = transitions.stream().filter(t -> t.getFrom().equals(state.getName())).collect(Collectors.toList());
       //get the names of the transitions that this state does not have -> every state needs to have a method for every transition in the statechart
-      List<String> nonExistingTransitionNames = transitionNames.stream().filter((name)->(!existingTransitions.stream().map(ASTTransition::getInput).collect(Collectors.toList()).contains(name))).collect(Collectors.toList());
+      List<ASTTransition> otherTransitions = transitions.stream().filter(t -> !t.getFrom().equals(state.getName())).collect(Collectors.toList());
+      List<ASTTransition> nonExistingTransitions = handleDuplicateNames(otherTransitions,existingTransitions);
       //generate the concrete state classes and use the template ConcreteState.ftl for this
-      ge.generate("ConcreteState.ftl", Paths.get(state.getName()+"State.java"), ast, state.getName(), ast.getName(),existingTransitions, nonExistingTransitionNames);
+      ge.generate("ConcreteState.ftl", Paths.get(state.getName()+"State.java"), ast, state.getName(),existingTransitions, nonExistingTransitions);
     }
   }
-  
+
+  private static List<ASTTransition> handleDuplicateNames(List<ASTTransition> otherTransitions, List<ASTTransition> existingTransitions) {
+    List<ASTTransition> result = new ArrayList<>();
+    List<String> names = existingTransitions.stream().map(ASTTransition::getInput).collect(Collectors.toList());
+    for(ASTTransition transition: otherTransitions){
+      if(!names.contains(transition.getInput())){
+        result.add(transition);
+        names.add(transition.getInput());
+      }
+    }
+    return result;
+  }
+
   /**
    * Parse the model contained in the specified file.
    *

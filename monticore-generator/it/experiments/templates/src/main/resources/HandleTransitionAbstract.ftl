@@ -1,2 +1,1 @@
-${tc.signature("transitionName","modelName")}
-    abstract void handle${transitionName?cap_first}(${modelName?cap_first} model);
+    abstract void handle${ast.getInput()?cap_first}(${glex.getGlobalVar("modelName")?cap_first} model);

@@ -1,4 +1,3 @@
-${tc.signature("transitionName")}
-    public void ${transitionName?uncap_first}(){
-        currentState.handle${transitionName?cap_first}(this);
+    public void ${ast.getInput()?uncap_first}(){
+        currentState.handle${ast.getInput()?cap_first}(this);
     }
