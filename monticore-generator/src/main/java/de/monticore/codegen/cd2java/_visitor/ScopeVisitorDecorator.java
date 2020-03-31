@@ -125,7 +125,7 @@ public class ScopeVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
     List<ASTCDMethod> methodList = new ArrayList<>();
     methodList.addAll(createVisitorMethods(symbolsNameList, scopeType));
-    if (symbolTableService.hasProd(astcdDefinition)) {
+    if (symbolTableService.hasProd(astcdDefinition) || symbolTableService.hasStartProd()) {
       methodList.addAll(createVisitorMethods(symbolsNameList, artifactScopeType));
     }
     return methodList;
