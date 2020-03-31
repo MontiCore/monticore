@@ -38,8 +38,8 @@ public class MyDSLSymbolTableCreator extends MyDSLSymbolTableCreatorTOP {
    * add optional package defined in ASTMyModel to MyModelSymbol
    */
   @Override
-  protected  bla.mydsl._symboltable.MyModelSymbol create_MyModel (bla.mydsl._ast.ASTMyModel ast)  {
-    return bla.mydsl._symboltable.MyDSLSymTabMill.myModelSymbolBuilder()
+  protected  MyModelSymbol create_MyModel (ASTMyModel ast)  {
+    return MyDSLSymTabMill.myModelSymbolBuilder()
         .setName(ast.getName())
         .setPackageName(Names.getQualifiedName(ast.getPackageList()))
         .build();

@@ -15,7 +15,7 @@ public class AtLeastOneMyField implements MyDSLASTMyElementCoCo {
   
   @Override
   public void check(ASTMyElement element) {    
-    if (element.getMyFieldList().isEmpty()) {
+    if (element.getMyFieldsList().isEmpty()) {
       // Issue warning...
       Log.warn(String.format(ERROR_MSG_FORMAT, element.getName()),
           element.get_SourcePositionStart());

@@ -8,8 +8,8 @@ import java.util.Optional;
 
 import ${package}.mydsl._ast.ASTMyField;
 import ${package}.mydsl._cocos.MyDSLASTMyFieldCoCo;
-import ${package}.symboltable.MyElementSymbol;
-import de.monticore.symboltable.Scope;
+import ${package}.mydsl._symboltable.IMyDSLScope;
+import ${package}.mydsl._symboltable.MyElementSymbol;
 import de.se_rwth.commons.logging.Log;
 
 public class ExistingMyFieldType implements MyDSLASTMyFieldCoCo {

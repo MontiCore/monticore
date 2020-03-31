@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package $
-
-{package};
+package ${package};
 
 import static org.junit.Assert.assertTrue;
 

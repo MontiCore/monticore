@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package $
-
-{package};
+package ${package};
 
 import java.io.IOException;
 import java.util.Optional;
@@ -13,19 +11,13 @@ import ${package}.cocos.AtLeastOneMyField;
 import ${package}.cocos.ExistingMyFieldType;
 import ${package}.cocos.MyDSLCoCos;
 import ${package}.cocos.MyElementNameStartsWithCapitalLetter;
-import ${package}.lang.MyDSLLanguage;
 import ${package}.mydsl._ast.ASTMyModel;
 import ${package}.mydsl._cocos.MyDSLCoCoChecker;
 import ${package}.mydsl._parser.MyDSLParser;
 import ${package}.prettyprint.PrettyPrinter;
-import ${package}.symboltable.MyDSLSymbolTableCreator;
-import ${package}.symboltable.MyElementSymbol;
+import ${package}.mydsl._symboltable.*;
 import ${package}.visitors.CountMyElements;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
