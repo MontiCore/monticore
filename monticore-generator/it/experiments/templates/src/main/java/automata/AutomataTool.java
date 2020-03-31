@@ -13,12 +13,16 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -88,20 +92,42 @@ public class AutomataTool {
 
     List<ASTState> states = ast.getStateList();
 
+
+
     //generate the class for the whole statechart
-    ge.generate("Statechart.ftl", Paths.get(modelName +".java"), ast,initialState, transitionsWithoutDuplicateNames, states);
+    String modelClassName = modelName;
+    if(existsHandwrittenClass(IterablePath.from(new File("src/main/java"),"java"),modelClassName)){
+      modelClassName = modelName+"TOP";
+    }
+    ge.generate("Statechart.ftl", Paths.get(modelClassName +".java"), ast,initialState, transitionsWithoutDuplicateNames, states, modelClassName);
+
+
     //generate the factory class for the states
-    ge.generate("StatechartFactory.ftl",Paths.get(modelName+"Factory.java"),ast, states);
+    String modelFactoryClassName = modelName+"Factory";
+    if(existsHandwrittenClass(IterablePath.from(new File("src/main/java"),"java"),modelFactoryClassName)){
+      modelFactoryClassName = modelFactoryClassName+"TOP";
+    }
+    ge.generate("StatechartFactory.ftl",Paths.get(modelFactoryClassName+".java"),ast, states, modelFactoryClassName);
+
+
     //generate the abstract class for the states
-    ge.generate("AbstractState.ftl", Paths.get("AbstractState.java"), ast, transitionsWithoutDuplicateNames);
+    String abstractStateClassName = "AbstractState";
+    if(existsHandwrittenClass(IterablePath.from(new File("src/main/java"),"java"),abstractStateClassName)){
+      abstractStateClassName= abstractStateClassName+"TOP";
+    }
+    ge.generate("AbstractState.ftl", Paths.get(abstractStateClassName+".java"), ast, transitionsWithoutDuplicateNames, abstractStateClassName);
     for(ASTState state : states) {
       //get the transitions that have this state as their source state
+      String stateClassName = state.getName()+"State";
+      if(existsHandwrittenClass(IterablePath.from(new File("src/main/java"),"java"),stateClassName)){
+        stateClassName=stateClassName+"TOP";
+      }
       List<ASTTransition> existingTransitions = transitions.stream().filter(t -> t.getFrom().equals(state.getName())).collect(Collectors.toList());
       //get the names of the transitions that this state does not have -> every state needs to have a method for every transition in the statechart
       List<ASTTransition> otherTransitions = transitions.stream().filter(t -> !t.getFrom().equals(state.getName())).collect(Collectors.toList());
       List<ASTTransition> nonExistingTransitions = handleDuplicateNames(otherTransitions,existingTransitions);
       //generate the concrete state classes and use the template ConcreteState.ftl for this
-      ge.generate("ConcreteState.ftl", Paths.get(state.getName()+"State.java"), ast, state.getName(),existingTransitions, nonExistingTransitions);
+      ge.generate("ConcreteState.ftl", Paths.get(stateClassName+".java"), ast, existingTransitions, nonExistingTransitions, stateClassName);
     }
   }
 
@@ -153,6 +179,22 @@ public class AutomataTool {
     
     AutomataSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
     return symbolTable.createFromAST(ast);
+  }
+
+  public static boolean existsHandwrittenClass(IterablePath targetPath,
+                                               String qualifiedName) {
+    Path handwrittenFile = Paths.get(Names
+        .getPathFromPackage(qualifiedName)
+        + ".java");
+    Optional<Path> handwrittenFilePath = targetPath.getResolvedPath(handwrittenFile);
+    boolean result = handwrittenFilePath.isPresent();
+    if (result) {
+      Reporting.reportUseHandwrittenCodeFile(handwrittenFilePath.get(),
+          handwrittenFile);
+    }
+    Reporting.reportHWCExistenceCheck(targetPath,
+        handwrittenFile, handwrittenFilePath);
+    return result;
   }
   
   

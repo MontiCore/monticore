@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("initialState","transitions","states")}
-public class ${glex.getGlobalVar("modelName")?cap_first}{
+${tc.signature("initialState","transitions","states","className")}
+public class ${className?cap_first}{
 
     ${tc.include("StatechartStateAttributes.ftl",states)}
 
