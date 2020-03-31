@@ -2,7 +2,7 @@
 
 package ${package};
 
-grammar MyDSL extends de.monticore.literals.MCCommonLiterals {
+grammar MyDSL extends de.monticore.MCBasics {
 
 /** A model with a name and a set of model elements
     @attribute name Name of the model
