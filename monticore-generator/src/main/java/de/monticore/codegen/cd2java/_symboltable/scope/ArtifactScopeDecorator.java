@@ -209,7 +209,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
   }
 
   protected ASTCDMethod createAcceptMethod(String artifactScopeName) {
-    String ownScopeVisitor = visitorService.getScopeVisitorFullName();
+    String ownScopeVisitor = visitorService.getVisitorFullName();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
     ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
     if (!isArtifactScopeTop()) {

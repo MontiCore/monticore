@@ -216,7 +216,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
   protected List<ASTCDMethod> createAcceptMethods(String scopeClassName) {
     List<ASTCDMethod> acceptMethods = new ArrayList<>();
 
-    String ownScopeVisitor = visitorService.getScopeVisitorFullName();
+    String ownScopeVisitor = visitorService.getVisitorFullName();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
     ASTCDMethod ownAcceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
     if (isScopeTop()) {
@@ -228,7 +228,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
     acceptMethods.add(ownAcceptMethod);
 
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      String superScopeVisitor = visitorService.getScopeVisitorFullName(cdDefinitionSymbol);
+      String superScopeVisitor = visitorService.getVisitorFullName(cdDefinitionSymbol);
       ASTCDParameter superVisitorParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(superScopeVisitor), VISITOR_PREFIX);
       ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, superVisitorParameter);
       String errorCode = symbolTableService.getGeneratedErrorCode(scopeClassName + cdDefinitionSymbol.getFullName()+ACCEPT_METHOD);

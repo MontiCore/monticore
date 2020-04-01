@@ -44,21 +44,18 @@ public class CDVisitorDecoratorTest extends DecoratorTestCase {
 
     IterablePath targetPath = Mockito.mock(IterablePath.class);
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     this.glex.setGlobalValue("service", visitorService);
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
-    ASTVisitorDecorator astVisitorDecorator = new ASTVisitorDecorator(this.glex, visitorService);
-    SymbolVisitorDecorator symbolVisitorDecorator = new SymbolVisitorDecorator(this.glex,
-        visitorService, new SymbolTableService(decoratedCompilationUnit));
-    ScopeVisitorDecorator scopeVisitorDecorator = new ScopeVisitorDecorator(this.glex,
-        visitorService, new SymbolTableService(decoratedCompilationUnit));
+    ASTVisitorDecorator astVisitorDecorator = new ASTVisitorDecorator(this.glex, visitorService, symbolTableService);
     DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(this.glex, visitorService);
     ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(this.glex, visitorService);
     InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(this.glex, visitorService);
 
     CDVisitorDecorator decorator = new CDVisitorDecorator(this.glex, targetPath, visitorService,
-        astVisitorDecorator, symbolVisitorDecorator, scopeVisitorDecorator,
-        delegatorVisitorDecorator, inheritanceVisitorDecorator, parentAwareVisitorDecorator);
+        astVisitorDecorator, delegatorVisitorDecorator, inheritanceVisitorDecorator, 
+        parentAwareVisitorDecorator);
 
     this.visitorCompilationUnit = decorator.decorate(decoratedCompilationUnit);
   }
@@ -75,7 +72,7 @@ public class CDVisitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(4, visitorCompilationUnit.getCDDefinition().getCDInterfaceList().size());
+    assertEquals(2, visitorCompilationUnit.getCDDefinition().getCDInterfaceList().size());
   }
 
   @Test

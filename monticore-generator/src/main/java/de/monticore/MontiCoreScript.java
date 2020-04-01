@@ -553,16 +553,16 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
 
-    ASTVisitorDecorator astVisitorDecorator = new ASTVisitorDecorator(glex, visitorService);
-    SymbolVisitorDecorator symbolVisitorDecorator = new SymbolVisitorDecorator(glex, visitorService, symbolTableService);
-    ScopeVisitorDecorator scopeVisitorDecorator = new ScopeVisitorDecorator(glex, visitorService, symbolTableService);
+    ASTVisitorDecorator astVisitorDecorator = new ASTVisitorDecorator(glex, visitorService, symbolTableService);
+//    SymbolVisitorDecorator symbolVisitorDecorator = new SymbolVisitorDecorator(glex, visitorService, symbolTableService);
+//    ScopeVisitorDecorator scopeVisitorDecorator = new ScopeVisitorDecorator(glex, visitorService, symbolTableService);
     DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(glex, visitorService);
     ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(glex, visitorService);
     InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(glex, visitorService);
 
-    CDVisitorDecorator decorator = new CDVisitorDecorator(glex,handCodedPath, visitorService,
-        astVisitorDecorator, symbolVisitorDecorator, scopeVisitorDecorator,
-        delegatorVisitorDecorator, inheritanceVisitorDecorator, parentAwareVisitorDecorator);
+    CDVisitorDecorator decorator = new CDVisitorDecorator(glex, handCodedPath, visitorService,
+        astVisitorDecorator, delegatorVisitorDecorator, inheritanceVisitorDecorator, 
+        parentAwareVisitorDecorator);
 
     ASTCDCompilationUnit visitorCompilationUnit = decorator.decorate(cd);
 

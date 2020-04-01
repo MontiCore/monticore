@@ -2,20 +2,28 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.cd.facade.CDModifier.*;
 
@@ -23,15 +31,19 @@ import static de.monticore.cd.facade.CDModifier.*;
  * creates a ASTVisitor class from a grammar
  */
 public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
-
+  
   protected final VisitorService visitorService;
-
+  
+  protected final SymbolTableService symbolTableService;
+  
   protected boolean isTop;
-
+  
   public ASTVisitorDecorator(final GlobalExtensionManagement glex,
-                             final VisitorService visitorService) {
+                             final VisitorService visitorService,
+                             final SymbolTableService symbolTableService) {
     super(glex);
     this.visitorService = visitorService;
+    this.symbolTableService = symbolTableService;
   }
 
   @Override
@@ -39,6 +51,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithASTPackage(ast);
     ASTMCType visitorType = this.visitorService.getVisitorType();
     ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(AST_INTERFACE);
+    Set<String> symbolNames = retrieveSymbolNamesFromCD(visitorService.getCDSymbol());
 
     ASTCDInterface symbolVisitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitorSimpleName())
@@ -48,6 +61,10 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
         .addCDMethod(addSetRealThisMethods(visitorType))
         .addCDMethod(addEndVisitASTNodeMethods(astNodeType))
         .addCDMethod(addVisitASTNodeMethods(astNodeType))
+        .addAllCDMethods(addISymbolVisitorMethods())
+        .addAllCDMethods(addSymbolVisitorMethods(symbolNames))
+        .addAllCDMethods(addIScopeVisitorMethods())
+        .addAllCDMethods(addScopeVisitorMethods(getSymbolsTransitive(), ast.getCDDefinition()))
         .build();
 
     // add visitor methods, but no double signatures
@@ -165,7 +182,144 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TRAVERSE_TEMPLATE, astcdClass));
     return traverseMethod;
   }
-
+  
+  /**
+   * Adds visit, endVisit, handle, and traverse methods for the general but
+   * language specific symbol interface.
+   * 
+   * @return The corresponding visitor methods for the symbol interface
+   */
+  protected List<ASTCDMethod> addISymbolVisitorMethods() {
+    List<ASTCDMethod> methodList = new ArrayList<>();
+    ASTMCQualifiedType iScopeType = getMCTypeFacade().createQualifiedType(I_SYMBOL);
+    methodList.add(visitorService.getVisitorMethod(VISIT, iScopeType));
+    methodList.add(visitorService.getVisitorMethod(END_VISIT, iScopeType));
+    return methodList;
+  }
+  
+  /**
+   * Adds visit, endVisit, handle, and traverse methods for a set of symbols.
+   * 
+   * @param symbolNames The input set of symbol names
+   * @return Created visitor methods to visit the symbols
+   */
+  protected List<ASTCDMethod> addSymbolVisitorMethods(Set<String> symbolNames) {
+    List<ASTCDMethod> visitorMethodList = new ArrayList<>();
+    for (String symbolName : symbolNames) {
+      ASTMCQualifiedType symbolType = getMCTypeFacade().createQualifiedType(symbolName);
+      visitorMethodList.add(visitorService.getVisitorMethod(VISIT, symbolType));
+      visitorMethodList.add(visitorService.getVisitorMethod(END_VISIT, symbolType));
+      // add template for handle method
+      ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, symbolType);
+      this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, true));
+      visitorMethodList.add(handleMethod);
+      visitorMethodList.add(visitorService.getVisitorMethod(TRAVERSE, symbolType));
+    }
+    return visitorMethodList;
+  }
+  
+  /**
+   * Adds visit, endVisit, handle, and traverse methods for the general but
+   * language specific scope interface.
+   * 
+   * @return The corresponding visitor methods for the scope interface
+   */
+  protected List<ASTCDMethod> addIScopeVisitorMethods() {
+    List<ASTCDMethod> methodList = new ArrayList<>();
+    ASTMCQualifiedType iScopeType = getMCTypeFacade().createQualifiedType(I_SCOPE);
+    methodList.add(visitorService.getVisitorMethod(VISIT, iScopeType));
+    methodList.add(visitorService.getVisitorMethod(END_VISIT, iScopeType));
+    return methodList;
+  }
+  
+  /**
+   * Adds visit, endVisit, handle, and traverse methods for scope and artifact
+   * scope of a given class diagram definition by delegating the respective
+   * names to createScopeVisitorMethods().
+   * 
+   * @param symbolsNameList The symbols to traverse
+   * @param astcdDefinition The input class diagram
+   * @return Created visitor methods to visit a (artifact) scope
+   */
+  protected List<ASTCDMethod> addScopeVisitorMethods(Set<String> symbolsNameList, ASTCDDefinition astcdDefinition) {
+    ASTMCType scopeType = symbolTableService.getScopeType();
+    ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeFullName());
+    
+    List<ASTCDMethod> methodList = new ArrayList<>();
+    methodList.addAll(createScopeVisitorMethods(symbolsNameList, scopeType));
+    // only create artifact scope methods if grammar contains productions or
+    // refers to a starting production of a super grammar
+    if (symbolTableService.hasProd(astcdDefinition) || symbolTableService.hasStartProd()) {
+      methodList.addAll(createScopeVisitorMethods(symbolsNameList, artifactScopeType));
+    }
+    return methodList;
+  }
+  
+  /**
+   * Creates visit, endVisit, handle, and traverse methods for a given scope.
+   * 
+   * @param symbolsNameList The symbols to traverse
+   * @param scopeName The scope name
+   * @return A List of created methods to visit a scope
+   */
+  protected List<ASTCDMethod> createScopeVisitorMethods(Set<String> symbolsNameList, ASTMCType scopeName) {
+    List<ASTCDMethod> methodList = new ArrayList<>();
+    methodList.add(visitorService.getVisitorMethod(VISIT, scopeName));
+    methodList.add(visitorService.getVisitorMethod(END_VISIT, scopeName));
+    ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, scopeName);
+    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, true));
+    methodList.add(handleMethod);
+    ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, scopeName);
+    methodList.add(traverseMethod);
+    this.replaceTemplate(EMPTY_BODY, traverseMethod,
+        new TemplateHookPoint(TRAVERSE_SCOPE_TEMPLATE, symbolsNameList, symbolTableService.getScopeInterfaceFullName()));
+    return methodList;
+  }
+  
+  /**
+   * Returns a set of qualified symbol names. Considers the complete inheritance
+   * hierarchy and thus, contains local symbols as well as inherited symbols.
+   * 
+   * @return The set of all qualified symbol names
+   */
+  protected Set<String> getSymbolsTransitive() {
+    Set<String> superSymbolNames = new HashSet<>();
+    // add local symbols
+    superSymbolNames.addAll(retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
+    
+    // add symbols of super CDs
+    List<CDDefinitionSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
+    for (CDDefinitionSymbol cdSymbol : superCDsTransitive) {
+      superSymbolNames.addAll(retrieveSymbolNamesFromCD(cdSymbol));
+    }
+    return superSymbolNames;
+  }
+  
+  /**
+   * Computes a set of all symbol defining rule in a class diagram.
+   * 
+   * @param cdSymbol The input symbol of a class diagram
+   * @return The set of symbol names within the class diagram
+   */
+  protected Set<String> retrieveSymbolNamesFromCD(CDDefinitionSymbol cdSymbol) {
+    Set<String> symbolNames = new HashSet<>();
+    // get AST for symbol
+    ASTCDDefinition astcdDefinition = cdSymbol.getAstNode();
+    // add symbol definitions from interfaces
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+      if (astcdInterface.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdInterface.getModifier())) {
+        symbolNames.add(symbolTableService.getSymbolFullName(astcdInterface, cdSymbol));
+      }
+    }
+    // add symbol definitions from nonterminals
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
+      if (astcdClass.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdClass.getModifier())) {
+        symbolNames.add(symbolTableService.getSymbolFullName(astcdClass, cdSymbol));
+      }
+    }
+    return symbolNames;
+  }
+  
   public boolean isTop() {
     return isTop;
   }

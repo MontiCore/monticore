@@ -25,10 +25,6 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
 
   protected final ASTVisitorDecorator astVisitorDecorator;
 
-  protected final SymbolVisitorDecorator symbolVisitorDecorator;
-
-  protected final ScopeVisitorDecorator scopeVisitorDecorator;
-
   protected final DelegatorVisitorDecorator delegatorVisitorDecorator;
 
   protected final InheritanceVisitorDecorator inheritanceVisitorDecorator;
@@ -43,8 +39,6 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
                             final IterablePath handCodedPath,
                             final VisitorService visitorService,
                             final ASTVisitorDecorator astVisitorDecorator,
-                            final SymbolVisitorDecorator symbolVisitorDecorator,
-                            final ScopeVisitorDecorator scopeVisitorDecorator,
                             final DelegatorVisitorDecorator delegatorVisitorDecorator,
                             final InheritanceVisitorDecorator inheritanceVisitorDecorator,
                             final ParentAwareVisitorDecorator parentAwareVisitorDecorator) {
@@ -52,8 +46,6 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
     this.handCodedPath = handCodedPath;
     this.visitorService = visitorService;
     this.astVisitorDecorator = astVisitorDecorator;
-    this.symbolVisitorDecorator = symbolVisitorDecorator;
-    this.scopeVisitorDecorator = scopeVisitorDecorator;
     this.delegatorVisitorDecorator = delegatorVisitorDecorator;
     this.inheritanceVisitorDecorator = inheritanceVisitorDecorator;
     this.parentAwareVisitorDecorator = parentAwareVisitorDecorator;
@@ -69,8 +61,6 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
     ASTCDDefinition astCD = CD4CodeMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
         .addCDInterface(astVisitorDecorator.decorate(input))
-        .addCDInterface(symbolVisitorDecorator.decorate(input))
-        .addCDInterface(scopeVisitorDecorator.decorate(input))
         .addCDClass(delegatorVisitorDecorator.decorate(input))
         .addCDInterface(inheritanceVisitorDecorator.decorate(input))
         .addCDClass(parentAwareVisitorDecorator.decorate(input))
@@ -94,13 +84,5 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
     boolean isVisitorHandCoded = existsHandwrittenClass(handCodedPath,
         constructQualifiedName(visitorPackage, visitorService.getSymbolVisitorSimpleName()));
     astVisitorDecorator.setTop(isVisitorHandCoded);
-
-    boolean isScopeVisitorHandCoded = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(visitorPackage, visitorService.getSymbolVisitorSimpleName()));
-    scopeVisitorDecorator.setTop(isScopeVisitorHandCoded);
-
-    boolean isSymbolVisitorHandCoded = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(visitorPackage, visitorService.getSymbolVisitorSimpleName()));
-    symbolVisitorDecorator.setTop(isSymbolVisitorHandCoded);
   }
 }
