@@ -185,8 +185,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   }
 
   protected ASTCDMethod createAcceptMethod(String symbolName) {
-    ASTMCQualifiedType symbolVisitorType = getMCTypeFacade().createQualifiedType(visitorService.getVisitorFullName());
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(symbolVisitorType, VISITOR_PREFIX);
+    ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(visitorService.getVisitorFullName());
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(visitorType, VISITOR_PREFIX);
     ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
     if (!isSymbolTop()) {
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new StringHookPoint("visitor.handle(this);"));

@@ -66,7 +66,7 @@ public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
 
     this.glex.setGlobalValue("genHelper", DecorationHelper.getInstance());
-    ASTVisitorDecorator decorator = new ASTVisitorDecorator(this.glex,
+    VisitorDecorator decorator = new VisitorDecorator(this.glex,
         new VisitorService(decoratedCompilationUnit),  new SymbolTableService(decoratedCompilationUnit));
     this.visitorInterface = decorator.decorate(decoratedCompilationUnit);
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());

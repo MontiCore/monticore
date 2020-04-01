@@ -537,8 +537,8 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createAcceptMethod() {
-    String ownScopeVisitor = visitorService.getVisitorFullName();
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
+    String visitor = visitorService.getVisitorFullName();
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(visitor), VISITOR_PREFIX);
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, parameter);
   }
 

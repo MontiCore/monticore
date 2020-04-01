@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symbols", "ownSymbol")}
+${tc.signature("symbols")}
   // traverse symbols within the scope
 <#list symbols as symbol>
     <#assign simpleName = symbol>

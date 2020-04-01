@@ -137,45 +137,6 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getPackage(cdDefinitionSymbol) + "." + getDelegatorVisitorSimpleName(cdDefinitionSymbol);
   }
 
-  /**
-   * scope visitor name e.g. AutomataScopeVisitor
-   */
-
-  public String getScopeVisitorSimpleName() {
-    return getScopeVisitorSimpleName(getCDSymbol());
-  }
-
-  public String getScopeVisitorSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + SCOPE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
-  }
-
-  public String getScopeVisitorFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getScopeVisitorSimpleName(cdSymbol);
-  }
-
-  public String getScopeVisitorFullName() {
-    return getScopeVisitorFullName(getCDSymbol());
-  }
-
-  /**
-   * symbol visitor name e.g. AutomataSymbolVisitor
-   */
-
-  public String getSymbolVisitorSimpleName() {
-    return getSymbolVisitorSimpleName(getCDSymbol());
-  }
-
-  public String getSymbolVisitorSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + SYMBOL_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
-  }
-
-  public String getSymbolVisitorFullName() {
-    return getSymbolVisitorFullName(getCDSymbol());
-  }
-
-  public String getSymbolVisitorFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getSymbolVisitorSimpleName(cdSymbol);
-  }
 
   /**
    * other helpful methods

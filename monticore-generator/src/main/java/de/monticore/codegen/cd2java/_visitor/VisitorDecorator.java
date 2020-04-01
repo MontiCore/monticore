@@ -30,7 +30,7 @@ import static de.monticore.cd.facade.CDModifier.*;
 /**
  * creates a ASTVisitor class from a grammar
  */
-public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
+public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
   
   protected final VisitorService visitorService;
   
@@ -38,7 +38,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   
   protected boolean isTop;
   
-  public ASTVisitorDecorator(final GlobalExtensionManagement glex,
+  public VisitorDecorator(final GlobalExtensionManagement glex,
                              final VisitorService visitorService,
                              final SymbolTableService symbolTableService) {
     super(glex);
@@ -53,7 +53,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(AST_INTERFACE);
     Set<String> symbolNames = retrieveSymbolNamesFromCD(visitorService.getCDSymbol());
 
-    ASTCDInterface symbolVisitorInterface = CD4CodeMill.cDInterfaceBuilder()
+    ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitorSimpleName())
         .addAllInterfaces(this.visitorService.getSuperVisitors())
         .setModifier(PUBLIC.build())
@@ -70,25 +70,25 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     // add visitor methods, but no double signatures
     List<ASTCDMethod> classMethods = addClassVisitorMethods(compilationUnit.getCDDefinition().getCDClassList());
     for (ASTCDMethod classMethod : classMethods) {
-      if (!visitorService.isMethodAlreadyDefined(classMethod, symbolVisitorInterface.getCDMethodList())) {
-        symbolVisitorInterface.addCDMethod(classMethod);
+      if (!visitorService.isMethodAlreadyDefined(classMethod, visitorInterface.getCDMethodList())) {
+        visitorInterface.addCDMethod(classMethod);
       }
     }
     List<ASTCDMethod> interfaceMethods = addInterfaceVisitorMethods(compilationUnit.getCDDefinition().getCDInterfaceList());
     for (ASTCDMethod interfaceMethod : interfaceMethods) {
-      if (!visitorService.isMethodAlreadyDefined(interfaceMethod, symbolVisitorInterface.getCDMethodList())) {
-        symbolVisitorInterface.addCDMethod(interfaceMethod);
+      if (!visitorService.isMethodAlreadyDefined(interfaceMethod, visitorInterface.getCDMethodList())) {
+        visitorInterface.addCDMethod(interfaceMethod);
       }
     }
     List<ASTCDMethod> enumMethods = addEnumVisitorMethods(compilationUnit.getCDDefinition().getCDEnumList(),
         compilationUnit.getCDDefinition().getName());
     for (ASTCDMethod enumMethod : enumMethods) {
-      if (!visitorService.isMethodAlreadyDefined(enumMethod, symbolVisitorInterface.getCDMethodList())) {
-        symbolVisitorInterface.addCDMethod(enumMethod);
+      if (!visitorService.isMethodAlreadyDefined(enumMethod, visitorInterface.getCDMethodList())) {
+        visitorInterface.addCDMethod(enumMethod);
       }
     }
 
-    return symbolVisitorInterface;
+    return visitorInterface;
   }
 
   protected ASTCDMethod addVisitASTNodeMethods(ASTMCType astNodeType) {
@@ -272,7 +272,7 @@ public class ASTVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, scopeName);
     methodList.add(traverseMethod);
     this.replaceTemplate(EMPTY_BODY, traverseMethod,
-        new TemplateHookPoint(TRAVERSE_SCOPE_TEMPLATE, symbolsNameList, symbolTableService.getScopeInterfaceFullName()));
+        new TemplateHookPoint(TRAVERSE_SCOPE_TEMPLATE, symbolsNameList));
     return methodList;
   }
   

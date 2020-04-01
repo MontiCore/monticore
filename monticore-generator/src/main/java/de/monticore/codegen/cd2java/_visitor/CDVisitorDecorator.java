@@ -23,7 +23,7 @@ import static de.monticore.utils.Names.constructQualifiedName;
 
 public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
-  protected final ASTVisitorDecorator astVisitorDecorator;
+  protected final VisitorDecorator astVisitorDecorator;
 
   protected final DelegatorVisitorDecorator delegatorVisitorDecorator;
 
@@ -38,7 +38,7 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
   public CDVisitorDecorator(final GlobalExtensionManagement glex,
                             final IterablePath handCodedPath,
                             final VisitorService visitorService,
-                            final ASTVisitorDecorator astVisitorDecorator,
+                            final VisitorDecorator astVisitorDecorator,
                             final DelegatorVisitorDecorator delegatorVisitorDecorator,
                             final InheritanceVisitorDecorator inheritanceVisitorDecorator,
                             final ParentAwareVisitorDecorator parentAwareVisitorDecorator) {
