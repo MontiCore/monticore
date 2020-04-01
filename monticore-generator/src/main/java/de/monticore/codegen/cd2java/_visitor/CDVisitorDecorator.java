@@ -82,7 +82,7 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
 
   protected void setIfExistsHandwrittenFile(List<String> visitorPackage) {
     boolean isVisitorHandCoded = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(visitorPackage, visitorService.getSymbolVisitorSimpleName()));
+        constructQualifiedName(visitorPackage, visitorService.getVisitorSimpleName()));
     astVisitorDecorator.setTop(isVisitorHandCoded);
   }
 }
