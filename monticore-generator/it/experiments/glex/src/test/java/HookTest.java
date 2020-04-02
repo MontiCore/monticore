@@ -11,7 +11,6 @@ import hierautomata._parser.HierAutomataParser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,16 +20,19 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
-@Ignore
 public class HookTest {
   
   // setup the language infrastructure
   static ASTStateMachine ast;
   static GlobalExtensionManagement glex;
   static GeneratorEngine ge;
+
+  private static final String REGEXP = "[\r\n]+";
+
+  private static final String REPLACE = " ";
   
   @BeforeClass
-  public static void init() throws IOException {
+  public static void init() throws IOException{
     // replace log by a sideffect free variant
     LogStub.init();
     HierAutomataParser parser = new HierAutomataParser() ;
@@ -58,7 +60,7 @@ public class HookTest {
 
   // --------------------------------------------------------------------
   @Test
-  public void testSimple() throws IOException {
+  public void testSimple() {
     // Empty Dummy
     StringBuilder res = ge.generate("tpl4/Simple.ftl", ast);
 
@@ -66,13 +68,13 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("TA\n", res.toString());
+    assertEquals("TA ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
   // --------------------------------------------------------------------
   @Test
-  public void testDefine() throws IOException {
+  public void testDefine() {
     // Two explicit hook points
     StringBuilder res = ge.generate("tpl4/Define.ftl", ast);
 
@@ -80,13 +82,13 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\nA\n\n\nB\n", res.toString());
+    assertEquals(" A B ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
   // --------------------------------------------------------------------
   @Test
-  public void testDefineReplace1() throws IOException {
+  public void testDefineReplace1() {
     // Two explicit hook points
     glex.bindHookPoint("HP1", new StringHookPoint("St"));
     StringBuilder res = ge.generate("tpl4/Define.ftl", ast);
@@ -95,13 +97,13 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\nA\nSt\n\nB\n", res.toString());
+    assertEquals(" A St B ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
   // --------------------------------------------------------------------
   @Test
-  public void testDefineReplace2() throws IOException {
+  public void testDefineReplace2() {
     // Two explicit hook points
     glex.bindHookPoint("HP1", new StringHookPoint("StA"));
     glex.bindHookPoint("HP2", new StringHookPoint("StB"));
@@ -111,7 +113,7 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\nA\nStA\nStB\nB\n", res.toString());
+    assertEquals(" A StA StB B ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
@@ -126,7 +128,7 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\nA\nSt\n\nB\n", res.toString());
+    assertEquals(" A St B ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
@@ -141,7 +143,7 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\nA\n38\n\nB\n", res.toString());
+    assertEquals(" A 38 B ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
@@ -156,13 +158,13 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\nA\nPingPong\n\nB\n", res.toString());
+    assertEquals(" A PingPong B ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
   // --------------------------------------------------------------------
   @Test
-  public void testDefineReplace6() throws IOException {
+  public void testDefineReplace6() {
     // Two explicit hook points
     glex.bindHookPoint("HP1", new TemplateHookPoint("tpl4/Hook1.ftl"));
     StringBuilder res = ge.generate("tpl4/Define.ftl", ast);
@@ -171,13 +173,13 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\nA\nR\nPingPong\n\nT\n\n\nB\n", res.toString());
+    assertEquals(" A R PingPong T B ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
   // --------------------------------------------------------------------
   @Test
-  public void testDefineReplace7() throws IOException {
+  public void testDefineReplace7() {
     // Demonstrate that hook points in hook templates are again executed
     glex.bindHookPoint("HP1", new TemplateHookPoint("tpl4/Hook1.ftl"));
     glex.bindHookPoint("HP3", new StringHookPoint("tpl4/Hook1.ftl"));
@@ -187,13 +189,13 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\nA\nR\nPingPong\ntpl4/Hook1.ftl\nT\n\n\nB\n", res.toString());
+    assertEquals(" A R PingPong tpl4/Hook1.ftl T B ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
   // --------------------------------------------------------------------
   @Test
-  public void testDefineReplaceCode1() throws IOException {
+  public void testDefineReplaceCode1() {
     // Using Code Hooks (with Memory)
     CodeHookPoint chp = new CodeHookPoint() {
         int i = 0;
@@ -214,13 +216,13 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\nA\nC1\nC2\nB\n", res.toString());
+    assertEquals(" A C1 C2 B ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
   // --------------------------------------------------------------------
   @Test
-  public void testDefineReplaceCode2() throws IOException {
+  public void testDefineReplaceCode2() {
     // Using Code Hooks (with ast access)
     CodeHookPoint chp = new CodeHookPoint() {
         int i = 0;
@@ -241,13 +243,13 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\nA\nPingPong1\nPingPong2\nB\n", res.toString());
+    assertEquals(" A PingPong1 PingPong2 B ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
   // --------------------------------------------------------------------
   @Test
-  public void testReplaceCodeWithArgs11() throws IOException {
+  public void testReplaceCodeWithArgs11() {
     // Using Code Hooks (with explicit extra arguments)
     CodeHookPoint chp = new CodeHookPoint() {
       
@@ -276,12 +278,12 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\nPingPong:3318\nPingPong:3323\n\n", res.toString());
+    assertEquals(" PingPong:3318 PingPong:3323 ", res.toString().replaceAll(REGEXP, REPLACE));
   }
   
   // --------------------------------------------------------------------
   @Test
-  public void testReplaceCodeWithArgs12() throws IOException {
+  public void testReplaceCodeWithArgs12() {
     // Using Template Hooks (with explicit extra arguments)
     TemplateHookPoint chp = new TemplateHookPoint("tpl4/Hook2.ftl", "PingPong") ;
     
@@ -292,12 +294,12 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\n\nPingPong:18\n\n", res.toString());
+    assertEquals(" PingPong:18 ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
   // --------------------------------------------------------------------
   @Test
-  public void testHooksInTemplates1() throws IOException {
+  public void testHooksInTemplates1() {
     // Templates A -> B -> C+D
     StringBuilder res = ge.generate("tpl4/A.ftl", ast);
 
@@ -305,13 +307,13 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("A1\n\nB1\nC1\n\nD1\n\n\n", res.toString());
+    assertEquals("A1 B1 C1 D1 ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
   // --------------------------------------------------------------------
   @Test
-  public void testHooksInTemplates2() throws IOException {
+  public void testHooksInTemplates2() {
     // Templates A -> B -> C+D
     glex.bindHookPoint("P", new TemplateHookPoint("tpl4.F"));
     StringBuilder res = ge.generate("tpl4/A.ftl", ast);
@@ -320,7 +322,7 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("A1\nF1\n\nB1\nC1\n\nD1\n\n\n", res.toString());
+    assertEquals("A1 F1 B1 C1 D1 ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
     // Only three variants of template names work
@@ -330,7 +332,7 @@ public class HookTest {
 
   // --------------------------------------------------------------------
   @Test
-  public void testHooksInTemplates2c() throws IOException {
+  public void testHooksInTemplates2c() {
     // Templates A -> B -> C+D
     glex.bindHookPoint("P", new TemplateHookPoint("tpl4/F.ftl"));
     StringBuilder res = ge.generate("tpl4/A.ftl", ast);
@@ -339,13 +341,13 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("A1\nF1\n\nB1\nC1\n\nD1\n\n\n", res.toString());
+    assertEquals("A1 F1 B1 C1 D1 ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
   // --------------------------------------------------------------------
   @Test
-  public void testHooksInTemplates2d() throws IOException {
+  public void testHooksInTemplates2d() {
     // Templates A -> B -> C+D
     glex.bindHookPoint("P", new TemplateHookPoint("tpl4.F.ftl"));
     StringBuilder res = ge.generate("tpl4/A.ftl", ast);
@@ -354,13 +356,13 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("A1\nF1\n\nB1\nC1\n\nD1\n\n\n", res.toString());
+    assertEquals("A1 F1 B1 C1 D1 ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
   // --------------------------------------------------------------------
   @Test
-  public void testHooksInTemplates3() throws IOException {
+  public void testHooksInTemplates3() {
     // Templates A -> B=E
     glex.replaceTemplate("tpl4.B", new TemplateHookPoint("tpl4.E"));
     StringBuilder res = ge.generate("tpl4/A.ftl", ast);
@@ -369,12 +371,12 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("A1\n\nE1\n\n", res.toString());
+    assertEquals("A1 E1 ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
   // --------------------------------------------------------------------
   @Test
-  public void testOverwriteReplace() throws IOException {
+  public void testOverwriteReplace() {
     // Templates A -> B=F
     glex.replaceTemplate("tpl4.B", new TemplateHookPoint("tpl4.E")); // no eff.
     glex.replaceTemplate("tpl4.B", new TemplateHookPoint("tpl4.F"));
@@ -384,12 +386,12 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("A1\n\nF1\n\n", res.toString());
+    assertEquals("A1 F1 ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
   // --------------------------------------------------------------------
   @Test
-  public void testOverwriteAndDecorateOldB() throws IOException {
+  public void testOverwriteAndDecorateOldB() {
     // Templates A -> B=F
     glex.replaceTemplate("tpl4.B", new TemplateHookPoint("tpl4.E")); // no eff.
     glex.replaceTemplate("tpl4.B", new TemplateHookPoint("tpl4.F"));
@@ -403,12 +405,12 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("A1\n\nG1\nF1\nG1\n\n", res.toString());
+    assertEquals("A1 G1 F1 G1 ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
   // --------------------------------------------------------------------
   @Test
-  public void testOverwriteAndDecorateOldAndNew() throws IOException {
+  public void testOverwriteAndDecorateOldAndNew() {
     // Templates A -> B=F
     glex.replaceTemplate("tpl4.B", new TemplateHookPoint("tpl4.F"));
     glex.setBeforeTemplate("tpl4.B", new TemplateHookPoint("tpl4.E"));
@@ -421,12 +423,12 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("A1\n\nE1\nF1\nE1\n\n", res.toString());
+    assertEquals("A1 E1 F1 E1 ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
   // --------------------------------------------------------------------
   @Test
-  public void testHookSignature1() throws IOException {
+  public void testHookSignature1() {
     // Using Template Hooks (with 2 explicit extra arguments)
     TemplateHookPoint chp = new TemplateHookPoint("tpl4/HookDoubleArgs.ftl",
     							"FH1", "FH2") ;
@@ -439,12 +441,12 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\n\nFH1:FH2:18:FH2\n\n", res.toString());
+    assertEquals(" FH1:FH2:18:FH2 ", res.toString().replaceAll(REGEXP, REPLACE));
   }
   
   // --------------------------------------------------------------------
   @Test
-  public void testDefaults() throws IOException {
+  public void testDefaults() {
     // Using String Hook
     StringHookPoint chp = new StringHookPoint("HookPoint filled") ;
     
@@ -457,12 +459,12 @@ public class HookTest {
     // Stringvergleich: --------------------
     System.out.println(res.toString());
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\nHookPoint filled\n" + "Hook empty\n", res.toString());
+    assertEquals(" HookPoint filled " + "Hook empty ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
   // --------------------------------------------------------------------
   @Test
-  public void testBindHookFromTemplate() throws IOException {
+  public void testBindHookFromTemplate() {
     
     // the hook in Define3 itself has also one argument
     StringBuilder res = ge.generate("tpl4/Bind1.ftl", ast);
@@ -471,9 +473,9 @@ public class HookTest {
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("\n\n\n// Content of (c) template\n\n\n"
-    		 + "\n\n// Content of (c) template\n\n"
-		 + "\n// Developed by SE RWTH\n\n", res.toString());
+    assertEquals(" // Content of (c) template"
+    		 + " // Content of (c) template"
+		 + " // Developed by SE RWTH ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
 
