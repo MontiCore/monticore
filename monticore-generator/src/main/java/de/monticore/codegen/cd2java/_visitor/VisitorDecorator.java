@@ -179,7 +179,9 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
 
   protected ASTCDMethod addTraversMethod(ASTMCType astType, ASTCDClass astcdClass) {
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, astType);
-    this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TRAVERSE_TEMPLATE, astcdClass));
+    boolean isScopeSpanningSymbol = symbolTableService.hasScopeStereotype(astcdClass.getModifier()) ||
+        symbolTableService.hasInheritedScopeStereotype(astcdClass.getModifier());
+    this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TRAVERSE_TEMPLATE, astcdClass, isScopeSpanningSymbol));
     return traverseMethod;
   }
   

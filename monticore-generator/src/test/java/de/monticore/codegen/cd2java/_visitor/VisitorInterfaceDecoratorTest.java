@@ -28,7 +28,7 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.Assert.*;
 
-public class ASTVisitorInterfaceDecoratorTest extends DecoratorTestCase {
+public class VisitorInterfaceDecoratorTest extends DecoratorTestCase {
 
   private MCTypeFacade mcTypeFacade;
 

@@ -4,7 +4,7 @@
 // concrete type of the element.
 // Instead we double-dispatch the call, to call the correctly typed
 // traverse(...) method with the elements concrete type.
-${tc.signature("cdClass")}
+${tc.signature("cdClass", "isScopeSpanning")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 
 <#list cdClass.getCDAttributeList() as attr>
@@ -31,3 +31,10 @@ ${tc.signature("cdClass")}
     }
   </#if>
 </#list>
+
+<#if isScopeSpanning>
+    // traverse spanned scope if present
+    if (node.getSpannedScope() != null) {
+      node.getSpannedScope().accept(getRealThis());
+    }
+</#if>
