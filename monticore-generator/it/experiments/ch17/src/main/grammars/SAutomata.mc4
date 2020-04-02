@@ -6,7 +6,7 @@ grammar SAutomata extends de.monticore.MCBasics {
 
  symbol State =
    "state" Name
- (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))* ";" ;
+   (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))* ";";
 
  Transition =
    from:Name@State "-" input:Name ">" to:Name@State ";" ;
