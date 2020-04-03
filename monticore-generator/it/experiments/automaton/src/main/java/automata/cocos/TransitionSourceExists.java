@@ -9,7 +9,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
-public class TransitionSourceExists implements AutomataASTTransitionCoCo {
+public class TransitionSourceExists
+                 implements AutomataASTTransitionCoCo {
 
   @Override
   public void check(ASTTransition node) {
