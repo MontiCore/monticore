@@ -33,7 +33,9 @@ ${tc.signature("cdClass", "isScopeSpanning")}
 </#list>
 
 <#if isScopeSpanning>
-    // traverse spanned scope if present
+    // although we generally assume that the symbol table is always available,
+    // there are cases, where this is not true (for example construction of the
+    // symbol table itself. Thus, the null-check is necessary.
     if (node.getSpannedScope() != null) {
       node.getSpannedScope().accept(getRealThis());
     }

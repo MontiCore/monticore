@@ -28,7 +28,7 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.cd.facade.CDModifier.*;
 
 /**
- * creates a ASTVisitor class from a grammar
+ * creates a Visitor interface from a grammar
  */
 public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
   
