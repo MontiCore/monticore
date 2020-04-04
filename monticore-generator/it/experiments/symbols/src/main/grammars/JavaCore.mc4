@@ -1,0 +1,94 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+component grammar JavaCore {
+
+CompilationUnit =  TypeDeclaration* EOF ;
+
+// Type declarations
+interface TypeDeclaration;
+
+symbol scope ClassDeclaration implements TypeDeclaration
+    =   "class" Name 
+        ("extends" superClass:Type)?
+        ("implements" implementedInterfaces:(Type || ",")+)?
+        ClassBody
+    ;
+
+symbol scope InterfaceDeclaration implements TypeDeclaration
+    =   "interface" Name 
+        ("extends" extendedInterfaces:(Type || ",")+)?
+        ClassBody
+    ;
+
+scope ClassBody
+    =   "{" ClassBodyDeclaration* "}"
+    ;
+
+interface ClassBodyDeclaration ;
+
+MethodDeclaration implements ClassBodyDeclaration
+    =   MethodSignature (JavaBlock | ";")
+    ;
+
+ConstructorDeclaration implements ClassBodyDeclaration
+    =   Name FormalParameters 
+    ;
+
+FieldDeclaration implements ClassBodyDeclaration
+    =   Type ";"
+    ;
+
+MethodSignature
+    =   ReturnType Name FormalParameters 
+    ;
+
+VariableDeclarator
+    =   DeclaratorId ("=" Expression)?
+    ;
+
+DeclaratorId
+    =   Name (dim:"[" "]")*
+    ;
+
+FormalParameters
+    =   "(" FormalParameterListing? ")"
+    ;
+
+FormalParameterListing
+    =   (FormalParameter || ",")+ 
+    ;
+
+FormalParameter
+    =   Type DeclaratorId
+    ;
+
+// STATEMENTS / BLOCKS
+
+interface Statement ;
+
+LocalVariableDeclarationStatement implements Statement
+    =    LocalVariableDeclaration ";"
+    ;
+
+LocalVariableDeclaration implements ForInit
+    =   Type (VariableDeclarator || ",")+
+    ;
+
+JavaBlock implements Statement
+    =   "{" Statement* "}"
+    ;
+
+ExpressionStatement implements Statement
+    =   Expression ";"
+    ;
+
+// EXPRESSIONS
+
+Expression implements ElementValue
+    =   
+    |   Expression "." Name
+    |   "(" Expression ")"
+    |   Name
+    ;
+
+}
