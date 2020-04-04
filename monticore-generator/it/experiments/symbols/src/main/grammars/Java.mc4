@@ -1,6 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-component grammar JavaCore extends de.monticore.MCBasics {
+/** This is a very much simplified Java excerpt that 
+    exhibits some of typical Java symbols and scopes.
+    It is used for demonstration only.
+*/
+
+component grammar Java extends de.monticore.MCBasics {
 
 CompilationUnit =  TypeDeclaration* EOF ;
 
@@ -13,59 +18,49 @@ interface Type;
 //Type used in return statements
 interface ReturnType;
 
-symbol scope ClassDeclaration implements TypeDeclaration
+symbol ClassDeclaration 
     =   "class" Name 
         ("extends" superClass:Type)?
         ("implements" implementedInterfaces:(Type || ",")+)?
         ClassBody
     ;
 
-symbol scope InterfaceDeclaration implements TypeDeclaration
+/*XXX: other symboltype */
+symbol InterfaceDeclaration 
     =   "interface" Name 
         ("extends" extendedInterfaces:(Type || ",")+)?
         ClassBody
     ;
 
 scope ClassBody
-    =   "{" ClassBodyDeclaration* "}"
+    =   "{" (Method|Field)* "}"
     ;
 
-interface ClassBodyDeclaration ;
-
-MethodDeclaration implements ClassBodyDeclaration
-    =   MethodSignature (JavaBlock | ";")
+symbol Method 
+    =   ReturnType Name FormalParameters 
+        (JavaBlock | ";")
     ;
 
-ConstructorDeclaration implements ClassBodyDeclaration
+symbol ConstructorDeclaration 
     =   Name FormalParameters 
     ;
 
-FieldDeclaration implements ClassBodyDeclaration
-    =   Type ";"
+symbol Field 
+    =   Type Name (dim:"[" "]")* ("=" Expression)? ";"
     ;
 
-MethodSignature
-    =   ReturnType Name FormalParameters 
-    ;
-
-VariableDeclarator
-    =   DeclaratorId ("=" Expression)?
-    ;
-
-DeclaratorId
-    =   Name (dim:"[" "]")*
+/*XXX: other symboltype */
+symbol VariableDeclarator
+    =   Name (dim:"[" "]")* ("=" Expression)?
     ;
 
 FormalParameters
-    =   "(" FormalParameterListing? ")"
+    =   "(" (FormalParameter || ",")* ")"
     ;
 
-FormalParameterListing
-    =   (FormalParameter || ",")+ 
-    ;
-
-FormalParameter
-    =   Type DeclaratorId
+/*XXX: other symboltype */
+symbol FormalParameter
+    =   Type Name (dim:"[" "]")*
     ;
 
 // STATEMENTS / BLOCKS
@@ -76,7 +71,7 @@ LocalVariableDeclarationStatement implements Statement
     =    Type (VariableDeclarator || ",")+ ";"
     ;
 
-JavaBlock implements Statement
+scope JavaBlock implements Statement
     =   "{" Statement* "}"
     ;
 
@@ -88,9 +83,9 @@ ExpressionStatement implements Statement
 
 Expression
     =   
-    |   Expression "." Name
+    |   Expression "." Name@VariableDeclarator
     |   "(" Expression ")"
-    |   Name
+    |   Name@VariableDeclarator
     ;
 
 }
