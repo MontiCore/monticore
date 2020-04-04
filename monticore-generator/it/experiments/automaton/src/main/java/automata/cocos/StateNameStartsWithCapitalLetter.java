@@ -5,7 +5,8 @@ import automata._ast.ASTState;
 import automata._cocos.AutomataASTStateCoCo;
 import de.se_rwth.commons.logging.Log;
 
-public class StateNameStartsWithCapitalLetter implements AutomataASTStateCoCo {
+public class StateNameStartsWithCapitalLetter
+                        implements AutomataASTStateCoCo {
   
   @Override
   public void check(ASTState state) {

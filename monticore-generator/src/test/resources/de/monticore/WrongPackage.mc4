@@ -1,0 +1,11 @@
+
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.ronticore;
+
+grammar WrongPackage {
+
+    Test = "test";
+
+}
+
