@@ -1,11 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-component grammar JavaCore {
+component grammar JavaCore extends de.monticore.MCBasics {
 
 CompilationUnit =  TypeDeclaration* EOF ;
 
 // Type declarations
 interface TypeDeclaration;
+
+// Usage of a type
+interface Type;
+
+//Type used in return statements
+interface ReturnType;
 
 symbol scope ClassDeclaration implements TypeDeclaration
     =   "class" Name 
@@ -67,11 +73,7 @@ FormalParameter
 interface Statement ;
 
 LocalVariableDeclarationStatement implements Statement
-    =    LocalVariableDeclaration ";"
-    ;
-
-LocalVariableDeclaration implements ForInit
-    =   Type (VariableDeclarator || ",")+
+    =    Type (VariableDeclarator || ",")+ ";"
     ;
 
 JavaBlock implements Statement
@@ -84,7 +86,7 @@ ExpressionStatement implements Statement
 
 // EXPRESSIONS
 
-Expression implements ElementValue
+Expression
     =   
     |   Expression "." Name
     |   "(" Expression ")"
