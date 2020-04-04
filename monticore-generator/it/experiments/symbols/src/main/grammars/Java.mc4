@@ -25,12 +25,14 @@ symbol ClassDeclaration
         ClassBody
     ;
 
-/*XXX: other symboltype */
 symbol InterfaceDeclaration 
     =   "interface" Name 
         ("extends" extendedInterfaces:(Type || ",")+)?
         ClassBody
     ;
+
+// Interface-Symbols are special forms of class-Symbols
+symbolrule InterfaceDeclaration extends ASTClassDeclaration;
 
 scope ClassBody
     =   "{" (Method|Field)* "}"
@@ -49,7 +51,6 @@ symbol Field
     =   Type Name (dim:"[" "]")* ("=" Expression)? ";"
     ;
 
-/*XXX: other symboltype */
 symbol VariableDeclarator
     =   Name (dim:"[" "]")* ("=" Expression)?
     ;
@@ -58,7 +59,6 @@ FormalParameters
     =   "(" (FormalParameter || ",")* ")"
     ;
 
-/*XXX: other symboltype */
 symbol FormalParameter
     =   Type Name (dim:"[" "]")*
     ;
