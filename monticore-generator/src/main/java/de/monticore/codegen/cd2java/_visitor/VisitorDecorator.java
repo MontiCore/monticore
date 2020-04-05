@@ -285,7 +285,7 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    * @return The set of all qualified symbol names
    */
   protected Set<String> getSymbolsTransitive() {
-    Set<String> superSymbolNames = new HashSet<>();
+    Set<String> superSymbolNames = new HashSet<String>();
     // add local symbols
     superSymbolNames.addAll(retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
     
@@ -304,7 +304,7 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    * @return The set of symbol names within the class diagram
    */
   protected Set<String> retrieveSymbolNamesFromCD(CDDefinitionSymbol cdSymbol) {
-    Set<String> symbolNames = new HashSet<>();
+    Set<String> symbolNames = new HashSet<String>();
     // get AST for symbol
     ASTCDDefinition astcdDefinition = cdSymbol.getAstNode();
     // add symbol definitions from interfaces

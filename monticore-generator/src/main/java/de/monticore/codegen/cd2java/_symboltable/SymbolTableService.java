@@ -131,6 +131,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getArtifactScopeFullName(getCDSymbol());
   }
 
+  public ASTMCQualifiedType getArtifactScopeType() {
+    return getMCTypeFacade().createQualifiedType(getArtifactScopeFullName());
+  }
+
   /**
    * global scope class names e.g. AutomataGlobalScope
    */
@@ -473,6 +477,16 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getSimpleNameFromSymbolName(String referencedSymbol) {
     return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SYMBOL_SUFFIX));
+  }
+
+  /**
+   * Computes the MCQualifiedType of the symbol from its corresponding CD type.
+   * 
+   * @param node The input ASTCDType. Either a class or interface
+   * @return The qualified type of the symbol as MCQualifiedType
+   */
+  public ASTMCQualifiedType getSymbolTypeFromAstType(ASTCDType node) {
+    return getMCTypeFacade().createQualifiedType(getSymbolFullName(node));
   }
 
   /**
