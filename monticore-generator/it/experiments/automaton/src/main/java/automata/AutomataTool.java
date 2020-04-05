@@ -81,7 +81,7 @@ public class AutomataTool {
     // Now we know the model is well-formed
 
     // store artifact scope and its smybols
-    deser.store(modelTopScope,lang, DEFAULT_SYMBOL_LOCATION);
+    deser.store(modelTopScope, lang, DEFAULT_SYMBOL_LOCATION);
 
     // analyze the model with a visitor
     CountStates cs = new CountStates();
