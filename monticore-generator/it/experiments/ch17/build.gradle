@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 description = 'Experiments: ch17'
 
-fileTree(grammarDir).each {
+fileTree(grammarDir).matching { include '**/*.mc4'}.each {
   def g = it
   def taskname = file(grammarDir).toURI().relativize(g.toURI()).toString()
   taskname = taskname.substring(0, taskname.lastIndexOf(".")).replaceAll("/",'_')
