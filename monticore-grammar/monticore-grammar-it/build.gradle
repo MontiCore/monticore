@@ -41,7 +41,7 @@ ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
 sourceSets.main.java.srcDirs += [ outDir ]
 
 // one task per file
-fileTree(grammarDir).each {
+fileTree(grammarDir).matching { include '**/*.mc4'}.each {
   def g = it
   task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
     grammar = file g
