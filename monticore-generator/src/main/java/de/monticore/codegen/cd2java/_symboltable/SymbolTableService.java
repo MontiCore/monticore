@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.NODE_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.utils.Names.getSimpleName;
@@ -480,6 +481,32 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /**
+   * Computes a set of all symbol defining rules in a class diagram, stored as
+   * their qualified names.
+   * 
+   * @param cdSymbol The input symbol of a class diagram
+   * @return The set of symbol names within the class diagram
+   */
+  public Set<String> retrieveSymbolNamesFromCD(CDDefinitionSymbol cdSymbol) {
+    Set<String> symbolNames = new HashSet<String>();
+    // get AST for symbol
+    ASTCDDefinition astcdDefinition = cdSymbol.getAstNode();
+    // add symbol definitions from interfaces
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+      if (astcdInterface.isPresentModifier() && hasSymbolStereotype(astcdInterface.getModifier())) {
+        symbolNames.add(getSymbolFullName(astcdInterface, cdSymbol));
+      }
+    }
+    // add symbol definitions from nonterminals
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
+      if (astcdClass.isPresentModifier() && hasSymbolStereotype(astcdClass.getModifier())) {
+        symbolNames.add(getSymbolFullName(astcdClass, cdSymbol));
+      }
+    }
+    return symbolNames;
+  }
+
+  /**
    * Computes the MCQualifiedType of the symbol from its corresponding CD type.
    * 
    * @param node The input ASTCDType. Either a class or interface
@@ -648,8 +675,40 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     // is true if it has any class productions or any interface productions that are not the language interface
     return !astcdDefinition.isEmptyCDClasss() ||
         (!astcdDefinition.isEmptyCDInterfaces() &&
-            !(astcdDefinition.sizeCDInterfaces() == 1
-                && astcdDefinition.getCDInterface(0).getName().equals(getSimpleLanguageInterfaceName())));
+            (astcdDefinition.sizeCDInterfaces() != 1
+                || checkInterfaceNameForProd(astcdDefinition)));
+  }
+
+  /**
+   * Checks if there is an interface name that does match the language
+   * interface. This check is performed against the unqualified and qualified
+   * language interface. This check is supposed to be invoked when exactly one
+   * interface is present. Otherwise, this method returns true as the CD is
+   * assumed to have more interfaces, thus having at least one production.
+   * 
+   * @param astcdDefinition The input cd which is checked for interfaces
+   * @return True if the single interface matches the language interface name,
+   *         false otherwise
+   */
+  private boolean checkInterfaceNameForProd(ASTCDDefinition astcdDefinition) {
+    if (astcdDefinition.sizeCDInterfaces() != 1) {
+      return true;
+    }
+    String interfaceName = astcdDefinition.getCDInterface(0).getName();
+    // check unqualified interface name
+    if (interfaceName.equals(getSimpleLanguageInterfaceName())) {
+      return false;
+    }
+    
+    // check qualified interface name if symbol is available
+    if (astcdDefinition.isPresentSymbol()) {
+      CDDefinitionSymbol sym = astcdDefinition.getSymbol();
+      String qualifiedName = getASTPackage(sym) + "." + AST_PREFIX + sym.getName() + NODE_SUFFIX;
+      return !(interfaceName.equals(qualifiedName));
+    }
+    
+    // per default, we assume that productions are available
+    return true;
   }
 
   public String removeASTPrefix(ASTCDType clazz) {

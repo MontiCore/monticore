@@ -1,7 +1,34 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.END_VISIT;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.GET_REAL_THIS;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_TEMPLATE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.REAL_THIS;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.SET_REAL_THIS;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE_SCOPE_TEMPLATE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE_TEMPLATE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -13,19 +40,6 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a Visitor interface from a grammar
@@ -51,7 +65,7 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithASTPackage(ast);
     ASTMCType visitorType = this.visitorService.getVisitorType();
     ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(AST_INTERFACE);
-    Set<String> symbolNames = retrieveSymbolNamesFromCD(visitorService.getCDSymbol());
+    Set<String> symbolNames = symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol());
 
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitorSimpleName())
@@ -287,39 +301,14 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
   protected Set<String> getSymbolsTransitive() {
     Set<String> superSymbolNames = new HashSet<String>();
     // add local symbols
-    superSymbolNames.addAll(retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
+    superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
     
     // add symbols of super CDs
     List<CDDefinitionSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
     for (CDDefinitionSymbol cdSymbol : superCDsTransitive) {
-      superSymbolNames.addAll(retrieveSymbolNamesFromCD(cdSymbol));
+      superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(cdSymbol));
     }
     return superSymbolNames;
-  }
-  
-  /**
-   * Computes a set of all symbol defining rule in a class diagram.
-   * 
-   * @param cdSymbol The input symbol of a class diagram
-   * @return The set of symbol names within the class diagram
-   */
-  protected Set<String> retrieveSymbolNamesFromCD(CDDefinitionSymbol cdSymbol) {
-    Set<String> symbolNames = new HashSet<String>();
-    // get AST for symbol
-    ASTCDDefinition astcdDefinition = cdSymbol.getAstNode();
-    // add symbol definitions from interfaces
-    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
-      if (astcdInterface.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdInterface.getModifier())) {
-        symbolNames.add(symbolTableService.getSymbolFullName(astcdInterface, cdSymbol));
-      }
-    }
-    // add symbol definitions from nonterminals
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
-      if (astcdClass.isPresentModifier() && symbolTableService.hasSymbolStereotype(astcdClass.getModifier())) {
-        symbolNames.add(symbolTableService.getSymbolFullName(astcdClass, cdSymbol));
-      }
-    }
-    return symbolNames;
   }
   
   public boolean isTop() {
