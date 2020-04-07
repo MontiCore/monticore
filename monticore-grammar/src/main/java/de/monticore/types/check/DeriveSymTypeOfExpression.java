@@ -18,13 +18,23 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
 public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
+  
+  public ITypeSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){
+    // is accepted only here, decided on 07.04.2020
+    if(!(expressionsBasisScope instanceof ITypeSymbolsScope)){
+      Log.error(""); // TODO Useful Error message with error code
+    }
+    // is accepted only here, decided on 07.04.2020
+    return (ITypeSymbolsScope) expressionsBasisScope;
+  }
 
-  protected ITypeSymbolsScope scope;
-
+  @Deprecated
   protected IDerivePrettyPrinter prettyPrinter;
 
+  // TODO remove and use lastResult
   protected SymTypeExpression result;
 
+  // TODO find better name for LastResult
   protected LastResult lastResult;
 
   private ExpressionsBasisVisitor realThis;
@@ -65,8 +75,8 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   @Override
   public void traverse(ASTNameExpression expr) {
-    Optional<FieldSymbol> optVar = scope.resolveField(expr.getName());
-    Optional<TypeSymbol> optType = scope.resolveType(expr.getName());
+    Optional<FieldSymbol> optVar = getScope(expr.getEnclosingScope()).resolveField(expr.getName());
+    Optional<TypeSymbol> optType = getScope(expr.getEnclosingScope()).resolveType(expr.getName());
     if (optVar.isPresent()) {
       //no method here, test variable first
       // durch AST-Umbau kann ASTNameExpression keine Methode sein
@@ -96,10 +106,6 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
      lastResult.reset();
       Log.info("package suspected", "ExpressionBasisTypesCalculator");
     }
-  }
-
-  public void setScope(ITypeSymbolsScope scope) {
-    this.scope = scope;
   }
 
   public void setLastResult(LastResult lastResult) {
