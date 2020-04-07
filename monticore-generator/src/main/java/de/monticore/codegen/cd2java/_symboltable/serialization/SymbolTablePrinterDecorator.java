@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.serialization;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
@@ -16,6 +18,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
+import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -59,19 +62,25 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     String scopeVisitorFullName = visitorService.getScopeVisitorFullName();
     List<ASTCDClass> symbolTypes = symbolCD.getCDDefinition().getCDClassList();
     List<ASTCDClass> scopeTypes = scopeCD.getCDDefinition().getCDClassList();
+    List<ASTCDClass> symbolTablePrinterDelegateClasses = getSTPDelegates();
+    List<ASTCDAttribute> symbolTablePrinterDelegates = getSymbolTablePrinterDelegates(symbolTablePrinterDelegateClasses);
 
     ASTCDClass symbolTablePrinterClass = CD4CodeMill.cDClassBuilder()
         .setName(symbolTablePrinterName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(scopeVisitorFullName))
         .addCDAttribute(createJsonPrinterAttribute())
+        .addAllCDAttributes(symbolTablePrinterDelegates)
+        .addCDConstructor(createSymbolTablePrinterConstructor(symbolTablePrinterName,symbolTablePrinterDelegates))
+        .addCDMethod(createGetJsonPrinterMethod())
+        .addCDMethod(createSetJsonPrinterMethod())
         .addCDMethod(createRealThisMethod(symbolTablePrinterName))
         .addCDMethod(createGetSerializedStringMethod())
         .addCDMethod(createFilterRelevantSubScopesMethod(scopeInterfaceFullName))
         .addCDMethod(createHasSymbolsInSubScopesMethod(scopeInterfaceFullName))
         .addCDMethod(createAddScopeSpanningSymbolMethod())
         .addCDMethod(createSerializeRelevantSubScopes(scopeInterfaceFullName))
-        .addCDMethod(createSerializeLocalSymbols(scopeInterfaceFullName, symbolDefiningProds))
+        .addCDMethod(createSerializeLocalSymbols(scopeInterfaceFullName, symbolDefiningProds,symbolTablePrinterDelegates))
         .addAllCDMethods(createScopeVisitorMethods(scopeClassFullName))
         .addAllCDMethods(createSymbolVisitorMethods(symbolDefiningProds))
         .addAllCDMethods(createSerializationMethodsForSymbolRules(symbolTypes))
@@ -83,10 +92,52 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     return symbolTablePrinterClass;
   }
 
+  protected List<ASTCDClass> getSTPDelegates(){
+    List<CDDefinitionSymbol> superCDs = symbolTableService.getSuperCDsTransitive();
+
+  }
+
+  protected List<ASTCDAttribute> getSymbolTablePrinterDelegates(List<ASTCDClass> symbolTablePrinterDelegateClasses) {
+    List<ASTCDAttribute> attributes = new ArrayList<>();
+    for(ASTCDClass delegateClass: symbolTablePrinterDelegateClasses){
+      ASTMCType type = getMCTypeFacade().createQualifiedType(delegateClass.getName());
+      String attributeName = delegateClass.getName().substring(0,1).toLowerCase().concat(delegateClass.getName().substring(1));
+      ASTCDAttribute delegateAttribute = getCDAttributeFacade().createAttribute(PROTECTED,type,attributeName);
+      attributes.add(delegateAttribute);
+    }
+    return attributes;
+  }
+
+  protected ASTCDConstructor createSymbolTablePrinterConstructor(String symbolTablePrinterName,List<ASTCDAttribute> symbolTablePrinterDelegates){
+    MCFullGenericTypesPrettyPrinter prettyPrinter = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
+    List<String> delegateNames = symbolTablePrinterDelegates.stream()
+        .map(ASTCDAttribute::getMCType)
+        .map(prettyPrinter::prettyprint)
+        .collect(Collectors.toList());
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC,symbolTablePrinterName);
+    this.replaceTemplate(VALUE, constructor, new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.symbolTablePrinterConstructor",delegateNames,JSON_PRINTER));
+    return constructor;
+  }
+
   protected ASTCDAttribute createJsonPrinterAttribute() {
     ASTCDAttribute printerAttribute = getCDAttributeFacade().createAttribute(PROTECTED, JSON_PRINTER, "printer");
     this.replaceTemplate(VALUE, printerAttribute, new StringHookPoint("= new " + JSON_PRINTER + "()"));
     return printerAttribute;
+  }
+
+  protected ASTCDMethod createGetJsonPrinterMethod(){
+    ASTMCType type = getMCTypeFacade().createQualifiedType(JSON_PRINTER);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC,type,"getJsonPrinter");
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return this.printer;"));
+    return method;
+  }
+
+  protected ASTCDMethod createSetJsonPrinterMethod(){
+    ASTMCType type = getMCTypeFacade().createQualifiedType(JSON_PRINTER);
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(type,"jsonPrinter");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC,"setJsonPrinter", parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("this.printer = printer;"));
+    return method;
   }
 
   protected ASTCDMethod createRealThisMethod(String symbolTablePrinterName) {
@@ -160,18 +211,22 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     return visitorMethod;
   }
 
-  protected ASTCDMethod createSerializeLocalSymbols(String scopeInterfaceFullName, List<ASTCDType> symbolProds) {
+  protected ASTCDMethod createSerializeLocalSymbols(String scopeInterfaceFullName, List<ASTCDType> symbolProds, List<ASTCDAttribute> superSymbolTablePrinters) {
     List<String> simpleSymbolNames = symbolProds.stream()
         .map(symbolTableService::removeASTPrefix)
+        .collect(Collectors.toList());
+
+    List<String> delegateNames = superSymbolTablePrinters.stream()
+        .map(ASTCDAttribute::getName)
         .collect(Collectors.toList());
 
     String methodName = "serializeLocalSymbols";
 
     ASTCDParameter parameter = getASTCDParameter(scopeInterfaceFullName, "node");
-    ASTCDMethod serLocalMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, methodName, parameter);
+    ASTCDMethod serLocalMethod = CDMethodFacade.getInstance().createMethod(PUBLIC, methodName, parameter);
 
     this.replaceTemplate(EMPTY_BODY, serLocalMethod, new TemplateHookPoint(
-        TEMPLATE_PATH + "symbolTablePrinter.SerializeLocalSymbols", simpleSymbolNames));
+        TEMPLATE_PATH + "symbolTablePrinter.SerializeLocalSymbols", simpleSymbolNames, delegateNames));
     return serLocalMethod;
 
   }
