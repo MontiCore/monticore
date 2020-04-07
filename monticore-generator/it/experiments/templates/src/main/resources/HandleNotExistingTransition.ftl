@@ -1,5 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("modelName","transitionName")}
-    public void handle${transitionName?cap_first}(${modelName?cap_first} model){
-        //empty body
+    public void handle${ast.getInput()?cap_first}(${glex.getGlobalVar("modelName")?cap_first} model){
+      //empty body
     }

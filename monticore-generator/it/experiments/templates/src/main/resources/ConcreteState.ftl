@@ -1,12 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("stateName","modelName","existingTransitions","nonExistingTransitionNames")}
-public class ${stateName?cap_first}State extends AbstractState{
+${tc.signature("existingTransitions","nonExistingTransitionNames","className")}
+public <#if className?ends_with("TOP")>abstract </#if>class ${className?cap_first} extends AbstractState{
 
-    <#list existingTransitions as transition>
-        ${tc.includeArgs("HandleTransition.ftl",modelName,transition.getInput(),transition.getTo())}
-    </#list>
+    ${tc.include("HandleTransition.ftl",existingTransitions)}
+    ${tc.include("HandleNotExistingTransition.ftl",nonExistingTransitionNames)}
 
-    <#list nonExistingTransitionNames as transition>
-        ${tc.includeArgs("HandleNotExistingTransition.ftl",modelName,transition)}
-    </#list>
 }

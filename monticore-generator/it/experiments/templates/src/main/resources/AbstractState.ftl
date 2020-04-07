@@ -1,8 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("transitions","modelName")}
-public abstract class AbstractState {
+${tc.signature("transitions","className")}
+public abstract class ${className?cap_first} {
 
-    <#list transitions as transition>
-        ${tc.includeArgs("HandleTransitionAbstract.ftl",transition,modelName)}
-    </#list>
+    ${tc.include("HandleTransitionAbstract.ftl",transitions)}
+
 }

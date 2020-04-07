@@ -1,15 +1,15 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("modelName","initialStateName","transitions")}
-public class ${modelName?cap_first}{
+${tc.signature("initialState","transitions","states","className")}
+public <#if className?ends_with("TOP")>abstract </#if>class ${className?cap_first}{
 
-    protected AbstractState currentState = new ${initialStateName?cap_first}State();
+    ${tc.include("StatechartStateAttributes.ftl",states)}
+
+    protected AbstractState currentState = ${glex.getGlobalVar("modelName")?cap_first}Factory.get${initialState.getName()?cap_first}State();
 
     public void setState(AbstractState state){
         currentState = state;
     }
 
-    <#list transitions as transition>
-        ${tc.includeArgs("StatechartTransitionMethod.ftl",transition)}
-    </#list>
+    ${tc.include("StatechartTransitionMethod.ftl",transitions)}
 
 }

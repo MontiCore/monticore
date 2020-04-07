@@ -11,14 +11,20 @@ import automata._symboltable.serialization.AutomataScopeDeSer;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +64,8 @@ public class AutomataTool {
     deser.store(modelTopScope,lang, DEFAULT_SYMBOL_LOCATION);
   
     GeneratorSetup s = new GeneratorSetup();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    s.setGlex(glex);
     s.setOutputDirectory(new File("target/statepattern"));
     GeneratorEngine ge = new GeneratorEngine(s);
 
@@ -73,26 +81,68 @@ public class AutomataTool {
         .collect(Collectors.toList())
         .get(0);
 
-    //get all transitions of the statechart
-    List<ASTTransition> transitions = ast.getTransitionList();
-    //get unique transition names -> some transitions inputs are used multiple times in the model
-    List<String> transitionNames = transitions.stream().map(ASTTransition::getInput).distinct().collect(Collectors.toList());
 
     String modelName = ast.getName();
+    glex.setGlobalValue("modelName",modelName);
+
+    //get all transitions of the statechart
+    List<ASTTransition> transitions = ast.getTransitionList();
+
+    List<ASTTransition> transitionsWithoutDuplicateNames = handleDuplicateNames(transitions,new ArrayList<>());
+
+    List<ASTState> states = ast.getStateList();
+
+
+
     //generate the class for the whole statechart
-    ge.generate("Statechart.ftl", Paths.get(ast.getName() +".java"), ast,modelName,initialState.getName(), transitionNames);
+    String modelClassName = modelName;
+    if(existsHandwrittenClass(IterablePath.from(new File("src/test/java"),"java"),modelClassName)){
+      modelClassName = modelName+"TOP";
+    }
+    ge.generate("Statechart.ftl", Paths.get(modelClassName +".java"), ast,initialState, transitionsWithoutDuplicateNames, states, modelClassName);
+
+
+    //generate the factory class for the states
+    String modelFactoryClassName = modelName+"Factory";
+    if(existsHandwrittenClass(IterablePath.from(new File("src/test/java"),"java"),modelFactoryClassName)){
+      modelFactoryClassName = modelFactoryClassName+"TOP";
+    }
+    ge.generate("StatechartFactory.ftl",Paths.get(modelFactoryClassName+".java"),ast, states, modelFactoryClassName);
+
+
     //generate the abstract class for the states
-    ge.generate("AbstractState.ftl", Paths.get("AbstractState.java"), ast, transitionNames,modelName);
-    for(ASTState state : ast.getStateList()) {
+    String abstractStateClassName = "AbstractState";
+    if(existsHandwrittenClass(IterablePath.from(new File("src/test/java"),"java"),abstractStateClassName)){
+      abstractStateClassName= abstractStateClassName+"TOP";
+    }
+    ge.generate("AbstractState.ftl", Paths.get(abstractStateClassName+".java"), ast, transitionsWithoutDuplicateNames, abstractStateClassName);
+    for(ASTState state : states) {
       //get the transitions that have this state as their source state
+      String stateClassName = state.getName()+"State";
+      if(existsHandwrittenClass(IterablePath.from(new File("src/test/java"),"java"),stateClassName)){
+        stateClassName=stateClassName+"TOP";
+      }
       List<ASTTransition> existingTransitions = transitions.stream().filter(t -> t.getFrom().equals(state.getName())).collect(Collectors.toList());
       //get the names of the transitions that this state does not have -> every state needs to have a method for every transition in the statechart
-      List<String> nonExistingTransitionNames = transitionNames.stream().filter((name)->(!existingTransitions.stream().map(ASTTransition::getInput).collect(Collectors.toList()).contains(name))).collect(Collectors.toList());
+      List<ASTTransition> otherTransitions = transitions.stream().filter(t -> !t.getFrom().equals(state.getName())).collect(Collectors.toList());
+      List<ASTTransition> nonExistingTransitions = handleDuplicateNames(otherTransitions,existingTransitions);
       //generate the concrete state classes and use the template ConcreteState.ftl for this
-      ge.generate("ConcreteState.ftl", Paths.get(state.getName()+"State.java"), ast, state.getName(), ast.getName(),existingTransitions, nonExistingTransitionNames);
+      ge.generate("ConcreteState.ftl", Paths.get(stateClassName+".java"), ast, existingTransitions, nonExistingTransitions, stateClassName);
     }
   }
-  
+
+  private static List<ASTTransition> handleDuplicateNames(List<ASTTransition> otherTransitions, List<ASTTransition> existingTransitions) {
+    List<ASTTransition> result = new ArrayList<>();
+    List<String> names = existingTransitions.stream().map(ASTTransition::getInput).collect(Collectors.toList());
+    for(ASTTransition transition: otherTransitions){
+      if(!names.contains(transition.getInput())){
+        result.add(transition);
+        names.add(transition.getInput());
+      }
+    }
+    return result;
+  }
+
   /**
    * Parse the model contained in the specified file.
    *
@@ -129,6 +179,22 @@ public class AutomataTool {
     
     AutomataSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
     return symbolTable.createFromAST(ast);
+  }
+
+  public static boolean existsHandwrittenClass(IterablePath targetPath,
+                                               String qualifiedName) {
+    Path handwrittenFile = Paths.get(Names
+        .getPathFromPackage(qualifiedName)
+        + ".java");
+    Optional<Path> handwrittenFilePath = targetPath.getResolvedPath(handwrittenFile);
+    boolean result = handwrittenFilePath.isPresent();
+    if (result) {
+      Reporting.reportUseHandwrittenCodeFile(handwrittenFilePath.get(),
+          handwrittenFile);
+    }
+    Reporting.reportHWCExistenceCheck(targetPath,
+        handwrittenFile, handwrittenFilePath);
+    return result;
   }
   
   

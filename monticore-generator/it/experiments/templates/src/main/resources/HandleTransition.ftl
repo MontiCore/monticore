@@ -1,5 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("modelName","input","toState")}
-    public void handle${input?cap_first}(${modelName?cap_first} model){
-        model.setState(new ${toState}State());
+    public void handle${ast.getInput()?cap_first}(${glex.getGlobalVar("modelName")?cap_first} model){
+        model.setState(${glex.getGlobalVar("modelName")?cap_first}.${ast.getTo()?uncap_first});
     }
