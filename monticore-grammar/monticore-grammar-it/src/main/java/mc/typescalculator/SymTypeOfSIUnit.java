@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import de.monticore.symboltable.serialization.JsonDeSers;
+import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
@@ -21,7 +21,7 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
   public String printAsJson() {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
-    jp.member(JsonDeSers.KIND,
+    jp.member(JsonConstants.KIND,
         "mc.typescalculator.SymTypeOfSIUnit");
     jp.member("unit", print());
     jp.endObject();
