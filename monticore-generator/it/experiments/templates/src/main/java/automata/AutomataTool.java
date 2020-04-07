@@ -43,12 +43,13 @@ public class AutomataTool {
    * @param args
    */
   public static void main(String[] args) {
-    if (args.length != 1) {
+    if (args.length < 1) {
       Log.error("Please specify only one single path to the input model.");
       return;
     }
     String model = args[0];
-    
+    // TODO ND: read from args
+    final IterablePath handcodedPath = IterablePath.from(new File("src/test/java2"), "java");
     // setup the language infrastructure
     final AutomataLanguage lang = AutomataSymTabMill.automataLanguageBuilder().build();
     final AutomataScopeDeSer deser = new AutomataScopeDeSer();
@@ -96,7 +97,8 @@ public class AutomataTool {
 
     //generate the class for the whole statechart
     String modelClassName = modelName;
-    if(existsHandwrittenClass(IterablePath.from(new File("src/test/java"),"java"),modelClassName)){
+    
+    if(existsHandwrittenClass(handcodedPath,modelClassName)){
       modelClassName = modelName+"TOP";
     }
     ge.generate("Statechart.ftl", Paths.get(modelClassName +".java"), ast,initialState, transitionsWithoutDuplicateNames, states, modelClassName);
@@ -104,7 +106,7 @@ public class AutomataTool {
 
     //generate the factory class for the states
     String modelFactoryClassName = modelName+"Factory";
-    if(existsHandwrittenClass(IterablePath.from(new File("src/test/java"),"java"),modelFactoryClassName)){
+    if(existsHandwrittenClass(handcodedPath,modelFactoryClassName)){
       modelFactoryClassName = modelFactoryClassName+"TOP";
     }
     ge.generate("StatechartFactory.ftl",Paths.get(modelFactoryClassName+".java"),ast, states, modelFactoryClassName);
@@ -112,14 +114,14 @@ public class AutomataTool {
 
     //generate the abstract class for the states
     String abstractStateClassName = "AbstractState";
-    if(existsHandwrittenClass(IterablePath.from(new File("src/test/java"),"java"),abstractStateClassName)){
+    if(existsHandwrittenClass(handcodedPath,abstractStateClassName)){
       abstractStateClassName= abstractStateClassName+"TOP";
     }
     ge.generate("AbstractState.ftl", Paths.get(abstractStateClassName+".java"), ast, transitionsWithoutDuplicateNames, abstractStateClassName);
     for(ASTState state : states) {
       //get the transitions that have this state as their source state
       String stateClassName = state.getName()+"State";
-      if(existsHandwrittenClass(IterablePath.from(new File("src/test/java"),"java"),stateClassName)){
+      if(existsHandwrittenClass(handcodedPath,stateClassName)){
         stateClassName=stateClassName+"TOP";
       }
       List<ASTTransition> existingTransitions = transitions.stream().filter(t -> t.getFrom().equals(state.getName())).collect(Collectors.toList());

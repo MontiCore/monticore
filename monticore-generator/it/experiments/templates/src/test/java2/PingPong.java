@@ -1,6 +1,6 @@
 public class PingPong extends PingPongTOP {
 
-  @Override
+  //@Override
   public PingPong getRealThis() {
     return this;
   }
