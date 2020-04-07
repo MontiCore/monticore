@@ -4,14 +4,9 @@ package de.monticore.types.check;
 import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.MethodSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
+import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -26,7 +21,7 @@ import static org.junit.Assert.*;
 
 public class DeriveSymTypeOfJavaClassExpressionsTest {
 
-  private ExpressionsBasisScope scope;
+  private TypeSymbolsScope scope;
 
   /**
    * Focus: Deriving Type of Literals, here:
@@ -44,7 +39,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
     scope =
-        ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+        TypeSymbolsSymTabMill.typeSymbolsScopeBuilder()
             .setEnclosingScope(null)       // No enclosing Scope: Search ending here
             .setExportingSymbols(true)
             .setAstNode(null)
@@ -93,7 +88,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(),
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build(),
       new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
 
   // This is the TypeChecker under Test:
@@ -115,7 +110,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,p);
 
     //use the spanned scope of the type
-    derLit.setScope((ExpressionsBasisScope)p.getSpannedScope());
+    derLit.setScope(p.getSpannedScope());
     tc = new TypeCheck(null, derLit);
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
 
@@ -124,7 +119,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("A",tc.typeOf(a.get()).print());
 
     //use the spanned scope of the method
-    derLit.setScope((ExpressionsBasisScope)get.getSpannedScope());
+    derLit.setScope(get.getSpannedScope());
     tc = new TypeCheck(null, derLit);
 
     assertEquals("A",tc.typeOf(a.get()).print());
@@ -149,7 +144,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,p);
 
     //use the spanned scope of the type
-    derLit.setScope((ExpressionsBasisScope)p.getSpannedScope());
+    derLit.setScope(p.getSpannedScope());
     tc = new TypeCheck(null, derLit);
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
 
@@ -158,7 +153,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("AB",tc.typeOf(a.get()).print());
 
     //use the spanned scope of the method
-    derLit.setScope((ExpressionsBasisScope)get.getSpannedScope());
+    derLit.setScope(get.getSpannedScope());
     tc = new TypeCheck(null, derLit);
 
     assertEquals("AB",tc.typeOf(a.get()).print());
@@ -204,14 +199,14 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol outer = type("Outer",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     add2scope(scope,outer);
     MethodSymbol methodInner = method("methodInner",_voidSymType);
-    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)outer.getSpannedScope());
+    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),outer.getSpannedScope());
     add2scope(outer.getEnclosingScope(),inner);
     MethodSymbol methodInnerInner = method("methodInnerInner",_voidSymType);
-    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)inner.getSpannedScope());
+    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),inner.getSpannedScope());
     add2scope(inner.getSpannedScope(),innerinner);
 
     //test 1: Outer.this in methodInner()
-    derLit.setScope((ExpressionsBasisScope) methodInner.getSpannedScope());
+    derLit.setScope(methodInner.getSpannedScope());
     tc = new TypeCheck(null, derLit);
 
     Optional<ASTExpression> this1 = p.parse_StringExpression("Outer.this");
@@ -223,7 +218,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("Outer",tc.typeOf(this1.get()).print());
 
     //test 2&3: Outer.this and Inner.this in methodInnerInner()
-    derLit = new DeriveSymTypeOfCombineExpressionsDelegator((ExpressionsBasisScope) methodInnerInner.getSpannedScope(),new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+    derLit = new DeriveSymTypeOfCombineExpressionsDelegator(methodInnerInner.getSpannedScope(),new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
     tc = new TypeCheck(null, derLit);
 
     assertEquals("Inner",tc.typeOf(this2.get()).print());
@@ -527,16 +522,16 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol outer = type("Outer",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(superOuterType),Lists.newArrayList(),scope);
     add2scope(scope,outer);
     MethodSymbol methodInner = method("methodInner",_voidSymType);
-    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)outer.getSpannedScope());
+    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),outer.getSpannedScope());
     add2scope(outer.getEnclosingScope(),inner);
     MethodSymbol methodInnerInner = method("methodInnerInner",_voidSymType);
-    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)inner.getSpannedScope());
+    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),inner.getSpannedScope());
     add2scope(inner.getSpannedScope(),innerinner);
 
     Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.test()");
     Optional<ASTExpression> super2 = p.parse_StringExpression("Outer.super.field");
 
-    derLit.setScope((ExpressionsBasisScope) methodInner.getSpannedScope());
+    derLit.setScope(methodInner.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     assertTrue(super1.isPresent());
@@ -545,7 +540,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("int",tc.typeOf(super1.get()).print());
     assertEquals("int",tc.typeOf(super2.get()).print());
 
-    derLit = new DeriveSymTypeOfCombineExpressionsDelegator((ExpressionsBasisScope)methodInnerInner.getSpannedScope(),new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+    derLit = new DeriveSymTypeOfCombineExpressionsDelegator(methodInnerInner.getSpannedScope(),new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
     tc = new TypeCheck(null,derLit);
 
     assertEquals("int",tc.typeOf(super1.get()).print());
@@ -604,13 +599,13 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol outer = type("Outer",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(superOuterType, superOuterTwoType),Lists.newArrayList(),scope);
     add2scope(scope,outer);
     MethodSymbol methodInner = method("methodInner",_voidSymType);
-    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)outer.getSpannedScope());
+    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),outer.getSpannedScope());
     add2scope(outer.getEnclosingScope(),inner);
     MethodSymbol methodInnerInner = method("methodInnerInner",_voidSymType);
-    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)inner.getSpannedScope());
+    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),inner.getSpannedScope());
     add2scope(inner.getSpannedScope(),innerinner);
 
-    derLit.setScope((ExpressionsBasisScope) methodInner.getSpannedScope());
+    derLit.setScope(methodInner.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.test()");
@@ -630,13 +625,13 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol outer = type("Outer",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     add2scope(scope,outer);
     MethodSymbol methodInner = method("methodInner",_voidSymType);
-    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)outer.getSpannedScope());
+    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),outer.getSpannedScope());
     add2scope(outer.getEnclosingScope(),inner);
     MethodSymbol methodInnerInner = method("methodInnerInner",_voidSymType);
-    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)inner.getSpannedScope());
+    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),inner.getSpannedScope());
     add2scope(inner.getSpannedScope(),innerinner);
 
-    derLit.setScope((ExpressionsBasisScope) methodInner.getSpannedScope());
+    derLit.setScope(methodInner.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.test()");
@@ -662,16 +657,16 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol outer = type("Outer",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(superOuterType),Lists.newArrayList(),scope);
     add2scope(scope,outer);
     MethodSymbol methodInner = method("methodInner",_voidSymType);
-    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)outer.getSpannedScope());
+    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),outer.getSpannedScope());
     add2scope(outer.getEnclosingScope(),inner);
     MethodSymbol methodInnerInner = method("methodInnerInner",_voidSymType);
-    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope)inner.getSpannedScope());
+    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),inner.getSpannedScope());
     add2scope(inner.getSpannedScope(),innerinner);
 
     //SuperOuter does not have a method "get"
     Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.get()");
 
-    derLit.setScope((ExpressionsBasisScope) methodInner.getSpannedScope());
+    derLit.setScope(methodInner.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     assertTrue(super1.isPresent());
@@ -718,7 +713,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     aconstr.setReturnType(aType);
     add2scope(scope, a);
 
-    derLit.setScope((ExpressionsBasisScope) a.getSpannedScope());
+    derLit.setScope(a.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     //basic test
@@ -758,7 +753,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol sub = type("Sub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(supType),Lists.newArrayList(),scope);
     add2scope(scope,sub);
 
-    derLit.setScope((ExpressionsBasisScope) sub.getSpannedScope());
+    derLit.setScope(sub.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>super.help()");
@@ -784,7 +779,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol sub = type("Sub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(supType),Lists.newArrayList(),scope);
     add2scope(scope,sub);
 
-    derLit.setScope((ExpressionsBasisScope) sub.getSpannedScope());
+    derLit.setScope(sub.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>super.<double>help(2)");
@@ -809,7 +804,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol sub = type("Sub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(supType),Lists.newArrayList(),scope);
     add2scope(scope,sub);
 
-    derLit.setScope((ExpressionsBasisScope) sub.getSpannedScope());
+    derLit.setScope(sub.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>super.test");

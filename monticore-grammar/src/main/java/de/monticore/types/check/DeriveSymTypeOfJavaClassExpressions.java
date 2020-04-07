@@ -60,7 +60,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     int count = 0;
     if(lastResult.isType()) {
       if(scope.getEnclosingScope()!=null){
-        IExpressionsBasisScope testScope = scope;
+        ITypeSymbolsScope testScope = scope;
         while (testScope!=null) {
           if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof TypeSymbol) {
             count++;
@@ -225,7 +225,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     int count = 0;
     boolean isOuterType = false;
-    IExpressionsBasisScope testScope = scope;
+    ITypeSymbolsScope testScope = scope;
     while (testScope!=null) {
       if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof TypeSymbol) {
         count++;
@@ -620,7 +620,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
   }
 
-  private TypeSymbol searchForTypeSymbolSpanningEnclosingScope(IExpressionsBasisScope scope) {
+  private TypeSymbol searchForTypeSymbolSpanningEnclosingScope(ITypeSymbolsScope scope) {
     //search for the nearest type symbol in the enclosing scopes -> for this and super to get the
     //current object
     while(scope!=null){

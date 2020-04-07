@@ -8,9 +8,7 @@ import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSc
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -25,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfSetExpressionsTest {
 
-  private ExpressionsBasisScope scope;
+  private TypeSymbolsScope scope;
 
   /**
    * Focus: Deriving Type of Literals, here:
@@ -43,7 +41,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
     scope =
-        ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+        TypeSymbolsSymTabMill.typeSymbolsScopeBuilder()
             .setEnclosingScope(null)       // No enclosing Scope: Search ending here
             .setExportingSymbols(true)
             .setAstNode(null)
@@ -95,7 +93,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
 
   // other arguments not used (and therefore deliberately null)
 

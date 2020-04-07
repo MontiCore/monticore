@@ -9,6 +9,7 @@ import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 
@@ -29,7 +30,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
    * Using the visitor functionality to calculate the SymType Expression
    */
 
-  public SynthesizeSymTypeFromMCSimpleGenericTypes(IExpressionsBasisScope scope){
+  public SynthesizeSymTypeFromMCSimpleGenericTypes(ITypeSymbolsScope scope){
     super(scope);
   }
 

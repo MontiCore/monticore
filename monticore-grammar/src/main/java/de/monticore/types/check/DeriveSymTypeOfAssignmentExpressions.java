@@ -397,7 +397,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
     //if the type of the left expression is a String then so is the type of the whole expression
     if (isString(leftResult)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeObject("String", left.getEnclosingScope()));
+      return Optional.of(SymTypeExpressionFactory.createTypeObject("String", scope));
     }
     //else continue with the normal calculation of +=,-=,*=,/= and %=
     return calculateTypeArithmetic(left, right);

@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.helper;
 
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
-import de.monticore.testjavalight._parser.TestJavaLightAntlrParser;
 import de.monticore.types.check.*;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
@@ -11,6 +9,7 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -28,7 +27,7 @@ public class MCType2SymTypeExpressionTest {
 
 
   private SymTypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type) {
-    SynthesizeSymTypeFromMCSimpleGenericTypes visitor = new SynthesizeSymTypeFromMCSimpleGenericTypes(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
+    SynthesizeSymTypeFromMCSimpleGenericTypes visitor = new SynthesizeSymTypeFromMCSimpleGenericTypes(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build());
     type.accept(visitor);
     return visitor.getResult().get();
   }

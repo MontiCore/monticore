@@ -5,6 +5,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 
 import java.util.Optional;
 
@@ -42,7 +43,7 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
   private LastResult lastResult = new LastResult();
 
 
-  public DeriveSymTypeOfCombineExpressionsDelegator(IExpressionsBasisScope scope, IDerivePrettyPrinter prettyPrinter){
+  public DeriveSymTypeOfCombineExpressionsDelegator(ITypeSymbolsScope scope, IDerivePrettyPrinter prettyPrinter){
     this.realThis=this;
     this.prettyPrinter = prettyPrinter;
 
@@ -135,7 +136,7 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
   /**
    * set the scope of the typescalculator, important for resolving for e.g. NameExpression
    */
-  public void setScope(IExpressionsBasisScope scope){
+  public void setScope(ITypeSymbolsScope scope){
     deriveSymTypeOfAssignmentExpressions.setScope(scope);
     deriveSymTypeOfExpression.setScope(scope);
     deriveSymTypeOfCommonExpressions.setScope(scope);

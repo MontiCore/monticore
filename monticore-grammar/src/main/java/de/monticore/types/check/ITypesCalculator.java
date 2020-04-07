@@ -3,14 +3,15 @@ package de.monticore.types.check;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
+
 import java.util.Optional;
 
 public interface ITypesCalculator extends ExpressionsBasisVisitor {
 
-  ExpressionsBasisScope scope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+  TypeSymbolsScope scope = TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build();
 
   Optional<SymTypeExpression> calculateType(ASTExpression ex);
 
@@ -18,7 +19,7 @@ public interface ITypesCalculator extends ExpressionsBasisVisitor {
 
   void init();
 
-  default ExpressionsBasisScope getScope(){
+  default TypeSymbolsScope getScope(){
     return scope;
   }
 }

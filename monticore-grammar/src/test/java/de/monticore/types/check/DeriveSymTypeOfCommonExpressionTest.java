@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -28,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfCommonExpressionTest {
 
-  private ExpressionsBasisScope scope;
+  private TypeSymbolsScope scope;
 
   /**
    * Focus: Deriving Type of Literals, here:
@@ -54,8 +55,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisSymTabMill
-      .expressionsBasisScopeBuilder()
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(TypeSymbolsSymTabMill
+      .typeSymbolsScopeBuilder()
       .build(),
       new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
 
@@ -648,14 +649,19 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * testing (mostly used for FieldAccessExpressions)
    */
   public void init_advanced() {
-    ExpressionsBasisGlobalScope globalScope = globalScope(new ExpressionsBasisLanguage(), new ModelPath());
-    ExpressionsBasisArtifactScope artifactScope1 = artifactScope(globalScope, Lists.newArrayList(), "");
-    ExpressionsBasisArtifactScope artifactScope2 = artifactScope(globalScope, Lists.newArrayList(), "");
-    ExpressionsBasisArtifactScope artifactScope3 = artifactScope(globalScope, Lists.newArrayList(), "types2");
-    ExpressionsBasisArtifactScope artifactScope4 = artifactScope(artifactScope3, Lists.newArrayList(), "types3");
+    TypeSymbolsGlobalScope globalScope = globalScope(new TypeSymbolsLanguage("TypeSymbols","ts") {
+      @Override
+      public MCConcreteParser getParser() {
+        return null;
+      }
+    }, new ModelPath());
+    TypeSymbolsArtifactScope artifactScope1 = artifactScope(globalScope, Lists.newArrayList(), "");
+    TypeSymbolsArtifactScope artifactScope2 = artifactScope(globalScope, Lists.newArrayList(), "");
+    TypeSymbolsArtifactScope artifactScope3 = artifactScope(globalScope, Lists.newArrayList(), "types2");
+    TypeSymbolsArtifactScope artifactScope4 = artifactScope(artifactScope3, Lists.newArrayList(), "types3");
     scope = scope(artifactScope1, true, null, "Phantasy2"); // No enclosing Scope: Search ending here
-    ExpressionsBasisScope scope2 = scope(artifactScope2, "types");
-    ExpressionsBasisScope scope3 = scope(artifactScope4, "types2");
+    TypeSymbolsScope scope2 = scope(artifactScope2, "types");
+    TypeSymbolsScope scope3 = scope(artifactScope4, "types2");
     scope3.setEnclosingScope(artifactScope4);
 
     // some FieldSymbols (ie. Variables, Attributes)
@@ -697,7 +703,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     TypeSymbol testType = type("Test",Lists.newArrayList(ms,ms1),Lists.newArrayList(fs),Lists.newArrayList(),Lists.newArrayList(),scope);
     TypeSymbol testType2 = type("Test",Lists.newArrayList(ms,ms1),Lists.newArrayList(fs),Lists.newArrayList(),Lists.newArrayList(),scope2);
     TypeSymbol testType3 = type("Test",Lists.newArrayList(ms,ms1),Lists.newArrayList(fs),Lists.newArrayList(),Lists.newArrayList(),scope3);
-    ExpressionsBasisScope testScope = (ExpressionsBasisScope) testType3.getSpannedScope();
+    ITypeSymbolsScope testScope = testType3.getSpannedScope();
 
     FieldSymbol testVariable = field("testVariable",_shortSymType);
     testVariable.setIsStatic(true);
@@ -1369,7 +1375,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, mySubList);
 
     //set scope of method myAdd as standard resolving scope
-    derLit.setScope((ExpressionsBasisScope)myAdd.getSpannedScope());
+    derLit.setScope(myAdd.getSpannedScope());
     tc = new TypeCheck(null, derLit);
 
     String s = "mySubList";
@@ -1401,7 +1407,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     FieldSymbol afield = field("field",_intSymType);
     afield.setIsStatic(true);
     TypeSymbol a = type("A",Lists.newArrayList(atest),Lists.newArrayList(afield),Lists.newArrayList(),Lists.newArrayList(),scope);
-    TypeSymbol aD = type("D",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope) a.getSpannedScope());
+    TypeSymbol aD = type("D",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),a.getSpannedScope());
     aD.setIsStatic(true);
     a.getSpannedScope().add(aD);
 
@@ -1410,7 +1416,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     MethodSymbol btest = method("test",_voidSymType);
     FieldSymbol bfield = field("field",_intSymType);
     TypeSymbol b = type("B",Lists.newArrayList(btest),Lists.newArrayList(bfield),Lists.newArrayList(),Lists.newArrayList(),scope);
-    TypeSymbol bD = type("D",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope) b.getSpannedScope());
+    TypeSymbol bD = type("D",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),b.getSpannedScope());
     b.getSpannedScope().add(bD);
 
     add2scope(scope,b);
@@ -1532,12 +1538,12 @@ public class DeriveSymTypeOfCommonExpressionTest {
   /**
    * create a scope (some defaults apply)
    */
-  public static ExpressionsBasisScope scope() {
-    return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+  public static TypeSymbolsScope scope() {
+    return TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build();
   }
 
-  public static ExpressionsBasisScope scope(IExpressionsBasisScope enclosingScope, boolean exportingSymbols, ASTNode astnode, String name) {
-    return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+  public static TypeSymbolsScope scope(ITypeSymbolsScope enclosingScope, boolean exportingSymbols, ASTNode astnode, String name) {
+    return TypeSymbolsSymTabMill.typeSymbolsScopeBuilder()
         .setEnclosingScope(enclosingScope)
         .setExportingSymbols(exportingSymbols)
         .setAstNode(astnode)
@@ -1545,8 +1551,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
         .build();
   }
 
-  public static ExpressionsBasisScope scope(IExpressionsBasisScope enclosingScope, String name) {
-    return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+  public static TypeSymbolsScope scope(ITypeSymbolsScope enclosingScope, String name) {
+    return TypeSymbolsSymTabMill.typeSymbolsScopeBuilder()
         .setEnclosingScope(enclosingScope)
         .setName(name)
         .build();
@@ -1555,9 +1561,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
   /**
    * create a global scope (some defaults apply)
    */
-  public static ExpressionsBasisGlobalScope globalScope(ExpressionsBasisLanguage expressionsBasisLanguage, ModelPath modelPath) {
-    return ExpressionsBasisSymTabMill.expressionsBasisGlobalScopeBuilder()
-        .setExpressionsBasisLanguage(expressionsBasisLanguage)
+  public static TypeSymbolsGlobalScope globalScope(TypeSymbolsLanguage typeSymbolsLanguage, ModelPath modelPath) {
+    return TypeSymbolsSymTabMill.typeSymbolsGlobalScopeBuilder()
+        .setTypeSymbolsLanguage(typeSymbolsLanguage)
         .setModelPath(modelPath)
         .build();
   }
@@ -1565,8 +1571,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
   /**
    * create an artifact scope (some defaults apply)
    */
-  public static ExpressionsBasisArtifactScope artifactScope(IExpressionsBasisScope enclosingScope, List<ImportStatement> importList, String packageName) {
-    return ExpressionsBasisSymTabMill.expressionsBasisArtifactScopeBuilder()
+  public static TypeSymbolsArtifactScope artifactScope(ITypeSymbolsScope enclosingScope, List<ImportStatement> importList, String packageName) {
+    return TypeSymbolsSymTabMill.typeSymbolsArtifactScopeBuilder()
         .setEnclosingScope(enclosingScope)
         .setImportList(importList)
         .setPackageName(packageName)

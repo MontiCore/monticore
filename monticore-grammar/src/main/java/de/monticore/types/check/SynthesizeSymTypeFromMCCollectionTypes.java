@@ -9,6 +9,7 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 
@@ -34,7 +35,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
   //
   MCCollectionTypesVisitor realThis = this;
 
-  public SynthesizeSymTypeFromMCCollectionTypes(IExpressionsBasisScope scope){
+  public SynthesizeSymTypeFromMCCollectionTypes(ITypeSymbolsScope scope){
     super(scope);
   }
 

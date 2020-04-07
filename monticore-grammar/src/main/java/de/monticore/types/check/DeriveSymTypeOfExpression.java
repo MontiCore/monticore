@@ -5,6 +5,7 @@ import de.monticore.expressions.expressionsbasis._ast.*;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -18,7 +19,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
  */
 public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
-  protected IExpressionsBasisScope scope;
+  protected ITypeSymbolsScope scope;
 
   protected IDerivePrettyPrinter prettyPrinter;
 
@@ -97,7 +98,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     }
   }
 
-  public void setScope(IExpressionsBasisScope scope) {
+  public void setScope(ITypeSymbolsScope scope) {
     this.scope = scope;
   }
 

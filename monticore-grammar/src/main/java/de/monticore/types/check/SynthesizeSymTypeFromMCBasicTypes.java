@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 
 import java.util.Optional;
@@ -26,9 +27,9 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
   //
   MCBasicTypesVisitor realThis = this;
 
-  protected IExpressionsBasisScope scope;
+  protected ITypeSymbolsScope scope;
 
-  public SynthesizeSymTypeFromMCBasicTypes(IExpressionsBasisScope scope){
+  public SynthesizeSymTypeFromMCBasicTypes(ITypeSymbolsScope scope){
     this.scope = scope;
   }
   
@@ -97,7 +98,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
     // result is pushed upward (no change)
   }
 
-  protected void setScope(IExpressionsBasisScope scope){
+  protected void setScope(ITypeSymbolsScope scope){
     this.scope=scope;
   }
   

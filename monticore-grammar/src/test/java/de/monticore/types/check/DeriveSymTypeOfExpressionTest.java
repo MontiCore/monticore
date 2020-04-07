@@ -26,7 +26,7 @@ public class DeriveSymTypeOfExpressionTest {
    * Focus: Deriving Type of Literals, here:
    *    literals/MCLiteralsBasis.mc4
    */
-  private ExpressionsBasisScope scope;
+  private TypeSymbolsScope scope;
   
   @BeforeClass
   public static void setup() {
@@ -38,7 +38,7 @@ public class DeriveSymTypeOfExpressionTest {
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
     scope =
-            ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+            TypeSymbolsSymTabMill.typeSymbolsScopeBuilder()
                     .setEnclosingScope(null)       // No enclosing Scope: Search ending here
                 .setExportingSymbols(true)
                     .setAstNode(null)
@@ -96,7 +96,7 @@ public class DeriveSymTypeOfExpressionTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
   
   // other arguments not used (and therefore deliberately null)
   

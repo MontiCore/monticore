@@ -11,6 +11,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
   
   // This is Visitor for SimpleGeneric types under test:
-  SynthesizeSymTypeFromMCSimpleGenericTypes synt = new SynthesizeSymTypeFromMCSimpleGenericTypes(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
+  SynthesizeSymTypeFromMCSimpleGenericTypes synt = new SynthesizeSymTypeFromMCSimpleGenericTypes(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build());
   
   // other arguments not used (and therefore deliberately null)
   

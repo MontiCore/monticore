@@ -5,11 +5,11 @@ package de.monticore.types.check;
 import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class TypeCheckTest {
 
-  TypeCheck tc = new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter())));
+  TypeCheck tc = new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter())));
   CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
   @Test
@@ -50,7 +50,7 @@ public class TypeCheckTest {
     assertFalse(tc.isOfTypeForAssign(tc.typeOf(long1), float1, tc.iTypesCalculator.getScope()));
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(float1), int1, tc.iTypesCalculator.getScope()));
 
-    ExpressionsBasisScope scope = scope(null, true, null, "Phantasy2");
+    TypeSymbolsScope scope = scope(null, true, null, "Phantasy2");
 
     //a FirstSemesterStudent is a Student and a Student is a Person
     TypeSymbol person = DefsTypeBasic.type("Person");
@@ -71,11 +71,8 @@ public class TypeCheckTest {
 
     //non-primitives
     ASTExpression pers = p.parse_StringExpression("Person").get();
-    pers.setEnclosingScope(scope);
     ASTExpression stud = p.parse_StringExpression("Student").get();
-    stud.setEnclosingScope(scope);
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
-    fstud.setEnclosingScope(scope);
 
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), stud, scope));
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), fstud, scope));
@@ -111,7 +108,7 @@ public class TypeCheckTest {
     assertFalse(isSubtypeOf(tc.typeOf(float1), tc.typeOf(long1)));
     assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
 
-    ExpressionsBasisScope scope = scope(null, true, null, "Phantasy2");
+    TypeSymbolsScope scope = scope(null, true, null, "Phantasy2");
 
     //a FirstSemesterStudent is a Student and a Student is a Person
     TypeSymbol person = DefsTypeBasic.type("Person");
@@ -132,11 +129,8 @@ public class TypeCheckTest {
 
     //non-primitives
     ASTExpression pers = p.parse_StringExpression("Person").get();
-    pers.setEnclosingScope(scope);
     ASTExpression stud = p.parse_StringExpression("Student").get();
-    stud.setEnclosingScope(scope);
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
-    fstud.setEnclosingScope(scope);
 
     assertTrue(isSubtypeOf(tc.typeOf(stud), tc.typeOf(pers)));
     assertTrue(isSubtypeOf(tc.typeOf(fstud), tc.typeOf(pers)));
