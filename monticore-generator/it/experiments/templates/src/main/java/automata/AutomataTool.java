@@ -96,7 +96,7 @@ public class AutomataTool {
 
     //generate the class for the whole statechart
     String modelClassName = modelName;
-    if(existsHandwrittenClass(IterablePath.from(new File("src/main/java"),"java"),modelClassName)){
+    if(existsHandwrittenClass(IterablePath.from(new File("src/test/java"),"java"),modelClassName)){
       modelClassName = modelName+"TOP";
     }
     ge.generate("Statechart.ftl", Paths.get(modelClassName +".java"), ast,initialState, transitionsWithoutDuplicateNames, states, modelClassName);
@@ -104,7 +104,7 @@ public class AutomataTool {
 
     //generate the factory class for the states
     String modelFactoryClassName = modelName+"Factory";
-    if(existsHandwrittenClass(IterablePath.from(new File("src/main/java"),"java"),modelFactoryClassName)){
+    if(existsHandwrittenClass(IterablePath.from(new File("src/test/java"),"java"),modelFactoryClassName)){
       modelFactoryClassName = modelFactoryClassName+"TOP";
     }
     ge.generate("StatechartFactory.ftl",Paths.get(modelFactoryClassName+".java"),ast, states, modelFactoryClassName);
@@ -112,14 +112,14 @@ public class AutomataTool {
 
     //generate the abstract class for the states
     String abstractStateClassName = "AbstractState";
-    if(existsHandwrittenClass(IterablePath.from(new File("src/main/java"),"java"),abstractStateClassName)){
+    if(existsHandwrittenClass(IterablePath.from(new File("src/test/java"),"java"),abstractStateClassName)){
       abstractStateClassName= abstractStateClassName+"TOP";
     }
     ge.generate("AbstractState.ftl", Paths.get(abstractStateClassName+".java"), ast, transitionsWithoutDuplicateNames, abstractStateClassName);
     for(ASTState state : states) {
       //get the transitions that have this state as their source state
       String stateClassName = state.getName()+"State";
-      if(existsHandwrittenClass(IterablePath.from(new File("src/main/java"),"java"),stateClassName)){
+      if(existsHandwrittenClass(IterablePath.from(new File("src/test/java"),"java"),stateClassName)){
         stateClassName=stateClassName+"TOP";
       }
       List<ASTTransition> existingTransitions = transitions.stream().filter(t -> t.getFrom().equals(state.getName())).collect(Collectors.toList());
