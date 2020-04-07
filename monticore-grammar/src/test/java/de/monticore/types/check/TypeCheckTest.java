@@ -39,16 +39,16 @@ public class TypeCheckTest {
     ASTExpression long1 = p.parse_StringExpression("5L").get();
     ASTExpression char1 = p.parse_StringExpression("\'a\'").get();
 
-    assertTrue(tc.isOfTypeForAssign(tc.typeOf(bool1), bool2, tc.iTypesCalculator.getScope()));
-    assertTrue(tc.isOfTypeForAssign(tc.typeOf(double1), int1, tc.iTypesCalculator.getScope()));
-    assertFalse(tc.isOfTypeForAssign(tc.typeOf(bool1), int1, tc.iTypesCalculator.getScope()));
-    assertTrue(tc.isOfTypeForAssign(tc.typeOf(float1), int1, tc.iTypesCalculator.getScope()));
-    assertTrue(tc.isOfTypeForAssign(tc.typeOf(long1), int1, tc.iTypesCalculator.getScope()));
-    assertTrue(tc.isOfTypeForAssign(tc.typeOf(char1), char1, tc.iTypesCalculator.getScope()));
-    assertFalse(tc.isOfTypeForAssign(tc.typeOf(char1), int1, tc.iTypesCalculator.getScope()));
-    assertFalse(tc.isOfTypeForAssign(tc.typeOf(double1), bool1, tc.iTypesCalculator.getScope()));
-    assertFalse(tc.isOfTypeForAssign(tc.typeOf(long1), float1, tc.iTypesCalculator.getScope()));
-    assertTrue(tc.isOfTypeForAssign(tc.typeOf(float1), int1, tc.iTypesCalculator.getScope()));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(bool1), bool2));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(double1), int1));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(bool1), int1));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(float1), int1));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(long1), int1));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(char1), char1));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(char1), int1));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(double1), bool1));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(long1), float1));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(float1), int1));
 
     TypeSymbolsScope scope = scope(null, true, null, "Phantasy2");
 
@@ -74,15 +74,15 @@ public class TypeCheckTest {
     ASTExpression stud = p.parse_StringExpression("Student").get();
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
 
-    assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), stud, scope));
-    assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), fstud, scope));
-    assertTrue(tc.isOfTypeForAssign(tc.typeOf(stud), fstud, scope));
-    assertFalse(tc.isOfTypeForAssign(tc.typeOf(stud), pers, scope));
-    assertFalse(tc.isOfTypeForAssign(tc.typeOf(fstud), pers, scope));
-    assertFalse(tc.isOfTypeForAssign(tc.typeOf(fstud), stud, scope));
-    assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), pers, scope));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), stud));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), fstud));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(stud), fstud));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(stud), pers));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(fstud), pers));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(fstud), stud));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), pers));
 
-    assertFalse(tc.isOfTypeForAssign(tc.typeOf(int1), pers, scope));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(int1), pers));
   }
 
   @Test
