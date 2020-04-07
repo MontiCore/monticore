@@ -2,6 +2,7 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
@@ -13,6 +14,7 @@ import java.nio.file.Paths;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertInt;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -48,10 +50,12 @@ public final class AstRuleTest {
   public void testAstRuleDoubleInheritance() {
     // attributes from super interfaces are inherited
     assertEquals(2, impl.getCDAttributeList().size());
-    assertEquals("varName", impl.getCDAttribute(0).getName());
-    assertDeepEquals("varType", impl.getCDAttribute(0).getMCType());
-    assertEquals("varName2", impl.getCDAttribute(1).getName());
-    assertDeepEquals("varType2", impl.getCDAttribute(1).getMCType());
+
+    ASTCDAttribute varName = getAttributeBy("varName", impl);
+    assertDeepEquals("varType", varName.getMCType());
+
+    ASTCDAttribute varName2 = getAttributeBy("varName2", impl);
+    assertDeepEquals("varType2", varName2.getMCType());
   }
 
 }

@@ -19,7 +19,6 @@ import static org.junit.Assert.assertEquals;
  * Tests that attributes that are redefined in ASTRules correctly override their counterparts in the
  * corresponding ClassProds.
  */
-@Ignore
 public class AttributeInASTOverridingTest {
   
   private ASTCDClass astA;
