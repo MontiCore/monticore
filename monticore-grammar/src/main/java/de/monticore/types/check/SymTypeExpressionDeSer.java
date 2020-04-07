@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serialization.JsonParser;
-import de.monticore.symboltable.serialization.JsonUtil;
+import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
@@ -121,19 +121,19 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression, ITypeSy
     }
 
     // all other serialized SymTypeExrpressions are json objects with a kind
-    if (JsonUtil.isCorrectDeSerForKind(symTypeArrayDeSer, serialized)) {
+    if (JsonDeSers.isCorrectDeSerForKind(symTypeArrayDeSer, serialized)) {
       return symTypeArrayDeSer.deserialize(serialized, enclosingScope);
     }
-    else if (JsonUtil.isCorrectDeSerForKind(symTypeConstantDeSer, serialized)) {
+    else if (JsonDeSers.isCorrectDeSerForKind(symTypeConstantDeSer, serialized)) {
       return symTypeConstantDeSer.deserialize(serialized, enclosingScope);
     }
-    else if (JsonUtil.isCorrectDeSerForKind(symTypeOfGenericsDeSer, serialized)) {
+    else if (JsonDeSers.isCorrectDeSerForKind(symTypeOfGenericsDeSer, serialized)) {
       return symTypeOfGenericsDeSer.deserialize(serialized, enclosingScope);
     }
-    else if (JsonUtil.isCorrectDeSerForKind(symTypeOfObjectDeSer, serialized)) {
+    else if (JsonDeSers.isCorrectDeSerForKind(symTypeOfObjectDeSer, serialized)) {
       return symTypeOfObjectDeSer.deserialize(serialized, enclosingScope);
     }
-    else if (JsonUtil.isCorrectDeSerForKind(symTypeVariableDeSer, serialized)) {
+    else if (JsonDeSers.isCorrectDeSerForKind(symTypeVariableDeSer, serialized)) {
       return symTypeVariableDeSer.deserialize(serialized, enclosingScope);
     }
     else {

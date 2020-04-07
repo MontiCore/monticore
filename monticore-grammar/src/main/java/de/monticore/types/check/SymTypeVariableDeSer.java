@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serialization.JsonParser;
-import de.monticore.symboltable.serialization.JsonUtil;
+import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
@@ -39,7 +39,7 @@ public class SymTypeVariableDeSer implements IDeSer<SymTypeVariable, ITypeSymbol
   }
 
   public SymTypeVariable deserialize(JsonElement serialized, ITypeSymbolsScope enclosingScope) {
-    if (JsonUtil.isCorrectDeSerForKind(this, serialized)) {
+    if (JsonDeSers.isCorrectDeSerForKind(this, serialized)) {
       JsonObject o = serialized.getAsJsonObject();  //if it has a kind, it is an object
       String varName = o.getStringMember("varName");
       return SymTypeExpressionFactory.createTypeVariable(varName, enclosingScope);

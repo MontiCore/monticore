@@ -10,9 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Collection of (static) methods that support using DeSers in combination with Json.
+ * Collection of (static) methods and constants that support using DeSers in combination with Json.
  */
-public class JsonUtil {
+public class JsonDeSers {
+
+  public static final String PACKAGE = "package";
+
+  public static final String IMPORTS = "imports";
+
+  public static final String SUBSCOPES = "subScopes";
+
+  public static final String EXPORTS_SYMBOLS = "exportsSymbols";
+
+  public static final String IS_SHADOWING_SCOPE = "isShadowingScope";
+
+  public static final String NAME = "name";
+
+  public static final String KIND = "kind";
+
+  public static final String SCOPE_SPANNING_SYMBOL = "spanningSymbol";
 
   /**
    * This method deserializes a list of import statements in the passed Json object
@@ -22,8 +38,8 @@ public class JsonUtil {
    */
   public static List<ImportStatement> deserializeImports(JsonObject scope) {
     List<ImportStatement> result = new ArrayList<>();
-    if (scope.hasMember(JsonConstants.IMPORTS)) {
-      for (JsonElement e : scope.getArrayMember(JsonConstants.IMPORTS)) {
+    if (scope.hasMember(IMPORTS)) {
+      for (JsonElement e : scope.getArrayMember(IMPORTS)) {
         String i = e.getAsJsonString().getValue();
         result.add(new ImportStatement(i, i.endsWith("*")));
       }
@@ -37,13 +53,14 @@ public class JsonUtil {
    * @param spanningSymbol
    * @return
    */
-  public static JsonPrinter serializeScopeSpanningSymbol(IScopeSpanningSymbol spanningSymbol) {
-    JsonPrinter spPrinter = new JsonPrinter();
-    spPrinter.beginObject();
-    spPrinter.member(JsonConstants.KIND, spanningSymbol.getClass().getName());
-    spPrinter.member(JsonConstants.NAME, spanningSymbol.getName());
-    spPrinter.endObject();
-    return spPrinter;
+  public static void serializeScopeSpanningSymbol(IScopeSpanningSymbol spanningSymbol,
+      JsonPrinter printer) {
+    if (null != spanningSymbol) {
+      printer.beginObject();
+      printer.member(KIND, spanningSymbol.getClass().getName());
+      printer.member(NAME, spanningSymbol.getName());
+      printer.endObject();
+    }
   }
 
   /**
@@ -55,15 +72,15 @@ public class JsonUtil {
    * @param serializedObject
    * @return
    */
-  public static boolean isCorrectDeSerForKind(IDeSer<?,?> deser, JsonElement serializedObject) {
+  public static boolean isCorrectDeSerForKind(IDeSer<?, ?> deser, JsonElement serializedObject) {
     if (!serializedObject.isJsonObject()) {
       return false;
     }
     JsonObject o = serializedObject.getAsJsonObject();
-    if (!o.hasMember(JsonConstants.KIND)) {
+    if (!o.hasMember(KIND)) {
       return false;
     }
-    return deser.getSerializedKind().equals(o.getStringMember(JsonConstants.KIND));
+    return deser.getSerializedKind().equals(o.getStringMember(KIND));
   }
 
 }

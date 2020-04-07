@@ -11,7 +11,7 @@ public class JsonNumber implements JsonElement {
   protected String value;
   
   /**
-   * Constructor for automata._symboltable.serialization.json.JsonNumber
+   * Constructor for de.monticore._symboltable.serialization.json.JsonNumber
    * 
    * @param value
    */
