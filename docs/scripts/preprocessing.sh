@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 # script for all preprocessing steps of the pages job
 # is used to have uniform bases for both gitlab and github pages
 # is used from '.gitlab-ci.yml'(gitlab) and '.travis.yml'(github)
@@ -14,6 +15,7 @@
 # because mkdocs can only find *.md files there
 mkdir docs/docs
 mv docs/*.md docs/docs
+mv docs/further_docs docs/docs/further_docs
 mv monticore-grammar docs/monticore-grammar
 mv monticore-runtime docs/monticore-runtime
 mv 00.org docs/00.org

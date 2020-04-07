@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.testcd4analysis._symboltable;
 
 import com.google.common.collect.ImmutableSet;

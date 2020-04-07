@@ -42,8 +42,8 @@ grammar MinimalExample extends de.monticore.MCBasics {
   token STRING = '"'
     ( ESC
     | ~('"' | '\\' | '\n' | '\r' )
-	  )*
-	  '"'
+    )*
+    '"'
     :{setText(getText().substring(1, getText().length() - 1));};
 
 

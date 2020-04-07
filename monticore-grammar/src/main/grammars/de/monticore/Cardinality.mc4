@@ -10,14 +10,14 @@ package de.monticore;
  * This grammar defines UML Cardinalities of forms "*", "[n..m]" "[n..*]"
  */
 component grammar Cardinality extends
-	de.monticore.MCBasics, de.monticore.literals.MCCommonLiterals
+              de.monticore.MCBasics, de.monticore.literals.MCCommonLiterals
 {
 
   /** ASTCardinality represents a Cardinality in the UML/P
     @attribute many          True if "*" is set as Cardinality
     @attribute lowerBound    Minimum number of associated Classes/Objects
     @attribute upperBound    Maximum number of associated Classes/Objects;
-				 zero denotes that there is no upper bound set.
+                             zero denotes that there is no upper bound set.
     @attribute lowerBoundLit Lower bound as Literal
     @attribute upperBoundLit Upper bound as Literal
     @attribute noUpperLimit  True if a lower, but no upper bound exists "[n..*]"
@@ -32,7 +32,7 @@ component grammar Cardinality extends
       ( ".." (
         upperBoundLit:NatLiteral
         ( {_aNode.setUpperBound(
-	     _aNode.getUpperBoundLit().getValue());})
+                  _aNode.getUpperBoundLit().getValue());})
         |
         noUpperLimit:["*"] {_aNode.setUpperBound(0);} ) )?
     ) "]";

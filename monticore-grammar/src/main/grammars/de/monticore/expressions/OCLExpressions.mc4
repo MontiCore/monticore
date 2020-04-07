@@ -23,8 +23,8 @@ package de.monticore.expressions;
 component grammar OCLExpressions
           extends de.monticore.expressions.ExpressionsBasis {
 
-external EDeclaration;
-external ExtType;
+    external EDeclaration;
+    external ExtType;
 
     InstanceOfExpression implements Expression <50> =
         left:Expression "instanceof" ExtType;
@@ -34,7 +34,8 @@ external ExtType;
         ThenExpressionPart
         ElseExpressionPart;
 
-    // need own ASTNode for visitor to know when we are in then part and when we are in else part for
+    // need own ASTNode for visitor to know when we are in then part and
+    // when we are in else part for
     // typeif construction, b/c in then part we automatically cast the type
     // cf. http://mbse.se-rwth.de/book1/index.php?c=chapter3-3#x1-550003.3.5
     ThenExpressionPart = "then" thenExpression:Expression;
@@ -50,16 +51,16 @@ external ExtType;
         "implies"
         right:Expression;
 
-	SingleLogicalORExpr implements Expression <80> =
-		left:Expression
-		"|"
-		right:Expression;
+    SingleLogicalORExpr implements Expression <80> =
+        left:Expression
+        "|"
+        right:Expression;
 
-	SingleLogicalANDExpr implements Expression <80> =
-		left:Expression
-		"&"
-		right:Expression;
-		
+    SingleLogicalANDExpr implements Expression <80> =
+        left:Expression
+        "&"
+        right:Expression;
+
     /** ASTForAllExpr defines a quantified expression for collections e.g.
         "forall x in Y : ...".
         @attribute InExpr
@@ -138,7 +139,7 @@ external ExtType;
         "}";
 
     TypeCastExpression implements Expression <200> =
-    	"(" ExtType ")" Expression;
+        "(" ExtType ")" Expression;
 
     ParenthizedExpression implements Expression <400> =
         "(" Expression ")"
@@ -147,13 +148,9 @@ external ExtType;
     /** ASTInExpr defines a collection like "int x in y" or "Auction a" as
         shortform of "Auction a in Auction.allInstances").
     */
-    InExpr implements Expression <50> =
-		ExtType
-		varName:(Name || ",")+
-		|
-		ExtType?
-		varName:(Name || ",")+
-		("in" Expression)
+    InExpr implements Expression <50> 
+        =   ExtType  varName:(Name || ",")+
+        |   ExtType? varName:(Name || ",")+ ("in" Expression)
         ;
 
 
@@ -235,7 +232,7 @@ external ExtType;
     */
     interface OCLComprehensionExpr;
 
- 	/** ASTOCLComprehensionExpressionStyle defines a comprehension with given
+    /** ASTOCLComprehensionExpressionStyle defines a comprehension with given
         characteristic.
         @attribute expression
                    An expression (e.g. "x*x" or "x in Y").
@@ -246,9 +243,9 @@ external ExtType;
         Note that we assume at least one generator (e.g. x in Y) in this AST.
     */
     OCLComprehensionExpressionStyle implements OCLComprehensionExpr <20> =
-    	Expression "|"
-    	(OCLComprehensionItem || ",")+
-    	;
+      Expression "|"
+      (OCLComprehensionItem || ",")+
+      ;
 
     OCLComprehensionItem =
         generator:InExpr |
@@ -263,8 +260,8 @@ external ExtType;
                    (e.g.: "1..3, x, y..z")
     */
     OCLComprehensionEnumerationStyle implements OCLComprehensionExpr <10> =
-    	OCLCollectionItem* (",")?
-    	;
+      OCLCollectionItem* (",")?
+      ;
 
     OCLCollectionItem =
         (Expression  ".."  Expression)

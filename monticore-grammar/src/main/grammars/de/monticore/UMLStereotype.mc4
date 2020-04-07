@@ -52,19 +52,19 @@ component grammar UMLStereotype extends de.monticore.literals.MCCommonLiterals {
         };
 
     astrule StereoValue =
-	// Caution: decoded value is in cache: so change of value leads
-	// to outdated result in getValue()
-	content:String
+        // Caution: decoded value is in cache: so change of value leads
+        // to outdated result in getValue()
+        content:String
         method public String getValue() {
-	  if(content == null) {
-	    if (text.isPresent()) {
-	      content = de.monticore.MCLiteralsDecoder.decodeString(
-	      			text.get().getValue());
-	    } else {
-	      content = "";   // absent value
-	    }
-	  }
-	  return content;
+          if(content == null) {
+            if (text.isPresent()) {
+              content = de.monticore.MCLiteralsDecoder.decodeString(
+                    text.get().getValue());
+            } else {
+              content = "";   // absent value
+            }
+          }
+          return content;
         };
 
     /*========================================================================*/

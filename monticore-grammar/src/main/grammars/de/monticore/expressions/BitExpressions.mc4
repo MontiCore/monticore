@@ -29,7 +29,7 @@ component grammar BitExpressions extends de.monticore.expressions.ExpressionsBas
   /*=================================================================*/
 
   interface ShiftExpression =
-	left:Expression shiftOp:"" right:Expression;
+    left:Expression shiftOp:"" right:Expression;
 
   /* The priorities (160, 120 and 110) are compatible with the priorities
    * of the other infix operations e.g. in CommonExpressions
@@ -43,31 +43,31 @@ component grammar BitExpressions extends de.monticore.expressions.ExpressionsBas
    * We use the noSpace workaraound to ensure that no space was
    * found between the previous two token.
   */
-		
+
   LeftShiftExpression implements Expression <160>, ShiftExpression =
-	left:Expression 
-	shiftOp:"<" "<" {noSpace()}? {_aNode.setShiftOp("<<");}        
+    left:Expression
+    shiftOp:"<" "<" {noSpace()}? {_aNode.setShiftOp("<<");}
     right:Expression;
  
   RightShiftExpression implements Expression <160>, ShiftExpression =
-	left:Expression 
-	shiftOp:">" ">" {noSpace()}? {_aNode.setShiftOp(">>");}        
+    left:Expression
+    shiftOp:">" ">" {noSpace()}? {_aNode.setShiftOp(">>");}
     right:Expression;
 
   LogicalRightShiftExpression implements Expression <160>, ShiftExpression =
-	left:Expression 
-	shiftOp:">" ">" {noSpace()}? ">" {noSpace()}? {_aNode.setShiftOp(">>>");}        
+    left:Expression
+    shiftOp:">" ">" {noSpace()}? ">" {noSpace()}? {_aNode.setShiftOp(">>>");}
     right:Expression;
 
   /*=================================================================*/
     
   BinaryAndExpression implements Expression <120> =
-	left:Expression operator:"&"  right:Expression;
+    left:Expression operator:"&"  right:Expression;
 
   BinaryXorExpression implements Expression <110> =
-	left:Expression operator:"^"  right:Expression;
+    left:Expression operator:"^"  right:Expression;
 
   BinaryOrOpExpression implements Expression <100> =
-	left:Expression operator:"|"  right:Expression;
+    left:Expression operator:"|"  right:Expression;
 
 }

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.inheritedbuilder;
 
 import mc.feature.inheritedbuilder.buildertest._ast.ASTSubBuilder;

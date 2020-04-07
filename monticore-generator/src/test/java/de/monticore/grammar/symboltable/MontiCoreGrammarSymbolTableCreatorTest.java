@@ -8,7 +8,6 @@ import de.monticore.grammar.grammar._symboltable.*;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -331,7 +330,6 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertTrue(stateProd.isIsSymbolDefinition());
   }
   
-  @Ignore
   @Test
   public void testRuleWithSymbolReference() {
     final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.createUsingEssentialMCLanguage();
@@ -349,23 +347,20 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertEquals("S", s.getName());
     
     ProdSymbol t = grammar.getProd("T").orElse(null);
-    assertTrue(t.isIsSymbolDefinition());
-    assertEquals("S", t.getName());
-    
-    // The symbol kinds are determined transitively, i.e., A -> T -> S, hence, the symbol kind of
-    // prod A is S.
+    assertEquals("T", t.getName());
+    assertFalse(t.isIsSymbolDefinition());
+
     ProdSymbol a = grammar.getProd("A").orElse(null);
-    assertTrue(a.isIsSymbolDefinition());
-    assertEquals("S", a.getName());
-    
+    assertEquals("A", a.getName());
+    assertFalse(a.isIsSymbolDefinition());
+
     ProdSymbol b = grammar.getProd("B").orElse(null);
     assertFalse(b.isIsSymbolDefinition());
     List<RuleComponentSymbol> comps = b.getSpannedScope().resolveRuleComponentDownMany("an");
     assertFalse(comps.isEmpty());
     RuleComponentSymbol aComponent = comps.get(0);
     assertEquals("Name", aComponent.getReferencedProd().get().getName());
-    assertEquals(a.getName(), aComponent.getReferencedType());
-    
+
     ProdSymbol e = grammar.getProd("E").orElse(null);
     assertTrue(e.isIsExternal());
     assertTrue(e.isIsSymbolDefinition());

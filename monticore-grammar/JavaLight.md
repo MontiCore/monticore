@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # JavaLight
 JavaLight is a subset of Java. JavaLight provides methods, a subset 
 of statments and expressions and basic types. t is possible to enrich the

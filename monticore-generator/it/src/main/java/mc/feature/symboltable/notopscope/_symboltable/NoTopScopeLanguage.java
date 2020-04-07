@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.symboltable.notopscope._symboltable;
 
 import mc.feature.referencesymbol.reference._symboltable.ReferenceModelLoader;

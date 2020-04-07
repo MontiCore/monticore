@@ -35,7 +35,7 @@
       <artifactId>monticore-generator</artifactId>
     </dependency>
 
-	<dependency>
+    <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-grammar</artifactId>
       <classifier>${grammars.classifier}</classifier>

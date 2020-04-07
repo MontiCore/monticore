@@ -53,34 +53,34 @@ component grammar JavaClassExpressions
 
   /*=================================================================*/
 
-  PrimaryThisExpression implements Expression <320>
-	= "this";
+  PrimaryThisExpression implements Expression <320> =
+    "this";
 
   ThisExpression implements Expression <280> =
-	Expression "." "this";
+    Expression "." "this";
 
   ArrayExpression implements Expression <250> =
-	Expression "[" indexExpression:Expression "]";
+    Expression "[" indexExpression:Expression "]";
 
   SuperExpression implements Expression <270> =
-	Expression "." "super" SuperSuffix;
-	
+    Expression "." "super" SuperSuffix;
+
   GenericInvocationExpression implements Expression <260> =
-	Expression "." PrimaryGenericInvocationExpression;
-	
+    Expression "." PrimaryGenericInvocationExpression;
+
   TypeCastExpression implements Expression <230> =
-	"(" ExtType ")" Expression;
+    "(" ExtType ")" Expression;
         
-  PrimarySuperExpression implements Expression <330>
-	= "super";
-	
+  PrimarySuperExpression implements Expression <330> =
+    "super";
+
   /*=================================================================*/
 
-  ClassExpression implements Expression <360>
-    = ExtReturnType "." "class";
+  ClassExpression implements Expression <360> =
+    ExtReturnType "." "class";
    
-  PrimaryGenericInvocationExpression implements Expression <370>
-    = "<"(ExtTypeArgument||",")+">" GenericInvocationSuffix;
+  PrimaryGenericInvocationExpression implements Expression <370> =
+    "<"(ExtTypeArgument||",")+">" GenericInvocationSuffix;
 
   GenericInvocationSuffix
     =   ["super"] SuperSuffix
@@ -95,8 +95,8 @@ component grammar JavaClassExpressions
     
   /*=================================================================*/
 
-  InstanceofExpression implements Expression <140>
-	= Expression "instanceof" ExtType;
+  InstanceofExpression implements Expression <140> =
+    Expression "instanceof" ExtType;
 
 
 }

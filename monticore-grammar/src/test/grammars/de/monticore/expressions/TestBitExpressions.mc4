@@ -2,7 +2,5 @@
 package de.monticore.expressions;
 
 grammar TestBitExpressions extends de.monticore.expressions.ExpressionsBasis, de.monticore.literals.MCCommonLiterals {
-	    start Expression;
-
-
+      start Expression;
 }

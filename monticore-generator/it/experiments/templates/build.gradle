@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation project(":automaton_experiments")

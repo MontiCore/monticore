@@ -23,13 +23,13 @@ component grammar MCNumbers extends de.monticore.MCBasics {
   astrule Number =
     method public String getSource()
     { throw new UnsupportedOperationException(
-    	"0xFF230 Method not implemented"); }
+      "0xFF230 Method not implemented"); }
     method public int getValueInt()
     { throw new UnsupportedOperationException(
-    	"0xFF231 Method not implemented"); }
+      "0xFF231 Method not implemented"); }
     method public long getValue()
     { throw new UnsupportedOperationException(
-    	"0xFF232 Method not implemented"); }
+      "0xFF232 Method not implemented"); }
   ;
 
   /*========================================================================*/

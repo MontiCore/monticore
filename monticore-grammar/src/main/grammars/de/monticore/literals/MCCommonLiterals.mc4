@@ -13,7 +13,7 @@ package de.monticore.literals;
 */
 
 component grammar MCCommonLiterals extends de.monticore.MCBasics,
-			           de.monticore.literals.MCLiteralsBasis {
+                 de.monticore.literals.MCLiteralsBasis {
 
 
   /*========================================================================*/
@@ -84,7 +84,7 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
     */
   SignedNatLiteral implements SignedNumericLiteral<1> =
      (negative:["-"]) Digits {noSpace()}? |
-     Digits;
+                      Digits;
 
    /** ASTLongLiteral represents a positive Decimal number.
          @attribute source String-representation (including '"').
@@ -97,7 +97,7 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
      */
    SignedBasicLongLiteral implements SignedNumericLiteral<1> =
       negative:["-"] Digits {noSpace()}? key("l" | "L") {noSpace()}? |
-      Digits key("l" | "L") {noSpace()}?;
+                     Digits              key("l" | "L") {noSpace()}?;
 
   /** ASTFloatLiteral represents a positive float.
         @attribute source String-representation (including '"').
@@ -111,9 +111,9 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
     */
   SignedBasicFloatLiteral implements SignedNumericLiteral<1> =
      negative:["-"] pre:Digits {noSpace()}? "." {noSpace()}?
-       post:Digits {noSpace()}? key("f" | "F") {noSpace()}? |
-     pre:Digits "." {noSpace()}?
-       post:Digits {noSpace()}? key("f" | "F") {noSpace()}?;
+         post:Digits {noSpace()}? key("f" | "F") {noSpace()}? |
+                    pre:Digits              "." {noSpace()}?
+         post:Digits {noSpace()}? key("f" | "F") {noSpace()}?;
 
   /** ASTDoubleLiteral represents a positive double.
         @attribute source String-representation (including '"').
@@ -126,7 +126,7 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
     */
   SignedBasicDoubleLiteral implements SignedNumericLiteral<1> =
      negative:["-"] pre:Digits {noSpace()}? "." {noSpace()}? post:Digits {noSpace()}? |
-     pre:Digits "." {noSpace()}? post:Digits {noSpace()}?;
+                    pre:Digits              "." {noSpace()}? post:Digits {noSpace()}?;
 
   /*========================================================================*/
   /*============================ LEXER RULES ===============================*/

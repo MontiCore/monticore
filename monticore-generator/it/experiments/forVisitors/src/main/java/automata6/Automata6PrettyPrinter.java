@@ -13,8 +13,8 @@ import automata5.*;
 
  */
 public class Automata6PrettyPrinter
-		extends Automata5PrettyPrinter
-		implements Automata6Visitor {
+                extends Automata5PrettyPrinter
+                implements Automata6Visitor {
 
   @Override
   public void visit(ASTAutomaton node) {

@@ -60,7 +60,7 @@ public class AutomataTool {
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
     if (aSymbol.isPresent()) {
       Log.info("Resolved state symbol \"Ping\"; FQN = "
-      	       + aSymbol.get().toString(),
+               + aSymbol.get().toString(),
           AutomataTool.class.getName());
     } else {
       Log.info("This automaton does not contain a state called \"Ping\";",
@@ -80,8 +80,8 @@ public class AutomataTool {
     
     // Now we know the model is well-formed
 
-    // store artifact scope
-    deser.store(modelTopScope,lang, DEFAULT_SYMBOL_LOCATION);
+    // store artifact scope and its smybols
+    deser.store(modelTopScope, lang, DEFAULT_SYMBOL_LOCATION);
 
     // analyze the model with a visitor
     CountStates cs = new CountStates();

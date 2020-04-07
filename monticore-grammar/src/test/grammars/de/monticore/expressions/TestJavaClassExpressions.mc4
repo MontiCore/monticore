@@ -4,7 +4,7 @@ package de.monticore.expressions;
 grammar TestJavaClassExpressions
           extends de.monticore.expressions.JavaClassExpressions, de.monticore.literals.MCCommonLiterals, de.monticore.types.MCCollectionTypes{
 
-	 start Expression;
+   start Expression;
 
    ExtType = MCType;
 

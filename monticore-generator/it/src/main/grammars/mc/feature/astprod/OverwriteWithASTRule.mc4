@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.astprod;
 
 grammar OverwriteWithASTRule extends mc.grammar.types.ItTestTypes {

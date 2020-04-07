@@ -25,23 +25,23 @@ component grammar MCExceptionStatements extends de.monticore.statements.MCCommon
 
 TryStatement1 implements MCStatement
     =   "try"
-	   core:MCJavaBlock
-	   CatchClause+
- 	   ("finally" finally:MCJavaBlock)?
-     ;
+         core:MCJavaBlock
+         CatchClause+
+         ("finally" finally:MCJavaBlock)?
+    ;
 
 TryStatement2 implements MCStatement
     =   "try"
-	   core:MCJavaBlock
-	   CatchClause*
- 	   ("finally" finally:MCJavaBlock)
-     ;
+        core:MCJavaBlock
+        CatchClause*
+        ("finally" finally:MCJavaBlock)
+    ;
 
 TryStatement3 implements MCStatement
     =   "try" "(" (TryLocalVariableDeclaration || ";")+ ";"? ")"
-    core:MCJavaBlock
-	  CatchClause*
- 	  ("finally" finally:MCJavaBlock)?
+        core:MCJavaBlock
+        CatchClause*
+        ("finally" finally:MCJavaBlock)?
     ;
 
 TryLocalVariableDeclaration

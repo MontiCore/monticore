@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 description = 'Experiments: composition'
 
-fileTree(grammarDir).each {
+fileTree(grammarDir).matching { include '**/*.mc4'}.each {
   def g = it
   task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
     grammar = file g

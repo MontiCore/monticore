@@ -14,7 +14,7 @@ public class ASTB extends ASTBTOP
 {
 //   protected  ASTB () 
    //{
-   	//ASTBTOP.super()
+   //ASTBTOP.super()
    //}
 //
 

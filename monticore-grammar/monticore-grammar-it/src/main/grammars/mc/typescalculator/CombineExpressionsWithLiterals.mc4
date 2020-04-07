@@ -4,9 +4,9 @@ package mc.typescalculator;
 
 grammar CombineExpressionsWithLiterals extends
           de.monticore.expressions.AssignmentExpressions,
-	        de.monticore.expressions.CommonExpressions,
-	          de.monticore.expressions.BitExpressions,
-	    	    de.monticore.literals.MCCommonLiterals {
+          de.monticore.expressions.CommonExpressions,
+            de.monticore.expressions.BitExpressions,
+            de.monticore.literals.MCCommonLiterals {
 
     start Expression;
 

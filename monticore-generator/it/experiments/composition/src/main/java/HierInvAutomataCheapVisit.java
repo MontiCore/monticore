@@ -17,7 +17,7 @@ import invautomata._ast.ASTTransition;
  * (actually this is a bad an cheap form of reuse)
  */
 public class HierInvAutomataCheapVisit
-				implements HierInvAutomataVisitor {
+                        implements HierInvAutomataVisitor {
 
 
   // ----------------------------------------------------------

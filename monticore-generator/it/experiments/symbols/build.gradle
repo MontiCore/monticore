@@ -1,9 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 description = 'Experiments: symbols'
 
-task generate (type: MCTask) {
-  grammar = file "$projectDir/$grammarDir/Automata.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("Automata.mc4")
-  outputs.upToDateWhen { uptoDate }
+fileTree(grammarDir).matching { include '**/*.mc4'}.each {
+  def g = it
+  task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
+    grammar = file g
+    outputDir = file outDir
+    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
+    def uptoDate = incCheck(grammarIncludingPackage)
+    outputs.upToDateWhen { uptoDate }
+  }
 }
