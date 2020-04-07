@@ -2,7 +2,6 @@
 package mc.typescalculator;
 
 import com.google.common.collect.Lists;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -38,7 +37,7 @@ public class CD2EHelper {
       // add to map
       TypeSymbol typeSymbol = TypeSymbolsSymTabMill.typeSymbolBuilder()
           .setName(cdTypeSymbol.getName())
-          .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
+          .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
           .build();
       typeSymbolMap.put(cdTypeSymbol.getName(), typeSymbol);
 
@@ -141,7 +140,7 @@ public class CD2EHelper {
           String typeName = symbolLoader.getName();
           TypeSymbol typeSymbol = TypeSymbolsSymTabMill.typeSymbolBuilder()
               .setName(typeName)
-              .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
+              .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
               .build();
           iTypeSymbolsScope.add(typeSymbol);
           symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), iTypeSymbolsScope);

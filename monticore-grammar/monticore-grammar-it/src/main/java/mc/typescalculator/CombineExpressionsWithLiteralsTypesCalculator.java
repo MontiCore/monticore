@@ -6,6 +6,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 
 import java.util.HashMap;
@@ -31,7 +32,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
   private LastResult lastResult = new LastResult();
 
 
-  public CombineExpressionsWithLiteralsTypesCalculator(IExpressionsBasisScope scope){
+  public CombineExpressionsWithLiteralsTypesCalculator(ITypeSymbolsScope scope){
     this.realThis=this;
     commonExpressionTypesCalculator = new DeriveSymTypeOfCommonExpressions();
     commonExpressionTypesCalculator.setScope(scope);
@@ -101,7 +102,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     return realThis;
   }
 
-  public void setScope(IExpressionsBasisScope scope){
+  public void setScope(ITypeSymbolsScope scope){
     assignmentExpressionTypesCalculator.setScope(scope);
     expressionsBasisTypesCalculator.setScope(scope);
     commonExpressionTypesCalculator.setScope(scope);

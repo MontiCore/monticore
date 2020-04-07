@@ -4,6 +4,7 @@ package mc.typescalculator;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SynthesizeSymTypeFromMCBasicTypes;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import mc.typescalculator.unittypes._ast.ASTMinuteType;
 import mc.typescalculator.unittypes._visitor.UnitTypesVisitor;
@@ -12,7 +13,7 @@ public class SynthesizeSymTypeFromUnitTypes extends SynthesizeSymTypeFromMCBasic
 
   private UnitTypesVisitor realThis;
 
-  public SynthesizeSymTypeFromUnitTypes(IExpressionsBasisScope scope) {
+  public SynthesizeSymTypeFromUnitTypes(ITypeSymbolsScope scope) {
     super(scope);
   }
 

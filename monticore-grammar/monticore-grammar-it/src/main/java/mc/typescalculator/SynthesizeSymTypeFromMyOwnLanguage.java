@@ -3,6 +3,7 @@ package mc.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.types.check.*;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageDelegatorVisitor;
 
 import java.util.Optional;
@@ -20,7 +21,7 @@ public class SynthesizeSymTypeFromMyOwnLanguage extends MyOwnLanguageDelegatorVi
     return realThis;
   }
 
-  public SynthesizeSymTypeFromMyOwnLanguage(ExpressionsBasisScope scope){
+  public SynthesizeSymTypeFromMyOwnLanguage(TypeSymbolsScope scope){
     realThis = this;
     symTypeFromMCBasicTypes = new SynthesizeSymTypeFromMCBasicTypes(scope);
     symTypeFromMCBasicTypes.setLastResult(result);
