@@ -2,8 +2,8 @@ site_name: MontiCore
 theme:
   name: 'material'
   favicon: 'img/favicon.ico'
-  logo:
-    icon: 'computer'
+  icon:
+    logo: 'fontawesome/solid/desktop'
 
 repo_url: https://github.com/MontiCore/monticore/
 edit_uri: ""

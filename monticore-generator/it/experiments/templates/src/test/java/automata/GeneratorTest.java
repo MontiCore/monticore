@@ -17,4 +17,9 @@ public class GeneratorTest {
   public void testPingPong(){
     AutomataTool.main(new String[] { "src/test/resources/example/PingPong.aut" });
   }
+  
+  @Test
+  public void testSimple12(){
+    AutomataTool.main(new String[] { "src/test/resources/example/Simple12.aut" });
+  }
 }

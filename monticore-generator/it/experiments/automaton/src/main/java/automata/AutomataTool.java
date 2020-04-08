@@ -47,17 +47,18 @@ public class AutomataTool {
     
     // setup the language infrastructure
     AutomataLanguage lang = new AutomataLanguage();
-    AutomataScopeDeSer deser = new AutomataScopeDeSer();
 
     // parse the model and create the AST representation
     ASTAutomaton ast = parse(model);
     Log.info(model + " parsed successfully!", AutomataTool.class.getName());
     
     // setup the symbol table
-    AutomataArtifactScope modelTopScope = createSymbolTable(lang, ast);
+    AutomataArtifactScope modelTopScope =
+            createSymbolTable(lang, ast);
     
     // can be used for resolving names in the model
-    Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
+    Optional<StateSymbol> aSymbol =
+            modelTopScope.resolveState("Ping");
     if (aSymbol.isPresent()) {
       Log.info("Resolved state symbol \"Ping\"; FQN = "
                + aSymbol.get().toString(),
@@ -80,7 +81,8 @@ public class AutomataTool {
     
     // Now we know the model is well-formed
 
-    // store artifact scope and its smybols
+    // store artifact scope and its symbols
+    AutomataScopeDeSer deser = new AutomataScopeDeSer();
     deser.store(modelTopScope, lang, DEFAULT_SYMBOL_LOCATION);
 
     // analyze the model with a visitor
