@@ -2,11 +2,11 @@
 ${tc.signature("deser")}
   // 1. Throw errors and abort storing in case of missing required information:
   if(!toSerialize.isPresentName()){
-    Log.error("0xTODO ${deser} cannot store an artifact scope that has no name!");
+    Log.error("${deser} cannot store an artifact scope that has no name!");
     return;
   }
   if(null == getSymbolFileExtension()){
-    Log.error("0xTODO File extension for stored symbol tables has not been set in ${deser}!");
+    Log.error("File extension for stored symbol tables has not been set in ${deser}!");
     return;
   }
 
