@@ -2,14 +2,14 @@
 ${tc.signature("initialState","transitions","states","className")}
 public <#if className?ends_with("TOP")>abstract </#if>class ${className}{
 
-    ${tc.include("StatechartStateAttributes.ftl",states)}
+  ${tc.include("StatechartStateAttributes.ftl",states)}
 
-    protected Abstract${modelName}State currentState = ${modelName}Factory.get${initialState.getName()}State();
+  protected Abstract${modelName}State currentState = ${modelName}Factory.get${initialState.getName()}State();
 
-    public void setState(Abstract${modelName}State state){
-        currentState = state;
-    }
+  public void setState(Abstract${modelName}State state){
+      currentState = state;
+  }
 
-    ${tc.include("StatechartTransitionMethod.ftl",transitions)}
+  ${tc.include("StatechartTransitionMethod.ftl",transitions)}
 
 }
