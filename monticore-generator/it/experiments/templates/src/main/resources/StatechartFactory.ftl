@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("states","className")}
 public <#if className?ends_with("TOP")>abstract </#if>class ${className?cap_first} {
 
