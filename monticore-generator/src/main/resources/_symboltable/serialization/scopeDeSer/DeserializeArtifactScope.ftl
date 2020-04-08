@@ -1,6 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("symTabMill", "artifactScope", "artifactScopeBuilder", "scopeRuleAttrList")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
+  String kind = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.KIND);
+  if (!"${artifactScope}".equals(kind)) {
+    Log.error("\""+kind+"\" is not a ${artifactScope}!");
+    return null;
+  }
+
   String name = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME);
   String packageName = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE);
   List<de.monticore.symboltable.ImportStatement> imports = de.monticore.symboltable.serialization.JsonDeSers.deserializeImports(scopeJson);

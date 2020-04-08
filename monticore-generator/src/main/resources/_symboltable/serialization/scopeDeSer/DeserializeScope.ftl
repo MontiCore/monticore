@@ -1,6 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("symTabMill", "scopeClass", "scopeBuilder", "scopeRuleAttrList")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
+  String kind = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.KIND);
+  if (!"${scopeClass}".equals(kind)) {
+    Log.error("\""+kind+"\" is not a ${scopeClass}!");
+    return null;
+  }
+
   boolean isShadowingScope = false;
   if (scopeJson.hasBooleanMember(de.monticore.symboltable.serialization.JsonDeSers.IS_SHADOWING_SCOPE)) {
     isShadowingScope = scopeJson.getBooleanMember(de.monticore.symboltable.serialization.JsonDeSers.IS_SHADOWING_SCOPE);
