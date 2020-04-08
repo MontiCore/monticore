@@ -48,7 +48,7 @@ public class AutomataTool {
       return;
     }
     String model = args[0];
-    // TODO ND: read from args
+    // TODO ND: read handcodedPath from args
     final IterablePath handcodedPath = IterablePath.from(new File("src/test/java2"), "java");
     // setup the language infrastructure
     final AutomataLanguage lang = AutomataSymTabMill.automataLanguageBuilder().build();
@@ -67,6 +67,7 @@ public class AutomataTool {
     GeneratorSetup s = new GeneratorSetup();
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     s.setGlex(glex);
+    // TODO ND: read output dir from args
     s.setOutputDirectory(new File("target/statepattern"));
     GeneratorEngine ge = new GeneratorEngine(s);
 
@@ -113,7 +114,7 @@ public class AutomataTool {
 
 
     //generate the abstract class for the states
-    String abstractStateClassName = "AbstractState";
+    String abstractStateClassName = "Abstract"+ modelName +"State";
     if(existsHandwrittenClass(handcodedPath,abstractStateClassName)){
       abstractStateClassName= abstractStateClassName+"TOP";
     }
