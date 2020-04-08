@@ -10,5 +10,5 @@
 
   //3. Load symbol table into enclosing global scope if a file has been found
   if (modelCoordinate.hasLocation()) {
-    load(resolvedCoordinate.getLocation(), enclosingScope);
+    load(modelCoordinate.getLocation(), enclosingScope);
   }
