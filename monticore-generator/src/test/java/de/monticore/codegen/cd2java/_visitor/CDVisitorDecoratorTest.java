@@ -8,6 +8,7 @@ import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -52,10 +53,12 @@ public class CDVisitorDecoratorTest extends DecoratorTestCase {
     DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(this.glex, visitorService, symbolTableService);
     ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(this.glex, visitorService);
     InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(this.glex, visitorService, symbolTableService);
+    DelegatorVisitorBuilderDecorator delegatorVisitorBuilderDecorator = new DelegatorVisitorBuilderDecorator(this.glex, visitorService, symbolTableService);
+
 
     CDVisitorDecorator decorator = new CDVisitorDecorator(this.glex, targetPath, visitorService,
         astVisitorDecorator, delegatorVisitorDecorator, inheritanceVisitorDecorator, 
-        parentAwareVisitorDecorator);
+        parentAwareVisitorDecorator, delegatorVisitorBuilderDecorator);
 
     this.visitorCompilationUnit = decorator.decorate(decoratedCompilationUnit);
   }
@@ -67,7 +70,7 @@ public class CDVisitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(2, visitorCompilationUnit.getCDDefinition().getCDClassList().size());
+    assertEquals(3, visitorCompilationUnit.getCDDefinition().getCDClassList().size());
   }
 
   @Test

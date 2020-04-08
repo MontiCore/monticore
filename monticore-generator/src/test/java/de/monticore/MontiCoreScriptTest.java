@@ -368,7 +368,7 @@ public class MontiCoreScriptTest {
     assertNotNull(visitorPackageCD);
     assertNotNull(visitorPackageCD.getCDDefinition());
     assertEquals("Statechart", visitorPackageCD.getCDDefinition().getName());
-    assertEquals(2, visitorPackageCD.getCDDefinition().sizeCDClasss());
+    assertEquals(3, visitorPackageCD.getCDDefinition().sizeCDClasss());
     assertEquals("StatechartDelegatorVisitor", visitorPackageCD.getCDDefinition().getCDClass(0).getName());
     assertEquals("StatechartParentAwareVisitor", visitorPackageCD.getCDDefinition().getCDClass(1).getName());
     assertEquals(2, visitorPackageCD.getCDDefinition().sizeCDInterfaces());

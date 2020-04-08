@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_SUFFIX;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_SUFFIX;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 public class VisitorService extends AbstractService<VisitorService> {

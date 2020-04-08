@@ -61,6 +61,7 @@ import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolloadermutator.MandatoryMutatorSymbolLoaderDecorator;
 import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
 import de.monticore.codegen.cd2java._visitor.*;
+import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
@@ -557,10 +558,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(glex, visitorService, symbolTableService);
     ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(glex, visitorService);
     InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(glex, visitorService, symbolTableService);
+    DelegatorVisitorBuilderDecorator delegatorVisitorBuilderDecorator = new DelegatorVisitorBuilderDecorator(glex, visitorService, symbolTableService);
 
     CDVisitorDecorator decorator = new CDVisitorDecorator(glex, handCodedPath, visitorService,
         astVisitorDecorator, delegatorVisitorDecorator, inheritanceVisitorDecorator, 
-        parentAwareVisitorDecorator);
+        parentAwareVisitorDecorator, delegatorVisitorBuilderDecorator);
 
     ASTCDCompilationUnit visitorCompilationUnit = decorator.decorate(cd);
 
