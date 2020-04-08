@@ -14,6 +14,7 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -47,8 +48,11 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");
     glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
+    ASTService astService = new ASTService(decoratedCompilationUnit);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
-    MillDecorator decorator = new MillDecorator(this.glex, new ASTService(decoratedCompilationUnit));
+    MillDecorator decorator = new MillDecorator(this.glex, astService, visitorService);
     this.millClass = decorator.decorate(decoratedCompilationUnit);
   }
 
@@ -136,7 +140,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
 
   @Test
   public void testCBuilderMethod() {
-    ASTCDMethod fooBarBuilder = millClass.getCDMethod(8);
+    ASTCDMethod fooBarBuilder = millClass.getCDMethod(10);
     //test Method Name
     assertEquals("bBuilder", fooBarBuilder.getName());
     //test Parameters
@@ -151,7 +155,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
 
   @Test
   public void testFooBuilderMethod() {
-    ASTCDMethod fooBarBuilder = millClass.getCDMethod(9);
+    ASTCDMethod fooBarBuilder = millClass.getCDMethod(11);
     //test Method Name
     assertEquals("fooBuilder", fooBarBuilder.getName());
     //test Parameters
@@ -165,7 +169,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
 
   @Test
   public void tesBarBuilderMethod() {
-    ASTCDMethod fooBarBuilder = millClass.getCDMethod(10);
+    ASTCDMethod fooBarBuilder = millClass.getCDMethod(12);
     //test Method Name
     assertEquals("barBuilder", fooBarBuilder.getName());
     //test Parameters

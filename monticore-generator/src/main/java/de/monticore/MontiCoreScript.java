@@ -676,7 +676,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex, nodeFactoryService);
 
-    MillDecorator millDecorator = new MillDecorator(glex, astService);
+    MillDecorator millDecorator = new MillDecorator(glex, astService, visitorService);
 
     MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, astService);
 
@@ -722,7 +722,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     EmfNodeFactoryDecorator nodeFactoryDecorator = new EmfNodeFactoryDecorator(glex, nodeFactoryService);
 
-    MillDecorator millDecorator = new MillDecorator(glex, astService);
+    MillDecorator millDecorator = new MillDecorator(glex, astService, visitorService);
 
     MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, astService);
 

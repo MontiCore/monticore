@@ -90,7 +90,7 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
 
     EmfNodeFactoryDecorator nodeFactoryDecorator = new EmfNodeFactoryDecorator(glex, nodeFactoryService);
 
-    MillDecorator millDecorator = new MillDecorator(glex, astService);
+    MillDecorator millDecorator = new MillDecorator(glex, astService, visitorService);
 
     MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, astService);
 
