@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  */
 public class AutomataTool {
   
-  public static final String DEFAULT_SYMBOL_LOCATION = "target";
+  public static final Path DEFAULT_SYMBOL_LOCATION = Paths.get("target");
 
   /**
    * Use the single argument for specifying the single input automata file.
@@ -47,7 +47,6 @@ public class AutomataTool {
     final IterablePath handcodedPath = IterablePath.from(new File("src/extendedtest/java"), "java");
     // setup the language infrastructure
     final AutomataLanguage lang = AutomataSymTabMill.automataLanguageBuilder().build();
-    final AutomataScopeDeSer deser = new AutomataScopeDeSer();
 
     // parse the model and create the AST representation
     final ASTAutomaton ast = parse(model);
@@ -56,8 +55,10 @@ public class AutomataTool {
     // setup the symbol table
     AutomataArtifactScope modelTopScope = createSymbolTable(lang, ast);
     
-    // store artifact scope
-    deser.store(modelTopScope,lang, DEFAULT_SYMBOL_LOCATION);
+    // store artifact scope and its symbols
+    AutomataScopeDeSer deser = new AutomataScopeDeSer();
+    deser.setSymbolFileExtension("autsym");
+    deser.store(modelTopScope, DEFAULT_SYMBOL_LOCATION);
   
     // execute generator
     Log.info("Generating code for the parsed automata:"+ ast.getName(), AutomataTool.class.getName());
