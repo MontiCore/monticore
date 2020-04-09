@@ -629,8 +629,8 @@ public class IncrementalChecker {
    */
   protected static void collectInputOutputMapFromReport(Path report,
                                                         Map<String, InputOutputStory> inputOutputMap) {
-    FileReaderWriter io = new FileReaderWriter();
-    String reportContent = io.readFromFile(report);
+    FileReaderWriter.init();
+    String reportContent = FileReaderWriter.readFromFile(report);
     // read all lines at once
     List<String> lines = Arrays.asList(reportContent.split("\\r?\\n"));
 
