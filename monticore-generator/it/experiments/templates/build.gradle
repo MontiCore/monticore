@@ -1,24 +1,26 @@
 /* (c) https://github.com/MontiCore/monticore */
+plugins {
+  // provides a convenient way to have multiple test sets
+  id 'org.unbroken-dome.test-sets' version '3.0.0'
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation project(":automaton_experiments")
 }
-outDir = "$buildDir/statepattern"
 
-// this creates two configurations
-sourceSets{
-    extendedtest{
-        java.srcDirs += test.java.srcDirs + main.java.srcDirs + [outDir] + "$projectDir/src/test/java2"
-        compileClasspath += sourceSets.test.output
-        runtimeClasspath += sourceSets.test.output
-    }
+// create an additional test set called extendedTest
+testSets{
+    extendedTest { extendsFrom unitTest }
 }
 
-configurations {
-    extendedtestCompile.extendsFrom(implementation, testCompile)
-    extendedtestRuntime.extendsFrom (implementation, testCompile)
+sourceSets {
+  // add output dir to the sources of extendedTest
+  extendedTest.java.srcDirs += "$buildDir/statepattern"
 }
 
-compileExtendedtestJava.dependsOn(test)
+// let extendedTest depend on test as test produces code for extendedTest
+compileExtendedTestJava.dependsOn(test)
 
-check.dependsOn(compileExtendedtestJava)
+// let check depend on extendedTest such that it is included in the build
+check.dependsOn(extendedTest)
