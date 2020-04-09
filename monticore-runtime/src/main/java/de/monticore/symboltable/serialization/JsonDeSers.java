@@ -5,6 +5,7 @@ import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,23 +65,52 @@ public class JsonDeSers {
   }
 
   /**
-   * Returns true if the passed DeSer object is responsible to (de)serialize the passed JsonElement,
-   * based on it being a serialized object with a member of the key "KIND" with the suitable value.
-   * Returns false otherwise.
+   * This method checks, if a passed JsonElement is a Json object of a certain passed kind.
+   * It is useful to check, whether a DeSer that can deserialize the passed deSerSymbolKind is
+   * capable of deserializing the passed serializedElement.
    *
-   * @param deser
-   * @param serializedObject
+   * @param deSerSymbolKind
+   * @param serializedElement
    * @return
    */
-  public static boolean isCorrectDeSerForKind(IDeSer<?, ?> deser, JsonElement serializedObject) {
-    if (!serializedObject.isJsonObject()) {
+  public static boolean isCorrectDeSerForKind(String deSerSymbolKind,
+      JsonElement serializedElement) {
+    if (!serializedElement.isJsonObject()) {
       return false;
     }
-    JsonObject o = serializedObject.getAsJsonObject();
+    JsonObject o = serializedElement.getAsJsonObject();
     if (!o.hasMember(KIND)) {
       return false;
     }
-    return deser.getSerializedKind().equals(o.getStringMember(KIND));
+    return deSerSymbolKind.equals(o.getStringMember(KIND));
+  }
+
+  /**
+   * This method checks, if a passed JsonElement is a Json object of a certain passed kind.
+   * It is useful to check, whether a DeSer that can deserialize the passed deSerSymbolKind is
+   * capable of deserializing the passed serializedElement.
+   *
+   * @param deSerKind
+   * @param serializedElement
+   * @return
+   */
+  public static void checkCorrectDeSerForKind(String deSerKind, JsonElement serializedElement) {
+    if (serializedElement.isJsonObject()) {
+      Log.error("0xTODO DeSer for kind '" + deSerKind + "' can only deserialize Json objects! '"
+          + serializedElement + "' is not a Json object.");
+      return; //return here to avoid consecutive errors in this method
+    }
+    JsonObject o = serializedElement.getAsJsonObject();
+    if (!o.hasMember(KIND)) {
+      Log.error("0xTODO Serialized symbol table classes must have a member describing their "
+          + "kind. The Json object '" + serializedElement
+          + "' does not have a member describing the kind.");
+      return; //return here to avoid consecutive errors in this method
+    }
+    if (!deSerKind.equals(o.getStringMember(KIND))) {
+      Log.error("0xTODO DeSer for kind '" + deSerKind + "' cannot deserialize Json objects"
+          + " of kind '" + o.getStringMember(KIND) + "'");
+    }
   }
 
 }

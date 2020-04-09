@@ -1,20 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symboltable.serialization.IDeSer;
-import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonDeSers;
+import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
-
-import java.nio.file.Paths;
 
 /**
  * This DeSer reailizes serialization and deserialization of SymTypeExpressions.
  */
-public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression, ITypeSymbolsScope> {
+public class SymTypeExpressionDeSer {
 
   /**
    * The singleton that DeSerializes all SymTypeExpressions.
@@ -63,43 +59,14 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression, ITypeSy
     }
   }
 
-  public  void store(SymTypeExpression expr, String symbolPath)  {
-    TypeSymbol symbol = expr.getTypeInfo();
-    store(expr, Paths.get(symbolPath, symbol.getPackageName(), symbol.getName()+".symtype"));
-  }
-
-  /**
-   * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
-   */
-  @Override
-  public String getSerializedKind() {
-    // Care: this String is never to occur, because all subclasses override this function
-    return "de.monticore.types.check.SymTypeExpression";
-  }
-
-  /**
-   * @see de.monticore.symboltable.serialization.IDeSer#serialize(java.lang.Object)
-   */
-  @Override
   public String serialize(SymTypeExpression toSerialize) {
     return toSerialize.printAsJson();
   }
 
-  /**
-   *
-   * @param serialized
-   * @return
-   */
-  @Override
   public SymTypeExpression deserialize(String serialized, ITypeSymbolsScope enclosingScope) {
     return deserialize(JsonParser.parse(serialized), enclosingScope);
   }
 
-  /**
-   *
-   * @param serialized
-   * @return
-   */
   public SymTypeExpression deserialize(JsonElement serialized, ITypeSymbolsScope enclosingScope) {
 
     // void and null are stored as strings
@@ -121,19 +88,19 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression, ITypeSy
     }
 
     // all other serialized SymTypeExrpressions are json objects with a kind
-    if (JsonDeSers.isCorrectDeSerForKind(symTypeArrayDeSer, serialized)) {
+    if (JsonDeSers.isCorrectDeSerForKind(symTypeArrayDeSer.SERIALIZED_KIND, serialized)) {
       return symTypeArrayDeSer.deserialize(serialized, enclosingScope);
     }
-    else if (JsonDeSers.isCorrectDeSerForKind(symTypeConstantDeSer, serialized)) {
-      return symTypeConstantDeSer.deserialize(serialized, enclosingScope);
+    else if (JsonDeSers.isCorrectDeSerForKind(symTypeConstantDeSer.SERIALIZED_KIND, serialized)) {
+      return symTypeConstantDeSer.deserialize(serialized);
     }
-    else if (JsonDeSers.isCorrectDeSerForKind(symTypeOfGenericsDeSer, serialized)) {
+    else if (JsonDeSers.isCorrectDeSerForKind(symTypeOfGenericsDeSer.SERIALIZED_KIND, serialized)) {
       return symTypeOfGenericsDeSer.deserialize(serialized, enclosingScope);
     }
-    else if (JsonDeSers.isCorrectDeSerForKind(symTypeOfObjectDeSer, serialized)) {
+    else if (JsonDeSers.isCorrectDeSerForKind(symTypeOfObjectDeSer.SERIALIZED_KIND, serialized)) {
       return symTypeOfObjectDeSer.deserialize(serialized, enclosingScope);
     }
-    else if (JsonDeSers.isCorrectDeSerForKind(symTypeVariableDeSer, serialized)) {
+    else if (JsonDeSers.isCorrectDeSerForKind(symTypeVariableDeSer.SERIALIZED_KIND, serialized)) {
       return symTypeVariableDeSer.deserialize(serialized, enclosingScope);
     }
     else {

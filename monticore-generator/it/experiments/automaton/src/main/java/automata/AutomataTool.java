@@ -16,6 +16,8 @@ import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
@@ -24,7 +26,7 @@ import java.util.Optional;
  */
 public class AutomataTool {
 
-  public static final String DEFAULT_SYMBOL_LOCATION = "target";
+  public static final Path DEFAULT_SYMBOL_LOCATION = Paths.get("target");
 
   /**
    * Use the single argument for specifying the single input automaton file.
@@ -83,7 +85,8 @@ public class AutomataTool {
 
     // store artifact scope and its symbols
     AutomataScopeDeSer deser = new AutomataScopeDeSer();
-    deser.store(modelTopScope, lang, DEFAULT_SYMBOL_LOCATION);
+    deser.setSymbolFileExtension("autsym");
+    deser.store(modelTopScope, DEFAULT_SYMBOL_LOCATION);
 
     // analyze the model with a visitor
     CountStates cs = new CountStates();
