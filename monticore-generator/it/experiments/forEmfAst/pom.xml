@@ -137,7 +137,7 @@
          <executions>
           <execution>
             <configuration>
-              <grammars>${basedir}/target/src/main/grammars </grammars>
+              <grammars>${basedir}/target/src/main/grammars</grammars>
               <handcodedPaths>${basedir}/target/src/main/java</handcodedPaths>
               <script>de/monticore/monticore_emf.groovy</script>
             </configuration>
