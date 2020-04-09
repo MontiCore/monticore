@@ -44,7 +44,7 @@ public class AutomataTool {
     }
     String model = args[0];
     // TODO ND: read handcodedPath from args
-    final IterablePath handcodedPath = IterablePath.from(new File("src/extendedtest/java"), "java");
+    final IterablePath handcodedPath = IterablePath.from(new File("src/extendedTest/java"), "java");
     // setup the language infrastructure
     final AutomataLanguage lang = AutomataSymTabMill.automataLanguageBuilder().build();
 
