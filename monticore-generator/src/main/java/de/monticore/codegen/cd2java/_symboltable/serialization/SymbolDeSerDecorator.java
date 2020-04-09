@@ -44,8 +44,6 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     String symbolDeSerName = symbolTableService.getSymbolDeSerSimpleName(symbolClass);
     String symbolFullName = symbolTableService.getSymbolFullName(symbolClass);
     String symbolSimpleName = symbolTableService.getSymbolSimpleName(symbolClass);
-    ASTMCBasicGenericType iDeSerType = getMCTypeFacade()
-        .createBasicGenericTypeOf(I_DE_SER_TYPE, symbolFullName, symbolTableService.getScopeInterfaceFullName());
     String symbolTablePrinterName = symbolTableService.getSymbolTablePrinterFullName();
     String symbolBuilderFullName = symbolTableService.getSymbolBuilderFullName(symbolClass);
     String symbolBuilderSimpleName = symbolTableService.getSymbolBuilderSimpleName(symbolClass);
@@ -55,7 +53,6 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     return CD4CodeMill.cDClassBuilder()
         .setName(symbolDeSerName)
         .setModifier(PUBLIC.build())
-        .addInterface(iDeSerType)
         .addCDMethod(createGetSerializedKindMethod(symbolFullName))
         .addCDMethod(createSerializeMethod(symbolFullName, symbolTablePrinterName))
         .addAllCDMethods(
@@ -71,19 +68,17 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
       String symbolSimpleName,
       String symbolBuilderFullName, String symbolBuilderSimpleName,
       String symTabMill, List<ASTCDAttribute> symbolRuleAttributes) {
-    ASTCDMethod deserializeStringMethod = createDeserializeStringMethod(symbolFullName);
+    ASTCDMethod deserializeStringMethod = createDeserializeStringMethod(symbolFullName, symbolSimpleName);
     ASTCDParameter jsonParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), SYMBOL_JSON_VAR);
-    ASTCDMethod deserializeJsonObjectMethod = createDeserializeJsonObjectMethod(symbolFullName,
-        symbolSimpleName, jsonParam);
     ASTCDMethod deserializeSymbolMethod = createDeserializeSymbolMethod(symbolBuilderFullName,
         symbolBuilderSimpleName,
         symTabMill, symbolFullName, symbolSimpleName, jsonParam, symbolRuleAttributes);
     ASTCDMethod deserializeAdditionalAttributesSymbolMethod = createDeserializeAdditionalAttributesSymbolMethod(
         symbolFullName, jsonParam);
 
-    return Lists.newArrayList(deserializeStringMethod, deserializeJsonObjectMethod,
-        deserializeSymbolMethod, deserializeAdditionalAttributesSymbolMethod);
+    return Lists.newArrayList(deserializeStringMethod, deserializeSymbolMethod,
+        deserializeAdditionalAttributesSymbolMethod);
   }
 
   protected ASTCDMethod createGetSerializedKindMethod(String symbolName) {
@@ -104,25 +99,14 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     return serializeMethod;
   }
 
-  protected ASTCDMethod createDeserializeStringMethod(String symbolName) {
+  protected ASTCDMethod createDeserializeStringMethod(String symbolFullName, String symbolSimpleName) {
     ASTCDParameter stringParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createStringType(), "serialized");
     ASTCDMethod deserializeMethod = getCDMethodFacade()
-        .createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolName), DESERIALIZE,
+        .createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolFullName), DESERIALIZE,
             stringParam, enclosingScopeParameter);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
-        new TemplateHookPoint(TEMPLATE_PATH + "DeserializeString"));
-    return deserializeMethod;
-  }
-
-  protected ASTCDMethod createDeserializeJsonObjectMethod(String symbolFullName,
-      String symbolSimpleName,
-      ASTCDParameter jsonParam) {
-    ASTCDMethod deserializeMethod = getCDMethodFacade()
-        .createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolFullName), DESERIALIZE,
-            jsonParam, enclosingScopeParameter);
-    this.replaceTemplate(EMPTY_BODY, deserializeMethod,
-        new TemplateHookPoint(TEMPLATE_PATH + "DeserializeJsonObjectSymbol", symbolSimpleName));
+        new TemplateHookPoint(TEMPLATE_PATH + "DeserializeString", symbolSimpleName));
     return deserializeMethod;
   }
 

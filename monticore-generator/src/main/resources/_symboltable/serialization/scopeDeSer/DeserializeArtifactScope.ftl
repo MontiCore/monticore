@@ -1,10 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("symTabMill", "artifactScope", "artifactScopeBuilder", "scopeRuleAttrList")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-  String name = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonConstants.NAME);
-  String packageName = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonConstants.PACKAGE);
-  List<de.monticore.symboltable.ImportStatement> imports = de.monticore.symboltable.serialization.JsonUtil.deserializeImports(scopeJson);
-  boolean exportsSymbols = scopeJson.getBooleanMember(de.monticore.symboltable.serialization.JsonConstants.EXPORTS_SYMBOLS);
+  de.monticore.symboltable.serialization.JsonDeSers.checkCorrectDeSerForKind("${artifactScope}", scopeJson);
+  String name = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME);
+  String packageName = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE);
+  List<de.monticore.symboltable.ImportStatement> imports = de.monticore.symboltable.serialization.JsonDeSers.deserializeImports(scopeJson);
+  boolean exportsSymbols = scopeJson.getBooleanMember(de.monticore.symboltable.serialization.JsonDeSers.EXPORTS_SYMBOLS);
 
   ${artifactScope} scope = ${symTabMill}.${artifactScopeBuilder?uncap_first}().setPackageName(packageName) .setImportList(imports).build();
   scope.setName(name);

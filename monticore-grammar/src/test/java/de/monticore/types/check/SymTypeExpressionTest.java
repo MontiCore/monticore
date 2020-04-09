@@ -2,15 +2,11 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.symboltable.serialization.JsonParser;
-import de.monticore.symboltable.serialization.JsonUtil;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
