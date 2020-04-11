@@ -82,4 +82,9 @@ public class PingState extends PingStateTOP {
 	der Aufrufer kennt die internen(!) Zustaende des 
 	Automaten doch nicht
 
+* Testausführung:
+	Wie kann man die tests einfach ausfürhren
+	und sich das ergebniss aggregiert ausgeben lassen
+	(console)
+
 
