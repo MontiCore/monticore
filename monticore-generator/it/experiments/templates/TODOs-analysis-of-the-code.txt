@@ -79,8 +79,7 @@ public class PingState extends PingStateTOP {
 --
 
 * wieso das Argument in: handleReturnBall(PingPong model) 
-	handleReturnBall gehört zum Product Code
-	PingPong gehört zum Tool
-	--> das passt so gar nicht zusammen
+	der Aufrufer kennt die internen(!) Zustaende des 
+	Automaten doch nicht
 
 
