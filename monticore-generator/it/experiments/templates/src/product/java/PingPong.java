@@ -3,7 +3,7 @@
 public class PingPong extends PingPongTOP {
   
   public PingPong() {
-    realThis = this;
+    typedThis = this;
   }
   
 }
