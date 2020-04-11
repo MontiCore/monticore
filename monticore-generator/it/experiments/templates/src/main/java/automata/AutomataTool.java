@@ -1,11 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package automata;
 
-import automata._ast.ASTAutomaton;
-import automata._ast.ASTState;
-import automata._ast.ASTTransition;
-import automata._parser.AutomataParser;
+import automata._ast.*;
 import automata._symboltable.*;
+import automata._parser.AutomataParser;
 import automata._symboltable.serialization.AutomataScopeDeSer;
 import com.google.common.collect.Lists;
 import de.monticore.generating.GeneratorEngine;
@@ -43,6 +41,7 @@ public class AutomataTool {
       return;
     }
     String model = args[0];
+    
     // TODO ND: read handcodedPath from args
     final IterablePath handcodedPath = IterablePath.from(new File("src/extendedTest/java"), "java");
     // setup the language infrastructure

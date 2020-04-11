@@ -1,17 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
+
 plugins {
   // provides a convenient way to have multiple test sets
   id 'org.unbroken-dome.test-sets' version '3.0.0'
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    implementation project(":automaton_experiments")
+  testCompile group: 'junit', name: 'junit', version: '4.12'
+  implementation project(":automaton_experiments")
 }
 
 // create an additional test set called extendedTest
 testSets{
-    extendedTest { extendsFrom unitTest }
+  extendedTest { extendsFrom unitTest }
 }
 
 sourceSets {
@@ -24,3 +25,4 @@ compileExtendedTestJava.dependsOn(test)
 
 // let check depend on extendedTest such that it is included in the build
 check.dependsOn(extendedTest)
+
