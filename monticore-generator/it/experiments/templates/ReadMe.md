@@ -30,7 +30,7 @@ the Automata language is defined and the tooling fronted (parser,
 etc.) are derived. 
 
 
-## Technical realisation 
+## Technical realization 
 
 * Main class 
 [`AutomataTool`](src/main/java/automata/AutomataTool.java) reads in 
