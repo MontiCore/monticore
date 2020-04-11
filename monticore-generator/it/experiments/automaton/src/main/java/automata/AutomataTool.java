@@ -46,18 +46,18 @@ public class AutomataTool {
     Log.info("Automaton DSL Tool", AutomataTool.class.getName());
     Log.info("------------------", AutomataTool.class.getName());
     String model = args[0];
-    
+
     // setup the language infrastructure
     AutomataLanguage lang = new AutomataLanguage();
 
     // parse the model and create the AST representation
     ASTAutomaton ast = parse(model);
     Log.info(model + " parsed successfully!", AutomataTool.class.getName());
-    
+
     // setup the symbol table
     AutomataArtifactScope modelTopScope =
             createSymbolTable(lang, ast);
-    
+
     // can be used for resolving names in the model
     Optional<StateSymbol> aSymbol =
             modelTopScope.resolveState("Ping");
@@ -69,7 +69,7 @@ public class AutomataTool {
       Log.info("This automaton does not contain a state called \"Ping\";",
           AutomataTool.class.getName());
     }
-    
+
     // setup context condition insfrastructure
     AutomataCoCoChecker checker = new AutomataCoCoChecker();
 
@@ -80,25 +80,26 @@ public class AutomataTool {
 
     // check the CoCos
     checker.checkAll(ast);
-    
+
     // Now we know the model is well-formed
 
     // store artifact scope and its symbols
     AutomataScopeDeSer deser = new AutomataScopeDeSer();
+    deser.setSymbolFileExtension("autsym");
     deser.store(modelTopScope, DEFAULT_SYMBOL_LOCATION);
 
     // analyze the model with a visitor
     CountStates cs = new CountStates();
     cs.handle(ast);
     Log.info("The model contains " + cs.getCount() + " states.", AutomataTool.class.getName());
-    
+
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
     pp.handle(ast);
     Log.info("Pretty printing the parsed automaton into console:", AutomataTool.class.getName());
     System.out.println(pp.getResult());
   }
-  
+
   /**
    * Parse the model contained in the specified file.
    *
@@ -109,7 +110,7 @@ public class AutomataTool {
     try {
       AutomataParser parser = new AutomataParser() ;
       Optional<ASTAutomaton> optAutomaton = parser.parse(model);
-      
+
       if (!parser.hasErrors() && optAutomaton.isPresent()) {
         return optAutomaton.get();
       }
@@ -121,7 +122,7 @@ public class AutomataTool {
     System.exit(1);
     return null;
   }
-  
+
   /**
    * Create the symbol table from the parsed AST.
    *
@@ -130,12 +131,12 @@ public class AutomataTool {
    * @return
    */
   public static AutomataArtifactScope createSymbolTable(AutomataLanguage lang, ASTAutomaton ast) {
-    
+
     AutomataGlobalScope globalScope = new AutomataGlobalScope(new ModelPath(), lang);
-    
+
     AutomataSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(
          globalScope);
     return symbolTable.createFromAST(ast);
   }
-  
+
 }
