@@ -85,7 +85,6 @@ public class AutomataTool {
 
     // store artifact scope and its symbols
     AutomataScopeDeSer deser = new AutomataScopeDeSer();
-    deser.setSymbolFileExtension("autsym");
     deser.store(modelTopScope, DEFAULT_SYMBOL_LOCATION);
 
     // analyze the model with a visitor
