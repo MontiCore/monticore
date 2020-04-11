@@ -2,20 +2,20 @@
 ${tc.signature("initialState","transitions","states","className", "existsHWCExtension")}
 public <#if existsHWCExtension>abstract </#if>class ${className}{
 
-  protected ${modelName} realThis;
+  protected ${modelName} typedThis;
 
   <#if !existsHWCExtension>
     public ${className}(){
-      realThis = this;
+      typedThis = this;
     }
   </#if>
 
-  public ${modelName} getRealThis() {
-    return realThis;
+  public ${modelName} getTypedThis() {
+    return typedThis;
   }
 
-  public void setRealThis(${modelName} realThis) {
-    this.realThis = realThis;
+  public void setTypedThis(${modelName} typedThis) {
+    this.typedThis = typedThis;
   }
 
   ${tc.include("StatechartStateAttributes.ftl",states)}
