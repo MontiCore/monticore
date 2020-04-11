@@ -27,6 +27,13 @@ subprojects {
     grammar group:'de.monticore', name:'monticore-grammar', version:grammar_version, classifier:"grammars"
     grammar group:'de.monticore', name:'monticore-runtime', version:grammar_version
   }
+  
+  test {
+    testLogging {
+      // controls whether test output is shown
+      showStandardStreams= ("false").equals(getProperty('showTestOutput'))? false : true
+    }
+  }
 
   repositories {
     maven {
