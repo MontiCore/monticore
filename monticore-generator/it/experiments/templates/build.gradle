@@ -17,7 +17,7 @@ testSets{
 
 sourceSets {
   // add output dir to the sources of productTest
-  productTest.java.srcDirs += ["$buildDir/statepattern" , "$projectDir/src/product"]
+  productTest.java.srcDirs += ["$buildDir/statepattern" , "$projectDir/src/product/java"]
 }
 
 // let productTest depend on test as test produces code for productTest
