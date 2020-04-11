@@ -12,6 +12,9 @@ public class GeneratorTest {
     LogStub.init();
   }
   
+  /* We execute the Generator here, but do not really test it:
+   * (instead we use tests against the generated classes)
+   */
   
   @Test
   public void testPingPong(){

@@ -1,5 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-// The ping pong game
+
+// The ping pong game as automaton
+
 automaton PingPong {
   state NoGame <<initial>>;
   state Ping;
