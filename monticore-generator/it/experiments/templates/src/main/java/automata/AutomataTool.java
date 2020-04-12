@@ -34,14 +34,34 @@ public class AutomataTool {
    * The tool calculates and uses the following
    * values along it's generation process:
    */
+
+  // Filename of the model: args[0]
+  static protected String modelfilename = "";
+
+  //  handcodedPath: args[1]
+  static protected IterablePath handcodedPath;
+
+  // output directory: args[2]
+  static File outputDir;
+  
+  // The AST of the model to be handled (will result from parsing)
+  protected ASTAutomaton ast = null;
+  
+  // the symbol table of the model (after parsing and SymTab creation)
+  AutomataArtifactScope modelTopScope  = null;
+  
+  
+  // parse the model and create the AST representation
+// XXX  final ASTAutomaton ast = parse(model);
+
+// XXX
   protected List<ASTTransition> transitionsWithoutDuplicateInputs;
 
   protected GeneratorEngine ge;
 
-  protected IterablePath handcodedPath;
-
   protected ASTAutomaton model;
 
+  // XXX todel
   public AutomataTool(ASTAutomaton ast, IterablePath handcodedPath, File outputDir) {
     this.model = ast;
     this.handcodedPath = handcodedPath;
@@ -55,43 +75,79 @@ public class AutomataTool {
    * the generated code and the output directory.
    *
    * @param args requires 3 arguments:
-   *     1. automata model,
+   *     1. automata modelfile,
    *     2. handcodedPath,
    *     3. output directory
    */
   public static void main(String[] args) {
+    new AutomataTool(args);
+  }
+
+  /**
+   * Entry method of the AutomataTool:
+   * It extracts the relevant three arguments from the command line argumemnts
+   * and calls the tool execution workflow
+   */
+  public AutomataTool(String[] args) {
     if (args.length != 3) {
       Log.error("Please specify 3 arguments: \n"
-          + "1. automata model,\n"
+          + "1. automata modelfile,\n"
           + "2. handcodedPath,\n"
           + "3. output directory.");
       return;
     }
     // get the model from args
-    String model = args[0];
+    modelfilename = args[0];
 
-    // get handcodedPath from args
-    final IterablePath handcodedPath =
-                IterablePath.from(new File(args[1]), "java");
+    // get handcodedPath from arg[1]
+    handcodedPath = IterablePath.from(new File(args[1]), "java");
 
-    // get output directory from args
-    File outputDir = new File(args[2]);
+    // get output directory from arg[2]
+    outputDir = new File(args[2]);
+    
+    executeWorkflow();
+  }
+  
+  /**
+   * Second entry method of the AutomataTool:
+   * it stores the input parameters and calls the execution workflow
+   */
+  public AutomataTool(String modelfilename, IterablePath handcodedPath, File outputDir) {
+    this.modelfilename = modelfilename;
+    this.handcodedPath = handcodedPath;
+    this.outputDir = outputDir;
+    
+    executeWorkflow();
+  }
+  
+  
+// XXX To be added:    this.ge = initGeneratorEngine(ast.getName(), outputDir);
+// XXX To be added:    this.transitionsWithoutDuplicateInputs = getRepresentatives(ast.getTransitionList());
+
+  
+  /**
+   * The execution workflow:
+   * a single larger method calling all the individual steps needed
+   */
+  public void executeWorkflow() {
 
     // parse the model and create the AST representation
-    final ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", AutomataTool.class.getName());
+    ast = parse(modelfilename);
+    Log.info(modelfilename + " parsed successfully", this.getClass().getName());
 
     // setup the symbol table
-    AutomataArtifactScope modelTopScope = createSymbolTable(ast);
+    modelTopScope = createSymbolTable(ast);
 
     // store artifact scope and its symbols
     AutomataScopeDeSer deser = new AutomataScopeDeSer();
     deser.setSymbolFileExtension("autsym");
     deser.store(modelTopScope, SYMBOL_LOCATION);
+    Log.info(modelfilename + " symboltable stored successfully", this.getClass().getName());
 
     // execute generator
-    Log.info("Generating code for the parsed automata:"+ ast.getName(), AutomataTool.class.getName());
     generate(ast, handcodedPath, outputDir);
+    Log.info(modelfilename + " code generated successfully", this.getClass().getName());
+
   }
 
   /**
