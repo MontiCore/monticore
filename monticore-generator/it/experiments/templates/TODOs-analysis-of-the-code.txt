@@ -1,8 +1,6 @@
 
-./build.gradle
-./ReadMe.md
-	renamings einpflegen (siehe unten)
-
+ok ./build.gradle
+ok ./ReadMe.md
 ok ./src/extendedTest/java/PingPong.java
 
 ./src/extendedTest/java/PingPongTest.java

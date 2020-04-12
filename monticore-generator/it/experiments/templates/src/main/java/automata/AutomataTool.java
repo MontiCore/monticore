@@ -6,20 +6,17 @@ import automata._symboltable.*;
 import automata._parser.AutomataParser;
 import automata._symboltable.serialization.AutomataScopeDeSer;
 import com.google.common.collect.Lists;
-import de.monticore.generating.GeneratorEngine;
-import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.*;
+import de.monticore.generating.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.io.paths.IterablePath;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.*;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,10 +25,15 @@ import java.util.stream.Collectors;
  */
 public class AutomataTool {
 
-  public static final Path DEFAULT_SYMBOL_LOCATION = Paths.get("target");
-
+  /** Configurational values:
+   */ 
+  public static final Path SYMBOL_LOCATION = Paths.get("target");
   public static final String TOP_NAME_EXTENSION = "TOP";
 
+  /**
+   * The tool calculates and uses the following
+   * values along it's generation process:
+   */
   protected List<ASTTransition> transitionsWithoutDuplicateInputs;
 
   protected GeneratorEngine ge;
@@ -48,10 +50,14 @@ public class AutomataTool {
   }
 
   /**
-   * Use three arguments to specify the automata model, the path containing handwritten extensions of
+   * Use three arguments to specify the automata model,
+   * the path containing handwritten extensions of
    * the generated code and the output directory.
    *
-   * @param args requires 3 arguments: 1. automata model, 2. handcodedPath, 3. output directory
+   * @param args requires 3 arguments:
+   *     1. automata model,
+   *     2. handcodedPath,
+   *     3. output directory
    */
   public static void main(String[] args) {
     if (args.length != 3) {
@@ -63,8 +69,11 @@ public class AutomataTool {
     }
     // get the model from args
     String model = args[0];
+
     // get handcodedPath from args
-    final IterablePath handcodedPath = IterablePath.from(new File(args[1]), "java");
+    final IterablePath handcodedPath =
+                IterablePath.from(new File(args[1]), "java");
+
     // get output directory from args
     File outputDir = new File(args[2]);
 
@@ -78,7 +87,7 @@ public class AutomataTool {
     // store artifact scope and its symbols
     AutomataScopeDeSer deser = new AutomataScopeDeSer();
     deser.setSymbolFileExtension("autsym");
-    deser.store(modelTopScope, DEFAULT_SYMBOL_LOCATION);
+    deser.store(modelTopScope, SYMBOL_LOCATION);
 
     // execute generator
     Log.info("Generating code for the parsed automata:"+ ast.getName(), AutomataTool.class.getName());

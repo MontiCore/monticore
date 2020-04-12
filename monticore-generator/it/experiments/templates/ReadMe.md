@@ -25,9 +25,13 @@ cases needs to be exercised by the handwritten tests -- please
 "cover" the templates with appropriate tests by appropriate models 
 and Java test code.
 
-Remark: The experiment is based on the automaton experiment, where 
+Remark 1: The experiment is based on the automaton experiment, where 
 the Automata language is defined and the tooling fronted (parser, 
 etc.) are derived. 
+
+Remark 2: Neither the written nor the resulting code are optimized
+according to software engineering best practices, but for presentable
+results (e.g. in slides).
 
 
 ## Technical realization 
