@@ -7,7 +7,6 @@ import automata._parser.AutomataParser;
 import automata._symboltable.serialization.AutomataScopeDeSer;
 import com.google.common.collect.Lists;
 import de.monticore.generating.*;
-import de.monticore.generating.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.*;
@@ -45,30 +44,19 @@ public class AutomataTool {
   static File outputDir;
   
   // The AST of the model to be handled (will result from parsing)
-  protected ASTAutomaton ast = null;
+  protected ASTAutomaton ast;
   
   // the symbol table of the model (after parsing and SymTab creation)
-  AutomataArtifactScope modelTopScope  = null;
-  
-  
-  // parse the model and create the AST representation
-// XXX  final ASTAutomaton ast = parse(model);
+  AutomataArtifactScope modelTopScope;
 
-// XXX
+  // The generator engine used (reentrant, so only one instance needed)
+  protected GeneratorEngine generatorEngine;
+  
+  // XXX
   protected List<ASTTransition> transitionsWithoutDuplicateInputs;
 
-  protected GeneratorEngine ge;
 
-  protected ASTAutomaton model;
-
-  // XXX todel
-  public AutomataTool(ASTAutomaton ast, IterablePath handcodedPath, File outputDir) {
-    this.model = ast;
-    this.handcodedPath = handcodedPath;
-    this.ge = initGeneratorEngine(ast.getName(), outputDir);
-    this.transitionsWithoutDuplicateInputs = getRepresentatives(ast.getTransitionList());
-  }
-
+  
   /**
    * Use three arguments to specify the automata model,
    * the path containing handwritten extensions of
@@ -121,16 +109,13 @@ public class AutomataTool {
   }
   
   
-// XXX To be added:    this.ge = initGeneratorEngine(ast.getName(), outputDir);
-// XXX To be added:    this.transitionsWithoutDuplicateInputs = getRepresentatives(ast.getTransitionList());
-
-  
   /**
    * The execution workflow:
    * a single larger method calling all the individual steps needed
    */
   public void executeWorkflow() {
 
+    // Part 1: Frontend
     // parse the model and create the AST representation
     ast = parse(modelfilename);
     Log.info(modelfilename + " parsed successfully", this.getClass().getName());
@@ -138,16 +123,37 @@ public class AutomataTool {
     // setup the symbol table
     modelTopScope = createSymbolTable(ast);
 
+    // Part 1b: Store Symboltable
     // store artifact scope and its symbols
     AutomataScopeDeSer deser = new AutomataScopeDeSer();
     deser.setSymbolFileExtension("autsym");
     deser.store(modelTopScope, SYMBOL_LOCATION);
     Log.info(modelfilename + " symboltable stored successfully", this.getClass().getName());
-
-    // execute generator
-    generate(ast, handcodedPath, outputDir);
+  
+  
+    // Part 2: Transformation and Data Calculation
+    // XXX
+    transitionsWithoutDuplicateInputs = getRepresentatives(ast.getTransitionList());
+    
+    
+    // Part 3: Backend for Generation
+    generatorEngine = initGeneratorEngine(ast.getName(), outputDir);
+    
+    //generate the class for the whole statechart
+    generateStatechart();
+  
+    //generate the factory class for the states
+    generateFactory();
+  
+    //generate the abstract class for the states
+    generateAbstractState();
+  
+    // generate the class for each state
+    for(ASTState state : ast.getStateList()) {
+      generateState(state);
+    }
+  
     Log.info(modelfilename + " code generated successfully", this.getClass().getName());
-
   }
 
   /**
@@ -157,9 +163,12 @@ public class AutomataTool {
    * @param handcodedPath path including handwritten extension of generated code
    * @param outputDir the target directory
    */
-  protected static void generate(ASTAutomaton ast, IterablePath handcodedPath, File outputDir) {
-
-    AutomataTool tool = new AutomataTool(ast, handcodedPath, outputDir);
+  protected void generate() {
+  
+    // AutomataTool tool = new AutomataTool(ast, handcodedPath, outputDir);
+    AutomataTool tool = this;
+    this.generatorEngine = initGeneratorEngine(ast.getName(), outputDir);
+    this.transitionsWithoutDuplicateInputs = getRepresentatives(ast.getTransitionList());
 
     //generate the class for the whole statechart
     tool.generateStatechart();
@@ -187,30 +196,30 @@ public class AutomataTool {
     if(stateIsHandwritten){
       stateClassName=stateClassName+ TOP_NAME_EXTENSION;
     }
-    List<ASTTransition> existingTransitions = getOutgoingTransitions(model.getTransitionList(), state);
+    List<ASTTransition> existingTransitions = getOutgoingTransitions(ast.getTransitionList(), state);
     //get representatives for transitions whose input is no accepted by this state
     // -> every state needs to have a method for every input in the statechart
 
     List<String> acceptedInputs = existingTransitions.stream().map(t -> t.getInput()).collect(
         Collectors.toList());
-    List<ASTTransition> nonExistingTransitions = getRepresentatives(model.getTransitionList(), acceptedInputs);
+    List<ASTTransition> nonExistingTransitions = getRepresentatives(ast.getTransitionList(), acceptedInputs);
     //generate the concrete state classes and use the template ConcreteState.ftl for this
-    ge.generate("ConcreteState.ftl", Paths.get(stateClassName+ ".java"),
-                 model, existingTransitions, nonExistingTransitions, stateClassName, stateIsHandwritten);
+    generatorEngine.generate("ConcreteState.ftl", Paths.get(stateClassName+ ".java"),
+                 ast, existingTransitions, nonExistingTransitions, stateClassName, stateIsHandwritten);
   }
 
   /**
    * Generates the class for the statechart itself
    */
   protected void generateStatechart() {
-    String modelClassName = model.getName();
-    ASTState initialState = model.getStateList().stream().filter(ASTState::isInitial).findAny().get();
+    String modelClassName = ast.getName();
+    ASTState initialState = ast.getStateList().stream().filter(ASTState::isInitial).findAny().get();
     boolean statechartIsHandwritten = existsHandwrittenClass(handcodedPath,modelClassName);
     if(statechartIsHandwritten){
-      modelClassName = model.getName() + TOP_NAME_EXTENSION;
+      modelClassName = ast.getName() + TOP_NAME_EXTENSION;
     }
-    ge.generate("Statechart.ftl", Paths.get(modelClassName + ".java"),
-        model,initialState, transitionsWithoutDuplicateInputs, model.getStateList(),
+    generatorEngine.generate("Statechart.ftl", Paths.get(modelClassName + ".java"),
+        ast,initialState, transitionsWithoutDuplicateInputs, ast.getStateList(),
         modelClassName, statechartIsHandwritten);
   }
 
@@ -218,25 +227,25 @@ public class AutomataTool {
    * Generates the class for the state factory
    */
   protected void generateFactory() {
-    String modelFactoryClassName = model.getName()+"Factory";
+    String modelFactoryClassName = ast.getName()+"Factory";
     boolean factoryIsHandwritten = existsHandwrittenClass(handcodedPath,modelFactoryClassName);
     if(factoryIsHandwritten){
       modelFactoryClassName = modelFactoryClassName+ TOP_NAME_EXTENSION;
     }
-    ge.generate("StatechartFactory.ftl", Paths.get(modelFactoryClassName+ ".java"),
-        model, model.getStateList(), modelFactoryClassName, factoryIsHandwritten);
+    generatorEngine.generate("StatechartFactory.ftl", Paths.get(modelFactoryClassName+ ".java"),
+        ast, ast.getStateList(), modelFactoryClassName, factoryIsHandwritten);
   }
 
   /**
    * Generates the class for the abstract super class for all state classes
    */
   protected void generateAbstractState() {
-    String abstractStateClassName = "Abstract"+ model.getName() +"State";
+    String abstractStateClassName = "Abstract"+ ast.getName() +"State";
     if(existsHandwrittenClass(handcodedPath,abstractStateClassName)){
       abstractStateClassName = abstractStateClassName+ TOP_NAME_EXTENSION;
     }
-    ge.generate("AbstractState.ftl", Paths.get(abstractStateClassName+ ".java"),
-                 model, transitionsWithoutDuplicateInputs, abstractStateClassName);
+    generatorEngine.generate("AbstractState.ftl", Paths.get(abstractStateClassName+ ".java"),
+                 ast, transitionsWithoutDuplicateInputs, abstractStateClassName);
   }
 
   /**
@@ -245,7 +254,7 @@ public class AutomataTool {
    * @param modelName the name of the model used to generate code
    * @return the initialized generator engine
    */
-  protected static GeneratorEngine initGeneratorEngine(String modelName, File outputDir) {
+  protected GeneratorEngine initGeneratorEngine(String modelName, File outputDir) {
     GeneratorSetup s = new GeneratorSetup();
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.setGlobalValue("modelName",modelName);
@@ -262,7 +271,7 @@ public class AutomataTool {
    * @param state state whose outgoing transitions are calculated
    * @return a list of all outgoing transitions for the given state
    */
-  protected static List<ASTTransition> getOutgoingTransitions(List<ASTTransition> transitions,
+  protected List<ASTTransition> getOutgoingTransitions(List<ASTTransition> transitions,
       ASTState state) {
     return transitions.stream().filter(t -> t.getFrom().equals(state.getName())).collect(Collectors.toList());
   }
@@ -275,7 +284,7 @@ public class AutomataTool {
    * @param inputsToBeExcluded inputs that should be excluded
    * @return a list of transitions that act as representatives for not accepted inputs
    */
-  protected static List<ASTTransition> getRepresentatives(List<ASTTransition> allTransitions, List<String> inputsToBeExcluded) {
+  protected List<ASTTransition> getRepresentatives(List<ASTTransition> allTransitions, List<String> inputsToBeExcluded) {
     List<ASTTransition> result = new ArrayList<>();
     for(ASTTransition transition: allTransitions){
       if(!inputsToBeExcluded.contains(transition.getInput())){
@@ -291,20 +300,20 @@ public class AutomataTool {
    * @param allTransitions list of all transitions in the automaton
    * @return a list of transitions that act as representatives for possible inputs
    */
-  protected static List<ASTTransition> getRepresentatives(List<ASTTransition> allTransitions){
+  protected List<ASTTransition> getRepresentatives(List<ASTTransition> allTransitions){
     return getRepresentatives(allTransitions, Lists.newArrayList());
   }
 
   /**
    * Parse the model contained in the specified file.
    *
-   * @param model - file to parse
+   * @param file - file to parse
    * @return
    */
-  public static ASTAutomaton parse(String model) {
+  public ASTAutomaton parse(String file) {
     try {
       AutomataParser parser = new AutomataParser() ;
-      Optional<ASTAutomaton> optAutomaton = parser.parse(model);
+      Optional<ASTAutomaton> optAutomaton = parser.parse(file);
 
       if (!parser.hasErrors() && optAutomaton.isPresent()) {
         return optAutomaton.get();
@@ -312,7 +321,7 @@ public class AutomataTool {
       Log.error("Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("Failed to parse " + model, e);
+      Log.error("Failed to parse " + file, e);
     }
     return null;
   }
@@ -323,7 +332,7 @@ public class AutomataTool {
    * @param ast the model
    * @return
    */
-  public static AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
+  public AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
 
     final AutomataLanguage lang = AutomataSymTabMill.automataLanguageBuilder().build();
 
