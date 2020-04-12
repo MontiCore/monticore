@@ -139,9 +139,10 @@ public class AutomataTool {
     transitionsWithoutDuplicateInputs = getRepresentatives(ast.getTransitionList());
     
     
-    // Part 3: Backend for Generation
+    // Part 5: Backend for Generation: Setup Engine
     generatorEngine = initGeneratorEngine(ast.getName(), outputDir);
     
+    // Part 6: Generate.....
     //generate the class for the whole statechart
     generateStatechart();
   
@@ -164,6 +165,24 @@ public class AutomataTool {
   /************************************************************************/
   
   /**
+   * Initializes the generator engine
+   *
+   * @param modelName the name of the model used to generate code
+   * @return the initialized generator engine
+   */
+  protected GeneratorEngine initGeneratorEngine(String modelName, File outputDir) {
+    GeneratorSetup s = new GeneratorSetup();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+
+    // The modelName is used veryeher and does not change during generation
+    glex.setGlobalValue("modelName", modelName);
+    
+    s.setGlex(glex);
+    s.setOutputDirectory(outputDir);
+    return new GeneratorEngine(s);
+  }
+  
+  /**
    * Generates the class for the statechart itself
    */
   protected void generateStatechart() {
@@ -171,10 +190,13 @@ public class AutomataTool {
     // we assume there is at least one state (--> CoCo)
     ASTState initialState = ast.getStateList().stream().filter(ASTState::isInitial).findAny().get();
     
+    // ahndle TOP extension
     boolean isHW = existsHandwrittenClass(handcodedPath,className);
     if(isHW){
       className = ast.getName() + TOP_NAME_EXTENSION;
     }
+    
+    // call generator
     generatorEngine.generate("Statechart.ftl",
             Paths.get(className + ".java"),
             ast, initialState,
@@ -182,8 +204,20 @@ public class AutomataTool {
             ast.getStateList(),
             className, isHW);
   }
-
-
+  
+  /**
+   * Generates the abstract super class for all state classes
+   */
+  protected void generateAbstractState() {
+    String className = "Abstract" + ast.getName() + "State";
+    if(existsHandwrittenClass(handcodedPath,className)){
+      className += TOP_NAME_EXTENSION;
+    }
+    generatorEngine.generate("AbstractState.ftl", Paths.get(className+ ".java"),
+            ast, transitionsWithoutDuplicateInputs, className);
+  }
+  
+  
   /**
    * Generates the class for the given state
    *
@@ -227,34 +261,7 @@ public class AutomataTool {
         ast, ast.getStateList(), modelFactoryClassName, factoryIsHandwritten);
   }
   
-  // XXX
-  /**
-   * Generates the class for the abstract super class for all state classes
-   */
-  protected void generateAbstractState() {
-    String abstractStateClassName = "Abstract"+ ast.getName() +"State";
-    if(existsHandwrittenClass(handcodedPath,abstractStateClassName)){
-      abstractStateClassName = abstractStateClassName+ TOP_NAME_EXTENSION;
-    }
-    generatorEngine.generate("AbstractState.ftl", Paths.get(abstractStateClassName+ ".java"),
-                 ast, transitionsWithoutDuplicateInputs, abstractStateClassName);
-  }
   
-  // XXX
-  /**
-   * Initializes the generator engine
-   *
-   * @param modelName the name of the model used to generate code
-   * @return the initialized generator engine
-   */
-  protected GeneratorEngine initGeneratorEngine(String modelName, File outputDir) {
-    GeneratorSetup s = new GeneratorSetup();
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
-    glex.setGlobalValue("modelName",modelName);
-    s.setGlex(glex);
-    s.setOutputDirectory(outputDir);
-    return new GeneratorEngine(s);
-  }
   
   // XXX
   /**

@@ -4,10 +4,9 @@ ${tc.signature("initialState",
                "states",
                "className", 
                "existsHWCExtension")}
+<#-- plus String "modelName" is globally defined -->
 
 // TODO: zuviele Parameter (state, transition: koennte aus ast abgeleitet werden)
-
-// TODO: modelName ist KEIN Parameter!
 
 public <#if existsHWCExtension>abstract </#if>
           class ${className} {
