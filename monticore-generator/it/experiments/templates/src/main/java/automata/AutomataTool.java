@@ -31,7 +31,18 @@ public class AutomataTool {
 
   /**
    * The tool calculates and uses the following
-   * values along it's generation process:
+   * values along it's generation process.
+   *
+   * This implementation follows the general approach to store all
+   * derived data in attributes of the tool-object.
+   * This PREVENTS re-entrant reuse of the AutomationTool.
+   * But it allows to share calculated results in the attributes below.
+   *
+   * Furthermore, in this approach we pre-calculate the needed information
+   * (such as stimuli lists) allowing the templates to be relatively free
+   * of calculations, iterations and callbacks to the java code.
+   * This MAY lead to inefficient and not needed pre-calculations and
+   * missing information -- in case the templates are adapted.
    */
 
   // Filename of the model: args[0]
@@ -52,19 +63,12 @@ public class AutomataTool {
   // The generator engine used (reentrant, so only one instance needed)
   protected GeneratorEngine generatorEngine;
   
-  // XXX TODO: delete this
-  // We need the complete list of stimuli (each is represented only once)
-  protected List<ASTTransition> stimuliRepresentingTransitions;
-  
-  // XXX noch nicht benutzt:
   // Two dimensional map: SourceState x Stimulus -> Transition
   Map<ASTState, Map<String,ASTTransition>> deltaMap = new HashMap<>();
   
-  // XXX noch nicht benutzt:
   // Map: Name -> State (== State-Symbols)
   Map<String, ASTState> stateMap = new HashMap<>();
   
-  // XXX noch nicht benutzt:
   // List of stimuli
   Set<String> stimuli = new HashSet<>();
   
@@ -143,13 +147,9 @@ public class AutomataTool {
     deser.setSymbolFileExtension("autsym");
     deser.store(modelTopScope, SYMBOL_LOCATION);
     Log.info(modelfilename + " symboltable stored successfully", this.getClass().getName());
-  
-  
-    // Part 4: Transformation and Data Calculation
-    stimuliRepresentingTransitions = v11XXXderiveStimuliRepresentingTransitions();
-    // XXX
-    deriveStimuliRepresentingTransitions();
     
+    // Part 4: Transformation and Data Calculation
+    deriveStateMap_DeltaMap();
     
     // Part 5: Backend for Generation: Setup Engine
     initGeneratorEngine();
@@ -198,6 +198,7 @@ public class AutomataTool {
     String className = ast.getName();
 
     // we assume there is at least one state (--> CoCo)
+    // if there are more: one will arbitrarily be choosen (may be the last one)  (---> CoCo?)
     ASTState initialState = ast.getStateList().stream().filter(ASTState::isInitial).findAny().get();
     
     // handle TOP extension
@@ -208,9 +209,8 @@ public class AutomataTool {
     
     // call generator
     generatorEngine.generate("Statechart.ftl",
-            Paths.get(className + ".java"),
-            ast, initialState,
-            stimuliRepresentingTransitions,
+            Paths.get(className + ".java"), ast,
+            initialState,
             stimuli,
             className, isHW);
   }
@@ -220,105 +220,57 @@ public class AutomataTool {
    */
   protected void generateAbstractState() {
     String className = "Abstract" + ast.getName() + "State";
+  
+    // handle TOP extension
     if(existsHandwrittenClass(handcodedPath,className)){
       className += TOP_NAME_EXTENSION;
     }
-    generatorEngine.generate("AbstractState.ftl", Paths.get(className+ ".java"),
-            ast, stimuliRepresentingTransitions, className);
+
+    generatorEngine.generate("AbstractState.ftl",
+            Paths.get(className+ ".java"), ast,
+            stimuli, className);
   }
   
   
   /**
-   * Generates the class for the given state
+   * Generates a class for the given state
    *
    * @param state the state the code is generated for.
    */
   protected void generateState(ASTState state) {
-    
-    // Add Top Extension to the Class name if existsHandwrittenClass
-    String className = state.getName()+"State";
-    boolean stateIsHandwritten = existsHandwrittenClass(handcodedPath,className);
-    if(stateIsHandwritten){
+    String className = state.getName() + "State";
+  
+    // handle TOP extension
+    boolean isHW = existsHandwrittenClass(handcodedPath,className);
+    if(isHW){
       className += TOP_NAME_EXTENSION;
     }
-    // XXX
   
-    List<ASTTransition> existingTransitions = getOutgoingTransitions(ast.getTransitionList(), state);
-    //get representatives for transitions whose input is no accepted by this state
-    // -> every state needs to have a method for every input in the statechart
-
-    List<String> acceptedInputs = existingTransitions.stream().map(t -> t.getInput()).collect(
-        Collectors.toList());
-    List<ASTTransition> nonExistingTransitions = v11XXXderiveStimuliRepresentingTransitions(acceptedInputs);
-    //generate the concrete state classes and use the template ConcreteState.ftl for this
-    generatorEngine.generate("ConcreteState.ftl", Paths.get(className+ ".java"),
-                 ast, existingTransitions, nonExistingTransitions, className, stateIsHandwritten);
+    // sub Map of delta: contains all transitions starting in this state
+    Map<String,ASTTransition> outgoing = deltaMap.get(state);
+    
+    generatorEngine.generate("ConcreteState.ftl",
+            Paths.get(className+ ".java"), ast,
+            outgoing, className, isHW);
   }
   
-  
-  
-  // XXX
   /**
    * Generates the class for the state factory
    */
   protected void generateFactory() {
-    String modelFactoryClassName = ast.getName()+"Factory";
-    boolean factoryIsHandwritten = existsHandwrittenClass(handcodedPath,modelFactoryClassName);
-    if(factoryIsHandwritten){
-      modelFactoryClassName = modelFactoryClassName+ TOP_NAME_EXTENSION;
+    String className = ast.getName() + "Factory";
+  
+    // handle TOP extension
+    boolean isHW = existsHandwrittenClass(handcodedPath,className);
+    if(isHW){
+      className = className+ TOP_NAME_EXTENSION;
     }
-    generatorEngine.generate("StatechartFactory.ftl", Paths.get(modelFactoryClassName+ ".java"),
-        ast, ast.getStateList(), modelFactoryClassName, factoryIsHandwritten);
+    
+    generatorEngine.generate("StatechartFactory.ftl",
+            Paths.get(className+ ".java"), ast,
+            className, isHW);
   }
   
-  
-  
-  // XXX
-  /**
-   *  For  a given state and a list of transitions this method calculates
-   *  a list of all transitions that are outgoing transitions of the given state
-   *
-   * @param transitions transitions to be filtered
-   * @param state state whose outgoing transitions are calculated
-   * @return a list of all outgoing transitions for the given state
-   */
-  protected List<ASTTransition> getOutgoingTransitions(List<ASTTransition> transitions,
-      ASTState state) {
-    return transitions.stream().filter(t -> t.getFrom().equals(state.getName())).collect(Collectors.toList());
-  }
-  
-  // XXX
-  /**
-   * Calculates a list of transitions that act as representatives for transitions whose input is not
-   *  included in the list of inputs inputsToBeFiltered
-   *
-   * @param allTransitions list o all transitions in the automaton
-   * @param inputsToBeExcluded inputs that should be excluded
-   * @return a list of transitions that act as representatives for not accepted inputs
-   */
-  protected List<ASTTransition> v11XXXderiveStimuliRepresentingTransitions(List<String> inputsToBeExcluded) {
-    List<ASTTransition> allTransitions = ast.getTransitionList();
-    List<ASTTransition> result = new ArrayList<>();
-    for(ASTTransition transition: allTransitions){
-      if(!inputsToBeExcluded.contains(transition.getInput())){
-        result.add(transition);
-        inputsToBeExcluded.add(transition.getInput());
-      }
-    }
-    return result;
-  }
-  
-  // XXX
-  /**
-   * Calculates a list of transitions that act as representatives for the inputs of all transitions
-   * @param allTransitions list of all transitions in the automaton
-   * @return a list of transitions that act as representatives for possible inputs
-   */
-  protected List<ASTTransition> v11XXXderiveStimuliRepresentingTransitions(){
-    return v11XXXderiveStimuliRepresentingTransitions(Lists.newArrayList());
-  }
-  
-  // XXX XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   /**
    * Calculates a list of transitions that act as representatives for all occuring stimuli
    * (each stumulis is represented exactly once in that list)
@@ -327,7 +279,7 @@ public class AutomataTool {
    * @param inputsToBeExcluded inputs that should be excluded
    * @return a list of transitions that act as representatives for not accepted inputs
    */
-  protected void deriveStimuliRepresentingTransitions() {
+  protected void deriveStateMap_DeltaMap() {
     
     // We might also extend and use the symbol table for this extra infos
     // For demonstration we use the direct approach
@@ -343,6 +295,9 @@ public class AutomataTool {
       String input = t.getInput();
       stimuli.add(input);
       ASTState from = stateMap.get(t.getFrom());
+      // we assume that the automaton is deterministic --> CoCo
+      // if it isn't one transition will arbitrarily choosen (may be the last one)
+      // However, it may be incomplete!
       deltaMap.get(from).put(input, t);
     }
   }
@@ -404,5 +359,4 @@ public class AutomataTool {
     Reporting.reportHWCExistenceCheck(targetPath, hwFile, hwFilePath);
     return result;
   }
-
 }

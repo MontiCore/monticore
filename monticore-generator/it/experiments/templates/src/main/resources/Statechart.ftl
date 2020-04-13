@@ -1,12 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("initialState",
-               "stimuliRepresentingTransitions",
                "stimuli",
                "className", 
                "existsHWCExtension")}
 <#-- plus: String "modelName" is globally defined -->
-
-// TODO: zuviele Parameter (state, transition: koennte aus ast abgeleitet werden)
 
 /**
  * ${className} ist the main class of a Statechart that is realized
