@@ -52,10 +52,21 @@ public class AutomataTool {
   // The generator engine used (reentrant, so only one instance needed)
   protected GeneratorEngine generatorEngine;
   
-  // XXX
-  protected List<ASTTransition> transitionsWithoutDuplicateInputs;
-
-
+  // XXX TODO: delete this
+  // We need the complete list of stimuli (each is represented only once)
+  protected List<ASTTransition> stimuliRepresentingTransitions;
+  
+  // XXX noch nicht benutzt:
+  // Two dimensional map: SourceState x Stimulus -> Transition
+  Map<ASTState, Map<String,ASTTransition>> deltaMap = new HashMap<>();
+  
+  // XXX noch nicht benutzt:
+  // Map: Name -> State (== State-Symbols)
+  Map<String, ASTState> stateMap = new HashMap<>();
+  
+  // XXX noch nicht benutzt:
+  // List of stimuli
+  Set<String> stimuli = new HashSet<>();
   
   /**
    * Use three arguments to specify the automata model,
@@ -135,12 +146,13 @@ public class AutomataTool {
   
   
     // Part 4: Transformation and Data Calculation
+    stimuliRepresentingTransitions = v11XXXderiveStimuliRepresentingTransitions();
     // XXX
-    transitionsWithoutDuplicateInputs = getRepresentatives(ast.getTransitionList());
+    deriveStimuliRepresentingTransitions();
     
     
     // Part 5: Backend for Generation: Setup Engine
-    generatorEngine = initGeneratorEngine(ast.getName(), outputDir);
+    initGeneratorEngine();
     
     // Part 6: Generate.....
     //generate the class for the whole statechart
@@ -166,20 +178,17 @@ public class AutomataTool {
   
   /**
    * Initializes the generator engine
-   *
-   * @param modelName the name of the model used to generate code
-   * @return the initialized generator engine
    */
-  protected GeneratorEngine initGeneratorEngine(String modelName, File outputDir) {
+  protected void initGeneratorEngine() {
     GeneratorSetup s = new GeneratorSetup();
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
     // The modelName is used veryeher and does not change during generation
-    glex.setGlobalValue("modelName", modelName);
+    glex.setGlobalValue("modelName", ast.getName());
     
     s.setGlex(glex);
     s.setOutputDirectory(outputDir);
-    return new GeneratorEngine(s);
+    generatorEngine = new GeneratorEngine(s);
   }
   
   /**
@@ -187,10 +196,11 @@ public class AutomataTool {
    */
   protected void generateStatechart() {
     String className = ast.getName();
+
     // we assume there is at least one state (--> CoCo)
     ASTState initialState = ast.getStateList().stream().filter(ASTState::isInitial).findAny().get();
     
-    // ahndle TOP extension
+    // handle TOP extension
     boolean isHW = existsHandwrittenClass(handcodedPath,className);
     if(isHW){
       className = ast.getName() + TOP_NAME_EXTENSION;
@@ -200,8 +210,8 @@ public class AutomataTool {
     generatorEngine.generate("Statechart.ftl",
             Paths.get(className + ".java"),
             ast, initialState,
-            transitionsWithoutDuplicateInputs,
-            ast.getStateList(),
+            stimuliRepresentingTransitions,
+            stimuli,
             className, isHW);
   }
   
@@ -214,7 +224,7 @@ public class AutomataTool {
       className += TOP_NAME_EXTENSION;
     }
     generatorEngine.generate("AbstractState.ftl", Paths.get(className+ ".java"),
-            ast, transitionsWithoutDuplicateInputs, className);
+            ast, stimuliRepresentingTransitions, className);
   }
   
   
@@ -239,7 +249,7 @@ public class AutomataTool {
 
     List<String> acceptedInputs = existingTransitions.stream().map(t -> t.getInput()).collect(
         Collectors.toList());
-    List<ASTTransition> nonExistingTransitions = getRepresentatives(ast.getTransitionList(), acceptedInputs);
+    List<ASTTransition> nonExistingTransitions = v11XXXderiveStimuliRepresentingTransitions(acceptedInputs);
     //generate the concrete state classes and use the template ConcreteState.ftl for this
     generatorEngine.generate("ConcreteState.ftl", Paths.get(className+ ".java"),
                  ast, existingTransitions, nonExistingTransitions, className, stateIsHandwritten);
@@ -286,7 +296,8 @@ public class AutomataTool {
    * @param inputsToBeExcluded inputs that should be excluded
    * @return a list of transitions that act as representatives for not accepted inputs
    */
-  protected List<ASTTransition> getRepresentatives(List<ASTTransition> allTransitions, List<String> inputsToBeExcluded) {
+  protected List<ASTTransition> v11XXXderiveStimuliRepresentingTransitions(List<String> inputsToBeExcluded) {
+    List<ASTTransition> allTransitions = ast.getTransitionList();
     List<ASTTransition> result = new ArrayList<>();
     for(ASTTransition transition: allTransitions){
       if(!inputsToBeExcluded.contains(transition.getInput())){
@@ -303,8 +314,37 @@ public class AutomataTool {
    * @param allTransitions list of all transitions in the automaton
    * @return a list of transitions that act as representatives for possible inputs
    */
-  protected List<ASTTransition> getRepresentatives(List<ASTTransition> allTransitions){
-    return getRepresentatives(allTransitions, Lists.newArrayList());
+  protected List<ASTTransition> v11XXXderiveStimuliRepresentingTransitions(){
+    return v11XXXderiveStimuliRepresentingTransitions(Lists.newArrayList());
+  }
+  
+  // XXX XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  /**
+   * Calculates a list of transitions that act as representatives for all occuring stimuli
+   * (each stumulis is represented exactly once in that list)
+   *
+   * @param allTransitions list o all transitions in the automaton
+   * @param inputsToBeExcluded inputs that should be excluded
+   * @return a list of transitions that act as representatives for not accepted inputs
+   */
+  protected void deriveStimuliRepresentingTransitions() {
+    
+    // We might also extend and use the symbol table for this extra infos
+    // For demonstration we use the direct approach
+  
+    // initialize delta: transition map of maps, and state name2node
+    for(ASTState s: ast.getStateList()) {
+      stateMap.put(s.getName(),s);
+      deltaMap.put(s,new HashMap<>());
+    }
+    
+    // Add the transitions to the table
+    for(ASTTransition t: ast.getTransitionList()) {
+      String input = t.getInput();
+      stimuli.add(input);
+      ASTState from = stateMap.get(t.getFrom());
+      deltaMap.get(from).put(input, t);
+    }
   }
   
   /**

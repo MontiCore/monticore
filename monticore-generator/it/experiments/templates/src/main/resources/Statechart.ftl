@@ -1,13 +1,19 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("initialState",
-               "transitions",
-               "states",
+               "stimuliRepresentingTransitions",
+               "stimuli",
                "className", 
                "existsHWCExtension")}
-<#-- plus String "modelName" is globally defined -->
+<#-- plus: String "modelName" is globally defined -->
 
 // TODO: zuviele Parameter (state, transition: koennte aus ast abgeleitet werden)
 
+/**
+ * ${className} ist the main class of a Statechart that is realized
+ * using a state pattern approach.
+ * It contains an instance of each state and the
+ * pointer to the current state.
+ */
 public <#if existsHWCExtension>abstract </#if>
           class ${className} {
 
@@ -43,10 +49,11 @@ public <#if existsHWCExtension>abstract </#if>
   }
 
   <#-- Place the list of states here -->
-  ${tc.include("StatechartStateAttributes.ftl",states)}
+  ${tc.include("StatechartStateAttributes.ftl", ast.getStateList())}
 
   /** 
    * This is the pointer to the current state 
+   * and start with initial state
    */ 
   protected Abstract${modelName}State currentState =
                            ${initialState.getName()?uncap_first};
@@ -58,7 +65,13 @@ public <#if existsHWCExtension>abstract </#if>
       currentState = state;
   }
 
-  <#-- Add the list of transition in form of method calls -->
-  ${tc.include("StatechartTransitionMethod.ftl",transitions)}
-
+  <#-- Add the list of transitions in form of method calls -->
+  <#list stimuli as stimulusName>
+    /**
+     * Method call delegated to the current state object
+     */
+    public void ${stimulusName?uncap_first}() {
+      currentState.handle${stimulusName?cap_first}(getTypedThis());
+    }
+  </#list>
 }
