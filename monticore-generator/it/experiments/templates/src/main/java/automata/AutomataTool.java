@@ -256,6 +256,7 @@ public class AutomataTool {
   
   /**
    * Generates the class for the state factory
+   * (although the factory isn't used in this example)
    */
   protected void generateFactory() {
     String className = ast.getName() + "Factory";

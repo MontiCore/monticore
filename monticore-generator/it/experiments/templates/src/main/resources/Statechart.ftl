@@ -27,8 +27,6 @@ public <#if existsHWCExtension>abstract </#if>
     }
   </#if>
 
-// TODO: ueberlegen ob dies ausgelagert werden kann 
-// (gemeinsam mit Konstruktor)
   /**
    * A trick to reconstruct the de'facto type of "this" instead of
    * its TOP-type; this often needed, but always the same piece of code 
@@ -62,7 +60,7 @@ public <#if existsHWCExtension>abstract </#if>
       currentState = state;
   }
 
-  <#-- Add the list of transitions in form of method calls -->
+  <#-- Add the list of stimuli as method calls -->
   <#list stimuli as stimulusName>
     /**
      * Method call delegated to the current state object
