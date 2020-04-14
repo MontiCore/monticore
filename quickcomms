@@ -44,7 +44,7 @@ ant) #:= m + e: monticore-grammar bauen (2 min)
     cd ~/monticore/monticore-grammar;
     mvn install -Dmaven.test.skip=true || bell || continue
     ### cd ~/monticore/monticore-generator/it/experiments;
-    ### gradlew --refresh-dependencies build 
+    ### sh gradlew --refresh-dependencies build 
     bell ;;
 
 a) #:= monticore-grammar bauen + tests (3 min)
@@ -74,49 +74,49 @@ b) #:schnell bauen; ohne Tests (5:30 min)
 it) #:IntegrationTests (gradle's, 30 min)
     #   * Integration tests of the generator:
     cd ~/monticore/monticore-generator/it;
-    gradlew build || bell || continue
+    sh gradlew build || bell || continue
     #   * EMF Integration tests of the generator:
     cd ~/monticore/monticore-generator/it/;
-    gradlew build -PbuildProfile=emf || bell || continue
+    sh gradlew build -PbuildProfile=emf || bell || continue
     #   * Experiments integration tests:
     cd ~/monticore/monticore-generator/it/experiments/;
-    gradlew build || bell || continue
+    sh gradlew build || bell || continue
     #   * Grammar integration tests:
     cd ~/monticore/monticore-grammar/monticore-grammar-it;
-    gradlew build || bell || continue
+    sh gradlew build || bell || continue
     #   * TemplateClassGenerator integration tests:
     cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it;
-    gradlew build || bell || continue
+    sh gradlew build || bell || continue
     bell ;;
 
 e) #:Tests aus den Experimenten (gradle's; 2:40 min -- 12 sek)
     #   * Experiments integration tests:
     cd ~/monticore/monticore-generator/it/experiments;
-    gradlew --refresh-dependencies build || bell || continue 
+    sh gradlew --refresh-dependencies build || bell || continue 
     ;;
 
 cl) #:     clean main (via mvn)
     cd ~/monticore/; mvn clean ;;
 
 cla) #:    clean all
-    cd ~/monticore/monticore-generator/it; gradlew --stop;
+    cd ~/monticore/monticore-generator/it; sh gradlew --stop;
     cd ~/monticore/; mvn clean || bell || continue
     cd ~/monticore/monticore-generator/it;
-    gradlew clean || bell || continue
+    sh gradlew clean || bell || continue
     # cd ~/monticore/monticore-generator/it/;
-    # gradlew clean -PbuildProfile=emf || bell || continue
+    # sh gradlew clean -PbuildProfile=emf || bell || continue
     cd ~/monticore/monticore-generator/it/experiments/;
-    gradlew clean || bell || continue
+    sh gradlew clean || bell || continue
     cd ~/monticore/monticore-grammar/monticore-grammar-it;
-    gradlew clean || bell || continue
+    sh gradlew clean || bell || continue
     cd ~/monticore//monticore-templateclassgenerator/it/monticore-templateclassgenerator-it;
-    gradlew clean || bell || continue
+    sh gradlew clean || bell || continue
     ;;
 
 cle) #:    clean experiments
-    cd ~/monticore/monticore-generator/it; gradlew --stop;
+    cd ~/monticore/monticore-generator/it; sh gradlew --stop;
     cd ~/monticore/monticore-generator/it/experiments/;
-    gradlew clean 
+    sh gradlew clean 
     ;;
 
 db) #:     delete *.bak

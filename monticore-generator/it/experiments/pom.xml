@@ -26,6 +26,7 @@
     <module>composition</module>
     <module>extensionvariants</module>
     <module>forAst</module>
+    <module>forEmfAst</module>
     <module>forConcSt</module>
     <module>forParser</module>
     <module>forVisitors</module>

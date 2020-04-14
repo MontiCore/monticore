@@ -7,7 +7,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.FileReader;
 
+import de.monticore.io.FileReaderWriter;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,13 +43,19 @@ public class TemplateLoggerTest {
     glex = new GlobalExtensionManagement();
  
     fileHandler = new FileReaderWriterMock();
+    FileReaderWriter.init(fileHandler);
+
     GeneratorSetup config = new GeneratorSetup();
     config.setGlex(glex);
-    config.setFileHandler(fileHandler);
     config.setOutputDirectory(TARGET_DIR);
     config.setTracing(false);
     // .externalTemplatePaths(new File[]{})
     tc = new TemplateControllerMock(config, "");
+  }
+
+  @AfterClass
+  public static void resetFileReaderWriter() {
+    FileReaderWriter.init();
   }
   
   /**
@@ -58,5 +67,5 @@ public class TemplateLoggerTest {
     assertNotNull(result);
     assertEquals("A", result.toString().trim());
   }
-  
+
 }
