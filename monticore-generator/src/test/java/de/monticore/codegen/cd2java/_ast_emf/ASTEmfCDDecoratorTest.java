@@ -107,7 +107,7 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
     PackageInterfaceDecorator packageInterfaceDecorator = new PackageInterfaceDecorator(glex, emfService);
 
     ASTEmfCDDecorator astcdDecorator = new ASTEmfCDDecorator(glex, fullEmfDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
-        millDecorator, millForSuperDecorator, astConstantsDecorator, emfEnumDecorator, fullASTInterfaceDecorator, packageImplDecorator, packageInterfaceDecorator);
+         millForSuperDecorator, astConstantsDecorator, emfEnumDecorator, fullASTInterfaceDecorator, packageImplDecorator, packageInterfaceDecorator);
     this.decoratedCompilationUnit = astcdDecorator.decorate(decoratedCompilationUnit);
   }
 

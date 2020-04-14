@@ -99,7 +99,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator, astInterfaceReferencedSymbolDecorator);
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
-        millDecorator, millForSuperDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
+         millForSuperDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
     this.decoratedCompilationUnit = astcdDecorator.decorate(decoratedCompilationUnit);
   }
 

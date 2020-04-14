@@ -6,6 +6,7 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -15,12 +16,13 @@ import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.CoreTemplates.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
@@ -29,22 +31,22 @@ import static de.monticore.codegen.cd2java._ast.mill.MillConstants.*;
 /**
  * created mill class for a grammar
  */
-public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
+public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
   protected final AbstractService<?> service;
   protected final VisitorService visitorService;
 
   public static final String ALTERNATIVE_QUALIFIER = "alternative_qualifier";
 
-  public MillDecorator(final GlobalExtensionManagement glex, 
-                       final AbstractService service, 
+  public MillDecorator(final GlobalExtensionManagement glex,
+                       final AbstractService service,
                        final VisitorService visitorService) {
     super(glex);
     this.service = service;
     this.visitorService = visitorService;
   }
-  
-  public ASTCDClass decorate(final ASTCDCompilationUnit compilationUnit) {
+
+  public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compilationUnit) {
     // filter out all classes that are abstract and remove AST prefix
     List<ASTCDClass> classList = compilationUnit.getCDDefinition().deepClone().getCDClassList()
         .stream()
@@ -84,7 +86,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
     // add builder methods for each class
     List<ASTCDMethod> superMethodsList = addSuperBuilderMethods(superSymbolList, classList);
 
-    return CD4AnalysisMill.cDClassBuilder()
+    ASTCDClass millClass = CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(millClassName)
         .addCDAttribute(millAttribute)
@@ -96,6 +98,21 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
         .addCDMethod(resetMethod)
         .addAllCDMethods(builderMethodsList)
         .addAllCDMethods(superMethodsList)
+        .build();
+    List<String> astPackage = new ArrayList<>(compilationUnit.getPackageList());
+    astPackage.addAll(Arrays.asList(compilationUnit.getCDDefinition().getName().toLowerCase(), ASTConstants.AST_PACKAGE));
+
+    this.replaceTemplate(PACKAGE, millClass, createPackageHookPoint(astPackage));
+    if (millClass.isPresentModifier()) {
+      this.replaceTemplate(ANNOTATIONS, millClass, createAnnotationsHookPoint(millClass.getModifier()));
+    }
+    ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
+        .setName(compilationUnit.getCDDefinition().getName())
+        .addCDClass(millClass)
+        .build();
+    return CD4AnalysisMill.cDCompilationUnitBuilder()
+        .setPackageList(astPackage)
+        .setCDDefinition(astCD)
         .build();
   }
 
@@ -193,7 +210,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
   /**
    * Creates a list of classes that are no AST nodes but represent associated
    * external classes for the mill.
-   * 
+   *
    * @return A list of additional classes for the mill
    */
   protected List<ASTCDClass> getAdditionalClasses() {
@@ -209,7 +226,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
             .build())
         .build();
     classList.add(delegatorVisitor);
-    
+
     return classList;
   }
 
@@ -218,7 +235,7 @@ public class MillDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCl
    * ALTERNATIVE_QUALIFIER stereotype. If this stereotype is found, its
    * corresponding value serves as qualifier. Otherwise, the name of the CD is
    * returned instead.
-   * 
+   *
    * @param cdClass The class for which the qualifier is computed
    * @return The qualifier of the class as String value
    */

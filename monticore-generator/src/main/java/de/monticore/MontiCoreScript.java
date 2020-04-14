@@ -108,6 +108,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.DELEGATOR_SUFFIX;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the
@@ -561,7 +564,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     DelegatorVisitorBuilderDecorator delegatorVisitorBuilderDecorator = new DelegatorVisitorBuilderDecorator(glex, visitorService, symbolTableService);
 
     CDVisitorDecorator decorator = new CDVisitorDecorator(glex, handCodedPath, visitorService,
-        astVisitorDecorator, delegatorVisitorDecorator, inheritanceVisitorDecorator, 
+        astVisitorDecorator, delegatorVisitorDecorator, inheritanceVisitorDecorator,
         parentAwareVisitorDecorator, delegatorVisitorBuilderDecorator);
 
     ASTCDCompilationUnit visitorCompilationUnit = decorator.decorate(cd);
@@ -609,6 +612,33 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     ODCDDecorator odcdDecorator = new ODCDDecorator(glex, odDecorator);
     ASTCDCompilationUnit odCompilationUnit = odcdDecorator.decorate(cd);
+
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(odCompilationUnit);
+  }
+
+
+  public ASTCDCompilationUnit decorateMill(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+                                           ASTCDCompilationUnit astClassDiagram, ASTCDCompilationUnit visitorCD,
+                                           IterablePath handCodedPath) {
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
+    return generateMill(preparedCD, visitorCD, glex, handCodedPath);
+  }
+
+  private ASTCDCompilationUnit generateMill(ASTCDCompilationUnit cd, ASTCDCompilationUnit visitorCD, GlobalExtensionManagement glex,
+                                            IterablePath handCodedPath) {
+    ASTService astService = new ASTService(cd);
+    VisitorService visitorService = new VisitorService(cd);
+    MillDecorator millDecorator = new MillDecorator(glex, astService, visitorService);
+
+    ASTCDCompilationUnit compilationUnit = cd.deepClone();
+    compilationUnit.getCDDefinition().addAllCDClasss(visitorCD.getCDDefinition().getCDClassList()
+        .stream()
+        .filter(c -> c.getName().equals(cd.getCDDefinition().getName() + DELEGATOR_SUFFIX))
+        .collect(Collectors.toList()));
+
+
+    ASTCDCompilationUnit odCompilationUnit = millDecorator.decorate(cd);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(odCompilationUnit);
@@ -676,7 +706,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex, nodeFactoryService);
 
-    MillDecorator millDecorator = new MillDecorator(glex, astService, visitorService);
 
     MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, astService);
 
@@ -689,7 +718,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator, astInterfaceReferencedSymbolDecorator);
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator,
-        astBuilderDecorator, nodeFactoryDecorator, millDecorator, millForSuperDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
+        astBuilderDecorator, nodeFactoryDecorator, millForSuperDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
     ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
@@ -739,7 +768,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     PackageInterfaceDecorator packageInterfaceDecorator = new PackageInterfaceDecorator(glex, emfService);
 
     ASTEmfCDDecorator astcdDecorator = new ASTEmfCDDecorator(glex, fullEmfDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
-        millDecorator, millForSuperDecorator, astConstantsDecorator, emfEnumDecorator, fullASTInterfaceDecorator, packageImplDecorator, packageInterfaceDecorator);
+         millForSuperDecorator, astConstantsDecorator, emfEnumDecorator, fullASTInterfaceDecorator, packageImplDecorator, packageInterfaceDecorator);
     ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
