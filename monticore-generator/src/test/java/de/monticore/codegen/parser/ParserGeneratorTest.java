@@ -2,148 +2,195 @@
 
 package de.monticore.codegen.parser;
 
-import com.google.common.io.Resources;
 import de.monticore.MontiCoreScript;
-import de.monticore.codegen.AstDependentGeneratorTest;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.codegen.parser.antlr.AntlrTool;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
+import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.Names;
-import de.se_rwth.commons.cli.CLIArguments;
-import de.se_rwth.commons.configuration.Configuration;
-import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
+
+import static org.junit.Assert.assertTrue;
 
 /**
- * Test for the MontiCore generator. Generates parser and wrappers for parser
- * rules for example grammars and performs a compilation task for all generated
- * files.
- *
+ * Test for the MontiCore parser generator.
+ * generates parser files and checks the correctness of the GrammarNameAntlr.g4 file
  */
-// TODO Write new test without compilation
-@Ignore
-public class ParserGeneratorTest extends AstDependentGeneratorTest {
 
-  private static boolean doCompile = false;
+public class ParserGeneratorTest {
 
-  @BeforeClass
-  public static void setup() {
-    LogStub.init();
-    LogStub.enableFailQuick(false);
+  private GlobalExtensionManagement glex;
+
+  private ModelPath modelPath;
+
+  private File outputPath;
+
+  @Before
+  public void setUp() {
+    this.glex = new GlobalExtensionManagement();
+    Path modelPathPath = Paths.get("src/test/resources");
+    outputPath = new File("target/generated-test-sources");
+    this.modelPath = new ModelPath(modelPathPath, outputPath.toPath());
   }
 
   @Test
-  public void testCommon() {
-    astTest.testCommon();
-    testCorrect("mc/grammars/common/TestCommon.mc4", doCompile);
+  public void testAutomatonSTParserGeneration() {
+    Optional<ASTMCGrammar> ast = new MontiCoreScript()
+        .parseGrammar(Paths.get(new File(
+            "src/test/resources/de/monticore/AutomatonST.mc4").getAbsolutePath()));
+    assertTrue(ast.isPresent());
+    ASTMCGrammar grammar = ast.get();
+
+    Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    createSymbolsFromAST(symbolTable, ast.get());
+    ParserGenerator.generateParser(glex, grammar, symbolTable, IterablePath.empty(),
+        new File("target/generated-test-sources/parsertest"));
+    String g4File = "target/generated-test-sources/parsertest/de/monticore/automatonst/_parser/AutomatonSTAntlr.g4";
+    assertTrue(ast.get().isPresentSymbol());
+    String[] args = {};
+    AntlrTool antlrTool = new AntlrTool(args, ast.get().getSymbol(), Paths.get(outputPath.getAbsolutePath()));
+    antlrTool.parseAntlrFile(g4File);
   }
 
   @Test
-  public void testExpression() {
-    astTest.testExpression();
-    testCorrect("de/monticore/expression/Expression.mc4", doCompile);
+  public void testExpressionParserGeneration() {
+    Optional<ASTMCGrammar> ast = new MontiCoreScript()
+        .parseGrammar(Paths.get(new File(
+            "src/test/resources/de/monticore/expression/Expression.mc4").getAbsolutePath()));
+    assertTrue(ast.isPresent());
+    ASTMCGrammar grammar = ast.get();
+
+    Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    createSymbolsFromAST(symbolTable, ast.get());
+    ParserGenerator.generateParser(glex, grammar, symbolTable, IterablePath.empty(),
+        new File("target/generated-test-sources/parsertest"));
+    String g4File = "target/generated-test-sources/parsertest/de/monticore/expression/expression/_parser/ExpressionAntlr.g4";
+    assertTrue(ast.get().isPresentSymbol());
+    String[] args = {};
+    AntlrTool antlrTool = new AntlrTool(args, ast.get().getSymbol(), Paths.get(outputPath.getAbsolutePath()));
+    antlrTool.parseAntlrFile(g4File);
   }
 
   @Test
-  public void testInterfaces() {
-    astTest.testInterfaces();
-    doGenerate("de/monticore/interfaces/Sup.mc4");
-    doGenerate("de/monticore/interfaces/Sub.mc4");
-    doGenerate("de/monticore/interfaces/InterfaceExtension.mc4");
-    doGenerate("de/monticore/interfaces/InterfaceExtensionRecursive.mc4");
-    doGenerate("de/monticore/interfaces/InterfaceExtensionPartialImpl.mc4");
+  public void testCdAttributesParserGeneration() {
+    Optional<ASTMCGrammar> ast = new MontiCoreScript()
+        .parseGrammar(Paths.get(new File(
+            "src/test/resources/de/monticore/CdAttributes.mc4").getAbsolutePath()));
+    assertTrue(ast.isPresent());
+    ASTMCGrammar grammar = ast.get();
+
+    Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    createSymbolsFromAST(symbolTable, ast.get());
+    ParserGenerator.generateParser(glex, grammar, symbolTable, IterablePath.empty(),
+        new File("target/generated-test-sources/parsertest"));
+    String g4File = "target/generated-test-sources/parsertest/de/monticore/cdattributes/_parser/CdAttributesAntlr.g4";
+    assertTrue(ast.get().isPresentSymbol());
+    String[] args = {};
+    AntlrTool antlrTool = new AntlrTool(args, ast.get().getSymbol(), Paths.get(outputPath.getAbsolutePath()));
+    antlrTool.parseAntlrFile(g4File);
   }
 
   @Test
-  public void testInterfaceAttributes() {
-    astTest.testInterfaceAttributes();;
-    testCorrect("de/monticore/InterfaceAttributes.mc4", doCompile);
-  }
+  public void testSubsubgrammarParserGeneration() {
+    Optional<ASTMCGrammar> ast = new MontiCoreScript()
+        .parseGrammar(Paths.get(new File(
+            "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4").getAbsolutePath()));
+    assertTrue(ast.isPresent());
+    ASTMCGrammar grammar = ast.get();
 
-   @Test
-  public void testStatechart() {
-    astTest.testStatechart();
-    testCorrect("de/monticore/statechart/Statechart.mc4", doCompile);
-  }
-
-  @Test
-  public void testCdAttributes() {
-    astTest.testCdAttributes();
-    testCorrect("de/monticore/CdAttributes.mc4", doCompile);
-  }
-
-  public void testScopesExample() {
-    astTest.testScopesExample();
-    testCorrect("de/monticore/ScopesExample.mc4", doCompile);
+    Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    createSymbolsFromAST(symbolTable, ast.get());
+    ParserGenerator.generateParser(glex, grammar, symbolTable, IterablePath.empty(),
+        new File("target/generated-test-sources/parsertest"));
+    String g4File = "target/generated-test-sources/parsertest/de/monticore/inherited/subsub/subsubgrammar/_parser/SubsubgrammarAntlr.g4";
+    assertTrue(ast.get().isPresentSymbol());
+    String[] args = {};
+    AntlrTool antlrTool = new AntlrTool(args, ast.get().getSymbol(), Paths.get(outputPath.getAbsolutePath()));
+    antlrTool.parseAntlrFile(g4File);
   }
 
   @Test
-  public void testHelloWorld() {
-    astTest.testHelloWorld();
-    testCorrect("de/monticore/HelloWorld.mc4", doCompile);
+  public void testSubgrammarParserGeneration() {
+    Optional<ASTMCGrammar> ast = new MontiCoreScript()
+        .parseGrammar(Paths.get(new File(
+            "src/test/resources/de/monticore/inherited/sub/Subgrammar.mc4").getAbsolutePath()));
+    assertTrue(ast.isPresent());
+    ASTMCGrammar grammar = ast.get();
+
+    Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    createSymbolsFromAST(symbolTable, ast.get());
+    ParserGenerator.generateParser(glex, grammar, symbolTable, IterablePath.empty(),
+        new File("target/generated-test-sources/parsertest"));
+    String g4File = "target/generated-test-sources/parsertest/de/monticore/inherited/sub/subgrammar/_parser/SubgrammarAntlr.g4";
+    assertTrue(ast.get().isPresentSymbol());
+    String[] args = {};
+    AntlrTool antlrTool = new AntlrTool(args, ast.get().getSymbol(), Paths.get(outputPath.getAbsolutePath()));
+    antlrTool.parseAntlrFile(g4File);
   }
 
+
   @Test
-  public void testGrammarInDefaultPackage() {
-    astTest.testGrammarInDefaultPackage();
-    testCorrect("Automaton.mc4", false);
+  public void testActionParserGeneration() {
+    Optional<ASTMCGrammar> ast = new MontiCoreScript()
+        .parseGrammar(Paths.get(new File(
+            "src/test/resources/de/monticore/Action.mc4").getAbsolutePath()));
+    assertTrue(ast.isPresent());
+    ASTMCGrammar grammar = ast.get();
+
+    Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    createSymbolsFromAST(symbolTable, ast.get());
+    ParserGenerator.generateParser(glex, grammar, symbolTable, IterablePath.empty(),
+        new File("target/generated-test-sources/parsertest"));
+    String g4File = "target/generated-test-sources/parsertest/de/monticore/action/_parser/ActionAntlr.g4";
+    assertTrue(ast.get().isPresentSymbol());
+    String[] args = {};
+    AntlrTool antlrTool = new AntlrTool(args, ast.get().getSymbol(), Paths.get(outputPath.getAbsolutePath()));
+    antlrTool.parseAntlrFile(g4File);
   }
 
-  @Test
-  public void testInherited() {
-    astTest.testInherited();
-    doGenerate("de/monticore/inherited/Supergrammar.mc4");
-    doGenerate("de/monticore/inherited/sub/Subgrammar.mc4");
-    Path path = Paths.get(OUTPUT_FOLDER, Names.getPathFromFilename("de/monticore/inherited/"));
-    // assertTrue("There are compile errors in generated code for the models in grammars/inherited.",
-    // compile(path));
-  }
+  public ASTMCGrammar createSymbolsFromAST(Grammar_WithConceptsGlobalScope globalScope, ASTMCGrammar ast) {
+    // Build grammar symbol table (if not already built)
+    String qualifiedGrammarName = Names.getQualifiedName(ast.getPackageList(), ast.getName());
+    Optional<MCGrammarSymbol> grammarSymbol = globalScope
+        .resolveMCGrammarDown(qualifiedGrammarName);
 
-  @Test
- public void testAction() {
-   astTest.testAction();
-   testCorrect("de/monticore/Action.mc4", doCompile);
- }
+    ASTMCGrammar result = ast;
 
-  /**
-   * @see de.monticore.codegen.GeneratorTest#doGenerate(java.lang.String)
-   */
-  @Override
-  protected void doGenerate(String model) {
-    Log.info("Runs parser generator test for the model " + model, LOG);
-    ClassLoader l = ParserGeneratorTest.class.getClassLoader();
-    try {
-      String script = Resources.asCharSource(
-          l.getResource("de/monticore/groovy/monticoreOnlyParser.groovy"),
-          Charset.forName("UTF-8")).read();
+    if (grammarSymbol.isPresent()) {
+      result = grammarSymbol.get().getAstNode();
+    } else {
+      Grammar_WithConceptsLanguage language = new Grammar_WithConceptsLanguage();
 
-      Configuration configuration =
-          ConfigurationPropertiesMapContributor.fromSplitMap(CLIArguments.forArguments(
-              getCLIArguments("src/test/resources/" + model))
-              .asMap());
-      new MontiCoreScript().run(script, configuration);
+      Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = language.getSymbolTableCreator(globalScope);
+      stCreator.createFromAST(result);
+      globalScope.cache(qualifiedGrammarName);
     }
-    catch (IOException e) {
-      Log.error("0xA1010 ParserGeneratorTest failed: ", e);
+
+    MCGrammarSymbol symbol = result.getSymbol();
+    for (MCGrammarSymbol it : MCGrammarSymbolTableHelper.getAllSuperGrammars(symbol)) {
+      if (!it.getFullName().equals(symbol.getFullName())) {
+        Reporting.reportOpenInputFile(Optional.empty(),
+            Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".mc4")));
+        Reporting.reportOpenInputFile(Optional.empty(),
+            Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".cd")));
+      }
     }
 
-  }
-
-  /**
-   * @see de.monticore.codegen.GeneratorTest#getPathToGeneratedCode(java.lang.String)
-   */
-  @Override
-  protected Path getPathToGeneratedCode(String grammar) {
-    String garmmarPath = grammar.endsWith(GRAMMAR_EXTENSION)
-        ? grammar.substring(0, grammar.indexOf(GRAMMAR_EXTENSION))
-        : grammar;
-    return Paths.get(OUTPUT_FOLDER, garmmarPath.toLowerCase());
+    return result;
   }
 
 }
