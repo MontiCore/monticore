@@ -5,6 +5,11 @@ package de.monticore;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.modelloader.IModelLoader;
 
+/**
+ * @Deprecated File extension will be moved to global scope. Instances of parser, modelloader, etc.
+ * are not managed centralized anymore.
+ */
+@Deprecated
 public interface IModelingLanguage {
   
   /**

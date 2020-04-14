@@ -43,7 +43,6 @@ public class ExtendedGeneratorSetup extends GeneratorSetup {
     this.setCommentEnd(s.getCommentEnd());
     this.setCommentStart(s.getCommentStart());
     this.setDefaultFileExtension(s.getDefaultFileExtension());
-    this.setFileHandler(s.getFileHandler());
     this.setFreeMarkerTemplateEngine(s.getFreeMarkerTemplateEngine());
     this.setGlex(s.getGlex());
     this.setHandcodedPath(s.getHandcodedPath());

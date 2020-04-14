@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+import de.monticore.io.FileReaderWriter;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,6 +38,11 @@ public class TemplateControllerHookPointsTest {
     config.setOutputDirectory(new File("dummy"));
     config.setTracing(false);
     tc = new TemplateControllerMock(config, "");
+  }
+
+  @AfterClass
+  public static void resetFileReaderWriter() {
+    FileReaderWriter.init();
   }
   
   @Test

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CoreTemplates.ANNOTATIONS;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 
@@ -67,9 +68,12 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     ASTCDAttribute fileExtensionAttribute = createFileExtensionAttribute();
     List<ASTCDMethod> fileExtensionMethods = accessorDecorator.decorate(fileExtensionAttribute);
 
+    ASTModifier modifier = PUBLIC_ABSTRACT.build();
+    symbolTableService.addDeprecatedStereotype(modifier, Optional.empty());
+
     ASTCDClass languageClass = CD4AnalysisMill.cDClassBuilder()
         .setName(languageClassName)
-        .setModifier(PUBLIC_ABSTRACT.build())
+        .setModifier(modifier)
         .addInterface(iModelingLanguage)
         .addCDConstructor(createConstructor(languageClassName))
         .addCDAttribute(modelLoaderAttribute)
@@ -84,6 +88,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
         .build();
     Optional<ASTCDMethod> getParserMethod = createGetParserMethod(input.getCDDefinition());
     getParserMethod.ifPresent(languageClass::addCDMethod);
+
     return languageClass;
   }
 

@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar Automata2 extends de.monticore.literals.MCCommonLiterals {
+
+  symbol scope Automaton =
+    "automaton" Name "{" (State | Transition)* "}" ;
+
+  symbol scope State =
+    "state" Name
+    (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
+    ( ("{" (State | Transition)* "}") | ";") ;
+
+  Transition =
+    from:Name@State "-" input:Name ">" to:Name@State ";" ;
+
+}
+

@@ -520,7 +520,7 @@ public class GlobalExtensionManagement {
     Reporting.reportASTSpecificTemplateReplacement(oldTemplate, node, newHp);
 
     Map<ASTNode, HookPoint> replacedTemplates = this.specificReplacement.get(oldTemplate);
-    if (replacedTemplates != null && !replacedTemplates.containsKey(node)) {
+    if (replacedTemplates != null) {
       replacedTemplates.put(node, newHp);
     }
     else {

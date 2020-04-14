@@ -1,12 +1,28 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("stateName","modelName","existingTransitions","nonExistingTransitionNames")}
-public class ${stateName?cap_first}State extends AbstractState{
+${tc.signature("outgoing",
+               "className",
+               "existsHWCExtension")}
+<#-- plus: String "modelName" is globally defined -->
 
-    <#list existingTransitions as transition>
-        ${tc.includeArgs("HandleTransition.ftl",modelName,transition.getInput(),transition.getTo())}
-    </#list>
+/**
+ * This generated class implements one state
+ * and contains the method implementations for in that state
+ */
+public <#if existsHWCExtension>abstract </#if>
+     class ${className} extends Abstract${modelName}State {
 
-    <#list nonExistingTransitionNames as transition>
-        ${tc.includeArgs("HandleNotExistingTransition.ftl",modelName,transition)}
-    </#list>
+<#-- Add the list of stimuli as method calls with default implemementations-->
+<#list outgoing as stimulusName, transitionAST>
+  /**
+   * Signature of handle${stimulusName?cap_first}
+   * The method contains the state change to ${transitionAST.getTo()?uncap_first}
+   * @param ${modelName} sc
+   */
+  @Override
+  public void handle${stimulusName?cap_first}(${modelName} sc) {
+      sc.setState(${modelName}.${transitionAST.getTo()?uncap_first});
+  }
+</#list>
+
 }
+
