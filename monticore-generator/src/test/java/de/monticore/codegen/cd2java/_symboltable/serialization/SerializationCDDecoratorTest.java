@@ -100,14 +100,13 @@ public class SerializationCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testPackage() {
-    assertEquals(7, serializationCD.getPackageList().size());
+    assertEquals(6, serializationCD.getPackageList().size());
     assertEquals("de", serializationCD.getPackageList().get(0));
     assertEquals("monticore", serializationCD.getPackageList().get(1));
     assertEquals("codegen", serializationCD.getPackageList().get(2));
     assertEquals("symboltable", serializationCD.getPackageList().get(3));
     assertEquals("automatonsymbolcd", serializationCD.getPackageList().get(4));
     assertEquals("_symboltable", serializationCD.getPackageList().get(5));
-    assertEquals("serialization", serializationCD.getPackageList().get(6));
   }
 
   @Test

@@ -51,12 +51,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return new SymbolTableService(cdSymbol);
   }
 
-  public String getSerializationPackage() {
-    return getSerializationPackage(getCDSymbol());
-  }
-
   public String getSerializationPackage(CDDefinitionSymbol cdDefinitionSymbol) {
-    return getPackage(cdDefinitionSymbol) + "." + SERIALIZATION_PACKAGE;
+    // can be used to change the package that the serialization is generated to.
+    // currently, it is generated into the same package as the remaining symboltable infrastructure
+    return getPackage(cdDefinitionSymbol);
   }
 
   /**

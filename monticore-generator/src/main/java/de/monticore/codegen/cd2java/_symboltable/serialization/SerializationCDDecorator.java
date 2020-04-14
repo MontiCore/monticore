@@ -46,7 +46,7 @@ public class SerializationCDDecorator extends AbstractDecorator {
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit astCD, ASTCDCompilationUnit symbolInput, ASTCDCompilationUnit scopeInput) {
 
     List<String> symbolTablePackage = new ArrayList<>(symbolInput.getPackageList());
-    symbolTablePackage.addAll(Arrays.asList(symbolInput.getCDDefinition().getName().toLowerCase(), SYMBOL_TABLE_PACKAGE, SERIALIZATION_PACKAGE));
+    symbolTablePackage.addAll(Arrays.asList(symbolInput.getCDDefinition().getName().toLowerCase(), SYMBOL_TABLE_PACKAGE));
 
     ASTCDDefinition serializeCD = CD4CodeMill.cDDefinitionBuilder()
         .setName(symbolInput.getCDDefinition().getName())
@@ -58,7 +58,7 @@ public class SerializationCDDecorator extends AbstractDecorator {
       serializeCD.addCDClass(createScopeDeSerClass(scopeInput, symbolInput));
     }
 
-    // change to _serialization package
+    // change to symbolTable package
     for (ASTCDClass cdClass : serializeCD.getCDClassList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(symbolTablePackage));
     }
