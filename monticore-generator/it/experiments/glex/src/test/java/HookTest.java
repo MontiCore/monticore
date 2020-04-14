@@ -457,7 +457,7 @@ public class HookTest {
     // System.out.println("****RES::\n" + res + "\n****--------");
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     // Stringvergleich: --------------------
-    System.out.println(res.toString());
+    // System.out.println(res.toString());
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" HookPoint filled " + "Hook empty ", res.toString().replaceAll(REGEXP, REPLACE));
   }

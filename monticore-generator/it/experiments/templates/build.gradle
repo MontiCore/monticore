@@ -10,19 +10,19 @@ dependencies {
   implementation project(":automaton_experiments")
 }
 
-// create an additional test set called extendedTest
+// create an additional test set called productTest
 testSets{
-  extendedTest { extendsFrom unitTest }
+  productTest { extendsFrom unitTest }
 }
 
 sourceSets {
-  // add output dir to the sources of extendedTest
-  extendedTest.java.srcDirs += "$buildDir/statepattern"
+  // add output dir to the sources of productTest
+  productTest.java.srcDirs += ["$buildDir/statepattern" , "$projectDir/src/product/java"]
 }
 
-// let extendedTest depend on test as test produces code for extendedTest
-compileExtendedTestJava.dependsOn(test)
+// let productTest depend on test as test produces code for productTest
+compileProductTestJava.dependsOn(test)
 
-// let check depend on extendedTest such that it is included in the build
-check.dependsOn(extendedTest)
+// let check depend on productTest such that it is included in the build
+check.dependsOn(productTest)
 

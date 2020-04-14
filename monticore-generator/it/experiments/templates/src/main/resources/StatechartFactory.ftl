@@ -1,8 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("states","className", "existsHWCExtension")}
+${tc.signature("className", "existsHWCExtension")}
 
-public <#if existsHWCExtension>abstract </#if>class ${className} {
+public <#if existsHWCExtension>abstract </#if>
+		class ${className} {
 
-  ${tc.include("FactoryStateMethod.ftl",states)}
+  <#-- Iterate over list of states: one factory method for each state -->
+  ${tc.include("FactoryStateMethod.ftl", ast.getStateList())}
 
 }
