@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.factory;
+package mc.feature.factory;
 
-grammar AGrammar extends mc.grammars.lexicals.TestLexicals {
+grammar AGrammar extends mc.grammar.lexicals.ItTestLexicals{
 
   Foo = "foo" Name;
 

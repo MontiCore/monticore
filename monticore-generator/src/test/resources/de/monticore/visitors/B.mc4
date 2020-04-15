@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-
-package de.monticore.visitors;
-
-grammar B extends de.monticore.visitors.A {
-  Y extends X = "y";
-}

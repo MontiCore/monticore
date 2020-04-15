@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package mc.grammars.concepts.attributes;
+package mc.feature.attributes;
 
-component grammar TestAttributes extends mc.grammars.lexicals.TestLexicals {
+component grammar TestAttributes mc.grammar.lexicals.ItTestLexicals  {
 
 	/**
 	 * This concepts consists of AttributeDefinitions and AttributeConcretion
