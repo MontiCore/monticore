@@ -6,5 +6,5 @@ grammar InterfaceExtension extends mc.feature.interfaces.Sup {
 
   interface I;
 
-  interface A extends I;
+  A implements I;
 }

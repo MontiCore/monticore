@@ -6,7 +6,8 @@ grammar InterfaceExtensionRecursive extends mc.feature.interfaces.Sup {
 
   interface I;
 
-  interface A extends I;
+  interface E extends I;
 
-  interface C extends A;
+  interface C extends E;
+
 }
