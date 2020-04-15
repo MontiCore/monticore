@@ -57,7 +57,7 @@ public class JsonDeSers {
   public static void serializeScopeSpanningSymbol(IScopeSpanningSymbol spanningSymbol,
       JsonPrinter printer) {
     if (null != spanningSymbol) {
-      printer.beginObject();
+      printer.beginObject(SCOPE_SPANNING_SYMBOL);
       printer.member(KIND, spanningSymbol.getClass().getName());
       printer.member(NAME, spanningSymbol.getName());
       printer.endObject();
