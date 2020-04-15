@@ -142,6 +142,8 @@ pages:
   dependencies: []
   image: python:alpine
   before_script:
+    - apk add gcc musl-dev python3-dev
+    - pip install cython
     - pip install mkdocs
     - pip install mkdocs-material
   script:
