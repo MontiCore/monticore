@@ -8,8 +8,9 @@ import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -36,6 +37,12 @@ public class AstRuleInheritanceTest {
   private ASTCDInterface astE;
 
   private ASTCDClass astF;
+
+  @BeforeClass
+  public static void init() {
+    LogStub.init();
+    LogStub.enableFailQuick(false);
+  }
 
   @Before
   public void setUp() {
