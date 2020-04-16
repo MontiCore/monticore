@@ -63,9 +63,9 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMandatorySymbolAttribute() {
-    ASTCDAttribute nameSymbol = getAttributeBy("nameSymbol", astMandClass);
+    ASTCDAttribute nameSymbol = getAttributeBy("nameSymbolLoader", astMandClass);
     assertTrue(nameSymbol.getModifier().isProtected());
-    assertDeepEquals("Optional<de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol>", nameSymbol.getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbolLoader", nameSymbol.getMCType());
   }
 
   @Test
@@ -76,9 +76,9 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testOptionalSymbolAttribute() {
-    ASTCDAttribute nameSymbol = getAttributeBy("nameSymbol", astOptClass);
+    ASTCDAttribute nameSymbol = getAttributeBy("nameSymbolLoader", astOptClass);
     assertTrue(nameSymbol.getModifier().isProtected());
-    assertDeepEquals("Optional<de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol>", nameSymbol.getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbolLoader", nameSymbol.getMCType());
   }
 
   @Test
@@ -89,26 +89,26 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testListSymbolAttribute() {
-    ASTCDAttribute nameSymbol = getAttributeBy("nameSymbol", astListClass);
+    ASTCDAttribute nameSymbol = getAttributeBy("nameSymbolLoader", astListClass);
     assertTrue(nameSymbol.getModifier().isProtected());
-    assertDeepEquals("Map<String,Optional<de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol>>", nameSymbol.getMCType());
+    assertDeepEquals("Map<String,de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbolLoader>", nameSymbol.getMCType());
   }
 
   @Test
   public void testMandatoryMethods() {
-    assertEquals(4, astMandClass.getCDMethodList().size());
+    assertEquals(5, astMandClass.getCDMethodList().size());
   }
 
 
   @Test
   public void testOptionalMethods() {
-    assertEquals(4, astOptClass.getCDMethodList().size());
+    assertEquals(5, astOptClass.getCDMethodList().size());
   }
 
 
   @Test
   public void testListMethods() {
-    assertEquals(38, astListClass.getCDMethodList().size());
+    assertEquals(39, astListClass.getCDMethodList().size());
   }
 
 }
