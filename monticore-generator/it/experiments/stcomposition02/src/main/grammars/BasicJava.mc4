@@ -5,7 +5,7 @@
     It is used for demonstration only.
 */
 
-component grammar Java extends de.monticore.MCBasics {
+grammar BasicJava extends de.monticore.MCBasics {
 
 CompilationUnit =  TypeDeclaration* EOF ;
 
@@ -18,14 +18,18 @@ interface Type;
 //Type used in return statements
 interface ReturnType;
 
-symbol ClassDeclaration implements TypeDeclaration
+// pseudo interface implementations to produce non-component grammar
+DummyType implements Type  =  b:"boolean" | s:"String" ;
+DummyReturnType implements ReturnType  = b:"boolean" | v:"void" ;
+
+symbol scope ClassDeclaration implements TypeDeclaration
     =   "class" Name 
         ("extends" superClass:Type)?
         ("implements" implementedInterfaces:(Type || ",")+)?
         ClassBody
     ;
 
-symbol InterfaceDeclaration implements TypeDeclaration
+symbol scope InterfaceDeclaration implements TypeDeclaration
     =   "interface" Name 
         ("extends" extendedInterfaces:(Type || ",")+)?
         ClassBody
@@ -34,11 +38,11 @@ symbol InterfaceDeclaration implements TypeDeclaration
 // Interface-Symbols are special forms of class-Symbols
 symbolrule InterfaceDeclaration extends ASTClassDeclaration;
 
-scope ClassBody
+ClassBody
     =   "{" (Method|Field)* "}"
     ;
 
-symbol Method 
+symbol scope Method
     =   ReturnType Name FormalParameters 
         (JavaBlock | ";")
     ;
@@ -71,7 +75,7 @@ LocalVariableDeclarationStatement implements Statement
     =    Type (VariableDeclarator || ",")+ ";"
     ;
 
-scope JavaBlock implements Statement
+JavaBlock implements Statement
     =   "{" Statement* "}"
     ;
 

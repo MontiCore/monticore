@@ -3,6 +3,7 @@ grammar Automata4 extends de.monticore.MCBasics {
 
   symbol Automaton = "automaton" Name "{" ( IState | Transition )* "}" ;
 
+  // interface symbol, indicating that implementing nonterminals define an IStateSymbol
   interface symbol IState = Name;
 
   State implements IState = "state" Name ";" ;

@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar Automata6 extends de.monticore.MCBasics {
+
+  symbol Automaton = "automaton" Name "{" (State | Transition)* "}" ;
+
+  symbol State = "state" Name
+                 (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
+                 ";"  ;
+
+  Transition = from:Name "-" input:Name@Stimulus ">" to:Name ";" ;
+
+  // this nonterminal is never parsed, but used for adapting foreign Stimuli
+  symbol Stimulus = Name;
+  
+}
