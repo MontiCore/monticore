@@ -3,6 +3,7 @@ grammar HierarchicalAutomata2 extends Automata4 {
 
   start Automaton;
 
+  //IState defines a symbol
   HState implements IState = "state" Name "{" (IState |  Transition)* "}";
 
 }

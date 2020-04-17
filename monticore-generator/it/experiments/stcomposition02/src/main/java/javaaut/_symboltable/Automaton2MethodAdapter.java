@@ -4,8 +4,7 @@ package javaaut._symboltable;
 
 import automata5._symboltable.AutomatonSymbol;
 
-import java._symboltable.IJavaScope;
-import java._symboltable.MethodSymbol;
+import basicjava._symboltable.MethodSymbol;
 
 public class Automaton2MethodAdapter extends MethodSymbol {
 

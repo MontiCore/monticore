@@ -5,14 +5,11 @@
     It is used for demonstration only.
 */
 
-grammar JavaAut extends Java, Automata5 {
-  start CompilationUnit; //from Java
+grammar JavaAut extends BasicJava, Automata5 {
+  start CompilationUnit; //from BasicJava
 
   // embedding rule
   AutomatonMethodBody extends JavaBlock = Automaton;
 
-  // pseudo interface implementations to produce non-component grammar
-  DummyType implements Type  = "^ß§1";
-  DummyReturnType implements ReturnType  = "^ß§2";
 }
 

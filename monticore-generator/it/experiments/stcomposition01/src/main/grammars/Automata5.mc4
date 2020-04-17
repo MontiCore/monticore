@@ -5,6 +5,7 @@ grammar Automata5 extends de.monticore.MCBasics {
 
   interface IState;
 
+  // IState does not define a symbol, but State does
   symbol State implements IState = "state" Name ";" ;
 
   Transition = from:Name "-" input:Name ">" to:Name ";" ;
