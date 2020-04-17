@@ -93,6 +93,7 @@ public final class ModelPath {
         .map(classloader -> FileReaderWriter.getResource(classloader, fixedPath))
         .filter(opturl -> opturl.isPresent())
         .map(url -> url.get())
+        .distinct()
         .collect(Collectors.toList());
 
     if (1 < resolvedURLS.size()) {
