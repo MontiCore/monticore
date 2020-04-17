@@ -26,7 +26,7 @@ public class QuestionnaireTool {
    */
   public static void main(String[] args) {
     if (args.length != 1) {
-      Log.error("Please specify only one single path to the input model.");
+      Log.error("0xEE74A Please specify only one single path to the input model.");
       return;
     }
     Log.info("Questionnaire DSL Tool", QuestionnaireTool.class.getName());
@@ -62,10 +62,10 @@ public class QuestionnaireTool {
       if (!parser.hasErrors() && optQuestionnaire.isPresent()) {
         return optQuestionnaire.get();
       }
-      Log.error("Model could not be parsed.");
+      Log.error("0xEE84A Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("Failed to parse " + model, e);
+      Log.error("0xEE64A Failed to parse " + model, e);
     }
     return null;
   }

@@ -38,10 +38,10 @@ public class JavaAndAutTool {
       if (!parser.hasErrors() && optResult.isPresent()) {
         return optResult.get();
       }
-      Log.error("Model could not be parsed.");
+      Log.error("0xEE84E Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("Failed to parse " + model, e);
+      Log.error("0xEE64E Failed to parse " + model, e);
     }
     System.exit(1);
     return null;

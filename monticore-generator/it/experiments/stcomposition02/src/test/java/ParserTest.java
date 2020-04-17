@@ -29,10 +29,10 @@ public class ParserTest {
       if (!parser.hasErrors() && optResult.isPresent()) {
         return optResult.get();
       }
-      Log.error("Model could not be parsed.");
+      Log.error("0xEE84B Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("Failed to parse " + model, e);
+      Log.error("0xEE64B Failed to parse " + model, e);
     }
     System.exit(1);
     return null;

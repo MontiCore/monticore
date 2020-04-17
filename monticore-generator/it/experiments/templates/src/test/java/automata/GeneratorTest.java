@@ -40,7 +40,7 @@ public class GeneratorTest {
   public void testWrongArguments(){
     AutomataTool.main(new String[] {  });
     assertEquals(1, Log.getErrorCount());
-    assertEquals("Please specify 3 arguments: \n"
+    assertEquals("0xEE631 Please specify 3 arguments: \n"
         + "1. automata modelfile,\n"
         + "2. handcodedPath,\n"
         + "3. output directory.", Log.getFindings().get(0).buildMsg());
