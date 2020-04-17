@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import de.monticore.io.FileReaderWriter;
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.common.base.Strings;
@@ -420,7 +421,7 @@ public class TemplateController {
 
     Reporting.reportFileCreation(qualifiedTemplateName, filePath, ast);
 
-    config.getFileHandler().storeInFile(completeFilePath, content.toString());
+    FileReaderWriter.storeInFile(completeFilePath, content.toString());
 
     Log.debug(completeFilePath + " written successfully!", this.getClass().getName());
 

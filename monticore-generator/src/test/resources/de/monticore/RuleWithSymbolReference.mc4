@@ -8,9 +8,9 @@ component grammar RuleWithSymbolReference {
 
   interface symbol S;
 
-  interface symbol(S) T;
+  interface T extends S;
 
-  symbol(T) A = "a";
+  A implements S = "a";
 
   B = an:Name@T;
 

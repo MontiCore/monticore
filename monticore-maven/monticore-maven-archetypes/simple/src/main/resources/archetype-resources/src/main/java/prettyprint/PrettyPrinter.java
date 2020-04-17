@@ -7,100 +7,92 @@ import ${package}.mydsl._ast.ASTMyField;
 import ${package}.mydsl._ast.ASTMyModel;
 import ${package}.mydsl._visitor.MyDSLVisitor;
 
+import de.monticore.prettyprint.IndentPrinter;
+import de.se_rwth.commons.Names;
+
 /**
- * Pretty prints models. Use {@link #print(ASTMyModel)} to start a pretty print
- * and get the result by using {@link #getResult()}.
+ * Pretty prints models. Use {@link #prettyprint(ASTMyModel)} (ASTMyModel)} to start a pretty printing
  */
 public class PrettyPrinter implements MyDSLVisitor {
-  
-  private String result = "";
-  
-  private int indention = 0;
-  
-  private String indent = "";
-  
+
+  private IndentPrinter printer;
+
+  private MyDSLVisitor realThis;
+
+  public PrettyPrinter() {
+    this.printer = new IndentPrinter();
+    this.realThis = this;
+  }
+
   /**
    * Prints the model
-   * 
-   * @param model
+   *
+   * @param node
    */
-  public void print(ASTMyModel model) {
-    handle(model);
+  public String prettyprint(ASTMyModel node) {
+    getPrinter().clearBuffer();
+    node.accept(getRealThis());
+    return getPrinter().getContent();
   }
-  
-  /**
-   * Gets the printed result.
-   * 
-   * @return the result of the pretty print.
-   */
-  public String getResult() {
-    return this.result;
-  }
-  
+
+
   @Override
   public void visit(ASTMyModel node) {
-    println("model " + node.getName() + " {");
-    indent();
+    if (!node.isEmptyPackages()) {
+      getPrinter().println("package " + Names.getQualifiedName(node.getPackageList()) + ";");
+    }
+    getPrinter().println("model " + node.getName() + " {");
+    getPrinter().indent();
   }
-  
+
   @Override
   public void endVisit(ASTMyModel node) {
-    unindent();
-    println("}");
+    getPrinter().unindent();
+    getPrinter().println("}");
   }
-  
+
   @Override
   public void traverse(ASTMyModel node) {
-    node.getMyElements().stream().forEach(e -> e.accept(getRealThis()));
+    node.getMyElementsList().forEach(e -> e.accept(getRealThis()));
   }
-  
+
   @Override
   public void visit(ASTMyElement node) {
-    println("element " + node.getName() + " {");
-    indent();
+    getPrinter().println("element " + node.getName() + " {");
+    getPrinter().indent();
   }
-  
+
   @Override
   public void endVisit(ASTMyElement node) {
-    unindent();
-    println("}");
+    getPrinter().unindent();
+    getPrinter().println("}");
   }
-  
+
   @Override
   public void traverse(ASTMyElement node) {
-    node.getMyFields().stream().forEach(e -> e.accept(getRealThis()));
+    node.getMyFieldsList().forEach(e -> e.accept(getRealThis()));
   }
-  
+
   @Override
   public void visit(ASTMyField node) {
-    println(node.getName() + " " + node.getType() + ";");
+    getPrinter().println(node.getName() + " " + node.getType() + ";");
   }
-  
-  private void print(String s) {
-    result += (indent + s);
-    indent = "";
+
+  public IndentPrinter getPrinter() {
+    return printer;
   }
-  
-  private void println(String s) {
-    result += (indent + s + "\n");
-    indent = "";
-    calcIndention();
+
+  public void setPrinter(IndentPrinter printer) {
+    this.printer = printer;
   }
-  
-  private void calcIndention() {
-    indent = "";
-    for (int i = 0; i < indention; i++) {
-      indent += "  ";
-    }
+
+  @Override
+  public MyDSLVisitor getRealThis() {
+    return realThis;
   }
-  
-  private void indent() {
-    indention++;
-    calcIndention();
-  }
-  
-  private void unindent() {
-    indention--;
-    calcIndention();
+
+  @Override
+  public void setRealThis(MyDSLVisitor realThis) {
+    this.realThis = realThis;
   }
 }

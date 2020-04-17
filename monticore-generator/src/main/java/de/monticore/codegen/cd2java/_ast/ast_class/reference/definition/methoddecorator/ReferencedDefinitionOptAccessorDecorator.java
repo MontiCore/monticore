@@ -58,8 +58,7 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
   protected ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
     String name = String.format(IS_PRESENT, StringUtils.capitalize(naiveAttributeName));
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), name);
-    String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.IsPresentDefinition", ast.getName(), referencedSymbolType));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.IsPresentDefinition", ast.getName()));
     return method;
   }
 }

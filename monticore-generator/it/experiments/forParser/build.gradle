@@ -5,7 +5,7 @@ dependencies {
   implementation group:'de.monticore', name:'monticore-generator', version:mc_version
 }
 
-fileTree(grammarDir).each {
+fileTree(grammarDir).matching { include '**/*.mc4'}.each {
   def g = it
   task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
     grammar = file g

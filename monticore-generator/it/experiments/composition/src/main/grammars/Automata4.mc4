@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar Automata4 extends de.monticore.MCBasics {
+
+  symbol Automaton = "automaton" Name "{" ( IState | Transition )* "}" ;
+
+  interface symbol IState = Name;
+
+  State implements IState = "state" Name ";" ;
+
+  Transition = from:Name "-" input:Name ">" to:Name ";" ;
+  
+}

@@ -4,16 +4,14 @@ package de.monticore.generating.templateengine;
 
 import com.google.common.base.Joiner;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.FileReaderWriterMock;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import de.se_rwth.commons.logging.Slf4jLog;
 import freemarker.core.Macro;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.util.Arrays;
@@ -42,17 +40,21 @@ public class TemplateAliasingTest {
 
   @Before
   public void setup() {
-
     FileReaderWriterMock fileHandler = new FileReaderWriterMock();
+    FileReaderWriter.init(fileHandler);
 
     config = new GeneratorSetup();
-    config.setFileHandler(fileHandler);
     config.setOutputDirectory(TARGET_DIR);
     config.setTracing(false);
     
     tc = new TemplateControllerMock(config, "");
 
     Slf4jLog.getFindings().clear();
+  }
+
+  @AfterClass
+  public static void resetFileReaderWriter() {
+    FileReaderWriter.init();
   }
 
   @Test

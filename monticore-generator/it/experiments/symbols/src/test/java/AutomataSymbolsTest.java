@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class SymbolsTest {
+public class AutomataSymbolsTest {
   
   // setup the language infrastructure
   AutomataParser parser = new AutomataParser() ;

@@ -19,9 +19,9 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.*;
 
 public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
@@ -32,7 +32,7 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
 
   private ASTCDClass originalClass;
 
-  private static final String NAME_SYMBOL_MAP = "Map<String,Optional<de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol>>";
+  private static final String NAME_SYMBOL_MAP = "Map<String,de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbolLoader>";
 
   @Before
   public void setup() {
@@ -77,14 +77,22 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
 
   @Test
   public void testSymbolAttribute() {
-    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astClass);
+    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbolLoader", astClass);
     assertTrue(symbolAttribute.getModifier().isProtected());
     assertDeepEquals(NAME_SYMBOL_MAP, symbolAttribute.getMCType());
   }
 
   @Test
   public void testMethods() {
-    assertEquals(38, astClass.getCDMethodList().size());
+    assertEquals(39, astClass.getCDMethodList().size());
+  }
+
+  @Test
+  public void testUpdateNameSymbolLoaderListMethod() {
+    ASTCDMethod method = getMethodBy("updateNameSymbolLoader", astClass);
+    assertDeepEquals(PROTECTED, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
