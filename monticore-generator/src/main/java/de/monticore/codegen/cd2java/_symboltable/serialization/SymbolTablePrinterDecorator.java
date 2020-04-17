@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
@@ -23,6 +24,7 @@ import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
@@ -62,8 +64,8 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     String scopeVisitorFullName = visitorService.getScopeVisitorFullName();
     List<ASTCDClass> symbolTypes = symbolCD.getCDDefinition().getCDClassList();
     List<ASTCDClass> scopeTypes = scopeCD.getCDDefinition().getCDClassList();
-    List<ASTCDClass> symbolTablePrinterDelegateClasses = getSTPDelegates();
-    List<ASTCDAttribute> symbolTablePrinterDelegates = getSymbolTablePrinterDelegates(symbolTablePrinterDelegateClasses);
+    List<String> delegateNames = getDelegateClassNames();
+    List<ASTCDAttribute> symbolTablePrinterDelegates = getSymbolTablePrinterDelegates(delegateNames);
 
     ASTCDClass symbolTablePrinterClass = CD4CodeMill.cDClassBuilder()
         .setName(symbolTablePrinterName)
@@ -92,17 +94,27 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     return symbolTablePrinterClass;
   }
 
-  protected List<ASTCDClass> getSTPDelegates(){
-    List<CDDefinitionSymbol> superCDs = symbolTableService.getSuperCDsTransitive();
-
+  protected List<String> getDelegateClassNames() {
+    List<String> classNames = new ArrayList<>();
+    for(CDDefinitionSymbol cdDefinitionSymbol:symbolTableService.getSuperCDsTransitive()) {
+      String name = "";
+      if(null!=cdDefinitionSymbol.getPackageName() && !cdDefinitionSymbol.getPackageName().equals("")){
+        name+=cdDefinitionSymbol.getPackageName()+".";
+      }
+       classNames.add(name+cdDefinitionSymbol.getName().toLowerCase()
+           +"."+SYMBOL_TABLE_PACKAGE+"."+SERIALIZATION_PACKAGE+"."+cdDefinitionSymbol.getName()+SYMBOL_TABLE_PRINTER_SUFFIX);
+    }
+    return classNames;
   }
 
-  protected List<ASTCDAttribute> getSymbolTablePrinterDelegates(List<ASTCDClass> symbolTablePrinterDelegateClasses) {
+  protected List<ASTCDAttribute> getSymbolTablePrinterDelegates(List<String> symbolTablePrinterDelegateClasses) {
     List<ASTCDAttribute> attributes = new ArrayList<>();
-    for(ASTCDClass delegateClass: symbolTablePrinterDelegateClasses){
-      ASTMCType type = getMCTypeFacade().createQualifiedType(delegateClass.getName());
-      String attributeName = delegateClass.getName().substring(0,1).toLowerCase().concat(delegateClass.getName().substring(1));
+    for(String fullName: symbolTablePrinterDelegateClasses){
+      ASTMCType type = getMCTypeFacade().createQualifiedType(fullName);
+      String[] names = fullName.split("\\.");
+      String attributeName = StringTransformations.uncapitalize(names[names.length-1])+"Delegate";
       ASTCDAttribute delegateAttribute = getCDAttributeFacade().createAttribute(PROTECTED,type,attributeName);
+      getDecorationHelper().addAttributeDefaultValues(delegateAttribute, glex);
       attributes.add(delegateAttribute);
     }
     return attributes;
@@ -110,12 +122,14 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
   protected ASTCDConstructor createSymbolTablePrinterConstructor(String symbolTablePrinterName,List<ASTCDAttribute> symbolTablePrinterDelegates){
     MCFullGenericTypesPrettyPrinter prettyPrinter = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
-    List<String> delegateNames = symbolTablePrinterDelegates.stream()
-        .map(ASTCDAttribute::getMCType)
-        .map(prettyPrinter::prettyprint)
-        .collect(Collectors.toList());
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC,symbolTablePrinterName);
-    this.replaceTemplate(VALUE, constructor, new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.symbolTablePrinterConstructor",delegateNames,JSON_PRINTER));
+    StringBuilder sb = new StringBuilder("this.printer = new "+ JSON_PRINTER+"();\n");
+    for(ASTCDAttribute delegate: symbolTablePrinterDelegates){
+      String attributeName = delegate.getName();
+      String typeName = prettyPrinter.prettyprint(delegate.getMCType());
+      sb.append("  this.").append(attributeName).append(" = new ").append(typeName).append("();\n");
+    }
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint(sb.toString()));
     return constructor;
   }
 
@@ -134,7 +148,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createSetJsonPrinterMethod(){
     ASTMCType type = getMCTypeFacade().createQualifiedType(JSON_PRINTER);
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(type,"jsonPrinter");
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(type,"printer");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC,"setJsonPrinter", parameter);
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("this.printer = printer;"));
     return method;
