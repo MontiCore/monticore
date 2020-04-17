@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar HierarchicalAutomata3 extends Automata5 {
+
+  start Automaton;
+
+  symbol HState implements IState = "state" Name "{" (IState |  Transition)* "}";
+
+}
