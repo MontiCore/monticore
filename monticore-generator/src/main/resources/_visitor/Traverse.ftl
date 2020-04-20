@@ -4,7 +4,7 @@
 // concrete type of the element.
 // Instead we double-dispatch the call, to call the correctly typed
 // traverse(...) method with the elements concrete type.
-${tc.signature("cdClass")}
+${tc.signature("cdClass", "isScopeSpanning")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 
 <#list cdClass.getCDAttributeList() as attr>
@@ -31,3 +31,12 @@ ${tc.signature("cdClass")}
     }
   </#if>
 </#list>
+
+<#if isScopeSpanning>
+    // although we generally assume that the symbol table is always available,
+    // there are cases, where this is not true (for example construction of the
+    // symbol table itself. Thus, the null-check is necessary.
+    if (node.getSpannedScope() != null) {
+      node.getSpannedScope().accept(getRealThis());
+    }
+</#if>

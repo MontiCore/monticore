@@ -216,8 +216,8 @@ public class ScopeClassDecorator extends AbstractDecorator {
   protected List<ASTCDMethod> createAcceptMethods(String scopeClassName) {
     List<ASTCDMethod> acceptMethods = new ArrayList<>();
 
-    String ownScopeVisitor = visitorService.getScopeVisitorFullName();
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
+    String visitor = visitorService.getVisitorFullName();
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(visitor), VISITOR_PREFIX);
     ASTCDMethod ownAcceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
     if (isScopeTop()) {
       String errorCode = symbolTableService.getGeneratedErrorCode(scopeClassName + ACCEPT_METHOD);
@@ -228,11 +228,11 @@ public class ScopeClassDecorator extends AbstractDecorator {
     acceptMethods.add(ownAcceptMethod);
 
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      String superScopeVisitor = visitorService.getScopeVisitorFullName(cdDefinitionSymbol);
-      ASTCDParameter superVisitorParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(superScopeVisitor), VISITOR_PREFIX);
+      String superVisitor = visitorService.getVisitorFullName(cdDefinitionSymbol);
+      ASTCDParameter superVisitorParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(superVisitor), VISITOR_PREFIX);
       ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, superVisitorParameter);
       String errorCode = symbolTableService.getGeneratedErrorCode(scopeClassName + cdDefinitionSymbol.getFullName()+ACCEPT_METHOD);
-      this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(TEMPLATE_PATH + "AcceptScope", ownScopeVisitor, scopeClassName, superScopeVisitor, errorCode));
+      this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(TEMPLATE_PATH + "AcceptScope", visitor, scopeClassName, superVisitor, errorCode));
       acceptMethods.add(acceptMethod);
     }
 
