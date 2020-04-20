@@ -93,7 +93,7 @@ public class AutomataTool {
    */
   public AutomataTool(String[] args) {
     if (args.length != 3) {
-      Log.error("Please specify 3 arguments: \n"
+      Log.error("0xEE631 Please specify 3 arguments: \n"
           + "1. automata modelfile,\n"
           + "2. handcodedPath,\n"
           + "3. output directory.");

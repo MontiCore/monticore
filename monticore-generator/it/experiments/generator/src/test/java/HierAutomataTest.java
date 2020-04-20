@@ -83,11 +83,11 @@ public class HierAutomataTest {
       optStateMachine = parser.parse(model);
       
       if (parser.hasErrors()) {
-        Log.error("Model could not be parsed.");
+        Log.error("0xEE848 Model could not be parsed.");
       }
     }
     catch (RecognitionException | IOException e) {
-      Log.error("Failed to parse " + model, e);
+      Log.error("0xEE648 Failed to parse " + model, e);
     }
     return optStateMachine.get();
   }

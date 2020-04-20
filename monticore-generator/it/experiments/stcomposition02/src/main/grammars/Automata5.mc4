@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar Automata5 extends de.monticore.MCBasics {
+
+  symbol Automaton = "automaton" Name "{" ( IState | Transition )* "}" ;
+
+  interface IState;
+
+  symbol State implements IState = "state" Name
+                                   (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
+                                   ";"  ;
+
+  Transition = from:Name "-" input:Name ">" to:Name ";" ;
+
+}

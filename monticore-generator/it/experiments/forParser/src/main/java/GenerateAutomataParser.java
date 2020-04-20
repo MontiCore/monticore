@@ -23,7 +23,7 @@ public class GenerateAutomataParser {
   public static void main(String[] args) {
     Log.init();
     if (args.length != 2) {
-      Log.error("Please specify one single path to the input model and one single path for the generated output");
+      Log.error("0xEE630 Please specify one single path to the input model and one single path for the generated output");
       return;
     }
 
