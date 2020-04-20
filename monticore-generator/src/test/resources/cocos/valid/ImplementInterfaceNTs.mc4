@@ -25,8 +25,8 @@ grammar ImplementInterfaceNTs {
 
   OptImpl implements IOpt = D?;
 
-  interface ITerminal = "{" "}";
+  interface ITerminal = bracketOpen:"{"  bracketClosed:"}";
 
-  TerminalImpl implements ITerminal = "{" "}";
+  TerminalImpl implements ITerminal = bracketOpen:"{" bracketClosed:"}";
 }
 

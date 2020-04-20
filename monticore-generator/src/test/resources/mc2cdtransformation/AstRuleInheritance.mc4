@@ -2,24 +2,28 @@
 
 package mc2cdtransformation;
 
-grammar AstRuleInheritance {
+grammar AstRuleInheritance extends mc2cdtransformation.super.Supergrammar {
 
    A;
-
-   astrule A = dimensions:int;
-
-   C extends A;
-
-
-
-   interface I;
-
-   astrule I = varName:varType;
-
-   interface I2 extends I;
-
-   astrule I2 = varName2:varType2;
-
-   Impl implements I2;
-
-}
+  
+   interface B;
+   
+   abstract C;
+   
+   D;
+   
+   F;
+   
+   interface E;
+   
+   astrule A astextends ASTExternalProd;
+  
+   astrule C astextends ASTA;
+  
+   astrule D astextends ASTSuperProd astimplements ASTB, ASTSuperInterface, java.io.Serializable;
+   
+   astrule F astextends java.util.Observable;
+   
+   astrule E astextends ASTB, ASTSuperInterface, ASTExternalInterface, java.io.Serializable;
+  
+}      

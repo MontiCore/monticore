@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package mc.grammars.concepts.attributes;
+package mc.feature.attributes;
 
-component grammar TestAttributes extends mc.grammars.lexicals.TestLexicals {
+component grammar TestAttributes extends mc.grammar.lexicals.ItTestLexicals  {
 
 	/**
 	 * This concepts consists of AttributeDefinitions and AttributeConcretion
@@ -49,10 +49,10 @@ component grammar TestAttributes extends mc.grammars.lexicals.TestLexicals {
 	astrule Calculation =
 		method public String getGrammarname() {
 			String name = new String();
-			if (getName().size() > 1) {
-				for (int i = 0; i < getName().size() - 1; i++) {
-					name = name + getName().get(i);
-					if (i < getName().size() - 2) {
+			if (getNameList().size() > 1) {
+				for (int i = 0; i < getNameList().size() - 1; i++) {
+					name = name + getNameList().get(i);
+					if (i < getNameList().size() - 2) {
 						name = name + ".";
 					}
 				}
@@ -61,10 +61,10 @@ component grammar TestAttributes extends mc.grammars.lexicals.TestLexicals {
 		}
 		method public String getPackagename() {
 			String name = new String();
-			if (getName().size() > 2) {
-				for (int i = 0; i < getName().size() - 2; i++) {
-					name = name + getName().get(i);
-					if (i < getName().size() - 3) {
+			if (getNameList().size() > 2) {
+				for (int i = 0; i < getNameList().size() - 2; i++) {
+					name = name + getNameList().get(i);
+					if (i < getNameList().size() - 3) {
 						name = name + ".";
 					}
 				}
@@ -73,8 +73,8 @@ component grammar TestAttributes extends mc.grammars.lexicals.TestLexicals {
 		}
 		method public String getAttributename() {
 			String name = new String();
-			if (getName().size() > 0) {
-				return getName().get(getName().size() - 1);
+			if (getNameList().size() > 0) {
+				return getNameList().get(getNameList().size() - 1);
 			}
 			return "";
 		};
@@ -119,9 +119,8 @@ component grammar TestAttributes extends mc.grammars.lexicals.TestLexicals {
 
 	astrule GenericAttributeType =
 		method public String toString() {
-			return  de.monticore.grammar.HelperGrammar.printGenericType(this);
-		};
-
-	astrule GenericAttributeType =
-		Dimension: /int;  
+			return String.join(", ",getNameList());
+		}
+		Dimension:int
+		;
 }

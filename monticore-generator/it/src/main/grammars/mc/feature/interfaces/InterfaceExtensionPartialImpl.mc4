@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.interfaces;
+package mc.feature.interfaces;
 
-grammar InterfaceExtensionPartialImpl extends de.monticore.interfaces.Sup {
+grammar InterfaceExtensionPartialImpl extends mc.feature.interfaces.Sup {
 
   interface XYZ;
 
