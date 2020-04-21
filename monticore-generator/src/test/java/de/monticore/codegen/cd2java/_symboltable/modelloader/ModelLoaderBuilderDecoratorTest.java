@@ -83,7 +83,7 @@ public class ModelLoaderBuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDefaultConstructor() {
     ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
-    assertDeepEquals(PROTECTED, cdConstructor.getModifier());
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AModelLoaderBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());

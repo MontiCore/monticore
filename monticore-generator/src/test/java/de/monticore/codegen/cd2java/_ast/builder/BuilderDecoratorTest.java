@@ -71,7 +71,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     List<ASTCDConstructor> constructors = builderClass.getCDConstructorList();
     assertEquals(1, constructors.size());
     ASTCDConstructor constructor = constructors.get(0);
-    assertDeepEquals(PROTECTED, constructor.getModifier());
+    assertDeepEquals(PUBLIC, constructor.getModifier());
     assertTrue(constructor.getCDParameterList().isEmpty());
   }
 

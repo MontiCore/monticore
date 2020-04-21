@@ -90,7 +90,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDefaultConstructor() {
     ASTCDConstructor cdConstructor = scopeBuilderClass.getCDConstructor(0);
-    assertDeepEquals(PROTECTED, cdConstructor.getModifier());
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AScopeBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());

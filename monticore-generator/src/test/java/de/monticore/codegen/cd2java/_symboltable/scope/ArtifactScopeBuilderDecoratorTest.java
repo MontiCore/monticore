@@ -97,7 +97,7 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDefaultConstructor() {
     ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(0);
-    assertDeepEquals(PROTECTED, cdConstructor.getModifier());
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AArtifactScopeBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());
