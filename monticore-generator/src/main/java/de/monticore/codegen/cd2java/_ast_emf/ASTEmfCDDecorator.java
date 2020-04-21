@@ -40,7 +40,6 @@ public class ASTEmfCDDecorator extends ASTCDDecorator {
                            final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator,
                            final ASTBuilderDecorator astBuilderDecorator,
                            final EmfNodeFactoryDecorator nodeFactoryDecorator,
-                           final MillForSuperDecorator millForSuperDecorator,
                            final ASTConstantsDecorator astConstantsDecorator,
                            final EmfEnumDecorator enumDecorator,
                            final FullASTInterfaceDecorator astInterfaceDecorator,
@@ -51,7 +50,6 @@ public class ASTEmfCDDecorator extends ASTCDDecorator {
         astLanguageInterfaceDecorator,
         astBuilderDecorator,
         nodeFactoryDecorator,
-        millForSuperDecorator,
         astConstantsDecorator,
         enumDecorator,
         astInterfaceDecorator);

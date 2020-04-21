@@ -39,8 +39,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
   protected final NodeFactoryDecorator nodeFactoryDecorator;
 
-  protected final MillForSuperDecorator millForSuperDecorator;
-
   protected final ASTConstantsDecorator astConstantsDecorator;
 
   protected final EnumDecorator enumDecorator;
@@ -52,7 +50,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
                         final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator,
                         final ASTBuilderDecorator astBuilderDecorator,
                         final NodeFactoryDecorator nodeFactoryDecorator,
-                        final MillForSuperDecorator millForSuperDecorator,
                         final ASTConstantsDecorator astConstantsDecorator,
                         final EnumDecorator enumDecorator,
                         final FullASTInterfaceDecorator astInterfaceDecorator) {
@@ -61,7 +58,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     this.astLanguageInterfaceDecorator = astLanguageInterfaceDecorator;
     this.astBuilderDecorator = astBuilderDecorator;
     this.nodeFactoryDecorator = nodeFactoryDecorator;
-    this.millForSuperDecorator = millForSuperDecorator;
     this.astConstantsDecorator = astConstantsDecorator;
     this.enumDecorator = enumDecorator;
     this.astInterfaceDecorator = astInterfaceDecorator;
@@ -77,7 +73,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
         .addAllCDClasss(createASTClasses(ast))
         .addAllCDClasss(createASTBuilderClasses(ast))
         .addCDClass(createNodeFactoryClass(ast))
-        .addAllCDClasss(createMillForSuperClasses(ast))
         .addCDClass(createASTConstantsClass(ast))
         .addAllCDInterfaces(createASTInterfaces(ast))
         .addCDInterface(createLanguageInterface(ast))
@@ -138,10 +133,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
   protected ASTCDClass createNodeFactoryClass(final ASTCDCompilationUnit ast) {
     return nodeFactoryDecorator.decorate(ast);
-  }
-
-  protected List<ASTCDClass> createMillForSuperClasses(final ASTCDCompilationUnit ast) {
-    return millForSuperDecorator.decorate(ast);
   }
 
   protected ASTCDClass createASTConstantsClass(final ASTCDCompilationUnit ast) {
