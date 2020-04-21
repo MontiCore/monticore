@@ -95,20 +95,20 @@ public class JsonDeSers {
    * @return
    */
   public static void checkCorrectDeSerForKind(String deSerKind, JsonElement serializedElement) {
-    if (serializedElement.isJsonObject()) {
-      Log.error("0xTODO DeSer for kind '" + deSerKind + "' can only deserialize Json objects! '"
+    if (!serializedElement.isJsonObject()) {
+      Log.error("0xA7223 DeSer for kind '" + deSerKind + "' can only deserialize Json objects! '"
           + serializedElement + "' is not a Json object.");
       return; //return here to avoid consecutive errors in this method
     }
     JsonObject o = serializedElement.getAsJsonObject();
     if (!o.hasMember(KIND)) {
-      Log.error("0xTODO Serialized symbol table classes must have a member describing their "
+      Log.error("0xA7224 Serialized symbol table classes must have a member describing their "
           + "kind. The Json object '" + serializedElement
           + "' does not have a member describing the kind.");
       return; //return here to avoid consecutive errors in this method
     }
     if (!deSerKind.equals(o.getStringMember(KIND))) {
-      Log.error("0xTODO DeSer for kind '" + deSerKind + "' cannot deserialize Json objects"
+      Log.error("0xA7225 DeSer for kind '" + deSerKind + "' cannot deserialize Json objects"
           + " of kind '" + o.getStringMember(KIND) + "'");
     }
   }
