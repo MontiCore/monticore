@@ -161,17 +161,26 @@ public class MCTask extends DefaultTask {
 
     // if no path for hand coded classes is specified use $projectDir/src/main/java as default
     if (handcodedPath.isEmpty()) {
-      handcodedPath.add(project.layout.projectDirectory.file("src/main/java"))
+      File hcp = project.layout.projectDirectory.file("src/main/java").getAsFile()
+      if(hcp.exists()) {
+        handcodedPath.add(hcp)
+      }
     }
 
     // if no model path is specified use $projectDir/src/main/grammars as default
     if (modelPath.isEmpty()) {
-      modelPath.add(project.layout.projectDirectory.file("src/main/grammars"))
+      File mp = project.layout.projectDirectory.file("src/main/grammars").getAsFile()
+      if(mp.exists()) {
+        modelPath.add(mp)
+      }
     }
 
     // if no template path is specified use $projectDir/src/main/resources as default
     if (templatePath.isEmpty()) {
-      templatePath.add(project.layout.projectDirectory.file("src/main/resources"))
+      File tp = project.layout.projectDirectory.file("src/main/resources").getAsFile()
+      if(tp.exists()) {
+        templatePath.add(tp)
+      }
     }
 
     if (!inputs.getFileChanges(grammar).isEmpty()) {
