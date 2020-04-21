@@ -2,6 +2,7 @@
 package mc.feature.referencesymbol;
 
 import de.monticore.io.paths.ModelPath;
+import de.se_rwth.commons.logging.Log;
 import mc.feature.referencesymbol.reference._ast.*;
 import mc.feature.referencesymbol.reference._parser.ReferenceParser;
 import mc.feature.referencesymbol.reference._symboltable.*;
@@ -25,8 +26,11 @@ public class ReferenceTest {
 
   @Before
   public void setUp() throws IOException {
+    Log.init();
+    Log.enableFailQuick(false);
     ReferenceParser parser = new ReferenceParser();
     Optional<ASTRand> astRand = parser.parse("src/test/resources/mc/feature/referencesymbol/ReferenceModel.ref");
+    assertFalse(parser.hasErrors());
     assertTrue(astRand.isPresent());
     //create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/referencesymbol"));
@@ -68,7 +72,6 @@ public class ReferenceTest {
   public void testMandatory() {
     ASTTest astTest = astRand.getTest(0);
 
-
     ASTReferenceToTest astReferenceToTest = astRand.getReferenceToTest(0);
 
     //test getter
@@ -90,10 +93,28 @@ public class ReferenceTest {
     assertEquals(astReferenceToTest.getNameSymbol(), b);
     assertEquals(astReferenceToTest.getNameDefinition(), b.getAstNode());
 
+    // set name null
     astReferenceToTest.setName(null);
     assertFalse(astReferenceToTest.isPresentNameDefinition());
     assertFalse(astReferenceToTest.isPresentNameSymbol());
 
+    // set enclosing scope null
+    astReferenceToTest.setName("A");
+    astReferenceToTest.setEnclosingScope(null);
+    assertFalse(astReferenceToTest.isPresentNameDefinition());
+    assertFalse(astReferenceToTest.isPresentNameSymbol());
+  }
+
+  @Test
+  public void testMandatoryWrongReference() {
+    ASTReferenceToTest astReferenceToTest = astRand.getReferenceToTest(2);
+
+    //test getter
+    assertNotNull(astReferenceToTest.getEnclosingScope());
+    assertFalse(astReferenceToTest.isPresentNameSymbol());
+    assertEquals("Z", astReferenceToTest.getName());
+    assertFalse(astReferenceToTest.isPresentNameSymbol());
+    assertFalse(astReferenceToTest.isPresentNameDefinition());
   }
 
   @Test
@@ -131,6 +152,24 @@ public class ReferenceTest {
     astOptionalRef.setNameAbsent();
     assertFalse(astOptionalRef.isPresentNameSymbol());
     assertFalse(astOptionalRef.isPresentNameDefinition());
+
+    // set enclosing scope null
+    astOptionalRef.setName("A");
+    astOptionalRef.setEnclosingScope(null);
+    assertFalse(astOptionalRef.isPresentNameDefinition());
+    assertFalse(astOptionalRef.isPresentNameSymbol());
+  }
+
+  @Test
+  public void testOptionalWrongReference() {
+    ASTOptionalRef astReferenceToTest = astRand.getOptionalRef(1);
+
+    //test getter
+    assertNotNull(astReferenceToTest.getEnclosingScope());
+    assertFalse(astReferenceToTest.isPresentNameSymbol());
+    assertEquals("Z", astReferenceToTest.getName());
+    assertFalse(astReferenceToTest.isPresentNameSymbol());
+    assertFalse(astReferenceToTest.isPresentNameDefinition());
   }
 
   @Test
@@ -159,7 +198,6 @@ public class ReferenceTest {
   public void testListSymbolGet() {
     ASTListRef astListRef = astRand.getListRef(0);
 
-
     assertNotNull(astListRef.getEnclosingScope());
     assertFalse(astListRef.isEmptyNamesSymbol());
     assertEquals(astListRef.sizeNamesSymbol(), 3);
@@ -174,6 +212,22 @@ public class ReferenceTest {
     assertTrue(astListRef.containsNamesSymbol(Optional.ofNullable(a)));
     assertTrue(astListRef.containsNamesSymbol(Optional.ofNullable(b)));
     assertTrue(astListRef.containsNamesSymbol(Optional.ofNullable(c)));
+
+    IReferenceScope enclosingScope = astListRef.getEnclosingScope();
+    // set enclosing scope null
+    astListRef.setEnclosingScope(null);
+    assertTrue( astListRef.isEmptyNamesSymbol());
+    assertTrue(astListRef.isEmptyNamesDefinition());
+
+    // reactivate enclosing scope
+    astListRef.setEnclosingScope(enclosingScope);
+    assertFalse( astListRef.isEmptyNamesSymbol());
+    assertFalse(astListRef.isEmptyNamesDefinition());
+
+    // clear name list
+    astListRef.clearNames();
+    assertTrue(astListRef.isEmptyNamesSymbol());
+    assertTrue(astListRef.isEmptyNamesDefinition());
 
   }
 
@@ -257,6 +311,23 @@ public class ReferenceTest {
     assertEquals(astListRef.getName(3), "D");
     assertFalse(astListRef.getNamesSymbol(3).isPresent());
     assertFalse(astListRef.getNamesDefinition(3).isPresent());
+  }
+
+  @Test
+  public void testListWrongReference() {
+    ASTListRef astReferenceToTest = astRand.getListRef(3);
+
+    //test getter
+    assertNotNull(astReferenceToTest.getEnclosingScope());
+    assertFalse(astReferenceToTest.isEmptyNames());
+    assertFalse(astReferenceToTest.isEmptyNamesDefinition());
+    assertFalse(astReferenceToTest.isEmptyNamesSymbol());
+    for (Optional<ASTTest> astTest : astReferenceToTest.getNamesDefinitionList()) {
+      assertFalse(astTest.isPresent());
+    }
+    for (Optional<TestSymbol> testSymbol : astReferenceToTest.getNamesSymbolList()) {
+      assertFalse(testSymbol.isPresent());
+    }
   }
 
   @Test

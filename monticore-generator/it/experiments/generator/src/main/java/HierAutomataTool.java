@@ -32,7 +32,7 @@ public class HierAutomataTool {
     
     // Retrieve the model name
     if (args.length != 1) {
-      Log.error("Please specify only one single path to the input model.");
+      Log.error("0xEE747 Please specify only one single path to the input model.");
       return;
     }
     Log.info("HierAutomata DSL Tool", HierAutomataTool.class.getName());
@@ -96,10 +96,10 @@ public class HierAutomataTool {
       if (!parser.hasErrors() && optStateMachine.isPresent()) {
         return optStateMachine.get();
       }
-      Log.error("Model could not be parsed.");
+      Log.error("0xEE847 Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("Failed to parse " + model, e);
+      Log.error("0xEE647 Failed to parse " + model, e);
     }
     System.exit(1);
     return null;

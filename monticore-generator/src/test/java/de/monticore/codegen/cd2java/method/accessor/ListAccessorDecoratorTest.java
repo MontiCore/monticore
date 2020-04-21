@@ -95,23 +95,23 @@ public class ListAccessorDecoratorTest {
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 
-  @Ignore //TODO
   @Test
   public void testToArrayWithParamMethod() {
-//    ASTCDMethod method = getMethodBy("toArrayA", 1, this.methods);
-//    assertArrayOf(String.class, method.getMCReturnType());
-//    assertDeepEquals(PUBLIC, method.getModifier());
-//    ASTCDParameter parameter = method.getCDParameter(0);
-//    assertArrayOf(String.class, parameter.getMCType());
-//    assertEquals("array", parameter.getName());
+    ASTCDMethod method = getMethodBy("toArrayA", 1, this.methods);
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertArrayOf(String.class, method.getMCReturnType().getMCType());
+    assertDeepEquals(PUBLIC, method.getModifier());
+    ASTCDParameter parameter = method.getCDParameter(0);
+    assertArrayOf(String.class, parameter.getMCType());
+    assertEquals("array", parameter.getName());
   }
 
-  @Ignore //TODO
   @Test
   public void testToArrayMethod() {
-//    ASTCDMethod method = getMethodBy("toArrayA", 0, this.methods);
-//    assertArrayOf(Object.class, method.getMCReturnType());
-//    assertDeepEquals(PUBLIC, method.getModifier());
+    ASTCDMethod method = getMethodBy("toArrayA", 0, this.methods);
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertArrayOf(Object.class, method.getMCReturnType().getMCType());
+    assertDeepEquals(PUBLIC, method.getModifier());
   }
 
   @Test
