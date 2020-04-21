@@ -21,7 +21,7 @@ public class ComponetTranslationTest {
     componentCD = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AbstractProd.mc4")).get();
     nonComponentCD = TestHelper.parseAndTransform(Paths
-        .get("src/test/resources/mc2cdtransformation/AstRule.mc4")).get();
+        .get("src/test/resources/mc2cdtransformation/AstRuleInheritance.mc4")).get();
   }
 
   @Test

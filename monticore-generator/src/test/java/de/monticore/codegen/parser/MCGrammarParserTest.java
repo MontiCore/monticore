@@ -144,6 +144,16 @@ public class MCGrammarParserTest {
   }
 
   @Test
+  public void testAutomatonWithInvsAndStartRule() throws IOException {
+    String model = "src/test/resources/de/monticore/script/AutomatonWithInvsAndStartRule.mc4";
+
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Optional<ASTMCGrammar> result = parser.parse(model);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+  }
+
+  @Test
   public void testGrammarSymbolTableInfo() throws IOException {
     String model = "src/test/resources/de/monticore/AutomatonST.mc4";
 

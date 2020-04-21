@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.interfaces;
+
+grammar InterfaceExtensionPartialImpl extends mc.feature.interfaces.Sup {
+
+  interface XYZ;
+
+  interface ABCDEF extends XYZ;
+
+  Foo implements XYZ;
+}

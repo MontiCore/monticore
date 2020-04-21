@@ -91,7 +91,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
-    assertDeepEquals("de.monticore.codegen.symboltable.automaton._visitor.AutomatonScopeVisitor", symbolTablePrinter.getInterface(0));
+    assertDeepEquals("de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor", symbolTablePrinter.getInterface(0));
   }
 
   @Test

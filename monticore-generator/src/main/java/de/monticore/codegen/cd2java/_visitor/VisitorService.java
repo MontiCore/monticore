@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_SUFFIX;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_SUFFIX;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 public class VisitorService extends AbstractService<VisitorService> {
@@ -137,45 +135,6 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getPackage(cdDefinitionSymbol) + "." + getDelegatorVisitorSimpleName(cdDefinitionSymbol);
   }
 
-  /**
-   * scope visitor name e.g. AutomataScopeVisitor
-   */
-
-  public String getScopeVisitorSimpleName() {
-    return getScopeVisitorSimpleName(getCDSymbol());
-  }
-
-  public String getScopeVisitorSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + SCOPE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
-  }
-
-  public String getScopeVisitorFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getScopeVisitorSimpleName(cdSymbol);
-  }
-
-  public String getScopeVisitorFullName() {
-    return getScopeVisitorFullName(getCDSymbol());
-  }
-
-  /**
-   * symbol visitor name e.g. AutomataSymbolVisitor
-   */
-
-  public String getSymbolVisitorSimpleName() {
-    return getSymbolVisitorSimpleName(getCDSymbol());
-  }
-
-  public String getSymbolVisitorSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + SYMBOL_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
-  }
-
-  public String getSymbolVisitorFullName() {
-    return getSymbolVisitorFullName(getCDSymbol());
-  }
-
-  public String getSymbolVisitorFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getSymbolVisitorSimpleName(cdSymbol);
-  }
 
   /**
    * other helpful methods
