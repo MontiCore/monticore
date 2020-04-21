@@ -5,6 +5,8 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import g1.G1Mill;
+import g3.G3Mill;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -15,9 +17,7 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import g1._ast.ASTT;
 import g1._ast.ASTTBuilder;
-import g1._ast.G1Mill;
-import g2._ast.G2Mill;
-import g3._ast.G3Mill;
+import g2.G2Mill;
 
 public class BuildersG1G2Test {
   
