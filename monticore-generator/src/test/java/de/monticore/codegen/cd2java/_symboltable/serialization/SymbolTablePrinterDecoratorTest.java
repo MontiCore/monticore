@@ -53,6 +53,8 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   private static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
 
+  private static final String JSON_PRINTER = "de.monticore.symboltable.serialization.JsonPrinter";
+
   @Before
   public void setUp() {
     Log.init();
@@ -99,9 +101,15 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructor() {
-    assertEquals(1, symbolTablePrinter.getCDConstructorList().size());
+    assertEquals(2, symbolTablePrinter.getCDConstructorList().size());
     ASTCDConstructor astcdConstructor = symbolTablePrinter.getCDConstructor(0);
     assertDeepEquals(PUBLIC, astcdConstructor.getModifier());
+
+    ASTCDConstructor constructor2 = symbolTablePrinter.getCDConstructor(1);
+    assertDeepEquals(PUBLIC, constructor2.getModifier());
+    assertEquals(1, constructor2.sizeCDParameters());
+    assertEquals("printer", constructor2.getCDParameter(0).getName());
+    assertDeepEquals(this.mcTypeFacade.createQualifiedType(JSON_PRINTER), constructor2.getCDParameter(0).getMCType());
   }
 
   @Test
@@ -113,7 +121,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   public void testJsonPrinterAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("printer", symbolTablePrinter);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("de.monticore.symboltable.serialization.JsonPrinter", astcdAttribute.getMCType());
+    assertDeepEquals(JSON_PRINTER, astcdAttribute.getMCType());
   }
 
   @Test

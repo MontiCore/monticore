@@ -1,10 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.serialization;
 
-import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
@@ -24,7 +22,6 @@ import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
@@ -73,7 +70,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         .addInterface(getMCTypeFacade().createQualifiedType(scopeVisitorFullName))
         .addCDAttribute(createJsonPrinterAttribute())
         .addAllCDAttributes(symbolTablePrinterDelegates)
-        .addCDConstructor(createSymbolTablePrinterConstructor(symbolTablePrinterName,symbolTablePrinterDelegates))
+        .addAllCDConstructors(createConstructors(symbolTablePrinterName,symbolTablePrinterDelegates))
         .addCDMethod(createGetJsonPrinterMethod())
         .addCDMethod(createSetJsonPrinterMethod())
         .addCDMethod(createRealThisMethod(symbolTablePrinterName))
@@ -97,12 +94,12 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
   protected List<String> getDelegateClassNames() {
     List<String> classNames = new ArrayList<>();
     for(CDDefinitionSymbol cdDefinitionSymbol:symbolTableService.getSuperCDsTransitive()) {
-      String name = "";
-      if(null!=cdDefinitionSymbol.getPackageName() && !cdDefinitionSymbol.getPackageName().equals("")){
-        name+=cdDefinitionSymbol.getPackageName()+".";
-      }
-       classNames.add(name+cdDefinitionSymbol.getName().toLowerCase()
-           +"."+SYMBOL_TABLE_PACKAGE+"."+SERIALIZATION_PACKAGE+"."+cdDefinitionSymbol.getName()+SYMBOL_TABLE_PRINTER_SUFFIX);
+        String name = "";
+        if(null!=cdDefinitionSymbol.getPackageName() && !cdDefinitionSymbol.getPackageName().equals("")){
+          name+=cdDefinitionSymbol.getPackageName()+".";
+        }
+         classNames.add(name+cdDefinitionSymbol.getName().toLowerCase()
+             +"."+SYMBOL_TABLE_PACKAGE+"."+SERIALIZATION_PACKAGE+"."+cdDefinitionSymbol.getName()+SYMBOL_TABLE_PRINTER_SUFFIX);
     }
     return classNames;
   }
@@ -120,17 +117,29 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     return attributes;
   }
 
-  protected ASTCDConstructor createSymbolTablePrinterConstructor(String symbolTablePrinterName,List<ASTCDAttribute> symbolTablePrinterDelegates){
+  protected List<ASTCDConstructor> createConstructors(String symbolTablePrinterName,List<ASTCDAttribute> symbolTablePrinterDelegates){
+    List<ASTCDConstructor> constructors = new ArrayList<>();
+
     MCFullGenericTypesPrettyPrinter prettyPrinter = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC,symbolTablePrinterName);
-    StringBuilder sb = new StringBuilder("this.printer = new "+ JSON_PRINTER+"();\n");
+    StringBuilder sb = new StringBuilder("this(new "+ JSON_PRINTER+"());\n");
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint(sb.toString()));
+    constructors.add(constructor);
+
+    List<ASTCDParameter> constructorParameters = new ArrayList<>();
+    String parameterName = "printer";
+    constructorParameters.add(getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(JSON_PRINTER), parameterName));
+    ASTCDConstructor constructorB = getCDConstructorFacade().createConstructor(PUBLIC, symbolTablePrinterName, constructorParameters);
+    StringBuilder sb2 = new StringBuilder("this.printer = "+parameterName+";\n");
     for(ASTCDAttribute delegate: symbolTablePrinterDelegates){
       String attributeName = delegate.getName();
       String typeName = prettyPrinter.prettyprint(delegate.getMCType());
-      sb.append("  this.").append(attributeName).append(" = new ").append(typeName).append("();\n");
+      sb2.append("  this.").append(attributeName).append(" = new ").append(typeName).append("(").append(parameterName).append(");\n");
     }
-    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint(sb.toString()));
-    return constructor;
+    this.replaceTemplate(EMPTY_BODY, constructorB, new StringHookPoint(sb2.toString()));
+    constructors.add(constructorB);
+
+    return constructors;
   }
 
   protected ASTCDAttribute createJsonPrinterAttribute() {
