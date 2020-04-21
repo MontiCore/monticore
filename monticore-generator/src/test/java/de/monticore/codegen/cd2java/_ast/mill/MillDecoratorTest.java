@@ -50,9 +50,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
 //    this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 //
 //    ASTService astService = new ASTService(decoratedCompilationUnit);
-//    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
 //
-//    MillDecorator decorator = new MillDecorator(this.glex, astService, visitorService);
+//    MillDecorator decorator = new MillDecorator(this.glex, astService);
 //    this.millClass = decorator.decorate(decoratedCompilationUnit);
 //  }
 //

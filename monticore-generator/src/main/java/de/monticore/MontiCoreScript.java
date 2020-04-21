@@ -24,6 +24,7 @@ import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
+import de.monticore.codegen.cd2java._ast.mill.CDMillDecorator;
 import de.monticore.codegen.cd2java._ast.mill.MillDecorator;
 import de.monticore.codegen.cd2java._ast.mill.MillForSuperDecorator;
 import de.monticore.codegen.cd2java._ast_emf.ASTEmfCDDecorator;
@@ -630,16 +631,16 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   private ASTCDCompilationUnit generateMill(ASTCDCompilationUnit cd, ASTCDCompilationUnit visitorCD, GlobalExtensionManagement glex,
                                             IterablePath handCodedPath) {
     ASTService astService = new ASTService(cd);
-    VisitorService visitorService = new VisitorService(cd);
     MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, astService);
-    MillDecorator millDecorator = new MillDecorator(glex, millForSuperDecorator, astService, visitorService);
+    MillDecorator millDecorator = new MillDecorator(glex, astService);
+    CDMillDecorator cdMillDecorator = new CDMillDecorator(glex, millDecorator, millForSuperDecorator);
 
     // set correct package name for ast cd
     ASTCDCompilationUnit astCD = cd.deepClone();
     astCD.addPackage(astCD.getCDDefinition().getName().toLowerCase());
     astCD.addPackage(AST_PACKAGE);
 
-    ASTCDCompilationUnit millCD = millDecorator.decorate(Lists.newArrayList(astCD, visitorCD));
+    ASTCDCompilationUnit millCD = cdMillDecorator.decorate(Lists.newArrayList(astCD, visitorCD));
 
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);

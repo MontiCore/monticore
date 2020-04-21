@@ -31,28 +31,18 @@ import static de.monticore.codegen.cd2java._ast.mill.MillConstants.*;
 /**
  * created mill class for a grammar
  */
-public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, ASTCDCompilationUnit> {
-
-  protected final MillForSuperDecorator millForSuperDecorator;
+public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, ASTCDClass> {
 
   protected final AbstractService<?> service;
-  protected final VisitorService visitorService;
-
-  public static final String ALTERNATIVE_QUALIFIER = "alternative_qualifier";
 
   public MillDecorator(final GlobalExtensionManagement glex,
-                       final MillForSuperDecorator millForSuperDecorator,
-                       final AbstractService service,
-                       final VisitorService visitorService) {
+                       final AbstractService service) {
     super(glex);
-    this.millForSuperDecorator = millForSuperDecorator;
     this.service = service;
-    this.visitorService = visitorService;
   }
 
-  public ASTCDCompilationUnit decorate(final List<ASTCDCompilationUnit> cdList) {
-    ASTCDCompilationUnit mainCD = cdList.get(0);
-    String millClassName = mainCD.getCDDefinition().getName() + MILL_SUFFIX;
+  public ASTCDClass decorate(final List<ASTCDCompilationUnit> cdList) {
+    String millClassName = cdList.get(0).getCDDefinition().getName() + MILL_SUFFIX;
     ASTMCType millType = this.getMCTypeFacade().createQualifiedType(millClassName);
 
     List<CDDefinitionSymbol> superSymbolList = service.getSuperCDsTransitive();
@@ -108,29 +98,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     ASTCDMethod resetMethod = addResetMethod(allClasses, superSymbolList);
     millClass.addCDMethod(resetMethod);
 
-    List<ASTCDClass> millForSuperClasses = millForSuperDecorator.decorate(mainCD);
-
-    // create package at the top level of the grammar package -> remove _ast package
-    List<String> topLevelPackage = new ArrayList<>(mainCD.getPackageList());
-    topLevelPackage.remove(topLevelPackage.size() - 1);
-
-    ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
-        .setName(mainCD.getCDDefinition().getName())
-        .addCDClass(millClass)
-        .addAllCDClasss(millForSuperClasses)
-        .build();
-
-    for (ASTCDClass cdClass : astCD.getCDClassList()) {
-      this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(topLevelPackage));
-      if (cdClass.isPresentModifier()) {
-        this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
-      }
-    }
-
-    return CD4AnalysisMill.cDCompilationUnitBuilder()
-        .setPackageList(topLevelPackage)
-        .setCDDefinition(astCD)
-        .build();
+    return millClass;
   }
 
   protected List<String> getAttributeNameList(List<ASTCDClass> astcdClasses) {
