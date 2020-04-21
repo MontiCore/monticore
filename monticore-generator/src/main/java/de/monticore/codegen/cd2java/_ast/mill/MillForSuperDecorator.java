@@ -53,8 +53,10 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
       String millClassName = superSymbol.getName() + MILL_FOR + astcdDefinition.getName();
       List<ASTCDMethod> builderMethodsList = addBuilderMethodsForSuper(astcdClassList, superSymbol);
+      String basePackage = service.getBasePackage(superSymbol).isEmpty() ? "" : service.getBasePackage(superSymbol) + ".";
+
       ASTMCQualifiedType superclass = this.getMCTypeFacade().createQualifiedType(
-          service.getASTPackage(superSymbol) + "." + superSymbol.getName() + MILL_SUFFIX);
+          basePackage + superSymbol.getName().toLowerCase() + "." + superSymbol.getName() + MILL_SUFFIX);
 
       superMills.add(CD4AnalysisMill.cDClassBuilder()
           .setModifier(PUBLIC.build())
@@ -96,7 +98,8 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
       // Add method body based on whether method is overridden by this cdType
       if (firstClasses.contains(cdType)) {
-        ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX);
+        String packageDef = service.getASTPackage(superSymbol);
+        ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(packageDef+"."+astName + BUILDER_SUFFIX);
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
         this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderForSuperMethod",
             astcdDefinition.getName() + MILL_SUFFIX, methodName));

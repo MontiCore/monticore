@@ -1,6 +1,6 @@
 // (c) https://github.com/MontiCore/monticore
 
-package de.monticore.types.mcbasictypes._ast;
+package de.monticore.types.mcbasictypes;
 
 
 import de.monticore.prettyprint.IndentPrinter;

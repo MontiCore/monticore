@@ -2,6 +2,7 @@
 package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.testjavaclassexpressions._ast.ASTExtType;
 import de.monticore.expressions.testjavaclassexpressions._parser.TestJavaClassExpressionsParser;

@@ -61,7 +61,7 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSuperClass() {
     assertTrue(millClass.isPresentSuperclass());
-    assertDeepEquals("de.monticore.codegen.ast.lexicals._ast.LexicalsMill", millClass.getSuperclass());
+    assertDeepEquals("de.monticore.codegen.ast.lexicals.LexicalsMill", millClass.getSuperclass());
   }
 
   @Test

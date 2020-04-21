@@ -84,13 +84,15 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       }
 
       List<ASTCDMethod> builderMethodsList = addBuilderMethods(classList, cd);
-      // add builder methods for each class
-      List<ASTCDMethod> superMethodsList = addSuperBuilderMethods(superSymbolList, classList);
+
 
       millClass.addAllCDAttributes(attributeList);
       millClass.addAllCDMethods(builderMethodsList);
-      millClass.addAllCDMethods(superMethodsList);
     }
+
+    // add builder methods for each class
+    List<ASTCDMethod> superMethodsList = addSuperBuilderMethods(superSymbolList, allClasses);
+    millClass.addAllCDMethods(superMethodsList);
 
     ASTCDMethod initMeMethod = addInitMeMethod(millType, allClasses);
     millClass.addCDMethod(initMeMethod);
@@ -176,14 +178,15 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
         for (ASTCDClass superClass : copiedList) {
           if (!service.isClassOverwritten(superClass, classList)) {
-            String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
-            ASTMCQualifiedType superAstType = this.getMCTypeFacade().createQualifiedType(packageName + superClass.getName() + BUILDER_SUFFIX);
+            String astPackageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
+            ASTMCQualifiedType superAstType = this.getMCTypeFacade().createQualifiedType(astPackageName + superClass.getName() + BUILDER_SUFFIX);
             String methodName = StringTransformations.uncapitalize(superClass.getName().replaceFirst(AST_PREFIX, "")) + BUILDER_SUFFIX;
 
             // add builder method
             ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, methodName);
             if (!service.isMethodAlreadyDefined(createDelegateMethod, superMethods)) {
-              this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("_ast.mill.BuilderDelegatorMethod", packageName + superSymbol.getName(), methodName));
+              String millPackageName = superSymbol.getFullName().toLowerCase() + ".";
+              this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("_ast.mill.BuilderDelegatorMethod", millPackageName + superSymbol.getName(), methodName));
               superMethods.add(createDelegateMethod);
             }
           }

@@ -149,11 +149,11 @@ public class AbstractService<T extends AbstractService> {
     return getCDSymbol().getName();
   }
 
-  protected String getBasePackage(CDDefinitionSymbol cdSymbol) {
+  public String getBasePackage(CDDefinitionSymbol cdSymbol) {
     return cdSymbol.getPackageName();
   }
 
-  private String getBasePackage() {
+  public String getBasePackage() {
     return getBasePackage(getCDSymbol());
   }
 
