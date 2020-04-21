@@ -107,7 +107,7 @@ for (astGrammar in getParsedGrammars()) {
   decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
 
-  // decorate and generate CD for the '_ast' package
+  // decorate and generate CD for the mills
   decoratedASTClassDiagramm = decorateMill(glex, cdScope, astClassDiagram,decoratedVisitorCD, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
 

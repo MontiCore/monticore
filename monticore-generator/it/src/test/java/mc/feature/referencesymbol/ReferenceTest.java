@@ -3,6 +3,7 @@ package mc.feature.referencesymbol;
 
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
+import mc.feature.referencesymbol.reference.ReferenceMill;
 import mc.feature.referencesymbol.reference._ast.*;
 import mc.feature.referencesymbol.reference._parser.ReferenceParser;
 import mc.feature.referencesymbol.reference._symboltable.*;

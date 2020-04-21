@@ -4,16 +4,16 @@ package mc.feature.visitor.inheritance.delegator;
 
 import static org.junit.Assert.assertEquals;
 
+import mc.feature.visitor.inheritance.a.AMill;
+import mc.feature.visitor.inheritance.b.BMill;
 import org.junit.Before;
 import org.junit.Test;
 
-import mc.feature.visitor.inheritance.a._ast.AMill;
 import mc.feature.visitor.inheritance.a._ast.ASTXA;
 import mc.feature.visitor.inheritance.a._visitor.AVisitor;
 import mc.feature.visitor.inheritance.b._ast.ASTXB;
 import mc.feature.visitor.inheritance.b._ast.ASTYB;
 import mc.feature.visitor.inheritance.b._ast.ASTZB;
-import mc.feature.visitor.inheritance.b._ast.BMill;
 import mc.feature.visitor.inheritance.b._visitor.BVisitor;
 import mc.feature.visitor.inheritance.c._ast.ASTXC;
 import mc.feature.visitor.inheritance.c._ast.ASTYC;
@@ -68,7 +68,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
   
   @Test
   public void testSimpleComposed3() {
-    v.handle(mc.feature.visitor.inheritance.c._ast.CMill.xCBuilder().build());
+    v.handle(mc.feature.visitor.inheritance.c.CMill.xCBuilder().build());
     assertEquals("SimpleCVisitor.hXCSimpleCVisitor.vXCSimpleCVisitor.tXCSimpleCVisitor.eXC",
         run.toString());
   }
@@ -76,7 +76,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
   @Test
   public void testSimpleComposed4() {
     ASTYB yb = BMill.yBBuilder().build();
-    ASTYC yc = mc.feature.visitor.inheritance.c._ast.CMill.yCBuilder()
+    ASTYC yc = mc.feature.visitor.inheritance.c.CMill.yCBuilder()
         .setYB(yb)
         .build();
     v.handle(yc);
