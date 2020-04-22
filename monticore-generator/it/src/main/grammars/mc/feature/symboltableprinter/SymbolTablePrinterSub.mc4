@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.symboltableprinter;
+
+grammar SymbolTablePrinterSub extends mc.feature.symboltableprinter.SymbolTablePrinterSup1,
+                                        mc.feature.symboltableprinter.SymbolTablePrinterSup2{
+
+    symbol C = "test" Name;
+}
+    

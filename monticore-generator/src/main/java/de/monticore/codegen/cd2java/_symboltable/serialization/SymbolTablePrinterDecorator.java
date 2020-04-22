@@ -72,7 +72,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         .addAllCDAttributes(symbolTablePrinterDelegates)
         .addAllCDConstructors(createConstructors(symbolTablePrinterName,symbolTablePrinterDelegates))
         .addCDMethod(createGetJsonPrinterMethod())
-        .addCDMethod(createSetJsonPrinterMethod())
+        .addCDMethod(createSetJsonPrinterMethod(symbolTablePrinterDelegates))
         .addCDMethod(createRealThisMethod(symbolTablePrinterName))
         .addCDMethod(createGetSerializedStringMethod())
         .addCDMethod(createFilterRelevantSubScopesMethod(scopeInterfaceFullName))
@@ -134,7 +134,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     for(ASTCDAttribute delegate: symbolTablePrinterDelegates){
       String attributeName = delegate.getName();
       String typeName = prettyPrinter.prettyprint(delegate.getMCType());
-      sb2.append("  this.").append(attributeName).append(" = new ").append(typeName).append("(").append(parameterName).append(");\n");
+      sb2.append("    this.").append(attributeName).append(" = new ").append(typeName).append("(").append(parameterName).append(");\n");
     }
     this.replaceTemplate(EMPTY_BODY, constructorB, new StringHookPoint(sb2.toString()));
     constructors.add(constructorB);
@@ -155,11 +155,16 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     return method;
   }
 
-  protected ASTCDMethod createSetJsonPrinterMethod(){
+  protected ASTCDMethod createSetJsonPrinterMethod(List<ASTCDAttribute> delegates){
     ASTMCType type = getMCTypeFacade().createQualifiedType(JSON_PRINTER);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(type,"printer");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC,"setJsonPrinter", parameter);
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("this.printer = printer;"));
+    StringBuilder sb = new StringBuilder("this.printer=printer;\n");
+    for(ASTCDAttribute delegate: delegates){
+      sb.
+          append("    ").append(delegate.getName()).append(".setJsonPrinter(printer);\n");
+    }
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(sb.toString()));
     return method;
   }
 
