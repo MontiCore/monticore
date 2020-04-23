@@ -93,13 +93,13 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
   protected List<String> getDelegateClassNames() {
     List<String> classNames = new ArrayList<>();
-    for(CDDefinitionSymbol cdDefinitionSymbol:symbolTableService.getSuperCDsTransitive()) {
-        String name = "";
-        if(null!=cdDefinitionSymbol.getPackageName() && !cdDefinitionSymbol.getPackageName().equals("")){
-          name+=cdDefinitionSymbol.getPackageName()+".";
-        }
-         classNames.add(name+cdDefinitionSymbol.getName().toLowerCase()
-             +"."+SYMBOL_TABLE_PACKAGE+"."+SERIALIZATION_PACKAGE+"."+cdDefinitionSymbol.getName()+SYMBOL_TABLE_PRINTER_SUFFIX);
+    for(CDDefinitionSymbol cdDefinitionSymbol:symbolTableService.getSuperCDsDirect()) {
+      String name = "";
+      if(null!=cdDefinitionSymbol.getPackageName() && !cdDefinitionSymbol.getPackageName().equals("")){
+        name+=cdDefinitionSymbol.getPackageName()+".";
+      }
+      classNames.add(name+cdDefinitionSymbol.getName().toLowerCase()
+          +"."+SYMBOL_TABLE_PACKAGE+"."+SERIALIZATION_PACKAGE+"."+cdDefinitionSymbol.getName()+SYMBOL_TABLE_PRINTER_SUFFIX);
     }
     return classNames;
   }
