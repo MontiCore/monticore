@@ -139,8 +139,7 @@ public class ParserGeneratorTest {
 
     Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     createSymbolsFromAST(symbolTable, ast.get());
-    ParserGenerator.generateParser(glex, grammar, symbolTable, IterablePath.empty(),
-        new File("target/generated-test-sources/parsertest"));
+    generateG4File(glex, grammar, symbolTable, new File("target/generated-test-sources/parsertest"));
     String g4File = "target/generated-test-sources/parsertest/de/monticore/inherited/sub/subgrammar/_parser/SubgrammarAntlr.g4";
     assertTrue(ast.get().isPresentSymbol());
     String[] args = {};
