@@ -304,6 +304,11 @@ public class AbstractService<T extends AbstractService> {
     return classList.stream().anyMatch(x -> x.getName().endsWith(astcdClass.getName()));
   }
 
+  public boolean isClassOverwritten(String className, List<ASTCDClass> classList) {
+    //if there is a Class with the same name in the current CompilationUnit, then the methods are only generated once
+    return classList.stream().anyMatch(x -> x.getName().equals(className));
+  }
+
   public boolean isMethodAlreadyDefined(String methodname, List<ASTCDMethod> definedMethods) {
     return definedMethods
         .stream()

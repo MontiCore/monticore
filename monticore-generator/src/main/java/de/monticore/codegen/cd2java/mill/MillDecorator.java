@@ -5,7 +5,6 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -66,12 +65,12 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     List<ASTCDClass> allClasses = new ArrayList<>();
 
     for (ASTCDCompilationUnit cd : cdList) {
-      // filter out all classes that are abstract and remove AST prefix
+      // filter out all classes that are abstract and only builder classes
       List<ASTCDClass> classList = cd.getCDDefinition().deepClone().getCDClassList()
           .stream()
           .filter(ASTCDClass::isPresentModifier)
           .filter(x -> !x.getModifier().isAbstract())
-          .filter(x -> !x.getName().endsWith(BUILDER_SUFFIX))
+          .filter(x -> x.getName().endsWith(BUILDER_SUFFIX))
           .collect(Collectors.toList());
 
 
@@ -84,10 +83,12 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
           .collect(Collectors.toList());
       // remove TOP suffix
       topClassList.forEach(x -> x.setName(x.getName().substring(0, x.getName().length() - 3)));
+      // check if builder classes
       topClassList = topClassList
           .stream()
-          .filter(x -> !x.getName().endsWith(BUILDER_SUFFIX))
+          .filter(x -> x.getName().endsWith(BUILDER_SUFFIX))
           .collect(Collectors.toList());
+      // add to classes which need a builder method
       classList.addAll(topClassList);
 
       // add to all class list for reset and initMe method
@@ -129,26 +130,26 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
   protected ASTCDMethod addGetMillMethods(ASTMCType millType) {
     ASTCDMethod getMillMethod = this.getCDMethodFacade().createMethod(PROTECTED_STATIC, millType, GET_MILL);
-    this.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint("_ast.mill.GetMillMethod", millType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())));
+    this.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint("mill.GetMillMethod", millType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())));
     return getMillMethod;
   }
 
   protected ASTCDMethod addInitMeMethod(ASTMCType millType, List<ASTCDClass> astcdClassList) {
     ASTCDParameter astcdParameter = getCDParameterFacade().createParameter(millType, "a");
     ASTCDMethod initMeMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, INIT_ME, astcdParameter);
-    this.replaceTemplate(EMPTY_BODY, initMeMethod, new TemplateHookPoint("_ast.mill.InitMeMethod", getAttributeNameList(astcdClassList)));
+    this.replaceTemplate(EMPTY_BODY, initMeMethod, new TemplateHookPoint("mill.InitMeMethod", getAttributeNameList(astcdClassList)));
     return initMeMethod;
   }
 
   protected ASTCDMethod addInitMethod(ASTMCType millType, List<CDDefinitionSymbol> superSymbolList) {
     ASTCDMethod initMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, INIT);
-    this.replaceTemplate(EMPTY_BODY, initMethod, new TemplateHookPoint("_ast.mill.InitMethod", millType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()), superSymbolList));
+    this.replaceTemplate(EMPTY_BODY, initMethod, new TemplateHookPoint("mill.InitMethod", millType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()), superSymbolList));
     return initMethod;
   }
 
   protected ASTCDMethod addResetMethod(List<ASTCDClass> astcdClassList, List<CDDefinitionSymbol> superSymbolList) {
     ASTCDMethod resetMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, RESET);
-    this.replaceTemplate(EMPTY_BODY, resetMethod, new TemplateHookPoint("_ast.mill.ResetMethod", getAttributeNameList(astcdClassList), superSymbolList));
+    this.replaceTemplate(EMPTY_BODY, resetMethod, new TemplateHookPoint("mill.ResetMethod", getAttributeNameList(astcdClassList), superSymbolList));
     return resetMethod;
   }
 
@@ -158,20 +159,20 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     for (ASTCDClass astcdClass : astcdClassList) {
       String astName = astcdClass.getName();
       String packageDef = String.join(".", cd.getPackageList());
-      ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(packageDef + "." + astName + BUILDER_SUFFIX);
+      ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(packageDef + "." + astName);
       String methodName = astName.startsWith(AST_PREFIX) ?
-          StringTransformations.uncapitalize(astName.replaceFirst(AST_PREFIX, "")) + BUILDER_SUFFIX
-          :StringTransformations.uncapitalize(astName) + BUILDER_SUFFIX;
+          StringTransformations.uncapitalize(astName.replaceFirst(AST_PREFIX, ""))
+          : StringTransformations.uncapitalize(astName);
 
       // add public static Method for Builder
       ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, builderType, methodName);
       builderMethodsList.add(builderMethod);
-      this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("_ast.mill.BuilderMethod", astName, methodName));
+      this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.BuilderMethod", astName, methodName));
 
       // add protected Method for Builder
       ASTCDMethod protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
       builderMethodsList.add(protectedMethod);
-      this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderMethod", builderType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())));
+      this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", builderType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())));
     }
 
     return builderMethodsList;
@@ -191,7 +192,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
             superMethods.addAll(getSuperSymbolMethods(superSymbol, type));
           }
           if (type.isIsClass() && !type.isIsAbstract() && type.isPresentAstNode() &&
-              !service.isClassOverwritten(type.getAstNode(), classList)) {
+              !service.isClassOverwritten(type.getName() + BUILDER_SUFFIX, classList)) {
             superMethods.addAll(getSuperASTMethods(superSymbol, type, superMethods));
           }
         }
@@ -235,7 +236,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, methodName);
     if (!service.isMethodAlreadyDefined(createDelegateMethod, alreadyDefinedMethods)) {
       String millPackageName = superSymbol.getFullName().toLowerCase() + ".";
-      this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("_ast.mill.BuilderDelegatorMethod", millPackageName + superSymbol.getName(), methodName));
+      this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("mill.BuilderDelegatorMethod", millPackageName + superSymbol.getName(), methodName));
       superMethods.add(createDelegateMethod);
     }
     return superMethods;

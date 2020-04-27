@@ -619,24 +619,20 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
 
   public ASTCDCompilationUnit decorateMill(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
-                                           ASTCDCompilationUnit astClassDiagram, ASTCDCompilationUnit visitorCD,
-                                           ASTCDCompilationUnit symbolCD, IterablePath handCodedPath) {
-    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
-    return generateMill(preparedCD, visitorCD, symbolCD, glex, handCodedPath);
+                                           ASTCDCompilationUnit cd, ASTCDCompilationUnit astClassDiagram,
+                                           ASTCDCompilationUnit visitorCD, ASTCDCompilationUnit symbolCD,
+                                           IterablePath handCodedPath) {
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, cd);
+    return generateMill(preparedCD, astClassDiagram, visitorCD, symbolCD, glex, handCodedPath);
   }
 
-  private ASTCDCompilationUnit generateMill(ASTCDCompilationUnit cd, ASTCDCompilationUnit visitorCD,
+  private ASTCDCompilationUnit generateMill(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD, ASTCDCompilationUnit visitorCD,
                                             ASTCDCompilationUnit symbolCD, GlobalExtensionManagement glex,
                                             IterablePath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService);
     MillDecorator millDecorator = new MillDecorator(glex, symbolTableService);
     CDMillDecorator cdMillDecorator = new CDMillDecorator(glex, millDecorator, millForSuperDecorator);
-
-    // set correct package name for ast cd
-    ASTCDCompilationUnit astCD = cd.deepClone();
-    astCD.addPackage(astCD.getCDDefinition().getName().toLowerCase());
-    astCD.addPackage(AST_PACKAGE);
 
     ASTCDCompilationUnit millCD = cdMillDecorator.decorate(Lists.newArrayList(astCD, visitorCD, symbolCD));
 

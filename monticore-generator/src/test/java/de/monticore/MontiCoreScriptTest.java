@@ -565,7 +565,7 @@ public class MontiCoreScriptTest {
     ASTCDCompilationUnit cd = mc.deriveCD(grammar, glex, cd4AGlobalScope);
     IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
 
-    ASTCDCompilationUnit millCd = mc.decorateMill(glex, cd4AGlobalScope, cd, getVisitorCD(cd), getSymbolCD(cd), handcodedPath);
+    ASTCDCompilationUnit millCd = mc.decorateMill(glex, cd4AGlobalScope, cd, getASTCD(cd), getVisitorCD(cd), getSymbolCD(cd), handcodedPath);
 
     assertNotNull(millCd);
     assertNotNull(millCd.getCDDefinition());
@@ -609,5 +609,17 @@ public class MontiCoreScriptTest {
 
     IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
     return mc.decorateForSymbolTablePackage(glex, cd4AGlobalScope, cd, symbolCD, scopeCD, handcodedPath);
+  }
+
+  protected ASTCDCompilationUnit getASTCD(ASTCDCompilationUnit decoratedCompilationUnit) {
+    MontiCoreScript mc = new MontiCoreScript();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    mc.createSymbolsFromAST(symbolTable, grammar);
+    CD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
+    ASTCDCompilationUnit cd = mc.deriveCD(grammar, glex, cd4AGlobalScope);
+    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+
+    return mc.decorateForASTPackage(glex, cd4AGlobalScope, cd, handcodedPath);
   }
 }

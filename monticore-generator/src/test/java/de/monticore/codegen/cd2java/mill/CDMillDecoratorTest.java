@@ -5,12 +5,23 @@ import com.google.common.collect.Lists;
 import de.monticore.MontiCoreScript;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
+import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.*;
+import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
+import de.monticore.codegen.cd2java._ast.ast_interface.ASTInterfaceDecorator;
+import de.monticore.codegen.cd2java._ast.ast_interface.ASTLanguageInterfaceDecorator;
+import de.monticore.codegen.cd2java._ast.ast_interface.FullASTInterfaceDecorator;
+import de.monticore.codegen.cd2java._ast.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
+import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
+import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
+import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
+import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -24,6 +35,9 @@ import de.monticore.codegen.cd2java._symboltable.symbol.symbolloadermutator.Mand
 import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
 import de.monticore.codegen.cd2java._visitor.*;
 import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDecorator;
+import de.monticore.codegen.cd2java.data.DataDecorator;
+import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
+import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.mc2cd.TestHelper;
@@ -77,14 +91,39 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     MillForSuperDecorator forSuperDecorator = new MillForSuperDecorator(this.glex, new ASTService(decoratedCompilationUnit));
     MillDecorator millDecorator = new MillDecorator(this.glex, symbolTableService);
 
-    // create ast package
-    ASTCDCompilationUnit astCD = decoratedCompilationUnit.deepClone();
-    astCD.addPackage(astCD.getCDDefinition().getName().toLowerCase());
-    astCD.addPackage(AST_PACKAGE);
-
     CDMillDecorator cdMillDecorator = new CDMillDecorator(this.glex, millDecorator, forSuperDecorator);
-    this.millCD = cdMillDecorator.decorate(Lists.newArrayList(astCD, getVisitorCD(), getSymbolCD()));
+    this.millCD = cdMillDecorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getSymbolCD()));
   }
+
+  protected ASTCDCompilationUnit getASTCD() {
+    ASTService astService = new ASTService(decoratedCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    NodeFactoryService nodeFactoryService = new NodeFactoryService(decoratedCompilationUnit);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, astService);
+    DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator, astService, new DataDecoratorUtil());
+    ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
+    ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, symbolTableService);
+    ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, nodeFactoryService,
+        astSymbolDecorator, astScopeDecorator, methodDecorator, symbolTableService);
+    ASTReferenceDecorator<ASTCDClass> astClassReferencedSymbolDecorator = new ASTReferenceDecorator<ASTCDClass>(glex, symbolTableService);
+    ASTReferenceDecorator<ASTCDInterface> astInterfaceReferencedSymbolDecorator = new ASTReferenceDecorator<ASTCDInterface>(glex, symbolTableService);
+    ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astClassReferencedSymbolDecorator);
+    ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), new ASTService(decoratedCompilationUnit));
+    ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
+    NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex, nodeFactoryService);
+    ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
+    EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex, astService), astService);
+    ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService,
+        astSymbolDecorator, astScopeDecorator, methodDecorator);
+    InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, new DataDecoratorUtil(), methodDecorator, astService);
+    FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator, astInterfaceReferencedSymbolDecorator);
+    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
+        astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
+    return astcdDecorator.decorate(decoratedCompilationUnit);
+  }
+
 
   protected ASTCDCompilationUnit getSymbolCD() {
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
