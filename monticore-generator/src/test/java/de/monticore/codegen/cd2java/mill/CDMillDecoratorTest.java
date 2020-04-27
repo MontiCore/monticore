@@ -73,9 +73,9 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
 
-    ASTService astService = new ASTService(decoratedCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     MillForSuperDecorator forSuperDecorator = new MillForSuperDecorator(this.glex, new ASTService(decoratedCompilationUnit));
-    MillDecorator millDecorator = new MillDecorator(this.glex, astService);
+    MillDecorator millDecorator = new MillDecorator(this.glex, symbolTableService);
 
     // create ast package
     ASTCDCompilationUnit astCD = decoratedCompilationUnit.deepClone();

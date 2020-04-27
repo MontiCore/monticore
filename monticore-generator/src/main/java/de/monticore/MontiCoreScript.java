@@ -628,9 +628,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   private ASTCDCompilationUnit generateMill(ASTCDCompilationUnit cd, ASTCDCompilationUnit visitorCD,
                                             ASTCDCompilationUnit symbolCD, GlobalExtensionManagement glex,
                                             IterablePath handCodedPath) {
-    ASTService astService = new ASTService(cd);
-    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, astService);
-    MillDecorator millDecorator = new MillDecorator(glex, astService);
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService);
+    MillDecorator millDecorator = new MillDecorator(glex, symbolTableService);
     CDMillDecorator cdMillDecorator = new CDMillDecorator(glex, millDecorator, millForSuperDecorator);
 
     // set correct package name for ast cd

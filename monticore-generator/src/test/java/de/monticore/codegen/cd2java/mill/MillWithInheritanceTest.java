@@ -15,6 +15,7 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -49,10 +50,10 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");
     glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
-    ASTService astService = new ASTService(decoratedCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
 
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
-    MillDecorator decorator = new MillDecorator(this.glex, astService);
+    MillDecorator decorator = new MillDecorator(this.glex, symbolTableService);
     this.millClass = decorator.decorate(Lists.newArrayList(decoratedCompilationUnit));
   }
 

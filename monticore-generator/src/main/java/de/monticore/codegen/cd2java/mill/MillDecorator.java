@@ -3,9 +3,12 @@ package de.monticore.codegen.cd2java.mill;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -29,10 +32,10 @@ import static de.monticore.codegen.cd2java.top.TopDecorator.TOP_SUFFIX;
  */
 public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, ASTCDClass> {
 
-  protected final AbstractService<?> service;
+  protected final SymbolTableService service;
 
   public MillDecorator(final GlobalExtensionManagement glex,
-                       final AbstractService service) {
+                       final SymbolTableService service) {
     super(glex);
     this.service = service;
   }
@@ -81,7 +84,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
           .collect(Collectors.toList());
       // remove TOP suffix
       topClassList.forEach(x -> x.setName(x.getName().substring(0, x.getName().length() - 3)));
-       topClassList = topClassList
+      topClassList = topClassList
           .stream()
           .filter(x -> !x.getName().endsWith(BUILDER_SUFFIX))
           .collect(Collectors.toList());
@@ -156,7 +159,9 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       String astName = astcdClass.getName();
       String packageDef = String.join(".", cd.getPackageList());
       ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(packageDef + "." + astName + BUILDER_SUFFIX);
-      String methodName = StringTransformations.uncapitalize(astName.replaceFirst(AST_PREFIX, "")) + BUILDER_SUFFIX;
+      String methodName = astName.startsWith(AST_PREFIX) ?
+          StringTransformations.uncapitalize(astName.replaceFirst(AST_PREFIX, "")) + BUILDER_SUFFIX
+          :StringTransformations.uncapitalize(astName) + BUILDER_SUFFIX;
 
       // add public static Method for Builder
       ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, builderType, methodName);
@@ -180,31 +185,58 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     // get super symbols
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
       if (superSymbol.isPresentAstNode()) {
-        // get super cdDefinition
-        ASTCDDefinition superDefinition = superSymbol.getAstNode().deepClone();
-        // filter out all abstract classes
-        List<ASTCDClass> copiedList = superDefinition.getCDClassList()
-            .stream()
-            .filter(ASTCDClass::isPresentModifier)
-            .filter(x -> !x.getModifier().isAbstract())
-            .collect(Collectors.toList());
-
-        for (ASTCDClass superClass : copiedList) {
-          if (!service.isClassOverwritten(superClass, classList)) {
-            String astPackageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
-            ASTMCQualifiedType superAstType = this.getMCTypeFacade().createQualifiedType(astPackageName + superClass.getName() + BUILDER_SUFFIX);
-            String methodName = StringTransformations.uncapitalize(superClass.getName().replaceFirst(AST_PREFIX, "")) + BUILDER_SUFFIX;
-
-            // add builder method
-            ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, methodName);
-            if (!service.isMethodAlreadyDefined(createDelegateMethod, superMethods)) {
-              String millPackageName = superSymbol.getFullName().toLowerCase() + ".";
-              this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("_ast.mill.BuilderDelegatorMethod", millPackageName + superSymbol.getName(), methodName));
-              superMethods.add(createDelegateMethod);
-            }
+        for (CDTypeSymbol type : superSymbol.getTypes()) {
+          if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+              && service.hasSymbolStereotype(type.getAstNode().getModifier())) {
+            superMethods.addAll(getSuperSymbolMethods(superSymbol, type));
+          }
+          if (type.isIsClass() && !type.isIsAbstract() && type.isPresentAstNode() &&
+              !service.isClassOverwritten(type.getAstNode(), classList)) {
+            superMethods.addAll(getSuperASTMethods(superSymbol, type, superMethods));
           }
         }
       }
+    }
+    return superMethods;
+  }
+
+  protected List<ASTCDMethod> getSuperSymbolMethods(CDDefinitionSymbol superSymbol, CDTypeSymbol type) {
+    List<ASTCDMethod> superMethods = new ArrayList<>();
+    // for prod with symbol property create delegate builder method
+    String symbolBuilderFullName = service.getSymbolBuilderFullName(type.getAstNode(), superSymbol);
+    String millFullName = service.getMillFullName(superSymbol);
+    String symbolBuilderSimpleName = StringTransformations.uncapitalize(service.getSymbolBuilderSimpleName(type.getAstNode()));
+    ASTCDMethod builderMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC,
+        getMCTypeFacade().createQualifiedType(symbolBuilderFullName), symbolBuilderSimpleName);
+
+    this.replaceTemplate(EMPTY_BODY, builderMethod, new StringHookPoint("return " + millFullName + "." + symbolBuilderSimpleName + "();"));
+    superMethods.add(builderMethod);
+
+    // create corresponding builder for SymbolLoader
+    String symbolLoaderBuilderFullName = service.getSymbolLoaderBuilderFullName(type.getAstNode(), superSymbol);
+    String symbolLoaderBuilderSimpleName = StringTransformations.uncapitalize(service.getSymbolLoaderBuilderSimpleName(type.getAstNode()));
+    ASTCDMethod builderLoaderMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC,
+        getMCTypeFacade().createQualifiedType(symbolLoaderBuilderFullName), symbolLoaderBuilderSimpleName);
+
+    this.replaceTemplate(EMPTY_BODY, builderLoaderMethod, new StringHookPoint("return " + millFullName + "." + symbolLoaderBuilderSimpleName + "();"));
+    superMethods.add(builderLoaderMethod);
+    return superMethods;
+  }
+
+
+  protected List<ASTCDMethod> getSuperASTMethods(CDDefinitionSymbol superSymbol, CDTypeSymbol type,
+                                                 List<ASTCDMethod> alreadyDefinedMethods) {
+    List<ASTCDMethod> superMethods = new ArrayList<>();
+    String astPackageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
+    ASTMCQualifiedType superAstType = this.getMCTypeFacade().createQualifiedType(astPackageName + type.getName() + BUILDER_SUFFIX);
+    String methodName = StringTransformations.uncapitalize(type.getName().replaceFirst(AST_PREFIX, "")) + BUILDER_SUFFIX;
+
+    // add builder method
+    ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, methodName);
+    if (!service.isMethodAlreadyDefined(createDelegateMethod, alreadyDefinedMethods)) {
+      String millPackageName = superSymbol.getFullName().toLowerCase() + ".";
+      this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("_ast.mill.BuilderDelegatorMethod", millPackageName + superSymbol.getName(), methodName));
+      superMethods.add(createDelegateMethod);
     }
     return superMethods;
   }

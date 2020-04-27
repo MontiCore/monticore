@@ -299,7 +299,7 @@ public class AbstractService<T extends AbstractService> {
   /**
    * checking for duplicate classes and methods
    */
-  public boolean isClassOverwritten(ASTCDClass astcdClass, List<ASTCDClass> classList) {
+  public boolean isClassOverwritten(ASTCDType astcdClass, List<ASTCDClass> classList) {
     //if there is a Class with the same name in the current CompilationUnit, then the methods are only generated once
     return classList.stream().anyMatch(x -> x.getName().endsWith(astcdClass.getName()));
   }
