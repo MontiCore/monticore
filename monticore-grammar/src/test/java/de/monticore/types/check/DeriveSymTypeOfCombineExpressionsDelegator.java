@@ -48,37 +48,31 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
     this.prettyPrinter = prettyPrinter;
 
     deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfCommonExpressions();
-    deriveSymTypeOfCommonExpressions.setScope(scope);
     deriveSymTypeOfCommonExpressions.setLastResult(lastResult);
     deriveSymTypeOfCommonExpressions.setPrettyPrinter(prettyPrinter);
     setCommonExpressionsVisitor(deriveSymTypeOfCommonExpressions);
 
     deriveSymTypeOfAssignmentExpressions = new DeriveSymTypeOfAssignmentExpressions();
-    deriveSymTypeOfAssignmentExpressions.setScope(scope);
     deriveSymTypeOfAssignmentExpressions.setLastResult(lastResult);
     deriveSymTypeOfAssignmentExpressions.setPrettyPrinter(prettyPrinter);
     setAssignmentExpressionsVisitor(deriveSymTypeOfAssignmentExpressions);
 
     deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
-    deriveSymTypeOfBitExpressions.setScope(scope);
     deriveSymTypeOfBitExpressions.setLastResult(lastResult);
     deriveSymTypeOfBitExpressions.setPrettyPrinter(prettyPrinter);
     setBitExpressionsVisitor(deriveSymTypeOfBitExpressions);
 
     deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
-    deriveSymTypeOfExpression.setScope(scope);
     deriveSymTypeOfExpression.setLastResult(lastResult);
     deriveSymTypeOfExpression.setPrettyPrinter(prettyPrinter);
     setExpressionsBasisVisitor(deriveSymTypeOfExpression);
 
     deriveSymTypeOfJavaClassExpressions = new DeriveSymTypeOfJavaClassExpressions();
-    deriveSymTypeOfJavaClassExpressions.setScope(scope);
     deriveSymTypeOfJavaClassExpressions.setLastResult(lastResult);
     deriveSymTypeOfJavaClassExpressions.setPrettyPrinter(prettyPrinter);
     setJavaClassExpressionsVisitor(deriveSymTypeOfJavaClassExpressions);
 
     deriveSymTypeOfSetExpressions = new DeriveSymTypeOfSetExpressions();
-    deriveSymTypeOfSetExpressions.setScope(scope);
     deriveSymTypeOfSetExpressions.setLastResult(lastResult);
     deriveSymTypeOfSetExpressions.setPrettyPrinter(prettyPrinter);
     setSetExpressionsVisitor(deriveSymTypeOfSetExpressions);
@@ -96,8 +90,6 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
     deriveSymTypeOfCombineExpressions = new DeriveSymTypeOfCombineExpressions(symTypeFromMCSimpleGenericTypes);
     deriveSymTypeOfCombineExpressions.setLastResult(lastResult);
     setCombineExpressionsWithLiteralsVisitor(deriveSymTypeOfCombineExpressions);
-
-    setScope(scope);
   }
 
   /**
@@ -131,19 +123,6 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
     deriveSymTypeOfJavaClassExpressions.setLastResult(lastResult);
     deriveSymTypeOfSetExpressions.setLastResult(lastResult);
     deriveSymTypeOfCombineExpressions.setLastResult(lastResult);
-  }
-
-  /**
-   * set the scope of the typescalculator, important for resolving for e.g. NameExpression
-   */
-  public void setScope(ITypeSymbolsScope scope){
-    deriveSymTypeOfAssignmentExpressions.setScope(scope);
-    deriveSymTypeOfExpression.setScope(scope);
-    deriveSymTypeOfCommonExpressions.setScope(scope);
-    deriveSymTypeOfBitExpressions.setScope(scope);
-    deriveSymTypeOfJavaClassExpressions.setScope(scope);
-    deriveSymTypeOfSetExpressions.setScope(scope);
-    symTypeFromMCSimpleGenericTypes.setScope(scope);
   }
 
   /**

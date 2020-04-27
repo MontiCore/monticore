@@ -31,9 +31,6 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   @Deprecated
   protected IDerivePrettyPrinter prettyPrinter;
 
-  // TODO remove and use lastResult
-  protected SymTypeExpression result;
-
   // TODO find better name for LastResult
   protected LastResult lastResult;
 
@@ -64,7 +61,6 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       wholeResult = lastResult.getLast();
     }
     if (wholeResult != null) {
-      this.result = wholeResult;
       lastResult.setLast(wholeResult);
     } else {
       //No type found --> error
@@ -91,14 +87,12 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       } else {
         res = createTypeExpression(var.getType().print(), var.getType().getTypeInfo().getEnclosingScope());
       }
-      this.result = res;
       lastResult.setField();
       lastResult.setLast(res);
     } else if (optType.isPresent()) {
       //no variable found, test if name is type
       TypeSymbol type = optType.get();
       SymTypeExpression res = createTypeExpression(type.getName(), type.getEnclosingScope());
-      this.result = res;
       lastResult.setType();
       lastResult.setLast(res);
     }else{

@@ -43,7 +43,6 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     if(wholeResult.isPresent()){
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     }else{
       lastResult.reset();
       Log.error("0xA0200"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -56,7 +55,6 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     if(wholeResult.isPresent()){
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     }else{
       lastResult.reset();
       Log.error("0xA0201"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -69,7 +67,6 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     if(wholeResult.isPresent()){
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     }else{
       lastResult.reset();
       Log.error("0xA0202"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -82,7 +79,6 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     if(wholeResult.isPresent()){
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     }else{
       lastResult.reset();
       Log.error("0xA0203"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -95,7 +91,6 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     if(wholeResult.isPresent()){
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     }else{
       lastResult.reset();
       Log.error("0xA0204"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -108,7 +103,6 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     if(wholeResult.isPresent()){
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     }else{
       lastResult.reset();
       Log.error("0xA0205"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));

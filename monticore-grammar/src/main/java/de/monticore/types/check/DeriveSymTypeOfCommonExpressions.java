@@ -46,11 +46,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
   @Override
   public void traverse(ASTPlusExpression expr) {
     //the "+"-operator also allows String
-    Optional<SymTypeExpression> wholeResult = getBinaryNumericPromotionWithString(expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = getBinaryNumericPromotionWithString(expr, expr.getLeft(), expr.getRight());
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0210"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -66,7 +65,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0211"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -82,7 +80,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0212"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -98,7 +95,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0213"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -114,7 +110,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0214"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -130,7 +125,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0215"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -146,7 +140,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0216"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -162,7 +155,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0217"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -178,7 +170,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0218"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -194,7 +185,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0219"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -210,7 +200,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0220"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -250,7 +239,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0223"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -290,7 +278,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0226"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -319,7 +306,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0228"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -345,7 +331,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the whole expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0230"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -405,7 +390,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0234"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -435,7 +419,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       lastResult.setLast(wholeResult.get());
-      this.result = wholeResult.get();
     } else {
       lastResult.reset();
       Log.error("0xA0236"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -472,7 +455,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         if(!fieldSymbols.isEmpty()) {
           FieldSymbol var = fieldSymbols.get(0);
           SymTypeExpression type = var.getType();
-          this.result = type;
           lastResult.setField();
           lastResult.setLast(type);
         }
@@ -486,7 +468,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         }
         if(match){
           SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getFullName(), typeSymbol.getEnclosingScope());
-          this.result = wholeResult;
           lastResult.setType();
           lastResult.setLast(wholeResult);
         }else{
@@ -500,11 +481,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     } else {
       //inner type has no result --> try to resolve a type
       String toResolve = printer.prettyprint(expr);
-      Optional<TypeSymbol> typeSymbolOpt = scope.resolveType(toResolve);
+      Optional<TypeSymbol> typeSymbolOpt = getScope(expr.getEnclosingScope()).resolveType(toResolve);
       if (typeSymbolOpt.isPresent()) {
         TypeSymbol typeSymbol = typeSymbolOpt.get();
-        SymTypeExpression type = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getFullName(), typeSymbol.getEnclosingScope());
-        this.result = type;
+        SymTypeExpression type = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), typeSymbol.getEnclosingScope());
         lastResult.setType();
         lastResult.setLast(type);
       } else {
@@ -549,7 +529,6 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
           }
         }
         SymTypeExpression result = fittingMethods.get(0).getReturnType();
-        this.result = result;
         lastResult.setMethod();
         lastResult.setLast(result);
       } else {
@@ -557,14 +536,13 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         Log.error("0xA0239"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
       }
     } else {
-      Collection<MethodSymbol> methodcollection = scope.resolveMethodMany(expr.getName());
+      Collection<MethodSymbol> methodcollection = getScope(expr.getEnclosingScope()).resolveMethodMany(expr.getName());
       List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
       //count how many methods can be found with the correct arguments and return type
       List<MethodSymbol> fittingMethods = getFittingMethods(methodlist,expr);
       //there can only be one method with the correct arguments and return type
       if (fittingMethods.size() == 1) {
         Optional<SymTypeExpression> wholeResult = Optional.of(fittingMethods.get(0).getReturnType());
-        this.result = wholeResult.get();
         lastResult.setMethod();
         lastResult.setLast(wholeResult.get());
       } else {
@@ -727,7 +705,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
   /**
    * return the result for the "+"-operation if Strings
    */
-  public Optional<SymTypeExpression> getBinaryNumericPromotionWithString(ASTExpression leftType,
+  public Optional<SymTypeExpression> getBinaryNumericPromotionWithString(ASTExpression expr, ASTExpression leftType,
                                                                          ASTExpression rightType) {
     SymTypeExpression leftResult = null;
     SymTypeExpression rightResult = null;
@@ -752,7 +730,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
     //if one part of the expression is a String then the whole expression is a String
     if (isString(leftResult) || isString(rightResult)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeObject("String", scope));
+      return Optional.of(SymTypeExpressionFactory.createTypeObject("String", getScope(expr.getEnclosingScope())));
     }
     //no String in the expression -> use the normal calculation for the basic arithmetic operators
     return getBinaryNumericPromotion(leftType, rightType);

@@ -77,7 +77,6 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
 
     if(null!=wholeResult){
       lastResult.setLast(wholeResult);
-      result = wholeResult;
     }else{
       lastResult.reset();
       Log.error("0xA0288"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
@@ -122,7 +121,6 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
 
     if(null!=wholeResult){
       lastResult.setLast(wholeResult);
-      result = wholeResult;
     }else{
       lastResult.reset();
       Log.error("0xA0291"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
@@ -132,11 +130,10 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
   @Override
   public void traverse(ASTUnionExpressionInfix node) {
     //union of two sets -> both sets need to have the same type or their types need to be sub/super types
-    Optional<SymTypeExpression> wholeResult = calculateUnionAndIntersectionInfix(node.getLeft(),node.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateUnionAndIntersectionInfix(node, node.getLeft(),node.getRight());
 
     if(wholeResult.isPresent()){
       lastResult.setLast(wholeResult.get());
-      result = wholeResult.get();
     }else{
       lastResult.reset();
       Log.error("0xA0292"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
@@ -146,18 +143,17 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
   @Override
   public void traverse(ASTIntersectionExpressionInfix node) {
     //intersection of two sets -> both sets need to have the same type or their types need to be sub/super types
-    Optional<SymTypeExpression> wholeResult = calculateUnionAndIntersectionInfix(node.getLeft(),node.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateUnionAndIntersectionInfix(node, node.getLeft(),node.getRight());
 
     if(wholeResult.isPresent()){
       lastResult.setLast(wholeResult.get());
-      result = wholeResult.get();
     }else{
       lastResult.reset();
       Log.error("0xA0293"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
 
-  public Optional<SymTypeExpression> calculateUnionAndIntersectionInfix(ASTExpression leftExpr, ASTExpression rightExpr){
+  public Optional<SymTypeExpression> calculateUnionAndIntersectionInfix(ASTExpression expr, ASTExpression leftExpr, ASTExpression rightExpr){
     SymTypeExpression leftResult = null;
     SymTypeExpression rightResult = null;
     Optional<SymTypeExpression> wholeResult = Optional.empty();
@@ -184,11 +180,11 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       String right = rightGeneric.getTypeInfo().getName();
       if(collections.contains(left) && unbox(left).equals(unbox(right))) {
         if(unbox(leftGeneric.getArgument(0).print()).equals(unbox(rightGeneric.getArgument(0).print()))) {
-          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,scope),leftGeneric.getArgument(0).deepClone()));
+          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,getScope(expr.getEnclosingScope())),leftGeneric.getArgument(0).deepClone()));
         }else if(isSubtypeOf(leftGeneric.getArgument(0),rightGeneric.getArgument(0))){
-          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(right,scope),rightGeneric.getArgument(0).deepClone()));
+          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(right,getScope(expr.getEnclosingScope())),rightGeneric.getArgument(0).deepClone()));
         }else if(isSubtypeOf(rightGeneric.getArgument(0),leftGeneric.getArgument(0))){
-          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,scope),leftGeneric.getArgument(0).deepClone()));
+          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,getScope(expr.getEnclosingScope())),leftGeneric.getArgument(0).deepClone()));
         }
       }
     }

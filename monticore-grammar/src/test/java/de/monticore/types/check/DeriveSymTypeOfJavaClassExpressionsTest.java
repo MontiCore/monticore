@@ -78,7 +78,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope)));
-    derLit.setScope(scope);
 
     LogStub.init();
   }
@@ -110,7 +109,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,p);
 
     //use the spanned scope of the type
-    derLit.setScope(p.getSpannedScope());
     tc = new TypeCheck(null, derLit);
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
 
@@ -119,7 +117,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("A",tc.typeOf(a.get()).print());
 
     //use the spanned scope of the method
-    derLit.setScope(get.getSpannedScope());
     tc = new TypeCheck(null, derLit);
 
     assertEquals("A",tc.typeOf(a.get()).print());
@@ -144,7 +141,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,p);
 
     //use the spanned scope of the type
-    derLit.setScope(p.getSpannedScope());
     tc = new TypeCheck(null, derLit);
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
 
@@ -153,7 +149,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("AB",tc.typeOf(a.get()).print());
 
     //use the spanned scope of the method
-    derLit.setScope(get.getSpannedScope());
     tc = new TypeCheck(null, derLit);
 
     assertEquals("AB",tc.typeOf(a.get()).print());
@@ -206,7 +201,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(inner.getSpannedScope(),innerinner);
 
     //test 1: Outer.this in methodInner()
-    derLit.setScope(methodInner.getSpannedScope());
     tc = new TypeCheck(null, derLit);
 
     Optional<ASTExpression> this1 = p.parse_StringExpression("Outer.this");
@@ -231,7 +225,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol fail = type("Fail",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     add2scope(scope,fail);
 
-    derLit.setScope(scope);
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> this1 = p.parse_StringExpression("Fail.this");
@@ -285,7 +278,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     FieldSymbol c = field("c",genarrType);
     add2scope(scope,c);
 
-    derLit.setScope(scope);
     tc = new TypeCheck(null,derLit);
 
 
@@ -320,7 +312,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol test = type("Test",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     add2scope(scope,test);
 
-    derLit.setScope(scope);
     tc = new TypeCheck(null, derLit);
 
     Optional<ASTExpression> arr1 = p.parse_StringExpression("Test[4]");
@@ -341,7 +332,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     FieldSymbol a = field("a",arrType);
     add2scope(scope,a);
 
-    derLit.setScope(scope);
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> arr1 = p.parse_StringExpression("a[7.5]");
@@ -362,7 +352,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     FieldSymbol a = field("a",arrType);
     add2scope(scope,a);
 
-    derLit.setScope(scope);
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> arr1 = p.parse_StringExpression("a[Person]");
@@ -531,7 +520,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.test()");
     Optional<ASTExpression> super2 = p.parse_StringExpression("Outer.super.field");
 
-    derLit.setScope(methodInner.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     assertTrue(super1.isPresent());
@@ -552,7 +540,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol fail = type("Fail",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     add2scope(scope,fail);
 
-    derLit.setScope(scope);
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> this1 = p.parse_StringExpression("Fail.super.get()");
@@ -605,7 +592,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),inner.getSpannedScope());
     add2scope(inner.getSpannedScope(),innerinner);
 
-    derLit.setScope(methodInner.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.test()");
@@ -631,7 +617,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),inner.getSpannedScope());
     add2scope(inner.getSpannedScope(),innerinner);
 
-    derLit.setScope(methodInner.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.test()");
@@ -666,7 +651,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     //SuperOuter does not have a method "get"
     Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.get()");
 
-    derLit.setScope(methodInner.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     assertTrue(super1.isPresent());
@@ -713,7 +697,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     aconstr.setReturnType(aType);
     add2scope(scope, a);
 
-    derLit.setScope(a.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     //basic test
@@ -753,7 +736,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol sub = type("Sub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(supType),Lists.newArrayList(),scope);
     add2scope(scope,sub);
 
-    derLit.setScope(sub.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>super.help()");
@@ -779,7 +761,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol sub = type("Sub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(supType),Lists.newArrayList(),scope);
     add2scope(scope,sub);
 
-    derLit.setScope(sub.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>super.<double>help(2)");
@@ -804,7 +785,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol sub = type("Sub",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(supType),Lists.newArrayList(),scope);
     add2scope(scope,sub);
 
-    derLit.setScope(sub.getSpannedScope());
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>super.test");
@@ -831,7 +811,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,aField);
     add2scope(scope,a);
 
-    derLit.setScope(scope);
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> gie1 = p.parse_StringExpression("a.<int>test()");
@@ -854,7 +833,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,aField);
     add2scope(scope,a);
 
-    derLit.setScope(scope);
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> gie1 = p.parse_StringExpression("a.<int>this()");
@@ -885,7 +863,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,aField);
     add2scope(scope,a);
 
-    derLit.setScope(scope);
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> gie1 = p.parse_StringExpression("a.<int>super()");
@@ -910,7 +887,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol a = type("A",Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     add2scope(scope,a);
 
-    derLit.setScope(scope);
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> gie1 = p.parse_StringExpression("A.<int>test()");
@@ -936,7 +912,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeSymbol a = type("A",Lists.newArrayList(test),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
     add2scope(scope,a);
 
-    derLit.setScope(scope);
     tc = new TypeCheck(null,derLit);
 
     Optional<ASTExpression> gie1 = p.parse_StringExpression("A.<int>test()");

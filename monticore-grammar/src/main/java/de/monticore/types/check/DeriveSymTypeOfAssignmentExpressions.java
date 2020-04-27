@@ -46,7 +46,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0170"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -66,7 +65,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0171"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -86,7 +84,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0172"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -106,7 +103,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0173"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -126,7 +122,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0174"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -146,7 +141,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0175"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -154,12 +148,11 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
   }
 
   private void calculatePlusAssignment(ASTAssignmentExpression expr) {
-    Optional<SymTypeExpression> wholeResult = calculateTypeArithmeticWithString(expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmeticWithString(expr, expr.getLeft(), expr.getRight());
     if (wholeResult.isPresent()) {
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0176"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -172,7 +165,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0177"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -185,7 +177,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0178"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -198,7 +189,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0179"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -245,7 +235,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
         //store the result of the expression in the last result
         Optional<SymTypeExpression> sym = wholeResult;
         lastResult.setLast(sym.get());
-        this.result = sym.get();
       } else {
         lastResult.reset();
         Log.error("0xA0182"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -260,7 +249,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0183"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -274,7 +262,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0184"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -288,7 +275,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0185"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -302,7 +288,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0186"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -316,7 +301,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0187"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -330,7 +314,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0188"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -343,7 +326,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
       //store the result of the expression in the last result
       Optional<SymTypeExpression> sym = wholeResult;
       lastResult.setLast(sym.get());
-      this.result = sym.get();
     } else {
       lastResult.reset();
       Log.error("0xA0189"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
@@ -381,7 +363,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
   /**
    * helper method for += because in this case you can use Strings too
    */
-  private Optional<SymTypeExpression> calculateTypeArithmeticWithString(ASTExpression left, ASTExpression right) {
+  private Optional<SymTypeExpression> calculateTypeArithmeticWithString(ASTExpression expr, ASTExpression left, ASTExpression right) {
     SymTypeExpression leftResult = null;
     left.accept(getRealThis());
     if (lastResult.isPresentLast()) {
@@ -397,7 +379,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     }
     //if the type of the left expression is a String then so is the type of the whole expression
     if (isString(leftResult)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeObject("String", scope));
+      return Optional.of(SymTypeExpressionFactory.createTypeObject("String", getScope(expr.getEnclosingScope())));
     }
     //else continue with the normal calculation of +=,-=,*=,/= and %=
     return calculateTypeArithmetic(left, right);
