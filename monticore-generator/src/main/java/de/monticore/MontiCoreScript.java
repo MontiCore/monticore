@@ -24,9 +24,9 @@ import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
-import de.monticore.codegen.cd2java._ast.mill.CDMillDecorator;
-import de.monticore.codegen.cd2java._ast.mill.MillDecorator;
-import de.monticore.codegen.cd2java._ast.mill.MillForSuperDecorator;
+import de.monticore.codegen.cd2java.mill.CDMillDecorator;
+import de.monticore.codegen.cd2java.mill.MillDecorator;
+import de.monticore.codegen.cd2java.mill.MillForSuperDecorator;
 import de.monticore.codegen.cd2java._ast_emf.ASTEmfCDDecorator;
 import de.monticore.codegen.cd2java._ast_emf.CDEmfGenerator;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
@@ -57,7 +57,6 @@ import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorat
 import de.monticore.codegen.cd2java._symboltable.serialization.SerializationCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolTablePrinterDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbTabMill.SymTabMillDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolloadermutator.MandatoryMutatorSymbolLoaderDecorator;
 import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
@@ -109,10 +108,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.DELEGATOR_SUFFIX;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the
