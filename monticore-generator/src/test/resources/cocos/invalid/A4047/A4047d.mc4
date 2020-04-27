@@ -4,7 +4,7 @@ package cocos.invalid.A4047;
 
 grammar A4047d {
 
-    interface A = "Foo";
+    interface A = foo:"Foo";
 
     B implements A;
 }

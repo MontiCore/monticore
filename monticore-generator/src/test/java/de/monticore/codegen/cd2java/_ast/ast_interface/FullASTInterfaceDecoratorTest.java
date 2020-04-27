@@ -25,7 +25,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
@@ -101,7 +101,7 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(61, astcdInterface.sizeCDMethods());
+    assertEquals(62, astcdInterface.sizeCDMethods());
   }
 
   /**
@@ -144,6 +144,13 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
   }
 
+  @Test
+  public void testUpdateNameSymbolLoaderListMethod() {
+    ASTCDMethod method = getMethodBy("updateFooSymbolLoader", astcdInterface);
+    assertDeepEquals(PROTECTED_ABSTRACT, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertTrue(method.isEmptyCDParameters());
+  }
 
   /**
    * ASTInterface methods

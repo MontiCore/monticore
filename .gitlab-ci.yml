@@ -51,6 +51,15 @@ build_branches:
   stage: build
   script:
     - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
+    - "cd monticore-generator/it/experiments"
+    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+    - "cd ../../../monticore-grammar/monticore-grammar-it"
+    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+    - "cd ../../monticore-generator/it"
+    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS clean install -P emf-it-tests"
+    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
+    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
   only:
     - merge_requests
     - branches
@@ -71,22 +80,6 @@ it-gradle:
     - dev
     - master
 
-it-maven:
-  stage: test2
-  dependencies: []
-  script:
-    - cd monticore-generator/it
-    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
-    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS clean install -P emf-it-tests"
-    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
-    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
-  only:
-    - merge_requests
-    - branches
-  except:
-    - dev
-    - master
-
   #rules:
   #  - if: '$CI_COMMIT_REF_SLUG == "dev"'
   #    when: always
@@ -102,22 +95,6 @@ it-experiments-grammar-gradle:
     - "cd ../../../monticore-grammar/monticore-grammar-it"
     - "./gradlew build $GRADLE_OPTS"
   only:
-    - dev
-    - master
-
-# build experiments and grammar with maven for all other branches
-it-experiments-grammar-maven:
-  stage: test1
-  dependencies: []
-  script:
-    - cd monticore-generator/it/experiments
-    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
-    - "cd ../../../monticore-grammar/monticore-grammar-it"
-    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
-  only:
-    - merge_requests
-    - branches
-  except:
     - dev
     - master
 
@@ -142,6 +119,8 @@ pages:
   dependencies: []
   image: python:alpine
   before_script:
+    - apk add gcc musl-dev python3-dev
+    - pip install cython
     - pip install mkdocs
     - pip install mkdocs-material
   script:

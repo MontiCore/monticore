@@ -2,20 +2,15 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
-import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsArtifactScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
@@ -23,8 +18,6 @@ import static org.junit.Assert.*;
 
 public class SymTypeExpressionDeSerTest {
   private static TypeSymbolsScope scope = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
-
-  protected static final String TEST_SYMBOL_STORE_LOCATION = "target/generated-test-sources/monticore/symbols";
 
   // setup of objects (unchanged during tests)
   // these should be the same as those of SymTypeExpressionText
@@ -201,7 +194,7 @@ public class SymTypeExpressionDeSerTest {
 
     String serialized = deser.serialize(expr);
 
-    SymTypeExpression deserialized = deser.deserialize(serialized,scope);
+    SymTypeExpression deserialized = deser.deserialize(serialized);
     assertNotNull(deserialized);
 
     assertEquals(expr.print(),deserialized.print());
@@ -214,34 +207,32 @@ public class SymTypeExpressionDeSerTest {
 
 
   @Test
-  public void testRoundtripLoadStore() throws MalformedURLException {
-    performRoundtripLoadStore(teDouble);
-    performRoundtripLoadStore(teInt);
-    performRoundtripLoadStore(teVarA);
-    performRoundtripLoadStore(teVarB);
-    performRoundtripLoadStore(teP);
-    performRoundtripLoadStore(teH);
-    performRoundtripLoadStore(teVoid);
-    performRoundtripLoadStore(teNull);
-    performRoundtripLoadStore(teArr1);
-    performRoundtripLoadStore(teArr3);
-    performRoundtripLoadStore(teSet);
-    performRoundtripLoadStore(teSetA);
-    performRoundtripLoadStore(teMap);
-    performRoundtripLoadStore(teFoo);
-    performRoundtripLoadStore(teDeep1);
-    performRoundtripLoadStore(teDeep2);
+  public void testRoundtrip2() throws MalformedURLException {
+    performRoundtrip2(teDouble);
+    performRoundtrip2(teInt);
+    performRoundtrip2(teVarA);
+    performRoundtrip2(teVarB);
+    performRoundtrip2(teP);
+    performRoundtrip2(teH);
+    performRoundtrip2(teVoid);
+    performRoundtrip2(teNull);
+    performRoundtrip2(teArr1);
+    performRoundtrip2(teArr3);
+    performRoundtrip2(teSet);
+    performRoundtrip2(teSetA);
+    performRoundtrip2(teMap);
+    performRoundtrip2(teFoo);
+    performRoundtrip2(teDeep1);
+    performRoundtrip2(teDeep2);
   }
 
-  protected void performRoundtripLoadStore(SymTypeExpression expr) throws MalformedURLException {
+  protected void performRoundtrip2(SymTypeExpression expr) throws MalformedURLException {
     SymTypeExpressionDeSer deser = SymTypeExpressionDeSer.getInstance();
     //first serialize the expression using the deser
-    deser.store(expr, TEST_SYMBOL_STORE_LOCATION);
-    URL url = Paths.get(TEST_SYMBOL_STORE_LOCATION, expr.getTypeInfo().getPackageName(),
-        expr.getTypeInfo().getName()+".symtype").toUri().toURL();
+    String serialized = deser.serialize(expr);
 
     // then deserialize it
-    SymTypeExpression loaded = deser.load(url, scope);
+    SymTypeExpression loaded = deser.deserialize(serialized, scope);
     assertNotNull(loaded);
     // and assert that the serialized and deserialized symtype expression equals the one before
     assertEquals(expr.print(), loaded.print());
@@ -279,7 +270,7 @@ public class SymTypeExpressionDeSerTest {
     assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F5"));
 
     SymTypeConstantDeSer symTypeConstantDeser = new SymTypeConstantDeSer();
-    symTypeConstantDeser.deserialize(invalidJsonForSerializing,scope);
+    symTypeConstantDeser.deserialize(invalidJsonForSerializing);
     assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F1"));
   }
 

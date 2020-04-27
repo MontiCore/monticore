@@ -88,10 +88,9 @@ public final class ModelPath {
   public ModelCoordinate resolveModel(ModelCoordinate qualifiedModel) {
     String fixedPath = qualifiedModel.getQualifiedPath().toString()
         .replaceAll("\\" + File.separator, "/");
-    FileReaderWriter ioWrapper = new FileReaderWriter();
 
     List<URL> resolvedURLS = classloaderMap.keySet().stream()
-        .map(classloader -> ioWrapper.getResource(classloader, fixedPath))
+        .map(classloader -> FileReaderWriter.getResource(classloader, fixedPath))
         .filter(opturl -> opturl.isPresent())
         .map(url -> url.get())
         .collect(Collectors.toList());

@@ -33,7 +33,7 @@ public class SM2Tool {
     Log.init();
     
     if (args.length != 1) {
-      Log.error("Please specify only one single path to the input model.");
+      Log.error("0xEE744 Please specify only one single path to the input model.");
       return;
     }
     Log.info("SM2 DSL Tool", SM2Tool.class.getName());
@@ -90,10 +90,10 @@ public class SM2Tool {
       if (!parser.hasErrors() && optAutomaton.isPresent()) {
         return optAutomaton.get();
       }
-      Log.error("Model could not be parsed.");
+      Log.error("0xEE844 Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("Failed to parse " + model, e);
+      Log.error("0xEE644 Failed to parse " + model, e);
     }
     return null;
   }

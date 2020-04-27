@@ -1,18 +1,15 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("attributeName", "referencedSymbol", "simpleSymbolName")}
+    update${attributeName?cap_first}Loader();
     java.util.List<Optional<${referencedSymbol}>> temp = new java.util.ArrayList<>();
-    if (this.${attributeName}.isEmpty() && getEnclosingScope() != null) {
-      ${attributeName}.clear();
-      for (String element : this.${attributeName?remove_ending("Symbol")}) {
-        //add the string to Symbol match to the map
-        ${attributeName}.put(element, getEnclosingScope().resolve${simpleSymbolName}(element));
-        //create the returned list
-        temp.add(${attributeName}.get(element));
-      }
-    }else if(getEnclosingScope() != null){
-      for (String element : this.${attributeName?remove_ending("Symbol")}) {
-        //create the returned list, because the names list has not changed
-        temp.add(${attributeName}.get(element));
-      }
+        if (getEnclosingScope() != null) {
+            for (String element : this.names) {
+                //create the returned list, because the names list has not changed
+                if (${attributeName}Loader.get(element).isSymbolLoaded()) {
+                    temp.add(Optional.ofNullable(${attributeName}Loader.get(element).getLoadedSymbol()));
+                } else {
+                    temp.add(Optional.empty());
+                }
+            }
     }
     return temp;

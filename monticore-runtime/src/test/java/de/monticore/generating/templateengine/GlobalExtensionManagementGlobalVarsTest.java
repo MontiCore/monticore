@@ -8,6 +8,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.util.ArrayList;
 
+import de.monticore.io.FileReaderWriter;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -36,6 +38,11 @@ public class GlobalExtensionManagementGlobalVarsTest {
     config.setOutputDirectory(new File("dummy"));
     config.setTracing(false);
     tc = new TemplateControllerMock(config, "");
+  }
+
+  @AfterClass
+  public static void resetFileReaderWriter() {
+    FileReaderWriter.init();
   }
 
   @Test

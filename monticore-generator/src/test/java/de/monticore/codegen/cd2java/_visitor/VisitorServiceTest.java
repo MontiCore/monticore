@@ -116,37 +116,6 @@ public class VisitorServiceTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetScopeVisitorSimpleName() {
-    assertEquals("AutomatonScopeVisitor", astService.getScopeVisitorSimpleName());
-    assertEquals("AutomatonScopeVisitor", astService.getScopeVisitorSimpleName(astcdCompilationUnit.getCDDefinition().getSymbol()));
-  }
-
-  @Test
-  public void testGetScopeVisitorFullName() {
-    assertEquals(VISITOR_AUT_PACKAGE + "AutomatonScopeVisitor", astService.getScopeVisitorFullName());
-    assertEquals(VISITOR_AUT_PACKAGE + "AutomatonScopeVisitor", astService.getScopeVisitorFullName(astcdCompilationUnit.getCDDefinition().getSymbol()));
-  }
-
-  @Test
-  public void testGetSymbolVisitorSimpleName() {
-    assertEquals("AutomatonSymbolVisitor", astService.getSymbolVisitorSimpleName());
-    assertEquals("AutomatonSymbolVisitor", astService.getSymbolVisitorSimpleName(astcdCompilationUnit.getCDDefinition().getSymbol()));
-  }
-
-  @Test
-  public void testGetSymbolVisitorFullName() {
-    assertEquals(VISITOR_AUT_PACKAGE + "AutomatonSymbolVisitor", astService.getSymbolVisitorFullName());
-    assertEquals(VISITOR_AUT_PACKAGE + "AutomatonSymbolVisitor", astService.getSymbolVisitorFullName(astcdCompilationUnit.getCDDefinition().getSymbol()));
-  }
-
-  @Test
-  public void testGetAllVisitorTypesInHierarchy() {
-    List<ASTMCQualifiedType> allVisitorTypesInHierarchy = astService.getAllVisitorTypesInHierarchy();
-    assertEquals(1, allVisitorTypesInHierarchy.size());
-    assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsVisitor", allVisitorTypesInHierarchy.get(0));
-  }
-
-  @Test
   public void testGetVisitorMethod() {
     ASTCDMethod visitMethod = astService.getVisitorMethod("visit", mcTypeFacade.createQualifiedType("_ast.ASTFoo"));
     assertEquals("visit", visitMethod.getName());

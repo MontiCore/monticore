@@ -9,14 +9,20 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.LOADER_SUFFIX;
 
 /**
  * is a transforming class for the ast generation
@@ -52,8 +58,13 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
         ASTCDAttribute refSymbolAttribute = getRefSymbolAttribute(astcdAttribute, referencedSymbolType);
         attributeList.add(refSymbolAttribute);
 
-        boolean wasAttributeOptional = wasAttributeOptional(astcdAttribute);
-        methodList.addAll(getRefSymbolMethods(refSymbolAttribute, referencedSymbolType, wasAttributeOptional));
+        methodList.addAll(getRefSymbolMethods(astcdAttribute, referencedSymbolType));
+        if (!getDecorationHelper().isListType(astcdAttribute.printType())) {
+          methodList.add(getUpdateLoaderAttribute(refSymbolAttribute, astcdAttribute.getName(),
+              getDecorationHelper().isOptional(astcdAttribute.printType())));
+        } else {
+          methodList.add(getUpdateLoaderListAttribute(refSymbolAttribute.getName(), referencedSymbolType, astcdAttribute.getName()));
+        }
       }
     }
     changedClass.getCDMethodList().addAll(methodList);
@@ -70,43 +81,55 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
     //add referenced Symbol modifier that it can later be distinguished
     TransformationHelper.addStereotypeValue(modifier, MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE.toString());
 
-    ASTMCOptionalType optionalTypeOfReferencedSymbol = getMCTypeFacade().createOptionalTypeOf(referencedSymbol);
+    ASTMCQualifiedType symbolLoaderType = getMCTypeFacade().createQualifiedType(referencedSymbol + LOADER_SUFFIX);
     if (getDecorationHelper().isListType(attribute.printType())) {
       //if the attribute is a list
-      ASTMCType attributeType = getMCTypeFacade().createMapTypeOf(getMCTypeFacade().createStringType(), optionalTypeOfReferencedSymbol);
-      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL);
+      ASTMCType attributeType = getMCTypeFacade().createMapTypeOf(getMCTypeFacade().createStringType(), symbolLoaderType);
+      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL + LOADER_SUFFIX);
       replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= new HashMap<>()"));
       return symbolAttribute;
     } else {
       //if the attribute is mandatory or optional
-      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, optionalTypeOfReferencedSymbol, attribute.getName() + SYMBOL);
-      replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= Optional.empty()"));
-      return symbolAttribute;
+      return this.getCDAttributeFacade().createAttribute(modifier, symbolLoaderType, attribute.getName() + SYMBOL + LOADER_SUFFIX);
     }
   }
 
   /**
    * generated the correct getters for the reference symbol attributes
    */
-  protected List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol, boolean wasAttributeOptional) {
-    ASTCDAttribute methodDecorationAttribute = refSymbolAttribute.deepClone();
-    if (getDecorationHelper().isMapType(refSymbolAttribute.printType())) {
+  protected List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute astcdAttribute, String referencedSymbol) {
+    ASTCDAttribute symbolAttribute = getCDAttributeFacade().createAttribute(PUBLIC, referencedSymbol, astcdAttribute.getName() + SYMBOL);
+    if (getDecorationHelper().isListType(astcdAttribute.printType())) {
       //have to change type of attribute list instead of map
       //because the inner representation is a map but for users the List methods are only shown
       ASTMCType optionalType = getMCTypeFacade().createOptionalTypeOf(referencedSymbol);
       ASTMCType listType = getMCTypeFacade().createListTypeOf(optionalType);
-      methodDecorationAttribute = getCDAttributeFacade().createAttribute(refSymbolAttribute.getModifier().deepClone(), listType, refSymbolAttribute.getName());
-    } else if (wasAttributeOptional) {
+      symbolAttribute = getCDAttributeFacade().createAttribute(astcdAttribute.getModifier().deepClone(), listType, astcdAttribute.getName() + SYMBOL);
+    } else if (getDecorationHelper().isOptional(astcdAttribute.printType())) {
       //add stereotype to attribute to later in the method generation know if the original attribute was optional or mandatory
-      TransformationHelper.addStereotypeValue(methodDecorationAttribute.getModifier(), IS_OPTIONAL);
+      TransformationHelper.addStereotypeValue(symbolAttribute.getModifier(), IS_OPTIONAL);
     }
     //to later easy symbol type
-    TransformationHelper.addStereotypeValue(methodDecorationAttribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL.toString(), referencedSymbol);
-    return accessorDecorator.decorate(methodDecorationAttribute);
+    TransformationHelper.addStereotypeValue(symbolAttribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL.toString(), referencedSymbol);
+    return accessorDecorator.decorate(symbolAttribute);
   }
 
-  protected boolean wasAttributeOptional(ASTCDAttribute originalAttribute) {
-    return getDecorationHelper().isOptional(originalAttribute.getMCType());
+
+  protected ASTCDMethod getUpdateLoaderAttribute(ASTCDAttribute loaderAttribute, String nameAttributeName, boolean wasOptional) {
+    ASTCDMethod updateLoaderMethod = getCDMethodFacade().createMethod(PROTECTED, "update" +
+        StringTransformations.capitalize(loaderAttribute.getName()));
+    replaceTemplate(EMPTY_BODY, updateLoaderMethod, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.UpdateLoader",
+        loaderAttribute.getName(), getDecorationHelper().getNativeAttributeName(nameAttributeName), loaderAttribute.printType(), wasOptional));
+    return updateLoaderMethod;
   }
+
+  protected ASTCDMethod getUpdateLoaderListAttribute(String referencedAttributeName, String referencedAttributeType, String nameAttributeName) {
+    ASTCDMethod updateLoaderMethod = getCDMethodFacade().createMethod(PROTECTED, "update" +
+        StringTransformations.capitalize(referencedAttributeName));
+    replaceTemplate(EMPTY_BODY, updateLoaderMethod, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.UpdateLoaderList",
+        referencedAttributeName, nameAttributeName, referencedAttributeType + LOADER_SUFFIX));
+    return updateLoaderMethod;
+  }
+
 
 }
