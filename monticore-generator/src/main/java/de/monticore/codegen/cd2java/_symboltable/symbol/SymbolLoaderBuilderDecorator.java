@@ -69,7 +69,7 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
   }
 
   protected ASTCDConstructor createDefaultConstructor(String symbolLoaderBuilderName) {
-    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PROTECTED, symbolLoaderBuilderName);
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC, symbolLoaderBuilderName);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + symbolLoaderBuilderName + ") this;"));
     return constructor;
   }

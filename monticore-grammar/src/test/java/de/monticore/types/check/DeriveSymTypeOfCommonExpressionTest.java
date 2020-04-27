@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
@@ -54,7 +55,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisSymTabMill
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisMill
       .expressionsBasisScopeBuilder()
       .build(),
       new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
@@ -1533,11 +1534,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * create a scope (some defaults apply)
    */
   public static ExpressionsBasisScope scope() {
-    return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    return ExpressionsBasisMill.expressionsBasisScopeBuilder().build();
   }
 
   public static ExpressionsBasisScope scope(IExpressionsBasisScope enclosingScope, boolean exportingSymbols, ASTNode astnode, String name) {
-    return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+    return ExpressionsBasisMill.expressionsBasisScopeBuilder()
         .setEnclosingScope(enclosingScope)
         .setExportingSymbols(exportingSymbols)
         .setAstNode(astnode)
@@ -1546,7 +1547,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
   }
 
   public static ExpressionsBasisScope scope(IExpressionsBasisScope enclosingScope, String name) {
-    return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+    return ExpressionsBasisMill.expressionsBasisScopeBuilder()
         .setEnclosingScope(enclosingScope)
         .setName(name)
         .build();
@@ -1556,7 +1557,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * create a global scope (some defaults apply)
    */
   public static ExpressionsBasisGlobalScope globalScope(ExpressionsBasisLanguage expressionsBasisLanguage, ModelPath modelPath) {
-    return ExpressionsBasisSymTabMill.expressionsBasisGlobalScopeBuilder()
+    return ExpressionsBasisMill.expressionsBasisGlobalScopeBuilder()
         .setExpressionsBasisLanguage(expressionsBasisLanguage)
         .setModelPath(modelPath)
         .build();
@@ -1566,7 +1567,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * create an artifact scope (some defaults apply)
    */
   public static ExpressionsBasisArtifactScope artifactScope(IExpressionsBasisScope enclosingScope, List<ImportStatement> importList, String packageName) {
-    return ExpressionsBasisSymTabMill.expressionsBasisArtifactScopeBuilder()
+    return ExpressionsBasisMill.expressionsBasisArtifactScopeBuilder()
         .setEnclosingScope(enclosingScope)
         .setImportList(importList)
         .setPackageName(packageName)

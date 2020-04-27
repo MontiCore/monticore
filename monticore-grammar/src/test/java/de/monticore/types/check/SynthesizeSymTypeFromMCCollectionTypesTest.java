@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
+import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
@@ -34,7 +34,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
   
   // This is Visitor for Collection types under test:
-  SynthesizeSymTypeFromMCCollectionTypes synt = new SynthesizeSymTypeFromMCCollectionTypes(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
+  SynthesizeSymTypeFromMCCollectionTypes synt = new SynthesizeSymTypeFromMCCollectionTypes(ExpressionsBasisMill.expressionsBasisScopeBuilder().build());
   
   // other arguments not used (and therefore deliberately null)
   

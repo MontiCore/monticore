@@ -27,6 +27,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKA
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.mill.MillConstants.*;
+import static de.monticore.codegen.cd2java.top.TopDecorator.TOP_SUFFIX;
 
 /**
  * created mill class for a grammar
@@ -42,7 +43,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
   }
 
   public ASTCDClass decorate(final List<ASTCDCompilationUnit> cdList) {
-    String millClassName = cdList.get(0).getCDDefinition().getName() + MILL_SUFFIX;
+    String millClassName = service.getMillSimpleName();
     ASTMCType millType = this.getMCTypeFacade().createQualifiedType(millClassName);
 
     List<CDDefinitionSymbol> superSymbolList = service.getSuperCDsTransitive();
@@ -74,6 +75,23 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
           .filter(x -> !x.getModifier().isAbstract())
           .filter(x -> !x.getName().endsWith(BUILDER_SUFFIX))
           .collect(Collectors.toList());
+
+
+      // filter out all classes that are abstract and end with the TOP suffix
+      List<ASTCDClass> topClassList = cd.getCDDefinition().deepClone().getCDClassList()
+          .stream()
+          .filter(ASTCDClass::isPresentModifier)
+          .filter(x -> x.getModifier().isAbstract())
+          .filter(x -> x.getName().endsWith(TOP_SUFFIX))
+          .collect(Collectors.toList());
+      // remove TOP suffix
+      topClassList.forEach(x -> x.setName(x.getName().substring(0, x.getName().length() - 3)));
+       topClassList = topClassList
+          .stream()
+          .filter(x -> !x.getName().endsWith(BUILDER_SUFFIX))
+          .collect(Collectors.toList());
+      classList.addAll(topClassList);
+
       // add to all class list for reset and initMe method
       allClasses.addAll(classList);
 

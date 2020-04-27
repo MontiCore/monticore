@@ -106,8 +106,8 @@ for (astGrammar in getParsedGrammars()) {
   generateEmfFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
 
   // decorate and generate CD for the mills
-  decoratedASTClassDiagramm = decorateMill(glex, cdScope, astClassDiagram,decoratedVisitorCD, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
+  decoratedMillCD = decorateMill(glex, cdScope, astClassDiagram,decoratedVisitorCD, decoratedSymbolTableCd, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath)
 
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 

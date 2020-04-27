@@ -3,7 +3,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
+import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
@@ -37,7 +37,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
   
   // This is Visitor for SimpleGeneric types under test:
-  SynthesizeSymTypeFromMCSimpleGenericTypes synt = new SynthesizeSymTypeFromMCSimpleGenericTypes(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
+  SynthesizeSymTypeFromMCSimpleGenericTypes synt = new SynthesizeSymTypeFromMCSimpleGenericTypes(ExpressionsBasisMill.expressionsBasisScopeBuilder().build());
   
   // other arguments not used (and therefore deliberately null)
   

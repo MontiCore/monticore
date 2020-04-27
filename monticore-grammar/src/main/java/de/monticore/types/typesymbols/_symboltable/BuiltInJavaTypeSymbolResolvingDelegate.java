@@ -8,6 +8,7 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -322,21 +323,21 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements ITypeSymbolResolv
   }
 
   public static MethodSymbol methodSymbol(String name, SymTypeExpression returnType){
-    MethodSymbol m = TypeSymbolsSymTabMill.methodSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    MethodSymbol m = TypeSymbolsMill.methodSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName(name)
         .setFullName(name)  // can later be adapted, when fullname of Type is known
         .setAccessModifier(AccessModifier.ALL_INCLUSION)
         .setReturnType(returnType)
         .build();
-    m.setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build());
+    m.setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build());
     return m;
   }
 
   public static TypeSymbol typeSymbol(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList, List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList, ITypeSymbolsScope enclosingScope){
-    TypeSymbol t = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol t = TypeSymbolsMill.typeSymbolBuilder()
         .setEnclosingScope(enclosingScope)
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName(name)
         .setFullName(name)
         .setTypeParameterList(typeVariableList)

@@ -21,6 +21,8 @@ import java.util.stream.Stream;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
+import static de.monticore.codegen.cd2java._ast.mill.MillConstants.MILL_SUFFIX;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYM_TAB_MILL_SUFFIX;
 
 public class AbstractService<T extends AbstractService> {
 
@@ -402,4 +404,30 @@ public class AbstractService<T extends AbstractService> {
     String errorCodeSuffix = String.valueOf(hashCode);
     return "x" + errorCodeSuffix;
   }
+
+
+  /**
+   * Mill class names e.g. AutomataMill
+   */
+
+  public String getMillSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + MILL_SUFFIX;
+  }
+
+  public String getMillSimpleName() {
+    return getMillSimpleName(getCDSymbol());
+  }
+
+  public String getMillFullName(CDDefinitionSymbol cdSymbol) {
+    if (getBasePackage(cdSymbol).isEmpty()) {
+      return cdSymbol.getName().toLowerCase() + "." + getMillSimpleName(cdSymbol);
+    }else {
+      return String.join(".", getBasePackage(cdSymbol), cdSymbol.getName()).toLowerCase() + "." + getMillSimpleName(cdSymbol);
+    }
+  }
+
+  public String getMillFullName() {
+    return getMillFullName(getCDSymbol());
+  }
+
 }

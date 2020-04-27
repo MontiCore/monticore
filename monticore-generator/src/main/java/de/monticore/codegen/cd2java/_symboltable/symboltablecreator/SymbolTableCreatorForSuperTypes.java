@@ -68,7 +68,7 @@ public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompil
   }
 
   protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName, String definitionName) {
-    String symTabMill = symbolTableService.getSymTabMillFullName();
+    String symTabMill = symbolTableService.getMillFullName();
     ASTCDParameter boolParam = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), SHADOWING_VAR);
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterfaceName),
         "createScope", boolParam);

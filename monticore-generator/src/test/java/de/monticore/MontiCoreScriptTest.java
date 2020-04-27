@@ -336,21 +336,20 @@ public class MontiCoreScriptTest {
     assertNotNull(symbolPackageCD);
     assertNotNull(symbolPackageCD.getCDDefinition());
     assertEquals("Statechart", symbolPackageCD.getCDDefinition().getName());
-    assertEquals(14, symbolPackageCD.getCDDefinition().sizeCDClasss());
+    assertEquals(13, symbolPackageCD.getCDDefinition().sizeCDClasss());
     assertEquals("StatechartScope", symbolPackageCD.getCDDefinition().getCDClass(0).getName());
     assertEquals("StatechartScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(1).getName());
-    assertEquals("StatechartSymTabMill", symbolPackageCD.getCDDefinition().getCDClass(2).getName());
-    assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClass(3).getName());
-    assertEquals("StatechartGlobalScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(4).getName());
-    assertEquals("StatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDClass(5).getName());
-    assertEquals("StatechartArtifactScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(6).getName());
-    assertEquals("StatechartLanguage", symbolPackageCD.getCDDefinition().getCDClass(7).getName());
-    assertEquals("StatechartModelLoader", symbolPackageCD.getCDDefinition().getCDClass(8).getName());
-    assertEquals("StatechartModelLoaderBuilder", symbolPackageCD.getCDDefinition().getCDClass(9).getName());
-    assertEquals("StatechartSymbolTableCreator", symbolPackageCD.getCDDefinition().getCDClass(10).getName());
-    assertEquals("StatechartSymbolTableCreatorBuilder", symbolPackageCD.getCDDefinition().getCDClass(11).getName());
-    assertEquals("StatechartSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(12).getName());
-    assertEquals("StatechartSymbolTableCreatorDelegatorBuilder", symbolPackageCD.getCDDefinition().getCDClass(13).getName());
+    assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClass(2).getName());
+    assertEquals("StatechartGlobalScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(3).getName());
+    assertEquals("StatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDClass(4).getName());
+    assertEquals("StatechartArtifactScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(5).getName());
+    assertEquals("StatechartLanguage", symbolPackageCD.getCDDefinition().getCDClass(6).getName());
+    assertEquals("StatechartModelLoader", symbolPackageCD.getCDDefinition().getCDClass(7).getName());
+    assertEquals("StatechartModelLoaderBuilder", symbolPackageCD.getCDDefinition().getCDClass(8).getName());
+    assertEquals("StatechartSymbolTableCreator", symbolPackageCD.getCDDefinition().getCDClass(9).getName());
+    assertEquals("StatechartSymbolTableCreatorBuilder", symbolPackageCD.getCDDefinition().getCDClass(10).getName());
+    assertEquals("StatechartSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(11).getName());
+    assertEquals("StatechartSymbolTableCreatorDelegatorBuilder", symbolPackageCD.getCDDefinition().getCDClass(12).getName());
 
     assertEquals(2, symbolPackageCD.getCDDefinition().sizeCDInterfaces());
     assertEquals("IStatechartScope", symbolPackageCD.getCDDefinition().getCDInterface(0).getName());
@@ -566,7 +565,7 @@ public class MontiCoreScriptTest {
     ASTCDCompilationUnit cd = mc.deriveCD(grammar, glex, cd4AGlobalScope);
     IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
 
-    ASTCDCompilationUnit millCd = mc.decorateMill(glex, cd4AGlobalScope, cd, getVisitorCD(cd), handcodedPath);
+    ASTCDCompilationUnit millCd = mc.decorateMill(glex, cd4AGlobalScope, cd, getVisitorCD(cd), getSymbolCD(cd), handcodedPath);
 
     assertNotNull(millCd);
     assertNotNull(millCd.getCDDefinition());
@@ -584,20 +583,31 @@ public class MontiCoreScriptTest {
   }
 
   protected ASTCDCompilationUnit getVisitorCD(ASTCDCompilationUnit decoratedCompilationUnit) {
-    IterablePath targetPath = Mockito.mock(IterablePath.class);
-    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
-    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
+    MontiCoreScript mc = new MontiCoreScript();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    mc.createSymbolsFromAST(symbolTable, grammar);
+    CD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
+    ASTCDCompilationUnit cd = mc.deriveCD(grammar, glex, cd4AGlobalScope);
+    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
 
-    VisitorDecorator astVisitorDecorator = new VisitorDecorator(this.glex, visitorService, symbolTableService);
-    DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(this.glex, visitorService, symbolTableService);
-    ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(this.glex, visitorService);
-    InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(this.glex, visitorService, symbolTableService);
-    DelegatorVisitorBuilderDecorator delegatorVisitorBuilderDecorator = new DelegatorVisitorBuilderDecorator(this.glex, visitorService, symbolTableService);
+    return mc.decorateForVisitorPackage(glex, cd4AGlobalScope, cd, handcodedPath);
+  }
 
+  protected ASTCDCompilationUnit getSymbolCD(ASTCDCompilationUnit decoratedCompilationUnit) {
+    MontiCoreScript mc = new MontiCoreScript();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    mc.createSymbolsFromAST(symbolTable, grammar);
+    CD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
+    CD4AnalysisGlobalScope cd4AGlobalScopeSymbolCD = mc.createCD4AGlobalScope(modelPath);
+    CD4AnalysisGlobalScope cd4AGlobalScopeScopeCD = mc.createCD4AGlobalScope(modelPath);
 
-    CDVisitorDecorator decorator = new CDVisitorDecorator(this.glex, targetPath, visitorService,
-        astVisitorDecorator, delegatorVisitorDecorator, inheritanceVisitorDecorator,
-        parentAwareVisitorDecorator, delegatorVisitorBuilderDecorator);
-    return decorator.decorate(decoratedCompilationUnit);
+    ASTCDCompilationUnit symbolCD = mc.deriveSymbolCD(grammar, cd4AGlobalScopeSymbolCD);
+    ASTCDCompilationUnit scopeCD = mc.deriveScopeCD(grammar, cd4AGlobalScopeScopeCD);
+    ASTCDCompilationUnit cd = mc.deriveCD(grammar, glex, cd4AGlobalScope);
+
+    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+    return mc.decorateForSymbolTablePackage(glex, cd4AGlobalScope, cd, symbolCD, scopeCD, handcodedPath);
   }
 }
