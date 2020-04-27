@@ -204,26 +204,26 @@ public class MillDecoratorTest extends DecoratorTestCase {
   public void testAttributeName() {
     // ast
     getAttributeBy("mill", millClass);
-    getAttributeBy("millASTAutomaton", millClass);
-    getAttributeBy("millASTState", millClass);
-    getAttributeBy("millASTTransition", millClass);
-    getAttributeBy("millASTScope", millClass);
-    getAttributeBy("millASTInheritedSymbolClass", millClass);
+    getAttributeBy("millASTAutomatonBuilder", millClass);
+    getAttributeBy("millASTStateBuilder", millClass);
+    getAttributeBy("millASTTransitionBuilder", millClass);
+    getAttributeBy("millASTScopeBuilder", millClass);
+    getAttributeBy("millASTInheritedSymbolClassBuilder", millClass);
     // visitor
-    getAttributeBy("millAutomatonDelegatorVisitor", millClass);
+    getAttributeBy("millAutomatonDelegatorVisitorBuilder", millClass);
     //symboltable
-    getAttributeBy("millAutomatonSymbol", millClass);
-    getAttributeBy("millStateSymbol", millClass);
-    getAttributeBy("millFooSymbol", millClass);
-    getAttributeBy("millAutomatonScopeCDScope", millClass);
-    getAttributeBy("millAutomatonSymbolLoader", millClass);
-    getAttributeBy("millStateSymbolLoader", millClass);
-    getAttributeBy("millFooSymbolLoader", millClass);
-    getAttributeBy("millAutomatonGlobalScope", millClass);
-    getAttributeBy("millAutomatonArtifactScope", millClass);
-    getAttributeBy("millAutomatonModelLoader", millClass);
-    getAttributeBy("millAutomatonSymbolTableCreator", millClass);
-    getAttributeBy("millAutomatonSymbolTableCreatorDelegator", millClass);
+    getAttributeBy("millAutomatonSymbolBuilder", millClass);
+    getAttributeBy("millStateSymbolBuilder", millClass);
+    getAttributeBy("millFooSymbolBuilder", millClass);
+    getAttributeBy("millAutomatonScopeCDScopeBuilder", millClass);
+    getAttributeBy("millAutomatonSymbolLoaderBuilder", millClass);
+    getAttributeBy("millStateSymbolLoaderBuilder", millClass);
+    getAttributeBy("millFooSymbolLoaderBuilder", millClass);
+    getAttributeBy("millAutomatonGlobalScopeBuilder", millClass);
+    getAttributeBy("millAutomatonArtifactScopeBuilder", millClass);
+    getAttributeBy("millAutomatonModelLoaderBuilder", millClass);
+    getAttributeBy("millAutomatonSymbolTableCreatorBuilder", millClass);
+    getAttributeBy("millAutomatonSymbolTableCreatorDelegatorBuilder", millClass);
   }
 
   @Test
