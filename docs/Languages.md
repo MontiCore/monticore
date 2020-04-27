@@ -230,7 +230,7 @@ and
 <!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
-### [SysML_2](https://git.rwth-aachen.de/monticore/sysml/sysml_2/-/tree/master/sysml2-language) (Alpha: Intention to become stable)
+### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
 * Caretaker: NJ
 * Project for the SysML 2 language famlily. It will be compatible with the 
   general upcoming SysML 2 specification.
@@ -241,10 +241,9 @@ and
 * SysML 2 covers **ADs**, **BDDs**, **IBDs**, **PackageDiagrams**, 
   **ParametricDiagrams**, **RequirementDiagrams**, **SDs**, **SMDs**, 
   **UseCaseDiagrams**, and general **SysMLBasics**
-* Main grammars
-  [`de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/sysml/sysml_2/-/tree/master/sysml2-language/src/main/grammars/de/monticore/lang/sysml)
+* [Main grammars](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/tree/master/src%2Fmain%2Fgrammars%2Fde%2Fmonticore%2Flang%2Fsysml)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/sysml/sysml_2/-/blob/master/sysml2-language/sysml2.md)
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/blob/master/sysml2.md)
 <!-- Status: Teaser erstellt -->
 
 
