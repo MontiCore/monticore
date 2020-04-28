@@ -467,7 +467,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
           match = false;
         }
         if(match){
-          SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getFullName(), typeSymbol.getEnclosingScope());
+          SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), typeSymbol.getEnclosingScope());
           lastResult.setType();
           lastResult.setLast(wholeResult);
         }else{

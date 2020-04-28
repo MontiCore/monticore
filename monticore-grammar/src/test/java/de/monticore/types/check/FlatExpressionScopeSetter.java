@@ -9,10 +9,14 @@ import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.setexpressions._ast.ASTIntersectionExpressionInfix;
 import de.monticore.expressions.setexpressions._ast.ASTIsInExpression;
 import de.monticore.expressions.setexpressions._ast.ASTSetInExpression;
 import de.monticore.expressions.setexpressions._ast.ASTUnionExpressionInfix;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 
 public class FlatExpressionScopeSetter implements CombineExpressionsWithLiteralsVisitor {
 
@@ -240,5 +244,65 @@ public class FlatExpressionScopeSetter implements CombineExpressionsWithLiterals
   }
 
   /*************************************************JAVA CLASS EXPRESSIONS****************************************************/
+
+  @Override
+  public void visit(ASTPrimarySuperExpression expr){
+    expr.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTPrimaryThisExpression expr){
+    expr.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTSuperExpression expr){
+    expr.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTThisExpression expr){
+    expr.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTArrayExpression expr){
+    expr.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTInstanceofExpression expr){
+    expr.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTTypeCastExpression expr){
+    expr.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTPrimaryGenericInvocationExpression expr){
+    expr.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTGenericInvocationExpression expr){
+    expr.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTClassExpression expr){
+    expr.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCQualifiedType type){
+    type.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCReturnType type){
+    type.setEnclosingScope(scope);
+  }
 
 }

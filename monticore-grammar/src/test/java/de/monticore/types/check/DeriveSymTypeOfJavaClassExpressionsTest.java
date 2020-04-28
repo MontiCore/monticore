@@ -3,6 +3,8 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymTabMill;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
@@ -21,7 +23,8 @@ import static org.junit.Assert.*;
 
 public class DeriveSymTypeOfJavaClassExpressionsTest {
 
-  private TypeSymbolsScope scope;
+  private ICombineExpressionsWithLiteralsScope scope;
+  private FlatExpressionScopeSetter flatExpressionScopeSetter;
 
   /**
    * Focus: Deriving Type of Literals, here:
@@ -39,7 +42,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
     scope =
-        TypeSymbolsSymTabMill.typeSymbolsScopeBuilder()
+        CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder()
             .setEnclosingScope(null)       // No enclosing Scope: Search ending here
             .setExportingSymbols(true)
             .setAstNode(null)
@@ -78,7 +81,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope)));
-
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
     LogStub.init();
   }
 
@@ -98,28 +101,43 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
   @Test
   public void deriveFromPrimarySuperExpression() throws IOException {
-    TypeSymbol supType = type("A",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    TypeSymbol supType = TypeSymbolsSymTabMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+        .setName("A")
+        .setEnclosingScope(scope)
+        .build();
     SymTypeExpression sup = SymTypeExpressionFactory.createTypeObject("A",scope);
     supType.setClass(true);
     add2scope(scope,supType);
 
-    MethodSymbol get = method("get",_voidSymType);
-    TypeSymbol p = type("AB",Lists.newArrayList(get),Lists.newArrayList(),Lists.newArrayList(sup),Lists.newArrayList(),scope);
+    MethodSymbol get = TypeSymbolsSymTabMill.methodSymbolBuilder()
+        .setName("get")
+        .setReturnType(_voidSymType)
+        .build();
+    get.setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    TypeSymbol p = TypeSymbolsSymTabMill.typeSymbolBuilder()
+        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setName("AB")
+        .setSuperTypeList(Lists.newArrayList(sup))
+        .setEnclosingScope(scope)
+        .build();
     p.setClass(true);
+    get.getSpannedScope().setEnclosingScope(p.getSpannedScope());
     add2scope(scope,p);
 
     //use the spanned scope of the type
-    tc = new TypeCheck(null, derLit);
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter((ICombineExpressionsWithLiteralsScope) p.getSpannedScope());
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
 
     Optional<ASTExpression> a = parser.parse_StringExpression("super");
     assertTrue(a.isPresent());
-    assertEquals("A",tc.typeOf(a.get()).print());
+    ASTExpression astex = a.get();
+    astex.accept(flatExpressionScopeSetter);
+    assertEquals("A",tc.typeOf(astex).print());
 
     //use the spanned scope of the method
-    tc = new TypeCheck(null, derLit);
-
-    assertEquals("A",tc.typeOf(a.get()).print());
+    astex.accept(new FlatExpressionScopeSetter((ICombineExpressionsWithLiteralsScope) get.getSpannedScope()));
+    assertEquals("A",tc.typeOf(astex).print());
   }
 
   @Test
@@ -127,8 +145,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     //use the current scope -> there is no type spanning any enclosing scope
     Optional<ASTExpression> a = p.parse_StringExpression("super");
     assertTrue(a.isPresent());
+    ASTExpression astex = a.get();
+    astex.accept(flatExpressionScopeSetter);
     try{
-      tc.typeOf(a.get());
+      tc.typeOf(astex);
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0280"));
     }
@@ -136,22 +156,34 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
   @Test
   public void deriveFromPrimaryThisExpression() throws IOException {
-    MethodSymbol get = method("get",_voidSymType);
-    TypeSymbol p = type("AB",Lists.newArrayList(get),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    MethodSymbol get = TypeSymbolsSymTabMill.methodSymbolBuilder()
+        .setName("get")
+        .setReturnType(_voidSymType)
+        .build();
+    get.setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    TypeSymbol p = TypeSymbolsSymTabMill.typeSymbolBuilder()
+        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setMethodList(Lists.newArrayList(get))
+        .setName("AB")
+        .setEnclosingScope(scope)
+        .build();
+    get.getSpannedScope().setEnclosingScope(p.getSpannedScope());
     add2scope(scope,p);
 
     //use the spanned scope of the type
-    tc = new TypeCheck(null, derLit);
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter((ICombineExpressionsWithLiteralsScope) p.getSpannedScope());
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
 
     Optional<ASTExpression> a = parser.parse_StringExpression("this");
     assertTrue(a.isPresent());
-    assertEquals("AB",tc.typeOf(a.get()).print());
+    ASTExpression astex = a.get();
+    astex.accept(flatExpressionScopeSetter);
+    assertEquals("AB",tc.typeOf(astex).print());
 
     //use the spanned scope of the method
-    tc = new TypeCheck(null, derLit);
-
-    assertEquals("AB",tc.typeOf(a.get()).print());
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter((ICombineExpressionsWithLiteralsScope) get.getSpannedScope());
+    astex.accept(flatExpressionScopeSetter);
+    assertEquals("AB",tc.typeOf(astex).print());
   }
 
   @Test
@@ -159,8 +191,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     //use the current scope -> there is no type spanning any enclosing scope
     Optional<ASTExpression> a = p.parse_StringExpression("this");
     assertTrue(a.isPresent());
+    ASTExpression astex = a.get();
+    astex.accept(flatExpressionScopeSetter);
     try{
-      tc.typeOf(a.get());
+      tc.typeOf(astex);
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0272"));
     }
@@ -191,48 +225,83 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     * */
 
     //build infrastructure for previous comment
-    TypeSymbol outer = type("Outer",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    TypeSymbol outer = TypeSymbolsSymTabMill.typeSymbolBuilder()
+        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setName("Outer")
+        .setEnclosingScope(scope)
+        .build();
+    outer.getSpannedScope().setEnclosingScope(outer.getEnclosingScope());
     add2scope(scope,outer);
-    MethodSymbol methodInner = method("methodInner",_voidSymType);
-    TypeSymbol inner = type("Inner",Lists.newArrayList(methodInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),outer.getSpannedScope());
+    MethodSymbol methodInner = TypeSymbolsSymTabMill.methodSymbolBuilder()
+        .setName("methodInner")
+        .setReturnType(_voidSymType)
+        .build();
+    methodInner.setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    TypeSymbol inner = TypeSymbolsSymTabMill.typeSymbolBuilder()
+        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setName("Inner")
+        .setMethodList(Lists.newArrayList(methodInner))
+        .setEnclosingScope(outer.getSpannedScope())
+        .build();
+    inner.getSpannedScope().setEnclosingScope(inner.getEnclosingScope());
+    methodInner.getSpannedScope().setEnclosingScope(inner.getSpannedScope());
     add2scope(outer.getEnclosingScope(),inner);
-    MethodSymbol methodInnerInner = method("methodInnerInner",_voidSymType);
-    TypeSymbol innerinner = type("InnerInner", Lists.newArrayList(methodInnerInner),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),inner.getSpannedScope());
+    MethodSymbol methodInnerInner = TypeSymbolsSymTabMill.methodSymbolBuilder()
+        .setName("methodInnerInner")
+        .setReturnType(_voidSymType)
+        .build();
+    methodInnerInner.setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    TypeSymbol innerinner = TypeSymbolsSymTabMill.typeSymbolBuilder()
+        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setName("InnerInner")
+        .setMethodList(Lists.newArrayList(methodInnerInner))
+        .setEnclosingScope(inner.getSpannedScope())
+        .build();
+    innerinner.getSpannedScope().setEnclosingScope(innerinner.getEnclosingScope());
+    methodInnerInner.getSpannedScope().setEnclosingScope(innerinner.getSpannedScope());
     add2scope(inner.getSpannedScope(),innerinner);
 
     //test 1: Outer.this in methodInner()
-    tc = new TypeCheck(null, derLit);
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter((ICombineExpressionsWithLiteralsScope) methodInner.getSpannedScope());
 
     Optional<ASTExpression> this1 = p.parse_StringExpression("Outer.this");
     Optional<ASTExpression> this2 = p.parse_StringExpression("Inner.this");
 
     assertTrue(this1.isPresent());
     assertTrue(this2.isPresent());
+    ASTExpression t1 = this1.get();
+    ASTExpression t2 = this2.get();
+    t1.accept(flatExpressionScopeSetter);
 
-    assertEquals("Outer",tc.typeOf(this1.get()).print());
+    assertEquals("Outer",tc.typeOf(t1).print());
 
     //test 2&3: Outer.this and Inner.this in methodInnerInner()
-    derLit = new DeriveSymTypeOfCombineExpressionsDelegator(methodInnerInner.getSpannedScope(),new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
-    tc = new TypeCheck(null, derLit);
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter((ICombineExpressionsWithLiteralsScope) methodInnerInner.getSpannedScope());
+    t1.accept(flatExpressionScopeSetter);
+    t2.accept(flatExpressionScopeSetter);
 
-    assertEquals("Inner",tc.typeOf(this2.get()).print());
-    assertEquals("Outer",tc.typeOf(this1.get()).print());
+    assertEquals("Inner",tc.typeOf(t2).print());
+    assertEquals("Outer",tc.typeOf(t1).print());
   }
 
   @Test
   public void failDeriveFromThisExpression1() throws IOException{
     //.this in enclosing class
-    TypeSymbol fail = type("Fail",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    TypeSymbol fail = TypeSymbolsSymTabMill.typeSymbolBuilder()
+        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setName("Fail")
+        .setEnclosingScope(scope)
+        .build();
     add2scope(scope,fail);
 
-    tc = new TypeCheck(null,derLit);
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
 
     Optional<ASTExpression> this1 = p.parse_StringExpression("Fail.this");
-
     assertTrue(this1.isPresent());
-
+    ASTExpression t1 = this1.get();
+    t1.accept(flatExpressionScopeSetter);
     try{
-      tc.typeOf(this1.get());
+      tc.typeOf(t1);
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0252"));
     }
@@ -243,9 +312,9 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   public void failDeriveFromThisExpression2() throws IOException{
     //.this without a type
     Optional<ASTExpression> this1 = p.parse_StringExpression("person1.this");
-
     assertTrue(this1.isPresent());
-
+    ASTExpression t1 = this1.get();
+    t1.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(this1.get());
     }catch(RuntimeException e){
@@ -271,15 +340,17 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     TypeVarSymbol t = typeVariable("T");
     add2scope(scope,t);
-    TypeSymbol list = type("List",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(t),scope);
+    TypeSymbol list = TypeSymbolsSymTabMill.typeSymbolBuilder()
+        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setName("List")
+        .setTypeParameterList(Lists.newArrayList(t))
+        .setEnclosingScope(scope)
+        .build();
     add2scope(scope,list);
     SymTypeExpression generic = SymTypeExpressionFactory.createGenerics("List",scope,_intSymType);
     SymTypeArray genarrType = SymTypeExpressionFactory.createTypeArray("List",scope,1,generic);
     FieldSymbol c = field("c",genarrType);
     add2scope(scope,c);
-
-    tc = new TypeCheck(null,derLit);
-
 
     Optional<ASTExpression> arr1 = p.parse_StringExpression("b[3]");
     Optional<ASTExpression> arr2 = p.parse_StringExpression("a[3]");
@@ -297,29 +368,49 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertTrue(arr6.isPresent());
     assertTrue(arr7.isPresent());
 
-    assertEquals("int[]",tc.typeOf(arr1.get()).print());
-    assertEquals("int",tc.typeOf(arr2.get()).print());
-    assertEquals("int",tc.typeOf(arr3.get()).print());
-    assertEquals("int[]",tc.typeOf(arr4.get()).print());
-    assertEquals("int",tc.typeOf(arr5.get()).print());
-    assertEquals("int",tc.typeOf(arr6.get()).print());
-    assertEquals("List<int>",tc.typeOf(arr7.get()).print());
+    ASTExpression a1 = arr1.get();
+    ASTExpression a2 = arr2.get();
+    ASTExpression a3 = arr3.get();
+    ASTExpression a4 = arr4.get();
+    ASTExpression a5 = arr5.get();
+    ASTExpression a6 = arr6.get();
+    ASTExpression a7 = arr7.get();
+
+    a1.accept(flatExpressionScopeSetter);
+    a2.accept(flatExpressionScopeSetter);
+    a3.accept(flatExpressionScopeSetter);
+    a4.accept(flatExpressionScopeSetter);
+    a5.accept(flatExpressionScopeSetter);
+    a6.accept(flatExpressionScopeSetter);
+    a7.accept(flatExpressionScopeSetter);
+
+    assertEquals("int[]",tc.typeOf(a1).print());
+    assertEquals("int",tc.typeOf(a2).print());
+    assertEquals("int",tc.typeOf(a3).print());
+    assertEquals("int[]",tc.typeOf(a4).print());
+    assertEquals("int",tc.typeOf(a5).print());
+    assertEquals("int",tc.typeOf(a6).print());
+    assertEquals("List<int>",tc.typeOf(a7).print());
   }
 
   @Test 
   public void failDeriveSymTypeOfArrayExpression() throws IOException {
     //assert that a type will throw an error -> no int[4]
-    TypeSymbol test = type("Test",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),scope);
+    TypeSymbol test = TypeSymbolsSymTabMill.typeSymbolBuilder()
+        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setName("Test")
+        .setEnclosingScope(scope)
+        .build();
     add2scope(scope,test);
 
-    tc = new TypeCheck(null, derLit);
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
 
     Optional<ASTExpression> arr1 = p.parse_StringExpression("Test[4]");
-
     assertTrue(arr1.isPresent());
-
+    ASTExpression a1 = arr1.get();
+    a1.accept(flatExpressionScopeSetter);
     try{
-      tc.typeOf(arr1.get());
+      tc.typeOf(a1);
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0255"));
     }
@@ -332,14 +423,13 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     FieldSymbol a = field("a",arrType);
     add2scope(scope,a);
 
-    tc = new TypeCheck(null,derLit);
-
     Optional<ASTExpression> arr1 = p.parse_StringExpression("a[7.5]");
-
     assertTrue(arr1.isPresent());
+    ASTExpression a1 = arr1.get();
+    a1.accept(flatExpressionScopeSetter);
 
     try{
-      tc.typeOf(arr1.get());
+      tc.typeOf(a1);
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0257"));
     }
@@ -352,14 +442,13 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     FieldSymbol a = field("a",arrType);
     add2scope(scope,a);
 
-    tc = new TypeCheck(null,derLit);
-
     Optional<ASTExpression> arr1 = p.parse_StringExpression("a[Person]");
-
     assertTrue(arr1.isPresent());
+    ASTExpression a1 = arr1.get();
+    a1.accept(flatExpressionScopeSetter);
 
     try{
-      tc.typeOf(arr1.get());
+      tc.typeOf(a1);
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0253"));
     }
@@ -375,13 +464,21 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertTrue(class2.isPresent());
     assertTrue(class3.isPresent());
 
+    ASTExpression c1 = class1.get();
+    ASTExpression c2 = class2.get();
+    ASTExpression c3 = class3.get();
+
+    c1.accept(flatExpressionScopeSetter);
+    c2.accept(flatExpressionScopeSetter);
+    c3.accept(flatExpressionScopeSetter);
+
     //soll es so funktionieren wie in Java? Dann duerfte man naemlich keine Generics akzeptieren
     //hier sind erst einmal Generics mit dabei, s. Testfall #3
     //falls man einschränken möchte, kann man die CoCo NoClassExpressionForGenerics
 
-    assertEquals("Class<String>",tc.typeOf(class1.get()).print());
-    assertEquals("Class<Integer>",tc.typeOf(class2.get()).print());
-    assertEquals("Class<java.util.Set<double>>",tc.typeOf(class3.get()).print());
+    assertEquals("Class<String>",tc.typeOf(c1).print());
+    assertEquals("Class<Integer>",tc.typeOf(c2).print());
+    assertEquals("Class<java.util.Set<double>>",tc.typeOf(c3).print());
   }
 
   @Test
@@ -405,20 +502,29 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertTrue(inst2.isPresent());
     assertTrue(inst3.isPresent());
 
-    assertEquals("boolean",tc.typeOf(inst1.get()).print());
-    assertEquals("boolean",tc.typeOf(inst2.get()).print());
-    assertEquals("boolean",tc.typeOf(inst3.get()).print());
+    ASTExpression i1 = inst1.get();
+    ASTExpression i2 = inst2.get();
+    ASTExpression i3 = inst3.get();
+
+    i1.accept(flatExpressionScopeSetter);
+    i2.accept(flatExpressionScopeSetter);
+    i3.accept(flatExpressionScopeSetter);
+
+    assertEquals("boolean",tc.typeOf(i1).print());
+    assertEquals("boolean",tc.typeOf(i2).print());
+    assertEquals("boolean",tc.typeOf(i3).print());
   }
 
   @Test
   public void failDeriveSymTypeOfInstanceOfExpression() throws IOException{
     //the expression is a type
     Optional<ASTExpression> inst1 = p.parse_StringExpression("Student instanceof Person");
-
     assertTrue(inst1.isPresent());
+    ASTExpression i1 = inst1.get();
+    i1.accept(flatExpressionScopeSetter);
 
     try{
-      tc.typeOf(inst1.get());
+      tc.typeOf(i1);
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0267"));
     }
@@ -427,16 +533,24 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   @Test
   public void deriveSymTypeOfTypeCastExpression() throws IOException {
     Optional<ASTExpression> cast1 = p.parse_StringExpression("(Person) student1");
-    Optional<ASTExpression> cast2 = p.parse_StringExpression("(Person) person1");
-    Optional<ASTExpression> cast3 = p.parse_StringExpression("(Student) person1");
+    Optional<ASTExpression> cast2 = p.parse_StringExpression("(Person)  person1");
+    Optional<ASTExpression> cast3 = p.parse_StringExpression("(Student)person1");
 
     assertTrue(cast1.isPresent());
     assertTrue(cast2.isPresent());
     assertTrue(cast3.isPresent());
 
-    assertEquals("Person",tc.typeOf(cast1.get()).print());
-    assertEquals("Person",tc.typeOf(cast2.get()).print());
-    assertEquals("Student",tc.typeOf(cast3.get()).print());
+    ASTExpression c1 = cast1.get();
+    ASTExpression c2 = cast2.get();
+    ASTExpression c3 = cast3.get();
+
+    c1.accept(flatExpressionScopeSetter);
+    c2.accept(flatExpressionScopeSetter);
+    c3.accept(flatExpressionScopeSetter);
+
+    assertEquals("Person",tc.typeOf(c1).print());
+    assertEquals("Person",tc.typeOf(c2).print());
+    assertEquals("Student",tc.typeOf(c3).print());
   }
 
   @Test

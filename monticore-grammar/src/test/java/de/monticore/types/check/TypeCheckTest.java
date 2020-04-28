@@ -15,7 +15,6 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
-import static de.monticore.types.check.DeriveSymTypeOfCommonExpressionTest.scope;
 import static de.monticore.types.check.TypeCheck.isSubtypeOf;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -50,7 +49,12 @@ public class TypeCheckTest {
     assertFalse(tc.isOfTypeForAssign(tc.typeOf(long1), float1));
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(float1), int1));
 
-    TypeSymbolsScope scope = scope(null, true, null, "Phantasy2");
+    TypeSymbolsScope scope = TypeSymbolsSymTabMill.typeSymbolsScopeBuilder()
+        .setName("Phantasy2")
+        .setEnclosingScope(null)
+        .setExportingSymbols(true)
+        .setAstNode(null)
+        .build();
 
     //a FirstSemesterStudent is a Student and a Student is a Person
     TypeSymbol person = DefsTypeBasic.type("Person");
@@ -108,7 +112,12 @@ public class TypeCheckTest {
     assertFalse(isSubtypeOf(tc.typeOf(float1), tc.typeOf(long1)));
     assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
 
-    TypeSymbolsScope scope = scope(null, true, null, "Phantasy2");
+    TypeSymbolsScope scope = TypeSymbolsSymTabMill.typeSymbolsScopeBuilder()
+        .setName("Phantasy2")
+        .setEnclosingScope(null)
+        .setExportingSymbols(true)
+        .setAstNode(null)
+        .build();
 
     //a FirstSemesterStudent is a Student and a Student is a Person
     TypeSymbol person = DefsTypeBasic.type("Person");

@@ -22,7 +22,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   public ITypeSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){
     // is accepted only here, decided on 07.04.2020
     if(!(expressionsBasisScope instanceof ITypeSymbolsScope)){
-      Log.error(""); // TODO Useful Error message with error code
+      Log.error("0xA0307 the enclosing scope of the expression does not implement the interface ITypeSymbolsScope"); // TODO Useful Error message with error code
     }
     // is accepted only here, decided on 07.04.2020
     return (ITypeSymbolsScope) expressionsBasisScope;
