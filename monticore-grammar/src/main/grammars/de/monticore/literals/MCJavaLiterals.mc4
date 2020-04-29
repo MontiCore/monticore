@@ -69,13 +69,13 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
    // §3.10.1 Integer Literals
 
    token Num_Int
-     = DecimalIntegerLiteral | HexIntegerLiteral 
+     = DecimalIntegerLiteral | HexIntegerLiteral
        | OctalIntegerLiteral | BinaryIntegerLiteral;
 
    token Num_Long
-     = (DecimalIntegerLiteral IntegerTypeSuffix) 
-       | (HexIntegerLiteral IntegerTypeSuffix) 
-       | (OctalIntegerLiteral IntegerTypeSuffix) 
+     = (DecimalIntegerLiteral IntegerTypeSuffix)
+       | (HexIntegerLiteral IntegerTypeSuffix)
+       | (OctalIntegerLiteral IntegerTypeSuffix)
        | (BinaryIntegerLiteral IntegerTypeSuffix);
 
    fragment token DecimalIntegerLiteral
@@ -157,15 +157,15 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
      = DecimalDoublePointLiteral | HexadecimalDoublePointLiteral;
 
    fragment token DecimalDoublePointLiteral
-     = Digits '.' (Digits)? (ExponentPart)? (DoubleTypeSuffix)? 
-       | '.' Digits (ExponentPart)? (DoubleTypeSuffix)? 
-       | Digits ExponentPart (DoubleTypeSuffix)? 
+     = Digits '.' (Digits)? (ExponentPart)? (DoubleTypeSuffix)?
+       | '.' Digits (ExponentPart)? (DoubleTypeSuffix)?
+       | Digits ExponentPart (DoubleTypeSuffix)?
        | Digits DoubleTypeSuffix;
 
    fragment token DecimalFloatingPointLiteral
-     = Digits '.' (Digits)? (ExponentPart)? (FloatTypeSuffix) 
-       | '.' Digits (ExponentPart)? (FloatTypeSuffix) 
-       | Digits ExponentPart (FloatTypeSuffix) 
+     = Digits '.' (Digits)? (ExponentPart)? (FloatTypeSuffix)
+       | '.' Digits (ExponentPart)? (FloatTypeSuffix)
+       | Digits ExponentPart (FloatTypeSuffix)
        | Digits FloatTypeSuffix;
 
    fragment token ExponentPart
