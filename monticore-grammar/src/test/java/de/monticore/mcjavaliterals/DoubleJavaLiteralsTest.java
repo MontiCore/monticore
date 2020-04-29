@@ -17,7 +17,7 @@ public class DoubleJavaLiteralsTest {
 
   @BeforeClass
   public static void init() {
-    LogStub.init();
+    Log.init();
     Log.enableFailQuick(false);
   }
 
@@ -25,6 +25,8 @@ public class DoubleJavaLiteralsTest {
     ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
     assertTrue(lit instanceof ASTDoubleLiteral);
     assertEquals(d, ((ASTDoubleLiteral) lit).getValue(), 0);
+    double i = 0x009.;
+    int j = 009;
   }
   
   @Test
