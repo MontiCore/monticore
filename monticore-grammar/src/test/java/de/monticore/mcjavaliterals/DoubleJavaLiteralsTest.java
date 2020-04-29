@@ -17,7 +17,7 @@ public class DoubleJavaLiteralsTest {
 
   @BeforeClass
   public static void init() {
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 
@@ -25,10 +25,8 @@ public class DoubleJavaLiteralsTest {
     ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
     assertTrue(lit instanceof ASTDoubleLiteral);
     assertEquals(d, ((ASTDoubleLiteral) lit).getValue(), 0);
-    double i = 0x009.;
-    int j = 009;
   }
-  
+
   @Test
   public void testDoubleLiterals() {
     try {
@@ -53,7 +51,7 @@ public class DoubleJavaLiteralsTest {
       checkDoubleLiteral(29.18e08, "29.18e08");
       checkDoubleLiteral(0029.0008e-00008, "0029.0008e-00008");
       checkDoubleLiteral(0029.0008e-00008D, "0029.0008e-00008D");
-      
+
       // hexadezimal number
       checkDoubleLiteral(0x5.p1, "0x5.p1");
       checkDoubleLiteral(0x.5p1, "0x.5p1");
@@ -70,7 +68,7 @@ public class DoubleJavaLiteralsTest {
       checkDoubleLiteral(0x0p-5, "0x0p-5");
       checkDoubleLiteral(0x0p1, "0x0p1");
       checkDoubleLiteral(0x0p1d, "0x0p1d");
-      
+
       // Examples from Java Language Specification
       checkDoubleLiteral(.3, ".3");
       checkDoubleLiteral(1e1, "1e1");
