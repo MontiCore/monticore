@@ -94,7 +94,7 @@ MontiCore projects are hosted at
 * Feature diagrams are used to model (software) product lines
 * Feature configurations select a subset of features of a feature model 
   to describe a product of the product line
-* [Main grammar `FeatureDiagram`](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.mc4)
+* Main grammar [`FeatureDiagram`](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.md)
 <!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
