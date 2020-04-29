@@ -83,50 +83,50 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
         @attribute source String-representation (including '"').
     */
   SignedNatLiteral implements SignedNumericLiteral<1> =
-     (negative:["-"]) Digits {noSpace()}? |
-                      Digits;
+    {noSpace(2)}? (negative:["-"]) Digits |
+                                    Digits;
 
-   /** ASTLongLiteral represents a positive Decimal number.
+  /** ASTLongLiteral represents a positive Decimal number.
          @attribute source String-representation (including '"').
-     */
-   BasicLongLiteral implements NumericLiteral<1> =
-     { cmpTokens(2,"l", "L") && noSpace(2)}? Digits key("l" | "L");
+    */
+  BasicLongLiteral implements NumericLiteral<1> =
+    { cmpTokens(2,"l","L") && noSpace(2) }? Digits key("l" | "L");
 
-   /** ASTSignedLongLiteral represents a positive or negative Decimal number.
+  /** ASTSignedLongLiteral represents a positive or negative Decimal number.
          @attribute source String-representation (including '"').
-     */
-   SignedBasicLongLiteral implements SignedNumericLiteral<1> =
-      { cmpTokens(3,"l","L") && noSpaces(2,3) }? negative:["-"] Digits key("l" | "L") |
-      { cmpTokens(2,"l","L") && noSpace(2) }?                   Digits key("l" | "L");
+    */
+  SignedBasicLongLiteral implements SignedNumericLiteral<1> =
+    { cmpTokens(3,"l","L") && noSpaces(2,3) }? negative:["-"] Digits key("l" | "L") |
+    { cmpTokens(2,"l","L") && noSpace(2) }?                   Digits key("l" | "L");
 
   /** ASTFloatLiteral represents a positive float.
         @attribute source String-representation (including '"').
     */
   BasicFloatLiteral implements NumericLiteral<1> =
     { cmpTokens(4,"f","F") && noSpaces(2,3,4) }?
-     pre:Digits "." post:Digits key("f" | "F");
+      pre:Digits "." post:Digits key("f" | "F");
 
   /** ASTSignedFloatLiteral represents a positive or negative float.
         @attribute source String-representation (including '"').
     */
   SignedBasicFloatLiteral implements SignedNumericLiteral<1> =
-     { cmpTokens(5,"f","F") && noSpaces(2,3,4,5)}?
-        negative:["-"] pre:Digits "." post:Digits key("f" | "F") |
-     { cmpTokens(4,"f","F") && noSpaces(2,3,4) }?
-        pre:Digits "." post:Digits key("f" | "F");
+    { cmpTokens(5,"f","F") && noSpaces(2,3,4,5)}?
+      negative:["-"] pre:Digits "." post:Digits key("f" | "F") |
+    { cmpTokens(4,"f","F") && noSpaces(2,3,4) }?
+      pre:Digits "." post:Digits key("f" | "F");
 
   /** ASTDoubleLiteral represents a positive double.
         @attribute source String-representation (including '"').
     */
   BasicDoubleLiteral implements NumericLiteral<1> =
-    pre:Digits "." {noSpace()}? post:Digits {noSpace()}?;
+    { noSpaces(2,3) }? pre:Digits "." post:Digits;
 
   /** ASTSignedDoubleLiteral represents a positive or negative double.
         @attribute source String-representation (including '"').
     */
   SignedBasicDoubleLiteral implements SignedNumericLiteral<1> =
-     negative:["-"] pre:Digits {noSpace()}? "." {noSpace()}? post:Digits {noSpace()}? |
-                    pre:Digits              "." {noSpace()}? post:Digits {noSpace()}?;
+    { noSpaces(2,3,4) }? negative:["-"] pre:Digits "." post:Digits |
+    { noSpaces(2,3) }?                  pre:Digits "." post:Digits;
 
   /*========================================================================*/
   /*============================ LEXER RULES ===============================*/
@@ -282,38 +282,38 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
     }
   ;
 
-    concept antlr {
-        parserjava {
-            public boolean cmpTokens(int i, String... strs) {
-                for (String str: strs) {
-                    if (cmpToken(i, str)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            public boolean noSpace(int i) {
-                org.antlr.v4.runtime.Token t1 = _input.LT(i);
-                org.antlr.v4.runtime.Token t2 = _input.LT(i - 1);
-                if ((t1 == null) || (t2==null)) {
-                  return false;
-                }
-                // token are on same line
-                // and columns differ exactly length of earlier token (t2)
-                return ((t1.getLine() == t2.getLine()) &&
-                    (t1.getCharPositionInLine() == t2.getCharPositionInLine() + t2.getText().length()));
-            }
-
-            public boolean noSpaces(Integer... is) {
-                for (Integer i: is) {
-                    if (!noSpace(i)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
+  concept antlr {
+    parserjava {
+      public boolean cmpTokens(int i, String... strs) {
+        for (String str: strs) {
+          if (cmpToken(i, str)) {
+            return true;
+          }
         }
+        return false;
+      }
+
+      public boolean noSpace(int i) {
+        org.antlr.v4.runtime.Token t1 = _input.LT(i);
+        org.antlr.v4.runtime.Token t2 = _input.LT(i - 1);
+        if ((t1 == null) || (t2==null)) {
+          return false;
+        }
+        // token are on same line
+        // and columns differ exactly length of earlier token (t2)
+        return ((t1.getLine() == t2.getLine()) &&
+          (t1.getCharPositionInLine() == t2.getCharPositionInLine() + t2.getText().length()));
+      }
+
+      public boolean noSpaces(Integer... is) {
+        for (Integer i: is) {
+          if (!noSpace(i)) {
+            return false;
+          }
+        }
+        return true;
+      }
     }
+  }
 }
 
