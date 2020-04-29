@@ -27,6 +27,12 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
   /*========================================================================*/
 
 
+  /** ASTDoubleLiteral represents a positive Double number.
+        @attribute source String-representation (including '"').
+    */
+  DoubleLiteral implements NumericLiteral<101> =
+     Num_Int "." | source:Num_Double ;
+
   /** ASTIntLiteral represents a positive Integer number.
         @attribute source String-representation (including '"').
     */
@@ -46,14 +52,6 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
     */
   FloatLiteral implements NumericLiteral<100> =
      source:Num_Float ;
-
-
-
-  /** ASTDoubleLiteral represents a positive Double number.
-        @attribute source String-representation (including '"').
-    */
-  DoubleLiteral implements NumericLiteral<100> =
-    source:Num_Double ;
 
 
   /*========================================================================*/
@@ -157,7 +155,9 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
      = DecimalDoublePointLiteral | HexadecimalDoublePointLiteral;
 
    fragment token DecimalDoublePointLiteral
-     = Digits '.' (Digits)? (ExponentPart)? (DoubleTypeSuffix)? 
+     = Digits '.' (Digits) (ExponentPart)? (DoubleTypeSuffix)?
+       | Digits '.' (Digits)? (ExponentPart) (DoubleTypeSuffix)?
+       | Digits '.' (Digits)? (ExponentPart)? (DoubleTypeSuffix)
        | '.' Digits (ExponentPart)? (DoubleTypeSuffix)? 
        | Digits ExponentPart (DoubleTypeSuffix)? 
        | Digits DoubleTypeSuffix;
@@ -228,7 +228,11 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
 
   astrule DoubleLiteral =
     method public double getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+        if (isPresentSource()) {
+           return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+        } else {
+           return de.monticore.MCLiteralsDecoder.decodeDouble(getNum_Int());
+        }
     }
   ;
 

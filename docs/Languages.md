@@ -321,7 +321,10 @@ and
 ### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) (30% to MC6)
 * Caretaker: MB
 * This is the full Java' Language (as Opposed to JavaLight).
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+* Main Grammar [`JavaDSL`](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.mc4)
+  and
+  [*detailed description*](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/JavaDSL.md).
+ <!-- Status: TODO: Sobald die Umstellung auf MC6 abgeschlossen ist, Beschreibung hinzufügen -->
 
 
 ## Further Information
