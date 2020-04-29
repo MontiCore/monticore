@@ -209,9 +209,14 @@ and
 
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
 * Caretaker: SH
-* Language for textual object diagrams.
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
-
+* Language for textual object diagrams. In its current state the language is mostly used for (i) a data structure in certain projets (e.g. artifact toolchain)
+   and (ii) as a report format for languages developed with MontiCore. For its lastest version the OD language was enhanced with 
+   the possiblility of using expressions in its attributes extending its capabilities.
+* Main grammars:
+    * [ODBasics](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.mc4)
+    * [OD4Report](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Report.mc4)
+    * [DateLiterals](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/DateLiterals.mc4)
+* [*Detailed description*](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.md) 
 
 ### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (Beta: In Stabilization) )(50% to MC6)
 * Caretaker: RE
