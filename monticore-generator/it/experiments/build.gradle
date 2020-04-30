@@ -3,6 +3,7 @@ import de.monticore.MCTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 plugins {
+   id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
   id "monticore" version "6.1.0-SNAPSHOT" // MontiCore Plugin
 }
 allprojects {
@@ -13,6 +14,7 @@ allprojects {
 subprojects {
   apply plugin: 'java'
   apply plugin: 'monticore'
+  apply plugin: 'de.set.ecj'
   
   buildDir = file("$projectDir/target")
   
@@ -66,12 +68,15 @@ subprojects {
     main.java.srcDirs += [ outDir ]
   }
   
+  // Fixes issue with java plugin in projects without resources
+  compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
   
-  sourceCompatibility = '1.8'
+    sourceCompatibility = '1.8'
   
   tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
     options.deprecation false
+    options.warnings = false
   }
   
   compileJava {
