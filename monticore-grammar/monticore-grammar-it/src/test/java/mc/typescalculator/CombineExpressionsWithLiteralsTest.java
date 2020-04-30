@@ -13,6 +13,7 @@ import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcd4analysis._symboltable.TestCD4AnalysisLanguage;
 import mc.testcd4analysis._symboltable.TestCD4AnalysisGlobalScope;
+import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.*;
 import mc.typescalculator.combineexpressionswithliterals.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
@@ -41,8 +42,8 @@ public class CombineExpressionsWithLiteralsTest {
 
 
     CD2EAdapter adapter = new CD2EAdapter(globalScope);
-    CombineExpressionsWithLiteralsLanguage language = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsLanguageBuilder().build();
-    CombineExpressionsWithLiteralsGlobalScope globalScope1 = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsGlobalScopeBuilder()
+    CombineExpressionsWithLiteralsLanguage language = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsLanguageBuilder().build();
+    CombineExpressionsWithLiteralsGlobalScope globalScope1 = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsGlobalScopeBuilder()
         .setCombineExpressionsWithLiteralsLanguage(language).setModelPath(new ModelPath()).build();
     globalScope1.addAdaptedFieldSymbolResolvingDelegate(adapter);
     globalScope1.addAdaptedTypeSymbolResolvingDelegate(adapter);

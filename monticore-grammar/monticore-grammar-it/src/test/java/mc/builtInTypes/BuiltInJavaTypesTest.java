@@ -3,6 +3,7 @@ package mc.builtInTypes;
 
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
@@ -19,7 +20,7 @@ public class BuiltInJavaTypesTest {
   @BeforeClass
   public static void setup(){
     LogStub.init();
-    gs = TypeSymbolsSymTabMill
+    gs = TypeSymbolsMill
         .typeSymbolsGlobalScopeBuilder()
         .setTypeSymbolsLanguage(new TypeSymbolsLanguage("TypeSymbols","ts") {
           @Override
