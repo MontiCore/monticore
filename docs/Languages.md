@@ -163,7 +163,7 @@ and
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (MontiCore Stable)
 * Responsible: NJ
 * The MontiCore language for parsing JSON artifacts.
-* The JSON grammar adheres to the common **standard** and allows parsing 
+* The JSON grammar adheres to the common **JSON standard** and allows parsing 
   arbitrary JSON artifacts for further processing.
 * Actually the grammar represents a slight superset to the official JSON standard. 
   It is intended for parsing JSON-compliant artifacts. Further well-formedness
