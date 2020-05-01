@@ -53,7 +53,7 @@ MontiCore projects are hosted at
 
 ### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Responsible: SVa, AGe
-* CD4A is the textual representation to describe UML class diagrams 
+* CD4A is the textual representation to describe **UML class diagrams** 
   (it uses the [UML/P](http://mbse.se-rwth.de/) variant).
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
   visibilities**,
