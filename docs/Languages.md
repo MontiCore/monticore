@@ -155,8 +155,9 @@ and
 <!-- Status: ok, BR 20.03.22 -->
   
 
-### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
+### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (stable)
 * Responsible: NJ
+* Status: Mc4: stable; symbols: in work; explanation: in work
 * The MontiCore language for parsing JSON artifacts
 * The JSON grammar adheres to the common **standard** and allows parsing 
   arbitrary JSON artifacts for further processing
