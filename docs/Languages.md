@@ -170,7 +170,7 @@ and
   checks are not included, because we assume to parse correctly produced JSON 
   documents only.
 * Please note that JSON (like XML or ASCII) is just a carrier language.
-  The conrete JSON dialect and the question, how to recreate the
+  The concrete JSON dialect and the question, how to recreate the
   real objects / data structures, etc. behind the JSON tree structure
   is beyond this grammar, but can be applied to the AST defined here.
 * Main grammar 
