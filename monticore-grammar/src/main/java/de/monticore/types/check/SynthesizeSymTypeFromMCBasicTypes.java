@@ -3,9 +3,11 @@ package de.monticore.types.check;
 
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.*;
+import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
@@ -27,10 +29,8 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
   //
   MCBasicTypesVisitor realThis = this;
 
-  protected ITypeSymbolsScope scope;
+  public SynthesizeSymTypeFromMCBasicTypes(){
 
-  public SynthesizeSymTypeFromMCBasicTypes(ITypeSymbolsScope scope){
-    this.scope = scope;
   }
   
   @Override
@@ -44,23 +44,32 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
   }
   
   // ---------------------------------------------------------- Storage result
+
+  public ITypeSymbolsScope getScope (IMCBasicTypesScope mcBasicTypesScope){
+    // is accepted only here, decided on 07.04.2020
+    if(!(mcBasicTypesScope instanceof ITypeSymbolsScope)){
+      Log.error("0xA0308 the enclosing scope of the type does not implement the interface ITypeSymbolsScope"); // TODO Useful Error message with error code
+    }
+    // is accepted only here, decided on 07.04.2020
+    return (ITypeSymbolsScope) mcBasicTypesScope;
+  }
   
   /**
    * Storage in the Visitor: result of the last endVisit.
    * This attribute is synthesized upward.
    */
-  public LastResult lastResult = new LastResult();
+  public TypeCheckResult typeCheckResult = new TypeCheckResult();
   
   public Optional<SymTypeExpression> getResult() {
-    return Optional.of(lastResult.getLast());
+    return Optional.of(typeCheckResult.getLast());
   }
   
   public void init() {
-    lastResult = new LastResult();
+    typeCheckResult = new TypeCheckResult();
   }
 
-  public void setLastResult(LastResult lastResult){
-    this.lastResult = lastResult;
+  public void setTypeCheckResult(TypeCheckResult typeCheckResult){
+    this.typeCheckResult = typeCheckResult;
   }
   
   // ---------------------------------------------------------- Visting Methods
@@ -73,11 +82,11 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
   public void endVisit(ASTMCPrimitiveType primitiveType) {
     SymTypeConstant typeConstant =
             SymTypeExpressionFactory.createTypeConstant(primitiveType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
-    lastResult.setLast(typeConstant);
+    typeCheckResult.setLast(typeConstant);
   }
   
   public void endVisit(ASTMCVoidType voidType) {
-    lastResult.setLast(SymTypeExpressionFactory.createTypeVoid());
+    typeCheckResult.setLast(SymTypeExpressionFactory.createTypeVoid());
   }
   
   /**
@@ -90,16 +99,12 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
    */
   public void endVisit(ASTMCQualifiedType qType) {
     // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
-    lastResult.setLast(
-        SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), scope)));
+    typeCheckResult.setLast(
+        SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope()))));
   }
   
   public void endVisit(ASTMCReturnType rType) {
     // result is pushed upward (no change)
   }
 
-  protected void setScope(ITypeSymbolsScope scope){
-    this.scope=scope;
-  }
-  
 }

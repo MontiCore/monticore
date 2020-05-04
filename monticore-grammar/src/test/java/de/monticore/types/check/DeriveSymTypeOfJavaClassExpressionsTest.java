@@ -557,11 +557,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   public void failDeriveSymTypeOfTypeCastExpression() throws IOException{
     //the expression is a type
     Optional<ASTExpression> cast1 = p.parse_StringExpression("(Student)Person");
-
     assertTrue(cast1.isPresent());
+    ASTExpression c1 = cast1.get();
+    c1.accept(flatExpressionScopeSetter);
 
     try{
-      tc.typeOf(cast1.get());
+      tc.typeOf(c1);
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0262"));
     }
@@ -571,11 +572,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   public void failDeriveSymTypeOfTypeCastExpression2() throws IOException{
     //there exists no sub/super type relation between the expression and the type
     Optional<ASTExpression> cast1 = p.parse_StringExpression("(String)person1");
-
     assertTrue(cast1.isPresent());
+    ASTExpression c1 = cast1.get();
+    c1.accept(flatExpressionScopeSetter);
 
     try{
-      tc.typeOf(cast1.get());
+      tc.typeOf(c1);
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0266"));
     }

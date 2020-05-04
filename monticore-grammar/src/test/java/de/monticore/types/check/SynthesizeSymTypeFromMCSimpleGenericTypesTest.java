@@ -39,7 +39,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
   
   // This is Visitor for SimpleGeneric types under test:
-  SynthesizeSymTypeFromMCSimpleGenericTypes synt = new SynthesizeSymTypeFromMCSimpleGenericTypes(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build());
+  SynthesizeSymTypeFromMCSimpleGenericTypes synt = new SynthesizeSymTypeFromMCSimpleGenericTypes();
   
   // other arguments not used (and therefore deliberately null)
   

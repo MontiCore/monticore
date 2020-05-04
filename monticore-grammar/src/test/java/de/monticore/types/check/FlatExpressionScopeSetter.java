@@ -15,6 +15,7 @@ import de.monticore.expressions.setexpressions._ast.ASTIsInExpression;
 import de.monticore.expressions.setexpressions._ast.ASTSetInExpression;
 import de.monticore.expressions.setexpressions._ast.ASTUnionExpressionInfix;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 
@@ -298,6 +299,11 @@ public class FlatExpressionScopeSetter implements CombineExpressionsWithLiterals
   @Override
   public void visit(ASTMCQualifiedType type){
     type.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCQualifiedName name) {
+    name.setEnclosingScope(scope);
   }
 
   @Override

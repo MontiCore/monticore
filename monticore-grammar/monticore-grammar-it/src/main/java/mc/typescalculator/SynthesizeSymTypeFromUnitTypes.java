@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SynthesizeSymTypeFromMCBasicTypes;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
@@ -29,6 +28,6 @@ public class SynthesizeSymTypeFromUnitTypes extends SynthesizeSymTypeFromMCBasic
 
   @Override
   public void endVisit(ASTMinuteType type){
-    lastResult.setLast(new SymTypeOfSIUnit(new TypeSymbolLoader(type.getUnit(),scope)));
+    typeCheckResult.setLast(new SymTypeOfSIUnit(new TypeSymbolLoader(type.getUnit(),scope)));
   }
 }

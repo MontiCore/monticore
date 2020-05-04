@@ -36,7 +36,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
   
   // This is Visitor for Collection types under test:
-  SynthesizeSymTypeFromMCCollectionTypes synt = new SynthesizeSymTypeFromMCCollectionTypes(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build());
+  SynthesizeSymTypeFromMCCollectionTypes synt = new SynthesizeSymTypeFromMCCollectionTypes();
   
   // other arguments not used (and therefore deliberately null)
   

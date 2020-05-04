@@ -8,7 +8,6 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
-import static de.monticore.types.check.SymTypeConstant.unbox;
 import static de.monticore.types.check.TypeCheck.*;
 
 /**
@@ -33,8 +32,8 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     realThis = this;
   }
 
-  public void setLastResult(LastResult lastResult){
-    this.lastResult = lastResult;
+  public void setTypeCheckResult(TypeCheckResult typeCheckResult){
+    this.typeCheckResult = typeCheckResult;
   }
 
   @Override
@@ -42,9 +41,9 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     Optional<SymTypeExpression> wholeResult = calculateTypeShift(expr.getLeft(),expr.getRight());
     if(wholeResult.isPresent()){
       //store the result of the expression in the last result
-      lastResult.setLast(wholeResult.get());
+      typeCheckResult.setLast(wholeResult.get());
     }else{
-      lastResult.reset();
+      typeCheckResult.reset();
       Log.error("0xA0200"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
@@ -54,9 +53,9 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     Optional<SymTypeExpression> wholeResult = calculateTypeShift(expr.getLeft(),expr.getRight());
     if(wholeResult.isPresent()){
       //store the result of the expression in the last result
-      lastResult.setLast(wholeResult.get());
+      typeCheckResult.setLast(wholeResult.get());
     }else{
-      lastResult.reset();
+      typeCheckResult.reset();
       Log.error("0xA0201"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
@@ -66,9 +65,9 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     Optional<SymTypeExpression> wholeResult = calculateTypeShift(expr.getLeft(),expr.getRight());
     if(wholeResult.isPresent()){
       //store the result of the expression in the last result
-      lastResult.setLast(wholeResult.get());
+      typeCheckResult.setLast(wholeResult.get());
     }else{
-      lastResult.reset();
+      typeCheckResult.reset();
       Log.error("0xA0202"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
@@ -78,9 +77,9 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     Optional<SymTypeExpression> wholeResult = calculateTypeBinary(expr.getLeft(),expr.getRight());
     if(wholeResult.isPresent()){
       //store the result of the expression in the last result
-      lastResult.setLast(wholeResult.get());
+      typeCheckResult.setLast(wholeResult.get());
     }else{
-      lastResult.reset();
+      typeCheckResult.reset();
       Log.error("0xA0203"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
@@ -90,9 +89,9 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     Optional<SymTypeExpression> wholeResult = calculateTypeBinary(expr.getLeft(),expr.getRight());
     if(wholeResult.isPresent()){
       //store the result of the expression in the last result
-      lastResult.setLast(wholeResult.get());
+      typeCheckResult.setLast(wholeResult.get());
     }else{
-      lastResult.reset();
+      typeCheckResult.reset();
       Log.error("0xA0204"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
@@ -102,9 +101,9 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     Optional<SymTypeExpression> wholeResult = calculateTypeBinary(expr.getLeft(),expr.getRight());
     if(wholeResult.isPresent()){
       //store the result of the expression in the last result
-      lastResult.setLast(wholeResult.get());
+      typeCheckResult.setLast(wholeResult.get());
     }else{
-      lastResult.reset();
+      typeCheckResult.reset();
       Log.error("0xA0205"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
@@ -117,17 +116,17 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     SymTypeExpression rightResult = null;
 
     left.accept(getRealThis());
-    if(lastResult.isPresentLast()){
+    if(typeCheckResult.isPresentLast()){
       //store the type of the left expression in a variable for later use
-      leftResult = lastResult.getLast();
+      leftResult = typeCheckResult.getLast();
     }else{
       Log.error("0xA0206"+String.format(ERROR_MSG,prettyPrinter.prettyprint(left)));
     }
 
     right.accept(getRealThis());
-    if(lastResult.isPresentLast()){
+    if(typeCheckResult.isPresentLast()){
       //store the type of the right expression in a variable for later use
-      rightResult = lastResult.getLast();
+      rightResult = typeCheckResult.getLast();
     }else{
       Log.error("0xA0207"+String.format(ERROR_MSG,prettyPrinter.prettyprint(right)));
     }
@@ -153,17 +152,17 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     SymTypeExpression rightResult = null;
 
     left.accept(getRealThis());
-    if(lastResult.isPresentLast()){
+    if(typeCheckResult.isPresentLast()){
       //store the type of the left expression in a variable for later use
-      leftResult = lastResult.getLast();
+      leftResult = typeCheckResult.getLast();
     }else{
       Log.error("0xA0208"+String.format(ERROR_MSG,prettyPrinter.prettyprint(left)));
     }
 
     right.accept(getRealThis());
-    if(lastResult.isPresentLast()){
+    if(typeCheckResult.isPresentLast()){
       //store the type of the right expression in a variable for later use
-      rightResult = lastResult.getLast();
+      rightResult = typeCheckResult.getLast();
     }else{
       Log.error("0xA0209"+String.format(ERROR_MSG,prettyPrinter.prettyprint(right)));
     }

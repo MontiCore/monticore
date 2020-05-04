@@ -27,7 +27,7 @@ public class MCType2SymTypeExpressionTest {
 
 
   private SymTypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type) {
-    SynthesizeSymTypeFromMCSimpleGenericTypes visitor = new SynthesizeSymTypeFromMCSimpleGenericTypes(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build());
+    SynthesizeSymTypeFromMCSimpleGenericTypes visitor = new SynthesizeSymTypeFromMCSimpleGenericTypes();
     type.accept(visitor);
     return visitor.getResult().get();
   }

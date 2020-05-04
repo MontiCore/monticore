@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
@@ -12,8 +11,6 @@ import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.Optional;
 
 /**
  * Visitor for Derivation of SymType from MCBasicTypes
@@ -35,8 +32,8 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
   //
   MCCollectionTypesVisitor realThis = this;
 
-  public SynthesizeSymTypeFromMCCollectionTypes(ITypeSymbolsScope scope){
-    super(scope);
+  public SynthesizeSymTypeFromMCCollectionTypes(){
+    super();
   }
 
   @Override
@@ -65,34 +62,34 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
   public void endVisit(ASTMCListType t) {
     // argument Type has been processed and stored in result:
     SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("List", scope), lastResult.getLast());
-    if (!lastResult.isPresentLast()) {
+        SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("List", getScope(t.getEnclosingScope())), typeCheckResult.getLast());
+    if (!typeCheckResult.isPresentLast()) {
       Log.error("0xE9FD6 Internal Error: No SymType argument for List type. "
           + " Probably TypeCheck mis-configured.");
     }
-    lastResult.setLast(tex);
+    typeCheckResult.setLast(tex);
   }
 
   public void endVisit(ASTMCSetType t) {
     // argument Type has been processed and stored in result:
     SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Set", scope), lastResult.getLast());
-    if (!lastResult.isPresentLast()) {
+        SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Set", getScope(t.getEnclosingScope())), typeCheckResult.getLast());
+    if (!typeCheckResult.isPresentLast()) {
       Log.error("0xE9FD7 Internal Error: No SymType argument for Set type. "
           + " Probably TypeCheck mis-configured.");
     }
-    lastResult.setLast(tex);
+    typeCheckResult.setLast(tex);
   }
 
   public void endVisit(ASTMCOptionalType t) {
     // argument Type has been processed and stored in result:
     SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Optional", scope), lastResult.getLast());
-    if (!lastResult.isPresentLast()) {
+        SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Optional", getScope(t.getEnclosingScope())), typeCheckResult.getLast());
+    if (!typeCheckResult.isPresentLast()) {
       Log.error("0xE9FD8 Internal Error: No SymType argument for Optional type. "
           + " Probably TypeCheck mis-configured.");
     }
-    lastResult.setLast(tex);
+    typeCheckResult.setLast(tex);
   }
 
   /**
@@ -104,26 +101,26 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
     if (null != node.getKey()) {
       node.getKey().accept(getRealThis());
     }
-    if (!lastResult.isPresentLast()) {
+    if (!typeCheckResult.isPresentLast()) {
       Log.error("0xE9FDA Internal Error: Missing SymType argument 1 for Map type. "
           + " Probably TypeCheck mis-configured.");
     }
-    SymTypeExpression argument1 = lastResult.getLast();
+    SymTypeExpression argument1 = typeCheckResult.getLast();
 
     // Argument 2:
     if (null != node.getValue()) {
       node.getValue().accept(getRealThis());
     }
-    if (!lastResult.isPresentLast()) {
+    if (!typeCheckResult.isPresentLast()) {
       Log.error("0xE9FDB Internal Error: Missing SymType argument 1 for Map type. "
           + " Probably TypeCheck mis-configured.");
     }
-    SymTypeExpression argument2 = lastResult.getLast();
+    SymTypeExpression argument2 = typeCheckResult.getLast();
     // Construct new TypeExpression:
     SymTypeExpression tex =
         SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(
-            "Map", scope), argument1, argument2);
-    lastResult.setLast(tex);
+            "Map", getScope(node.getEnclosingScope())), argument1, argument2);
+    typeCheckResult.setLast(tex);
   }
 
   /**
@@ -139,7 +136,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
    */
   @Override
   public void endVisit(ASTMCQualifiedType qType) {
-    lastResult.setLast(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), scope)));
+    typeCheckResult.setLast(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope()))));
   }
 
   // ASTMCTypeArgument, ASTMCBasicTypeArgument and  MCPrimitiveTypeArgument:

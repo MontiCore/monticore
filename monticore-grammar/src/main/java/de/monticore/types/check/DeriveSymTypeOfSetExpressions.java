@@ -49,15 +49,15 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
 
     //element
     node.getElem().accept(realThis);
-    if(lastResult.isPresentLast()){
-      elemResult = lastResult.getLast();
+    if(typeCheckResult.isPresentLast()){
+      elemResult = typeCheckResult.getLast();
     }else{
       Log.error("0xA0286"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getElem())));
     }
     //set
     node.getSet().accept(realThis);
-    if(lastResult.isPresentLast()){
-      setResult = lastResult.getLast();
+    if(typeCheckResult.isPresentLast()){
+      setResult = typeCheckResult.getLast();
     }else{
       Log.error("0xA0287"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getSet())));
     }
@@ -76,9 +76,9 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     }
 
     if(null!=wholeResult){
-      lastResult.setLast(wholeResult);
+      typeCheckResult.setLast(wholeResult);
     }else{
-      lastResult.reset();
+      typeCheckResult.reset();
       Log.error("0xA0288"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
@@ -93,15 +93,15 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
 
     //element
     node.getElem().accept(realThis);
-    if(lastResult.isPresentLast()){
-      elemResult = lastResult.getLast();
+    if(typeCheckResult.isPresentLast()){
+      elemResult = typeCheckResult.getLast();
     }else{
       Log.error("0xA0289"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getElem())));
     }
     //set
     node.getSet().accept(realThis);
-    if(lastResult.isPresentLast()){
-      setResult = lastResult.getLast();
+    if(typeCheckResult.isPresentLast()){
+      setResult = typeCheckResult.getLast();
     }else{
       Log.error("0xA0290"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getSet())));
     }
@@ -120,9 +120,9 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     }
 
     if(null!=wholeResult){
-      lastResult.setLast(wholeResult);
+      typeCheckResult.setLast(wholeResult);
     }else{
-      lastResult.reset();
+      typeCheckResult.reset();
       Log.error("0xA0291"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
@@ -133,9 +133,9 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     Optional<SymTypeExpression> wholeResult = calculateUnionAndIntersectionInfix(node, node.getLeft(),node.getRight());
 
     if(wholeResult.isPresent()){
-      lastResult.setLast(wholeResult.get());
+      typeCheckResult.setLast(wholeResult.get());
     }else{
-      lastResult.reset();
+      typeCheckResult.reset();
       Log.error("0xA0292"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
@@ -146,9 +146,9 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     Optional<SymTypeExpression> wholeResult = calculateUnionAndIntersectionInfix(node, node.getLeft(),node.getRight());
 
     if(wholeResult.isPresent()){
-      lastResult.setLast(wholeResult.get());
+      typeCheckResult.setLast(wholeResult.get());
     }else{
-      lastResult.reset();
+      typeCheckResult.reset();
       Log.error("0xA0293"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
     }
   }
@@ -160,15 +160,15 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
 
     //element
     leftExpr.accept(realThis);
-    if(lastResult.isPresentLast()){
-      leftResult = lastResult.getLast();
+    if(typeCheckResult.isPresentLast()){
+      leftResult = typeCheckResult.getLast();
     }else{
       Log.error("0xA0294"+String.format(ERROR_MSG,prettyPrinter.prettyprint(leftExpr)));
     }
     //set
     rightExpr.accept(realThis);
-    if(lastResult.isPresentLast()){
-      rightResult = lastResult.getLast();
+    if(typeCheckResult.isPresentLast()){
+      rightResult = typeCheckResult.getLast();
     }else{
       Log.error("0xA0295"+String.format(ERROR_MSG,prettyPrinter.prettyprint(rightExpr)));
     }

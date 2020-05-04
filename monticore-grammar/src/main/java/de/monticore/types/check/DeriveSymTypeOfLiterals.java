@@ -36,14 +36,14 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
    * Storage in the Visitor: result of the last endVisit.
    * This attribute is synthesized upward.
    */
-  protected LastResult result;
+  protected TypeCheckResult result;
   
-  public LastResult getResult() {
+  public TypeCheckResult getResult() {
     return result;
   }
   
   public void init() {
-    result = new LastResult();
+    result = new TypeCheckResult();
   }
 
   
@@ -60,7 +60,7 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
             + " Probably TypeCheck mis-configured.");
   }
 
-  public void setResult(LastResult result) {
+  public void setResult(TypeCheckResult result) {
     this.result = result;
   }
 }

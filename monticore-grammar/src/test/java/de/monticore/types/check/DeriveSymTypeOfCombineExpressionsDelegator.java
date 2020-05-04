@@ -2,7 +2,6 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
@@ -40,7 +39,7 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
 
   private IDerivePrettyPrinter prettyPrinter;
 
-  private LastResult lastResult = new LastResult();
+  private TypeCheckResult typeCheckResult = new TypeCheckResult();
 
 
   public DeriveSymTypeOfCombineExpressionsDelegator(ITypeSymbolsScope scope, IDerivePrettyPrinter prettyPrinter){
@@ -48,47 +47,47 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
     this.prettyPrinter = prettyPrinter;
 
     deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfCommonExpressions();
-    deriveSymTypeOfCommonExpressions.setLastResult(lastResult);
+    deriveSymTypeOfCommonExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfCommonExpressions.setPrettyPrinter(prettyPrinter);
     setCommonExpressionsVisitor(deriveSymTypeOfCommonExpressions);
 
     deriveSymTypeOfAssignmentExpressions = new DeriveSymTypeOfAssignmentExpressions();
-    deriveSymTypeOfAssignmentExpressions.setLastResult(lastResult);
+    deriveSymTypeOfAssignmentExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfAssignmentExpressions.setPrettyPrinter(prettyPrinter);
     setAssignmentExpressionsVisitor(deriveSymTypeOfAssignmentExpressions);
 
     deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
-    deriveSymTypeOfBitExpressions.setLastResult(lastResult);
+    deriveSymTypeOfBitExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfBitExpressions.setPrettyPrinter(prettyPrinter);
     setBitExpressionsVisitor(deriveSymTypeOfBitExpressions);
 
     deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
-    deriveSymTypeOfExpression.setLastResult(lastResult);
+    deriveSymTypeOfExpression.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfExpression.setPrettyPrinter(prettyPrinter);
     setExpressionsBasisVisitor(deriveSymTypeOfExpression);
 
     deriveSymTypeOfJavaClassExpressions = new DeriveSymTypeOfJavaClassExpressions();
-    deriveSymTypeOfJavaClassExpressions.setLastResult(lastResult);
+    deriveSymTypeOfJavaClassExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfJavaClassExpressions.setPrettyPrinter(prettyPrinter);
     setJavaClassExpressionsVisitor(deriveSymTypeOfJavaClassExpressions);
 
     deriveSymTypeOfSetExpressions = new DeriveSymTypeOfSetExpressions();
-    deriveSymTypeOfSetExpressions.setLastResult(lastResult);
+    deriveSymTypeOfSetExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfSetExpressions.setPrettyPrinter(prettyPrinter);
     setSetExpressionsVisitor(deriveSymTypeOfSetExpressions);
 
     deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
     setMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
-    deriveSymTypeOfLiterals.setResult(lastResult);
+    deriveSymTypeOfLiterals.setResult(typeCheckResult);
 
     commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
     setMCCommonLiteralsVisitor(commonLiteralsTypesCalculator);
-    commonLiteralsTypesCalculator.setResult(lastResult);
+    commonLiteralsTypesCalculator.setResult(typeCheckResult);
 
-    symTypeFromMCSimpleGenericTypes = new SynthesizeSymTypeFromMCSimpleGenericTypes(scope);
+    symTypeFromMCSimpleGenericTypes = new SynthesizeSymTypeFromMCSimpleGenericTypes();
 
     deriveSymTypeOfCombineExpressions = new DeriveSymTypeOfCombineExpressions(symTypeFromMCSimpleGenericTypes);
-    deriveSymTypeOfCombineExpressions.setLastResult(lastResult);
+    deriveSymTypeOfCombineExpressions.setTypeCheckResult(typeCheckResult);
     setCombineExpressionsWithLiteralsVisitor(deriveSymTypeOfCombineExpressions);
   }
 
@@ -98,10 +97,10 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
   public Optional<SymTypeExpression> calculateType(ASTExpression e){
     e.accept(realThis);
     Optional<SymTypeExpression> result = Optional.empty();
-    if (lastResult.isPresentLast()) {
-      result = Optional.ofNullable(lastResult.getLast());
+    if (typeCheckResult.isPresentLast()) {
+      result = Optional.ofNullable(typeCheckResult.getLast());
     }
-    lastResult.reset();
+    typeCheckResult.reset();
     return result;
   }
 
@@ -113,16 +112,16 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
   /**
    * set the last result of all calculators to the same object
    */
-  public void setLastResult(LastResult lastResult){
-    deriveSymTypeOfAssignmentExpressions.setLastResult(lastResult);
-    deriveSymTypeOfMCCommonLiterals.setResult(lastResult);
-    deriveSymTypeOfCommonExpressions.setLastResult(lastResult);
-    deriveSymTypeOfExpression.setLastResult(lastResult);
-    deriveSymTypeOfLiterals.setResult(lastResult);
-    deriveSymTypeOfBitExpressions.setLastResult(lastResult);
-    deriveSymTypeOfJavaClassExpressions.setLastResult(lastResult);
-    deriveSymTypeOfSetExpressions.setLastResult(lastResult);
-    deriveSymTypeOfCombineExpressions.setLastResult(lastResult);
+  public void setTypeCheckResult(TypeCheckResult typeCheckResult){
+    deriveSymTypeOfAssignmentExpressions.setTypeCheckResult(typeCheckResult);
+    deriveSymTypeOfMCCommonLiterals.setResult(typeCheckResult);
+    deriveSymTypeOfCommonExpressions.setTypeCheckResult(typeCheckResult);
+    deriveSymTypeOfExpression.setTypeCheckResult(typeCheckResult);
+    deriveSymTypeOfLiterals.setResult(typeCheckResult);
+    deriveSymTypeOfBitExpressions.setTypeCheckResult(typeCheckResult);
+    deriveSymTypeOfJavaClassExpressions.setTypeCheckResult(typeCheckResult);
+    deriveSymTypeOfSetExpressions.setTypeCheckResult(typeCheckResult);
+    deriveSymTypeOfCombineExpressions.setTypeCheckResult(typeCheckResult);
   }
 
   /**
@@ -139,7 +138,7 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
     deriveSymTypeOfJavaClassExpressions = new DeriveSymTypeOfJavaClassExpressions();
     deriveSymTypeOfSetExpressions = new DeriveSymTypeOfSetExpressions();
     deriveSymTypeOfCombineExpressions = new DeriveSymTypeOfCombineExpressions(symTypeFromMCSimpleGenericTypes);
-    setLastResult(lastResult);
+    setTypeCheckResult(typeCheckResult);
   }
 
   /**
@@ -149,10 +148,10 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
   public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
     lit.accept(realThis);
     Optional<SymTypeExpression> result = Optional.empty();
-    if (lastResult.isPresentLast()) {
-      result = Optional.ofNullable(lastResult.getLast());
+    if (typeCheckResult.isPresentLast()) {
+      result = Optional.ofNullable(typeCheckResult.getLast());
     }
-    lastResult.reset();
+    typeCheckResult.reset();
     return result;
   }
 }

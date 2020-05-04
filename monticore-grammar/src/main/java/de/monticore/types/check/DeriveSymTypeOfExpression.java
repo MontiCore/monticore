@@ -32,7 +32,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   protected IDerivePrettyPrinter prettyPrinter;
 
   // TODO find better name for LastResult
-  protected LastResult lastResult;
+  protected TypeCheckResult typeCheckResult;
 
   private ExpressionsBasisVisitor realThis;
 
@@ -57,14 +57,14 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     SymTypeExpression wholeResult = null;
     //get the type of the literal
     expr.getLiteral().accept(getRealThis());
-    if (lastResult.isPresentLast()) {
-      wholeResult = lastResult.getLast();
+    if (typeCheckResult.isPresentLast()) {
+      wholeResult = typeCheckResult.getLast();
     }
     if (wholeResult != null) {
-      lastResult.setLast(wholeResult);
+      typeCheckResult.setLast(wholeResult);
     } else {
       //No type found --> error
-      lastResult.reset();
+      typeCheckResult.reset();
       Log.error("0xA0250"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
     }
   }
@@ -87,23 +87,23 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       } else {
         res = createTypeExpression(var.getType().print(), var.getType().getTypeInfo().getEnclosingScope());
       }
-      lastResult.setField();
-      lastResult.setLast(res);
+      typeCheckResult.setField();
+      typeCheckResult.setLast(res);
     } else if (optType.isPresent()) {
       //no variable found, test if name is type
       TypeSymbol type = optType.get();
       SymTypeExpression res = createTypeExpression(type.getName(), type.getEnclosingScope());
-      lastResult.setType();
-      lastResult.setLast(res);
+      typeCheckResult.setType();
+      typeCheckResult.setLast(res);
     }else{
      //name not found --> package or nothing
-     lastResult.reset();
-      Log.info("package suspected", "ExpressionBasisTypesCalculator");
+     typeCheckResult.reset();
+      Log.info("package suspected", "DeriveSymTypeOfExpression");
     }
   }
 
-  public void setLastResult(LastResult lastResult) {
-    this.lastResult = lastResult;
+  public void setTypeCheckResult(TypeCheckResult typeCheckResult) {
+    this.typeCheckResult = typeCheckResult;
   }
 
   public void setPrettyPrinter(IDerivePrettyPrinter prettyPrinter){

@@ -24,7 +24,7 @@ public class DeriveSymTypeOfMyOwnLanguage
 
   private DeriveSymTypeOfMCCommonLiterals deriveSymTypeOfMCCommonLiterals;
 
-  private LastResult lastResult = new LastResult();
+  private TypeCheckResult typeCheckResult = new TypeCheckResult();
 
   public DeriveSymTypeOfMyOwnLanguage(){
     this.realThis = this;
@@ -34,32 +34,32 @@ public class DeriveSymTypeOfMyOwnLanguage
   @Override
   public Optional<SymTypeExpression> calculateType(ASTExpression ex) {
     ex.accept(realThis);
-    return Optional.of(lastResult.getLast());
+    return Optional.of(typeCheckResult.getLast());
   }
 
   @Override
   public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
     lit.accept(realThis);
-    return Optional.of(lastResult.getLast());
+    return Optional.of(typeCheckResult.getLast());
   }
 
   @Override
   public void init() {
-    lastResult = new LastResult();
+    typeCheckResult = new TypeCheckResult();
     TypeSymbolsScope scope = TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build();
     deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfCommonExpressions();
-    deriveSymTypeOfCommonExpressions.setLastResult(lastResult);
+    deriveSymTypeOfCommonExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfCommonExpressions.setScope(scope);
     setCommonExpressionsVisitor(deriveSymTypeOfCommonExpressions);
     deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
-    deriveSymTypeOfExpression.setLastResult(lastResult);
+    deriveSymTypeOfExpression.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfExpression.setScope(scope);
     setExpressionsBasisVisitor(deriveSymTypeOfExpression);
     deriveSymTypeOfMyOwnExpressionGrammar = new DeriveSymTypeOfMyOwnExpressionGrammar();
-    deriveSymTypeOfMyOwnExpressionGrammar.setLastResult(lastResult);
+    deriveSymTypeOfMyOwnExpressionGrammar.setTypeCheckResult(typeCheckResult);
     setMyOwnExpressionGrammarVisitor(deriveSymTypeOfMyOwnExpressionGrammar);
     deriveSymTypeOfMCCommonLiterals = new DeriveSymTypeOfMCCommonLiterals();
-    deriveSymTypeOfMCCommonLiterals.setResult(lastResult);
+    deriveSymTypeOfMCCommonLiterals.setResult(typeCheckResult);
     setMCCommonLiteralsVisitor(deriveSymTypeOfMCCommonLiterals);
   }
 }
