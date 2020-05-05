@@ -7,8 +7,8 @@
 development of domain-specific languages (DSLs). It processes an extended 
 grammar format which defines the DSL and generates Java components for processing 
 the DSL documents. Examples for these components are parser, 
-AST classes, symboltables or pretty 
-printers. This enables a user to rapidly define a language and use it together 
+AST classes, symboltables or pretty printers.
+This enables a user to rapidly define a language and use it together 
 with the MontiCore-framework to build domain specific tools. 
 
 Some MontiCore advantages are the reusability of predefined language 

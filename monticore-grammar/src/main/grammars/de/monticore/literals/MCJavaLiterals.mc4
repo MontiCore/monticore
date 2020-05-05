@@ -5,12 +5,13 @@ package de.monticore.literals;
 
 /**
  *
- * This grammar defines Java compliant literals. The scope of this grammar is to
- * ease the reuse of literals structures in Java-like sublanguages, e.g., by 
- * grammar inheritance or grammar embedment.
+ * This grammar defines Java compliant literals. The scope of this grammar
+ * is to ease the reuse of literals structures in Java-like sublanguages,
+ * e.g., by grammar inheritance or grammar embedment.
  * The grammar contains literals from Java, e.g., Boolean, Char, String, ....
- * Please note that Java has an extended syntax e.g. for integers using underscores
- * or other kinds of encodings. They parse e.g. 999_999 or 0x3F2A
+ * Please note that Java has an extended syntax e.g. for integers
+ * using underscores or other kinds of encodings.
+ * They parse e.g. 999_999 or 0x3F2A
  *
 */
 
@@ -69,14 +70,14 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
    // §3.10.1 Integer Literals
 
    token Num_Int
-     = DecimalIntegerLiteral | HexIntegerLiteral 
+     = DecimalIntegerLiteral | HexIntegerLiteral
        | OctalIntegerLiteral | BinaryIntegerLiteral;
 
    token Num_Long
-     = (DecimalIntegerLiteral IntegerTypeSuffix) 
-       | (HexIntegerLiteral IntegerTypeSuffix) 
-       | (OctalIntegerLiteral IntegerTypeSuffix) 
-       | (BinaryIntegerLiteral IntegerTypeSuffix);
+     = DecimalIntegerLiteral IntegerTypeSuffix
+       | HexIntegerLiteral IntegerTypeSuffix
+       | OctalIntegerLiteral IntegerTypeSuffix
+       | BinaryIntegerLiteral IntegerTypeSuffix;
 
    fragment token DecimalIntegerLiteral
      = DecimalNumeral;
@@ -94,10 +95,10 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
      = 'l' | 'L';
 
    fragment token DecimalNumeral
-     = '0' | NonZeroDigit ((Digits)? | Underscores Digits);
+     = '0' | NonZeroDigit (Digits? | Underscores Digits);
 
    fragment token Digits
-     = Digit ((DigitOrUnderscore)* Digit)?;
+     = Digit (DigitOrUnderscore* Digit)?;
 
    fragment token Digit
      = '0' | NonZeroDigit;
@@ -115,7 +116,7 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
      = '0' ('x' | 'X') HexDigits;
 
    fragment token HexDigits
-     = HexDigit ((HexDigitOrUnderscore)* HexDigit)?;
+     = HexDigit (HexDigitOrUnderscore* HexDigit)?;
 
    fragment token HexDigit
      = '0'..'9'  | 'a'..'f'  | 'A'..'F' ;
@@ -124,10 +125,10 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
      = HexDigit | '_';
 
    fragment token OctalNumeral
-     = '0' (Underscores)? OctalDigits;
+     = '0' Underscores? OctalDigits;
 
    fragment token OctalDigits
-     = OctalDigit ((OctalDigitOrUnderscore)* OctalDigit)?;
+     = OctalDigit (OctalDigitOrUnderscore* OctalDigit)?;
 
    fragment token OctalDigit
      = '0'..'7' ;
@@ -139,7 +140,7 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
      = '0' ('b' | 'B') BinaryDigits;
 
    fragment token BinaryDigits
-     = BinaryDigit ((BinaryDigitOrUnderscore)* BinaryDigit)?;
+     = BinaryDigit (BinaryDigitOrUnderscore* BinaryDigit)?;
 
    fragment token BinaryDigit
      = '0' | '1';
@@ -157,16 +158,16 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
      = DecimalDoublePointLiteral | HexadecimalDoublePointLiteral;
 
    fragment token DecimalDoublePointLiteral
-     = Digits '.' (Digits)? (ExponentPart)? (DoubleTypeSuffix)? 
-       | '.' Digits (ExponentPart)? (DoubleTypeSuffix)? 
-       | Digits ExponentPart (DoubleTypeSuffix)? 
-       | Digits DoubleTypeSuffix;
+     =   Digits '.' Digits? ExponentPart? DoubleTypeSuffix?
+       |        '.' Digits  ExponentPart? DoubleTypeSuffix?
+       | Digits             ExponentPart  DoubleTypeSuffix?
+       | Digits                           DoubleTypeSuffix;
 
    fragment token DecimalFloatingPointLiteral
-     = Digits '.' (Digits)? (ExponentPart)? (FloatTypeSuffix) 
-       | '.' Digits (ExponentPart)? (FloatTypeSuffix) 
-       | Digits ExponentPart (FloatTypeSuffix) 
-       | Digits FloatTypeSuffix;
+     =   Digits '.' Digits? ExponentPart? FloatTypeSuffix
+       |        '.' Digits  ExponentPart? FloatTypeSuffix
+       | Digits             ExponentPart  FloatTypeSuffix
+       | Digits                           FloatTypeSuffix;
 
    fragment token ExponentPart
      = ExponentIndicator SignedInteger;
@@ -175,7 +176,7 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
      = 'e' | 'E';
 
    fragment token SignedInteger
-     = (Sign)? Digits;
+     = Sign? Digits;
 
    fragment token Sign
      = '+' | '-';
@@ -187,13 +188,13 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
      = 'd' | 'D';
 
    fragment token HexadecimalDoublePointLiteral
-     = HexSignificand BinaryExponent (DoubleTypeSuffix)?;
+     = HexSignificand BinaryExponent DoubleTypeSuffix?;
 
    fragment token HexadecimalFloatingPointLiteral
-     = HexSignificand BinaryExponent (FloatTypeSuffix);
+     = HexSignificand BinaryExponent FloatTypeSuffix;
 
    fragment token HexSignificand
-     = HexNumeral '.'? | '0' ('x' | 'X') (HexDigits)? '.' HexDigits;
+     = HexNumeral '.'? | '0' ('x' | 'X') HexDigits? '.' HexDigits;
 
    fragment token BinaryExponent
      = BinaryExponentIndicator SignedInteger;

@@ -53,7 +53,7 @@ MontiCore projects are hosted at
 
 ### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Responsible: SVa, AGe
-* CD4A is the textual representation to describe UML class diagrams 
+* CD4A is the textual representation to describe **UML class diagrams** 
   (it uses the [UML/P](http://mbse.se-rwth.de/) variant).
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
   visibilities**,
@@ -94,6 +94,9 @@ MontiCore projects are hosted at
 * Feature diagrams are used to model (software) product lines
 * Feature configurations select a subset of features of a feature model 
   to describe a product of the product line
+* Main grammar [`FeatureDiagram`](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.mc4)
+  and 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.md)
 <!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
@@ -131,17 +134,22 @@ and
   and thus conform to this Grammar.
 * Main features: Define **nonterminals** and their **productions** in EBNF, 
   **lexical token** as regular expressions. 
-* Extensions:
+* Most important extensions to standard grammars:
   * **Abstract**, **interface** and **external productions** allow to
     define extensible component grammars (object-oriented grammar style).
   * Inherited productions can be redefined (overwritten) as well
     as conservatively extended.
+  * Symbol and scope infrastructure is defined by simple keywords.
   * **Symbols definition** places can be introduced and 
     **symbol referencing places** defined, such that for standard cases
     automatically symbol tables can be added.
   * Additional attributes and methods can be added to the abstract syntax only.
   * Various elements, such as **semantic predicates** and **actions**
     can be defined in the same style as the underlying ANTLR.
+  * MontiCore grammars can be **left recursive** and even allow mutual recursion. 
+    This is e.g. useful for expression hierarchies.
+  * Additional elements, such as **enum productions** and comfortable 
+    operations for grammar definitions exist.
 * Main grammars 
   [`de.monticore.grammar.Grammar`](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/grammars/de/monticore/grammar/Grammar.mc4)
   defines the language with some open parameters and
@@ -152,16 +160,24 @@ and
 <!-- Status: ok, BR 20.03.22 -->
   
 
-### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
+### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (MontiCore Stable)
 * Responsible: NJ
-* The MontiCore language for parsing JSON artifacts
-* The JSON grammar adheres to the common **standard** and allows parsing 
-  arbitrary JSON artifacts for further processing
+* The MontiCore language for parsing JSON artifacts.
+* The JSON grammar adheres to the common **JSON standard** and allows parsing 
+  arbitrary JSON artifacts for further processing.
+* Actually the grammar represents a slight superset to the official JSON standard. 
+  It is intended for parsing JSON-compliant artifacts. Further well-formedness
+  checks are not included, because we assume to parse correctly produced JSON 
+  documents only.
+* Please note that JSON (like XML or ASCII) is just a carrier language.
+  The concrete JSON dialect and the question, how to recreate the
+  real objects / data structures, etc. behind the JSON tree structure
+  is beyond this grammar, but can be applied to the AST defined here.
 * Main grammar 
   [`de.monticore.lang.JSON`](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/json.md)
-<!-- Status: Teaser erstellt -->
+<!-- Status: MC4 stable; TODO: symbols, better explanation, BR 1.5.20 -->
 
 
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
@@ -169,13 +185,13 @@ and
 * MontiArc is an architecture and behavior modeling language and framework 
     that provides an integrated, platform independent structure and behavior 
     modeling language with an extensible code generation framework.
-* The Documentation [MontiArc.md](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/documentation/MontiArc.md)
+* The Documentation [MontiArc.md](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/MontiArc.md)
 * The MontiArc language family contains the following grammar
-    * [Arc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/documentation/languages/arc-fe/src/main/grammars/Arc.mc4) 
+    * [Arc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/arc-fe/src/main/grammars/Arc.mc4) 
     for modeling architectural diagrams.
-    * [IOAutomata](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/documentation/languages/automata-fe/src/main/grammars/IOAutomata.mc4)
+    * [IOAutomata](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/automata-fe/src/main/grammars/IOAutomata.mc4)
     for component behavior description.
-    * [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/documentation/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
+    * [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
     combining architectural diagrams with automata behavior descriptions.
 <!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
@@ -206,9 +222,13 @@ and
 
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
 * Caretaker: SH
-* Language for textual object diagrams.
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
-
+* Language for textual object diagrams. In its current state the language is mostly used for (i) data structures in certain projects (e.g. artifact toolchain)
+   and (ii) as a report format for languages developed with MontiCore. The OD language provides the possiblility to use expressions in its attributes.
+* Main grammars:
+    * [ODBasics](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.mc4)
+    * [OD4Report](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Report.mc4)
+    * [DateLiterals](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/DateLiterals.mc4)
+* [*Detailed description*](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.md) 
 
 ### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (Beta: In Stabilization) )(50% to MC6)
 * Caretaker: RE
@@ -230,7 +250,7 @@ and
 <!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
-### [SysML_2](https://git.rwth-aachen.de/monticore/sysml/sysml_2/-/tree/master/sysml2-language) (Alpha: Intention to become stable)
+### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
 * Caretaker: NJ
 * Project for the SysML 2 language famlily. It will be compatible with the 
   general upcoming SysML 2 specification.
@@ -241,10 +261,9 @@ and
 * SysML 2 covers **ADs**, **BDDs**, **IBDs**, **PackageDiagrams**, 
   **ParametricDiagrams**, **RequirementDiagrams**, **SDs**, **SMDs**, 
   **UseCaseDiagrams**, and general **SysMLBasics**
-* Main grammars
-  [`de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/sysml/sysml_2/-/tree/master/sysml2-language/src/main/grammars/de/monticore/lang/sysml)
+* [Main grammars](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/tree/master/src%2Fmain%2Fgrammars%2Fde%2Fmonticore%2Flang%2Fsysml)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/sysml/sysml_2/-/blob/master/sysml2-language/sysml2.md)
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/blob/master/sysml2.md)
 <!-- Status: Teaser erstellt -->
 
 
@@ -315,7 +334,10 @@ and
 ### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) (30% to MC6)
 * Caretaker: MB
 * This is the full Java' Language (as Opposed to JavaLight).
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+* Main Grammar [`JavaDSL`](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.mc4)
+  and
+  [*detailed description*](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/JavaDSL.md).
+ <!-- Status: TODO: Sobald die Umstellung auf MC6 abgeschlossen ist, Beschreibung hinzufügen -->
 
 
 ## Further Information
