@@ -49,11 +49,9 @@ public class DeriveSymTypeOfMyOwnLanguage
     TypeSymbolsScope scope = TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build();
     deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfCommonExpressions();
     deriveSymTypeOfCommonExpressions.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfCommonExpressions.setScope(scope);
     setCommonExpressionsVisitor(deriveSymTypeOfCommonExpressions);
     deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
     deriveSymTypeOfExpression.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfExpression.setScope(scope);
     setExpressionsBasisVisitor(deriveSymTypeOfExpression);
     deriveSymTypeOfMyOwnExpressionGrammar = new DeriveSymTypeOfMyOwnExpressionGrammar();
     deriveSymTypeOfMyOwnExpressionGrammar.setTypeCheckResult(typeCheckResult);

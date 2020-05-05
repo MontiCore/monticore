@@ -28,24 +28,20 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
   private TypeCheckResult typeCheckResult = new TypeCheckResult();
 
 
-  public CombineExpressionsWithLiteralsTypesCalculator(ITypeSymbolsScope scope){
+  public CombineExpressionsWithLiteralsTypesCalculator(){
     this.realThis=this;
     commonExpressionTypesCalculator = new DeriveSymTypeOfCommonExpressions();
-    commonExpressionTypesCalculator.setScope(scope);
     commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
     setCommonExpressionsVisitor(commonExpressionTypesCalculator);
 
     deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
-    deriveSymTypeOfBitExpressions.setScope(scope);
     setBitExpressionsVisitor(deriveSymTypeOfBitExpressions);
 
     assignmentExpressionTypesCalculator = new DeriveSymTypeOfAssignmentExpressions();
-    assignmentExpressionTypesCalculator.setScope(scope);
     assignmentExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
     setAssignmentExpressionsVisitor(assignmentExpressionTypesCalculator);
 
     expressionsBasisTypesCalculator = new DeriveSymTypeOfExpression();
-    expressionsBasisTypesCalculator.setScope(scope);
     expressionsBasisTypesCalculator.setTypeCheckResult(typeCheckResult);
     setExpressionsBasisVisitor(expressionsBasisTypesCalculator);
   
@@ -98,12 +94,6 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     return realThis;
   }
 
-  public void setScope(ITypeSymbolsScope scope){
-    assignmentExpressionTypesCalculator.setScope(scope);
-    expressionsBasisTypesCalculator.setScope(scope);
-    commonExpressionTypesCalculator.setScope(scope);
-    deriveSymTypeOfBitExpressions.setScope(scope);
-  }
 
   public void setTypeCheckResult(TypeCheckResult typeCheckResult){
     this.typeCheckResult = typeCheckResult;

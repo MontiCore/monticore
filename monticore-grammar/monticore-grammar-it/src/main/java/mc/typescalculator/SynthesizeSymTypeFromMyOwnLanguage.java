@@ -20,15 +20,15 @@ public class SynthesizeSymTypeFromMyOwnLanguage extends MyOwnLanguageDelegatorVi
     return realThis;
   }
 
-  public SynthesizeSymTypeFromMyOwnLanguage(TypeSymbolsScope scope){
+  public SynthesizeSymTypeFromMyOwnLanguage(){
     realThis = this;
-    symTypeFromMCBasicTypes = new SynthesizeSymTypeFromMCBasicTypes(scope);
+    symTypeFromMCBasicTypes = new SynthesizeSymTypeFromMCBasicTypes();
     symTypeFromMCBasicTypes.setTypeCheckResult(result);
     setMCBasicTypesVisitor(symTypeFromMCBasicTypes);
-    symTypeFromMCCollectionTypes = new SynthesizeSymTypeFromMCCollectionTypes(scope);
+    symTypeFromMCCollectionTypes = new SynthesizeSymTypeFromMCCollectionTypes();
     symTypeFromMCCollectionTypes.setTypeCheckResult(result);
     setMCCollectionTypesVisitor(symTypeFromMCCollectionTypes);
-    symTypeFromUnitTypes = new SynthesizeSymTypeFromUnitTypes(scope);
+    symTypeFromUnitTypes = new SynthesizeSymTypeFromUnitTypes();
     symTypeFromUnitTypes.setTypeCheckResult(result);
     setUnitTypesVisitor(symTypeFromUnitTypes);
   }

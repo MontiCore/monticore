@@ -12,8 +12,8 @@ public class SynthesizeSymTypeFromUnitTypes extends SynthesizeSymTypeFromMCBasic
 
   private UnitTypesVisitor realThis;
 
-  public SynthesizeSymTypeFromUnitTypes(ITypeSymbolsScope scope) {
-    super(scope);
+  public SynthesizeSymTypeFromUnitTypes() {
+    super();
   }
 
   @Override
@@ -28,6 +28,6 @@ public class SynthesizeSymTypeFromUnitTypes extends SynthesizeSymTypeFromMCBasic
 
   @Override
   public void endVisit(ASTMinuteType type){
-    typeCheckResult.setLast(new SymTypeOfSIUnit(new TypeSymbolLoader(type.getUnit(),scope)));
+    typeCheckResult.setLast(new SymTypeOfSIUnit(new TypeSymbolLoader(type.getUnit(),getScope(type.getEnclosingScope()))));
   }
 }
