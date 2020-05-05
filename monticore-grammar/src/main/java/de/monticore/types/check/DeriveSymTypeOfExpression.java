@@ -22,16 +22,15 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   public ITypeSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){
     // is accepted only here, decided on 07.04.2020
     if(!(expressionsBasisScope instanceof ITypeSymbolsScope)){
-      Log.error("0xA0307 the enclosing scope of the expression does not implement the interface ITypeSymbolsScope"); // TODO Useful Error message with error code
+      Log.error("0xA0307 the enclosing scope of the expression does not implement the interface ITypeSymbolsScope");
     }
     // is accepted only here, decided on 07.04.2020
     return (ITypeSymbolsScope) expressionsBasisScope;
   }
 
-  @Deprecated
+  @Deprecated //TODO find better solution for prettyprinter
   protected IDerivePrettyPrinter prettyPrinter;
 
-  // TODO find better name for LastResult
   protected TypeCheckResult typeCheckResult;
 
   private ExpressionsBasisVisitor realThis;

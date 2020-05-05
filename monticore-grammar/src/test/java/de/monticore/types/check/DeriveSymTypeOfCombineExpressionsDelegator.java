@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 
 import java.util.Optional;
 
@@ -42,7 +41,7 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
   private TypeCheckResult typeCheckResult = new TypeCheckResult();
 
 
-  public DeriveSymTypeOfCombineExpressionsDelegator(ITypeSymbolsScope scope, IDerivePrettyPrinter prettyPrinter){
+  public DeriveSymTypeOfCombineExpressionsDelegator(IDerivePrettyPrinter prettyPrinter){
     this.realThis=this;
     this.prettyPrinter = prettyPrinter;
 

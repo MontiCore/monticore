@@ -48,7 +48,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
   public ITypeSymbolsScope getScope (IMCBasicTypesScope mcBasicTypesScope){
     // is accepted only here, decided on 07.04.2020
     if(!(mcBasicTypesScope instanceof ITypeSymbolsScope)){
-      Log.error("0xA0308 the enclosing scope of the type does not implement the interface ITypeSymbolsScope"); // TODO Useful Error message with error code
+      Log.error("0xA0308 the enclosing scope of the type does not implement the interface ITypeSymbolsScope");
     }
     // is accepted only here, decided on 07.04.2020
     return (ITypeSymbolsScope) mcBasicTypesScope;

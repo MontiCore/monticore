@@ -4,12 +4,17 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymTabMill;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -24,19 +29,85 @@ import static org.junit.Assert.assertTrue;
  */
 public class TypeCheckTest {
 
-  TypeCheck tc = new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter())));
-  CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
+  private ICombineExpressionsWithLiteralsScope scope;
+  private TypeCheck tc = new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator(new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter())));
+  private CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
+  private FlatExpressionScopeSetter flatExpressionScopeSetter;
+
+  @BeforeClass
+  public static void setup() {
+    Log.init();
+    Log.enableFailQuick(false);
+  }
+
+  @Before
+  public void setupForEach() {
+    // Setting up a Scope Infrastructure (without a global Scope)
+    DefsTypeBasic.setup();
+    scope =
+        CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder()
+            .setEnclosingScope(null)       // No enclosing Scope: Search ending here
+            .setExportingSymbols(true)
+            .setAstNode(null)
+            .setName("Phantasy2").build();     // hopefully unused
+    // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
+    add2scope(scope, DefsTypeBasic._int);
+    add2scope(scope, DefsTypeBasic._char);
+    add2scope(scope, DefsTypeBasic._boolean);
+    add2scope(scope, DefsTypeBasic._double);
+    add2scope(scope, DefsTypeBasic._float);
+    add2scope(scope, DefsTypeBasic._long);
+
+    add2scope(scope, DefsTypeBasic._array);
+    add2scope(scope, DefsTypeBasic._Object);
+    add2scope(scope, DefsTypeBasic._String);
+
+    // some FieldSymbols (ie. Variables, Attributes)
+    TypeSymbol p = new TypeSymbol("Person");
+    p.setEnclosingScope(scope);
+    scope.add(p);
+    TypeSymbol s = new TypeSymbol("Student");
+    s.setEnclosingScope(scope);
+    scope.add(s);
+    s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
+    f.setEnclosingScope(scope);
+    scope.add(f);
+    f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    add2scope(scope, field("foo", _intSymType));
+    add2scope(scope, field("bar2", _booleanSymType));
+    add2scope(scope, field("vardouble", _doubleSymType));
+    add2scope(scope, field("varchar", _charSymType));
+    add2scope(scope, field("varfloat", _floatSymType));
+    add2scope(scope, field("varlong", _longSymType));
+    add2scope(scope, field("varint", _intSymType));
+    add2scope(scope, field("varString", SymTypeExpressionFactory.createTypeObject("String", scope)));
+    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope)));
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    LogStub.init();
+  }
 
   @Test
   public void testIsOfTypeForAssign() throws IOException {
     //primitives
     ASTExpression bool1 = p.parse_StringExpression("true").get();
+    bool1.accept(flatExpressionScopeSetter);
     ASTExpression bool2 = p.parse_StringExpression("false").get();
+    bool2.accept(flatExpressionScopeSetter);
     ASTExpression float1 = p.parse_StringExpression("3.4f").get();
+    float1.accept(flatExpressionScopeSetter);
     ASTExpression int1 = p.parse_StringExpression("3").get();
+    int1.accept(flatExpressionScopeSetter);
     ASTExpression double1 = p.parse_StringExpression("3.46").get();
+    double1.accept(flatExpressionScopeSetter);
     ASTExpression long1 = p.parse_StringExpression("5L").get();
+    long1.accept(flatExpressionScopeSetter);
     ASTExpression char1 = p.parse_StringExpression("\'a\'").get();
+    char1.accept(flatExpressionScopeSetter);
 
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(bool1), bool2));
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(double1), int1));
@@ -49,34 +120,13 @@ public class TypeCheckTest {
     assertFalse(tc.isOfTypeForAssign(tc.typeOf(long1), float1));
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(float1), int1));
 
-    TypeSymbolsScope scope = TypeSymbolsSymTabMill.typeSymbolsScopeBuilder()
-        .setName("Phantasy2")
-        .setEnclosingScope(null)
-        .setExportingSymbols(true)
-        .setAstNode(null)
-        .build();
-
-    //a FirstSemesterStudent is a Student and a Student is a Person
-    TypeSymbol person = DefsTypeBasic.type("Person");
-    scope.add(person);
-    TypeSymbol student = DefsTypeBasic.type("Student",
-        Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope))
-    );
-    scope.add(student);
-    TypeSymbol firstsemesterstudent = DefsTypeBasic.type("FirstSemesterStudent",
-        Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope))
-    );
-
-    add2scope(scope, person);
-    add2scope(scope, student);
-    add2scope(scope, firstsemesterstudent);
-    DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(scope, new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
-    tc = new TypeCheck(null, derLit);
-
     //non-primitives
     ASTExpression pers = p.parse_StringExpression("Person").get();
+    pers.accept(flatExpressionScopeSetter);
     ASTExpression stud = p.parse_StringExpression("Student").get();
+    stud.accept(flatExpressionScopeSetter);
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
+    fstud.accept(flatExpressionScopeSetter);
 
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), stud));
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), fstud));
@@ -93,12 +143,19 @@ public class TypeCheckTest {
   public void testIsSubtype() throws IOException {
     //primitives
     ASTExpression bool1 = p.parse_StringExpression("true").get();
+    bool1.accept(flatExpressionScopeSetter);
     ASTExpression bool2 = p.parse_StringExpression("false").get();
+    bool2.accept(flatExpressionScopeSetter);
     ASTExpression float1 = p.parse_StringExpression("3.4f").get();
+    float1.accept(flatExpressionScopeSetter);
     ASTExpression int1 = p.parse_StringExpression("3").get();
+    int1.accept(flatExpressionScopeSetter);
     ASTExpression double1 = p.parse_StringExpression("3.46").get();
+    double1.accept(flatExpressionScopeSetter);
     ASTExpression long1 = p.parse_StringExpression("5L").get();
+    long1.accept(flatExpressionScopeSetter);
     ASTExpression char1 = p.parse_StringExpression("\'a\'").get();
+    char1.accept(flatExpressionScopeSetter);
 
 
     assertFalse(isSubtypeOf(tc.typeOf(bool1), tc.typeOf(bool2)));
@@ -112,34 +169,13 @@ public class TypeCheckTest {
     assertFalse(isSubtypeOf(tc.typeOf(float1), tc.typeOf(long1)));
     assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
 
-    TypeSymbolsScope scope = TypeSymbolsSymTabMill.typeSymbolsScopeBuilder()
-        .setName("Phantasy2")
-        .setEnclosingScope(null)
-        .setExportingSymbols(true)
-        .setAstNode(null)
-        .build();
-
-    //a FirstSemesterStudent is a Student and a Student is a Person
-    TypeSymbol person = DefsTypeBasic.type("Person");
-    scope.add(person);
-    TypeSymbol student = DefsTypeBasic.type("Student",
-        Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope))
-    );
-    scope.add(student);
-    TypeSymbol firstsemesterstudent = DefsTypeBasic.type("FirstSemesterStudent",
-        Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope))
-    );
-
-    add2scope(scope, person);
-    add2scope(scope, student);
-    add2scope(scope, firstsemesterstudent);
-    DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(scope, new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
-    tc = new TypeCheck(null, derLit);
-
     //non-primitives
     ASTExpression pers = p.parse_StringExpression("Person").get();
+    pers.accept(flatExpressionScopeSetter);
     ASTExpression stud = p.parse_StringExpression("Student").get();
+    stud.accept(flatExpressionScopeSetter);
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
+    fstud.accept(flatExpressionScopeSetter);
 
     assertTrue(isSubtypeOf(tc.typeOf(stud), tc.typeOf(pers)));
     assertTrue(isSubtypeOf(tc.typeOf(fstud), tc.typeOf(pers)));

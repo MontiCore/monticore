@@ -11,15 +11,9 @@ import java.util.Optional;
 
 public interface ITypesCalculator extends ExpressionsBasisVisitor {
 
-  TypeSymbolsScope scope = TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build();
-
   Optional<SymTypeExpression> calculateType(ASTExpression ex);
 
   Optional<SymTypeExpression> calculateType(ASTLiteral lit);
 
   void init();
-
-  default TypeSymbolsScope getScope(){
-    return scope;
-  }
 }
