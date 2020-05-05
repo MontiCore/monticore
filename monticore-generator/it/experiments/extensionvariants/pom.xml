@@ -74,7 +74,10 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <compilerId>eclipse</compilerId>
+          <!-- Eclipse-Compiler doesn't work with target excludes -->
+          <compilerId>javac</compilerId>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
           <excludes>
             <exclude>eproblemoptinheritance/**/*.java</exclude>
             <exclude>eproblemstarinheritance/**/*.java</exclude>
