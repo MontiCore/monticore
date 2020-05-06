@@ -334,11 +334,11 @@ public class AutomataTool {
   public AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
 
     // TODO AB: AutomataLanguage (die Klasse!) entfernen
-    final AutomataLanguage lang = AutomataSymTabMill.automataLanguageBuilder().build();
+    final AutomataLanguage lang = AutomataMill.automataLanguageBuilder().build();
 
     // TODO AB: es ist nicht sinnvoll jedes Mal einen GlobalScope zu instantiieren
     // --> das ist noch eine zu bereinigende technical debt
-    AutomataGlobalScope globalScope = AutomataSymTabMill.automataGlobalScopeBuilder()
+    AutomataGlobalScope globalScope = AutomataMill.automataGlobalScopeBuilder()
         .setModelPath(new ModelPath()).setAutomataLanguage(lang).build();
 
     // TODO AB: ersetzen durch einfaches create.
