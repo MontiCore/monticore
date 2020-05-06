@@ -16,7 +16,7 @@ import automata._parser.AutomataParser;
 import automata._symboltable.AutomataArtifactScope;
 import automata._symboltable.AutomataGlobalScope;
 import automata._symboltable.AutomataLanguage;
-import automata._symboltable.AutomataSymTabMill;
+import automata.AutomataMill;
 import automata._symboltable.AutomataSymbolTableCreatorDelegator;
 import automata._symboltable.IAutomataScope;
 import automata._symboltable.StateSymbol;
@@ -38,7 +38,7 @@ public class ResolveDeepTest {
     assertTrue(jsonDoc.isPresent());
     
     // build symbol table
-    final AutomataLanguage lang = AutomataSymTabMill.automataLanguageBuilder().build();
+    final AutomataLanguage lang = AutomataMill.automataLanguageBuilder().build();
     AutomataArtifactScope scope = createSymbolTable(lang, jsonDoc.get());
     
     // test resolving
@@ -89,7 +89,7 @@ public class ResolveDeepTest {
    */
   public static AutomataArtifactScope createSymbolTable(AutomataLanguage lang, ASTAutomaton ast) {
     
-    AutomataGlobalScope globalScope = AutomataSymTabMill.automataGlobalScopeBuilder()
+    AutomataGlobalScope globalScope = AutomataMill.automataGlobalScopeBuilder()
         .setModelPath(new ModelPath())
         .setAutomataLanguage(lang)
         .build();
