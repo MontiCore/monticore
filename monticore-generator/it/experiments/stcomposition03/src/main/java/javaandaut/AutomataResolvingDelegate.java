@@ -3,27 +3,25 @@
 package javaandaut;
 
 import automata6._symboltable.*;
+import basicjava.BasicJavaMill;
 import basicjava._symboltable.BasicJavaGlobalScope;
 import basicjava._symboltable.BasicJavaLanguage;
-import basicjava._symboltable.BasicJavaSymTabMill;
 import basicjava._symboltable.ClassDeclarationSymbol;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types.typesymbols._symboltable.MethodSymbol;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static basicjava._symboltable.BasicJavaSymTabMill.basicJavaGlobalScopeBuilder;
 
 public class AutomataResolvingDelegate implements IStimulusSymbolResolvingDelegate {
 
   BasicJavaGlobalScope javaGS;
 
   public AutomataResolvingDelegate(ModelPath mp){
-    javaGS =   BasicJavaSymTabMill
+    javaGS =   BasicJavaMill
         .basicJavaGlobalScopeBuilder()
         .setModelPath(mp) //hand over modelpath
         .setBasicJavaLanguage(new BasicJavaLanguage()) //will be removed soon
