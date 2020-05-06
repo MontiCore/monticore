@@ -11,11 +11,11 @@
     <version>6.1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>composition</artifactId>
+  <artifactId>stcomposition03</artifactId>
 
   <!-- == PROJECT METAINFORMATION ========================================= -->
 
-  <name>Experiments: composition</name>
+  <name>Experiments: stcomposition03</name>
 
   <!-- == PROJECT DEPENDENCIES ============================================ -->
 

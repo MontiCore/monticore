@@ -41,6 +41,9 @@
     <module>spacesOffWithPositionCheck</module>
     <module>symbols</module>
     <module>visit.L.inherit</module>
+    <module>stcomposition01</module>
+    <module>stcomposition02</module>
+    <module>stcomposition03</module>
   </modules>
 
   <build>
