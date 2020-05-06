@@ -54,6 +54,7 @@
     <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
     <maven-reporting-api.version>3.0</maven-reporting-api.version>
     <maven-reporting-impl.version>2.3</maven-reporting-impl.version>
+    <eclipse.compiler>2.8.4</eclipse.compiler>
     <mockito.version>3.3.3</mockito.version>
     <powermock.version>1.6.1</powermock.version>
     <reflections.version>0.9.9</reflections.version>
@@ -72,7 +73,7 @@
     <se-groovy.plugin>1.2.3</se-groovy.plugin>
     <archetype.plugin>2.3</archetype.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
-    <compiler.plugin>3.3</compiler.plugin>
+    <compiler.plugin>3.7.0</compiler.plugin>
     <build.helper.plugin>3.0.0</build.helper.plugin>
     <dependency.plugin>2.10</dependency.plugin>
     <deploy.plugin>2.8.2</deploy.plugin>
@@ -568,9 +569,18 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${compiler.plugin}</version>
           <configuration>
+            <compilerId>eclipse</compilerId>
             <source>${java.version}</source>
             <target>${java.version}</target>
+            <useIncrementalCompilation>true</useIncrementalCompilation>
           </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.plexus</groupId>
+              <artifactId>plexus-compiler-eclipse</artifactId>
+              <version>${eclipse.compiler}</version>
+            </dependency>
+          </dependencies>
         </plugin>
 
         <plugin>

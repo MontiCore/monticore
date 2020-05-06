@@ -1,4 +1,6 @@
-# Template Experiment
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+# MontiCore Template Experiment
 
 This experiment demonstrates how to write and test templates. 
 

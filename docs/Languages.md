@@ -53,7 +53,7 @@ MontiCore projects are hosted at
 
 ### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
 * Responsible: SVa, AGe
-* CD4A is the textual representation to describe UML class diagrams 
+* CD4A is the textual representation to describe **UML class diagrams** 
   (it uses the [UML/P](http://mbse.se-rwth.de/) variant).
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
   visibilities**,
@@ -134,17 +134,22 @@ and
   and thus conform to this Grammar.
 * Main features: Define **nonterminals** and their **productions** in EBNF, 
   **lexical token** as regular expressions. 
-* Extensions:
+* Most important extensions to standard grammars:
   * **Abstract**, **interface** and **external productions** allow to
     define extensible component grammars (object-oriented grammar style).
   * Inherited productions can be redefined (overwritten) as well
     as conservatively extended.
+  * Symbol and scope infrastructure is defined by simple keywords.
   * **Symbols definition** places can be introduced and 
     **symbol referencing places** defined, such that for standard cases
     automatically symbol tables can be added.
   * Additional attributes and methods can be added to the abstract syntax only.
   * Various elements, such as **semantic predicates** and **actions**
     can be defined in the same style as the underlying ANTLR.
+  * MontiCore grammars can be **left recursive** and even allow mutual recursion. 
+    This is e.g. useful for expression hierarchies.
+  * Additional elements, such as **enum productions** and comfortable 
+    operations for grammar definitions exist.
 * Main grammars 
   [`de.monticore.grammar.Grammar`](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/grammars/de/monticore/grammar/Grammar.mc4)
   defines the language with some open parameters and
@@ -155,16 +160,24 @@ and
 <!-- Status: ok, BR 20.03.22 -->
   
 
-### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (Beta: In Stabilization)
+### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (MontiCore Stable)
 * Responsible: NJ
-* The MontiCore language for parsing JSON artifacts
-* The JSON grammar adheres to the common **standard** and allows parsing 
-  arbitrary JSON artifacts for further processing
+* The MontiCore language for parsing JSON artifacts.
+* The JSON grammar adheres to the common **JSON standard** and allows parsing 
+  arbitrary JSON artifacts for further processing.
+* Actually the grammar represents a slight superset to the official JSON standard. 
+  It is intended for parsing JSON-compliant artifacts. Further well-formedness
+  checks are not included, because we assume to parse correctly produced JSON 
+  documents only.
+* Please note that JSON (like XML or ASCII) is just a carrier language.
+  The concrete JSON dialect and the question, how to recreate the
+  real objects / data structures, etc. behind the JSON tree structure
+  is beyond this grammar, but can be applied to the AST defined here.
 * Main grammar 
   [`de.monticore.lang.JSON`](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/json.md)
-<!-- Status: Teaser erstellt -->
+<!-- Status: MC4 stable; TODO: symbols, better explanation, BR 1.5.20 -->
 
 
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
