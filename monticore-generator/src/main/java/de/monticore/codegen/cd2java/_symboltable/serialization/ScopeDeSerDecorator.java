@@ -161,7 +161,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
       String scopeClassName,
       String artifactScopeName, String simpleName,
       List<ASTCDAttribute> scopeRuleAttributes) {
-    String symTabMillFullName = symbolTableService.getSymTabMillFullName();
+    String symTabMillFullName = symbolTableService.getMillFullName();
     ASTCDParameter scopeJsonParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), SCOPE_JSON_VAR);
 
     ASTCDMethod deserializeStringMethod = createDeserializeStringMethod(artifactScopeName);

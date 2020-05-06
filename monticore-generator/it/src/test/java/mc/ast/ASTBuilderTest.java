@@ -4,12 +4,12 @@ package mc.ast;
 
 import com.google.common.collect.Lists;
 import mc.GeneratorIntegrationsTest;
+import mc.feature.featuredsl.FeatureDSLMill;
 import mc.feature.featuredsl._ast.ASTTransition;
-import mc.feature.featuredsl._ast.FeatureDSLMill;
 import mc.feature.featuredsl._ast.FeatureDSLNodeFactory;
-import mc.feature.javasql.javasql.javasql._ast.JavaSQLMill;
+import mc.feature.javasql.javasql.javasql.JavaSQLMill;
 import mc.feature.javasql.javasql.javasql._ast.JavaSQLNodeFactory;
-import mc.feature.javasql.sql.sql._ast.SQLMill;
+import mc.feature.javasql.sql.sql.SQLMill;
 import mc.feature.javasql.sql.sql._ast.SQLNodeFactory;
 import org.junit.Test;
 

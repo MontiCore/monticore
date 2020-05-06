@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java._ast.mill;
+package de.monticore.codegen.cd2java.mill;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -23,8 +23,6 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
-import static de.monticore.codegen.cd2java._ast.mill.MillConstants.MILL_FOR;
-import static de.monticore.codegen.cd2java._ast.mill.MillConstants.MILL_SUFFIX;
 
 public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit, Collection<ASTCDClass>> {
 
@@ -51,10 +49,12 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
 
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
-      String millClassName = superSymbol.getName() + MILL_FOR + astcdDefinition.getName();
+      String millClassName = superSymbol.getName() + MillConstants.MILL_FOR + astcdDefinition.getName();
       List<ASTCDMethod> builderMethodsList = addBuilderMethodsForSuper(astcdClassList, superSymbol);
+      String basePackage = service.getBasePackage(superSymbol).isEmpty() ? "" : service.getBasePackage(superSymbol) + ".";
+
       ASTMCQualifiedType superclass = this.getMCTypeFacade().createQualifiedType(
-          service.getASTPackage(superSymbol) + "." + superSymbol.getName() + MILL_SUFFIX);
+          basePackage + superSymbol.getName().toLowerCase() + "." + superSymbol.getName() + MillConstants.MILL_SUFFIX);
 
       superMills.add(CD4AnalysisMill.cDClassBuilder()
           .setModifier(PUBLIC.build())
@@ -96,10 +96,11 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
       // Add method body based on whether method is overridden by this cdType
       if (firstClasses.contains(cdType)) {
-        ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(astName + BUILDER_SUFFIX);
+        String packageDef = service.getASTPackage(superSymbol);
+        ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(packageDef+"."+astName + BUILDER_SUFFIX);
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
-        this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("_ast.mill.ProtectedBuilderForSuperMethod",
-            astcdDefinition.getName() + MILL_SUFFIX, methodName));
+        this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderForSuperMethod",
+            astcdDefinition.getName() + MillConstants.MILL_SUFFIX, methodName));
       } else {
         ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(service.getASTPackage(superSymbol) + "." + astName + BUILDER_SUFFIX);
         protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);

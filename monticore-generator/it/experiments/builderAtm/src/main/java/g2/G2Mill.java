@@ -1,5 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-package g2._ast;
+package g2;
+
+import g2._ast.ASTSBuilder;
 
 public class G2Mill extends G2MillTOP {
 
@@ -9,7 +11,7 @@ public class G2Mill extends G2MillTOP {
     
   protected G2Mill () { super(); }
 
-  protected ASTSBuilder _sBuilder() { 
+  protected ASTSBuilder _sBuilder() {
      ASTSBuilder sb = super._sBuilder();
      // add extra c:T objects
      sb.addC(tBuilder().build());

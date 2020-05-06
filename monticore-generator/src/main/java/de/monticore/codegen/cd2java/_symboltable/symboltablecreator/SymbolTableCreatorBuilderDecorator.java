@@ -55,7 +55,7 @@ public class SymbolTableCreatorBuilderDecorator extends AbstractCreator<ASTCDCom
   }
 
   protected ASTCDConstructor createConstructor(String symTabCreatorBuilder) {
-    return getCDConstructorFacade().createConstructor(PROTECTED.build(), symTabCreatorBuilder);
+    return getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreatorBuilder);
   }
 
   protected ASTCDMethod createBuildMethod(String symTabCreator) {

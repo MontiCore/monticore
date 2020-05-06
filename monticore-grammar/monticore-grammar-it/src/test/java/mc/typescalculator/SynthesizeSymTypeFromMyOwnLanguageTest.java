@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
+import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import mc.typescalculator.myownlanguage._parser.MyOwnLanguageParser;
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 public class SynthesizeSymTypeFromMyOwnLanguageTest {
 
   protected MyOwnLanguageParser parser = new MyOwnLanguageParser();
-  protected TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromMyOwnLanguage(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build()),null);
+  protected TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromMyOwnLanguage(ExpressionsBasisMill.expressionsBasisScopeBuilder().build()),null);
 
   @Test
   public void testMCCollectionTypes() throws IOException {

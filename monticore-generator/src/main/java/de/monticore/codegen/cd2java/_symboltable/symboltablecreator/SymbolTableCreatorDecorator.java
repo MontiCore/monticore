@@ -59,7 +59,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       String symbolTableCreator = symbolTableService.getSymbolTableCreatorSimpleName();
       String visitorName = visitorService.getVisitorFullName();
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();
-      String symTabMillFullName = symbolTableService.getSymTabMillFullName();
+      String symTabMillFullName = symbolTableService.getMillFullName();
       ASTMCBasicGenericType dequeType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, scopeInterface);
       ASTMCWildcardTypeArgument wildCardTypeArgument = getMCTypeFacade().createWildCardWithUpperBoundType(scopeInterface);
       ASTMCBasicGenericType dequeWildcardType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, wildCardTypeArgument);
@@ -180,7 +180,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
   }
 
   protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName, String definitionName) {
-    String symTabMill = symbolTableService.getSymTabMillFullName();
+    String symTabMill = symbolTableService.getMillFullName();
     ASTCDParameter boolParam = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), SHADOWING_VAR);
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterfaceName),
         "createScope", boolParam);
@@ -258,7 +258,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
   }
 
   protected ASTCDMethod createSymbolCreate_Method(String symbolFullName, String simpleName, ASTCDParameter astParam) {
-    String symTabMillFullName = symbolTableService.getSymTabMillFullName();
+    String symTabMillFullName = symbolTableService.getMillFullName();
     ASTCDMethod createSymbolMethod = getCDMethodFacade().createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(symbolFullName),
         "create_" + simpleName, astParam);
     String symbolSimpleName = Names.getSimpleName(symbolFullName);

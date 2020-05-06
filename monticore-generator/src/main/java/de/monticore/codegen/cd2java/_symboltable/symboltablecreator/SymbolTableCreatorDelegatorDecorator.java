@@ -75,7 +75,7 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
   protected ASTCDConstructor createConstructor(String symTabCreatorDelegator, String globalScope,
                                                String symbolTableCreator, String simpleName) {
     List<CDDefinitionSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
-    String symTabMillFullName = symbolTableService.getSymTabMillFullName();
+    String symTabMillFullName = symbolTableService.getMillFullName();
     Map<String, String> superSymTabCreator = new HashMap<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : superCDsTransitive) {
       if (cdDefinitionSymbol.isPresentAstNode() && symbolTableService.hasStartProd(cdDefinitionSymbol.getAstNode())) {

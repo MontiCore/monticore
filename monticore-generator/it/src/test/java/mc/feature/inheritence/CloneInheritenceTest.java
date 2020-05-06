@@ -2,9 +2,9 @@
 package mc.feature.inheritence;
 
 import mc.GeneratorIntegrationsTest;
+import mc.feature.inheritence.inheritence.InheritenceMill;
 import mc.feature.inheritence.inheritence._ast.ASTSub;
 import mc.feature.inheritence.inheritence._ast.ASTSuper;
-import mc.feature.inheritence.inheritence._ast.InheritenceMill;
 
 import org.junit.Test;
 

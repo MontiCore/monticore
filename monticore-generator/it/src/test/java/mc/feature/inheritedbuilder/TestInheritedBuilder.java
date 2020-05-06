@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.inheritedbuilder;
 
+import mc.feature.inheritedbuilder.buildertest.BuilderTestMill;
 import mc.feature.inheritedbuilder.buildertest._ast.ASTSubBuilder;
-import mc.feature.inheritedbuilder.buildertest._ast.BuilderTestMill;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

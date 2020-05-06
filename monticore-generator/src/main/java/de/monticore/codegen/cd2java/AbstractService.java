@@ -6,7 +6,6 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolLoader;
-import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
@@ -21,6 +20,7 @@ import java.util.stream.Stream;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
+import static de.monticore.codegen.cd2java.mill.MillConstants.MILL_SUFFIX;
 
 public class AbstractService<T extends AbstractService> {
 
@@ -149,11 +149,11 @@ public class AbstractService<T extends AbstractService> {
     return getCDSymbol().getName();
   }
 
-  protected String getBasePackage(CDDefinitionSymbol cdSymbol) {
+  public String getBasePackage(CDDefinitionSymbol cdSymbol) {
     return cdSymbol.getPackageName();
   }
 
-  private String getBasePackage() {
+  public String getBasePackage() {
     return getBasePackage(getCDSymbol());
   }
 
@@ -299,9 +299,14 @@ public class AbstractService<T extends AbstractService> {
   /**
    * checking for duplicate classes and methods
    */
-  public boolean isClassOverwritten(ASTCDClass astcdClass, List<ASTCDClass> classList) {
+  public boolean isClassOverwritten(ASTCDType astcdClass, List<ASTCDClass> classList) {
     //if there is a Class with the same name in the current CompilationUnit, then the methods are only generated once
     return classList.stream().anyMatch(x -> x.getName().endsWith(astcdClass.getName()));
+  }
+
+  public boolean isClassOverwritten(String className, List<ASTCDClass> classList) {
+    //if there is a Class with the same name in the current CompilationUnit, then the methods are only generated once
+    return classList.stream().anyMatch(x -> x.getName().equals(className));
   }
 
   public boolean isMethodAlreadyDefined(String methodname, List<ASTCDMethod> definedMethods) {
@@ -402,4 +407,30 @@ public class AbstractService<T extends AbstractService> {
     String errorCodeSuffix = String.valueOf(hashCode);
     return "x" + errorCodeSuffix;
   }
+
+
+  /**
+   * Mill class names e.g. AutomataMill
+   */
+
+  public String getMillSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + MILL_SUFFIX;
+  }
+
+  public String getMillSimpleName() {
+    return getMillSimpleName(getCDSymbol());
+  }
+
+  public String getMillFullName(CDDefinitionSymbol cdSymbol) {
+    if (getBasePackage(cdSymbol).isEmpty()) {
+      return cdSymbol.getName().toLowerCase() + "." + getMillSimpleName(cdSymbol);
+    }else {
+      return String.join(".", getBasePackage(cdSymbol), cdSymbol.getName()).toLowerCase() + "." + getMillSimpleName(cdSymbol);
+    }
+  }
+
+  public String getMillFullName() {
+    return getMillFullName(getCDSymbol());
+  }
+
 }
