@@ -64,7 +64,8 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
   * Disadvantage: 
     1. The designer of `A` explicitly has to design the *hole* `X` 
       and inject it into other places. 
-    1. Only one overriding alternative possible.
+    1. Only one overriding alternative possible (i.e. multiple overriding in 
+       subgrammars are allowed, but only the most specific resides) .
 * Extending nonterminal in the super-grammar.
   * Use a normal nonterminal `X` and extend it in a sub-grammar.
   ```
@@ -114,7 +115,8 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
   * Advantage: Compact definition. No "*framework thinking*" needed (no need
     to forecast all potential extension points)
   * Disadvantage: 
-    The entire production is overriden (some redundancy). 
+    1. The entire production is overriden (some redundancy). 
+    2. Only one overriding alternative possible. 
 * Combinations are possible.
 * Defined by: BR
 
