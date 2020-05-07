@@ -41,7 +41,8 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
      }
      grammar B {
         Y implements X = "specific" "thing"
-     }```
+     }
+  ```
   * Advantage: Multiple extensions are possible at the same time
   * Disadvantage: the designer of `A` explicitly has to design the *hole* `X` 
     and inject it into other places
