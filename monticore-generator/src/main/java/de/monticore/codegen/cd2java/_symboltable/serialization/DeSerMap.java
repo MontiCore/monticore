@@ -31,7 +31,7 @@ public class DeSerMap {
 
   protected static final String COMPLEX_TEMPLATE = "_symboltable.serialization.PrintComplexAttribute";
 
-  protected static TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromMCSimpleGenericTypes(),
+  protected static TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromMCSimpleGenericTypes(null),
       null);
 
   protected static final Map<SymTypeExpression, String> primitiveDataTypes = new HashMap<>();

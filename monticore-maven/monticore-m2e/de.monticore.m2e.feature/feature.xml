@@ -3,7 +3,7 @@
 <feature
       id="de.monticore.m2e.feature"
       label="MontiCore m2e Extension"
-      version="6.1.0-SNAPSHOT">
+      version="6.2.0-SNAPSHOT">
 
    <plugin
          id="de.monticore.m2e"

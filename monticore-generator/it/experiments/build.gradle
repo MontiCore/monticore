@@ -4,11 +4,11 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 plugins {
    id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
-  id "monticore" version "6.1.0-SNAPSHOT" // MontiCore Plugin
+  id "monticore" version "6.2.0-SNAPSHOT" // MontiCore Plugin
 }
 allprojects {
   group = 'de.monticore'
-  version = '6.1.0-SNAPSHOT'
+  version = '6.2.0-SNAPSHOT'
 }
 
 subprojects {
@@ -19,8 +19,8 @@ subprojects {
   buildDir = file("$projectDir/target")
   
   ext.grammarDir = 'src/main/grammars'
-  ext.grammar_version = '6.1.0-SNAPSHOT'
-  ext.mc_version = '6.1.0-SNAPSHOT'
+  ext.grammar_version = '6.2.0-SNAPSHOT'
+  ext.mc_version = '6.2.0-SNAPSHOT'
   ext.junit_version = '4.12'
   ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
   
